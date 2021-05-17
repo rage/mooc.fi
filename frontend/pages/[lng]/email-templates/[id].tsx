@@ -249,9 +249,11 @@ const EmailTemplateView = () => {
                             txt_body: txtBody,
                             html_body: htmlBody,
                             triggered_automatically_by_course_id: thresholdCourseId,
-                            execise_completions_threshold: exerciseThreshold,
-                            points_threshold: pointsThreshold,
-                            type: templateType,
+                            exercise_completions_threshold: Number(
+                              exerciseThreshold,
+                            ),
+                            points_threshold: Number(pointsThreshold),
+                            template_type: templateType,
                           },
                         },
                       )
