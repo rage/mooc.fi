@@ -6,6 +6,7 @@ import { BAItiers } from "../../../../config/courseConfig"
 import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
 import { checkBAICompletion } from "./generateBAIUserCourseProgress"
 import { KafkaContext } from "../kafkaContext"
+import { checkAndSendThresholdEmail } from "./checkAndSendThresholdEmail"
 
 interface Props {
   user: User
@@ -31,6 +32,8 @@ export const generateUserCourseProgress = async ({
   } else {
     await checkCompletion({ user, course, combinedProgress: combined, context })
   }
+
+  await checkAndSendThresholdEmail({ user, course, combined, context })
 
   await context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
