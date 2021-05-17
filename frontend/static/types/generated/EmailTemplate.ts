@@ -16,7 +16,7 @@ export interface EmailTemplate_email_template {
   txt_body: string | null
   html_body: string | null
   title: string | null
-  type: string | null
+  template_type: string | null
   points_threshold: number | null
   exercise_completions_threshold: number | null
   triggered_automatically_by_course_id: string | null
