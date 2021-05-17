@@ -198,6 +198,7 @@ const EmailTemplateView = () => {
                     e.preventDefault()
                     setExerciseThreshold(e.target.value)
                   }}
+                  disabled
                 />
                 <br />
                 <br />
