@@ -89,7 +89,7 @@ const EmailTemplateView = () => {
     setTxtBody(data.email_template?.txt_body)
     setHtmlBody(data.email_template?.html_body)
     setTitle(data.email_template?.title)
-    setTemplateType(data.email_template?.type)
+    setTemplateType(data.email_template?.template_type)
     setExerciseThreshold(data.email_template?.exercise_completions_threshold)
     setPointsThreshold(data.email_template?.points_threshold)
     setThresholdCourseId(
@@ -177,7 +177,7 @@ const EmailTemplateView = () => {
                 setTemplateType(e.target.value)
               }}
               id="select"
-              value={templateType}
+              value={templateType ?? "completion"}
             >
               <option value="completion">Completion e-mail</option>
               <option value="threshold">Threshold e-mail</option>
@@ -193,6 +193,7 @@ const EmailTemplateView = () => {
                   autoComplete="off"
                   variant="outlined"
                   style={{ width: "60%" }}
+                  value={exerciseThreshold}
                   onChange={(e) => {
                     e.preventDefault()
                     setExerciseThreshold(e.target.value)
@@ -207,6 +208,7 @@ const EmailTemplateView = () => {
                   autoComplete="off"
                   variant="outlined"
                   style={{ width: "60%" }}
+                  value={pointsThreshold}
                   onChange={(e) => {
                     e.preventDefault()
                     setPointsThreshold(e.target.value)
