@@ -457,12 +457,12 @@ export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
     created_at: "1901-01-01T10:00:00.00+02:00",
     updated_at: "1901-01-01T10:00:00.00+02:00",
     title: "Win",
-    points_threshold: 1,
+    points_threshold: 2,
     name: "value",
     triggered_automatically_by_course: {
-      connect: { id: "00000000000000000000000000000002" },
+      connect: { id: "00000000000000000000000000000667" },
     },
-    exercise_completions_threshold: 1,
+    exercise_completions_threshold: 2,
   },
   {
     id: "00000000000000000000000000000013",
@@ -474,7 +474,7 @@ export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
     points_threshold: 60,
     name: "value",
     triggered_automatically_by_course: {
-      connect: { id: "00000000000000000000000000000002" },
+      connect: { id: "00000000000000000000000000000667" },
     },
     exercise_completions_threshold: 100,
   },
