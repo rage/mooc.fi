@@ -14,6 +14,8 @@ export interface AddEmailTemplate_addEmailTemplate {
   html_body: string | null
   txt_body: string | null
   title: string | null
+  template_type: string | null
+  triggered_automatically_by_course_id: string | null
 }
 
 export interface AddEmailTemplate {
@@ -25,4 +27,6 @@ export interface AddEmailTemplateVariables {
   html_body?: string | null
   txt_body?: string | null
   title?: string | null
+  template_type?: string | null
+  triggered_automatically_by_course_id?: string | null
 }

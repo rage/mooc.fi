@@ -5,14 +5,7 @@ import { SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"
 import { EmailTemplateQuery } from "/graphql/queries/email-templates"
-import {
-  Paper,
-  TextField,
-  Button,
-  NativeSelect,
-  InputLabel,
-  Select,
-} from "@material-ui/core"
+import { Paper, TextField, Button } from "@material-ui/core"
 import {
   UpdateEmailTemplateMutation,
   DeleteEmailTemplateMutation,
@@ -24,19 +17,23 @@ import LanguageContext from "/contexts/LanguageContext"
 import Router from "next/router"
 import withAdmin from "/lib/with-admin"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import { AllCoursesQuery } from "/graphql/queries/courses"
-import { AllCourses } from "/static/types/generated/AllCourses"
+import Spinner from "/components/Spinner"
 
 const EmailTemplateView = () => {
+  // TODO: Get rid of any
   const [emailTemplate, setEmailTemplate] = useState<any>()
   const [name, setName] = useState<any>()
   const [txtBody, setTxtBody] = useState<any>()
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
-  const [exerciseThreshold, setExerciseThreshold] = useState<any>()
-  const [pointsThreshold, setPointsThreshold] = useState<any>()
-  const [templateType, setTemplateType] = useState<any>()
-  const [thresholdCourseId, setThresholdCourseId] = useState<any>()
+  const [exerciseThreshold, setExerciseThreshold] = useState<
+    Number | null | undefined
+  >()
+  const [pointsThreshold, setPointsThreshold] = useState<
+    Number | null | undefined
+  >()
+  const [templateType, setTemplateType] = useState<string | null | undefined>()
+  const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
 
   const id = useQueryParameter("id")
@@ -56,12 +53,6 @@ const EmailTemplateView = () => {
     variables: { id: id },
   })
 
-  const {
-    loading: courseLoading,
-    error: courseError,
-    data: courseData,
-  } = useQuery<AllCourses>(AllCoursesQuery)
-
   const { language } = useContext(LanguageContext)
 
   useBreadcrumbs([
@@ -75,12 +66,11 @@ const EmailTemplateView = () => {
     },
   ])
 
-  //TODO add circular progress
-  if (loading || courseLoading) {
-    return null
+  if (loading) {
+    return <Spinner />
   }
   //TODO fix error message
-  if (error || !data || courseError || !courseData) {
+  if (error || !data) {
     return <p>Error has occurred</p>
   }
 
@@ -92,16 +82,12 @@ const EmailTemplateView = () => {
     setTemplateType(data.email_template?.template_type)
     setExerciseThreshold(data.email_template?.exercise_completions_threshold)
     setPointsThreshold(data.email_template?.points_threshold)
-    setThresholdCourseId(
+    setTriggeredByCourseId(
       data.email_template?.triggered_automatically_by_course_id,
     )
     setDidInit(true)
     setEmailTemplate(data.email_template)
   }
-
-  const courseOptions = courseData?.courses?.map((course) => {
-    return <option value={course?.id}>{course?.name}</option>
-  })
 
   return (
     <section>
@@ -129,7 +115,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="title"
-              label="Title"
+              label="Email Subject"
               variant="outlined"
               value={title ?? ""}
               onChange={(e) => {
@@ -141,7 +127,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="txt-body"
-              label="txt_body"
+              label="Email Text Body"
               multiline
               rows="4"
               maxRows="40"
@@ -156,7 +142,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="html-body"
-              label="html_body (disabled)"
+              label="Email HTML Body (disabled)"
               multiline
               rows="4"
               maxRows="40"
@@ -170,25 +156,11 @@ const EmailTemplateView = () => {
             />
             <br></br>
             <br></br>
-            <InputLabel htmlFor="select">Template type</InputLabel>
-            <NativeSelect
-              onChange={(e) => {
-                e.preventDefault()
-                setTemplateType(e.target.value)
-              }}
-              id="select"
-              value={templateType ?? "completion"}
-            >
-              <option value="completion">Completion e-mail</option>
-              <option value="threshold">Threshold e-mail</option>
-            </NativeSelect>
-            <br />
-            <br />
             {templateType === "threshold" ? (
               <>
                 <TextField
                   type="number"
-                  label="Exercise Completions threshold"
+                  label="Exercise Completions threshold (not supported)"
                   fullWidth
                   autoComplete="off"
                   variant="outlined"
@@ -196,7 +168,7 @@ const EmailTemplateView = () => {
                   value={exerciseThreshold}
                   onChange={(e) => {
                     e.preventDefault()
-                    setExerciseThreshold(e.target.value)
+                    setExerciseThreshold(Number(e.target.value))
                   }}
                   disabled
                 />
@@ -212,24 +184,9 @@ const EmailTemplateView = () => {
                   value={pointsThreshold}
                   onChange={(e) => {
                     e.preventDefault()
-                    setPointsThreshold(e.target.value)
+                    setPointsThreshold(Number(e.target.value))
                   }}
                 />
-                <br />
-                <br />
-                <InputLabel htmlFor="selectCourse">
-                  Threshold for course
-                </InputLabel>
-                <Select
-                  onChange={(e) => {
-                    e.preventDefault()
-                    setThresholdCourseId(e.target.value)
-                  }}
-                  id="selectCourse"
-                  value={thresholdCourseId}
-                >
-                  {courseOptions}
-                </Select>
               </>
             ) : null}
             <br></br>
@@ -251,11 +208,9 @@ const EmailTemplateView = () => {
                             title: title,
                             txt_body: txtBody,
                             html_body: htmlBody,
-                            triggered_automatically_by_course_id: thresholdCourseId,
-                            exercise_completions_threshold: Number(
-                              exerciseThreshold,
-                            ),
-                            points_threshold: Number(pointsThreshold),
+                            triggered_automatically_by_course_id: triggeredByCourseId,
+                            exercise_completions_threshold: exerciseThreshold,
+                            points_threshold: pointsThreshold,
                             template_type: templateType,
                           },
                         },
