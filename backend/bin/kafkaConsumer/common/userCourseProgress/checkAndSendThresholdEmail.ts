@@ -32,7 +32,7 @@ export const checkAndSendThresholdEmail = async ({
     .sort((a, b) => (b.points_threshold ?? 0) - (a.points_threshold ?? 0))
     .filter((et) => {
       return (
-        combinedUserCourseProgress.total_n_points >
+        combinedUserCourseProgress.total_n_points >=
         (et.points_threshold ?? 99999)
       )
     })
