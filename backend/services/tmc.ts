@@ -137,7 +137,15 @@ export const authenticateUser = async (
   return await axios({
     method: "POST",
     url: `${BASE_URL}/oauth/token`,
-    data: JSON.stringify({ username, password, grant_type: "password" }),
+    data: JSON.stringify({
+      username,
+      password,
+      grant_type: "password",
+      client_id:
+        "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
+      client_secret:
+        "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+    }),
     headers: { "Content-Type": "application/json" },
   })
     .then((response) => response.data)
