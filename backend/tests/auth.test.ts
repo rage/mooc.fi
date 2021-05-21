@@ -663,4 +663,35 @@ describe("server", () => {
       expect(res.status).toBe(200)
     })
   })
+
+  describe("user", () => {
+    let token =
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMzMTAsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMjAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAzIiwiYWRtaW4iOnRydWUsIm5vbmNlIjoiNWMwOGQwZjRhMzYxMTdkZmJlZGIzZWI3NzA1ZTUzZTIiLCJqd3RpZCI6Ijk5NzUzYWJlZTEyZGZkYTM5YWY1OGQyODRkZDQ0MzAxYjMxNGYzMmZhN2Y1OGE0OGFlMGYxZmEwNzUzMDBkZDMxM2E0OTM0MjkyZjVjMDAzNTY0Y2YyMjY3NjRhMDllY2M1ZjRlODhiZTc0YzhkNzcwZmU1NmM1NTA4YzNkYjlmIiwiaWF0IjoxNjE5MDA3MzEwLCJhdWQiOiJuYXRpdmUiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMDAvYXV0aC90b2tlbiIsInN1YiI6IlprQnRZV2xzTG1OdmJRPT0ifQ.qvPIfJxToS3k_Vu6ixIVarW3DCPmddGTSedYKc5yUt6yn7i_q99ps38A5w1LgKq_2_G8gBw6WzV7ulOpstx0L3stBxpoHv073WVrCo2v-mw7EMbUJHKCiggPUOLtcYF4B4rK64x0vo1NnlcBIBATYmq2gr_jEXX4gBx-6JEmzsMCOCzT4ZYft0rRkn3930giGtGpcP5C4acl12USrc6QNVGcbN0U1J9wWvo45Qe2QVdV-xG96PR2KiOfVsrZ-5YVMJjwiD6heEbghdyo00yifIPDSTRr0Zpjmwr1a7bUFSen93h-iEHiFVZ1_GfM9a_HqvXdtY0-8_eAJi8f9WVrjw"
+    const course = "00000000000000000000000000000002"
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const defaultHeaders = {
+      authorization: `Bearer ${token}`,
+    }
+
+    const getUser = get(`/api/user/${course}`, defaultHeaders)
+    const getUserNonToken = get(`/api/user/${course}`, {})
+
+    it("error get user on invalid token", async () => {
+      return getUserNonToken({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("get user", async () => {
+      const res = await getUser({})
+
+      expect(res.status).toBe(200)
+    })
+  })
 })
