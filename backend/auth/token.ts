@@ -40,6 +40,7 @@ async function issueToken(user: any, client: any, { knex }: ApiContext) {
   )
 
   await knex("access_tokens").insert({
+    //email: user.email,
     access_token: token,
     client_id: client.client_id,
     user_id: user?.id,
@@ -318,7 +319,7 @@ export async function signIn(
     )?.[0]
   }
 
-  if (user) {
+  if (user && user.password) {
     if (user.password_throttle) {
       let passwordThrottle = user.password_throttle || <any>[]
       passwordThrottle.forEach((throttle: any) => {
