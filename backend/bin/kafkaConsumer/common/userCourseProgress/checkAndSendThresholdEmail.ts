@@ -38,28 +38,26 @@ export const checkAndSendThresholdEmail = async ({
       return combinedUserCourseProgress.total_n_points >= et.points_threshold
     })
 
-  if (templatesThatFulfillPoints.length !== 0) {
-    templatesThatFulfillPoints.forEach(async (template) => {
-      const mailSent = await context.prisma.emailDelivery.findFirst({
-        where: {
-          email_template_id: template.id,
+  for (const template of templatesThatFulfillPoints) {
+    const mailSent = await context.prisma.emailDelivery.findFirst({
+      where: {
+        email_template_id: template.id,
+        user_id: user.id,
+      },
+    })
+
+    if (!mailSent) {
+      await context.prisma.emailDelivery.create({
+        data: {
+          id: uuidv4(),
+          created_at: new Date(),
+          updated_at: new Date(),
           user_id: user.id,
+          email_template_id: template.id,
+          sent: false,
+          error: false,
         },
       })
-
-      if (!mailSent) {
-        await context.prisma.emailDelivery.create({
-          data: {
-            id: uuidv4(),
-            created_at: new Date(),
-            updated_at: new Date(),
-            user_id: user.id,
-            email_template_id: template.id,
-            sent: false,
-            error: false,
-          },
-        })
-      }
-    })
+    }
   }
 }
