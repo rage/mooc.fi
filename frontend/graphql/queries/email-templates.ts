@@ -8,6 +8,10 @@ export const AllEmailTemplatesQuery = gql`
       txt_body
       html_body
       title
+      template_type
+      triggered_automatically_by_course_id
+      exercise_completions_threshold
+      points_threshold
     }
   }
 `
@@ -22,6 +26,10 @@ export const EmailTemplateQuery = gql`
       txt_body
       html_body
       title
+      template_type
+      triggered_automatically_by_course_id
+      exercise_completions_threshold
+      points_threshold
     }
   }
 `
