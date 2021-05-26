@@ -68,11 +68,14 @@ describe("Email threshold", () => {
       expect(emailDeliveries.length).toEqual(1)
     })
 
-    it("sends only the highest threshold template", async () => {
+    it("sends all the threshold templates that has not been sent", async () => {
       await saveToDatabase(kafkaContext, newMessage)
       const emailDeliveries = await ctx.prisma.emailDelivery.findMany({})
-      expect(emailDeliveries.length).toEqual(1)
+      expect(emailDeliveries.length).toEqual(2)
       expect(emailDeliveries[0].email_template_id).toEqual(
+        "00000000-0000-0000-0000-000000000012",
+      )
+      expect(emailDeliveries[1].email_template_id).toEqual(
         "00000000-0000-0000-0000-000000000013",
       )
     })
@@ -99,8 +102,8 @@ describe("Email threshold", () => {
       const emailDeliveries = await ctx.prisma.emailDelivery.findMany({})
       expect(emailDeliveries.length).toEqual(0)
     })
-    it("twice", async () => {
-      await saveToDatabase(kafkaContext, newMessage)
+    it("twice if same threshold", async () => {
+      await saveToDatabase(kafkaContext, message)
       const emailDeliveries = await ctx.prisma.emailDelivery.findMany({})
       expect(emailDeliveries.length).toEqual(1)
 
