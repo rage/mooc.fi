@@ -28,36 +28,38 @@ export const checkAndSendThresholdEmail = async ({
     },
   )
 
+  // Sort threshold emails ascending, send highest threshold email as last.
   const templatesThatFulfillPoints = courseEmailThresholdTemplates
-    .sort((a, b) => (b.points_threshold ?? 0) - (a.points_threshold ?? 0))
+    .sort((a, b) => (a.points_threshold ?? 0) - (b.points_threshold ?? 0))
     .filter((et) => {
-      return (
-        combinedUserCourseProgress.total_n_points >=
-        (et.points_threshold ?? 99999)
-      )
+      if (et.points_threshold === null || et.points_threshold === undefined) {
+        return false
+      }
+      return combinedUserCourseProgress.total_n_points >= et.points_threshold
     })
 
   if (templatesThatFulfillPoints.length !== 0) {
-    // Send only for the highest fulfilled?
-    const mailSent = await context.prisma.emailDelivery.findFirst({
-      where: {
-        email_template_id: templatesThatFulfillPoints[0].id,
-        user_id: user.id,
-      },
-    })
-
-    if (!mailSent) {
-      await context.prisma.emailDelivery.create({
-        data: {
-          id: uuidv4(),
-          created_at: new Date(),
-          updated_at: new Date(),
+    templatesThatFulfillPoints.forEach(async (template) => {
+      const mailSent = await context.prisma.emailDelivery.findFirst({
+        where: {
+          email_template_id: template.id,
           user_id: user.id,
-          email_template_id: templatesThatFulfillPoints[0].id,
-          sent: false,
-          error: false,
         },
       })
-    }
+
+      if (!mailSent) {
+        await context.prisma.emailDelivery.create({
+          data: {
+            id: uuidv4(),
+            created_at: new Date(),
+            updated_at: new Date(),
+            user_id: user.id,
+            email_template_id: template.id,
+            sent: false,
+            error: false,
+          },
+        })
+      }
+    })
   }
 }
