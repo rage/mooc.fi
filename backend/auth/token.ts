@@ -328,7 +328,7 @@ export async function signIn(
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-                (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
@@ -418,9 +418,8 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${
-              RATE_LIMIT - throttle.currentRate
-            } attempts left.`,
+            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
+              } attempts left.`,
           }
           return
         }
