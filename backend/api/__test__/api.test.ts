@@ -1,12 +1,12 @@
-import { fakeTMCCurrent, getTestContext } from "./__helpers"
-import { normalUserDetails, adminUserDetails } from "./data"
-import { seed } from "./data/seed"
+import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import { normalUserDetails, adminUserDetails } from "../../tests/data"
+import { seed } from "../../tests/data/seed"
 import axios, { Method } from "axios"
-import { omit } from "lodash"
+import { omit, orderBy } from "lodash"
 
 const ctx = getTestContext()
 
-describe("server", () => {
+describe("API", () => {
   interface RequestParams {
     data?: any
     headers?: any
@@ -337,6 +337,110 @@ describe("server", () => {
           isCat: true,
           sound: "meow",
         })
+      })
+    })
+
+    describe("/api/completions", () => {
+      const tmc = fakeTMCCurrent({
+        "Bearer normal": [200, normalUserDetails],
+        "Bearer admin": [200, adminUserDetails],
+      })
+
+      beforeAll(() => tmc.setup())
+      afterAll(() => tmc.teardown())
+
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      const getCompletions = (slug: string, registered: boolean = false) =>
+        get(
+          `/api/completions/${slug}${
+            registered ? `?registered=${registered}` : ""
+          }`,
+          {},
+        )
+
+      it("errors on no auth", async () => {
+        return getCompletions("course1")({})
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(401)
+          })
+      })
+
+      it("errors on non-existent organization", async () => {
+        return getCompletions("course1")({
+          headers: { Authorization: "Basic bogus" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(401)
+          })
+      })
+
+      it("errors on non-basic authorization", async () => {
+        return getCompletions("course1")({
+          headers: { Authorization: "Bearer admin" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(401)
+          })
+      })
+
+      it("errors on non-existent course", async () => {
+        return getCompletions("bogus")({
+          headers: { Authorization: "Basic kissa" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(404)
+            expect(response.data.message).toContain("Course not found")
+          })
+      })
+
+      it("returns correctly on course, skipping registered completions", async () => {
+        const res = await getCompletions("course1")({
+          headers: { Authorization: "Basic kissa" },
+        })
+
+        const completions = orderBy(res.data, "id")
+
+        expect(completions.map((c) => c.id)).toEqual([
+          "12400000-0000-0000-0000-000000000001",
+          "30000000-0000-0000-0000-000000000104",
+        ])
+      })
+
+      it("returns correctly on course alias, skipping registered completions", async () => {
+        const res = await getCompletions("alias")({
+          headers: { Authorization: "Basic kissa" },
+        })
+
+        const completions = orderBy(res.data, "id")
+
+        expect(completions.map((c) => c.id)).toEqual([
+          "12400000-0000-0000-0000-000000000001",
+          "30000000-0000-0000-0000-000000000104",
+        ])
+      })
+
+      it("returns correctly on course when registered query parameter is set", async () => {
+        const res = await getCompletions(
+          "course1",
+          true,
+        )({
+          headers: { Authorization: "Basic kissa" },
+        })
+
+        const completions = orderBy(res.data, "id")
+
+        expect(completions.map((c) => c.id)).toEqual([
+          "12400000-0000-0000-0000-000000000001",
+          "30000000-0000-0000-0000-000000000102",
+          "30000000-0000-0000-0000-000000000104",
+        ])
       })
     })
   })
