@@ -28,6 +28,11 @@ npm run migrate
 npm run dev
 ```
 
+## Generating GraphQL types for frontend
+
+If you make changes to the GraphQL schema or the queries in the frontend, you probably need to regenerate the Typescript types. Run `npm run generate-graphql-types` in the frontend folder.
+
+If you're getting errors about mismatching GraphQL versions, then try `npm i --legacy-peer-deps --save-dev apollo` to force it. This is because `apollo-tooling` keeps on packaging some old versions of dependencies instead of using the newer ones available. 
 ## Using installed `librdkafka` to speed up backend development
 
 By default, `node-rdkafka` builds `librdkafka` from the source. This can take minutes on a bad day and can slow development down quite considerably. However, there's an option to use the version installed locally.
