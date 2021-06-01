@@ -16,6 +16,8 @@ export interface AddEmailTemplate_addEmailTemplate {
   title: string | null
   template_type: string | null
   triggered_automatically_by_course_id: string | null
+  exercise_completions_threshold: number | null
+  points_threshold: number | null
 }
 
 export interface AddEmailTemplate {
@@ -29,4 +31,6 @@ export interface AddEmailTemplateVariables {
   title?: string | null
   template_type?: string | null
   triggered_automatically_by_course_id?: string | null
+  exercise_completions_threshold?: number | null
+  points_threshold?: number | null
 }
