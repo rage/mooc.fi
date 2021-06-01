@@ -215,6 +215,20 @@ export const users: Prisma.UserCreateInput[] = [
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
+  {
+    id: "20000000000000000000000000000105",
+    administrator: false,
+    email: "e@mail.com",
+    upstream_id: 4,
+    username: "fourth_user",
+  },
+  {
+    id: "20000000000000000000000000000106",
+    administrator: false,
+    email: "e@mail.com",
+    upstream_id: 5,
+    username: "fifth_user",
+  },
 ]
 
 export const completions: Prisma.CompletionCreateInput[] = [
@@ -249,9 +263,19 @@ export const completions: Prisma.CompletionCreateInput[] = [
   {
     id: "30000000-0000-0000-0000-000000000104",
     course: { connect: { id: "00000000000000000000000000000002" } },
-    user: { connect: { id: "20000000000000000000000000000104" } },
+    user: { connect: { id: "20000000000000000000000000000105" } },
     email: "e@mail.com",
-    user_upstream_id: 1,
+    user_upstream_id: 4,
+    eligible_for_ects: true,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    id: "30000000-0000-0000-0000-000000000105",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000106" } },
+    email: "e@mail.com",
+    user_upstream_id: 5,
     eligible_for_ects: true,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
@@ -494,9 +518,10 @@ export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
 export const completionsRegistered: Prisma.CompletionRegisteredCreateInput[] = [
   {
     id: "66000000-0000-0000-0000-000000000102",
-    completion: { connect: { id: "30000000-0000-0000-0000-000000000102" } },
+    completion: { connect: { id: "30000000-0000-0000-0000-000000000105" } },
     course: { connect: { id: "00000000000000000000000000000002" } },
-    real_student_number: "1",
+    user: { connect: { id: "20000000000000000000000000000106" } },
+    real_student_number: "4",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
