@@ -150,7 +150,9 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
         >
           <CompletionInfoList>
             <CompletionInfo>
-              {`${t("completedDate")}${formatDateTime(completion.created_at)}`}
+              {`${t("completedDate")}${formatDateTime(
+                completion.completion_date,
+              )}`}
             </CompletionInfo>
             {completion.completion_language ? (
               <CompletionInfo>
