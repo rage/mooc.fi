@@ -14,6 +14,8 @@ export function completions({ knex }: ApiContext) {
 
     // TODO/FIXME? organization value not used
 
+    const { registered } = req.query
+
     let course_id: string
 
     const course = (
@@ -37,10 +39,20 @@ export function completions({ knex }: ApiContext) {
     } else {
       course_id = course.id
     }
-    const sql = knex.select<any, Completion[]>("*").from("completion").where({
-      course_id,
-      eligible_for_ects: true,
-    })
+    const sql = knex
+      .select<any, Completion[]>("completion.*")
+      .from("completion")
+      .fullOuterJoin(
+        "completion_registered",
+        "completion.id",
+        "completion_registered.completion_id",
+      )
+      .where({
+        "completion.course_id": course_id,
+        eligible_for_ects: true,
+        ...(!registered && { "completion_registered.id": null }),
+      })
+
     res.set("Content-Type", "application/json")
 
     // TODO/FIXME: typings broke on Knex update
