@@ -16,6 +16,7 @@ const completionsFragment = gql`
       created_at
       tier
       eligible_for_ects
+      completion_date
       course {
         id
         slug

@@ -100,8 +100,12 @@ export const AllEditorCoursesQuery = gql`
 `
 
 export const CheckSlugQuery = gql`
-  query checkSlug($slug: String!) {
-    course_exists(slug: $slug)
+  query CheckSlug($slug: String!) {
+    course(slug: $slug) {
+      id
+      slug
+      name
+    }
   }
 `
 

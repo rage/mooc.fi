@@ -154,7 +154,9 @@ export const UserCourseSettingQueries = extendType({
 
         const orCondition: Prisma.UserWhereInput[] = []
 
-        if (search) orCondition.push(buildUserSearch(search))
+        if (search && search !== "") {
+          orCondition.push(buildUserSearch(search))
+        }
 
         if (user_id) orCondition.push({ id: user_id })
         if (user_upstream_id)
@@ -162,9 +164,13 @@ export const UserCourseSettingQueries = extendType({
 
         const baseArgs = {
           where: {
-            user: {
-              OR: orCondition,
-            },
+            ...(orCondition.length
+              ? {
+                  user: {
+                    OR: orCondition,
+                  },
+                }
+              : {}),
             course_id,
           },
         }

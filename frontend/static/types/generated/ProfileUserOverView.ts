@@ -41,6 +41,7 @@ export interface ProfileUserOverView_currentUser_completions {
   created_at: any | null
   tier: number | null
   eligible_for_ects: boolean | null
+  completion_date: any | null
   course: ProfileUserOverView_currentUser_completions_course | null
   completions_registered: ProfileUserOverView_currentUser_completions_completions_registered[]
 }
