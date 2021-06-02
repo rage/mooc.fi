@@ -866,7 +866,12 @@ Object {
       "name": "exercise 3",
     },
   ],
-  "course_aliases": Array [],
+  "course_aliases": Array [
+    Object {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
   "course_translations": Array [
     Object {
       "description": "course1_description_en_US",
@@ -945,7 +950,12 @@ Object {
       "name": "exercise 3",
     },
   ],
-  "course_aliases": Array [],
+  "course_aliases": Array [
+    Object {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
   "course_translations": Array [
     Object {
       "description": "course1_description_en_US",
@@ -1029,7 +1039,12 @@ Object {
       "name": "deleted exercise 4",
     },
   ],
-  "course_aliases": Array [],
+  "course_aliases": Array [
+    Object {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
   "course_translations": Array [
     Object {
       "description": "course1_description_en_US",

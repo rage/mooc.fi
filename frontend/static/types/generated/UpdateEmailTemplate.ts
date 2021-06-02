@@ -14,6 +14,10 @@ export interface UpdateEmailTemplate_updateEmailTemplate {
   html_body: string | null
   txt_body: string | null
   title: string | null
+  template_type: string | null
+  triggered_automatically_by_course_id: string | null
+  exercise_completions_threshold: number | null
+  points_threshold: number | null
 }
 
 export interface UpdateEmailTemplate {
@@ -26,4 +30,8 @@ export interface UpdateEmailTemplateVariables {
   html_body?: string | null
   txt_body?: string | null
   title?: string | null
+  template_type?: string | null
+  triggered_automatically_by_course_id?: string | null
+  exercise_completions_threshold?: number | null
+  points_threshold?: number | null
 }
