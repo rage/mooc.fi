@@ -162,11 +162,10 @@ export const User = objectType({
     t.list.nonNull.field("progresses", {
       type: "Progress",
       resolve: async (parent, _, ctx) => {
-        const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
-          {
+        const user_course_progressess =
+          await ctx.prisma.userCourseProgress.findMany({
             where: { user_id: parent.id },
-          },
-        )
+          })
         const progresses = await Promise.all(
           user_course_progressess.map(async (p) => {
             const course = await ctx.prisma.userCourseProgress

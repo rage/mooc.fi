@@ -55,21 +55,18 @@ const ManualCompletions = () => {
   const [input, setInput] = useState("")
   const [message, setMessage] = useState<string | null>(null)
   const [messageTitle, setMessageTitle] = useState<string>("")
-  const [messageSeverity, setMessageSeverity] = useState<
-    "info" | "error" | "success" | "warning" | undefined
-  >("info")
+  const [messageSeverity, setMessageSeverity] =
+    useState<"info" | "error" | "success" | "warning" | undefined>("info")
   const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
-  const [
-    addCompletions,
-    { loading: mutationLoading, error: mutationError },
-  ] = useMutation(AddManualCompletionQuery, {
-    onCompleted: () => {
-      setInput("")
-      setMessage("Completions added")
-      setMessageTitle("Success")
-      setMessageSeverity("success")
-    },
-  })
+  const [addCompletions, { loading: mutationLoading, error: mutationError }] =
+    useMutation(AddManualCompletionQuery, {
+      onCompleted: () => {
+        setInput("")
+        setMessage("Completions added")
+        setMessageTitle("Success")
+        setMessageSeverity("success")
+      },
+    })
   const slug = useQueryParameter("slug") ?? ""
   const {
     data: courseData,

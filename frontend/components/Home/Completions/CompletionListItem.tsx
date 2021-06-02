@@ -175,27 +175,25 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
         <div style={{ gridArea: "empty" }}></div>
         <RegistrationList>
           {isRegistered && completion.completions_registered
-            ? (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
-                (r) => {
-                  return (
-                    <Registration key={`completion-registered-${r.id}`}>
+            ? (
+                completion.completions_registered as CompletionsRegisteredFragment_completions_registered[]
+              )?.map((r) => {
+                return (
+                  <Registration key={`completion-registered-${r.id}`}>
+                    <CardSubtitle>
+                      {t("registeredDate")}
+                      {formatDateTime(r.created_at)}
+                    </CardSubtitle>
+                    {r.organization ? (
                       <CardSubtitle>
-                        {t("registeredDate")}
-                        {formatDateTime(r.created_at)}
+                        {t("organization")}
+                        {r.organization.slug}
                       </CardSubtitle>
-                      {r.organization ? (
-                        <CardSubtitle>
-                          {t("organization")}
-                          {r.organization.slug}
-                        </CardSubtitle>
-                      ) : null}
-                      <DoneIcon
-                        style={{ color: "green", marginTop: "0.5rem" }}
-                      />
-                    </Registration>
-                  )
-                },
-              )
+                    ) : null}
+                    <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
+                  </Registration>
+                )
+              })
             : null}
         </RegistrationList>
         <ButtonList>

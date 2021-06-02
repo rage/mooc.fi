@@ -47,9 +47,8 @@ export default function ImportPhotoDialog({
   courses = [],
 }: ImportPhotoDialogProps) {
   const { setValue, getValues, watch } = useFormContext()
-  const [selected, setSelected] = useState<CourseEditorCourses_courses | null>(
-    null,
-  )
+  const [selected, setSelected] =
+    useState<CourseEditorCourses_courses | null>(null)
   const t = useTranslator(CoursesTranslations)
 
   const fetchBase64 = (

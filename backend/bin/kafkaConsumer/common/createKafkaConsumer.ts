@@ -7,16 +7,16 @@ import type { PrismaClient } from "@prisma/client"
 import { attachPrismaEvents } from "../../../util/prismaLogger"
 import { v4 } from "uuid"
 
-const logCommit = (logger: winston.Logger) => (
-  err: any,
-  topicPartitions: any,
-) => {
-  if (err) {
-    logger.error(new KafkaError("Error in commit", err))
-  } else {
-    logger.info("Committed. topicPartitions:" + JSON.stringify(topicPartitions))
+const logCommit =
+  (logger: winston.Logger) => (err: any, topicPartitions: any) => {
+    if (err) {
+      logger.error(new KafkaError("Error in commit", err))
+    } else {
+      logger.info(
+        "Committed. topicPartitions:" + JSON.stringify(topicPartitions),
+      )
+    }
   }
-}
 
 interface CreateKafkaConsumer {
   logger: winston.Logger

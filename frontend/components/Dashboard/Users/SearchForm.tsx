@@ -19,13 +19,8 @@ const StyledButton = styled(ButtonWithPaddingAndMargin)`
 `
 
 const SearchForm = () => {
-  const {
-    page,
-    rowsPerPage,
-    searchVariables,
-    setPage,
-    setSearchVariables,
-  } = useContext(UserSearchContext)
+  const { page, rowsPerPage, searchVariables, setPage, setSearchVariables } =
+    useContext(UserSearchContext)
   const t = useTranslator(UsersTranslations)
 
   const [searchFormText, setSearchFormText] = useState(searchVariables.search)

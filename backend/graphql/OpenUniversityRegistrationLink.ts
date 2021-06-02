@@ -91,8 +91,8 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
         const { course_code, course, language, link } = args
 
         // FIXME: empty course_code and/or language?
-        const openUniversityRegistrationLink = await ctx.prisma.openUniversityRegistrationLink.create(
-          {
+        const openUniversityRegistrationLink =
+          await ctx.prisma.openUniversityRegistrationLink.create({
             data: {
               course: {
                 connect: { id: course },
@@ -101,8 +101,7 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
               language: language ?? "",
               link: link,
             },
-          },
-        )
+          })
         return openUniversityRegistrationLink
       },
     })
