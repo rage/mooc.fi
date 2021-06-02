@@ -1,4 +1,4 @@
-// generated Wed Feb 17 2021 19:08:35 GMT+0200 (GMT+02:00)
+// generated Fri Apr 09 2021 15:54:34 GMT+0300 (GMT+03:00)
 
 export * from "./Completion"
 export * from "./CompletionRegistered"
@@ -29,5 +29,6 @@ export * from "./UserCourseProgress"
 export * from "./UserCourseServiceProgress"
 export * from "./UserCourseSetting"
 export * from "./UserCourseSettingsVisibility"
+export * from "./UserCourseSummary"
 export * from "./UserOrganization"
 export * from "./VerifiedUser"

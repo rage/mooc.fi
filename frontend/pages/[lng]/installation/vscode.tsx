@@ -9,13 +9,14 @@ import MDX_Windows from "/static/md_pages/vscode_installation_Windows_fi.mdx"
 import MDX_Windows_en from "/static/md_pages/vscode_installation_Windows_en.mdx"
 import MDX_MAC from "/static/md_pages/vscode_installation_macOS_fi.mdx"
 import MDX_MAC_en from "/static/md_pages/vscode_installation_macOS_en.mdx"
-import UserOSContext from "/contexes/UserOSContext"
+import UserOSContext from "/contexts/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import InstallationTranslations from "/translations/installation"
 import Spinner from "/components/Spinner"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -91,6 +92,16 @@ const VSCode = () => {
   const [render, setRender] = useState(false)
   const { language } = useContext(LanguageContext)
   const t = useTranslator(InstallationTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "installation",
+    },
+    {
+      label: "VSCode",
+      href: `/installation/vscode`,
+    },
+  ])
 
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)

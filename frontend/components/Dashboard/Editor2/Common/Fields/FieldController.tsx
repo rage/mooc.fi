@@ -1,5 +1,5 @@
-import { useCallback } from "react"
-import { ControllerRenderProps, useFormContext } from "react-hook-form"
+import React, { useCallback } from "react"
+import { ControllerRenderProps, Path, useFormContext } from "react-hook-form"
 import { FieldProps } from "."
 import { Controller } from "react-hook-form"
 import { ErrorMessage } from "@hookform/error-message"
@@ -7,41 +7,45 @@ import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import { FormHelperText } from "@material-ui/core"
 import notEmpty from "/util/notEmpty"
 
-export interface FieldControllerProps extends FieldProps {
-  renderComponent: (props: ControllerRenderProps) => JSX.Element
+export interface FieldControllerProps<T> extends FieldProps {
+  renderComponent: (props: ControllerRenderProps<T>) => JSX.Element
   onChange?: (e: any, newValue: any) => {}
 }
 
-export function FieldController({
+export function FieldController<T>({
   name,
   label,
   required = false,
   defaultValue,
   renderComponent,
   ...props
-}: FieldControllerProps & React.HTMLProps<HTMLDivElement>) {
-  const { control, errors, setValue } = useFormContext()
+}: FieldControllerProps<T> & React.HTMLProps<HTMLDivElement>) {
+  const {
+    control,
+    formState: { errors },
+    setValue,
+  } = useFormContext<T>()
 
   const onChange = useCallback(
     ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      setValue(name, target.value, { shouldValidate: true }),
+      setValue(name as Path<T>, target.value as any, { shouldValidate: true }),
     [name],
   )
 
   return (
-    <Controller
-      name={name}
+    <Controller<T>
+      name={name as Path<T>}
       control={control}
-      autoComplete="disabled"
+      // autoComplete="disabled"
       {...(notEmpty(defaultValue) ? { defaultValue } : {})}
       render={(renderProps) => (
         <div {...props}>
           <EnumeratingAnchor id={name} />
-          {renderComponent({ ...renderProps, onChange })}
+          {renderComponent({ ...renderProps.field, onChange })}
           <ErrorMessage
             errors={errors}
-            name={name}
-            render={({ message }) => (
+            name={name as any} // TODO/FIXME: annoying typing here
+            render={({ message }: { message: string | React.ReactElement }) => (
               <FormHelperText style={{ color: "#f44336" }}>
                 {message}
               </FormHelperText>

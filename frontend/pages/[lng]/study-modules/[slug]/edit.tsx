@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { SingletonRouter, withRouter } from "next/router"
@@ -9,7 +9,7 @@ import styled from "@emotion/styled"
 import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import LangLink from "/components/LangLink"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -18,6 +18,7 @@ import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -58,8 +59,6 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   const slug = useQueryParameter("slug")
   const beta = useQueryParameter("beta", false)
 
-  let redirectTimeout: NodeJS.Timeout | null = null
-
   const { data, loading, error } = useQuery<StudyModuleDetails>(
     StudyModuleQuery,
     {
@@ -67,18 +66,46 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
     },
   )
 
+  useBreadcrumbs([
+    {
+      translation: "studyModules",
+      href: "/study-modules",
+    },
+    {
+      label: data?.study_module?.name,
+    },
+    {
+      translation: "studyModuleEdit",
+      href: `/study-modules/${slug}/edit`,
+    },
+  ])
+
+  useEffect(() => {
+    let redirectTimeout: NodeJS.Timeout | null = null
+
+    if (typeof window === "undefined") {
+      return
+    }
+
+    if (!loading && !data?.study_module) {
+      redirectTimeout = setTimeout(
+        () => router.push(listLink, undefined, { shallow: true }),
+        5000,
+      )
+    }
+
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout)
+      }
+    }
+  }, [loading, data])
+
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
-
-  if (!loading && !data?.study_module && typeof window !== "undefined") {
-    redirectTimeout = setTimeout(
-      () => router.push("/[lng]/study-modules", listLink, { shallow: true }),
-      5000,
-    )
-  }
 
   return (
     <section>
@@ -104,10 +131,11 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <LangLink href={listLink}>
+              <LangLink href="/study-modules">
                 <a
                   onClick={() =>
-                    redirectTimeout && clearTimeout(redirectTimeout)
+                    //redirectTimeout && clearTimeout(redirectTimeout)
+                    {}
                   }
                   href=""
                 >

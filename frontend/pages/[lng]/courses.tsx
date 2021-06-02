@@ -12,7 +12,7 @@ import {
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
@@ -20,6 +20,7 @@ import FilterMenu from "/components/FilterMenu"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -35,10 +36,16 @@ interface SearchVariables {
 const notEmptyOrEmptyString = (value: any) =>
   notEmpty(value) && value !== "" && value !== false
 
-function Courses() {
+function useCourseSearch() {
   const { language } = useContext(LanguageContext)
-  const t = useTranslator(CoursesTranslations)
   const router = useRouter()
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: "/courses",
+    },
+  ])
 
   const statusParam = decodeURIComponent(useQueryParameter("status", false))
     ?.split(",")
@@ -60,12 +67,13 @@ function Courses() {
     initialSearchVariables.status ?? [],
   )
 
-  const { loading, error, data } = useQuery<AllEditorCourses>(
-    AllEditorCoursesQuery,
-    {
-      variables: searchVariables || initialSearchVariables,
-    },
-  )
+  const {
+    loading: editorLoading,
+    error: editorError,
+    data: editorData,
+  } = useQuery<AllEditorCourses>(AllEditorCoursesQuery, {
+    variables: searchVariables || initialSearchVariables,
+  })
   const {
     loading: handlersLoading,
     error: handlersError,
@@ -78,7 +86,9 @@ function Courses() {
         keyof typeof searchVariables
       >).map((field) =>
         notEmptyOrEmptyString(searchVariables[field])
-          ? `${field}=${encodeURI(searchVariables[field]?.toString() ?? "")}`
+          ? `${field}=${encodeURIComponent(
+              searchVariables[field]?.toString() ?? "",
+            )}`
           : "",
       ),
       !searchVariables.hidden ? `hidden=false` : "",
@@ -90,9 +100,9 @@ function Courses() {
     ].filter(Boolean)
 
     const query = params.length ? `?${params.join("&")}` : ""
-    const as = `/${language}/courses/${query}`
-    if (router?.asPath !== as) {
-      router.push(as, as, { shallow: true })
+    const href = `/${language}/courses/${query}`
+    if (router?.asPath !== href) {
+      router.push(href, undefined, { shallow: true })
     }
   }, [searchVariables])
 
@@ -104,10 +114,37 @@ function Courses() {
     })
   }
 
-  if (error || handlersError) {
+  return {
+    loading: editorLoading || handlersLoading,
+    error: editorError || handlersError,
+    handlersData,
+    editorData,
+    status,
+    setStatus,
+    onClickStatus,
+    searchVariables,
+    setSearchVariables,
+  }
+}
+
+function Courses() {
+  const t = useTranslator(CoursesTranslations)
+  const {
+    loading,
+    error,
+    handlersData,
+    editorData,
+    status,
+    setStatus,
+    onClickStatus,
+    searchVariables,
+    setSearchVariables,
+  } = useCourseSearch()
+
+  if (error) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(error || handlersError, undefined, 2)}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }
@@ -124,10 +161,10 @@ function Courses() {
           status={status}
           setStatus={setStatus}
           handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
-          loading={loading || handlersLoading}
+          loading={loading}
         />
         <CourseGrid
-          courses={data?.courses?.filter(notEmpty)}
+          courses={editorData?.courses?.filter(notEmpty)}
           onClickStatus={onClickStatus}
           loading={loading}
         />

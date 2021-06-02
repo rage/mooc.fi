@@ -38,19 +38,19 @@ export default function StudyModuleTranslationsForm() {
             <EntryContainer elevation={2}>
               <ControlledHiddenField name="_id" defaultValue={item._id} />
               <ControlledSelect
-                name={`study_module_translations[${index}].language`}
+                name={`study_module_translations.${index}.language`}
                 label={t("moduleLanguage")}
                 items={_languages}
                 keyField="value"
                 nameField="label"
               />
               <ControlledTextField
-                name={`study_module_translations[${index}].name`}
+                name={`study_module_translations.${index}.name`}
                 label={t("moduleName")}
                 revertable
               />
               <ControlledTextField
-                name={`study_module_translations[${index}].description`}
+                name={`study_module_translations.${index}.description`}
                 label={t("moduleDescription")}
                 type="textarea"
                 rows={5}

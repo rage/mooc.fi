@@ -163,6 +163,42 @@ const langArr: langProps[] = [
     country: "Portugal",
     langName: "Portuguese",
   },
+  {
+    language: "de-at",
+    completion_language: "de_AT",
+    country: "Austria",
+    langName: "German (Austria)",
+  },
+  {
+    language: "el",
+    completion_language: "el_GR",
+    country: "Greece",
+    langName: "Greek",
+  },
+  {
+    language: "es",
+    completion_language: "es_ES",
+    country: "Spain",
+    langName: "Spanish",
+  },
+  {
+    language: "sl",
+    completion_language: "sl_SI",
+    country: "Slovenia",
+    langName: "Slovenian",
+  },
+  {
+    language: "is",
+    completion_language: "is_IS",
+    country: "Iceland",
+    langName: "Icelandic",
+  },
+  {
+    language: "ga",
+    completion_language: "ga_IE",
+    country: "Ireland",
+    langName: "Irish",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {

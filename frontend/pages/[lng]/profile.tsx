@@ -7,6 +7,8 @@ import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Container from "/components/Container"
 import withSignedIn from "/lib/with-signed-in"
+import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -24,6 +26,7 @@ export const UserOverViewQuery = gql`
         created_at
         tier
         eligible_for_ects
+        completion_date
         course {
           id
           slug
@@ -33,21 +36,23 @@ export const UserOverViewQuery = gql`
           }
           has_certificate
         }
-        completions_registered {
-          id
-          created_at
-          organization {
-            slug
-          }
-        }
+        ...CompletionsRegisteredFragment
       }
       research_consent
     }
   }
+  ${CompletionsRegisteredFragment}
 `
 
 function Profile() {
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+
+  useBreadcrumbs([
+    {
+      translation: "profile",
+      href: "/profile",
+    },
+  ])
 
   if (error) {
     return <ErrorMessage />

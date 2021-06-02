@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API /api/register-completions creates registered completions 1`] = `
+Array [
+  Object {
+    "completion_id": "30000000-0000-0000-0000-000000000102",
+    "course_id": "00000000-0000-0000-0000-000000000002",
+    "created_at": Any<Date>,
+    "id": Any<String>,
+    "organization_id": "10000000-0000-0000-0000-000000000102",
+    "real_student_number": "12345",
+    "updated_at": Any<Date>,
+    "user_id": "20000000-0000-0000-0000-000000000102",
+  },
+  Object {
+    "completion_id": "30000000-0000-0000-0000-000000000103",
+    "course_id": "00000000-0000-0000-0000-000000000001",
+    "created_at": Any<Date>,
+    "id": Any<String>,
+    "organization_id": "10000000-0000-0000-0000-000000000102",
+    "real_student_number": "12345",
+    "updated_at": Any<Date>,
+    "user_id": "20000000-0000-0000-0000-000000000102",
+  },
+]
+`;

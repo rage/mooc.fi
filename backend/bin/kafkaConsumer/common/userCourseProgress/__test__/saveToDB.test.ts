@@ -8,7 +8,7 @@ const ctx = getTestContext()
 
 describe("userCourseProgress/saveToDatabase", () => {
   const message: Message = {
-    course_id: "00000000000000000000000000000002",
+    course_id: "00000000000000000000000000000667",
     message_format_version: 1,
     progress: [{ group: "foo", max_points: 1, n_points: 1, progress: 1 }],
     service_id: "40000000-0000-0000-0000-000000000102",

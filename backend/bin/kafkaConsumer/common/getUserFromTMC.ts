@@ -1,7 +1,10 @@
 import TmcClient from "../../../services/tmc"
 import { PrismaClient } from "@prisma/client"
 
-const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
+const getUserFromTMCAndCreate = async (
+  prisma: PrismaClient,
+  user_id: number,
+) => {
   const tmc: TmcClient = new TmcClient()
   const userDetails = await tmc.getUserDetailsById(user_id)
 
@@ -17,4 +20,4 @@ const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
   })
 }
 
-export default getUserFromTMC
+export default getUserFromTMCAndCreate

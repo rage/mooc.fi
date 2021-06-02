@@ -1,40 +1,26 @@
-import { useContext, useEffect, useState } from "react"
-import LanguageContext from "/contexes/LanguageContext"
 import FAQTranslations from "/translations/faq"
-import { useQueryParameter } from "/util/useQueryParameter"
-import {
-  ContentBox,
-  FAQComponent,
-  FAQPage,
-  SectionBox,
-} from "/components/Home/FAQ/Common"
+import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
 import { useTranslator } from "/util/useTranslator"
+import { useFAQPage } from "/hooks/useFAQPage"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export default function FAQTopic() {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(FAQTranslations)
-
-  const [render, setRender] = useState(false)
-  const [error, setError] = useState(false)
-  const [title, setTitle] = useState("")
-  const [ingress, setIngress] = useState("")
-
-  useEffect(() => setRender(true), [])
-
   const topic: string = useQueryParameter("topic")
-  const sanitizedTopic = topic.replace(/[./\\]/g, "").trim()
 
-  const Component = FAQComponent({
-    mdxImport: () =>
-      import(`../../../../static/md_pages/${sanitizedTopic}_${language}.mdx`),
-    onSuccess: (mdx: any) => {
-      setTitle(mdx?.meta?.title ?? "")
-      setIngress(mdx?.meta?.ingress ?? "")
+  const { Component, title, ingress, error, render } = useFAQPage(topic)
 
-      return mdx
+  useBreadcrumbs([
+    {
+      translation: "faq",
+      href: `/faq`,
     },
-    onError: () => setError(true),
-  })
+    {
+      label: title,
+      href: `/faq/${topic}`,
+    },
+  ])
 
   return FAQPage({
     title,

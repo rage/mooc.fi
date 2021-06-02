@@ -16,11 +16,11 @@ import {
   DeleteCourseMutation,
 } from "/graphql/mutations/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseQuery } from "/pages/[lng]/courses/[slug]/edit"
+import { CourseQuery } from "/graphql/queries/courses"
 import { PureQueryOptions } from "@apollo/client"
 import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import CoursesTranslations from "/translations/courses"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
@@ -91,7 +91,7 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push("/[lng]/courses", `/${language}/courses`, { shallow: true })
+        Router.push(`/${language}/courses`, undefined, { shallow: true })
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -104,12 +104,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      Router.push("/[lng]/courses", `/${language}/courses`, { shallow: true })
+      Router.push(`/${language}/courses`, undefined, { shallow: true })
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    Router.push("/[lng]/courses", `/${language}/courses`, { shallow: true })
+    Router.push(`/${language}/courses`, undefined, { shallow: true })
   }, [])
 
   return (

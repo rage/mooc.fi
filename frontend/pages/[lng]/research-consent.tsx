@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react"
 import styled from "@emotion/styled"
 import { Paper, CircularProgress } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import { useMutation, useQuery } from "@apollo/client"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import SignupTranslations from "/translations/sign-up"
@@ -10,6 +10,7 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import withSignedIn from "/lib/with-signed-in"
 import Router from "next/router"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -46,9 +47,16 @@ const updateResearchConsentMutation = gql`
   }
 `
 
-const ResearchConsentPage = () => {
+function useResearchConsent() {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(SignupTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "researchConsent",
+      href: "/research-consent",
+    },
+  ])
 
   const { data, loading } = useQuery(consentQuery)
 
@@ -71,10 +79,7 @@ const ResearchConsentPage = () => {
       setFormError("")
       setSubmitting(true)
       await updateConsent({ variables: { value: research === "1" } })
-      Router.push(
-        language === "fi" ? "/" : `/[lng]`,
-        language === "fi" ? "/" : `/${language}`,
-      )
+      Router.push(language === "fi" ? "/" : `/${language}`)
     } catch (e) {
       setSubmitting(false)
       console.log(e)
@@ -82,6 +87,29 @@ const ResearchConsentPage = () => {
       setFormError(t("errorResearchSubmit"))
     }
   }
+
+  return {
+    data,
+    loading,
+    research,
+    handleInput,
+    formError,
+    submitting,
+    onSubmit,
+  }
+}
+
+const ResearchConsentPage = () => {
+  const t = useTranslator(SignupTranslations)
+
+  const {
+    loading,
+    research,
+    handleInput,
+    onSubmit,
+    formError,
+    submitting,
+  } = useResearchConsent()
 
   return (
     <StyledPaper>

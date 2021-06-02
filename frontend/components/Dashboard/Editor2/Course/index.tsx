@@ -19,10 +19,10 @@ import {
 } from "/graphql/mutations/courses"
 import { CourseFormValues } from "./types"
 import { fromCourseForm, toCourseForm } from "./serialization"
-import { CourseQuery } from "/pages/[lng]/courses/[slug]/edit"
+import { CourseQuery } from "/graphql/queries/courses"
 import notEmpty from "/util/notEmpty"
 import { EditorContext } from "../EditorContext"
-import { useAnchorContext } from "/contexes/AnchorContext"
+import { useAnchorContext } from "/contexts/AnchorContext"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import CourseEditForm from "./CourseEditForm"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
@@ -55,7 +55,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   })
   const methods = useForm<CourseFormValues>({
     defaultValues,
-    resolver: customValidationResolver<CourseFormValues>(validationSchema),
+    resolver: customValidationResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
@@ -76,7 +76,6 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
     ],
   })
 
-  console.log("would use default", defaultValues)
   const onSubmit = useCallback(async (values: CourseFormValues, _?: any) => {
     const newCourse = !values.id
     const mutationVariables = fromCourseForm({

@@ -1,32 +1,16 @@
-import { useContext, useEffect, useState } from "react"
-import {
-  ContentBox,
-  FAQComponent,
-  SectionBox,
-  FAQPage,
-} from "/components/Home/FAQ/Common"
-import LanguageContext from "/contexes/LanguageContext"
+import { ContentBox, SectionBox, FAQPage } from "/components/Home/FAQ/Common"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useFAQPage } from "/hooks/useFAQPage"
 
 export default function FAQ() {
-  const { language } = useContext(LanguageContext)
+  const { Component, title, ingress, error, render } = useFAQPage("toc_faq")
 
-  const [render, setRender] = useState(false)
-  const [error, setError] = useState(false)
-  const [title, setTitle] = useState("")
-  const [ingress, setIngress] = useState("")
-
-  useEffect(() => setRender(true), [])
-
-  const Component = FAQComponent({
-    mdxImport: () => import(`../../../static/md_pages/toc_faq_${language}.mdx`),
-    onSuccess: (mdx: any) => {
-      setTitle(mdx?.meta?.title ?? "")
-      setIngress(mdx?.meta?.ingress ?? "")
-
-      return mdx
+  useBreadcrumbs([
+    {
+      translation: "faq",
+      href: `/faq`,
     },
-    onError: () => setError(true),
-  })
+  ])
 
   return FAQPage({
     title,

@@ -31,6 +31,7 @@ const context: KafkaContext = {
   mutex,
   consumer,
   knex,
+  topic_name: TOPIC_NAME[0],
 }
 
 consumer.connect()

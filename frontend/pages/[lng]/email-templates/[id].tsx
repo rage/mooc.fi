@@ -13,16 +13,27 @@ import {
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 import CustomSnackbar from "/components/CustomSnackbar"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import Router from "next/router"
 import withAdmin from "/lib/with-admin"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import Spinner from "/components/Spinner"
 
 const EmailTemplateView = () => {
+  // TODO: Get rid of any
   const [emailTemplate, setEmailTemplate] = useState<any>()
   const [name, setName] = useState<any>()
   const [txtBody, setTxtBody] = useState<any>()
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
+  const [exerciseThreshold, setExerciseThreshold] = useState<
+    Number | null | undefined
+  >()
+  const [pointsThreshold, setPointsThreshold] = useState<
+    Number | null | undefined
+  >()
+  const [templateType, setTemplateType] = useState<string | null | undefined>()
+  const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
 
   const id = useQueryParameter("id")
@@ -44,9 +55,19 @@ const EmailTemplateView = () => {
 
   const { language } = useContext(LanguageContext)
 
-  //TODO add circular progress
+  useBreadcrumbs([
+    {
+      translation: "emailTemplates",
+      href: `/email-templates`,
+    },
+    {
+      label: data?.email_template?.name ?? undefined,
+      href: `/email-templates/${id}`,
+    },
+  ])
+
   if (loading) {
-    return null
+    return <Spinner />
   }
   //TODO fix error message
   if (error || !data) {
@@ -58,6 +79,12 @@ const EmailTemplateView = () => {
     setTxtBody(data.email_template?.txt_body)
     setHtmlBody(data.email_template?.html_body)
     setTitle(data.email_template?.title)
+    setTemplateType(data.email_template?.template_type)
+    setExerciseThreshold(data.email_template?.exercise_completions_threshold)
+    setPointsThreshold(data.email_template?.points_threshold)
+    setTriggeredByCourseId(
+      data.email_template?.triggered_automatically_by_course_id,
+    )
     setDidInit(true)
     setEmailTemplate(data.email_template)
   }
@@ -88,7 +115,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="title"
-              label="Title"
+              label="Email Subject"
               variant="outlined"
               value={title ?? ""}
               onChange={(e) => {
@@ -100,7 +127,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="txt-body"
-              label="txt_body"
+              label="Email Text Body"
               multiline
               rows="4"
               maxRows="40"
@@ -115,7 +142,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="html-body"
-              label="html_body (disabled)"
+              label="Email HTML Body (disabled)"
               multiline
               rows="4"
               maxRows="40"
@@ -127,6 +154,41 @@ const EmailTemplateView = () => {
                 setHtmlBody(e.target.value)
               }}
             />
+            <br></br>
+            <br></br>
+            {templateType === "threshold" ? (
+              <>
+                <TextField
+                  type="number"
+                  label="Exercise Completions threshold (not supported)"
+                  fullWidth
+                  autoComplete="off"
+                  variant="outlined"
+                  style={{ width: "60%" }}
+                  value={exerciseThreshold}
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setExerciseThreshold(Number(e.target.value))
+                  }}
+                  disabled
+                />
+                <br />
+                <br />
+                <TextField
+                  type="number"
+                  label="Points threshold"
+                  fullWidth
+                  autoComplete="off"
+                  variant="outlined"
+                  style={{ width: "60%" }}
+                  value={pointsThreshold}
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setPointsThreshold(Number(e.target.value))
+                  }}
+                />
+              </>
+            ) : null}
             <br></br>
             <br></br>
             <ApolloConsumer>
@@ -146,6 +208,10 @@ const EmailTemplateView = () => {
                             title: title,
                             txt_body: txtBody,
                             html_body: htmlBody,
+                            triggered_automatically_by_course_id: triggeredByCourseId,
+                            exercise_completions_threshold: exerciseThreshold,
+                            points_threshold: pointsThreshold,
+                            template_type: templateType,
                           },
                         },
                       )

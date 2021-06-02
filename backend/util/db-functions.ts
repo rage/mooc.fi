@@ -1,10 +1,45 @@
 import { notEmpty } from "./notEmpty"
+import { isNullOrUndefined } from "./isNullOrUndefined"
+import { Prisma } from "@prisma/client"
 
 const flatten = (arr: any[]) => arr.reduce((acc, val) => acc.concat(val), [])
 const titleCase = (s?: string) =>
   s && s.length > 0
     ? s.toLowerCase()[0].toUpperCase() + s.toLowerCase().slice(1)
     : undefined
+
+export const buildUserSearch = (
+  search?: string | null,
+): Prisma.UserWhereInput => {
+  if (isNullOrUndefined(search)) {
+    return {}
+  }
+  return {
+    OR: [
+      {
+        first_name: { contains: search, mode: "insensitive" },
+      },
+      {
+        last_name: { contains: search, mode: "insensitive" },
+      },
+      {
+        username: { contains: search, mode: "insensitive" },
+      },
+      {
+        email: { contains: search, mode: "insensitive" },
+      },
+      {
+        student_number: { contains: search },
+      },
+      {
+        real_student_number: { contains: search },
+      },
+      {
+        upstream_id: Number(search) || undefined,
+      },
+    ],
+  }
+}
 
 export const buildSearch = (fields: string[], search?: string) =>
   search

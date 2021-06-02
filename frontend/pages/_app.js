@@ -1,27 +1,28 @@
 import React from "react"
 import App from "next/app"
 import Router from "next/router"
-import { initGA, logPageView } from "../lib/gtag"
+import { initGA, logPageView } from "/lib/gtag"
 import Head from "next/head"
 import { ThemeProvider } from "@material-ui/core/styles"
 // import { StyledEngineProvider } from "@material-ui/styled-engine"
 import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
-import { isSignedIn, isAdmin } from "../lib/authentication"
-import LoginStateContext from "../contexes/LoginStateContext"
-import LanguageContext from "../contexes/LanguageContext"
-import withApolloClient from "../lib/with-apollo-client"
-import theme from "../src/theme"
+import { isSignedIn, isAdmin } from "/lib/authentication"
+import LoginStateContext from "/contexts/LoginStateContext"
+import LanguageContext from "/contexts/LanguageContext"
+import { BreadcrumbContext } from "/contexts/BreadcrumbContext"
+import withApolloClient from "/lib/with-apollo-client"
+import theme from "/src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
 import PageTranslations from "/translations/pages"
 import { ConfirmProvider } from "material-ui-confirm"
-import AlertContext from "../contexes/AlertContext"
+import AlertContext from "/contexts/AlertContext"
 import getTranslator from "/translations"
 import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
-import { fontCss } from "../src/fonts"
+import { fontCss } from "/src/fonts"
 import { Global } from "@emotion/react"
 
 fontAwesomeConfig.autoAddCss = false
@@ -46,6 +47,7 @@ class MyApp extends App {
       loggedIn: this.props.signedIn,
       logInOrOut: this.toggleLogin,
       alerts: [],
+      breadcrumbs: [],
       admin: this.props.admin,
       currentUser: this.props.currentUser,
       updateUser: this.updateCurrentUser,
@@ -83,6 +85,8 @@ class MyApp extends App {
 
   removeAlert = (alert) =>
     this.setState({ alerts: this.state.alerts.filter((a) => a !== alert) })
+
+  setBreadcrumbs = (breadcrumbs) => this.setState({ breadcrumbs })
 
   render() {
     const {
@@ -123,18 +127,25 @@ class MyApp extends App {
                   value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
                 >
                   <ConfirmProvider>
-                    <AlertContext.Provider
+                    <BreadcrumbContext.Provider
                       value={{
-                        alerts: this.state.alerts,
-                        addAlert: this.addAlert,
-                        removeAlert: this.removeAlert,
+                        breadcrumbs: this.state.breadcrumbs,
+                        setBreadcrumbs: this.setBreadcrumbs,
                       }}
                     >
-                      <Layout>
-                        <Global styles={fontCss} />
-                        <Component {...pageProps} />
-                      </Layout>
-                    </AlertContext.Provider>
+                      <AlertContext.Provider
+                        value={{
+                          alerts: this.state.alerts,
+                          addAlert: this.addAlert,
+                          removeAlert: this.removeAlert,
+                        }}
+                      >
+                        <Layout>
+                          <Global styles={fontCss} />
+                          <Component {...pageProps} />
+                        </Layout>
+                      </AlertContext.Provider>
+                    </BreadcrumbContext.Provider>
                   </ConfirmProvider>
                 </LanguageContext.Provider>
               </LoginStateContext.Provider>
@@ -156,13 +167,13 @@ function createPath(originalUrl) {
   /*   if (originalUrl === "/") {
     url = "/en/"
   } else  */
-  if (originalUrl.match(/^\/en\/?$/)) {
+  if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
-  } else if (originalUrl.startsWith("/en")) {
+  } else if (originalUrl?.startsWith("/en")) {
     url = originalUrl.replace("/en/", "/fi/")
-  } else if (originalUrl.startsWith("/se")) {
+  } else if (originalUrl?.startsWith("/se")) {
     url = originalUrl.replace("/se/", "/fi/")
-  } else if (originalUrl.startsWith("/fi")) {
+  } else if (originalUrl?.startsWith("/fi")) {
     url = originalUrl.replace("/fi/", "/en/")
   } else {
     url = "/en" + originalUrl
