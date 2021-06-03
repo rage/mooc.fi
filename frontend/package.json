@@ -83,13 +83,13 @@
     "react-ga": "^3.3.0",
     "react-hook-form": "^7.7.1",
     "responsive-loader": "^2.3.0",
-    "sharp": "^0.28.1",
+    "sharp": "^0.28.3",
     "styled-jsx": "^3.4.4",
     "tmc-client-js": "0.0.9",
     "url": "^0.11.0",
     "uuid": "^8.3.2",
     "webp-loader": "^0.6.0",
-    "xlsx": "^0.16.9",
+    "xlsx": "^0.17.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {
