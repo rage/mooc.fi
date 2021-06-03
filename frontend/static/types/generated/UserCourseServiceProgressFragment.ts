@@ -8,13 +8,13 @@
 // ====================================================
 
 export interface UserCourseServiceProgressFragment_service {
-  __typename: "Service";
-  name: string;
-  id: string;
+  __typename: "Service"
+  name: string
+  id: string
 }
 
 export interface UserCourseServiceProgressFragment {
-  __typename: "UserCourseServiceProgress";
-  progress: (any | null)[] | null;
-  service: UserCourseServiceProgressFragment_service | null;
+  __typename: "UserCourseServiceProgress"
+  progress: (any | null)[] | null
+  service: UserCourseServiceProgressFragment_service | null
 }
