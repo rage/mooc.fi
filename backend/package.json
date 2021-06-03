@@ -50,7 +50,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@devoxa/prisma-relay-cursor-connection": "^1.1.1",
+    "@devoxa/prisma-relay-cursor-connection": "^2.0.2",
     "@google-cloud/storage": "^5.8.5",
     "@prisma/client": "^2.21.2",
     "@sentry/integrations": "^6.2.3",
