@@ -8,16 +8,16 @@
 // ====================================================
 
 export interface CheckSlug_course {
-  __typename: "Course"
-  id: string
-  slug: string
-  name: string
+  __typename: "Course";
+  id: string;
+  slug: string;
+  name: string;
 }
 
 export interface CheckSlug {
-  course: CheckSlug_course | null
+  course: CheckSlug_course | null;
 }
 
 export interface CheckSlugVariables {
-  slug: string
+  slug: string;
 }
