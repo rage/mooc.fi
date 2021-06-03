@@ -29,7 +29,6 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
             onChange={onChange}
             onClose={() => trigger([name, ...validateOtherFields])}
             label={label}
-            allowKeyboardControl={true}
             renderInput={(params) => (
               <TextField {...params} variant="outlined" />
             )}
