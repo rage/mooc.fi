@@ -55,7 +55,7 @@ export function getTestContext(): TestContext {
   const ctx = createTestContext(testContext)
 
   // beforeEach
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     const { port, prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
@@ -65,17 +65,14 @@ export function getTestContext(): TestContext {
       knex: knexClient,
       version,
     })
-    done()
   })
-  afterEach(async (done) => {
+  afterEach(async () => {
     await ctx.clean()
-    done()
   })
 
-  afterAll(async (done) => {
+  afterAll(async () => {
     await ctx.after()
     await binPrisma.$disconnect()
-    done()
   })
   return testContext
 }
