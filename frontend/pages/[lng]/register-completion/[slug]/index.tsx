@@ -17,6 +17,9 @@ import { useTranslator } from "/util/useTranslator"
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { CheckSlug } from "/static/types/generated/CheckSlug"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { getAccessToken } from "/lib/authentication"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -81,7 +84,10 @@ export const UserOverViewQuery = gql`
 `
 
 function RegisterCompletionPage() {
+  const accessToken = getAccessToken(undefined)
   const { currentUser } = useContext(LoginStateContext)
+  const [instructions, setInstructions] = useState("")
+  const [tiers, setTiers] = useState([])
 
   const courseSlug = (useQueryParameter("slug") ?? "").replace(/\./g, "")
 
@@ -102,6 +108,28 @@ function RegisterCompletionPage() {
   } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   const course_exists = Boolean(courseData?.course?.id)
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:4000/api/completionInstructions/${courseSlug}`)
+      .then((res) => res.data)
+      .then((json) => {
+        setInstructions(json)
+      })
+
+    axios({
+      method: "GET",
+      url: `http://localhost:4000/api/completionTiers/${courseSlug}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then((res) => res.data)
+      .then((json) => {
+        setTiers(json.tierData)
+      })
+  }, [])
 
   useBreadcrumbs([
     {
@@ -214,16 +242,14 @@ function RegisterCompletionPage() {
       )}
       <StyledPaper>
         <Typography variant="body1" paragraph>
-          {t("credits_details")}
-        </Typography>
-        <Typography variant="body1" paragraph>
-          {t("donow")}
+          {instructions}
         </Typography>
       </StyledPaper>
       <ImportantNotice email={completion.email} />
       <RegisterCompletionText
         email={completion.email}
         link={courseLinkWithLanguage}
+        tiers={tiers}
       />
       <StyledPaperColumn>
         <Typography variant="body1">

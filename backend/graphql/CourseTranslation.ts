@@ -17,6 +17,7 @@ export const CourseTranslation = objectType({
     t.model.course_id()
     t.model.course()
     t.model.description()
+    t.model.instructions()
     t.model.language()
     t.model.link()
     t.model.name()
@@ -31,6 +32,7 @@ export const CourseTranslationCreateInput = inputObjectType({
     t.nonNull.string("description")
     t.nullable.string("link")
     t.nullable.id("course")
+    t.nullable.string("instructions")
   },
 })
 
@@ -43,6 +45,7 @@ export const CourseTranslationUpsertInput = inputObjectType({
     t.nonNull.string("description")
     t.nullable.string("link")
     t.nullable.id("course")
+    t.nullable.string("instructions")
   },
 })
 
@@ -72,18 +75,20 @@ export const CourseTranslationMutations = extendType({
         language: nonNull(stringArg()),
         name: stringArg(),
         description: stringArg(),
+        instructions: stringArg(),
         link: stringArg(),
         course: idArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
-        const { language, name, description, link, course } = args
+        const { language, name, description, instructions, link, course } = args
 
         const newCourseTranslation = await ctx.prisma.courseTranslation.create({
           data: {
             language: language,
             name: name ?? "",
             description: description ?? "",
+            instructions: instructions ?? "",
             link,
             course: course ? { connect: { id: course } } : undefined,
           },
@@ -99,12 +104,21 @@ export const CourseTranslationMutations = extendType({
         language: nonNull(stringArg()),
         name: stringArg(),
         description: stringArg(),
+        instructions: stringArg(),
         link: stringArg(),
         course: idArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const { id, language, name, description, link, course } = args
+        const {
+          id,
+          language,
+          name,
+          description,
+          instructions,
+          link,
+          course,
+        } = args
 
         return ctx.prisma.courseTranslation.update({
           where: { id },
@@ -112,6 +126,7 @@ export const CourseTranslationMutations = extendType({
             language: language,
             name: name ?? undefined,
             description: description ?? undefined,
+            instructions: instructions ?? undefined,
             link: link,
             course: course ? { connect: { id: course } } : undefined,
           },

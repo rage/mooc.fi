@@ -131,6 +131,7 @@ model CourseTranslation {
   course_id                         String?   
   created_at                        DateTime? @default(now())
   description                       String
+  instructions                      String?
   id                                String    @id @default(uuid())
   language                          String
   link                              String?
@@ -145,6 +146,7 @@ model CourseVariant {
   course_id                     String?   
   created_at                    DateTime? @default(now())
   description                   String?
+  instructions                  String?
   id                            String    @id @default(uuid())
   slug                          String
   updated_at                    DateTime? @updatedAt
@@ -262,6 +264,7 @@ model OpenUniversityRegistrationLink {
   stop_date                                        DateTime?
   updated_at                                       DateTime? @updatedAt
   course                                           Course?   @relation(fields: [course_id], references: [id])
+  tiers                                            Json?
 
   @@map("open_university_registration_link")
 }
