@@ -1,5 +1,6 @@
 import { Typography, Paper, Button, Tooltip } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/styles"
 import { useTranslator } from "/util/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
