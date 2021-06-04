@@ -105,6 +105,8 @@ export const CheckSlugQuery = gql`
       id
       slug
       name
+      description
+      instructions
     }
   }
 `

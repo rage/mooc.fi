@@ -59,7 +59,7 @@ export function getUser(knex: Knex) {
     let user = (
       await knex
         .select<any, User[]>("id")
-        .from("user")
+        .from("prisma2.user")
         .where("upstream_id", details.id)
     )?.[0]
 

@@ -54,12 +54,19 @@ function LinkButton(props: any) {
 type RegProps = {
   email: String
   link: string
+  tiers: any
 }
 function RegisterCompletionText(props: RegProps) {
   const classes = useStyles()
   const t = useTranslator(RegisterCompletionTranslations)
   return (
     <Paper className={classes.paper}>
+      <Typography variant="body1" paragraph>
+        {t("credits_details")}
+      </Typography>
+      <Typography variant="body1" paragraph>
+        {t("donow")}
+      </Typography>
       <Typography
         variant="h4"
         component="h2"
@@ -80,7 +87,18 @@ function RegisterCompletionText(props: RegProps) {
       <Typography variant="body1" paragraph>
         {t("grades")}
       </Typography>
-      <LinkButton className={classes.button} link={props.link} />
+      {props.tiers ? (
+        props.tiers.map((tier: any) => (
+          <>
+            <Typography variant="body1" paragraph align="center">
+              {tier.name}
+            </Typography>
+            <LinkButton className={classes.button} link={tier.link} />
+          </>
+        ))
+      ) : (
+        <LinkButton className={classes.button} link={props.link} />
+      )}
     </Paper>
   )
 }
