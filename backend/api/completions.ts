@@ -111,13 +111,14 @@ export function completionTiers({ knex }: ApiContext) {
 
     const tiers = (
       await knex
-        .select<any, OpenUniversityRegistrationLink[]>("tiers")
+        .select("tiers")
         .from("prisma2.open_university_registration_link")
         .where("course_id", course.id)
     )?.[0].tiers
 
     if (tiers) {
       let t = tiers.tiers
+
       for (let i = 0; i < t.length; i++) {
         let completionCheck = (
           await knex
