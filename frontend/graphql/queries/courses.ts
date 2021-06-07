@@ -59,6 +59,7 @@ export const AllEditorCoursesQuery = gql`
       status
       hidden
       tier
+      instructions
       completions_handled_by {
         id
       }
@@ -187,6 +188,7 @@ export const CourseQuery = gql`
         name
         language
         description
+        instructions
         link
       }
       open_university_registration_links {
