@@ -159,6 +159,7 @@ export const courses: Prisma.CourseCreateInput[] = [
         {
           id: "00000000000000000000000000000022",
           description: "course2_description_fi_FI",
+          instructions: "course2_instructions_fi_FI",
           language: "fi_FI",
           name: "course2_fi_FI",
         },
