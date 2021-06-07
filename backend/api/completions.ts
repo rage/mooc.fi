@@ -111,7 +111,7 @@ export function completionTiers({ knex }: ApiContext) {
     )?.[0].tiers
 
     if (tiers) {
-      let t = tiers
+      let t: any = tiers
 
       for (let i = 0; i < t.length; i++) {
         let completionCheck = (
