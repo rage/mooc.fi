@@ -105,15 +105,13 @@ export function completionTiers({ knex }: ApiContext) {
 
     const tiers = (
       await knex
-        .select("tiers")
+        .select<any, OpenUniversityRegistrationLink[]>("tiers")
         .from("open_university_registration_link")
         .where("course_id", course.id)
-    )[0].tiers
-
-    console.log(tiers)
+    )?.[0].tiers
 
     if (tiers) {
-      let t = tiers.tiers
+      let t = tiers
 
       for (let i = 0; i < t.length; i++) {
         let completionCheck = (

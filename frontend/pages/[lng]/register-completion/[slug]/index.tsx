@@ -21,6 +21,11 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { getAccessToken } from "/lib/authentication"
 
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://mooc.fi"
+    : "http://localhost:4000"
+
 const StyledPaper = styled(Paper)`
   padding: 1em;
   margin: 1em;
@@ -111,7 +116,7 @@ function RegisterCompletionPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/completionInstructions/${courseSlug}`)
+      .get(`${BASE_URL}/api/completionInstructions/${courseSlug}`)
       .then((res) => res.data)
       .then((json) => {
         setInstructions(json)
@@ -119,7 +124,7 @@ function RegisterCompletionPage() {
 
     axios({
       method: "GET",
-      url: `http://localhost:4000/api/completionTiers/${courseSlug}`,
+      url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
