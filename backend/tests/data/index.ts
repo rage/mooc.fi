@@ -543,8 +543,8 @@ export const courseAliases: Prisma.CourseAliasCreateInput[] = [
   {
     id: "67000000-0000-0000-0000-000000000003",
     course: { connect: { id: "00000000000000000000000000000666" } },
-    course_code: "alias3"
-  }
+    course_code: "alias3",
+  },
 ]
 
 export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLinkCreateInput[] = [
@@ -554,7 +554,23 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000002" } },
     link: "avoin-link",
-    tiers: { "tiers": [{ "name": "intermediate tier", "course_id": "00000000000000000000000000000001", "adjacent": [] }, { "name": "advanced tier", "course_id": "00000000000000000000000000000666", "adjacent": [{ "name": "intermediate tier", "course_id": "00000000000000000000000000000001" }] }] }
+    tiers: [
+      {
+        name: "intermediate tier",
+        course_id: "00000000000000000000000000000001",
+        adjacent: [],
+      },
+      {
+        name: "advanced tier",
+        course_id: "00000000000000000000000000000666",
+        adjacent: [
+          {
+            name: "intermediate tier",
+            course_id: "00000000000000000000000000000001",
+          },
+        ],
+      },
+    ],
   },
   {
     id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d92",
@@ -562,7 +578,7 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000001" } },
     link: "avoin-link",
-    tiers: null
+    tiers: null,
   },
   {
     id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d91",
@@ -570,6 +586,6 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000666" } },
     link: "avoin-link",
-    tiers: null
-  }
+    tiers: null,
+  },
 ]

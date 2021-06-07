@@ -20,13 +20,13 @@ describe("API", () => {
     headers = defaultHeaders,
     params = {},
   }: RequestParams) =>
-      await axios({
-        method,
-        url: `http://localhost:${ctx.port}${route}`,
-        data,
-        headers,
-        params,
-      })
+    await axios({
+      method,
+      url: `http://localhost:${ctx.port}${route}`,
+      data,
+      headers,
+      params,
+    })
 
   const get = (route: string = "", defaultHeaders: any) =>
     request("GET")(route, defaultHeaders)
@@ -355,7 +355,8 @@ describe("API", () => {
 
       const getCompletions = (slug: string, registered: boolean = false) =>
         get(
-          `/api/completions/${slug}${registered ? `?registered=${registered}` : ""
+          `/api/completions/${slug}${
+            registered ? `?registered=${registered}` : ""
           }`,
           {},
         )
@@ -445,7 +446,10 @@ describe("API", () => {
         ])
       })
 
-      const completionInstructions = get("/api/completionInstructions/course1", {})
+      const completionInstructions = get(
+        "/api/completionInstructions/course1",
+        {},
+      )
 
       it("returns course instructions", async () => {
         const res = await completionInstructions({})
@@ -456,7 +460,9 @@ describe("API", () => {
       const completionTiers = get("/api/completionTiers/course1", {})
 
       it("returns course with multiple tiered registration links", async () => {
-        const res = await completionTiers({ headers: { Authorization: "Bearer normal" } })
+        const res = await completionTiers({
+          headers: { Authorization: "Bearer normal" },
+        })
 
         expect(res.status).toBe(200)
       })
