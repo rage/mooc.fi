@@ -108,7 +108,9 @@ export function completionTiers({ knex }: ApiContext) {
         .select("tiers")
         .from("open_university_registration_link")
         .where("course_id", course.id)
-    )?.[0].tiers
+    )[0].tiers
+
+    console.log(tiers)
 
     if (tiers) {
       let t = tiers.tiers

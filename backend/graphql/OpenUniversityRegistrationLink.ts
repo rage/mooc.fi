@@ -19,6 +19,7 @@ export const OpenUniversityRegistrationLink = objectType({
     t.model.course_code()
     t.model.language()
     t.model.link()
+    t.model.tiers()
     t.model.start_date()
     t.model.stop_date()
   },
@@ -30,6 +31,7 @@ export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
     t.nonNull.string("course_code")
     t.nonNull.string("language")
     t.nullable.string("link")
+    t.nullable.field("tiers", { type: "Json" })
     t.field("start_date", { type: "DateTime" })
     t.field("stop_date", { type: "DateTime" })
   },
@@ -42,6 +44,7 @@ export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
     t.nonNull.string("course_code")
     t.nonNull.string("language")
     t.nullable.string("link")
+    t.nullable.field("tiers", { type: "Json" })
     t.field("start_date", { type: "DateTime" })
     t.field("stop_date", { type: "DateTime" })
   },
