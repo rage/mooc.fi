@@ -72,16 +72,13 @@ export function completionInstructions({ knex }: ApiContext) {
     const id = req.params.id
 
     const course = (
-      await knex
-        .select<any, Course[]>("id")
-        .from("prisma2.course")
-        .where("slug", id)
+      await knex.select<any, Course[]>("id").from("course").where("slug", id)
     )[0]
 
     const instructions = (
       await knex
         .select<any, CourseTranslation[]>("instructions")
-        .from("prisma2.course_translation")
+        .from("course_translation")
         .where("course_id", course.id)
     )[0]?.instructions
 
@@ -103,16 +100,13 @@ export function completionTiers({ knex }: ApiContext) {
     let tierData: any = []
 
     const course = (
-      await knex
-        .select<any, Course[]>("id")
-        .from("prisma2.course")
-        .where("slug", id)
+      await knex.select<any, Course[]>("id").from("course").where("slug", id)
     )[0]
 
     const tiers = (
       await knex
         .select("tiers")
-        .from("prisma2.open_university_registration_link")
+        .from("open_university_registration_link")
         .where("course_id", course.id)
     )?.[0].tiers
 
@@ -123,7 +117,7 @@ export function completionTiers({ knex }: ApiContext) {
         let completionCheck = (
           await knex
             .select<any, Completion[]>("*")
-            .from("prisma2.completion")
+            .from("completion")
             .where("course_id", t[i].course_id)
             .andWhere("user_id", user.id)
         )?.[0]
@@ -132,7 +126,7 @@ export function completionTiers({ knex }: ApiContext) {
           let tierRegister = (
             await knex
               .select<any, OpenUniversityRegistrationLink[]>("link")
-              .from("prisma2.open_university_registration_link")
+              .from("open_university_registration_link")
               .where("course_id", t[i].course_id)
           )?.[0]
 
@@ -148,7 +142,7 @@ export function completionTiers({ knex }: ApiContext) {
               let adjRegister = (
                 await knex
                   .select<any, OpenUniversityRegistrationLink[]>("link")
-                  .from("prisma2.open_university_registration_link")
+                  .from("open_university_registration_link")
                   .where("course_id", t[i].adjacent[j].course_id)
               )?.[0]
 
