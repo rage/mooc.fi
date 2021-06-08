@@ -19,9 +19,18 @@ export const OpenUniversityRegistrationLink = objectType({
     t.model.course_code()
     t.model.language()
     t.model.link()
-    t.model.tiers()
     t.model.start_date()
     t.model.stop_date()
+    t.nullable.field("tiers", {
+      type: "Json",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.prisma.openUniversityRegistrationLink.findUnique({
+          where: { id: parent.id },
+          select: { tiers: true },
+        })
+        return (res?.tiers as any) || []
+      },
+    })
   },
 })
 
