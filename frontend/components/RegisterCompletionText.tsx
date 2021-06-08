@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "black",
       border: "1px solid black",
     },
+    registrationButtons: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
   }),
 )
 
@@ -88,13 +93,13 @@ function RegisterCompletionText(props: RegProps) {
         {t("grades")}
       </Typography>
       {props.tiers ? (
-        props.tiers.map((tier: any) => (
-          <>
+        props.tiers.map((tier: any, i: number) => (
+          <div key={i} className={classes.registrationButtons}>
             <Typography variant="body1" paragraph align="center">
               {tier.name}
             </Typography>
             <LinkButton className={classes.button} link={tier.link} />
-          </>
+          </div>
         ))
       ) : (
         <LinkButton className={classes.button} link={props.link} />

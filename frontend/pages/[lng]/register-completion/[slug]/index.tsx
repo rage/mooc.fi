@@ -114,27 +114,36 @@ function RegisterCompletionPage() {
 
   const course_exists = Boolean(courseData?.course?.id)
 
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/completionInstructions/${courseSlug}`)
-      .then((res) => res.data)
-      .then((json) => {
-        setInstructions(json)
-      })
+  const completion =
+    userData?.currentUser?.completions?.find(
+      (c) => c.course?.slug == courseSlug,
+    ) ?? undefined
 
-    axios({
-      method: "GET",
-      url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((res) => res.data)
-      .then((json) => {
-        setTiers(json.tierData)
+  useEffect(() => {
+    if (completion) {
+      axios
+        .get(
+          `${BASE_URL}/api/completionInstructions/${courseSlug}/${completion.completion_language}`,
+        )
+        .then((res) => res.data)
+        .then((json) => {
+          setInstructions(json)
+        })
+
+      axios({
+        method: "GET",
+        url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       })
-  }, [])
+        .then((res) => res.data)
+        .then((json) => {
+          setTiers(json.tierData)
+        })
+    }
+  }, [completion])
 
   useBreadcrumbs([
     {
@@ -159,11 +168,6 @@ function RegisterCompletionPage() {
       />
     )
   }
-
-  const completion =
-    userData?.currentUser?.completions?.find(
-      (c) => c.course?.slug == courseSlug,
-    ) ?? undefined
 
   if (!currentUser) {
     return (

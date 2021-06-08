@@ -70,6 +70,7 @@ export function completions({ knex }: ApiContext) {
 export function completionInstructions({ knex }: ApiContext) {
   return async function (req: any, res: any) {
     const id = req.params.id
+    const language = req.params.language
 
     const course = (
       await knex.select<any, Course[]>("id").from("course").where("slug", id)
@@ -80,6 +81,7 @@ export function completionInstructions({ knex }: ApiContext) {
         .select<any, CourseTranslation[]>("instructions")
         .from("course_translation")
         .where("course_id", course.id)
+        .where("language", language)
     )[0]?.instructions
 
     return res.status(200).json(instructions)
