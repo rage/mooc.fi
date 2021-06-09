@@ -9,7 +9,7 @@ import DoneIcon from "@material-ui/icons/Done"
 import Avatar from "@material-ui/core/Avatar"
 import { CardTitle, CardSubtitle } from "components/Text/headers"
 import { addDomain } from "/util/imageUtils"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 import CertificateButton from "components/CertificateButton"
 import { useTranslator } from "/util/useTranslator"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
@@ -127,7 +127,7 @@ interface ListItemProps {
     | ProfileUserOverView_currentUser_completions_course
 }
 
-const CompletionListItem = ({ completion, course }: ListItemProps) => {
+export const CompletionListItem = ({ completion, course }: ListItemProps) => {
   const isRegistered = (completion?.completions_registered ?? []).length > 0
   const t = useTranslator(ProfileTranslations)
 
@@ -150,7 +150,9 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
         >
           <CompletionInfoList>
             <CompletionInfo>
-              {`${t("completedDate")}${formatDateTime(completion.created_at)}`}
+              {`${t("completedDate")}${formatDateTime(
+                completion.completion_date,
+              )}`}
             </CompletionInfo>
             {completion.completion_language ? (
               <CompletionInfo>
@@ -199,16 +201,13 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
         <ButtonList>
           {!isRegistered && completion.eligible_for_ects ? (
             <ButtonWrapper>
-              <Link
-                href="/register-completion/[slug]"
-                as={`/register-completion/${course?.slug}`}
-              >
+              <LangLink href={`/register-completion/${course?.slug}`}>
                 <StyledA>
                   <StyledButton color="secondary">
                     {t("registerCompletion")}
                   </StyledButton>
                 </StyledA>
-              </Link>
+              </LangLink>
             </ButtonWrapper>
           ) : (
             <CardSubtitle style={{ width: "115px" }}>&nbsp;</CardSubtitle>
@@ -224,5 +223,3 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
     </ListItemContainer>
   )
 }
-
-export default CompletionListItem

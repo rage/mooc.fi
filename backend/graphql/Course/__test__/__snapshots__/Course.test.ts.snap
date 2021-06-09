@@ -807,7 +807,12 @@ Object {
   "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": null,
-  "course_aliases": Array [],
+  "course_aliases": Array [
+    Object {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
   "course_translations": Array [
     Object {
       "description": "course1_description_en_US",
@@ -872,7 +877,12 @@ Object {
   "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": null,
-  "course_aliases": Array [],
+  "course_aliases": Array [
+    Object {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
   "course_translations": Array [
     Object {
       "description": "course1_description_en_US",

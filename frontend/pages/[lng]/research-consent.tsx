@@ -10,6 +10,7 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import withSignedIn from "/lib/with-signed-in"
 import Router from "next/router"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -50,6 +51,13 @@ function useResearchConsent() {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(SignupTranslations)
 
+  useBreadcrumbs([
+    {
+      translation: "researchConsent",
+      href: "/research-consent",
+    },
+  ])
+
   const { data, loading } = useQuery(consentQuery)
 
   const [research, setResearch] = useState("")
@@ -71,10 +79,7 @@ function useResearchConsent() {
       setFormError("")
       setSubmitting(true)
       await updateConsent({ variables: { value: research === "1" } })
-      Router.push(
-        language === "fi" ? "/" : `/[lng]`,
-        language === "fi" ? "/" : `/${language}`,
-      )
+      Router.push(language === "fi" ? "/" : `/${language}`)
     } catch (e) {
       setSubmitting(false)
       console.log(e)

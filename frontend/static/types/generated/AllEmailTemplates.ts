@@ -14,6 +14,10 @@ export interface AllEmailTemplates_email_templates {
   txt_body: string | null
   html_body: string | null
   title: string | null
+  template_type: string | null
+  triggered_automatically_by_course_id: string | null
+  exercise_completions_threshold: number | null
+  points_threshold: number | null
 }
 
 export interface AllEmailTemplates {

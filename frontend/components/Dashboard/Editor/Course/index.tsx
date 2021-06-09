@@ -91,7 +91,7 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push("/[lng]/courses", `/${language}/courses`, { shallow: true })
+        Router.push(`/${language}/courses`, undefined, { shallow: true })
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -104,12 +104,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      Router.push("/[lng]/courses", `/${language}/courses`, { shallow: true })
+      Router.push(`/${language}/courses`, undefined, { shallow: true })
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    Router.push("/[lng]/courses", `/${language}/courses`, { shallow: true })
+    Router.push(`/${language}/courses`, undefined, { shallow: true })
   }, [])
 
   return (

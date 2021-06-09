@@ -10,6 +10,7 @@ import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import LoginStateContext from "/contexts/LoginStateContext"
 import LanguageContext from "/contexts/LanguageContext"
+import { BreadcrumbContext } from "/contexts/BreadcrumbContext"
 import withApolloClient from "/lib/with-apollo-client"
 import theme from "/src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
@@ -46,6 +47,7 @@ class MyApp extends App {
       loggedIn: this.props.signedIn,
       logInOrOut: this.toggleLogin,
       alerts: [],
+      breadcrumbs: [],
       admin: this.props.admin,
       currentUser: this.props.currentUser,
       updateUser: this.updateCurrentUser,
@@ -83,6 +85,8 @@ class MyApp extends App {
 
   removeAlert = (alert) =>
     this.setState({ alerts: this.state.alerts.filter((a) => a !== alert) })
+
+  setBreadcrumbs = (breadcrumbs) => this.setState({ breadcrumbs })
 
   render() {
     const {
@@ -123,18 +127,25 @@ class MyApp extends App {
                   value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
                 >
                   <ConfirmProvider>
-                    <AlertContext.Provider
+                    <BreadcrumbContext.Provider
                       value={{
-                        alerts: this.state.alerts,
-                        addAlert: this.addAlert,
-                        removeAlert: this.removeAlert,
+                        breadcrumbs: this.state.breadcrumbs,
+                        setBreadcrumbs: this.setBreadcrumbs,
                       }}
                     >
-                      <Layout>
-                        <Global styles={fontCss} />
-                        <Component {...pageProps} />
-                      </Layout>
-                    </AlertContext.Provider>
+                      <AlertContext.Provider
+                        value={{
+                          alerts: this.state.alerts,
+                          addAlert: this.addAlert,
+                          removeAlert: this.removeAlert,
+                        }}
+                      >
+                        <Layout>
+                          <Global styles={fontCss} />
+                          <Component {...pageProps} />
+                        </Layout>
+                      </AlertContext.Provider>
+                    </BreadcrumbContext.Provider>
                   </ConfirmProvider>
                 </LanguageContext.Provider>
               </LoginStateContext.Provider>
