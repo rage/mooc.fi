@@ -7,6 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AbEnrollment {
+  user_id                   String                 
+  ab_study_id               String                 
+  group                     Int?
+  created_at                DateTime?               @default(now())
+  updated_at                DateTime?               @updatedAt
+  user                      User                    @relation(fields: [user_id], references: [id])
+  ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
+
+  @@id([user_id, ab_study_id])
+  @@map("ab_enrollment")
+}
+
+model AbStudy {
+  id                        String                  @id @default(uuid())
+  group_count               Int
+  name                      String
+  created_at                DateTime?               @default(now())
+  updated_at                DateTime?               @updatedAt
+  ab_enrollments            AbEnrollment[]
+
+  @@map("ab_study")
+}
+
 model Completion {
   certificate_id            String?
   completion_language       String?
@@ -376,6 +400,7 @@ model User {
   user_course_settings           UserCourseSetting[]
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
+  ab_enrollments                 AbEnrollment[]
 
   @@map("user")
 }

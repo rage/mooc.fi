@@ -11,6 +11,8 @@ import {
   userCourseSettingsGet,
   userCourseSettingsPost,
 } from "./userCourseSettings"
+import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
+
 import * as winston from "winston"
 
 export interface ApiContext {
@@ -32,4 +34,6 @@ export function apiRouter(ctx: ApiContext) {
     )
     .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
+    .use("/ab-studies", abStudiesRouter(ctx))
+    .use("/ab-enrollment", abEnrollmentRouter(ctx))
 }
