@@ -82,8 +82,12 @@ export function completionInstructions({ knex }: ApiContext) {
         break
       case "fi":
         language = "fi_FI"
+        break
       case "sv":
         language = "sv_SE"
+        break
+      default:
+        language = "fi_FI"
     }
 
     const instructions = (
