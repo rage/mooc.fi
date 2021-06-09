@@ -70,11 +70,21 @@ export function completions({ knex }: ApiContext) {
 export function completionInstructions({ knex }: ApiContext) {
   return async function (req: any, res: any) {
     const id = req.params.id
-    const language = req.params.language
+    let language = req.params.language
 
     const course = (
       await knex.select<any, Course[]>("id").from("course").where("slug", id)
     )[0]
+
+    switch (language) {
+      case "en":
+        language = "en_US"
+        break
+      case "fi":
+        language = "fi_FI"
+      case "sv":
+        language = "sv_SE"
+    }
 
     const instructions = (
       await knex
@@ -84,7 +94,11 @@ export function completionInstructions({ knex }: ApiContext) {
         .where("language", language)
     )[0]?.instructions
 
-    return res.status(200).json(instructions)
+    if (instructions) {
+      return res.status(200).json(instructions)
+    } else {
+      return res.status(404).json("")
+    }
   }
 }
 

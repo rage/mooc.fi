@@ -92,7 +92,7 @@ function RegisterCompletionText(props: RegProps) {
       <Typography variant="body1" paragraph>
         {t("grades")}
       </Typography>
-      {props.tiers ? (
+      {props.tiers.length > 0 ? (
         props.tiers.map((tier: any, i: number) => (
           <div key={i} className={classes.registrationButtons}>
             <Typography variant="body1" paragraph align="center">

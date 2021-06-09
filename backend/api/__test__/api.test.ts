@@ -447,7 +447,7 @@ describe("API", () => {
       })
 
       const completionInstructions = get(
-        "/api/completionInstructions/course1/en_US",
+        "/api/completionInstructions/course1/en",
         {},
       )
 

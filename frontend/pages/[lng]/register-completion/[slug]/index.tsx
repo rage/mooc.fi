@@ -20,6 +20,7 @@ import { CheckSlug } from "/static/types/generated/CheckSlug"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { getAccessToken } from "/lib/authentication"
+import LanguageContext from "/contexts/LanguageContext"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -119,15 +120,18 @@ function RegisterCompletionPage() {
       (c) => c.course?.slug == courseSlug,
     ) ?? undefined
 
+  const { language } = useContext(LanguageContext)
+
   useEffect(() => {
-    if (completion) {
+    if (language) {
       axios
-        .get(
-          `${BASE_URL}/api/completionInstructions/${courseSlug}/${completion.completion_language}`,
-        )
+        .get(`${BASE_URL}/api/completionInstructions/${courseSlug}/${language}`)
         .then((res) => res.data)
         .then((json) => {
           setInstructions(json)
+        })
+        .catch((error) => {
+          setInstructions(error.response.data)
         })
 
       axios({
@@ -143,7 +147,7 @@ function RegisterCompletionPage() {
           setTiers(json.tierData)
         })
     }
-  }, [completion])
+  }, [language])
 
   useBreadcrumbs([
     {
@@ -249,11 +253,13 @@ function RegisterCompletionPage() {
           {t("credits", { ects: completion.course?.ects })}
         </StyledText>
       )}
-      <StyledPaper>
-        <Typography variant="body1" paragraph>
-          {instructions}
-        </Typography>
-      </StyledPaper>
+      {instructions && (
+        <StyledPaper>
+          <Typography variant="body1" paragraph>
+            {instructions}
+          </Typography>
+        </StyledPaper>
+      )}
       <ImportantNotice email={completion.email} />
       <RegisterCompletionText
         email={completion.email}
