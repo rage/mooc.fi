@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@types/mime-types": "^2.1.0",
-    "@types/node": "^15.6.2",
+    "@types/node": "^15.9.0",
     "os-name": "^4.0.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/styles"
 import { Typography } from "@material-ui/core"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"

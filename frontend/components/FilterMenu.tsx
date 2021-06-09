@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  InputLabel,
   OutlinedInput,
   MenuItem,
   FormControl,
@@ -11,7 +10,7 @@ import {
   TextField,
   Button,
 } from "@material-ui/core"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Clear, Search } from "@material-ui/icons"
 
 import styled from "@emotion/styled"
@@ -99,10 +98,10 @@ export default function FilterMenu({
   )
   const [handledBy, setHandledBy] = useState(initialHandledBy ?? "")
 
-  const inputLabel = useRef<any>(null)
+  /*const inputLabel = useRef<any>(null)
   const [labelWidth, setLabelWidth] = useState(0)
 
-  useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])
+  useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])*/
 
   const onSubmit = () => {
     setSearchVariables({
@@ -212,21 +211,14 @@ export default function FilterMenu({
           ) : null}
           {showHandler ? (
             <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
-              <InputLabel
-                id="handledBy"
-                shrink={Boolean(handledBy)}
-                ref={inputLabel}
-              >
-                {t("handledBy")}
-              </InputLabel>
               <Select
                 value={loading ? "" : handledBy}
                 variant="outlined"
                 onChange={handleHandledByChange}
+                label={t("handledBy")}
                 input={
                   <OutlinedInput
                     notched={Boolean(handledBy)}
-                    labelWidth={labelWidth}
                     name="handledBy"
                     id="handledBy"
                   />
