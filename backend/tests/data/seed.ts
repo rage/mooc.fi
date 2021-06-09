@@ -7,6 +7,8 @@ import {
   completions,
   services,
   userCourseSettings,
+  abStudies,
+  abEnrollments,
   exercises,
   exerciseCompletions,
   userCourseProgresses,
@@ -42,6 +44,8 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseSetting",
     userCourseSettings,
   )
+  const seededAbStudies = await create("abStudy", abStudies)
+  const seededAbEnrollments = await create("abEnrollment", abEnrollments)
   const seededExercises = await create("exercise", exercises)
   const seededExerciseCompletions = await create(
     "exerciseCompletion",
@@ -73,6 +77,8 @@ export const seed = async (prisma: PrismaClient) => {
     completions: seededCompletions,
     services: seededServices,
     userCourseSettings: seededUserCourseSettings,
+    abStudies: seededAbStudies,
+    abEnrollments: seededAbEnrollments,
     exercises: seededExercises,
     exerciseCompletions: seededExerciseCompletions,
     userCourseProgresses: seededUserCourseProgresses,
