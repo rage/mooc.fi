@@ -23,7 +23,7 @@ docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
   --network host \
   --name "$TEST_NAME" "$TAG" \
-  /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
+  /bin/bash -c "npm run create-test-db; npm run test -- --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
 

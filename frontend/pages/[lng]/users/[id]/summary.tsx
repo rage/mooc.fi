@@ -17,6 +17,7 @@ import { UserCourseSummaryUserCourseServiceProgressFragment } from "/graphql/fra
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { Paper } from "@material-ui/core"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {
@@ -99,6 +100,20 @@ function UserSummaryView() {
   const { loading, error, data } = useQuery<UserSummary>(UserSummaryQuery, {
     variables: { upstream_id: Number(id) },
   })
+
+  useBreadcrumbs([
+    {
+      translation: "users",
+    },
+    {
+      label: id,
+    },
+    {
+      translation: "userSummary",
+      href: `/users/${id}/summary`,
+    },
+  ])
+
   const [state, dispatch] = useReducer(collapseReducer, {})
   const [searchVariables, setSearchVariables] = useState<SearchVariables>({
     search: "",

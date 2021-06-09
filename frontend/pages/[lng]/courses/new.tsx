@@ -12,6 +12,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { useTranslator } from "/util/useTranslator"
 import { useEditorCourses } from "/hooks/useEditorCourses"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 function stripId<T>(data: T): T {
   if (data === null || data === undefined) return data
@@ -46,6 +47,17 @@ const NewCourse = () => {
   } = useEditorCourses({
     slug: clone,
   })
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      translation: "courseNew",
+      href: `/courses/new`,
+    },
+  ])
 
   useEffect(() => {
     if (!courseData?.course) {

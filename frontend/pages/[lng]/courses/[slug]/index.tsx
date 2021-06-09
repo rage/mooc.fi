@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { WideContainer } from "/components/Container"
@@ -8,7 +8,6 @@ import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import { Card, Typography, Button, Paper } from "@material-ui/core"
-import LanguageContext from "/contexts/LanguageContext"
 import LangLink from "/components/LangLink"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
 import Spinner from "/components/Spinner"
@@ -22,6 +21,7 @@ import {
 } from "/components/Dashboard/CompletionsList"
 import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -58,7 +58,6 @@ const Row = styled(Paper)`
 `
 
 const Course = () => {
-  const { language } = useContext(LanguageContext)
   const slug = useQueryParameter("slug")
   const t = useTranslator(CoursesTranslations)
   const confirm = useConfirm()
@@ -72,6 +71,17 @@ const Course = () => {
       variables: { slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+  ])
 
   const [recheckCompletions] = useMutation(recheckCompletionsMutation, {
     variables: {
@@ -132,8 +142,7 @@ const Course = () => {
         <Row>
           {data.course?.completion_email != null ? (
             <LangLink
-              href="/[lng]/email-templates/[id]"
-              as={`/${language}/email-templates/${data.course.completion_email?.id}`}
+              href={`/email-templates/${data.course.completion_email?.id}`}
               prefetch={false}
               passHref
             >

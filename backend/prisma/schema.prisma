@@ -108,6 +108,7 @@ model Course {
   completions_registered                             CompletionRegistered[]
   handles_completions_for                            Course[]                            @relation("courseTocourse_completions_handled_by")
   other_course_courseTocourse_inherit_settings_from  Course[]                            @relation("courseTocourse_inherit_settings_from")
+  triggered_automatically_email                      EmailTemplate[]                     @relation("emailTemplateToCourse_triggered")
   course_aliases                                     CourseAlias[]
   course_organizations                               CourseOrganization[]
   course_translations                                CourseTranslation[]
@@ -192,15 +193,20 @@ model EmailDelivery {
 }
 
 model EmailTemplate {
-  created_at       DateTime?        @default(now())
-  html_body        String?
-  id               String           @id @default(uuid())
-  name             String?
-  title            String?
-  txt_body         String?
-  updated_at       DateTime?        @updatedAt
-  courses          Course[]
-  email_deliveries EmailDelivery[]
+  created_at                               DateTime?        @default(now())
+  html_body                                String?
+  id                                       String           @id @default(uuid())
+  name                                     String?
+  title                                    String?
+  txt_body                                 String?
+  template_type                            String?
+  exercise_completions_threshold           Int?
+  points_threshold                         Int?
+  updated_at                               DateTime?        @updatedAt
+  triggered_automatically_by_course_id     String?     
+  triggered_automatically_by_course        Course?          @relation("emailTemplateToCourse_triggered", fields: [triggered_automatically_by_course_id], references: [id])
+  courses                                  Course[]
+  email_deliveries                         EmailDelivery[]
 
   @@map("email_template")
 }

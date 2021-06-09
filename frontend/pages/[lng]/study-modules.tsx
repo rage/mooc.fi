@@ -9,9 +9,17 @@ import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "studyModules",
+      href: "/study-modules",
+    },
+  ])
 
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
     AllEditorModulesQuery,

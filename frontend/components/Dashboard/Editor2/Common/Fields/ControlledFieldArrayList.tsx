@@ -119,9 +119,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
             {noFields}
           </Typography>
         )}
-        {watchedFields.length === 0 ||
-        (watchedFields.length &&
-          conditions.add(watchedFields as Partial<T>[])) ? (
+        {conditions.add(watchedFields as Partial<T>[]) ? (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"

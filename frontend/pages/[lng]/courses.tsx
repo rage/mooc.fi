@@ -20,6 +20,7 @@ import FilterMenu from "/components/FilterMenu"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -38,6 +39,13 @@ const notEmptyOrEmptyString = (value: any) =>
 function useCourseSearch() {
   const { language } = useContext(LanguageContext)
   const router = useRouter()
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: "/courses",
+    },
+  ])
 
   const statusParam = decodeURIComponent(useQueryParameter("status", false))
     ?.split(",")
@@ -78,7 +86,9 @@ function useCourseSearch() {
         keyof typeof searchVariables
       >).map((field) =>
         notEmptyOrEmptyString(searchVariables[field])
-          ? `${field}=${encodeURI(searchVariables[field]?.toString() ?? "")}`
+          ? `${field}=${encodeURIComponent(
+              searchVariables[field]?.toString() ?? "",
+            )}`
           : "",
       ),
       !searchVariables.hidden ? `hidden=false` : "",
@@ -90,9 +100,9 @@ function useCourseSearch() {
     ].filter(Boolean)
 
     const query = params.length ? `?${params.join("&")}` : ""
-    const as = `/${language}/courses/${query}`
-    if (router?.asPath !== as) {
-      router.push(as, as, { shallow: true })
+    const href = `/${language}/courses/${query}`
+    if (router?.asPath !== href) {
+      router.push(href, undefined, { shallow: true })
     }
   }, [searchVariables])
 
