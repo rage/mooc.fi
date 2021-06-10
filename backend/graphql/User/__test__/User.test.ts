@@ -198,15 +198,18 @@ describe("User", () => {
         const sortedRes = {
           currentUser: {
             ...res?.currentUser,
-            user_course_summary: [
-              ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
-                ...cs,
-                exercise_completions: orderBy(
-                  cs?.exercise_completions?.map(sortByExercise),
-                  ["id"],
-                ),
-              })),
-            ],
+            user_course_summary: orderBy(
+              [
+                ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
+                  ...cs,
+                  exercise_completions: orderBy(
+                    cs?.exercise_completions?.map(sortByExercise),
+                    ["id"],
+                  ),
+                })),
+              ],
+              "course.id",
+            ),
           },
         }
 
