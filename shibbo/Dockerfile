@@ -20,7 +20,7 @@ RUN node -v
 RUN npm -v
 # USER node
 
-WORKDIR app
+WORKDIR /app
 
 RUN rm -rf shibboleth && rm -rf docs
 RUN npm ci
@@ -30,3 +30,7 @@ ENV NODE_ENV=production
 EXPOSE 80 443
 
 CMD ["sh", "./bin/run.sh"]
+
+ARG GIT_COMMIT=""
+LABEL GIT_COMMIT=${GIT_COMMIT}
+ENV GIT_COMMIT=${GIT_COMMIT}
