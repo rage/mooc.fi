@@ -12,6 +12,13 @@ export async function up(knex: Knex): Promise<void> {
     )
   }
 
+  try {
+    // if uuid-ossp already exists, but in another schema
+    await knex.raw(`ALTER EXTENSION "uuid-ossp" SET SCHEMA "extensions";`)
+  } catch {
+    // we can probably ignore this
+  }
+
   await knex.raw(
     `ALTER TABLE "ab_study" ALTER COLUMN "id" SET DEFAULT extensions.uuid_generate_v4();`,
   )
