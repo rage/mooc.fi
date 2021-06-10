@@ -1,6 +1,18 @@
 import { Knex } from "knex"
 
 export async function up(knex: Knex): Promise<void> {
+  try {
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
+    )
+  } catch {
+    Boolean(process.env.DEBUG) &&
+      console.warn(
+        "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
+      )
+  }
+
   await knex.raw(`CREATE TABLE IF NOT EXISTS ab_enrollment (
     user_id uuid,
     ab_study_id uuid,
