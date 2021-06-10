@@ -18,7 +18,7 @@ async function issueToken(user: any, client: any, { knex }: ApiContext) {
   let nonce = crypto.randomBytes(16).toString("hex")
   let jwtid = crypto.randomBytes(64).toString("hex")
   let subject = Buffer.from(user?.email || client?.name || "mooc.fi").toString(
-    "base64",
+    "base64"
   )
 
   let token = await jwt.sign(
@@ -81,6 +81,46 @@ async function grantAuthorizationCode(
     success: true,
     code,
     targetUri: `https://mooc.fi/authorization?code=${code}`,
+  }
+}
+
+async function exchangeImplicit(iss: string, login_hint: string, target_link_uri: string) {
+  let nonce = crypto.randomBytes(16).toString("hex")
+  let jwtid = crypto.randomBytes(64).toString("hex")
+  let subject = Buffer.from("mooc.fi").toString("base64")
+
+  let token = await jwt.sign(
+    {
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+      id: 'implicit_token',
+      nonce,
+      jwtid,
+      login_hint,
+      target_link_uri
+    },
+    privateKey,
+    {
+      algorithm: "RS256",
+      iss: iss,
+      subject,
+      audience: "mooc.fi"
+    }
+  )
+
+
+  await knex("access_tokens").insert({
+    access_token: token,
+    valid: true,
+    iss,
+    nonce
+  })
+
+
+  return {
+    status: 200,
+    success: true,
+    access_token: token,
   }
 }
 
@@ -251,8 +291,6 @@ export function token(ctx: ApiContext) {
             .json(result)
         }
 
-        break
-
       case "client_credentials":
         result = await exchangeClientCredentials(req.body.client, ctx)
 
@@ -269,6 +307,55 @@ export function token(ctx: ApiContext) {
           result,
         })
     }
+  }
+}
+
+export function implicitToken() {
+  return async (req: any, res: any) => {
+    console.log(req)
+    console.log(req.query)
+    console.log(req.body)
+    console.log(req.params)
+    console.log(req.headers)
+
+    if (!req.query.iss) {
+      return res.status(401).json({
+        status: 401,
+        success: false,
+        message: "Missing iss parameter"
+      })
+    }
+
+    if (!req.query.login_hint) {
+      return res.status(401).json({
+        status: 401,
+        success: false,
+        message: "Missing login_hint parameter"
+      })
+    }
+
+    if (!req.query.target_link_uri) {
+      return res.status(401).json({
+        status: 401,
+        success: false,
+        message: "Missing target_link_uri parameter"
+      })
+    }
+
+    let result = await exchangeImplicit()
+
+    if (!result.success) {
+      return res.status(result.status).json({
+        result,
+      })
+    }
+
+    return res
+      .status(result.status)
+      .cookie("access_token", result.access_token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      })
+      .json(result.access_token)
   }
 }
 
