@@ -2,7 +2,7 @@ import type { PrismaClient } from "@prisma/client"
 import { Knex } from "knex"
 import { Router } from "express"
 
-import { token } from "./token"
+import { token, implicitToken } from "./token"
 import { authorize } from "./authorize"
 import { decision } from "./decision"
 import { signUp } from "./signUp"
@@ -24,6 +24,7 @@ export function authRouter(ctx: ApiContext) {
     .post("/signOut", signOut(ctx))
     .post("/passwordReset", passwordReset(ctx))
     .post("/token", token(ctx))
+    .post("/implicit-token", implicitToken())
     .get("/authorize", authorize(ctx))
     .get("/decision/:code", decision(ctx))
     .get("/clients", getClients(ctx))
