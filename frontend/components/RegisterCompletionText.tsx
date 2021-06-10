@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "black",
       border: "1px solid black",
     },
+    registrationButtons: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
   }),
 )
 
@@ -54,12 +59,19 @@ function LinkButton(props: any) {
 type RegProps = {
   email: String
   link: string
+  tiers: any
 }
 function RegisterCompletionText(props: RegProps) {
   const classes = useStyles()
   const t = useTranslator(RegisterCompletionTranslations)
   return (
     <Paper className={classes.paper}>
+      <Typography variant="body1" paragraph>
+        {t("credits_details")}
+      </Typography>
+      <Typography variant="body1" paragraph>
+        {t("donow")}
+      </Typography>
       <Typography
         variant="h4"
         component="h2"
@@ -80,7 +92,18 @@ function RegisterCompletionText(props: RegProps) {
       <Typography variant="body1" paragraph>
         {t("grades")}
       </Typography>
-      <LinkButton className={classes.button} link={props.link} />
+      {props.tiers.length > 0 ? (
+        props.tiers.map((tier: any, i: number) => (
+          <div key={i} className={classes.registrationButtons}>
+            <Typography variant="body1" paragraph align="center">
+              {tier.name}
+            </Typography>
+            <LinkButton className={classes.button} link={tier.link} />
+          </div>
+        ))
+      ) : (
+        <LinkButton className={classes.button} link={props.link} />
+      )}
     </Paper>
   )
 }

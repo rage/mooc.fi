@@ -445,6 +445,27 @@ describe("API", () => {
           "30000000-0000-0000-0000-000000000105",
         ])
       })
+
+      const completionInstructions = get(
+        "/api/completionInstructions/course1/en",
+        {},
+      )
+
+      it("returns course instructions", async () => {
+        const res = await completionInstructions({})
+
+        expect(res.status).toBe(200)
+      })
+
+      const completionTiers = get("/api/completionTiers/course1", {})
+
+      it("returns course with multiple tiered registration links", async () => {
+        const res = await completionTiers({
+          headers: { Authorization: "Bearer normal" },
+        })
+
+        expect(res.status).toBe(200)
+      })
     })
   })
 

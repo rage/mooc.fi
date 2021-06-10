@@ -68,6 +68,19 @@ const CourseVariantEditForm = () => {
                             InputLabelProps={inputLabelProps}
                           />
                         </Grid>
+                        <Grid item xs={6}>
+                          <StyledFieldWithAnchor
+                            id={`course_variants[${index}].instructions`}
+                            name={`course_variants[${index}].instructions`}
+                            type="text"
+                            component={StyledTextField}
+                            value={variant.instructions}
+                            label={t("courseInstructions")}
+                            errors={[getIn(errors, `[${index}].instructions`)]}
+                            variant="outlined"
+                            InputLabelProps={inputLabelProps}
+                          />
+                        </Grid>
                         <Grid item xs={2}>
                           <Grid
                             container

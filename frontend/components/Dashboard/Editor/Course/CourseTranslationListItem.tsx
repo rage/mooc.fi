@@ -78,6 +78,20 @@ const CourseTranslationListItem = (props: Props) => {
         component={StyledTextField}
       />
       <StyledFieldWithAnchor
+        id={`course_translations[${index}].instructions`}
+        name={`course_translations[${index}].instructions`}
+        type="textarea"
+        label={t("courseInstructions")}
+        InputLabelProps={inputLabelProps}
+        error={getIn(errors, `[${index}].instructions`)}
+        fullWidth
+        multiline
+        rows={5}
+        autoComplete="off"
+        variant="outlined"
+        component={StyledTextField}
+      />
+      <StyledFieldWithAnchor
         id={`course_translations[${index}].link`}
         name={`course_translations[${index}].link`}
         type="text"
