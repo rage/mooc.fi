@@ -1,0 +1,5 @@
+shibboleth/*
+docs/*
+node_modules
+build
+.env

@@ -74,6 +74,21 @@ jobs:
           name: "Push image if on master"
           command: "bin/push-docker-backend-image.sh"
 
+  build_shibbo:
+    docker:
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - jq/install
+      - docker/install-docker-tools
+      - run:
+          name: "Build image"
+          command: "bin/build-docker-shibbo.sh"
+      - run:
+          name: "Push image if on master"
+          command: "bin/push-docker-shibbo-image.sh"  
+    
   deploy_to_production:
     docker:
       - image: google/cloud-sdk
@@ -95,11 +110,13 @@ workflows:
     jobs:
       - build_frontend
       - build_backend
+      - build_shibbo
       - code_style
       - deploy_to_production:
           requires:
             - build_frontend
             - build_backend
+            - build_shibbo
             - code_style
           filters:
             branches:
