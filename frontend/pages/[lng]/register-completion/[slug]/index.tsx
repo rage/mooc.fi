@@ -24,7 +24,7 @@ import LanguageContext from "/contexts/LanguageContext"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://mooc.fi"
+    ? "https://www.mooc.fi"
     : "http://localhost:4000"
 
 const StyledPaper = styled(Paper)`
