@@ -2,7 +2,11 @@ import type { PrismaClient } from "@prisma/client"
 import { Knex } from "knex"
 import { Router } from "express"
 
-import { completions } from "./completions"
+import {
+  completions,
+  completionTiers,
+  completionInstructions,
+} from "./completions"
 import { userCourseSettingsCount } from "./userCourseSettingsCount"
 import { progress, progressV2 } from "./progress"
 import { tierProgress } from "./tierProgress"
@@ -24,6 +28,8 @@ export interface ApiContext {
 export function apiRouter(ctx: ApiContext) {
   return Router()
     .get("/completions/:course", completions(ctx))
+    .get("/completionTiers/:id", completionTiers(ctx))
+    .get("/completionInstructions/:id/:language", completionInstructions(ctx))
     .get("/progress/:id", progress(ctx))
     .get("/progressv2/:id", progressV2(ctx))
     .post("/register-completions", registerCompletions(ctx))

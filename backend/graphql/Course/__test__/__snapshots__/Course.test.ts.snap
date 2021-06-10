@@ -496,7 +496,14 @@ Object {
       "id": "00000000-0000-0000-0000-000000000001",
     },
     "name": "updated course1",
-    "open_university_registration_links": Array [],
+    "open_university_registration_links": Array [
+      Object {
+        "course_code": "alias",
+        "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+        "language": "en_US",
+        "link": "avoin-link",
+      },
+    ],
     "order": null,
     "photo": null,
     "points_needed": 3,
@@ -609,7 +616,14 @@ Object {
       "id": "00000000-0000-0000-0000-000000000001",
     },
     "name": "updated course1",
-    "open_university_registration_links": Array [],
+    "open_university_registration_links": Array [
+      Object {
+        "course_code": "alias",
+        "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+        "language": "en_US",
+        "link": "avoin-link",
+      },
+    ],
     "order": null,
     "photo": Object {
       "compressed": StringContaining "webp",
@@ -729,7 +743,14 @@ Object {
       "id": "00000000-0000-0000-0000-000000000001",
     },
     "name": "updated course1",
-    "open_university_registration_links": Array [],
+    "open_university_registration_links": Array [
+      Object {
+        "course_code": "alias",
+        "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+        "language": "en_US",
+        "link": "avoin-link",
+      },
+    ],
     "order": null,
     "photo": Object {
       "compressed": StringContaining "webp",
@@ -838,7 +859,14 @@ Object {
   "id": Any<String>,
   "inherit_settings_from": null,
   "name": "course1",
-  "open_university_registration_links": Array [],
+  "open_university_registration_links": Array [
+    Object {
+      "course_code": "alias",
+      "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      "language": "en_US",
+      "link": "avoin-link",
+    },
+  ],
   "order": null,
   "photo": Object {
     "compressed": "webp",
@@ -908,7 +936,14 @@ Object {
   "id": Any<String>,
   "inherit_settings_from": null,
   "name": "course1",
-  "open_university_registration_links": Array [],
+  "open_university_registration_links": Array [
+    Object {
+      "course_code": "alias",
+      "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      "language": "en_US",
+      "link": "avoin-link",
+    },
+  ],
   "order": null,
   "photo": Object {
     "compressed": "webp",

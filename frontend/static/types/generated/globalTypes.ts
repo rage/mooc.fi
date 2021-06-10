@@ -74,6 +74,7 @@ export interface CourseCreateArg {
 export interface CourseTranslationCreateInput {
   course?: string | null
   description: string
+  instructions: string | null
   language: string
   link?: string | null
   name: string
