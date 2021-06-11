@@ -42,8 +42,8 @@ EXPOSE 80
 
 USER root
 # USER supervisor
-CMD ["supervisord", "-n"]
-# CMD ["sh", "./bin/run.sh"]
+# CMD ["supervisord", "-n"]
+CMD ["sh", "./bin/run.sh"]
 
 ARG GIT_COMMIT=""
 LABEL GIT_COMMIT=${GIT_COMMIT}
