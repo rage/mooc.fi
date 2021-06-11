@@ -2,13 +2,22 @@ FROM unicon/shibboleth-sp
 
 RUN yum -y update
 RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+RUN yum -y install nodejs npm mod_ssl
+RUN yum -y install epel-release
 RUN yum -y update
-RUN yum -y install nodejs npm mod_ssl supervisor
-# RUN useradd -ms /bin/bash node
-# COPY --chown=node . ./app
-COPY . /app
+RUN yum -y install supervisor
+RUN yum clean all
 
-RUN mkdir -p /var/log/supervisor
+RUN useradd -ms /bin/bash node 
+RUN useradd -G tty -U -ms /bin/bash supervisor
+
+COPY --chown=node . ./app
+# COPY . /app
+
+RUN mkdir -p /var/log/supervisor && chown -R supervisor:supervisor /var/log/supervisor/ 
+RUN mkdir -p /var/run/supervisor && chown -R supervisor:supervisor /var/run/supervisor/
+
+#&& chmod u=rwx,go=rx,a+s /var/log/myapplogs/
 COPY supervisord.conf /etc/supervisord/conf.d/supervisord.conf
 
 ### uncomment these if building locally
@@ -20,9 +29,7 @@ COPY supervisord.conf /etc/supervisord/conf.d/supervisord.conf
 # COPY shibboleth/ssl.conf /etc/httpd/conf.d/ssl.conf
 # COPY shibboleth/attribute-map.xml /etc/shibboleth/attribute-map.xml
 
-RUN node -v
-RUN npm -v
-# USER node
+USER node
 
 WORKDIR /app
 
@@ -33,7 +40,9 @@ ENV NODE_ENV=production
 
 EXPOSE 80
 
-CMD /usr/bin/supervisord
+USER root
+# USER supervisor
+CMD ["supervisord", "-n"]
 # CMD ["sh", "./bin/run.sh"]
 
 ARG GIT_COMMIT=""
