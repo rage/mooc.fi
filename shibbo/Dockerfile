@@ -3,11 +3,15 @@ FROM unicon/shibboleth-sp
 RUN yum -y update
 RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
 RUN yum -y update
-RUN yum -y install nodejs npm mod_ssl
+RUN yum -y install nodejs npm mod_ssl supervisor
 # RUN useradd -ms /bin/bash node
 # COPY --chown=node . ./app
 COPY . /app
 
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisord/conf.d/supervisord.conf
+
+### uncomment these if building locally
 # COPY shibboleth/shibboleth2.xml /etc/shibboleth/shibboleth2.xml
 # COPY shibboleth/shib.conf /etc/httpd/conf.d/shib.conf
 # COPY shibboleth/certs /etc/pki/tls/certs
@@ -27,9 +31,10 @@ RUN npm ci
 
 ENV NODE_ENV=production
 
-EXPOSE 80 443
+EXPOSE 80
 
-CMD ["sh", "./bin/run.sh"]
+CMD /usr/bin/supervisord
+# CMD ["sh", "./bin/run.sh"]
 
 ARG GIT_COMMIT=""
 LABEL GIT_COMMIT=${GIT_COMMIT}

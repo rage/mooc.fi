@@ -57,10 +57,6 @@ spec:
             backend:
               serviceName: shibbo-test
               servicePort: 80
-          - path: /Shibboleth.sso
-            backend:
-              serviceName: shibbo-test
-              servicePort: 443
           - path: /connect-hy/post-login
             backend:
               serviceName: shibbo-test
