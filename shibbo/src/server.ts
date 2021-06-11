@@ -63,9 +63,9 @@ app.get("/connect-hy/post-login", (req, res) => {
       organization_id: HY_ORGANIZATION_ID,
       organization_secret: HY_ORGANIZATION_SECRET,
     })
-    res.redirect(`${BACKEND_URL}/connection_success`)
+    res.redirect(`${BACKEND_URL}/connection/success`)
   } catch (error) {
-    res.redirect(`${BACKEND_URL}/connection_error`)
+    res.redirect(`${BACKEND_URL}/connection/error`)
   }
 })
 
