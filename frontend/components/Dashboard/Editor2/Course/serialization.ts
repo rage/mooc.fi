@@ -57,6 +57,7 @@ export const toCourseForm = ({
               link: open_university_course_link?.link ?? "",
               course_code: open_university_course_link?.course_code ?? "",
             },
+            instructions: c.instructions ?? undefined,
           }
         }),
         study_modules: modules?.reduce(

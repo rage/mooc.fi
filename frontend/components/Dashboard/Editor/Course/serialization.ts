@@ -49,6 +49,7 @@ export const toCourseForm = ({
           open_university_course_link: course?.open_university_registration_links?.find(
             (l) => l.language === c.language,
           ),
+          instructions: c.instructions ?? undefined,
         })),
         study_modules: modules?.reduce(
           (acc, module) => ({
