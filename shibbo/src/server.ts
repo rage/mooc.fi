@@ -9,6 +9,9 @@ const isProduction = process.env.NODE_ENV === "production"
 const API_URL = isProduction
   ? "https://www.mooc.fi/api"
   : "http://localhost:4000"
+const BACKEND_URL = isProduction
+  ? "https://www.mooc.fi"
+  : "http://localhost:4000"
 
 const app = express()
 
@@ -60,9 +63,9 @@ app.get("/connect-hy/post-login", (req, res) => {
       organization_id: HY_ORGANIZATION_ID,
       organization_secret: HY_ORGANIZATION_SECRET,
     })
-    res.redirect("https://www.mooc.fi/connection_success")
+    res.redirect(`${BACKEND_URL}/connection_success`)
   } catch (error) {
-    res.redirect("https://www.mooc.fi/connection_error")
+    res.redirect(`${BACKEND_URL}/connection_error`)
   }
 })
 
