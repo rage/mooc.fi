@@ -56,6 +56,7 @@ export interface AllEditorCourses_courses {
   status: CourseStatus | null
   hidden: boolean | null
   tier: number | null
+  instructions: string | null
   completions_handled_by: AllEditorCourses_courses_completions_handled_by | null
   start_date: string
   end_date: string | null

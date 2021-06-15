@@ -12,6 +12,8 @@ export interface CheckSlug_course {
   id: string
   slug: string
   name: string
+  description: string | null
+  instructions: string | null
 }
 
 export interface CheckSlug {

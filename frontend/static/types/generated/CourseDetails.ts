@@ -24,6 +24,7 @@ export interface CourseDetails_course_course_translations {
   name: string
   language: string
   description: string
+  instructions: string | null
   link: string | null
 }
 
