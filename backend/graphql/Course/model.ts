@@ -56,6 +56,7 @@ export const Course = objectType({
     t.model.handles_completions_for()
 
     t.string("description")
+    t.string("instructions")
     t.string("link")
 
     t.list.field("completions", {

@@ -7,10 +7,16 @@ import {
   completions,
   services,
   userCourseSettings,
+  abStudies,
+  abEnrollments,
   exercises,
   exerciseCompletions,
   userCourseProgresses,
   userCourseServiceProgresses,
+  emailTemplateThresholds,
+  completionsRegistered,
+  courseAliases,
+  openUniversityRegistrationLink,
 } from "."
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
@@ -39,6 +45,8 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseSetting",
     userCourseSettings,
   )
+  const seededAbStudies = await create("abStudy", abStudies)
+  const seededAbEnrollments = await create("abEnrollment", abEnrollments)
   const seededExercises = await create("exercise", exercises)
   const seededExerciseCompletions = await create(
     "exerciseCompletion",
@@ -52,6 +60,19 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseServiceProgress",
     userCourseServiceProgresses,
   )
+  const seededEmailThresholdtemplates = await create(
+    "emailTemplate",
+    emailTemplateThresholds,
+  )
+  const seededCompletionsRegistered = await create(
+    "completionRegistered",
+    completionsRegistered,
+  )
+  const seededCourseAliases = await create("courseAlias", courseAliases)
+  const seededOpenUniversityRegistrationLink = await create(
+    "openUniversityRegistrationLink",
+    openUniversityRegistrationLink,
+  )
 
   return {
     courses: seededCourses,
@@ -61,9 +82,15 @@ export const seed = async (prisma: PrismaClient) => {
     completions: seededCompletions,
     services: seededServices,
     userCourseSettings: seededUserCourseSettings,
+    abStudies: seededAbStudies,
+    abEnrollments: seededAbEnrollments,
     exercises: seededExercises,
     exerciseCompletions: seededExerciseCompletions,
     userCourseProgresses: seededUserCourseProgresses,
     userCourseServiceProgresses: seededUserCourseServiceProgresses,
+    emailTemplates: seededEmailThresholdtemplates,
+    completionsRegistered: seededCompletionsRegistered,
+    courseAliases: seededCourseAliases,
+    openUniversityRegistrationLink: seededOpenUniversityRegistrationLink,
   }
 }

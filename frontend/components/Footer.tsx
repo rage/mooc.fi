@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/styles"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from "@emotion/styled"
 import {

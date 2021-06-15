@@ -81,6 +81,14 @@ export default function CourseTranslationForm() {
                 revertable
               />
               <ControlledTextField
+                name={`course_translations.${index}.instructions`}
+                label={t("courseInstructions")}
+                defaultValue={item.instructions}
+                type="textarea"
+                rows={5}
+                revertable
+              />
+              <ControlledTextField
                 name={`course_translations.${index}.link`}
                 label={t("courseLink")}
                 defaultValue={item.link}

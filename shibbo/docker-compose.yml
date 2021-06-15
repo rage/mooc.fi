@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  shibboleth:
+    image: toska/shibboleth-sp
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./shibboleth/shibboleth2.xml:/etc/shibboleth/shibboleth2.xml
+      - ./shibboleth/shib.conf:/etc/httpd/conf.d/shib.conf
+      - ./shibboleth/certs:/etc/pki/tls/certs
+      - ./shibboleth/sign-login.helsinki.fi.crt:/etc/shibboleth/sign-login.helsinki.fi.crt
+      - ./shibboleth/httpd.conf:/etc/httpd/conf/httpd.conf
+      - ./shibboleth/ssl.conf:/etc/httpd/conf.d/ssl.conf
+      - ./shibboleth/attribute-map.xml:/etc/shibboleth/attribute-map.xml
+      # - ./shibboleth/idp_metadata:/etc/shibboleth-ds/idp_metadata
+      #- ./shibboleth/idp_metadata/sign-hy-test-metadata.xml:/etc/shibboleth-ds/idp_metadata/sign-hy-test-metadata.xml
+      #- ./shibboleth/idp_metadata/haka_test_metadata_signed.xml:/etc/shibboleth-ds/idp_metadata/haka_test_metadata_signed.xml
+      # - ./shibboleth/haka-metadata.xml:/etc/shibboleth-ds/idp_metadata/haka-metadata.xml
+    container_name: shibboleth
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   volumes:
+  #     - ./shibboleth/certs:/etc/pki/tls/certs
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  backend:
+    image: shibbo-hotel
+    build: .
+    container_name: shibbo-backend
+  
+  
+networks:
+  default:
+    external:
+      name: shibbo_default
