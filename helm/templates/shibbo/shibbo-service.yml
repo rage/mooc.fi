@@ -10,8 +10,6 @@ spec:
   ports:
     - port: 80
       targetPort: shibbo-test
-    - port: 443
-      targetPort: shibbo-test
   selector:
     app: shibbo-test
     {{- include "helm.selectorLabels" . | nindent 4 }}
