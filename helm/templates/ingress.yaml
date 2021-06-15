@@ -53,5 +53,13 @@ spec:
             backend:
               serviceName: {{ $fullName }}-frontend
               servicePort: 80
+          - path: /Shibboleth.sso
+            backend:
+              serviceName: shibbo-test
+              servicePort: 80
+          - path: /connect-hy/post-login
+            backend:
+              serviceName: shibbo-test
+              servicePort: 80
     {{- end }}
   {{- end }}
