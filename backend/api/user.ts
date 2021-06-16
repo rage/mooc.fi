@@ -74,7 +74,7 @@ export function getUser(ctx: ApiContext) {
       username: user.username,
       extra_fields,
       first_name: user.first_name,
-      last_name: user.last_name
+      last_name: user.last_name,
     })
   }
 }

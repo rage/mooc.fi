@@ -44,5 +44,5 @@ export function apiRouter(ctx: ApiContext) {
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
     .use("/ab-studies", abStudiesRouter(ctx))
     .use("/ab-enrollment", abEnrollmentRouter(ctx))
-    .get("/user/:course_id", getUser(ctx))
+    .get("/getUser/:course_id", getUser(ctx))
 }

@@ -1,8 +1,8 @@
 import { ApiContext } from "."
 import { authenticateUser } from "../services/tmc"
 import { User, Client, AuthorizationCode, AccessToken } from "@prisma/client"
-import { argon2Hash } from '../util/hashPassword'
-import { throttle } from '../util/throttle'
+import { argon2Hash } from "../util/hashPassword"
+import { throttle } from "../util/throttle"
 
 const fs = require("fs")
 const privateKey = fs.readFileSync(
@@ -19,7 +19,7 @@ async function issueToken(user: any, client: any, { knex }: ApiContext) {
   let nonce = crypto.randomBytes(16).toString("hex")
   let jwtid = crypto.randomBytes(64).toString("hex")
   let subject = Buffer.from(user?.email || client?.name || "mooc.fi").toString(
-    "base64"
+    "base64",
   )
 
   let token = await jwt.sign(
@@ -85,7 +85,11 @@ async function grantAuthorizationCode(
   }
 }
 
-async function exchangeImplicit(iss: string, login_hint: string, target_link_uri: string) {
+async function exchangeImplicit(
+  iss: string,
+  login_hint: string,
+  target_link_uri: string,
+) {
   let nonce = crypto.randomBytes(16).toString("hex")
   let jwtid = crypto.randomBytes(64).toString("hex")
   let subject = Buffer.from("mooc.fi").toString("base64")
@@ -94,29 +98,27 @@ async function exchangeImplicit(iss: string, login_hint: string, target_link_uri
     {
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
       maxAge: 365 * 24 * 60 * 60 * 1000,
-      id: 'implicit_token',
+      id: "implicit_token",
       nonce,
       jwtid,
       login_hint,
-      target_link_uri
+      target_link_uri,
     },
     privateKey,
     {
       algorithm: "RS256",
       iss: iss,
       subject,
-      audience: "mooc.fi"
-    }
+      audience: "mooc.fi",
+    },
   )
-
 
   await knex("access_tokens").insert({
     access_token: token,
     valid: true,
     iss,
-    nonce
+    nonce,
   })
-
 
   return {
     status: 200,
@@ -234,11 +236,7 @@ export function token(ctx: ApiContext) {
 
     switch (grantType) {
       case "password":
-        result = await exchangePassword(
-          req.body.email,
-          req.body.password,
-          ctx,
-        )
+        result = await exchangePassword(req.body.email, req.body.password, ctx)
 
         if (!result.success) {
           return res.status(result.status).json({
@@ -318,7 +316,7 @@ export function implicitToken() {
       return res.status(401).json({
         status: 401,
         success: false,
-        message: "Missing iss parameter"
+        message: "Missing iss parameter",
       })
     }
 
@@ -326,7 +324,7 @@ export function implicitToken() {
       return res.status(401).json({
         status: 401,
         success: false,
-        message: "Missing login_hint parameter"
+        message: "Missing login_hint parameter",
       })
     }
 
@@ -334,7 +332,7 @@ export function implicitToken() {
       return res.status(401).json({
         status: 401,
         success: false,
-        message: "Missing target_link_uri parameter"
+        message: "Missing target_link_uri parameter",
       })
     }
 
@@ -400,7 +398,6 @@ export async function signIn(
   }
 
   if (user && user.password) {
-
     if ((await argon2.verify(user.password, password)) && tmcToken.success) {
       let accessToken = await issueToken(user, client, ctx)
 
