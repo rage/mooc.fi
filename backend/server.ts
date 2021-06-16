@@ -16,6 +16,12 @@ const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const crypto = require("crypto")
+const rateLimit = require("express-rate-limit")
+
+const apiLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+})
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -56,7 +62,7 @@ const createExpressAppWithContext = ({
   }
   app.use(express.json())
   app.use("/api", apiRouter({ prisma, knex, logger }))
-  app.use("/auth", authRouter({ prisma, knex, logger }))
+  app.use("/auth", apiLimit, authRouter({ prisma, knex, logger }))
 
   return app
 }

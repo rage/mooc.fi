@@ -8,13 +8,13 @@ const publicKey = fs.readFileSync(
 const jwt = require("jsonwebtoken")
 
 export function validateEmail(value: string): value is string {
-  const mailRegex = /[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+  const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
   return mailRegex.test(value)
 }
 
 export function validatePassword(value: string): value is string {
-  const passwordRegex = /^[A-Za-z]\w{6,64}$/
+  const passwordRegex = /^\S*$/
 
   return passwordRegex.test(value)
 }
