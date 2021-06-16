@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<any> {
         created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
         updated_at timestamp(3) without time zone,
         name text NOT NULL,
-        client_id text NOT NULL,
+        client_id text UNIQUE NOT NULL,
         client_secret text NOT NULL,
         redirect_uri text,
         scopes text,

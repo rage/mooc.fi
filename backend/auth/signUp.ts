@@ -2,14 +2,13 @@ import { ApiContext } from "."
 import { createUser, getCurrentUserDetails, updateUser } from "../services/tmc"
 import { signIn } from "./token"
 import { validateEmail, validatePassword } from "../util/validateAuth"
+import { argon2Hash } from "../util/hashPassword"
 import { User } from "@prisma/client"
 
-const argon2 = require("argon2")
 const crypto = require("crypto")
 
 export function signUp(ctx: ApiContext) {
   return async (req: any, res: any) => {
-    const ipAddress = req.connection.remoteAddress
 
     let result = <any>(
       await _signUp(
@@ -32,7 +31,7 @@ export function signUp(ctx: ApiContext) {
       }
 
       const auth = await (<any>(
-        signIn(req.body.email, req.body.password, ipAddress, ctx)
+        signIn(req.body.email, req.body.password, ctx)
       ))
       if (result.data) {
         await updateUser(result.data.id, user, auth.tmc_token)
@@ -107,12 +106,7 @@ async function _signUp(
 
   const userDetails = await getCurrentUserDetails(accessToken.token)
 
-  const hashPassword = await argon2.hash(password, {
-    type: argon2.argon2id,
-    timeCost: 4,
-    memoryCost: 15360,
-    hashLength: 64,
-  })
+  const hashPassword = await argon2Hash(password)
 
   let user = (
     await knex

@@ -1,6 +1,8 @@
 import { ApiContext } from "."
 import { authenticateUser } from "../services/tmc"
 import { User, Client, AuthorizationCode, AccessToken } from "@prisma/client"
+import { argon2Hash } from '../util/hashPassword'
+import { throttle } from '../util/throttle'
 
 const fs = require("fs")
 const privateKey = fs.readFileSync(
@@ -10,7 +12,6 @@ const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")
 
-const RATE_LIMIT = 50
 const AUTH_ISSUER = "https://mooc.fi/auth/token"
 const NATIVE_ID = "native"
 
@@ -127,10 +128,9 @@ async function exchangeImplicit(iss: string, login_hint: string, target_link_uri
 async function exchangePassword(
   email: string,
   password: string,
-  ipAddress: string,
   ctx: ApiContext,
 ) {
-  return await signIn(email, password, ipAddress, ctx)
+  return await signIn(email, password, ctx)
 }
 
 async function exchangeAuthorizationCode(
@@ -229,7 +229,6 @@ export function token(ctx: ApiContext) {
   return async (req: any, res: any) => {
     const grantType = req.body.grant_type
     const response_type = req.body.response_type
-    const ipAddress = req.connection.remoteAddress
 
     let result = <any>{}
 
@@ -238,7 +237,6 @@ export function token(ctx: ApiContext) {
         result = await exchangePassword(
           req.body.email,
           req.body.password,
-          ipAddress,
           ctx,
         )
 
@@ -362,7 +360,6 @@ export function implicitToken() {
 export async function signIn(
   emailRaw: string,
   passwordRaw: string,
-  ipAddress: string,
   ctx: ApiContext,
 ) {
   let email = emailRaw.trim()
@@ -383,8 +380,6 @@ export async function signIn(
 
   const tmcToken = await authenticateUser(email, password)
 
-  let throttleBreak = <boolean>false
-  let throttleData = {}
   let client = (
     await ctx.knex
       .select<any, Client[]>("id", "client_id", "name")
@@ -407,43 +402,6 @@ export async function signIn(
   }
 
   if (user && user.password) {
-    if (user.password_throttle) {
-      let passwordThrottle = user.password_throttle || <any>[]
-      passwordThrottle.forEach((throttle: any) => {
-        if (throttle.ip === ipAddress) {
-          if (throttle.currentRate >= RATE_LIMIT) {
-            let renewStamp = <any>new Date().getDate()
-            let diffTime = Math.ceil(
-              Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-              (1000 * 60 * 60 * 24),
-            )
-
-            if (diffTime >= 1) {
-              throttle.currentRate = 0
-              throttle.limitStamp = null
-
-              ctx
-                .knex("user")
-                .update({ password_throttle: JSON.stringify(passwordThrottle) })
-                .where("email", email)
-            } else {
-              throttleBreak = true
-              throttleData = {
-                status: 403,
-                success: false,
-                message:
-                  "You have made too many sign in attempts. Please try again in 24 hours.",
-              }
-              return
-            }
-          }
-        }
-      })
-
-      if (throttleBreak === true) {
-        return throttleData
-      }
-    }
 
     if ((await argon2.verify(user.password, password)) && tmcToken.success) {
       let accessToken = await issueToken(user, client, ctx)
@@ -454,16 +412,16 @@ export async function signIn(
         tmc_token: tmcToken.token,
         access_token: accessToken,
       }
+    } else {
+      let throttleData = await throttle(user, ctx)
+      if (!throttleData.success) {
+        return throttleData
+      }
     }
   }
 
   if (tmcToken.success) {
-    const hashPassword = await argon2.hash(password, {
-      type: argon2.argon2id,
-      timeCost: 4,
-      memoryCost: 15360,
-      hashLength: 64,
-    })
+    const hashPassword = await argon2Hash(password)
 
     await ctx
       .knex("user")
@@ -480,44 +438,8 @@ export async function signIn(
     }
   } else {
     if (user) {
-      let updateThrottle = user.password_throttle || <any>[]
-      if (updateThrottle.length === 0) {
-        updateThrottle = [{ currentRate: 0, limitStamp: null, ip: ipAddress }]
-      }
-
-      updateThrottle.forEach((throttle: any) => {
-        if (throttle.ip === ipAddress) {
-          throttle.currentRate++
-          if (throttle.currentRate >= RATE_LIMIT) {
-            throttle.limitStamp = new Date()
-
-            throttleBreak = true
-            throttleData = {
-              status: 403,
-              success: false,
-              message:
-                "You have made too many sign in attempts. Please try again in 24 hours.",
-            }
-            return
-          }
-
-          throttleBreak = true
-          throttleData = {
-            status: 403,
-            success: false,
-            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
-              } attempts left.`,
-          }
-          return
-        }
-      })
-
-      await ctx
-        .knex("user")
-        .update({ password_throttle: JSON.stringify(updateThrottle) })
-        .where("email", email)
-
-      if (throttleBreak === true) {
+      let throttleData = await throttle(user, ctx)
+      if (!throttleData.success) {
         return throttleData
       }
     }

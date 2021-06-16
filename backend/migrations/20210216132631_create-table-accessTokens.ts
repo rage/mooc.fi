@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<any> {
         updated_at timestamp(3) without time zone,
         access_token text NOT NULL,
         client_id text NOT NULL,
-        user_id text,
+        "user" uuid,
         valid boolean DEFAULT TRUE
     );`)
 }
