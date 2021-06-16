@@ -310,13 +310,11 @@ export function token(ctx: ApiContext) {
 
 export function implicitToken() {
   return async (req: any, res: any) => {
-    console.log(req)
-    console.log(req.query)
-    console.log(req.body)
-    console.log(req.params)
-    console.log(req.headers)
+    const iss = req.query.iss
+    const login_hint = req.query.login_hint
+    const target_link_uri = req.query.target_link_uri
 
-    if (!req.query.iss) {
+    if (!iss) {
       return res.status(401).json({
         status: 401,
         success: false,
@@ -324,7 +322,7 @@ export function implicitToken() {
       })
     }
 
-    if (!req.query.login_hint) {
+    if (!login_hint) {
       return res.status(401).json({
         status: 401,
         success: false,
@@ -332,7 +330,7 @@ export function implicitToken() {
       })
     }
 
-    if (!req.query.target_link_uri) {
+    if (!target_link_uri) {
       return res.status(401).json({
         status: 401,
         success: false,
@@ -340,7 +338,7 @@ export function implicitToken() {
       })
     }
 
-    let result = await exchangeImplicit()
+    let result = await exchangeImplicit(iss, login_hint, target_link_uri)
 
     if (!result.success) {
       return res.status(result.status).json({
