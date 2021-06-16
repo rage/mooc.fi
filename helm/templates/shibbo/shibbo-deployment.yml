@@ -36,17 +36,21 @@ spec:
           image: "{{ .Values.image.repository }}/shibbo-test:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
-            - name: shibbo-test
+            - name: http
               containerPort: 80
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          livenessProbe:
+            httpGet:
+              path: /Shibboleth.sso/Metadata
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /Shibboleth.sso/Metadata
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
           volumeMounts:
             - name: shibboleth-configs
               mountPath: "/app/shibboleth"
