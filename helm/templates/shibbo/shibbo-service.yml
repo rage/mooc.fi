@@ -9,7 +9,7 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      targetPort: shibbo-test
+      targetPort: http
   selector:
     app: shibbo-test
     {{- include "helm.selectorLabels" . | nindent 4 }}
