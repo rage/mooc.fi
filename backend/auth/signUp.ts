@@ -9,7 +9,6 @@ const crypto = require("crypto")
 
 export function signUp(ctx: ApiContext) {
   return async (req: any, res: any) => {
-
     let result = <any>(
       await _signUp(
         req.body.email,
@@ -30,9 +29,7 @@ export function signUp(ctx: ApiContext) {
         },
       }
 
-      const auth = await (<any>(
-        signIn(req.body.email, req.body.password, ctx)
-      ))
+      const auth = await (<any>signIn(req.body.email, req.body.password, ctx))
       if (result.data) {
         await updateUser(result.data.id, user, auth.tmc_token)
       }

@@ -677,8 +677,8 @@ describe("server", () => {
       authorization: `Bearer ${token}`,
     }
 
-    const getUser = get(`/api/user/${course}`, defaultHeaders)
-    const getUserNonToken = get(`/api/user/${course}`, {})
+    const getUser = get(`/api/getUser/${course}`, defaultHeaders)
+    const getUserNonToken = get(`/api/getUser/${course}`, {})
 
     it("error get user on invalid token", async () => {
       return getUserNonToken({})
