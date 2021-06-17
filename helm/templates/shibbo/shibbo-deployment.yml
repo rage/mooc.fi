@@ -82,6 +82,8 @@ spec:
                 path: sign-login.helsinki.fi.crt
               - key: ssl.conf
                 path: ssl.conf
+              - key: shibd.logger
+                path: shibd.logger
               - key: mooc.fi.key
                 path: certs/mooc.fi.key
               - key: mooc.fi.crt
