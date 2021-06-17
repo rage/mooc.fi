@@ -123,6 +123,14 @@ export function completionTiers({ knex }: ApiContext) {
       await knex.select<any, Course[]>("id").from("course").where("slug", id)
     )[0]
 
+    const completion = (
+      await knex
+        .select<any, Completion[]>("tier")
+        .from("completion")
+        .where("course_id", course.id)
+        .andWhere("user_id", user.id)
+    )?.[0]
+
     const tiers = (
       await knex
         .select<any, OpenUniversityRegistrationLink[]>("tiers")
@@ -134,15 +142,7 @@ export function completionTiers({ knex }: ApiContext) {
       let t: any = tiers
 
       for (let i = 0; i < t.length; i++) {
-        let completionCheck = (
-          await knex
-            .select<any, Completion[]>("*")
-            .from("completion")
-            .where("course_id", t[i].course_id)
-            .andWhere("user_id", user.id)
-        )?.[0]
-
-        if (completionCheck) {
+        if (t[i].tier === completion.tier) {
           let tierRegister = (
             await knex
               .select<any, OpenUniversityRegistrationLink[]>("link")
@@ -151,14 +151,9 @@ export function completionTiers({ knex }: ApiContext) {
           )?.[0]
 
           tierData.push({ name: t[i].name, link: tierRegister.link })
-        }
 
-        if (t[i].adjacent) {
-          for (let j = 0; j < t[i].adjacent.length; j++) {
-            const exists = t.find(
-              (data: any) => data.course_id === t[i].adjacent[j].course_id,
-            )
-            if (!exists) {
+          if (t[i].adjacent) {
+            for (let j = 0; j < t[i].adjacent.length; j++) {
               let adjRegister = (
                 await knex
                   .select<any, OpenUniversityRegistrationLink[]>("link")
@@ -174,8 +169,8 @@ export function completionTiers({ knex }: ApiContext) {
           }
         }
       }
-    }
 
-    return res.status(200).json({ tierData })
+      return res.status(200).json({ tierData })
+    }
   }
 }
