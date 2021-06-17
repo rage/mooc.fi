@@ -12,5 +12,6 @@ if [[ "$NODE_ENV" == "production" ]]; then
   cp $CURRENT_DIR/../shibboleth/httpd.conf /etc/httpd/conf/httpd.conf
   cp $CURRENT_DIR/../shibboleth/ssl.conf /etc/httpd/conf.d/ssl.conf
   cp $CURRENT_DIR/../shibboleth/attribute-map.xml /etc/shibboleth/attribute-map.xml
+  cp $CURRENT_DIR/../shibboleth/shibd.logger /etc/shibboleth/shibd.logger
   echo "Configuration copied!"
 fi
