@@ -578,15 +578,18 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     link: "avoin-link",
     tiers: [
       {
+        tier: 2,
         name: "intermediate tier",
         course_id: "00000000000000000000000000000001",
         adjacent: [],
       },
       {
+        tier: 3,
         name: "advanced tier",
         course_id: "00000000000000000000000000000666",
         adjacent: [
           {
+            tier: 2,
             name: "intermediate tier",
             course_id: "00000000000000000000000000000001",
           },
