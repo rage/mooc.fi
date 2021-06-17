@@ -130,12 +130,6 @@ export function completionTiers({ knex }: ApiContext) {
         .where("course_id", course.id)
         .andWhere("user_id", user.id)
     )?.[0]
-    if (!completion) {
-      return res.status(404).json({
-        success: false,
-        message: "Completion not found",
-      })
-    }
 
     const tiers = (
       await knex
