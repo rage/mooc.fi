@@ -54,7 +54,6 @@ spec:
               serviceName: {{ $fullName }}-frontend
               servicePort: 80
           - path: /Shibboleth.sso
-            pathType: Prefix
             backend:
               serviceName: shibbo-test
               servicePort: 80

@@ -28,6 +28,7 @@ COPY supervisord.conf /etc/supervisord/conf.d/supervisord.conf
 # COPY shibboleth/httpd.conf /etc/httpd/conf/httpd.conf
 # COPY shibboleth/ssl.conf /etc/httpd/conf.d/ssl.conf
 # COPY shibboleth/attribute-map.xml /etc/shibboleth/attribute-map.xml
+# COPY shibboleth/shibd.logger /etc/shibboleth/shibd.logger
 
 USER node
 
