@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<any> {
         access_token text NOT NULL,
         client_id text NOT NULL,
         valid boolean DEFAULT TRUE,
-        user_id uuid REFERENCES "user"(id)
+        user_id uuid REFERENCES "user"(id) ON DELETE SET NULL
     );`)
 }
 
