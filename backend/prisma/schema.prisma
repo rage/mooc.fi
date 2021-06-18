@@ -518,7 +518,6 @@ model AuthorizationCode {
   client_id                                String
   redirect_uri                             String
   user_id                                  String? 
-  user                                     User?        @relation(fields: [user_id], references: [id])  
   code                                     String
   trusted                                  Boolean
 
@@ -546,7 +545,6 @@ model AccessToken {
   access_token                             String
   client_id                                String
   user_id                                  String? 
-  user                                     User?        @relation(fields: [user_id], references: [id])  
   valid                                    Boolean      @default(true)
 
   @@map("access_tokens")

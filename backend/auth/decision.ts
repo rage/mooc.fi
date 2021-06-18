@@ -34,7 +34,7 @@ export function decision(ctx: ApiContext) {
     await ctx
       .knex("authorization_codes")
       .where("code", code)
-      .update({ user_id: auth.id })
+      .update({ user_id: authorizationCode.user_id })
 
     return res.status(200).json({
       status: 200,
