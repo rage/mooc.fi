@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<any> {
         redirect_uri text NOT NULL,
         code text NOT NULL,
         trusted boolean DEFAULT false,
-        user_id uuid REFERENCES "user"(id)
+        user_id uuid REFERENCES "user"(id) ON DELETE SET NULL
     );`)
 }
 
