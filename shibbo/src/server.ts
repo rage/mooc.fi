@@ -43,7 +43,7 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-app.get("/", (req, res) => {
+app.get("/hy-post-login", (req, res) => {
   const { schacpersonaluniquecode, displayname, authorization } = req.headers
 
   if (!authorization) {
