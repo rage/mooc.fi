@@ -39,18 +39,18 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /Shibboleth.sso/Metadata
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /Shibboleth.sso/Metadata
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /Shibboleth.sso/Metadata
+          #     port: http
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /Shibboleth.sso/Metadata
+          #     port: http
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
           volumeMounts:
             - name: shibboleth-configs
               mountPath: "/app/shibboleth"
