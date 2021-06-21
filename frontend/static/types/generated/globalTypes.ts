@@ -74,6 +74,7 @@ export interface CourseCreateArg {
 export interface CourseTranslationCreateInput {
   course?: string | null
   description: string
+  instructions?: string | null
   language: string
   link?: string | null
   name: string
@@ -83,6 +84,7 @@ export interface CourseTranslationUpsertInput {
   course?: string | null
   description: string
   id?: string | null
+  instructions?: string | null
   language: string
   link?: string | null
   name: string
@@ -135,6 +137,7 @@ export interface CourseUpsertArg {
 export interface CourseVariantCreateInput {
   course?: string | null
   description?: string | null
+  instructions?: string | null
   slug: string
 }
 
@@ -142,6 +145,7 @@ export interface CourseVariantUpsertInput {
   course?: string | null
   description?: string | null
   id?: string | null
+  instructions?: string | null
   slug: string
 }
 
@@ -158,6 +162,7 @@ export interface OpenUniversityRegistrationLinkCreateInput {
   link?: string | null
   start_date?: any | null
   stop_date?: any | null
+  tiers?: any | null
 }
 
 export interface OpenUniversityRegistrationLinkUpsertInput {
@@ -167,6 +172,7 @@ export interface OpenUniversityRegistrationLinkUpsertInput {
   link?: string | null
   start_date?: any | null
   stop_date?: any | null
+  tiers?: any | null
 }
 
 export interface StudyModuleCreateArg {

@@ -21,6 +21,16 @@ export const OpenUniversityRegistrationLink = objectType({
     t.model.link()
     t.model.start_date()
     t.model.stop_date()
+    t.nullable.field("tiers", {
+      type: "Json",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.prisma.openUniversityRegistrationLink.findUnique({
+          where: { id: parent.id },
+          select: { tiers: true },
+        })
+        return (res?.tiers as any) || []
+      },
+    })
   },
 })
 
@@ -30,6 +40,7 @@ export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
     t.nonNull.string("course_code")
     t.nonNull.string("language")
     t.nullable.string("link")
+    t.nullable.field("tiers", { type: "Json" })
     t.field("start_date", { type: "DateTime" })
     t.field("stop_date", { type: "DateTime" })
   },
@@ -42,6 +53,7 @@ export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
     t.nonNull.string("course_code")
     t.nonNull.string("language")
     t.nullable.string("link")
+    t.nullable.field("tiers", { type: "Json" })
     t.field("start_date", { type: "DateTime" })
     t.field("stop_date", { type: "DateTime" })
   },
