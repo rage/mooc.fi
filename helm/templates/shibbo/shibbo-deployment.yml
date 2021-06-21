@@ -43,14 +43,14 @@ spec:
           #   httpGet:
           #     path: /Shibboleth.sso/Metadata
           #     port: http
-          #   initialDelaySeconds: 10
+          #   initialDelaySeconds: 60
           #   periodSeconds: 10
           # readinessProbe:
           #   httpGet:
           #     path: /Shibboleth.sso/Metadata
           #     port: http
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 10
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 5
           volumeMounts:
             - name: shibboleth-configs
               mountPath: "/app/shibboleth"
