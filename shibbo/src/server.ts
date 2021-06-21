@@ -43,8 +43,10 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-app.get("/hy-post-login", (req, res) => {
+app.get("/post-login", (req, res) => {
   const { schacpersonaluniquecode, displayname, authorization } = req.headers
+
+  console.log(JSON.stringify(req.headers, null, 2))
 
   if (!authorization) {
     res.json({ error: "You're not authorized to do this" })
