@@ -54,6 +54,7 @@ export interface CourseTranslationFormValues extends FormValues {
   language: string
   name: string
   description: string
+  instructions?: string
   link?: string | null
   course?: string
   // open_university_course_code?: string
@@ -72,6 +73,7 @@ export interface CourseVariantFormValues extends FormValues {
   id?: string
   slug: string
   description?: string
+  instructions?: string
   course?: string
 }
 

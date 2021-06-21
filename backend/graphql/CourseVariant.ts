@@ -27,6 +27,7 @@ export const CourseVariantCreateInput = inputObjectType({
     t.nullable.id("course")
     t.nonNull.string("slug")
     t.nullable.string("description")
+    t.nullable.string("instructions")
   },
 })
 
@@ -37,6 +38,7 @@ export const CourseVariantUpsertInput = inputObjectType({
     t.nullable.id("course")
     t.nonNull.string("slug")
     t.nullable.string("description")
+    t.nullable.string("instructions")
   },
 })
 

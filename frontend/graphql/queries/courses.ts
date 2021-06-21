@@ -59,6 +59,7 @@ export const AllEditorCoursesQuery = gql`
       status
       hidden
       tier
+      instructions
       completions_handled_by {
         id
       }
@@ -105,6 +106,8 @@ export const CheckSlugQuery = gql`
       id
       slug
       name
+      description
+      instructions
     }
   }
 `
@@ -185,6 +188,7 @@ export const CourseQuery = gql`
         name
         language
         description
+        instructions
         link
       }
       open_university_registration_links {
