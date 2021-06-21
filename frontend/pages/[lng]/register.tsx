@@ -314,8 +314,12 @@ function useRegisterOrganization(searchFilter: string) {
 
 const Register = () => {
   const t = useTranslator(RegistrationTranslations)
-  const { searchFilter, cancelFilterDebounce, searchBox, setSearchBox } =
-    useSearchBox()
+  const {
+    searchFilter,
+    cancelFilterDebounce,
+    searchBox,
+    setSearchBox,
+  } = useSearchBox()
   const {
     error,
     loading,
@@ -364,11 +368,9 @@ const Register = () => {
           {loading || !Object.keys(organizations).length ? (
             range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
           ) : Object.keys(filteredOrganizations).length ? (
-            (
-              Object.entries(filteredOrganizations) as Array<
-                [string, Organizations_organizations]
-              >
-            ).map(([id, organization]) => (
+            (Object.entries(filteredOrganizations) as Array<
+              [string, Organizations_organizations]
+            >).map(([id, organization]) => (
               <OrganizationCard
                 key={`card-${id}`}
                 name={organization!.organization_translations![0].name}

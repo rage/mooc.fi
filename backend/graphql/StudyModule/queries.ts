@@ -49,13 +49,14 @@ export const StudyModuleQueries = extendType({
         }
 
         if (language) {
-          const module_translation =
-            await ctx.prisma.studyModuleTranslation.findFirst({
+          const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
+            {
               where: {
                 study_module_id: study_module.id,
                 language,
               },
-            })
+            },
+          )
 
           if (!module_translation) {
             if (!translationFallback) {

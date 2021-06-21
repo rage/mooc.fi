@@ -160,13 +160,16 @@ describe("calculates tier progress correctly", () => {
 
 describe("gets the rules right", () => {
   test("not enough points", () => {
-    const { hasEnoughPoints, hasEnoughExerciseCompletions, hasBasicRule } =
-      getRules({
-        totalExerciseCompletions: 10,
-        n_points: 6,
-        points_needed: 7,
-        exercise_completions_needed: 6,
-      })
+    const {
+      hasEnoughPoints,
+      hasEnoughExerciseCompletions,
+      hasBasicRule,
+    } = getRules({
+      totalExerciseCompletions: 10,
+      n_points: 6,
+      points_needed: 7,
+      exercise_completions_needed: 6,
+    })
 
     expect(hasEnoughPoints).toBe(false)
     expect(hasEnoughExerciseCompletions).toBe(true)
@@ -174,13 +177,16 @@ describe("gets the rules right", () => {
   })
 
   test("not enough exercise completions", () => {
-    const { hasEnoughPoints, hasEnoughExerciseCompletions, hasBasicRule } =
-      getRules({
-        totalExerciseCompletions: 6,
-        n_points: 10,
-        points_needed: 10,
-        exercise_completions_needed: 10,
-      })
+    const {
+      hasEnoughPoints,
+      hasEnoughExerciseCompletions,
+      hasBasicRule,
+    } = getRules({
+      totalExerciseCompletions: 6,
+      n_points: 10,
+      points_needed: 10,
+      exercise_completions_needed: 10,
+    })
 
     expect(hasEnoughPoints).toBe(true)
     expect(hasEnoughExerciseCompletions).toBe(false)
@@ -188,13 +194,16 @@ describe("gets the rules right", () => {
   })
 
   test("hunky dory", () => {
-    const { hasEnoughPoints, hasEnoughExerciseCompletions, hasBasicRule } =
-      getRules({
-        totalExerciseCompletions: 20,
-        n_points: 15,
-        points_needed: 10,
-        exercise_completions_needed: 20,
-      })
+    const {
+      hasEnoughPoints,
+      hasEnoughExerciseCompletions,
+      hasBasicRule,
+    } = getRules({
+      totalExerciseCompletions: 20,
+      n_points: 15,
+      points_needed: 10,
+      exercise_completions_needed: 20,
+    })
 
     expect(hasEnoughPoints).toBe(true)
     expect(hasEnoughExerciseCompletions).toBe(true)

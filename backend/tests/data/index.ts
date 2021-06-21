@@ -473,17 +473,16 @@ export const userCourseProgresses: Prisma.UserCourseProgressCreateInput[] = [
   },
 ]
 
-export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreateInput[] =
-  [
-    {
-      course: { connect: { id: "00000000000000000000000000000002" } },
-      user: { connect: { id: "20000000000000000000000000000104" } },
-      service: {
-        connect: { id: "40000000-0000-0000-0000-000000000102" },
-      },
-      progress: [{ group: "week1", max_points: 3, n_points: 3 }],
+export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreateInput[] = [
+  {
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    service: {
+      connect: { id: "40000000-0000-0000-0000-000000000102" },
     },
-  ]
+    progress: [{ group: "week1", max_points: 3, n_points: 3 }],
+  },
+]
 
 export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
   {

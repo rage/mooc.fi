@@ -32,15 +32,21 @@ function stripId<T>(data: T): T {
 const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
 
-  const [clonedCourse, setClonedCourse] =
-    useState<CourseDetails_course | undefined>(undefined)
+  const [clonedCourse, setClonedCourse] = useState<
+    CourseDetails_course | undefined
+  >(undefined)
   const clone = useQueryParameter("clone", false)
   const beta = useQueryParameter("beta", false)
 
-  const { loading, error, coursesData, studyModulesData, courseData } =
-    useEditorCourses({
-      slug: clone,
-    })
+  const {
+    loading,
+    error,
+    coursesData,
+    studyModulesData,
+    courseData,
+  } = useEditorCourses({
+    slug: clone,
+  })
 
   useBreadcrumbs([
     {

@@ -28,33 +28,34 @@ const isStringTranslation = (
   translation: TranslationEntry,
 ): translation is BaseTranslation => typeof translation === "string"
 
-const getTranslator =
-  <T extends Translation>(dicts: Record<string, T>) =>
-  (lng: string, router?: NextRouter): Translator<T> =>
-    memoize(
-      (key: keyof T, variables?: Record<string, any>) => {
-        const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
+const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
+  lng: string,
+  router?: NextRouter,
+): Translator<T> =>
+  memoize(
+    (key: keyof T, variables?: Record<string, any>) => {
+      const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
-        if (!translation) {
-          console.warn(`WARNING: no translation for ${lng}:${key}`)
-          return key
+      if (!translation) {
+        console.warn(`WARNING: no translation for ${lng}:${key}`)
+        return key
+      }
+
+      return isArrayTranslation(translation)
+        ? translation.map((t) =>
+            substitute({ translation: t, variables, router }),
+          )
+        : substitute({ translation, variables, router })
+    },
+    (...args) =>
+      // cached value is supposed to depend on possible given variables
+      args.reduce((acc, curr) => {
+        if (typeof curr === "object") {
+          return `${acc}_${JSON.stringify(curr)}`
         }
-
-        return isArrayTranslation(translation)
-          ? translation.map((t) =>
-              substitute({ translation: t, variables, router }),
-            )
-          : substitute({ translation, variables, router })
-      },
-      (...args) =>
-        // cached value is supposed to depend on possible given variables
-        args.reduce((acc, curr) => {
-          if (typeof curr === "object") {
-            return `${acc}_${JSON.stringify(curr)}`
-          }
-          return `${acc}_${curr}`
-        }, ""),
-    )
+        return `${acc}_${curr}`
+      }, ""),
+  )
 
 interface Substitute<T> {
   translation: T[keyof T]
@@ -152,7 +153,7 @@ const substitute = <T extends Translation>({
 const _combineDictionaries = <
   T extends Translation,
   U extends Translation = {},
-  V extends Translation = {},
+  V extends Translation = {}
 >(
   dicts: [
     TranslationDictionary<T>,

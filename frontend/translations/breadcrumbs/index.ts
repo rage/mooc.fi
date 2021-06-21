@@ -5,10 +5,9 @@ import fi from "./fi.json"
 import { TranslationDictionary } from "/translations"
 
 export type BreadcrumbsTranslations = typeof en & typeof fi
-const BreadcrumbsTranslations: TranslationDictionary<BreadcrumbsTranslations> =
-  {
-    en,
-    fi,
-  }
+const BreadcrumbsTranslations: TranslationDictionary<BreadcrumbsTranslations> = {
+  en,
+  fi,
+}
 
 export default BreadcrumbsTranslations
