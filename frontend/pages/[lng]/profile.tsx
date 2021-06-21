@@ -9,6 +9,13 @@ import Container from "/components/Container"
 import withSignedIn from "/lib/with-signed-in"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import React, { ChangeEvent, useState } from "react"
+import styled from "@emotion/styled"
+import Warning from "@material-ui/icons/Warning"
+import ProfileTabs from "/components/Profile/ProfileTabs"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -44,8 +51,23 @@ export const UserOverViewQuery = gql`
   ${CompletionsRegisteredFragment}
 `
 
+const ConsentNotification = styled.div`
+  display: flex;
+  padding: 6px 16px;
+  line-height: 1.43;
+  border-radius: 4px;
+  letter-spacing: 0.01071em;
+  background-color: rgb(255, 244, 229);
+`
+
 function Profile() {
+  const t = useTranslator(ProfileTranslations)
+
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const [tab, setTab] = useState(0)
+  const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
+    setTab(newValue)
+  }
 
   useBreadcrumbs([
     {
@@ -65,7 +87,8 @@ function Profile() {
   const last_name = data?.currentUser?.last_name || "No last name"
   const email = data?.currentUser?.email || "no email"
   const studentNumber = data?.currentUser?.student_number || "no student number"
-
+  const { research_consent } = data?.currentUser ?? {}
+  
   return (
     <>
       <ProfilePageHeader
@@ -75,7 +98,23 @@ function Profile() {
         student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
-        <StudentDataDisplay data={data?.currentUser || undefined} />
+      {(research_consent === null ||
+        typeof research_consent === "undefined") && (
+        <ConsentNotification>
+          <Warning />
+          {t("researchNotification")}
+        </ConsentNotification>
+      )}
+
+        <ProfileTabs
+          selected={tab}
+          onChange={handleTabChange}
+        >
+          <StudentDataDisplay
+            tab={tab}
+            data={data?.currentUser || undefined} 
+          />
+        </ProfileTabs>
       </Container>
     </>
   )
