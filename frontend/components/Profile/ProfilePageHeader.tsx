@@ -11,7 +11,9 @@ const HeaderBackground = styled.div`
 
 const HeaderTitle = styled(Typography)<any>`
   padding: 0.5em;
-  font-size: 64px;
+  @media (min-width: 768px) {
+    font-size: 64px;
+  }
   @media (max-width: 768px) {
     font-size: 56px;
   }

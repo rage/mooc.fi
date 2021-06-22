@@ -8,18 +8,18 @@
 // ====================================================
 
 export interface DeleteEmailTemplate_deleteEmailTemplate {
-  __typename: "EmailTemplate"
-  id: string
-  name: string | null
-  html_body: string | null
-  txt_body: string | null
-  title: string | null
+  __typename: "EmailTemplate";
+  id: string;
+  name: string | null;
+  html_body: string | null;
+  txt_body: string | null;
+  title: string | null;
 }
 
 export interface DeleteEmailTemplate {
-  deleteEmailTemplate: DeleteEmailTemplate_deleteEmailTemplate | null
+  deleteEmailTemplate: DeleteEmailTemplate_deleteEmailTemplate | null;
 }
 
 export interface DeleteEmailTemplateVariables {
-  id: string
+  id: string;
 }

@@ -15,6 +15,7 @@ import Warning from "@material-ui/icons/Warning"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
 
 export const UserOverViewQuery = gql`
@@ -26,6 +27,19 @@ export const UserOverViewQuery = gql`
       last_name
       student_number
       email
+      verified_users {
+        id
+        organization {
+          slug
+          organization_translations {
+            language
+            name
+          }
+        }
+        created_at
+        personal_unique_code
+        display_name
+      }
       completions {
         id
         completion_language
@@ -105,7 +119,9 @@ function Profile() {
           {t("researchNotification")}
         </ConsentNotification>
       )}
-
+        <VerifiedUsers
+          data={data?.currentUser?.verified_users}
+        />
         <ProfileTabs
           selected={tab}
           onChange={handleTabChange}
