@@ -8,33 +8,33 @@
 // ====================================================
 
 export interface ConnectedUser_currentUser_verified_users_organization_organization_translations {
-  __typename: "OrganizationTranslation"
-  language: string
-  name: string
+  __typename: "OrganizationTranslation";
+  language: string;
+  name: string;
 }
 
 export interface ConnectedUser_currentUser_verified_users_organization {
-  __typename: "Organization"
-  id: string
-  organization_translations: ConnectedUser_currentUser_verified_users_organization_organization_translations[]
+  __typename: "Organization";
+  id: string;
+  organization_translations: ConnectedUser_currentUser_verified_users_organization_organization_translations[];
 }
 
 export interface ConnectedUser_currentUser_verified_users {
-  __typename: "VerifiedUser"
-  id: string
-  created_at: any | null
-  updated_at: any | null
-  display_name: string | null
-  organization: ConnectedUser_currentUser_verified_users_organization | null
+  __typename: "VerifiedUser";
+  id: string;
+  created_at: any | null;
+  updated_at: any | null;
+  display_name: string | null;
+  organization: ConnectedUser_currentUser_verified_users_organization | null;
 }
 
 export interface ConnectedUser_currentUser {
-  __typename: "User"
-  id: string
-  upstream_id: number
-  verified_users: ConnectedUser_currentUser_verified_users[]
+  __typename: "User";
+  id: string;
+  upstream_id: number;
+  verified_users: ConnectedUser_currentUser_verified_users[];
 }
 
 export interface ConnectedUser {
-  currentUser: ConnectedUser_currentUser | null
+  currentUser: ConnectedUser_currentUser | null;
 }

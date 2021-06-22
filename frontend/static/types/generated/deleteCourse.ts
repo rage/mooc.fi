@@ -8,15 +8,15 @@
 // ====================================================
 
 export interface deleteCourse_deleteCourse {
-  __typename: "Course"
-  id: string
-  slug: string
+  __typename: "Course";
+  id: string;
+  slug: string;
 }
 
 export interface deleteCourse {
-  deleteCourse: deleteCourse_deleteCourse | null
+  deleteCourse: deleteCourse_deleteCourse | null;
 }
 
 export interface deleteCourseVariables {
-  id: string
+  id: string;
 }
