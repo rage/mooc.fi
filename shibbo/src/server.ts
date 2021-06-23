@@ -74,18 +74,19 @@ app.get("/hy-post-login", async (req: Request, res) => {
   })
 
   try {
-    const res = await client.request(VERIFIED_USER_MUTATION, {
+    const result = await client.request(VERIFIED_USER_MUTATION, {
       display_name: displayname,
       personal_unique_code: schacpersonaluniquecode,
       organization_id: HY_ORGANIZATION_ID,
       organization_secret: HY_ORGANIZATION_SECRET,
     })
-    res.redirect(`${BACKEND_URL}/${language}/connection/test?success=${res.id}`)
-  } catch (error) {
     res.redirect(
-      `${BACKEND_URL}/${language}/connection/test?error=${encodeURIComponent(
-        error,
-      )}`,
+      `${BACKEND_URL}/${language}/connection/test?success=${result.id}`,
+    )
+  } catch (error) {
+    const encodedError = Buffer.from(error).toString("base64")
+    res.redirect(
+      `${BACKEND_URL}/${language}/connection/test?error=${encodedError}`,
     )
   }
 })
