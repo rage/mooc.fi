@@ -40,6 +40,10 @@ function ConnectionTest() {
   const connectionSuccess = useQueryParameter("success", false)
   const connectionError = useQueryParameter("error", false)
 
+  const decodedConnectionError = connectionError
+    ? Buffer.from(connectionError, "base64").toString("ascii")
+    : null
+
   if (error) {
     return <ErrorMessage />
   }
@@ -57,7 +61,7 @@ function ConnectionTest() {
         <Alert severity="error">
           Connection error:
           <pre>
-            <code>{decodeURIComponent(connectionError)}</code>
+            <code>{JSON.stringify(decodedConnectionError, null, 2)}</code>
           </pre>
         </Alert>
       )}
