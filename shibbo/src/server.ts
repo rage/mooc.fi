@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 
 app.get("/hy-post-login", async (req: Request, res) => {
   const { schacpersonaluniquecode, displayname } = req.headers
-  const { accessToken } = res.locals.cookie
+  const { access_token: accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
 
   console.log(accessToken)
