@@ -57,7 +57,7 @@ spec:
             backend:
               serviceName: shibbo-test
               servicePort: 80
-          - path: /connect-hy
+          - path: /connect
             backend:
               serviceName: shibbo-test
               servicePort: 80

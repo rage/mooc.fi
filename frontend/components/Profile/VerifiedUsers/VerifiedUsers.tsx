@@ -4,6 +4,7 @@ import styled from "@emotion/styled"
 import VerifiedUser from "./VerifiedUser"
 import LaunchIcon from "@material-ui/icons/Launch"
 import Link from "next/link"
+import { useLanguageContext } from "/contexts/LanguageContext"
 // import axios from "axios"
 // import { getAccessToken } from "/lib/authentication"
 
@@ -23,6 +24,7 @@ const Container = styled(Paper)`
 `
 
 function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
+  const { language } = useLanguageContext()
   const isConnected = (slug: string) =>
     Boolean(
       data.find((verified_user) => verified_user?.organization?.slug === slug),
@@ -45,7 +47,9 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
         </>
       ))}
       {!isConnected("hy") && (
-        <Link href="https://mooc.fi/connect/post-login">
+        <Link
+          href={`https://mooc.fi/connect/hy-post-login?language=${language}`}
+        >
           <Button color="primary" startIcon={<LaunchIcon />}>
             Connect to HY
           </Button>

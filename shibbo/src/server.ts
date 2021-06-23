@@ -46,6 +46,7 @@ const VERIFIED_USER_MUTATION = gql`
 app.get("/hy-post-login", async (req, res) => {
   const { schacpersonaluniquecode, displayname } = req.headers
   const accessToken = nookies.get()["access_token"]
+  const language = req.query.language ?? "en"
 
   if (!accessToken) {
     res.json({ error: "You're not authorized to do this" })
@@ -66,10 +67,12 @@ app.get("/hy-post-login", async (req, res) => {
       organization_id: HY_ORGANIZATION_ID,
       organization_secret: HY_ORGANIZATION_SECRET,
     })
-    res.redirect(`${BACKEND_URL}/connection/test?success=${res.id}`)
+    res.redirect(`${BACKEND_URL}/${language}/connection/test?success=${res.id}`)
   } catch (error) {
     res.redirect(
-      `${BACKEND_URL}/connection/test?error=${encodeURIComponent(error)}`,
+      `${BACKEND_URL}/${language}/connection/test?error=${encodeURIComponent(
+        error,
+      )}`,
     )
   }
 })
