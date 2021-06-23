@@ -19,3 +19,4 @@ sourcemap
 shibbo/shibboleth
 idp
 idp/*.pem
+certs

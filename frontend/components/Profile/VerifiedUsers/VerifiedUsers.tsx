@@ -2,7 +2,7 @@ import { Paper, Button } from "@material-ui/core"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import styled from "@emotion/styled"
 import VerifiedUser from "./VerifiedUser"
-import LaunchIcon from '@material-ui/icons/Launch'
+import LaunchIcon from "@material-ui/icons/Launch"
 import Link from "next/link"
 // import axios from "axios"
 // import { getAccessToken } from "/lib/authentication"
@@ -23,16 +23,16 @@ const Container = styled(Paper)`
 `
 
 function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
-  const isConnected = (slug: string) => Boolean(data.find((verified_user) => verified_user?.organization?.slug === slug))
+  const isConnected = (slug: string) =>
+    Boolean(
+      data.find((verified_user) => verified_user?.organization?.slug === slug),
+    )
 
   return (
     <Container>
       {data.map((verified_user) => (
         <>
-          <VerifiedUser
-            key={verified_user.id}
-            data={verified_user}
-          />
+          <VerifiedUser key={verified_user.id} data={verified_user} />
           {/*
         <VerifiedUser
           key={`${verified_user.id}-2`}
@@ -44,22 +44,14 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
         />*/}
         </>
       ))}
-      {!isConnected("hy") &&
-        <Link
-          href="https://mooc.fi/connect/post-login"
-        >
-          <Button
-            color="primary"
-            startIcon={<LaunchIcon />}
-          >
+      {!isConnected("hy") && (
+        <Link href="https://mooc.fi/connect/post-login">
+          <Button color="primary" startIcon={<LaunchIcon />}>
             Connect to HY
-        </Button>
+          </Button>
         </Link>
-      }
-      <Button
-        color="secondary"
-        startIcon={<LaunchIcon />}
-      >
+      )}
+      <Button color="secondary" startIcon={<LaunchIcon />}>
         Connect to another organization
       </Button>
     </Container>

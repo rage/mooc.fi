@@ -33,7 +33,7 @@ interface StudentDataDisplayProps {
   data?: ProfileUserOverView_currentUser
 }
 
-const StudentDataDisplay = ({tab, data }: StudentDataDisplayProps) => {
+const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
   const { completions = [] } = data || {}
 
   return (

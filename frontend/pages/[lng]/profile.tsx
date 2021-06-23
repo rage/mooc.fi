@@ -15,8 +15,7 @@ import Warning from "@material-ui/icons/Warning"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
-
+// import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -102,7 +101,7 @@ function Profile() {
   const email = data?.currentUser?.email || "no email"
   const studentNumber = data?.currentUser?.student_number || "no student number"
   const { research_consent } = data?.currentUser ?? {}
-  
+
   return (
     <>
       <ProfilePageHeader
@@ -112,24 +111,18 @@ function Profile() {
         student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
-      {(research_consent === null ||
-        typeof research_consent === "undefined") && (
-        <ConsentNotification>
-          <Warning />
-          {t("researchNotification")}
-        </ConsentNotification>
-      )}
-        <VerifiedUsers
+        {(research_consent === null ||
+          typeof research_consent === "undefined") && (
+          <ConsentNotification>
+            <Warning />
+            {t("researchNotification")}
+          </ConsentNotification>
+        )}
+        {/*<VerifiedUsers
           data={data?.currentUser?.verified_users}
-        />
-        <ProfileTabs
-          selected={tab}
-          onChange={handleTabChange}
-        >
-          <StudentDataDisplay
-            tab={tab}
-            data={data?.currentUser || undefined} 
-          />
+        />*/}
+        <ProfileTabs selected={tab} onChange={handleTabChange}>
+          <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
         </ProfileTabs>
       </Container>
     </>
