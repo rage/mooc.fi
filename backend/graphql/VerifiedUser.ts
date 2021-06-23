@@ -59,6 +59,7 @@ export const VerifiedUserMutations = extendType({
         if (!organization || !organization?.secret_key) {
           throw new ForbiddenError("no organization or organization secret")
         }
+
         if (organization.secret_key !== organization_secret) {
           throw new ForbiddenError("wrong organization secret key")
         }

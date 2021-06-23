@@ -8,6 +8,8 @@ import { useLanguageContext } from "/contexts/LanguageContext"
 // import axios from "axios"
 // import { getAccessToken } from "/lib/authentication"
 
+const isProduction = process.env.NODE_ENV === "production"
+
 interface VerifiedUsersProps {
   data?: ProfileUserOverView_currentUser_verified_users[]
 }
@@ -25,6 +27,11 @@ const Container = styled(Paper)`
 
 function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
   const { language } = useLanguageContext()
+
+  const CONNECT_URL = isProduction
+    ? `https://mooc.fi/connect/hy?language=${language}`
+    : `http://localhost:5000/hy?language=${language}`
+
   const isConnected = (slug: string) =>
     Boolean(
       data.find((verified_user) => verified_user?.organization?.slug === slug),
@@ -47,9 +54,7 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
         </>
       ))}
       {!isConnected("hy") && (
-        <Link
-          href={`https://mooc.fi/connect/hy-post-login?language=${language}`}
-        >
+        <Link href={CONNECT_URL}>
           <Button color="primary" startIcon={<LaunchIcon />}>
             Connect to HY
           </Button>
