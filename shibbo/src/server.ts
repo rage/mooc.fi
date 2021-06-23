@@ -48,6 +48,8 @@ app.get("/hy-post-login", async (req, res) => {
   const accessToken = nookies.get()["access_token"]
   const language = req.query.language ?? "en"
 
+  console.log(JSON.stringify(req.headers, null, 2))
+
   if (!accessToken) {
     res.json({ error: "You're not authorized to do this" })
     res.status(401)
