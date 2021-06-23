@@ -3,7 +3,7 @@ import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
 import { HY_ORGANIZATION_SECRET, HY_ORGANIZATION_ID, PORT } from "./config"
-
+import nookies from "nookies"
 const isProduction = process.env.NODE_ENV === "production"
 
 const API_URL = isProduction
@@ -43,12 +43,14 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-app.get("/post-login", (req, res) => {
-  const { schacpersonaluniquecode, displayname, authorization } = req.headers
+app.get("/hy-post-login", async (req, res) => {
+  const { schacpersonaluniquecode, displayname } = req.headers
+  const accessToken = nookies.get()["access_token"]
+  const language = req.query.language ?? "en"
 
   console.log(JSON.stringify(req.headers, null, 2))
 
-  if (!authorization) {
+  if (!accessToken) {
     res.json({ error: "You're not authorized to do this" })
     res.status(401)
     res.end()
@@ -56,18 +58,24 @@ app.get("/post-login", (req, res) => {
     return
   }
 
-  const client = new GraphQLClient(API_URL, { headers: { authorization } })
+  const client = new GraphQLClient(API_URL, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
 
   try {
-    client.request(VERIFIED_USER_MUTATION, {
+    const res = await client.request(VERIFIED_USER_MUTATION, {
       display_name: displayname,
       personal_unique_code: schacpersonaluniquecode,
       organization_id: HY_ORGANIZATION_ID,
       organization_secret: HY_ORGANIZATION_SECRET,
     })
-    res.redirect(`${BACKEND_URL}/connection/success`)
+    res.redirect(`${BACKEND_URL}/${language}/connection/test?success=${res.id}`)
   } catch (error) {
-    res.redirect(`${BACKEND_URL}/connection/error`)
+    res.redirect(
+      `${BACKEND_URL}/${language}/connection/test?error=${encodeURIComponent(
+        error,
+      )}`,
+    )
   }
 })
 

@@ -30,6 +30,7 @@
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
+    "nookies": "^2.5.2",
     "unfuck-utf8-headers-middleware": "^1.0.1"
   }
 }
