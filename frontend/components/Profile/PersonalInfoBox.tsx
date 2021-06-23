@@ -55,7 +55,6 @@ const InfoBoxBackground = styled.div`
     margin-left: 10%;
     bottom: -50px;
   }
-  
 `
 const Info = styled(Typography)<any>`
   margin-left: 1rem;

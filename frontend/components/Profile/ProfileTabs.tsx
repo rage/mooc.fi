@@ -8,16 +8,16 @@ interface ProfileTabsProps {
   onChange: (_: ChangeEvent<{}>, __: number) => void
 }
 
-function ProfileTabs({ selected, onChange, children }: PropsWithChildren<ProfileTabsProps>) {
+function ProfileTabs({
+  selected,
+  onChange,
+  children,
+}: PropsWithChildren<ProfileTabsProps>) {
   const t = useTranslator(ProfileTranslations)
 
   return (
     <>
-      <Tabs
-        value={selected}
-        onChange={onChange}
-        aria-label={t("tabAriaLabel")}
-      >
+      <Tabs value={selected} onChange={onChange} aria-label={t("tabAriaLabel")}>
         <Tab
           label={t("tabPoints")}
           id="user-profile-tab-0"
