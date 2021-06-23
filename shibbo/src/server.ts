@@ -1,9 +1,8 @@
-import express from "express"
+import express, { Request } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
 import { HY_ORGANIZATION_SECRET, HY_ORGANIZATION_ID, PORT } from "./config"
-import nookies from "nookies"
 const isProduction = process.env.NODE_ENV === "production"
 
 const API_URL = isProduction
@@ -42,12 +41,24 @@ const VERIFIED_USER_MUTATION = gql`
     }
   }
 `
+app.use((req, res, next) => {
+  const {
+    headers: { cookie },
+  } = req
+  res.locals.cookie =
+    cookie?.split(";").reduce((res, item) => {
+      const data = item.trim().split("=")
+      return { ...res, [data[0]]: data[1] }
+    }, {}) ?? {}
+  next()
+})
 
-app.get("/hy-post-login", async (req, res) => {
+app.get("/hy-post-login", async (req: Request, res) => {
   const { schacpersonaluniquecode, displayname } = req.headers
-  const accessToken = nookies.get()["access_token"]
+  const { accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
 
+  console.log(accessToken)
   console.log(JSON.stringify(req.headers, null, 2))
 
   if (!accessToken) {
