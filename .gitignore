@@ -16,3 +16,7 @@ newrelic_agent.log
 sourcemap
 .scannerwork
 .mailmap
+shibbo/shibboleth
+idp
+idp/*.pem
+certs
