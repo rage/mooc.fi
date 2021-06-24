@@ -28,9 +28,12 @@ const Container = styled(Paper)`
 function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
   const { language } = useLanguageContext()
 
-  const CONNECT_URL = isProduction
+  const HY_CONNECT_URL = isProduction
     ? `https://mooc.fi/connect/hy?language=${language}`
     : `http://localhost:5000/hy?language=${language}`
+  const HAKA_CONNECT_URL = isProduction
+    ? `https://mooc.fi/connect/haka?language=${language}`
+    : `http://localhost:5000/haka?language=${language}`
 
   const isConnected = (slug: string) =>
     Boolean(
@@ -54,15 +57,17 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
         </>
       ))}
       {!isConnected("hy") && (
-        <Link href={CONNECT_URL}>
+        <Link href={HY_CONNECT_URL}>
           <Button color="primary" startIcon={<LaunchIcon />}>
             Connect to HY
           </Button>
         </Link>
       )}
-      <Button color="secondary" startIcon={<LaunchIcon />}>
-        Connect to another organization
+      <Link href={HAKA_CONNECT_URL}>
+        <Button color="secondary" startIcon={<LaunchIcon />}>
+          Connect to another organization
       </Button>
+      </Link>
     </Container>
   )
 }
