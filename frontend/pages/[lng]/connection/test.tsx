@@ -41,7 +41,8 @@ function ConnectionTest() {
   const connectionError = useQueryParameter("error", false)
 
   const decodedConnectionError = connectionError
-    ? Buffer.from(connectionError, "base64").toString("ascii")
+    ? JSON.parse(Buffer.from(connectionError, "base64").toString("ascii"))
+        ?.error
     : null
 
   if (error) {

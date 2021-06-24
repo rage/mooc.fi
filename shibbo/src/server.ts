@@ -1,4 +1,4 @@
-import express, { Request } from "express"
+import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
@@ -8,18 +8,40 @@ const isProduction = process.env.NODE_ENV === "production"
 const API_URL = isProduction
   ? "https://www.mooc.fi/api"
   : "http://localhost:4000"
-const BACKEND_URL = isProduction
+const FRONTEND_URL = isProduction
   ? "https://www.mooc.fi"
-  : "http://localhost:4000"
+  : "http://localhost:3000"
 
 const app = express()
 
-const SHIBBOLETH_HEADERS = ["displayname", "schachpersonaluniquecode"]
+const SHIBBOLETH_HEADERS = [
+  "displayname",
+  "schacpersonaluniquecode",
+  "schachomeorganization",
+] as const
+
+const defaultHeaders: Record<typeof SHIBBOLETH_HEADERS[number], string> = {
+  displayname: "kissa kissanen",
+  schachomeorganization: "yliopisto.fi",
+  schacpersonaluniquecode:
+    "urn:schac:personalUniqueCode:fi:yliopisto.fi:121345678",
+}
 
 app.set("port", PORT)
 app.use(cors())
 app.use(express.json())
-app.use(shibbolethCharsetMiddleware(SHIBBOLETH_HEADERS))
+app.use(shibbolethCharsetMiddleware(SHIBBOLETH_HEADERS as any))
+app.use((req, res, next) => {
+  const {
+    headers: { cookie },
+  } = req
+  res.locals.cookie =
+    cookie?.split(";").reduce((res, item) => {
+      const data = item.trim().split("=")
+      return { ...res, [data[0]]: data[1] }
+    }, {}) ?? {}
+  next()
+})
 
 const VERIFIED_USER_MUTATION = gql`
   mutation addVerifiedUser(
@@ -41,26 +63,59 @@ const VERIFIED_USER_MUTATION = gql`
     }
   }
 `
-app.use((req, res, next) => {
-  const {
-    headers: { cookie },
-  } = req
-  res.locals.cookie =
-    cookie?.split(";").reduce((res, item) => {
-      const data = item.trim().split("=")
-      return { ...res, [data[0]]: data[1] }
-    }, {}) ?? {}
-  next()
-})
 
-app.get("/hy-post-login", async (req: Request, res) => {
-  const { schacpersonaluniquecode, displayname } = req.headers
+const handler = async (req: Request, res: Response) => {
+  const headers =
+    req.headers ?? !isProduction
+      ? defaultHeaders
+      : ({} as Record<string, string>)
+
+  const { schacpersonaluniquecode, displayname } = headers
+
   const { access_token: accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
 
   console.log(accessToken)
   console.log(JSON.stringify(req.headers, null, 2))
 
+  try {
+    if (!accessToken) {
+      throw new Error("You're not authorized to do this")
+    }
+
+    if (!schacpersonaluniquecode || !displayname) {
+      throw new Error("Required attributes missing")
+    }
+
+    const client = new GraphQLClient(API_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    const result = await client.request(VERIFIED_USER_MUTATION, {
+      display_name: displayname,
+      personal_unique_code: schacpersonaluniquecode,
+      organization_id: HY_ORGANIZATION_ID,
+      organization_secret: HY_ORGANIZATION_SECRET,
+    })
+    console.log(result)
+    res.redirect(
+      `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
+    )
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : error
+    const encodedError = Buffer.from(
+      JSON.stringify({ error: errorMessage }),
+    ).toString("base64")
+    res.redirect(
+      `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
+    )
+  }
+}
+
+app.get("/hy", (req: Request, res) => {
+  console.log("In HY handler")
+
+  return handler(req, res)
+  /*
   if (!accessToken) {
     res.json({ error: "You're not authorized to do this" })
     res.status(401)
@@ -69,6 +124,9 @@ app.get("/hy-post-login", async (req: Request, res) => {
     return
   }
 
+  if (!schacpersonaluniquecode || !displayname) {
+    res.json({ error: "some fields are missing "})
+  }
   const client = new GraphQLClient(API_URL, {
     headers: { Authorization: `Bearer ${accessToken}` },
   })
@@ -80,15 +138,23 @@ app.get("/hy-post-login", async (req: Request, res) => {
       organization_id: HY_ORGANIZATION_ID,
       organization_secret: HY_ORGANIZATION_SECRET,
     })
+    console.log(result)
     res.redirect(
-      `${BACKEND_URL}/${language}/connection/test?success=${result.id}`,
+      `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
     )
   } catch (error) {
-    const encodedError = Buffer.from(error).toString("base64")
+    const encodedError = Buffer.from(JSON.stringify(error)).toString("base64")
     res.redirect(
-      `${BACKEND_URL}/${language}/connection/test?error=${encodedError}`,
+      `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
     )
   }
+  */
+})
+
+app.get("/haka", (req, res) => {
+  console.log("In Haka handler")
+
+  return handler(req, res)
 })
 
 app.listen(PORT, () => {
