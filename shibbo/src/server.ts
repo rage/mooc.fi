@@ -1,4 +1,4 @@
-import express, { Request } from "express"
+import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
@@ -64,7 +64,7 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-app.get("/hy", async (req: Request, res) => {
+const handler = async (req: Request, res: Response) => {
   const headers =
     req.headers ?? !isProduction
       ? defaultHeaders
@@ -109,7 +109,12 @@ app.get("/hy", async (req: Request, res) => {
       `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
     )
   }
+}
 
+app.get("/hy", (req: Request, res) => {
+  console.log("In HY handler")
+
+  return handler(req, res)
   /*
   if (!accessToken) {
     res.json({ error: "You're not authorized to do this" })
@@ -144,6 +149,12 @@ app.get("/hy", async (req: Request, res) => {
     )
   }
   */
+})
+
+app.get("/haka", (req, res) => {
+  console.log("In Haka handler")
+
+  return handler(req, res)
 })
 
 app.listen(PORT, () => {
