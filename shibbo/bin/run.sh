@@ -5,4 +5,5 @@ if [ ! -n "$CIRCLE_SHA1" ]; then
   source "$CURRENT_DIR/copy-config.sh"
 fi
 
-supervisord -n
+/usr/local/bin/httpd-shibd-foreground
+# supervisord -n

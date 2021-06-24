@@ -18,7 +18,7 @@ EXPOSE 80 443
 
 USER root
 
-CMD ["/usr/local/bin/httpd-shibd-foreground"]
+CMD ["sh", "./bin/run.sh"]
 
 ARG GIT_COMMIT=""
 LABEL GIT_COMMIT=${GIT_COMMIT}
