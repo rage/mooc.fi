@@ -66,7 +66,7 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
       <Link href={HAKA_CONNECT_URL}>
         <Button color="secondary" startIcon={<LaunchIcon />}>
           Connect to another organization
-      </Button>
+        </Button>
       </Link>
     </Container>
   )
