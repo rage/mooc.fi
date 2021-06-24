@@ -55,11 +55,11 @@ spec:
               servicePort: 80
           - path: /Shibboleth.sso
             backend:
-              serviceName: shibbo-test
+              serviceName: moocfi-shibbo
               servicePort: 80
           - path: /connect
             backend:
-              serviceName: shibbo-test
+              serviceName: moocfi-shibbo
               servicePort: 80
     {{- end }}
   {{- end }}

@@ -29,6 +29,32 @@ export function requireAdmin(knex: Knex) {
   }
 }
 
+export const getUserDetailsFromToken = async (rawToken: string) => {
+  let details: UserInfo | null = null
+
+  try {
+    const client = new TmcClient(rawToken)
+    details = await redisify<UserInfo>(
+      async () => await client.getCurrentUserDetails(),
+      {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      },
+    )
+  } catch (e) {
+    console.log("error", e)
+  }
+
+  if (!details) {
+    return err({ message: "invalid credentials" })
+  }
+
+  return ok({
+    details,
+  })
+}
+
 export function getUser(knex: Knex) {
   return async function (
     req: any,
@@ -40,24 +66,13 @@ export function getUser(knex: Knex) {
       return err(res.status(401).json({ message: "not logged in" }))
     }
 
-    let details: UserInfo | null = null
-    try {
-      const client = new TmcClient(rawToken)
-      details = await redisify<UserInfo>(
-        async () => await client.getCurrentUserDetails(),
-        {
-          prefix: "userdetails",
-          expireTime: 3600,
-          key: rawToken,
-        },
-      )
-    } catch (e) {
-      console.log("error", e)
+    const userDetails = await getUserDetailsFromToken(rawToken)
+
+    if (userDetails.isErr()) {
+      return err(res.status(401).json(userDetails.error))
     }
 
-    if (!details) {
-      return err(res.status(401).json({ message: "invalid credentials" }))
-    }
+    const { details } = userDetails.value
 
     let user = (
       await knex

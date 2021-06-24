@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shibbo-test
+  name: moocfi-shibbo
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
@@ -10,7 +10,7 @@ spec:
   {{- end }}
   selector:
     matchLabels: 
-      app: shibbo-test
+      app: moocfi-shibbo
       {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: shibbo-test
+        app: moocfi-shibbo
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -30,27 +30,27 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: shibbo-test
+        - name: moocfi-shibbo
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}/shibbo-test:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-shibbo:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
-            - name: http
+            - name: moocfi-shibbo-http
               containerPort: 80
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /Shibboleth.sso/Metadata
-          #     port: http
-          #   initialDelaySeconds: 60
-          #   periodSeconds: 10
-          # readinessProbe:
-          #   httpGet:
-          #     path: /Shibboleth.sso/Metadata
-          #     port: http
-          #   initialDelaySeconds: 5
-          #   periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /Shibboleth.sso/Metadata
+              port: moocfi-shibbo-http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /Shibboleth.sso/Metadata
+              port: moocfi-shibbo-http
+            initialDelaySeconds: 5
+            periodSeconds: 5
           volumeMounts:
             - name: shibboleth-configs
               mountPath: "/app/shibboleth"

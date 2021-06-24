@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: moocfi-shibbo
+  name: moocfi-shibbo-connect
   labels:
-    app: moocfi-shibbo
+    app: moocfi-shibbo-connect
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: NodePort
   ports:
-    - port: 80
-      targetPort: moocfi-shibbo-http
+  - port: 80
+    targetPort: moocfi-shibbo-connect
   selector:
-    app: moocfi-shibbo
+    app: moocfi-shibbo-connect
     {{- include "helm.selectorLabels" . | nindent 4 }}
