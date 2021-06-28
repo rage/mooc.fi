@@ -56,3 +56,7 @@ export async function requireAuth(auth: string, { knex }: ApiContext) {
     return { ...data }
   })
 }
+
+export async function invalidateAuth(id: string, { knex }: ApiContext) {
+  await knex("access_tokens").update({ valid: false }).where("user_id", id)
+}
