@@ -29,6 +29,8 @@ COPY supervisord.conf /etc/supervisord/conf.d/supervisord.conf
 # COPY shibboleth/ssl.conf /etc/httpd/conf.d/ssl.conf
 # COPY shibboleth/attribute-map.xml /etc/shibboleth/attribute-map.xml
 # COPY shibboleth/shibd.logger /etc/shibboleth/shibd.logger
+# COPY shibboleth/haka_test_metadata_signed.xml /etc/shibboleth/haka_test_metadata_signed.xml
+# COPY shibboleth/haka_testi_2018_sha2.crt /etc/shibboleth/haka_testi_2018_sha2.crt
 
 USER node
 

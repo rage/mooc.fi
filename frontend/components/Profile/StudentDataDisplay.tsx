@@ -1,26 +1,11 @@
-import { useState, PropsWithChildren, ChangeEvent } from "react"
-import Tabs from "@material-ui/core/Tabs"
-import Tab from "@material-ui/core/Tab"
+import { PropsWithChildren } from "react"
 import Typography from "@material-ui/core/Typography"
 import Box from "@material-ui/core/Box"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileSettings from "/components/Profile/ProfileSettings"
-import ProfileTranslations from "/translations/profile"
-import Warning from "@material-ui/icons/Warning"
-import styled from "@emotion/styled"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
-
-const ConsentNotification = styled.div`
-  display: flex;
-  padding: 6px 16px;
-  line-height: 1.43;
-  border-radius: 4px;
-  letter-spacing: 0.01071em;
-  background-color: rgb(255, 244, 229);
-`
 
 interface TabPanelProps {
   index: any
@@ -44,58 +29,24 @@ const TabPanel = ({
 )
 
 interface StudentDataDisplayProps {
+  tab: number
   data?: ProfileUserOverView_currentUser
 }
 
-const StudentDataDisplay = ({ data }: StudentDataDisplayProps) => {
-  const t = useTranslator(ProfileTranslations)
-
-  const { completions = [], research_consent } = data || {}
-  const [tabOpen, setTabOpen] = useState(0)
-
-  const handleTabChange = (_event: ChangeEvent<{}>, newValue: number) => {
-    setTabOpen(newValue)
-  }
+const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
+  const { completions = [] } = data || {}
 
   return (
     <>
-      {(research_consent === null ||
-        typeof research_consent === "undefined") && (
-        <ConsentNotification>
-          <Warning />
-          {t("researchNotification")}
-        </ConsentNotification>
-      )}
-      <Tabs
-        value={tabOpen}
-        onChange={handleTabChange}
-        aria-label={t("tabAriaLabel")}
-      >
-        <Tab
-          label={t("tabPoints")}
-          id="user-profile-tab-0"
-          aria-controls="user-profile-tab-0"
-        />
-        <Tab
-          label={t("tabCompletions")}
-          id="user-profile-tab-1"
-          aria-controls="user-profile-tab-1"
-        />
-        <Tab
-          label={t("tabSettings")}
-          id="user-profile-tab2"
-          aria-controls="user-profile-tab2"
-        />
-      </Tabs>
-      <TabPanel index={0} value={tabOpen}>
+      <TabPanel index={0} value={tab}>
         <ProfilePointsDisplay />
       </TabPanel>
-      <TabPanel index={1} value={tabOpen}>
+      <TabPanel index={1} value={tab}>
         <ProfileCompletionsDisplay
           completions={completions?.filter(notEmpty) ?? []}
         />
       </TabPanel>
-      <TabPanel index={2} value={tabOpen}>
+      <TabPanel index={2} value={tab}>
         <ProfileSettings data={data} />
       </TabPanel>
     </>
