@@ -680,6 +680,10 @@ describe("server", () => {
     const getUser = get(`/api/getUser/${course}`, defaultHeaders)
     const getUserNonToken = get(`/api/getUser/${course}`, {})
 
+    const updatePassword = post(`/api/updatePassword`, defaultHeaders)
+    const updatePasswordNonToken = post(`/api/updatePassword`, {})
+
+    //Get User
     it("error get user on invalid token", async () => {
       return getUserNonToken({})
         .then(() => fail())
@@ -690,6 +694,83 @@ describe("server", () => {
 
     it("get user", async () => {
       const res = await getUser({})
+
+      expect(res.status).toBe(200)
+    })
+
+    //Update Password
+    it("error update password on invalid token", async () => {
+      return updatePasswordNonToken({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("error on invalid password", async () => {
+      return updatePassword({
+        data: {
+          oldPassword: "password",
+          password: "password change",
+          confirmPassword: "password",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+        })
+    })
+
+    it("error on invalid password confirm", async () => {
+      return updatePassword({
+        data: {
+          oldPassword: "password",
+          password: "password2",
+          confirmPassword: "password3",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+        })
+    })
+
+    it("error on same old password", async () => {
+      return updatePassword({
+        data: {
+          oldPassword: "password",
+          password: "password",
+          confirmPassword: "password",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("error on invalid old password", async () => {
+      return updatePassword({
+        data: {
+          oldPassword: "passwor",
+          password: "password2",
+          confirmPassword: "password2",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("update password", async () => {
+      const res = await updatePassword({
+        data: {
+          oldPassword: "password",
+          password: "password2",
+          confirmPassword: "password2",
+        },
+      })
 
       expect(res.status).toBe(200)
     })
