@@ -43,7 +43,7 @@ export function apiRouter(ctx: ApiContext) {
     .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
     .use("/ab-studies", abStudiesRouter(ctx))
-    .use("/ab-enrollment", abEnrollmentRouter(ctx))
     .get("/getUser/:course_id", getUser(ctx))
     .post("/updatePassword", updatePassword(ctx))
+    .use("/ab-enrollments", abEnrollmentRouter(ctx))
 }

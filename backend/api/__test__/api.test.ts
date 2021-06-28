@@ -560,7 +560,7 @@ describe("API", () => {
       await seed(ctx.prisma)
     })
 
-    const getEnrollment = (id: string) => get(`/api/ab-enrollment/${id}`, {})
+    const getEnrollment = (id: string) => get(`/api/ab-enrollments/${id}`, {})
 
     const okStudyId = "99000000-0000-0000-0000-000000000001"
     const okStudyId2 = "99000000-0000-0000-0000-000000000002"

@@ -38,7 +38,7 @@ export function abEnrollmentRouter({ knex, prisma }: ApiContext) {
       WITH cte AS (
         INSERT INTO "ab_enrollment" (user_id, ab_study_id, "group")
         VALUES (:user_id, :ab_study_id, (
-          SELECT floor(random() * (group_count - 1)) + 1 FROM ab_study WHERE id = :ab_study_id
+          SELECT floor(random() * group_count) + 1 FROM ab_study WHERE id = :ab_study_id
         ))
         ON CONFLICT (user_id, ab_study_id) DO NOTHING
         RETURNING user_id, ab_study_id, "group", created_at, updated_at
