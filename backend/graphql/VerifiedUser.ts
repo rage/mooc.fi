@@ -9,9 +9,10 @@ export const VerifiedUser = objectType({
     t.model.created_at()
     t.model.updated_at()
     t.model.display_name()
-    t.model.organization_id()
-    t.model.organization()
     t.model.personal_unique_code()
+    t.model.home_organization()
+    t.model.person_affiliation()
+    t.model.person_affiliation_updated_at()
     t.model.user_id()
     t.model.user()
   },
@@ -22,6 +23,8 @@ export const VerifiedUserArg = inputObjectType({
   definition(t) {
     t.string("display_name")
     t.nonNull.string("personal_unique_code")
+    t.nonNull.string("home_organization")
+    t.nonNull.string("person_affiliation")
     t.nonNull.id("organization_id")
     t.nonNull.string("organization_secret")
   },
@@ -44,6 +47,8 @@ export const VerifiedUserMutations = extendType({
           organization_id,
           display_name,
           personal_unique_code,
+          home_organization,
+          person_affiliation,
           organization_secret,
         } = verified_user
         const { user: currentUser } = ctx
@@ -66,12 +71,11 @@ export const VerifiedUserMutations = extendType({
 
         return ctx.prisma.verifiedUser.create({
           data: {
-            organization: {
-              connect: { id: organization.id },
-            },
             user: { connect: { id: currentUser.id } },
             personal_unique_code,
             display_name,
+            home_organization,
+            person_affiliation,
           },
         })
       },

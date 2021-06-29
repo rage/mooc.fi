@@ -7,25 +7,16 @@
 // GraphQL query operation: ConnectionTest
 // ====================================================
 
-export interface ConnectionTest_currentUser_verified_users_organization_organization_translations {
-  __typename: "OrganizationTranslation"
-  language: string
-  name: string
-}
-
-export interface ConnectionTest_currentUser_verified_users_organization {
-  __typename: "Organization"
-  slug: string
-  organization_translations: ConnectionTest_currentUser_verified_users_organization_organization_translations[]
-}
-
 export interface ConnectionTest_currentUser_verified_users {
   __typename: "VerifiedUser"
   id: string
-  organization: ConnectionTest_currentUser_verified_users_organization | null
   created_at: any | null
   personal_unique_code: string
   display_name: string | null
+  home_organization: string
+  person_affiliation: string
+  person_affiliation_updated_at: any
+  updated_at: any | null
 }
 
 export interface ConnectionTest_currentUser {

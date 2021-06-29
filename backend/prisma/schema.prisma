@@ -321,7 +321,6 @@ model Organization {
   course_organizations      CourseOrganization[]
   organization_translations OrganizationTranslation[]
   user_organizations        UserOrganization[]
-  verified_users            VerifiedUser[]
 
   @@map("organization")
 }
@@ -499,14 +498,16 @@ model VerifiedUser {
   created_at                               DateTime?     @default(now())
   display_name                             String?
   id                                       String        @id @default(uuid())
-  organization_id                          String?       
   personal_unique_code                     String
+  home_organization                        String
+  person_affiliation                       String
+  person_affiliation_updated_at            DateTime      @default(now())
   updated_at                               DateTime?     @updatedAt
   user_id                                  String?       
-  organization                             Organization? @relation(fields: [organization_id], references: [id])
   user                                     User?         @relation(fields: [user_id], references: [id])
 
   @@map("verified_user")
+  @@unique([user_id, personal_unique_code, home_organization])
 }
 
 enum CourseStatus {

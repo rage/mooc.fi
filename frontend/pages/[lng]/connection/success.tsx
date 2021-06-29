@@ -21,13 +21,10 @@ export const ConnectedUserQuery = gql`
         created_at
         updated_at
         display_name
-        organization {
-          id
-          organization_translations {
-            language
-            name
-          }
-        }
+        home_organization
+        person_affiliation
+        person_affiliation_updated_at
+        updated_at
       }
     }
   }
@@ -64,8 +61,7 @@ function ConnectionSuccess() {
               alignItems: "baseline",
             }}
           >
-            Organization:{" "}
-            {verified_user.organization?.organization_translations?.[0]?.name}
+            Organization: {verified_user.home_organization}
             <Typography variant="h4">
               Registered: {formatDateTime(verified_user.created_at)}
             </Typography>

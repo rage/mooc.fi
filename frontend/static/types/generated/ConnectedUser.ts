@@ -7,25 +7,15 @@
 // GraphQL query operation: ConnectedUser
 // ====================================================
 
-export interface ConnectedUser_currentUser_verified_users_organization_organization_translations {
-  __typename: "OrganizationTranslation"
-  language: string
-  name: string
-}
-
-export interface ConnectedUser_currentUser_verified_users_organization {
-  __typename: "Organization"
-  id: string
-  organization_translations: ConnectedUser_currentUser_verified_users_organization_organization_translations[]
-}
-
 export interface ConnectedUser_currentUser_verified_users {
   __typename: "VerifiedUser"
   id: string
   created_at: any | null
   updated_at: any | null
   display_name: string | null
-  organization: ConnectedUser_currentUser_verified_users_organization | null
+  home_organization: string
+  person_affiliation: string
+  person_affiliation_updated_at: any
 }
 
 export interface ConnectedUser_currentUser {

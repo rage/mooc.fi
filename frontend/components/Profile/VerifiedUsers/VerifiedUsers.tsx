@@ -35,9 +35,11 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
     ? `https://mooc.fi/connect/haka?language=${language}`
     : `http://localhost:5000/haka?language=${language}`
 
-  const isConnected = (slug: string) =>
+  const isConnected = (organization: string) =>
     Boolean(
-      data.find((verified_user) => verified_user?.organization?.slug === slug),
+      data.find(
+        (verified_user) => verified_user?.home_organization === organization,
+      ),
     )
 
   return (

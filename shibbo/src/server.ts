@@ -18,6 +18,7 @@ const SHIBBOLETH_HEADERS = [
   "displayname",
   "schacpersonaluniquecode",
   "schachomeorganization",
+  "edupersonaffiliation",
 ] as const
 
 const defaultHeaders: Record<typeof SHIBBOLETH_HEADERS[number], string> = {
@@ -25,6 +26,7 @@ const defaultHeaders: Record<typeof SHIBBOLETH_HEADERS[number], string> = {
   schachomeorganization: "yliopisto.fi",
   schacpersonaluniquecode:
     "urn:schac:personalUniqueCode:fi:yliopisto.fi:121345678",
+  edupersonaffiliation: "member;student",
 }
 
 app.set("port", PORT)
@@ -47,15 +49,15 @@ const VERIFIED_USER_MUTATION = gql`
   mutation addVerifiedUser(
     $display_name: String
     $personal_unique_code: String!
-    $organization_id: ID!
-    $organization_secret: String!
+    $home_organization: String!
+    $person_affiliation: String!
   ) {
     addVerifiedUser(
       verified_user: {
         display_name: $display_name
         personal_unique_code: $personal_unique_code
-        organization_id: $organization_id
-        organization_secret: $organization_secret
+        home_organization: $home_organization
+        person_affiliation: $person_affiliation
       }
     ) {
       id
@@ -70,7 +72,12 @@ const handler = async (req: Request, res: Response) => {
       ? defaultHeaders
       : ({} as Record<string, string>)
 
-  const { schacpersonaluniquecode, displayname } = headers
+  const {
+    schacpersonaluniquecode,
+    displayname,
+    edupersonaffiliation,
+    schachomeorganization,
+  } = headers
 
   const { access_token: accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
@@ -93,8 +100,8 @@ const handler = async (req: Request, res: Response) => {
     const result = await client.request(VERIFIED_USER_MUTATION, {
       display_name: displayname,
       personal_unique_code: schacpersonaluniquecode,
-      organization_id: HY_ORGANIZATION_ID,
-      organization_secret: HY_ORGANIZATION_SECRET,
+      home_organization: schachomeorganization,
+      person_affiliation: edupersonaffiliation,
     })
     console.log(result)
     res.redirect(
