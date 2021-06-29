@@ -45,20 +45,9 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
   return (
     <Container>
       {data.map((verified_user) => (
-        <>
-          <VerifiedUser key={verified_user.id} data={verified_user} />
-          {/*
-        <VerifiedUser
-          key={`${verified_user.id}-2`}
-          data={verified_user}
-        />
-        <VerifiedUser
-          key={`${verified_user.id}-3`}
-          data={verified_user}
-        />*/}
-        </>
+        <VerifiedUser key={verified_user.id} data={verified_user} />
       ))}
-      {!isConnected("hy") && (
+      {!isConnected("helsinki.fi") && (
         <Link href={HY_CONNECT_URL}>
           <Button color="primary" startIcon={<LaunchIcon />}>
             Connect to HY
