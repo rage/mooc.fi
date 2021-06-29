@@ -1,5 +1,5 @@
 import { objectType, inputObjectType, extendType, arg, nonNull } from "nexus"
-import { ForbiddenError, AuthenticationError } from "apollo-server-core"
+import { AuthenticationError } from "apollo-server-core"
 import { Context } from "../context"
 
 export const VerifiedUser = objectType({
@@ -25,8 +25,6 @@ export const VerifiedUserArg = inputObjectType({
     t.nonNull.string("personal_unique_code")
     t.nonNull.string("home_organization")
     t.nonNull.string("person_affiliation")
-    t.nonNull.id("organization_id")
-    t.nonNull.string("organization_secret")
   },
 })
 
@@ -44,29 +42,15 @@ export const VerifiedUserMutations = extendType({
       },
       resolve: async (_, { verified_user }, ctx: Context) => {
         const {
-          organization_id,
           display_name,
           personal_unique_code,
           home_organization,
           person_affiliation,
-          organization_secret,
         } = verified_user
         const { user: currentUser } = ctx
 
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
-        }
-
-        const organization = await ctx.prisma.organization.findUnique({
-          where: { id: organization_id },
-        })
-
-        if (!organization || !organization?.secret_key) {
-          throw new ForbiddenError("no organization or organization secret")
-        }
-
-        if (organization.secret_key !== organization_secret) {
-          throw new ForbiddenError("wrong organization secret key")
         }
 
         return ctx.prisma.verifiedUser.create({

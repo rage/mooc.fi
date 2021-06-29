@@ -20,14 +20,21 @@ const SHIBBOLETH_HEADERS = [
   "schachomeorganization",
   "edupersonaffiliation",
 ] as const
+type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 
-const defaultHeaders: Record<typeof SHIBBOLETH_HEADERS[number], string> = {
+const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
-  schachomeorganization: "yliopisto.fi",
+  schachomeorganization: "helsinki.fi",
   schacpersonaluniquecode:
-    "urn:schac:personalUniqueCode:fi:yliopisto.fi:121345678",
+    "urn:schac:personalUniqueCode:fi:helsinki.fi:121345678",
   edupersonaffiliation: "member;student",
 }
+
+const requiredFields: HeaderField[] = [
+  "schacpersonaluniquecode",
+  "schachomeorganization",
+  "edupersonaffiliation",
+]
 
 app.set("port", PORT)
 app.use(cors())
@@ -90,7 +97,7 @@ const handler = async (req: Request, res: Response) => {
       throw new Error("You're not authorized to do this")
     }
 
-    if (!schacpersonaluniquecode || !displayname) {
+    if (!requiredFields.every((field) => Boolean(headers[field]))) {
       throw new Error("Required attributes missing")
     }
 
