@@ -20,16 +20,13 @@ export const ConnectionTestQuery = gql`
       email
       verified_users {
         id
-        organization {
-          slug
-          organization_translations {
-            language
-            name
-          }
-        }
         created_at
         personal_unique_code
         display_name
+        home_organization
+        person_affiliation
+        person_affiliation_updated_at
+        updated_at
       }
     }
   }

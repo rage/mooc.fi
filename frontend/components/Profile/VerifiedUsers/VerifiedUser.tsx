@@ -23,9 +23,7 @@ function VerifiedUser({ data }: VerifiedUserProps) {
   return (
     <VerifiedUserCard>
       <VerifiedUserCardTitle variant="section">
-        <Typography variant="h3">
-          {data?.organization?.organization_translations[0].name}
-        </Typography>
+        <Typography variant="h3">{data?.home_organization}</Typography>
         <Typography variant="h3">{data?.personal_unique_code}</Typography>
       </VerifiedUserCardTitle>
     </VerifiedUserCard>

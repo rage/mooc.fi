@@ -28,13 +28,10 @@ export const UserOverViewQuery = gql`
       email
       verified_users {
         id
-        organization {
-          slug
-          organization_translations {
-            language
-            name
-          }
-        }
+        home_organization
+        person_affiliation
+        person_affiliation_updated_at
+        updated_at
         created_at
         personal_unique_code
         display_name
