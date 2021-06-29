@@ -2,7 +2,7 @@ import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
-import { HY_ORGANIZATION_SECRET, HY_ORGANIZATION_ID, PORT } from "./config"
+import { PORT } from "./config"
 const isProduction = process.env.NODE_ENV === "production"
 
 const API_URL = isProduction
