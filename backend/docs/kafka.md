@@ -1,4 +1,4 @@
-`Feel free to edit this documentation for better language`
+{"name":"RDD","id":"b925ec4a-4c68-41ad-9fce-0bb6f3f480b1","part":2,"section":0,"max_points":1,"deleted":false}{"name":"RDD","id":"b925ec4a-4c68-41ad-9fce-0bb6f3f480b1","part":2,"section":0,"max_points":1,"deleted":false}`Feel free to edit this documentation for better language`
 # Kafka
 https://kafka.apache.org/intro
 >Apache Kafka® is a distributed streaming platform. 
@@ -161,7 +161,7 @@ export interface Message {
   user_id: Number
   course_id: string
   service_id: string
-  required_actions: string | null
+  required_actions: [string]
   message_format_version: Number
 }
 ```
@@ -179,7 +179,7 @@ Message:
 | user_id | user id from tmc | can be queryed from tmc api with email
 | course_id | course id from points db | this is broadcasted in kafka topic courses when a course is created
 | service_id | service_id from points db | each service has one id and this should be stored in services own db
-| required_action | what user needs to do to complete the exercise | this field is optional
+| required_actions | what user needs to do to complete the exercise | this field is optional
 | message_format_version | which version of message format is used | messages with wrong number are not processed
 
 
