@@ -77,17 +77,17 @@ const Authorization = () => {
   const [showTrusted, setShowTrusted] = useState(false)
 
   useEffect(() => {
-    useAuthorization()
+    authorize()
   }, [])
 
-  const useAuthorization = async () => {
+  const authorize = async () => {
     try {
       const res = await getAuthorization(router.query.code)
       setRedirectUri(res.redirectUri)
       setShowTrusted(res.trusted)
 
       if (res.trusted) {
-        useDecision(true)
+        getDecision(true)
       }
     } catch (error) {
       if (error.response.data.status === 404) {
@@ -100,7 +100,7 @@ const Authorization = () => {
     }
   }
 
-  const useDecision = async (choice: boolean) => {
+  const getDecision = async (choice: boolean) => {
     if (choice === true) {
       try {
         const res = await decision(router.query.code)
@@ -113,7 +113,7 @@ const Authorization = () => {
     }
   }
 
-  const useSignIn = async () => {
+  const postSignIn = async () => {
     try {
       await signIn(email, password)
       setShowForm(false)
@@ -167,7 +167,7 @@ const Authorization = () => {
             onClick={async (e) => {
               e.preventDefault()
               try {
-                await useSignIn()
+                await postSignIn()
               } catch (error) {
                 setError(true)
               }
@@ -211,8 +211,8 @@ const Authorization = () => {
     <Container style={{ width: "90%", maxWidth: 900 }}>
       <StyledPaper>
         <p>{t("authConsent")}</p>
-        <AllowButton onClick={() => useDecision(true)}>Allow</AllowButton>
-        <DenyButton onClick={() => useDecision(false)}>Deny</DenyButton>
+        <AllowButton onClick={() => getDecision(true)}>Allow</AllowButton>
+        <DenyButton onClick={() => getDecision(false)}>Deny</DenyButton>
       </StyledPaper>
     </Container>
   )

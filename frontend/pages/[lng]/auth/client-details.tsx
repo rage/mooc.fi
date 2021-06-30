@@ -110,20 +110,20 @@ const ClientDetails = () => {
   const [confirmRegenerate, setConfirmRegenerate] = useState(false)
 
   useEffect(() => {
-    useShowClient()
+    fetchClient()
   }, [])
 
   const answerDelete = () => {
     setConfirmDelete(false)
-    useDeleteClient()
+    removeClient()
   }
 
   const answerRegenerate = () => {
     setConfirmRegenerate(false)
-    useRegenerateClient()
+    regenerateClientKeys()
   }
 
-  const useShowClient = async () => {
+  const fetchClient = async () => {
     try {
       const res = await showClient(router.query.id)
       setClient(res)
@@ -132,7 +132,7 @@ const ClientDetails = () => {
     }
   }
 
-  const useUpdateClient = async () => {
+  const putClient = async () => {
     try {
       const res = await updateClient(router.query.id)
       setClient(res)
@@ -141,7 +141,7 @@ const ClientDetails = () => {
     }
   }
 
-  const useRegenerateClient = async () => {
+  const regenerateClientKeys = async () => {
     try {
       const res = await regenerateClient(router.query.id)
       setClient(res.client)
@@ -150,7 +150,7 @@ const ClientDetails = () => {
     }
   }
 
-  const useDeleteClient = async () => {
+  const removeClient = async () => {
     try {
       await deleteClient(router.query.id)
       router.push("/en/auth/clients")
@@ -210,7 +210,7 @@ const ClientDetails = () => {
               Regenerate
             </ClientButton>
           )}
-          <CancelButton onClick={useUpdateClient}>Save</CancelButton>
+          <CancelButton onClick={putClient}>Save</CancelButton>
         </section>
       </Options>
     </Container>
