@@ -27,7 +27,7 @@ const StyledPaper = styled(Paper)`
   margin-bottom: 2em;
 `
 
-const Header = styled(Typography) <any>`
+const Header = styled(Typography)<any>`
   margin: 1em;
 `
 
@@ -89,7 +89,6 @@ const Authorization = () => {
       if (res.trusted) {
         useDecision(true)
       }
-
     } catch (error) {
       if (error.response.data.status === 404) {
         setShowError(true)
