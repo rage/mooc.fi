@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react"
 import LangLink from "/components/LangLink"
-import axios from "axios"
 import styled from "@emotion/styled"
-import { getAccessToken } from "../../../lib/authentication"
-
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://mooc.fi"
-    : "http://localhost:4000"
+import { getClients, createClient } from "../../../services/moocfi"
 
 const Container = styled.section`
   width: 100%;
@@ -146,51 +140,34 @@ const Clients = () => {
   const [clientRedirect, setClientRedirect] = useState("")
 
   useEffect(() => {
-    getClients()
+    useGetClients()
   }, [])
 
-  const getClients = async () => {
-    axios({
-      method: "GET",
-      url: `${BASE_URL}/auth/clients`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getAccessToken(undefined)}`,
-      },
-    })
-      .then((response) => response.data)
-      .then((json) => setClients(json))
-      .catch((json) => console.log(json))
+  const useGetClients = async () => {
+    try {
+      const res = await getClients()
+      setClients(res)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  const createClient = async () => {
+  const useCreateClient = async () => {
     setShowCreateComplete(false)
     setShowCreateError(false)
     setCreateError("")
-    axios({
-      method: "POST",
-      url: `${BASE_URL}/auth/clients`,
-      data: {
-        name: clientName,
-        redirect_uri: clientRedirect,
-      },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getAccessToken(undefined)}`,
-      },
-    })
-      .then((response) => response.data)
-      .then((json) => {
-        setShowCreate(false)
-        setShowCreateComplete(true)
-        clients.push(json.client)
-        setClients([...clients])
-        setCreateDetails(json.client)
-      })
-      .catch((error) => {
-        setShowCreateError(true)
-        setCreateError(error.response.data.error.error)
-      })
+
+    try {
+      const res = await createClient(clientName, clientRedirect)
+      setShowCreate(false)
+      setShowCreateComplete(true)
+      clients.push(res.client)
+      setClients([...clients])
+      setCreateDetails(res.client)
+    } catch (error) {
+      setShowCreateError(true)
+      setCreateError(error.response.data.error.error)
+    }
   }
 
   return (
@@ -242,7 +219,7 @@ const Clients = () => {
               />
             </InputContainer>
             <InputOptions>
-              <ClientButton onClick={createClient}>Confirm</ClientButton>
+              <ClientButton onClick={useCreateClient}>Confirm</ClientButton>
               <CancelButton onClick={() => setShowCreate(!showCreate)}>
                 Cancel
               </CancelButton>
