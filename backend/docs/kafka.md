@@ -1,4 +1,4 @@
-{"name":"RDD","id":"b925ec4a-4c68-41ad-9fce-0bb6f3f480b1","part":2,"section":0,"max_points":1,"deleted":false}{"name":"RDD","id":"b925ec4a-4c68-41ad-9fce-0bb6f3f480b1","part":2,"section":0,"max_points":1,"deleted":false}`Feel free to edit this documentation for better language`
+`Feel free to edit this documentation for better language`
 # Kafka
 https://kafka.apache.org/intro
 >Apache Kafka® is a distributed streaming platform. 
