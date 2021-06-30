@@ -140,10 +140,10 @@ const Clients = () => {
   const [clientRedirect, setClientRedirect] = useState("")
 
   useEffect(() => {
-    useGetClients()
+    fetchClients()
   }, [])
 
-  const useGetClients = async () => {
+  const fetchClients = async () => {
     try {
       const res = await getClients()
       setClients(res)
@@ -152,7 +152,7 @@ const Clients = () => {
     }
   }
 
-  const useCreateClient = async () => {
+  const storeClient = async () => {
     setShowCreateComplete(false)
     setShowCreateError(false)
     setCreateError("")
@@ -219,7 +219,7 @@ const Clients = () => {
               />
             </InputContainer>
             <InputOptions>
-              <ClientButton onClick={useCreateClient}>Confirm</ClientButton>
+              <ClientButton onClick={storeClient}>Confirm</ClientButton>
               <CancelButton onClick={() => setShowCreate(!showCreate)}>
                 Cancel
               </CancelButton>
