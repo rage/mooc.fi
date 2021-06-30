@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import axios from "axios"
 import styled from "@emotion/styled"
-import { getAccessToken } from "../../../lib/authentication"
-
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://mooc.fi"
-    : "http://localhost:4000"
+import { showClient, updateClient, regenerateClient, deleteClient } from '../../../services/moocfi'
 
 const Container = styled.section`
   width: 100%;
@@ -111,77 +105,53 @@ const ClientDetails = () => {
   const [confirmRegenerate, setConfirmRegenerate] = useState(false)
 
   useEffect(() => {
-    showClient()
+    useShowClient()
   }, [])
 
   const answerDelete = () => {
     setConfirmDelete(false)
-    deleteClient()
+    useDeleteClient()
   }
 
   const answerRegenerate = () => {
     setConfirmRegenerate(false)
-    regenerateClient()
+    useRegenerateClient()
   }
 
-  const showClient = async () => {
-    axios({
-      method: "GET",
-      url: `${BASE_URL}/auth/client/${router.query.id}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getAccessToken(undefined)}`,
-      },
-    })
-      .then((response) => response.data)
-      .then((json) => setClient(json))
-      .catch((json) => console.log(json))
+  const useShowClient = async () => {
+    try {
+      const res = await showClient(router.query.id)
+      setClient(res)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  const updateClient = async () => {
-    axios({
-      method: "PUT",
-      url: `${BASE_URL}/auth/client/${router.query.id}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getAccessToken(undefined)}`,
-      },
-    })
-      .then((response) => response.data)
-      .then((json) => setClient(json))
-      .catch((json) => console.log(json))
+  const useUpdateClient = async () => {
+    try {
+      const res = await updateClient(router.query.id)
+      setClient(res)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  const regenerateClient = async () => {
-    axios({
-      method: "POST",
-      url: `${BASE_URL}/auth/regenerateSecret/${router.query.id}`,
-      data: {},
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getAccessToken(undefined)}`,
-      },
-    })
-      .then((response) => response.data)
-      .then((json) => setClient(json.client))
-      .catch((json) => console.log(json))
+  const useRegenerateClient = async () => {
+    try {
+      const res = await regenerateClient(router.query.id)
+      setClient(res.client)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  const deleteClient = async () => {
-    axios({
-      method: "POST",
-      url: `${BASE_URL}/auth/deleteClient/${router.query.id}`,
-      data: {},
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getAccessToken(undefined)}`,
-      },
-    })
-      .then((response) => response.data)
-      .then(() => {
-        router.push("/en/auth/clients")
-      })
-      .catch((json) => console.log(json))
+  const useDeleteClient = async () => {
+    try {
+      await deleteClient(router.query.id)
+      router.push("/en/auth/clients")
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -235,7 +205,7 @@ const ClientDetails = () => {
               Regenerate
             </ClientButton>
           )}
-          <CancelButton onClick={updateClient}>Save</CancelButton>
+          <CancelButton onClick={useUpdateClient}>Save</CancelButton>
         </section>
       </Options>
     </Container>

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import Cookies from "universal-cookie"
-import axios from "axios"
 import styled from "@emotion/styled"
+import { decision, getAuthorization, signIn } from "../../services/moocfi"
 
 import Container from "../../components/Container"
 import Paper from "@material-ui/core/Paper"
@@ -19,12 +18,6 @@ import { FormSubmitButton as SubmitButton } from "../../components/Buttons/FormS
 import CommonTranslations from "../../translations/common"
 import { useTranslator } from "../../util/useTranslator"
 
-const domain = process.env.NODE_ENV === "production" ? "mooc.fi" : "localhost"
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://mooc.fi"
-    : "http://localhost:4000"
-
 const StyledPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
@@ -34,7 +27,7 @@ const StyledPaper = styled(Paper)`
   margin-bottom: 2em;
 `
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography) <any>`
   margin: 1em;
 `
 
@@ -72,7 +65,6 @@ const DenyButton = styled.div`
 
 const Authorization = () => {
   const router = useRouter()
-  const cookies = new Cookies()
   const t = useTranslator(CommonTranslations)
 
   const [showForm, setShowForm] = useState(false)
@@ -83,95 +75,54 @@ const Authorization = () => {
   const [password, setPassword] = useState("")
   const [redirectUri, setRedirectUri] = useState("")
   const [showTrusted, setShowTrusted] = useState(false)
-  const token = cookies.get("token")
-  const tmcToken = cookies.get("tmcToken")
 
   useEffect(() => {
-    getAuthorization()
+    useAuthorization()
   }, [])
 
-  const getAuthorization = async () => {
-    return await axios({
-      method: "GET",
-      url: `${BASE_URL}/auth/authorize/${router.query.code}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.data)
-      .then((json) => {
-        setRedirectUri(json.redirectUri)
-        setShowTrusted(json.trusted)
-        if (json.trusted) {
-          decision(true)
-        }
-      })
-      .catch((error) => {
-        if (error.response.data.status === 404) {
-          setShowError(true)
-          setErrorMessage(error.response.data.message)
-          return false
-        } else if (error.response.data.status === 403) {
-          setShowForm(true)
-          setRedirectUri(error.response.data.redirectUri)
-          return false
-        }
-      })
+  const useAuthorization = async () => {
+    try {
+      const res = await getAuthorization(router.query.code)
+      setRedirectUri(res.redirectUri)
+      setShowTrusted(res.trusted)
+
+      if (res.trusted) {
+        useDecision(true)
+      }
+
+    } catch (error) {
+      if (error.response.data.status === 404) {
+        setShowError(true)
+        setErrorMessage(error.response.data.message)
+      } else if (error.response.data.status === 403) {
+        setShowForm(true)
+        setRedirectUri(error.response.data.redirectUri)
+      }
+    }
   }
 
-  const decision = async (choice: boolean) => {
+  const useDecision = async (choice: boolean) => {
     if (choice === true) {
-      return await axios({
-        method: "GET",
-        url: `${BASE_URL}/auth/decision/${router.query.code}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${cookies.get("token")}`,
-        },
-      })
-        .then((response) => response.data)
-        .then((json) => {
-          router.push(
-            `${json.redirectUri}?code=${router.query.code}&tmc=${
-              tmcToken || cookies.get("tmcToken")
-            }`,
-          )
-        })
+      try {
+        const res = await decision(router.query.code)
+        router.push(res)
+      } catch (error) {
+        router.push(redirectUri)
+      }
     } else {
       router.push(redirectUri)
     }
   }
 
-  const signIn = () => {
-    axios({
-      method: "POST",
-      url: `${BASE_URL}/auth/token`,
-      data: {
-        email,
-        password,
-        grant_type: "password",
-      },
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => response.data)
-      .then((json) => {
-        cookies.set("token", JSON.stringify(json.access_token), {
-          domain: domain,
-        })
-        cookies.set("tmcToken", JSON.stringify(json.tmc_token), {
-          domain: domain,
-        })
-        return json.access_token
-      })
-      .then(() => {
-        setShowForm(false)
-        setShowError(false)
-      })
-      .catch((error) => {
-        setError(true)
-        setErrorMessage(error.response.data.message)
-      })
+  const useSignIn = async () => {
+    try {
+      await signIn(email, password)
+      setShowForm(false)
+      setShowError(false)
+    } catch (error) {
+      setShowError(true)
+      setErrorMessage(error.response.data.message)
+    }
   }
 
   if (showForm) {
@@ -217,7 +168,7 @@ const Authorization = () => {
             onClick={async (e) => {
               e.preventDefault()
               try {
-                await signIn()
+                await useSignIn()
               } catch (error) {
                 setError(true)
               }
@@ -261,8 +212,8 @@ const Authorization = () => {
     <Container style={{ width: "90%", maxWidth: 900 }}>
       <StyledPaper>
         <p>{t("authConsent")}</p>
-        <AllowButton onClick={() => decision(true)}>Allow</AllowButton>
-        <DenyButton onClick={() => decision(false)}>Deny</DenyButton>
+        <AllowButton onClick={() => useDecision(true)}>Allow</AllowButton>
+        <DenyButton onClick={() => useDecision(false)}>Deny</DenyButton>
       </StyledPaper>
     </Container>
   )
