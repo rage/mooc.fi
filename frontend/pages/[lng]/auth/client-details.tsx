@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import styled from "@emotion/styled"
-import { showClient, updateClient, regenerateClient, deleteClient } from '../../../services/moocfi'
+import {
+  showClient,
+  updateClient,
+  regenerateClient,
+  deleteClient,
+} from "../../../services/moocfi"
 
 const Container = styled.section`
   width: 100%;
