@@ -3,6 +3,7 @@ import { getTestContext, fakeTMCCurrent } from "../../tests/__helpers"
 import { adminUserDetails, normalUserDetails } from "../../tests/data"
 import { seed } from "../../tests/data/seed"
 import { VerifiedUser } from "@prisma/client"
+import { orderBy } from "lodash"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
@@ -129,29 +130,55 @@ describe("VerifiedUser", () => {
 
     describe("deleteVerifiedUser", () => {
       describe("admin user", () => {
-        it("should be able to delete other users with user_id specified", async () => {
+        it("should be able to delete other users with user_id specified, not affecting own connections", async () => {
+          const ownBefore = await ctx.prisma.verifiedUser.findMany({
+            where: {
+              user_id: "20000000000000000000000000000103",
+            },
+          })
+
+          let res
+
           try {
-            const res = await ctx.client.request(deleteVerifiedUserMutation, {
-              user_id: "20000000000000000000000000000104",
-              personal_unique_code:
-                "personal:unique:code:second-university.fi:third",
-            }, {
-              Authorization: "Bearer admin"
-            })
-            const notExisting = await ctx.prisma.verifiedUser.findUnique({
-              where: {
-                user_id_personal_unique_code: {
-                  user_id: "20000000000000000000000000000104",
-                  personal_unique_code:
-                    "personal:unique:code:second-university.fi:third",
-                }
-              }
-            })
-            expect(notExisting).toBeNull()
+            res = await ctx.client.request(
+              deleteVerifiedUserMutation,
+              {
+                user_id: "20000000000000000000000000000104",
+                personal_unique_code:
+                  "personal:unique:code:second-university.fi:third",
+              },
+              {
+                Authorization: "Bearer admin",
+              },
+            )
           } catch {
             fail()
           }
+
+          expect(res.deleteVerifiedUser.personal_unique_code).toEqual(
+            "personal:unique:code:second-university.fi:third",
+          )
+          // should not affect own
+
+          const notExisting = await ctx.prisma.verifiedUser.findUnique({
+            where: {
+              user_id_personal_unique_code: {
+                user_id: "20000000000000000000000000000104",
+                personal_unique_code:
+                  "personal:unique:code:second-university.fi:third",
+              },
+            },
           })
+          expect(notExisting).toBeNull()
+
+          const ownAfter = await ctx.prisma.verifiedUser.findMany({
+            where: {
+              user_id: "20000000000000000000000000000103",
+            },
+          })
+
+          expect(orderBy(ownBefore, "id")).toEqual(orderBy(ownAfter, "id"))
+        })
       })
 
       describe("normal user", () => {

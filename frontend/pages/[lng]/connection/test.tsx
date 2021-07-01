@@ -1,12 +1,15 @@
 import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
+import { useQuery, useMutation } from "@apollo/client"
 import { Alert } from "@material-ui/core"
+import { useRouter } from "next/router"
 import React from "react"
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 import Spinner from "/components/Spinner"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import withSignedIn from "/lib/with-signed-in"
+import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
 
 export const ConnectionTestQuery = gql`
@@ -32,8 +35,33 @@ export const ConnectionTestQuery = gql`
   }
 `
 
+export const DeleteVerifiedUserMutation = gql`
+  mutation eleteVerifiedUser(
+    $personal_unique_code: String!
+  ) {
+    deleteVerifiedUser(
+      personal_unique_code: $personal_unique_code
+    ) {
+      id
+      personal_unique_code
+    }
+  }
+`
+
 function ConnectionTest() {
+  const { language } = useLanguageContext()
+
   const { data, error, loading } = useQuery(ConnectionTestQuery)
+  const [deleteVerifiedUser, { }] = useMutation(
+    DeleteVerifiedUserMutation,
+    {
+      refetchQueries: [{
+        query: ConnectionTestQuery
+      }]
+    }
+  )
+  const router = useRouter()
+
   const connectionSuccess = useQueryParameter("success", false)
   const connectionError = useQueryParameter("error", false)
 
@@ -50,20 +78,29 @@ function ConnectionTest() {
     return <Spinner />
   }
 
+  const onDisconnect = (user: ProfileUserOverView_currentUser_verified_users) => {
+    deleteVerifiedUser({ variables: { personal_unique_code: user.personal_unique_code }})
+      .then((res) => router.replace(`/${language}/connection/test?success=${res.deleteVerifiedUser.id}`, undefined, { shallow: true }))
+      .catch(() => router.replace(`/${language}/connection/test?error`))
+  }
+
   return (
     <Container style={{ maxWidth: 900 }}>
       {connectionSuccess && (
-        <Alert severity="success">Connection successful!</Alert>
+        <Alert severity="success">Success!</Alert>
       )}
       {connectionError && (
         <Alert severity="error">
-          Connection error:
+          Error:
           <pre>
             <code>{JSON.stringify(decodedConnectionError, null, 2)}</code>
           </pre>
         </Alert>
       )}
-      <VerifiedUsers data={data?.currentUser?.verified_users} />
+      <VerifiedUsers 
+        data={data?.currentUser?.verified_users} 
+        onDisconnect={onDisconnect}
+      />
     </Container>
   )
 }

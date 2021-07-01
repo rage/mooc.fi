@@ -109,9 +109,7 @@ export const VerifiedUserMutations = extendType({
         if (ctx.role !== Role.ADMIN && Boolean(user_id)) {
           throw new Error("must be admin to specify deletable user_id") 
         }
-        const _user_id = Boolean(user_id) 
-          ? user_id 
-          : ctx.user?.id
+        const _user_id = user_id ?? ctx.user?.id
 
         if (isNullOrUndefined(_user_id)) {
           throw new AuthenticationError("not logged in")
