@@ -12,6 +12,7 @@ const isProduction = process.env.NODE_ENV === "production"
 
 interface VerifiedUsersProps {
   data?: ProfileUserOverView_currentUser_verified_users[]
+  onDisconnect: (_: ProfileUserOverView_currentUser_verified_users) => void
 }
 
 const Container = styled(Paper)`
@@ -25,7 +26,7 @@ const Container = styled(Paper)`
   }
 `
 
-function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
+function VerifiedUsers({ data = [], onDisconnect }: VerifiedUsersProps) {
   const { language } = useLanguageContext()
 
   const HY_CONNECT_URL = isProduction
@@ -45,7 +46,11 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
   return (
     <Container>
       {data.map((verified_user) => (
-        <VerifiedUser key={verified_user.id} data={verified_user} />
+        <VerifiedUser 
+          key={verified_user.id} 
+          data={verified_user} 
+          onDisconnect={onDisconnect}
+        />
       ))}
       {!isConnected("helsinki.fi") && (
         <Link href={HY_CONNECT_URL}>

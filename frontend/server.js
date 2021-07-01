@@ -20,7 +20,11 @@ const DirectFrom = Redirects.redirects_list
 const cypress = process.env.CYPRESS === "true"
 const createMockBackend = require("./tests/mockBackend")
 
+let i = 0
+
 const main = async () => {
+  console.log("Run", ++i)
+
   try {
     await app.prepare()
   } catch (e) {
@@ -65,6 +69,7 @@ const main = async () => {
 
 const main2 = async () => {
   try {
+    console.log("Going to main")
     await main()
   } catch (e) {
     console.error("Server crashed :(", e)
