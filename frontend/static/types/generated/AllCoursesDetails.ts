@@ -8,22 +8,22 @@
 // ====================================================
 
 export interface AllCoursesDetails_courses_completion_email {
-  __typename: "EmailTemplate"
-  name: string | null
-  id: string
+  __typename: "EmailTemplate";
+  name: string | null;
+  id: string;
 }
 
 export interface AllCoursesDetails_courses {
-  __typename: "Course"
-  id: string
-  slug: string
-  name: string
-  teacher_in_charge_name: string
-  teacher_in_charge_email: string
-  start_date: string
-  completion_email: AllCoursesDetails_courses_completion_email | null
+  __typename: "Course";
+  id: string;
+  slug: string;
+  name: string;
+  teacher_in_charge_name: string;
+  teacher_in_charge_email: string;
+  start_date: string;
+  completion_email: AllCoursesDetails_courses_completion_email | null;
 }
 
 export interface AllCoursesDetails {
-  courses: (AllCoursesDetails_courses | null)[] | null
+  courses: (AllCoursesDetails_courses | null)[] | null;
 }

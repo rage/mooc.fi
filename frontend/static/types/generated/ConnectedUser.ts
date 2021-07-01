@@ -8,23 +8,23 @@
 // ====================================================
 
 export interface ConnectedUser_currentUser_verified_users {
-  __typename: "VerifiedUser"
-  id: string
-  created_at: any | null
-  updated_at: any | null
-  display_name: string | null
-  home_organization: string
-  person_affiliation: string
-  person_affiliation_updated_at: any
+  __typename: "VerifiedUser";
+  id: string;
+  created_at: any | null;
+  updated_at: any | null;
+  display_name: string | null;
+  home_organization: string;
+  person_affiliation: string;
+  person_affiliation_updated_at: any;
 }
 
 export interface ConnectedUser_currentUser {
-  __typename: "User"
-  id: string
-  upstream_id: number
-  verified_users: ConnectedUser_currentUser_verified_users[]
+  __typename: "User";
+  id: string;
+  upstream_id: number;
+  verified_users: ConnectedUser_currentUser_verified_users[];
 }
 
 export interface ConnectedUser {
-  currentUser: ConnectedUser_currentUser | null
+  currentUser: ConnectedUser_currentUser | null;
 }

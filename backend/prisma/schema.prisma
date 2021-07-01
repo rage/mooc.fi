@@ -507,6 +507,7 @@ model VerifiedUser {
   user                                     User?         @relation(fields: [user_id], references: [id])
 
   @@map("verified_user")
+  @@unique([user_id, personal_unique_code])
   @@unique([user_id, personal_unique_code, home_organization])
 }
 

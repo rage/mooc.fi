@@ -1,6 +1,9 @@
-import { objectType, inputObjectType, extendType, arg, nonNull } from "nexus"
+import { objectType, inputObjectType, extendType, arg, nonNull, stringArg, idArg, nullable } from "nexus"
 import { AuthenticationError } from "apollo-server-core"
 import { Context } from "../context"
+import { isAdmin, isUser, or, Role } from "../accessControl"
+import { isNullOrUndefined } from "../util/isNullOrUndefined"
+import { DatabaseInputError } from "../bin/lib/errors"
 
 export const VerifiedUser = objectType({
   name: "VerifiedUser",
@@ -28,6 +31,31 @@ export const VerifiedUserArg = inputObjectType({
   },
 })
 
+/*export const VerifiedUserQueries = extendType({
+  type: "Query",
+  definition(t) {
+    t.nullable.field("verifiedUser",  {
+      type: "VerifiedUser",
+      args: {nonNull(
+        personal_unique_code: nonNull(stringArg()),
+        secret: nonNull(stringArg())
+      },
+      resolve: async (_, { personal_unique_code, secret }, ctx) => {
+        if (secret !== process.env.VERIFIED_USER_SECRET) {
+          throw new AuthenticationError("not allowed without secret")
+        }
+        const verified_user = await ctx.prisma.verifiedUser.findFirst({
+          where: {
+            personal_unique_code
+          }
+        })
+
+        return verified_user // only return id or something?
+      }
+    })
+  }
+})*/
+
 export const VerifiedUserMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -52,17 +80,52 @@ export const VerifiedUserMutations = extendType({
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
         }
-
-        return ctx.prisma.verifiedUser.create({
-          data: {
-            user: { connect: { id: currentUser.id } },
-            personal_unique_code,
-            display_name,
-            home_organization,
-            person_affiliation,
-          },
-        })
+        
+        try {
+          const res = await ctx.prisma.verifiedUser.create({
+            data: {
+              user: { connect: { id: currentUser.id } },
+              personal_unique_code,
+              display_name,
+              home_organization,
+              person_affiliation,
+            },
+          })
+          return res
+        } catch {
+          throw new DatabaseInputError("user already verified")
+        }
       },
+    })
+
+    t.field("deleteVerifiedUser", {
+      type: "VerifiedUser",
+      args: {
+        personal_unique_code: nonNull(stringArg()),
+        user_id: nullable(idArg())
+      },
+      authorize: or(isAdmin, isUser),
+      resolve: async (_, { personal_unique_code, user_id }, ctx: Context) => {
+        if (ctx.role !== Role.ADMIN && Boolean(user_id)) {
+          throw new Error("must be admin to specify deletable user_id") 
+        }
+        const _user_id = Boolean(user_id) 
+          ? user_id 
+          : ctx.user?.id
+
+        if (isNullOrUndefined(_user_id)) {
+          throw new AuthenticationError("not logged in")
+        }
+
+        return ctx.prisma.verifiedUser.delete({
+          where: {
+            user_id_personal_unique_code: {
+              user_id: _user_id,
+              personal_unique_code
+            }
+          }
+        })
+      }
     })
   },
 })
