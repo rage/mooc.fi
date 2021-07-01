@@ -8,15 +8,15 @@
 // ====================================================
 
 export interface deleteStudyModule_deleteStudyModule {
-  __typename: "StudyModule"
-  id: string
-  slug: string
+  __typename: "StudyModule";
+  id: string;
+  slug: string;
 }
 
 export interface deleteStudyModule {
-  deleteStudyModule: deleteStudyModule_deleteStudyModule | null
+  deleteStudyModule: deleteStudyModule_deleteStudyModule | null;
 }
 
 export interface deleteStudyModuleVariables {
-  id: string
+  id: string;
 }

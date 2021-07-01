@@ -8,11 +8,11 @@
 // ====================================================
 
 export interface consentQuery_currentUser {
-  __typename: "User"
-  id: string
-  research_consent: boolean | null
+  __typename: "User";
+  id: string;
+  research_consent: boolean | null;
 }
 
 export interface consentQuery {
-  currentUser: consentQuery_currentUser | null
+  currentUser: consentQuery_currentUser | null;
 }

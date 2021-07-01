@@ -614,3 +614,29 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     tiers: null,
   },
 ]
+
+export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [{
+  id: "65400000000000000000000000000001",
+  user: { connect: { id: "20000000000000000000000000000103" } },
+  display_name: "admin",
+  personal_unique_code: "personal:unique:code:university.fi:admin",
+  home_organization: "university.fi",
+  person_affiliation: "member;student;staff"
+},
+{
+  id: "65400000000000000000000000000002",
+  user: { connect: { id: "20000000000000000000000000000104" } },
+  display_name: "third user",
+  personal_unique_code: "personal:unique:code:university.fi:third",
+  home_organization: "university.fi",
+  person_affiliation: "member;student"
+},
+{
+  id: "65400000000000000000000000000003",
+  user: { connect: { id: "20000000000000000000000000000104" } },
+  display_name: "third user",
+  personal_unique_code: "personal:unique:code:second-university.fi:third",
+  home_organization: "second-university.fi",
+  person_affiliation: "member;student"
+},
+]
