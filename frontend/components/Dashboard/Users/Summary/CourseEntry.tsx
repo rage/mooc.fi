@@ -53,7 +53,7 @@ function CourseEntry({ data }: CourseEntryProps) {
   const { state, dispatch } = useCollapseContext()
 
   // @ts-ignore: not used
-  const exercisesPerPart =
+  /*const exercisesPerPart =
     data?.exercise_completions
       ?.filter(notEmpty)
       .reduce<
@@ -70,7 +70,7 @@ function CourseEntry({ data }: CourseEntryProps) {
           ),
         }),
         {},
-      ) ?? {}
+      ) ?? {}*/
 
   if (!data) {
     return <CourseEntryCardSkeleton />

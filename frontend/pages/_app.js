@@ -89,6 +89,8 @@ class MyApp extends App {
   setBreadcrumbs = (breadcrumbs) => this.setState({ breadcrumbs })
 
   render() {
+    console.log(this.props)
+
     const {
       Component,
       pageProps,
