@@ -4,20 +4,19 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: VerifiedUserDetails
+// GraphQL mutation operation: DeleteVerifiedUser
 // ====================================================
 
-export interface VerifiedUserDetails_verifiedUser {
+export interface DeleteVerifiedUser_deleteVerifiedUser {
   __typename: "VerifiedUser";
   id: string;
-  user_id: string | null;
-}
-
-export interface VerifiedUserDetails {
-  verifiedUser: VerifiedUserDetails_verifiedUser | null;
-}
-
-export interface VerifiedUserDetailsVariables {
   personal_unique_code: string;
-  secret: string;
+}
+
+export interface DeleteVerifiedUser {
+  deleteVerifiedUser: DeleteVerifiedUser_deleteVerifiedUser | null;
+}
+
+export interface DeleteVerifiedUserVariables {
+  personal_unique_code: string;
 }

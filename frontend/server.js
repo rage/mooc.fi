@@ -20,11 +20,7 @@ const DirectFrom = Redirects.redirects_list
 const cypress = process.env.CYPRESS === "true"
 const createMockBackend = require("./tests/mockBackend")
 
-let i = 0
-
 const main = async () => {
-  console.log("Run", ++i)
-
   try {
     await app.prepare()
   } catch (e) {
@@ -63,13 +59,13 @@ const main = async () => {
     server.get("*", redirectHandler)
   }
 
-  await server.listen(port)
-  console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console
+  server.listen(port)
+    .on("listening", () => console.log(`> Ready on http://localhost:${port}`)) // eslint-disable-line no-console
+    .on("error", (e) => console.log("error", e))
 }
 
 const main2 = async () => {
   try {
-    console.log("Going to main")
     await main()
   } catch (e) {
     console.error("Server crashed :(", e)

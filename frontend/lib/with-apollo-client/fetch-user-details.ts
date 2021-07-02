@@ -16,21 +16,6 @@ export const UserDetailQuery = gql`
   }
 `
 
-export const VerifiedUserDetailQuery = gql`
-  query VerifiedUserDetails(
-    $personal_unique_code: String!
-    $secret: String!
-  ) {
-    verifiedUser(
-      personal_unique_code: $personal_unique_code
-      secret: $secret
-    ) {
-      id
-      user_id
-    }
-  }
-`
-
 export default async function fetchUserDetails(
   apollo: ApolloClient<NormalizedCacheObject>,
 ) {
@@ -41,7 +26,7 @@ export default async function fetchUserDetails(
   return data.currentUser
 }
 
-export async function fetchVerifiedUserDetails(
+/*export async function fetchVerifiedUserDetails(
   apollo: ApolloClient<NormalizedCacheObject>,
   personal_unique_code: string
 ) {
@@ -54,4 +39,4 @@ export async function fetchVerifiedUserDetails(
   })
 
   return data.verifiedUser
-}
+}*/

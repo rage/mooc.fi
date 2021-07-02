@@ -26,7 +26,7 @@ const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
   schachomeorganization: "helsinki.fi",
   schacpersonaluniquecode:
-    "urn:schac:personalUniqueCode:fi:helsinki.fi:121345678",
+    "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
   edupersonaffiliation: "member;student",
 }
 
@@ -111,6 +111,7 @@ const handler = async (req: Request, res: Response) => {
       person_affiliation: edupersonaffiliation,
     })
     console.log(result)
+
     res.redirect(
       `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
     )
@@ -119,6 +120,7 @@ const handler = async (req: Request, res: Response) => {
     const encodedError = Buffer.from(
       JSON.stringify({ error: errorMessage }),
     ).toString("base64")
+    
     res.redirect(
       `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
     )
