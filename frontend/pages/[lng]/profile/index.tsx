@@ -15,6 +15,7 @@ import Warning from "@material-ui/icons/Warning"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+import notEmpty from "/util/notEmpty"
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
 export const UserOverViewQuery = gql`
@@ -108,8 +109,7 @@ function Profile() {
         student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
-        {(research_consent === null ||
-          typeof research_consent === "undefined") && (
+        {!notEmpty(research_consent) && (
           <ConsentNotification>
             <Warning />
             {t("researchNotification")}
