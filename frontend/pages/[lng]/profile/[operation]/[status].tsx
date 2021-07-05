@@ -1,13 +1,16 @@
 import { Container, Typography } from "@material-ui/core"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
+import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
 
 interface ConnectionStatusProps {
   status: String
+  operation: "connect" | "disconnect"
 }
 
-function ConnectionStatus({ status }: ConnectionStatusProps) {
+function ConnectionStatus({ operation, status }: ConnectionStatusProps) {
   const isSuccess = status?.toLowerCase().trim() === "success"
+  const capitalizedOperation = capitalizeFirstLetter(operation)
 
   useBreadcrumbs([
     {
@@ -15,14 +18,14 @@ function ConnectionStatus({ status }: ConnectionStatusProps) {
       href: "/profile",
     },
     {
-      translation: "profileConnection",
-      href: "/profile/connection",
+      translation: `profile${capitalizedOperation}`,
+      href: `/profile/${operation}`, // TODO: disconnect doesn't exist
     },
     {
       translation: isSuccess
-        ? "profileConnectionSuccess"
-        : "profileConnectionFailure",
-      href: `/profile/connection/${status}`,
+        ? `profile${capitalizedOperation}Success`
+        : `profile${capitalizedOperation}Failure`,
+      href: `/profile/${operation}/${status}`,
     },
   ])
 
@@ -33,8 +36,12 @@ function ConnectionStatus({ status }: ConnectionStatusProps) {
           {isSuccess ? "Success!" : "Error!"}
         </Typography>
         <Typography variant="body1" align="center">
-          {isSuccess
-            ? "Your account was connected successfully."
+          {operation === "connect"
+            ? isSuccess
+              ? "Your account was connected successfully."
+              : "There was an error connecting your account. Please try again later."
+            : isSuccess
+            ? "Your account was disconnected successfully."
             : "There was an error connecting your account. Please try again later."}
         </Typography>
       </Container>
@@ -43,11 +50,13 @@ function ConnectionStatus({ status }: ConnectionStatusProps) {
 }
 
 ConnectionStatus.getInitialProps = async (ctx: any) => {
-  const { status } = ctx?.query ?? {}
+  const { operation, status } = ctx?.query ?? {}
 
   if (
     !status ||
-    !["success", "failure"].includes(status?.toLowerCase().trim())
+    !operation ||
+    !["success", "failure"].includes(status?.toLowerCase().trim()) ||
+    !["connect", "disconnect"].includes(operation?.toLowerCase().trim())
   ) {
     ctx?.res.writeHead(302, { location: "/404" })
     ctx?.res.end()
@@ -56,7 +65,8 @@ ConnectionStatus.getInitialProps = async (ctx: any) => {
   }
 
   return {
-    status: ctx?.query?.status,
+    status,
+    operation,
   }
 }
 

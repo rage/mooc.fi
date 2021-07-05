@@ -113,7 +113,7 @@ const handler = async (req: Request, res: Response) => {
     console.log(result)
 
     res.redirect(
-      `${FRONTEND_URL}/${language}/profile/connection/success?id=${result.addVerifiedUser.id}`,
+      `${FRONTEND_URL}/${language}/profile/connect/success?id=${result.addVerifiedUser.id}`,
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
@@ -122,7 +122,7 @@ const handler = async (req: Request, res: Response) => {
     ).toString("base64")
 
     res.redirect(
-      `${FRONTEND_URL}/${language}/profile/connection/failure?error=${encodedError}`,
+      `${FRONTEND_URL}/${language}/profile/connect/failure?error=${encodedError}`,
     )
   }
 }
@@ -131,40 +131,6 @@ app.get("/hy", (req: Request, res) => {
   console.log("In HY handler")
 
   return handler(req, res)
-  /*
-  if (!accessToken) {
-    res.json({ error: "You're not authorized to do this" })
-    res.status(401)
-    res.end()
-
-    return
-  }
-
-  if (!schacpersonaluniquecode || !displayname) {
-    res.json({ error: "some fields are missing "})
-  }
-  const client = new GraphQLClient(API_URL, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
-
-  try {
-    const result = await client.request(VERIFIED_USER_MUTATION, {
-      display_name: displayname,
-      personal_unique_code: schacpersonaluniquecode,
-      organization_id: HY_ORGANIZATION_ID,
-      organization_secret: HY_ORGANIZATION_SECRET,
-    })
-    console.log(result)
-    res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
-    )
-  } catch (error) {
-    const encodedError = Buffer.from(JSON.stringify(error)).toString("base64")
-    res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
-    )
-  }
-  */
 })
 
 app.get("/haka", (req, res) => {
