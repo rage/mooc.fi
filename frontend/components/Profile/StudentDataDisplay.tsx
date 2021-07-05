@@ -5,11 +5,11 @@ import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import {
   ProfileUserOverView_currentUser,
-  ProfileUserOverView_currentUser_verified_users,
 } from "/static/types/generated/ProfileUserOverView"
 import ProfileSettings from "/components/Profile/ProfileSettings"
 import notEmpty from "/util/notEmpty"
-import ConnectionList from "/components/Profile/Connection/ConnectionList"
+import OrganizationConnectionList from "./OrganizationConnection/OrganizationConnectionList"
+import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
 
 interface TabPanelProps {
   index: any
@@ -35,15 +35,14 @@ const TabPanel = ({
 interface StudentDataDisplayProps {
   tab: number
   data?: ProfileUserOverView_currentUser
-  onDisconnect: (_: ProfileUserOverView_currentUser_verified_users) => void
 }
 
 const StudentDataDisplay = ({
   tab,
   data,
-  onDisconnect,
 }: StudentDataDisplayProps) => {
   const { completions = [] } = data || {}
+  const { onDisconnect } = useDisconnect()
 
   return (
     <>
@@ -56,7 +55,7 @@ const StudentDataDisplay = ({
         />
       </TabPanel>
       <TabPanel index={2} value={tab}>
-        <ConnectionList
+        <OrganizationConnectionList
           data={data?.verified_users}
           onDisconnect={onDisconnect}
         />

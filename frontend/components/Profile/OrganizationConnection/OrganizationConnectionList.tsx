@@ -1,10 +1,12 @@
 // import { Paper } from "@material-ui/core"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 // import styled from "@emotion/styled"
-import ConnectionEntry from "./ConnectionEntry"
-import ConnectionButtons from "./ConnectionButtons"
+import OrganizationConnectionEntry from "./OrganizationConnectionEntry"
+import OrganizationConnectionButtons from "./OrganizationConnectionButtons"
 import React from "react"
 import { Typography } from "@material-ui/core"
+import { useTranslator } from "/util/useTranslator"
+import ProfileTranslations from "/translations/profile"
 
 interface ConnectionListProps {
   data?: ProfileUserOverView_currentUser_verified_users[]
@@ -23,6 +25,8 @@ interface ConnectionListProps {
 `*/
 
 function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
+  const t = useTranslator(ProfileTranslations)
+  
   const isConnected = (organization: string) =>
     Boolean(
       data.find(
@@ -34,25 +38,23 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
     <>
       <section>
         <h1>
-          Connecting your MOOC.fi profile to learning institution accounts
+          {t("connectTitle")}
         </h1>
-
         <p>
-          On this page, you can connect your MOOC.fi account to any institution
-          accounts you might have, or disconnect your accounts.
+          {t("connectText")}
         </p>
       </section>
       <section>
-        <Typography variant="h4">Existing connections</Typography>
+        <Typography variant="h4">{t("connectExisting")}</Typography>
         {data.map((verified_user) => (
-          <ConnectionEntry
+          <OrganizationConnectionEntry
             key={verified_user.id}
             data={verified_user}
             onDisconnect={onDisconnect}
           />
         ))}
       </section>
-      <ConnectionButtons hyVisible={!isConnected("helsinki.fi")} />
+      <OrganizationConnectionButtons hyVisible={!isConnected("helsinki.fi")} />
     </>
   )
 }

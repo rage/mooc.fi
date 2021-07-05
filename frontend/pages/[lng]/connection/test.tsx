@@ -2,19 +2,17 @@ import { gql } from "@apollo/client"
 import { useQuery, useMutation } from "@apollo/client"
 import { Alert } from "@material-ui/core"
 import { useRouter } from "next/router"
-import React, { Component } from "react"
+import React from "react"
 import { useEffect } from "react"
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import ConnectionList from "../../../components/Profile/Connection/ConnectionList"
+import OrganizationConnectionList from "../../../components/Profile/OrganizationConnection/OrganizationConnectionList"
 import Spinner from "/components/Spinner"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import withSignedIn from "/lib/with-signed-in"
 import { DeleteVerifiedUser } from "/static/types/generated/DeleteVerifiedUser"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { NextPageContext as NextContext } from "next"
-import nookies from "nookies"
 
 export const ConnectionTestQuery = gql`
   query ConnectionTest {
@@ -113,7 +111,7 @@ function ConnectionTest(props: any) {
           </pre>
         </Alert>
       )}
-      <ConnectionList
+      <OrganizationConnectionList
         data={data?.currentUser?.verified_users}
         onDisconnect={onDisconnect}
       />
