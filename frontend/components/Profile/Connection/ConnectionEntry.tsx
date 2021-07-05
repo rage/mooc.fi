@@ -1,13 +1,22 @@
-import { Card, Button, Typography, CardContent, TableCell, TableRow, Table, TableBody, TableContainer, Collapse } from "@material-ui/core"
+import {
+  Card,
+  Button,
+  Typography,
+  CardContent,
+  TableCell,
+  TableRow,
+  Table,
+  TableBody,
+  TableContainer,
+  Collapse,
+} from "@material-ui/core"
 import styled from "@emotion/styled"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import React, { useState } from "react"
 import { CardTitle } from "/components/Text/headers"
 import { useConfirm } from "material-ui-confirm"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faUnlink
-} from "@fortawesome/free-solid-svg-icons"
+import { faUnlink } from "@fortawesome/free-solid-svg-icons"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import parseSchacPersonalUniqueCode from "/util/parseSchacUniqueCode"
 
@@ -79,9 +88,8 @@ function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
                   title: "About to disconnect your account",
                   description: `Are you sure you want to disconnect your account from ${data?.home_organization}?`,
                   confirmationText: "Yes",
-                  cancellationText: "No"
-                })
-                  .then(() => onDisconnect(data))
+                  cancellationText: "No",
+                }).then(() => onDisconnect(data))
               }}
               startIcon={<FontAwesomeIcon icon={faUnlink} />}
               color="secondary"

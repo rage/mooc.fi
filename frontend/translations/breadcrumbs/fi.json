@@ -27,5 +27,8 @@
   "signIn": "Kirjaudu",
   "signUp": "Rekisteröidy",
   "installation": "Asennus",
-  "home": "Etusivu"
+  "home": "Etusivu",
+  "profileConnection": "Tilien liittäminen",
+  "profileConnectionFailure": "Virhe",
+  "profileConnectionSuccess": "Liitetty"
 }

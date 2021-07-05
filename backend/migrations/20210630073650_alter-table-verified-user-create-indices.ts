@@ -1,4 +1,4 @@
-import { Knex } from "knex";
+import { Knex } from "knex"
 
 export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
@@ -9,7 +9,6 @@ export async function up(knex: Knex): Promise<void> {
   `)
 }
 
-
 export async function down(knex: Knex): Promise<void> {
   await knex.raw(`
     DROP INDEX IF EXISTS "verified_user.personal_unique_code";
@@ -18,4 +17,3 @@ export async function down(knex: Knex): Promise<void> {
     DROP INDEX IF EXISTS "verified_user.user_id_personal_unique_code_home_organization";
   `)
 }
-

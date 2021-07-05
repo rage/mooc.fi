@@ -17,7 +17,7 @@ import {
   completionsRegistered,
   courseAliases,
   openUniversityRegistrationLink,
-  verifiedUsers
+  verifiedUsers,
 } from "."
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
@@ -74,10 +74,7 @@ export const seed = async (prisma: PrismaClient) => {
     "openUniversityRegistrationLink",
     openUniversityRegistrationLink,
   )
-  const seededVerifiedUsers = await create(
-    "verifiedUser",
-    verifiedUsers
-  )
+  const seededVerifiedUsers = await create("verifiedUser", verifiedUsers)
 
   return {
     courses: seededCourses,
@@ -97,6 +94,6 @@ export const seed = async (prisma: PrismaClient) => {
     completionsRegistered: seededCompletionsRegistered,
     courseAliases: seededCourseAliases,
     openUniversityRegistrationLink: seededOpenUniversityRegistrationLink,
-    verifiedUsers: seededVerifiedUsers
+    verifiedUsers: seededVerifiedUsers,
   }
 }

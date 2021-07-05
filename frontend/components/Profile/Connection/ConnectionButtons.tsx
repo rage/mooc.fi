@@ -31,7 +31,7 @@ function ConnectionButtons({ hyVisible }: ConnectButtonProps) {
     ? `https://mooc.fi/connect/haka?language=${language}`
     : `http://localhost:5000/haka?language=${language}`
 
-    return (
+  return (
     <ButtonContainer>
       {hyVisible && (
         <Link href={HY_CONNECT_URL}>

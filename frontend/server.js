@@ -59,7 +59,8 @@ const main = async () => {
     server.get("*", redirectHandler)
   }
 
-  server.listen(port)
+  server
+    .listen(port)
     .on("listening", () => console.log(`> Ready on http://localhost:${port}`)) // eslint-disable-line no-console
     .on("error", (e) => console.log("error", e))
 }

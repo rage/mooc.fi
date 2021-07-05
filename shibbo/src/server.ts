@@ -113,16 +113,16 @@ const handler = async (req: Request, res: Response) => {
     console.log(result)
 
     res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
+      `${FRONTEND_URL}/${language}/profile/connection/success?id=${result.addVerifiedUser.id}`,
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
     const encodedError = Buffer.from(
       JSON.stringify({ error: errorMessage }),
     ).toString("base64")
-    
+
     res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
+      `${FRONTEND_URL}/${language}/profile/connection/failure?error=${encodedError}`,
     )
   }
 }

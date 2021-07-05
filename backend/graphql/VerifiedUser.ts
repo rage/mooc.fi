@@ -1,4 +1,13 @@
-import { objectType, inputObjectType, extendType, arg, nonNull, stringArg, idArg, nullable } from "nexus"
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  arg,
+  nonNull,
+  stringArg,
+  idArg,
+  nullable,
+} from "nexus"
 import { AuthenticationError } from "apollo-server-core"
 import { Context } from "../context"
 import { isAdmin, isUser, or, Role } from "../accessControl"
@@ -80,7 +89,7 @@ export const VerifiedUserMutations = extendType({
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
         }
-        
+
         try {
           const res = await ctx.prisma.verifiedUser.create({
             data: {
@@ -102,12 +111,12 @@ export const VerifiedUserMutations = extendType({
       type: "VerifiedUser",
       args: {
         personal_unique_code: nonNull(stringArg()),
-        user_id: nullable(idArg())
+        user_id: nullable(idArg()),
       },
       authorize: or(isAdmin, isUser),
       resolve: async (_, { personal_unique_code, user_id }, ctx: Context) => {
         if (ctx.role !== Role.ADMIN && Boolean(user_id)) {
-          throw new Error("must be admin to specify deletable user_id") 
+          throw new Error("must be admin to specify deletable user_id")
         }
         const _user_id = user_id ?? ctx.user?.id
 
@@ -129,11 +138,11 @@ export const VerifiedUserMutations = extendType({
           where: {
             user_id_personal_unique_code: {
               user_id: _user_id,
-              personal_unique_code
-            }
-          }
+              personal_unique_code,
+            },
+          },
         })
-      }
+      },
     })
   },
 })

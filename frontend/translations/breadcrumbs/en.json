@@ -27,5 +27,8 @@
   "signIn": "Sign in",
   "signUp": "Sign up",
   "home": "Home",
-  "installation": "Installation"
+  "installation": "Installation",
+  "profileConnection": "Connecting accounts",
+  "profileConnectionFailure": "Failure",
+  "profileConnectionSuccess": "Success"
 }

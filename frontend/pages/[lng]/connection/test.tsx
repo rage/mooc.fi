@@ -40,12 +40,8 @@ export const ConnectionTestQuery = gql`
 `
 
 export const DeleteVerifiedUserMutation = gql`
-  mutation DeleteVerifiedUser(
-    $personal_unique_code: String!
-  ) {
-    deleteVerifiedUser(
-      personal_unique_code: $personal_unique_code
-    ) {
+  mutation DeleteVerifiedUser($personal_unique_code: String!) {
+    deleteVerifiedUser(personal_unique_code: $personal_unique_code) {
       id
       personal_unique_code
     }
@@ -57,14 +53,16 @@ function ConnectionTest(props: any) {
   const { language } = useLanguageContext()
 
   const { data, error, loading } = useQuery(ConnectionTestQuery)
-  const [deleteVerifiedUser, { data: deleteData, error: deleteError }] = useMutation<DeleteVerifiedUser>(
-    DeleteVerifiedUserMutation,
-    {
-      refetchQueries: [{
-        query: ConnectionTestQuery
-      }]
-    }
-  )
+  const [
+    deleteVerifiedUser,
+    { data: deleteData, error: deleteError },
+  ] = useMutation<DeleteVerifiedUser>(DeleteVerifiedUserMutation, {
+    refetchQueries: [
+      {
+        query: ConnectionTestQuery,
+      },
+    ],
+  })
   const router = useRouter()
 
   const connectionSuccess = useQueryParameter("success", false)
@@ -73,7 +71,11 @@ function ConnectionTest(props: any) {
   useEffect(() => {
     // TODO/FIXME: not actually how I want it to be done, but it's there
     if (deleteData?.deleteVerifiedUser) {
-      router.replace(`/${language}/connection/test?success=${deleteData.deleteVerifiedUser.id}`, undefined, { shallow: true })
+      router.replace(
+        `/${language}/connection/test?success=${deleteData.deleteVerifiedUser.id}`,
+        undefined,
+        { shallow: true },
+      )
     }
     if (deleteError) {
       router.replace(`/${language}/connection/test?error`)
@@ -85,7 +87,6 @@ function ConnectionTest(props: any) {
         ?.error
     : null
 
-  
   if (error) {
     return <ErrorMessage />
   }
@@ -94,15 +95,16 @@ function ConnectionTest(props: any) {
     return <Spinner />
   }
 
-  const onDisconnect = async (user: ProfileUserOverView_currentUser_verified_users) => 
-    deleteVerifiedUser({ variables: { personal_unique_code: user.personal_unique_code }})
-
+  const onDisconnect = async (
+    user: ProfileUserOverView_currentUser_verified_users,
+  ) =>
+    deleteVerifiedUser({
+      variables: { personal_unique_code: user.personal_unique_code },
+    })
 
   return (
     <Container style={{ maxWidth: 900 }}>
-      {connectionSuccess && (
-        <Alert severity="success">Success!</Alert>
-      )}
+      {connectionSuccess && <Alert severity="success">Success!</Alert>}
       {connectionError && (
         <Alert severity="error">
           Error:
@@ -111,8 +113,8 @@ function ConnectionTest(props: any) {
           </pre>
         </Alert>
       )}
-      <ConnectionList 
-        data={data?.currentUser?.verified_users} 
+      <ConnectionList
+        data={data?.currentUser?.verified_users}
         onDisconnect={onDisconnect}
       />
     </Container>

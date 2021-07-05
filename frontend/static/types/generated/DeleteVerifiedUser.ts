@@ -8,15 +8,15 @@
 // ====================================================
 
 export interface DeleteVerifiedUser_deleteVerifiedUser {
-  __typename: "VerifiedUser";
-  id: string;
-  personal_unique_code: string;
+  __typename: "VerifiedUser"
+  id: string
+  personal_unique_code: string
 }
 
 export interface DeleteVerifiedUser {
-  deleteVerifiedUser: DeleteVerifiedUser_deleteVerifiedUser | null;
+  deleteVerifiedUser: DeleteVerifiedUser_deleteVerifiedUser | null
 }
 
 export interface DeleteVerifiedUserVariables {
-  personal_unique_code: string;
+  personal_unique_code: string
 }

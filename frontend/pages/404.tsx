@@ -1,6 +1,13 @@
 import { Typography } from "@material-ui/core"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const FourOhFour = () => {
+  useBreadcrumbs([
+    {
+      label: "404",
+    },
+  ])
+
   return (
     <section>
       <Typography
