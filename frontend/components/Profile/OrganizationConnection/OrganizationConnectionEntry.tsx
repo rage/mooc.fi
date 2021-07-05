@@ -19,6 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUnlink } from "@fortawesome/free-solid-svg-icons"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import parseSchacPersonalUniqueCode from "/util/parseSchacUniqueCode"
+import { useTranslator } from "/util/useTranslator"
+import ProfileTranslations from "/translations/profile"
 
 interface ConnectionEntryProps {
   data: ProfileUserOverView_currentUser_verified_users
@@ -51,6 +53,7 @@ const ConnectionButtonContainer = styled.div`
 `
 
 function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
+  const t = useTranslator(ProfileTranslations)
   const confirm = useConfirm()
   const [isOpen, setIsOpen] = useState(false)
   const codes = parseSchacPersonalUniqueCode(data?.personal_unique_code)
@@ -85,10 +88,10 @@ function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
             <Button
               onClick={() => {
                 confirm({
-                  title: "About to disconnect your account",
-                  description: `Are you sure you want to disconnect your account from ${data?.home_organization}?`,
-                  confirmationText: "Yes",
-                  cancellationText: "No",
+                  title: t("disconnectWarningTitle"),
+                  description: t("disconnectWarningDescription", { organization: data?.home_organization}),
+                  confirmationText: t("disconnectWarningConfirmationText"),
+                  cancellationText: t("disconnectWarningCancellationText"),
                 }).then(() => onDisconnect(data))
               }}
               startIcon={<FontAwesomeIcon icon={faUnlink} />}

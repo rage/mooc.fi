@@ -42,6 +42,12 @@
     "connectSuccessMessage": "Tilisi on kytketty onnistuneesti.",
     "connectFailureMessage": "Tilien liitoksessa tapahtui virhe. Yritä myöhemmin uudelleen.",
     "disconnectSuccessMessage": "Tilien kytkentä on poistettu onnistuneesti.",
-    "disconnectFailureMessage": "Tilien kytkennän poistossa tapahtui virhe. Yritä myöhemmin uudelleen."
-
+    "disconnectFailureMessage": "Tilien kytkennän poistossa tapahtui virhe. Yritä myöhemmin uudelleen.",
+    "connectTitle": "MOOC.fi-tilin liittäminen oppilaitoksen tiliin",
+    "connectText": "Tällä sivulla voit kytkeä MOOC.fi-tilisi oppilaitoksiesi tileihin, tai poistaa liitoksia.",
+    "connectExisting": "Olemassaolevat yhteydet",
+    "disconnectWarningTitle": "Olet poistamassa kytkentää",
+    "disconnectWarningDescription": "Oletko varma, että haluat poistaa kytkennän {{organization}}-tiliisi?",
+    "disconnectWarningConfirmationText": "Kyllä",
+    "disconnectWarningCancellationText": "Ei"
 }
