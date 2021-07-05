@@ -3,7 +3,10 @@ import Typography from "@material-ui/core/Typography"
 import Box from "@material-ui/core/Box"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
+import {
+  ProfileUserOverView_currentUser,
+  ProfileUserOverView_currentUser_verified_users,
+} from "/static/types/generated/ProfileUserOverView"
 import ProfileSettings from "/components/Profile/ProfileSettings"
 import notEmpty from "/util/notEmpty"
 import ConnectionList from "/components/Profile/Connection/ConnectionList"
@@ -32,9 +35,14 @@ const TabPanel = ({
 interface StudentDataDisplayProps {
   tab: number
   data?: ProfileUserOverView_currentUser
+  onDisconnect: (_: ProfileUserOverView_currentUser_verified_users) => void
 }
 
-const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
+const StudentDataDisplay = ({
+  tab,
+  data,
+  onDisconnect,
+}: StudentDataDisplayProps) => {
   const { completions = [] } = data || {}
 
   return (
@@ -48,7 +56,10 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
         />
       </TabPanel>
       <TabPanel index={2} value={tab}>
-        <ConnectionList data={data?.verified_users} onDisconnect={() => {}} />
+        <ConnectionList
+          data={data?.verified_users}
+          onDisconnect={onDisconnect}
+        />
       </TabPanel>
       <TabPanel index={3} value={tab}>
         <ProfileSettings data={data} />

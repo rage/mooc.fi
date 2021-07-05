@@ -39,7 +39,7 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
 
         <p>
           On this page, you can connect your MOOC.fi account to any institution
-          accounts you might have.
+          accounts you might have, or disconnect your accounts.
         </p>
       </section>
       <section>

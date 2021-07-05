@@ -28,7 +28,10 @@
   "signUp": "Sign up",
   "home": "Home",
   "installation": "Installation",
-  "profileConnection": "Connecting accounts",
-  "profileConnectionFailure": "Failure",
-  "profileConnectionSuccess": "Success"
+  "profileConnect": "Connecting accounts",
+  "profileConnectFailure": "Failure",
+  "profileConnectSuccess": "Success",
+  "profileDisconnect": "Disconnecting accounts",
+  "profileDisconnectFailure": "Failure",
+  "profileDisconnectSuccess": "Success"
 }

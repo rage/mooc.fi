@@ -28,7 +28,10 @@
   "signUp": "Rekisteröidy",
   "installation": "Asennus",
   "home": "Etusivu",
-  "profileConnection": "Tilien liittäminen",
-  "profileConnectionFailure": "Virhe",
-  "profileConnectionSuccess": "Liitetty"
+  "profileConnect": "Tilien liittäminen",
+  "profileConnectFailure": "Virhe",
+  "profileConnectSuccess": "Liitetty",
+  "profileDisconnect": "Tilien liitoksen poisto",
+  "profileDisconnectFailure": "Virhe",
+  "profileDisconnectSuccess": "Poistettu"
 }
