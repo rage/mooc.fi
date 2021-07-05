@@ -127,17 +127,9 @@ const handler = async (req: Request, res: Response) => {
   }
 }
 
-app.get("/hy", (req: Request, res) => {
-  console.log("In HY handler")
+app.get("/hy", handler)
 
-  return handler(req, res)
-})
-
-app.get("/haka", (req, res) => {
-  console.log("In Haka handler")
-
-  return handler(req, res)
-})
+app.get("/haka", handler)
 
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)

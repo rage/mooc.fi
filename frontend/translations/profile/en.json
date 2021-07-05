@@ -34,5 +34,13 @@
     "no": "no",
     "progress": "Progress",
     "totalProgress": "Total progress",
-    "exercisesCompleted": "Exercises completed"
+    "exercisesCompleted": "Exercises completed",
+    "connectSuccess": "Success!",
+    "connectFailure": "Error!",
+    "disconnectSuccess": "Success!",
+    "disconnectFailure": "Error!",
+    "connectSuccessMessage": "Your account was connected successfully.",
+    "connectFailureMessage": "There was an error connecting your account. Please try again later.",
+    "disconnectSuccessMessage": "Your account was disconnected successfully.",
+    "disconnectFailureMessage": "There was an error disconnecting your account. Please try again later."
 }

@@ -1,16 +1,19 @@
 import { Container, Typography } from "@material-ui/core"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
+import ProfileTranslations from "/translations/profile"
 import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
+import { useTranslator } from "/util/useTranslator"
 
 interface ConnectionStatusProps {
-  status: String
+  status: "success" | "failure"
   operation: "connect" | "disconnect"
 }
 
 function ConnectionStatus({ operation, status }: ConnectionStatusProps) {
-  const isSuccess = status?.toLowerCase().trim() === "success"
+  const t = useTranslator(ProfileTranslations)
   const capitalizedOperation = capitalizeFirstLetter(operation)
+  const capitalizedStatus = capitalizeFirstLetter(status)
 
   useBreadcrumbs([
     {
@@ -18,13 +21,11 @@ function ConnectionStatus({ operation, status }: ConnectionStatusProps) {
       href: "/profile",
     },
     {
-      translation: `profile${capitalizedOperation}`,
-      href: `/profile/${operation}`, // TODO: disconnect doesn't exist
+      translation: `profileConnect`,
+      href: `/profile/connect`
     },
     {
-      translation: isSuccess
-        ? `profile${capitalizedOperation}Success`
-        : `profile${capitalizedOperation}Failure`,
+      translation: `profile${capitalizedOperation}${capitalizedStatus}`,
       href: `/profile/${operation}/${status}`,
     },
   ])
@@ -33,16 +34,10 @@ function ConnectionStatus({ operation, status }: ConnectionStatusProps) {
     <>
       <Container style={{ maxWidth: "900" }}>
         <Typography component="h1" variant="h1" align="center">
-          {isSuccess ? "Success!" : "Error!"}
+          {t(`${operation}${capitalizedStatus}`)}
         </Typography>
         <Typography variant="body1" align="center">
-          {operation === "connect"
-            ? isSuccess
-              ? "Your account was connected successfully."
-              : "There was an error connecting your account. Please try again later."
-            : isSuccess
-            ? "Your account was disconnected successfully."
-            : "There was an error connecting your account. Please try again later."}
+          {t(`${operation}${capitalizedStatus}Message`)}
         </Typography>
       </Container>
     </>
