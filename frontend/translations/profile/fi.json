@@ -34,5 +34,14 @@
     "no": "ei",
     "progress": "Edistyminen",
     "totalProgress": "Kokonaisedistyminen",
-    "exercisesCompleted": "Tehtyjä tehtäviä"
+    "exercisesCompleted": "Tehtyjä tehtäviä",
+    "connectSuccess": "Tili liitetty!",
+    "connectFailure": "Virhe!",
+    "disconnectSuccess": "Tilin liitos poistettu!",
+    "disconnectFailure": "Virhe!",
+    "connectSuccessMessage": "Tilisi on kytketty onnistuneesti.",
+    "connectFailureMessage": "Tilien liitoksessa tapahtui virhe. Yritä myöhemmin uudelleen.",
+    "disconnectSuccessMessage": "Tilien kytkentä on poistettu onnistuneesti.",
+    "disconnectFailureMessage": "Tilien kytkennän poistossa tapahtui virhe. Yritä myöhemmin uudelleen."
+
 }
