@@ -25,5 +25,5 @@ fi
 
 if [[ "$BRANCH" == "staging" ]]; then
   echo "Deploying staging..."
-  helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi-staging --install
+  helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi-staging --install -f values.staging.yaml
 fi
