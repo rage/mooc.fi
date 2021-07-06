@@ -34,10 +34,12 @@ export const buildUserSearch = (
       {
         real_student_number: { contains: search },
       },
-      {
-        upstream_id: Number(search) || undefined,
-      },
-    ],
+      !Number.isNaN(Number(search))
+        ? {
+            upstream_id: Number(search),
+          }
+        : undefined,
+    ].filter(notEmpty) as Prisma.UserWhereInput, //.filter(notEmpty),
   }
 }
 

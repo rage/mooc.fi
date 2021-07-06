@@ -9,7 +9,7 @@ import {
   nullable,
 } from "nexus"
 import { Prisma } from "@prisma/client"
-import { isAdmin } from "../accessControl"
+import { isAdmin, Role } from "../accessControl"
 import { filterNull } from "../util/db-functions"
 import { Context } from "/context"
 import { AuthenticationError } from "apollo-server-core"
@@ -43,11 +43,15 @@ export const Exercise = objectType({
             type: "ExerciseCompletionOrderByInput",
           }),
         ),
+        user_id: nullable(idArg()),
       },
       resolve: async (parent, args, ctx: Context) => {
-        const { orderBy } = args
+        const { orderBy, user_id: user_id_arg } = args
+        const isAdmin = ctx.role === Role.ADMIN
 
-        if (!ctx?.user?.id) {
+        const user_id = isAdmin && user_id_arg ? user_id_arg : ctx?.user?.id
+
+        if (!user_id) {
           throw new AuthenticationError("not logged in")
         }
         return ctx.prisma.exercise
@@ -55,7 +59,7 @@ export const Exercise = objectType({
           .exercise_completions({
             where: {
               // @ts-ignore: context typing problem, FIXME
-              user_id: ctx?.user?.id, // { id: ctx?.user?.id },
+              user_id,
             },
             orderBy:
               (filterNull(orderBy) as Prisma.ExerciseCompletionOrderByInput) ??

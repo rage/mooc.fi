@@ -49,6 +49,21 @@ export const adminUserDetails = {
   extra_fields: {},
 }
 
+export const thirdUserDetails: UserInfo = {
+  id: 3,
+  administrator: false,
+  email: "third@mail.com",
+  user_field: {
+    first_name: "first",
+    last_name: "last",
+    course_announcements: false,
+    html1: "",
+    organizational_id: "",
+  },
+  username: "third_user",
+  extra_fields: {},
+}
+
 export const organizations: Prisma.OrganizationCreateInput[] = [
   {
     id: "10000000000000000000000000000102",
@@ -311,6 +326,32 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
       research: false,
       country: "fi",
       okField: true,
+    },
+  },
+  {
+    id: "40000000-0000-0000-0000-000000000103",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
+    },
+  },
+  {
+    id: "40000000-0000-0000-0000-000000000104",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
     },
   },
 ]

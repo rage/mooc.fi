@@ -1,10 +1,7 @@
 import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
 import { CardTitle } from "/components/Text/headers"
 import styled from "@emotion/styled"
-import {
-  UserSummary_user_user_course_summary,
-  UserSummary_user_user_course_summary_exercise_completions,
-} from "/static/types/generated/UserSummary"
+import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import { sortBy } from "lodash"
 import React from "react"
 import ExerciseList from "./ExerciseList"
@@ -53,7 +50,7 @@ function CourseEntry({ data }: CourseEntryProps) {
   const { state, dispatch } = useCollapseContext()
 
   // @ts-ignore: not used
-  const exercisesPerPart =
+  /*const exercisesPerPart =
     data?.exercise_completions
       ?.filter(notEmpty)
       .reduce<
@@ -70,7 +67,7 @@ function CourseEntry({ data }: CourseEntryProps) {
           ),
         }),
         {},
-      ) ?? {}
+      ) ?? {}*/
 
   if (!data) {
     return <CourseEntryCardSkeleton />
@@ -82,6 +79,13 @@ function CourseEntry({ data }: CourseEntryProps) {
 
   const isOpen = state[data?.course?.id ?? "_"]?.open
   // TODO: subheaders for parts?
+  const exercisesWithCompletions = data.course.exercises.map((exercise) => ({
+    ...exercise,
+    exercise_completions:
+      data.exercise_completions
+        ?.filter((ec) => ec?.exercise_id === exercise.id)
+        .filter(notEmpty) || [],
+  }))
 
   return (
     <CourseEntryCard>
@@ -115,10 +119,7 @@ function CourseEntry({ data }: CourseEntryProps) {
             )}
           />
           <ExerciseList
-            exerciseCompletions={sortBy(
-              (data.exercise_completions ?? []).filter(notEmpty),
-              ["exercise.part", "exercise.section", "exercise.name"],
-            )}
+            exercises={sortBy(exercisesWithCompletions, ["name"])}
           />
         </CardContent>
       </Collapse>
