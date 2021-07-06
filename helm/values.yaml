@@ -70,13 +70,14 @@ ingress:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
-    - host: www.mooc.fi
+    - host: staging.mooc.fi
   tls:
    - secretName: moocfi-tls
      hosts:
       - points.mooc.fi
       - mooc.fi
       - www.mooc.fi
+      - staging.mooc.fi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

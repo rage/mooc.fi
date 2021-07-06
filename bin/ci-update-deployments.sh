@@ -22,3 +22,8 @@ if [[ "$BRANCH" == "master" ]]; then
   echo "Deploying..."
   helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi --install
 fi
+
+if [[ "$BRANCH" == "staging" ]]; then
+  echo "Deploying staging..."
+  helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi-staging --install
+fi
