@@ -8,6 +8,7 @@ const recheckMutation = gql`
     recheckCompletions(course_id: $course_id, slug: $slug)
   }
 `
+
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
   "Bearer normal": [200, normalUserDetails],

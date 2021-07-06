@@ -13,6 +13,18 @@ export interface UserSummary_user_user_course_summary_course_photo {
   uncompressed: string
 }
 
+export interface UserSummary_user_user_course_summary_course_exercises {
+  __typename: "Exercise"
+  id: string
+  name: string | null
+  custom_id: string
+  course_id: string | null
+  part: number | null
+  section: number | null
+  max_points: number | null
+  deleted: boolean | null
+}
+
 export interface UserSummary_user_user_course_summary_course {
   __typename: "Course"
   id: string
@@ -20,6 +32,7 @@ export interface UserSummary_user_user_course_summary_course {
   slug: string
   has_certificate: boolean | null
   photo: UserSummary_user_user_course_summary_course_photo | null
+  exercises: UserSummary_user_user_course_summary_course_exercises[]
 }
 
 export interface UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions {
@@ -28,27 +41,10 @@ export interface UserSummary_user_user_course_summary_exercise_completions_exerc
   value: string
 }
 
-export interface UserSummary_user_user_course_summary_exercise_completions_exercise_course {
-  __typename: "Course"
-  id: string
-  name: string
-}
-
-export interface UserSummary_user_user_course_summary_exercise_completions_exercise {
-  __typename: "Exercise"
-  id: string
-  name: string | null
-  custom_id: string
-  course_id: string | null
-  course: UserSummary_user_user_course_summary_exercise_completions_exercise_course | null
-  part: number | null
-  section: number | null
-  max_points: number | null
-}
-
 export interface UserSummary_user_user_course_summary_exercise_completions {
   __typename: "ExerciseCompletion"
   id: string
+  exercise_id: string | null
   created_at: any | null
   updated_at: any | null
   n_points: number | null
@@ -56,7 +52,6 @@ export interface UserSummary_user_user_course_summary_exercise_completions {
   completed: boolean | null
   timestamp: any
   exercise_completion_required_actions: UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions[]
-  exercise: UserSummary_user_user_course_summary_exercise_completions_exercise | null
 }
 
 export interface UserSummary_user_user_course_summary_user_course_progress_exercise_progress {

@@ -1,5 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Course model completions shouldn't return anything with non-existent user 1`] = `
+Object {
+  "completions": Array [],
+  "course": Object {
+    "completions": Array [],
+    "id": "00000000-0000-0000-0000-000000000002",
+  },
+}
+`;
+
+exports[`Course model completions works with user_id 1`] = `
+Object {
+  "completions": Array [],
+  "course": Object {
+    "completions": Array [
+      Object {
+        "completion_language": null,
+        "email": "what@ever.com",
+        "id": "12400000-0000-0000-0000-000000000001",
+        "user": Object {
+          "id": "20000000-0000-0000-0000-000000000103",
+          "username": "admin",
+        },
+        "user_upstream_id": null,
+      },
+    ],
+    "id": "00000000-0000-0000-0000-000000000002",
+  },
+}
+`;
+
+exports[`Course model completions works with user_upstream_id 1`] = `
+Object {
+  "completions": Array [],
+  "course": Object {
+    "completions": Array [
+      Object {
+        "completion_language": null,
+        "email": "e@mail.com",
+        "id": "30000000-0000-0000-0000-000000000102",
+        "user": Object {
+          "id": "20000000-0000-0000-0000-000000000102",
+          "username": "existing_user",
+        },
+        "user_upstream_id": 1,
+      },
+    ],
+    "id": "00000000-0000-0000-0000-000000000002",
+  },
+}
+`;
+
 exports[`Course mutations addCourse creates a course full 1`] = `
 Object {
   "addCourse": Object {
@@ -854,6 +906,13 @@ Object {
   "ects": null,
   "end_date": "12/31/2100",
   "exercise_completions_needed": 1,
+  "exercises": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
@@ -931,9 +990,105 @@ Object {
   "ects": null,
   "end_date": "12/31/2100",
   "exercise_completions_needed": 1,
+  "exercises": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
+  "inherit_settings_from": null,
+  "name": "course1",
+  "open_university_registration_links": Array [
+    Object {
+      "course_code": "alias",
+      "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      "language": "en_US",
+      "link": "avoin-link",
+    },
+  ],
+  "order": null,
+  "photo": Object {
+    "compressed": "webp",
+    "compressed_mimetype": "image/webp",
+    "id": "00000000-0000-0000-0000-000000001101",
+    "uncompressed": "jpeg",
+    "uncompressed_mimetype": "image/jpeg",
+  },
+  "points_needed": 3,
+  "promote": null,
+  "slug": "course1",
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": Array [
+    Object {
+      "id": "00000000-0000-0000-0000-000000000101",
+    },
+    Object {
+      "id": "00000000-0000-0000-0000-000000000102",
+    },
+  ],
+  "support_email": null,
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher1",
+  "tier": null,
+  "upcoming_active_link": false,
+  "user_course_settings_visibilities": Array [],
+}
+`;
+
+exports[`Course queries course admin should include deleted exercises if specified 1`] = `
+Object {
+  "automatic_completions": true,
+  "automatic_completions_eligible_for_ects": true,
+  "completions_handled_by": null,
+  "course_aliases": Array [
+    Object {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
+  "course_translations": Array [
+    Object {
+      "description": "course1_description_en_US",
+      "id": "00000000-0000-0000-0000-000000000011",
+      "language": "en_US",
+      "link": "http://link.com",
+      "name": "course1_en_US",
+    },
+    Object {
+      "description": "course1_description_fi_FI",
+      "id": "00000000-0000-0000-0000-000000000012",
+      "language": "fi_FI",
+      "link": "http:/link.fi.com",
+      "name": "course1_fi_FI",
+    },
+  ],
+  "course_variants": Array [],
+  "ects": null,
+  "end_date": "12/31/2100",
+  "exercise_completions_needed": 1,
+  "exercises": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+    Object {
+      "deleted": true,
+      "id": "50000000-0000-0000-0000-000000000004",
+      "name": "deleted exercise 4",
+    },
+  ],
+  "has_certificate": false,
+  "hidden": null,
+  "id": "00000000-0000-0000-0000-000000000002",
   "inherit_settings_from": null,
   "name": "course1",
   "open_university_registration_links": Array [
