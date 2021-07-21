@@ -13,5 +13,5 @@ const connection = {
 export default knex({
   client: "pg",
   connection,
-  searchPath: PRODUCTION ? ["moocfi$production"] : ["default$default"],
+  searchPath: PRODUCTION ? [process.env.SEARCH_PATH ?? "moocfi$production"] : ["default$default"],
 })
