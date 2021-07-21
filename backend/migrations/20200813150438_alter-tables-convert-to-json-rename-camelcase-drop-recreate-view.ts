@@ -5,7 +5,9 @@ export async function up(knex: Knex): Promise<void> {
   if (isProduction) {
     await knex.raw(`DROP MATERIALIZED VIEW IF EXISTS reaktor.completion;`)
     await knex.raw(`DROP MATERIALIZED VIEW IF EXISTS reaktor."user";`)
-    await knex.raw(`DROP MATERIALIZED VIEW IF EXISTS reaktor.user_course_settings;`)
+    await knex.raw(
+      `DROP MATERIALIZED VIEW IF EXISTS reaktor.user_course_settings;`,
+    )
   }
 
   await knex.raw(
