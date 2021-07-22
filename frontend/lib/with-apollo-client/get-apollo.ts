@@ -10,6 +10,7 @@ import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
+import { BACKEND_URL } from "/config"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -45,7 +46,7 @@ function create(initialState: any, originalAccessToken?: string) {
     uri: cypress
       ? "http://localhost:4001"
       : production
-      ? process.env.BACKEND_URL ?? "https://www.mooc.fi/api/"
+      ? BACKEND_URL ?? "https://www.mooc.fi/api/"
       : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
