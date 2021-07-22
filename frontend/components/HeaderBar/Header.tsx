@@ -14,7 +14,6 @@ import { useContext } from "react"
 
 import { BACKEND_URL } from "/config"
 
-console.log("BACKEND_URL", BACKEND_URL)
 const isStaging = (BACKEND_URL ?? "").includes("staging")
 
 interface Props {
