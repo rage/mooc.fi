@@ -22,10 +22,10 @@ import axios from "axios"
 import { getAccessToken } from "/lib/authentication"
 import LanguageContext from "/contexts/LanguageContext"
 
-const BASE_URL =
+const BACKEND_URL =
   process.env.NODE_ENV === "production"
-    ? "https://www.mooc.fi"
-    : "http://localhost:4000"
+    ? process.env.BACKEND_URL ?? "https://www.mooc.fi/api"
+    : "http://localhost:4000/api"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -125,7 +125,7 @@ function RegisterCompletionPage() {
   useEffect(() => {
     if (language) {
       axios
-        .get(`${BASE_URL}/api/completionInstructions/${courseSlug}/${language}`)
+        .get(`${BACKEND_URL}/completionInstructions/${courseSlug}/${language}`)
         .then((res) => res.data)
         .then((json) => {
           setInstructions(json)
@@ -136,7 +136,7 @@ function RegisterCompletionPage() {
 
       axios({
         method: "GET",
-        url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
+        url: `${BACKEND_URL}/completionTiers/${courseSlug}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,

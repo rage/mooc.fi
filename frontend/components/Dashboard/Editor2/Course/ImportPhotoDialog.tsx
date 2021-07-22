@@ -59,7 +59,7 @@ export default function ImportPhotoDialog({
     fetch(filename, {
       mode: "no-cors",
       cache: "no-cache",
-      headers: { Origin: "https://www.mooc.fi" },
+      headers: { Origin: process.env.FRONTEND_URL ?? "https://www.mooc.fi" },
     })
       .then((res) => res.blob())
       .then((blob) => {
