@@ -1,5 +1,5 @@
 import { ReactElement } from "react"
-import { AppBar, Toolbar } from "@material-ui/core"
+import { AppBar, Toolbar, Chip } from "@material-ui/core"
 import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import useScrollTrigger from "@material-ui/core/useScrollTrigger"
@@ -11,6 +11,11 @@ import UserOptionsMenu from "./UserOptionsMenu"
 import styled from "@emotion/styled"
 import LanguageContext from "/contexts/LanguageContext"
 import { useContext } from "react"
+
+import { BACKEND_URL } from "/config"
+
+console.log("BACKEND_URL", BACKEND_URL)
+const isStaging = (BACKEND_URL ?? "").includes("staging")
 
 interface Props {
   window?: () => Window
@@ -68,6 +73,7 @@ function Header() {
                 )}
               </HiddenMenuContainer>
             </MenuContainer>
+            {isStaging && <Chip label="STAGING" color="secondary" />}
             <UserOptionsMenu isSignedIn={loggedIn} logInOrOut={logInOrOut} />
 
             <LanguageSwitch />
