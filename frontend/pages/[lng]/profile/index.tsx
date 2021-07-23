@@ -1,9 +1,6 @@
-import { gql, useMutation } from "@apollo/client"
+import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
-import {
-  ProfileUserOverView as UserOverViewData,
-  ProfileUserOverView_currentUser_verified_users,
-} from "/static/types/generated/ProfileUserOverView"
+import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
@@ -19,9 +16,6 @@ import ProfileTabs from "/components/Profile/ProfileTabs"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 import notEmpty from "/util/notEmpty"
-import { DeleteVerifiedUserMutation } from "/pages/[lng]/connection/test"
-import { DeleteVerifiedUser } from "/static/types/generated/DeleteVerifiedUser"
-// import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
