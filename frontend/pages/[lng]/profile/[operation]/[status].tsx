@@ -22,7 +22,7 @@ function ConnectionStatus({ operation, status }: ConnectionStatusProps) {
     },
     {
       translation: `profileConnect`,
-      href: `/profile/connect`
+      href: `/profile/connect`,
     },
     {
       translation: `profile${capitalizedOperation}${capitalizedStatus}`,

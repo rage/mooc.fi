@@ -38,14 +38,18 @@ export default function () {
 
   useEffect(() => {
     if (deleteError) {
-      router.replace(`/${language}/profile/disconnect/failure`, undefined, { shallow: true })
+      router.replace(`/${language}/profile/disconnect/failure`, undefined, {
+        shallow: true,
+      })
     }
     if (deleteData) {
-      router.replace(`/${language}/profile/disconnect/success`, undefined, { shallow: true })
+      router.replace(`/${language}/profile/disconnect/success`, undefined, {
+        shallow: true,
+      })
     }
   }, [deleteError, deleteData])
 
   return {
-    onDisconnect 
+    onDisconnect,
   }
 }

@@ -89,7 +89,9 @@ function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
               onClick={() => {
                 confirm({
                   title: t("disconnectWarningTitle"),
-                  description: t("disconnectWarningDescription", { organization: data?.home_organization}),
+                  description: t("disconnectWarningDescription", {
+                    organization: data?.home_organization,
+                  }),
                   confirmationText: t("disconnectWarningConfirmationText"),
                   cancellationText: t("disconnectWarningCancellationText"),
                 }).then(() => onDisconnect(data))

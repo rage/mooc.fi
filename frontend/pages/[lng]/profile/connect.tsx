@@ -10,7 +10,6 @@ import withSignedIn from "/lib/with-signed-in"
 import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUserOverView"
 import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
 
-
 function Connection() {
   const { data, loading, error } = useQuery<CurrentUserUserOverView>(
     UserOverViewQuery,

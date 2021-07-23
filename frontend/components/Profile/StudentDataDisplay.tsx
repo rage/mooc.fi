@@ -3,9 +3,7 @@ import Typography from "@material-ui/core/Typography"
 import Box from "@material-ui/core/Box"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
-import {
-  ProfileUserOverView_currentUser,
-} from "/static/types/generated/ProfileUserOverView"
+import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileSettings from "/components/Profile/ProfileSettings"
 import notEmpty from "/util/notEmpty"
 import OrganizationConnectionList from "./OrganizationConnection/OrganizationConnectionList"
@@ -37,10 +35,7 @@ interface StudentDataDisplayProps {
   data?: ProfileUserOverView_currentUser
 }
 
-const StudentDataDisplay = ({
-  tab,
-  data,
-}: StudentDataDisplayProps) => {
+const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
   const { completions = [] } = data || {}
   const { onDisconnect } = useDisconnect()
 
