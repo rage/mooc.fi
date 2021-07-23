@@ -5,6 +5,7 @@ import React from "react"
 import { Button } from "@material-ui/core"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import styled from "@emotion/styled"
+import { FRONTEND_URL } from "/config"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -25,10 +26,10 @@ function ConnectionButtons({ hyVisible }: ConnectButtonProps) {
   const { language } = useLanguageContext()
 
   const HY_CONNECT_URL = isProduction
-    ? `https://mooc.fi/connect/hy?language=${language}`
+    ? `${FRONTEND_URL}/connect/hy?language=${language}`
     : `http://localhost:5000/hy?language=${language}`
   const HAKA_CONNECT_URL = isProduction
-    ? `https://mooc.fi/connect/haka?language=${language}`
+    ? `${FRONTEND_URL}/connect/haka?language=${language}`
     : `http://localhost:5000/haka?language=${language}`
 
   return (
