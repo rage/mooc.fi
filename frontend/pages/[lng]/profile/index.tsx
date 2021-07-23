@@ -15,7 +15,7 @@ import Warning from "@material-ui/icons/Warning"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-// import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
+import notEmpty from "/util/notEmpty"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -28,13 +28,10 @@ export const UserOverViewQuery = gql`
       email
       verified_users {
         id
-        organization {
-          slug
-          organization_translations {
-            language
-            name
-          }
-        }
+        home_organization
+        person_affiliation
+        person_affiliation_updated_at
+        updated_at
         created_at
         personal_unique_code
         display_name
@@ -77,6 +74,7 @@ function Profile() {
   const t = useTranslator(ProfileTranslations)
 
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+
   const [tab, setTab] = useState(0)
   const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
     setTab(newValue)
@@ -111,8 +109,7 @@ function Profile() {
         student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
-        {(research_consent === null ||
-          typeof research_consent === "undefined") && (
+        {!notEmpty(research_consent) && (
           <ConsentNotification>
             <Warning />
             {t("researchNotification")}

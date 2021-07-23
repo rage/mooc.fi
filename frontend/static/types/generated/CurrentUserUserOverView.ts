@@ -7,6 +7,18 @@
 // GraphQL query operation: CurrentUserUserOverView
 // ====================================================
 
+export interface CurrentUserUserOverView_currentUser_verified_users {
+  __typename: "VerifiedUser"
+  id: string
+  home_organization: string
+  person_affiliation: string
+  person_affiliation_updated_at: any
+  updated_at: any | null
+  created_at: any | null
+  personal_unique_code: string
+  display_name: string | null
+}
+
 export interface CurrentUserUserOverView_currentUser_completions_course_photo {
   __typename: "Image"
   id: string
@@ -55,6 +67,7 @@ export interface CurrentUserUserOverView_currentUser {
   first_name: string | null
   last_name: string | null
   email: string
+  verified_users: CurrentUserUserOverView_currentUser_verified_users[]
   completions: CurrentUserUserOverView_currentUser_completions[] | null
   research_consent: boolean | null
 }
