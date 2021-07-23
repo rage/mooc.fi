@@ -1,10 +1,7 @@
 import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
 import { CardTitle } from "/components/Text/headers"
 import styled from "@emotion/styled"
-import {
-  UserSummary_user_user_course_summary,
-  UserSummary_user_user_course_summary_exercise_completions,
-} from "/static/types/generated/UserSummary"
+import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import { sortBy } from "lodash"
 import React from "react"
 import ExerciseList from "./ExerciseList"
