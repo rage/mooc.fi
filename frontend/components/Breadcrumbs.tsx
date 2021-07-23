@@ -118,7 +118,6 @@ const createKey = memoize(
 export function Breadcrumbs() {
   const { breadcrumbs } = useBreadcrumbContext()
 
-  console.log("bread", breadcrumbs)
   return (
     <BreadcrumbList>
       <BreadcrumbComponent translation="home" href="/" key="home" />

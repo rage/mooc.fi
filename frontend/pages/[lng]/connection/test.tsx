@@ -10,7 +10,7 @@ import OrganizationConnectionList from "../../../components/Profile/Organization
 import Spinner from "/components/Spinner"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import withSignedIn from "/lib/with-signed-in"
-import { DeleteVerifiedUser } from "/static/types/generated/DeleteVerifiedUser"
+import { DeleteVerifiedUserTest } from "/static/types/generated/DeleteVerifiedUserTest"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
 
@@ -38,7 +38,7 @@ export const ConnectionTestQuery = gql`
 `
 
 export const DeleteVerifiedUserMutation = gql`
-  mutation DeleteVerifiedUser($personal_unique_code: String!) {
+  mutation DeleteVerifiedUserTest($personal_unique_code: String!) {
     deleteVerifiedUser(personal_unique_code: $personal_unique_code) {
       id
       personal_unique_code
@@ -54,7 +54,7 @@ function ConnectionTest(props: any) {
   const [
     deleteVerifiedUser,
     { data: deleteData, error: deleteError },
-  ] = useMutation<DeleteVerifiedUser>(DeleteVerifiedUserMutation, {
+  ] = useMutation<DeleteVerifiedUserTest>(DeleteVerifiedUserMutation, {
     refetchQueries: [
       {
         query: ConnectionTestQuery,
