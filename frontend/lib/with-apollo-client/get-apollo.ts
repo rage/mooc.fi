@@ -79,9 +79,10 @@ function create(initialState: any, originalAccessToken?: string) {
   })
 
   return new ApolloClient<NormalizedCacheObject>({
-    link: process.browser
-      ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
-      : authLink.concat(uploadLink),
+    link:
+      process.browser || !production
+        ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
+        : authLink.concat(uploadLink),
     cache: cache.restore(initialState || {}),
     ssrMode: !process.browser, // isBrowser,
     ssrForceFetchDelay: 100,

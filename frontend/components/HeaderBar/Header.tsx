@@ -47,7 +47,7 @@ const MenuContainer = styled.div`
 `
 
 export function whichIsActive({ url }: { url: string }) {
-  const urlParts = url.split("/")
+  const urlParts = url?.split("/") ?? []
   const active = urlParts.length >= 3 ? urlParts[2] : ""
 
   return active
