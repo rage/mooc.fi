@@ -2,15 +2,13 @@ import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
-import { PORT } from "./config"
+import { PORT, BACKEND_URL, FRONTEND_URL } from "./config"
+
 const isProduction = process.env.NODE_ENV === "production"
 
-const API_URL = isProduction
-  ? "https://www.mooc.fi/api"
-  : "http://localhost:4000"
-const FRONTEND_URL = isProduction
-  ? "https://www.mooc.fi"
-  : "http://localhost:3000"
+if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
+  throw new Error("BACKEND_URL and FRONTEND_URL must be set")
+}
 
 const app = express()
 
@@ -101,7 +99,7 @@ const handler = async (req: Request, res: Response) => {
       throw new Error("Required attributes missing")
     }
 
-    const client = new GraphQLClient(API_URL, {
+    const client = new GraphQLClient(BACKEND_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
     const result = await client.request(VERIFIED_USER_MUTATION, {

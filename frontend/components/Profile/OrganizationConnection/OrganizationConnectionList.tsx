@@ -26,7 +26,7 @@ interface ConnectionListProps {
 
 function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
   const t = useTranslator(ProfileTranslations)
-  
+
   const isConnected = (organization: string) =>
     Boolean(
       data.find(
@@ -37,12 +37,8 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
   return (
     <>
       <section>
-        <h1>
-          {t("connectTitle")}
-        </h1>
-        <p>
-          {t("connectText")}
-        </p>
+        <h1>{t("connectTitle")}</h1>
+        <p>{t("connectText")}</p>
       </section>
       <section>
         <Typography variant="h4">{t("connectExisting")}</Typography>
