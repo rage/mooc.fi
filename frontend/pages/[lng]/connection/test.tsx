@@ -32,6 +32,8 @@ export const ConnectionTestQuery = gql`
         person_affiliation
         person_affiliation_updated_at
         updated_at
+        mail
+        organizational_unit
       }
     }
   }
