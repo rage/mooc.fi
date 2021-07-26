@@ -39,8 +39,8 @@ export const VerifiedUserArg = inputObjectType({
     t.nonNull.string("personal_unique_code")
     t.nonNull.string("home_organization")
     t.nonNull.string("person_affiliation")
-    t.string("mail")
-    t.string("organizational_unit")
+    t.nonNull.string("mail")
+    t.nonNull.string("organizational_unit")
   },
 })
 
@@ -87,7 +87,7 @@ export const VerifiedUserMutations = extendType({
           personal_unique_code,
           home_organization,
           person_affiliation,
-          ogranizational_unit,
+          organizational_unit,
           mail,
         } = verified_user
         const { user: currentUser } = ctx
