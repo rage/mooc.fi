@@ -18,8 +18,8 @@ const addVerifiedUserMutation = gql`
     $personal_unique_code: String!
     $home_organization: String!
     $person_affiliation: String!
-    $mail: String
-    $organizational_unit: String
+    $mail: String!
+    $organizational_unit: String!
   ) {
     addVerifiedUser(
       verified_user: {
@@ -80,37 +80,38 @@ describe("VerifiedUser", () => {
       })
 
       it("creates a verified user", async () => {
-        try {
-          const res = await ctx.client.request(
-            addVerifiedUserMutation,
-            {
-              ...verified_user,
+        // try {
+        const res = await ctx.client.request(
+          addVerifiedUserMutation,
+          {
+            ...verified_user,
+          },
+          {
+            Authorization: "Bearer normal",
+          },
+        )
+        expect(res.addVerifiedUser.id).not.toBeNull()
+        expect(res.addVerifiedUser.personal_unique_code).toBe(
+          "foo:personal:unique:code",
+        )
+
+        const userVerifiedUsers = await ctx.prisma.user
+          .findUnique({
+            where: {
+              upstream_id: normalUserDetails.id,
             },
-            {
-              Authorization: "Bearer normal",
-            },
-          )
-          expect(res.addVerifiedUser.id).not.toBeNull()
-          expect(res.addVerifiedUser.personal_unique_code).toBe(
-            "foo:personal:unique:code",
-          )
-
-          const userVerifiedUsers = await ctx.prisma.user
-            .findUnique({
-              where: {
-                upstream_id: normalUserDetails.id,
-              },
-            })
-            .verified_users()
-
-          expect(userVerifiedUsers.length).toBe(1)
-
-          Object.entries(verified_user).map(([key, value]) => {
-            expect(userVerifiedUsers[0][key as keyof VerifiedUser]).toBe(value)
           })
-        } catch {
-          fail()
-        }
+          .verified_users()
+
+        expect(userVerifiedUsers.length).toBe(1)
+
+        Object.entries(verified_user).map(([key, value]) => {
+          expect(userVerifiedUsers[0][key as keyof VerifiedUser]).toBe(value)
+        })
+
+        // } catch {
+        //   done.fail()
+        // }
       })
 
       it("errors on existing verified user", async () => {

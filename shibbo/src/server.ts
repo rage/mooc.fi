@@ -62,8 +62,8 @@ const VERIFIED_USER_MUTATION = gql`
     $personal_unique_code: String!
     $home_organization: String!
     $person_affiliation: String!
-    $mail: String
-    $organizational_unit: String
+    $mail: String!
+    $organizational_unit: String!
   ) {
     addVerifiedUser(
       verified_user: {
