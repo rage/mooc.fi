@@ -27,6 +27,8 @@ export const VerifiedUser = objectType({
     t.model.person_affiliation_updated_at()
     t.model.user_id()
     t.model.user()
+    t.model.organizational_unit()
+    t.model.mail()
   },
 })
 
@@ -37,6 +39,8 @@ export const VerifiedUserArg = inputObjectType({
     t.nonNull.string("personal_unique_code")
     t.nonNull.string("home_organization")
     t.nonNull.string("person_affiliation")
+    t.string("mail")
+    t.string("organizational_unit")
   },
 })
 
@@ -83,6 +87,8 @@ export const VerifiedUserMutations = extendType({
           personal_unique_code,
           home_organization,
           person_affiliation,
+          ogranizational_unit,
+          mail,
         } = verified_user
         const { user: currentUser } = ctx
 
@@ -98,6 +104,8 @@ export const VerifiedUserMutations = extendType({
               display_name,
               home_organization,
               person_affiliation,
+              organizational_unit,
+              mail,
             },
           })
           return res

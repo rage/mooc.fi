@@ -18,6 +18,8 @@ const addVerifiedUserMutation = gql`
     $personal_unique_code: String!
     $home_organization: String!
     $person_affiliation: String!
+    $mail: String
+    $organizational_unit: String
   ) {
     addVerifiedUser(
       verified_user: {
@@ -25,6 +27,8 @@ const addVerifiedUserMutation = gql`
         personal_unique_code: $personal_unique_code
         home_organization: $home_organization
         person_affiliation: $person_affiliation
+        mail: $mail
+        organizational_unit: $organizational_unit
       }
     ) {
       id
@@ -50,6 +54,8 @@ const verified_user = {
   personal_unique_code: "foo:personal:unique:code",
   home_organization: "organization.foo",
   person_affiliation: "foo",
+  organizational_unit: "department of foo",
+  mail: "kissa@organization.foo",
 }
 
 describe("VerifiedUser", () => {

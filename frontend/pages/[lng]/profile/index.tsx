@@ -35,6 +35,8 @@ export const UserOverViewQuery = gql`
         created_at
         personal_unique_code
         display_name
+        mail
+        organizational_unit
       }
       completions {
         id

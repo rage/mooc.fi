@@ -17,6 +17,9 @@ const SHIBBOLETH_HEADERS = [
   "schacpersonaluniquecode",
   "schachomeorganization",
   "edupersonaffiliation",
+  "mail",
+  "o",
+  "ou",
 ] as const
 type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 
@@ -26,6 +29,9 @@ const defaultHeaders: Record<HeaderField, string> = {
   schacpersonaluniquecode:
     "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
   edupersonaffiliation: "member;student",
+  mail: "mail@helsinki.fi",
+  o: "University of Helsinki",
+  ou: "Department of Computer Science",
 }
 
 const requiredFields: HeaderField[] = [
@@ -56,6 +62,8 @@ const VERIFIED_USER_MUTATION = gql`
     $personal_unique_code: String!
     $home_organization: String!
     $person_affiliation: String!
+    $mail: String
+    $organizational_unit: String
   ) {
     addVerifiedUser(
       verified_user: {
@@ -63,6 +71,8 @@ const VERIFIED_USER_MUTATION = gql`
         personal_unique_code: $personal_unique_code
         home_organization: $home_organization
         person_affiliation: $person_affiliation
+        mail: $mail
+        organizational_unit: $organizational_unit
       }
     ) {
       id
@@ -82,6 +92,8 @@ const handler = async (req: Request, res: Response) => {
     displayname,
     edupersonaffiliation,
     schachomeorganization,
+    mail,
+    ou,
   } = headers
 
   const { access_token: accessToken } = res.locals.cookie
@@ -107,6 +119,8 @@ const handler = async (req: Request, res: Response) => {
       personal_unique_code: schacpersonaluniquecode,
       home_organization: schachomeorganization,
       person_affiliation: edupersonaffiliation,
+      mail,
+      organizational_unit: ou,
     })
     console.log(result)
 
