@@ -624,7 +624,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     home_organization: "university.fi",
     person_affiliation: "member;student;staff",
     organizational_unit: "unit",
-    mail: "admin@university.fi"
+    mail: "admin@university.fi",
   },
   {
     id: "65400000000000000000000000000002",
@@ -634,7 +634,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     home_organization: "university.fi",
     person_affiliation: "member;student",
     organizational_unit: "unit",
-    mail: "third@university.fi"
+    mail: "third@university.fi",
   },
   {
     id: "65400000000000000000000000000003",
@@ -644,6 +644,6 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     home_organization: "second-university.fi",
     person_affiliation: "member;student",
     organizational_unit: "unit",
-    mail: "third@second-university.fi"
+    mail: "third@second-university.fi",
   },
 ]
