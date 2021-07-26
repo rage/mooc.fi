@@ -623,6 +623,8 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     personal_unique_code: "personal:unique:code:university.fi:admin",
     home_organization: "university.fi",
     person_affiliation: "member;student;staff",
+    organizational_unit: "unit",
+    mail: "admin@university.fi"
   },
   {
     id: "65400000000000000000000000000002",
@@ -631,6 +633,8 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     personal_unique_code: "personal:unique:code:university.fi:third",
     home_organization: "university.fi",
     person_affiliation: "member;student",
+    organizational_unit: "unit",
+    mail: "third@university.fi"
   },
   {
     id: "65400000000000000000000000000003",
@@ -639,5 +643,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     personal_unique_code: "personal:unique:code:second-university.fi:third",
     home_organization: "second-university.fi",
     person_affiliation: "member;student",
+    organizational_unit: "unit",
+    mail: "third@second-university.fi"
   },
 ]
