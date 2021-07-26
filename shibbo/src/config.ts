@@ -2,6 +2,10 @@ require("dotenv").config()
 
 const isProduction = process.env.NODE_ENV === "production"
 
+console.log("isProduction", isProduction)
+console.log("BACKEND_URL", process.env.BACKEND_URL)
+console.log("FRONTEND_URL", process.env.FRONTEND_URL)
+
 export const HY_ORGANIZATION_SECRET =
   process.env.HY_ORGANIZATION_SECRET || "hy_secret"
 export const HY_ORGANIZATION_ID =
