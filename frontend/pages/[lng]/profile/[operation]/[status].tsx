@@ -24,7 +24,7 @@ const getCookies = () => {
 
         return {
           ...acc,
-          [key]: value
+          [key]: value,
         }
       } catch {}
 
