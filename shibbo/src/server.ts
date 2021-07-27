@@ -81,6 +81,8 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
+const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+
 const handler = async (req: Request, res: Response) => {
   const headers =
     req.headers ?? !isProduction
@@ -123,6 +125,14 @@ const handler = async (req: Request, res: Response) => {
       organizational_unit: ou,
     })
     console.log(result)
+
+    Object.keys(res.locals.cookie).forEach((key) => {
+      shibCookies.forEach((prefix) => {
+        if (key.startsWith(prefix)) {
+          res.clearCookie(key)
+        }
+      })
+    })
 
     res.redirect(
       `${FRONTEND_URL}/${language}/profile/connect/success?id=${result.addVerifiedUser.id}`,
