@@ -7,6 +7,9 @@ export class CompletionLink extends Template {
         where: { completion_email: { id: this.emailTemplate.id } },
       })
     )?.slug
-    return `https://www.mooc.fi/register-completion/${completion_link_slug}`
+
+    const FRONTEND_URL = process.env.FRONTEND_URL ?? "https://www.mooc.fi"
+
+    return `${FRONTEND_URL}/register-completion/${completion_link_slug}`
   }
 }
