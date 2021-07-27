@@ -20,6 +20,7 @@ const SHIBBOLETH_HEADERS = [
   "mail",
   "o",
   "ou",
+  "SHIB_LOGOUT_URL",
 ] as const
 type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 
@@ -32,6 +33,7 @@ const defaultHeaders: Record<HeaderField, string> = {
   mail: "mail@helsinki.fi",
   o: "University of Helsinki",
   ou: "Department of Computer Science",
+  SHIB_LOGOUT_URL: "https://example.com/logout",
 }
 
 const requiredFields: HeaderField[] = [
@@ -81,7 +83,7 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+// const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 
 const handler = async (req: Request, res: Response) => {
   const headers =
@@ -126,13 +128,13 @@ const handler = async (req: Request, res: Response) => {
     })
     console.log(result)
 
-    Object.keys(res.locals.cookie).forEach((key) => {
+    /*Object.keys(res.locals.cookie).forEach((key) => {
       shibCookies.forEach((prefix) => {
         if (key.startsWith(prefix)) {
           res.clearCookie(key)
         }
       })
-    })
+    })*/
 
     res.redirect(
       `${FRONTEND_URL}/${language}/profile/connect/success?id=${result.addVerifiedUser.id}`,
