@@ -10,6 +10,7 @@ interface ConnectionStatusProps {
   operation: "connect" | "disconnect"
 }
 
+// @ts-ignore: not used
 const getCookies = () => {
   if (typeof document === "undefined" || !document?.cookie) {
     return {}
@@ -23,7 +24,7 @@ const getCookies = () => {
 
         return {
           ...acc,
-          [key]: value,
+          [key]: value
         }
       } catch {}
 
