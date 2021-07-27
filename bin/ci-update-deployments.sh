@@ -22,3 +22,13 @@ if [[ "$BRANCH" == "master" ]]; then
   echo "Deploying..."
   helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi --install
 fi
+
+if [[ "$BRANCH" == "staging" ]]; then
+  if [ -n "$CIRCLE_SHA1" ]; then
+    echo "Removing kafka deployments in staging"
+    rm -rf ./helm/templates/kafka
+  fi
+  echo "Deploying staging..."
+ 
+  helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi-staging --install -f helm/values.staging.yaml
+fi

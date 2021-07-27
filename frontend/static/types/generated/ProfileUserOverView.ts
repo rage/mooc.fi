@@ -7,22 +7,13 @@
 // GraphQL query operation: ProfileUserOverView
 // ====================================================
 
-export interface ProfileUserOverView_currentUser_verified_users_organization_organization_translations {
-  __typename: "OrganizationTranslation"
-  language: string
-  name: string
-}
-
-export interface ProfileUserOverView_currentUser_verified_users_organization {
-  __typename: "Organization"
-  slug: string
-  organization_translations: ProfileUserOverView_currentUser_verified_users_organization_organization_translations[]
-}
-
 export interface ProfileUserOverView_currentUser_verified_users {
   __typename: "VerifiedUser"
   id: string
-  organization: ProfileUserOverView_currentUser_verified_users_organization | null
+  home_organization: string
+  person_affiliation: string
+  person_affiliation_updated_at: any
+  updated_at: any | null
   created_at: any | null
   personal_unique_code: string
   display_name: string | null

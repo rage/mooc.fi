@@ -30,3 +30,6 @@ spec:
             requests:
               memory: 300Mi
               cpu: 200m
+          envFrom:
+          - secretRef:
+              name: frontend-secret

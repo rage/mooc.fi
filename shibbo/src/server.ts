@@ -2,15 +2,13 @@ import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
-import { HY_ORGANIZATION_SECRET, HY_ORGANIZATION_ID, PORT } from "./config"
+import { PORT, BACKEND_URL, FRONTEND_URL } from "./config"
+
 const isProduction = process.env.NODE_ENV === "production"
 
-const API_URL = isProduction
-  ? "https://www.mooc.fi/api"
-  : "http://localhost:4000"
-const FRONTEND_URL = isProduction
-  ? "https://www.mooc.fi"
-  : "http://localhost:3000"
+if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
+  throw new Error("BACKEND_URL and FRONTEND_URL must be set")
+}
 
 const app = express()
 
@@ -18,14 +16,31 @@ const SHIBBOLETH_HEADERS = [
   "displayname",
   "schacpersonaluniquecode",
   "schachomeorganization",
+  "edupersonaffiliation",
+  "mail",
+  "o",
+  "ou",
+  "SHIB_LOGOUT_URL",
 ] as const
+type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 
-const defaultHeaders: Record<typeof SHIBBOLETH_HEADERS[number], string> = {
+const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
-  schachomeorganization: "yliopisto.fi",
+  schachomeorganization: "helsinki.fi",
   schacpersonaluniquecode:
-    "urn:schac:personalUniqueCode:fi:yliopisto.fi:121345678",
+    "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
+  edupersonaffiliation: "member;student",
+  mail: "mail@helsinki.fi",
+  o: "University of Helsinki",
+  ou: "Department of Computer Science",
+  SHIB_LOGOUT_URL: "https://example.com/logout",
 }
+
+const requiredFields: HeaderField[] = [
+  "schacpersonaluniquecode",
+  "schachomeorganization",
+  "edupersonaffiliation",
+]
 
 app.set("port", PORT)
 app.use(cors())
@@ -47,15 +62,19 @@ const VERIFIED_USER_MUTATION = gql`
   mutation addVerifiedUser(
     $display_name: String
     $personal_unique_code: String!
-    $organization_id: ID!
-    $organization_secret: String!
+    $home_organization: String!
+    $person_affiliation: String!
+    $mail: String!
+    $organizational_unit: String!
   ) {
     addVerifiedUser(
       verified_user: {
         display_name: $display_name
         personal_unique_code: $personal_unique_code
-        organization_id: $organization_id
-        organization_secret: $organization_secret
+        home_organization: $home_organization
+        person_affiliation: $person_affiliation
+        mail: $mail
+        organizational_unit: $organizational_unit
       }
     ) {
       id
@@ -64,13 +83,22 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
+// const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+
 const handler = async (req: Request, res: Response) => {
   const headers =
     req.headers ?? !isProduction
       ? defaultHeaders
       : ({} as Record<string, string>)
 
-  const { schacpersonaluniquecode, displayname } = headers
+  const {
+    schacpersonaluniquecode,
+    displayname,
+    edupersonaffiliation,
+    schachomeorganization,
+    mail,
+    ou,
+  } = headers
 
   const { access_token: accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
@@ -83,79 +111,49 @@ const handler = async (req: Request, res: Response) => {
       throw new Error("You're not authorized to do this")
     }
 
-    if (!schacpersonaluniquecode || !displayname) {
+    if (!requiredFields.every((field) => Boolean(headers[field]))) {
       throw new Error("Required attributes missing")
     }
 
-    const client = new GraphQLClient(API_URL, {
+    const client = new GraphQLClient(BACKEND_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
     const result = await client.request(VERIFIED_USER_MUTATION, {
       display_name: displayname,
       personal_unique_code: schacpersonaluniquecode,
-      organization_id: HY_ORGANIZATION_ID,
-      organization_secret: HY_ORGANIZATION_SECRET,
+      home_organization: schachomeorganization,
+      person_affiliation: edupersonaffiliation,
+      mail,
+      organizational_unit: ou,
     })
     console.log(result)
+
+    /*Object.keys(res.locals.cookie).forEach((key) => {
+      shibCookies.forEach((prefix) => {
+        if (key.startsWith(prefix)) {
+          res.clearCookie(key)
+        }
+      })
+    })*/
+
     res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
+      `${FRONTEND_URL}/${language}/profile/connect/success?id=${result.addVerifiedUser.id}`,
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
     const encodedError = Buffer.from(
       JSON.stringify({ error: errorMessage }),
     ).toString("base64")
+
     res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
+      `${FRONTEND_URL}/${language}/profile/connect/failure?error=${encodedError}`,
     )
   }
 }
 
-app.get("/hy", (req: Request, res) => {
-  console.log("In HY handler")
+app.get("/hy", handler)
 
-  return handler(req, res)
-  /*
-  if (!accessToken) {
-    res.json({ error: "You're not authorized to do this" })
-    res.status(401)
-    res.end()
-
-    return
-  }
-
-  if (!schacpersonaluniquecode || !displayname) {
-    res.json({ error: "some fields are missing "})
-  }
-  const client = new GraphQLClient(API_URL, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
-
-  try {
-    const result = await client.request(VERIFIED_USER_MUTATION, {
-      display_name: displayname,
-      personal_unique_code: schacpersonaluniquecode,
-      organization_id: HY_ORGANIZATION_ID,
-      organization_secret: HY_ORGANIZATION_SECRET,
-    })
-    console.log(result)
-    res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?success=${result.addVerifiedUser.id}`,
-    )
-  } catch (error) {
-    const encodedError = Buffer.from(JSON.stringify(error)).toString("base64")
-    res.redirect(
-      `${FRONTEND_URL}/${language}/connection/test?error=${encodedError}`,
-    )
-  }
-  */
-})
-
-app.get("/haka", (req, res) => {
-  console.log("In Haka handler")
-
-  return handler(req, res)
-})
+app.get("/haka", handler)
 
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)

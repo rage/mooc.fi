@@ -34,7 +34,7 @@ export const signIn = async ({
   shallow = true,
 }: SignInProps) => {
   const res = await tmcClient.authenticate({ username: email, password })
-  const details = await userDetails(res.accessToken)
+  const details = await getUserDetails(res.accessToken)
 
   document.cookie = `access_token=${res.accessToken};path=/`
 
@@ -68,6 +68,14 @@ export const signIn = async ({
   return details
 }
 
+/*export const signInShibbo = async (
+  apollo: ApolloClient<any>,
+  personal_unique_code: string
+) => {
+  const verifiedUser = await apollo.query(VerifiedUserQuery, {
+
+  }) 
+}*/
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
@@ -114,7 +122,7 @@ export const getAccessToken = (ctx: NextContext | undefined) => {
   return nookies.get(ctx)["access_token"]
 }
 
-export async function userDetails(accessToken: string) {
+export async function getUserDetails(accessToken: string) {
   const res = await axios.get(
     `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`,
     {

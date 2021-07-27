@@ -48,7 +48,6 @@ export const Organization = objectType({
     t.model.course_organizations()
     t.model.organization_translations()
     t.model.user_organizations()
-    t.model.verified_users()
   },
 })
 
