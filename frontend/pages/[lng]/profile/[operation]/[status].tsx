@@ -1,4 +1,5 @@
 import { Container, Typography } from "@material-ui/core"
+import { useEffect } from "react"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import ProfileTranslations from "/translations/profile"
@@ -10,10 +11,47 @@ interface ConnectionStatusProps {
   operation: "connect" | "disconnect"
 }
 
+const getCookies = () => {
+  if (typeof document === "undefined" || !document?.cookie) {
+    return {}
+  }
+
+  return document.cookie
+    .split("; ")
+    .reduce<{ [key: string]: string }>((acc, curr) => {
+      try {
+        const [key, value] = curr.split("=")
+
+        return {
+          ...acc,
+          [key]: value,
+        }
+      } catch {}
+
+      return acc
+    }, {})
+}
+
+const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 function ConnectionStatus({ operation, status }: ConnectionStatusProps) {
   const t = useTranslator(ProfileTranslations)
   const capitalizedOperation = capitalizeFirstLetter(operation)
   const capitalizedStatus = capitalizeFirstLetter(status)
+
+  useEffect(() => {
+    if (operation === "connect" && status === "success") {
+      const cookies = getCookies()
+
+      Object.keys(cookies).map((key) => {
+        shibCookies.some((prefix) => {
+          if (key.startsWith(prefix)) {
+            console.log("reset key", key)
+            document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/`
+          }
+        })
+      })
+    }
+  })
 
   useBreadcrumbs([
     {
