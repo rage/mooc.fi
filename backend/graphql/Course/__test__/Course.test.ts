@@ -962,7 +962,7 @@ describe("Course", () => {
         ctx!.client.setHeader("Authorization", "Bearer normal")
         try {
           await ctx!.client.request(createCourseMutation, {
-            course: cases[0],
+            course: getNewCourse(),
           })
           fail()
         } catch {}
