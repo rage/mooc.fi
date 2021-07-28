@@ -11,6 +11,7 @@ const next = require("next")
 const compression = require("compression")
 
 const Redirects = require("./Redirects")
+
 const port = process.env.PORT || 3000
 const app = next({ dev: !isProduction })
 const handle = app.getRequestHandler()
@@ -18,9 +19,6 @@ const handle = app.getRequestHandler()
 const DirectFrom = Redirects.redirects_list
 
 const cypress = process.env.CYPRESS === "true"
-const createMockBackend = require("./tests/mockBackend")
-
-const { FRONTEND_URL } = require("./config")
 
 const main = async () => {
   try {
