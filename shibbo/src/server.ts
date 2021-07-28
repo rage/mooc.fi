@@ -151,9 +151,9 @@ const handler = async (req: Request, res: Response) => {
   }
 }
 
-app.get("/hy", handler)
+app.get("/connect/hy", handler)
 
-app.get("/haka", handler)
+app.get("/connect/haka", handler)
 
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)

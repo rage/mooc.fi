@@ -26,10 +26,10 @@ function ConnectionButtons({ hyVisible }: ConnectButtonProps) {
 
   const HY_CONNECT_URL = isProduction
     ? `/connect/hy?language=${language}`
-    : `/hy?language=${language}`
+    : `http://localhost:5000/connect/hy?language=${language}`
   const HAKA_CONNECT_URL = isProduction
     ? `/connect/haka?language=${language}`
-    : `/haka?language=${language}`
+    : `http://localhost:5000/connect/haka?language=${language}`
 
   return (
     <ButtonContainer>
