@@ -69,6 +69,27 @@ export const VerifiedUserArg = inputObjectType({
   }
 })*/
 
+export const VerifiedUserQueries = extendType({
+  type: "Query",
+  definition(t) {
+    t.nullable.field("verifiedUser", {
+      type: "User",
+      args: {
+        personal_unique_code: nonNull(stringArg()),
+      },
+      resolve: async (_, { personal_unique_code }, ctx: Context) => {
+        return ctx.prisma.verifiedUser
+          .findFirst({
+            where: {
+              personal_unique_code,
+            },
+          })
+          .user()
+      },
+    })
+  },
+})
+
 export const VerifiedUserMutations = extendType({
   type: "Mutation",
   definition(t) {

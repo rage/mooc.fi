@@ -8,12 +8,12 @@ import {
 } from "@material-ui/core"
 
 import { signIn, isSignedIn } from "/lib/authentication"
-import LoginStateContext from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useContext } from "react"
 import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { useTranslator } from "/util/useTranslator"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 const StyledForm = styled.form`
   padding: 1em;

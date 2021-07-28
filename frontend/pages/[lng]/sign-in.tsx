@@ -1,6 +1,7 @@
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
-import SignInForm from "/components/SignInForm"
+import SignInForm from "/components/SignIn/SignInForm"
+import SignInHYHakaForm from "/components/SignIn/SignInHYHakaForm"
 import Container from "/components/Container"
 import SignInTranslations from "/translations/common"
 import styled from "@emotion/styled"
@@ -42,6 +43,15 @@ const SignInPage = () => {
             {t("loginDetails")}
           </Typography>
           <SignInForm />
+        </StyledPaper>
+        <StyledPaper>
+          <Header component="h1" variant="h4" gutterBottom={true}>
+            Login using HY or Haka
+          </Header>
+          <Typography component="p" paragraph>
+            Sign in using your institution credentials
+          </Typography>
+          <SignInHYHakaForm />
         </StyledPaper>
       </Container>
     </>

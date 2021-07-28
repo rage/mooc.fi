@@ -83,9 +83,11 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
+const VERIFIED_USER_QUERY = gql``
+
 // const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 
-const handler = async (req: Request, res: Response) => {
+const verifyUserHandler = async (req: Request, res: Response) => {
   const headers =
     req.headers ?? !isProduction
       ? defaultHeaders
@@ -151,9 +153,33 @@ const handler = async (req: Request, res: Response) => {
   }
 }
 
-app.get("/hy", handler)
+const loginUserHandler = async (req: Request, res: Response) => {
+  const headers =
+    req.headers ?? !isProduction
+      ? defaultHeaders
+      : ({} as Record<string, string>)
 
-app.get("/haka", handler)
+  const { schacpersonaluniquecode, mail } = headers
+
+  try {
+    const client = new GraphQLClient(BACKEND_URL)
+    const result = await client.request(VERIFIED_USER_QUERY, {
+      personal_unique_code: schacpersonaluniquecode,
+      mail,
+    })
+  } catch (error) {}
+}
+
+const registerUserHandler = async (req: Request, res: Response) => {}
+
+app.get("/connect/hy", verifyUserHandler)
+app.get("/connect/haka", verifyUserHandler)
+
+app.get("/sign-in/hy", loginUserHandler)
+app.get("/sign-in/haka", loginUserHandler)
+
+app.get("/sign-up/hy", registerUserHandler)
+app.get("/sign-up/haka", registerUserHandler)
 
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)

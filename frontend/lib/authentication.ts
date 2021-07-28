@@ -68,14 +68,6 @@ export const signIn = async ({
   return details
 }
 
-/*export const signInShibbo = async (
-  apollo: ApolloClient<any>,
-  personal_unique_code: string
-) => {
-  const verifiedUser = await apollo.query(VerifiedUserQuery, {
-
-  }) 
-}*/
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"

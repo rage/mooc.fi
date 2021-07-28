@@ -14,6 +14,7 @@ import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import getTranslator from "/translations"
 import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
+import CreateAccountHYHakaForm from "/components/SignUp/CreateAccountHYHakaForm"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -324,6 +325,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
           </LangLink>
         </Row>
 
+        <Row>
+          <CreateAccountHYHakaForm />
+        </Row>
         {this.state.error && (
           <InfoBox>
             <b>

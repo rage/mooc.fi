@@ -1,6 +1,6 @@
 import { useContext } from "react"
 
-import CreateAccountForm from "/components/CreateAccountForm"
+import CreateAccountForm from "/components/SignUp/CreateAccountForm"
 
 import { RegularContainer } from "/components/Container"
 import withSignedOut from "/lib/with-signed-out"
