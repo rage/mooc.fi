@@ -402,7 +402,9 @@ export async function signIn(
   }
 
   if (user?.password) {
-    if ((await argon2.verify(user.password, password)) && tmcToken.success) {
+    const verified = await argon2.verify(user.password, password)
+
+    if (verified && tmcToken.success) {
       let accessToken = await issueToken(user, client, ctx)
 
       return {
