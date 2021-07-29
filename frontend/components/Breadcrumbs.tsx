@@ -79,6 +79,7 @@ const BreadcrumbLink = styled.a`
 
 const BreadcrumbNonLink = styled.div`
   ${BreadcrumbArrowStyle}
+  cursor: default;
 `
 
 function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
@@ -95,9 +96,11 @@ function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
   return (
     <BreadcrumbItem>
       {!text || !href ? (
-        <BreadcrumbNonLink>
-          {text || <Skeleton width="100px" />}
-        </BreadcrumbNonLink>
+        <>
+          <BreadcrumbNonLink>
+            {text || <Skeleton width="100px" />}
+          </BreadcrumbNonLink>
+        </>
       ) : (
         <LangLink href={href}>
           <BreadcrumbLink>{text}</BreadcrumbLink>

@@ -1,4 +1,4 @@
-import { objectType, stringArg, intArg, nullable } from "nexus"
+import { objectType, stringArg, intArg, nullable, booleanArg } from "nexus"
 import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({
@@ -14,6 +14,7 @@ export const Course = objectType({
     t.model.created_at()
     t.model.ects()
     t.model.end_date()
+    // t.model.exercises()
     t.model.exercise_completions_needed()
     t.model.has_certificate()
     t.model.hidden()
@@ -59,6 +60,24 @@ export const Course = objectType({
     t.string("instructions")
     t.string("link")
 
+    t.list.field("exercises", {
+      type: "Exercise",
+      args: {
+        includeDeleted: booleanArg({ default: false }),
+      },
+      resolve: async (parent, args, ctx) => {
+        const { includeDeleted } = args
+
+        return ctx.prisma.course
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .exercises({
+            ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
+          })
+      },
+    })
+
     t.list.field("completions", {
       type: "Completion",
       args: {
@@ -73,7 +92,21 @@ export const Course = objectType({
           throw new Error("needs user_id or user_upstream_id")
         }
 
-        return ctx.prisma.completion.findMany({
+        return ctx.prisma.course
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .completions({
+            where: {
+              user: {
+                id: user_id ?? undefined,
+                upstream_id: user_upstream_id ?? undefined,
+              },
+            },
+          })
+        /*return ctx.prisma.completion.findMany({
           where: {
             user: {
               id: user_id ?? undefined,
@@ -81,7 +114,7 @@ export const Course = objectType({
             },
             course_id: parent.id,
           },
-        })
+        })*/
       },
     })
   },

@@ -52,6 +52,21 @@ export const adminUserDetails = {
   password: "password",
 }
 
+export const thirdUserDetails: UserInfo = {
+  id: 3,
+  administrator: false,
+  email: "third@mail.com",
+  user_field: {
+    first_name: "first",
+    last_name: "last",
+    course_announcements: false,
+    html1: "",
+    organizational_id: "",
+  },
+  username: "third_user",
+  extra_fields: {},
+}
+
 export const organizations: Prisma.OrganizationCreateInput[] = [
   {
     id: "10000000000000000000000000000102",
@@ -320,6 +335,32 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
       research: false,
       country: "fi",
       okField: true,
+    },
+  },
+  {
+    id: "40000000-0000-0000-0000-000000000103",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
+    },
+  },
+  {
+    id: "40000000-0000-0000-0000-000000000104",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
     },
   },
 ]
@@ -623,6 +664,7 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     tiers: null,
   },
 ]
+
 export const authorizationCode: Prisma.AuthorizationCodeCreateInput[] = [
   {
     id: "00000000000000000000000000004102",
@@ -670,5 +712,37 @@ export const accessToken: Prisma.AccessTokenCreateInput[] = [
     access_token:
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMzMTAsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMjAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAzIiwiYWRtaW4iOnRydWUsIm5vbmNlIjoiNWMwOGQwZjRhMzYxMTdkZmJlZGIzZWI3NzA1ZTUzZTIiLCJqd3RpZCI6Ijk5NzUzYWJlZTEyZGZkYTM5YWY1OGQyODRkZDQ0MzAxYjMxNGYzMmZhN2Y1OGE0OGFlMGYxZmEwNzUzMDBkZDMxM2E0OTM0MjkyZjVjMDAzNTY0Y2YyMjY3NjRhMDllY2M1ZjRlODhiZTc0YzhkNzcwZmU1NmM1NTA4YzNkYjlmIiwiaWF0IjoxNjE5MDA3MzEwLCJhdWQiOiJuYXRpdmUiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMDAvYXV0aC90b2tlbiIsInN1YiI6IlprQnRZV2xzTG1OdmJRPT0ifQ.qvPIfJxToS3k_Vu6ixIVarW3DCPmddGTSedYKc5yUt6yn7i_q99ps38A5w1LgKq_2_G8gBw6WzV7ulOpstx0L3stBxpoHv073WVrCo2v-mw7EMbUJHKCiggPUOLtcYF4B4rK64x0vo1NnlcBIBATYmq2gr_jEXX4gBx-6JEmzsMCOCzT4ZYft0rRkn3930giGtGpcP5C4acl12USrc6QNVGcbN0U1J9wWvo45Qe2QVdV-xG96PR2KiOfVsrZ-5YVMJjwiD6heEbghdyo00yifIPDSTRr0Zpjmwr1a7bUFSen93h-iEHiFVZ1_GfM9a_HqvXdtY0-8_eAJi8f9WVrjw",
     valid: true,
+]
+    
+export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
+  {
+    id: "65400000000000000000000000000001",
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    display_name: "admin",
+    personal_unique_code: "personal:unique:code:university.fi:admin",
+    home_organization: "university.fi",
+    person_affiliation: "member;student;staff",
+    organizational_unit: "unit",
+    mail: "admin@university.fi",
+  },
+  {
+    id: "65400000000000000000000000000002",
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    display_name: "third user",
+    personal_unique_code: "personal:unique:code:university.fi:third",
+    home_organization: "university.fi",
+    person_affiliation: "member;student",
+    organizational_unit: "unit",
+    mail: "third@university.fi",
+  },
+  {
+    id: "65400000000000000000000000000003",
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    display_name: "third user",
+    personal_unique_code: "personal:unique:code:second-university.fi:third",
+    home_organization: "second-university.fi",
+    person_affiliation: "member;student",
+    organizational_unit: "unit",
+    mail: "third@second-university.fi",
   },
 ]

@@ -7,12 +7,13 @@ import {
 } from "@material-ui/core"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
-import LanguageContext from "/contexts/LanguageContext"
 import SignUpTranslations from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import getTranslator from "/translations"
+import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
+import LanguageContext from "/contexts/LanguageContext"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -54,10 +55,6 @@ interface state {
   showPassword?: boolean
   first_name?: string
   last_name?: string
-}
-
-export function capitalizeFirstLetter(string: String) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export interface CreateAccountFormProps {

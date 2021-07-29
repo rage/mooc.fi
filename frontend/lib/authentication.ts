@@ -91,6 +91,14 @@ export const signIn = async ({
   return details
 }
 
+/*export const signInShibbo = async (
+  apollo: ApolloClient<any>,
+  personal_unique_code: string
+) => {
+  const verifiedUser = await apollo.query(VerifiedUserQuery, {
+
+  }) 
+}*/
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   await removeToken("tmc")
   document.cookie =
@@ -141,7 +149,7 @@ export const getAccessToken = async (ctx: NextContext | undefined) => {
   //return nookies.get(ctx)["access_token"]
 }
 
-export async function userDetails(accessToken: string) {
+export async function getUserDetails(accessToken: string) {
   const res = await axios.get(
     `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`,
     {

@@ -42,7 +42,7 @@ jobs:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - run:
-          name: "Push image if on master"
+          name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
 
   build_backend:
@@ -71,7 +71,7 @@ jobs:
           name: "Upload coverage"
           command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
       - run:
-          name: "Push image if on master"
+          name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
 
   build_shibbo:
@@ -122,3 +122,4 @@ workflows:
             branches:
               only:
                 - master
+                - staging

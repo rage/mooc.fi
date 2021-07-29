@@ -19,6 +19,7 @@ import { addDomain } from "/util/imageUtils"
 import CoursesTranslations from "/translations/courses"
 import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
+import { FRONTEND_URL } from "/config"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -67,7 +68,7 @@ const ImportPhotoDialog = ({
     fetch(filename, {
       mode: "no-cors",
       cache: "no-cache",
-      headers: { Origin: "https://www.mooc.fi" },
+      headers: { Origin: FRONTEND_URL ?? "https://www.mooc.fi" },
     })
       .then((res) => res.blob())
       .then((blob) => {
