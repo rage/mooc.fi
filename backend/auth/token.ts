@@ -4,6 +4,8 @@ import { User, Client, AuthorizationCode, AccessToken } from "@prisma/client"
 import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
 
+const BACKEND_URL = process.env.BACKEND_URL ?? "https://mooc.fi"
+
 const fs = require("fs")
 const privateKey =
   process.env.PRIVATE_KEY ?? fs.readFileSync(process.env.PRIVATE_KEY_TEST)
@@ -11,7 +13,7 @@ const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")
 
-const AUTH_ISSUER = "https://mooc.fi/auth/token"
+const AUTH_ISSUER = `${BACKEND_URL}/auth/token`
 const NATIVE_ID = "native"
 
 async function issueToken(user: any, client: any, { knex }: ApiContext) {
