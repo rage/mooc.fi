@@ -419,7 +419,8 @@ export async function signIn(
     }
   }
 
-  if (tmcToken.success && user) { // TODO/FIXME: added user check, what was the original purpose here?
+  if (tmcToken.success && user) {
+    // TODO/FIXME: added user check, what was the original purpose here?
     const hashPassword = await argon2Hash(password)
 
     await ctx
