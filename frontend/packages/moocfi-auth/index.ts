@@ -1,15 +1,13 @@
 import axios from "axios"
 import Cookies from "universal-cookie"
-
+import { FRONTEND_URL } from "/config"
 /*
 const axios = require("axios")
 const Cookies = require("universal-cookie")
 */
 
 const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://mooc.fi"
-    : "http://localhost:4000"
+  process.env.NODE_ENV === "production" ? FRONTEND_URL : "http://localhost:4000"
 
 interface ExtraFields {
   namespace?: string
