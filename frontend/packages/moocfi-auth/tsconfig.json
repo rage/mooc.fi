@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "outDir": "./dist",
+        "target": "es2017",
+        "lib": [
+            "dom",
+            "esnext"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "strictNullChecks": true,
+        "strict": true,
+        "removeComments": true,
+        "declaration": false,
+        "sourceMap": true,
+        "jsx": "react",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "types": [
+            "node"
+        ]
+    },
+    "include": [
+        "./*.tsx",
+        "./*.ts",
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

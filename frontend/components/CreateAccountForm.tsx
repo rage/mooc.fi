@@ -135,7 +135,10 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         }
         this.setState({ error: message, submitting: false, errorObj: error })
       } catch (_error2) {
-        this.setState({ error: JSON.stringify(error), submitting: false })
+        this.setState({
+          error: JSON.stringify(error.response.data.message),
+          submitting: false,
+        })
       }
 
       this.setState({ submitting: false })

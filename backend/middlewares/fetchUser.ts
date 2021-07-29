@@ -85,6 +85,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
     username: details.username,
+    password: "password",
   }
 
   ctx.user = await ctx.prisma.user.upsert({
@@ -162,6 +163,7 @@ export const contextUser = async (
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
     username: details.username,
+    password: "password",
   }
 
   const user = await prisma.user.upsert({

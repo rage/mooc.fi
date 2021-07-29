@@ -8,6 +8,7 @@ export const normalUser = {
   first_name: "first",
   last_name: "last",
   username: "user",
+  password: "password",
 }
 
 export const normalUserDetails: UserInfo = {
@@ -32,6 +33,7 @@ export const adminUser = {
   first_name: "first",
   last_name: "last",
   username: "admin",
+  password: "password",
 }
 
 export const adminUserDetails = {
@@ -47,6 +49,7 @@ export const adminUserDetails = {
   },
   username: "admin",
   extra_fields: {},
+  password: "password",
 }
 
 export const thirdUserDetails: UserInfo = {
@@ -216,6 +219,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 1,
     username: "existing_user",
+    password:
+      "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000103",
@@ -223,6 +228,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "f@mail.com",
     upstream_id: 2,
     username: "second_user_admin",
+    password:
+      "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000104",
@@ -232,6 +239,8 @@ export const users: Prisma.UserCreateInput[] = [
     username: "third_user",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    password:
+      "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000105",
@@ -653,6 +662,56 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     course: { connect: { id: "00000000000000000000000000000666" } },
     link: "avoin-link",
     tiers: null,
+  },
+]
+
+export const authorizationCode: Prisma.AuthorizationCodeCreateInput[] = [
+  {
+    id: "00000000000000000000000000004102",
+    client_id: "native",
+    redirect_uri: "*",
+    user_id: "20000000000000000000000000000102",
+    code: "code",
+    trusted: true,
+  },
+  {
+    id: "00000000000000000000000000003103",
+    client_id: "native",
+    redirect_uri: "*",
+    user_id: null,
+    code: "code2",
+    trusted: true,
+  },
+]
+
+export const client: Prisma.ClientCreateInput[] = [
+  {
+    id: "00000000000000000000000000050102",
+    name: "native",
+    client_id: "native",
+    client_secret: "native",
+    redirect_uri: "*",
+    scopes: "*",
+    is_trusted: true,
+  },
+]
+
+export const accessToken: Prisma.AccessTokenCreateInput[] = [
+  {
+    id: "00000000000000000000000000600102",
+    client_id: "native",
+    user_id: "20000000000000000000000000000102",
+    access_token:
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMwNzIsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMzg0MzczYjEtZGY0Ny00MDQ1LWE1YmUtZjQ4NzE4YjYzN2M4IiwiYWRtaW4iOmZhbHNlLCJub25jZSI6IjRmZjA3NGMzNjgxZjZmMDlkNjdjNDdkZDk0OGI1YmM2Iiwiand0aWQiOiJhYjAyOTllZDE4M2ZmM2E1ZmE4NTFiYzQ5YTc0OWIxMzczZGQ1MWNjYTFkMThjM2UwZTgwNDk1MTI0YzRiYzMyMTc5MDg2MGZiMThlYzUxNmZiMjkyNjg0YWNjMGUzNmNmNzIyY2U1NzExMzYxZjhlOGNmYmU0MzU2ZGZlMzQ5OSIsImlhdCI6MTYxOTAwNzA3MiwiYXVkIjoibmF0aXZlIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwL2F1dGgvdG9rZW4iLCJzdWIiOiJaVUJ0WVdsc0xtTnZiUT09In0.h8DTbBzFMGL0_tU1_krt4O8BqlEgWzhfreXGTsOLHKRS53apzrjIcMbjsvnxHAbfns8EGxRzdd36x-yCbMCnvKS5y6jP1sWcsfsUPUco8A9GtTO0zwWa8kse7j-MrEoaixfpz9LWak27OAW48XONU8wSAzDabhJdvNEqH2ydT8y3lm1a53gApttC-V6dee7PAnDZPOWFSbIXqlI5-9UffQ7iSebu549Vm0692K0HWbSBU2pewJqZTXfWPCJ6xl4MTlE1FEBqLkG6Mpzu4bRcBvS8niqE7JVsZxDd_3jQNHoHfb7ipAbgCMbvbAhD3B5q13Ak2KAumqdTUKvaOwj5ng",
+    valid: true,
+  },
+  {
+    id: "20000000000000000000000000000103",
+    client_id: "native",
+    user_id: "20000000000000000000000000000103",
+    access_token:
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMzMTAsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMjAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAzIiwiYWRtaW4iOnRydWUsIm5vbmNlIjoiNWMwOGQwZjRhMzYxMTdkZmJlZGIzZWI3NzA1ZTUzZTIiLCJqd3RpZCI6Ijk5NzUzYWJlZTEyZGZkYTM5YWY1OGQyODRkZDQ0MzAxYjMxNGYzMmZhN2Y1OGE0OGFlMGYxZmEwNzUzMDBkZDMxM2E0OTM0MjkyZjVjMDAzNTY0Y2YyMjY3NjRhMDllY2M1ZjRlODhiZTc0YzhkNzcwZmU1NmM1NTA4YzNkYjlmIiwiaWF0IjoxNjE5MDA3MzEwLCJhdWQiOiJuYXRpdmUiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMDAvYXV0aC90b2tlbiIsInN1YiI6IlprQnRZV2xzTG1OdmJRPT0ifQ.qvPIfJxToS3k_Vu6ixIVarW3DCPmddGTSedYKc5yUt6yn7i_q99ps38A5w1LgKq_2_G8gBw6WzV7ulOpstx0L3stBxpoHv073WVrCo2v-mw7EMbUJHKCiggPUOLtcYF4B4rK64x0vo1NnlcBIBATYmq2gr_jEXX4gBx-6JEmzsMCOCzT4ZYft0rRkn3930giGtGpcP5C4acl12USrc6QNVGcbN0U1J9wWvo45Qe2QVdV-xG96PR2KiOfVsrZ-5YVMJjwiD6heEbghdyo00yifIPDSTRr0Zpjmwr1a7bUFSen93h-iEHiFVZ1_GfM9a_HqvXdtY0-8_eAJi8f9WVrjw",
+    valid: true,
   },
 ]
 

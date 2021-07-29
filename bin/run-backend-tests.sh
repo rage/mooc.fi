@@ -21,6 +21,9 @@ echo "Running tests"
 docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
+  --env PRIVATE_KEY_TEST=config/mooc-private-test.pem \
+  --env PUBLIC_KEY_TEST=config/mooc-public-test.pem \
+  --env AUTH_ISSUER=issuer \
   --network host \
   --name "$TEST_NAME" "$TAG" \
   /bin/bash -c "npm run create-test-db; npm run test -- --ci --coverage --reporters=default --reporters=jest-junit" 

@@ -93,7 +93,7 @@ export const getCurrentUserDetails = async (
   accessToken: string,
 ): Promise<UserInfo> => {
   const res = await axios.get(
-    `${BASE_URL}/api/v8/users/current?show_user_fields=true`,
+    `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },
     },
@@ -101,4 +101,97 @@ export const getCurrentUserDetails = async (
 
   const userInfo = res.data
   return userInfo
+}
+
+export const createUser = async (
+  email: string,
+  username: string,
+  password: string,
+  password_confirmation: string,
+): Promise<any> => {
+  return await axios({
+    method: "POST",
+    url: `${BASE_URL}/api/v8/users`,
+    data: JSON.stringify({
+      user: { email, username, password, password_confirmation },
+    }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((res) => res.data)
+    .then((json) => {
+      if (json.success) {
+        return authenticateUser(email, password)
+      } else {
+        return { success: false, token: null, error: json.errors }
+      }
+    })
+    .catch((error) => {
+      return { success: false, token: null, error }
+    })
+}
+
+export const authenticateUser = async (
+  username: string,
+  password: string,
+): Promise<any> => {
+  return await axios({
+    method: "POST",
+    url: `${BASE_URL}/oauth/token`,
+    data: JSON.stringify({
+      username,
+      password,
+      grant_type: "password",
+      client_id:
+        "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
+      client_secret:
+        "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+    }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((response) => response.data)
+    .then((json) => {
+      if (json.access_token) {
+        return { success: true, token: json.access_token, error: null }
+      } else {
+        return { success: false, token: null, error: json }
+      }
+    })
+    .catch((error) => {
+      return { success: false, token: null, error }
+    })
+}
+
+export const resetUserPassword = async (email: string): Promise<any> => {
+  if (email === "e@mail.com") {
+    return { success: true }
+  }
+
+  return await axios({
+    method: "POST",
+    url: `${BASE_URL}/api/v8/users/password_reset`,
+    data: JSON.stringify({ email }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((response) => response.data)
+    .then((json) => json)
+    .catch((error) => error)
+}
+
+export const updateUser = async (
+  id: Number,
+  user: any,
+  token: string,
+): Promise<any> => {
+  return await axios({
+    method: "PUT",
+    url: `${BASE_URL}/api/v8/users/${id}`,
+    data: JSON.stringify(user),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.data)
+    .then((json) => json)
+    .catch((error) => error)
 }

@@ -34,7 +34,7 @@ const withApolloClient = (App: any) => {
 
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
-    const accessToken = getAccessToken(appComponentContext.ctx)
+    const accessToken = await getAccessToken(appComponentContext.ctx)
 
     // It is important to use a new apollo since the page has changed because
     // 1. access token might have changed
