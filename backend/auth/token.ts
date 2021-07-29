@@ -357,11 +357,11 @@ export function implicitToken() {
 }
 
 export async function signIn(
-  emailRaw: string,
+  emailOrUsernameRaw: string,
   passwordRaw: string,
   ctx: ApiContext,
 ) {
-  let email = emailRaw.trim()
+  let emailOrUsername = emailOrUsernameRaw.trim()
   let password = passwordRaw.trim()
 
   let user = (
@@ -374,10 +374,11 @@ export async function signIn(
         "administrator",
       )
       .from("user")
-      .where("email", email)
+      .where("email", emailOrUsername)
+      .orWhere("username", emailOrUsername)
   )?.[0]
 
-  const tmcToken = await authenticateUser(email, password)
+  const tmcToken = await authenticateUser(user?.email ?? "", password)
 
   let client = (
     await ctx.knex
