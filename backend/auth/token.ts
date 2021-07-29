@@ -4,11 +4,13 @@ import { User, Client, AuthorizationCode, AccessToken } from "@prisma/client"
 import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
 
+const isProduction = process.env.NODE_ENV === "production"
 const BACKEND_URL = process.env.BACKEND_URL ?? "https://mooc.fi"
 
 const fs = require("fs")
-const privateKey =
-  process.env.PRIVATE_KEY ?? fs.readFileSync(process.env.PRIVATE_KEY_TEST)
+const privateKey = isProduction
+  ? process.env.PRIVATE_KEY
+  : fs.readFileSync(process.env.PRIVATE_KEY_TEST)
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")

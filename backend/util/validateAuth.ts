@@ -1,9 +1,12 @@
 import { ApiContext } from "../auth"
 import { AccessToken } from "@prisma/client"
 
+const isProduction = process.env.NODE_ENV === "production"
+
 const fs = require("fs")
-const publicKey =
-  process.env.PUBLIC_KEY ?? fs.readFileSync(process.env.PUBLIC_KEY_TEST)
+const publicKey = isProduction
+  ? process.env.PUBLIC_KEY
+  : fs.readFileSync(process.env.PUBLIC_KEY_TEST)
 const jwt = require("jsonwebtoken")
 
 export function validateEmail(value: string): value is string {

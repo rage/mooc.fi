@@ -5,6 +5,8 @@ import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
 
+const isProduction = process.env.NODE_ENV === "production"
+
 import {
   getToken,
   removeToken,
@@ -31,7 +33,7 @@ export const isAdmin = (ctx: NextContext) => {
 const client_id = "7g5Llw"
 const grant_type = "password"
 const response_type = "token"
-const domain = "localhost"
+const domain = isProduction ? "mooc.fi" : "localhost"
 const priority = "tmc"
 
 interface SignInProps {
