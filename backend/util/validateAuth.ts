@@ -2,9 +2,8 @@ import { ApiContext } from "../auth"
 import { AccessToken } from "@prisma/client"
 
 const fs = require("fs")
-const publicKey = fs.readFileSync(
-  process.env.PUBLIC_KEY || process.env.PUBLIC_KEY_TEST,
-)
+const publicKey =
+  process.env.PUBLIC_KEY ?? fs.readFileSync(process.env.PUBLIC_KEY_TEST)
 const jwt = require("jsonwebtoken")
 
 export function validateEmail(value: string): value is string {
