@@ -419,13 +419,13 @@ export async function signIn(
     }
   }
 
-  if (tmcToken.success) {
+  if (tmcToken.success && user) { // TODO/FIXME: added user check, what was the original purpose here?
     const hashPassword = await argon2Hash(password)
 
     await ctx
       .knex("user")
       .update({ password: hashPassword })
-      .where("id", user.id) // TODO: looks risky now
+      .where("id", user.id)
 
     let accessToken = await issueToken(user, client, ctx)
 
