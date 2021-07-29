@@ -2,11 +2,13 @@ import axios from "axios"
 import Cookies from "universal-cookie"
 import { getAccessToken } from "../lib/authentication"
 
+import { FRONTEND_URL } from "/config"
+
 const cookies = new Cookies()
 const domain = process.env.NODE_ENV === "production" ? "mooc.fi" : "localhost"
 const BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://mooc.fi"
+    ? FRONTEND_URL // TODO: this is strictly speaking not the frontend_url here, but we'll use that for now as it's the same
     : "http://localhost:4000"
 
 const token = cookies.get("token")
