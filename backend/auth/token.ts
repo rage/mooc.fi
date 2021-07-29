@@ -425,7 +425,7 @@ export async function signIn(
     await ctx
       .knex("user")
       .update({ password: hashPassword })
-      .where("email", email)
+      .where("id", user.id) // TODO: looks risky now
 
     let accessToken = await issueToken(user, client, ctx)
 
