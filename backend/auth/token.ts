@@ -82,7 +82,7 @@ async function grantAuthorizationCode(
     status: 200,
     success: true,
     code,
-    targetUri: `https://mooc.fi/authorization?code=${code}`,
+    targetUri: `${BACKEND_URL}/authorization?code=${code}`,
   }
 }
 
@@ -398,7 +398,7 @@ export async function signIn(
     )?.[0]
   }
 
-  if (user && user.password) {
+  if (user?.password) {
     if ((await argon2.verify(user.password, password)) && tmcToken.success) {
       let accessToken = await issueToken(user, client, ctx)
 
