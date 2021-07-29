@@ -5,9 +5,8 @@ import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
 
 const fs = require("fs")
-const privateKey = fs.readFileSync(
-  process.env.PRIVATE_KEY || process.env.PRIVATE_KEY_TEST,
-)
+const privateKey =
+  process.env.PRIVATE_KEY ?? fs.readFileSync(process.env.PRIVATE_KEY_TEST)
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")

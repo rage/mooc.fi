@@ -9,5 +9,5 @@ env.json
 coverage/
 sourcemap/
 
-backend/config/mooc-private.pem
-backend/config/mooc-public.pem
+config/mooc-private.pem
+config/mooc-public.pem
