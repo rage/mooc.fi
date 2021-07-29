@@ -1,10 +1,9 @@
 import { extendType, stringArg, intArg, idArg, nonNull } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import Knex from "../../services/knex"
-// import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
+import { buildUserSearch } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -27,47 +26,43 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        const courseWithSlug = await ctx.prisma.course.findUnique({
-          where: {
-            slug: course,
-          },
-        })
+        let completions = await ctx.prisma.course
+          .findUnique({
+            where: {
+              slug: course,
+            },
+          })
+          .completions({
+            where: {
+              completion_language,
+            },
+          })
 
-        if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.prisma.courseAlias
+        if (!completions) {
+          completions = await ctx.prisma.courseAlias
             .findUnique({
               where: {
                 course_code: course,
               },
             })
             .course()
+            .completions({
+              where: {
+                completion_language,
+              },
+            })
 
-          if (!courseFromAvoinCourse) {
+          if (!completions) {
             throw new UserInputError("Invalid course identifier")
           }
-          course = courseFromAvoinCourse.slug
         }
-        const courseObject = await ctx.prisma.course.findUnique({
-          where: {
-            slug: course,
-          },
-        })
 
-        if (completion_language) {
-          return await Knex.select("*").from("completion").where({
-            course_id: courseObject?.id,
-            completion_language: completion_language,
-          })
-        } else {
-          return await Knex.select("*")
-            .from("completion")
-            .where({ course_id: courseObject?.id })
-        }
+        return completions
       },
     })
 
     t.field("completionsPaginated", {
-      type: "CompletionConnection",
+      type: "QueryCompletionsPaginated_type_Connection",
       args: {
         course: nonNull(stringArg()),
         completion_language: stringArg(),
@@ -107,35 +102,19 @@ export const CompletionQueries = extendType({
             completion_language,
             ...(search
               ? {
-                  user: {
-                    OR: [
-                      {
-                        first_name: { contains: search, mode: "insensitive" },
-                      },
-                      {
-                        last_name: { contains: search, mode: "insensitive" },
-                      },
-                      {
-                        username: { contains: search, mode: "insensitive" },
-                      },
-                      {
-                        email: { contains: search, mode: "insensitive" },
-                      },
-                      {
-                        student_number: { contains: search },
-                      },
-                      {
-                        real_student_number: { contains: search },
-                      },
-                    ],
-                  },
+                  user: buildUserSearch(search),
                 }
               : {}),
           },
         }
 
         return findManyCursorConnection(
-          (args) => ctx.prisma.completion.findMany({ ...args, ...baseArgs }),
+          (args) =>
+            ctx.prisma.course
+              .findUnique({
+                where: { slug: course },
+              })
+              .completions({ ...args, ...baseArgs }),
           () => ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
           { first, last, before, after },
           {
@@ -149,7 +128,7 @@ export const CompletionQueries = extendType({
       },
     })
 
-    t.connection("deprecatedCompletionsPaginated", {
+    t.connection("completionsPaginated_type", {
       // hack to generate connection type
       type: "Completion",
       additionalArgs: {
@@ -165,6 +144,9 @@ export const CompletionQueries = extendType({
       authorize: () => false,
       nodes: async (_, _args, _ctx, __) => {
         return []
+      },
+      extendConnection(t) {
+        t.int("totalCount")
       },
     })
   },

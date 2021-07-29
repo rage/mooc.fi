@@ -7,7 +7,14 @@ gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 
 echo "Configuring kubectl"
 gcloud --quiet container clusters get-credentials moocfi-cluster
-kubectl config set-context "$GOOGLE_CLUSTER_NAME" --namespace=moocfi
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$BRANCH" == "staging" ]]; then
+  kubectl config set-context "$GOOGLE_CLUSTER_NAME" --namespace=moocfi-staging
+else
+  kubectl config set-context "$GOOGLE_CLUSTER_NAME" --namespace=moocfi
+fi
 
 echo "Logging in to docker"
 gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io

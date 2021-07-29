@@ -16,6 +16,8 @@ const nextConfiguration = {
       typeof process.env.LOCALE_SUBPATHS === "string"
         ? process.env.LOCALE_SUBPATHS
         : "none",
+    NEXT_PUBLIC_BACKEND_URL: process.env.BACKEND_URL,
+    NEXT_PUBLIC_FRONTEND_URL: process.env.FRONTEND_URL,
   },
 }
 

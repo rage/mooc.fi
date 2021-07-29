@@ -11,6 +11,7 @@ const next = require("next")
 const compression = require("compression")
 
 const Redirects = require("./Redirects")
+
 const port = process.env.PORT || 3000
 const app = next({ dev: !isProduction })
 const handle = app.getRequestHandler()
@@ -18,7 +19,6 @@ const handle = app.getRequestHandler()
 const DirectFrom = Redirects.redirects_list
 
 const cypress = process.env.CYPRESS === "true"
-const createMockBackend = require("./tests/mockBackend")
 
 const main = async () => {
   try {
@@ -59,8 +59,10 @@ const main = async () => {
     server.get("*", redirectHandler)
   }
 
-  await server.listen(port)
-  console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console
+  server
+    .listen(port)
+    .on("listening", () => console.log(`> Ready on http://localhost:${port}`)) // eslint-disable-line no-console
+    .on("error", (e) => console.log("error", e))
 }
 
 const main2 = async () => {

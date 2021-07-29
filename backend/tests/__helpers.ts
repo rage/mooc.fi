@@ -91,7 +91,7 @@ function createTestContext(testContext: TestContext) {
     async before() {
       const { prisma, knexClient } = await prismaCtx.before()
 
-      const { apollo, app } = server({
+      const { apollo, app } = await server({
         prisma,
         knex: knexClient,
         logger: testContext.logger,

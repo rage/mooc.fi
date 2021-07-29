@@ -8,6 +8,18 @@ export const UserOverViewQuery = gql`
       first_name
       last_name
       email
+      verified_users {
+        id
+        home_organization
+        person_affiliation
+        person_affiliation_updated_at
+        updated_at
+        created_at
+        personal_unique_code
+        display_name
+        mail
+        organizational_unit
+      }
       completions {
         id
         completion_language

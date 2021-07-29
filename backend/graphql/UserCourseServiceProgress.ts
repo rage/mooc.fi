@@ -48,7 +48,51 @@ export const UserCourseServiceProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        return await ctx.prisma.userCourseServiceProgress.findFirst({
+
+        if (course_id) {
+          return (
+            await ctx.prisma.course
+              .findUnique({
+                where: { id: course_id },
+              })
+              .user_course_service_progresses({
+                where: {
+                  user_id,
+                  service_id,
+                },
+                orderBy: { created_at: "asc" },
+              })
+          )?.[0]
+        }
+
+        if (service_id) {
+          return (
+            await ctx.prisma.service
+              .findUnique({
+                where: { id: service_id },
+              })
+              .user_course_service_progresses({
+                where: {
+                  user_id,
+                },
+                orderBy: { created_at: "asc" },
+              })
+          )?.[0]
+        }
+
+        if (user_id) {
+          return (
+            await ctx.prisma.user
+              .findUnique({
+                where: { id: user_id },
+              })
+              .user_course_service_progresses({
+                orderBy: { created_at: "asc" },
+              })
+          )?.[0]
+        }
+
+        return ctx.prisma.userCourseServiceProgress.findFirst({
           where: {
             user_id: user_id,
             course_id: course_id,

@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react"
+import React, { PropsWithChildren } from "react"
 import Typography from "@material-ui/core/Typography"
 import Box from "@material-ui/core/Box"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
@@ -6,6 +6,8 @@ import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisp
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileSettings from "/components/Profile/ProfileSettings"
 import notEmpty from "/util/notEmpty"
+import OrganizationConnectionList from "./OrganizationConnection/OrganizationConnectionList"
+import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
 
 interface TabPanelProps {
   index: any
@@ -35,6 +37,7 @@ interface StudentDataDisplayProps {
 
 const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
   const { completions = [] } = data || {}
+  const { onDisconnect } = useDisconnect()
 
   return (
     <>
@@ -47,6 +50,12 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
         />
       </TabPanel>
       <TabPanel index={2} value={tab}>
+        <OrganizationConnectionList
+          data={data?.verified_users}
+          onDisconnect={onDisconnect}
+        />
+      </TabPanel>
+      <TabPanel index={3} value={tab}>
         <ProfileSettings data={data} />
       </TabPanel>
     </>
