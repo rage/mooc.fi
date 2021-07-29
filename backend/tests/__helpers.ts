@@ -255,3 +255,40 @@ export const fakeUserDetailReply = (reply: [number, object]) =>
   nock(process.env.TMC_HOST || "")
     .get("/api/v8/users/recently_changed_user_details")
     .reply(reply[0], () => reply[1])
+
+export const fakeTMCUserCreate = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .post("/api/v8/users")
+    .reply(() => [reply[0], reply[1]])
+
+export const fakeTMCUserEmailNotFound = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .post(
+      "/oauth/token",
+      JSON.stringify({
+        username: "incorrect-email@user.com",
+        password: "password",
+        grant_type: "password",
+        client_id:
+          "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
+        client_secret:
+          "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+      }),
+    )
+    .reply(() => [reply[0], reply[1]])
+
+export const fakeTMCUserWrongPassword = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .post(
+      "/oauth/token",
+      JSON.stringify({
+        username: "e@mail.com",
+        password: "incorrect-password",
+        grant_type: "password",
+        client_id:
+          "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
+        client_secret:
+          "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+      }),
+    )
+    .reply(() => [reply[0], reply[1]])

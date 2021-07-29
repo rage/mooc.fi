@@ -17,6 +17,9 @@ import {
   completionsRegistered,
   courseAliases,
   openUniversityRegistrationLink,
+  authorizationCode,
+  client,
+  accessToken,
   verifiedUsers,
 } from "."
 
@@ -74,6 +77,12 @@ export const seed = async (prisma: PrismaClient) => {
     "openUniversityRegistrationLink",
     openUniversityRegistrationLink,
   )
+  const seededAuthorizationCodes = await create(
+    "authorizationCode",
+    authorizationCode,
+  )
+  const seededClients = await create("client", client)
+  const seededAccessTokens = await create("accessToken", accessToken)
   const seededVerifiedUsers = await create("verifiedUser", verifiedUsers)
 
   return {
@@ -94,6 +103,9 @@ export const seed = async (prisma: PrismaClient) => {
     completionsRegistered: seededCompletionsRegistered,
     courseAliases: seededCourseAliases,
     openUniversityRegistrationLink: seededOpenUniversityRegistrationLink,
+    authorizationCodes: seededAuthorizationCodes,
+    clients: seededClients,
+    accessTokens: seededAccessTokens,
     verifiedUsers: seededVerifiedUsers,
   }
 }

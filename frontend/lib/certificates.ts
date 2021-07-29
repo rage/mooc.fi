@@ -4,7 +4,7 @@ import { getAccessToken } from "./authentication"
 const SERVICE_URL = "https://certificates.mooc.fi"
 
 export const checkCertificate = async (courseSlug: string) => {
-  const accessToken = getAccessToken(undefined)
+  const accessToken = await getAccessToken(undefined)
 
   const res = await axios.get(
     `${SERVICE_URL}/certificate-availability/${courseSlug}`,
@@ -20,7 +20,7 @@ export const checkCertificate = async (courseSlug: string) => {
 }
 
 export const createCertificate = async (courseSlug: string) => {
-  const accessToken = getAccessToken(undefined)
+  const accessToken = await getAccessToken(undefined)
 
   try {
     const res = await axios.post(

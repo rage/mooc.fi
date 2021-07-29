@@ -1,0 +1,22 @@
+{
+  "name": "moocfi-auth",
+  "version": "0.0.2",
+  "description": "Authentication package for MoocFi",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RAGE",
+  "license": "ISC",
+  "peerDependencies": {
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.2",
+    "axios": "^0.21.1",
+    "universal-cookie": "^4.0.4"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.2"
+  }
+}

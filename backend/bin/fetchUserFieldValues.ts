@@ -120,6 +120,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
     username: details.username,
+    password: "password",
   }
   try {
     const result = await prisma.user.upsert({

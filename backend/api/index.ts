@@ -11,6 +11,8 @@ import { userCourseSettingsCount } from "./userCourseSettingsCount"
 import { progress, progressV2 } from "./progress"
 import { tierProgress } from "./tierProgress"
 import { registerCompletions } from "./registerCompletions"
+import { getUser, updatePassword } from "./user"
+
 import {
   userCourseSettingsGet,
   userCourseSettingsPost,
@@ -41,5 +43,7 @@ export function apiRouter(ctx: ApiContext) {
     .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
     .use("/ab-studies", abStudiesRouter(ctx))
+    .get("/getUser/:course_id", getUser(ctx))
+    .post("/updatePassword", updatePassword(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
 }

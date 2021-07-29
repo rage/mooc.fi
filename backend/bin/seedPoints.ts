@@ -48,6 +48,7 @@ const addUsers = async () => {
       administrator: false,
       student_number: generateRandomString(),
       real_student_number: generateRandomString(),
+      password: generateRandomString(),
     }
     //add new upstreamId to ids already in use
     UpstreamIdsInUse = UpstreamIdsInUse.concat(newUser.upstream_id)

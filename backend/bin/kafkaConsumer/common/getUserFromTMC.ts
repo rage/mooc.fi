@@ -16,6 +16,7 @@ const getUserFromTMCAndCreate = async (
       email: userDetails.email,
       username: userDetails.username,
       administrator: userDetails.administrator,
+      password: "password",
     },
   })
 }

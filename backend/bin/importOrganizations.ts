@@ -115,6 +115,7 @@ const getUserFromTmc = async (user_id: Number) => {
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
     username: details.username,
+    password: "password",
   }
   return await prisma.user.upsert({
     where: { upstream_id: details.id },
