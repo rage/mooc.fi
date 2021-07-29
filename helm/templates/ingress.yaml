@@ -45,6 +45,10 @@ spec:
             backend:
               serviceName: {{ $fullName }}-backend
               servicePort: 80
+          - path: /auth
+            backend:
+              serviceName: {{ $fullName }}-backend
+              servicePort: 80
           - path: /kafka-bridge/api/v0
             backend:
               serviceName: kafka-bridge
@@ -58,6 +62,14 @@ spec:
               serviceName: shibbo-test
               servicePort: 80
           - path: /connect
+            backend:
+              serviceName: shibbo-test
+              servicePort: 80
+          - path: /sign-in
+            backend:
+              serviceName: shibbo-test
+              servicePort: 80
+          - path: /sign-up
             backend:
               serviceName: shibbo-test
               servicePort: 80
