@@ -1,6 +1,7 @@
 //import { v4 as uuidv4 } from "uuid"
 import { getAccessToken } from "/lib/authentication"
 import { createUser } from "../packages/moocfi-auth"
+import { DOMAIN } from "/config"
 
 const BASE_URL = "https://tmc.mooc.fi/api/v8"
 
@@ -17,7 +18,7 @@ export async function createAccount(data: any) {
     origin: "mooc.fi",
     provider: "native",
     language: "fi",
-    domain: "mooc.fi",
+    domain: DOMAIN ?? "mooc.fi",
     priority: "tmc",
   })
 }
