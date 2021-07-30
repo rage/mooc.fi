@@ -21,7 +21,7 @@ export default async function fetchUserDetails(
 ) {
   const { data } = await apollo.query({
     query: UserDetailQuery,
-    fetchPolicy: "cache-first",
+    fetchPolicy: "no-cache", // "cache-first",
   })
   return data.currentUser
 }
