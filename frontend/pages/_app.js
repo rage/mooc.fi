@@ -33,6 +33,7 @@ const getPageTranslator = getTranslator(PageTranslations)
 class MyApp extends App {
   constructor(props) {
     super(props)
+
     this.toggleLogin = () => {
       this.setState({
         loggedIn: !this.state.loggedIn,
