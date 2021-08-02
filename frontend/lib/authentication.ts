@@ -5,7 +5,6 @@ import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
 import { DOMAIN } from "/config"
-
 const isProduction = process.env.NODE_ENV === "production"
 
 import {
@@ -65,7 +64,6 @@ export const signIn = async ({
   //document.cookie = `access_token=${res.accessToken};path=/`
 
   //document.cookie = `admin=${details.administrator};path=/`
-
   const rawRedirectLocation = nookies.get()["redirect-back"]
 
   if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {
@@ -94,14 +92,6 @@ export const signIn = async ({
   return details
 }
 
-/*export const signInShibbo = async (
-  apollo: ApolloClient<any>,
-  personal_unique_code: string
-) => {
-  const verifiedUser = await apollo.query(VerifiedUserQuery, {
-
-  }) 
-}*/
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   await removeToken("tmc")
   document.cookie =
@@ -116,6 +106,7 @@ export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   }, 100)
 }
 
+// @ts-ignore: not used for now
 const getCookie = (key: string) => {
   if (typeof document === "undefined" || !document || !document?.cookie) {
     return
@@ -141,15 +132,16 @@ const getCookie = (key: string) => {
   return vals[key] || ""
 }
 
+// @ts-ignore: ctx not used for now
 export const getAccessToken = async (ctx: NextContext | undefined) => {
   const access_token = await _getAccessToken()
 
-  if (!ctx) {
+  /*if (!ctx) {
     return getCookie("access_token")
-  }
+  }*/
 
   return access_token
-  //return nookies.get(ctx)["access_token"]
+  // return nookies.get(ctx)["access_token"]
 }
 
 export async function getUserDetails(accessToken: string) {

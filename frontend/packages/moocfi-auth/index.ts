@@ -35,8 +35,42 @@ interface CreateFields {
   priority?: string
 }
 
-export const createUser = async (data: CreateFields) => {
+interface SetCookiesOptions {
+  priority?: string | null
+  accessToken: string
+  tmcToken: string
+  domain: string
+  admin?: boolean
+}
+
+const setCookies = ({
+  priority,
+  accessToken,
+  tmcToken,
+  domain,
+  admin,
+}: SetCookiesOptions) => {
   const cookies = new Cookies()
+  cookies.set("admin", admin, { domain })
+
+  if (priority === "tmc") {
+    cookies.set("mooc_token", accessToken, {
+      domain,
+    })
+    cookies.set("access_token", tmcToken, {
+      domain,
+    })
+  } else {
+    cookies.set("access_token", accessToken, {
+      domain,
+    })
+    cookies.set("tmc_token", tmcToken, {
+      domain,
+    })
+  }
+}
+
+export const createUser = async (data: CreateFields) => {
   let origin = data.origin || "mooc.fi"
   let provider = data.provider || "native"
   let language = data.language || "en"
@@ -60,21 +94,13 @@ export const createUser = async (data: CreateFields) => {
   })
     .then((response) => response.data)
     .then((json) => {
-      if (priority === "tmc") {
-        cookies.set("mooc_token", JSON.stringify(json.auth.access_token), {
-          domain: domain,
-        })
-        cookies.set("access_token", JSON.stringify(json.auth.tmc), {
-          domain: domain,
-        })
-      } else {
-        cookies.set("access_token", JSON.stringify(json.auth.access_token), {
-          domain: domain,
-        })
-        cookies.set("tmc_token", JSON.stringify(json.auth.tmc), {
-          domain: domain,
-        })
-      }
+      setCookies({
+        priority,
+        accessToken: json.auth.access_token,
+        tmcToken: json.auth.tmc,
+        admin: json.auth.admin,
+        domain,
+      })
 
       return json
     })
@@ -94,8 +120,6 @@ interface Data {
 }
 
 export const getToken = async (data: Data) => {
-  const cookies = new Cookies()
-
   return await axios({
     method: "POST",
     url: `${BASE_URL}/auth/token`,
@@ -107,23 +131,13 @@ export const getToken = async (data: Data) => {
       if (json.targetUri) {
         window.location.replace(json.targetUri)
       } else {
-        if (data.priority === "tmc") {
-          cookies.set("mooc_token", JSON.stringify(json.access_token), {
-            domain: data.domain,
-          })
-          cookies.set(
-            "access_token",
-            JSON.stringify(json.tmc_token || data.tmc),
-            { domain: data.domain },
-          )
-        } else {
-          cookies.set("access_token", JSON.stringify(json.access_token), {
-            domain: data.domain,
-          })
-          cookies.set("tmc_token", JSON.stringify(json.tmc_token || data.tmc), {
-            domain: data.domain,
-          })
-        }
+        setCookies({
+          priority: data.priority,
+          accessToken: json.access_token,
+          tmcToken: json.tmc_token || data.tmc,
+          admin: json.admin,
+          domain: data.domain,
+        })
 
         return {
           access_token: json.access_token,
@@ -152,6 +166,8 @@ export const removeToken = async (priority: string) => {
       cookies.remove("access_token")
       cookies.remove("tmc_token")
       cookies.remove("mooc_token")
+      cookies.remove("admin")
+
       return json
     })
     .catch((error) => {
@@ -159,23 +175,13 @@ export const removeToken = async (priority: string) => {
     })
 }
 
-export const getAccessToken = () => {
+const getCookie = (field: string) => () => {
   const cookies = new Cookies()
-  let access_token = cookies.get("access_token")
 
-  return access_token
+  return cookies.get(field)
 }
 
-export const getTMCToken = () => {
-  const cookies = new Cookies()
-  let tmc_token = cookies.get("tmc_token")
-
-  return tmc_token
-}
-
-export const getMoocToken = () => {
-  const cookies = new Cookies()
-  let mooc_token = cookies.get("mooc_token")
-
-  return mooc_token
-}
+export const getAccessToken = getCookie("access_token")
+export const getTMCToken = getCookie("tmc_token")
+export const getMoocToken = getCookie("mooc_token")
+export const getAdmin = getCookie("admin")

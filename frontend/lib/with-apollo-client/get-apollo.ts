@@ -28,6 +28,7 @@ function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = cookies.get("access_token")
+
     if (!accessToken && !process.browser) {
       accessToken = originalAccessToken
     }
@@ -124,5 +125,6 @@ export default function getApollo(initialState: any, accessToken?: string) {
 
 export function initNewApollo(accessToken?: any) {
   apolloClient = create(undefined, accessToken)
+
   return apolloClient
 }

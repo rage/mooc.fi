@@ -412,6 +412,7 @@ export async function signIn(
         success: true,
         tmc_token: tmcToken.token,
         access_token: accessToken,
+        admin: user.administrator,
       }
     } else {
       let throttleData = await throttle(user, ctx)
@@ -437,6 +438,7 @@ export async function signIn(
       success: true,
       tmc_token: tmcToken.token,
       access_token: accessToken,
+      admin: user.administrator,
     }
   } else {
     if (user) {
