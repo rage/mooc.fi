@@ -32,12 +32,10 @@ const withApolloClient = (App: any) => {
       appProps = await App.getInitialProps(appComponentContext)
     }
 
-    console.log("ctx", appComponentContext.ctx)
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
     const accessToken = await getAccessToken(appComponentContext.ctx)
 
-    console.log("accessToken in withApollo", accessToken)
     // It is important to use a new apollo since the page has changed because
     // 1. access token might have changed
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
@@ -45,8 +43,6 @@ const withApolloClient = (App: any) => {
 
     // UserDetailsContext uses this
     appProps.currentUser = await fetchUserDetails(apollo)
-
-    console.log("currentUser", appProps.currentUser)
 
     if (res?.finished) {
       return {}
