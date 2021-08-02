@@ -39,8 +39,7 @@ export const decision = async (code: string | string[]) => {
     .then((response) => response.data)
     .then(
       (json) =>
-        `${json.redirectUri}?code=${code}&tmc=${
-          tmcToken || cookies.get("tmc_token")
+        `${json.redirectUri}?code=${code}&tmc=${tmcToken || cookies.get("tmc_token")
         }`,
     )
     .catch((error) => error)
