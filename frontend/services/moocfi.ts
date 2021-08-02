@@ -12,7 +12,7 @@ const BASE_URL =
     : "http://localhost:4000"
 
 const token = cookies.get("token")
-const tmcToken = cookies.get("tmcToken")
+const tmcToken = cookies.get("tmc_token")
 
 export const getAuthorization = async (code: string | string[]) => {
   return await axios({
@@ -41,7 +41,7 @@ export const decision = async (code: string | string[]) => {
     .then(
       (json) =>
         `${json.redirectUri}?code=${code}&tmc=${
-          tmcToken || cookies.get("tmcToken")
+          tmcToken || cookies.get("tmc_token")
         }`,
     )
     .catch((error) => error)
@@ -63,7 +63,7 @@ export const signIn = async (email: string, password: string) => {
       cookies.set("token", JSON.stringify(json.access_token), {
         domain: domain,
       })
-      cookies.set("tmcToken", JSON.stringify(json.tmc_token), {
+      cookies.set("tmc_token", JSON.stringify(json.tmc_token), {
         domain: domain,
       })
       return json.access_token
