@@ -8,7 +8,7 @@ export function signOut(ctx: ApiContext) {
       return res.status(403).json({
         status: 403,
         success: false,
-        message: "Not logged in.",
+        message: `Not logged in: ${auth.error}`,
       })
     }
 
