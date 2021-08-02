@@ -63,7 +63,7 @@ export const signIn = async (email: string, password: string) => {
       cookies.set("token", JSON.stringify(json.access_token), {
         domain: domain,
       })
-      cookies.set("tmcToken", JSON.stringify(json.tmc_token), {
+      cookies.set("tmc_token", JSON.stringify(json.tmc_token), {
         domain: domain,
       })
       return json.access_token
