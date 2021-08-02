@@ -23,5 +23,6 @@ export default async function fetchUserDetails(
     query: UserDetailQuery,
     fetchPolicy: "cache-first",
   })
+
   return data.currentUser
 }

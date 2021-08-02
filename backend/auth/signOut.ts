@@ -16,10 +16,9 @@ export function signOut(ctx: ApiContext) {
       .knex("access_tokens")
       .update({ valid: false })
       .where("access_token", req.headers.authorization.replace("Bearer ", ""))
-    req.session = null
 
     return res.status(200).json({
-      sucess: true,
+      success: true,
     })
   }
 }

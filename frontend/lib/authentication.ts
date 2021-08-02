@@ -33,7 +33,7 @@ export const isAdmin = (ctx: NextContext) => {
 const client_id = "7g5Llw"
 const grant_type = "password"
 const response_type = "token"
-const domain = isProduction ? DOMAIN ?? "mooc.fi" : "localhost"
+const domain = isProduction ? DOMAIN : "localhost"
 const priority = "tmc"
 
 interface SignInProps {
@@ -94,9 +94,9 @@ export const signIn = async ({
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   await removeToken("tmc")
-  document.cookie =
-    "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
-  document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+  // document.cookie =
+  //   "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+  // document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   // Give browser a moment to react to the change
   setTimeout(() => {
     cb()
@@ -140,7 +140,7 @@ export const getAccessToken = async (ctx: NextContext | undefined) => {
     return getCookie("access_token")
   }*/
 
-  return access_token
+  return access_token || nookies.get(ctx)["access_token"]
   // return nookies.get(ctx)["access_token"]
 }
 
