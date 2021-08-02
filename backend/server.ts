@@ -16,8 +16,6 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-co
 const helmet = require("helmet")
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
-const session = require("express-session")
-const crypto = require("crypto")
 const rateLimit = require("express-rate-limit")
 
 const apiLimit = rateLimit({
@@ -46,18 +44,6 @@ const createExpressAppWithContext = ({
   app.use(helmet.frameguard())
   app.use(cookieParser())
   app.use(bodyParser.json())
-  app.use(
-    session({
-      secret: crypto.randomBytes(20).toString("hex"),
-      cookie: {
-        maxAge: 365 * 24 * 60 * 60 * 1000,
-        secure: true,
-      },
-      saveUninitialized: false,
-      resave: false,
-      unset: "keep",
-    }),
-  )
 
   if (!TEST) {
     app.use(morgan("combined"))
