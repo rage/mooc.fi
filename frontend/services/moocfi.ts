@@ -5,7 +5,7 @@ import { getAccessToken } from "../lib/authentication"
 import { FRONTEND_URL, DOMAIN, isProduction } from "/config"
 
 const cookies = new Cookies()
-const domain = isProduction ? `.${DOMAIN}` : "localhost"
+const domain = isProduction ? DOMAIN : "localhost"
 const BASE_URL = isProduction
   ? FRONTEND_URL // TODO: this is strictly speaking not the frontend_url here, but we'll use that for now as it's the same
   : "http://localhost:4000"

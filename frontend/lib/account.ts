@@ -18,7 +18,7 @@ export async function createAccount(data: any) {
     origin: "mooc.fi",
     provider: "native",
     language: "fi",
-    domain: isProduction ? `.${DOMAIN}` : "localhost",
+    domain: isProduction ? DOMAIN : "localhost",
     priority: "tmc",
   })
 }
