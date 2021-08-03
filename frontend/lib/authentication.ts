@@ -93,7 +93,7 @@ export const signIn = async ({
 }
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
-  const res = await removeToken("tmc")
+  const res = await removeToken("tmc", domain)
 
   if (!res.success) {
     return
