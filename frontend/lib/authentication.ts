@@ -93,7 +93,12 @@ export const signIn = async ({
 }
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
-  await removeToken("tmc")
+  const res = await removeToken("tmc")
+
+  if (!res.success) {
+    return
+  }
+
   // document.cookie =
   //   "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   // document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"

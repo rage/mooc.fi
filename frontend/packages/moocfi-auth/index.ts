@@ -148,8 +148,6 @@ export const getToken = async (data: Data) => {
 }
 
 export const removeToken = async (priority: string) => {
-  const cookies = new Cookies()
-
   return await axios({
     method: "POST",
     url: `${BASE_URL}/auth/signOut`,
@@ -163,10 +161,19 @@ export const removeToken = async (priority: string) => {
   })
     .then((response) => response.data)
     .then((json) => {
-      cookies.remove("access_token")
+      document.cookie =
+        "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+      document.cookie =
+        "tmc_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+      document.cookie =
+        "mooc_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+      document.cookie =
+        "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+
+      /*cookies.remove("access_token")
       cookies.remove("tmc_token")
       cookies.remove("mooc_token")
-      cookies.remove("admin")
+      cookies.remove("admin")*/
 
       return json
     })
