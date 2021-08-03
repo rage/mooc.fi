@@ -82,7 +82,7 @@ function create(initialState: any, originalAccessToken?: string) {
 
   return new ApolloClient<NormalizedCacheObject>({
     link:
-      process.browser || !production
+      process.browser || !isProduction
         ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
         : authLink.concat(uploadLink),
     cache: cache.restore(initialState || {}),
