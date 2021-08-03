@@ -47,7 +47,7 @@ function create(initialState: any, originalAccessToken?: string) {
   const uploadLink = createUploadLink({
     uri: cypress
       ? "http://localhost:4001"
-      : production
+      : isProduction
       ? BACKEND_URL ?? "https://www.mooc.fi/api/"
       : "http://localhost:4000",
     credentials: "same-origin",
