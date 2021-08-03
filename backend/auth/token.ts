@@ -249,9 +249,6 @@ export function token(ctx: ApiContext) {
 
         return res
           .status(result.status)
-          .cookie("access_token", result.access_token, {
-            expires: new Date(Date.now() + 8 * 3600000),
-          })
           .json(result)
 
       case "authorization_code":
@@ -284,9 +281,6 @@ export function token(ctx: ApiContext) {
 
           return res
             .status(result.status)
-            .cookie("access_token", result.access_token, {
-              expires: new Date(Date.now() + 8 * 3600000),
-            })
             .json(result)
         }
 
@@ -349,9 +343,6 @@ export function implicitToken() {
 
     return res
       .status(result.status)
-      .cookie("access_token", result.access_token, {
-        expires: new Date(Date.now() + 8 * 3600000),
-      })
       .json(result.access_token)
   }
 }
