@@ -32,7 +32,7 @@ export const isAdmin = (ctx: NextContext) => {
 const client_id = "7g5Llw"
 const grant_type = "password"
 const response_type = "token"
-const domain = isProduction ? `.${DOMAIN}` : "localhost"
+const domain = isProduction ? DOMAIN : "localhost"
 const priority = "tmc"
 
 interface SignInProps {
@@ -49,7 +49,7 @@ export const signIn = async ({
   shallow = true,
 }: SignInProps) => {
   //const res = await tmcClient.authenticate({ username: email, password })
-  const res = await (<any>getToken({
+  const res = await getToken({
     client_id,
     grant_type,
     response_type,
@@ -57,8 +57,8 @@ export const signIn = async ({
     email,
     password,
     priority,
-  }))
-  const details = await getUserDetails(res.tmc_token)
+  })
+  const details = await getUserDetails(res?.tmc_token)
 
   //document.cookie = `access_token=${res.accessToken};path=/`
   //document.cookie = `admin=${details.administrator};path=/`
@@ -136,7 +136,6 @@ const getCookie = (key: string) => {
   return vals[key] || ""
 }
 
-// @ts-ignore: ctx not used for now
 export const getAccessToken = async (ctx: NextContext | undefined) => {
   const access_token = await _getAccessToken()
 
