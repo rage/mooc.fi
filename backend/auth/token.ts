@@ -247,9 +247,7 @@ export function token(ctx: ApiContext) {
           })
         }
 
-        return res
-          .status(result.status)
-          .json(result)
+        return res.status(result.status).json(result)
 
       case "authorization_code":
         if (response_type === "code") {
@@ -279,9 +277,7 @@ export function token(ctx: ApiContext) {
             })
           }
 
-          return res
-            .status(result.status)
-            .json(result)
+          return res.status(result.status).json(result)
         }
 
       case "client_credentials":
@@ -341,9 +337,7 @@ export function implicitToken() {
       })
     }
 
-    return res
-      .status(result.status)
-      .json(result.access_token)
+    return res.status(result.status).json(result.access_token)
   }
 }
 
