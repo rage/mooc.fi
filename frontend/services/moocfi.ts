@@ -2,10 +2,10 @@ import axios from "axios"
 import Cookies from "universal-cookie"
 import { getAccessToken } from "../lib/authentication"
 
-import { FRONTEND_URL } from "/config"
+import { FRONTEND_URL, DOMAIN } from "/config"
 
 const cookies = new Cookies()
-const domain = process.env.NODE_ENV === "production" ? "mooc.fi" : "localhost"
+const domain = process.env.NODE_ENV === "production" ? DOMAIN : "localhost"
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? FRONTEND_URL // TODO: this is strictly speaking not the frontend_url here, but we'll use that for now as it's the same
@@ -61,10 +61,10 @@ export const signIn = async (email: string, password: string) => {
     .then((response) => response.data)
     .then((json) => {
       cookies.set("token", json.access_token, {
-        domain: domain,
+        domain,
       })
       cookies.set("tmc_token", json.tmc_token, {
-        domain: domain,
+        domain,
       })
       return json.access_token
     })
