@@ -12,8 +12,7 @@ import {
 } from "/static/types/generated/globalTypes"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { DateTime } from "luxon"
-
-const isProduction = process.env.NODE_ENV === "production"
+import { isProduction } from "/config"
 
 export const toCourseForm = ({
   course,

@@ -10,11 +10,10 @@ import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
 import fetch from "isomorphic-unfetch"
 import Cookies from "universal-cookie"
-import { BACKEND_URL } from "/config"
+import { BACKEND_URL, isProduction } from "/config"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
-const production = process.env.NODE_ENV === "production"
 const cypress = process.env.CYPRESS === "true"
 
 /* const cypress =
@@ -48,7 +47,7 @@ function create(initialState: any, originalAccessToken?: string) {
   const uploadLink = createUploadLink({
     uri: cypress
       ? "http://localhost:4001"
-      : production
+      : isProduction
       ? BACKEND_URL ?? "https://www.mooc.fi/api/"
       : "http://localhost:4000",
     credentials: "same-origin",
@@ -83,7 +82,7 @@ function create(initialState: any, originalAccessToken?: string) {
 
   return new ApolloClient<NormalizedCacheObject>({
     link:
-      process.browser || !production
+      process.browser || !isProduction
         ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
         : authLink.concat(uploadLink),
     cache: cache.restore(initialState || {}),

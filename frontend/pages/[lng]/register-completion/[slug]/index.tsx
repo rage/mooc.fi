@@ -22,12 +22,11 @@ import axios from "axios"
 import { getAccessToken } from "/lib/authentication"
 import LanguageContext from "/contexts/LanguageContext"
 
-import { BACKEND_URL } from "/config"
+import { BACKEND_URL, isProduction } from "/config"
 
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? BACKEND_URL ?? "https://www.mooc.fi/api"
-    : "http://localhost:4000/api"
+const BASE_URL = isProduction
+  ? BACKEND_URL ?? "https://www.mooc.fi/api"
+  : "http://localhost:4000/api"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
