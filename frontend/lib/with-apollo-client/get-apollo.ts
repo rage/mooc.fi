@@ -10,11 +10,10 @@ import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
 import fetch from "isomorphic-unfetch"
 import Cookies from "universal-cookie"
-import { BACKEND_URL } from "/config"
+import { BACKEND_URL, isProduction } from "/config"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
-const production = process.env.NODE_ENV === "production"
 const cypress = process.env.CYPRESS === "true"
 
 /* const cypress =

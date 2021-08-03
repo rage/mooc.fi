@@ -25,10 +25,9 @@ import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import { isProduction } from "/config"
 
 // TODO: show delete to course owner
-const isProduction = process.env.NODE_ENV === "production"
-
 const FormBackground = styled(Paper)`
   padding: 2em;
 `
