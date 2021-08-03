@@ -5,8 +5,7 @@ import React from "react"
 import { Button } from "@material-ui/core"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import styled from "@emotion/styled"
-
-const isProduction = process.env.NODE_ENV === "production"
+import { isProduction } from "/config"
 
 interface ConnectButtonProps {
   hyVisible: boolean

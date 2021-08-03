@@ -4,8 +4,7 @@ import nookies from "nookies"
 import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
-import { DOMAIN } from "/config"
-const isProduction = process.env.NODE_ENV === "production"
+import { DOMAIN, isProduction } from "/config"
 
 import {
   getToken,
@@ -33,7 +32,7 @@ export const isAdmin = (ctx: NextContext) => {
 const client_id = "7g5Llw"
 const grant_type = "password"
 const response_type = "token"
-const domain = isProduction ? DOMAIN : "localhost"
+const domain = isProduction ? `.${DOMAIN}` : "localhost"
 const priority = "tmc"
 
 interface SignInProps {
@@ -62,8 +61,8 @@ export const signIn = async ({
   const details = await getUserDetails(res.tmc_token)
 
   //document.cookie = `access_token=${res.accessToken};path=/`
-
   //document.cookie = `admin=${details.administrator};path=/`
+
   const rawRedirectLocation = nookies.get()["redirect-back"]
 
   if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {

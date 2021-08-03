@@ -16,8 +16,7 @@ import { useConfirm } from "material-ui-confirm"
 import { useFormContext } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useEditorContext } from "./EditorContext"
-
-const isProduction = process.env.NODE_ENV === "production"
+import { isProduction } from "/config"
 
 const FormBackground = styled(Paper)`
   padding: 2em;
