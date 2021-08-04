@@ -84,11 +84,9 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+// const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 
 const handler = async (req: Request, res: Response) => {
-  console.log("isProduction?", isProduction)
-
   const headers = req.headers
   /*?? !isProduction
       ? defaultHeaders
@@ -131,16 +129,16 @@ const handler = async (req: Request, res: Response) => {
     })
     console.log(result)
 
-    Object.keys(res.locals.cookie).forEach((key) => {
+    /*Object.keys(res.locals.cookie).forEach((key) => {
       shibCookies.forEach((prefix) => {
         if (key.startsWith(prefix)) {
           res.clearCookie(key)
         }
       })
-    })
+    })*/
 
     res.redirect(
-      `${FRONTEND_URL}/${language}/profile/connect/success?id=${result.addVerifiedUser.id}`,
+      `https://${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
