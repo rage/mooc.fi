@@ -141,7 +141,7 @@ const handler = async (req: Request, res: Response) => {
     axios
       .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`, {
         headers: {
-          cookie: res.locals.cookie,
+          cookie: req.headers.cookie,
         },
       })
       .then((res) => console.log("logged out with", res))
