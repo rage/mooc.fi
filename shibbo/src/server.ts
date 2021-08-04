@@ -40,7 +40,7 @@ const defaultHeaders: Record<HeaderField, string> = {
 const requiredFields: HeaderField[] = [
   "schacpersonaluniquecode",
   "schachomeorganization",
-  "edupersonaffiliation",
+  "mail",
 ]
 
 app.set("port", PORT)
@@ -97,7 +97,7 @@ const handler = async (req: Request, res: Response) => {
   const {
     schacpersonaluniquecode,
     displayname,
-    edupersonaffiliation,
+    edupersonaffiliation = "",
     schachomeorganization,
     mail,
     ou,
