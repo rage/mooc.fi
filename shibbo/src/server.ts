@@ -40,7 +40,7 @@ const defaultHeaders: Record<HeaderField, string> = {
 const requiredFields: HeaderField[] = [
   "schacpersonaluniquecode",
   "schachomeorganization",
-  "mail"
+  "mail",
 ]
 
 app.set("port", PORT)
