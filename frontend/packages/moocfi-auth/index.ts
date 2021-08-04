@@ -58,10 +58,12 @@ const setCookies = ({
     })
     cookies.set("access_token", tmcToken, {
       domain,
+      path: "/",
     })
   } else {
     cookies.set("access_token", accessToken, {
       domain,
+      path: "/",
     })
     cookies.set("tmc_token", tmcToken, {
       domain,
@@ -162,7 +164,7 @@ export const removeToken = async (priority: string, domain: string) => {
   })
     .then((response) => response.data)
     .then((json) => {
-      cookies.remove("access_token", { domain })
+      cookies.remove("access_token", { domain, path: "/" })
       cookies.remove("tmc_token", { domain })
       cookies.remove("mooc_token", { domain })
       cookies.remove("admin", { domain })
