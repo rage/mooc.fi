@@ -1,6 +1,16 @@
 import { NextPageContext } from "next"
+import { useRouter } from "next/router"
 
-const SPLogout = () => {
+interface SPLogoutProps {
+  redirect?: string
+}
+
+const SPLogout = ({ redirect }: SPLogoutProps) => {
+  const router = useRouter()
+
+  if (redirect) {
+    router.replace(redirect)
+  }
   return <div>You are logged out. You should not be able to see this page.</div>
 }
 
@@ -10,7 +20,7 @@ SPLogout.getInitialProps = (ctx: NextPageContext) => {
     ctx?.res?.end()
   }
 
-  return {}
+  return { redirect: ctx.query.return }
 }
 
 export default SPLogout
