@@ -206,8 +206,8 @@ MyApp.getInitialProps = async (props) => {
     if (languages.includes(maybeLng)) {
       lng = maybeLng
     } else {
-      ctx?.res.writeHead(302, { location: "/404" })
-      ctx?.res.end()
+      ctx.res.writeHead(302, { location: "/404" })
+      ctx.res.end()
     }
 
     url = ctx.req.originalUrl
