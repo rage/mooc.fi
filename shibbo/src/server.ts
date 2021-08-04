@@ -97,7 +97,7 @@ const handler = async (req: Request, res: Response) => {
   const {
     schacpersonaluniquecode,
     displayname,
-    edupersonaffiliation,
+    edupersonaffiliation = "",
     schachomeorganization,
     mail,
     ou,
