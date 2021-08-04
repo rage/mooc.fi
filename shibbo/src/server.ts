@@ -3,7 +3,7 @@ import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
 import { PORT, BACKEND_URL, FRONTEND_URL } from "./config"
-// import axios from "axios"
+import axios from "axios"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -138,13 +138,13 @@ const handler = async (req: Request, res: Response) => {
       })
     })*/
 
-    /*axios
+    axios
       .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`)
       .then((res) => console.log("logged out with", res))
       .catch((error) => console.log("error with logout", error)) // we don't care
-    */
+
     res.redirect(
-      `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+      `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
