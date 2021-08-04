@@ -3,7 +3,7 @@ import TmcClient from "../services/tmc"
 import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
-import { PrismaClient } from "@prisma/client"
+// import { PrismaClient } from "@prisma/client"
 import { Context } from "../context"
 import { plugin } from "nexus"
 import { convertUpdate } from "../util/db-functions"
@@ -101,7 +101,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
 }
 
 // this is the one suitable for context, not used for now
-export const contextUser = async (
+/*export const contextUser = async (
   req: any, // was: IncomingMessage, but somehow it's wrapped in req
   prisma: PrismaClient,
 ) => {
@@ -177,4 +177,4 @@ export const contextUser = async (
     organization: undefined,
     user,
   }
-}
+}*/
