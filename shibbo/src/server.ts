@@ -138,7 +138,7 @@ const handler = async (req: Request, res: Response) => {
     })*/
 
     res.redirect(
-      `https://${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+      `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
