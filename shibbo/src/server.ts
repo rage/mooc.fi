@@ -24,6 +24,7 @@ const SHIBBOLETH_HEADERS = [
 ] as const
 type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 
+// @ts-ignore: test not using these
 const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
   schachomeorganization: "helsinki.fi",
@@ -86,10 +87,12 @@ const VERIFIED_USER_MUTATION = gql`
 const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 
 const handler = async (req: Request, res: Response) => {
-  const headers =
-    req.headers ?? !isProduction
+  console.log("isProduction?", isProduction)
+
+  const headers = req.headers
+  /*?? !isProduction
       ? defaultHeaders
-      : ({} as Record<string, string>)
+      : ({} as Record<string, string>)*/
 
   const {
     schacpersonaluniquecode,
