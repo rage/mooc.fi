@@ -134,7 +134,7 @@ const handler = async (req: Request, res: Response) => {
     })
     console.log(result)
 
-    axios
+    /*axios
       .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`, {
         headers: {
           cookie: req.headers.cookie,
@@ -150,10 +150,10 @@ const handler = async (req: Request, res: Response) => {
           res.clearCookie(key)
         }
       })
-    })
+    })*/
 
     res.redirect(
-      `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+      `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error
