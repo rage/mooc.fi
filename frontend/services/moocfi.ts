@@ -61,9 +61,11 @@ export const signIn = async (email: string, password: string) => {
     .then((json) => {
       cookies.set("token", json.access_token, {
         domain,
+        path: "/",
       })
       cookies.set("tmc_token", json.tmc_token, {
         domain,
+        path: "/",
       })
       return json.access_token
     })
