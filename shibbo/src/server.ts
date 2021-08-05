@@ -102,6 +102,10 @@ const handler = async (req: Request, res: Response) => {
     ou,
   } = headers
 
+  const shibHeaders = Object.keys(headers)
+    .filter((key) => key.startsWith("shib-"))
+    .reduce((obj, key) => ({ ...obj, [key]: headers[key] }), {})
+
   const { access_token: accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
 
@@ -134,6 +138,7 @@ const handler = async (req: Request, res: Response) => {
       .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`, {
         headers: {
           cookie: req.headers.cookie,
+          ...shibHeaders,
         },
       })
       .then((res) => console.log("logged out with", res))
