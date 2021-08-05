@@ -1,9 +1,8 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
-import { gql, GraphQLClient } from "graphql-request"
-import { PORT, BACKEND_URL, FRONTEND_URL } from "./config"
-import axios from "axios"
+import { PORT, BACKEND_URL, FRONTEND_URL, SHIBBOLETH_HEADERS } from "./config"
+import { connectHandler, signInHandler } from "./handlers"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -12,18 +11,6 @@ if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
 }
 
 const app = express()
-
-const SHIBBOLETH_HEADERS = [
-  "displayname",
-  "schacpersonaluniquecode",
-  "schachomeorganization",
-  "edupersonaffiliation",
-  "mail",
-  "o",
-  "ou",
-  "SHIB_LOGOUT_URL",
-] as const
-type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 
 // @ts-ignore: test not using these
 const defaultHeaders: Record<HeaderField, string> = {
@@ -37,12 +24,6 @@ const defaultHeaders: Record<HeaderField, string> = {
   ou: "Department of Computer Science",
   SHIB_LOGOUT_URL: "https://example.com/logout",
 }
-
-const requiredFields: HeaderField[] = [
-  "schacpersonaluniquecode",
-  "schachomeorganization",
-  "mail",
-]
 
 app.set("port", PORT)
 app.use(cors())
@@ -60,117 +41,11 @@ app.use((req, res, next) => {
   next()
 })
 
-const VERIFIED_USER_MUTATION = gql`
-  mutation addVerifiedUser(
-    $display_name: String
-    $personal_unique_code: String!
-    $home_organization: String!
-    $person_affiliation: String!
-    $mail: String!
-    $organizational_unit: String!
-  ) {
-    addVerifiedUser(
-      verified_user: {
-        display_name: $display_name
-        personal_unique_code: $personal_unique_code
-        home_organization: $home_organization
-        person_affiliation: $person_affiliation
-        mail: $mail
-        organizational_unit: $organizational_unit
-      }
-    ) {
-      id
-      personal_unique_code
-    }
-  }
-`
+app.get("/connect/hy", connectHandler)
+app.get("/connect/haka", connectHandler)
 
-const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
-
-const handler = async (req: Request, res: Response) => {
-  const headers = req.headers
-  /*?? !isProduction
-      ? defaultHeaders
-      : ({} as Record<string, string>)*/
-
-  const {
-    schacpersonaluniquecode,
-    displayname,
-    edupersonaffiliation = "",
-    schachomeorganization,
-    mail,
-    ou,
-  } = headers
-
-  const shibHeaders = Object.keys(headers)
-    .filter((key) => key.startsWith("shib-"))
-    .reduce((obj, key) => ({ ...obj, [key]: headers[key] }), {})
-
-  const { access_token: accessToken } = res.locals.cookie
-  const language = req.query.language ?? "en"
-
-  console.log(accessToken)
-  console.log(JSON.stringify(req.headers, null, 2))
-
-  try {
-    if (!accessToken) {
-      throw new Error("You're not authorized to do this")
-    }
-
-    if (!requiredFields.every((field) => Boolean(headers[field]))) {
-      throw new Error("Required attributes missing")
-    }
-
-    const client = new GraphQLClient(BACKEND_URL, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-    const result = await client.request(VERIFIED_USER_MUTATION, {
-      display_name: displayname,
-      personal_unique_code: schacpersonaluniquecode,
-      home_organization: schachomeorganization,
-      person_affiliation: edupersonaffiliation,
-      mail,
-      organizational_unit: ou,
-    })
-    console.log(result)
-
-    /*axios
-      .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`, {
-        headers: {
-          cookie: req.headers.cookie,
-          ...shibHeaders,
-        },
-      })
-      .then((res) => console.log("logged out with", res))
-      .catch((error) => console.log("error with logout", error)) // we don't care
-
-    Object.keys(res.locals.cookie).forEach((key) => {
-      shibCookies.forEach((prefix) => {
-        if (key.startsWith(prefix)) {
-          res.clearCookie(key)
-        }
-      })
-    })*/
-
-    res.redirect(
-      `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
-    )
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : error
-    const encodedError = Buffer.from(
-      JSON.stringify({ error: errorMessage }),
-    ).toString("base64")
-
-    res.redirect(
-      `${FRONTEND_URL}/${language}/profile/connect/failure?error=${encodedError}`,
-    )
-  }
-}
-
-app.get("/connect/hy", handler)
-
-app.get("/connect/haka", handler)
-
+app.get("/sign-in/hy", signInHandler)
+app.get("/sign-in/haka", signInHandler)
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)
 })
