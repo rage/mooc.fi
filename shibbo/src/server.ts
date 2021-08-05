@@ -85,7 +85,7 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-// const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 
 const handler = async (req: Request, res: Response) => {
   const headers = req.headers
@@ -130,14 +130,6 @@ const handler = async (req: Request, res: Response) => {
     })
     console.log(result)
 
-    /*Object.keys(res.locals.cookie).forEach((key) => {
-      shibCookies.forEach((prefix) => {
-        if (key.startsWith(prefix)) {
-          res.clearCookie(key)
-        }
-      })
-    })*/
-
     axios
       .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`, {
         headers: {
@@ -146,6 +138,14 @@ const handler = async (req: Request, res: Response) => {
       })
       .then((res) => console.log("logged out with", res))
       .catch((error) => console.log("error with logout", error)) // we don't care
+
+    Object.keys(res.locals.cookie).forEach((key) => {
+      shibCookies.forEach((prefix) => {
+        if (key.startsWith(prefix)) {
+          res.clearCookie(key)
+        }
+      })
+    })
 
     res.redirect(
       `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
