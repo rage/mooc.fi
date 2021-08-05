@@ -3,7 +3,7 @@ import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { gql, GraphQLClient } from "graphql-request"
 import { PORT, BACKEND_URL, FRONTEND_URL } from "./config"
-import axios from "axios"
+// import axios from "axios"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -85,7 +85,7 @@ const VERIFIED_USER_MUTATION = gql`
   }
 `
 
-const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+// const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
 
 const handler = async (req: Request, res: Response) => {
   const headers = req.headers

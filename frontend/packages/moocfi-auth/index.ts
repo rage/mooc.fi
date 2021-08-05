@@ -50,11 +50,12 @@ const setCookies = ({
   admin,
 }: SetCookiesOptions) => {
   const cookies = new Cookies()
-  cookies.set("admin", admin, { domain })
+  cookies.set("admin", admin, { domain, path: "/" })
 
   if (priority === "tmc") {
     cookies.set("mooc_token", accessToken, {
       domain,
+      path: "/",
     })
     cookies.set("access_token", tmcToken, {
       domain,
@@ -67,6 +68,7 @@ const setCookies = ({
     })
     cookies.set("tmc_token", tmcToken, {
       domain,
+      path: "/",
     })
   }
 }
@@ -165,9 +167,9 @@ export const removeToken = async (priority: string, domain: string) => {
     .then((response) => response.data)
     .then((json) => {
       cookies.remove("access_token", { domain, path: "/" })
-      cookies.remove("tmc_token", { domain })
-      cookies.remove("mooc_token", { domain })
-      cookies.remove("admin", { domain })
+      cookies.remove("tmc_token", { domain, path: "/" })
+      cookies.remove("mooc_token", { domain, path: "/" })
+      cookies.remove("admin", { domain, path: "/" })
 
       return json
     })
