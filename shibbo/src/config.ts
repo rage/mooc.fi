@@ -11,3 +11,20 @@ export const BACKEND_URL =
   process.env.BACKEND_URL ?? (!isProduction ? "http://localhost:4000" : "")
 export const FRONTEND_URL =
   process.env.FRONTEND_URL ?? (!isProduction ? "http://localhost:3000" : "")
+
+export const SHIBBOLETH_HEADERS = [
+  "displayname",
+  "schacpersonaluniquecode",
+  "schachomeorganization",
+  "edupersonaffiliation",
+  "mail",
+  "o",
+  "ou",
+  "SHIB_LOGOUT_URL",
+] as const
+export type HeaderField = typeof SHIBBOLETH_HEADERS[number]
+export const requiredFields: HeaderField[] = [
+  "schacpersonaluniquecode",
+  "schachomeorganization",
+  "mail",
+]
