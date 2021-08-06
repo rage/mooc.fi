@@ -1,6 +1,6 @@
 import axios from "axios"
 import Cookies from "universal-cookie"
-import { getAccessToken } from "../lib/authentication"
+// import { getAccessToken } from "../lib/authentication"
 
 import { FRONTEND_URL, DOMAIN, isProduction } from "/config"
 
@@ -61,9 +61,11 @@ export const signIn = async (email: string, password: string) => {
     .then((json) => {
       cookies.set("token", json.access_token, {
         domain,
+        path: "/",
       })
       cookies.set("tmc_token", json.tmc_token, {
         domain,
+        path: "/",
       })
       return json.access_token
     })
@@ -76,7 +78,7 @@ export const getClients = async () => {
     url: `${BASE_URL}/auth/clients`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAccessToken(undefined)}`,
+      Authorization: `Bearer ${cookies.get("mooc_token")}`,
     },
   })
     .then((response) => response.data)
@@ -97,7 +99,7 @@ export const createClient = async (
     },
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAccessToken(undefined)}`,
+      Authorization: `Bearer ${cookies.get("mooc_token")}`,
     },
   })
     .then((response) => response.data)
@@ -111,7 +113,7 @@ export const showClient = async (id: string | string[]) => {
     url: `${BASE_URL}/auth/client/${id}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAccessToken(undefined)}`,
+      Authorization: `Bearer ${cookies.get("mooc_token")}`,
     },
   })
     .then((response) => response.data)
@@ -125,7 +127,7 @@ export const updateClient = async (id: string | string[]) => {
     url: `${BASE_URL}/auth/client/${id}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAccessToken(undefined)}`,
+      Authorization: `Bearer ${cookies.get("mooc_token")}`,
     },
   })
     .then((response) => response.data)
@@ -140,7 +142,7 @@ export const regenerateClient = async (id: string | string[]) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAccessToken(undefined)}`,
+      Authorization: `Bearer ${cookies.get("mooc_token")}`,
     },
   })
     .then((response) => response.data)
@@ -155,7 +157,7 @@ export const deleteClient = async (id: string | string[]) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAccessToken(undefined)}`,
+      Authorization: `Bearer ${cookies.get("mooc_token")}`,
     },
   })
     .then((response) => response.data)

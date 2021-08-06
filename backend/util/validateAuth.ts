@@ -41,6 +41,7 @@ export async function requireAuth(auth: string, { knex }: ApiContext) {
       .from("access_tokens")
       .where("access_token", token)
   )?.[0]
+
   if (!dbToken || dbToken.valid === false) {
     return {
       error: "Token is no longer valid",

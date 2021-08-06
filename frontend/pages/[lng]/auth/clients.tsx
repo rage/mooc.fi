@@ -145,8 +145,10 @@ const Clients = () => {
 
   const fetchClients = async () => {
     try {
+      console.log("a")
       const res = await getClients()
-      setClients(res)
+      console.log(JSON.stringify(res, undefined, 2))
+      setClients(res ?? [])
     } catch (error) {
       console.log(error)
     }
@@ -235,13 +237,13 @@ const Clients = () => {
             <th>Redirect_URI</th>
             <th>Actions</th>
           </tr>
-          {clients.map((client: any) => (
+          {clients?.map((client: any) => (
             <tr key={client.client_id}>
               <td>{client.name}</td>
               <td>{client.client_id}</td>
               <td>{client.redirect_uri}</td>
               <td>
-                <LangLink href={`client-details?id=${client.client_id}`}>
+                <LangLink href={`/auth/client-details?id=${client.client_id}`}>
                   <a>View</a>
                 </LangLink>
               </td>

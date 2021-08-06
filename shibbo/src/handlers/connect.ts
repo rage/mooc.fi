@@ -1,5 +1,11 @@
 import { Request, Response } from "express"
-import { BACKEND_URL, FRONTEND_URL, requiredFields } from "../config"
+import {
+  BACKEND_URL,
+  FRONTEND_URL,
+  requiredFields,
+  defaultHeaders,
+  isProduction,
+} from "../config"
 import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
 import { GraphQLClient } from "graphql-request"
 
@@ -7,9 +13,6 @@ import { GraphQLClient } from "graphql-request"
 
 export const connectHandler = async (req: Request, res: Response) => {
   const headers = req.headers
-  /*?? !isProduction
-      ? defaultHeaders
-      : ({} as Record<string, string>)*/
 
   const {
     schacpersonaluniquecode,
@@ -20,9 +23,9 @@ export const connectHandler = async (req: Request, res: Response) => {
     ou,
   } = headers
 
-  const shibHeaders = Object.keys(headers)
+  /*const shibHeaders = Object.keys(headers)
     .filter((key) => key.startsWith("shib-"))
-    .reduce((obj, key) => ({ ...obj, [key]: headers[key] }), {})
+    .reduce((obj, key) => ({ ...obj, [key]: headers[key] }), {})*/
 
   const { access_token: accessToken } = res.locals.cookie
   const language = req.query.language ?? "en"
