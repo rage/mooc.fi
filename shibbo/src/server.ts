@@ -2,7 +2,7 @@ import express, { Request, Response } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import { PORT, BACKEND_URL, FRONTEND_URL, SHIBBOLETH_HEADERS } from "./config"
-import { connectHandler, signInHandler } from "./handlers"
+import { connectHandler, signInHandler, signUpHandler } from "./handlers"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -41,11 +41,12 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get("/connect/hy", connectHandler)
-app.get("/connect/haka", connectHandler)
+app.get(/^\/connect\/(hy|haka)\/?$/, connectHandler)
 
-app.get("/sign-in/hy", signInHandler)
-app.get("/sign-in/haka", signInHandler)
+app.get(/^\/sign-in\/(hy|haka)\/?$/, signInHandler)
+
+app.get(/^\/sign-up\/(hy|haka)\/?$/, signUpHandler)
+
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)
 })
