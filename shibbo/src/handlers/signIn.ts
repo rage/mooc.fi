@@ -1,26 +1,15 @@
 import { Request, Response } from "express"
-import { FRONTEND_URL, DOMAIN, isProduction } from "../config"
+import { FRONTEND_URL, AUTH_URL } from "../config"
 import axios from "axios"
 
-const client_id = "client"
-const grant_type = "password"
+const grant_type = "client_authorize"
 const response_type = "token"
-const domain = isProduction ? DOMAIN : "localhost"
+const client_secret = "native"
 
 export const signInHandler = async (req: Request, res: Response) => {
   const headers = req.headers
-  /*?? !isProduction
-      ? defaultHeaders
-      : ({} as Record<string, string>)*/
 
-  const {
-    schacpersonaluniquecode,
-    displayname,
-    edupersonaffiliation = "",
-    schachomeorganization,
-    mail,
-    ou,
-  } = headers
+  const { schacpersonaluniquecode } = headers
 
   const language = req.query.language ?? "en"
 
@@ -28,14 +17,32 @@ export const signInHandler = async (req: Request, res: Response) => {
     if (!schacpersonaluniquecode) {
       throw new Error("Authorization failed")
     }
+    if (res.locals.access_token) {
+      throw new Error("Already signed in")
+    }
 
-    const token = await axios.post(`${FRONTEND_URL}/auth/token`, {
-      client_id,
+    const { data } = await axios.post(`${AUTH_URL}/token`, {
       grant_type,
       response_type,
-      domain,
+      personal_unique_code: schacpersonaluniquecode,
+      client_secret,
     })
-  } catch (error) {}
 
-  res.redirect(`${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}`)
+    if (!data?.success) {
+      throw Error(data?.message)
+    }
+
+    res
+      .cookie("access_token", data.access_token)
+      .redirect(
+        `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${
+          language !== "en" ? `${language}/` : ""
+        }`,
+      )
+  } catch (error) {
+    console.log("error", error)
+    res.redirect(
+      `${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}sign-in/`,
+    )
+  }
 }

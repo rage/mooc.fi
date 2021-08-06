@@ -11,6 +11,8 @@ export const BACKEND_URL =
   process.env.BACKEND_URL ?? (!isProduction ? "http://localhost:4000" : "")
 export const FRONTEND_URL =
   process.env.FRONTEND_URL ?? (!isProduction ? "http://localhost:3000" : "")
+export const AUTH_URL =
+  process.env.AUTH_URL ?? (!isProduction ? "http://localhost:4000" : "")
 export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
 
 export const SHIBBOLETH_HEADERS = [
@@ -29,3 +31,15 @@ export const requiredFields: HeaderField[] = [
   "schachomeorganization",
   "mail",
 ]
+
+export const defaultHeaders: Record<HeaderField, string> = {
+  displayname: "kissa kissanen",
+  schachomeorganization: "helsinki.fi",
+  schacpersonaluniquecode:
+    "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
+  edupersonaffiliation: "member;student",
+  mail: "mail@helsinki.fi",
+  o: "University of Helsinki",
+  ou: "Department of Computer Science",
+  SHIB_LOGOUT_URL: "https://example.com/logout",
+}

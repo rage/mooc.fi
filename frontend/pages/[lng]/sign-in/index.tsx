@@ -7,6 +7,7 @@ import styled from "@emotion/styled"
 import withSignedOut from "/lib/with-signed-out"
 import { useTranslator } from "/util/useTranslator"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import React from "react"
 
 const StyledPaper = styled(Paper)`
   display: flex;
