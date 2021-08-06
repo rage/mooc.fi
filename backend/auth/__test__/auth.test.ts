@@ -379,10 +379,7 @@ describe("server", () => {
       const res = await postToken({
         data: {
           grant_type: "client_authorize",
-          client: {
-            client_id: "native",
-            client_secret: "native",
-          },
+          client_secret: "native",
           personal_unique_code: "personal:unique:code:university.fi:admin",
         },
       })
