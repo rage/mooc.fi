@@ -358,6 +358,32 @@ describe("server", () => {
 
       expect(res.status).toBe(200)
     })
+
+    it("invalid client_secret on client authorize", async () => {
+      return postToken({
+        data: {
+          grant_type: "client_authorize",
+          client_secret: "invalid_client_secret",
+          personal_unique_code: "personal:unique:code:university.fi:admin",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("tokenize user based on client authorization", async () => {
+      const res = await postToken({
+        data: {
+          grant_type: "client_authorize",
+          client_secret: "native",
+          personal_unique_code: "personal:unique:code:university.fi:admin",
+        },
+      })
+
+      expect(res.status).toBe(200)
+    })
   })
 
   describe("authorize", () => {
