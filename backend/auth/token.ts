@@ -1,6 +1,12 @@
 import { ApiContext } from "."
 import { authenticateUser } from "../services/tmc"
-import { User, Client, AuthorizationCode, AccessToken } from "@prisma/client"
+import {
+  User,
+  Client,
+  AuthorizationCode,
+  AccessToken,
+  VerifiedUser,
+} from "@prisma/client"
 import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
 
@@ -230,6 +236,51 @@ async function exchangeClientCredentials(client: any, ctx: ApiContext) {
   }
 }
 
+async function exchangeClientAuthorize(
+  client_secret: string,
+  personal_unique_code: string,
+  ctx: ApiContext,
+) {
+  let client = (
+    await ctx.knex
+      .select<any, Client[]>("*")
+      .from("clients")
+      .where("client_secret", client_secret)
+  )?.[0]
+
+  if (!client) {
+    return {
+      status: 403,
+      success: false,
+      message: "Invalid client secret",
+    }
+  }
+
+  let verifiedUser = (
+    await ctx.knex
+      .select<any, VerifiedUser[]>("user_id")
+      .from("verified_user")
+      .where("personal_unique_code", personal_unique_code)
+  )?.[0]
+
+  let user = (
+    await ctx.knex
+      .select<any, User[]>("id", "email", "administrator")
+      .from("user")
+      .where("id", verifiedUser.user_id)
+  )?.[0]
+
+  let accessToken = await issueToken(user, client, ctx)
+
+  return {
+    status: 200,
+    success: true,
+    tmc_token: null,
+    access_token: accessToken,
+    admin: user.administrator,
+  }
+}
+
 export function token(ctx: ApiContext) {
   return async (req: any, res: any) => {
     const grantType = req.body.grant_type
@@ -282,6 +333,15 @@ export function token(ctx: ApiContext) {
 
       case "client_credentials":
         result = await exchangeClientCredentials(req.body.client, ctx)
+
+        return res.status(result.status).json(result)
+
+      case "client_authorize":
+        result = await exchangeClientAuthorize(
+          req.body.client_secret,
+          req.body.personal_unique_code,
+          ctx,
+        )
 
         return res.status(result.status).json(result)
 
