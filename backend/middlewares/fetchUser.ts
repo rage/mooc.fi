@@ -52,6 +52,54 @@ const getOrganization = async (ctx: Context, rawToken: string | null) => {
   ctx.role = Role.ORGANIZATION
 }
 
+const getUserNewToken = async (ctx: Context, rawToken: string) => {
+  if (!rawToken) {
+    return
+  }
+
+  const accessToken = await ctx.prisma.accessToken.findFirst({
+    where: {
+      access_token: rawToken.replace("Bearer ", ""),
+      valid: true,
+    },
+  })
+
+  if (!accessToken?.user_id) {
+    return
+  }
+  const user = await ctx.prisma.user.findUnique({
+    where: {
+      id: accessToken.user_id,
+    },
+    select: {
+      id: true,
+      administrator: true,
+      first_name: true,
+      last_name: true,
+      research_consent: true,
+      upstream_id: true,
+      email: true,
+      username: true,
+      created_at: true,
+      updated_at: true,
+      real_student_number: true,
+      student_number: true,
+    },
+  })
+
+  if (!user) {
+    return
+  }
+
+  ctx.user = user
+
+  if (ctx.user.administrator) {
+    ctx.role = Role.ADMIN
+  } else {
+    ctx.role = Role.USER
+  }
+}
+
 const getUser = async (ctx: Context, rawToken: string) => {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
@@ -74,7 +122,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
   ctx.userDetails = details ?? undefined
 
   if (!details) {
-    return
+    return await getUserNewToken(ctx, rawToken)
   }
 
   const id: number = details.id
