@@ -17,6 +17,8 @@ export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
 
 export const SHIBBOLETH_HEADERS = [
   "displayname",
+  "givenName",
+  "sn",
   "schacpersonaluniquecode",
   "schachomeorganization",
   "edupersonaffiliation",
@@ -34,6 +36,8 @@ export const requiredFields: HeaderField[] = [
 
 export const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
+  givenName: "kissa",
+  sn: "kissanen",
   schachomeorganization: "helsinki.fi",
   schacpersonaluniquecode:
     "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",

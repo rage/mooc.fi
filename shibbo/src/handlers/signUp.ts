@@ -7,6 +7,8 @@ export const signUpHandler = async (req: Request, res: Response) => {
   const {
     schacpersonaluniquecode,
     displayname,
+    givenName,
+    sn,
     edupersonaffiliation = "",
     schachomeorganization,
     mail,

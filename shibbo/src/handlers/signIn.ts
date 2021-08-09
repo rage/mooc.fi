@@ -34,6 +34,8 @@ export const signInHandler = async (req: Request, res: Response) => {
 
     res
       .cookie("access_token", data.access_token)
+      .cookie("mooc_token", data.access_token)
+      .cookie("admin", data.admin)
       .redirect(
         `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${
           language !== "en" ? `${language}/` : ""
