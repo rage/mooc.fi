@@ -8,3 +8,4 @@ env.json
 .watchmanconfig
 coverage/
 sourcemap/
+config/*.pem
