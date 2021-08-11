@@ -17,5 +17,9 @@
     "confirmEmailTitle": "Mooc.fi käyttäjätunnuksesi on luotu",
     "confirmEmailInfo": "Olemme lähettäneet sähköpostiisi sähköpostiosoitteen varmistuslinkin. Käy nyt sähköpostissasi ja varmista osoitteesi.",
     "submit": "Lähetä",
-    "errorResearchSubmit": "Virhe vastauksen tallennuksessa. Voit yrittää vastata myöhemmin uudelleen profiilisivullasi."
+    "errorResearchSubmit": "Virhe vastauksen tallennuksessa. Voit yrittää vastata myöhemmin uudelleen profiilisivullasi.",
+    "required": "Vaaditaan",
+    "signupHYHaka": "Rekisteröityminen",
+    "formInfoHYHakaRegister": "Tarkista, että allaolevat tiedot ovat oikein.",
+    "formInfoNoTMC": "Näyttää siltä, ettei sinulla ole TMC-tiliä sähköpostiosoitteella <b>{{email}}</b>. Anna salasana ja varmista se, ja luomme tilin sinulle automaattisesti."
 }

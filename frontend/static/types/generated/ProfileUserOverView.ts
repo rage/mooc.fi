@@ -17,6 +17,8 @@ export interface ProfileUserOverView_currentUser_verified_users {
   created_at: any | null
   personal_unique_code: string
   display_name: string | null
+  mail: string
+  organizational_unit: string
 }
 
 export interface ProfileUserOverView_currentUser_completions_course_photo {

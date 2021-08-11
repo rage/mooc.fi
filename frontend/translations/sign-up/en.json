@@ -17,5 +17,9 @@
     "confirmEmailTitle": "Your Mooc.fi account has been created.",
     "confirmEmailInfo": "We have sent an confirmation e-mail to your e-mail address. Please check your e-mail and confirm the address.",
     "submit": "Submit",
-    "errorResearchSubmit": "There was an error saving your answer. You can change it in your profile later."
+    "errorResearchSubmit": "There was an error saving your answer. You can change it in your profile later.",
+    "required": "Required",
+    "signupHYHaka": "Sign-up",
+    "formInfoHYHakaRegister": "Please check that the following information is correct.",
+    "formInfoNoTMC": "Looks like you do not have a TMC account associated with the e-mail address {{email}}. Please enter a password and confirm it and we will create the account for you."
 }
