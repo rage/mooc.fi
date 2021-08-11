@@ -20,6 +20,7 @@ export interface UserOverView_currentUser {
   first_name: string | null
   last_name: string | null
   email: string
+  upstream_id: number
   verified_users: UserOverView_currentUser_verified_users[]
 }
 

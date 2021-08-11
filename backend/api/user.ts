@@ -185,6 +185,7 @@ interface RegisterUserParams {
 
 export function registerUser(ctx: ApiContext) {
   return async (req: Request<{}, {}, RegisterUserParams>, res: Response) => {
+    console.log("hmm")
     const {
       personalUniqueCode,
       displayName,
@@ -196,27 +197,42 @@ export function registerUser(ctx: ApiContext) {
       organizationalUnit,
     } = req.body
 
+    console.log("trying to get user")
     const existingUser = await ctx.prisma.user.findFirst({
       where: {
         email: mail,
       },
     })
 
+    console.log("trying to get verified user")
     const existingVerifiedUser = await ctx.prisma.verifiedUser.findFirst({
       where: {
         mail,
+        home_organization: homeOrganization,
       },
     })
 
     const existingTMCUser = (await getUsersByEmail([mail]))?.[0]
 
+    console.log("existingUser", existingUser)
+    console.log("existingVerifiedUser", existingVerifiedUser)
+    console.log("existingTMCUser", existingTMCUser)
+
     if (existingUser || existingVerifiedUser) {
+      const accessToken = await ctx.prisma.accessToken.findFirst({
+        where: {
+          user_id: existingUser?.id || existingVerifiedUser?.user_id,
+          valid: true,
+        },
+      })
+
       return res.status(401).json({
         status: 401,
         success: false,
-        user_id: existingUser?.id,
-        verified_user_id: existingVerifiedUser?.id,
-        tmc_user_id: existingTMCUser?.id,
+        user: existingUser,
+        verified_user: existingVerifiedUser,
+        tmc_user: existingTMCUser,
+        access_token: accessToken?.access_token,
         message: "User or verified user already exists",
       })
     }
@@ -250,6 +266,7 @@ export function registerUser(ctx: ApiContext) {
       user: newUser,
       verified_user: newVerifiedUser,
       tmc_user: existingTMCUser,
+      message: "User created",
     })
   }
 }

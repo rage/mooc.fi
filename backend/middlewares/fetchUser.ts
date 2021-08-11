@@ -7,6 +7,7 @@ import { UserInfo } from "/domain/UserInfo"
 import { Context } from "../context"
 import { plugin } from "nexus"
 import { convertUpdate } from "../util/db-functions"
+import { isNewToken } from "../util/server-functions"
 
 export const moocfiAuthPlugin = () =>
   plugin({
@@ -101,6 +102,10 @@ const getUserNewToken = async (ctx: Context, rawToken: string) => {
 }
 
 const getUser = async (ctx: Context, rawToken: string) => {
+  if (isNewToken(rawToken)) {
+    return await getUserNewToken(ctx, rawToken)
+  }
+
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null
