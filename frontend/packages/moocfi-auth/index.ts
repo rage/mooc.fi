@@ -178,6 +178,24 @@ export const removeToken = async (priority: string, domain: string) => {
     })
 }
 
+export const validateToken = async (priority: string, domain: string) => {
+  return await axios({
+    method: "GET",
+    url: `${BASE_URL}/auth/validate`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
+    },
+  })
+    .then((response) => response.data)
+    .then((json) => json)
+    .catch(() => {
+      removeToken(priority, domain)
+    })
+}
+
 const getCookie = (field: string) => () => {
   const cookies = new Cookies()
 
