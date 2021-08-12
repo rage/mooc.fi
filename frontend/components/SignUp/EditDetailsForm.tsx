@@ -1,13 +1,6 @@
 import { CircularProgress, TextField } from "@material-ui/core"
 import React, { useEffect, useReducer, useState } from "react"
-import {
-  StyledPaper,
-  Row,
-  Form,
-  Header,
-  InfoBox,
-  StyledTypography,
-} from "./common"
+import { StyledPaper, Row, Form, Header, StyledTypography } from "./common"
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -16,10 +9,10 @@ import LangLink from "/components/LangLink"
 import { ControlledTextField } from "/components/Dashboard/Editor2/Common/Fields"
 
 interface EditDetailsFromProps {
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   email: string
-  has_tmc?: boolean
+  upstreamId?: number
 }
 
 interface FormState {
@@ -49,18 +42,14 @@ const reducer = (state: FormState, action: FormAction) => {
   return state
 }
 const EditDetailsForm = ({
-  first_name,
-  last_name,
+  firstName,
+  lastName,
   email,
-  has_tmc,
+  upstreamId,
 }: EditDetailsFromProps) => {
   const t = useTranslator(SignUpTranslations)
 
-  /*const [state, dispatch] = useReducer(reducer, { first_name, last_name, email, submitting: false })
-
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    dispatch({ type: "EDIT", field: e.target.name, payload: e.target.value })
-  }*/
+  const hasTmc = (upstreamId ?? -1) > 0
 
   const {
     control,
@@ -79,8 +68,8 @@ const EditDetailsForm = ({
     },
   } = useForm<FormState>({
     defaultValues: {
-      first_name,
-      last_name,
+      first_name: firstName,
+      last_name: lastName,
       email,
     },
     mode: "onBlur",
@@ -110,7 +99,7 @@ const EditDetailsForm = ({
       <Header component="h1" variant="h4" gutterBottom={true} align="center">
         {t("signupHYHaka")}
       </Header>
-      <Form onSubmit={handleSubmit(onSubmit)} onChange={validate}>
+      <Form onSubmit={handleSubmit(onSubmit)} onBlur={validate}>
         <StyledTypography component="p" paragraph>
           {t("formInfoHYHakaRegister")}
         </StyledTypography>
@@ -148,7 +137,7 @@ const EditDetailsForm = ({
           <Controller
             name="first_name"
             control={control}
-            defaultValue={first_name}
+            defaultValue={firstName}
             rules={{ required: t("required") }}
             render={({
               field: { onChange, value, ref },
@@ -173,7 +162,7 @@ const EditDetailsForm = ({
           <Controller
             name="last_name"
             control={control}
-            defaultValue={last_name}
+            defaultValue={lastName}
             rules={{ required: t("required") }}
             render={({
               field: { onChange, value, ref },
@@ -194,7 +183,7 @@ const EditDetailsForm = ({
             )}
           />
         </Row>
-        {!has_tmc && (
+        {!hasTmc && (
           <>
             <StyledTypography
               component="p"
@@ -273,21 +262,6 @@ const EditDetailsForm = ({
           </SubmitButton>
         </Row>
       </Form>
-
-      <Row>
-        <LangLink href={`/sign-in`}>
-          <a>{t("signIn")}</a>
-        </LangLink>
-      </Row>
-
-      {!isValid && (
-        <InfoBox>
-          <b>
-            {" "}
-            {t("error")} {"error"}
-          </b>
-        </InfoBox>
-      )}
     </StyledPaper>
   )
 }

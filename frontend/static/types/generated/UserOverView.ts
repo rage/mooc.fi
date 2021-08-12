@@ -21,6 +21,7 @@ export interface UserOverView_currentUser {
   last_name: string | null
   email: string
   upstream_id: number
+  administrator: boolean
   verified_users: UserOverView_currentUser_verified_users[]
 }
 

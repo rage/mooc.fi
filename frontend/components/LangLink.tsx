@@ -46,9 +46,12 @@ export default function LangLink(props: PropsWithChildren<LinkProps>): any {
   const { path } = parsedHref
 
   if (path === "/") {
-    href = isFi ? "/" : `/${language}`
+    href = isFi ? "/" : `/${language}/`
   } else if (!isOutsideLink) {
-    href = `/${language}${href}`
+    if (href.startsWith("#")) {
+      href = `/${href}`
+    }
+    href = `/${language}${href ?? "/"}`
   }
 
   return (

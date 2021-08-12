@@ -64,6 +64,7 @@ export const UserOverViewQuery = gql`
       upstream_id
       first_name
       last_name
+      administrator
       completions {
         id
         email

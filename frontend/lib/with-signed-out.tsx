@@ -2,6 +2,7 @@ import { Component as ReactComponent } from "react"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "/lib/authentication"
 import redirectTo from "/lib/redirect"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 // TODO: add more redirect parameters?
 export default function withSignedOut(redirect = "/") {
@@ -11,7 +12,11 @@ export default function withSignedOut(redirect = "/") {
         Component.name || Component.displayName || "AnonymousComponent"
       })`
 
+      static contextType = LoginStateContext
+
       static async getInitialProps(context: NextContext) {
+        const originalProps = await Component.getInitialProps?.(context)
+
         const signedIn = isSignedIn(context)
 
         if (signedIn) {
@@ -23,7 +28,7 @@ export default function withSignedOut(redirect = "/") {
         }
 
         return {
-          ...(await Component.getInitialProps?.(context)),
+          ...originalProps,
           signedIn,
         }
       }

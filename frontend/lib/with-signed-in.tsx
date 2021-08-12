@@ -15,6 +15,8 @@ export default function withSignedIn(Component: any) {
     static contextType = LoginStateContext
 
     static async getInitialProps(context: NextContext) {
+      const originalProps = await Component.getInitialProps?.(context)
+
       const signedIn = isSignedIn(context)
 
       prevContext = context
@@ -29,7 +31,7 @@ export default function withSignedIn(Component: any) {
       }
 
       return {
-        ...(await Component.getInitialProps?.(context)),
+        ...originalProps,
         signedIn,
       }
     }

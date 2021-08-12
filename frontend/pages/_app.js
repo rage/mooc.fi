@@ -93,11 +93,10 @@ class MyApp extends App {
     const {
       Component,
       pageProps,
-      apollo,
       admin,
-      lng,
-      languageSwitchUrl,
-      url,
+      lng = "fi",
+      languageSwitchUrl = "/en/",
+      url = "/",
       hrefUrl,
       currentUser,
     } = this.props
@@ -122,35 +121,33 @@ class MyApp extends App {
           </Head>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <ApolloProvider client={apollo}>
-              <LoginStateContext.Provider value={this.state}>
-                <LanguageContext.Provider
-                  value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-                >
-                  <ConfirmProvider>
-                    <BreadcrumbContext.Provider
+            <LoginStateContext.Provider value={this.state}>
+              <LanguageContext.Provider
+                value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
+              >
+                <ConfirmProvider>
+                  <BreadcrumbContext.Provider
+                    value={{
+                      breadcrumbs: this.state.breadcrumbs,
+                      setBreadcrumbs: this.setBreadcrumbs,
+                    }}
+                  >
+                    <AlertContext.Provider
                       value={{
-                        breadcrumbs: this.state.breadcrumbs,
-                        setBreadcrumbs: this.setBreadcrumbs,
+                        alerts: this.state.alerts,
+                        addAlert: this.addAlert,
+                        removeAlert: this.removeAlert,
                       }}
                     >
-                      <AlertContext.Provider
-                        value={{
-                          alerts: this.state.alerts,
-                          addAlert: this.addAlert,
-                          removeAlert: this.removeAlert,
-                        }}
-                      >
-                        <Layout>
-                          <Global styles={fontCss} />
-                          <Component {...pageProps} />
-                        </Layout>
-                      </AlertContext.Provider>
-                    </BreadcrumbContext.Provider>
-                  </ConfirmProvider>
-                </LanguageContext.Provider>
-              </LoginStateContext.Provider>
-            </ApolloProvider>
+                      <Layout>
+                        <Global styles={fontCss} />
+                        <Component {...pageProps} />
+                      </Layout>
+                    </AlertContext.Provider>
+                  </BreadcrumbContext.Provider>
+                </ConfirmProvider>
+              </LanguageContext.Provider>
+            </LoginStateContext.Provider>
           </ThemeProvider>
         </CacheProvider>
       </>
@@ -171,13 +168,13 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en/", "/fi/")
+    url = originalUrl.replace("/en", "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se/", "/fi/")
+    url = originalUrl.replace("/se", "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi/", "/en/")
+    url = originalUrl.replace("/fi", "/en")
   } else {
-    url = "/en" + originalUrl
+    url = "/en" + (originalUrl ?? "/")
   }
   /*       ? (url = originalUrl.replace("/en/", "/fi/"))
       : (url = originalUrl.replace("/fi/", "/en/"))
@@ -189,6 +186,7 @@ function createPath(originalUrl) {
 
 MyApp.getInitialProps = async (props) => {
   const { ctx } = props
+
   let lng = "fi"
   let url = "/"
   let hrefUrl = "/"
@@ -220,9 +218,9 @@ MyApp.getInitialProps = async (props) => {
     originalProps = (await originalGetInitialProps(props)) || {}
   }
 
-  if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
+  /*if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
     hrefUrl = `/[lng]${hrefUrl}`
-  }
+  }*/
 
   return {
     ...originalProps,
