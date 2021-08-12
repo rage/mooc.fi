@@ -8,6 +8,7 @@ export const UserDetailQuery = gql`
       last_name
       email
       upstream_id
+      administrator
       verified_users {
         id
         person_affiliation

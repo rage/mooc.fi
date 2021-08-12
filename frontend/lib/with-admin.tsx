@@ -18,6 +18,8 @@ export default function withAdmin(Component: any) {
     static contextType = LoginStateContext
 
     static async getInitialProps(context: NextContext) {
+      const originalProps = await Component.getInitialProps?.(context)
+
       const admin = isAdmin(context)
       const signedIn = isSignedIn(context)
 
@@ -33,7 +35,7 @@ export default function withAdmin(Component: any) {
       }
 
       return {
-        ...(await Component.getInitialProps?.(context)),
+        ...originalProps,
         admin,
         signedIn,
       }

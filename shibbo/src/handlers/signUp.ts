@@ -24,7 +24,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
   console.log(language, languagePath)
 
-  const moocfi_status_cookie: Record<string, any> = {}
+  // const moocfi_status_cookie: Record<string, any> = {}
 
   try {
     const { data } = await axios.post(`${BACKEND_URL}/api/register`, {
@@ -39,7 +39,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
     })
     console.log("got register data", data)
 
-    moocfi_status_cookie.has_tmc = Boolean(data?.tmc_user?.id)
+    // moocfi_status_cookie.has_tmc = Boolean(data?.tmc_user?.id)
 
     const { data: tokenData } = await axios.post(`${AUTH_URL}/token`, {
       grant_type,
@@ -52,7 +52,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
       .cookie("access_token", tokenData.access_token)
       .cookie("mooc_token", tokenData.access_token)
       .cookie("admin", tokenData.admin)
-      .cookie("__moocfi_register_status", JSON.stringify(moocfi_status_cookie))
+      //.cookie("__moocfi_register_status", JSON.stringify(moocfi_status_cookie))
       .redirect(
         `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${languagePath}}sign-up/edit-details`,
       )
