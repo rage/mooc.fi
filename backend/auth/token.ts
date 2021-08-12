@@ -1,5 +1,6 @@
 import { ApiContext } from "."
 import { authenticateUser } from "../services/tmc"
+import { requireAuth } from "../util/validateAuth"
 import {
   User,
   Client,
@@ -398,6 +399,17 @@ export function implicitToken() {
     }
 
     return res.status(result.status).json(result.access_token)
+  }
+}
+
+export function validateToken(ctx: ApiContext) {
+  return async (req: any, res: any) => {
+    let auth = await requireAuth(req.headers.authorization, ctx)
+    if (auth.error) {
+      return res.status(403).json({ error: auth })
+    } else {
+      return res.status(200).json({ success: "ok" })
+    }
   }
 }
 
