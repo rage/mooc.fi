@@ -30,13 +30,13 @@ describe("server", () => {
     headers = defaultHeaders,
     params = {},
   }: RequestParams) =>
-      await axios({
-        method,
-        url: `http://localhost:${ctx.port}${route}`,
-        data,
-        headers,
-        params,
-      })
+    await axios({
+      method,
+      url: `http://localhost:${ctx.port}${route}`,
+      data,
+      headers,
+      params,
+    })
 
   const get = (route: string = "", defaultHeaders: any) =>
     request("GET")(route, defaultHeaders)
@@ -412,7 +412,6 @@ describe("server", () => {
 
       expect(res.status).toBe(200)
     })
-
   })
 
   describe("authorize", () => {
