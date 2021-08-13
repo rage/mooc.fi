@@ -281,7 +281,7 @@ export function registerUser(ctx: ApiContext) {
         tmc_user: existingTMCUser,
         message: "User created",
       })
-    } catch  {
+    } catch {
       return res.status(500).json({
         status: 500,
         success: false,
