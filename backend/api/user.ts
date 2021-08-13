@@ -243,7 +243,7 @@ export function registerUser(ctx: ApiContext) {
       if (!upstream_id) {
         // assign random unique negative upstream_id for user until has real TMC account
         while (true) {
-          upstream_id = -Math.round(Math.random() * 100000)
+          upstream_id = -1 - Math.round(Math.random() * 100000)
 
           if (!(await ctx.prisma.user.findUnique({ where: { upstream_id } }))) {
             break
