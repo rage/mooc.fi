@@ -30,7 +30,7 @@ const EditDetailsForm = ({
 }: EditDetailsFromProps) => {
   const t = useTranslator(SignUpTranslations)
 
-  const hasTmc = (upstreamId ?? -1) > 0
+  const hasTmc = (upstreamId ?? -1) >= 0
 
   const {
     control,

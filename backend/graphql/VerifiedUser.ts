@@ -129,16 +129,6 @@ export const VerifiedUserMutations = extendType({
           throw new AuthenticationError("not logged in")
         }
 
-        /*console.log("I would delete, but I'm not going to")
-
-        return ctx.prisma.verifiedUser.findUnique({
-          where: {
-            user_id_personal_unique_code: {
-              user_id: _user_id,
-              personal_unique_code
-            }
-          }
-        })*/
         return ctx.prisma.verifiedUser.delete({
           where: {
             user_id_personal_unique_code: {

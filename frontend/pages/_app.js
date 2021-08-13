@@ -231,7 +231,8 @@ MyApp.getInitialProps = async (props) => {
     hrefUrl = `/[lng]${hrefUrl}`
   }*/
 
-  const signedIn = (validated = isSignedIn(ctx))
+  const signedIn = validated && isSignedIn(ctx)
+
   return {
     ...originalProps,
     signedIn,

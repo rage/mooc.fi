@@ -15,6 +15,10 @@ export const AUTH_URL =
   process.env.AUTH_URL ?? (!isProduction ? "http://localhost:4000" : "")
 export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
 
+export const LOGOUT_URL = isProduction
+  ? `${FRONTEND_URL}/Shibboleth.sso/Logout?return=`
+  : ""
+
 export const SHIBBOLETH_HEADERS = [
   "displayname",
   "givenName",

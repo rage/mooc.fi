@@ -1,10 +1,11 @@
 import axios from "axios"
 import { Request, Response } from "express"
-import { AUTH_URL, BACKEND_URL, FRONTEND_URL } from "../config"
+import { AUTH_URL, BACKEND_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
 
 const grant_type = "client_authorize"
 const response_type = "token"
 const client_secret = "native"
+
 export const signUpHandler = async (req: Request, res: Response) => {
   const headers = req.headers
 
@@ -22,12 +23,8 @@ export const signUpHandler = async (req: Request, res: Response) => {
   const language = req.query.language ?? "en"
   const languagePath = language !== "en" ? `${language}/` : ""
 
-  console.log(language, languagePath)
-
-  // const moocfi_status_cookie: Record<string, any> = {}
-
   try {
-    const { data } = await axios.post(`${BACKEND_URL}/api/register`, {
+    const { data } = await axios.post(`${BACKEND_URL}/api/user/register`, {
       personalUniqueCode: schacpersonaluniquecode,
       firstName: givenName,
       lastName: sn,
@@ -39,50 +36,54 @@ export const signUpHandler = async (req: Request, res: Response) => {
     })
     console.log("got register data", data)
 
-    // moocfi_status_cookie.has_tmc = Boolean(data?.tmc_user?.id)
+    try {
+      const { data: tokenData } = await axios.post(`${AUTH_URL}/token`, {
+        grant_type,
+        response_type,
+        personal_unique_code: schacpersonaluniquecode,
+        client_secret,
+      })
 
-    const { data: tokenData } = await axios.post(`${AUTH_URL}/token`, {
-      grant_type,
-      response_type,
-      personal_unique_code: schacpersonaluniquecode,
-      client_secret,
-    })
-
-    res
-      .cookie("access_token", tokenData.access_token)
-      .cookie("mooc_token", tokenData.access_token)
-      .cookie("admin", tokenData.admin)
-      //.cookie("__moocfi_register_status", JSON.stringify(moocfi_status_cookie))
-      .redirect(
-        `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${languagePath}}sign-up/edit-details`,
+      return res
+        .cookie("access_token", tokenData.access_token)
+        .cookie("mooc_token", tokenData.access_token)
+        .cookie("admin", tokenData.admin)
+        .redirect(
+          `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
+        )
+    } catch (error) {
+      // couldn't issue a token
+      return res.redirect(
+        `${FRONTEND_URL}/${languagePath}sign-up/error/token-issue`,
       )
+    }
   } catch (error) {
     const { data } = error.response
 
-    console.log("data", data)
-    if (data.user) {
+    if (data.user?.id) {
       // user already exists
-      if (!data.verified_user) {
+
+      // set cookies in case we have them
+      res
+        .cookie("access_token", data.access_token ?? "")
+        .cookie("mooc_token", data.access_token ?? "")
+        .cookie("admin", data.user.administrator || "")
+
+      if (!data.verified_user?.id) {
+        return res.redirect(
+          `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/verify-user`,
+        )
         // TODO: prompt user to login with previous details and verify account
       } else {
-        if (data.access_token) {
-          // has valid access token, just log in
-          // TODO: show some info to user about this, redirect to details?
-          return res
-            .cookie("access_token", data.access_token)
-            .cookie("mooc_token", data.access_token)
-            .cookie("admin", data.user.administrator || false)
-            .redirect(
-              `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${languagePath}`,
-            )
-        }
+        // TODO: show some info to user about this, redirect to details?
+        return res.redirect(
+          `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/already-registered`,
+        )
       }
     }
 
     return res.redirect(
-      `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${languagePath}}sign-up/error`,
+      `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`,
     )
   }
-
-  res.redirect(`${FRONTEND_URL}/${languagePath}`)
 }

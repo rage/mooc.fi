@@ -160,15 +160,18 @@ export const removeToken = async (
   domain: string,
   context?: NextPageContext,
 ) => {
+  const token =
+    priority === "tmc"
+      ? await getMoocToken(context)
+      : await getAccessToken(context)
+
   return await axios({
     method: "POST",
     url: `${BASE_URL}/auth/signOut`,
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        priority === "tmc" ? await getMoocToken() : await getAccessToken()
-      }`,
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((response) => response.data)
@@ -185,32 +188,35 @@ export const removeToken = async (
 export const validateToken = async (
   priority: string,
   domain: string,
-  context: NextPageContext,
+  context?: NextPageContext,
 ) => {
-  console.log("validating")
+  const token =
+    priority === "tmc"
+      ? await getMoocToken(context)
+      : await getAccessToken(context)
+
   return await axios({
     method: "GET",
     url: `${BASE_URL}/auth/validate`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        priority === "tmc" ? await getMoocToken() : await getAccessToken()
-      }`,
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((response) => response.data)
     .then((json) => json)
-    .catch(async () => {
+    .catch(async ({ response }) => {
+      console.log("caught error", response.data.error)
       clearTokens(context, domain)
 
       return false
     })
 }
 
-const getCookie = (field: string) => () => {
-  const cookies = new Cookies()
+const getCookie = (field: string) => (ctx?: NextPageContext) => {
+  // const cookies = new Cookies()
 
-  return cookies.get(field)
+  return nookies.get(ctx)[field] // cookies.get(field)
 }
 
 export const getAccessToken = getCookie("access_token")
