@@ -159,9 +159,8 @@ export const removeToken = async (priority: string, domain: string) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        priority === "tmc" ? await getMoocToken() : await getAccessToken()
-      }`,
+      Authorization: `Bearer ${priority === "tmc" ? await getMoocToken() : await getAccessToken()
+        }`,
     },
   })
     .then((response) => response.data)
@@ -179,20 +178,24 @@ export const removeToken = async (priority: string, domain: string) => {
 }
 
 export const validateToken = async (priority: string, domain: string) => {
+  const cookies = new Cookies()
+
   return await axios({
     method: "GET",
     url: `${BASE_URL}/auth/validate`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        priority === "tmc" ? await getMoocToken() : await getAccessToken()
-      }`,
+      Authorization: `Bearer ${priority === "tmc" ? await getMoocToken() : await getAccessToken()
+        }`,
     },
   })
     .then((response) => response.data)
     .then((json) => json)
     .catch(() => {
-      removeToken(priority, domain)
+      cookies.remove("access_token", { domain, path: "/" })
+      cookies.remove("tmc_token", { domain, path: "/" })
+      cookies.remove("mooc_token", { domain, path: "/" })
+      cookies.remove("admin", { domain, path: "/" })
     })
 }
 
