@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import {
   BACKEND_URL,
   FRONTEND_URL,
+  LOGOUT_URL,
   requiredFields,
   defaultHeaders,
   isProduction,
@@ -74,7 +75,7 @@ export const connectHandler = async (req: Request, res: Response) => {
     })*/
 
     res.redirect(
-      `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+      `${LOGOUT_URL}${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
     )
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : error

@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { FRONTEND_URL, AUTH_URL } from "../config"
+import { FRONTEND_URL, AUTH_URL, LOGOUT_URL } from "../config"
 import axios from "axios"
 
 const grant_type = "client_authorize"
@@ -37,7 +37,7 @@ export const signInHandler = async (req: Request, res: Response) => {
       .cookie("mooc_token", data.access_token)
       .cookie("admin", data.admin)
       .redirect(
-        `${FRONTEND_URL}/Shibboleth.sso/Logout?return=${FRONTEND_URL}/${
+        `${LOGOUT_URL}${FRONTEND_URL}/${
           language !== "en" ? `${language}/` : ""
         }`,
       )
