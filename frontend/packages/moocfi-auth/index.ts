@@ -1,10 +1,8 @@
 import axios from "axios"
 import Cookies from "universal-cookie"
 import { FRONTEND_URL, isProduction } from "../../config"
-/*
-const axios = require("axios")
-const Cookies = require("universal-cookie")
-*/
+import nookies from "nookies"
+import { NextPageContext } from "next"
 
 const BASE_URL = isProduction
   ? FRONTEND_URL // TODO: not actually the frontend url, but it's the same in production
@@ -150,9 +148,18 @@ export const getToken = async (data: Data) => {
     })
 }
 
-export const removeToken = async (priority: string, domain: string) => {
-  const cookies = new Cookies()
+const clearTokens = (context: any, domain: string) => {
+  nookies.destroy(context, "access_token", { domain, path: "/" })
+  nookies.destroy(context, "tmc_token", { domain, path: "/" })
+  nookies.destroy(context, "mooc_token", { domain, path: "/" })
+  nookies.destroy(context, "admin", { domain, path: "/" })
+}
 
+export const removeToken = async (
+  priority: string,
+  domain: string,
+  context?: NextPageContext,
+) => {
   return await axios({
     method: "POST",
     url: `${BASE_URL}/auth/signOut`,
@@ -166,15 +173,37 @@ export const removeToken = async (priority: string, domain: string) => {
   })
     .then((response) => response.data)
     .then((json) => {
-      cookies.remove("access_token", { domain, path: "/" })
-      cookies.remove("tmc_token", { domain, path: "/" })
-      cookies.remove("mooc_token", { domain, path: "/" })
-      cookies.remove("admin", { domain, path: "/" })
+      clearTokens(context, domain)
 
       return json
     })
     .catch((error) => {
       return error.response.data
+    })
+}
+
+export const validateToken = async (
+  priority: string,
+  domain: string,
+  context: NextPageContext,
+) => {
+  console.log("validating")
+  return await axios({
+    method: "GET",
+    url: `${BASE_URL}/auth/validate`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
+    },
+  })
+    .then((response) => response.data)
+    .then((json) => json)
+    .catch(async () => {
+      clearTokens(context, domain)
+
+      return false
     })
 }
 

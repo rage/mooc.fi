@@ -9,7 +9,7 @@ import { Knex } from "knex"
 
 export type Context = {
   prisma: PrismaClient
-  user?: Omit<User, "password" | "password_throttle">
+  user?: User
   organization?: Organization
   disableRelations: boolean
   role?: Role | undefined

@@ -6,14 +6,6 @@ import LoginStateContext from "/contexts/LoginStateContext"
 import { RegularContainer } from "/components/Container"
 import EditDetailsForm from "/components/SignUp/EditDetailsForm"
 
-interface RegistrationData {
-  has_tmc: boolean
-}
-
-/*interface CheckRegistrationDetailsProps {
-  registrationData: RegistrationData
-}*/
-
 function CheckRegistrationDetailsPage() {
   const { currentUser } = useContext(LoginStateContext)
 

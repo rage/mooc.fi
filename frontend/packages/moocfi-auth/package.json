@@ -18,5 +18,8 @@
   "devDependencies": {
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2"
+  },
+  "dependencies": {
+    "nookies": "^2.5.2"
   }
 }

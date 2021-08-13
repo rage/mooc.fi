@@ -68,6 +68,7 @@ const getUserNewToken = async (ctx: Context, rawToken: string) => {
   if (!accessToken?.user_id) {
     return
   }
+
   const user = await ctx.prisma.user.findUnique({
     where: {
       id: accessToken.user_id,
@@ -92,9 +93,9 @@ const getUserNewToken = async (ctx: Context, rawToken: string) => {
     return
   }
 
-  ctx.user = user
+  ctx.user = { ...user, password: "", password_throttle: "" }
 
-  if (ctx.user.administrator) {
+  if (ctx.user?.administrator) {
     ctx.role = Role.ADMIN
   } else {
     ctx.role = Role.USER
@@ -146,7 +147,8 @@ const getUser = async (ctx: Context, rawToken: string) => {
     create: prismaDetails,
     update: convertUpdate(prismaDetails),
   })
-  if (ctx.user.administrator) {
+
+  if (ctx.user?.administrator) {
     ctx.role = Role.ADMIN
   } else {
     ctx.role = Role.USER

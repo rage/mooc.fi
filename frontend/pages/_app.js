@@ -5,7 +5,7 @@ import { initGA, logPageView } from "/lib/gtag"
 import Head from "next/head"
 import { ThemeProvider } from "@material-ui/core/styles"
 // import { StyledEngineProvider } from "@material-ui/styled-engine"
-import { ApolloProvider } from "@apollo/client"
+// import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import LoginStateContext from "/contexts/LoginStateContext"
@@ -24,6 +24,9 @@ import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
 import { fontCss } from "/src/fonts"
 import { Global } from "@emotion/react"
+
+import { validateToken } from "../packages/moocfi-auth"
+import { DOMAIN } from "../config"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -186,6 +189,12 @@ function createPath(originalUrl) {
 
 MyApp.getInitialProps = async (props) => {
   const { ctx } = props
+  let validated = true
+
+  if (ctx.req?.url?.indexOf("/_next/data/") === -1) {
+    // server
+    validated = await validateToken("tmc", DOMAIN, ctx)
+  }
 
   let lng = "fi"
   let url = "/"
@@ -222,10 +231,11 @@ MyApp.getInitialProps = async (props) => {
     hrefUrl = `/[lng]${hrefUrl}`
   }*/
 
+  const signedIn = (validated = isSignedIn(ctx))
   return {
     ...originalProps,
-    signedIn: isSignedIn(ctx),
-    admin: isAdmin(ctx),
+    signedIn,
+    admin: signedIn && isAdmin(ctx),
     lng,
     url,
     languageSwitchUrl: createPath(url),

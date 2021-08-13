@@ -182,9 +182,22 @@ describe("server", () => {
   })
 
   describe("token", () => {
+    let token =
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMwNzIsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMzg0MzczYjEtZGY0Ny00MDQ1LWE1YmUtZjQ4NzE4YjYzN2M4IiwiYWRtaW4iOmZhbHNlLCJub25jZSI6IjRmZjA3NGMzNjgxZjZmMDlkNjdjNDdkZDk0OGI1YmM2Iiwiand0aWQiOiJhYjAyOTllZDE4M2ZmM2E1ZmE4NTFiYzQ5YTc0OWIxMzczZGQ1MWNjYTFkMThjM2UwZTgwNDk1MTI0YzRiYzMyMTc5MDg2MGZiMThlYzUxNmZiMjkyNjg0YWNjMGUzNmNmNzIyY2U1NzExMzYxZjhlOGNmYmU0MzU2ZGZlMzQ5OSIsImlhdCI6MTYxOTAwNzA3MiwiYXVkIjoibmF0aXZlIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwL2F1dGgvdG9rZW4iLCJzdWIiOiJaVUJ0WVdsc0xtTnZiUT09In0.h8DTbBzFMGL0_tU1_krt4O8BqlEgWzhfreXGTsOLHKRS53apzrjIcMbjsvnxHAbfns8EGxRzdd36x-yCbMCnvKS5y6jP1sWcsfsUPUco8A9GtTO0zwWa8kse7j-MrEoaixfpz9LWak27OAW48XONU8wSAzDabhJdvNEqH2ydT8y3lm1a53gApttC-V6dee7PAnDZPOWFSbIXqlI5-9UffQ7iSebu549Vm0692K0HWbSBU2pewJqZTXfWPCJ6xl4MTlE1FEBqLkG6Mpzu4bRcBvS8niqE7JVsZxDd_3jQNHoHfb7ipAbgCMbvbAhD3B5q13Ak2KAumqdTUKvaOwj5ng"
+
     const defaultHeaders = {}
 
+    const validateHeaders = {
+      authorization: `Bearer ${token}`,
+    }
+
+    const nonValidateHeaders = {
+      authorization: "Bearer nonToken",
+    }
+
     const postToken = post("/auth/token", defaultHeaders)
+    const validateToken = get("/auth/validate", validateHeaders)
+    const validateNonToken = get("/auth/validate", nonValidateHeaders)
 
     beforeEach(async () => {
       await seed(ctx.prisma)
@@ -398,6 +411,21 @@ describe("server", () => {
           expect(response.status).toBe(401)
           expect(response.data.message).toContain("No verified user found")
         })
+    })
+
+    //Validate Token
+    it("validate invalidate token attempt", async () => {
+      return validateNonToken({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("validate token", async () => {
+      const res = await validateToken({})
+
+      expect(res.status).toBe(200)
     })
   })
 
