@@ -20,8 +20,8 @@ export default function withAdmin(Component: any) {
     static async getInitialProps(context: NextContext) {
       const originalProps = await Component.getInitialProps?.(context)
 
-      const admin = isAdmin(context)
       const signedIn = isSignedIn(context)
+      const admin = isAdmin(context)
 
       prevContext = context
 

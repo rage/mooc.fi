@@ -1,12 +1,10 @@
 import { CircularProgress, TextField } from "@material-ui/core"
-import React, { useEffect, useReducer, useState } from "react"
+import React, { useEffect } from "react"
 import { StyledPaper, Row, Form, Header, StyledTypography } from "./common"
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { Controller, useForm } from "react-hook-form"
-import LangLink from "/components/LangLink"
-import { ControlledTextField } from "/components/Dashboard/Editor2/Common/Fields"
 
 interface EditDetailsFromProps {
   firstName: string
@@ -24,23 +22,6 @@ interface FormState {
   submitting: boolean
 }
 
-interface FormAction {
-  type: string
-  field: string
-  payload: any
-}
-
-const reducer = (state: FormState, action: FormAction) => {
-  switch (action.type) {
-    case "EDIT":
-      return {
-        ...state,
-        [action.field]: action.payload,
-      }
-  }
-
-  return state
-}
 const EditDetailsForm = ({
   firstName,
   lastName,
@@ -53,19 +34,10 @@ const EditDetailsForm = ({
 
   const {
     control,
-    register,
     handleSubmit,
     trigger,
-    setError,
-    clearErrors,
     getValues,
-    formState: {
-      isSubmitting,
-      isSubmitted,
-      isSubmitSuccessful,
-      errors,
-      isValid,
-    },
+    formState: { isSubmitting, errors, isValid },
   } = useForm<FormState>({
     defaultValues: {
       first_name: firstName,
@@ -81,16 +53,6 @@ const EditDetailsForm = ({
   const onSubmit = (values: any) => console.log(values)
 
   const validate = () => {
-    const values = getValues()
-    /*if (values.email) {
-      if (values.email.indexOf("@") === - 1) {
-        setError("email", { type: "atSign", message: t("emailNoAt") })
-      } else if (values.email.indexOf(".") === -1) {
-        setError("email", { type: "dot", message: t("emailNoPoint")})
-      } else {
-        clearErrors("email")
-      }
-    }*/
     trigger()
   }
   console.log(errors)
