@@ -159,8 +159,9 @@ export const removeToken = async (priority: string, domain: string) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${priority === "tmc" ? await getMoocToken() : await getAccessToken()
-        }`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -185,8 +186,9 @@ export const validateToken = async (priority: string, domain: string) => {
     url: `${BASE_URL}/auth/validate`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${priority === "tmc" ? await getMoocToken() : await getAccessToken()
-        }`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
