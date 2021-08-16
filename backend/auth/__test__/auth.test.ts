@@ -398,6 +398,21 @@ describe("server", () => {
       expect(res.status).toBe(200)
     })
 
+    it("no user found on client authorize", async () => {
+      return postToken({
+        data: {
+          grant_type: "client_authorize",
+          client_secret: "native",
+          personal_unique_code: "foo",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+          expect(response.data.message).toContain("No verified user found")
+        })
+    })
+
     //Validate Token
     it("validate invalidate token attempt", async () => {
       return validateNonToken({})

@@ -32,7 +32,9 @@ export interface UserSummary_user_user_course_summary_course {
   slug: string
   has_certificate: boolean | null
   photo: UserSummary_user_user_course_summary_course_photo | null
-  exercises: UserSummary_user_user_course_summary_course_exercises[]
+  exercises:
+    | (UserSummary_user_user_course_summary_course_exercises | null)[]
+    | null
 }
 
 export interface UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions {
