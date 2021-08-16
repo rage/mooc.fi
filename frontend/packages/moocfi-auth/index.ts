@@ -149,6 +149,10 @@ export const getToken = async (data: Data) => {
 }
 
 const clearTokens = (context: any, domain: string) => {
+  console.log(
+    `clearing tokens - have context ${Boolean(context)}; domain ${domain}`,
+  )
+
   nookies.destroy(context, "access_token", { domain, path: "/" })
   nookies.destroy(context, "tmc_token", { domain, path: "/" })
   nookies.destroy(context, "mooc_token", { domain, path: "/" })
