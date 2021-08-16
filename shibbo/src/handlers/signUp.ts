@@ -65,16 +65,15 @@ export const signUpHandler = async (req: Request, res: Response) => {
     if (data.user?.id) {
       // user already exists
 
-      // set cookies in case we have them
-      res
-        .cookie("access_token", data.access_token ?? "")
-        .cookie("mooc_token", data.access_token ?? "")
-        .cookie("admin", data.user.administrator || "")
-
       if (!data.verified_user?.id) {
-        return res.redirect(
-          `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/verify-user`,
-        )
+        // set cookies in case we have them
+        return res
+          .cookie("access_token", data.access_token ?? "")
+          .cookie("mooc_token", data.access_token ?? "")
+          .cookie("admin", data.user.administrator || "")
+          .redirect(
+            `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/verify-user`,
+          )
         // TODO: prompt user to login with previous details and verify account
       } else {
         // TODO: show some info to user about this, redirect to details?
@@ -84,8 +83,10 @@ export const signUpHandler = async (req: Request, res: Response) => {
       }
     }
 
-    return res.redirect(
-      `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`,
-    )
+    return res
+      .cookie("access_token", data.access_token ?? "")
+      .cookie("mooc_token", data.access_token ?? "")
+      .cookie("admin", data.user.administrator || "")
+      .redirect(`${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`)
   }
 }
