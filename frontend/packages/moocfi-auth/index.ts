@@ -150,20 +150,15 @@ export const getToken = async (data: Data) => {
     })
 }
 
-const clearCookies = (context: any = {}, domain: string) => {
-  const cookies = new Cookies()
+const clearTokens = (context: any, domain: string) => {
   console.log(
     `clearing tokens - have context ${Boolean(context)}; domain ${domain}`,
   )
 
-  cookies.remove("access_token", { domain, path: "/" })
-  cookies.remove("tmc_token", { domain, path: "/" })
-  cookies.remove("mooc_token", { domain, path: "/" })
-  cookies.remove("admin", { domain, path: "/" })
-  /*nookies.destroy(context, "access_token", { domain, path: "/" })
+  nookies.destroy(context, "access_token", { domain, path: "/" })
   nookies.destroy(context, "tmc_token", { domain, path: "/" })
   nookies.destroy(context, "mooc_token", { domain, path: "/" })
-  nookies.destroy(context, "admin", { domain, path: "/" })*/
+  nookies.destroy(context, "admin", { domain, path: "/" })
 }
 
 export const removeToken = async (
@@ -185,7 +180,7 @@ export const removeToken = async (
   })
     .then((response) => response.data)
     .then((json) => {
-      clearCookies(context, domain)
+      clearTokens(context, domain)
 
       return json
     })
@@ -214,7 +209,7 @@ export const validateToken = async (
     .then((response) => response.data)
     .then((json) => json)
     .catch(() => {
-      clearCookies(context, domain)
+      clearTokens(context, domain)
 
       return false
     })
