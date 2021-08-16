@@ -43,9 +43,8 @@ export default function () {
       })
     }
     if (deleteData) {
-      router.push(
-        `${LOGOUT_URL}${FRONTEND_URL}/${language}/profile/disconnect/success`,
-      )
+      window.location.href = `${LOGOUT_URL}${FRONTEND_URL}/${language}/profile/disconnect/success`
+
       /*router.replace(`/${language}/profile/disconnect/success`, undefined, {
         shallow: true,
       })*/
