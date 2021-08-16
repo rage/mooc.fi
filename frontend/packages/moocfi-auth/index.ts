@@ -48,6 +48,7 @@ const setCookies = ({
   admin,
 }: SetCookiesOptions) => {
   console.log(`setting cookies with domain ${domain}`)
+
   const cookies = new Cookies()
   cookies.set("admin", admin, { domain, path: "/" })
 
@@ -149,7 +150,7 @@ export const getToken = async (data: Data) => {
     })
 }
 
-const clearTokens = (context: any = {}, domain: string) => {
+const clearCookies = (context: any = {}, domain: string) => {
   const cookies = new Cookies()
   console.log(
     `clearing tokens - have context ${Boolean(context)}; domain ${domain}`,
@@ -184,7 +185,7 @@ export const removeToken = async (
   })
     .then((response) => response.data)
     .then((json) => {
-      clearTokens(context, domain)
+      clearCookies(context, domain)
 
       return json
     })
@@ -213,7 +214,7 @@ export const validateToken = async (
     .then((response) => response.data)
     .then((json) => json)
     .catch(() => {
-      clearTokens(context, domain)
+      clearCookies(context, domain)
 
       return false
     })

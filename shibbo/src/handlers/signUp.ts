@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Request, Response } from "express"
-import { AUTH_URL, API_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
+import { AUTH_URL, API_URL, FRONTEND_URL, LOGOUT_URL, DOMAIN } from "../config"
 
 const grant_type = "client_authorize"
 const response_type = "token"
@@ -45,9 +45,15 @@ export const signUpHandler = async (req: Request, res: Response) => {
       })
 
       return res
-        .cookie("access_token", tokenData.access_token)
-        .cookie("mooc_token", tokenData.access_token)
-        .cookie("admin", tokenData.admin)
+        .cookie("access_token", tokenData.access_token, {
+          domain: DOMAIN,
+          path: "/",
+        })
+        .cookie("mooc_token", tokenData.access_token, {
+          domain: DOMAIN,
+          path: "/",
+        })
+        .cookie("admin", tokenData.admin, { domain: DOMAIN, path: "/" })
         .redirect(
           `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
         )
@@ -71,6 +77,18 @@ export const signUpHandler = async (req: Request, res: Response) => {
         .cookie("admin", data.user.administrator || "")
       if (!data.verified_user?.id) {
         return res
+          .cookie("access_token", data.access_token ?? "", {
+            domain: DOMAIN,
+            path: "/",
+          })
+          .cookie("mooc_token", data.access_token ?? "", {
+            domain: DOMAIN,
+            path: "/",
+          })
+          .cookie("admin", data.user.administrator || "", {
+            domain: DOMAIN,
+            path: "/",
+          })
           .redirect(
             `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/verify-user`,
           )
@@ -85,6 +103,18 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
 
     return res
+      .cookie("access_token", data.access_token ?? "", {
+        domain: DOMAIN,
+        path: "/",
+      })
+      .cookie("mooc_token", data.access_token ?? "", {
+        domain: DOMAIN,
+        path: "/",
+      })
+      .cookie("admin", data.user.administrator || "", {
+        domain: DOMAIN,
+        path: "/",
+      })
       .redirect(`${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`)
   }
 }
