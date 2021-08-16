@@ -32,7 +32,7 @@ const UserOptionsMenu = (props: Props) => {
   }
   return (
     <>
-      <LangLink href={`/sign-in`} passHref>
+      <LangLink href="/sign-in" passHref>
         <HeaderMenuButton
           color="inherit"
           variant="text"
@@ -41,7 +41,7 @@ const UserOptionsMenu = (props: Props) => {
           {t("loginShort")}
         </HeaderMenuButton>
       </LangLink>
-      <LangLink href={`/sign-up`} prefetch={false} passHref>
+      <LangLink href="/sign-up" prefetch={false} passHref>
         <HeaderMenuButton color="inherit" variant="text">
           {t("signUp")}
         </HeaderMenuButton>

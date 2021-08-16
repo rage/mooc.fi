@@ -26,6 +26,7 @@ export const UserOverViewQuery = gql`
       last_name
       student_number
       email
+      administrator
       verified_users {
         id
         home_organization

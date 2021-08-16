@@ -17,6 +17,8 @@ export interface ConnectionTest_currentUser_verified_users {
   person_affiliation: string
   person_affiliation_updated_at: any
   updated_at: any | null
+  mail: string
+  organizational_unit: string
 }
 
 export interface ConnectionTest_currentUser {

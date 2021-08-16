@@ -5,7 +5,7 @@ import { initGA, logPageView } from "/lib/gtag"
 import Head from "next/head"
 import { ThemeProvider } from "@material-ui/core/styles"
 // import { StyledEngineProvider } from "@material-ui/styled-engine"
-import { ApolloProvider } from "@apollo/client"
+// import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import LoginStateContext from "/contexts/LoginStateContext"
@@ -24,6 +24,9 @@ import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
 import { fontCss } from "/src/fonts"
 import { Global } from "@emotion/react"
+
+import { validateToken } from "../packages/moocfi-auth"
+import { DOMAIN } from "../config"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -93,11 +96,10 @@ class MyApp extends App {
     const {
       Component,
       pageProps,
-      apollo,
       admin,
-      lng,
-      languageSwitchUrl,
-      url,
+      lng = "fi",
+      languageSwitchUrl = "/en/",
+      url = "/",
       hrefUrl,
       currentUser,
     } = this.props
@@ -122,35 +124,33 @@ class MyApp extends App {
           </Head>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <ApolloProvider client={apollo}>
-              <LoginStateContext.Provider value={this.state}>
-                <LanguageContext.Provider
-                  value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-                >
-                  <ConfirmProvider>
-                    <BreadcrumbContext.Provider
+            <LoginStateContext.Provider value={this.state}>
+              <LanguageContext.Provider
+                value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
+              >
+                <ConfirmProvider>
+                  <BreadcrumbContext.Provider
+                    value={{
+                      breadcrumbs: this.state.breadcrumbs,
+                      setBreadcrumbs: this.setBreadcrumbs,
+                    }}
+                  >
+                    <AlertContext.Provider
                       value={{
-                        breadcrumbs: this.state.breadcrumbs,
-                        setBreadcrumbs: this.setBreadcrumbs,
+                        alerts: this.state.alerts,
+                        addAlert: this.addAlert,
+                        removeAlert: this.removeAlert,
                       }}
                     >
-                      <AlertContext.Provider
-                        value={{
-                          alerts: this.state.alerts,
-                          addAlert: this.addAlert,
-                          removeAlert: this.removeAlert,
-                        }}
-                      >
-                        <Layout>
-                          <Global styles={fontCss} />
-                          <Component {...pageProps} />
-                        </Layout>
-                      </AlertContext.Provider>
-                    </BreadcrumbContext.Provider>
-                  </ConfirmProvider>
-                </LanguageContext.Provider>
-              </LoginStateContext.Provider>
-            </ApolloProvider>
+                      <Layout>
+                        <Global styles={fontCss} />
+                        <Component {...pageProps} />
+                      </Layout>
+                    </AlertContext.Provider>
+                  </BreadcrumbContext.Provider>
+                </ConfirmProvider>
+              </LanguageContext.Provider>
+            </LoginStateContext.Provider>
           </ThemeProvider>
         </CacheProvider>
       </>
@@ -171,13 +171,13 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en/", "/fi/")
+    url = originalUrl.replace("/en", "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se/", "/fi/")
+    url = originalUrl.replace("/se", "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi/", "/en/")
+    url = originalUrl.replace("/fi", "/en")
   } else {
-    url = "/en" + originalUrl
+    url = "/en" + (originalUrl ?? "/")
   }
   /*       ? (url = originalUrl.replace("/en/", "/fi/"))
       : (url = originalUrl.replace("/fi/", "/en/"))
@@ -189,6 +189,13 @@ function createPath(originalUrl) {
 
 MyApp.getInitialProps = async (props) => {
   const { ctx } = props
+  let validated = true
+
+  if (ctx.req?.url?.indexOf("/_next/data/") === -1) {
+    // server
+    validated = await validateToken("tmc", DOMAIN, ctx)
+  }
+
   let lng = "fi"
   let url = "/"
   let hrefUrl = "/"
@@ -220,14 +227,16 @@ MyApp.getInitialProps = async (props) => {
     originalProps = (await originalGetInitialProps(props)) || {}
   }
 
-  if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
+  /*if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
     hrefUrl = `/[lng]${hrefUrl}`
-  }
+  }*/
+
+  const signedIn = validated && isSignedIn(ctx)
 
   return {
     ...originalProps,
-    signedIn: isSignedIn(ctx),
-    admin: isAdmin(ctx),
+    signedIn,
+    admin: signedIn && isAdmin(ctx),
     lng,
     url,
     languageSwitchUrl: createPath(url),
