@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Request, Response } from "express"
-import { AUTH_URL, API_URL, FRONTEND_URL, LOGOUT_URL, DOMAIN } from "../config"
+import { AUTH_URL, API_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
 
 const grant_type = "client_authorize"
 const response_type = "token"
