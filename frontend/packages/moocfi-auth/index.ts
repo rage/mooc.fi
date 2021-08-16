@@ -181,6 +181,7 @@ export const removeToken = async (
       return json
     })
     .catch((error) => {
+      console.log("error removing token", error.response)
       return error.response.data
     })
 }
