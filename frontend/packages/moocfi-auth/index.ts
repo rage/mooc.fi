@@ -47,7 +47,7 @@ const setCookies = ({
   domain,
   admin,
 }: SetCookiesOptions) => {
-  console.log("setting cookies")
+  console.log(`setting cookies with domain ${domain}`)
   const cookies = new Cookies()
   cookies.set("admin", admin, { domain, path: "/" })
 
@@ -149,15 +149,20 @@ export const getToken = async (data: Data) => {
     })
 }
 
-const clearTokens = (context: any, domain: string) => {
+const clearTokens = (context: any = {}, domain: string) => {
+  const cookies = new Cookies()
   console.log(
     `clearing tokens - have context ${Boolean(context)}; domain ${domain}`,
   )
 
-  nookies.destroy(context, "access_token", { domain, path: "/" })
+  cookies.remove("access_token", { domain, path: "/" })
+  cookies.remove("tmc_token", { domain, path: "/" })
+  cookies.remove("mooc_token", { domain, path: "/" })
+  cookies.remove("admin", { domain, path: "/" })
+  /*nookies.destroy(context, "access_token", { domain, path: "/" })
   nookies.destroy(context, "tmc_token", { domain, path: "/" })
   nookies.destroy(context, "mooc_token", { domain, path: "/" })
-  nookies.destroy(context, "admin", { domain, path: "/" })
+  nookies.destroy(context, "admin", { domain, path: "/" })*/
 }
 
 export const removeToken = async (
@@ -166,9 +171,7 @@ export const removeToken = async (
   context?: NextPageContext,
 ) => {
   const token =
-    priority === "tmc"
-      ? await getMoocToken(context)
-      : await getAccessToken(context)
+    priority === "tmc" ? getMoocToken(context) : getAccessToken(context)
 
   return await axios({
     method: "POST",
