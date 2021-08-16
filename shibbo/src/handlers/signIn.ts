@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { FRONTEND_URL, AUTH_URL, LOGOUT_URL } from "../config"
+import { FRONTEND_URL, AUTH_URL, LOGOUT_URL, DOMAIN } from "../config"
 import axios from "axios"
 
 const grant_type = "client_authorize"
@@ -33,9 +33,9 @@ export const signInHandler = async (req: Request, res: Response) => {
     }
 
     res
-      .cookie("access_token", data.access_token)
-      .cookie("mooc_token", data.access_token)
-      .cookie("admin", data.admin)
+      .cookie("access_token", data.access_token, { domain: DOMAIN, path: "/" })
+      .cookie("mooc_token", data.access_token, { domain: DOMAIN, path: "/" })
+      .cookie("admin", data.admin, { domain: DOMAIN, path: "/" })
       .redirect(
         `${LOGOUT_URL}${FRONTEND_URL}/${
           language !== "en" ? `${language}/` : ""
