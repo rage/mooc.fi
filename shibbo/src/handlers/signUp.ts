@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Request, Response } from "express"
-import { AUTH_URL, BACKEND_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
+import { AUTH_URL, API_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
 
 const grant_type = "client_authorize"
 const response_type = "token"
@@ -24,7 +24,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
   const languagePath = language !== "en" ? `${language}/` : ""
 
   try {
-    const { data } = await axios.post(`${BACKEND_URL}/api/user/register`, {
+    const { data } = await axios.post(`${API_URL}/user/register`, {
       personalUniqueCode: schacpersonaluniquecode,
       firstName: givenName,
       lastName: sn,

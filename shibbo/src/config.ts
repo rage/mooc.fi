@@ -13,6 +13,8 @@ export const FRONTEND_URL =
   process.env.FRONTEND_URL ?? (!isProduction ? "http://localhost:3000" : "")
 export const AUTH_URL =
   process.env.AUTH_URL ?? (!isProduction ? "http://localhost:4000" : "")
+export const API_URL =
+  process.env.API_URL ?? (!isProduction ? "http://localhost:4000/api" : "")
 export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
 
 export const LOGOUT_URL = isProduction
