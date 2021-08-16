@@ -47,6 +47,7 @@ const setCookies = ({
   domain,
   admin,
 }: SetCookiesOptions) => {
+  console.log("setting cookies")
   const cookies = new Cookies()
   cookies.set("admin", admin, { domain, path: "/" })
 
@@ -196,9 +197,7 @@ export const validateToken = async (
   context?: NextPageContext,
 ) => {
   const token =
-    priority === "tmc"
-      ? await getMoocToken(context)
-      : await getAccessToken(context)
+    priority === "tmc" ? getMoocToken(context) : getAccessToken(context)
 
   return await axios({
     method: "GET",
