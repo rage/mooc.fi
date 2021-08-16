@@ -206,7 +206,6 @@ export const validateToken = async (
     .then((response) => response.data)
     .then((json) => json)
     .catch(async ({ response }) => {
-      console.log("caught error", response.data.error)
       clearTokens(context, domain)
 
       return false
