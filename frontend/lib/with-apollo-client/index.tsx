@@ -10,6 +10,7 @@ import {
 } from "@apollo/client"
 import { NextPageContext } from "next"
 import { renderToString } from "react-dom/server"
+
 interface Props {
   // Server side rendered state. Prevents queries from running again in the frontend.
   apollo: ApolloClient<NormalizedCacheObject>
@@ -36,15 +37,15 @@ const withApolloClient = (App: any) => {
   withApollo.getInitialProps = async (ctx: NextPageContext) => {
     const { AppTree } = ctx
 
-    let pageProps: any = {}
+    let appProps: any = {}
     if (App.getInitialProps) {
-      pageProps = await App.getInitialProps(ctx)
+      appProps = await App.getInitialProps(ctx)
     }
 
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
     // @ts-ignore: ctx in ctx
-    const accessToken = await getAccessToken(ctx.ctx)
+    const accessToken = await getAccessToken(ctx?.ctx ?? ctx)
     // It is important to use a new apollo since the page has changed because
     // 1. access token might have changed
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
@@ -53,54 +54,49 @@ const withApolloClient = (App: any) => {
     // @ts-ignore: ignore
     apollo.toJSON = () => null
     // UserDetailsContext uses this
-    pageProps.currentUser = await fetchUserDetails(apollo)
+    appProps.pageProps.currentUser = await fetchUserDetails(apollo)
 
-    if (ctx.res?.finished) {
-      return pageProps
-    }
-
-    if (process.browser) {
-      return {
-        ...pageProps,
-        apollo,
-        accessToken,
+    if (!process.browser) {
+      if (ctx.res?.finished) {
+        return appProps
       }
+
+      // Run the graphql queries on server and pass the results to frontend by using the Apollo cache.
+
+      try {
+        // getDataFromTree is using getMarkupFromTree anyway?
+        await getMarkupFromTree({
+          renderFunction: renderToString,
+          tree: (
+            <AppTree
+              pageProps={{
+                ...appProps.pageProps,
+              }}
+              apollo={apollo}
+            />
+          ),
+        })
+        // Run all GraphQL queries
+      } catch (error) {
+        // Prevent Apollo Client GraphQL errors from crashing SSR.
+        // Handle them in components via the data.error prop:
+        // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
+        console.error("Error while running `getDataFromTree`", error)
+      }
+
+      // getDataFromTree does not call componentWillUnmount
+      // head side effect therefore need to be cleared manually
+      Head.rewind()
     }
-
-    // Run the graphql queries on server and pass the results to frontend by using the Apollo cache.
-
-    try {
-      // getDataFromTree is using getMarkupFromTree anyway?
-      await getMarkupFromTree({
-        renderFunction: renderToString,
-        tree: (
-          <AppTree
-            pageProps={{
-              ...pageProps,
-              apollo,
-            }}
-          />
-        ),
-      })
-      // Run all GraphQL queries
-    } catch (error) {
-      // Prevent Apollo Client GraphQL errors from crashing SSR.
-      // Handle them in components via the data.error prop:
-      // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
-      console.error("Error while running `getDataFromTree`", error)
-    }
-
-    // getDataFromTree does not call componentWillUnmount
-    // head side effect therefore need to be cleared manually
-    Head.rewind()
 
     // Extract query data from the Apollo store
     const apolloState = apollo.cache.extract()
 
     return {
-      ...pageProps,
-      apolloState,
+      ...appProps,
       accessToken,
+      apollo,
+      apolloState,
     }
   }
 

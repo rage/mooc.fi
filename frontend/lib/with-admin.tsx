@@ -30,8 +30,6 @@ export default function withAdmin(Component: any) {
           context,
           target: "/sign-in",
         })
-
-        return { signedIn: false }
       }
 
       return {
