@@ -8,6 +8,9 @@ declare module "unfuck-utf8-headers-middleware" {
 
 declare namespace Express {
   interface Response {
-    setMOOCCookies: (data: Record<string, any>) => this
+    setMOOCCookies: (
+      data: Record<string, any>,
+      headers?: Record<string, any>,
+    ) => this
   }
 }
