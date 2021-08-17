@@ -30,12 +30,9 @@ app.use((req, _, next) => {
   next()
 })
 app.use((_, res, next) => {
-  res.setMOOCCookies = (
-    data: Record<string, any>,
-    headers: CookieOptions = { domain: DOMAIN, path: "/" },
-  ) => {
+  res.setMOOCCookies = (data: Record<string, any>, headers?: CookieOptions) => {
     Object.entries(data).forEach(([key, value]) =>
-      res.cookie(key, value, headers),
+      res.cookie(key, value, { domain: DOMAIN, path: "/", ...headers }),
     )
     return res
   }
