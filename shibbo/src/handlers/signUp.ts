@@ -45,15 +45,11 @@ export const signUpHandler = async (req: Request, res: Response) => {
       })
 
       return res
-        .cookie("access_token", tokenData.access_token, {
-          domain: DOMAIN,
-          path: "/",
+        .setMOOCCookies({
+          access_token: tokenData.access_token,
+          mooc_token: tokenData.access_token,
+          admin: tokenData.admin,
         })
-        .cookie("mooc_token", tokenData.access_token, {
-          domain: DOMAIN,
-          path: "/",
-        })
-        .cookie("admin", tokenData.admin, { domain: DOMAIN, path: "/" })
         .redirect(
           `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
         )
@@ -74,17 +70,10 @@ export const signUpHandler = async (req: Request, res: Response) => {
       if (!data.verified_user?.id) {
         // set cookies in case we have them
         return res
-          .cookie("access_token", data.access_token ?? "", {
-            domain: DOMAIN,
-            path: "/",
-          })
-          .cookie("mooc_token", data.access_token ?? "", {
-            domain: DOMAIN,
-            path: "/",
-          })
-          .cookie("admin", data.user.administrator || "", {
-            domain: DOMAIN,
-            path: "/",
+          .setMOOCCookies({
+            access_token: data.access_token,
+            mooc_token: data.access_token,
+            admin: data.user.administrator ?? "",
           })
           .redirect(
             `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/verify-user`,
@@ -99,17 +88,10 @@ export const signUpHandler = async (req: Request, res: Response) => {
     }
 
     return res
-      .cookie("access_token", data.access_token ?? "", {
-        domain: DOMAIN,
-        path: "/",
-      })
-      .cookie("mooc_token", data.access_token ?? "", {
-        domain: DOMAIN,
-        path: "/",
-      })
-      .cookie("admin", data.user.administrator || "", {
-        domain: DOMAIN,
-        path: "/",
+      .setMOOCCookies({
+        access_token: data.access_token,
+        mooc_token: data.access_token,
+        admin: data.user.administrator ?? "",
       })
       .redirect(`${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`)
   }

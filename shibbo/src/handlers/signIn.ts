@@ -33,9 +33,11 @@ export const signInHandler = async (req: Request, res: Response) => {
     }
 
     res
-      .cookie("access_token", data.access_token, { domain: DOMAIN, path: "/" })
-      .cookie("mooc_token", data.access_token, { domain: DOMAIN, path: "/" })
-      .cookie("admin", data.admin, { domain: DOMAIN, path: "/" })
+      .setMOOCCookies({
+        access_token: data.access_token,
+        mooc_token: data.access_token,
+        admin: data.admin,
+      })
       .redirect(
         `${LOGOUT_URL}${FRONTEND_URL}/${
           language !== "en" ? `${language}/` : ""
