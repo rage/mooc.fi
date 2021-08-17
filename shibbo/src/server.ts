@@ -1,4 +1,4 @@
-import express from "express"
+import express, { CookieOptions } from "express"
 import cors from "cors"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 import {
@@ -7,6 +7,7 @@ import {
   FRONTEND_URL,
   SHIBBOLETH_HEADERS,
   defaultHeaders,
+  DOMAIN,
 } from "./config"
 import { connectHandler, signInHandler, signUpHandler } from "./handlers"
 
@@ -28,6 +29,17 @@ app.use((req, _, next) => {
 
   next()
 })
+app.use((_, res, next) => {
+  res.setMOOCCookies = (data: Record<string, any>, headers?: CookieOptions) => {
+    Object.entries(data).forEach(([key, value]) =>
+      res.cookie(key, value, { domain: DOMAIN, path: "/", ...headers }),
+    )
+    return res
+  }
+
+  next()
+})
+
 app.use(shibbolethCharsetMiddleware(SHIBBOLETH_HEADERS as any))
 app.use((req, res, next) => {
   const {

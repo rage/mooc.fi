@@ -5,3 +5,12 @@ declare module "unfuck-utf8-headers-middleware" {
 
   export = shibbolethCharsetMiddleware
 }
+
+declare namespace Express {
+  interface Response {
+    setMOOCCookies: (
+      data: Record<string, any>,
+      headers?: Record<string, any>,
+    ) => this
+  }
+}
