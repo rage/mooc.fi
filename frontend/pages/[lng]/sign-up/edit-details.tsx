@@ -5,6 +5,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { RegularContainer } from "/components/Container"
 import EditDetailsForm from "/components/SignUp/EditDetailsForm"
+import withSignedIn from "/lib/with-signed-in"
 
 function CheckRegistrationDetailsPage() {
   const { currentUser } = useContext(LoginStateContext)
@@ -40,4 +41,4 @@ function CheckRegistrationDetailsPage() {
   }
 }*/
 
-export default CheckRegistrationDetailsPage
+export default withSignedIn(CheckRegistrationDetailsPage)

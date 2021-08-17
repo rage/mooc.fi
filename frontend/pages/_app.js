@@ -37,6 +37,7 @@ class MyApp extends App {
   constructor(props) {
     super(props)
 
+    console.log("props", props)
     this.toggleLogin = () => {
       this.setState({
         loggedIn: !this.state.loggedIn,
@@ -48,22 +49,22 @@ class MyApp extends App {
       })
     }
     this.state = {
-      loggedIn: this.props.signedIn,
+      loggedIn: this.props.pageProps?.signedIn,
       logInOrOut: this.toggleLogin,
       alerts: [],
       breadcrumbs: [],
-      admin: this.props.admin,
-      currentUser: this.props.currentUser,
+      admin: this.props.pageProps?.admin,
+      currentUser: this.props.pageProps?.currentUser,
       updateUser: this.updateCurrentUser,
     }
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props?.currentUser !== state.currentUser) {
+    if (props?.pageProps?.currentUser !== state.currentUser) {
       return {
         ...state,
-        currentUser: props.currentUser,
-        admin: props.admin,
+        currentUser: props.pageProps?.currentUser,
+        admin: props.pageProps?.admin,
       }
     }
 
@@ -79,6 +80,14 @@ class MyApp extends App {
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
+
+    // redirect to create a TMC account if user doesn't have one
+    // TODO: replace this with a nagging modal that will go away only when you have a TMC account
+    /*if (this.props.pageProps?.currentUser) {
+      if (this.props.pageProps?.currentUser.upstream_id < 0 && !Router.router.pathname?.startsWith("/[lng]/sign-up/edit-details")) {
+        Router.replace(`/${this.props.pageProps?.lng}/sign-up/edit-details`)
+      }
+    }*/
   }
 
   addAlert = (alert) =>
@@ -93,22 +102,22 @@ class MyApp extends App {
   setBreadcrumbs = (breadcrumbs) => this.setState({ breadcrumbs })
 
   render() {
+    const { Component, pageProps } = this.props
+
     const {
-      Component,
-      pageProps,
       admin,
       lng = "fi",
       languageSwitchUrl = "/en/",
-      url = "/",
+      asUrl = "/",
       hrefUrl,
       currentUser,
-    } = this.props
+    } = pageProps
 
     // give router to translator to get query parameters
     const t = getPageTranslator(lng, Router.router)
     const titleString =
       t("title", { title: "..." })?.[hrefUrl] ||
-      t("title", { title: "..." })?.[url]
+      t("title", { title: "..." })?.[asUrl]
 
     const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
@@ -197,7 +206,7 @@ MyApp.getInitialProps = async (props) => {
   }
 
   let lng = "fi"
-  let url = "/"
+  let asUrl = "/"
   let hrefUrl = "/"
 
   if (typeof window !== "undefined") {
@@ -205,7 +214,7 @@ MyApp.getInitialProps = async (props) => {
       lng = ctx.asPath.substring(1, 3)
     }
 
-    url = ctx.asPath
+    asUrl = ctx.asPath
     hrefUrl = ctx.pathname
   } else {
     const maybeLng = ctx.query.lng ?? "fi"
@@ -217,7 +226,7 @@ MyApp.getInitialProps = async (props) => {
       ctx.res.end()
     }
 
-    url = ctx.req.originalUrl
+    asUrl = ctx.req.originalUrl
     hrefUrl = ctx.pathname //.req.path
   }
 
@@ -235,12 +244,15 @@ MyApp.getInitialProps = async (props) => {
 
   return {
     ...originalProps,
-    signedIn,
-    admin: signedIn && isAdmin(ctx),
-    lng,
-    url,
-    languageSwitchUrl: createPath(url),
-    hrefUrl,
+    pageProps: {
+      ...originalProps.pageProps,
+      signedIn,
+      admin: signedIn && isAdmin(ctx),
+      lng,
+      asUrl,
+      languageSwitchUrl: createPath(asUrl),
+      hrefUrl,
+    },
   }
 }
 

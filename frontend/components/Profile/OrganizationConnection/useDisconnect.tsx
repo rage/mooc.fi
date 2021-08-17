@@ -15,7 +15,7 @@ export const DeleteVerifiedUserMutation = gql`
     }
   }
 `
-export default function () {
+export default function useDisconnect() {
   const { language } = useLanguageContext()
   const router = useRouter()
 
