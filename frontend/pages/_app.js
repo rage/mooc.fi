@@ -37,6 +37,7 @@ class MyApp extends App {
   constructor(props) {
     super(props)
 
+    console.log("props", props)
     this.toggleLogin = () => {
       this.setState({
         loggedIn: !this.state.loggedIn,
@@ -87,23 +88,6 @@ class MyApp extends App {
         Router.replace(`/${this.props.pageProps?.lng}/sign-up/edit-details`)
       }
     }*/
-
-    const path = window.location.hash
-    if (path?.includes("#")) {
-      // try scrolling to hash with increasing timeouts; if successful, clear remaining timeouts
-      const timeouts = [100, 500, 1000, 2000].map((ms) =>
-        setTimeout(() => {
-          const id = path.replace("#", "")
-
-          if (id) {
-            try {
-              document?.querySelector("#" + id).scrollIntoView()
-              timeouts.forEach((t) => clearTimeout(t))
-            } catch {}
-          }
-        }, ms),
-      )
-    }
   }
 
   addAlert = (alert) =>

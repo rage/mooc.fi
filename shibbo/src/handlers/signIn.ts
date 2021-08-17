@@ -46,7 +46,7 @@ export const signInHandler = async (req: Request, res: Response) => {
   } catch ({ response }) {
     console.log("error", response)
     res.redirect(
-      `${LOGOUT_URL}${FRONTEND_URL}/${
+      `${FRONTEND_URL}/${
         language !== "en" ? `${language}/` : ""
       }sign-in?error=${decodeURIComponent(response.data.message)}`,
     )
