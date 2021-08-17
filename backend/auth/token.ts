@@ -268,7 +268,7 @@ async function exchangeClientAuthorize(
     await ctx.knex
       .select<any, User[]>("id", "email", "administrator")
       .from("user")
-      .where("id", verifiedUser.user_id)
+      .where("id", verifiedUser.user_id || personal_unique_code)
   )?.[0]
 
   let accessToken = await issueToken(user, client, ctx)
@@ -481,6 +481,8 @@ export async function signIn(
 
   if (tmcToken.success && user) {
     // TODO/FIXME: added user check, what was the original purpose here?
+    // Ren: If the user existed within TMC, but their password did not exist in the MOOC DB.
+
     const hashPassword = await argon2Hash(password)
 
     await ctx
