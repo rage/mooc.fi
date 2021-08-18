@@ -152,3 +152,65 @@ This grant uses the `exchangeClientCredentials` function to issue non-user clien
 Notes:
 `client_secret` should always be secret and behind a server / API. 
 
+There isn't a large use case for `client_credentials` at the moment. One possible future would be to use this grant as a more secure form of the `client_authorize` psuedo-grant, as `client_credentials` can accomplish a similar result, but with a three-way handshake.
+
+### Client Authorize
+The `client_authorize` grant is a pseduo-grant and should be used sparingly. 
+
+Requires: 
+* client_secret
+* personal_unique_code
+
+This grant was originally created to be used with the Haka/Shibbo login system. Using a client's `client_secret` key, we would use that to validate the client has authorization to make queries on the MOOC back-end and issue tokens for users. The `personal_unique_code` could possible be a HAKA ID from the `verified_user` table or an `id` (upstream_id) from the `user` table. 
+
+Notes:
+I say this should be used sparingly because it works fine for internal back-ends such as Shibbo, TMC, or Quizzes, but third-parties might have far too much control over issuing tokens and reading MOOC user data. The `client_credentials` grant might be a more suitable alternative in the future.
+
+## Clients
+The clients system are a way to assign and manage `client_id` and `client_secret` keys to third-party entities. For example, courses can be considered clients as well as other servers (TMC, Quizzes, etc). This ensures that only authorized entities can access MOOC data.
+
+Consumption of the client APIs can be found in the `/frontend/pages/[lng]/auth` folder. Only administrators have the ability to manage client data. 
+
+POST `/auth/clients` - Will store a new client and generate a `client_id` and `client_secret`
+Requires: 
+* Admin Authorization Header
+* name
+* redirect_uri
+
+GET `/auth/clients` - Gets a list of clients 
+Requires: 
+* Admin Authorization Header
+
+GET `/auth/client/:id` - Gets a single client by id
+Requires:
+* Admin Authorization Header
+* id
+
+POST `/auth/deleteClient/:id` - Deletes a single client
+Requires:
+* Admin Authorization Header
+* id
+
+I also wrote a function for regenerating the `client_secret` but it appears I never implemented it.
+
+## Implicit Token
+There's not much I can say about this endpoint, it was developed to comply with IMSGlobal's LTI standard security framework. It should be noted the usage of implicit tokens are not secure and are deprecated in OAuth2.0 flows. Nevertheless, this endpoint is written for the sake of having it work with the IMC Learning Platform. 
+
+POST `/auth/implicit-token` - Issues an implicit user token using `login_hint` as the UserID
+Requires:
+* iss
+* login_hint
+* target_link_uri
+
+I recommend not using this endpoint at all. Maybe even removing it until there's a point for it to exist. 
+
+## Validate
+
+GET `/auth/validate` - Checks if a JWT is valid
+Requires:
+* Authorization Header
+
+
+
+
+
