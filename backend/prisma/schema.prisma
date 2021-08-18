@@ -403,6 +403,7 @@ model User {
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
+  access_tokens                  AccessToken[]
   password                       String?
   password_throttle              Json?
 
@@ -546,9 +547,10 @@ model AccessToken {
   created_at                               DateTime?    @default(now())
   updated_at                               DateTime?    @updatedAt
   id                                       String       @id @default(uuid())
-  access_token                             String
+  access_token                             String       @unique
   client_id                                String
   user_id                                  String? 
+  user                                     User?        @relation(fields: [user_id], references: [id])
   valid                                    Boolean      @default(true)
 
   @@map("access_tokens")

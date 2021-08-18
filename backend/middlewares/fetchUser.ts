@@ -8,6 +8,7 @@ import { Context } from "../context"
 import { plugin } from "nexus"
 import { convertUpdate } from "../util/db-functions"
 import { isNewToken } from "../util/server-functions"
+import { User } from "@prisma/client"
 
 export const moocfiAuthPlugin = () =>
   plugin({
@@ -20,13 +21,16 @@ export const moocfiAuthPlugin = () =>
         info: any,
         next: Function,
       ) => {
-        if (ctx.userDetails || ctx.organization) {
+        if (ctx.user || ctx.organization) {
           return await next(root, args, ctx, info)
         }
 
         const rawToken = ctx.req?.headers?.authorization // connection?
 
-        if (!rawToken) {
+        if (
+          !rawToken ||
+          rawToken.replace(/(Basic|Bearer)\s/, "") === "undefined"
+        ) {
           ctx.role = Role.VISITOR
         } else if (rawToken.startsWith("Basic")) {
           await getOrganization(ctx, rawToken)
@@ -54,40 +58,51 @@ const getOrganization = async (ctx: Context, rawToken: string | null) => {
 }
 
 const getUserNewToken = async (ctx: Context, rawToken: string) => {
-  if (!rawToken) {
-    return
+  let user
+  try {
+    user = await redisify<User | undefined>(
+      async () => {
+        const { user: _user } =
+          (await ctx.prisma.accessToken.findFirst({
+            where: {
+              access_token: rawToken.replace("Bearer ", ""),
+              valid: true,
+            },
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  administrator: true,
+                  first_name: true,
+                  last_name: true,
+                  research_consent: true,
+                  upstream_id: true,
+                  email: true,
+                  username: true,
+                  created_at: true,
+                  updated_at: true,
+                  real_student_number: true,
+                  student_number: true,
+                },
+              },
+            },
+          })) ?? ({} as any)
+
+        if (!_user) {
+          return
+        }
+
+        return { ..._user, password: "", password_throttle: "" }
+      },
+      {
+        prefix: "user",
+        expireTime: 3600,
+        key: rawToken,
+      },
+    )
+  } catch {
+    // console.log(e)
   }
-
-  const accessToken = await ctx.prisma.accessToken.findFirst({
-    where: {
-      access_token: rawToken.replace("Bearer ", ""),
-      valid: true,
-    },
-  })
-
-  if (!accessToken?.user_id) {
-    return
-  }
-
-  const user = await ctx.prisma.user.findUnique({
-    where: {
-      id: accessToken.user_id,
-    },
-    select: {
-      id: true,
-      administrator: true,
-      first_name: true,
-      last_name: true,
-      research_consent: true,
-      upstream_id: true,
-      email: true,
-      username: true,
-      created_at: true,
-      updated_at: true,
-      real_student_number: true,
-      student_number: true,
-    },
-  })
 
   if (!user) {
     return
@@ -120,15 +135,17 @@ const getUser = async (ctx: Context, rawToken: string) => {
         key: rawToken,
       },
     )
-  } catch (e) {
+  } catch {
     // console.log("error", e)
   }
 
+  console.log("got details", details)
+
   ctx.tmcClient = client
-  ctx.userDetails = details ?? undefined
+  ctx.userDetails = details ?? undefined // not used anywhere
 
   if (!details) {
-    return await getUserNewToken(ctx, rawToken)
+    return
   }
 
   const id: number = details.id
