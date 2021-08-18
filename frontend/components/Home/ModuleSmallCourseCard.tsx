@@ -56,7 +56,7 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
     }
   `
       : undefined}
-  @media (max-width: 960px) {
+  @media (min-width: 960px) {
     min-height: 150px;
   }
   @media (min-width: 600px) and (max-width: 960px) {

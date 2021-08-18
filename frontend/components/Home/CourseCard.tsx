@@ -15,7 +15,7 @@ const Background = styled(ClickableButtonBase)<{ component: any }>`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  @media (max-width: 960px) {
+  @media (max-width: 959px) {
     flex-direction: row;
   }
 `
@@ -29,7 +29,7 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
     width: 45%;
     height: 235px;
   }
-  @media (min-width: 600px) and (max-width: 960px) {
+  @media (min-width: 600px) and (max-width: 959px) {
     width: 40%;
     height: 240px;
   }
@@ -49,7 +49,7 @@ const TextArea = styled.div`
     text-align: left;
     width: 65%;
   }
-  @media (min-width: 600px) and (max-width: 960px) {
+  @media (min-width: 600px) and (max-width: 959px) {
     text-align: left;
     width: 60%;
   }
