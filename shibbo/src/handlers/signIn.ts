@@ -43,10 +43,12 @@ export const signInHandler = async (req: Request, res: Response) => {
           language !== "en" ? `${language}/` : ""
         }`,
       )
-  } catch (error) {
-    console.log("error", error)
+  } catch ({ response }) {
+    console.log("error", response)
     res.redirect(
-      `${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}sign-in/`,
+      `${FRONTEND_URL}/${
+        language !== "en" ? `${language}/` : ""
+      }sign-in?error=${decodeURIComponent(response.data.message)}`,
     )
   }
 }
