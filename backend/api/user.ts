@@ -11,6 +11,7 @@ import {
 } from "../services/tmc"
 import { Request, Response } from "express"
 import { omit } from "lodash"
+import { invalidate } from "../services/redis"
 
 const argon2 = require("argon2")
 
@@ -93,7 +94,8 @@ export function getUser(ctx: ApiContext) {
 
 export function updatePassword(ctx: ApiContext) {
   return async (req: Request, res: Response) => {
-    let auth = await requireAuth(req.headers.authorization ?? "", ctx)
+    const token = req.headers.authorization ?? ""
+    let auth = await requireAuth(token, ctx)
     if (auth.error) {
       return res.status(403).json({
         status: 403,
@@ -157,6 +159,7 @@ export function updatePassword(ctx: ApiContext) {
         .where("id", user.id)
 
       await invalidateAuth(user.id, ctx)
+      invalidate(["userdetails", "user"], token)
 
       return res.status(200).json({
         status: 200,

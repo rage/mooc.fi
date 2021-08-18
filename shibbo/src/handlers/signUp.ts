@@ -46,9 +46,9 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
       return res
         .setMOOCCookies({
-          access_token: tokenData.access_token,
-          mooc_token: tokenData.access_token,
-          admin: tokenData.admin,
+          access_token: tokenData.access_token ?? "",
+          mooc_token: tokenData.access_token ?? "",
+          admin: tokenData.admin ?? "",
         })
         .redirect(
           `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
@@ -89,8 +89,8 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
     return res
       .setMOOCCookies({
-        access_token: data.access_token,
-        mooc_token: data.access_token,
+        access_token: data.access_token ?? "",
+        mooc_token: data.access_token ?? "",
         admin: data.user.administrator ?? "",
       })
       .redirect(`${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`)

@@ -59,11 +59,11 @@ export const signIn = async (email: string, password: string) => {
   })
     .then((response) => response.data)
     .then((json) => {
-      cookies.set("token", json.access_token, {
+      cookies.set("token", json.access_token ?? "", {
         domain,
         path: "/",
       })
-      cookies.set("tmc_token", json.tmc_token, {
+      cookies.set("tmc_token", json.tmc_token ?? "", {
         domain,
         path: "/",
       })

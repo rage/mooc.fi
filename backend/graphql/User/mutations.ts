@@ -2,7 +2,6 @@ import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
 import { extendType, stringArg, booleanArg, arg, nonNull } from "nexus"
 import { Context } from "../../context"
-import hashUser from "../../util/hashUser"
 
 export const UserMutations = extendType({
   type: "Mutation",
@@ -22,8 +21,7 @@ export const UserMutations = extendType({
         }
         const access_token = authorization?.split(" ")[1]
 
-        invalidate("userdetails", `Bearer ${access_token}`)
-        invalidate("user", hashUser(currentUser))
+        invalidate(["userdetails", "user"], `Bearer ${access_token}`)
 
         return ctx.prisma.user.update({
           where: { id: currentUser.id },
@@ -50,8 +48,7 @@ export const UserMutations = extendType({
 
         const access_token = authorization?.split(" ")[1]
 
-        invalidate("userdetails", `Bearer ${access_token}`)
-        invalidate("user", hashUser(currentUser))
+        invalidate(["userdetails", "user"], `Bearer ${access_token}`)
 
         return ctx.prisma.user.update({
           where: { id: currentUser.id },

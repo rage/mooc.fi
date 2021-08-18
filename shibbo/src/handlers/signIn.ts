@@ -34,9 +34,9 @@ export const signInHandler = async (req: Request, res: Response) => {
 
     res
       .setMOOCCookies({
-        access_token: data.access_token,
-        mooc_token: data.access_token,
-        admin: data.admin,
+        access_token: data.access_token ?? "",
+        mooc_token: data.access_token ?? "",
+        admin: data.admin ?? "",
       })
       .redirect(
         `${LOGOUT_URL}${FRONTEND_URL}/${

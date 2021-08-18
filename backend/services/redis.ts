@@ -90,12 +90,16 @@ export const subscriber =
       })
     : null
 
-export const invalidate = (prefix: string, key: string) => {
+export const invalidate = (prefix: string | string[], key: string) => {
   if (!redisClient?.connected) {
     return
   }
 
-  redisClient.del(`${prefix}:${key}`)
+  if (Array.isArray(prefix)) {
+    prefix.forEach((p) => invalidate(p, key))
+  } else {
+    redisClient.del(`${prefix}:${key}`)
+  }
 }
 
 export default redisClient
