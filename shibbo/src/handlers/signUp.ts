@@ -71,8 +71,8 @@ export const signUpHandler = async (req: Request, res: Response) => {
         // set cookies in case we have them
         return res
           .setMOOCCookies({
-            access_token: data.access_token,
-            mooc_token: data.access_token,
+            access_token: data.access_token ?? "",
+            mooc_token: data.access_token ?? "",
             admin: data.user.administrator ?? "",
           })
           .redirect(
