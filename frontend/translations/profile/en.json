@@ -49,5 +49,6 @@
     "disconnectWarningTitle": "About to disconnect your account",
     "disconnectWarningDescription": "Are you sure you want to disconnect your {{organization}} account?",
     "disconnectWarningConfirmationText": "Yes",
-    "disconnectWarningCancellationText": "No"
+    "disconnectWarningCancellationText": "No",
+    "myProfile": "My profile"
 }

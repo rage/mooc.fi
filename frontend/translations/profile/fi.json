@@ -49,5 +49,6 @@
     "disconnectWarningTitle": "Olet poistamassa kytkentää",
     "disconnectWarningDescription": "Oletko varma, että haluat poistaa kytkennän {{organization}}-tiliisi?",
     "disconnectWarningConfirmationText": "Kyllä",
-    "disconnectWarningCancellationText": "Ei"
+    "disconnectWarningCancellationText": "Ei",
+    "myProfile": "Oma profiili"
 }

@@ -23,6 +23,13 @@ export const signUpHandler = async (req: Request, res: Response) => {
   const language = req.query.language ?? "en"
   const languagePath = language !== "en" ? `${language}/` : ""
 
+  // confidently default to an error
+  let status = {
+    error: true,
+    type: "",
+    query: "",
+  }
+
   try {
     const { data } = await axios.post(`${API_URL}/user/register`, {
       personalUniqueCode: schacpersonaluniquecode,
@@ -44,7 +51,14 @@ export const signUpHandler = async (req: Request, res: Response) => {
         client_secret,
       })
 
-      return res
+      res.setMOOCCookies({
+        access_token: tokenData.access_token ?? "",
+        mooc_token: tokenData.access_token ?? "",
+        admin: tokenData.admin ?? "",
+      })
+
+      status.error = false
+      /*return res
         .setMOOCCookies({
           access_token: tokenData.access_token ?? "",
           mooc_token: tokenData.access_token ?? "",
@@ -52,13 +66,11 @@ export const signUpHandler = async (req: Request, res: Response) => {
         })
         .redirect(
           `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
-        )
+        )*/
     } catch (error) {
       console.log("sign-up error with token issuing", error)
       // couldn't issue a token
-      return res.redirect(
-        `${FRONTEND_URL}/${languagePath}sign-up/error/token-issue`,
-      )
+      status.type = "token-issue"
     }
   } catch (error) {
     console.log("sign-up error", error.response)
@@ -68,31 +80,39 @@ export const signUpHandler = async (req: Request, res: Response) => {
       // user already exists
 
       if (!data.verified_user?.id) {
-        // set cookies in case we have them
-        return res
-          .setMOOCCookies({
+        status.type = "verify-user"
+
+        if (data.access_token) {
+          // is logged in but not verified
+          res.setMOOCCookies({
             access_token: data.access_token ?? "",
             mooc_token: data.access_token ?? "",
             admin: data.user.administrator ?? "",
           })
-          .redirect(
-            `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/verify-user`,
-          )
-        // TODO: prompt user to login with previous details and verify account
+        } else {
+          // not verified, not logged in
+          status.query = `email=${encodeURIComponent(data.user.email)}`
+          // TODO: prompt user to login with previous details and verify account
+        }
       } else {
+        status.query = `email=${encodeURIComponent(data.user.email)}`
+        status.type = "already-registered"
         // TODO: show some info to user about this, redirect to details?
-        return res.redirect(
-          `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/already-registered`,
-        )
       }
     }
-
-    return res
-      .setMOOCCookies({
-        access_token: data.access_token ?? "",
-        mooc_token: data.access_token ?? "",
-        admin: data.user.administrator ?? "",
-      })
-      .redirect(`${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error`)
   }
+
+  let redirectUrl = ""
+
+  if (status.error) {
+    redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/${status.type}`
+  } else {
+    redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`
+  }
+
+  if (status.query) {
+    redirectUrl += `?${status.query}`
+  }
+
+  return res.redirect(redirectUrl)
 }
