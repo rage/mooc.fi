@@ -21,5 +21,10 @@
     "required": "Required",
     "signupHYHaka": "Sign-up",
     "formInfoHYHakaRegister": "Please check that the following information is correct.",
-    "formInfoNoTMC": "Looks like you do not have a TMC account associated with the e-mail address {{email}}. Please enter a password and confirm it and we will create the account for you."
+    "formInfoNoTMC": "Looks like you do not have a TMC account associated with the e-mail address {{email}}. Please enter a password and confirm it and we will create the account for you.",
+    "errorTitle": "Error",
+    "verify-user": "A user with email <b>{{email}}</b> already exists, but is not connected to this organization. Please connect the user with the organization.",
+    "token-issue": "We have created an account for you, but there was an issue when logging you in. Please try again later.",
+    "already-registered": "A user with email <b>{{email}}</b> already exists, and is connected to this organization. Please log in.",
+    "generic-error": "There was an issue while registering. Please try again later."
 }
