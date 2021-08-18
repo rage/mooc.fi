@@ -37,7 +37,6 @@ class MyApp extends App {
   constructor(props) {
     super(props)
 
-    console.log("props", props)
     this.toggleLogin = () => {
       this.setState({
         loggedIn: !this.state.loggedIn,
