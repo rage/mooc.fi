@@ -139,6 +139,8 @@ const getUser = async (ctx: Context, rawToken: string) => {
     // console.log("error", e)
   }
 
+  console.log("got details", details)
+
   ctx.tmcClient = client
   ctx.userDetails = details ?? undefined // not used anywhere
 
