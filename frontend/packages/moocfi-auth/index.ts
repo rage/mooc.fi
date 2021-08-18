@@ -99,9 +99,9 @@ export const createUser = async (data: CreateFields) => {
     .then((json) => {
       setCookies({
         priority,
-        accessToken: json.auth.access_token,
-        tmcToken: json.auth.tmc,
-        admin: json.auth.admin,
+        accessToken: json.auth.access_token ?? "",
+        tmcToken: json.auth.tmc ?? "",
+        admin: json.auth.admin ?? "",
         domain,
       })
 
@@ -136,9 +136,9 @@ export const getToken = async (data: Data) => {
       } else {
         setCookies({
           priority: data.priority,
-          accessToken: json.access_token,
-          tmcToken: json.tmc_token || data.tmc,
-          admin: json.admin,
+          accessToken: json.access_token ?? "",
+          tmcToken: (json.tmc_token || data.tmc) ?? "",
+          admin: json.admin ?? "",
           domain: data.domain,
         })
 
