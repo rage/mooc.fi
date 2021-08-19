@@ -5,12 +5,23 @@ import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { Controller, useForm } from "react-hook-form"
+import { MutationFunction } from "@apollo/client"
+import { UpdateUser } from "/static/types/generated/UpdateUser"
+import { createTMCAccount, getUserDetails } from "/lib/account"
 
+interface UpdateDetailsParams {
+  email: string
+  first_name: string
+  last_name: string
+  password?: string
+  password_confirmation?: string
+}
 interface EditDetailsFromProps {
   firstName: string
   lastName: string
   email: string
   upstreamId?: number
+  updateUser: MutationFunction<UpdateUser>
 }
 
 interface FormState {
@@ -27,6 +38,7 @@ const EditDetailsForm = ({
   lastName,
   email,
   upstreamId,
+  updateUser,
 }: EditDetailsFromProps) => {
   const t = useTranslator(SignUpTranslations)
 
@@ -50,11 +62,76 @@ const EditDetailsForm = ({
   useEffect(() => {
     trigger()
   }, [])
-  const onSubmit = (values: any) => console.log(values)
+
+  const updateDetails = async () => {
+    const {
+      email,
+      password,
+      first_name,
+      last_name,
+      password_confirmation,
+    } = getValues()
+
+    let upstream_id = upstreamId
+
+    if (password && password_confirmation) {
+      // console.log("would create TMC account")
+      const res = {
+        success: true,
+        token: "PmjMmzSW459mYGMnTe0vGQ5sAiN8391d9XB1p23aSUk",
+      }
+      /*const res = await createTMCAccount({
+        email,
+        username: email,
+        password,
+        password_confirmation,
+        user_field: {
+          first_name,
+          last_name,
+          html1: "",
+          organizational_id: "",
+          course_announcements: false
+        }
+      })*/
+
+      if (res.success && res.token) {
+        try {
+          console.log("would get current user id")
+          const user = { id: 6666 }
+          // const user = await getUserDetails(`Bearer ${res.token}`)
+
+          upstream_id = user.id
+        } catch (error) {
+          return // TODO: couldn't get user details, error
+        }
+      } else {
+        return // TODO: couldn't create account, error
+      }
+    }
+
+    try {
+      const result = await updateUser({
+        variables: {
+          first_name: firstName,
+          last_name,
+          lastName,
+          upstream_id,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      return // TODO: couldn't update user, do something
+    }
+  }
 
   const validate = () => {
     trigger()
   }
+
+  const onSubmit = () => {
+    updateDetails()
+  }
+
   console.log(errors)
   return (
     <StyledPaper>

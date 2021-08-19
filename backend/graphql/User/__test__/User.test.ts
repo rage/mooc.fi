@@ -31,12 +31,21 @@ const updateReseachConsentMutation = gql`
   }
 `
 
-const updateUserNameMutation = gql`
-  mutation updateUserName($first_name: String, $last_name: String) {
-    updateUserName(first_name: $first_name, last_name: $last_name) {
+const updateUserMutation = gql`
+  mutation updateUser(
+    $first_name: String
+    $last_name: String
+    $upstream_id: Int
+  ) {
+    updateUser(
+      first_name: $first_name
+      last_name: $last_name
+      upstream_id: $upstream_id
+    ) {
       id
       first_name
       last_name
+      upstream_id
     }
   }
 `
@@ -323,7 +332,7 @@ describe("User", () => {
       })
     })
 
-    describe("updateUserName", () => {
+    describe("updateUser", () => {
       beforeEach(async () => {
         await ctx!.prisma.user.create({
           data: normalUser,
@@ -333,21 +342,37 @@ describe("User", () => {
       it("updates correctly", async () => {
         ctx!.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx!.client.request(updateUserNameMutation, {
+        const res = await ctx!.client.request(updateUserMutation, {
           first_name: "updated first",
           last_name: "updated last",
+          upstream_id: 666,
         })
 
-        expect(res.updateUserName).toMatchObject({
+        expect(res.updateUser).toMatchObject({
           first_name: "updated first",
           last_name: "updated last",
+          upstream_id: 666,
         })
       })
 
+      it("should not change upstream_id if not given", async () => {
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+
+        const res = await ctx!.client.request(updateUserMutation, {
+          first_name: "updated first",
+          last_name: "updated last",
+        })
+
+        expect(res.updateUser).toMatchObject({
+          first_name: "updated first",
+          last_name: "updated last",
+          upstream_id: 1,
+        })
+      })
       it("errors without auth", async () => {
         ctx!.client.setHeader("Authorization", "")
         try {
-          await ctx!.client.request(updateUserNameMutation, {})
+          await ctx!.client.request(updateUserMutation, {})
           fail()
         } catch {}
       })

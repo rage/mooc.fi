@@ -46,6 +46,7 @@ export interface RegisterCompletionUserOverView_currentUser {
   upstream_id: number
   first_name: string | null
   last_name: string | null
+  administrator: boolean
   completions: RegisterCompletionUserOverView_currentUser_completions[] | null
 }
 
