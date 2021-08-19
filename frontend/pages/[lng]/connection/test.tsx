@@ -11,8 +11,8 @@ import Spinner from "/components/Spinner"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import withSignedIn from "/lib/with-signed-in"
 import { DeleteVerifiedUserTest } from "/static/types/generated/DeleteVerifiedUserTest"
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
 
 export const ConnectionTestQuery = gql`
   query ConnectionTest {
@@ -96,7 +96,7 @@ function ConnectionTest(props: any) {
   }
 
   const onDisconnect = async (
-    user: ProfileUserOverView_currentUser_verified_users,
+    user: CurrentUserUserOverView_currentUser_verified_users,
   ) =>
     deleteVerifiedUser({
       variables: { personal_unique_code: user.personal_unique_code },

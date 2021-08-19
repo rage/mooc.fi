@@ -1,5 +1,4 @@
 // import { Paper } from "@material-ui/core"
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 // import styled from "@emotion/styled"
 import OrganizationConnectionEntry from "./OrganizationConnectionEntry"
 import OrganizationConnectionButtons from "./OrganizationConnectionButtons"
@@ -7,10 +6,11 @@ import React from "react"
 import { Typography } from "@material-ui/core"
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
 
 interface ConnectionListProps {
-  data?: ProfileUserOverView_currentUser_verified_users[]
-  onDisconnect: (_: ProfileUserOverView_currentUser_verified_users) => void
+  data?: CurrentUserUserOverView_currentUser_verified_users[]
+  onDisconnect: (_: CurrentUserUserOverView_currentUser_verified_users) => void
 }
 
 /*const Container = styled(Paper)`

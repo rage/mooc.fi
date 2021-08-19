@@ -1,4 +1,6 @@
 import { gql } from "@apollo/client"
+import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
+import { VerifiedUsersFragment } from "/graphql/fragments/verifiedUsersFragment"
 
 export const UserOverViewQuery = gql`
   query CurrentUserUserOverView {
@@ -9,18 +11,8 @@ export const UserOverViewQuery = gql`
       last_name
       email
       administrator
-      verified_users {
-        id
-        home_organization
-        person_affiliation
-        person_affiliation_updated_at
-        updated_at
-        created_at
-        personal_unique_code
-        display_name
-        mail
-        organizational_unit
-      }
+      student_number
+      ...VerifiedUsersFragment
       completions {
         id
         completion_language
@@ -40,15 +32,11 @@ export const UserOverViewQuery = gql`
         }
         completion_date
         registered
-        completions_registered {
-          id
-          created_at
-          organization {
-            slug
-          }
-        }
+        ...CompletionsRegisteredFragment
       }
       research_consent
     }
   }
+  ${VerifiedUsersFragment}
+  ${CompletionsRegisteredFragment}
 `

@@ -3,9 +3,9 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 // import { LOGOUT_URL, FRONTEND_URL } from "/config"
 import { useLanguageContext } from "/contexts/LanguageContext"
-import { UserOverViewQuery } from "/graphql/queries/currentUser"
+import { UserOverViewQuery } from "../../../graphql/queries/user"
 import { DeleteVerifiedUser } from "/static/types/generated/DeleteVerifiedUser"
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
 
 export const DeleteVerifiedUserMutation = gql`
   mutation DeleteVerifiedUser($personal_unique_code: String!) {
@@ -30,7 +30,7 @@ export default function useDisconnect() {
     ],
   })
   const onDisconnect = async (
-    user: ProfileUserOverView_currentUser_verified_users,
+    user: CurrentUserUserOverView_currentUser_verified_users,
   ) =>
     deleteVerifiedUser({
       variables: { personal_unique_code: user.personal_unique_code },

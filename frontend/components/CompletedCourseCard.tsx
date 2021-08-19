@@ -3,12 +3,12 @@ import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
+import { CurrentUserUserOverView_currentUser_completions } from "/static/types/generated/CurrentUserUserOverView"
 
 const Background = styled(ClickableDiv)`
   display: flex;
@@ -37,7 +37,7 @@ const RegistrationDetails = styled.div`
 `
 
 interface CourseCardProps {
-  completion: ProfileUserOverView_currentUser_completions
+  completion: CurrentUserUserOverView_currentUser_completions
 }
 
 function formatDateTime(date: string) {

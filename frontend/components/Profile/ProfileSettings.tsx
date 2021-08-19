@@ -1,12 +1,12 @@
 import { useState, ChangeEvent } from "react"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { gql } from "@apollo/client"
 import { useMutation } from "@apollo/client"
 import CustomSnackbar from "/components/CustomSnackbar"
-import { UserOverViewQuery } from "/pages/[lng]/profile"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+import { CurrentUserUserOverView_currentUser } from "/static/types/generated/CurrentUserUserOverView"
+import { UserOverViewQuery } from "/graphql/queries/user"
 
 const updateResearchConsentMutation = gql`
   mutation updateUpdateAccountResearchConsent($value: Boolean!) {
@@ -17,7 +17,7 @@ const updateResearchConsentMutation = gql`
 `
 
 interface ProfileSettingsProps {
-  data?: ProfileUserOverView_currentUser
+  data?: CurrentUserUserOverView_currentUser
 }
 
 interface SnackbarProps {

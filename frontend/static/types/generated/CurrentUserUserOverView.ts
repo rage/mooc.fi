@@ -70,6 +70,7 @@ export interface CurrentUserUserOverView_currentUser {
   last_name: string | null
   email: string
   administrator: boolean
+  student_number: string | null
   verified_users: CurrentUserUserOverView_currentUser_verified_users[]
   completions: CurrentUserUserOverView_currentUser_completions[] | null
   research_consent: boolean | null
