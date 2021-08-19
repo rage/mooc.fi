@@ -43,6 +43,7 @@ export interface ShowUserUserOverView_user_completions {
   tier: number | null
   eligible_for_ects: boolean | null
   completion_date: any | null
+  registered: boolean | null
   course: ShowUserUserOverView_user_completions_course | null
   completions_registered: ShowUserUserOverView_user_completions_completions_registered[]
 }
