@@ -63,7 +63,7 @@ jobs:
       - run:
           name: "Tests"
           command: |
-            TESTFILES=$(circleci tests glob "**/*.test.ts" | circleci tests split --split-by=timings)
+            TESTFILES=$(circleci tests glob "**/*.test.ts" | circleci tests split)
             "bin/run-backend-tests.sh $TESTFILES"
       - store_test_results:
           path: ~/project/backend/coverage/junit/
