@@ -48,6 +48,7 @@ jobs:
   build_backend:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    parallelism: 4
     steps:
       - checkout
       - setup_remote_docker

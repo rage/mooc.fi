@@ -134,7 +134,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
-  const [updateUserName] = useMutation(UpdateUserMutation, {
+  const [updateUserMutation] = useMutation(UpdateUserMutation, {
     refetchQueries: [{ query: UserDetailQuery }, { query: UserOverViewQuery }],
   })
 
@@ -178,7 +178,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
       if (nameChanged()) {
         dispatch({ type: "UPDATE_NAME" })
         const res = await updateAccount(firstName, lastName)
-        await updateUserName({
+        await updateUserMutation({
           variables: {
             first_name: firstName,
             last_name: lastName,
