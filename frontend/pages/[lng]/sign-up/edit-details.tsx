@@ -10,7 +10,6 @@ import { useMutation } from "@apollo/client"
 import { UpdateUserMutation } from "/graphql/mutations/users"
 import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
 import { UserOverViewQuery } from "/graphql/queries/user"
-import { createTMCAccount, getUserDetails } from "/lib/account"
 import { UpdateUser } from "/static/types/generated/UpdateUser"
 
 function CheckRegistrationDetailsPage() {
