@@ -6,6 +6,7 @@ import { Button } from "@material-ui/core"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import styled from "@emotion/styled"
 import { isProduction } from "/config"
+import OrganizationButton from "/components/Buttons/OrganizationButton"
 
 interface ConnectButtonProps {
   hyVisible: boolean
@@ -32,18 +33,8 @@ function ConnectionButtons({ hyVisible }: ConnectButtonProps) {
 
   return (
     <ButtonContainer>
-      {hyVisible && (
-        <Link href={HY_CONNECT_URL}>
-          <Button color="primary" startIcon={<FontAwesomeIcon icon={faLink} />}>
-            Connect to HY
-          </Button>
-        </Link>
-      )}
-      <Link href={HAKA_CONNECT_URL}>
-        <Button color="secondary" startIcon={<FontAwesomeIcon icon={faLink} />}>
-          Connect to another organization
-        </Button>
-      </Link>
+      {hyVisible && <OrganizationButton variant="hy" href={HY_CONNECT_URL} />}
+      <OrganizationButton variant="haka" href={HAKA_CONNECT_URL} />
     </ButtonContainer>
   )
 }

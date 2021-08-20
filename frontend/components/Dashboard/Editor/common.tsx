@@ -39,7 +39,7 @@ export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
   }
 
   &:focus {
-    bordercolor: "#3f51b5";
+    border-color: "#3f51b5";
   }
 
   @media (hover: none) {
@@ -69,7 +69,7 @@ export const AdjustingAnchorLink = styled.a<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;
-  visibliity: hidden;
+  visibility: hidden;
 `
 
 export const CheckboxField = ({
