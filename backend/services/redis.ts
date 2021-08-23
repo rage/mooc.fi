@@ -25,6 +25,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
+redisClient?.on("ready", () => logger.info("Redis client connected"))
 redisClient?.on("error", (err: any) => {
   logger.error("Redis error: " + err)
 })
@@ -89,6 +90,14 @@ export const subscriber =
         password: process.env.REDIS_PASSWORD,
       })
     : null
+
+publisher?.on("error", (err: any) => {
+  logger.error("Redis publisher error: " + err)
+})
+
+subscriber?.on("error", (err: any) => {
+  logger.error("Redis subscriber error: " + err)
+})
 
 export const invalidate = (prefix: string | string[], key: string) => {
   if (!redisClient?.connected) {

@@ -29,7 +29,7 @@ export const UserMutations = extendType({
           data: {
             first_name,
             last_name,
-            upstream_id,
+            upstream_id: upstream_id ?? undefined,
           },
         })
       },
