@@ -181,11 +181,11 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
+    url = originalUrl.replace(/^\/en/, "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se", "/fi")
+    url = originalUrl.replace(/^\/se/, "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi", "/en")
+    url = originalUrl.replace(/^\/fi/, "/en")
   } else {
     url = "/en" + originalUrl
   }
