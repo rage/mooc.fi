@@ -12,22 +12,9 @@ import { useTranslator } from "/util/useTranslator"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import React from "react"
 import { RegularContainer } from "/components/Container"
-import styled from "@emotion/styled"
 import { isProduction } from "/config"
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button } from "@material-ui/core"
-import Link from "next/link"
+import OrganizationButtons from "/components/OrganizationButtons"
 
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  button:not(:last-child) {
-    margin-bottom: 0.5rem;
-  }
-`
 
 const SignUpPage = () => {
   const { language } = useLanguageContext()
@@ -69,24 +56,13 @@ const SignUpPage = () => {
     <div>
       <RegularContainer>
         <CreateAccountForm onComplete={onStepComplete} />
-        <ButtonContainer>
-          <Link href={HY_SIGNUP_URL}>
-            <Button
-              color="primary"
-              startIcon={<FontAwesomeIcon icon={faUserPlus} />}
-            >
-              Register using HY credentials
-            </Button>
-          </Link>
-          <Link href={HAKA_SIGNUP_URL}>
-            <Button
-              color="secondary"
-              startIcon={<FontAwesomeIcon icon={faUserPlus} />}
-            >
-              Register using Haka credentials
-            </Button>
-          </Link>
-        </ButtonContainer>
+        <OrganizationButtons
+          hyURL={HY_SIGNUP_URL}
+          hakaURL={HAKA_SIGNUP_URL}
+          hyCaption="Sign up using University of Helsinki credentials"
+          hakaCaption="Sign up using other organization credentials"
+          hyVisible
+        />
       </RegularContainer>
     </div>
   )
