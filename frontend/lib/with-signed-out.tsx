@@ -4,6 +4,8 @@ import { isSignedIn } from "/lib/authentication"
 import redirectTo from "/lib/redirect"
 import LoginStateContext from "/contexts/LoginStateContext"
 
+let prevContext: NextContext | null = null
+
 // TODO: add more redirect parameters?
 export default function withSignedOut(redirect = "/") {
   return (Component: any) => {
@@ -36,6 +38,17 @@ export default function withSignedOut(redirect = "/") {
       render() {
         if (this.props.signedIn) {
           return <div>Redirecting...</div>
+        }
+
+        if (this.context.loggedIn) {
+          redirectTo({
+            context: prevContext || this.context,
+            target: redirect,
+            shallow: false,
+          })
+          // We don't return here because when logging out it is better to keep the old content for a moment
+          // than flashing a message while the redirect happens
+          // return <div>You've logged out.</div>
         }
 
         return <Component {...this.props}>{this.props.children}</Component>

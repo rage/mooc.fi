@@ -1,17 +1,21 @@
 import { Component as ReactComponent } from "react"
 import { NextPageContext as NextContext } from "next"
-import { isAdmin, isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
 import redirect from "/lib/redirect"
 import LoginStateContext from "/contexts/LoginStateContext"
+import { isAdmin, isSignedIn } from "/lib/authentication"
 
 let prevContext: NextContext | null = null
 
 export default function withAdmin(Component: any) {
-  return class WithAdmin extends ReactComponent<{
+  class WithAdmin extends ReactComponent<{
     admin: boolean
     signedIn: boolean
   }> {
+    constructor(props: any) {
+      super(props)
+    }
+
     static displayName = `withAdmin(${
       Component.displayName || Component.name || "AnonymousComponent"
     })`
@@ -65,4 +69,6 @@ export default function withAdmin(Component: any) {
       return <Component {...this.props}>{this.props.children}</Component>
     }
   }
+
+  return WithAdmin
 }

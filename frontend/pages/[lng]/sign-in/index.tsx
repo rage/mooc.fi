@@ -24,7 +24,6 @@ const Header = styled(Typography)<any>`
   margin: 1em;
 `
 
-
 const SignInPage = () => {
   const t = useTranslator(SignInTranslations)
   const { language } = useLanguageContext()

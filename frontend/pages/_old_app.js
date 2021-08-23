@@ -28,6 +28,8 @@ import { Global } from "@emotion/react"
 import { validateToken } from "../packages/moocfi-auth"
 import { DOMAIN } from "../config"
 
+import { SWRConfig, createCache } from "swr"
+
 fontAwesomeConfig.autoAddCss = false
 
 export const cache = createCache({ key: "css", prepend: true })
@@ -53,6 +55,7 @@ class MyApp extends App {
       alerts: [],
       breadcrumbs: [],
       admin: this.props.pageProps?.admin,
+      validated: this.props.pageProps?.validated,
       currentUser: this.props.pageProps?.currentUser,
       updateUser: this.updateCurrentUser,
     }
@@ -201,7 +204,8 @@ MyApp.getInitialProps = async (props) => {
 
   if (ctx.req?.url?.indexOf("/_next/data/") === -1) {
     // server
-    validated = await validateToken("tmc", DOMAIN, ctx)
+    validated = validateToken("tmc", DOMAIN, ctx)
+    // validated = await validateToken("tmc", DOMAIN, ctx)
   }
 
   let lng = "fi"
@@ -235,18 +239,22 @@ MyApp.getInitialProps = async (props) => {
     originalProps = (await originalGetInitialProps(props)) || {}
   }
 
+  console.log("originalProps", originalProps)
   /*if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
     hrefUrl = `/[lng]${hrefUrl}`
   }*/
 
-  const signedIn = validated && isSignedIn(ctx)
+  console.log(validated)
+  const signedIn = await isSignedIn(ctx)
+  const admin = await isAdmin(ctx)
 
   return {
     ...originalProps,
     pageProps: {
       ...originalProps.pageProps,
+      validated,
       signedIn,
-      admin: signedIn && isAdmin(ctx),
+      admin,
       lng,
       asUrl,
       languageSwitchUrl: createPath(asUrl),

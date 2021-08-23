@@ -44,11 +44,11 @@ export default function redirect({
   } else {
     // In the browser, we just pretend like this never even happened ;)
     if (target !== "/") {
-      Router.push(`/[lng]${sep}${target}`, targetWithLanguage, {
+      Router?.router?.push(`/[lng]${sep}${target}`, targetWithLanguage, {
         shallow,
       })
     } else {
-      Router.push("/", "/", { shallow })
+      Router?.router?.push("/", "/", { shallow })
     }
   }
 }
