@@ -15,7 +15,6 @@ import { RegularContainer } from "/components/Container"
 import { isProduction } from "/config"
 import OrganizationButtons from "/components/OrganizationButtons"
 
-
 const SignUpPage = () => {
   const { language } = useLanguageContext()
   const t = useTranslator(SignUpTranslations)

@@ -12,8 +12,8 @@ interface VariantProps {
 }
 
 const ORGANIZATION_IMAGE: Record<Variant[number], string> = {
-  "hy": "/static/images/HY_logo_kolmikielinen_vaaka.png",
-  "haka": "/static/images/Haka_login_vaaka.svg"
+  hy: "/static/images/HY_logo_kolmikielinen_vaaka.png",
+  haka: "/static/images/Haka_login_vaaka.svg",
 }
 
 const OrganizationImage = styled.img`
@@ -42,24 +42,24 @@ interface OrganizationButtonProps {
   caption?: string
 }
 
-function OrganizationButton({ variant, href, caption }: OrganizationButtonProps) {
+function OrganizationButton({
+  variant,
+  href,
+  caption,
+}: OrganizationButtonProps) {
   return (
     <Row>
       <StyledButton $variant={variant}>
         <Link href={href}>
           <picture>
-            <OrganizationImage 
-              src={ORGANIZATION_IMAGE[variant]} 
-              alt={`[${capitalizeFirstLetter(variant)} login]`} 
+            <OrganizationImage
+              src={ORGANIZATION_IMAGE[variant]}
+              alt={`[${capitalizeFirstLetter(variant)} login]`}
             />
           </picture>
         </Link>
       </StyledButton>
-      {caption ?
-      <Typography variant="h3">
-        {caption}
-      </Typography>
-      : null}
+      {caption ? <Typography variant="h3">{caption}</Typography> : null}
     </Row>
   )
 }

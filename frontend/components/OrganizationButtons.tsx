@@ -18,10 +18,18 @@ const ButtonContainer = styled.div`
   row-gap: 0.5rem;
 `
 
-function OrganizationButtons({ hyVisible, hyURL, hakaURL, hyCaption, hakaCaption }: OrganizationButtonProps) {
+function OrganizationButtons({
+  hyVisible,
+  hyURL,
+  hakaURL,
+  hyCaption,
+  hakaCaption,
+}: OrganizationButtonProps) {
   return (
     <ButtonContainer>
-      {hyVisible && <OrganizationButton variant="hy" href={hyURL} caption={hyCaption} />}
+      {hyVisible && (
+        <OrganizationButton variant="hy" href={hyURL} caption={hyCaption} />
+      )}
       <OrganizationButton variant="haka" href={hakaURL} caption={hakaCaption} />
     </ButtonContainer>
   )

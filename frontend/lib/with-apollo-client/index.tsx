@@ -1,6 +1,6 @@
 import getApollo, { initNewApollo } from "./get-apollo"
 import Head from "next/head"
-import { getMarkupFromTree } from "@apollo/client/react/ssr"
+import { getDataFromTree, getMarkupFromTree } from "@apollo/client/react/ssr"
 import { getAccessToken } from "/lib/authentication"
 import fetchUserDetails from "./fetch-user-details"
 import {
@@ -8,9 +8,11 @@ import {
   NormalizedCacheObject,
   ApolloProvider,
 } from "@apollo/client"
-import { NextPageContext } from "next"
+// import { NextPageContext } from "next"
 import { renderToString } from "react-dom/server"
-
+import { validateToken } from "/packages/moocfi-auth"
+import { DOMAIN } from "/config"
+import { AppContext } from "next/app"
 interface Props {
   // Server side rendered state. Prevents queries from running again in the frontend.
   apollo: ApolloClient<NormalizedCacheObject>
@@ -34,13 +36,21 @@ const withApolloClient = (App: any) => {
   }
 
   withApollo.displayName = "withApollo(App)"
-  withApollo.getInitialProps = async (ctx: NextPageContext) => {
-    const { AppTree } = ctx
+  withApollo.getInitialProps = async (ctx: AppContext) => {
+    const { Component, AppTree } = ctx
 
-    let appProps: any = {}
-    if (App.getInitialProps) {
-      appProps = await App.getInitialProps(ctx)
+    // @ts-ignore: ctx?.res
+    const res = ctx?.res ?? ctx?.ctx?.res
+
+    let props: any = {
+      pageProps: {},
     }
+    if (App.getInitialProps) {
+      props = await App.getInitialProps(ctx)
+    }
+
+    // @ts-ignore: ctx in ctx
+    const inAppContext = Boolean(ctx?.ctx)
 
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
@@ -54,25 +64,44 @@ const withApolloClient = (App: any) => {
     // @ts-ignore: ignore
     apollo.toJSON = () => null
     // UserDetailsContext uses this
-    appProps.pageProps.currentUser = await fetchUserDetails(apollo)
+    const currentUser = await fetchUserDetails(apollo)
+
+    props.pageProps.currentUser = currentUser
+    // @ts-ignore: ctx in ctx
+    props.pageProps.validated = Boolean(
+      await validateToken("tmc", DOMAIN, ctx?.ctx ?? ctx),
+    )
 
     if (!process.browser) {
-      if (ctx.res?.finished) {
-        return appProps
+      if (inAppContext) {
+        props = { ...props, apollo }
+      } else {
+        props = { pageProps: { ...props, apollo } }
+      }
+      if (res?.finished) {
+        return props
       }
 
       // Run the graphql queries on server and pass the results to frontend by using the Apollo cache.
 
       try {
         // getDataFromTree is using getMarkupFromTree anyway?
+        /*await getDataFromTree(
+          <AppTree
+            {...props}
+          />
+        )*/
         await getMarkupFromTree({
           renderFunction: renderToString,
           tree: (
             <AppTree
-              pageProps={{
+              {...props}
+              pageProps={props?.pageProps ?? {}}
+              Component={Component}
+              /*pageProps={{
                 ...appProps.pageProps,
               }}
-              apollo={apollo}
+              apollo={apollo}*/
             />
           ),
         })
@@ -93,9 +122,9 @@ const withApolloClient = (App: any) => {
     const apolloState = apollo.cache.extract()
 
     return {
-      ...appProps,
+      ...props,
       accessToken,
-      apollo,
+      // apollo,
       apolloState,
     }
   }
