@@ -171,7 +171,8 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
           ) : course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
-            <LangLink href={`/courses/new`}>
+            <LangLink href={`/courses/new`} passHref>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a>
                 <div
                   style={{

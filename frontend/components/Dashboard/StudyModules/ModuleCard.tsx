@@ -135,7 +135,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
           ) : module ? (
-            <LangLink href={`/study-modules/${module.slug}/edit`}>
+            <LangLink href={`/study-modules/${module.slug}/edit`} passHref>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a>
                 <ButtonWithPaddingAndMargin
                   variant="text"
@@ -148,7 +149,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               </a>
             </LangLink>
           ) : (
-            <LangLink href={`/study-modules/new`}>
+            <LangLink href={`/study-modules/new`} passHref>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a>
                 <ButtonWithPaddingAndMargin
                   variant="text"
