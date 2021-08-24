@@ -5,16 +5,17 @@ import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
-import Container from "/components/Container"
 import withSignedIn from "/lib/with-signed-in"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import React, { ChangeEvent, useState } from "react"
-import styled from "@emotion/styled"
-import Warning from "@material-ui/icons/Warning"
 import ProfileTabs from "/components/Profile/ProfileTabs"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
+import ConsentNotification from "/components/Profile/ConsentNotification"
+import { useRouter } from "next/router"
+import { useLanguageContext } from "/contexts/LanguageContext"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useEffect } from "react"
+import Container from "/components/Container"
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
 export const UserOverViewQuery = gql`
@@ -64,23 +65,31 @@ export const UserOverViewQuery = gql`
   ${CompletionsRegisteredFragment}
 `
 
-const ConsentNotification = styled.div`
-  display: flex;
-  padding: 6px 16px;
-  line-height: 1.43;
-  border-radius: 4px;
-  letter-spacing: 0.01071em;
-  background-color: rgb(255, 244, 229);
-`
+const tabs: Record<string, number> = {
+  "points": 0,
+  "completions": 1,
+  "settings": 2
+}
+const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce((acc, [key, value]) => ({ ...acc, [value]: key }), {})
 
 function Profile() {
-  const t = useTranslator(ProfileTranslations)
+  const _tab = useQueryParameter("tab", false) || "points"
+  const router = useRouter()
+  const { language } = useLanguageContext()
+
+  const [tab, setTab] = useState(tabs[_tab] ?? 0)
+
+  const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
+    // setTab(newValue)
+    router.replace(router.pathname, `/${language}/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`, { shallow: true })
+  }
+  useEffect(() => {
+    if (tabs[_tab] !== tab) {
+      setTab(tabs[_tab] ?? 0)
+    }
+  }, [_tab])
 
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
-  const [tab, setTab] = useState(0)
-  const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
-    setTab(newValue)
-  }
 
   useBreadcrumbs([
     {
@@ -113,14 +122,8 @@ function Profile() {
       <Container style={{ maxWidth: 900 }}>
         {(research_consent === null ||
           typeof research_consent === "undefined") && (
-          <ConsentNotification>
-            <Warning />
-            {t("researchNotification")}
-          </ConsentNotification>
-        )}
-        {/*<VerifiedUsers
-          data={data?.currentUser?.verified_users}
-        />*/}
+            <ConsentNotification />
+          )}
         <ProfileTabs selected={tab} onChange={handleTabChange}>
           <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
         </ProfileTabs>
