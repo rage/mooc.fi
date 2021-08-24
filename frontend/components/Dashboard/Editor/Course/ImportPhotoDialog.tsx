@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
