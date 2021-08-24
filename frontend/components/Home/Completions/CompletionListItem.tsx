@@ -142,10 +142,7 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
 
         <RegistrationColumn>
           {isRegistered && completion.completions_registered
-            ? ([
-                completion.completions_registered[0],
-                completion.completions_registered[0],
-              ] as CompletionsRegisteredFragment_completions_registered[])?.map(
+            ? (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
                 (r) => {
                   return (
                     <Row key={`registration-${r.id}`}>
