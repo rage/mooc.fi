@@ -66,11 +66,14 @@ export const UserOverViewQuery = gql`
 `
 
 const tabs: Record<string, number> = {
-  "points": 0,
-  "completions": 1,
-  "settings": 2
+  points: 0,
+  completions: 1,
+  settings: 2,
 }
-const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce((acc, [key, value]) => ({ ...acc, [value]: key }), {})
+const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
+  (acc, [key, value]) => ({ ...acc, [value]: key }),
+  {},
+)
 
 function Profile() {
   const _tab = useQueryParameter("tab", false) || "points"
@@ -81,7 +84,13 @@ function Profile() {
 
   const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
     // setTab(newValue)
-    router.replace(router.pathname, `/${language}/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`, { shallow: true })
+    router.replace(
+      router.pathname,
+      `/${language}/profile${
+        newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""
+      }`,
+      { shallow: true },
+    )
   }
   useEffect(() => {
     if (tabs[_tab] !== tab) {
@@ -121,9 +130,7 @@ function Profile() {
       />
       <Container style={{ maxWidth: 900 }}>
         {(research_consent === null ||
-          typeof research_consent === "undefined") && (
-            <ConsentNotification />
-          )}
+          typeof research_consent === "undefined") && <ConsentNotification />}
         <ProfileTabs selected={tab} onChange={handleTabChange}>
           <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
         </ProfileTabs>
