@@ -18,7 +18,9 @@ const FooterDownPusherWrapper = styled.div`
 const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
 
-  const isHomePage = !!router?.asPath?.match(/^\/(\[lng\])?\/?$/)
+  const isHomePage = !!router?.asPath
+    ?.replace(/#(.*)/, "")
+    .match(/^\/(fi|en|se|\[lng\])?\/?$/)
 
   // {!isHomePage && <DashboardBreadCrumbs />}
   return (
