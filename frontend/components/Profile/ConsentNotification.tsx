@@ -25,7 +25,9 @@ export default function ConsentNotification() {
       <Warning />
       <Typography variant="h4">
         {t("researchNotification1")}
-        <LangLink href="/profile?tab=settings" shallow>{t("researchNotificationLink")}</LangLink>
+        <LangLink href="/profile?tab=settings" shallow>
+          {t("researchNotificationLink")}
+        </LangLink>
         {language !== "fi" && <span>&nbsp;</span>}
         {t("researchNotification2")}
       </Typography>
