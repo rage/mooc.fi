@@ -17,6 +17,7 @@ const nextConfiguration = {
         ? process.env.LOCALE_SUBPATHS
         : "none",
   },
+  trailingSlash: true,
 }
 
 module.exports = withPlugins(
