@@ -78,13 +78,19 @@ class MyApp extends App {
 
     const path = window.location.hash
     if (path?.includes("#")) {
-      setImmediate(() => {
-        const id = path.replace("#", "")
+      // try scrolling to hash with increasing timeouts; if successful, clear remaining timeouts
+      const timeouts = [100, 500, 1000, 2000].map((ms) =>
+        setTimeout(() => {
+          const id = path.replace("#", "")
 
-        if (id) {
-          document?.querySelector("#" + id)?.scrollIntoView()
-        }
-      })
+          if (id) {
+            try {
+              document?.querySelector("#" + id).scrollIntoView()
+              timeouts.forEach((t) => clearTimeout(t))
+            } catch {}
+          }
+        }, ms),
+      )
     }
   }
 
