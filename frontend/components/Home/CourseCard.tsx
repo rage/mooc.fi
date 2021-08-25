@@ -87,6 +87,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             (course?.status === "Upcoming" && !course?.upcoming_active_link)
           }
           component="div"
+          role="none"
         >
           <ResponsiveCourseImageBase>
             <ImageContainer>

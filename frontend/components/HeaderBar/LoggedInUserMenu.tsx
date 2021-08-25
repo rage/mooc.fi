@@ -32,8 +32,8 @@ const StyledButton = styled(Button)<ButtonProps>`
     font-size: 16px;
     margin: 0.5rem;
   }
-  color: ${(props) => (props.active ? "#3C8C7A" : "black")};
-  border-bottom: ${(props) => (props.active ? "1px solid #3C8C7A" : "")};
+  color: ${(props) => (props.active ? "#378170" : "black")};
+  border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
 `
 
 const ButtonLabel = styled(Typography)<any>`
@@ -58,7 +58,7 @@ const UserMenu = (props: UserMenuprops) => {
   const { active } = props
 
   return (
-    <>
+    <nav role="navigation">
       {admin && (
         <>
           <LangLink href={`/courses`}>
@@ -113,7 +113,7 @@ const UserMenu = (props: UserMenuprops) => {
           </LangLink>
         </>
       )}
-    </>
+    </nav>
   )
 }
 

@@ -9,7 +9,7 @@ import styled from "@emotion/styled"
 const StatusBadge = styled(Chip)<{ status?: CourseStatus | null }>`
   background-color: ${({ status }) =>
     status === CourseStatus.Active
-      ? "#8bc34a"
+      ? "#378170"
       : status === CourseStatus.Upcoming
       ? "#ffcd38"
       : status === CourseStatus.Ended
