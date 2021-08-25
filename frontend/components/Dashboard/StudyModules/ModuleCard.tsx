@@ -135,8 +135,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
           ) : module ? (
-            <LangLink href={`/study-modules/${module.slug}/edit`}>
-              <a>
+            <LangLink href={`/study-modules/${module.slug}/edit`} passHref>
+              <a aria-label={`Edit study module ${module.name}`}>
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"
@@ -148,8 +148,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               </a>
             </LangLink>
           ) : (
-            <LangLink href={`/study-modules/new`}>
-              <a>
+            <LangLink href={`/study-modules/new`} passHref>
+              <a aria-label="Create new study module">
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"

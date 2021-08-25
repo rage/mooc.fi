@@ -63,7 +63,7 @@ const EmailTemplates = (admin: Boolean) => {
                   passHref
                 >
                   <Paper>
-                    <Typography variant="h5" component="h3">
+                    <Typography variant="h5" component="h2">
                       Name: {p.name}
                     </Typography>
                     <Typography component="p">
