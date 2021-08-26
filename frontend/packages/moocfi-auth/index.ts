@@ -1,10 +1,8 @@
 import axios from "axios"
 import Cookies from "universal-cookie"
 import { FRONTEND_URL, isProduction } from "../../config"
-/*
-const axios = require("axios")
-const Cookies = require("universal-cookie")
-*/
+import nookies from "nookies"
+import { NextPageContext } from "next"
 
 const BASE_URL = isProduction
   ? FRONTEND_URL // TODO: not actually the frontend url, but it's the same in production
@@ -49,6 +47,8 @@ const setCookies = ({
   domain,
   admin,
 }: SetCookiesOptions) => {
+  console.log(`setting cookies with domain ${domain}`)
+
   const cookies = new Cookies()
   cookies.set("admin", admin, { domain, path: "/" })
 
@@ -99,9 +99,9 @@ export const createUser = async (data: CreateFields) => {
     .then((json) => {
       setCookies({
         priority,
-        accessToken: json.auth.access_token,
-        tmcToken: json.auth.tmc,
-        admin: json.auth.admin,
+        accessToken: json.auth.access_token ?? "",
+        tmcToken: json.auth.tmc ?? "",
+        admin: json.auth.admin ?? "",
         domain,
       })
 
@@ -136,9 +136,9 @@ export const getToken = async (data: Data) => {
       } else {
         setCookies({
           priority: data.priority,
-          accessToken: json.access_token,
-          tmcToken: json.tmc_token || data.tmc,
-          admin: json.admin,
+          accessToken: json.access_token ?? "",
+          tmcToken: (json.tmc_token || data.tmc) ?? "",
+          admin: json.admin ?? "",
           domain: data.domain,
         })
 
@@ -150,8 +150,29 @@ export const getToken = async (data: Data) => {
     })
 }
 
-export const removeToken = async (priority: string, domain: string) => {
+const clearCookies = (context: any = {}, domain: string) => {
   const cookies = new Cookies()
+  console.log(
+    `clearing tokens - have context ${Boolean(context)}; domain ${domain}`,
+  )
+
+  cookies.remove("access_token", { domain, path: "/" })
+  cookies.remove("tmc_token", { domain, path: "/" })
+  cookies.remove("mooc_token", { domain, path: "/" })
+  cookies.remove("admin", { domain, path: "/" })
+  /*nookies.destroy(context, "access_token", { domain, path: "/" })
+  nookies.destroy(context, "tmc_token", { domain, path: "/" })
+  nookies.destroy(context, "mooc_token", { domain, path: "/" })
+  nookies.destroy(context, "admin", { domain, path: "/" })*/
+}
+
+export const removeToken = async (
+  priority: string,
+  domain: string,
+  context?: NextPageContext,
+) => {
+  const token =
+    priority === "tmc" ? getMoocToken(context) : getAccessToken(context)
 
   return await axios({
     method: "POST",
@@ -159,52 +180,50 @@ export const removeToken = async (priority: string, domain: string) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        priority === "tmc" ? await getMoocToken() : await getAccessToken()
-      }`,
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((response) => response.data)
     .then((json) => {
-      cookies.remove("access_token", { domain, path: "/" })
-      cookies.remove("tmc_token", { domain, path: "/" })
-      cookies.remove("mooc_token", { domain, path: "/" })
-      cookies.remove("admin", { domain, path: "/" })
+      clearCookies(context, domain)
 
       return json
     })
     .catch((error) => {
+      console.log("error removing token", error.response)
       return error.response.data
     })
 }
 
-export const validateToken = async (priority: string, domain: string) => {
-  const cookies = new Cookies()
+export const validateToken = async (
+  priority: string,
+  domain: string,
+  context?: NextPageContext,
+) => {
+  const token =
+    priority === "tmc" ? getMoocToken(context) : getAccessToken(context)
 
   return await axios({
     method: "GET",
     url: `${BASE_URL}/auth/validate`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        priority === "tmc" ? await getMoocToken() : await getAccessToken()
-      }`,
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((response) => response.data)
     .then((json) => json)
     .catch(() => {
-      cookies.remove("access_token", { domain, path: "/" })
-      cookies.remove("tmc_token", { domain, path: "/" })
-      cookies.remove("mooc_token", { domain, path: "/" })
-      cookies.remove("admin", { domain, path: "/" })
+      clearCookies(context, domain)
+
+      return false
     })
 }
 
-const getCookie = (field: string) => () => {
-  const cookies = new Cookies()
+const getCookie = (field: string) => (ctx?: NextPageContext) => {
+  // const cookies = new Cookies()
 
-  return cookies.get(field)
+  return nookies.get(ctx)[field] // cookies.get(field)
 }
 
 export const getAccessToken = getCookie("access_token")

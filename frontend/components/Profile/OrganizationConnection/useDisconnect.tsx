@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
+// import { LOGOUT_URL, FRONTEND_URL } from "/config"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import { UserOverViewQuery } from "/graphql/queries/currentUser"
 import { DeleteVerifiedUser } from "/static/types/generated/DeleteVerifiedUser"
@@ -14,8 +15,7 @@ export const DeleteVerifiedUserMutation = gql`
     }
   }
 `
-
-export default function () {
+export default function useDisconnect() {
   const { language } = useLanguageContext()
   const router = useRouter()
 
@@ -43,6 +43,8 @@ export default function () {
       })
     }
     if (deleteData) {
+      // window.location.href = `${LOGOUT_URL}${FRONTEND_URL}/${language}/profile/disconnect/success`
+
       router.replace(`/${language}/profile/disconnect/success`, undefined, {
         shallow: true,
       })

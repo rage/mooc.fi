@@ -195,3 +195,19 @@ export const updateUser = async (
     .then((json) => json)
     .catch((error) => error)
 }
+
+export const getUsersByEmail = async (
+  emails: string[],
+): Promise<UserInfo[]> => {
+  return await axios.post(
+    `${BASE_URL}/api/v8/users/basic_info_by_emails`,
+    { emails },
+    {
+      headers: {
+        "Content-Type": "application/json",
+
+        Authorization: `Bearer ${await getAccessToken()}`, // TODO: needs admin token
+      },
+    },
+  )
+}

@@ -5,6 +5,8 @@ import LanguageContext from "/contexts/LanguageContext"
 import { whichIsActive } from "/components/HeaderBar/Header"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import LoginStateContext from "/contexts/LoginStateContext"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
   active: any
@@ -24,10 +26,11 @@ const ProfileButton = () => {
   const { currentUser } = useContext(LoginStateContext)
   const { url } = useContext(LanguageContext)
   const active = whichIsActive({ url })
+  const t = useTranslator(ProfileTranslations)
 
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
-    : "Oma profiili"
+    : t("myProfile")
 
   return (
     <LangLink href={`/profile`}>

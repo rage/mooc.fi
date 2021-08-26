@@ -44,30 +44,27 @@ export const VerifiedUserArg = inputObjectType({
   },
 })
 
-/*export const VerifiedUserQueries = extendType({
+export const VerifiedUserQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("verifiedUser",  {
+    t.nullable.field("verifiedUser", {
       type: "VerifiedUser",
-      args: {nonNull(
+      args: {
         personal_unique_code: nonNull(stringArg()),
-        secret: nonNull(stringArg())
       },
-      resolve: async (_, { personal_unique_code, secret }, ctx) => {
-        if (secret !== process.env.VERIFIED_USER_SECRET) {
-          throw new AuthenticationError("not allowed without secret")
-        }
+      resolve: async (_, { personal_unique_code }, ctx) => {
+        // TODO: add some secret thing here
         const verified_user = await ctx.prisma.verifiedUser.findFirst({
           where: {
-            personal_unique_code
-          }
+            personal_unique_code,
+          },
         })
 
         return verified_user // only return id or something?
-      }
+      },
     })
-  }
-})*/
+  },
+})
 
 export const VerifiedUserMutations = extendType({
   type: "Mutation",
@@ -132,16 +129,6 @@ export const VerifiedUserMutations = extendType({
           throw new AuthenticationError("not logged in")
         }
 
-        /*console.log("I would delete, but I'm not going to")
-
-        return ctx.prisma.verifiedUser.findUnique({
-          where: {
-            user_id_personal_unique_code: {
-              user_id: _user_id,
-              personal_unique_code
-            }
-          }
-        })*/
         return ctx.prisma.verifiedUser.delete({
           where: {
             user_id_personal_unique_code: {

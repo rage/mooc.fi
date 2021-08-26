@@ -11,6 +11,10 @@ interface GetUserReturn {
   details: UserInfo
 }
 
+export function isNewToken(rawToken: string) {
+  return rawToken.replace(/(Bearer|Basic)\s/, "").length >= 64
+}
+
 export function requireAdmin(knex: Knex) {
   return async function (
     req: Request,
@@ -29,6 +33,62 @@ export function requireAdmin(knex: Knex) {
   }
 }
 
+export function getUserWithNewToken(knex: Knex) {
+  return async function (
+    req: Request,
+    res: Response,
+  ): Promise<Result<GetUserReturn, any>> {
+    const rawToken = req.get("Authorization")
+
+    if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+      return err(res.status(401).json({ message: "not logged in" }))
+    }
+
+    const users = await knex<any, User[]>("access_tokens")
+      .select([
+        "user.id",
+        "administrator",
+        "first_name",
+        "last_name",
+        "research_consent",
+        "upstream_id",
+        "user.email",
+        "username",
+        "user.created_at",
+        "user.updated_at",
+        "real_student_number",
+        "student_number",
+      ])
+      .leftJoin("user", "user.id", "access_tokens.user_id")
+      .where("access_token", rawToken.replace("Bearer ", ""))
+      .andWhere("valid", true)
+
+    if (users.length === 0) {
+      return err(res.status(401).json({ message: "invalid credentials" }))
+    }
+
+    const user = users[0]
+
+    return ok({
+      user,
+      details: {
+        administrator: user.administrator,
+        email: user.email,
+        extra_fields: {},
+        id: user.upstream_id,
+        user_field: {
+          first_name: user.first_name,
+          last_name: user.last_name,
+          course_announcements: false, // TODO
+          html1: "", // TODO
+          organizational_id: "",
+        },
+        username: user.username,
+      },
+    })
+  }
+}
+
 export function getUser(knex: Knex) {
   return async function (
     req: any,
@@ -38,6 +98,10 @@ export function getUser(knex: Knex) {
 
     if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
       return err(res.status(401).json({ message: "not logged in" }))
+    }
+
+    if (isNewToken(rawToken)) {
+      return getUserWithNewToken(knex)(req, res)
     }
 
     let details: UserInfo | null = null

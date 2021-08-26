@@ -42,6 +42,7 @@ export function createClient(ctx: ApiContext) {
 export function getClients(ctx: ApiContext) {
   return async (req: any, res: any) => {
     let auth = await requireAuth(req.headers.authorization, ctx)
+
     if (auth.error) {
       return res.status(403).json({ error: auth })
     }

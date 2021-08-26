@@ -1,5 +1,6 @@
 import { ApiContext } from "../auth"
 import { AccessToken } from "@prisma/client"
+import { invalidate } from "../services/redis"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -41,6 +42,7 @@ export async function requireAuth(auth: string, { knex }: ApiContext) {
       .from("access_tokens")
       .where("access_token", token)
   )?.[0]
+
   if (!dbToken || dbToken.valid === false) {
     return {
       error: "Token is no longer valid",
@@ -52,6 +54,9 @@ export async function requireAuth(auth: string, { knex }: ApiContext) {
       await knex("access_tokens")
         .update({ valid: false })
         .where("access_token", token)
+
+      invalidate(["userdetails", "user"], token)
+
       return { error: err }
     }
 

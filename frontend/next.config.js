@@ -19,6 +19,7 @@ const nextConfiguration = {
     NEXT_PUBLIC_BACKEND_URL: process.env.BACKEND_URL,
     NEXT_PUBLIC_FRONTEND_URL: process.env.FRONTEND_URL,
   },
+  trailingSlash: true,
 }
 
 module.exports = withPlugins(

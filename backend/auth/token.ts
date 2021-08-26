@@ -6,7 +6,7 @@ import {
   Client,
   AuthorizationCode,
   AccessToken,
-  VerifiedUser,
+  // VerifiedUser,
 } from "@prisma/client"
 import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
@@ -257,7 +257,23 @@ async function exchangeClientAuthorize(
     }
   }
 
-  let verifiedUser = (
+  let user = (
+    await ctx.knex
+      .select<any, User[]>("user.id as id", "email", "administrator")
+      .from("verified_user")
+      .leftJoin("user", "user.id", "verified_user.user_id")
+      .where("personal_unique_code", personal_unique_code)
+  )?.[0]
+
+  if (!user) {
+    return {
+      status: 401,
+      success: false,
+      message: "No verified user found",
+    }
+  }
+
+  /*let verifiedUser = (
     await ctx.knex
       .select<any, VerifiedUser[]>("user_id")
       .from("verified_user")
@@ -268,8 +284,8 @@ async function exchangeClientAuthorize(
     await ctx.knex
       .select<any, User[]>("id", "email", "administrator")
       .from("user")
-      .where("id", verifiedUser.user_id || personal_unique_code)
-  )?.[0]
+      .where("id", verifiedUser.user_id)
+  )?.[0]*/
 
   let accessToken = await issueToken(user, client, ctx)
 

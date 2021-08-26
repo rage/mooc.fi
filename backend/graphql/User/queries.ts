@@ -2,6 +2,7 @@ import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { convertPagination, buildUserSearch } from "../../util/db-functions"
 import { extendType, idArg, stringArg, intArg } from "nexus"
 import { isAdmin } from "../../accessControl"
+import { User } from "./model"
 
 export const UserQueries = extendType({
   type: "Query",
@@ -82,7 +83,7 @@ export const UserQueries = extendType({
     })
 
     t.nullable.field("currentUser", {
-      type: "User",
+      type: User,
       args: { search: stringArg() }, // was: email
       resolve: (_, __, ctx) => {
         // FIXME: why don't we search anything? where's this come from?

@@ -1,19 +1,23 @@
 import { ApiContext } from "."
 import { requireAuth } from "../util/validateAuth"
-import { User, UserCourseSetting } from "@prisma/client"
+import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
 import { validatePassword, invalidateAuth } from "../util/validateAuth"
 import { argon2Hash } from "../util/hashPassword"
 import {
   authenticateUser,
   getCurrentUserDetails,
+  getUsersByEmail,
   updateUser,
 } from "../services/tmc"
+import { Request, Response } from "express"
+import { omit } from "lodash"
+import { invalidate } from "../services/redis"
 
 const argon2 = require("argon2")
 
 export function getUser(ctx: ApiContext) {
-  return async (req: any, res: any) => {
-    let auth = await requireAuth(req.headers.authorization, ctx)
+  return async (req: Request, res: Response) => {
+    let auth = await requireAuth(req.headers.authorization ?? "", ctx)
     if (auth.error) {
       return res.status(403).json({
         status: 403,
@@ -89,8 +93,9 @@ export function getUser(ctx: ApiContext) {
 }
 
 export function updatePassword(ctx: ApiContext) {
-  return async (req: any, res: any) => {
-    let auth = await requireAuth(req.headers.authorization, ctx)
+  return async (req: Request, res: Response) => {
+    const token = req.headers.authorization ?? ""
+    let auth = await requireAuth(token, ctx)
     if (auth.error) {
       return res.status(403).json({
         status: 403,
@@ -154,6 +159,7 @@ export function updatePassword(ctx: ApiContext) {
         .where("id", user.id)
 
       await invalidateAuth(user.id, ctx)
+      invalidate(["userdetails", "user"], token)
 
       return res.status(200).json({
         status: 200,
@@ -165,6 +171,126 @@ export function updatePassword(ctx: ApiContext) {
         status: 403,
         success: false,
         message: "Old password was incorrect",
+      })
+    }
+  }
+}
+
+interface RegisterUserParams {
+  personalUniqueCode: string
+  displayName: string
+  firstName: string
+  lastName: string
+  homeOrganization: string
+  personAffiliation: string
+  mail: string
+  organizationalUnit: string
+}
+
+export function registerUser(ctx: ApiContext) {
+  return async (req: Request<{}, {}, RegisterUserParams>, res: Response) => {
+    const {
+      personalUniqueCode,
+      displayName,
+      firstName,
+      lastName,
+      homeOrganization,
+      personAffiliation,
+      mail,
+      organizationalUnit,
+    } = req.body
+
+    const existingUser = await ctx.prisma.user.findFirst({
+      where: {
+        email: mail,
+      },
+    })
+
+    const existingVerifiedUser = await ctx.prisma.verifiedUser.findFirst({
+      where: {
+        mail,
+        home_organization: homeOrganization,
+      },
+      include: {
+        user: true,
+      },
+    })
+
+    const existingTMCUser = (await getUsersByEmail([mail]))?.[0]
+
+    if (existingUser || existingVerifiedUser) {
+      const accessToken = await ctx.prisma.accessToken.findFirst({
+        where: {
+          user_id: existingUser?.id || existingVerifiedUser?.user_id,
+          valid: true,
+        },
+      })
+
+      return res.status(401).json({
+        status: 401,
+        success: false,
+        user: existingUser || existingVerifiedUser?.user,
+        verified_user: omit(existingVerifiedUser, "user"),
+        tmc_user: existingTMCUser,
+        access_token: accessToken?.access_token,
+        message: "User or verified user already exists",
+      })
+    }
+
+    let newUser: User | undefined
+    let newVerifiedUser: VerifiedUser | undefined
+
+    try {
+      let upstream_id = existingTMCUser?.id
+
+      if (!upstream_id) {
+        // assign random unique negative upstream_id for user until has real TMC account
+        while (true) {
+          upstream_id = -1 - Math.round(Math.random() * 100000)
+
+          if (!(await ctx.prisma.user.findUnique({ where: { upstream_id } }))) {
+            break
+          }
+        }
+      }
+      newUser = await ctx.prisma.user.create({
+        data: {
+          username: mail,
+          email: mail,
+          first_name: firstName,
+          last_name: lastName,
+          administrator: false,
+          upstream_id,
+        },
+      })
+
+      newVerifiedUser = await ctx.prisma.verifiedUser.create({
+        data: {
+          user: { connect: { id: newUser.id } },
+          home_organization: homeOrganization,
+          mail,
+          organizational_unit: organizationalUnit,
+          person_affiliation: personAffiliation,
+          personal_unique_code: personalUniqueCode,
+          display_name: displayName,
+        },
+      })
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        user: newUser,
+        verified_user: newVerifiedUser,
+        tmc_user: existingTMCUser,
+        message: "User created",
+      })
+    } catch {
+      return res.status(500).json({
+        status: 500,
+        success: false,
+        user: newUser,
+        verified_user: newVerifiedUser,
+        message: "Error creating user",
       })
     }
   }
