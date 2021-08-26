@@ -23,7 +23,7 @@ export default function ConsentNotification() {
   return (
     <ConsentNotificationWrapper>
       <Warning />
-      <Typography variant="h4">
+      <Typography variant="h4" component="h2">
         {t("researchNotification1")}
         <LangLink href="/profile?tab=settings" shallow>
           {t("researchNotificationLink")}

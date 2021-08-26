@@ -166,6 +166,7 @@ export default function FilterMenu({
                   }}
                   disabled={searchString === ""}
                   edge="end"
+                  aria-label="clear search"
                 >
                   <Clear />
                 </IconButton>
