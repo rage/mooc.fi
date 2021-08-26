@@ -136,7 +136,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </ButtonWithPaddingAndMargin>
           ) : module ? (
             <LangLink href={`/study-modules/${module.slug}/edit`} passHref>
-              <a aria-label={`Edit study module ${module.name}`} href="#">
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a aria-label={`Edit study module ${module.name}`}>
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"
@@ -149,7 +150,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </LangLink>
           ) : (
             <LangLink href={`/study-modules/new`} passHref>
-              <a aria-label="Create new study module" href="#">
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a aria-label="Create new study module">
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"
