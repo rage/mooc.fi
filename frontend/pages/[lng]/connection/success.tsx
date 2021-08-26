@@ -52,7 +52,7 @@ function ConnectionSuccess() {
   return (
     <Container>
       <Typography component="h1" variant="h1">
-        Connecting your account successful
+        Connecting your account successful!
       </Typography>
       {data?.currentUser?.verified_users.map((verified_user) => (
         <ConnectionEntryCard>

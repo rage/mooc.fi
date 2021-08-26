@@ -58,7 +58,7 @@ function Header() {
     <>
       <CssBaseline />
       <HideOnScroll>
-        <AppBar color="inherit" position="sticky">
+        <AppBar color="inherit" position="sticky" aria-label="user toolbar">
           <StyledToolbar>
             <MoocLogo />
             <MenuContainer>

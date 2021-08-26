@@ -57,7 +57,7 @@ function NaviCard(props: NaviCardProps) {
   const { item, count } = props
   return (
     <Grid item {...gridLayout(count)}>
-      <LangLink href={item.link} prefetch={false}>
+      <LangLink href={item.link} passHref prefetch={false}>
         <StyledLink aria-label={item.linkText}>
           <NaviItemBase>
             <picture>
@@ -76,7 +76,7 @@ function NaviCard(props: NaviCardProps) {
             </picture>
             <FullCoverTextBackground style={{ width: "100%" }}>
               <CardTitle
-                component="h3"
+                component="h2"
                 variant="h3"
                 align="left"
                 style={{ maxWidth: "70%" }}

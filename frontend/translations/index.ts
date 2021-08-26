@@ -49,6 +49,9 @@ const getTranslator =
       (...args) =>
         // cached value is supposed to depend on possible given variables
         args.reduce((acc, curr) => {
+          if (typeof curr === "function") {
+            return `${acc}_${curr.name}`
+          }
           if (typeof curr === "object") {
             return `${acc}_${JSON.stringify(curr)}`
           }

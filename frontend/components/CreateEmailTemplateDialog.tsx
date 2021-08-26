@@ -140,7 +140,6 @@ const CreateEmailTemplateDialog = ({
             and you will be redirected to editing page.
           </DialogContentText>
           <TextField
-            autoFocus
             margin="dense"
             id="name"
             label="Name"

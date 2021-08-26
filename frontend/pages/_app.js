@@ -75,6 +75,23 @@ class MyApp extends App {
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
+
+    const path = window.location.hash
+    if (path?.includes("#")) {
+      // try scrolling to hash with increasing timeouts; if successful, clear remaining timeouts
+      const timeouts = [100, 500, 1000, 2000].map((ms) =>
+        setTimeout(() => {
+          const id = path.replace("#", "")
+
+          if (id) {
+            try {
+              document?.querySelector("#" + id).scrollIntoView()
+              timeouts.forEach((t) => clearTimeout(t))
+            } catch {}
+          }
+        }, ms),
+      )
+    }
   }
 
   addAlert = (alert) =>
@@ -96,7 +113,7 @@ class MyApp extends App {
       admin,
       lng,
       languageSwitchUrl,
-      url,
+      asUrl,
       hrefUrl,
       currentUser,
     } = this.props
@@ -105,7 +122,7 @@ class MyApp extends App {
     const t = getPageTranslator(lng, Router.router)
     const titleString =
       t("title", { title: "..." })?.[hrefUrl] ||
-      t("title", { title: "..." })?.[url]
+      t("title", { title: "..." })?.[asUrl]
 
     const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
@@ -170,11 +187,11 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en/", "/fi/")
+    url = originalUrl.replace(/^\/en/, "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se/", "/fi/")
+    url = originalUrl.replace(/^\/se/, "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi/", "/en/")
+    url = originalUrl.replace(/^\/fi/, "/en")
   } else {
     url = "/en" + originalUrl
   }
@@ -189,7 +206,7 @@ function createPath(originalUrl) {
 MyApp.getInitialProps = async (props) => {
   const { ctx } = props
   let lng = "fi"
-  let url = "/"
+  let asUrl = "/"
   let hrefUrl = "/"
 
   if (typeof window !== "undefined") {
@@ -197,7 +214,7 @@ MyApp.getInitialProps = async (props) => {
       lng = ctx.asPath.substring(1, 3)
     }
 
-    url = ctx.asPath
+    asUrl = ctx.asPath
     hrefUrl = ctx.pathname
   } else {
     const maybeLng = ctx.query.lng ?? "fi"
@@ -209,7 +226,7 @@ MyApp.getInitialProps = async (props) => {
       ctx?.res.end()
     }
 
-    url = ctx.req.originalUrl
+    asUrl = ctx.req.originalUrl
     hrefUrl = ctx.pathname //.req.path
   }
 
@@ -219,17 +236,13 @@ MyApp.getInitialProps = async (props) => {
     originalProps = (await originalGetInitialProps(props)) || {}
   }
 
-  if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
-    hrefUrl = `/[lng]${hrefUrl}`
-  }
-
   return {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
     lng,
-    url,
-    languageSwitchUrl: createPath(url),
+    asUrl,
+    languageSwitchUrl: createPath(asUrl),
     hrefUrl,
   }
 }
