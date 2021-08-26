@@ -8,6 +8,6 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   return knex.raw(
-    `DROP INDEX IF EXISTS "email_delivery.user_id_email_template_id;`,
+    `DROP INDEX IF EXISTS "email_delivery.user_id_email_template_id";`,
   )
 }
