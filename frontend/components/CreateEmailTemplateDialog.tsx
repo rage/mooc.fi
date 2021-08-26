@@ -51,14 +51,12 @@ const CreateEmailTemplateDialog = ({
   const [openDialog, setOpenDialog] = useState(false)
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState("completion")
-  const [selectedCourse, setSelectedCourse] = useState<
-    CourseDetailsData | undefined
-  >(undefined)
+  const [selectedCourse, setSelectedCourse] =
+    useState<CourseDetailsData | undefined>(undefined)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { language } = useContext(LanguageContext)
-  const { loading, error, data } = useQuery<{ courses: CourseDetailsData[] }>(
-    AllCoursesDetails,
-  )
+  const { loading, error, data } =
+    useQuery<{ courses: CourseDetailsData[] }>(AllCoursesDetails)
 
   if (loading) {
     return <Spinner />

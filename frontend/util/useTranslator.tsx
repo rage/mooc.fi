@@ -10,7 +10,7 @@ import getTranslator, {
 export const useTranslator = <
   T extends Translation,
   U extends Translation = {},
-  V extends Translation = {}
+  V extends Translation = {},
 >(
   ...dicts:
     | [TranslationDictionary<T>]

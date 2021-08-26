@@ -26,12 +26,10 @@ const EmailTemplateView = () => {
   const [txtBody, setTxtBody] = useState<any>()
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
-  const [exerciseThreshold, setExerciseThreshold] = useState<
-    Number | null | undefined
-  >()
-  const [pointsThreshold, setPointsThreshold] = useState<
-    Number | null | undefined
-  >()
+  const [exerciseThreshold, setExerciseThreshold] =
+    useState<Number | null | undefined>()
+  const [pointsThreshold, setPointsThreshold] =
+    useState<Number | null | undefined>()
   const [templateType, setTemplateType] = useState<string | null | undefined>()
   const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
@@ -208,7 +206,8 @@ const EmailTemplateView = () => {
                             title: title,
                             txt_body: txtBody,
                             html_body: htmlBody,
-                            triggered_automatically_by_course_id: triggeredByCourseId,
+                            triggered_automatically_by_course_id:
+                              triggeredByCourseId,
                             exercise_completions_threshold: exerciseThreshold,
                             points_threshold: pointsThreshold,
                             template_type: templateType,

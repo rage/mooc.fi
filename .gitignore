@@ -17,3 +17,4 @@ sourcemap
 .scannerwork
 .mailmap
 shibbo/shibboleth
+backend/config/mooc-{public,private}.pem

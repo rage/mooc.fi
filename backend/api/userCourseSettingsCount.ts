@@ -15,10 +15,8 @@ type UserCourseSettingsCountResult =
 
 export function userCourseSettingsCount({ knex }: ApiContext) {
   return async (req: any, res: any) => {
-    const {
-      course,
-      language,
-    }: { course: string; language: string } = req.params
+    const { course, language }: { course: string; language: string } =
+      req.params
 
     if (!course || !language) {
       return res

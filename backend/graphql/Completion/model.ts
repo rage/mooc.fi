@@ -92,11 +92,10 @@ export const Completion = objectType({
             language: parent.completion_language,
           }
         }
-        const avoinLink = await ctx.prisma.openUniversityRegistrationLink.findFirst(
-          {
+        const avoinLink =
+          await ctx.prisma.openUniversityRegistrationLink.findFirst({
             where: filter,
-          },
-        )
+          })
 
         return avoinLink?.link ?? null
       },
