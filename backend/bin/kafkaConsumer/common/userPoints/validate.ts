@@ -12,6 +12,7 @@ export const MessageYupSchema = yup.object().shape({
   service_id: yup.string().length(36).required(),
   required_actions: yup.array(yup.string()),
   attempted: yup.boolean().nullable(),
+  original_submission_date: yup.date(),
   message_format_version: yup
     .number()
     .min(CURRENT_MESSAGE_FORMAT_VERSION)

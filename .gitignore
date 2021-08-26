@@ -17,6 +17,8 @@ sourcemap
 .scannerwork
 .mailmap
 shibbo/shibboleth
+shibbo/shibboleth-staging
+backend/config/mooc-{public,private}.pem
 idp
 idp/*.pem
 certs

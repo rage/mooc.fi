@@ -246,6 +246,7 @@ model ExerciseCompletion {
   user                                   User?                                  @relation(fields: [user_id], references: [id])
   exercise_completion_required_actions   ExerciseCompletionRequiredAction[]
   attempted                              Boolean?
+  original_submission_date               DateTime?
 
   @@map("exercise_completion")
 }
