@@ -253,7 +253,6 @@ const CertificateButton = ({ course }: CertificateProps) => {
                 {t("nameFormIntro")}
               </DialogContentText>
               <StyledTextField
-                autoFocus
                 id="first-name"
                 label={t("nameFormFirstName")}
                 value={firstName}
@@ -262,7 +261,6 @@ const CertificateButton = ({ course }: CertificateProps) => {
                 fullWidth
               />
               <StyledTextField
-                autoFocus
                 id="last-name"
                 label={t("nameFormLastName")}
                 defaultValue={lastName}
