@@ -7,5 +7,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.raw(`DROP INDEX IF EXISTS "completion.course_id_user_id;`)
+  return knex.raw(`DROP INDEX IF EXISTS "completion.course_id_user_id";`)
 }
