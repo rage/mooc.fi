@@ -24,7 +24,7 @@
  */
 const flattenKeys = <
   T extends Record<string, any>,
-  TOut extends Record<keyof T | keyof T[keyof T], any>,
+  TOut extends Record<keyof T | keyof T[keyof T], any>
 >(
   object: T,
   output: TOut = {} as TOut,

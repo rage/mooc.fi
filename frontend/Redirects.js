@@ -2,35 +2,43 @@ module.exports = {
   redirects_list: [
     {
       from: "/courses/2017/ohjelmoinnin-mooc/aikataulu.html",
-      to: "https://moocfi.github.io/courses/2017/ohjelmoinnin-mooc/aikataulu.html",
+      to:
+        "https://moocfi.github.io/courses/2017/ohjelmoinnin-mooc/aikataulu.html",
     },
     {
       from: "/courses/2016/ohjelmoinnin-mooc/aikataulu.html",
-      to: "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/aikataulu.html",
+      to:
+        "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/aikataulu.html",
     },
     {
       from: "/courses/2015/ohjelmoinnin-mooc/aikataulu.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/aikataulu.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/aikataulu.html",
     },
     {
       from: "/courses/2018/ohjelmoinnin-mooc/aikataulu.html",
-      to: "https://moocfi.github.io/courses/2018/ohjelmoinnin-mooc/aikataulu.html",
+      to:
+        "https://moocfi.github.io/courses/2018/ohjelmoinnin-mooc/aikataulu.html",
     },
     {
       from: "/courses/2014/clojure/behind-the-scenes.html",
-      to: "https://moocfi.github.io/courses/2014/clojure/behind-the-scenes.html",
+      to:
+        "https://moocfi.github.io/courses/2014/clojure/behind-the-scenes.html",
     },
     {
       from: "/courses/general/programming/certificates.html",
-      to: "https://moocfi.github.io/courses/general/programming/certificates.html",
+      to:
+        "https://moocfi.github.io/courses/general/programming/certificates.html",
     },
     {
       from: "/english.html",
       to: "/en",
     },
     {
-      from: "/courses/2014/wepa/esitietovaatimukset-ja-kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2014/wepa/esitietovaatimukset-ja-kurssin-suorittaminen.html",
+      from:
+        "/courses/2014/wepa/esitietovaatimukset-ja-kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2014/wepa/esitietovaatimukset-ja-kurssin-suorittaminen.html",
     },
     {
       from: "/courses/2017/cybersecurity/faq.html",
@@ -38,11 +46,13 @@ module.exports = {
     },
     {
       from: "/courses/general/programming/how-to-get-started.html",
-      to: "https://moocfi.github.io/courses/general/programming/how-to-get-started.html",
+      to:
+        "https://moocfi.github.io/courses/general/programming/how-to-get-started.html",
     },
     {
       from: "/courses/2014/ohjelmointi/hy-opiskelijoille.html",
-      to: "https://moocfi.github.io/courses/2014/ohjelmointi/hy-opiskelijoille.html",
+      to:
+        "https://moocfi.github.io/courses/2014/ohjelmointi/hy-opiskelijoille.html",
     },
     {
       from: "/evasteet/",
@@ -97,36 +107,45 @@ module.exports = {
       to: "https://moocfi.github.io/courses/general/programming/",
     },
     {
-      from: "/courses/general/ohjelmointi/tehtavien-tekeminen-ja-palauttaminen/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/tehtavien-tekeminen-ja-palauttaminen/",
+      from:
+        "/courses/general/ohjelmointi/tehtavien-tekeminen-ja-palauttaminen/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/tehtavien-tekeminen-ja-palauttaminen/",
     },
     {
       from: "/courses/general/ohjelmointi/ohjeita-kokeeseen/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/ohjeita-kokeeseen/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/ohjeita-kokeeseen/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/intellij/tmc/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/intellij/tmc/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/intellij/tmc/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/intellij/java/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/intellij/java/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/intellij/java/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/intellij/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/intellij/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/intellij/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/netbeans/tmc/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/netbeans/tmc/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/netbeans/tmc/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/netbeans/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/netbeans/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/netbeans/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/tmcbeans/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/tmcbeans/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/asentaminen/tmcbeans/",
     },
     {
       from: "/courses/general/ohjelmointi/asentaminen/",
@@ -134,19 +153,23 @@ module.exports = {
     },
     {
       from: "/courses/general/ohjelmointi/kurssitodistus/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/kurssitodistus/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/kurssitodistus/",
     },
     {
       from: "/courses/general/ohjelmointi/tukikanavat/google-groups/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/tukikanavat/google-groups/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/tukikanavat/google-groups/",
     },
     {
       from: "/courses/general/ohjelmointi/tukikanavat/irc/ohjeet/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/tukikanavat/irc/ohjeet/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/tukikanavat/irc/ohjeet/",
     },
     {
       from: "/courses/general/ohjelmointi/tukikanavat/irc/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/tukikanavat/irc/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/tukikanavat/irc/",
     },
     {
       from: "/courses/general/ohjelmointi/tukikanavat/",
@@ -158,7 +181,8 @@ module.exports = {
     },
     {
       from: "/courses/general/ohjelmointi/rekisteroityminen/",
-      to: "https://moocfi.github.io/courses/general/ohjelmointi/rekisteroityminen/",
+      to:
+        "https://moocfi.github.io/courses/general/ohjelmointi/rekisteroityminen/",
     },
     {
       from: "/courses/general/ohjelmointi/",
@@ -210,27 +234,33 @@ module.exports = {
     },
     {
       from: "/courses/2017/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2017/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2017/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
     },
     {
       from: "/courses/2016/aalto-c/kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2016/aalto-c/kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2016/aalto-c/kurssin-suorittaminen.html",
     },
     {
       from: "/courses/2016/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
     },
     {
       from: "/courses/2015/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
     },
     {
       from: "/courses/2015/ohjelmointi/kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmointi/kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmointi/kurssin-suorittaminen.html",
     },
     {
       from: "/courses/2018/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
-      to: "https://moocfi.github.io/courses/2018/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
+      to:
+        "https://moocfi.github.io/courses/2018/ohjelmoinnin-mooc/kurssin-suorittaminen.html",
     },
     {
       from: "/kurssit.html",
@@ -238,7 +268,8 @@ module.exports = {
     },
     {
       from: "/courses/2013/programming-part-1/material.html",
-      to: "https://moocfi.github.io/courses/2013/programming-part-1/material.html",
+      to:
+        "https://moocfi.github.io/courses/2013/programming-part-1/material.html",
     },
     {
       from: "/programming-part1/material/week-1?noredirect=0",
@@ -266,7 +297,8 @@ module.exports = {
     },
     {
       from: "/courses/2013/programming-part-2/material.html",
-      to: "http://moocfi.github.io/courses/2013/programming-part-2/material.html",
+      to:
+        "http://moocfi.github.io/courses/2013/programming-part-2/material.html",
     },
     {
       from: "/programming-part2/material/week-7?noredirect=0",
@@ -298,7 +330,8 @@ module.exports = {
     },
     {
       from: "/courses/2014/wepa/opettajille-ja-opiskelijoille.html",
-      to: "https://moocfi.github.io/courses/2014/wepa/opettajille-ja-opiskelijoille.html",
+      to:
+        "https://moocfi.github.io/courses/2014/wepa/opettajille-ja-opiskelijoille.html",
     },
     {
       from: "/opettajille.html",
@@ -306,31 +339,38 @@ module.exports = {
     },
     {
       from: "/courses/2017/ohjelmoinnin-mooc/opinto-oikeus.html",
-      to: "https://moocfi.github.io/courses/2017/ohjelmoinnin-mooc/opinto-oikeus.html",
+      to:
+        "https://moocfi.github.io/courses/2017/ohjelmoinnin-mooc/opinto-oikeus.html",
     },
     {
       from: "/courses/2016/ohjelmoinnin-mooc/opinto-oikeus.html",
-      to: "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/opinto-oikeus.html",
+      to:
+        "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/opinto-oikeus.html",
     },
     {
       from: "/courses/2015/ohjelmoinnin-mooc/opinto-oikeus.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/opinto-oikeus.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/opinto-oikeus.html",
     },
     {
       from: "/courses/2015/ohjelmointi/opinto-oikeus.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmointi/opinto-oikeus.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmointi/opinto-oikeus.html",
     },
     {
       from: "/courses/2018/ohjelmoinnin-mooc/opinto-oikeus.html",
-      to: "https://moocfi.github.io/courses/2018/ohjelmoinnin-mooc/opinto-oikeus.html",
+      to:
+        "https://moocfi.github.io/courses/2018/ohjelmoinnin-mooc/opinto-oikeus.html",
     },
     {
       from: "/courses/2015/ohjelmointi/opiskelijalle.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmointi/opiskelijalle.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmointi/opiskelijalle.html",
     },
     {
       from: "/courses/2014/clojure/placement-in-curriculum.html",
-      to: "https://moocfi.github.io/courses/2014/clojure/placement-in-curriculum.html",
+      to:
+        "https://moocfi.github.io/courses/2014/clojure/placement-in-curriculum.html",
     },
     {
       from: "/courses/2016/aalto-c/en/scoreboard.html",
@@ -338,11 +378,13 @@ module.exports = {
     },
     {
       from: "/courses/2015/ohjelmoinnin-mooc/selitystehtavat.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/selitystehtavat.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/selitystehtavat.html",
     },
     {
       from: "/courses/2015/ohjelmointi/selitystehtavat.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmointi/selitystehtavat.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmointi/selitystehtavat.html",
     },
     {
       from: "/courses/2015/ohjelmointi/sisalto.html",
@@ -350,15 +392,18 @@ module.exports = {
     },
     {
       from: "/courses/2014/algoritmit/speedrun-challenge.html",
-      to: "https://moocfi.github.io/courses/2014/algoritmit/speedrun-challenge.html",
+      to:
+        "https://moocfi.github.io/courses/2014/algoritmit/speedrun-challenge.html",
     },
     {
       from: "/courses/2015/algoritmit/speedrun-challenge.html",
-      to: "https://moocfi.github.io/courses/2015/algoritmit/speedrun-challenge.html",
+      to:
+        "https://moocfi.github.io/courses/2015/algoritmit/speedrun-challenge.html",
     },
     {
       from: "/courses/2014/ohjelmointi/tiedoksi-opettajille.html",
-      to: "https://moocfi.github.io/courses/2014/ohjelmointi/tiedoksi-opettajille.html",
+      to:
+        "https://moocfi.github.io/courses/2014/ohjelmointi/tiedoksi-opettajille.html",
     },
     {
       from: "/courses/2016/aalto-c/tulostaulu.html",
@@ -366,11 +411,13 @@ module.exports = {
     },
     {
       from: "/courses/2016/ohjelmoinnin-mooc/tulostaulu.html",
-      to: "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/tulostaulu.html",
+      to:
+        "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/tulostaulu.html",
     },
     {
       from: "/courses/2015/ohjelmoinnin-mooc/tulostaulu.html",
-      to: "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/tulostaulu.html",
+      to:
+        "https://moocfi.github.io/courses/2015/ohjelmoinnin-mooc/tulostaulu.html",
     },
     {
       from: "/courses/2015/ohjelmointi/tulostaulu.html",
@@ -378,7 +425,8 @@ module.exports = {
     },
     {
       from: "/courses/2016/ohjelmoinnin-mooc/vaihtaminen-nodl-kurssille.html",
-      to: "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/vaihtaminen-nodl-kurssille.html",
+      to:
+        "https://moocfi.github.io/courses/2016/ohjelmoinnin-mooc/vaihtaminen-nodl-kurssille.html",
     },
     {
       from: "/content/mikä-mooc",
