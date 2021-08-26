@@ -327,7 +327,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <LangLink href={`/sign-in`}>
+          <LangLink href={`/sign-in`} passHref>
+            {/*LangLink passes href*/}
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <a>{t("signIn")}</a>
           </LangLink>
         </Row>
