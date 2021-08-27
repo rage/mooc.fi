@@ -131,16 +131,9 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <LangLink href="/study-modules">
-                <a
-                  onClick={() =>
-                    //redirectTimeout && clearTimeout(redirectTimeout)
-                    {}
-                  }
-                  href=""
-                >
-                  {t("redirectLinkText")}
-                </a>
+              <LangLink href="/study-modules" passHref>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a>{t("redirectLinkText")}</a>
               </LangLink>
               {t("redirectMessagePost")}
             </Typography>

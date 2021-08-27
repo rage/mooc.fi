@@ -98,6 +98,9 @@ export const saveToDatabase = async (
         create: required_actions.map((value) => ({ value })),
       },
       timestamp: timestamp.toJSDate(),
+      original_submission_date: message.original_submission_date
+        ? DateTime.fromISO(message.original_submission_date).toJSDate()
+        : null,
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
     try {
@@ -142,6 +145,11 @@ export const saveToDatabase = async (
           deleteMany: deletedActions.map((da) => ({ id: da.id })),
         },
         timestamp: { set: timestamp.toJSDate() },
+        original_submission_date: {
+          set: message.original_submission_date
+            ? DateTime.fromISO(message.original_submission_date).toJSDate()
+            : null,
+        },
       },
     })
   }

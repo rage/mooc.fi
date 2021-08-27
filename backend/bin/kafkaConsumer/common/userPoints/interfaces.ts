@@ -9,4 +9,5 @@ export interface Message {
   attempted: boolean | null
   required_actions: string[]
   message_format_version: number
+  original_submission_date: string | null
 }

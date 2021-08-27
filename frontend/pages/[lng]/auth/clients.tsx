@@ -205,16 +205,18 @@ const Clients = () => {
         {showCreate && (
           <>
             <InputContainer>
-              <label>Client Name:</label>
+              <label htmlFor="clientName">Client Name:</label>
               <input
+                id="clientName"
                 type="text"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
               />
             </InputContainer>
             <InputContainer>
-              <label>Redirect URI:</label>
+              <label htmlFor="clientRedirect">Redirect URI:</label>
               <input
+                id="clientRedirect"
                 type="text"
                 value={clientRedirect}
                 onChange={(e) => setClientRedirect(e.target.value)}
@@ -243,7 +245,11 @@ const Clients = () => {
               <td>{client.client_id}</td>
               <td>{client.redirect_uri}</td>
               <td>
-                <LangLink href={`/auth/client-details?id=${client.client_id}`}>
+                <LangLink
+                  href={`/auth/client-details?id=${client.client_id}`}
+                  passHref
+                >
+                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                   <a>View</a>
                 </LangLink>
               </td>

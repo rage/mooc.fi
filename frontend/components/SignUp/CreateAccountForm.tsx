@@ -212,6 +212,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               name="email"
               autoComplete="lolled"
               label={t("formLabelEmail")}
+              placeholder={t("formLabelEmail")}
               error={this.state.errorObj.email}
               fullWidth
               value={this.state.email}
@@ -228,6 +229,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type="text"
               label={t("formLabelFirstName")}
+              placeholder={t("formLabelFirstName")}
               name="first_name"
               autoComplete="lolled"
               fullWidth
@@ -240,6 +242,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type="text"
               label={t("formLabelLastName")}
+              placeholder={t("formLabelLastName")}
               name="last_name"
               autoComplete="lolled"
               fullWidth
@@ -252,6 +255,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
               label={t("formLabelPassword")}
+              placeholder={t("formLabelPassword")}
               name="password"
               autoComplete="lolled"
               error={this.state.errorObj.password}
@@ -265,6 +269,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
               label={t("formLabelPasswordAgain")}
+              placeholder={t("formLabelPasswordAgain")}
               name="password_confirmation"
               autoComplete="lolled"
               error={this.state.errorObj.password_confirmation}
@@ -298,7 +303,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <LangLink href={`/sign-in`}>
+          <LangLink href={`/sign-in`} passHref>
+            {/*LangLink passes href*/}
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <a>{t("signIn")}</a>
           </LangLink>
         </Row>

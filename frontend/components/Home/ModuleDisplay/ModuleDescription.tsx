@@ -43,7 +43,7 @@ const ModuleDescription = (props: DescriptionProps) => {
       <ModuleHeader component="h2" variant="h2" align="left">
         {name}
       </ModuleHeader>
-      <ModuleDescriptionText variant="subtitle1">
+      <ModuleDescriptionText variant="subtitle1" component="h3">
         {description}
       </ModuleDescriptionText>
     </ContentContainer>

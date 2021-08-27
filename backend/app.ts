@@ -29,10 +29,6 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-/*const prismaClient = new PrismaClient({
-  log: ["query"]
-})*/
-
 const startApp = async () => {
   const { app } = await server({
     prisma, //: prismaClient,
@@ -42,13 +38,13 @@ const startApp = async () => {
 
   attachPrismaEvents({ prisma, logger })
   /*prismaClient.on("query", (e) => {
-  e.timestamp
-  e.query
-  e.params
-  e.duration
-  e.target
-  console.log(e)
-})*/
+    e.timestamp
+    e.query
+    e.params
+    e.duration
+    e.target
+    console.log(e)
+  })*/
 
   if (!process.env.NEXUS_REFLECTION) {
     app.listen(4000, () => {

@@ -54,6 +54,7 @@ describe("userPoints/saveToDatabase", () => {
     timestamp: "2000-01-01T10:00:00.00+02:00",
     user_id: 1,
     required_actions: ["test1", "test2"],
+    original_submission_date: "2000-01-01T10:00:00.00+02:00",
   }
 
   describe("errors", () => {

@@ -87,6 +87,23 @@ class MyApp extends App {
         Router.replace(`/${this.props.pageProps?.lng}/sign-up/edit-details`)
       }
     }*/
+
+    const path = window.location.hash
+    if (path?.includes("#")) {
+      // try scrolling to hash with increasing timeouts; if successful, clear remaining timeouts
+      const timeouts = [100, 500, 1000, 2000].map((ms) =>
+        setTimeout(() => {
+          const id = path.replace("#", "")
+
+          if (id) {
+            try {
+              document?.querySelector("#" + id).scrollIntoView()
+              timeouts.forEach((t) => clearTimeout(t))
+            } catch {}
+          }
+        }, ms),
+      )
+    }
   }
 
   addAlert = (alert) =>
@@ -179,11 +196,11 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
+    url = originalUrl.replace(/^\/en/, "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se", "/fi")
+    url = originalUrl.replace(/^\/se/, "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi", "/en")
+    url = originalUrl.replace(/^\/fi/, "/en")
   } else {
     url = "/en" + (originalUrl ?? "/")
   }
@@ -234,10 +251,6 @@ MyApp.getInitialProps = async (props) => {
   if (originalGetInitialProps) {
     originalProps = (await originalGetInitialProps(props)) || {}
   }
-
-  /*if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
-    hrefUrl = `/[lng]${hrefUrl}`
-  }*/
 
   const signedIn = validated && isSignedIn(ctx)
 
