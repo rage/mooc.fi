@@ -163,14 +163,6 @@ export const getUserDetails = async (
   return res.data
 }
 
-interface UpdateDetailsParams {
-  email: string
-  first_name: string
-  last_name: string
-  password?: string
-  password_confirmation?: string
-}
-
 export async function updateAccount(firstName: string, lastName: string) {
   const accessToken = await getAccessToken(undefined)
 
