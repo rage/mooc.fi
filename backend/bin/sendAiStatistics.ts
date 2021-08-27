@@ -130,8 +130,8 @@ const langArr: langProps[] = [
   {
     language: "cs",
     completion_language: "cs_CZ",
-    country: "Czech",
-    langName: "Czech Republic",
+    country: "Czech Republic",
+    langName: "Czech",
   },
   {
     language: "bg",
