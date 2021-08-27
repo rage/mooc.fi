@@ -14,6 +14,7 @@ import { UpdateUser } from "/static/types/generated/UpdateUser"
 
 function CheckRegistrationDetailsPage() {
   const { currentUser } = useContext(LoginStateContext)
+  // @ts-ignore: not used
   const [updateUserMutation, { data, error }] = useMutation<UpdateUser>(
     UpdateUserMutation,
     {

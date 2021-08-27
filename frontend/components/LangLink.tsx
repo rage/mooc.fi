@@ -11,7 +11,6 @@ export default function LangLink(props: PropsWithChildren<LinkProps>): any {
   const parsedHref: any =
     typeof _href === "object" ? _href : parse(_href || "", true)
   const parsedAs = (_as || format(parsedHref, { unicode: true })) as string
-
   const isOutsideLink = parsedAs.startsWith("http")
 
   if (isOutsideLink) {

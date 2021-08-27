@@ -56,7 +56,7 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
     }
   `
       : undefined}
-  @media (max-width: 960px) {
+  @media (min-width: 960px) {
     min-height: 150px;
   }
   @media (min-width: 600px) and (max-width: 960px) {
@@ -104,7 +104,7 @@ function ModuleSmallCourseCard({
 
   return (
     <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
-      <Background focusRipple component="div">
+      <Background focusRipple component="div" role="none">
         {course ? (
           <ReactGA.OutboundLink
             eventLabel={`modulecoursesite: ${course ? course.name : ""}`}

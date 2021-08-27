@@ -497,6 +497,8 @@ export async function signIn(
 
   if (tmcToken.success && user) {
     // TODO/FIXME: added user check, what was the original purpose here?
+    // Ren: If the user existed within TMC, but their password did not exist in the MOOC DB.
+
     const hashPassword = await argon2Hash(password)
 
     await ctx

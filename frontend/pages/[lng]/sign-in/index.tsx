@@ -1,4 +1,4 @@
-import { Paper, Typography, Button } from "@material-ui/core"
+import { Paper, Typography } from "@material-ui/core"
 import SignInForm from "/components/SignInForm"
 import Container from "/components/Container"
 import SignInTranslations from "/translations/common"

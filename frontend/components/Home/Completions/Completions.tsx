@@ -1,3 +1,4 @@
+import { CurrentUserUserOverView_currentUser_completions } from "/static/types/generated/CurrentUserUserOverView"
 import { RegularContainer as Container } from "/components/Container"
 import { Typography } from "@material-ui/core"
 import styled from "@emotion/styled"
@@ -5,7 +6,6 @@ import { gql } from "@apollo/client"
 import ProfileTranslations from "/translations/profile"
 import { CompletionListItem } from "/components/Home/Completions"
 import { useTranslator } from "/util/useTranslator"
-import { CurrentUserUserOverView_currentUser_completions } from "/static/types/generated/CurrentUserUserOverView"
 
 const completionsFragment = gql`
   fragment UserCompletions on User {

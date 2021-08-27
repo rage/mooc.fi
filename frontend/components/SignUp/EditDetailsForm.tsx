@@ -7,15 +7,8 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import { Controller, useForm } from "react-hook-form"
 import { MutationFunction } from "@apollo/client"
 import { UpdateUser } from "/static/types/generated/UpdateUser"
-import { createTMCAccount, getUserDetails } from "/lib/account"
+// import { createTMCAccount, getUserDetails } from "/lib/account"
 
-interface UpdateDetailsParams {
-  email: string
-  first_name: string
-  last_name: string
-  password?: string
-  password_confirmation?: string
-}
 interface EditDetailsFromProps {
   firstName: string
   lastName: string
@@ -65,9 +58,9 @@ const EditDetailsForm = ({
 
   const updateDetails = async () => {
     const {
-      email,
+      // email,
       password,
-      first_name,
+      // first_name,
       last_name,
       password_confirmation,
     } = getValues()
@@ -110,6 +103,7 @@ const EditDetailsForm = ({
     }
 
     try {
+      // @ts-ignore: debug
       const result = await updateUser({
         variables: {
           first_name: firstName,

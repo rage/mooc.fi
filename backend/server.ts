@@ -44,7 +44,6 @@ const createExpressAppWithContext = ({
   app.use(helmet.frameguard())
   app.use(cookieParser())
   app.use(bodyParser.json())
-
   if (!TEST) {
     app.use(morgan("combined"))
   }

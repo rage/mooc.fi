@@ -67,7 +67,9 @@ function EmailSubscribe() {
     <MailingList>
       <StyledCard>
         <CardContent>
-          <StyledHeader variant="h5">{t("emailHeader")}</StyledHeader>
+          <StyledHeader variant="h5" component="h4">
+            {t("emailHeader")}
+          </StyledHeader>
           <div>
             {sent ? (
               <Typography variant="subtitle1">

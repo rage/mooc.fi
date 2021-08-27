@@ -3,7 +3,7 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 // import { LOGOUT_URL, FRONTEND_URL } from "/config"
 import { useLanguageContext } from "/contexts/LanguageContext"
-import { UserOverViewQuery } from "../../../graphql/queries/user"
+import { UserOverViewQuery } from "/graphql/queries/user"
 import { DeleteVerifiedUser } from "/static/types/generated/DeleteVerifiedUser"
 import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
 

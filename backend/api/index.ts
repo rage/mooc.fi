@@ -18,6 +18,7 @@ import {
   userCourseSettingsPost,
 } from "./userCourseSettings"
 import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
+import { userCourseProgress } from "./userCourseProgress"
 
 import * as winston from "winston"
 
@@ -47,4 +48,5 @@ export function apiRouter(ctx: ApiContext) {
     .post("/updatePassword", updatePassword(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
     .post("/user/register", registerUser(ctx))
+    .get("/user-course-progress/:slug", userCourseProgress(ctx))
 }

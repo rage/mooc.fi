@@ -8,11 +8,7 @@ import withSignedIn from "/lib/with-signed-in"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import React, { ChangeEvent, useState } from "react"
 import styled from "@emotion/styled"
-import Warning from "@material-ui/icons/Warning"
 import ProfileTabs from "/components/Profile/ProfileTabs"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
-import notEmpty from "/util/notEmpty"
 import { UserOverViewQuery } from "/graphql/queries/user"
 import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUserOverView"
 
@@ -26,8 +22,6 @@ const ConsentNotification = styled.div`
 `
 
 function Profile() {
-  const t = useTranslator(ProfileTranslations)
-
   const { data, error, loading } = useQuery<CurrentUserUserOverView>(
     UserOverViewQuery,
   )
@@ -66,15 +60,8 @@ function Profile() {
         student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
-        {!notEmpty(research_consent) && (
-          <ConsentNotification>
-            <Warning />
-            {t("researchNotification")}
-          </ConsentNotification>
-        )}
-        {/*<VerifiedUsers
-          data={data?.currentUser?.verified_users}
-        />*/}
+        {(research_consent === null ||
+          typeof research_consent === "undefined") && <ConsentNotification />}
         <ProfileTabs selected={tab} onChange={handleTabChange}>
           <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
         </ProfileTabs>

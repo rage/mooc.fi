@@ -28,8 +28,6 @@ import { Global } from "@emotion/react"
 import { validateToken } from "../packages/moocfi-auth"
 import { DOMAIN } from "../config"
 
-import { SWRConfig, createCache } from "swr"
-
 fontAwesomeConfig.autoAddCss = false
 
 export const cache = createCache({ key: "css", prepend: true })
@@ -55,7 +53,6 @@ class MyApp extends App {
       alerts: [],
       breadcrumbs: [],
       admin: this.props.pageProps?.admin,
-      validated: this.props.pageProps?.validated,
       currentUser: this.props.pageProps?.currentUser,
       updateUser: this.updateCurrentUser,
     }
@@ -90,6 +87,23 @@ class MyApp extends App {
         Router.replace(`/${this.props.pageProps?.lng}/sign-up/edit-details`)
       }
     }*/
+
+    const path = window.location.hash
+    if (path?.includes("#")) {
+      // try scrolling to hash with increasing timeouts; if successful, clear remaining timeouts
+      const timeouts = [100, 500, 1000, 2000].map((ms) =>
+        setTimeout(() => {
+          const id = path.replace("#", "")
+
+          if (id) {
+            try {
+              document?.querySelector("#" + id).scrollIntoView()
+              timeouts.forEach((t) => clearTimeout(t))
+            } catch {}
+          }
+        }, ms),
+      )
+    }
   }
 
   addAlert = (alert) =>
@@ -182,11 +196,11 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
+    url = originalUrl.replace(/^\/en/, "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se", "/fi")
+    url = originalUrl.replace(/^\/se/, "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi", "/en")
+    url = originalUrl.replace(/^\/fi/, "/en")
   } else {
     url = "/en" + (originalUrl ?? "/")
   }
@@ -204,8 +218,7 @@ MyApp.getInitialProps = async (props) => {
 
   if (ctx.req?.url?.indexOf("/_next/data/") === -1) {
     // server
-    validated = validateToken("tmc", DOMAIN, ctx)
-    // validated = await validateToken("tmc", DOMAIN, ctx)
+    validated = await validateToken("tmc", DOMAIN, ctx)
   }
 
   let lng = "fi"
@@ -239,22 +252,14 @@ MyApp.getInitialProps = async (props) => {
     originalProps = (await originalGetInitialProps(props)) || {}
   }
 
-  console.log("originalProps", originalProps)
-  /*if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
-    hrefUrl = `/[lng]${hrefUrl}`
-  }*/
-
-  console.log(validated)
-  const signedIn = await isSignedIn(ctx)
-  const admin = await isAdmin(ctx)
+  const signedIn = validated && isSignedIn(ctx)
 
   return {
     ...originalProps,
     pageProps: {
       ...originalProps.pageProps,
-      validated,
       signedIn,
-      admin,
+      admin: signedIn && isAdmin(ctx),
       lng,
       asUrl,
       languageSwitchUrl: createPath(asUrl),

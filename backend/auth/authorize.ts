@@ -38,8 +38,6 @@ export function authorize(ctx: ApiContext) {
         .from("access_tokens")
         .where("client_id", authorizationCode.client_id)
         .where("user_id", auth.id)
-        .where("access_token", auth.nonce)
-        .where("valid", true)
     )?.[0]
     if (accessToken) {
       return res.status(200).json({

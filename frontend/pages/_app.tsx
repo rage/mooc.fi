@@ -24,10 +24,7 @@ import { ConfirmProvider } from "material-ui-confirm"
 import AlertContext from "/contexts/AlertContext"
 import theme from "/src/theme"
 
-import { validateToken } from "../packages/moocfi-auth"
-import { DOMAIN } from "../config"
 import { isSignedIn, isAdmin } from "/lib/authentication"
-import { NextPageContext } from "next"
 import withApolloClient from "/lib/with-apollo-client"
 
 fontAwesomeConfig.autoAddCss = false
@@ -110,15 +107,30 @@ export function MyApp({ Component, pageProps }: AppProps) {
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
+
+    const path = window.location.hash
+    if (path?.includes("#")) {
+      // try scrolling to hash with increasing timeouts; if successful, clear remaining timeouts
+      const timeouts = [100, 500, 1000, 2000].map((ms) =>
+        setTimeout(() => {
+          const id = path.replace("#", "")
+
+          if (id) {
+            try {
+              document?.querySelector("#" + id)?.scrollIntoView()
+              timeouts.forEach((t) => clearTimeout(t))
+            } catch {}
+          }
+        }, ms),
+      )
+    }
   }, [])
 
   const {
-    admin,
     lng = "fi",
     languageSwitchUrl = "/en/",
     asUrl = "/",
     hrefUrl,
-    currentUser,
   } = pageProps
 
   console.log("pageProps", pageProps)
@@ -186,11 +198,11 @@ function createPath(originalUrl: string) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
+    url = originalUrl.replace(/^\/en/, "/fi")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se", "/fi")
+    url = originalUrl.replace(/^\/se/, "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi", "/en")
+    url = originalUrl.replace(/^\/fi/, "/en")
   } else {
     url = "/en" + (originalUrl ?? "/")
   }
@@ -233,6 +245,7 @@ MyApp.getInitialProps = async (props: AppContext) => {
       ctx?.res?.end()
     }
 
+    // @ts-ignore: FIXME: what is it then?
     asUrl = ctx?.req?.originalUrl ?? ""
     hrefUrl = ctx.pathname //.req.path
   }

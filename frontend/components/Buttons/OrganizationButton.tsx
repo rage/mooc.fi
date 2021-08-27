@@ -1,8 +1,7 @@
 import Link from "next/link"
 import styled from "@emotion/styled"
 import React from "react"
-import { Button, Typography } from "@material-ui/core"
-import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
+import { Typography } from "@material-ui/core"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 
 type Variant = "hy" | "haka"

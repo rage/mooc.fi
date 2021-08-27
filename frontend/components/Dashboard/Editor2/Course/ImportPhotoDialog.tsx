@@ -128,7 +128,11 @@ export default function ImportPhotoDialog({
         />
         <ImageContainer>
           {selected ? (
-            <img src={addDomain(selected.photo?.compressed)} height="200" />
+            <img
+              src={addDomain(selected.photo?.compressed)}
+              alt={`${selected.name} course`}
+              height="200"
+            />
           ) : (
             <ImagePlaceholder />
           )}

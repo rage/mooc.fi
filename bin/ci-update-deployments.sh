@@ -27,6 +27,12 @@ if [[ "$BRANCH" == "staging" ]]; then
   if [ -n "$CIRCLE_SHA1" ]; then
     echo "Removing kafka deployments in staging"
     rm -rf ./helm/templates/kafka
+<<<<<<< HEAD
+=======
+    echo "Removing unwanted jobs and deployments in staging"
+    rm ./helm/templates/send-ai-statistics-cronjob.yml
+    rm ./helm/templates/background-emailer-deployment.yml
+>>>>>>> staging
   fi
   echo "Deploying staging..."
  

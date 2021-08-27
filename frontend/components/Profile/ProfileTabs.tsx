@@ -30,13 +30,13 @@ function ProfileTabs({
         />
         <Tab
           label="Connections"
-          id="user-profile-tab2"
-          aria-controls="user-profile-tab2"
+          id="user-profile-tab-2"
+          aria-controls="user-profile-tab-2"
         />
         <Tab
           label={t("tabSettings")}
-          id="user-profile-tab3"
-          aria-controls="user-profile-tab3"
+          id="user-profile-tab-3"
+          aria-controls="user-profile-tab-3"
         />
       </Tabs>
       {children}
