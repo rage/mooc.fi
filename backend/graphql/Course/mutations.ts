@@ -49,7 +49,6 @@ export const CourseMutations = extendType({
           completion_email,
         } = course
 
-        console.log("got params", course)
         let photo = null
 
         if (new_photo) {
