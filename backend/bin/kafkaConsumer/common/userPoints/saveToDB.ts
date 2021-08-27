@@ -100,7 +100,7 @@ export const saveToDatabase = async (
       timestamp: timestamp.toJSDate(),
       original_submission_date: message.original_submission_date
         ? DateTime.fromISO(message.original_submission_date).toJSDate()
-        : null
+        : null,
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
     try {
@@ -149,7 +149,7 @@ export const saveToDatabase = async (
           set: message.original_submission_date
             ? DateTime.fromISO(message.original_submission_date).toJSDate()
             : null,
-        }
+        },
       },
     })
   }

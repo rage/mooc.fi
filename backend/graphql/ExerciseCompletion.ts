@@ -77,7 +77,7 @@ export const ExerciseCompletionMutations = extendType({
             exercise: exercise ? { connect: { id: exercise } } : undefined,
             user: user ? { connect: { id: user } } : undefined,
             timestamp,
-            original_submission_date
+            original_submission_date,
           },
         })
       },
