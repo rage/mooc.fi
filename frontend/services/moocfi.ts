@@ -1,6 +1,5 @@
 import axios from "axios"
 import Cookies from "universal-cookie"
-// import { getAccessToken } from "../lib/authentication"
 
 import { FRONTEND_URL, DOMAIN, isProduction } from "/config"
 
@@ -10,8 +9,8 @@ const BASE_URL = isProduction
   ? FRONTEND_URL // TODO: this is strictly speaking not the frontend_url here, but we'll use that for now as it's the same
   : "http://localhost:4000"
 
-const token = cookies.get("token")
 const tmcToken = cookies.get("tmc_token")
+const priority = "tmc"
 
 export const getAuthorization = async (code: string | string[]) => {
   return await axios({
@@ -19,7 +18,9 @@ export const getAuthorization = async (code: string | string[]) => {
     url: `${BASE_URL}/auth/authorize/${code}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -33,7 +34,9 @@ export const decision = async (code: string | string[]) => {
     url: `${BASE_URL}/auth/decision/${code}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -59,7 +62,7 @@ export const signIn = async (email: string, password: string) => {
   })
     .then((response) => response.data)
     .then((json) => {
-      cookies.set("token", json.access_token ?? "", {
+      cookies.set("access_token", json.access_token ?? "", {
         domain,
         path: "/",
       })
@@ -78,7 +81,9 @@ export const getClients = async () => {
     url: `${BASE_URL}/auth/clients`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("mooc_token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -99,7 +104,9 @@ export const createClient = async (
     },
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("mooc_token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -113,7 +120,9 @@ export const showClient = async (id: string | string[]) => {
     url: `${BASE_URL}/auth/client/${id}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("mooc_token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -127,7 +136,9 @@ export const updateClient = async (id: string | string[]) => {
     url: `${BASE_URL}/auth/client/${id}`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("mooc_token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -142,7 +153,9 @@ export const regenerateClient = async (id: string | string[]) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("mooc_token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
@@ -157,10 +170,23 @@ export const deleteClient = async (id: string | string[]) => {
     data: {},
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies.get("mooc_token")}`,
+      Authorization: `Bearer ${
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
+      }`,
     },
   })
     .then((response) => response.data)
     .then((json) => json)
     .catch((error) => error)
 }
+
+const getCookie = (field: string) => () => {
+  const cookies = new Cookies()
+
+  return cookies.get(field)
+}
+
+export const getAccessToken = getCookie("access_token")
+export const getTMCToken = getCookie("tmc_token")
+export const getMoocToken = getCookie("mooc_token")
+export const getAdmin = getCookie("admin")
