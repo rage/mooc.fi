@@ -9,8 +9,11 @@ import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
 import { Knex } from "knex"
 import { apiRouter } from "./api"
+import { graphqlUploadExpress } from "graphql-upload"
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
 
 const helmet = require("helmet")
+const bodyParser = require("body-parser")
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -31,15 +34,17 @@ const createExpressAppWithContext = ({
 
   app.use(cors())
   app.use(helmet.frameguard())
+  app.use(bodyParser.json())
   if (!TEST) {
     app.use(morgan("combined"))
   }
+  app.use(graphqlUploadExpress())
   app.use(express.json())
   app.use("/api", apiRouter({ prisma, knex, logger }))
   return app
 }
 
-export default (serverContext: ServerContext) => {
+export default async (serverContext: ServerContext) => {
   const { prisma, logger, knex, extraContext = {} } = serverContext
 
   const apollo = new ApolloServer({
@@ -51,13 +56,17 @@ export default (serverContext: ServerContext) => {
       ...extraContext,
     }),
     schema,
-    playground: {
-      endpoint: PRODUCTION ? "/api" : "/",
-    },
+    plugins: [
+      ApolloServerPluginLandingPageGraphQLPlayground({
+        endpoint: PRODUCTION ? "/api" : "/",
+      }),
+    ],
     introspection: true,
     logger,
     debug: DEBUG,
   })
+  await apollo.start()
+
   const app = createExpressAppWithContext(serverContext)
 
   apollo.applyMiddleware({ app, path: PRODUCTION ? "/api" : "/" })

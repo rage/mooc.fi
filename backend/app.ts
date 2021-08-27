@@ -29,29 +29,29 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-/*const prismaClient = new PrismaClient({
-  log: ["query"]
-})*/
-
-const { app } = server({
-  prisma, //: prismaClient,
-  logger,
-  knex,
-})
-
-attachPrismaEvents({ prisma, logger })
-/*prismaClient.on("query", (e) => {
-  e.timestamp
-  e.query
-  e.params
-  e.duration
-  e.target
-  console.log(e)
-})*/
-
-if (!process.env.NEXUS_REFLECTION) {
-  app.listen(4000, () => {
-    console.log("server running on port 4000")
+const startApp = async () => {
+  const { app } = await server({
+    prisma, //: prismaClient,
+    logger,
+    knex,
   })
-  wsListen()
+
+  attachPrismaEvents({ prisma, logger })
+  /*prismaClient.on("query", (e) => {
+    e.timestamp
+    e.query
+    e.params
+    e.duration
+    e.target
+    console.log(e)
+  })*/
+
+  if (!process.env.NEXUS_REFLECTION) {
+    app.listen(4000, () => {
+      console.log("server running on port 4000")
+    })
+    wsListen()
+  }
 }
+
+startApp()
