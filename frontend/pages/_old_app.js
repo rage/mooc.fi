@@ -28,8 +28,6 @@ import { Global } from "@emotion/react"
 import { validateToken } from "../packages/moocfi-auth"
 import { DOMAIN } from "../config"
 
-import { SWRConfig, createCache } from "swr"
-
 fontAwesomeConfig.autoAddCss = false
 
 export const cache = createCache({ key: "css", prepend: true })
