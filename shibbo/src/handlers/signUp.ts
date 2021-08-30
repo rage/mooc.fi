@@ -71,18 +71,13 @@ export const signUpHandler = async (req: Request, res: Response) => {
       // couldn't issue a token
       status.type = "token-issue"
     }
-  } catch (error) {
-    console.log("sign-up error", error.response)
-    const { data } = error.response
+  } catch (error: any) {
+    console.log("sign-up error", error?.response)
+    const { data } = error?.response
 
     if (data.user?.id) {
       // user already exists
 
-      // set cookies in case we have them
-      res
-        .cookie("access_token", data.access_token ?? "")
-        .cookie("mooc_token", data.access_token ?? "")
-        .cookie("admin", data.user.administrator || "")
       if (!data.verified_user?.id) {
         status.type = "verify-user"
 

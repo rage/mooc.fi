@@ -9,10 +9,11 @@ import { CurrentUserUserOverView_currentUser_verified_users } from "/static/type
 import { isProduction } from "/config"
 import OrganizationButtons from "/components/OrganizationButtons"
 import { useLanguageContext } from "/contexts/LanguageContext"
+import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
 
 interface ConnectionListProps {
   data?: CurrentUserUserOverView_currentUser_verified_users[]
-  onDisconnect: (_: CurrentUserUserOverView_currentUser_verified_users) => void
+  onDisconnect: DisconnectFunction
 }
 
 /*const Container = styled(Paper)`

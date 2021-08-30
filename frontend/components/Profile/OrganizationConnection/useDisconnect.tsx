@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client"
+import { FetchResult, gql, useMutation } from "@apollo/client"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 // import { LOGOUT_URL, FRONTEND_URL } from "/config"
@@ -15,6 +15,7 @@ export const DeleteVerifiedUserMutation = gql`
     }
   }
 `
+
 export default function useDisconnect() {
   const { language } = useLanguageContext()
   const router = useRouter()
@@ -55,3 +56,7 @@ export default function useDisconnect() {
     onDisconnect,
   }
 }
+
+export type DisconnectFunction = (
+  user: CurrentUserUserOverView_currentUser_verified_users,
+) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>

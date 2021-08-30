@@ -47,8 +47,6 @@ const setCookies = ({
   domain,
   admin,
 }: SetCookiesOptions) => {
-  console.log(`setting cookies with domain ${domain}`)
-
   const cookies = new Cookies()
   cookies.set("admin", admin, { domain, path: "/" })
 
@@ -203,7 +201,6 @@ export const validateToken = async (
   const token =
     priority === "tmc" ? getMoocToken(context) : getAccessToken(context)
 
-  console.log("validating")
   return await axios({
     method: "GET",
     url: `${BASE_URL}/auth/validate`,
@@ -215,7 +212,6 @@ export const validateToken = async (
     .then((response) => response.data)
     .then((json) => json)
     .catch(() => {
-      console.log("we're shafted")
       clearCookies(context, domain)
 
       return false

@@ -105,8 +105,8 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
         refetchQueries: () => refetchQueries,
       })
       setStatus({ message: null })
-    } catch (err) {
-      setStatus({ message: err.message, error: true })
+    } catch (err: any) {
+      setStatus({ message: err, error: true })
     }
   }, [])
 

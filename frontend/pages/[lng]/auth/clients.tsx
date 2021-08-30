@@ -166,7 +166,7 @@ const Clients = () => {
       clients.push(res.client)
       setClients([...clients])
       setCreateDetails(res.client)
-    } catch (error) {
+    } catch (error: any) {
       setShowCreateError(true)
       setCreateError(error.response.data.error.error)
     }

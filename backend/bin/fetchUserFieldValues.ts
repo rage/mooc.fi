@@ -130,7 +130,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     })
 
     return result
-  } catch (e) {
+  } catch (e: any) {
     logger.error(
       new DatabaseInputError(
         `Failed to upsert user with upstream id ${

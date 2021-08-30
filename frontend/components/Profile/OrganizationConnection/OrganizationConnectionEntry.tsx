@@ -21,10 +21,11 @@ import parseSchacPersonalUniqueCode from "/util/parseSchacUniqueCode"
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
+import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
 
 interface ConnectionEntryProps {
   data: CurrentUserUserOverView_currentUser_verified_users
-  onDisconnect: (_: CurrentUserUserOverView_currentUser_verified_users) => void
+  onDisconnect: DisconnectFunction
 }
 
 const ConnectionEntryCard = styled(Card)`

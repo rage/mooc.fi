@@ -13,11 +13,17 @@ import { renderToString } from "react-dom/server"
 import { validateToken } from "/packages/moocfi-auth"
 import { DOMAIN } from "/config"
 import { AppContext } from "next/app"
+import { NextPageContext } from "next"
 interface Props {
   // Server side rendered state. Prevents queries from running again in the frontend.
   apollo: ApolloClient<NormalizedCacheObject>
   apolloState: any
   accessToken?: string
+}
+
+const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
+  // @ts-ignore: ctx.ctx doesn't exist in NextPageContext
+  return Boolean(ctx?.ctx)
 }
 
 const withApolloClient = (App: any) => {
@@ -36,11 +42,13 @@ const withApolloClient = (App: any) => {
   }
 
   withApollo.displayName = "withApollo(App)"
-  withApollo.getInitialProps = async (ctx: AppContext) => {
-    const { Component, AppTree } = ctx
+  withApollo.getInitialProps = async (ctx: AppContext | NextPageContext) => {
+    const inAppContext = isAppContext(ctx)
 
-    // @ts-ignore: ctx?.res
-    const res = ctx?.res ?? ctx?.ctx?.res
+    const { AppTree } = ctx
+    const Component = inAppContext ? ctx.Component : undefined
+
+    const res = inAppContext ? ctx?.ctx?.res : ctx?.res
 
     let props: any = {
       pageProps: {},
@@ -50,12 +58,12 @@ const withApolloClient = (App: any) => {
     }
 
     // @ts-ignore: ctx in ctx
-    const inAppContext = Boolean(ctx?.ctx)
+    // const inAppContext = Boolean(ctx?.ctx)
 
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
     // @ts-ignore: ctx in ctx
-    const accessToken = await getAccessToken(ctx?.ctx ?? ctx)
+    const accessToken = await getAccessToken(inAppContext ? ctx?.ctx : ctx)
     // It is important to use a new apollo since the page has changed because
     // 1. access token might have changed
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
@@ -67,9 +75,8 @@ const withApolloClient = (App: any) => {
     const currentUser = await fetchUserDetails(apollo)
 
     props.pageProps.currentUser = currentUser
-    // @ts-ignore: ctx in ctx
     props.pageProps.validated = Boolean(
-      await validateToken("tmc", DOMAIN, ctx?.ctx ?? ctx),
+      await validateToken("tmc", DOMAIN, inAppContext ? ctx?.ctx : ctx),
     )
 
     if (!process.browser) {
@@ -99,9 +106,9 @@ const withApolloClient = (App: any) => {
               pageProps={props?.pageProps ?? {}}
               Component={Component}
               /*pageProps={{
-                ...appProps.pageProps,
-              }}
-              apollo={apollo}*/
+              ...appProps.pageProps,
+            }}
+            apollo={apollo}*/
             />
           ),
         })
