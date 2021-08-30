@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "/*": ["./*"]
+      "/*": ["./*"],
     },
     "rootDir": ".",
     "lib": ["es2016", "esnext"],
