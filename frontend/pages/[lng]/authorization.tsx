@@ -89,7 +89,7 @@ const Authorization = () => {
       if (res.trusted) {
         getDecision(true)
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error.response.data.status === 404) {
         setShowError(true)
         setErrorMessage(error.response.data.message)
@@ -118,7 +118,7 @@ const Authorization = () => {
       await signIn(email, password)
       setShowForm(false)
       setShowError(false)
-    } catch (error) {
+    } catch (error: any) {
       setShowError(true)
       setErrorMessage(error.response.data.message)
     }

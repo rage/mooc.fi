@@ -42,7 +42,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   let message: Message
   try {
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
-  } catch (error) {
+  } catch (error: any) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
     await commit(context, kafkaMessage)
     release()
@@ -51,7 +51,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 
   try {
     await MessageYupSchema.validate(message)
-  } catch (error) {
+  } catch (error: any) {
     logger.error(new ValidationError("JSON validation failed", message, error))
     await commit(context, kafkaMessage)
     release()
@@ -68,7 +68,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     } else {
       if (saveResult.hasError()) logger.error(saveResult.error)
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
       new DatabaseInputError(
         "Could not save event to database",

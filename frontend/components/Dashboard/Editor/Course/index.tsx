@@ -92,7 +92,7 @@ const CourseEdit = ({
 
         setStatus({ message: null })
         Router.push(`/${language}/courses`, undefined, { shallow: true })
-      } catch (err) {
+      } catch (err: any) {
         setStatus({ message: err.message, error: true })
         console.error(err)
         setSubmitting(false)

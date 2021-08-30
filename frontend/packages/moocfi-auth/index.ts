@@ -47,8 +47,6 @@ const setCookies = ({
   domain,
   admin,
 }: SetCookiesOptions) => {
-  console.log(`setting cookies with domain ${domain}`)
-
   const cookies = new Cookies()
   cookies.set("admin", admin, { domain, path: "/" })
 

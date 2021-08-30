@@ -10,6 +10,7 @@ import {
   getToken,
   removeToken,
   getAccessToken as _getAccessToken,
+  validateToken,
 } from "../packages/moocfi-auth"
 
 /*
@@ -18,6 +19,16 @@ const tmcClient = new TmcClient(
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
 )
 */
+
+// @ts-ignore: not used for now
+const isValidated = async (ctx: NextContext) => {
+  let validated = true
+  //if (!process.browser) {
+  validated = await validateToken("tmc", DOMAIN, ctx)
+  //}
+
+  return validated
+}
 
 export const isSignedIn = (ctx: NextContext) => {
   const accessToken = nookies.get(ctx)["access_token"]

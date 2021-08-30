@@ -89,7 +89,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
       })
 
       this.props.onComplete()
-    } catch (error) {
+    } catch (error: any) {
       try {
         let message = ""
         Object.entries(error).forEach((o: any) => {
@@ -110,7 +110,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
           message = t("commonProblem") + JSON.stringify(error)
         }
         this.setState({ error: message, submitting: false, errorObj: error })
-      } catch (_error2) {
+      } catch {
         this.setState({
           error: JSON.stringify(error.response.data.message),
           submitting: false,

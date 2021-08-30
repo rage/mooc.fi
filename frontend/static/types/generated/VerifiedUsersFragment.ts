@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: UserOverView
+// GraphQL fragment: VerifiedUsersFragment
 // ====================================================
 
-export interface UserOverView_currentUser_verified_users {
+export interface VerifiedUsersFragment_verified_users {
   __typename: "VerifiedUser"
   id: string
   home_organization: string
@@ -21,17 +21,7 @@ export interface UserOverView_currentUser_verified_users {
   organizational_unit: string
 }
 
-export interface UserOverView_currentUser {
+export interface VerifiedUsersFragment {
   __typename: "User"
-  id: string
-  first_name: string | null
-  last_name: string | null
-  email: string
-  upstream_id: number
-  administrator: boolean
-  verified_users: UserOverView_currentUser_verified_users[]
-}
-
-export interface UserOverView {
-  currentUser: UserOverView_currentUser | null
+  verified_users: VerifiedUsersFragment_verified_users[]
 }

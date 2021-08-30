@@ -11,7 +11,6 @@ import {
   Collapse,
 } from "@material-ui/core"
 import styled from "@emotion/styled"
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import React, { useState } from "react"
 import { CardTitle } from "/components/Text/headers"
 import { useConfirm } from "material-ui-confirm"
@@ -21,10 +20,12 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import parseSchacPersonalUniqueCode from "/util/parseSchacUniqueCode"
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
+import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
 
 interface ConnectionEntryProps {
-  data: ProfileUserOverView_currentUser_verified_users
-  onDisconnect: (_: ProfileUserOverView_currentUser_verified_users) => void
+  data: CurrentUserUserOverView_currentUser_verified_users
+  onDisconnect: DisconnectFunction
 }
 
 const ConnectionEntryCard = styled(Card)`

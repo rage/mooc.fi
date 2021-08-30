@@ -39,7 +39,7 @@ export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
   }
 
   &:focus {
-    bordercolor: "#3f51b5";
+    border-color: "#3f51b5";
   }
 
   @media (hover: none) {

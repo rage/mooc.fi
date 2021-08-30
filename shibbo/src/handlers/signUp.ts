@@ -68,13 +68,12 @@ export const signUpHandler = async (req: Request, res: Response) => {
           `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
         )*/
     } catch (error) {
-      console.log("sign-up error with token issuing", error)
       // couldn't issue a token
       status.type = "token-issue"
     }
-  } catch (error) {
-    console.log("sign-up error", error.response)
-    const { data } = error.response
+  } catch (error: any) {
+    console.log("sign-up error", error?.response)
+    const { data } = error?.response
 
     if (data.user?.id) {
       // user already exists

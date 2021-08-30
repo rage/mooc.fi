@@ -3,10 +3,10 @@ import ProfileTranslations from "/translations/profile"
 import LangLink from "/components/LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { useTranslator } from "/util/useTranslator"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import { CurrentUserUserOverView_currentUser_completions } from "/static/types/generated/CurrentUserUserOverView"
 
 interface CompletionsProps {
-  completions: ProfileUserOverView_currentUser_completions[]
+  completions: CurrentUserUserOverView_currentUser_completions[]
 }
 
 const ProfileCompletionsDisplay = (props: CompletionsProps) => {

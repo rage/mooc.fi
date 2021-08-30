@@ -7,6 +7,7 @@ export interface LoginState {
   admin: boolean
   currentUser?: UserOverView_currentUser
   updateUser: (user: UserOverView_currentUser) => void
+  validated: boolean
 }
 
 const LoginStateContext = createContext<LoginState>({
@@ -15,6 +16,7 @@ const LoginStateContext = createContext<LoginState>({
   currentUser: undefined,
   admin: false,
   updateUser: (_) => {},
+  validated: false,
 })
 
 export default LoginStateContext

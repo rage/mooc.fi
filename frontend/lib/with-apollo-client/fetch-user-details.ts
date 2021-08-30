@@ -1,4 +1,5 @@
 import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client"
+import { VerifiedUsersFragment } from "/graphql/fragments/verifiedUsersFragment"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -9,13 +10,10 @@ export const UserDetailQuery = gql`
       email
       upstream_id
       administrator
-      verified_users {
-        id
-        person_affiliation
-        person_affiliation_updated_at
-      }
+      ...VerifiedUsersFragment
     }
   }
+  ${VerifiedUsersFragment}
 `
 
 export default async function fetchUserDetails(

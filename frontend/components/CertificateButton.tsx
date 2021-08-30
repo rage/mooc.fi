@@ -11,18 +11,17 @@ import {
   CircularProgress,
 } from "@material-ui/core"
 import CompletionsTranslations from "/translations/completions"
-import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
 import { checkCertificate, createCertificate } from "/lib/certificates"
 import { updateAccount } from "/lib/account"
 import { useMutation } from "@apollo/client"
-import { gql } from "@apollo/client"
 import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
-import { UserOverViewQuery } from "/pages/[lng]/profile"
-import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/queries/currentUser"
+import { UserOverViewQuery } from "/graphql/queries/user"
 import LoginStateContext from "/contexts/LoginStateContext"
 import AlertContext from "/contexts/AlertContext"
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 import { useTranslator } from "/util/useTranslator"
+import { UpdateUserMutation } from "/graphql/mutations/users"
+import { CurrentUserUserOverView_currentUser_completions_course } from "/static/types/generated/CurrentUserUserOverView"
 
 const StyledButton = styled(Button)`
   margin: auto;
@@ -36,18 +35,8 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
-const updateUserNameMutation = gql`
-  mutation updateUserName($first_name: String, $last_name: String) {
-    updateUserName(first_name: $first_name, last_name: $last_name) {
-      id
-      first_name
-      last_name
-    }
-  }
-`
-
 interface CertificateProps {
-  course: ProfileUserOverView_currentUser_completions_course
+  course: CurrentUserUserOverView_currentUser_completions_course
 }
 
 type Status =
@@ -145,12 +134,8 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
-  const [updateUserName] = useMutation(updateUserNameMutation, {
-    refetchQueries: [
-      { query: UserDetailQuery },
-      { query: UserOverViewQuery },
-      { query: CompletionsUserOverViewQuery },
-    ],
+  const [updateUserName] = useMutation(UpdateUserMutation, {
+    refetchQueries: [{ query: UserDetailQuery }, { query: UserOverViewQuery }],
   })
 
   const [open, setOpen] = useState(false)

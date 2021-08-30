@@ -27,7 +27,7 @@ const ModuleImage = ({
         />
       </picture>
     )
-  } catch (e) {
+  } catch {
     return null
   }
 }

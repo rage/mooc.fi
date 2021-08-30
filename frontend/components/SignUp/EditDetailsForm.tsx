@@ -5,12 +5,16 @@ import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { Controller, useForm } from "react-hook-form"
+import { MutationFunction } from "@apollo/client"
+import { UpdateUser } from "/static/types/generated/UpdateUser"
+import { createTMCAccount, getUserDetails } from "/lib/account"
 
 interface EditDetailsFromProps {
   firstName: string
   lastName: string
   email: string
   upstreamId?: number
+  updateUser: MutationFunction<UpdateUser>
 }
 
 interface FormState {
@@ -27,6 +31,7 @@ const EditDetailsForm = ({
   lastName,
   email,
   upstreamId,
+  updateUser,
 }: EditDetailsFromProps) => {
   const t = useTranslator(SignUpTranslations)
 
@@ -50,11 +55,70 @@ const EditDetailsForm = ({
   useEffect(() => {
     trigger()
   }, [])
-  const onSubmit = (values: any) => console.log(values)
+
+  const updateDetails = async () => {
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      password_confirmation,
+    } = getValues()
+
+    let upstream_id = upstreamId
+
+    if (password && password_confirmation) {
+      const res = await createTMCAccount({
+        email,
+        username: email,
+        password,
+        password_confirmation,
+        user_field: {
+          first_name,
+          last_name,
+          html1: "",
+          organizational_id: "",
+          course_announcements: false,
+        },
+      })
+
+      if (res.success && res.token) {
+        try {
+          const user = await getUserDetails(`Bearer ${res.token}`)
+
+          upstream_id = user.id
+        } catch (error) {
+          return // TODO: couldn't get user details, error
+        }
+      } else {
+        return // TODO: couldn't create account, error
+      }
+    }
+
+    try {
+      // @ts-ignore: not used now
+      const result = await updateUser({
+        variables: {
+          first_name: firstName,
+          last_name,
+          lastName,
+          upstream_id,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      return // TODO: couldn't update user, do something
+    }
+  }
 
   const validate = () => {
     trigger()
   }
+
+  const onSubmit = () => {
+    updateDetails()
+  }
+
   console.log(errors)
   return (
     <StyledPaper>

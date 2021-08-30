@@ -82,7 +82,7 @@ const StudyModuleEdit = ({
         Router.push(`/${language}/study-modules`, undefined, {
           shallow: true,
         })
-      } catch (err) {
+      } catch (err: any) {
         setStatus({ message: err.message, error: true })
         console.error(err)
         setSubmitting(false)

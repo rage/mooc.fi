@@ -1,69 +1,19 @@
-import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
-import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import withSignedIn from "/lib/with-signed-in"
-import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import React, { ChangeEvent, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import ProfileTabs from "/components/Profile/ProfileTabs"
-import ConsentNotification from "/components/Profile/ConsentNotification"
-import { useRouter } from "next/router"
+import { UserOverViewQuery } from "/graphql/queries/user"
+import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUserOverView"
 import { useLanguageContext } from "/contexts/LanguageContext"
+import { useRouter } from "next/router"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useEffect } from "react"
 import Container from "/components/Container"
-// import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
-
-export const UserOverViewQuery = gql`
-  query ProfileUserOverView {
-    currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      student_number
-      email
-      administrator
-      verified_users {
-        id
-        home_organization
-        person_affiliation
-        person_affiliation_updated_at
-        updated_at
-        created_at
-        personal_unique_code
-        display_name
-        mail
-        organizational_unit
-      }
-      completions {
-        id
-        completion_language
-        student_number
-        created_at
-        tier
-        eligible_for_ects
-        completion_date
-        course {
-          id
-          slug
-          name
-          photo {
-            uncompressed
-          }
-          has_certificate
-        }
-        ...CompletionsRegisteredFragment
-      }
-      research_consent
-    }
-  }
-  ${CompletionsRegisteredFragment}
-`
+import ConsentNotification from "/components/Profile/ConsentNotification"
 
 const tabs: Record<string, number> = {
   points: 0,
@@ -81,6 +31,9 @@ function Profile() {
   const { language } = useLanguageContext()
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
+  const { data, error, loading } = useQuery<CurrentUserUserOverView>(
+    UserOverViewQuery,
+  )
 
   const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
     // setTab(newValue)
@@ -97,8 +50,6 @@ function Profile() {
       setTab(tabs[_tab] ?? 0)
     }
   }, [_tab])
-
-  const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   useBreadcrumbs([
     {

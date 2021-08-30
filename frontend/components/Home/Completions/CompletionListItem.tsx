@@ -11,13 +11,15 @@ import { addDomain } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
 import CertificateButton from "components/CertificateButton"
 import { useTranslator } from "/util/useTranslator"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import {
   UserSummary_user_user_course_summary_completion,
   UserSummary_user_user_course_summary_course,
 } from "/static/types/generated/UserSummary"
-import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
 import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
+import {
+  CurrentUserUserOverView_currentUser_completions,
+  CurrentUserUserOverView_currentUser_completions_course,
+} from "/static/types/generated/CurrentUserUserOverView"
 
 const StyledButton = styled(Button)`
   //height: 50%;
@@ -31,7 +33,7 @@ const StyledA = styled.a`
 interface CourseAvatarProps {
   course:
     | UserSummary_user_user_course_summary_course
-    | ProfileUserOverView_currentUser_completions_course
+    | CurrentUserUserOverView_currentUser_completions_course
 }
 const CourseAvatar = ({ course }: CourseAvatarProps) => {
   return (
@@ -84,10 +86,10 @@ const ButtonColumn = styled(Column)`
 interface ListItemProps {
   completion:
     | UserSummary_user_user_course_summary_completion
-    | ProfileUserOverView_currentUser_completions
+    | CurrentUserUserOverView_currentUser_completions
   course:
     | UserSummary_user_user_course_summary_course
-    | ProfileUserOverView_currentUser_completions_course
+    | CurrentUserUserOverView_currentUser_completions_course
 }
 
 export const CompletionListItem = ({ completion, course }: ListItemProps) => {

@@ -78,7 +78,7 @@ const fetch = async () => {
     logger.info(`Processing link ${p.link}, ${p.course_code}, ${p.language}`)
     try {
       await processLink(p)
-    } catch (e) {
+    } catch (e: any) {
       logger.error(
         new AvoinError(
           `Processing link failed for course code ${p.course_code}`,

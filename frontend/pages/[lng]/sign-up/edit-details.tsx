@@ -6,9 +6,17 @@ import LoginStateContext from "/contexts/LoginStateContext"
 import { RegularContainer } from "/components/Container"
 import EditDetailsForm from "/components/SignUp/EditDetailsForm"
 import withSignedIn from "/lib/with-signed-in"
+import { useMutation } from "@apollo/client"
+import { UpdateUserMutation } from "/graphql/mutations/users"
+import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
+import { UserOverViewQuery } from "/graphql/queries/user"
+import { UpdateUser } from "/static/types/generated/UpdateUser"
 
 function CheckRegistrationDetailsPage() {
   const { currentUser } = useContext(LoginStateContext)
+  const [updateUserMutation] = useMutation<UpdateUser>(UpdateUserMutation, {
+    refetchQueries: [{ query: UserDetailQuery }, { query: UserOverViewQuery }],
+  })
 
   useBreadcrumbs([
     {
@@ -25,6 +33,7 @@ function CheckRegistrationDetailsPage() {
           lastName={currentUser?.last_name ?? ""}
           email={currentUser?.email ?? ""}
           upstreamId={currentUser?.upstream_id}
+          updateUser={updateUserMutation}
         />
       </RegularContainer>
     </div>

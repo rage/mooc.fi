@@ -5,7 +5,7 @@ import { Completions } from "/components/Home/Completions"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withSignedIn from "/lib/with-signed-in"
-import { UserOverViewQuery } from "/graphql/queries/currentUser"
+import { UserOverViewQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 function CompletionsPage() {

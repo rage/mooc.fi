@@ -1,18 +1,19 @@
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
-import { extendType, stringArg, booleanArg, arg, nonNull } from "nexus"
+import { extendType, stringArg, booleanArg, arg, nonNull, intArg } from "nexus"
 import { Context } from "../../context"
 
 export const UserMutations = extendType({
   type: "Mutation",
   definition(t) {
-    t.field("updateUserName", {
+    t.field("updateUser", {
       type: "User",
       args: {
         first_name: stringArg(),
         last_name: stringArg(),
+        upstream_id: intArg(),
       },
-      resolve: (_, { first_name, last_name }, ctx: Context) => {
+      resolve: (_, { first_name, last_name, upstream_id }, ctx: Context) => {
         const { user: currentUser } = ctx
         const authorization = ctx?.req?.headers?.authorization
 
@@ -28,6 +29,7 @@ export const UserMutations = extendType({
           data: {
             first_name,
             last_name,
+            upstream_id: upstream_id ?? undefined,
           },
         })
       },

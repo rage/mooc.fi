@@ -1,4 +1,4 @@
-import { Paper, Typography, Button } from "@material-ui/core"
+import { Paper, Typography } from "@material-ui/core"
 import SignInForm from "/components/SignInForm"
 import Container from "/components/Container"
 import SignInTranslations from "/translations/common"
@@ -7,11 +7,9 @@ import withSignedOut from "/lib/with-signed-out"
 import { useTranslator } from "/util/useTranslator"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import React from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSignInAlt } from "@fortawesome/free-solid-svg-icons"
-import Link from "next/link"
 import { isProduction } from "/config"
 import { useLanguageContext } from "/contexts/LanguageContext"
+import OrganizationButtons from "/components/OrganizationButtons"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -24,16 +22,6 @@ const StyledPaper = styled(Paper)`
 
 const Header = styled(Typography)<any>`
   margin: 1em;
-`
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  button:not(:last-child) {
-    margin-bottom: 0.5rem;
-  }
 `
 
 const SignInPage = () => {
@@ -65,24 +53,11 @@ const SignInPage = () => {
             {t("loginDetails")}
           </Typography>
           <SignInForm />
-          <ButtonContainer>
-            <Link href={HY_SIGNIN_URL}>
-              <Button
-                color="primary"
-                startIcon={<FontAwesomeIcon icon={faSignInAlt} />}
-              >
-                Login using HY credentials
-              </Button>
-            </Link>
-            <Link href={HAKA_SIGNIN_URL}>
-              <Button
-                color="secondary"
-                startIcon={<FontAwesomeIcon icon={faSignInAlt} />}
-              >
-                Login using Haka credentials
-              </Button>
-            </Link>
-          </ButtonContainer>
+          <OrganizationButtons
+            hyURL={HY_SIGNIN_URL}
+            hakaURL={HAKA_SIGNIN_URL}
+            hyVisible
+          />
         </StyledPaper>
       </Container>
     </>

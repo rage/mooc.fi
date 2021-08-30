@@ -401,7 +401,9 @@ const createMutation = async <T extends { id?: string | null } | null>({
     existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
   } catch (e) {
     throw new Error(
-      `error creating mutation ${String(field)} for course ${slug}: ${e}`,
+      `error creating mutation ${String(field)} for course ${slug}: ${
+        e instanceof Error ? e.message : e
+      }`,
     )
   }
 
