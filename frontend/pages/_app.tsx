@@ -24,10 +24,7 @@ import { ConfirmProvider } from "material-ui-confirm"
 import AlertContext from "/contexts/AlertContext"
 import theme from "/src/theme"
 
-import { validateToken } from "../packages/moocfi-auth"
-import { DOMAIN } from "../config"
 import { isSignedIn, isAdmin } from "/lib/authentication"
-import { NextPageContext } from "next"
 import withApolloClient from "/lib/with-apollo-client"
 
 fontAwesomeConfig.autoAddCss = false
@@ -113,12 +110,10 @@ export function MyApp({ Component, pageProps }: AppProps) {
   }, [])
 
   const {
-    admin,
     lng = "fi",
     languageSwitchUrl = "/en/",
     asUrl = "/",
     hrefUrl,
-    currentUser,
   } = pageProps
 
   console.log("pageProps", pageProps)
@@ -233,6 +228,7 @@ MyApp.getInitialProps = async (props: AppContext) => {
       ctx?.res?.end()
     }
 
+    // @ts-ignore: TODO: check what it really is
     asUrl = ctx?.req?.originalUrl ?? ""
     hrefUrl = ctx.pathname //.req.path
   }
