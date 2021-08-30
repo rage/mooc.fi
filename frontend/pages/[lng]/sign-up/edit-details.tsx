@@ -14,15 +14,9 @@ import { UpdateUser } from "/static/types/generated/UpdateUser"
 
 function CheckRegistrationDetailsPage() {
   const { currentUser } = useContext(LoginStateContext)
-  const [updateUserMutation, { data, error }] = useMutation<UpdateUser>(
-    UpdateUserMutation,
-    {
-      refetchQueries: [
-        { query: UserDetailQuery },
-        { query: UserOverViewQuery },
-      ],
-    },
-  )
+  const [updateUserMutation] = useMutation<UpdateUser>(UpdateUserMutation, {
+    refetchQueries: [{ query: UserDetailQuery }, { query: UserOverViewQuery }],
+  })
 
   useBreadcrumbs([
     {
