@@ -52,5 +52,7 @@
     "disconnectWarningDescription": "Are you sure you want to disconnect your {{organization}} account?",
     "disconnectWarningConfirmationText": "Yes",
     "disconnectWarningCancellationText": "No",
-    "myProfile": "My profile"
+    "myProfile": "My profile",
+    "connectHYCaption": "Connect using your University of Helsinki credentials",
+    "connectHakaCaption": "Connect using other organization credentials"
 }

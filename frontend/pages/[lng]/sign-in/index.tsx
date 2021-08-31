@@ -1,15 +1,17 @@
-import { Paper, Typography } from "@material-ui/core"
-import SignInForm from "/components/SignInForm"
-import Container from "/components/Container"
-import SignInTranslations from "/translations/common"
-import styled from "@emotion/styled"
-import withSignedOut from "/lib/with-signed-out"
-import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import React from "react"
+
+import Container from "/components/Container"
+import OrganizationButtons from "/components/OrganizationButtons"
+import SignInForm from "/components/SignInForm"
 import { isProduction } from "/config"
 import { useLanguageContext } from "/contexts/LanguageContext"
-import OrganizationButtons from "/components/OrganizationButtons"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedOut from "/lib/with-signed-out"
+import SignInTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+import { Paper, Typography } from "@material-ui/core"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -56,7 +58,8 @@ const SignInPage = () => {
           <OrganizationButtons
             hyURL={HY_SIGNIN_URL}
             hakaURL={HAKA_SIGNIN_URL}
-            hyVisible
+            hyCaption={t("signinHYCaption")}
+            hakaCaption={t("signinHakaCaption")}
           />
         </StyledPaper>
       </Container>

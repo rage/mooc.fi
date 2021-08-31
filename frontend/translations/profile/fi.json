@@ -52,5 +52,8 @@
     "disconnectWarningDescription": "Oletko varma, että haluat poistaa kytkennän {{organization}}-tiliisi?",
     "disconnectWarningConfirmationText": "Kyllä",
     "disconnectWarningCancellationText": "Ei",
-    "myProfile": "Oma profiili"
+    "myProfile": "Oma profiili",
+    "connectHYCaption": "Kytke tili käyttäen Helsingin yliopiston tunnuksia",
+    "connectHakaCaption": "Kytke tili käyttäen muun organisaation tunnuksia"
+
 }

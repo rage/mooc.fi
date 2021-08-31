@@ -57,5 +57,7 @@
     "hideAll": "Piilota kaikki",
     "authConsent": "Allow this application to login with your MOOC account?",
     "allow": "Allow",
-    "deny": "Deny"
+    "deny": "Deny",
+    "signinHYCaption": "Kirjaudu sisään Helsingin yliopiston tunnuksilla",
+    "signinHakaCaption": "Kirjaudu sisään muun organisaation tunnuksilla"
 }

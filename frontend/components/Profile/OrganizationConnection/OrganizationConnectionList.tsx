@@ -1,15 +1,18 @@
+import React from "react"
+
+import OrganizationButtons from "/components/OrganizationButtons"
+import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
+import { isProduction } from "/config"
+import { useLanguageContext } from "/contexts/LanguageContext"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
+import { Typography } from "@material-ui/core"
+
 // import { Paper } from "@material-ui/core"
 // import styled from "@emotion/styled"
 import OrganizationConnectionEntry from "./OrganizationConnectionEntry"
-import React from "react"
-import { Typography } from "@material-ui/core"
-import { useTranslator } from "/util/useTranslator"
-import ProfileTranslations from "/translations/profile"
-import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
-import { isProduction } from "/config"
-import OrganizationButtons from "/components/OrganizationButtons"
-import { useLanguageContext } from "/contexts/LanguageContext"
-import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
 
 interface ConnectionListProps {
   data?: CurrentUserUserOverView_currentUser_verified_users[]
@@ -66,6 +69,8 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
         hyVisible={!isConnected("helsinki.fi")}
         hyURL={HY_CONNECT_URL}
         hakaURL={HAKA_CONNECT_URL}
+        hyCaption={t("connectHYCaption")}
+        hakaCaption={t("connectHakaCaption")}
       />
     </>
   )
