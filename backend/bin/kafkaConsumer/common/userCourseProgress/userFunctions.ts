@@ -1,19 +1,20 @@
 import {
-  User,
   Course,
-  UserCourseSetting,
+  User,
   UserCourseServiceProgress,
+  UserCourseSetting,
 } from "@prisma/client"
-import {
-  ServiceProgressType,
-  ServiceProgressPartType,
-  ExerciseCompletionPart,
-} from "./interfaces"
-import { pushMessageToClient, MessageType } from "../../../../wsServer"
-import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
+
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-import { KafkaContext } from "../kafkaContext"
+import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
+import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
+import { KafkaContext } from "../kafkaContext"
+import {
+  ExerciseCompletionPart,
+  ServiceProgressPartType,
+  ServiceProgressType,
+} from "./interfaces"
 
 export const getCombinedUserCourseProgress = async ({
   user,
@@ -126,6 +127,9 @@ export const getUserCourseSettings = async ({
       user_id: user.id,
       course_id,
     },
+    orderBy: {
+      created_at: "asc",
+    },
   })
 
   if (!userCourseSetting) {
@@ -137,6 +141,9 @@ export const getUserCourseSettings = async ({
         where: {
           user_id: user.id,
           course_id: inheritCourse.id,
+        },
+        orderBy: {
+          created_at: "asc",
         },
       })
     }

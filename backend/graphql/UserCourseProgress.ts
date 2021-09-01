@@ -1,15 +1,15 @@
-import {
-  objectType,
-  extendType,
-  idArg,
-  stringArg,
-  intArg,
-  arg,
-  floatArg,
-  nonNull,
-  list,
-} from "nexus"
 import { UserInputError } from "apollo-server-core"
+import {
+  arg,
+  extendType,
+  floatArg,
+  idArg,
+  intArg,
+  list,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus"
 
 import { isAdmin } from "../accessControl"
 
@@ -69,6 +69,9 @@ export const UserCourseProgress = objectType({
           where: {
             course_id,
             user_id,
+          },
+          orderBy: {
+            created_at: "asc",
           },
         })
       },
