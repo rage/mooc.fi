@@ -52,5 +52,8 @@
     "disconnectWarningDescription": "Oletko varma, että haluat poistaa kytkennän {{organization}}-tiliisi?",
     "disconnectWarningConfirmationText": "Kyllä",
     "disconnectWarningCancellationText": "Ei",
-    "myProfile": "Oma profiili"
+    "myProfile": "Oma profiili",
+    "connectHYCaption": "Kytke tili käyttäen Helsingin yliopiston tunnuksia",
+    "connectHakaCaption": "Kytke tili käyttäen <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka-käyttäjätunnistusjärjestelmän</a> tunnukseen"
+
 }

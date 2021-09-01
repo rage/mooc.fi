@@ -57,5 +57,12 @@
     "hideAll": "Piilota kaikki",
     "authConsent": "Allow this application to login with your MOOC account?",
     "allow": "Allow",
-    "deny": "Deny"
+    "deny": "Deny",
+    "signinHYCaption": "Kirjaudu sisään Helsingin yliopiston tunnuksilla",
+    "signinHakaCaption": "Kirjaudu sisään <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka-käyttäjätunnistusjärjestelmän</a> tunnuksilla",
+    "signinError_auth-fail": "Kirjautumimnen epäonnistui.",
+    "signinError_already-signed-in": "Olet jo kirjautunut sisään.",
+    "signinError_no-user-found": "Emme löytäneet käyttäjää näillä tunnuksilla. Ole hyvä ja rekisteröi uusi tili, tai kirjaudu sisään MOOC.fi-tunnuksillasi ja yhdistä tili asetuksista.",
+    "signinError_unknown": "Tapahtui tuntematon virhe: {{message}}"
+  
 }

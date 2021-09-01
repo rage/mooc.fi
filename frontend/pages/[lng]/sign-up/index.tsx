@@ -1,19 +1,17 @@
-import { useContext } from "react"
+import React, { useContext } from "react"
 
+import { RegularContainer } from "/components/Container"
+import OrganizationButtons from "/components/OrganizationButtons"
 import CreateAccountForm from "/components/SignUp/CreateAccountForm"
-
-import withSignedOut from "/lib/with-signed-out"
+import { isProduction } from "/config"
 import AlertContext from "/contexts/AlertContext"
 import { useLanguageContext } from "/contexts/LanguageContext"
-import SignUpTranslations from "/translations/sign-up"
 import LoginStateContext from "/contexts/LoginStateContext"
-import Router from "next/router"
-import { useTranslator } from "/util/useTranslator"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import React from "react"
-import { RegularContainer } from "/components/Container"
-import { isProduction } from "/config"
-import OrganizationButtons from "/components/OrganizationButtons"
+import withSignedOut from "/lib/with-signed-out"
+import SignUpTranslations from "/translations/sign-up"
+import { useTranslator } from "/util/useTranslator"
+import Router from "next/router"
 
 const SignUpPage = () => {
   const { language } = useLanguageContext()
@@ -58,9 +56,8 @@ const SignUpPage = () => {
         <OrganizationButtons
           hyURL={HY_SIGNUP_URL}
           hakaURL={HAKA_SIGNUP_URL}
-          hyCaption="Sign up using University of Helsinki credentials"
-          hakaCaption="Sign up using other organization credentials"
-          hyVisible
+          hyCaption={t("signupHYCaption")}
+          hakaCaption={t("signupHakaCaption")}
         />
       </RegularContainer>
     </div>

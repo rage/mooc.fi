@@ -1,8 +1,9 @@
-import Link from "next/link"
-import styled from "@emotion/styled"
 import React from "react"
-import { Typography } from "@material-ui/core"
-import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+
+import Link from "next/link"
+
+import styled from "@emotion/styled"
+import { Button, Typography } from "@material-ui/core"
 
 type Variant = "hy" | "haka"
 
@@ -18,19 +19,27 @@ const HYLogo = (props: any) => (
 )
 
 const LoginButtonWrapper = styled.div`
-  min-width: 250px;
+  // min-width: 250px;
   display: flex;
   justify-content: center;
   width: 100%;
   align-items: center;
-  padding: 1rem;
   border: 1px #b9b9b9 solid;
+  background-color: white;
 `
 
-const LogoWrapper = styled.div`
+const ContentWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 50%;
+  padding: 0.5rem;
+`
+
+const LogoWrapper = styled(ContentWrapper)``
+
+const TextWrapper = styled(ContentWrapper)`
+  padding-right: 0.75rem;
+  padding-left: 0.25rem;
 `
 
 const LogoText = styled(Typography)`
@@ -38,15 +47,19 @@ const LogoText = styled(Typography)`
   justify-content: center;
   border: 1px solid black;
   width: 100%;
-  max-width: 125px;
+  // margin-right: 0.75rem;
+  // margin-left: 1.25rem;
+  color: black;
 `
 
 const HYLoginButton = ({ text = "Login" }: { text?: string }) => (
   <LoginButtonWrapper>
     <LogoWrapper>
-      <HYLogo style={{ width: "60px" }} />
+      <HYLogo style={{ width: "50%", minWidth: "50px" }} />
     </LogoWrapper>
-    <LogoText>{text}</LogoText>
+    <TextWrapper>
+      <LogoText>{text}</LogoText>
+    </TextWrapper>
   </LoginButtonWrapper>
 )
 
@@ -68,13 +81,15 @@ const Row = styled.div`
   width: 100%;
   align-items: center;
   column-gap: 2rem;
+  flex-wrap: wrap;
 `
 
-const StyledButton = styled(ClickableDiv)<VariantProps>`
-  background-color: transparent;
+const StyledButton = styled(Button)<VariantProps>`
+  background-color: white;
   max-width: 250px;
   padding: 0;
   margin: 0;
+  min-width: 150px;
   ${({ $variant }) => ($variant === "haka" ? "max-height: 73px" : "")};
 `
 
@@ -91,12 +106,17 @@ function OrganizationButton({
 }: OrganizationButtonProps) {
   return (
     <Row>
-      <StyledButton $variant={variant}>
-        <Link href={href}>
+      <Link href={href}>
+        <StyledButton $variant={variant}>
           {variant === "hy" ? <HYLoginButton /> : <HakaLoginButton />}
-        </Link>
-      </StyledButton>
-      {caption ? <Typography variant="h3">{caption}</Typography> : null}
+        </StyledButton>
+      </Link>
+      {caption ? (
+        <Typography
+          variant="body1"
+          dangerouslySetInnerHTML={{ __html: caption }}
+        />
+      ) : null}
     </Row>
   )
 }

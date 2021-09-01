@@ -1,31 +1,34 @@
 import {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
   Dispatch,
   ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react"
+
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { isProduction } from "/config"
+import AnchorContext from "/contexts/AnchorContext"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import CommonTranslations from "/translations/common"
+import flattenKeys from "/util/flattenKeys"
+import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import { useTranslator } from "/util/useTranslator"
+import { FormikErrors, FormikTouched, useFormikContext } from "formik"
+import { useConfirm } from "material-ui-confirm"
+
+import styled from "@emotion/styled"
 import {
-  Container,
-  Paper,
-  Grid,
-  CircularProgress,
   Checkbox as MUICheckbox,
+  CircularProgress,
+  Container,
+  Grid,
+  Paper,
   Tooltip,
 } from "@material-ui/core"
-import { FormikErrors, FormikTouched, useFormikContext } from "formik"
+
 import { FormValues } from "./types"
-import styled from "@emotion/styled"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import CommonTranslations from "/translations/common"
-import AnchorContext from "/contexts/AnchorContext"
-import { useConfirm } from "material-ui-confirm"
-import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/util/useTranslator"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { isProduction } from "/config"
 
 // TODO: show delete to course owner
 const FormBackground = styled(Paper)`

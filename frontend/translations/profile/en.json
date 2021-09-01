@@ -52,5 +52,7 @@
     "disconnectWarningDescription": "Are you sure you want to disconnect your {{organization}} account?",
     "disconnectWarningConfirmationText": "Yes",
     "disconnectWarningCancellationText": "No",
-    "myProfile": "My profile"
+    "myProfile": "My profile",
+    "connectHYCaption": "Connect your account with University of Helsinki credentials",
+    "connectHakaCaption": "Connect your account with <a href=\"https://www.csc.fi/en/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka identity federation</a> credentials"
 }

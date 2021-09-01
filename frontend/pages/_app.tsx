@@ -1,31 +1,30 @@
-import { initGA, logPageView } from "/lib/gtag"
-import type { AppContext, AppProps } from "next/app"
-import { useRouter } from "next/router"
+import "@fortawesome/fontawesome-svg-core/styles.css"
+
 import { useEffect, useState } from "react"
-import { Alert } from "/contexts/AlertContext"
-import { Breadcrumb } from "/contexts/BreadcrumbContext"
+
+import AlertContext, { Alert } from "/contexts/AlertContext"
+import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
+import LanguageContext from "/contexts/LanguageContext"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { isAdmin, isSignedIn } from "/lib/authentication"
+import { initGA, logPageView } from "/lib/gtag"
+import withApolloClient from "/lib/with-apollo-client"
+import { fontCss } from "/src/fonts"
+import theme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
-
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import "@fortawesome/fontawesome-svg-core/styles.css"
-import { CacheProvider } from "@emotion/react"
-import createCache from "@emotion/cache"
-import { fontCss } from "/src/fonts"
-import { Global } from "@emotion/react"
-import Head from "next/head"
-import { ThemeProvider } from "@material-ui/core/styles"
-import Layout from "./_layout"
-import LoginStateContext from "/contexts/LoginStateContext"
-import LanguageContext from "/contexts/LanguageContext"
-import { BreadcrumbContext } from "/contexts/BreadcrumbContext"
-import { CssBaseline } from "@material-ui/core"
 import { ConfirmProvider } from "material-ui-confirm"
-import AlertContext from "/contexts/AlertContext"
-import theme from "/src/theme"
+import type { AppContext, AppProps } from "next/app"
+import Head from "next/head"
+import { useRouter } from "next/router"
 
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import withApolloClient from "/lib/with-apollo-client"
+import createCache from "@emotion/cache"
+import { CacheProvider, Global } from "@emotion/react"
+import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
+import { CssBaseline } from "@material-ui/core"
+import { ThemeProvider } from "@material-ui/core/styles"
+
+import Layout from "./_layout"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -116,7 +115,6 @@ export function MyApp({ Component, pageProps }: AppProps) {
     hrefUrl,
   } = pageProps
 
-  console.log("pageProps", pageProps)
   const titleString =
     t("title", { title: "..." })?.[hrefUrl] ||
     t("title", { title: "..." })?.[asUrl]
