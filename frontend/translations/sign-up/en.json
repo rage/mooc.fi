@@ -28,5 +28,5 @@
   "already-registered": "A user with email <b>{{email}}</b> already exists, and is connected to this organization. Please log in.",
   "generic-error": "There was an issue while registering. Please try again later.",
   "signupHYCaption": "Sign up using University of Helsinki credentials",
-  "signupHakaCaption": "Sign up using other organization credentials"
+  "signupHakaCaption": "Sign up using <a href=\"https://www.csc.fi/en/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka identity federation</a> credentials"
 }

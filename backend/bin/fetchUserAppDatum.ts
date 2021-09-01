@@ -1,15 +1,18 @@
+import { DateTime } from "luxon"
+
+import { PrismaClient, UserCourseSetting } from "@prisma/client"
+
+import { UserInfo } from "../domain/UserInfo"
+import prisma from "../prisma"
+import TmcClient from "../services/tmc"
+import { convertUpdate } from "../util/db-functions"
+import { notEmpty } from "../util/notEmpty"
+import { DatabaseInputError, TMCError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
+
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import TmcClient from "../services/tmc"
-import { PrismaClient, UserCourseSetting } from "@prisma/client"
-import { UserInfo } from "../domain/UserInfo"
-import { DateTime } from "luxon"
-import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
-import { DatabaseInputError, TMCError } from "./lib/errors"
-import { convertUpdate } from "../util/db-functions"
-import { notEmpty } from "../util/notEmpty"
 
 const CONFIG_NAME = "userAppDatum"
 
@@ -100,6 +103,9 @@ const fetchUserAppDatum = async () => {
       where: {
         user: { upstream_id: e.user_id },
         course_id: course.id,
+      },
+      orderBy: {
+        created_at: "asc",
       },
     })
     if (!existingUserCourseSetting) {

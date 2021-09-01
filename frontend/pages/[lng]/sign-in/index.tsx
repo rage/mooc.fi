@@ -8,6 +8,7 @@ import { useLanguageContext } from "/contexts/LanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedOut from "/lib/with-signed-out"
 import SignInTranslations from "/translations/common"
+import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
 import styled from "@emotion/styled"
@@ -26,9 +27,18 @@ const Header = styled(Typography)<any>`
   margin: 1em;
 `
 
+type SignInError =
+  | "no-user-found"
+  | "already-signed-in"
+  | "auth-fail"
+  | "unknown"
+
 const SignInPage = () => {
   const t = useTranslator(SignInTranslations)
   const { language } = useLanguageContext()
+
+  const error = useQueryParameter("error", false) as SignInError | undefined
+  const message = useQueryParameter("message", false)
 
   const HY_SIGNIN_URL = isProduction
     ? `/sign-in/hy?language=${language}`
@@ -60,6 +70,7 @@ const SignInPage = () => {
             hakaURL={HAKA_SIGNIN_URL}
             hyCaption={t("signinHYCaption")}
             hakaCaption={t("signinHakaCaption")}
+            error={error ? t(`signinError_${error}`, { message }) : undefined}
           />
         </StyledPaper>
       </Container>

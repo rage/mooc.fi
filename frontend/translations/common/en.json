@@ -59,5 +59,9 @@
   "allow": "Allow",
   "deny": "Deny",
   "signinHYCaption": "Log in using University of Helsinki credentials",
-  "signinHakaCaption": "Log in using other organization credentials"
+  "signinHakaCaption": "Log in using <a href=\"https://www.csc.fi/en/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka identity federation</a> credentials",
+  "signinError_auth-fail": "Authorization failed",
+  "signinError_already-signed-in": "You are already signed in",
+  "signinError_no-user-found": "We didn't find an account with these credentials. Please register a new account or connect your existing MOOC.fi account.",
+  "signinError_unknown": "An unknown error occurred: {{message}}"
 }

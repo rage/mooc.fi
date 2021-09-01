@@ -106,12 +106,17 @@ function OrganizationButton({
 }: OrganizationButtonProps) {
   return (
     <Row>
-      <StyledButton $variant={variant}>
-        <Link href={href}>
+      <Link href={href}>
+        <StyledButton $variant={variant}>
           {variant === "hy" ? <HYLoginButton /> : <HakaLoginButton />}
-        </Link>
-      </StyledButton>
-      {caption ? <Typography variant="h3">{caption}</Typography> : null}
+        </StyledButton>
+      </Link>
+      {caption ? (
+        <Typography
+          variant="body1"
+          dangerouslySetInnerHTML={{ __html: caption }}
+        />
+      ) : null}
     </Row>
   )
 }

@@ -3,7 +3,7 @@ import React from "react"
 import OrganizationButton from "/components/Buttons/OrganizationButton"
 
 import styled from "@emotion/styled"
-import { Paper } from "@material-ui/core"
+import { Alert, Paper } from "@material-ui/core"
 
 interface OrganizationButtonProps {
   hyVisible?: boolean
@@ -12,6 +12,7 @@ interface OrganizationButtonProps {
   hakaURL: string
   hyCaption?: string
   hakaCaption?: string
+  error?: string
 }
 
 const ButtonContainer = styled(Paper)`
@@ -30,7 +31,12 @@ function OrganizationButtons({
   hakaURL,
   hyCaption,
   hakaCaption,
+  error,
 }: OrganizationButtonProps) {
+  if (!hakaVisible && !hyVisible) {
+    return null
+  }
+
   return (
     <ButtonContainer>
       {hyVisible && (
@@ -43,6 +49,7 @@ function OrganizationButtons({
           caption={hakaCaption}
         />
       )}
+      {error && <Alert severity="error">{error}</Alert>}
     </ButtonContainer>
   )
 }

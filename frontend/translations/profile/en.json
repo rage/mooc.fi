@@ -53,6 +53,6 @@
     "disconnectWarningConfirmationText": "Yes",
     "disconnectWarningCancellationText": "No",
     "myProfile": "My profile",
-    "connectHYCaption": "Connect using your University of Helsinki credentials",
-    "connectHakaCaption": "Connect using other organization credentials"
+    "connectHYCaption": "Connect your account with University of Helsinki credentials",
+    "connectHakaCaption": "Connect your account with <a href=\"https://www.csc.fi/en/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka identity federation</a> credentials"
 }
