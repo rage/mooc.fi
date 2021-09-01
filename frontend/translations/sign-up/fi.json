@@ -27,6 +27,6 @@
   "token-issue": "Loimme sinulle käyttäjätilin, mutta sisäänkirjautumisessa oli ongelmia. Yritä myöhemmin uudelleen.",
   "already-registered": "Käyttäjä sähköpostiosoitteella <b>{{email}}</b> on jo olemassa, ja se on kytketty tähän organisaatioon. Ole hyvä ja kirjaudu sisään.",
   "generic-error": "Rekisteröinnissä tapahtui virhe. Yritä myöhemmin uudelleen.",
-  "signupHYCaption": "Kirjaudu Helsingin yliopiston tunnuksilla",
-  "signupHakaCaption": "Kirjaudu <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka-käyttäjätunnistusjärjestelmän</a> tunnuksilla"
+  "signupHYCaption": "Rekisteröidy Helsingin yliopiston tunnuksilla",
+  "signupHakaCaption": "Rekisteröidy <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka-käyttäjätunnistusjärjestelmän</a> tunnuksilla"
 }
