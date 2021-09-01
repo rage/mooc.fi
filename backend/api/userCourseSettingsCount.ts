@@ -1,5 +1,5 @@
-import { ApiContext } from "."
 import { redisify } from "../services/redis"
+import { ApiContext } from "./"
 
 type UserCourseSettingsCountResult =
   | {
