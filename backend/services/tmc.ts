@@ -1,6 +1,11 @@
 import axios from "axios"
-import { UserInfo, OrganizationInfo } from "../domain/UserInfo"
+
+import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
+
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 const BASE_URL = process.env.TMC_HOST || ""
 
@@ -54,7 +59,7 @@ export default class TmcClient {
 
   async getUserAppDatum(after: string | null): Promise<any[]> {
     let res
-    if (after != null) {
+    if (after !== null) {
       after = await encodeURI(after)
       res = await axios.get(
         `${BASE_URL}/api/v8/user_app_datum?after=${after}`,
@@ -108,7 +113,11 @@ export const createUser = async (
   username: string,
   password: string,
   password_confirmation: string,
-): Promise<any> => {
+): Promise<{
+  success: boolean
+  token: string | null
+  error: object | null
+}> => {
   return await axios({
     method: "POST",
     url: `${BASE_URL}/api/v8/users`,
@@ -118,9 +127,9 @@ export const createUser = async (
     headers: { "Content-Type": "application/json" },
   })
     .then((res) => res.data)
-    .then((json) => {
+    .then(async (json) => {
       if (json.success) {
-        return authenticateUser(email, password)
+        return await authenticateUser(email, password)
       } else {
         return { success: false, token: null, error: json.errors }
       }
@@ -133,7 +142,11 @@ export const createUser = async (
 export const authenticateUser = async (
   username: string,
   password: string,
-): Promise<any> => {
+): Promise<{
+  success: boolean
+  token: string | null
+  error: object | null
+}> => {
   return await axios({
     method: "POST",
     url: `${BASE_URL}/oauth/token`,
@@ -141,10 +154,8 @@ export const authenticateUser = async (
       username,
       password,
       grant_type: "password",
-      client_id:
-        "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
-      client_secret:
-        "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+      client_id: process.env.TMC_CLIENT_ID,
+      client_secret: process.env.TMC_CLIENT_SECRET,
     }),
     headers: { "Content-Type": "application/json" },
   })

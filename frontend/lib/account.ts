@@ -1,10 +1,11 @@
+import { DOMAIN, isProduction } from "/config"
 //import { v4 as uuidv4 } from "uuid"
 import { getAccessToken } from "/lib/authentication"
-import { createUser } from "../packages/moocfi-auth"
-import { DOMAIN, isProduction } from "/config"
 import axios from "axios"
 
-const BASE_URL = "https://tmc.mooc.fi/"
+import { createUser } from "../packages/moocfi-auth"
+
+const BASE_URL = process.env.TMC_HOST || "https://tmc.mooc.fi/"
 
 export async function createAccount(data: any) {
   return await createUser({

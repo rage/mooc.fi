@@ -1,14 +1,16 @@
-import { AuthenticationError } from "apollo-server-core"
-import TmcClient from "../services/tmc"
-import { Role } from "../accessControl"
-import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
+import { AuthenticationError } from "apollo-server-core"
+import { plugin } from "nexus"
+
+import { User } from "@prisma/client"
+
+import { Role } from "../accessControl"
 // import { PrismaClient } from "@prisma/client"
 import { Context } from "../context"
-import { plugin } from "nexus"
+import { redisify } from "../services/redis"
+import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 import { isNewToken } from "../util/server-functions"
-import { User } from "@prisma/client"
 
 export const moocfiAuthPlugin = () =>
   plugin({
@@ -150,9 +152,9 @@ const getUser = async (ctx: Context, rawToken: string) => {
   const prismaDetails = {
     upstream_id: id,
     administrator: details.administrator,
-    email: details.email.trim(),
-    first_name: details.user_field.first_name.trim(),
-    last_name: details.user_field.last_name.trim(),
+    email: details.email?.trim(),
+    first_name: details.user_field?.first_name?.trim(),
+    last_name: details.user_field?.last_name?.trim(),
     username: details.username,
     // password: "password",
   }

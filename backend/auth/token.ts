@@ -1,15 +1,10 @@
-import { ApiContext } from "."
+import { AccessToken, AuthorizationCode, Client, User } from "@prisma/client"
+
 import { authenticateUser } from "../services/tmc"
-import { requireAuth } from "../util/validateAuth"
-import {
-  User,
-  Client,
-  AuthorizationCode,
-  AccessToken,
-  // VerifiedUser,
-} from "@prisma/client"
 import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
+import { requireAuth } from "../util/validateAuth"
+import { ApiContext } from "./"
 
 const isProduction = process.env.NODE_ENV === "production"
 const BACKEND_URL = process.env.BACKEND_URL ?? "https://mooc.fi"
@@ -421,10 +416,19 @@ export function implicitToken() {
 export function validateToken(ctx: ApiContext) {
   return async (req: any, res: any) => {
     let auth = await requireAuth(req.headers.authorization, ctx)
+    console.log("auth", auth)
     if (auth.error) {
       return res.status(403).json({ error: auth })
     } else {
-      return res.status(200).json({ success: "ok" })
+      const user = await ctx.prisma.accessToken
+        .findFirst({
+          where: {
+            access_token: req.headers.authorization.replace("Bearer ", ""),
+            valid: true,
+          },
+        })
+        .user()
+      return res.status(200).json({ success: "ok", user })
     }
   }
 }

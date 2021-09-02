@@ -1,19 +1,21 @@
-import { useState, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
+
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { isSignedIn, signIn } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
 import {
   FormControl,
-  InputLabel,
-  Input,
   FormHelperText,
+  Input,
+  InputLabel,
   Link,
 } from "@material-ui/core"
 
-import { signIn, isSignedIn } from "/lib/authentication"
-import LoginStateContext from "/contexts/LoginStateContext"
-import CommonTranslations from "/translations/common"
-import { useContext } from "react"
-import styled from "@emotion/styled"
-import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import { useTranslator } from "/util/useTranslator"
+const TMC_HOST = process.env.TMC_HOST || "https://tmc.mooc.fi"
 
 const StyledForm = styled.form`
   padding: 1em;
@@ -119,7 +121,7 @@ function SignIn() {
         {t("login")}
       </SubmitButton>
       <Link
-        href="https://tmc.mooc.fi/password_reset_keys/new"
+        href={`${TMC_HOST}/password_reset_keys/new`}
         target="_blank"
         rel="noopener noreferrer"
       >

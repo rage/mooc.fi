@@ -1,3 +1,11 @@
+import * as winston from "winston"
+
+import prisma from "./prisma"
+import server from "./server"
+import knex from "./services/knex"
+import { attachPrismaEvents } from "./util/prismaLogger"
+import { wsListen } from "./wsServer"
+
 const PRODUCTION = process.env.NODE_ENV === "production"
 
 require("sharp") // image library sharp seems to crash without this require
@@ -11,13 +19,6 @@ if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
     console.log("New Relic license key missing")
   }
 }
-
-import { wsListen } from "./wsServer"
-import server from "./server"
-import prisma from "./prisma"
-import * as winston from "winston"
-import knex from "./services/knex"
-import { attachPrismaEvents } from "./util/prismaLogger"
 
 const logger = winston.createLogger({
   level: "info",

@@ -1,8 +1,9 @@
 import axios from "axios"
-import Cookies from "universal-cookie"
-import { FRONTEND_URL, isProduction } from "../../config"
-import nookies from "nookies"
 import { NextPageContext } from "next"
+import nookies from "nookies"
+import Cookies from "universal-cookie"
+
+import { FRONTEND_URL, isProduction } from "../../config"
 
 const BASE_URL = isProduction
   ? FRONTEND_URL // TODO: not actually the frontend url, but it's the same in production

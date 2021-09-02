@@ -43,8 +43,8 @@ const fetchUserAppDatum = async () => {
   const data = tmcData
     .sort(
       (a, b) =>
-        DateTime.fromISO(a.updated_at).toMillis() -
-        DateTime.fromISO(b.updated_at).toMillis(),
+        DateTime.fromISO(a?.updated_at).toMillis() -
+        DateTime.fromISO(b?.updated_at).toMillis(),
     )
     .filter(notEmpty)
     .filter((e) => e.user_id !== null)
@@ -143,7 +143,7 @@ const fetchUserAppDatum = async () => {
         saveOther(e)
     }
     if (index % saveInterval == 0) {
-      await saveProgress(prisma, new Date(e.updated_at))
+      await saveProgress(prisma, new Date(e?.updated_at))
     }
   }
   /*if (!p || p == "undefined" || p == null) {
@@ -158,7 +158,7 @@ const fetchUserAppDatum = async () => {
       continue
     }*/
 
-  await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
+  await saveProgress(prisma, new Date(data[data.length - 1]?.updated_at))
 
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)

@@ -1,9 +1,10 @@
-import { ApiContext } from "."
-import { createUser, getCurrentUserDetails, updateUser } from "../services/tmc"
-import { signIn } from "./token"
-import { validateEmail, validatePassword } from "../util/validateAuth"
-import { argon2Hash } from "../util/hashPassword"
 import { User } from "@prisma/client"
+
+import { createUser, getCurrentUserDetails, updateUser } from "../services/tmc"
+import { argon2Hash } from "../util/hashPassword"
+import { validateEmail, validatePassword } from "../util/validateAuth"
+import { ApiContext } from "./"
+import { signIn } from "./token"
 
 const crypto = require("crypto")
 
@@ -101,7 +102,7 @@ async function _signUp(
     }
   }
 
-  const userDetails = await getCurrentUserDetails(accessToken.token)
+  const userDetails = await getCurrentUserDetails(accessToken.token ?? "")
 
   const hashPassword = await argon2Hash(password)
 
