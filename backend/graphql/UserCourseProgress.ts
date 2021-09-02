@@ -1,15 +1,15 @@
+import { UserInputError } from "apollo-server-express"
 import {
-  objectType,
-  extendType,
-  idArg,
-  stringArg,
-  intArg,
   arg,
+  extendType,
   floatArg,
-  nonNull,
+  idArg,
+  intArg,
   list,
+  nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
-import { UserInputError } from "apollo-server-core"
 
 import { isAdmin } from "../accessControl"
 
@@ -54,6 +54,7 @@ export const UserCourseProgress = objectType({
             .user()
             .user_course_settings({
               where: { course_id: parent.course_id },
+              orderBy: { created_at: "asc" },
             })
         )?.[0]
 
@@ -74,6 +75,9 @@ export const UserCourseProgress = objectType({
           where: {
             course_id,
             user_id,
+          },
+          orderBy: {
+            created_at: "asc",
           },
         })*/
       },

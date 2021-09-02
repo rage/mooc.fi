@@ -108,6 +108,7 @@ const fetchUserAppDatum = async () => {
         created_at: "asc",
       },
     })
+
     if (!existingUserCourseSetting) {
       old = await prisma.userCourseSetting.create({
         data: {
