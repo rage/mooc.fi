@@ -1,17 +1,29 @@
-import { ApiContext } from "."
-import { requireAuth } from "../util/validateAuth"
-import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
-import { validatePassword, invalidateAuth } from "../util/validateAuth"
-import { argon2Hash } from "../util/hashPassword"
+import {
+  Request,
+  Response,
+} from "express"
+import { omit } from "lodash"
+
+import {
+  User,
+  UserCourseSetting,
+  VerifiedUser,
+} from "@prisma/client"
+
+import { invalidate } from "../services/redis"
 import {
   authenticateUser,
   getCurrentUserDetails,
   getUsersByEmail,
   updateUser,
 } from "../services/tmc"
-import { Request, Response } from "express"
-import { omit } from "lodash"
-import { invalidate } from "../services/redis"
+import { argon2Hash } from "../util/hashPassword"
+import {
+  invalidateAuth,
+  requireAuth,
+  validatePassword,
+} from "../util/validateAuth"
+import { ApiContext } from "./"
 
 const argon2 = require("argon2")
 
@@ -291,6 +303,53 @@ export function registerUser(ctx: ApiContext) {
         user: newUser,
         verified_user: newVerifiedUser,
         message: "Error creating user",
+      })
+    }
+  }
+}
+
+export function updateUserFromTMC(ctx: ApiContext) {
+  return async (
+    req: Request<{}, {}, { upstream_id: number }>,
+    res: Response,
+  ) => {
+    // TODO: only trust TMC
+    const token = req.headers.authorization ?? ""
+    const auth = await requireAuth(token, ctx)
+
+    if (auth.error) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "Not logged in.",
+      })
+    }
+
+    const { upstream_id } = req.body
+
+    try {
+      await ctx.prisma.user.update({
+        where: {
+          id: auth.id,
+        },
+        data: {
+          upstream_id,
+        },
+      })
+
+      return res
+        .status(200)
+        .json({
+          status: 200,
+          success: true,
+          message: "User upstream_id updated",
+          upstream_id,
+        })
+    } catch {
+      return res.status(500).json({
+        status: 500,
+        success: false,
+        message: "User update not successful",
       })
     }
   }

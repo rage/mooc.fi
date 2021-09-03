@@ -1,5 +1,8 @@
-import { ApiContext } from "../auth"
+import jwt from "jsonwebtoken"
+
 import { AccessToken } from "@prisma/client"
+
+import { ApiContext } from "../auth"
 import { invalidate } from "../services/redis"
 
 const isProduction = process.env.NODE_ENV === "production"
@@ -8,7 +11,6 @@ const fs = require("fs")
 const publicKey = isProduction
   ? process.env.PUBLIC_KEY
   : fs.readFileSync(process.env.PUBLIC_KEY_TEST)
-const jwt = require("jsonwebtoken")
 
 export function validateEmail(value: string): value is string {
   const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -22,7 +24,10 @@ export function validatePassword(value: string): value is string {
   return passwordRegex.test(value)
 }
 
-export async function requireAuth(auth: string, { knex }: ApiContext) {
+export async function requireAuth(
+  auth: string,
+  { knex }: ApiContext,
+): Promise<any> {
   if (!auth) {
     return {
       error: "Missing token",
@@ -49,19 +54,21 @@ export async function requireAuth(auth: string, { knex }: ApiContext) {
     }
   }
 
-  return jwt.verify(token, publicKey, async (err: any, data: any) => {
-    if (err) {
-      await knex("access_tokens")
-        .update({ valid: false })
-        .where("access_token", token)
+  return new Promise((resolve, reject) =>
+    jwt.verify(token, publicKey, async (err: any, data: any) => {
+      if (err) {
+        await knex("access_tokens")
+          .update({ valid: false })
+          .where("access_token", token)
 
-      invalidate(["userdetails", "user"], token)
+        invalidate(["userdetails", "user"], token)
 
-      return { error: err }
-    }
+        reject({ error: err })
+      }
 
-    return { ...data }
-  })
+      resolve({ ...data })
+    }),
+  )
 }
 
 export async function invalidateAuth(id: string, { knex }: ApiContext) {

@@ -1,4 +1,14 @@
-import { AccessToken, AuthorizationCode, Client, User } from "@prisma/client"
+import {
+  Request,
+  Response,
+} from "express"
+
+import {
+  AccessToken,
+  AuthorizationCode,
+  Client,
+  User,
+} from "@prisma/client"
 
 import { authenticateUser } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"
@@ -294,7 +304,7 @@ async function exchangeClientAuthorize(
 }
 
 export function token(ctx: ApiContext) {
-  return async (req: any, res: any) => {
+  return async (req: Request, res: Response) => {
     const grantType = req.body.grant_type
     const response_type = req.body.response_type
 
@@ -372,7 +382,15 @@ export function token(ctx: ApiContext) {
 }
 
 export function implicitToken() {
-  return async (req: any, res: any) => {
+  return async (
+    req: Request<
+      {},
+      {},
+      {},
+      { iss?: string; login_hint?: string; target_link_uri?: string }
+    >,
+    res: Response,
+  ) => {
     const iss = req.query.iss
     const login_hint = req.query.login_hint
     const target_link_uri = req.query.target_link_uri
@@ -414,21 +432,32 @@ export function implicitToken() {
 }
 
 export function validateToken(ctx: ApiContext) {
-  return async (req: any, res: any) => {
-    let auth = await requireAuth(req.headers.authorization, ctx)
-    console.log("auth", auth)
+  return async (req: Request, res: Response) => {
+    let auth = await requireAuth(req.headers.authorization ?? "", ctx)
     if (auth.error) {
       return res.status(403).json({ error: auth })
     } else {
       const user = await ctx.prisma.accessToken
         .findFirst({
           where: {
-            access_token: req.headers.authorization.replace("Bearer ", ""),
+            access_token:
+              req.headers.authorization?.replace("Bearer ", "") ?? "",
             valid: true,
           },
         })
-        .user()
-      return res.status(200).json({ success: "ok", user })
+        .user({
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            username: true,
+            upstream_id: true,
+          },
+        })
+      return res
+        .status(200)
+        .json({ success: "ok", user })
     }
   }
 }

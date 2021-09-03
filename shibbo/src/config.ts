@@ -48,7 +48,7 @@ export const defaultHeaders: Record<HeaderField, string> = {
   schacpersonaluniquecode:
     "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
   edupersonaffiliation: "member;student",
-  mail: "mail@helsinki.fi",
+  mail: "kissa.kissanen@helsinki.fi",
   o: "University of Helsinki",
   ou: "Department of Computer Science",
   SHIB_LOGOUT_URL: "https://example.com/logout",
