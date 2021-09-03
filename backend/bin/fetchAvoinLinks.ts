@@ -1,10 +1,12 @@
 import axios from "axios"
-import { DateTime } from "luxon"
 import { maxBy } from "lodash"
-import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
+import { DateTime } from "luxon"
+
 import { OpenUniversityRegistrationLink } from "@prisma/client"
+
+import prisma from "../prisma"
 import { AvoinError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -12,6 +14,7 @@ require("dotenv-safe").config({
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 
+const isOodiLink = (link: string) => link.startsWith("AY")
 const processLink = async (p: OpenUniversityRegistrationLink) => {
   if (!p.course_code || p.course_code === "null") {
     logger.info(
@@ -55,7 +58,10 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 
   logger.info(`Best link found was: ${JSON.stringify(bestLink)}`)
 
-  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
+  const link = bestLink.link
+  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?${
+    isOodiLink(link) ? `o` : `s`
+  }=${link}`
 
   logger.info("Updating link to " + url)
   await prisma.openUniversityRegistrationLink.update({
