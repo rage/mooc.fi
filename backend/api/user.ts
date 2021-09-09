@@ -25,6 +25,10 @@ import {
 } from "../util/validateAuth"
 import { ApiContext } from "./"
 
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
+
 const argon2 = require("argon2")
 
 export function getUser(ctx: ApiContext) {
@@ -153,7 +157,7 @@ export function updatePassword(ctx: ApiContext) {
 
       const tmcUser = await authenticateUser(user.email, oldPassword)
 
-      let userDetails = await getCurrentUserDetails(tmcUser.token)
+      let userDetails = await getCurrentUserDetails(tmcUser.token ?? "")
       let updateDetails = {
         ...userDetails,
         old_password: oldPassword,
@@ -161,7 +165,7 @@ export function updatePassword(ctx: ApiContext) {
         password_repeat: confirmPassword,
       }
 
-      await updateUser(user.upstream_id, updateDetails, tmcUser.token)
+      await updateUser(user.upstream_id, updateDetails, tmcUser.token ?? "")
 
       const hashPassword = await argon2Hash(password)
 
@@ -265,6 +269,9 @@ export function registerUser(ctx: ApiContext) {
           }
         }
       }
+
+      const real_student_number = getStudentNumber(personalUniqueCode)
+
       newUser = await ctx.prisma.user.create({
         data: {
           username: mail,
@@ -273,6 +280,7 @@ export function registerUser(ctx: ApiContext) {
           last_name: lastName,
           administrator: false,
           upstream_id,
+          real_student_number
         },
       })
 
@@ -310,13 +318,13 @@ export function registerUser(ctx: ApiContext) {
 
 export function updateUserFromTMC(ctx: ApiContext) {
   return async (
-    req: Request<{}, {}, { upstream_id: number }>,
+    req: Request<{}, {}, { upstream_id: number; secret: string }>,
     res: Response,
   ) => {
-    // TODO: only trust TMC
     const token = req.headers.authorization ?? ""
     const auth = await requireAuth(token, ctx)
 
+    console.log(req.body)
     if (auth.error) {
       return res.status(403).json({
         status: 403,
@@ -325,7 +333,23 @@ export function updateUserFromTMC(ctx: ApiContext) {
       })
     }
 
-    const { upstream_id } = req.body
+    const { upstream_id, secret } = req.body
+
+    if (secret !== process.env.TMC_UPDATE_SECRET) {
+      return res.status(403).json({
+        status: 405,
+        success: false,
+        message: "Not allowed",
+      })
+    }
+
+    if (!upstream_id) {
+      return res.status(400).json({
+        status: 400,
+        success: false,
+        message: "No upstream_id provided",
+      })
+    }
 
     try {
       await ctx.prisma.user.update({
@@ -335,16 +359,24 @@ export function updateUserFromTMC(ctx: ApiContext) {
         data: {
           upstream_id,
         },
+        select: {
+          upstream_id: true,
+          email: true,
+          first_name: true,
+          last_name: true,
+          created_at: true,
+          updated_at: true,
+          real_student_number: true,
+          username: true,
+        },
       })
 
-      return res
-        .status(200)
-        .json({
-          status: 200,
-          success: true,
-          message: "User upstream_id updated",
-          upstream_id,
-        })
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "User upstream_id updated",
+        upstream_id,
+      })
     } catch {
       return res.status(500).json({
         status: 500,
@@ -353,4 +385,14 @@ export function updateUserFromTMC(ctx: ApiContext) {
       })
     }
   }
+}
+
+function getStudentNumber(personalUniqueCode: string) {
+  const codes = personalUniqueCode.split(";").map((code) => code.split(":"))
+
+  const codeWithStudentID = codes.find((code) =>
+    code.some((field) => field === "studentID"),
+  )
+
+  return codeWithStudentID?.[codeWithStudentID.length - 1]
 }

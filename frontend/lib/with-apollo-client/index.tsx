@@ -1,19 +1,22 @@
-import getApollo, { initNewApollo } from "./get-apollo"
-import Head from "next/head"
-import { getMarkupFromTree } from "@apollo/client/react/ssr"
+import { DOMAIN } from "/config"
 import { getAccessToken } from "/lib/authentication"
-import fetchUserDetails from "./fetch-user-details"
-import {
-  ApolloClient,
-  NormalizedCacheObject,
-  ApolloProvider,
-} from "@apollo/client"
+import { validateToken } from "/packages/moocfi-auth"
+import { NextPageContext } from "next"
+import { AppContext } from "next/app"
+import Head from "next/head"
 // import { NextPageContext } from "next"
 import { renderToString } from "react-dom/server"
-import { validateToken } from "/packages/moocfi-auth"
-import { DOMAIN } from "/config"
-import { AppContext } from "next/app"
-import { NextPageContext } from "next"
+
+import {
+  ApolloClient,
+  ApolloProvider,
+  NormalizedCacheObject,
+} from "@apollo/client"
+import { getMarkupFromTree } from "@apollo/client/react/ssr"
+
+import fetchUserDetails from "./fetch-user-details"
+import getApollo, { initNewApollo } from "./get-apollo"
+
 interface Props {
   // Server side rendered state. Prevents queries from running again in the frontend.
   apollo: ApolloClient<NormalizedCacheObject>

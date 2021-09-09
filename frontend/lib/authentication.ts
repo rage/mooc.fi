@@ -1,4 +1,7 @@
-import { DOMAIN, isProduction } from "/config"
+import {
+  DOMAIN,
+  isProduction,
+} from "/config"
 import axios from "axios"
 //import TmcClient from "tmc-client-js"
 import { NextPageContext as NextContext } from "next"
@@ -72,7 +75,7 @@ export const signIn = async ({
     priority,
   })
   console.log("signIn res", res)
-  const details = await getUserDetails(res?.tmc_token)
+  const details = await getUserDetails(res?.access_token) //tmc_token
   console.log("signIn details", details)
   //document.cookie = `access_token=${res.accessToken};path=/`
   //document.cookie = `admin=${details.administrator};path=/`

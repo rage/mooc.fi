@@ -453,6 +453,7 @@ export function validateToken(ctx: ApiContext) {
             email: true,
             username: true,
             upstream_id: true,
+            real_student_number: true
           },
         })
       return res
