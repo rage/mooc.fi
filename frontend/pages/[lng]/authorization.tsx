@@ -1,20 +1,22 @@
-import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
-import styled from "@emotion/styled"
-import { decision, getAuthorization, signIn } from "../../services/moocfi"
+import { useEffect, useState } from "react"
 
-import Container from "../../components/Container"
-import Paper from "@material-ui/core/Paper"
+import { TMC_HOST } from "/config"
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
 import {
   FormControl,
-  InputLabel,
-  Input,
   FormHelperText,
+  Input,
+  InputLabel,
   Link,
 } from "@material-ui/core"
+import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
-import { FormSubmitButton as SubmitButton } from "../../components/Buttons/FormSubmitButton"
 
+import { FormSubmitButton as SubmitButton } from "../../components/Buttons/FormSubmitButton"
+import Container from "../../components/Container"
+import { decision, getAuthorization, signIn } from "../../services/moocfi"
 import CommonTranslations from "../../translations/common"
 import { useTranslator } from "../../util/useTranslator"
 
@@ -176,7 +178,7 @@ const Authorization = () => {
             {t("login")}
           </SubmitButton>
           <Link
-            href="https://tmc.mooc.fi/password_reset_keys/new"
+            href={`${TMC_HOST}password_reset_keys/new`}
             target="_blank"
             rel="noopener noreferrer"
           >

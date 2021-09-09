@@ -1,14 +1,7 @@
-import {
-  Request,
-  Response,
-} from "express"
+import { Request, Response } from "express"
 import { omit } from "lodash"
 
-import {
-  User,
-  UserCourseSetting,
-  VerifiedUser,
-} from "@prisma/client"
+import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
 
 import { invalidate } from "../services/redis"
 import {
@@ -280,7 +273,7 @@ export function registerUser(ctx: ApiContext) {
           last_name: lastName,
           administrator: false,
           upstream_id,
-          real_student_number
+          real_student_number,
         },
       })
 

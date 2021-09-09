@@ -52,7 +52,7 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
   return (
     <>
       <section>
-        <h1>{t("connectTitle")}</h1>
+        <Typography variant="h3">{t("connectTitle")}</Typography>
         <p>{t("connectText")}</p>
       </section>
       <section>

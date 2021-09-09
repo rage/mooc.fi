@@ -1,6 +1,7 @@
 import axios from "axios"
 import { Request, Response } from "express"
-import { AUTH_URL, API_URL, FRONTEND_URL, LOGOUT_URL, DOMAIN } from "../config"
+
+import { API_URL, AUTH_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
 
 const grant_type = "client_authorize"
 const response_type = "token"
@@ -21,7 +22,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
   } = headers
 
   const language = req.query.language ?? "en"
-  const languagePath = language !== "en" ? `${language}/` : ""
+  const languagePath = `${language}/`
 
   // confidently default to an error
   let status = {
@@ -103,6 +104,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
   let redirectUrl = ""
 
+  // TODO: show these on the actual sign-up page
   if (status.error) {
     redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/${status.type}`
   } else {

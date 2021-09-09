@@ -1,14 +1,6 @@
-import {
-  Request,
-  Response,
-} from "express"
+import { Request, Response } from "express"
 
-import {
-  AccessToken,
-  AuthorizationCode,
-  Client,
-  User,
-} from "@prisma/client"
+import { AccessToken, AuthorizationCode, Client, User } from "@prisma/client"
 
 import { authenticateUser } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"
@@ -453,12 +445,10 @@ export function validateToken(ctx: ApiContext) {
             email: true,
             username: true,
             upstream_id: true,
-            real_student_number: true
+            real_student_number: true,
           },
         })
-      return res
-        .status(200)
-        .json({ success: "ok", user })
+      return res.status(200).json({ success: "ok", user })
     }
   }
 }

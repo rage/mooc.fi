@@ -19,6 +19,7 @@ const nextConfiguration = {
     NEXT_PUBLIC_BACKEND_URL: process.env.BACKEND_URL,
     NEXT_PUBLIC_FRONTEND_URL: process.env.FRONTEND_URL,
     NEXT_PUBLIC_PORT: process.env.PORT,
+    NEXT_PUBLIC_TMC_HOST: process.env.TMC_HOST,
   },
   trailingSlash: true,
 }

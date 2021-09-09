@@ -1,27 +1,26 @@
-import {
-  Card,
-  Button,
-  Typography,
-  CardContent,
-  TableCell,
-  TableRow,
-  Table,
-  TableBody,
-  TableContainer,
-  Collapse,
-} from "@material-ui/core"
-import styled from "@emotion/styled"
 import React, { useState } from "react"
-import { CardTitle } from "/components/Text/headers"
-import { useConfirm } from "material-ui-confirm"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faUnlink } from "@fortawesome/free-solid-svg-icons"
+
 import CollapseButton from "/components/Buttons/CollapseButton"
+import HYLogo from "/components/HYLogo"
+import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
+import { CardTitle } from "/components/Text/headers"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
+import ProfileTranslations from "/translations/profile"
 import parseSchacPersonalUniqueCode from "/util/parseSchacUniqueCode"
 import { useTranslator } from "/util/useTranslator"
-import ProfileTranslations from "/translations/profile"
-import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
-import { DisconnectFunction } from "/components/Profile/OrganizationConnection/useDisconnect"
+import { DateTime } from "luxon"
+import { useConfirm } from "material-ui-confirm"
+
+import styled from "@emotion/styled"
+import { faUnlink } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  Button,
+  Card,
+  CardContent,
+  Collapse,
+  Typography,
+} from "@material-ui/core"
 
 interface ConnectionEntryProps {
   data: CurrentUserUserOverView_currentUser_verified_users
@@ -37,6 +36,7 @@ const ConnectionEntryCard = styled(Card)`
 const ConnectionEntryCardTitle = styled(CardTitle)`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `
 
 const ConnectionEntryCardContent = styled(CardContent)`
@@ -64,7 +64,22 @@ function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
   return (
     <ConnectionEntryCard>
       <ConnectionEntryCardTitle variant="section">
-        <Typography variant="h3">{data?.home_organization}</Typography>
+        {data?.home_organization === "helsinki.fi" ? (
+          <HYLogo style={{ width: "50%", maxWidth: "50px" }} />
+        ) : (
+          <img
+            src="/static/images/Haka_nega_rgb_sm.png"
+            width="54"
+            height="27"
+            alt="[Haka]"
+          />
+        )}
+        <Typography
+          variant="h3"
+          style={{ width: "100%", paddingLeft: "0.5rem" }}
+        >
+          {data?.home_organization}
+        </Typography>
         <CollapseButton
           open={isOpen}
           onClick={() => setIsOpen((value) => !value)}
@@ -72,7 +87,10 @@ function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
       </ConnectionEntryCardTitle>
       <Collapse in={isOpen} style={{ marginBottom: "0rem", padding: 0 }}>
         <ConnectionEntryCardContent>
-          <TableContainer style={{ marginBottom: "0.5rem" }}>
+          <Typography variant="body1">
+            Liitetty {DateTime.fromISO(data.created_at).toLocaleString()}
+          </Typography>
+          {/*<TableContainer style={{ marginBottom: "0.5rem" }}>
             <Table>
               <TableBody>
                 {codes.map((code, index) => (
@@ -84,15 +102,21 @@ function ConnectionEntry({ data, onDisconnect }: ConnectionEntryProps) {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
+                </TableContainer>*/}
           <ConnectionButtonContainer>
             <Button
               onClick={() => {
                 confirm({
                   title: t("disconnectWarningTitle"),
-                  description: t("disconnectWarningDescription", {
-                    organization: data?.home_organization,
-                  }),
+                  description: (
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: t("disconnectWarningDescription", {
+                          organization: data?.home_organization,
+                        }),
+                      }}
+                    />
+                  ),
                   confirmationText: t("disconnectWarningConfirmationText"),
                   cancellationText: t("disconnectWarningCancellationText"),
                 }).then(() => onDisconnect(data))

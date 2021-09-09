@@ -51,11 +51,9 @@ export const signInHandler = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     res.redirect(
-      `${LOGOUT_URL}${FRONTEND_URL}/${
-        language !== "en" ? `${language}/` : ""
-      }sign-in?error=${errorType ?? "unknown"}&message=${decodeURIComponent(
-        error?.response?.data.message,
-      )}`,
+      `${LOGOUT_URL}${FRONTEND_URL}/${language}/sign-in?error=${
+        errorType ?? "unknown"
+      }&message=${decodeURIComponent(error?.response?.data.message)}`,
     )
   }
 }

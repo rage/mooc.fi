@@ -49,7 +49,7 @@
     "connectText": "On this page, you can connect your MOOC.fi account to any institution accounts you might have, or disconnect your accounts.",
     "connectExisting": "Existing connections",
     "disconnectWarningTitle": "About to disconnect your account",
-    "disconnectWarningDescription": "Are you sure you want to disconnect your {{organization}} account?",
+    "disconnectWarningDescription": "Are you sure you want to disconnect your <b>{{organization}}</b> account?",
     "disconnectWarningConfirmationText": "Yes",
     "disconnectWarningCancellationText": "No",
     "myProfile": "My profile",
