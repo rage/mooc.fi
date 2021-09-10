@@ -317,7 +317,6 @@ export function updateUserFromTMC(ctx: ApiContext) {
     const token = req.headers.authorization ?? ""
     const auth = await requireAuth(token, ctx)
 
-    console.log(req.body)
     if (auth.error) {
       return res.status(403).json({
         status: 403,
@@ -329,7 +328,7 @@ export function updateUserFromTMC(ctx: ApiContext) {
     const { upstream_id, secret } = req.body
 
     if (secret !== process.env.TMC_UPDATE_SECRET) {
-      return res.status(403).json({
+      return res.status(405).json({
         status: 405,
         success: false,
         message: "Not allowed",

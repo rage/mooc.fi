@@ -1,13 +1,41 @@
-import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
-import {
-  normalUserDetails,
-  adminUserDetails,
-  thirdUserDetails,
-} from "../../tests/data"
-import { seed } from "../../tests/data/seed"
 import axios, { Method } from "axios"
 import { omit, orderBy } from "lodash"
 
+import { updateUserFromTMC } from "../../api/user"
+import { ApiContext } from "../../auth"
+import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  thirdUserDetails,
+} from "../../tests/data"
+import { seed } from "../../tests/data/seed"
+
+jest.mock("../../util/validateAuth", () => ({
+  __esModule: true,
+  requireAuth: async (auth: string, _ctx: ApiContext) => {
+    let ret: any = {
+      id: "20000000000000000000000000000102",
+    }
+    if (auth === "") {
+      ret = {
+        error: "Missing token",
+      }
+    }
+    if (auth === "Bearer old") {
+      ret = {
+        error: "Token is no longer valid",
+      }
+    }
+    if (auth === "Bearer invalid") {
+      ret = {
+        error: "Some JWT error",
+      }
+    }
+
+    return new Promise((resolve) => resolve(ret))
+  },
+}))
 const ctx = getTestContext()
 
 describe("API", () => {
@@ -684,6 +712,122 @@ describe("API", () => {
       ])
       expect(ucpResponse.data.data.created_at).toEqual(
         "1900-01-01T08:00:00.000Z",
+      )
+    })
+  })
+
+  describe("/user/update-from-tmc", () => {
+    beforeEach(async () => {
+      process.env.TMC_UPDATE_SECRET = "secret"
+      await seed(ctx.prisma)
+    })
+
+    const postUpdateUserFromTMC = post("/api/user/update-from-tmc", {})
+
+    it("errors on auth error", async () => {
+      try {
+        await postUpdateUserFromTMC({
+          data: { upstream_id: 1, secret: "secret" },
+        })
+
+        fail()
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(403)
+        expect(response.data.success).toBe(false)
+        expect(response.data.message).toBe("Not logged in.")
+      }
+    })
+
+    it("errors on invalid secret", async () => {
+      try {
+        await postUpdateUserFromTMC({
+          data: { upstream_id: 1, secret: "foo" },
+          headers: { authorization: "Bearer ok" },
+        })
+
+        fail()
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(405)
+        expect(response.data.success).toBe(false)
+        expect(response.data.message).toBe("Not allowed")
+      }
+    })
+
+    it("errors on no upstream_id", async () => {
+      try {
+        await postUpdateUserFromTMC({
+          data: { secret: "secret" },
+          headers: { authorization: "Bearer ok" },
+        })
+
+        fail()
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(400)
+        expect(response.data.success).toBe(false)
+        expect(response.data.message).toBe("No upstream_id provided")
+      }
+    })
+
+    it("updates upstream_id", async () => {
+      const before = await ctx.prisma.user.findUnique({
+        where: {
+          id: "20000000000000000000000000000102",
+        },
+      })
+      expect(before?.upstream_id).toBe(1)
+
+      const res = await postUpdateUserFromTMC({
+        data: { upstream_id: 666, secret: "secret" },
+        headers: { authorization: "Bearer ok" },
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data.message).toBe("User upstream_id updated")
+      expect(res.data.upstream_id).toBe(666)
+
+      const after = await ctx.prisma.user.findUnique({
+        where: {
+          id: "20000000000000000000000000000102",
+        },
+      })
+      expect(after?.upstream_id).toBe(666)
+    })
+
+    it("returns 500 on update error", async () => {
+      const mockCtx = {
+        ...ctx,
+        prisma: {
+          ...ctx.prisma,
+          user: {
+            ...ctx.prisma.user,
+            update: async () => {
+              throw new Error()
+            },
+          },
+        },
+      }
+
+      await updateUserFromTMC(mockCtx as any)(
+        {
+          headers: {
+            authorization: "Bearer ok",
+          },
+          body: {
+            upstream_id: 1,
+            secret: "secret",
+          },
+        } as any,
+        {
+          status: (code: number) => ({
+            json: (json: any) => {
+              expect(code).toBe(500)
+              expect(json.message).toBe("User update not successful")
+            },
+          }),
+        } as any,
       )
     })
   })
