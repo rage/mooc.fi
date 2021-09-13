@@ -1,15 +1,7 @@
 import axios from "axios"
-import {
-  Request,
-  Response,
-} from "express"
+import { Request, Response } from "express"
 
-import {
-  API_URL,
-  AUTH_URL,
-  FRONTEND_URL,
-  LOGOUT_URL,
-} from "../config"
+import { API_URL, AUTH_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
 
 const grant_type = "client_authorize"
 const response_type = "token"
@@ -48,15 +40,19 @@ export const signInHandler = async (req: Request, res: Response) => {
 
       try {
         // @ts-ignore: ignore return value for now
-        const { data: updateData } = await axios.post(`${API_URL}/user/update-person-affiliation`, {
-          personal_unique_code: schacpersonaluniquecode,
-          person_affiliation: edupersonaffiliation,
-          home_organization: schachomeorganization
-        }, {
-          headers: {
-            "Authorization": `Bearer ${data.access_token}`
-          }
-        })
+        const { data: updateData } = await axios.post(
+          `${API_URL}/user/update-person-affiliation`,
+          {
+            personal_unique_code: schacpersonaluniquecode,
+            person_affiliation: edupersonaffiliation,
+            home_organization: schachomeorganization,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${data.access_token}`,
+            },
+          },
+        )
       } catch {
         // we'll just ignore the affiliation update error
       }

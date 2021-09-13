@@ -1,14 +1,7 @@
-import {
-  Request,
-  Response,
-} from "express"
+import { Request, Response } from "express"
 import { omit } from "lodash"
 
-import {
-  User,
-  UserCourseSetting,
-  VerifiedUser,
-} from "@prisma/client"
+import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
 
 import { invalidate } from "../services/redis"
 import {
@@ -388,11 +381,19 @@ export function updateUserFromTMC(ctx: ApiContext) {
 
 export function updatePersonAffiliation(ctx: ApiContext) {
   return async (
-    req: Request<{}, {}, { personal_unique_code: string, person_affiliation: string, home_organization: string }>,
-    res: Response
+    req: Request<
+      {},
+      {},
+      {
+        personal_unique_code: string
+        person_affiliation: string
+        home_organization: string
+      }
+    >,
+    res: Response,
   ) => {
     const token = req.headers.authorization ?? ""
-    const auth = await (await requireAuth(token, ctx))
+    const auth = await await requireAuth(token, ctx)
 
     if (auth.error) {
       return res.status(403).json({
@@ -402,7 +403,11 @@ export function updatePersonAffiliation(ctx: ApiContext) {
       })
     }
 
-    const { person_affiliation, personal_unique_code, home_organization } = req.body
+    const {
+      person_affiliation,
+      personal_unique_code,
+      home_organization,
+    } = req.body
 
     if (!personal_unique_code || !home_organization) {
       return res.status(400).json({
@@ -418,16 +423,16 @@ export function updatePersonAffiliation(ctx: ApiContext) {
           user_id_personal_unique_code_home_organization: {
             user_id: auth.id,
             personal_unique_code,
-            home_organization
-          }
-        }
+            home_organization,
+          },
+        },
       })
 
       if (existing?.person_affiliation === person_affiliation) {
         return res.status(200).json({
           status: 200,
           success: true,
-          message: "No change"
+          message: "No change",
         })
       }
 
@@ -436,25 +441,25 @@ export function updatePersonAffiliation(ctx: ApiContext) {
           user_id_personal_unique_code_home_organization: {
             user_id: auth.id,
             personal_unique_code,
-            home_organization
-          }
+            home_organization,
+          },
         },
         data: {
           person_affiliation,
-          person_affiliation_updated_at: new Date().toISOString()
-        }
+          person_affiliation_updated_at: new Date().toISOString(),
+        },
       })
 
       return res.status(200).json({
         status: 200,
         success: true,
-        message: "Person affiliation updated"
+        message: "Person affiliation updated",
       })
     } catch (error: any) {
       return res.status(500).json({
         status: 500,
         success: false,
-        message: "Verified user update not successful"
+        message: "Verified user update not successful",
       })
     }
   }

@@ -13,7 +13,9 @@ const publicKey = isProduction
   ? process.env.PUBLIC_KEY
   : fs.readFileSync(process.env.PUBLIC_KEY_TEST ?? "")
 
-if (isNullOrUndefined(publicKey) || publicKey === "") { throw new Error("No public key set in env")}
+if (isNullOrUndefined(publicKey) || publicKey === "") {
+  throw new Error("No public key set in env")
+}
 
 export function validateEmail(value: string): value is string {
   const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/

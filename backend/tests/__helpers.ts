@@ -1,20 +1,14 @@
 import type { ApolloServer } from "apollo-server-express"
-import { Method } from "axios"
+import axios, { Method } from "axios"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { Server } from "http"
-import {
-  knex,
-  Knex,
-} from "knex"
+import { knex, Knex } from "knex"
 import { nanoid } from "nanoid"
 import nock from "nock"
 import winston from "winston"
 
-import {
-  PrismaClient,
-  User,
-} from "@prisma/client"
+import { PrismaClient, User } from "@prisma/client"
 
 import binPrisma from "../prisma"
 import server from "../server"
@@ -52,18 +46,15 @@ export type TestContext = {
   user?: User
   version: number
   port: number
-} & ReturnType<typeof createRequestHelpers>
-
+}
 let version = 1
-
 interface RequestParams {
   data?: any
   headers?: any
   params?: Record<string, any>
 }
 
-const createRequestHelpers = (port: number) => {
-  console.log("helpers")
+export const createRequestHelpers = (port: number) => {
   const request = (method: Method) => (
     route: string = "",
     defaultHeaders: any,
@@ -92,10 +83,17 @@ const createRequestHelpers = (port: number) => {
   }
 }
 
+export type RequestGet = ReturnType<
+  ReturnType<typeof createRequestHelpers>["get"]
+>
+export type RequestPost = ReturnType<
+  ReturnType<typeof createRequestHelpers>["post"]
+>
+
 export function getTestContext(): TestContext {
-  let testContext = {
+  let testContext = ({
     logger: logger.createLogger() as winston.Logger,
-  } as TestContext
+  } as unknown) as TestContext
 
   const ctx = createTestContext(testContext)
 
@@ -109,7 +107,6 @@ export function getTestContext(): TestContext {
       client,
       knex: knexClient,
       version,
-      ...createRequestHelpers(port),
     })
   })
   afterEach(async () => {
