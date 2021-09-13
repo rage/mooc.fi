@@ -1,16 +1,25 @@
-require("sharp") // ensure correct zlib thingy
-
-import { PrismaClient, User } from "@prisma/client"
-import { Server } from "http"
+import type { ApolloServer } from "apollo-server-express"
+import { Method } from "axios"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
+import { Server } from "http"
+import {
+  knex,
+  Knex,
+} from "knex"
 import { nanoid } from "nanoid"
-import { knex, Knex } from "knex"
-import server from "../server"
-import type { ApolloServer } from "apollo-server-express"
-import winston from "winston"
 import nock from "nock"
+import winston from "winston"
+
+import {
+  PrismaClient,
+  User,
+} from "@prisma/client"
+
 import binPrisma from "../prisma"
+import server from "../server"
+
+require("sharp") // ensure correct zlib thingy
 
 const DEBUG = Boolean(process.env.DEBUG)
 
@@ -43,9 +52,45 @@ export type TestContext = {
   user?: User
   version: number
   port: number
-}
+} & ReturnType<typeof createRequestHelpers>
 
 let version = 1
+
+interface RequestParams {
+  data?: any
+  headers?: any
+  params?: Record<string, any>
+}
+
+const createRequestHelpers = (port: number) => {
+  console.log("helpers")
+  const request = (method: Method) => (
+    route: string = "",
+    defaultHeaders: any,
+  ) => async ({
+    data = null,
+    headers = defaultHeaders,
+    params = {},
+  }: RequestParams) =>
+    await axios({
+      method,
+      url: `http://localhost:${port}${route}`,
+      data,
+      headers,
+      params,
+    })
+
+  const get = (route: string = "", defaultHeaders: any) =>
+    request("GET")(route, defaultHeaders)
+  const post = (route: string = "", defaultHeaders: any) =>
+    request("POST")(route, defaultHeaders)
+
+  return {
+    request,
+    get,
+    post,
+  }
+}
 
 export function getTestContext(): TestContext {
   let testContext = {
@@ -64,6 +109,7 @@ export function getTestContext(): TestContext {
       client,
       knex: knexClient,
       version,
+      ...createRequestHelpers(port),
     })
   })
   afterEach(async () => {

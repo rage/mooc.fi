@@ -1,7 +1,14 @@
-import { Request, Response } from "express"
+import {
+  Request,
+  Response,
+} from "express"
 import { omit } from "lodash"
 
-import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
+import {
+  User,
+  UserCourseSetting,
+  VerifiedUser,
+} from "@prisma/client"
 
 import { invalidate } from "../services/redis"
 import {
@@ -379,11 +386,85 @@ export function updateUserFromTMC(ctx: ApiContext) {
   }
 }
 
+export function updatePersonAffiliation(ctx: ApiContext) {
+  return async (
+    req: Request<{}, {}, { personal_unique_code: string, person_affiliation: string, home_organization: string }>,
+    res: Response
+  ) => {
+    const token = req.headers.authorization ?? ""
+    const auth = await (await requireAuth(token, ctx))
+
+    if (auth.error) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "Not logged in.",
+      })
+    }
+
+    const { person_affiliation, personal_unique_code, home_organization } = req.body
+
+    if (!personal_unique_code || !home_organization) {
+      return res.status(400).json({
+        status: 400,
+        success: false,
+        message: "No personal_unique code or home_organization provided",
+      })
+    }
+
+    try {
+      const existing = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          user_id_personal_unique_code_home_organization: {
+            user_id: auth.id,
+            personal_unique_code,
+            home_organization
+          }
+        }
+      })
+
+      if (existing?.person_affiliation === person_affiliation) {
+        return res.status(200).json({
+          status: 200,
+          success: true,
+          message: "No change"
+        })
+      }
+
+      await ctx.prisma.verifiedUser.update({
+        where: {
+          user_id_personal_unique_code_home_organization: {
+            user_id: auth.id,
+            personal_unique_code,
+            home_organization
+          }
+        },
+        data: {
+          person_affiliation,
+          person_affiliation_updated_at: new Date().toISOString()
+        }
+      })
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "Person affiliation updated"
+      })
+    } catch (error: any) {
+      return res.status(500).json({
+        status: 500,
+        success: false,
+        message: "Verified user update not successful"
+      })
+    }
+  }
+}
+
 function getStudentNumber(personalUniqueCode: string) {
   const codes = personalUniqueCode.split(";").map((code) => code.split(":"))
 
   const codeWithStudentID = codes.find((code) =>
-    code.some((field) => field === "studentID"),
+    code.some((field) => field === "helsinki.fi"),
   )
 
   return codeWithStudentID?.[codeWithStudentID.length - 1]

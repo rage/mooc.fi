@@ -1,9 +1,13 @@
-import axios, { Method } from "axios"
-import { omit, orderBy } from "lodash"
+import {
+  omit,
+  orderBy,
+} from "lodash"
 
-import { updateUserFromTMC } from "../../api/user"
 import { ApiContext } from "../../auth"
-import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import {
+  fakeTMCCurrent,
+  getTestContext,
+} from "../../tests/__helpers"
 import {
   adminUserDetails,
   normalUserDetails,
@@ -14,151 +18,27 @@ import { seed } from "../../tests/data/seed"
 jest.mock("../../util/validateAuth", () => ({
   __esModule: true,
   requireAuth: async (auth: string, _ctx: ApiContext) => {
-    let ret: any = {
-      id: "20000000000000000000000000000102",
-    }
-    if (auth === "") {
-      ret = {
-        error: "Missing token",
-      }
-    }
-    if (auth === "Bearer old") {
-      ret = {
-        error: "Token is no longer valid",
-      }
-    }
-    if (auth === "Bearer invalid") {
-      ret = {
-        error: "Some JWT error",
-      }
+    const ret: Record<string, object> = {
+      "Bearer normal": { id: "20000000000000000000000000000102" },
+      "Bearer admin": { id: "20000000000000000000000000000103" },
+      "Bearer third": { id: "20000000000000000000000000000104" },
+      "Bearer old": { error: "Token is no longer valid" },
+      "Bearer invalid": { error: "Some JWT error" },
     }
 
-    return new Promise((resolve) => resolve(ret))
+    return new Promise(
+      (resolve) => resolve(
+        ret[auth ?? ""] ?? { error: "Missing token" }
+      )
+    )
   },
 }))
+
 const ctx = getTestContext()
 
+
 describe("API", () => {
-  interface RequestParams {
-    data?: any
-    headers?: any
-    params?: Record<string, any>
-  }
-  const request = (method: Method) => (
-    route: string = "",
-    defaultHeaders: any,
-  ) => async ({
-    data = null,
-    headers = defaultHeaders,
-    params = {},
-  }: RequestParams) =>
-    await axios({
-      method,
-      url: `http://localhost:${ctx.port}${route}`,
-      data,
-      headers,
-      params,
-    })
-
-  const get = (route: string = "", defaultHeaders: any) =>
-    request("GET")(route, defaultHeaders)
-  const post = (route: string = "", defaultHeaders: any) =>
-    request("POST")(route, defaultHeaders)
-
-  describe("/register-completions", () => {
-    const defaultHeaders = {
-      Authorization: "Basic kissa",
-    }
-    const postCompletions = post("/api/register-completions", defaultHeaders)
-
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
-
-    it("errors on wrong authorization", async () => {
-      return postCompletions({
-        data: { foo: 1 },
-        headers: { Authorization: "foo" },
-      })
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.status).toBe(401)
-        })
-    })
-
-    it("errors on non-existent secret", async () => {
-      return postCompletions({
-        data: { foo: 1 },
-        headers: { Authorization: "Basic koira" },
-      })
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.status).toBe(401)
-        })
-    })
-
-    it("errors on no completions", async () => {
-      return postCompletions({ data: { foo: 1 } })
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.status).toBe(400)
-        })
-    })
-
-    it("errors on malformed completion", async () => {
-      return postCompletions({
-        data: {
-          completions: [
-            {
-              foo: 1,
-            },
-          ],
-        },
-      })
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.status).toBe(403)
-        })
-    })
-
-    it("creates registered completions", async () => {
-      const res = await postCompletions({
-        data: {
-          completions: [
-            {
-              completion_id: "30000000-0000-0000-0000-000000000102",
-              student_number: "12345",
-            },
-            {
-              completion_id: "30000000-0000-0000-0000-000000000103",
-              student_number: "12345",
-            },
-          ],
-        },
-      })
-
-      expect(res.status).toBe(200)
-
-      const addedCompletions = await ctx.prisma.completionRegistered.findMany({
-        where: {
-          user_id: "20000000000000000000000000000102",
-        },
-      })
-
-      expect(orderBy(addedCompletions, "completion_id")).toMatchSnapshot([
-        {
-          id: expect.any(String),
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        },
-        {
-          id: expect.any(String),
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        },
-      ])
-    })
-  })
+  const { get, post } = ctx
 
   describe("/user-course-settings", () => {
     const tmc = fakeTMCCurrent({
@@ -372,133 +252,133 @@ describe("API", () => {
         })
       })
     })
+  })
 
-    describe("/api/completions", () => {
-      const tmc = fakeTMCCurrent({
-        "Bearer normal": [200, normalUserDetails],
-        "Bearer admin": [200, adminUserDetails],
-      })
+  describe("/api/completions", () => {
+    const tmc = fakeTMCCurrent({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer admin": [200, adminUserDetails],
+    })
 
-      beforeAll(() => tmc.setup())
-      afterAll(() => tmc.teardown())
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
 
-      beforeEach(async () => {
-        await seed(ctx.prisma)
-      })
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
 
-      const getCompletions = (slug: string, registered: boolean = false) =>
-        get(
-          `/api/completions/${slug}${
-            registered ? `?registered=${registered}` : ""
-          }`,
-          {},
-        )
-
-      it("errors on no auth", async () => {
-        return getCompletions("course1")({})
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(401)
-          })
-      })
-
-      it("errors on non-existent organization", async () => {
-        return getCompletions("course1")({
-          headers: { Authorization: "Basic bogus" },
-        })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(401)
-          })
-      })
-
-      it("errors on non-basic authorization", async () => {
-        return getCompletions("course1")({
-          headers: { Authorization: "Bearer admin" },
-        })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(401)
-          })
-      })
-
-      it("errors on non-existent course", async () => {
-        return getCompletions("bogus")({
-          headers: { Authorization: "Basic kissa" },
-        })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(404)
-            expect(response.data.message).toContain("Course not found")
-          })
-      })
-
-      it("returns correctly on course, skipping registered completions", async () => {
-        const res = await getCompletions("course1")({
-          headers: { Authorization: "Basic kissa" },
-        })
-
-        const completions = orderBy(res.data, "id")
-
-        expect(completions.map((c) => c.id)).toEqual([
-          "12400000-0000-0000-0000-000000000001",
-          "30000000-0000-0000-0000-000000000102",
-          "30000000-0000-0000-0000-000000000104",
-        ])
-      })
-
-      it("returns correctly on course alias, skipping registered completions", async () => {
-        const res = await getCompletions("alias")({
-          headers: { Authorization: "Basic kissa" },
-        })
-
-        const completions = orderBy(res.data, "id")
-
-        expect(completions.map((c) => c.id)).toEqual([
-          "12400000-0000-0000-0000-000000000001",
-          "30000000-0000-0000-0000-000000000102",
-          "30000000-0000-0000-0000-000000000104",
-        ])
-      })
-
-      it("returns correctly on course when registered query parameter is set", async () => {
-        const res = await getCompletions(
-          "course1",
-          true,
-        )({
-          headers: { Authorization: "Basic kissa" },
-        })
-
-        const completions = orderBy(res.data, "id")
-
-        expect(completions.map((c) => c.id)).toEqual([
-          "12400000-0000-0000-0000-000000000001",
-          "30000000-0000-0000-0000-000000000102",
-          "30000000-0000-0000-0000-000000000104",
-          "30000000-0000-0000-0000-000000000105",
-        ])
-      })
-
-      const completionInstructions = get(
-        "/api/completionInstructions/course1/en",
+    const getCompletions = (slug: string, registered: boolean = false) =>
+      get(
+        `/api/completions/${slug}${
+          registered ? `?registered=${registered}` : ""
+        }`,
         {},
       )
 
-      it("returns course instructions", async () => {
-        const res = await completionInstructions({})
-
-        expect(res.status).toBe(200)
-      })
-
-      const completionTiers = get("/api/completionTiers/course1", {})
-
-      it("returns course with multiple tiered registration links", async () => {
-        const res = await completionTiers({
-          headers: { Authorization: "Bearer normal" },
+    it("errors on no auth", async () => {
+      return getCompletions("course1")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
         })
+    })
 
-        expect(res.status).toBe(200)
+    it("errors on non-existent organization", async () => {
+      return getCompletions("course1")({
+        headers: { Authorization: "Basic bogus" },
       })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on non-basic authorization", async () => {
+      return getCompletions("course1")({
+        headers: { Authorization: "Bearer admin" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on non-existent course", async () => {
+      return getCompletions("bogus")({
+        headers: { Authorization: "Basic kissa" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(404)
+          expect(response.data.message).toContain("Course not found")
+        })
+    })
+
+    it("returns correctly on course, skipping registered completions", async () => {
+      const res = await getCompletions("course1")({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      const completions = orderBy(res.data, "id")
+
+      expect(completions.map((c) => c.id)).toEqual([
+        "12400000-0000-0000-0000-000000000001",
+        "30000000-0000-0000-0000-000000000102",
+        "30000000-0000-0000-0000-000000000104",
+      ])
+    })
+
+    it("returns correctly on course alias, skipping registered completions", async () => {
+      const res = await getCompletions("alias")({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      const completions = orderBy(res.data, "id")
+
+      expect(completions.map((c) => c.id)).toEqual([
+        "12400000-0000-0000-0000-000000000001",
+        "30000000-0000-0000-0000-000000000102",
+        "30000000-0000-0000-0000-000000000104",
+      ])
+    })
+
+    it("returns correctly on course when registered query parameter is set", async () => {
+      const res = await getCompletions(
+        "course1",
+        true,
+      )({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      const completions = orderBy(res.data, "id")
+
+      expect(completions.map((c) => c.id)).toEqual([
+        "12400000-0000-0000-0000-000000000001",
+        "30000000-0000-0000-0000-000000000102",
+        "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
+      ])
+    })
+
+    const completionInstructions = get(
+      "/api/completionInstructions/course1/en",
+      {},
+    )
+
+    it("returns course instructions", async () => {
+      const res = await completionInstructions({})
+
+      expect(res.status).toBe(200)
+    })
+
+    const completionTiers = get("/api/completionTiers/course1", {})
+
+    it("returns course with multiple tiered registration links", async () => {
+      const res = await completionTiers({
+        headers: { Authorization: "Bearer normal" },
+      })
+
+      expect(res.status).toBe(200)
     })
   })
 
@@ -743,7 +623,7 @@ describe("API", () => {
       try {
         await postUpdateUserFromTMC({
           data: { upstream_id: 1, secret: "foo" },
-          headers: { authorization: "Bearer ok" },
+          headers: { authorization: "Bearer normal" },
         })
 
         fail()
@@ -759,7 +639,7 @@ describe("API", () => {
       try {
         await postUpdateUserFromTMC({
           data: { secret: "secret" },
-          headers: { authorization: "Bearer ok" },
+          headers: { authorization: "Bearer normal" },
         })
 
         fail()
@@ -781,7 +661,7 @@ describe("API", () => {
 
       const res = await postUpdateUserFromTMC({
         data: { upstream_id: 666, secret: "secret" },
-        headers: { authorization: "Bearer ok" },
+        headers: { authorization: "Bearer normal" },
       })
 
       expect(res.status).toBe(200)
@@ -797,38 +677,193 @@ describe("API", () => {
     })
 
     it("returns 500 on update error", async () => {
-      const mockCtx = {
-        ...ctx,
-        prisma: {
-          ...ctx.prisma,
-          user: {
-            ...ctx.prisma.user,
-            update: async () => {
-              throw new Error()
-            },
-          },
-        },
+      const spy = jest.spyOn(ctx.prisma.user, "update")
+      // @ts-ignore: never mind the return type
+      spy.mockImplementation(async () => {
+        throw new Error("Mocked prisma error")
+      })
+      try {
+        await postUpdateUserFromTMC({
+          data: { secret: "secret", upstream_id: 666 },
+          headers: { authorization: "Bearer normal" },
+        })
+        fail()
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(500)
+        expect(response.data.success).toBe(false)
+        expect(response.data.message).toBe("User update not successful")
+      } finally {
+        jest.clearAllMocks()
       }
-
-      await updateUserFromTMC(mockCtx as any)(
-        {
-          headers: {
-            authorization: "Bearer ok",
-          },
-          body: {
-            upstream_id: 1,
-            secret: "secret",
-          },
-        } as any,
-        {
-          status: (code: number) => ({
-            json: (json: any) => {
-              expect(code).toBe(500)
-              expect(json.message).toBe("User update not successful")
-            },
-          }),
-        } as any,
-      )
     })
   })
+
+  describe("/user/update-person-affiliation", () => {
+    const tmc = fakeTMCCurrent({
+      "Bearer admin": [200, adminUserDetails],
+      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
+    })
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const postUpdatePersonAffiliation = post(
+      "/api/user/update-person-affiliation",
+      {},
+    )
+
+    it("errors on auth error", async () => {
+      try {
+        await postUpdatePersonAffiliation({
+          data: {
+            person_affiliation: "member",
+            personal_unique_code: "personal:unique:code:university.fi:admin",
+            home_organization: "university.fi",
+          },
+        })
+
+        fail()
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(403)
+        expect(response.data.success).toBe(false)
+        expect(response.data.message).toBe("Not logged in.")
+      }
+    })
+
+    it("errors on missing parameters", async () => {
+      const testData = [{
+        person_affiliation: "member",
+        home_organization: "university.fi",
+      }, {
+        person_affiliation: "member",
+        personal_unique_code: "personal:unique:code:university.fi:admin",
+      }]
+
+      for (const data of testData) {
+        try {
+          await postUpdatePersonAffiliation({
+            data,
+            headers: {
+              authorization: "Bearer admin"
+            }
+          })
+          fail()
+        } catch (err: any) {
+          const { response } = err
+          expect(response.status).toBe(400)
+          expect(response.data.success).toBe(false)
+        }
+      }
+    })
+
+    it("doesn't change if same as existing", async () => {
+      const before = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000001"
+        }
+      })
+
+      const res = await postUpdatePersonAffiliation({
+        data: {
+          person_affiliation: "member;student;staff",
+          personal_unique_code: "personal:unique:code:university.fi:admin",
+          home_organization: "university.fi",
+        },
+        headers: { authorization: "Bearer admin" }
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data.success).toBe(true)
+      expect(res.data.message).toBe("No change")
+
+      const after = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000001"
+        }
+      })
+
+      expect(before?.updated_at).toEqual(after?.updated_at)
+      expect(before?.person_affiliation).toEqual(after?.person_affiliation)
+      expect(before?.person_affiliation_updated_at).toEqual(after?.person_affiliation_updated_at)
+    })
+
+    it("updates value and date", async () => {
+      const before = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000001"
+        }
+      })
+
+      const res = await postUpdatePersonAffiliation({
+        data: {
+          person_affiliation: "member;student;staff;wizard",
+          personal_unique_code: "personal:unique:code:university.fi:admin",
+          home_organization: "university.fi",
+        },
+        headers: { authorization: "Bearer admin" }
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data.success).toBe(true)
+      expect(res.data.message).toBe("Person affiliation updated")
+
+      const after = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000001"
+        }
+      })
+
+      expect(before?.person_affiliation).not.toEqual(after?.person_affiliation)
+      expect(before?.person_affiliation_updated_at! < after?.person_affiliation_updated_at!).toBeTruthy()
+    })
+
+    it("updates correct entry when user has multiple organizations", async () => {
+      const beforeFirst = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000002"
+        }
+      })
+      const beforeSecond = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000003"
+        }
+      })
+  
+      const res = await postUpdatePersonAffiliation({
+        data: {
+          person_affiliation: "member;student;wizard",
+          personal_unique_code: "personal:unique:code:second-university.fi:third",
+          home_organization: "second-university.fi",
+        },
+        headers: { authorization: "Bearer third" }
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data.success).toBe(true)
+      expect(res.data.message).toBe("Person affiliation updated")
+
+      const afterFirst = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000002"
+        }
+      })
+      const afterSecond = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          id: "65400000000000000000000000000003"
+        }
+      })
+
+      expect(beforeFirst).toEqual(afterFirst)
+      expect(beforeSecond?.person_affiliation).not.toEqual(afterSecond?.person_affiliation)
+      expect(beforeSecond?.person_affiliation_updated_at! < afterSecond?.person_affiliation_updated_at!).toBeTruthy()
+    })
+  
+  })
+
 })

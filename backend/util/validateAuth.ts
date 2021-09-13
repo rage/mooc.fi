@@ -1,16 +1,19 @@
+import fs from "fs"
 import jwt from "jsonwebtoken"
 
 import { AccessToken } from "@prisma/client"
 
 import { ApiContext } from "../auth"
 import { invalidate } from "../services/redis"
+import { isNullOrUndefined } from "./isNullOrUndefined"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const fs = require("fs")
 const publicKey = isProduction
   ? process.env.PUBLIC_KEY
-  : fs.readFileSync(process.env.PUBLIC_KEY_TEST)
+  : fs.readFileSync(process.env.PUBLIC_KEY_TEST ?? "")
+
+if (isNullOrUndefined(publicKey) || publicKey === "") { throw new Error("No public key set in env")}
 
 export function validateEmail(value: string): value is string {
   const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -55,7 +58,7 @@ export async function requireAuth(
   }
 
   return new Promise((resolve, reject) =>
-    jwt.verify(token, publicKey, async (err: any, data: any) => {
+    jwt.verify(token, publicKey ?? "", async (err: any, data: any) => {
       if (err) {
         await knex("access_tokens")
           .update({ valid: false })
