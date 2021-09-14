@@ -1,17 +1,22 @@
-import { ApiContext } from "."
-import { requireAuth } from "../util/validateAuth"
+import { Request, Response } from "express"
+import { omit } from "lodash"
+
 import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
-import { validatePassword, invalidateAuth } from "../util/validateAuth"
-import { argon2Hash } from "../util/hashPassword"
+
+import { invalidate } from "../services/redis"
 import {
   authenticateUser,
   getCurrentUserDetails,
   getUsersByEmail,
   updateUser,
 } from "../services/tmc"
-import { Request, Response } from "express"
-import { omit } from "lodash"
-import { invalidate } from "../services/redis"
+import { argon2Hash } from "../util/hashPassword"
+import {
+  invalidateAuth,
+  requireAuth,
+  validatePassword,
+} from "../util/validateAuth"
+import { ApiContext } from "./"
 
 const argon2 = require("argon2")
 
@@ -140,6 +145,14 @@ export function updatePassword(ctx: ApiContext) {
       }
 
       const tmcUser = await authenticateUser(user.email, oldPassword)
+
+      if (!tmcUser.token) {
+        return res.status(403).json({
+          status: 403,
+          success: false,
+          message: "Could not authenticate user.",
+        })
+      }
 
       let userDetails = await getCurrentUserDetails(tmcUser.token)
       let updateDetails = {

@@ -1,14 +1,15 @@
+import axios, { Method } from "axios"
+
 import {
-  getTestContext,
+  fakeGetAccessToken,
   fakeTMCCurrent,
   fakeTMCUserCreate,
-  fakeGetAccessToken,
   fakeTMCUserEmailNotFound,
   fakeTMCUserWrongPassword,
+  getTestContext,
 } from "../../tests/__helpers"
 import { adminUserDetails, normalUserDetails } from "../../tests/data"
 import { seed } from "../../tests/data/seed"
-import axios, { Method } from "axios"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({

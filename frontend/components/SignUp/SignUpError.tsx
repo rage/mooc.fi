@@ -1,6 +1,8 @@
-import { StyledPaper, Header, StyledTypography } from "./common"
+// import { StyledPaper, Header, StyledTypography } from "./common"
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
+
+import { Alert } from "@material-ui/core"
 
 type SignUpError =
   | "verify-user"
@@ -17,6 +19,11 @@ function SignUpError({ type = "generic-error", email }: SignUpErrorProps) {
   const t = useTranslator(SignUpTranslations)
 
   return (
+    <Alert severity="error">
+      <span dangerouslySetInnerHTML={{ __html: t(type, { email }) }} />
+    </Alert>
+  )
+  /*
     <StyledPaper>
       <Header component="h1" variant="h4" gutterBottom={true} align="center">
         {t("errorTitle")}
@@ -27,7 +34,7 @@ function SignUpError({ type = "generic-error", email }: SignUpErrorProps) {
         dangerouslySetInnerHTML={{ __html: t(type, { email }) }}
       />
     </StyledPaper>
-  )
+  )*/
 }
 
 export default SignUpError
