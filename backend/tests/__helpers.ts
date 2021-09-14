@@ -3,12 +3,18 @@ import axios, { Method } from "axios"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { Server } from "http"
-import { knex, Knex } from "knex"
+import {
+  knex,
+  Knex,
+} from "knex"
 import { nanoid } from "nanoid"
 import nock from "nock"
 import winston from "winston"
 
-import { PrismaClient, User } from "@prisma/client"
+import {
+  PrismaClient,
+  User,
+} from "@prisma/client"
 
 import binPrisma from "../prisma"
 import server from "../server"
@@ -128,7 +134,7 @@ function createTestContext(testContext: TestContext) {
   let serverInstance: Server | null = null
   let port: number | null = null
 
-  const prismaCtx = prismaTestContext()
+  const prismaCtx = createPrismaTestContext()
 
   return {
     async before() {
@@ -177,7 +183,7 @@ function createTestContext(testContext: TestContext) {
   }
 }
 
-function prismaTestContext() {
+function createPrismaTestContext() {
   // const knexBinary = join(__dirname, "..", "node_modules", ".bin", "knex")
 
   let schemaName = ""
