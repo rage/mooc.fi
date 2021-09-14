@@ -146,7 +146,15 @@ export function updatePassword(ctx: ApiContext) {
 
       const tmcUser = await authenticateUser(user.email, oldPassword)
 
-      let userDetails = await getCurrentUserDetails(tmcUser.token ?? "")
+      if (!tmcUser.token) {
+        return res.status(403).json({
+          status: 403,
+          success: false,
+          message: "Could not authenticate user.",
+        })
+      }
+
+      let userDetails = await getCurrentUserDetails(tmcUser.token)
       let updateDetails = {
         ...userDetails,
         old_password: oldPassword,
@@ -154,7 +162,7 @@ export function updatePassword(ctx: ApiContext) {
         password_repeat: confirmPassword,
       }
 
-      await updateUser(user.upstream_id, updateDetails, tmcUser.token ?? "")
+      await updateUser(user.upstream_id, updateDetails, tmcUser.token)
 
       const hashPassword = await argon2Hash(password)
 
