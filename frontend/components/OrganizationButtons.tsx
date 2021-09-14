@@ -39,6 +39,7 @@ function OrganizationButtons({
 
   return (
     <ButtonContainer>
+      {error && <Alert severity="error">{error}</Alert>}
       {hyVisible && (
         <OrganizationButton variant="hy" href={hyURL} caption={hyCaption} />
       )}
@@ -49,7 +50,6 @@ function OrganizationButtons({
           caption={hakaCaption}
         />
       )}
-      {error && <Alert severity="error">{error}</Alert>}
     </ButtonContainer>
   )
 }

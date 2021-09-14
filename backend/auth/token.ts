@@ -424,8 +424,9 @@ export function implicitToken() {
 }
 
 export function validateToken(ctx: ApiContext) {
-  return async (req: Request, res: Response) => {
-    let auth = await requireAuth(req.headers.authorization ?? "", ctx)
+  return async (req: any, res: any) => {
+    let auth = await requireAuth(req.headers.authorization, ctx)
+
     if (auth.error) {
       return res.status(403).json({ error: auth })
     } else {

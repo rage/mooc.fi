@@ -3,18 +3,12 @@ import axios, { Method } from "axios"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { Server } from "http"
-import {
-  knex,
-  Knex,
-} from "knex"
+import { knex, Knex } from "knex"
 import { nanoid } from "nanoid"
 import nock from "nock"
 import winston from "winston"
 
-import {
-  PrismaClient,
-  User,
-} from "@prisma/client"
+import { PrismaClient, User } from "@prisma/client"
 
 import binPrisma from "../prisma"
 import server from "../server"

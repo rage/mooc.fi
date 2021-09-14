@@ -3,7 +3,6 @@ import { getAccessToken } from "/lib/authentication"
 import { validateToken } from "/packages/moocfi-auth"
 import { NextPageContext } from "next"
 import { AppContext } from "next/app"
-import Head from "next/head"
 // import { NextPageContext } from "next"
 import { renderToString } from "react-dom/server"
 
@@ -122,10 +121,6 @@ const withApolloClient = (App: any) => {
         // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
         console.error("Error while running `getDataFromTree`", error)
       }
-
-      // getDataFromTree does not call componentWillUnmount
-      // head side effect therefore need to be cleared manually
-      Head.rewind()
     }
 
     // Extract query data from the Apollo store

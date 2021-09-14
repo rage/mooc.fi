@@ -1,24 +1,27 @@
-import { useQuery } from "@apollo/client"
-import Spinner from "/components/Spinner"
-import ErrorMessage from "/components/ErrorMessage"
-import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
-import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
-import withSignedIn from "/lib/with-signed-in"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import React, { ChangeEvent, useEffect, useState } from "react"
-import ProfileTabs from "/components/Profile/ProfileTabs"
-import { UserOverViewQuery } from "/graphql/queries/user"
-import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUserOverView"
-import { useLanguageContext } from "/contexts/LanguageContext"
-import { useRouter } from "next/router"
-import { useQueryParameter } from "/util/useQueryParameter"
+
 import Container from "/components/Container"
+import ErrorMessage from "/components/ErrorMessage"
 import ConsentNotification from "/components/Profile/ConsentNotification"
+import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
+import ProfileTabs from "/components/Profile/ProfileTabs"
+import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
+import Spinner from "/components/Spinner"
+import { useLanguageContext } from "/contexts/LanguageContext"
+import { UserOverViewQuery } from "/graphql/queries/user"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
+import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUserOverView"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
 
 const tabs: Record<string, number> = {
   points: 0,
   completions: 1,
-  settings: 2,
+  connections: 2,
+  settings: 3,
 }
 const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
   (acc, [key, value]) => ({ ...acc, [value]: key }),

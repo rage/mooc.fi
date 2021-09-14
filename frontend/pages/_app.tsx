@@ -106,7 +106,11 @@ export function MyApp({ Component, pageProps }: AppProps) {
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-  }, [])
+
+    return () => {
+      router.events.off("routeChangeComplete", logPageView)
+    }
+  }, [router])
 
   const {
     lng = "fi",

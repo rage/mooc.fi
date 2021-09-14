@@ -150,7 +150,15 @@ export function updatePassword(ctx: ApiContext) {
 
       const tmcUser = await authenticateUser(user.email, oldPassword)
 
-      let userDetails = await getCurrentUserDetails(tmcUser.token ?? "")
+      if (!tmcUser.token) {
+        return res.status(403).json({
+          status: 403,
+          success: false,
+          message: "Could not authenticate user.",
+        })
+      }
+
+      let userDetails = await getCurrentUserDetails(tmcUser.token)
       let updateDetails = {
         ...userDetails,
         old_password: oldPassword,

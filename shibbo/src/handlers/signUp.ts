@@ -28,7 +28,7 @@ export const signUpHandler = async (req: Request, res: Response) => {
   let status = {
     error: true,
     type: "",
-    query: "",
+    query: [] as string[],
   }
 
   try {
@@ -91,11 +91,11 @@ export const signUpHandler = async (req: Request, res: Response) => {
           })
         } else {
           // not verified, not logged in
-          status.query = `email=${encodeURIComponent(data.user.email)}`
+          status.query.push(`email=${encodeURIComponent(data.user.email)}`)
           // TODO: prompt user to login with previous details and verify account
         }
       } else {
-        status.query = `email=${encodeURIComponent(data.user.email)}`
+        status.query.push(`email=${encodeURIComponent(data.user.email)}`)
         status.type = "already-registered"
         // TODO: show some info to user about this, redirect to details?
       }
@@ -106,13 +106,14 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
   // TODO: show these on the actual sign-up page
   if (status.error) {
-    redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/error/${status.type}`
+    status.query.push(`error=${status.type}`)
+    redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up`
   } else {
     redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`
   }
 
   if (status.query) {
-    redirectUrl += `?${status.query}`
+    redirectUrl += `?${status.query.join("&")}`
   }
 
   return res.redirect(redirectUrl)

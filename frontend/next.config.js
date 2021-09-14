@@ -22,6 +22,13 @@ const nextConfiguration = {
     NEXT_PUBLIC_TMC_HOST: process.env.TMC_HOST,
   },
   trailingSlash: true,
+  images: {
+    disableStaticImages: true,
+    // nextjs 11 supports its own static image imports with next/image -
+    // however, we were using next-optimized-images here, so we'll disable
+    // it now to avoid refactoring the image loading
+  },
+  webpack5: true,
 }
 
 module.exports = withPlugins(
