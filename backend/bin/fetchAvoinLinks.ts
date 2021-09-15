@@ -1,10 +1,12 @@
 import axios from "axios"
-import { DateTime } from "luxon"
 import { maxBy } from "lodash"
-import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
+import { DateTime } from "luxon"
+
 import { OpenUniversityRegistrationLink } from "@prisma/client"
+
+import prisma from "../prisma"
 import { AvoinError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -32,15 +34,17 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 
   const now: DateTime = DateTime.fromJSDate(new Date())
 
-  const alternatives = res.map((data) => {
-    const linkStartDate: DateTime = DateTime.fromISO(data.alkupvm)
-    const linkStopDate: DateTime = DateTime.fromISO(data.loppupvm)
-    return {
-      link: data.oodi_id,
-      stopDate: linkStopDate,
-      startTime: linkStartDate,
-    } as Link
-  })
+  const alternatives = res
+    .map((data) => {
+      const linkStartDate: DateTime = DateTime.fromISO(data.alkupvm)
+      const linkStopDate: DateTime = DateTime.fromISO(data.loppupvm)
+      return {
+        link: data.oodi_id,
+        stopDate: linkStopDate,
+        startTime: linkStartDate,
+      } as Link
+    })
+    .filter((link) => Boolean(link.link))
 
   let openLinks = alternatives.filter(
     (o) => o.startTime < now && o.stopDate > now,
@@ -55,7 +59,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 
   logger.info(`Best link found was: ${JSON.stringify(bestLink)}`)
 
-  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
+  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?s=${bestLink.link}`
 
   logger.info("Updating link to " + url)
   await prisma.openUniversityRegistrationLink.update({
