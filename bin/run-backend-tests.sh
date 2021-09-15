@@ -19,7 +19,7 @@ if [ -n "$CIRCLE_SHA1" ]; then
     BASE_BRANCH=$(curl -H ''Authorization: token $GITHUB_TOKEN'' -fsSL $URL | jq -r '.base.ref')
     echo "We're on $CIRCLE_BRANCH and our base branch is $BASE_BRANCH"
     if [ -n "$BASE_BRANCH" ] && [ $CIRCLE_BRANCH != $BASE_BRANCH ]; then
-      JEST_OPTIONS="--baseBranch $BASE_BRANCH --targetBranch $CIRCLE_BRANCH"
+      JEST_OPTIONS="--changedSince origin/$BASE_BRANCH"
     fi
   fi
 else
