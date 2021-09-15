@@ -32,7 +32,9 @@ cd backend
 
 echo "Running tests"
 
-docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
+docker run \
+  --volume=/.git:/app/.git \
+  --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
   --env PRIVATE_KEY_TEST=config/mooc-private-test.pem \
@@ -40,7 +42,6 @@ docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env AUTH_ISSUER=issuer \
   --network host \
   --name "$TEST_NAME" "$TAG" \
-  --volume=/.git:/app/.git \
   /bin/bash -c "npm run create-test-db; npm run test -- $JEST_OPTIONS --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
