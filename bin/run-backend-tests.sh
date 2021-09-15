@@ -30,8 +30,8 @@ TEST_NAME="test-$REV-$DATE"
 
 cd backend
 
-echo "pwd/"
-ls "$(pwd)"/ -la
+echo "root/"
+ls / -la
 
 echo "current"
 ls -la
