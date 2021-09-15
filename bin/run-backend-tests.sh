@@ -28,6 +28,7 @@ fi
 TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
 TEST_NAME="test-$REV-$DATE"
 
+
 cd backend
 
 echo "pwd $(pwd)"
@@ -37,8 +38,10 @@ ls .. -la
 
 echo "Running tests"
 
+#   --mount type=bind,source="/root/project/.git",target=/app/.git \
+
+docker cp /root/project/.git "$TEST_NAME":/app
 docker run \
-  --mount type=bind,source=/root/project/.git,target=/app/.git \
   --env NODE_ENV=test \
   --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
