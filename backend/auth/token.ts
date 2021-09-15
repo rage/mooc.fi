@@ -304,6 +304,7 @@ export function token(ctx: ApiContext) {
       case "password":
         result = await exchangePassword(req.body.email, req.body.password, ctx)
 
+        console.log("with body", req.body, "exchange password", result)
         if (!result.success) {
           return res.status(result.status).json({
             result,
@@ -455,7 +456,7 @@ export async function signIn(
       .orWhere("username", emailOrUsername)
   )?.[0]
 
-  const tmcToken = await authenticateUser(user?.email ?? "", password)
+  const tmcToken = await authenticateUser(user?.email, password)
 
   let client = (
     await ctx.knex

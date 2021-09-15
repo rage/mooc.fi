@@ -147,6 +147,7 @@ export const authenticateUser = async (
   token: string | null
   error: object | null
 }> => {
+  console.log("will authenticate with ")
   return await axios({
     method: "POST",
     url: `${BASE_URL}/oauth/token`,
