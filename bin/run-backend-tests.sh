@@ -6,6 +6,14 @@ DATE=$(date +%s)
 if [ -n "$CIRCLE_SHA1" ]; then
   echo "Running in Circle CI"
   REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
+
+  if [ -n "$CIRCLE_PR_NUMBER" ]; then
+    URL="https://api.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER?access_token=$GITHUB_TOKEN"
+    BASE_BRANCH=$(curl -fsSL $URL | jq -r '.base.ref')
+    if [ -n "$BASE_BRANCH" ] && [ $CIRCLE_BRANCH != $BASE_BRANCH ]; then
+      JEST_OPTIONS = "--baseBranch $BASE_BRANCH --targetBranch $CIRCLE_BRANCH"
+    fi
+  fi
 else
   echo "Running outside CI"
   REV="$DATE-$(git rev-parse --verify HEAD)"
@@ -26,7 +34,7 @@ docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env AUTH_ISSUER=issuer \
   --network host \
   --name "$TEST_NAME" "$TAG" \
-  /bin/bash -c "npm run create-test-db; npm run test -- --ci --coverage --reporters=default --reporters=jest-junit" 
+  /bin/bash -c "npm run create-test-db; npm run test -- $JEST_OPTIONS --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
 
