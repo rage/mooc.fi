@@ -14,7 +14,7 @@ if [ -n "$CIRCLE_SHA1" ]; then
   if [ -n "$CIRCLE_PR_NUMBER" ]; then
     echo "We're pull request #$CIRCLE_PR_NUMBER"
     URL="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER"
-    BASE_BRANCH=$(curl -H ''Authorization: token $GITHUB_TOKEN'' -fsSL $URL | jq -r '.base.ref')
+    BASE_BRANCH=$(curl -H "Authorization: token $GITHUB_TOKEN" -fsSL $URL | jq -r '.base.ref')
 
     if [ -n "$BASE_BRANCH" ] && [ $CIRCLE_BRANCH != $BASE_BRANCH ]; then
       JEST_OPTIONS="--changedSince origin/$BASE_BRANCH"
@@ -40,7 +40,7 @@ docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env AUTH_ISSUER=issuer \
   --network host \
   --name "$TEST_NAME" "$TAG" \
-  -v /.git:/app/.git \
+  --volume=/.git:/app/.git \
   /bin/bash -c "npm run create-test-db; npm run test -- $JEST_OPTIONS --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
