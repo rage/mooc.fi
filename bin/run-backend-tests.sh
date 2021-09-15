@@ -30,10 +30,16 @@ TEST_NAME="test-$REV-$DATE"
 
 cd backend
 
+echo "pwd/"
+ls "$(pwd)"/ -la
+
+echo "current"
+ls -la
+
 echo "Running tests"
 
 docker run \
-  --mount type=bind,source=/.git,target=/app/.git \
+  --mount type=bind,source="$(pwd)"/.git,target=/app/.git \
   --env NODE_ENV=test \
   --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
