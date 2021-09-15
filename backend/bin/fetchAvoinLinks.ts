@@ -59,7 +59,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 
   logger.info(`Best link found was: ${JSON.stringify(bestLink)}`)
 
-  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
+  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?s=${bestLink.link}`
 
   logger.info("Updating link to " + url)
   await prisma.openUniversityRegistrationLink.update({
