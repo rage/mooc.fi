@@ -35,13 +35,10 @@ echo "pwd $(pwd)"
 echo ".."
 ls .. -la
 
-echo "current"
-ls -la
-
 echo "Running tests"
 
 docker run \
-  --mount type=bind,source="$(pwd)"/../.git,target=/app/.git \
+  --mount type=bind,source=/root/project/.git,target=/app/.git \
   --env NODE_ENV=test \
   --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
