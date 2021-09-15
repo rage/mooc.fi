@@ -15,9 +15,8 @@ if [ -n "$CIRCLE_SHA1" ]; then
   if [ -n "$CIRCLE_PR_NUMBER" ]; then
     echo "We are pull request #$CIRCLE_PR_NUMBER"
     echo "Project info $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME"
-    URL="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER?access_token=$GITHUB_TOKEN"
-    echo $URL
-    BASE_BRANCH=$(curl -fsSL $URL | jq -r '.base.ref')
+    URL="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER"
+    BASE_BRANCH=$(curl -H ''Authorization: token $GITHUB_TOKEN'' -fsSL $URL | jq -r '.base.ref')
     echo "We're on $CIRCLE_BRANCH and our base branch is $BASE_BRANCH"
     if [ -n "$BASE_BRANCH" ] && [ $CIRCLE_BRANCH != $BASE_BRANCH ]; then
       JEST_OPTIONS="--baseBranch $BASE_BRANCH --targetBranch $CIRCLE_BRANCH"
