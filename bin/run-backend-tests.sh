@@ -33,8 +33,9 @@ cd backend
 echo "Running tests"
 
 docker run \
-  --volume=/.git:/app/.git \
-  --env NODE_ENV=test --env PGPASSWORD=prisma \
+  --mount source=.git,target=/app/.git \
+  --env NODE_ENV=test \
+  --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
   --env PRIVATE_KEY_TEST=config/mooc-private-test.pem \
