@@ -33,7 +33,7 @@ cd backend
 echo "Running tests"
 
 docker run \
-  --mount source=.git,target=/app/.git \
+  --mount type=bind,source=/.git,target=/app/.git \
   --env NODE_ENV=test \
   --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
