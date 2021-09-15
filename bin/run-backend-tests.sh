@@ -8,8 +8,10 @@ if [ -n "$CIRCLE_SHA1" ]; then
   REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
 
   if [ -n "$CIRCLE_PR_NUMBER" ]; then
+    echo "Checking if we are a pull request"
     URL="https://api.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER?access_token=$GITHUB_TOKEN"
     BASE_BRANCH=$(curl -fsSL $URL | jq -r '.base.ref')
+    echo "We're on $CIRCLE_BRANCH and our base branch is $BASE_BRANCH"
     if [ -n "$BASE_BRANCH" ] && [ $CIRCLE_BRANCH != $BASE_BRANCH ]; then
       JEST_OPTIONS = "--baseBranch $BASE_BRANCH --targetBranch $CIRCLE_BRANCH"
     fi
