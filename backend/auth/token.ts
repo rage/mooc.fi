@@ -1,4 +1,9 @@
-import { AccessToken, AuthorizationCode, Client, User } from "@prisma/client"
+import {
+  AccessToken,
+  AuthorizationCode,
+  Client,
+  User,
+} from "@prisma/client"
 
 import { authenticateUser } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"
@@ -304,7 +309,6 @@ export function token(ctx: ApiContext) {
       case "password":
         result = await exchangePassword(req.body.email, req.body.password, ctx)
 
-        console.log("with body", req.body, "exchange password", result)
         if (!result.success) {
           return res.status(result.status).json({
             result,
