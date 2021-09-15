@@ -7,7 +7,7 @@ if [ -n "$CIRCLE_SHA1" ]; then
   echo "Running in Circle CI"
   REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
 
-  CIRCLE_PR_NUMBER = ${CIRCLE_PR_NUMBER:=${CIRCLE_PULL_REQUEST##*/}} 
+  CIRCLE_PR_NUMBER=${CIRCLE_PR_NUMBER:=${CIRCLE_PULL_REQUEST##*/}} 
   echo "Checking if we are a pull request"
   if [ -n "$CIRCLE_PR_NUMBER" ]; then
     echo "We are pull request #$CIRCLE_PR_NUMBER"
@@ -15,7 +15,7 @@ if [ -n "$CIRCLE_SHA1" ]; then
     BASE_BRANCH=$(curl -fsSL $URL | jq -r '.base.ref')
     echo "We're on $CIRCLE_BRANCH and our base branch is $BASE_BRANCH"
     if [ -n "$BASE_BRANCH" ] && [ $CIRCLE_BRANCH != $BASE_BRANCH ]; then
-      JEST_OPTIONS = "--baseBranch $BASE_BRANCH --targetBranch $CIRCLE_BRANCH"
+      JEST_OPTIONS="--baseBranch $BASE_BRANCH --targetBranch $CIRCLE_BRANCH"
     fi
   fi
 else
