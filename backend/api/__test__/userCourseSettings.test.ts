@@ -6,13 +6,13 @@ import {
   getTestContext,
   RequestGet,
   RequestPost,
-} from "../../tests/__helpers"
+} from "../../tests"
 import {
   adminUserDetails,
   normalUserDetails,
+  seed,
   thirdUserDetails,
 } from "../../tests/data"
-import { seed } from "../../tests/data/seed"
 
 const ctx = getTestContext()
 

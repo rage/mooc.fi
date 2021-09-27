@@ -3,9 +3,8 @@ import {
   fakeTMCCurrent,
   getTestContext,
   RequestGet,
-} from "../../tests/__helpers"
-import { normalUserDetails } from "../../tests/data"
-import { seed } from "../../tests/data/seed"
+} from "../../tests"
+import { normalUserDetails, seed } from "../../tests/data"
 
 const ctx = getTestContext()
 

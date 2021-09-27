@@ -1,12 +1,15 @@
 import {
-  getTestContext,
-  fakeTMCSpecific,
   fakeGetAccessToken,
-} from "../../../../tests/__helpers"
-import { seed } from "../../../../tests/data/seed"
-import { adminUserDetails, normalUserDetails } from "../../../../tests/data"
-import { KafkaContext } from "../kafkaContext"
+  fakeTMCSpecific,
+  getTestContext,
+} from "../../../../tests"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  seed,
+} from "../../../../tests/data"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
+import { KafkaContext } from "../kafkaContext"
 
 const ctx = getTestContext()
 const tmc = fakeTMCSpecific({

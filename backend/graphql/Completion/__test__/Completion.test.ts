@@ -1,7 +1,7 @@
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMCCurrent } from "../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
-import { seed } from "../../../tests/data/seed"
+
+import { fakeTMCCurrent, getTestContext } from "../../../tests"
+import { adminUserDetails, normalUserDetails, seed } from "../../../tests/data"
 
 const recheckMutation = gql`
   mutation RecheckCompletions($course_id: ID, $slug: String) {

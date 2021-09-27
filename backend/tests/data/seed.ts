@@ -1,27 +1,28 @@
 import type { PrismaClient } from "@prisma/client"
+
 import {
-  courses,
-  study_modules,
-  organizations,
-  users,
-  completions,
-  services,
-  userCourseSettings,
-  abStudies,
   abEnrollments,
-  exercises,
-  exerciseCompletions,
-  userCourseProgresses,
-  userCourseServiceProgresses,
-  emailTemplateThresholds,
-  completionsRegistered,
-  courseAliases,
-  openUniversityRegistrationLink,
+  abStudies,
+  accessToken,
   authorizationCode,
   client,
-  accessToken,
+  completions,
+  completionsRegistered,
+  courseAliases,
+  courses,
+  emailTemplateThresholds,
+  exerciseCompletions,
+  exercises,
+  openUniversityRegistrationLink,
+  organizations,
+  services,
+  study_modules,
+  userCourseProgresses,
+  userCourseServiceProgresses,
+  userCourseSettings,
+  users,
   verifiedUsers,
-} from "."
+} from "./fixtures"
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 

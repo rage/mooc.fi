@@ -1,17 +1,18 @@
+import nock from "nock"
+
 import {
-  getTestContext,
   fakeGetAccessToken,
   fakeUserDetailReply,
-} from "../../tests/__helpers"
-import { seed } from "../../tests/data/seed"
-import nock from "nock"
+  getTestContext,
+} from "../../tests"
+import { seed } from "../../tests/data"
+import { TMCError } from "../lib/errors"
 import {
-  syncTMCUsers,
   Change,
   deleteUsers,
+  syncTMCUsers,
   updateEmails,
 } from "../syncTMCUsers"
-import { TMCError } from "../lib/errors"
 
 const ctx = getTestContext()
 

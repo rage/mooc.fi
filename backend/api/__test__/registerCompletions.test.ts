@@ -1,11 +1,7 @@
 import { orderBy } from "lodash"
 
-import {
-  createRequestHelpers,
-  getTestContext,
-  RequestPost,
-} from "../../tests/__helpers"
-import { seed } from "../../tests/data/seed"
+import { createRequestHelpers, getTestContext, RequestPost } from "../../tests"
+import { seed } from "../../tests/data"
 
 const ctx = getTestContext()
 

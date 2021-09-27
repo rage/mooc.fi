@@ -1,7 +1,7 @@
-import { getTestContext } from "../../../../../tests/__helpers"
-import { seed } from "../../../../../tests/data/seed"
-import { Message } from "../interfaces"
+import { getTestContext } from "../../../../../tests"
+import { seed } from "../../../../../tests/data"
 import { KafkaContext } from "../../kafkaContext"
+import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"
 
 const ctx = getTestContext()
