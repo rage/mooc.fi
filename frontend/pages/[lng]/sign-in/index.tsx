@@ -54,7 +54,6 @@ const SignInPage = () => {
     },
   ])
 
-  console.log(HY_SIGNIN_URL)
   return (
     <>
       <Container style={{ width: "90%", maxWidth: 900 }}>

@@ -27,11 +27,14 @@ export const createRequestHelpers = (port: number) => {
     request("GET")(route, defaultHeaders)
   const post = (route: string = "", defaultHeaders: any) =>
     request("POST")(route, defaultHeaders)
+  const patch = (route: string = "", defaultHeaders: any) =>
+    request("PATCH")(route, defaultHeaders)
 
   return {
     request,
     get,
     post,
+    patch,
   }
 }
 

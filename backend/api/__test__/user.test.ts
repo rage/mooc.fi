@@ -22,18 +22,18 @@ jest.mock("../../util/validateAuth", () => ({
 }))
 
 describe("API", () => {
-  describe("/user/update-from-tmc", () => {
-    let postUpdateUserFromTMC: RequestPost
+  describe("/user PATCH", () => {
+    let patchUpdateUser: RequestPost
     beforeEach(async () => {
-      process.env.TMC_UPDATE_SECRET = "secret"
+      process.env.UPDATE_USER_SECRET = "secret"
       await seed(ctx.prisma)
-      const { post } = createRequestHelpers(ctx.port)
-      postUpdateUserFromTMC = post("/api/user/update-from-tmc", {})
+      const { patch } = createRequestHelpers(ctx.port)
+      patchUpdateUser = patch("/api/user", {})
     })
 
     it("errors on auth error", async () => {
       try {
-        await postUpdateUserFromTMC({
+        await patchUpdateUser({
           data: { upstream_id: 1, secret: "secret" },
         })
 
@@ -48,7 +48,7 @@ describe("API", () => {
 
     it("errors on invalid secret", async () => {
       try {
-        await postUpdateUserFromTMC({
+        await patchUpdateUser({
           data: { upstream_id: 1, secret: "foo" },
           headers: { authorization: "Bearer normal" },
         })
@@ -62,9 +62,9 @@ describe("API", () => {
       }
     })
 
-    it("errors on no upstream_id", async () => {
+    it("errors on no fields to update", async () => {
       try {
-        await postUpdateUserFromTMC({
+        await patchUpdateUser({
           data: { secret: "secret" },
           headers: { authorization: "Bearer normal" },
         })
@@ -74,11 +74,11 @@ describe("API", () => {
         const { response } = err
         expect(response.status).toBe(400)
         expect(response.data.success).toBe(false)
-        expect(response.data.message).toBe("No upstream_id provided")
+        expect(response.data.message).toBe("No data provided")
       }
     })
 
-    it("updates upstream_id", async () => {
+    it("updates user", async () => {
       const before = await ctx.prisma.user.findUnique({
         where: {
           id: "20000000000000000000000000000102",
@@ -86,14 +86,14 @@ describe("API", () => {
       })
       expect(before?.upstream_id).toBe(1)
 
-      const res = await postUpdateUserFromTMC({
+      const res = await patchUpdateUser({
         data: { upstream_id: 666, secret: "secret" },
         headers: { authorization: "Bearer normal" },
       })
 
       expect(res.status).toBe(200)
-      expect(res.data.message).toBe("User upstream_id updated")
-      expect(res.data.upstream_id).toBe(666)
+      expect(res.data.message).toBe("User updated")
+      expect(res.data.data.upstream_id).toBe(666)
 
       const after = await ctx.prisma.user.findUnique({
         where: {
@@ -103,6 +103,32 @@ describe("API", () => {
       expect(after?.upstream_id).toBe(666)
     })
 
+    it("ignores not updateable fields", async () => {
+      const before = await ctx.prisma.user.findUnique({
+        where: {
+          id: "20000000000000000000000000000102",
+        },
+      })
+
+      const res = await patchUpdateUser({
+        data: {
+          created_at: "2100-01-01T10:00:00.00+02:00",
+          upstream_id: 666,
+          last_name: "kissa",
+          secret: "secret",
+        },
+        headers: { authorization: "Bearer normal" },
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data.message).toBe("User updated")
+      expect(res.data.data.upstream_id).toBe(666)
+      expect(res.data.data.last_name).toBe("kissa")
+      expect(res.data.data.created_at).toEqual(
+        before?.created_at?.toISOString(),
+      )
+    })
+
     it("returns 500 on update error", async () => {
       const spy = jest.spyOn(ctx.prisma.user, "update")
       // @ts-ignore: never mind the return type
@@ -110,7 +136,7 @@ describe("API", () => {
         throw new Error("Mocked prisma error")
       })
       try {
-        await postUpdateUserFromTMC({
+        await patchUpdateUser({
           data: { secret: "secret", upstream_id: 666 },
           headers: { authorization: "Bearer normal" },
         })

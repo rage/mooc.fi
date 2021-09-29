@@ -8,7 +8,7 @@ import {
   authenticateUser,
   getCurrentUserDetails,
   getUsersByEmail,
-  updateUser,
+  updateUser as updateTMCUser,
 } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"
 import {
@@ -166,7 +166,7 @@ export function updatePassword(ctx: ApiContext) {
         password_repeat: confirmPassword,
       }
 
-      await updateUser(user.upstream_id, updateDetails, tmcUser.token ?? "")
+      await updateTMCUser(user.upstream_id, updateDetails, tmcUser.token ?? "")
 
       const hashPassword = await argon2Hash(password)
 
@@ -317,9 +317,27 @@ export function registerUser(ctx: ApiContext) {
   }
 }
 
-export function updateUserFromTMC(ctx: ApiContext) {
+const updateableUserFields = [
+  "administrator",
+  "email",
+  "first_name",
+  "last_name",
+  "real_student_number",
+  "research_consent",
+  "student_number",
+  "upstream_id",
+  "username",
+]
+
+export function updateUser(ctx: ApiContext) {
   return async (
-    req: Request<{}, {}, { upstream_id: number; secret: string }>,
+    req: Request<
+      {},
+      {},
+      Omit<Partial<User>, "created_at" | "updated_at" | "id"> & {
+        secret: string
+      }
+    >,
     res: Response,
   ) => {
     const token = req.headers.authorization ?? ""
@@ -333,9 +351,23 @@ export function updateUserFromTMC(ctx: ApiContext) {
       })
     }
 
-    const { upstream_id, secret } = req.body
+    const data: Partial<User> = Object.entries(req.body)
+      .filter(
+        ([key, _]) => key !== "secret" && updateableUserFields.includes(key),
+      )
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
 
-    if (secret !== process.env.TMC_UPDATE_SECRET) {
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({
+        status: 400,
+        success: false,
+        message: "No data provided",
+      })
+    }
+
+    const { secret } = req.body
+
+    if (secret !== process.env.UPDATE_USER_SECRET) {
       return res.status(405).json({
         status: 405,
         success: false,
@@ -343,22 +375,12 @@ export function updateUserFromTMC(ctx: ApiContext) {
       })
     }
 
-    if (!upstream_id) {
-      return res.status(400).json({
-        status: 400,
-        success: false,
-        message: "No upstream_id provided",
-      })
-    }
-
     try {
-      await ctx.prisma.user.update({
+      const updatedUser = await ctx.prisma.user.update({
         where: {
           id: auth.id,
         },
-        data: {
-          upstream_id,
-        },
+        data,
         select: {
           upstream_id: true,
           email: true,
@@ -374,8 +396,8 @@ export function updateUserFromTMC(ctx: ApiContext) {
       return res.status(200).json({
         status: 200,
         success: true,
-        message: "User upstream_id updated",
-        upstream_id,
+        message: "User updated",
+        data: updatedUser,
       })
     } catch {
       return res.status(500).json({

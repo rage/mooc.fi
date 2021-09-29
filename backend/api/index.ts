@@ -18,7 +18,7 @@ import {
   registerUser,
   updatePassword,
   updatePersonAffiliation,
-  updateUserFromTMC,
+  updateUser,
 } from "./user"
 import { userCourseProgress } from "./userCourseProgress"
 import {
@@ -49,11 +49,11 @@ export function apiRouter(ctx: ApiContext) {
     .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
     .use("/ab-studies", abStudiesRouter(ctx))
-    .get("/getUser/:course_id", getUser(ctx))
+    .get("/getUser/:course_id", getUser(ctx)) // TODO: find better name for this
     .post("/updatePassword", updatePassword(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
     .post("/user/register", registerUser(ctx))
     .get("/user-course-progress/:slug", userCourseProgress(ctx))
-    .post("/user/update-from-tmc", updateUserFromTMC(ctx))
+    .patch("/user", updateUser(ctx))
     .post("/user/update-person-affiliation", updatePersonAffiliation(ctx))
 }
