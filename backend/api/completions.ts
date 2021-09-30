@@ -1,17 +1,18 @@
+import { Request, Response } from "express"
+import { DataStream } from "scramjet"
+
 import {
   Completion,
-  OpenUniversityRegistrationLink,
-  CourseTranslation,
   Course,
+  CourseTranslation,
+  OpenUniversityRegistrationLink,
 } from "@prisma/client"
-import { ApiContext } from "."
-import { getOrganization } from "../util/server-functions"
-import { getUser } from "../util/server-functions"
 
-const JSONStream = require("JSONStream")
+import { getOrganization, getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 export function completions({ knex }: ApiContext) {
-  return async function (req: any, res: any) {
+  return async function (req: Request, res: Response) {
     const organizationResult = await getOrganization(knex)(req, res)
 
     if (organizationResult.isErr()) {
@@ -22,29 +23,32 @@ export function completions({ knex }: ApiContext) {
 
     const { registered } = req.query
 
-    let course_id: string
-
-    const course = (
+    let course = (
       await knex
-        .select("id")
+        .select<any, Course[]>("*")
         .from("course")
         .where({ slug: req.params.course })
         .limit(1)
     )[0]
+
     if (!course) {
-      const course_alias = (
+      course = (
         await knex
-          .select("course_id")
+          .select<any, Course[]>("course.*")
           .from("course_alias")
-          .where({ course_code: req.params.course })
+          .leftJoin("course", "course.id", "coures_alias.course_id")
+          .where("course_alias.course_code", req.params.course)
+          .limit(1)
       )[0]
-      if (!course_alias) {
-        return res.status(404).json({ message: "Course not found" })
-      }
-      course_id = course_alias.course_id
-    } else {
-      course_id = course.id
     }
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+
+    const { id: course_id, start_date, end_date } = course
+    console.log("course", course)
+
     const sql = knex
       .select<any, Completion[]>("completion.*")
       .from("completion")
@@ -61,8 +65,34 @@ export function completions({ knex }: ApiContext) {
 
     res.set("Content-Type", "application/json")
 
-    // TODO/FIXME: typings broke on Knex update
-    const stream = (sql.stream() as any).pipe(JSONStream.stringify()).pipe(res)
+    // TODO: write tests that test modified course start/end date
+    const stream = DataStream.from(sql.stream())
+      .map((completion: Completion) => {
+        const { completion_date } = completion
+        const start = new Date(start_date)
+        const end = end_date ? new Date(end_date) : null
+
+        let new_completion_date = completion_date
+
+        if (!completion_date) {
+          return completion
+        }
+        if (completion_date < start) {
+          new_completion_date = start
+        }
+        if (end && completion_date > end) {
+          new_completion_date = end
+        }
+
+        return {
+          ...completion,
+          original_completion_date: completion_date,
+          completion_date: new_completion_date,
+        }
+      })
+      .JSONStringify()
+      .pipe(res)
+
     req.on("close", stream.end.bind(stream))
   }
 }
