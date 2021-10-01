@@ -23,7 +23,7 @@ spec:
               command: ["sh", "-c", "npm run remove-duplicate-completions"]
               resources:
                 limits:
-                  memory: 500Mi
+                  memory: 100Mi
                   cpu: 20m
                 requests:
                   memory: 256Mi
