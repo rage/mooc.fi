@@ -32,13 +32,15 @@ export const SHIBBOLETH_HEADERS = [
   "o",
   "ou",
   "SHIB_LOGOUT_URL",
+  "edupersonprincipalname"
 ] as const
 export type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 export const requiredFields: HeaderField[] = [
   "schacpersonaluniquecode",
   "schachomeorganization",
-  "mail",
+  "edupersonprincipalname",
 ]
+
 
 export const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
@@ -49,6 +51,7 @@ export const defaultHeaders: Record<HeaderField, string> = {
     "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
   edupersonaffiliation: "member;student",
   mail: "mail@helsinki.fi",
+  edupersonprincipalname: "mail@helsinki.fi",
   o: "University of Helsinki",
   ou: "Department of Computer Science",
   SHIB_LOGOUT_URL: "https://example.com/logout",

@@ -17,6 +17,12 @@ import {
   PORT,
   SHIBBOLETH_HEADERS,
 } from "./config"
+import { connectHandler } from "./handlers/connect"
+import { signinHandler } from "./handlers/signIn"
+import {
+  decodeRelayState,
+  encodeRelayState,
+} from "./util/relayState"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -62,27 +68,65 @@ app.use((req, res, next) => {
 })
 app.use(passport.initialize())
 
-const loginHandler: RequestHandler = (req, res, next) => {
+/*const connectHandler: RequestHandler = (req, res, next) => {
+  const relayState = encodeRelayState(req)
+
   passport.authenticate(
     "multi",
     {
-      // @ts-ignore: it says it doesn't have this in type
-      additionalParams: { language: (req.query.language as string) ?? "en" },
-    },
+      additionalParams: {
+        RelayState: relayState
+      },
+    } as AuthenticateOptions,
     (err, user) => {
-      console.log("login handler", err, user)
+      console.log("connect handler", err, user, req.query)
 
       req.login(user, (err) => {
         if (err) {
-          console.log("login error", err)
+          console.log("connect error", err)
         }
       })
-      res.redirect(req.body.RelayState || req.query.RelayState || "/foo")
+
+      const { provider, action } = req.params
+      const { language = "en" } = req.query
+
+      res.redirect(`/foo?${Object.entries({ provider, action, language }).map(([key, value]) => `${key}=${value}`).join("&")}`)
     },
   )(req, res, next)
+}*/
+
+const handlers: Record<string, RequestHandler> = {
+  "sign-in": signinHandler,
+  "sign-up": () => {
+    throw new Error("not implemented")
+  },
+  connect: connectHandler,
 }
 
-passport.serializeUser((user, done) => {
+const providers: Record<string, string> = {
+  hy: "http://localhost:7000/saml/sso",
+  haka: "http://localhost:7002/saml/sso",
+}
+
+const callbackHandler: RequestHandler = (req, res, next) => {
+  const relayState = decodeRelayState(
+    req.params.RelayState || req.body.RelayState,
+  ) ?? {
+    action: req.params.action,
+    provider: req.params.provider,
+    language: ((req.query.language || req.params.language) as string) ?? "en",
+  }
+  console.log("callback relaystate", relayState)
+  const { action } = relayState
+
+  if (!Object.keys(handlers).includes(action)) {
+    throw new Error(`unknown action ${action}`) // TODO: something more sensible
+  }
+
+  return handlers[action](req, res, next)
+}
+
+/*passport.serializeUser((user, done) => {
   console.log("serialize", user)
   done(null, user)
 })
@@ -90,7 +134,7 @@ passport.deserializeUser((user, done) => {
   console.log("deserialize", user)
 
   done(null, user as any)
-})
+})*/
 
 passport.use(
   "multi",
@@ -98,11 +142,14 @@ passport.use(
     {
       passReqToCallback: true,
       getSamlOptions(req, done) {
-        console.log("relaystate", req.query.relaystate || req.body.relaystate)
+        const relayState = encodeRelayState(req)
+        const { provider, action } = req.params
+        const language = req.query.language || req.params.language || "en"
+
         done(null, {
           name: "multi",
-          path: `/callbacks/hy`,
-          entryPoint: "http://localhost:7000/saml/sso",
+          path: `/callbacks/${provider}/${action}/${language}`,
+          entryPoint: providers[provider],
           issuer: "https://mooc.fi/sp",
           cert: fs
             .readFileSync(
@@ -114,15 +161,20 @@ passport.use(
           identifierFormat:
             "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
           additionalParams: {
-            language: (req.query.language as string) ?? "en",
+            RelayState: relayState,
           },
         })
       },
     },
-    (_req, profile, done) => {
+    (_req, profile: any, done) => {
       console.log("got profile", profile)
-      // gets profile, yup
-      done(null, profile ?? undefined)
+      done(
+        null,
+        Object.entries(profile?.attributes).reduce(
+          (acc, [key, value]) => ({ ...acc, [key.toLowerCase()]: value }),
+          {},
+        ) ?? undefined,
+      )
     },
   ),
 )
@@ -130,8 +182,20 @@ passport.use(
 // passport.use("hy", signInStrategy("hy"))
 // passport.use("haka", signInStrategy("haka"))
 
-app.get("/sign-in/:provider", loginHandler)
-app.post("/callbacks/:provider", urlencoded({ extended: false }), loginHandler)
+app.get("/:action/:provider", callbackHandler)
+/*app.get("/sign-in/:provider", signinHandler)
+app.get("/connect/:provider", connectHandler)*/
+
+app.post(
+  "/callbacks/:provider",
+  urlencoded({ extended: false }),
+  callbackHandler,
+)
+app.post(
+  "/callbacks/:provider/:action/:language",
+  urlencoded({ extended: false }),
+  callbackHandler,
+)
 /*(req, res, next) => {
     console.log("callback first req headers", req.headers)
     console.log("callback first req body", req.body)
