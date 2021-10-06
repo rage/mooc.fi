@@ -6,7 +6,7 @@ import express, {
 } from "express"
 import * as fs from "fs"
 import morgan from "morgan"
-import passport from "passport"
+import passport, { AuthenticateOptions } from "passport"
 import { MultiSamlStrategy } from "passport-saml"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
@@ -18,7 +18,9 @@ import {
   SHIBBOLETH_HEADERS,
 } from "./config"
 import { connectHandler } from "./handlers/connect"
-import { signinHandler } from "./handlers/signIn"
+import { signInHandler } from "./handlers/signIn"
+import { signUpHandler } from "./handlers/signUp"
+import { HandlerCallback } from "./types/handlers"
 import {
   decodeRelayState,
   encodeRelayState,
@@ -95,11 +97,9 @@ app.use(passport.initialize())
   )(req, res, next)
 }*/
 
-const handlers: Record<string, RequestHandler> = {
-  "sign-in": signinHandler,
-  "sign-up": () => {
-    throw new Error("not implemented")
-  },
+const handlers: Record<string, HandlerCallback> = {
+  "sign-in": signInHandler,
+  "sign-up": signUpHandler,
   connect: connectHandler,
 }
 
@@ -109,21 +109,31 @@ const providers: Record<string, string> = {
 }
 
 const callbackHandler: RequestHandler = (req, res, next) => {
-  const relayState = decodeRelayState(
+  const relayState = req.params.RelayState || req.body.RelayState
+  const action = req.params.action || decodeRelayState(relayState)?.action
+
+  const decodedRelayState = decodeRelayState(
     req.params.RelayState || req.body.RelayState,
   ) ?? {
     action: req.params.action,
     provider: req.params.provider,
     language: ((req.query.language || req.params.language) as string) ?? "en",
   }
-  console.log("callback relaystate", relayState)
-  const { action } = relayState
+  console.log("callback relaystate", decodedRelayState)
 
   if (!Object.keys(handlers).includes(action)) {
     throw new Error(`unknown action ${action}`) // TODO: something more sensible
   }
 
-  return handlers[action](req, res, next)
+  passport.authenticate(
+    "hy-haka",
+    {
+      additionalParams: {
+        RelayState: relayState
+      }
+    } as AuthenticateOptions,
+    handlers[action](req, res, next)
+  )(req, res, next)
 }
 
 /*passport.serializeUser((user, done) => {
@@ -137,7 +147,7 @@ passport.deserializeUser((user, done) => {
 })*/
 
 passport.use(
-  "multi",
+  "hy-haka",
   new MultiSamlStrategy(
     {
       passReqToCallback: true,
@@ -220,40 +230,6 @@ app.get("/foo", (req, res) => {
   res.end()
 })
 
-/*
-app.get("/sign-in/:provider", 
-  passport.authenticate("multi", { successRedirect: "/foo", failureRedirect: "/foo"}),
-  (_req, res) => res.redirect("/foo")
-)
-app.all(("/sign-in/:provider"), (req, res, next) => {
-  const language = req.query.language ?? "en"
-  const provider = req.params.provider ?? ""
-
-  console.log(req)
-  if (!provider || Array.isArray(provider)) {
-    next(new Error("illegal provider"))
-  }
-
-  if (req.method === "GET") {
-    return passport.authenticate(provider as string, (err, user, _info) => {
-      console.log("in here")
-      if (err) {
-        return next(err)
-      }
-      if (!user) {
-        return res.redirect(
-          `${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}sign-in`,
-        )
-      }
-      return res.redirect(
-        `${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}`,
-      )
-    })(req, res, next)
-  }
-
-  return res.redirect("http://localhost:3000")
-})
-*/
 /*app.get(/^\/connect\/(hy|haka)\/?$/, connectHandler)
 
 app.get(/^\/sign-in\/(hy|haka)\/?$/, signInHandler)
