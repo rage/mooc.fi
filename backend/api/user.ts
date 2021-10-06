@@ -1,7 +1,14 @@
-import { Request, Response } from "express"
+import {
+  Request,
+  Response,
+} from "express"
 import { omit } from "lodash"
 
-import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
+import {
+  User,
+  UserCourseSetting,
+  VerifiedUser,
+} from "@prisma/client"
 
 import { invalidate } from "../services/redis"
 import {
@@ -190,6 +197,7 @@ export function updatePassword(ctx: ApiContext) {
 }
 
 interface RegisterUserParams {
+  eduPersonPrincipalName: string
   personalUniqueCode: string
   displayName: string
   firstName: string
@@ -203,6 +211,7 @@ interface RegisterUserParams {
 export function registerUser(ctx: ApiContext) {
   return async (req: Request<{}, {}, RegisterUserParams>, res: Response) => {
     const {
+      eduPersonPrincipalName,
       personalUniqueCode,
       displayName,
       firstName,
@@ -221,7 +230,7 @@ export function registerUser(ctx: ApiContext) {
 
     const existingVerifiedUser = await ctx.prisma.verifiedUser.findFirst({
       where: {
-        mail,
+        edu_person_principal_name: eduPersonPrincipalName,
         home_organization: homeOrganization,
       },
       include: {
@@ -286,6 +295,7 @@ export function registerUser(ctx: ApiContext) {
           person_affiliation: personAffiliation,
           personal_unique_code: personalUniqueCode,
           display_name: displayName,
+          edu_person_principal_name: eduPersonPrincipalName
         },
       })
 

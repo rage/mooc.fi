@@ -6,7 +6,10 @@ import {
 } from "@prisma/client"
 
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-import { MessageType, pushMessageToClient } from "../../../../wsServer"
+import {
+  MessageType,
+  pushMessageToClient,
+} from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
 import { KafkaContext } from "../kafkaContext"
@@ -266,17 +269,13 @@ export const createCompletion = async ({
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {
-      const updated = await prisma.$queryRaw(
+      const updated = await prisma.$queryRaw
         `
         UPDATE
           completion 
-        SET tier=$1, eligible_for_ects=$2, updated_at=now()
-        WHERE id=$3 AND COALESCE(tier, 0) < $1
-        RETURNING tier;`,
-        tier,
-        eligible_for_ects,
-        completions[0]!.id,
-      )
+        SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
+        WHERE id=${completions[0]!.id} AND COALESCE(tier, 0) < ${tier}
+        RETURNING tier;`
       if (updated.length > 0) {
         logger?.info("Existing completion found, updated tier")
       }

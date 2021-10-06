@@ -1,18 +1,24 @@
-import {
-  objectType,
-  inputObjectType,
-  extendType,
-  arg,
-  nonNull,
-  stringArg,
-  idArg,
-  nullable,
-} from "nexus"
 import { AuthenticationError } from "apollo-server-core"
-import { Context } from "../context"
-import { isAdmin, isUser, or, Role } from "../accessControl"
-import { isNullOrUndefined } from "../util/isNullOrUndefined"
+import {
+  arg,
+  extendType,
+  idArg,
+  inputObjectType,
+  nonNull,
+  nullable,
+  objectType,
+  stringArg,
+} from "nexus"
+
+import {
+  isAdmin,
+  isUser,
+  or,
+  Role,
+} from "../accessControl"
 import { DatabaseInputError } from "../bin/lib/errors"
+import { Context } from "../context"
+import { isNullOrUndefined } from "../util/isNullOrUndefined"
 
 export const VerifiedUser = objectType({
   name: "VerifiedUser",
@@ -29,6 +35,7 @@ export const VerifiedUser = objectType({
     t.model.user()
     t.model.organizational_unit()
     t.model.mail()
+    t.model.edu_person_principal_name()
   },
 })
 
@@ -36,6 +43,7 @@ export const VerifiedUserArg = inputObjectType({
   name: "VerifiedUserArg",
   definition(t) {
     t.string("display_name")
+    t.nonNull.string("edu_person_principal_name")
     t.nonNull.string("personal_unique_code")
     t.nonNull.string("home_organization")
     t.nonNull.string("person_affiliation")
@@ -50,13 +58,13 @@ export const VerifiedUserQueries = extendType({
     t.nullable.field("verifiedUser", {
       type: "VerifiedUser",
       args: {
-        personal_unique_code: nonNull(stringArg()),
+        edu_person_principal_name: nonNull(stringArg()),
       },
-      resolve: async (_, { personal_unique_code }, ctx) => {
+      resolve: async (_, { edu_person_principal_name }, ctx) => {
         // TODO: add some secret thing here
         const verified_user = await ctx.prisma.verifiedUser.findFirst({
           where: {
-            personal_unique_code,
+            edu_person_principal_name,
           },
         })
 
@@ -85,6 +93,7 @@ export const VerifiedUserMutations = extendType({
           home_organization,
           person_affiliation,
           organizational_unit,
+          edu_person_principal_name,
           mail,
         } = verified_user
         const { user: currentUser } = ctx
@@ -97,6 +106,7 @@ export const VerifiedUserMutations = extendType({
           const res = await ctx.prisma.verifiedUser.create({
             data: {
               user: { connect: { id: currentUser.id } },
+              edu_person_principal_name,
               personal_unique_code,
               display_name,
               home_organization,
@@ -115,11 +125,11 @@ export const VerifiedUserMutations = extendType({
     t.field("deleteVerifiedUser", {
       type: "VerifiedUser",
       args: {
-        personal_unique_code: nonNull(stringArg()),
+        edu_person_principal_name: nonNull(stringArg()),
         user_id: nullable(idArg()),
       },
       authorize: or(isAdmin, isUser),
-      resolve: async (_, { personal_unique_code, user_id }, ctx: Context) => {
+      resolve: async (_, { edu_person_principal_name, user_id }, ctx: Context) => {
         if (ctx.role !== Role.ADMIN && Boolean(user_id)) {
           throw new Error("must be admin to specify deletable user_id")
         }
@@ -131,9 +141,9 @@ export const VerifiedUserMutations = extendType({
 
         return ctx.prisma.verifiedUser.delete({
           where: {
-            user_id_personal_unique_code: {
+            user_id_edu_person_principal_name: {
               user_id: _user_id,
-              personal_unique_code,
+              edu_person_principal_name
             },
           },
         })

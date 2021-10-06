@@ -1,9 +1,17 @@
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMCCurrent } from "../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../tests/data"
-import { seed } from "../../tests/data/seed"
-import { VerifiedUser } from "@prisma/client"
 import { orderBy } from "lodash"
+
+import { VerifiedUser } from "@prisma/client"
+
+import {
+  fakeTMCCurrent,
+  getTestContext,
+} from "../../tests/__helpers"
+import {
+  adminUserDetails,
+  normalUserDetails,
+} from "../../tests/data"
+import { seed } from "../../tests/data/seed"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
@@ -14,6 +22,7 @@ const tmc = fakeTMCCurrent({
 
 const addVerifiedUserMutation = gql`
   mutation addVerifiedUser(
+    $edu_person_principal_name: String!
     $display_name: String
     $personal_unique_code: String!
     $home_organization: String!
@@ -23,6 +32,7 @@ const addVerifiedUserMutation = gql`
   ) {
     addVerifiedUser(
       verified_user: {
+        edu_person_principal_name: $edu_person_principal_name
         display_name: $display_name
         personal_unique_code: $personal_unique_code
         home_organization: $home_organization
@@ -32,25 +42,26 @@ const addVerifiedUserMutation = gql`
       }
     ) {
       id
-      personal_unique_code
+      edu_person_principal_name
     }
   }
 `
 
 const deleteVerifiedUserMutation = gql`
-  mutation deleteVerifiedUser($personal_unique_code: String!, $user_id: ID) {
+  mutation deleteVerifiedUser($edu_person_principal_name: String!, $user_id: ID) {
     deleteVerifiedUser(
-      personal_unique_code: $personal_unique_code
+      edu_person_principal_name: $edu_person_principal_name
       user_id: $user_id
     ) {
       id
-      personal_unique_code
+      edu_person_principal_name
     }
   }
 `
 
-const verified_user = {
+const verified_user: Partial<VerifiedUser> = {
   display_name: "kissa",
+  edu_person_principal_name: "kissa@organization.foo",
   personal_unique_code: "foo:personal:unique:code",
   home_organization: "organization.foo",
   person_affiliation: "foo",
@@ -91,8 +102,8 @@ describe("VerifiedUser", () => {
           },
         )
         expect(res.addVerifiedUser.id).not.toBeNull()
-        expect(res.addVerifiedUser.personal_unique_code).toBe(
-          "foo:personal:unique:code",
+        expect(res.addVerifiedUser.edu_person_principal_name).toBe(
+          "kissa@organization.foo",
         )
 
         const userVerifiedUsers = await ctx.prisma.user
@@ -120,7 +131,7 @@ describe("VerifiedUser", () => {
             addVerifiedUserMutation,
             {
               ...verified_user,
-              personal_unique_code: "personal:unique:code:university.fi:admin",
+              edu_person_principal_name: "admin@university.fi",
               home_organization: "university.fi",
             },
             {
@@ -151,8 +162,8 @@ describe("VerifiedUser", () => {
               deleteVerifiedUserMutation,
               {
                 user_id: "20000000000000000000000000000104",
-                personal_unique_code:
-                  "personal:unique:code:second-university.fi:third",
+                edu_person_principal_name:
+                  "third@second-university.fi",
               },
               {
                 Authorization: "Bearer admin",
@@ -162,17 +173,17 @@ describe("VerifiedUser", () => {
             fail()
           }
 
-          expect(res.deleteVerifiedUser.personal_unique_code).toEqual(
-            "personal:unique:code:second-university.fi:third",
+          expect(res.deleteVerifiedUser.edu_person_principal_name).toEqual(
+            "third@second-university.fi",
           )
           // should not affect own
 
           const notExisting = await ctx.prisma.verifiedUser.findUnique({
             where: {
-              user_id_personal_unique_code: {
+              user_id_edu_person_principal_name: {
                 user_id: "20000000000000000000000000000104",
-                personal_unique_code:
-                  "personal:unique:code:second-university.fi:third",
+                edu_person_principal_name:
+                  "third@second-university.fi",
               },
             },
           })
@@ -195,8 +206,8 @@ describe("VerifiedUser", () => {
               deleteVerifiedUserMutation,
               {
                 user_id: "20000000000000000000000000000103",
-                personal_unique_code:
-                  "personal:unique:code:university.fi:admin",
+                edu_person_principal_name:
+                  "admin@university.fi",
               },
               {
                 Authorization: "Bearer normal",
@@ -220,14 +231,14 @@ describe("VerifiedUser", () => {
           const res = await ctx.client.request(
             deleteVerifiedUserMutation,
             {
-              personal_unique_code: "personal:unique:code:university.fi:third",
+              edu_person_principal_name: "third@university.fi",
             },
             {
               Authorization: "Bearer third",
             },
           )
-          expect(res.deleteVerifiedUser.personal_unique_code).toEqual(
-            "personal:unique:code:university.fi:third",
+          expect(res.deleteVerifiedUser.edu_person_principal_name).toEqual(
+            "third@university.fi",
           )
 
           const after = await ctx.prisma.verifiedUser.findMany({
@@ -236,8 +247,8 @@ describe("VerifiedUser", () => {
             },
           })
           expect(after.length).toBe(1)
-          expect(after[0].personal_unique_code).not.toEqual(
-            "personal:unique:code:university.fi:third",
+          expect(after[0].edu_person_principal_name).not.toEqual(
+            "third@university.fi",
           )
         })
       })

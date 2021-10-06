@@ -17,9 +17,11 @@ import {
   PORT,
   SHIBBOLETH_HEADERS,
 } from "./config"
-import { connectHandler } from "./handlers/connect"
-import { signInHandler } from "./handlers/signIn"
-import { signUpHandler } from "./handlers/signUp"
+import {
+  connectHandler,
+  signInHandler,
+  signUpHandler,
+} from "./handlers"
 import { HandlerCallback } from "./types/handlers"
 import {
   decodeRelayState,
@@ -189,12 +191,7 @@ passport.use(
   ),
 )
 
-// passport.use("hy", signInStrategy("hy"))
-// passport.use("haka", signInStrategy("haka"))
-
 app.get("/:action/:provider", callbackHandler)
-/*app.get("/sign-in/:provider", signinHandler)
-app.get("/connect/:provider", connectHandler)*/
 
 app.post(
   "/callbacks/:provider",

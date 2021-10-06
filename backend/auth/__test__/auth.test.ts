@@ -8,7 +8,10 @@ import {
   fakeTMCUserWrongPassword,
   getTestContext,
 } from "../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../tests/data"
+import {
+  adminUserDetails,
+  normalUserDetails,
+} from "../../tests/data"
 import { seed } from "../../tests/data/seed"
 
 const ctx = getTestContext()
@@ -378,7 +381,7 @@ describe("server", () => {
         data: {
           grant_type: "client_authorize",
           client_secret: "invalid_client_secret",
-          personal_unique_code: "personal:unique:code:university.fi:admin",
+          edu_person_principal_name: "admin@university.fi",
         },
       })
         .then(() => fail())
@@ -392,7 +395,7 @@ describe("server", () => {
         data: {
           grant_type: "client_authorize",
           client_secret: "native",
-          personal_unique_code: "personal:unique:code:university.fi:admin",
+          edu_person_principal_name: "admin@university.fi",
         },
       })
 
@@ -404,7 +407,7 @@ describe("server", () => {
         data: {
           grant_type: "client_authorize",
           client_secret: "native",
-          personal_unique_code: "foo",
+          edu_person_principal_name: "foo",
         },
       })
         .then(() => fail())

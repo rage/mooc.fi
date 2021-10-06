@@ -12,13 +12,13 @@ const client_secret = "native"
 
 export const signInHandler: HandlerCallback =
   (req, res, _next) => async (_err, user) => {
-    const { schacpersonaluniquecode } = user
+    const { edupersonprincipalname } = user
     const language = req.query.language || req.params.language || "en"
 
     let errorType = undefined
 
     try {
-      if (!schacpersonaluniquecode) {
+      if (!edupersonprincipalname) {
         errorType = "auth-fail"
         throw new Error("Authorization failed")
       }
@@ -31,7 +31,7 @@ export const signInHandler: HandlerCallback =
         const { data } = await axios.post<any>(`${AUTH_URL}/token`, {
           grant_type,
           response_type,
-          personal_unique_code: schacpersonaluniquecode,
+          edu_person_principal_name: edupersonprincipalname,
           client_secret,
         })
 

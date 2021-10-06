@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client"
+
 import { UserInfo } from "../../domain/UserInfo"
 
 export const normalUser = {
@@ -720,6 +721,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     id: "65400000000000000000000000000001",
     user: { connect: { id: "20000000000000000000000000000103" } },
     display_name: "admin",
+    edu_person_principal_name: "admin@university.fi",
     personal_unique_code: "personal:unique:code:university.fi:admin",
     home_organization: "university.fi",
     person_affiliation: "member;student;staff",
@@ -730,6 +732,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     id: "65400000000000000000000000000002",
     user: { connect: { id: "20000000000000000000000000000104" } },
     display_name: "third user",
+    edu_person_principal_name: "third@university.fi",
     personal_unique_code: "personal:unique:code:university.fi:third",
     home_organization: "university.fi",
     person_affiliation: "member;student",
@@ -740,6 +743,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     id: "65400000000000000000000000000003",
     user: { connect: { id: "20000000000000000000000000000104" } },
     display_name: "third user",
+    edu_person_principal_name: "third@second-university.fi",
     personal_unique_code: "personal:unique:code:second-university.fi:third",
     home_organization: "second-university.fi",
     person_affiliation: "member;student",

@@ -23,6 +23,8 @@ export const signUpHandler: HandlerCallback =
       schachomeorganization,
       mail,
       ou,
+      o,
+      edupersonprincipalname
     } = user
 
     const language = req.query.language ?? "en"
@@ -36,11 +38,13 @@ export const signUpHandler: HandlerCallback =
 
     try {
       const { data } = await axios.post(`${API_URL}/user/register`, {
+        eduPersonPrincipalName: edupersonprincipalname,
         personalUniqueCode: schacpersonaluniquecode,
         firstName: givenName,
         lastName: sn,
         personAffiliation: edupersonaffiliation,
         mail,
+        organization: o,
         organizationalUnit: ou,
         displayName: displayname,
         homeOrganization: schachomeorganization,
@@ -51,7 +55,7 @@ export const signUpHandler: HandlerCallback =
         const { data: tokenData } = await axios.post<any>(`${AUTH_URL}/token`, {
           grant_type,
           response_type,
-          personal_unique_code: schacpersonaluniquecode,
+          edu_person_principal_name: edupersonprincipalname,
           client_secret,
         })
 
@@ -111,6 +115,7 @@ export const signUpHandler: HandlerCallback =
       status.query.push(`error=${status.type}`)
       redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${language}/sign-up`
     } else {
+      // TODO: find something else than this
       redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${language}/sign-up/edit-details`
     }
 
