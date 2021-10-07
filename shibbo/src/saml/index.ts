@@ -8,6 +8,7 @@ import {
   HAKA_IDP_URL,
   HY_IDP_URL,
   MOOCFI_CERTIFICATE,
+  SP_URL,
 } from "../config"
 import {
   convertObjectKeysToLowerCase,
@@ -44,10 +45,10 @@ const createStrategyOptions = (req: Request): SamlConfig => {
   if (!Object.keys(samlProviders).includes(provider)) {
     throw new Error(`invalid provider ${provider}`)
   }
-  
+
   return {
     name: "hy-haka",
-    path: `/callbacks/${provider}/${action}/${language}`,
+    path: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     entryPoint: samlProviders[provider],
     issuer: "https://mooc.fi/sp",
     cert: MOOCFI_CERTIFICATE,

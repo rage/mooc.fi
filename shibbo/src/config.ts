@@ -20,6 +20,8 @@ export const API_URL =
 export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
 export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
 export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
+export const SP_URL = process.env.SP_URL ?? ""
+
 export const MOOCFI_CERTIFICATE = isProduction 
   ? process.env.MOOCFI_CERTIFICATE ?? "" 
   : fs
