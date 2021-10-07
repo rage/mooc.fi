@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: shibbo-test
+  name: {{ include "helm.fullname" . }}-saml
   labels:
-    app: shibbo-test
+    app: {{ include "helm.fullname" . }}-saml
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: NodePort
@@ -11,5 +11,5 @@ spec:
     - port: 80
       targetPort: http
   selector:
-    app: shibbo-test
+    app: {{ include "helm.fullname" . }}-saml
     {{- include "helm.selectorLabels" . | nindent 4 }}

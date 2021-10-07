@@ -3,11 +3,10 @@ import { GraphQLClient } from "graphql-request"
 import {
   BACKEND_URL,
   FRONTEND_URL,
-  LOGOUT_URL,
   requiredFields,
 } from "../config"
 import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
-import { HandlerCallback } from "../types/handlers"
+import { HandlerCallback } from "../handlers"
 
 export const connectHandler: HandlerCallback =
   (req, res, _next) =>
@@ -16,10 +15,11 @@ export const connectHandler: HandlerCallback =
 
     const {
       schacpersonaluniquecode,
+      edupersonprincipalname,
       displayname,
       edupersonaffiliation = "",
       schachomeorganization,
-      mail = user.edupersonprincipalname,
+      mail,
       ou,
     } = user
 
@@ -49,6 +49,7 @@ export const connectHandler: HandlerCallback =
       })
       const result = await client.request(VERIFIED_USER_MUTATION, {
         display_name: displayname,
+        edu_personal_principal_name: edupersonprincipalname,
         personal_unique_code: schacpersonaluniquecode,
         home_organization: schachomeorganization,
         person_affiliation: edupersonaffiliation,
@@ -79,7 +80,7 @@ export const connectHandler: HandlerCallback =
       })*/
       req.logout()
       res.redirect(
-        `${LOGOUT_URL}${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+        `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
       )
     } catch (error) {
       console.log("I've errored with", error)

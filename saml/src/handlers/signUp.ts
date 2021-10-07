@@ -4,9 +4,8 @@ import {
   API_URL,
   AUTH_URL,
   FRONTEND_URL,
-  LOGOUT_URL,
 } from "../config"
-import { HandlerCallback } from "../types/handlers"
+import { HandlerCallback } from "../handlers"
 
 const grant_type = "client_authorize"
 const response_type = "token"
@@ -113,10 +112,10 @@ export const signUpHandler: HandlerCallback =
 
     if (status.error) {
       status.query.push(`error=${status.type}`)
-      redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${language}/sign-up`
+      redirectUrl = `${FRONTEND_URL}/${language}/sign-up`
     } else {
       // TODO: find something else than this
-      redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${language}/sign-up/edit-details`
+      redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details`
     }
 
     if (status.query) {

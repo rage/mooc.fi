@@ -1,4 +1,8 @@
-import { Request } from "express"
+import {
+  NextFunction,
+  Request,
+  Response,
+} from "express"
 
 export const encodeRelayState = (req: Request) => {
   const { provider, action } = req.params
@@ -28,3 +32,15 @@ export const convertObjectKeysToLowerCase = <T extends Record<string, any>>(
         {} as T,
       )
     : undefined
+
+export const setLocalCookiesMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const {
+    headers: { cookie },
+  } = req
+  res.locals.cookie =
+    cookie?.split(";").reduce((res, item) => {
+      const data = item.trim().split("=")
+      return { ...res, [data[0]]: data[1] }
+    }, {}) ?? {}
+  next()
+}

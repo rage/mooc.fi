@@ -57,21 +57,25 @@ spec:
             backend:
               serviceName: {{ $fullName }}-frontend
               servicePort: 80
-          - path: /Shibboleth.sso
+          # - path: /Shibboleth.sso
+          #   backend:
+          #     serviceName: moocfi-saml
+          #     servicePort: 80
+          # - path: /connect
+          #   backend:
+          #     serviceName: moocfi-saml
+          #     servicePort: 80
+          # - path: /sign-in
+          #   backend:
+          #     serviceName: moocfi-saml
+          #     servicePort: 80
+          # - path: /sign-up
+          #   backend:
+          #     serviceName: moocfi-saml
+          #     servicePort: 80
+          - path: /sp
             backend:
-              serviceName: shibbo-test
-              servicePort: 80
-          - path: /connect
-            backend:
-              serviceName: shibbo-test
-              servicePort: 80
-          - path: /sign-in
-            backend:
-              serviceName: shibbo-test
-              servicePort: 80
-          - path: /sign-up
-            backend:
-              serviceName: shibbo-test
+              serviceName: {{ $fullname }}-saml
               servicePort: 80
     {{- end }}
   {{- end }}

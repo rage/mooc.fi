@@ -26,9 +26,15 @@ export const MOOCFI_CERTIFICATE = isProduction
   ? process.env.MOOCFI_CERTIFICATE ?? "" 
   : fs
     .readFileSync(
-      __dirname + "/../shibboleth-staging/certs/mooc.fi.crt",
+      __dirname + "/../saml/certs/mooc.fi.crt",
     )
     .toString() ?? ""
+export const HY_CERTIFICATE = isProduction
+  ? process.env.HY_CERTIFICATE ?? ""
+  : MOOCFI_CERTIFICATE
+export const HAKA_CERTIFICATE = isProduction
+  ? process.env.HAKA_CERTIFICATE ?? ""
+  : MOOCFI_CERTIFICATE
 
 if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
   throw new Error("BACKEND_URL and FRONTEND_URL must be set")
@@ -36,8 +42,8 @@ if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
 if (!HY_IDP_URL || !HAKA_IDP_URL) {
   throw new Error("HY_IDP_URL and HAKA_IDP_URL must be set")
 }
-if (!MOOCFI_CERTIFICATE) {
-  throw new Error("MOOCFI_CERTIFICATE not set")
+if (!HY_CERTIFICATE || !HAKA_CERTIFICATE) {
+  throw new Error("HY_CERTIFICATE and HAKA_CERTIFICATE must be set")
 }
 /*export const LOGOUT_URL = isProduction
   ? `${FRONTEND_URL}/Shibboleth.sso/Logout?return=`

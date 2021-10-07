@@ -5,9 +5,10 @@ import {
 } from "passport-saml"
 
 import {
+  HAKA_CERTIFICATE,
   HAKA_IDP_URL,
+  HY_CERTIFICATE,
   HY_IDP_URL,
-  MOOCFI_CERTIFICATE,
   SP_URL,
 } from "../config"
 import {
@@ -18,6 +19,11 @@ import {
 const samlProviders: Record<string, string> = {
   hy: HY_IDP_URL,
   haka: HAKA_IDP_URL,
+}
+
+const samlCertificates: Record<string, string> = {
+  hy: HY_CERTIFICATE,
+  haka: HAKA_CERTIFICATE
 }
 
 export const createSamlStrategy = () => 
@@ -51,7 +57,7 @@ const createStrategyOptions = (req: Request): SamlConfig => {
     path: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     entryPoint: samlProviders[provider],
     issuer: "https://mooc.fi/sp",
-    cert: MOOCFI_CERTIFICATE,
+    cert: samlCertificates[provider],
     authnRequestBinding: "HTTP-POST",
     forceAuthn: true,
     identifierFormat:

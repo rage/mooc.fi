@@ -4,7 +4,7 @@ import {
   AUTH_URL,
   FRONTEND_URL,
 } from "../config"
-import { HandlerCallback } from "../types/handlers"
+import { HandlerCallback } from "../handlers"
 
 const grant_type = "client_authorize"
 const response_type = "token"
