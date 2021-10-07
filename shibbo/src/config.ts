@@ -1,11 +1,13 @@
+import fs from "fs"
+
 require("dotenv").config()
 
 export const isProduction = process.env.NODE_ENV === "production"
 
-export const HY_ORGANIZATION_SECRET =
+/*export const HY_ORGANIZATION_SECRET =
   process.env.HY_ORGANIZATION_SECRET || "hy_secret"
 export const HY_ORGANIZATION_ID =
-  process.env.HY_ORGANIZATION_ID || "hy_organization"
+  process.env.HY_ORGANIZATION_ID || "hy_organization"*/
 export const PORT = process.env.PORT || 5000
 export const BACKEND_URL =
   process.env.BACKEND_URL ?? (!isProduction ? "http://localhost:4000" : "")
@@ -16,11 +18,29 @@ export const AUTH_URL =
 export const API_URL =
   process.env.API_URL ?? (!isProduction ? "http://localhost:4000/api" : "")
 export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
+export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
+export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
+export const MOOCFI_CERTIFICATE = isProduction 
+  ? process.env.MOOCFI_CERTIFICATE ?? "" 
+  : fs
+    .readFileSync(
+      __dirname + "/../shibboleth-staging/certs/mooc.fi.crt",
+    )
+    .toString() ?? ""
 
-export const LOGOUT_URL = isProduction
+if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
+  throw new Error("BACKEND_URL and FRONTEND_URL must be set")
+}
+if (!HY_IDP_URL || !HAKA_IDP_URL) {
+  throw new Error("HY_IDP_URL and HAKA_IDP_URL must be set")
+}
+if (!MOOCFI_CERTIFICATE) {
+  throw new Error("MOOCFI_CERTIFICATE not set")
+}
+/*export const LOGOUT_URL = isProduction
   ? `${FRONTEND_URL}/Shibboleth.sso/Logout?return=`
   : ""
-
+*/
 export const SHIBBOLETH_HEADERS = [
   "displayname",
   "givenName",
