@@ -205,6 +205,7 @@ interface RegisterUserParams {
   homeOrganization: string
   personAffiliation: string
   mail: string
+  organization: string
   organizationalUnit: string
 }
 
@@ -219,6 +220,8 @@ export function registerUser(ctx: ApiContext) {
       homeOrganization,
       personAffiliation,
       mail,
+      // @ts-ignore: not used?
+      organization,
       organizationalUnit,
     } = req.body
 
@@ -295,7 +298,8 @@ export function registerUser(ctx: ApiContext) {
           person_affiliation: personAffiliation,
           personal_unique_code: personalUniqueCode,
           display_name: displayName,
-          edu_person_principal_name: eduPersonPrincipalName
+          edu_person_principal_name: eduPersonPrincipalName,
+          // organization, // TODO: where does o go then?
         },
       })
 
@@ -314,6 +318,108 @@ export function registerUser(ctx: ApiContext) {
         user: newUser,
         verified_user: newVerifiedUser,
         message: "Error creating user",
+      })
+    }
+  }
+}
+
+interface ConnectUserParams {
+  eduPersonPrincipalName: string
+  personalUniqueCode: string
+  displayName: string
+  firstName: string
+  lastName: string
+  homeOrganization: string
+  personAffiliation: string
+  mail: string
+  organization: string
+  organizationalUnit: string
+}
+
+// TODO: make use of this, write tests
+// also check if user returns too much data, same for register
+export function connectUser(ctx: ApiContext) {
+  return async (req: Request<{}, {}, ConnectUserParams>, res: Response) => {
+    const token = req.headers.authorization ?? ""
+    const auth = await requireAuth(token, ctx)
+    if (auth.error) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "Not logged in.",
+      })
+    }
+
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: auth.id,
+      },
+    })
+
+    if (!user) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "User does not exist",
+      })
+    }
+
+    const {
+      eduPersonPrincipalName,
+      personalUniqueCode,
+      displayName,
+      homeOrganization,
+      personAffiliation,
+      mail,
+      // @ts-ignore: not used?
+      organization,
+      organizationalUnit,
+    } = req.body
+
+    const existingVerifiedUser = await ctx.prisma.verifiedUser.findFirst({
+      where: {
+        edu_person_principal_name: eduPersonPrincipalName,
+        home_organization: homeOrganization,
+      },
+    })
+
+    if (existingVerifiedUser) {
+      return res.status(401).json({
+        status: 401,
+        success: false,
+        user,
+        verified_user: existingVerifiedUser,
+        message: "Verified user already exists",
+      })
+    }
+
+    try {
+      const newVerifiedUser = await ctx.prisma.verifiedUser.create({
+        data: {
+          user: { connect: { id: user.id } },
+          home_organization: homeOrganization,
+          mail,
+          organizational_unit: organizationalUnit,
+          person_affiliation: personAffiliation,
+          personal_unique_code: personalUniqueCode,
+          display_name: displayName,
+          edu_person_principal_name: eduPersonPrincipalName,
+          // organization, // TODO: where does o go then?
+        },
+      })
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        user,
+        verified_user: newVerifiedUser,
+        message: "User connected",
+      })
+    } catch {
+      return res.status(500).json({
+        status: 500,
+        success: false,
+        message: "Error connecting user",
       })
     }
   }

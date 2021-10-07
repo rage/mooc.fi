@@ -6,22 +6,26 @@ import {
   requiredFields,
 } from "../config"
 import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
-import { HandlerCallback } from "../handlers"
+import { AuthenticationHandlerCallback } from "./"
 
-export const connectHandler: HandlerCallback =
+export const connectHandler: AuthenticationHandlerCallback =
   (req, res, _next) =>
   async (_err, user) => {
     console.log("connect with user", user)
 
     const {
       schacpersonaluniquecode,
-      edupersonprincipalname,
       displayname,
+      givenName,
+      sn,
       edupersonaffiliation = "",
       schachomeorganization,
       mail,
       ou,
+      o,
+      edupersonprincipalname
     } = user
+
 
     /*const shibHeaders = Object.keys(headers)
     .filter((key) => key.startsWith("shib-"))
@@ -55,6 +59,9 @@ export const connectHandler: HandlerCallback =
         person_affiliation: edupersonaffiliation,
         mail,
         organizational_unit: ou,
+        first_name: givenName,
+        last_name: sn,
+        organization: o
       })
       console.log(result)
 

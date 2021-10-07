@@ -10,7 +10,7 @@ import { Profile } from "passport-saml"
 import { decodeRelayState } from "../util"
 import { handlers } from "./"
 
-export type HandlerCallback = (
+export type AuthenticationHandlerCallback = (
   req: Request,
   res: Response,
   next: NextFunction,

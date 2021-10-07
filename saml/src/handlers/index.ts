@@ -1,9 +1,9 @@
-import { HandlerCallback } from "./callback"
+import { AuthenticationHandlerCallback } from "./callback"
 import { connectHandler } from "./connect"
 import { signInHandler } from "./signIn"
 import { signUpHandler } from "./signUp"
 
-export const handlers: Record<string, HandlerCallback> = {
+export const handlers: Record<string, AuthenticationHandlerCallback> = {
   "sign-in": signInHandler,
   "sign-up": signUpHandler,
   connect: connectHandler,

@@ -5,13 +5,13 @@ import {
   AUTH_URL,
   FRONTEND_URL,
 } from "../config"
-import { HandlerCallback } from "../handlers"
+import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
 const response_type = "token"
 const client_secret = "native"
 
-export const signUpHandler: HandlerCallback =
+export const signUpHandler: AuthenticationHandlerCallback =
   (req, res, _next) => async (_err, user) => {
     const {
       schacpersonaluniquecode,
