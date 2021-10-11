@@ -26,7 +26,7 @@ export const MOOCFI_CERTIFICATE = isProduction
   ? process.env.MOOCFI_CERTIFICATE ?? "" 
   : fs
     .readFileSync(
-      __dirname + "/../saml/certs/mooc.fi.crt",
+      __dirname + "/saml/certs/mooc.fi.crt",
     )
     .toString() ?? ""
 export const HY_CERTIFICATE = isProduction
