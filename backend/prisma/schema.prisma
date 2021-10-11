@@ -32,23 +32,24 @@ model AbStudy {
 }
 
 model Completion {
-  certificate_id            String?
-  completion_language       String?
-  course_id                 String?                 
-  created_at                DateTime?               @default(now())
-  eligible_for_ects         Boolean?                @default(true)
-  email                     String
-  grade                     String?
-  id                        String                  @id @default(uuid())
-  student_number            String?
-  updated_at                DateTime?               @updatedAt
-  user_id                   String?                 
-  user_upstream_id          Int?
-  course                    Course?                 @relation(fields: [course_id], references: [id])
-  user                      User?                   @relation(fields: [user_id], references: [id])
-  completions_registered    CompletionRegistered[]
-  completion_date           DateTime?
-  tier                      Int?
+  certificate_id                            String?
+  completion_language                       String?
+  course_id                                 String?                 
+  created_at                                DateTime?               @default(now())
+  eligible_for_ects                         Boolean?                @default(true)
+  email                                     String
+  grade                                     String?
+  id                                        String                  @id @default(uuid())
+  student_number                            String?
+  updated_at                                DateTime?               @updatedAt
+  user_id                                   String?                 
+  user_upstream_id                          Int?
+  course                                    Course?                 @relation(fields: [course_id], references: [id])
+  user                                      User?                   @relation(fields: [user_id], references: [id])
+  completions_registered                    CompletionRegistered[]
+  completion_date                           DateTime?
+  tier                                      Int?
+  completion_registration_attempt_date      DateTime?
 
   @@map("completion")
 }
@@ -66,7 +67,8 @@ model CompletionRegistered {
   course                                           Course?       @relation(fields: [course_id], references: [id])
   organization                                     Organization? @relation(fields: [organization_id], references: [id])
   user                                             User?         @relation(fields: [user_id], references: [id])
-
+  registration_date                                DateTime?
+  
   @@map("completion_registered")
 }
 
