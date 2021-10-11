@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client"
+
 import { UserInfo } from "../../domain/UserInfo"
 
 export const normalUser = {
@@ -612,5 +613,20 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     course: { connect: { id: "00000000000000000000000000000666" } },
     link: "avoin-link",
     tiers: null,
+  },
+]
+
+export const storedData: Prisma.StoredDataCreateInput[] = [
+  {
+    // user1, course2
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    data: "user1_foo",
+  },
+  {
+    // user3, course1
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    data: "user3_foo",
   },
 ]

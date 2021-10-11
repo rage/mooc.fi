@@ -123,6 +123,7 @@ model Course {
   study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
   upcoming_active_link                               Boolean?
   tier                                               Int?
+  stored_data                                        StoredData[]                        
 
   @@map("course")
 }
@@ -354,6 +355,19 @@ model Service {
   @@map("service")
 }
 
+model StoredData {
+  created_at                     DateTime?                      @default(now())
+  updated_at                     DateTime?                      @updatedAt
+  data                           String
+  course_id                      String
+  user_id                        String
+  course                         Course?                        @relation(fields: [course_id], references: [id])
+  user                           User?                          @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, course_id])
+  @@map("stored_data")
+}
+
 model StudyModule {
   created_at                DateTime?                  @default(now())
   id                        String                     @id @default(uuid())
@@ -405,6 +419,7 @@ model User {
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
+  stored_data                    StoredData[]
 
   @@map("user")
 }
