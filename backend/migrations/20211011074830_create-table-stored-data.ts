@@ -18,11 +18,11 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.raw(`
     ALTER TABLE ONLY stored_data
-      ADD CONSTRAINT stored_data_user FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE SET NULL;
+      ADD CONSTRAINT stored_data FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE;
   `)
   await knex.raw(`
     ALTER TABLE ONLY stored_data
-      ADD CONSTRAINT stored_data_course FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE SET NULL;
+      ADD CONSTRAINT stored_data_course FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE;
   `)
 
   await knex.raw(`
