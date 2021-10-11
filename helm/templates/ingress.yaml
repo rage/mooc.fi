@@ -59,23 +59,23 @@ spec:
               servicePort: 80
           # - path: /Shibboleth.sso
           #   backend:
-          #     serviceName: moocfi-saml
+          #     serviceName: moocfi-auth
           #     servicePort: 80
           # - path: /connect
           #   backend:
-          #     serviceName: moocfi-saml
+          #     serviceName: moocfi-auth
           #     servicePort: 80
           # - path: /sign-in
           #   backend:
-          #     serviceName: moocfi-saml
+          #     serviceName: moocfi-auth
           #     servicePort: 80
           # - path: /sign-up
           #   backend:
-          #     serviceName: moocfi-saml
+          #     serviceName: moocfi-auth
           #     servicePort: 80
           - path: /sp
             backend:
-              serviceName: {{ $fullname }}-saml
+              serviceName: {{ $fullname }}-auth
               servicePort: 80
     {{- end }}
   {{- end }}

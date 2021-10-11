@@ -74,7 +74,7 @@ jobs:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
 
-  build_shibbo:
+  build_auth:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
@@ -84,10 +84,10 @@ jobs:
       - docker/install-docker-tools
       - run:
           name: "Build image"
-          command: "bin/build-docker-shibbo.sh"
+          command: "bin/build-docker-auth.sh"
       - run:
           name: "Push image if on master"
-          command: "bin/push-docker-shibbo-image.sh"  
+          command: "bin/push-docker-auth-image.sh"  
     
   deploy_to_production:
     docker:
@@ -110,7 +110,7 @@ workflows:
     jobs:
       - build_frontend
       - build_backend
-      - build_shibbo
+      - build_auth
       - code_style
       - deploy_to_production:
           requires:

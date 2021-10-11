@@ -30,12 +30,12 @@ services:
   #     - 80:80
   #     - 443:443
   backend:
-    image: saml
+    image: moocfi-auth
     build: .
-    container_name: saml-backend
+    container_name: moocfi-auth-backend
   
   
 networks:
   default:
     external:
-      name: shibbo_default
+      name: moocfi-auth-default

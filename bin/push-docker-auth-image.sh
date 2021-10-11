@@ -19,13 +19,13 @@ else
   REV="$DATE-$(git rev-parse --verify HEAD)"
 fi
 
-TAG="eu.gcr.io/moocfi/moocfi-saml:build-$REV"
+TAG="eu.gcr.io/moocfi/moocfi-auth:build-$REV"
 
-docker tag "$TAG" eu.gcr.io/moocfi/moocfi-saml:latest
+docker tag "$TAG" eu.gcr.io/moocfi/moocfi-auth:latest
 
 echo "Pushing image $TAG"
 
 docker push "$TAG"
 
 echo "Pushing latest"
-docker push eu.gcr.io/moocfi/moocfi-saml:latest
+docker push eu.gcr.io/moocfi/moocfi-auth:latest

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm.fullname" . }}-saml
+  name: {{ include "helm.fullname" . }}-auth
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
@@ -10,7 +10,7 @@ spec:
   {{- end }}
   selector:
     matchLabels: 
-      app: {{ include "helm.fullname" . }}-saml
+      app: {{ include "helm.fullname" . }}-auth
       {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: {{ include "helm.fullname" . }}-saml
+        app: {{ include "helm.fullname" . }}-auth
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -30,10 +30,10 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ include "helm.fullname" . }}-saml
+        - name: {{ include "helm.fullname" . }}-auth
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}/{{ include "helm.fullname" . }}-saml:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/{{ include "helm.fullname" . }}-auth:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
             - name: http
