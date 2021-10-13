@@ -68,7 +68,7 @@ export function registerCompletions({ knex, prisma }: ApiContext) {
             },
             course: { connect: { id: course_id } },
             real_student_number: entry.student_number,
-            registration_date: entry.registration_date,
+            registration_date: entry.registration_date ?? null,
             user: { connect: { id: user_id } },
           },
         })
