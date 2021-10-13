@@ -1,16 +1,18 @@
-require("sharp") // ensure correct zlib thingy
-
-import { PrismaClient, User } from "@prisma/client"
-import { Server } from "http"
+import type { ApolloServer } from "apollo-server-express"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
-import { nanoid } from "nanoid"
+import { Server } from "http"
 import { knex, Knex } from "knex"
-import server from "../server"
-import type { ApolloServer } from "apollo-server-express"
-import winston from "winston"
+import { nanoid } from "nanoid"
 import nock from "nock"
+import winston from "winston"
+
+import { PrismaClient, User } from "@prisma/client"
+
 import binPrisma from "../prisma"
+import server from "../server"
+
+require("sharp") // ensure correct zlib thingy
 
 const DEBUG = Boolean(process.env.DEBUG)
 
