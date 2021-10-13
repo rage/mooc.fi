@@ -28,7 +28,7 @@ spec:
               memory: 600Mi
               cpu: 300m
             requests:
-              memory: 300Mi
+              memory: 200Mi
               cpu: 200m
           envFrom:
           - secretRef:
