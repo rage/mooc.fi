@@ -1,15 +1,16 @@
+import compression from "compression"
+// import * as winston from "winston"
+import express from "express"
+import morgan from "morgan"
+import * as Kafka from "node-rdkafka"
+import { promisify } from "util"
+
+import { KafkaError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
+
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-
-import * as Kafka from "node-rdkafka"
-// import * as winston from "winston"
-import express from "express"
-import compression from "compression"
-import morgan from "morgan"
-import { promisify } from "util"
-import sentryLogger from "./lib/logger"
-import { KafkaError } from "./lib/errors"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
 
@@ -90,7 +91,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
     flushProducer(1000)
-  } catch (e) {
+  } catch (e: any) {
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
   }

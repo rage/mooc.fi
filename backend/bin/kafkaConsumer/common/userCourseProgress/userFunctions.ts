@@ -280,7 +280,7 @@ export const createCompletion = async ({
       if (updated.length > 0) {
         logger?.info("Existing completion found, updated tier")
       }
-    } catch (error) {
+    } catch (error: any) {
       logger?.error(
         new DatabaseInputError("Error updating tier", completions[0], error),
       )
