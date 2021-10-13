@@ -1,26 +1,28 @@
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
-import { Typography, Paper, SvgIcon } from "@material-ui/core"
-import RegisterCompletionText from "/components/RegisterCompletionText"
-import ImportantNotice from "/components/ImportantNotice"
-import RegisterCompletionTranslations from "/translations/register-completion"
-import { useContext } from "react"
-import { useQueryParameter } from "/util/useQueryParameter"
-import Spinner from "/components/Spinner"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import styled from "@emotion/styled"
-import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "/contexts/LoginStateContext"
-import { CheckSlugQuery } from "/graphql/queries/courses"
-import { useTranslator } from "/util/useTranslator"
+import { useContext, useEffect, useState } from "react"
+
 import RegisterCompletion from "/components/Home/RegisterCompletion"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import { CheckSlug } from "/static/types/generated/CheckSlug"
-import { useEffect, useState } from "react"
-import axios from "axios"
-import { getAccessToken } from "/lib/authentication"
+import ImportantNotice from "/components/ImportantNotice"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import RegisterCompletionText from "/components/RegisterCompletionText"
+import Spinner from "/components/Spinner"
 import LanguageContext from "/contexts/LanguageContext"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { UpdateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
+import { CheckSlugQuery } from "/graphql/queries/courses"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { getAccessToken } from "/lib/authentication"
+import withSignedIn from "/lib/with-signed-in"
+import { CheckSlug } from "/static/types/generated/CheckSlug"
+import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
+import { UpdateRegistrationAttemptDate } from "/static/types/generated/UpdateRegistrationAttemptDate"
+import RegisterCompletionTranslations from "/translations/register-completion"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+import axios from "axios"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Paper, SvgIcon, Typography } from "@material-ui/core"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -112,6 +114,11 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const [
+    updateRegistrationAttemptDate,
+  ] = useMutation<UpdateRegistrationAttemptDate>(
+    UpdateRegistrationAttemptDateMutation,
+  )
 
   const course_exists = Boolean(courseData?.course?.id)
 
@@ -119,6 +126,19 @@ function RegisterCompletionPage() {
     userData?.currentUser?.completions?.find(
       (c) => c.course?.slug == courseSlug,
     ) ?? undefined
+
+  const onRegistrationClick = () => {
+    if (!completion?.id) {
+      return
+    }
+
+    updateRegistrationAttemptDate({
+      variables: {
+        id: completion.id,
+        completion_registration_attempt_date: new Date(),
+      },
+    })
+  }
 
   const { language } = useContext(LanguageContext)
 
@@ -236,7 +256,8 @@ function RegisterCompletionPage() {
         <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("open_university_registration_not_open")}{" "}
-            {completion.course?.name} {completion.completion_language}.
+            <strong>{completion.course?.name}</strong> (
+            {completion.completion_language}).
           </Typography>
         </StyledPaper>
       </RegisterCompletion>
@@ -265,6 +286,7 @@ function RegisterCompletionPage() {
         email={completion.email}
         link={courseLinkWithLanguage}
         tiers={tiers}
+        onRegistrationClick={onRegistrationClick}
       />
       <StyledPaperColumn>
         <Typography variant="body1">
