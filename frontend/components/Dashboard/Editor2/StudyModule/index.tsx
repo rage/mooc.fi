@@ -1,33 +1,35 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import StudyModuleEditForm from "./StudyModuleEditForm"
-import { StudyModuleFormValues } from "./types"
-import { useMutation, useApolloClient } from "@apollo/client"
-import {
-  AddStudyModuleMutation,
-  UpdateStudyModuleMutation,
-  DeleteStudyModuleMutation,
-} from "/graphql/mutations/study-modules"
-import {
-  AllModulesQuery,
-  AllEditorModulesQuery,
-  CheckModuleSlugQuery,
-} from "/graphql/queries/study-modules"
-import studyModuleEditSchema from "./form-validation"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
-import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
-import { PureQueryOptions } from "@apollo/client"
-import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
-import Router from "next/router"
-import LanguageContext from "/contexts/LanguageContext"
-import ModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
-import { SubmitErrorHandler, useForm, FormProvider } from "react-hook-form"
+
+import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { EditorContext } from "../EditorContext"
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import LanguageContext from "/contexts/LanguageContext"
+import {
+  AddStudyModuleMutation,
+  DeleteStudyModuleMutation,
+  UpdateStudyModuleMutation,
+} from "/graphql/mutations/study-modules"
+import {
+  AllEditorModulesQuery,
+  AllModulesQuery,
+  CheckModuleSlugQuery,
+} from "/graphql/queries/study-modules"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
+import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
+import ModulesTranslations from "/translations/study-modules"
+import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import { useTranslator } from "/util/useTranslator"
+import Router from "next/router"
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+
+import { EditorContext } from "../EditorContext"
+import studyModuleEditSchema from "./form-validation"
+import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
+import StudyModuleEditForm from "./StudyModuleEditForm"
+import { StudyModuleFormValues } from "./types"
 
 const StudyModuleEdit = ({
   module,
@@ -96,7 +98,7 @@ const StudyModuleEdit = ({
         Router.push(`/${language}/study-modules`, undefined, {
           shallow: true,
         })
-      } catch (err) {
+      } catch (err: any) {
         setStatus({ message: err.message, error: true })
         console.error(err)
         // setSubmitting(false)
