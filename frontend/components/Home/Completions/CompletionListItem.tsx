@@ -142,37 +142,37 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
 
         <RegistrationColumn>
           {isRegistered && completion.completions_registered
-            ? (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
-                (r) => {
-                  return (
-                    <Row key={`registration-${r.id}`}>
-                      <Column>
+            ? (
+                completion.completions_registered as CompletionsRegisteredFragment_completions_registered[]
+              )?.map((r) => {
+                return (
+                  <Row key={`registration-${r.id}`}>
+                    <Column>
+                      <CardSubtitle>
+                        <strong>
+                          {t("registeredDate")}
+                          {formatDateTime(r.created_at)}
+                        </strong>
+                      </CardSubtitle>
+                      {r.organization ? (
                         <CardSubtitle>
-                          <strong>
-                            {t("registeredDate")}
-                            {formatDateTime(r.created_at)}
-                          </strong>
+                          {t("organization")}
+                          {r.organization.slug}
                         </CardSubtitle>
-                        {r.organization ? (
-                          <CardSubtitle>
-                            {t("organization")}
-                            {r.organization.slug}
-                          </CardSubtitle>
-                        ) : null}
-                      </Column>
-                      <div
-                        style={{
-                          margin: "auto auto auto 0",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <DoneIcon style={{ color: "green" }} />
-                      </div>
-                    </Row>
-                  )
-                },
-              )
+                      ) : null}
+                    </Column>
+                    <div
+                      style={{
+                        margin: "auto auto auto 0",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <DoneIcon style={{ color: "green" }} />
+                    </div>
+                  </Row>
+                )
+              })
             : null}
         </RegistrationColumn>
         <ButtonColumn>

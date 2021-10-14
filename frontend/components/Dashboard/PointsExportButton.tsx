@@ -134,7 +134,7 @@ async function dowloadInChunks(
     const nDownLoaded = res.push(...downloaded)
     setMessage(`Downloaded progress for ${nDownLoaded} users...`)
   }
-  return (res as unknown) as ExportUserCourseProgesses_userCourseProgresses[]
+  return res as unknown as ExportUserCourseProgesses_userCourseProgresses[]
 }
 
 export default PointsExportButton
