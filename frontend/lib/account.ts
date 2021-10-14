@@ -108,7 +108,7 @@ export async function createTMCAccount({
     headers: { "Content-Type": "application/json" },
   })
     .then((res) => res.data)
-    .then((json) => {
+    .then((json: any) => {
       if (json.success) {
         return authenticateTMCUser(email, password)
       } else {
@@ -139,7 +139,7 @@ export const authenticateTMCUser = async (
     headers: { "Content-Type": "application/json" },
   })
     .then((response) => response.data)
-    .then((json) => {
+    .then((json: any) => {
       if (json.access_token) {
         return { success: true, token: json.access_token, error: null }
       } else {
@@ -154,7 +154,7 @@ export const authenticateTMCUser = async (
 export const getUserDetails = async (
   accessToken: string,
 ): Promise<UserInfo> => {
-  const res = await axios.get(
+  const res = await axios.get<any>(
     `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
     {
       headers: { Authorization: accessToken },

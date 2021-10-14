@@ -1,26 +1,26 @@
-import type { PrismaClient } from "@prisma/client"
-import { Knex } from "knex"
 import { Router } from "express"
+import { Knex } from "knex"
+import * as winston from "winston"
 
+import type { PrismaClient } from "@prisma/client"
+
+import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
 import {
+  completionInstructions,
   completions,
   completionTiers,
-  completionInstructions,
 } from "./completions"
-import { userCourseSettingsCount } from "./userCourseSettingsCount"
 import { progress, progressV2 } from "./progress"
-import { tierProgress } from "./tierProgress"
 import { registerCompletions } from "./registerCompletions"
+import { postStoredData } from "./storedData"
+import { tierProgress } from "./tierProgress"
 import { getUser, registerUser, updatePassword } from "./user"
-
+import { userCourseProgress } from "./userCourseProgress"
 import {
   userCourseSettingsGet,
   userCourseSettingsPost,
 } from "./userCourseSettings"
-import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
-import { userCourseProgress } from "./userCourseProgress"
-
-import * as winston from "winston"
+import { userCourseSettingsCount } from "./userCourseSettingsCount"
 
 export interface ApiContext {
   prisma: PrismaClient
@@ -49,4 +49,5 @@ export function apiRouter(ctx: ApiContext) {
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
     .post("/user/register", registerUser(ctx))
     .get("/user-course-progress/:slug", userCourseProgress(ctx))
+    .post("/stored-data/:slug", postStoredData(ctx))
 }

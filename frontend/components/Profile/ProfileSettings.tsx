@@ -51,9 +51,8 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     },
   )
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
-  const [snackbarState, setSnackbarState] = useState<SnackbarProps>(
-    initialSnackbarState,
-  )
+  const [snackbarState, setSnackbarState] =
+    useState<SnackbarProps>(initialSnackbarState)
 
   const handleResearchConsentInput = async (
     event: ChangeEvent<{}>,

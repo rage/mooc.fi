@@ -26,14 +26,13 @@ export const getCombinedUserCourseProgress = async ({
   context: KafkaContext
 }): Promise<CombinedUserCourseProgress> => {
   /* Get UserCourseServiceProgresses */
-  const userCourseServiceProgresses = await prisma.userCourseServiceProgress.findMany(
-    {
+  const userCourseServiceProgresses =
+    await prisma.userCourseServiceProgress.findMany({
       where: {
         user_id: user?.id,
         course_id: course?.id,
       },
-    },
-  )
+    })
 
   /*
    * Get rid of everything we dont neeed. After this the array looks like this:

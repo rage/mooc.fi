@@ -1,12 +1,13 @@
+import axios, { Method } from "axios"
+import { omit, orderBy } from "lodash"
+
 import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
 import {
-  normalUserDetails,
   adminUserDetails,
+  normalUserDetails,
   thirdUserDetails,
 } from "../../tests/data"
 import { seed } from "../../tests/data/seed"
-import axios, { Method } from "axios"
-import { omit, orderBy } from "lodash"
 
 const ctx = getTestContext()
 
@@ -16,21 +17,21 @@ describe("API", () => {
     headers?: any
     params?: Record<string, any>
   }
-  const request = (method: Method) => (
-    route: string = "",
-    defaultHeaders: any,
-  ) => async ({
-    data = null,
-    headers = defaultHeaders,
-    params = {},
-  }: RequestParams) =>
-    await axios({
-      method,
-      url: `http://localhost:${ctx.port}${route}`,
-      data,
-      headers,
-      params,
-    })
+  const request =
+    (method: Method) =>
+    (route: string = "", defaultHeaders: any) =>
+    async ({
+      data = null,
+      headers = defaultHeaders,
+      params = {},
+    }: RequestParams) =>
+      await axios({
+        method,
+        url: `http://localhost:${ctx.port}${route}`,
+        data,
+        headers,
+        params,
+      })
 
   const get = (route: string = "", defaultHeaders: any) =>
     request("GET")(route, defaultHeaders)
@@ -685,6 +686,91 @@ describe("API", () => {
       expect(ucpResponse.data.data.created_at).toEqual(
         "1900-01-01T08:00:00.000Z",
       )
+    })
+  })
+
+  describe("/stored-data", () => {
+    const tmc = fakeTMCCurrent({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
+    })
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const postStoredData = (slug: string) =>
+      post(`/api/stored-data/${slug}`, {})
+
+    it("errors on no auth", async () => {
+      return postStoredData("course1")({
+        data: { data: "foo" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on no data", async () => {
+      return postStoredData("course1")({
+        headers: { Authorization: "Bearer normal" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+        })
+    })
+
+    it("creates stored data", async () => {
+      const existing = await ctx.prisma.storedData.findFirst({
+        where: {
+          user_id: "20000000000000000000000000000102",
+          course_id: "00000000000000000000000000000002",
+        },
+      })
+
+      expect(existing).toBeNull()
+
+      const res = await postStoredData("course1")({
+        data: { data: "foo foo" },
+        headers: { Authorization: "Bearer normal" },
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data.message).toContain("stored data created")
+
+      const created = await ctx.prisma.storedData.findFirst({
+        where: {
+          user_id: "20000000000000000000000000000102",
+          course_id: "00000000000000000000000000000002",
+        },
+      })
+
+      expect(created?.data).toEqual("foo foo")
+    })
+
+    it("errors when data already exists", async () => {
+      const existing = await ctx.prisma.storedData.findFirst({
+        where: {
+          user_id: "20000000000000000000000000000102",
+          course_id: "00000000000000000000000000000001",
+        },
+      })
+
+      expect(existing?.data).toEqual("user1_foo")
+
+      return postStoredData("course2")({
+        data: { data: "foo foo" },
+        headers: { Authorization: "Bearer normal" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(500)
+        })
     })
   })
 })

@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client"
+
 import { UserInfo } from "../../domain/UserInfo"
 
 export const normalUser = {
@@ -547,16 +548,17 @@ export const userCourseProgresses: Prisma.UserCourseProgressCreateInput[] = [
   },
 ]
 
-export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreateInput[] = [
-  {
-    course: { connect: { id: "00000000000000000000000000000002" } },
-    user: { connect: { id: "20000000000000000000000000000104" } },
-    service: {
-      connect: { id: "40000000-0000-0000-0000-000000000102" },
+export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreateInput[] =
+  [
+    {
+      course: { connect: { id: "00000000000000000000000000000002" } },
+      user: { connect: { id: "20000000000000000000000000000104" } },
+      service: {
+        connect: { id: "40000000-0000-0000-0000-000000000102" },
+      },
+      progress: [{ group: "week1", max_points: 3, n_points: 3 }],
     },
-    progress: [{ group: "week1", max_points: 3, n_points: 3 }],
-  },
-]
+  ]
 
 export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
   {
@@ -619,51 +621,52 @@ export const courseAliases: Prisma.CourseAliasCreateInput[] = [
   },
 ]
 
-export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLinkCreateInput[] = [
-  {
-    id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
-    course_code: "alias",
-    language: "en_US",
-    course: { connect: { id: "00000000000000000000000000000002" } },
-    link: "avoin-link",
-    tiers: [
-      {
-        tier: 2,
-        name: "intermediate tier",
-        course_id: "00000000000000000000000000000001",
-        adjacent: [],
-      },
-      {
-        tier: 3,
-        name: "advanced tier",
-        course_id: "00000000000000000000000000000666",
-        adjacent: [
-          {
-            tier: 2,
-            name: "intermediate tier",
-            course_id: "00000000000000000000000000000001",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d92",
-    course_code: "alias2",
-    language: "en_US",
-    course: { connect: { id: "00000000000000000000000000000001" } },
-    link: "avoin-link",
-    tiers: null,
-  },
-  {
-    id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d91",
-    course_code: "alias3",
-    language: "en_US",
-    course: { connect: { id: "00000000000000000000000000000666" } },
-    link: "avoin-link",
-    tiers: null,
-  },
-]
+export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLinkCreateInput[] =
+  [
+    {
+      id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      course_code: "alias",
+      language: "en_US",
+      course: { connect: { id: "00000000000000000000000000000002" } },
+      link: "avoin-link",
+      tiers: [
+        {
+          tier: 2,
+          name: "intermediate tier",
+          course_id: "00000000000000000000000000000001",
+          adjacent: [],
+        },
+        {
+          tier: 3,
+          name: "advanced tier",
+          course_id: "00000000000000000000000000000666",
+          adjacent: [
+            {
+              tier: 2,
+              name: "intermediate tier",
+              course_id: "00000000000000000000000000000001",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d92",
+      course_code: "alias2",
+      language: "en_US",
+      course: { connect: { id: "00000000000000000000000000000001" } },
+      link: "avoin-link",
+      tiers: null,
+    },
+    {
+      id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d91",
+      course_code: "alias3",
+      language: "en_US",
+      course: { connect: { id: "00000000000000000000000000000666" } },
+      link: "avoin-link",
+      tiers: null,
+    },
+  ]
 
 export const authorizationCode: Prisma.AuthorizationCodeCreateInput[] = [
   {
@@ -745,5 +748,20 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     person_affiliation: "member;student",
     organizational_unit: "unit",
     mail: "third@second-university.fi",
+  },
+]
+
+export const storedData: Prisma.StoredDataCreateInput[] = [
+  {
+    // user1, course2
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    data: "user1_foo",
+  },
+  {
+    // user3, course1
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    data: "user3_foo",
   },
 ]

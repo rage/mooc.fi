@@ -34,9 +34,8 @@ function Profile() {
   const { language } = useLanguageContext()
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
-  const { data, error, loading } = useQuery<CurrentUserUserOverView>(
-    UserOverViewQuery,
-  )
+  const { data, error, loading } =
+    useQuery<CurrentUserUserOverView>(UserOverViewQuery)
 
   const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
     // setTab(newValue)

@@ -5,9 +5,10 @@ import fi from "./fi.json"
 import { TranslationDictionary } from "/translations"
 
 export type CompletionsTranslations = typeof en & typeof fi
-const CompletionsTranslations: TranslationDictionary<CompletionsTranslations> = {
-  en,
-  fi,
-}
+const CompletionsTranslations: TranslationDictionary<CompletionsTranslations> =
+  {
+    en,
+    fi,
+  }
 
 export default CompletionsTranslations

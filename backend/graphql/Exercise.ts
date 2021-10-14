@@ -115,15 +115,8 @@ export const ExerciseMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const {
-          custom_id,
-          name,
-          part,
-          section,
-          max_points,
-          course,
-          service,
-        } = args
+        const { custom_id, name, part, section, max_points, course, service } =
+          args
 
         ctx.prisma
         return ctx.prisma.exercise.create({

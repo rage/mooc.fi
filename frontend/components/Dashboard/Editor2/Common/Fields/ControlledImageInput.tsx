@@ -11,14 +11,8 @@ export interface ControlledImageInputProps extends ControlledFieldProps {
 }
 
 export function ControlledImageInput(props: ControlledImageInputProps) {
-  const {
-    name,
-    label,
-    onImageLoad,
-    onImageAccepted,
-    onClose,
-    thumbnail,
-  } = props
+  const { name, label, onImageLoad, onImageAccepted, onClose, thumbnail } =
+    props
 
   return (
     <FieldController

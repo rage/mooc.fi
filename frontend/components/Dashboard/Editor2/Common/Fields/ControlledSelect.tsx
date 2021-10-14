@@ -1,17 +1,18 @@
 import {
+  ControlledFieldProps,
+  FieldController,
+} from "/components/Dashboard/Editor2/Common/Fields"
+import CommonTranslations from "/translations/common"
+import flattenKeys from "/util/flattenKeys"
+import { useTranslator } from "/util/useTranslator"
+import {
   Path,
   PathValue,
   UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
-import { TextField, MenuItem } from "@material-ui/core"
-import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/util/useTranslator"
-import CommonTranslations from "/translations/common"
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
+
+import { MenuItem, TextField } from "@material-ui/core"
 
 interface ControlledSelectProps<T> extends ControlledFieldProps {
   items: T[]
@@ -65,7 +66,7 @@ export function ControlledSelect<T extends { [key: string]: any }>(
           variant="outlined"
           label={label}
           value={value !== "" ? value : "_empty"}
-          error={Boolean(flattenKeys(errors)[name])}
+          error={Boolean(flattenKeys(errors as Record<string, any>)[name])}
           onChange={_onChange}
           style={{ marginTop: "1.5rem" }}
         >
