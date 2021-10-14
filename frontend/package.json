@@ -31,7 +31,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "@hookform/error-message": "^2.0.0",
     "@hookform/resolvers": "^2.8.2",
     "@material-ui/core": "^5.0.0-alpha.35",
@@ -48,10 +48,10 @@
     "@types/mime-types": "^2.1.1",
     "@types/react-fontawesome": "^1.6.5",
     "@types/uuid": "^8.3.1",
-    "@types/yup": "^0.29.11",
+    "@types/yup": "^0.29.13",
     "@zeit/next-typescript": "^1.1.1",
     "apollo-upload-client": "^16.0.0",
-    "axios": "^0.21.0",
+    "axios": "^0.23.0",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-plugin-module-resolver": "^4.1.0",
     "compression": "^1.7.4",
@@ -83,14 +83,14 @@
     "react-ga": "^3.3.0",
     "react-hook-form": "^7.17.4",
     "responsive-loader": "^2.3.0",
-    "sharp": "^0.28.3",
+    "sharp": "^0.29.1",
     "styled-jsx": "^3.4.4",
     "tmc-client-js": "0.0.9",
     "url": "^0.11.0",
     "uuid": "^8.3.2",
     "webp-loader": "^0.6.0",
-    "xlsx": "^0.17.0",
-    "yup": "^0.32.9"
+    "xlsx": "^0.17.3",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
@@ -113,7 +113,7 @@
     "express-graphql": "^0.12.0",
     "istanbul-lib-coverage": "^3.0.0",
     "nyc": "^15.1.0",
-    "source-map-support": "^0.5.19",
+    "source-map-support": "^0.5.20",
     "typescript": "^4.4.4"
   },
   "nyc": {
