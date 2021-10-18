@@ -234,7 +234,7 @@ async function exchangeClientCredentials(client: any, ctx: ApiContext) {
 
 async function exchangeClientAuthorize(
   client_secret: string,
-  personal_unique_code: string,
+  edu_person_principal_name: string,
   ctx: ApiContext,
 ) {
   let client = (
@@ -257,7 +257,7 @@ async function exchangeClientAuthorize(
       .select<any, User[]>("user.id as id", "email", "administrator")
       .from("verified_user")
       .leftJoin("user", "user.id", "verified_user.user_id")
-      .where("personal_unique_code", personal_unique_code)
+      .where("edu_person_principal_name", edu_person_principal_name)
   )?.[0]
 
   if (!user) {
@@ -351,7 +351,7 @@ export function token(ctx: ApiContext) {
       case "client_authorize":
         result = await exchangeClientAuthorize(
           req.body.client_secret,
-          req.body.personal_unique_code,
+          req.body.edu_person_principal_name,
           ctx,
         )
 

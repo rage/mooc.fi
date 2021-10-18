@@ -1,15 +1,17 @@
 import axios from "axios"
-import { Request, Response } from "express"
 
-import { API_URL, AUTH_URL, FRONTEND_URL, LOGOUT_URL } from "../config"
+import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
+import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
 const response_type = "token"
 const client_secret = "native"
 
-export const signUpHandler = async (req: Request, res: Response) => {
-  const headers = req.headers
-
+export const signUpHandler: AuthenticationHandlerCallback = (
+  req,
+  res,
+  _next,
+) => async (_err, user) => {
   const {
     schacpersonaluniquecode,
     displayname,
@@ -19,10 +21,11 @@ export const signUpHandler = async (req: Request, res: Response) => {
     schachomeorganization,
     mail,
     ou,
-  } = headers
+    o,
+    edupersonprincipalname,
+  } = user
 
   const language = req.query.language ?? "en"
-  const languagePath = language !== "en" ? `${language}/` : ""
 
   // confidently default to an error
   let status = {
@@ -33,11 +36,13 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
   try {
     const { data } = await axios.post(`${API_URL}/user/register`, {
+      eduPersonPrincipalName: edupersonprincipalname,
       personalUniqueCode: schacpersonaluniquecode,
       firstName: givenName,
       lastName: sn,
       personAffiliation: edupersonaffiliation,
       mail,
+      organization: o,
       organizationalUnit: ou,
       displayName: displayname,
       homeOrganization: schachomeorganization,
@@ -45,10 +50,10 @@ export const signUpHandler = async (req: Request, res: Response) => {
     console.log("got register data", data)
 
     try {
-      const { data: tokenData } = await axios.post(`${AUTH_URL}/token`, {
+      const { data: tokenData } = await axios.post<any>(`${AUTH_URL}/token`, {
         grant_type,
         response_type,
-        personal_unique_code: schacpersonaluniquecode,
+        edu_person_principal_name: edupersonprincipalname,
         client_secret,
       })
 
@@ -60,14 +65,14 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
       status.error = false
       /*return res
-        .setMOOCCookies({
-          access_token: tokenData.access_token ?? "",
-          mooc_token: tokenData.access_token ?? "",
-          admin: tokenData.admin ?? "",
-        })
-        .redirect(
-          `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
-        )*/
+          .setMOOCCookies({
+            access_token: tokenData.access_token ?? "",
+            mooc_token: tokenData.access_token ?? "",
+            admin: tokenData.admin ?? "",
+          })
+          .redirect(
+            `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`,
+          )*/
     } catch (error) {
       // couldn't issue a token
       status.type = "token-issue"
@@ -106,9 +111,10 @@ export const signUpHandler = async (req: Request, res: Response) => {
 
   if (status.error) {
     status.query.push(`error=${status.type}`)
-    redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up`
+    redirectUrl = `${FRONTEND_URL}/${language}/sign-up`
   } else {
-    redirectUrl = `${LOGOUT_URL}${FRONTEND_URL}/${languagePath}sign-up/edit-details`
+    // TODO: find something else than this
+    redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details`
   }
 
   if (status.query) {

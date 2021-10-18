@@ -14,7 +14,7 @@ import { progress, progressV2 } from "./progress"
 import { registerCompletions } from "./registerCompletions"
 import { postStoredData } from "./storedData"
 import { tierProgress } from "./tierProgress"
-import { getUser, registerUser, updatePassword } from "./user"
+import { connectUser, getUser, registerUser, updatePassword } from "./user"
 import { userCourseProgress } from "./userCourseProgress"
 import {
   userCourseSettingsGet,
@@ -49,5 +49,6 @@ export function apiRouter(ctx: ApiContext) {
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
     .post("/user/register", registerUser(ctx))
     .get("/user-course-progress/:slug", userCourseProgress(ctx))
+    .post("/user/connect", connectUser(ctx))
     .post("/stored-data/:slug", postStoredData(ctx))
 }

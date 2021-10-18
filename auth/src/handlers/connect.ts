@@ -1,35 +1,35 @@
-import { Request, Response } from "express"
-import {
-  BACKEND_URL,
-  FRONTEND_URL,
-  LOGOUT_URL,
-  requiredFields,
-  defaultHeaders,
-  isProduction,
-} from "../config"
-import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
 import { GraphQLClient } from "graphql-request"
 
-// const shibCookies = ["_shibstate", "_opensaml", "_shibsession"]
+import { BACKEND_URL, FRONTEND_URL, requiredFields } from "../config"
+import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
+import { AuthenticationHandlerCallback } from "./"
 
-export const connectHandler = async (req: Request, res: Response) => {
-  const headers = req.headers
+export const connectHandler: AuthenticationHandlerCallback = (
+  req,
+  res,
+  _next,
+) => async (_err, user) => {
+  console.log("connect with user", user)
 
   const {
     schacpersonaluniquecode,
     displayname,
+    givenName,
+    sn,
     edupersonaffiliation = "",
     schachomeorganization,
     mail,
     ou,
-  } = headers
+    o,
+    edupersonprincipalname,
+  } = user
 
   /*const shibHeaders = Object.keys(headers)
     .filter((key) => key.startsWith("shib-"))
     .reduce((obj, key) => ({ ...obj, [key]: headers[key] }), {})*/
 
   const { access_token: accessToken } = res.locals.cookie
-  const language = req.query.language ?? "en"
+  const language = req.query.language || req.params.language || "en"
 
   console.log(accessToken)
   console.log(JSON.stringify(req.headers, null, 2))
@@ -39,7 +39,9 @@ export const connectHandler = async (req: Request, res: Response) => {
       throw new Error("You're not authorized to do this")
     }
 
-    if (!requiredFields.every((field) => Boolean(headers[field]))) {
+    console.log("requiredFields", requiredFields)
+    console.log("user", user)
+    if (!requiredFields.every((field) => Boolean(user[field]))) {
       throw new Error("Required attributes missing")
     }
 
@@ -48,11 +50,15 @@ export const connectHandler = async (req: Request, res: Response) => {
     })
     const result = await client.request(VERIFIED_USER_MUTATION, {
       display_name: displayname,
+      edu_personal_principal_name: edupersonprincipalname,
       personal_unique_code: schacpersonaluniquecode,
       home_organization: schachomeorganization,
       person_affiliation: edupersonaffiliation,
       mail,
       organizational_unit: ou,
+      first_name: givenName,
+      last_name: sn,
+      organization: o,
     })
     console.log(result)
 
@@ -73,11 +79,15 @@ export const connectHandler = async (req: Request, res: Response) => {
         }
       })
     })*/
-
+    /*req.login(user, (err) => {
+        console.log("express login error", err)
+      })*/
+    req.logout()
     res.redirect(
-      `${LOGOUT_URL}${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+      `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
     )
   } catch (error) {
+    console.log("I've errored with", error)
     const errorMessage = error instanceof Error ? error.message : error
     const encodedError = Buffer.from(
       JSON.stringify({ error: errorMessage }),

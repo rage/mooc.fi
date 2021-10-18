@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shibbo-test
+  name: {{ include "helm.fullname" . }}-auth
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
@@ -10,7 +10,7 @@ spec:
   {{- end }}
   selector:
     matchLabels: 
-      app: shibbo-test
+      app: {{ include "helm.fullname" . }}-auth
       {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: shibbo-test
+        app: {{ include "helm.fullname" . }}-auth
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -30,10 +30,10 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: shibbo-test
+        - name: {{ include "helm.fullname" . }}-auth
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}/shibbo-test:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/{{ include "helm.fullname" . }}-auth:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
             - name: http
@@ -52,46 +52,46 @@ spec:
           #   initialDelaySeconds: 5
           #   periodSeconds: 5
           volumeMounts:
-            - name: shibboleth-configs
-              mountPath: "/app/shibboleth"
-              readOnly: true
+          #   - name: saml-configs
+          #     mountPath: "/app/saml"
+          #     readOnly: true
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
               readOnly: true
           envFrom:
             - secretRef:
-                name: shibboleth-secret
+                name: saml-secret
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: shibboleth-configs
-          secret:
-            secretName: shibboleth-configs
-            items:
-              - key: attribute-map.xml
-                path: attribute-map.xml
-              - key: httpd.conf
-                path: httpd.conf
-              - key: shib.conf
-                path: shib.conf
-              - key: shibboleth2.xml
-                path: shibboleth2.xml
-              - key: sign-hy-test-metadata.xml
-                path: sign-hy-test-metadata.xml
-              - key: sign-login.helsinki.fi.crt
-                path: sign-login.helsinki.fi.crt
-              - key: ssl.conf
-                path: ssl.conf
-              - key: shibd.logger
-                path: shibd.logger
-              - key: mooc.fi.key
-                path: certs/mooc.fi.key
-              - key: mooc.fi.crt
-                path: certs/mooc.fi.crt
-              - key: haka_test_metadata_signed.xml
-                path: haka_test_metadata_signed.xml
-              - key: haka_testi_2018_sha2.crt
-                path: haka_testi_2018_sha2.crt
+        # - name: saml-configs
+        #   secret:
+        #     secretName: saml-configs
+        #     items:
+        #       # - key: attribute-map.xml
+        #       #   path: attribute-map.xml
+        #       # - key: httpd.conf
+        #       #   path: httpd.conf
+        #       # - key: shib.conf
+        #       #   path: shib.conf
+        #       # - key: shibboleth2.xml
+        #       #   path: shibboleth2.xml
+        #       # - key: sign-hy-test-metadata.xml
+        #       #   path: sign-hy-test-metadata.xml
+        #       - key: sign-login.helsinki.fi.crt
+        #         path: certs/sign-login.helsinki.fi.crt
+        #       # - key: ssl.conf
+        #       #   path: ssl.conf
+        #       # - key: shibd.logger
+        #       #   path: shibd.logger
+        #       - key: mooc.fi.key
+        #         path: certs/mooc.fi.key
+        #       - key: mooc.fi.crt
+        #         path: certs/mooc.fi.crt
+        #       # - key: haka_test_metadata_signed.xml
+        #       #   path: haka_test_metadata_signed.xml
+        #       - key: haka_testi_2018_sha2.crt
+        #         path: certs/haka_testi_2018_sha2.crt
         - name: google-cloud-storage-serviceaccount
           secret:
             secretName: google-cloud-storage-serviceaccount

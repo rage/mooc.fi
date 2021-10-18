@@ -519,6 +519,7 @@ model VerifiedUser {
   created_at                               DateTime?     @default(now())
   display_name                             String?
   id                                       String        @id @default(uuid())
+  edu_person_principal_name                String
   personal_unique_code                     String
   home_organization                        String
   person_affiliation                       String
@@ -526,12 +527,13 @@ model VerifiedUser {
   updated_at                               DateTime?     @updatedAt
   user_id                                  String?       
   user                                     User?         @relation(fields: [user_id], references: [id])
+  organization                             String
   organizational_unit                      String
   mail                                     String
 
   @@map("verified_user")
-  @@unique([user_id, personal_unique_code])
-  @@unique([user_id, personal_unique_code, home_organization])
+  @@unique([user_id, edu_person_principal_name])
+  @@unique([user_id, edu_person_principal_name, home_organization])
 }
 
 model AuthorizationCode {
