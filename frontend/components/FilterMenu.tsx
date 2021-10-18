@@ -112,18 +112,19 @@ export default function FilterMenu({
     })
   }
 
-  const handleStatusChange =
-    (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newStatus = e.target.checked
-        ? [...(searchVariables?.status || []), value]
-        : searchVariables?.status?.filter((v) => v !== value) || []
+  const handleStatusChange = (value: string) => (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const newStatus = e.target.checked
+      ? [...(searchVariables?.status || []), value]
+      : searchVariables?.status?.filter((v) => v !== value) || []
 
-      setStatus(newStatus)
-      setSearchVariables({
-        ...searchVariables,
-        status: newStatus,
-      })
-    }
+    setStatus(newStatus)
+    setSearchVariables({
+      ...searchVariables,
+      status: newStatus,
+    })
+  }
 
   const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHidden(e.target.checked)

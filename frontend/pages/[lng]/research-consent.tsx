@@ -102,8 +102,14 @@ function useResearchConsent() {
 const ResearchConsentPage = () => {
   const t = useTranslator(SignupTranslations)
 
-  const { loading, research, handleInput, onSubmit, formError, submitting } =
-    useResearchConsent()
+  const {
+    loading,
+    research,
+    handleInput,
+    onSubmit,
+    formError,
+    submitting,
+  } = useResearchConsent()
 
   return (
     <StyledPaper>

@@ -8,18 +8,20 @@ import Spinner from "/components/Spinner"
 import { BACKEND_URL, isProduction } from "/config"
 import LanguageContext from "/contexts/LanguageContext"
 import LoginStateContext from "/contexts/LoginStateContext"
+import { UpdateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
 import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { getAccessToken } from "/lib/authentication"
 import withSignedIn from "/lib/with-signed-in"
 import { CheckSlug } from "/static/types/generated/CheckSlug"
 import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
+import { UpdateRegistrationAttemptDate } from "/static/types/generated/UpdateRegistrationAttemptDate"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import axios from "axios"
 
-import { gql, useQuery } from "@apollo/client"
+import { gql, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Paper, SvgIcon, Typography } from "@material-ui/core"
 
@@ -113,6 +115,11 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const [
+    updateRegistrationAttemptDate,
+  ] = useMutation<UpdateRegistrationAttemptDate>(
+    UpdateRegistrationAttemptDateMutation,
+  )
 
   const course_exists = Boolean(courseData?.course?.id)
 
@@ -120,6 +127,19 @@ function RegisterCompletionPage() {
     userData?.currentUser?.completions?.find(
       (c) => c.course?.slug == courseSlug,
     ) ?? undefined
+
+  const onRegistrationClick = () => {
+    if (!completion?.id) {
+      return
+    }
+
+    updateRegistrationAttemptDate({
+      variables: {
+        id: completion.id,
+        completion_registration_attempt_date: new Date(),
+      },
+    })
+  }
 
   const { language } = useContext(LanguageContext)
 
@@ -239,7 +259,8 @@ function RegisterCompletionPage() {
         <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("open_university_registration_not_open")}{" "}
-            {completion.course?.name} {completion.completion_language}.
+            <strong>{completion.course?.name}</strong> (
+            {completion.completion_language}).
           </Typography>
         </StyledPaper>
       </RegisterCompletion>
@@ -268,6 +289,7 @@ function RegisterCompletionPage() {
         email={completion.email}
         link={courseLinkWithLanguage}
         tiers={tiers}
+        onRegistrationClick={onRegistrationClick}
       />
       <StyledPaperColumn>
         <Typography variant="body1">

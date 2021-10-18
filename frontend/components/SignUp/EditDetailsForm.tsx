@@ -57,8 +57,13 @@ const EditDetailsForm = ({
   }, [])
 
   const updateDetails = async () => {
-    const { first_name, last_name, email, password, password_confirmation } =
-      getValues()
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      password_confirmation,
+    } = getValues()
 
     let upstream_id = upstreamId
 

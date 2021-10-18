@@ -53,14 +53,16 @@ function ConnectionTest(props: any) {
   const { language } = useLanguageContext()
 
   const { data, error, loading } = useQuery(ConnectionTestQuery)
-  const [deleteVerifiedUser, { data: deleteData, error: deleteError }] =
-    useMutation<DeleteVerifiedUserTest>(DeleteVerifiedUserMutation, {
-      refetchQueries: [
-        {
-          query: ConnectionTestQuery,
-        },
-      ],
-    })
+  const [
+    deleteVerifiedUser,
+    { data: deleteData, error: deleteError },
+  ] = useMutation<DeleteVerifiedUserTest>(DeleteVerifiedUserMutation, {
+    refetchQueries: [
+      {
+        query: ConnectionTestQuery,
+      },
+    ],
+  })
   const router = useRouter()
 
   const connectionSuccess = useQueryParameter("success", false)

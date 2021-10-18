@@ -315,8 +315,7 @@ export const CourseMutations = extendType({
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-            user_course_settings_visibilities:
-              userCourseSettingsVisibilityMutation,
+            user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
           }),
         })
 

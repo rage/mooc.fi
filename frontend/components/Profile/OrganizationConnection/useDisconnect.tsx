@@ -20,14 +20,16 @@ export default function useDisconnect() {
   const { language } = useLanguageContext()
   const router = useRouter()
 
-  const [deleteVerifiedUser, { data: deleteData, error: deleteError }] =
-    useMutation<DeleteVerifiedUser>(DeleteVerifiedUserMutation, {
-      refetchQueries: [
-        {
-          query: UserOverViewQuery,
-        },
-      ],
-    })
+  const [
+    deleteVerifiedUser,
+    { data: deleteData, error: deleteError },
+  ] = useMutation<DeleteVerifiedUser>(DeleteVerifiedUserMutation, {
+    refetchQueries: [
+      {
+        query: UserOverViewQuery,
+      },
+    ],
+  })
   const onDisconnect = async (
     user: CurrentUserUserOverView_currentUser_verified_users,
   ) =>

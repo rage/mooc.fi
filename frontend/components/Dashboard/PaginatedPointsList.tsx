@@ -79,10 +79,12 @@ function PaginatedPointsList(props: Props) {
   const [search, setSearch] = useDebounce(searchString, 1000)
 
   // use lazy query to prevent running query on each render
-  const [getData, { data, loading, error, fetchMore }] =
-    useLazyQuery<StudentProgressData>(StudentProgresses, {
-      fetchPolicy: "cache-first",
-    })
+  const [
+    getData,
+    { data, loading, error, fetchMore },
+  ] = useLazyQuery<StudentProgressData>(StudentProgresses, {
+    fetchPolicy: "cache-first",
+  })
 
   useEffect(
     () =>
@@ -181,12 +183,12 @@ function PaginatedPointsList(props: Props) {
                   const newData = (
                     fetchMoreResult?.userCourseSettings?.edges ?? []
                   ).filter(notEmpty)
-                  const newPageInfo: UserCourseSettings_userCourseSettings_pageInfo =
-                    fetchMoreResult?.userCourseSettings?.pageInfo ?? {
-                      hasNextPage: false,
-                      endCursor: null,
-                      __typename: "PageInfo",
-                    }
+                  const newPageInfo: UserCourseSettings_userCourseSettings_pageInfo = fetchMoreResult
+                    ?.userCourseSettings?.pageInfo ?? {
+                    hasNextPage: false,
+                    endCursor: null,
+                    __typename: "PageInfo",
+                  }
 
                   return {
                     userCourseSettings: {

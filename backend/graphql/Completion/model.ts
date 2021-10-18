@@ -1,5 +1,6 @@
 import { ForbiddenError } from "apollo-server-core"
 import { objectType } from "nexus"
+
 import { UserCourseProgress } from "@prisma/client"
 
 export const Completion = objectType({
@@ -20,6 +21,7 @@ export const Completion = objectType({
     t.model.course()
     t.model.completion_date()
     t.model.tier()
+    t.model.completion_registration_attempt_date()
 
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
@@ -92,10 +94,11 @@ export const Completion = objectType({
             language: parent.completion_language,
           }
         }
-        const avoinLink =
-          await ctx.prisma.openUniversityRegistrationLink.findFirst({
+        const avoinLink = await ctx.prisma.openUniversityRegistrationLink.findFirst(
+          {
             where: filter,
-          })
+          },
+        )
 
         return avoinLink?.link ?? null
       },

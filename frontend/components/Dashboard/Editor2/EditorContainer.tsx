@@ -32,8 +32,13 @@ function EditorContainer<T extends Record<string, any>>({
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const { status, onSubmit, onError, onCancel, onDelete } =
-    useEditorContext<T>()
+  const {
+    status,
+    onSubmit,
+    onError,
+    onCancel,
+    onDelete,
+  } = useEditorContext<T>()
   const { handleSubmit, formState, watch } = useFormContext()
   const id = watch("id")
 

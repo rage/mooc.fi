@@ -58,8 +58,11 @@ const pixel =
 
 // capitalized to please the hook linter
 const RenderForm = () => {
-  const { errors, values, isSubmitting } =
-    useFormikContext<StudyModuleFormValues>()
+  const {
+    errors,
+    values,
+    isSubmitting,
+  } = useFormikContext<StudyModuleFormValues>()
 
   const t = useTranslator(ModulesTranslations)
   const confirm = useConfirm()

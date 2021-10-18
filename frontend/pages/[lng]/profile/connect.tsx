@@ -11,8 +11,9 @@ import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUser
 import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
 
 function Connection() {
-  const { data, loading, error } =
-    useQuery<CurrentUserUserOverView>(UserOverViewQuery)
+  const { data, loading, error } = useQuery<CurrentUserUserOverView>(
+    UserOverViewQuery,
+  )
   const { onDisconnect } = useDisconnect()
 
   useBreadcrumbs([
