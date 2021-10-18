@@ -1,13 +1,15 @@
-import { ApiContext } from "."
-import { getOrganization } from "../util/server-functions"
-import * as yup from "yup"
 import { chunk } from "lodash"
+import * as yup from "yup"
+
+import { getOrganization } from "../util/server-functions"
+import { ApiContext } from "./"
 
 interface RegisterCompletion {
   completion_id: string
   student_number: string
   eligible_for_ects?: boolean
   tier?: number
+  registration_date?: string
 }
 
 export function registerCompletions({ knex, prisma }: ApiContext) {
@@ -66,6 +68,7 @@ export function registerCompletions({ knex, prisma }: ApiContext) {
             },
             course: { connect: { id: course_id } },
             real_student_number: entry.student_number,
+            registration_date: entry.registration_date ?? null,
             user: { connect: { id: user_id } },
           },
         })
