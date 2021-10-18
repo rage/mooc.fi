@@ -1,27 +1,29 @@
 import type { PrismaClient } from "@prisma/client"
+
 import {
-  courses,
-  study_modules,
-  organizations,
-  users,
-  completions,
-  services,
-  userCourseSettings,
-  abStudies,
   abEnrollments,
-  exercises,
-  exerciseCompletions,
-  userCourseProgresses,
-  userCourseServiceProgresses,
-  emailTemplateThresholds,
-  completionsRegistered,
-  courseAliases,
-  openUniversityRegistrationLink,
+  abStudies,
+  accessToken,
   authorizationCode,
   client,
-  accessToken,
+  completions,
+  completionsRegistered,
+  courseAliases,
+  courses,
+  emailTemplateThresholds,
+  exerciseCompletions,
+  exercises,
+  openUniversityRegistrationLink,
+  organizations,
+  services,
+  storedData,
+  study_modules,
+  userCourseProgresses,
+  userCourseServiceProgresses,
+  userCourseSettings,
+  users,
   verifiedUsers,
-} from "."
+} from "./"
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 
@@ -84,6 +86,7 @@ export const seed = async (prisma: PrismaClient) => {
   const seededClients = await create("client", client)
   const seededAccessTokens = await create("accessToken", accessToken)
   const seededVerifiedUsers = await create("verifiedUser", verifiedUsers)
+  const seededStoredData = await create("storedData", storedData)
 
   return {
     courses: seededCourses,
@@ -107,5 +110,6 @@ export const seed = async (prisma: PrismaClient) => {
     clients: seededClients,
     accessTokens: seededAccessTokens,
     verifiedUsers: seededVerifiedUsers,
+    storedData: seededStoredData,
   }
 }

@@ -727,6 +727,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     person_affiliation: "member;student;staff",
     organizational_unit: "unit",
     mail: "admin@university.fi",
+    organization: "university.fi",
   },
   {
     id: "65400000000000000000000000000002",
@@ -738,6 +739,7 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     person_affiliation: "member;student",
     organizational_unit: "unit",
     mail: "third@university.fi",
+    organization: "university.fi",
   },
   {
     id: "65400000000000000000000000000003",
@@ -749,5 +751,21 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     person_affiliation: "member;student",
     organizational_unit: "unit",
     mail: "third@second-university.fi",
+    organization: "second-university.fi",
+  },
+]
+
+export const storedData: Prisma.StoredDataCreateInput[] = [
+  {
+    // user1, course2
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    data: "user1_foo",
+  },
+  {
+    // user3, course1
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    data: "user3_foo",
   },
 ]

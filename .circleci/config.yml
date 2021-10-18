@@ -52,7 +52,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - jq/install
-      - docker/install-docker-tools
+      - docker/install-docker-tools:
+          docker-compose-version: 1.29.2
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
@@ -81,7 +82,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - jq/install
-      - docker/install-docker-tools
+      - docker/install-docker-tools:
+          docker-compose-version: 1.29.2
       - run:
           name: "Build image"
           command: "bin/build-docker-auth.sh"

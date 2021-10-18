@@ -4,27 +4,17 @@ import * as winston from "winston"
 
 import type { PrismaClient } from "@prisma/client"
 
-import {
-  abEnrollmentRouter,
-  abStudiesRouter,
-} from "./abStudio"
+import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
 import {
   completionInstructions,
   completions,
   completionTiers,
 } from "./completions"
-import {
-  progress,
-  progressV2,
-} from "./progress"
+import { progress, progressV2 } from "./progress"
 import { registerCompletions } from "./registerCompletions"
+import { postStoredData } from "./storedData"
 import { tierProgress } from "./tierProgress"
-import {
-  connectUser,
-  getUser,
-  registerUser,
-  updatePassword,
-} from "./user"
+import { connectUser, getUser, registerUser, updatePassword } from "./user"
 import { userCourseProgress } from "./userCourseProgress"
 import {
   userCourseSettingsGet,
@@ -60,4 +50,5 @@ export function apiRouter(ctx: ApiContext) {
     .post("/user/register", registerUser(ctx))
     .get("/user-course-progress/:slug", userCourseProgress(ctx))
     .post("/user/connect", connectUser(ctx))
+    .post("/stored-data/:slug", postStoredData(ctx))
 }

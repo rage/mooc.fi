@@ -1,14 +1,7 @@
-import {
-  Request,
-  Response,
-} from "express"
+import { Request, Response } from "express"
 import { omit } from "lodash"
 
-import {
-  User,
-  UserCourseSetting,
-  VerifiedUser,
-} from "@prisma/client"
+import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
 
 import { invalidate } from "../services/redis"
 import {
@@ -220,7 +213,6 @@ export function registerUser(ctx: ApiContext) {
       homeOrganization,
       personAffiliation,
       mail,
-      // @ts-ignore: not used?
       organization,
       organizationalUnit,
     } = req.body
@@ -299,7 +291,7 @@ export function registerUser(ctx: ApiContext) {
           personal_unique_code: personalUniqueCode,
           display_name: displayName,
           edu_person_principal_name: eduPersonPrincipalName,
-          // organization, // TODO: where does o go then?
+          organization, // TODO: where does o go then?
         },
       })
 
@@ -404,7 +396,7 @@ export function connectUser(ctx: ApiContext) {
           personal_unique_code: personalUniqueCode,
           display_name: displayName,
           edu_person_principal_name: eduPersonPrincipalName,
-          // organization, // TODO: where does o go then?
+          organization, // TODO: where does o go then?
         },
       })
 

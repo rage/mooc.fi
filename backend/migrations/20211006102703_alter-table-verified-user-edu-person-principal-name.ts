@@ -1,11 +1,11 @@
 import { Knex } from "knex"
 
 export async function up(knex: Knex): Promise<void> {
-  try { 
+  try {
     await knex.raw(`
       ALTER TABLE "verified_user" DROP CONSTRAINT verified_user_user_id_puc_home_organization_constraint;
     `)
-  } catch { 
+  } catch {
     // ignore if it doesn't exist
   }
 
@@ -27,7 +27,6 @@ export async function up(knex: Knex): Promise<void> {
     CREATE INDEX IF NOT EXISTS "verified_user.edu_person_principal_name" ON verified_user USING btree(edu_person_principal_name); 
   `)
 }
-
 
 export async function down(knex: Knex): Promise<void> {
   await knex.raw(`
@@ -55,4 +54,3 @@ export async function down(knex: Knex): Promise<void> {
   
   `)
 }
-

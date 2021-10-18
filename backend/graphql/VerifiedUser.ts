@@ -10,12 +10,7 @@ import {
   stringArg,
 } from "nexus"
 
-import {
-  isAdmin,
-  isUser,
-  or,
-  Role,
-} from "../accessControl"
+import { isAdmin, isUser, or, Role } from "../accessControl"
 import { DatabaseInputError } from "../bin/lib/errors"
 import { Context } from "../context"
 import { isNullOrUndefined } from "../util/isNullOrUndefined"
@@ -49,6 +44,7 @@ export const VerifiedUserArg = inputObjectType({
     t.nonNull.string("person_affiliation")
     t.nonNull.string("mail")
     t.nonNull.string("organizational_unit")
+    t.nonNull.string("organization")
   },
 })
 
@@ -95,6 +91,7 @@ export const VerifiedUserMutations = extendType({
           organizational_unit,
           edu_person_principal_name,
           mail,
+          organization,
         } = verified_user
         const { user: currentUser } = ctx
 
@@ -113,6 +110,7 @@ export const VerifiedUserMutations = extendType({
               person_affiliation,
               organizational_unit,
               mail,
+              organization,
             },
           })
           return res
@@ -129,7 +127,11 @@ export const VerifiedUserMutations = extendType({
         user_id: nullable(idArg()),
       },
       authorize: or(isAdmin, isUser),
-      resolve: async (_, { edu_person_principal_name, user_id }, ctx: Context) => {
+      resolve: async (
+        _,
+        { edu_person_principal_name, user_id },
+        ctx: Context,
+      ) => {
         if (ctx.role !== Role.ADMIN && Boolean(user_id)) {
           throw new Error("must be admin to specify deletable user_id")
         }
@@ -143,7 +145,7 @@ export const VerifiedUserMutations = extendType({
           where: {
             user_id_edu_person_principal_name: {
               user_id: _user_id,
-              edu_person_principal_name
+              edu_person_principal_name,
             },
           },
         })

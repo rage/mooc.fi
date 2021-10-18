@@ -1,9 +1,4 @@
-import {
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from "express"
+import { NextFunction, Request, RequestHandler, Response } from "express"
 import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
@@ -37,9 +32,9 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
     "hy-haka",
     {
       additionalParams: {
-        RelayState: relayState
-      }
+        RelayState: relayState,
+      },
     } as AuthenticateOptions,
-    handlers[action](req, res, next)
+    handlers[action](req, res, next),
   )(req, res, next)
 }

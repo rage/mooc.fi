@@ -22,13 +22,9 @@ export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
 export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
 export const SP_URL = process.env.SP_URL ?? ""
 
-export const MOOCFI_CERTIFICATE = isProduction 
-  ? process.env.MOOCFI_CERTIFICATE ?? "" 
-  : fs
-    .readFileSync(
-      __dirname + "/saml/certs/mooc.fi.crt",
-    )
-    .toString() ?? ""
+export const MOOCFI_CERTIFICATE = isProduction
+  ? process.env.MOOCFI_CERTIFICATE ?? ""
+  : fs.readFileSync(__dirname + "/saml/certs/mooc.fi.crt").toString() ?? ""
 export const HY_CERTIFICATE = isProduction
   ? process.env.HY_CERTIFICATE ?? ""
   : MOOCFI_CERTIFICATE
@@ -60,7 +56,7 @@ export const SHIBBOLETH_HEADERS = [
   "o",
   "ou",
   "SHIB_LOGOUT_URL",
-  "edupersonprincipalname"
+  "edupersonprincipalname",
 ] as const
 export type HeaderField = typeof SHIBBOLETH_HEADERS[number]
 export const requiredFields: HeaderField[] = [
@@ -68,7 +64,6 @@ export const requiredFields: HeaderField[] = [
   "schachomeorganization",
   "edupersonprincipalname",
 ]
-
 
 export const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",

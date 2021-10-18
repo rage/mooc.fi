@@ -3,14 +3,8 @@ import { orderBy } from "lodash"
 
 import { VerifiedUser } from "@prisma/client"
 
-import {
-  fakeTMCCurrent,
-  getTestContext,
-} from "../../tests/__helpers"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../tests/data"
+import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import { adminUserDetails, normalUserDetails } from "../../tests/data"
 import { seed } from "../../tests/data/seed"
 
 const ctx = getTestContext()
@@ -29,6 +23,7 @@ const addVerifiedUserMutation = gql`
     $person_affiliation: String!
     $mail: String!
     $organizational_unit: String!
+    $organization: String!
   ) {
     addVerifiedUser(
       verified_user: {
@@ -39,6 +34,7 @@ const addVerifiedUserMutation = gql`
         person_affiliation: $person_affiliation
         mail: $mail
         organizational_unit: $organizational_unit
+        organization: $organization
       }
     ) {
       id
@@ -48,7 +44,10 @@ const addVerifiedUserMutation = gql`
 `
 
 const deleteVerifiedUserMutation = gql`
-  mutation deleteVerifiedUser($edu_person_principal_name: String!, $user_id: ID) {
+  mutation deleteVerifiedUser(
+    $edu_person_principal_name: String!
+    $user_id: ID
+  ) {
     deleteVerifiedUser(
       edu_person_principal_name: $edu_person_principal_name
       user_id: $user_id
@@ -67,6 +66,7 @@ const verified_user: Partial<VerifiedUser> = {
   person_affiliation: "foo",
   organizational_unit: "department of foo",
   mail: "kissa@organization.foo",
+  organization: "organization.foo",
 }
 
 describe("VerifiedUser", () => {
@@ -162,8 +162,7 @@ describe("VerifiedUser", () => {
               deleteVerifiedUserMutation,
               {
                 user_id: "20000000000000000000000000000104",
-                edu_person_principal_name:
-                  "third@second-university.fi",
+                edu_person_principal_name: "third@second-university.fi",
               },
               {
                 Authorization: "Bearer admin",
@@ -182,8 +181,7 @@ describe("VerifiedUser", () => {
             where: {
               user_id_edu_person_principal_name: {
                 user_id: "20000000000000000000000000000104",
-                edu_person_principal_name:
-                  "third@second-university.fi",
+                edu_person_principal_name: "third@second-university.fi",
               },
             },
           })
@@ -206,8 +204,7 @@ describe("VerifiedUser", () => {
               deleteVerifiedUserMutation,
               {
                 user_id: "20000000000000000000000000000103",
-                edu_person_principal_name:
-                  "admin@university.fi",
+                edu_person_principal_name: "admin@university.fi",
               },
               {
                 Authorization: "Bearer normal",

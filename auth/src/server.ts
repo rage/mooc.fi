@@ -1,17 +1,10 @@
 import cors from "cors"
-import express, {
-  CookieOptions,
-  urlencoded,
-} from "express"
+import express, { CookieOptions, urlencoded } from "express"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
-import {
-  DOMAIN,
-  PORT,
-  SHIBBOLETH_HEADERS,
-} from "./config"
+import { DOMAIN, PORT, SHIBBOLETH_HEADERS } from "./config"
 import { callbackHandler } from "./handlers"
 import { createSamlStrategy } from "./saml"
 import { setLocalCookiesMiddleware } from "./util"
@@ -46,11 +39,7 @@ app.use(shibbolethCharsetMiddleware(SHIBBOLETH_HEADERS as any))
 app.use(setLocalCookiesMiddleware)
 app.use(passport.initialize())
 
-
-passport.use(
-  "hy-haka",
-  createSamlStrategy()
-)
+passport.use("hy-haka", createSamlStrategy())
 
 // not used?
 /*passport.serializeUser((user, done) => {
@@ -62,7 +51,6 @@ passport.deserializeUser((user, done) => {
 
   done(null, user as any)
 })*/
-
 
 app.get("/:action/:provider", callbackHandler)
 

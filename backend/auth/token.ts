@@ -1,9 +1,4 @@
-import {
-  AccessToken,
-  AuthorizationCode,
-  Client,
-  User,
-} from "@prisma/client"
+import { AccessToken, AuthorizationCode, Client, User } from "@prisma/client"
 
 import { authenticateUser } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"

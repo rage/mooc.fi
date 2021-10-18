@@ -26,10 +26,10 @@ spec:
               containerPort: 4000
           resources:
             limits:
-              memory: 500Mi
+              memory: 256Mi
               cpu: 100m
             requests:
-              memory: 256Mi
+              memory: 100Mi
               cpu: 30m
           envFrom:
           - secretRef:

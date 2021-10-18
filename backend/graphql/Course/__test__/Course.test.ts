@@ -1,21 +1,16 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMCCurrent } from "../../../tests/__helpers"
-import {
-  //normalUser,
-  normalUserDetails,
-  //adminUser,
-  adminUserDetails,
-} from "../../../tests/data"
-import { seed } from "../../../tests/data/seed"
+import { omit, orderBy } from "lodash"
+import { mocked } from "ts-jest/utils"
 
 import { Course } from "@prisma/client"
-import { orderBy } from "lodash"
-import { mocked } from "ts-jest/utils"
-import { omit } from "lodash"
+
+import KafkaProducer from "../../../services/kafkaProducer"
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { adminUserDetails, normalUserDetails } from "../../../tests/data"
+import { seed } from "../../../tests/data/seed"
 
 jest.mock("../../../services/kafkaProducer")
-import KafkaProducer from "../../../services/kafkaProducer"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({

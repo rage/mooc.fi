@@ -6,10 +6,7 @@ import {
 } from "@prisma/client"
 
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-import {
-  MessageType,
-  pushMessageToClient,
-} from "../../../../wsServer"
+import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
 import { KafkaContext } from "../kafkaContext"
@@ -269,8 +266,7 @@ export const createCompletion = async ({
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {
-      const updated = await prisma.$queryRaw
-        `
+      const updated = await prisma.$queryRaw`
         UPDATE
           completion 
         SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
