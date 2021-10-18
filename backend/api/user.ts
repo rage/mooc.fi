@@ -363,7 +363,6 @@ export function connectUser(ctx: ApiContext) {
       homeOrganization,
       personAffiliation,
       mail,
-      // @ts-ignore: not used?
       organization,
       organizationalUnit,
     } = req.body

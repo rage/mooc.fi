@@ -1,6 +1,9 @@
 import axios from "axios"
 
-import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
+import {
+  OrganizationInfo,
+  UserInfo,
+} from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
 
 require("dotenv-safe").config({
@@ -147,7 +150,6 @@ export const authenticateUser = async (
   token: string | null
   error: object | null
 }> => {
-  console.log("will authenticate with ")
   return await axios({
     method: "POST",
     url: `${BASE_URL}/oauth/token`,
