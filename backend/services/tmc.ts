@@ -1,9 +1,6 @@
 import axios from "axios"
 
-import {
-  OrganizationInfo,
-  UserInfo,
-} from "../domain/UserInfo"
+import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
 
 require("dotenv-safe").config({
