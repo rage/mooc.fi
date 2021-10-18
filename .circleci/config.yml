@@ -118,7 +118,7 @@ workflows:
           requires:
             - build_frontend
             - build_backend
-            - build_shibbo
+            - build_auth
             - code_style
           filters:
             branches:
