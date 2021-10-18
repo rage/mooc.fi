@@ -1,3 +1,4 @@
+import { AuthenticationError } from "apollo-server-errors"
 import { difference, groupBy } from "lodash"
 import {
   arg,
@@ -13,7 +14,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import { Completion } from "@prisma/client"
 
-import { isAdmin, isUser, or } from "../../accessControl"
+import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -236,6 +237,21 @@ export const CompletionMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id, completion_registration_attempt_date }, ctx) => {
+        if (ctx.role === Role.USER) {
+          const existingCompletion = await ctx.prisma.completion.findFirst({
+            where: {
+              id,
+              user_id: ctx.user?.id,
+            },
+          })
+
+          if (!existingCompletion || !ctx.user?.id) {
+            throw new AuthenticationError(
+              "not authorized to edit this completion",
+            )
+          }
+        }
+
         return ctx.prisma.completion.update({
           where: {
             id,
