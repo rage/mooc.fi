@@ -60,7 +60,7 @@ spec:
               readOnly: true
           envFrom:
             - secretRef:
-                name: saml-secret
+                name: auth-secret
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
