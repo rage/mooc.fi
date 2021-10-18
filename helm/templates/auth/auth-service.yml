@@ -9,7 +9,8 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      targetPort: http
+      name: "auth-http"
+      targetPort: auth-http
   selector:
     app: {{ include "helm.fullname" . }}-auth
     {{- include "helm.selectorLabels" . | nindent 4 }}

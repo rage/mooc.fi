@@ -36,8 +36,8 @@ spec:
           image: "{{ .Values.image.repository }}/{{ include "helm.fullname" . }}-auth:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
-            - name: http
-              containerPort: 80
+            - name: auth-http
+              containerPort: 5000
               protocol: TCP
           # livenessProbe:
           #   httpGet:
