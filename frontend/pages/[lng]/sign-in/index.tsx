@@ -41,10 +41,10 @@ const SignInPage = () => {
   const message = useQueryParameter("message", false)
 
   const HY_SIGNIN_URL = isProduction
-    ? `/sign-in/hy?language=${language}`
+    ? `/sp/sign-in/hy?language=${language}`
     : `http://localhost:5000/sign-in/hy?language=${language}`
   const HAKA_SIGNIN_URL = isProduction
-    ? `/sign-in/haka?language=${language}`
+    ? `/sp/sign-in/haka?language=${language}`
     : `http://localhost:5000/sign-in/haka?language=${language}`
 
   useBreadcrumbs([

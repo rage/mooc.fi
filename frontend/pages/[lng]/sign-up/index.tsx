@@ -34,10 +34,10 @@ const SignUpPage = () => {
   const { logInOrOut } = useContext(LoginStateContext)
 
   const HY_SIGNUP_URL = isProduction
-    ? `/sign-up/hy?language=${language}`
+    ? `/sp/sign-up/hy?language=${language}`
     : `http://localhost:5000/sign-up/hy?language=${language}`
   const HAKA_SIGNUP_URL = isProduction
-    ? `/sign-up/haka?language=${language}`
+    ? `/sp/sign-up/haka?language=${language}`
     : `http://localhost:5000/sign-up/haka?language=${language}`
 
   const onStepComplete = () => {
