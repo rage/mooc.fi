@@ -1,10 +1,10 @@
 import cors from "cors"
-import express, { CookieOptions, urlencoded } from "express"
+import express, { CookieOptions, Router, urlencoded } from "express"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
-import { DOMAIN, PORT, SHIBBOLETH_HEADERS } from "./config"
+import { DOMAIN, PORT, SHIBBOLETH_HEADERS, SP_PATH } from "./config"
 import { callbackHandler } from "./handlers"
 import { createSamlStrategy } from "./saml"
 import { setLocalCookiesMiddleware } from "./util"
@@ -52,19 +52,20 @@ passport.deserializeUser((user, done) => {
   done(null, user as any)
 })*/
 
-app.get("/:action/:provider", callbackHandler)
+const router = Router()
+  .get("/:action/:provider", callbackHandler)
+  .post(
+    "/callbacks/:provider",
+    urlencoded({ extended: false }),
+    callbackHandler,
+  )
+  .post(
+    "/callbacks/:provider/:action/:language",
+    urlencoded({ extended: false }),
+    callbackHandler,
+  )
 
-app.post(
-  "/callbacks/:provider",
-  urlencoded({ extended: false }),
-  callbackHandler,
-)
-app.post(
-  "/callbacks/:provider/:action/:language",
-  urlencoded({ extended: false }),
-  callbackHandler,
-)
-
+app.use(SP_PATH, router)
 app.listen(PORT, () => {
   console.log(`Listening at port ${PORT}`)
 })

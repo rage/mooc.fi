@@ -1,4 +1,5 @@
 import fs from "fs"
+import { URL } from "url"
 
 require("dotenv").config()
 
@@ -17,10 +18,12 @@ export const AUTH_URL =
   process.env.AUTH_URL ?? (!isProduction ? "http://localhost:4000" : "")
 export const API_URL =
   process.env.API_URL ?? (!isProduction ? "http://localhost:4000/api" : "")
-export const DOMAIN = FRONTEND_URL?.replace(/(^https?:\/\/|:\d+)/g, "")
+export const DOMAIN = new URL(FRONTEND_URL).hostname
 export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
 export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
 export const SP_URL = process.env.SP_URL ?? ""
+
+export const SP_PATH = new URL(SP_URL).pathname
 
 export const MOOCFI_CERTIFICATE = isProduction
   ? process.env.MOOCFI_CERTIFICATE ?? ""
