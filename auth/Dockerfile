@@ -1,7 +1,6 @@
 FROM node:12.18.4
 
 RUN apt-get update
-
 RUN mkdir -p /app && chown -R node /app
 
 USER node

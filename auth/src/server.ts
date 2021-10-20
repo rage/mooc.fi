@@ -5,7 +5,7 @@ import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
 import { DOMAIN, PORT, SHIBBOLETH_HEADERS, SP_PATH } from "./config"
-import { callbackHandler } from "./handlers"
+import { callbackHandler, metadataHandler } from "./handlers"
 import { createSamlStrategy } from "./saml"
 import { setLocalCookiesMiddleware } from "./util"
 
@@ -39,7 +39,8 @@ app.use(shibbolethCharsetMiddleware(SHIBBOLETH_HEADERS as any))
 app.use(setLocalCookiesMiddleware)
 app.use(passport.initialize())
 
-passport.use("hy-haka", createSamlStrategy())
+const strategy = createSamlStrategy()
+passport.use("hy-haka", strategy)
 
 // not used?
 /*passport.serializeUser((user, done) => {
@@ -64,6 +65,7 @@ const router = Router()
     urlencoded({ extended: false }),
     callbackHandler,
   )
+  .get("/metadata", metadataHandler(strategy))
 
 app.use(SP_PATH, router)
 app.listen(PORT, () => {

@@ -1,5 +1,6 @@
 import { AuthenticationHandlerCallback } from "./callback"
 import { connectHandler } from "./connect"
+import { metadataHandler } from "./metadata"
 import { signInHandler } from "./signIn"
 import { signUpHandler } from "./signUp"
 
@@ -10,4 +11,4 @@ export const handlers: Record<string, AuthenticationHandlerCallback> = {
 }
 
 export * from "./callback"
-export { connectHandler, signInHandler, signUpHandler }
+export { connectHandler, metadataHandler, signInHandler, signUpHandler }

@@ -6,15 +6,20 @@ import {
   HAKA_IDP_URL,
   HY_CERTIFICATE,
   HY_IDP_URL,
+  MOOCFI_CERTIFICATE,
+  MOOCFI_PRIVATE_KEY,
   SP_URL,
 } from "../config"
 import { convertObjectKeysToLowerCase, encodeRelayState } from "../util"
+
+const issuer = "https://mooc.fi/sp"
 
 const samlProviders: Record<string, string> = {
   hy: HY_IDP_URL,
   haka: HAKA_IDP_URL,
 }
 
+// @ts-ignore: test without
 const samlCertificates: Record<string, string> = {
   hy: HY_CERTIFICATE,
   haka: HAKA_CERTIFICATE,
@@ -47,8 +52,12 @@ const createStrategyOptions = (req: Request): SamlConfig => {
     name: "hy-haka",
     path: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     entryPoint: samlProviders[provider],
-    issuer: "https://mooc.fi/sp",
-    cert: samlCertificates[provider],
+    audience: issuer,
+    issuer,
+    acceptedClockSkewMs: 0,
+    cert: MOOCFI_CERTIFICATE, // samlCertificates[provider],
+    privateKey: MOOCFI_PRIVATE_KEY,
+    decryptionPvk: MOOCFI_PRIVATE_KEY,
     authnRequestBinding: "HTTP-POST",
     forceAuthn: true,
     identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",

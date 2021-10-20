@@ -28,6 +28,9 @@ export const SP_PATH = new URL(SP_URL).pathname
 export const MOOCFI_CERTIFICATE = isProduction
   ? process.env.MOOCFI_CERTIFICATE ?? ""
   : fs.readFileSync(__dirname + "/saml/certs/mooc.fi.crt").toString() ?? ""
+export const MOOCFI_PRIVATE_KEY = isProduction
+  ? process.env.MOOCFI_PRIVATE_KEY ?? ""
+  : fs.readFileSync(__dirname + "/saml/certs/mooc.fi.key").toString() ?? ""
 export const HY_CERTIFICATE = isProduction
   ? process.env.HY_CERTIFICATE ?? ""
   : MOOCFI_CERTIFICATE
