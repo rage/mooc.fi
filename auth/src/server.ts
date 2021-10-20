@@ -65,7 +65,7 @@ const router = Router()
     urlencoded({ extended: false }),
     callbackHandler,
   )
-  .get("/metadata", metadataHandler(strategy))
+  .get("/:action/:provider/metadata", metadataHandler(strategy))
 
 app.use(SP_PATH, router)
 app.listen(PORT, () => {
