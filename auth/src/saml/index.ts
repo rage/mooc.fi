@@ -59,8 +59,8 @@ const createStrategyOptions = (req: Request): SamlConfig => {
     issuer: SP_URL,
     cert: samlCertificates[provider],
     publicCert: samlCertificates[provider],
-    privateCert: MOOCFI_PRIVATE_KEY,
     privateKey: MOOCFI_PRIVATE_KEY,
+    decryptionPvk: MOOCFI_PRIVATE_KEY,
     forceAuthn: true,
     identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
     additionalParams: {
