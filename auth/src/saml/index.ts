@@ -6,7 +6,6 @@ import {
   HAKA_IDP_URL,
   HY_CERTIFICATE,
   HY_IDP_URL,
-  MOOCFI_CERTIFICATE,
   MOOCFI_PRIVATE_KEY,
   SP_URL,
 } from "../config"
@@ -59,16 +58,16 @@ const createStrategyOptions = (req: Request): SamlConfig => {
     entryPoint: samlProviders[provider],
     audience: issuer,
     issuer,
-    acceptedClockSkewMs: 0,
-    cert: MOOCFI_CERTIFICATE, // samlCertificates[provider],
+    cert: samlCertificates[provider],
     privateKey: MOOCFI_PRIVATE_KEY,
     decryptionPvk: MOOCFI_PRIVATE_KEY,
-    // authnRequestBinding: "HTTP-POST",
     forceAuthn: true,
     identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
     additionalParams: {
       RelayState: relayState,
     },
+    signatureAlgorithm: "sha256",
+
     ...override,
   }
 }
