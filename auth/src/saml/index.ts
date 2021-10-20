@@ -45,10 +45,9 @@ const createStrategyOptions = (req: Request): SamlConfig => {
   const language = req.query.language || req.params.language || "en"
 
   // for inserting options while debugging
-  const override =
-    JSON.parse(
-      decodeURIComponent((req.query.override as string) ?? "") ?? "{}",
-    ) ?? {}
+  const override = req.query.override
+    ? JSON.parse(decodeURIComponent(req.query.override as string))
+    : {}
 
   if (!Object.keys(samlProviders).includes(provider)) {
     throw new Error(`invalid provider ${provider}`)
