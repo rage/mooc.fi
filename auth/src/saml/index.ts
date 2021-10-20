@@ -44,13 +44,19 @@ const createStrategyOptions = (req: Request): SamlConfig => {
   const { provider, action } = req.params
   const language = req.query.language || req.params.language || "en"
 
+  // for inserting options while debugging
+  const override =
+    JSON.parse(
+      decodeURIComponent((req.query.override as string) ?? "") ?? "{}",
+    ) ?? {}
+
   if (!Object.keys(samlProviders).includes(provider)) {
     throw new Error(`invalid provider ${provider}`)
   }
 
   return {
     name: "hy-haka",
-    path: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
+    callbackUrl: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     entryPoint: samlProviders[provider],
     audience: issuer,
     issuer,
@@ -58,11 +64,12 @@ const createStrategyOptions = (req: Request): SamlConfig => {
     cert: MOOCFI_CERTIFICATE, // samlCertificates[provider],
     privateKey: MOOCFI_PRIVATE_KEY,
     decryptionPvk: MOOCFI_PRIVATE_KEY,
-    authnRequestBinding: "HTTP-POST",
+    // authnRequestBinding: "HTTP-POST",
     forceAuthn: true,
     identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
     additionalParams: {
       RelayState: relayState,
     },
+    ...override,
   }
 }
