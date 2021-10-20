@@ -11,8 +11,6 @@ import {
 } from "../config"
 import { convertObjectKeysToLowerCase, encodeRelayState } from "../util"
 
-const issuer = "https://mooc.fi/sp"
-
 const samlProviders: Record<string, string> = {
   hy: HY_IDP_URL,
   haka: HAKA_IDP_URL,
@@ -52,15 +50,17 @@ const createStrategyOptions = (req: Request): SamlConfig => {
     throw new Error(`invalid provider ${provider}`)
   }
 
+  console.log("strategy relaystate", relayState)
   return {
     name: "hy-haka",
     callbackUrl: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     entryPoint: samlProviders[provider],
-    audience: issuer,
-    issuer,
+    audience: SP_URL,
+    issuer: SP_URL,
     cert: samlCertificates[provider],
+    publicCert: samlCertificates[provider],
+    privateCert: MOOCFI_PRIVATE_KEY,
     privateKey: MOOCFI_PRIVATE_KEY,
-    decryptionPvk: MOOCFI_PRIVATE_KEY,
     forceAuthn: true,
     identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
     additionalParams: {
