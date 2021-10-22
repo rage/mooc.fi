@@ -1,9 +1,11 @@
-import { objectType, extendType, stringArg, intArg, arg, list } from "nexus"
-import { chunk } from "lodash"
-import { or, isOrganization, isAdmin } from "../accessControl"
-import { ForbiddenError, UserInputError } from "apollo-server-core"
-import { Prisma } from "@prisma/client"
 import { Context } from "/context"
+import { ForbiddenError, UserInputError } from "apollo-server-core"
+import { chunk } from "lodash"
+import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
+
+import { Prisma } from "@prisma/client"
+
+import { isAdmin, isOrganization, or } from "../accessControl"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -20,6 +22,7 @@ export const CompletionRegistered = objectType({
     t.model.course()
     t.model.organization()
     t.model.user()
+    t.model.registration_date()
   },
 })
 
@@ -158,6 +161,8 @@ const buildPromises = (array: any[], ctx: Context) => {
         },
         course: { connect: { id: course.id } },
         real_student_number: entry.student_number,
+        // TODO: where to get registration_date here?
+        // receives CompletionArg as parameter! Is this used anywhere?
         user: { connect: { id: user.id } },
       },
     })

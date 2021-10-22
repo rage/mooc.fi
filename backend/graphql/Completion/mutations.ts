@@ -1,3 +1,5 @@
+import { AuthenticationError } from "apollo-server-errors"
+import { difference, groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -8,12 +10,13 @@ import {
   nullable,
   stringArg,
 } from "nexus"
-
-import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
-import { difference, groupBy } from "lodash"
-import { notEmpty } from "../../util/notEmpty"
+
+import { Completion } from "@prisma/client"
+
+import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
   type: "Mutation",
@@ -95,7 +98,7 @@ export const CompletionMutations = extendType({
 
         const databaseUsersByUpstreamId = groupBy(foundUsers, "upstream_id")
 
-        const newCompletions = completions.map((o) => {
+        const newCompletions: Completion[] = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
           return {
             id: uuidv4(),
@@ -113,6 +116,7 @@ export const CompletionMutations = extendType({
             certificate_id: null,
             eligible_for_ects: true,
             tier: o.tier ?? null,
+            completion_registration_attempt_date: null, // TODO: some date here?
           }
         })
 
@@ -220,6 +224,42 @@ export const CompletionMutations = extendType({
         }
 
         return `${users.length} users rechecked`
+      },
+    })
+
+    t.field("updateRegistrationAttemptDate", {
+      type: "Completion",
+      args: {
+        id: nonNull(idArg()),
+        completion_registration_attempt_date: nonNull(
+          arg({ type: "DateTime" }),
+        ),
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id, completion_registration_attempt_date }, ctx) => {
+        if (ctx.role === Role.USER) {
+          const existingCompletion = await ctx.prisma.completion.findFirst({
+            where: {
+              id,
+              user_id: ctx.user?.id,
+            },
+          })
+
+          if (!existingCompletion || !ctx.user?.id) {
+            throw new AuthenticationError(
+              "not authorized to edit this completion",
+            )
+          }
+        }
+
+        return ctx.prisma.completion.update({
+          where: {
+            id,
+          },
+          data: {
+            completion_registration_attempt_date,
+          },
+        })
       },
     })
   },

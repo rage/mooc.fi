@@ -32,23 +32,24 @@ model AbStudy {
 }
 
 model Completion {
-  certificate_id            String?
-  completion_language       String?
-  course_id                 String?                 
-  created_at                DateTime?               @default(now())
-  eligible_for_ects         Boolean?                @default(true)
-  email                     String
-  grade                     String?
-  id                        String                  @id @default(uuid())
-  student_number            String?
-  updated_at                DateTime?               @updatedAt
-  user_id                   String?                 
-  user_upstream_id          Int?
-  course                    Course?                 @relation(fields: [course_id], references: [id])
-  user                      User?                   @relation(fields: [user_id], references: [id])
-  completions_registered    CompletionRegistered[]
-  completion_date           DateTime?
-  tier                      Int?
+  certificate_id                            String?
+  completion_language                       String?
+  course_id                                 String?
+  created_at                                DateTime?               @default(now())
+  eligible_for_ects                         Boolean?                @default(true)
+  email                                     String
+  grade                                     String?
+  id                                        String                  @id @default(uuid())
+  student_number                            String?
+  updated_at                                DateTime?               @updatedAt
+  user_id                                   String?
+  user_upstream_id                          Int?
+  course                                    Course?                 @relation(fields: [course_id], references: [id])
+  user                                      User?                   @relation(fields: [user_id], references: [id])
+  completions_registered                    CompletionRegistered[]
+  completion_date                           DateTime?
+  tier                                      Int?
+  completion_registration_attempt_date      DateTime?
 
   @@map("completion")
 }
@@ -66,6 +67,7 @@ model CompletionRegistered {
   course                                           Course?       @relation(fields: [course_id], references: [id])
   organization                                     Organization? @relation(fields: [organization_id], references: [id])
   user                                             User?         @relation(fields: [user_id], references: [id])
+  registration_date                                DateTime?
 
   @@map("completion_registered")
 }
@@ -123,6 +125,7 @@ model Course {
   study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
   upcoming_active_link                               Boolean?
   tier                                               Int?
+  stored_data                                        StoredData[]                        
 
   @@map("course")
 }
@@ -354,6 +357,19 @@ model Service {
   @@map("service")
 }
 
+model StoredData {
+  created_at                     DateTime?                      @default(now())
+  updated_at                     DateTime?                      @updatedAt
+  data                           String
+  course_id                      String
+  user_id                        String
+  course                         Course?                        @relation(fields: [course_id], references: [id])
+  user                           User?                          @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, course_id])
+  @@map("stored_data")
+}
+
 model StudyModule {
   created_at                DateTime?                  @default(now())
   id                        String                     @id @default(uuid())
@@ -405,6 +421,7 @@ model User {
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
+  stored_data                    StoredData[]
 
   @@map("user")
 }
