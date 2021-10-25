@@ -6,3 +6,4 @@ build
 .env
 certs
 metadata
+!src/metadata
