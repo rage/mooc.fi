@@ -23,20 +23,28 @@ export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
 export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
 export const SP_URL = process.env.SP_URL ?? ""
 
+console.log(SP_URL)
 export const SP_PATH = new URL(SP_URL).pathname
 
 export const MOOCFI_CERTIFICATE = isProduction
   ? process.env.MOOCFI_CERTIFICATE ?? ""
-  : fs.readFileSync(__dirname + "/saml/certs/mooc.fi.crt").toString() ?? ""
+  : fs.readFileSync(__dirname + "/../certs/mooc.fi.crt").toString() ?? ""
 export const MOOCFI_PRIVATE_KEY = isProduction
   ? process.env.MOOCFI_PRIVATE_KEY ?? ""
-  : fs.readFileSync(__dirname + "/saml/certs/mooc.fi.key").toString() ?? ""
+  : fs.readFileSync(__dirname + "/../certs/mooc.fi.key").toString() ?? ""
 export const HY_CERTIFICATE = isProduction
   ? process.env.HY_CERTIFICATE ?? ""
   : MOOCFI_CERTIFICATE
 export const HAKA_CERTIFICATE = isProduction
   ? process.env.HAKA_CERTIFICATE ?? ""
   : MOOCFI_CERTIFICATE
+
+export const {
+  HY_METADATA_URL = "",
+  HY_METADATA_CERTIFICATE_URL = "",
+  HAKA_METADATA_URL = "",
+  HAKA_METADATA_CERTIFICATE_URL = "",
+} = process.env
 
 if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
   throw new Error("BACKEND_URL and FRONTEND_URL must be set")
