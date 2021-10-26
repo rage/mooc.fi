@@ -603,7 +603,7 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     course_code: "alias2",
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000001" } },
-    link: "avoin-link",
+    link: "avoin-link-alias2",
     tiers: null,
   },
   {
@@ -611,7 +611,7 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     course_code: "alias3",
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000666" } },
-    link: "avoin-link",
+    link: "avoin-link-alias3",
     tiers: null,
   },
 ]
