@@ -1,12 +1,12 @@
 import {
   Completion,
-  OpenUniversityRegistrationLink,
-  CourseTranslation,
   Course,
+  CourseTranslation,
+  OpenUniversityRegistrationLink,
 } from "@prisma/client"
-import { ApiContext } from "."
-import { getOrganization } from "../util/server-functions"
-import { getUser } from "../util/server-functions"
+
+import { getOrganization, getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 const JSONStream = require("JSONStream")
 
@@ -131,6 +131,8 @@ export function completionTiers({ knex }: ApiContext) {
         .andWhere("user_id", user.id)
     )?.[0]
 
+    // TODO/FIXME: note - this now happily ignores completion_language and just gets the first one
+    // - as it's now only used in BAI, shouldn't be a problem?
     const tiers = (
       await knex
         .select<any, OpenUniversityRegistrationLink[]>("tiers")
@@ -143,7 +145,7 @@ export function completionTiers({ knex }: ApiContext) {
 
       for (let i = 0; i < t.length; i++) {
         if (t[i].tier === completion.tier) {
-          let tierRegister = (
+          const tierRegister = (
             await knex
               .select<any, OpenUniversityRegistrationLink[]>("link")
               .from("open_university_registration_link")
@@ -154,7 +156,7 @@ export function completionTiers({ knex }: ApiContext) {
 
           if (t[i].adjacent) {
             for (let j = 0; j < t[i].adjacent.length; j++) {
-              let adjRegister = (
+              const adjRegister = (
                 await knex
                   .select<any, OpenUniversityRegistrationLink[]>("link")
                   .from("open_university_registration_link")
