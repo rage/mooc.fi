@@ -20,3 +20,5 @@ shibbo/shibboleth
 idp
 idp/*.pem
 certs
+auth/metadata
+!auth/src/metadata

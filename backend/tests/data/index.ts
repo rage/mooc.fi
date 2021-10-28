@@ -346,6 +346,11 @@ export const abEnrollments: Prisma.AbEnrollmentCreateInput[] = [
     ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
     group: 2,
   },
+  {
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
+    group: 3,
+  },
 ]
 
 export const exercises: Prisma.ExerciseCreateInput[] = [

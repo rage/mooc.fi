@@ -8,15 +8,16 @@ datasource db {
 }
 
 model AbEnrollment {
-  user_id                   String                 
+  id                        String                  @id @default(uuid())
+  user_id                   String?                 
   ab_study_id               String                 
   group                     Int?
   created_at                DateTime?               @default(now())
   updated_at                DateTime?               @updatedAt
-  user                      User                    @relation(fields: [user_id], references: [id])
+  user                      User?                   @relation(fields: [user_id], references: [id])
   ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
 
-  @@id([user_id, ab_study_id])
+  @@unique([user_id, ab_study_id])
   @@map("ab_enrollment")
 }
 
