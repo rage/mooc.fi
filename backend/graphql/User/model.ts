@@ -1,12 +1,13 @@
+import { groupBy } from "lodash"
 import {
-  objectType,
-  stringArg,
+  booleanArg,
   idArg,
   nonNull,
   nullable,
-  booleanArg,
+  objectType,
+  stringArg,
 } from "nexus"
-import { groupBy } from "lodash"
+
 import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
@@ -35,6 +36,7 @@ export const User = objectType({
     t.model.verified_users()
     t.model.research_consent()
     t.model.ab_enrollments()
+    t.model.course_ownerships()
 
     t.list.nonNull.field("completions", {
       type: "Completion",

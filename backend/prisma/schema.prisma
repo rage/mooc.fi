@@ -127,6 +127,7 @@ model Course {
   upcoming_active_link                               Boolean?
   tier                                               Int?
   stored_data                                        StoredData[]                        
+  ownerships                                         CourseOwnership[]
 
   @@map("course")
 }
@@ -423,6 +424,7 @@ model User {
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
   stored_data                    StoredData[]
+  course_ownerships              CourseOwnership[]
 
   @@map("user")
 }
@@ -526,6 +528,19 @@ model VerifiedUser {
   user                                     User?         @relation(fields: [user_id], references: [id])
 
   @@map("verified_user")
+}
+
+model CourseOwnership {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  user_id                                  String?
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  user                                     User?         @relation(fields: [user_id], references: [id])  
+
+  @@unique([user_id, course_id])
+  @@map("course_ownership")
 }
 
 enum CourseStatus {

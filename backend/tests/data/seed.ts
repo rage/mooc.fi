@@ -6,6 +6,7 @@ import {
   completions,
   completionsRegistered,
   courseAliases,
+  courseOwnerships,
   courses,
   emailTemplateThresholds,
   exerciseCompletions,
@@ -76,6 +77,10 @@ export const seed = async (prisma: PrismaClient) => {
     openUniversityRegistrationLink,
   )
   const seededStoredData = await create("storedData", storedData)
+  const seededCourseOwnerships = await create(
+    "courseOwnership",
+    courseOwnerships,
+  )
 
   return {
     courses: seededCourses,
@@ -96,5 +101,6 @@ export const seed = async (prisma: PrismaClient) => {
     courseAliases: seededCourseAliases,
     openUniversityRegistrationLink: seededOpenUniversityRegistrationLink,
     storedData: seededStoredData,
+    courseOwnerships: seededCourseOwnerships,
   }
 }
