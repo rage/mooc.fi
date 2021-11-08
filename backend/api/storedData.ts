@@ -120,7 +120,7 @@ export function getStoredData({ knex, prisma }: ApiContext) {
     })
 
     const mappedStoredData = storedData.map((data) => ({
-      user: omit(data.user, "completions"),
+      user: omit(data.user, ["completions", "password", "password_throttle"]),
       completions: data.user?.completions,
       storedData: omit(data, "user"),
     }))
