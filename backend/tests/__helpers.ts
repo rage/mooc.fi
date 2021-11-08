@@ -19,6 +19,13 @@ require("dotenv-safe").config({
 
 const DEBUG = Boolean(process.env.DEBUG)
 
+function fail(reason = "fail was called in a test") {
+  throw new Error(reason)
+}
+
+// @ts-ignore: jest has no explicit fail anymore
+global.fail = fail
+
 export const logger = {
   format: {
     printf: jest.fn(),

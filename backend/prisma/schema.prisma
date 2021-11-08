@@ -8,15 +8,16 @@ datasource db {
 }
 
 model AbEnrollment {
-  user_id                   String                 
+  id                        String                  @id @default(uuid())
+  user_id                   String?                 
   ab_study_id               String                 
   group                     Int?
   created_at                DateTime?               @default(now())
   updated_at                DateTime?               @updatedAt
-  user                      User                    @relation(fields: [user_id], references: [id])
+  user                      User?                   @relation(fields: [user_id], references: [id])
   ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
 
-  @@id([user_id, ab_study_id])
+  @@unique([user_id, ab_study_id])
   @@map("ab_enrollment")
 }
 
@@ -126,6 +127,7 @@ model Course {
   upcoming_active_link                               Boolean?
   tier                                               Int?
   stored_data                                        StoredData[]                        
+  ownerships                                         CourseOwnership[]
 
   @@map("course")
 }
@@ -424,6 +426,7 @@ model User {
   password                       String?
   password_throttle              Json?
   stored_data                    StoredData[]
+  course_ownerships              CourseOwnership[]
 
   @@map("user")
 }
@@ -574,6 +577,19 @@ model AccessToken {
   valid                                    Boolean      @default(true)
 
   @@map("access_tokens")
+}
+
+model CourseOwnership {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  user_id                                  String?
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  user                                     User?         @relation(fields: [user_id], references: [id])  
+
+  @@unique([user_id, course_id])
+  @@map("course_ownership")
 }
 
 enum CourseStatus {

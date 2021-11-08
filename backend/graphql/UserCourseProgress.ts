@@ -95,11 +95,14 @@ export const UserCourseProgress = objectType({
         const courseProgress: any = progress || []
         const exercises = await ctx.prisma.course
           .findUnique({
-            where: {
-              id: course_id,
-            },
+            where: { id: course_id },
           })
           .exercises({
+            where: {
+              NOT: {
+                deleted: true,
+              },
+            },
             select: {
               id: true,
               exercise_completions: {

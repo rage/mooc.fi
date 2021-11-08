@@ -2,21 +2,23 @@ import { Knex } from "knex"
 
 export async function up(knex: Knex): Promise<void> {
   try {
-    await knex.raw(`
-      ALTER TABLE "verified_user" DROP CONSTRAINT verified_user_user_id_puc_home_organization_constraint;
-    `)
+    await knex.transaction(async (trx) => {
+      await trx.raw(`
+          ALTER TABLE "verified_user" DROP CONSTRAINT verified_user_user_id_puc_home_organization_constraint;
+        `)
+      await trx.raw(`
+          ALTER TABLE "verified_user" 
+            ADD COLUMN IF NOT EXISTS "edu_person_principal_name" text NOT NULL;
+        `)
+      await trx.raw(`
+          ALTER TABLE "verified_user"
+            ADD CONSTRAINT verified_user_user_id_edu_person_principal_name_home_organization UNIQUE (user_id, edu_person_principal_name, home_organization);
+        `)
+    })
   } catch {
     // ignore if it doesn't exist
   }
 
-  await knex.raw(`
-    ALTER TABLE "verified_user" 
-      ADD COLUMN IF NOT EXISTS "edu_person_principal_name" text NOT NULL;
-  `)
-  await knex.raw(`
-    ALTER TABLE "verified_user"
-      ADD CONSTRAINT verified_user_user_id_edu_person_principal_name_home_organization UNIQUE (user_id, edu_person_principal_name, home_organization);
-  `)
   await knex.raw(`
     DROP INDEX IF EXISTS "verified_user.personal_unique_code";
   `)

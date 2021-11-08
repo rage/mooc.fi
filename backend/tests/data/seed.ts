@@ -9,6 +9,7 @@ import {
   completions,
   completionsRegistered,
   courseAliases,
+  courseOwnerships,
   courses,
   emailTemplateThresholds,
   exerciseCompletions,
@@ -87,6 +88,10 @@ export const seed = async (prisma: PrismaClient) => {
   const seededAccessTokens = await create("accessToken", accessToken)
   const seededVerifiedUsers = await create("verifiedUser", verifiedUsers)
   const seededStoredData = await create("storedData", storedData)
+  const seededCourseOwnerships = await create(
+    "courseOwnership",
+    courseOwnerships,
+  )
 
   return {
     courses: seededCourses,
@@ -111,5 +116,6 @@ export const seed = async (prisma: PrismaClient) => {
     accessTokens: seededAccessTokens,
     verifiedUsers: seededVerifiedUsers,
     storedData: seededStoredData,
+    courseOwnerships: seededCourseOwnerships,
   }
 }
