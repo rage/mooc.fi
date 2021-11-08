@@ -24,7 +24,7 @@ import {
   userCourseSettings,
   users,
   verifiedUsers,
-} from "./"
+} from "./fixtures"
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 

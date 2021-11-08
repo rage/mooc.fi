@@ -14,7 +14,14 @@ import { progress, progressV2 } from "./progress"
 import { registerCompletions } from "./registerCompletions"
 import { getStoredData, postStoredData } from "./storedData"
 import { tierProgress } from "./tierProgress"
-import { connectUser, getUser, registerUser, updatePassword } from "./user"
+import {
+  connectUser,
+  getUser,
+  registerUser,
+  updatePassword,
+  updatePersonAffiliation,
+  updateUser,
+} from "./user"
 import { userCourseProgress } from "./userCourseProgress"
 import {
   userCourseSettingsGet,
@@ -44,11 +51,13 @@ export function apiRouter(ctx: ApiContext) {
     .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
     .use("/ab-studies", abStudiesRouter(ctx))
-    .get("/getUser/:course_id", getUser(ctx))
+    .get("/getUser/:course_id", getUser(ctx)) // TODO: find better name for this
     .post("/updatePassword", updatePassword(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
     .post("/user/register", registerUser(ctx))
     .get("/user-course-progress/:slug", userCourseProgress(ctx))
+    .patch("/user", updateUser(ctx))
+    .post("/user/update-person-affiliation", updatePersonAffiliation(ctx))
     .post("/user/connect", connectUser(ctx))
     .post("/stored-data/:slug", postStoredData(ctx))
     .get("/stored-data/:slug", getStoredData(ctx))

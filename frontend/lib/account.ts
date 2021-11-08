@@ -1,11 +1,9 @@
-import { DOMAIN, isProduction } from "/config"
+import { DOMAIN, isProduction, TMC_HOST } from "/config"
 //import { v4 as uuidv4 } from "uuid"
 import { getAccessToken } from "/lib/authentication"
 import axios from "axios"
 
 import { createUser } from "../packages/moocfi-auth"
-
-const BASE_URL = process.env.TMC_HOST || "https://tmc.mooc.fi/"
 
 export async function createAccount(data: any) {
   return await createUser({
@@ -100,7 +98,7 @@ export async function createTMCAccount({
 }: CreateTMCAccountParams): Promise<CreateTMCAccountReturnValue> {
   return await axios({
     method: "POST",
-    url: `${BASE_URL}/api/v8/users`,
+    url: `${TMC_HOST}/api/v8/users`,
     data: JSON.stringify({
       user: { email, username, password, password_confirmation },
       user_field,
@@ -126,7 +124,7 @@ export const authenticateTMCUser = async (
 ): Promise<any> => {
   return await axios({
     method: "POST",
-    url: `${BASE_URL}/api/v8/oauth/token`,
+    url: `${TMC_HOST}/api/v8/oauth/token`,
     data: JSON.stringify({
       username,
       password,
@@ -154,8 +152,8 @@ export const authenticateTMCUser = async (
 export const getUserDetails = async (
   accessToken: string,
 ): Promise<UserInfo> => {
-  const res = await axios.get<any>(
-    `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
+  const res = await axios.get(
+    `${TMC_HOST}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
     {
       headers: { Authorization: accessToken },
     },
@@ -172,7 +170,7 @@ export async function updateAccount(firstName: string, lastName: string) {
   }
 
   const res = await fetch(
-    `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
+    `${TMC_HOST}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -196,7 +194,7 @@ export async function updateAccount(firstName: string, lastName: string) {
     },
   }
 
-  const newRes = await fetch(`${BASE_URL}/api/v8/users/${existingUser.id}`, {
+  const newRes = await fetch(`${TMC_HOST}/api/v8/users/${existingUser.id}`, {
     method: "PUT",
     body: JSON.stringify(newUser),
     headers: {

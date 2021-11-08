@@ -3,9 +3,8 @@ import { orderBy } from "lodash"
 
 import { VerifiedUser } from "@prisma/client"
 
-import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../tests/data"
-import { seed } from "../../tests/data/seed"
+import { fakeTMCCurrent, getTestContext } from "../../tests"
+import { adminUserDetails, normalUserDetails, seed } from "../../tests/data"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({

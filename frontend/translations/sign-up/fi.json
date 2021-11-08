@@ -28,5 +28,5 @@
   "already-registered": "Käyttäjä sähköpostiosoitteella <b>{{email}}</b> on jo olemassa, ja se on kytketty tähän organisaatioon. Ole hyvä ja kirjaudu sisään.",
   "generic-error": "Rekisteröinnissä tapahtui virhe. Yritä myöhemmin uudelleen.",
   "signupHYCaption": "Rekisteröidy Helsingin yliopiston tunnuksilla",
-  "signupHakaCaption": "Rekisteröidy <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka-käyttäjätunnistusjärjestelmän</a> tunnuksilla"
+  "signupHakaCaption": "Rekisteröidy <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">HAKA-luottamusverkoston</a> tunnuksilla"
 }
