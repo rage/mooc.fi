@@ -128,6 +128,7 @@ model Course {
   tier                                               Int?
   stored_data                                        StoredData[]                        
   ownerships                                         CourseOwnership[]
+  course_stats_emails                                CourseStatsEmail[]        
 
   @@map("course")
 }
@@ -541,6 +542,19 @@ model CourseOwnership {
 
   @@unique([user_id, course_id])
   @@map("course_ownership")
+}
+
+model CourseStatsEmail {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  email                                    String
+  last_sent_at                             DateTime?
+  
+  @@unique([course_id, email])
+  @@map("course_stats_email")
 }
 
 enum CourseStatus {
