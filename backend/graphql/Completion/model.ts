@@ -1,5 +1,6 @@
 import { ForbiddenError } from "apollo-server-core"
 import { objectType } from "nexus"
+
 import { UserCourseProgress } from "@prisma/client"
 
 export const Completion = objectType({
@@ -20,6 +21,7 @@ export const Completion = objectType({
     t.model.course()
     t.model.completion_date()
     t.model.tier()
+    t.model.completion_registration_attempt_date()
 
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
@@ -77,6 +79,11 @@ export const Completion = objectType({
         if (!course) {
           throw new Error("course not found")
         }
+
+        // TODO/FIXME:
+        // - register-completion/[slug] uses /api/completionTiers if there are tiers
+        // - this _always_ returns the parent course registration link, regardless of the tier
+        // - should this return the tier registration link?
 
         let filter
         if (

@@ -43,10 +43,10 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
     )
 
   const HY_CONNECT_URL = isProduction
-    ? `/connect/hy?language=${language}`
+    ? `/sp/connect/hy?language=${language}`
     : `http://localhost:5000/connect/hy?language=${language}`
   const HAKA_CONNECT_URL = isProduction
-    ? `/connect/haka?language=${language}`
+    ? `/sp/connect/haka?language=${language}`
     : `http://localhost:5000/connect/haka?language=${language}`
 
   return (

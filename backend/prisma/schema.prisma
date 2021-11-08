@@ -8,15 +8,16 @@ datasource db {
 }
 
 model AbEnrollment {
-  user_id                   String                 
+  id                        String                  @id @default(uuid())
+  user_id                   String?                 
   ab_study_id               String                 
   group                     Int?
   created_at                DateTime?               @default(now())
   updated_at                DateTime?               @updatedAt
-  user                      User                    @relation(fields: [user_id], references: [id])
+  user                      User?                   @relation(fields: [user_id], references: [id])
   ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
 
-  @@id([user_id, ab_study_id])
+  @@unique([user_id, ab_study_id])
   @@map("ab_enrollment")
 }
 
@@ -32,23 +33,24 @@ model AbStudy {
 }
 
 model Completion {
-  certificate_id            String?
-  completion_language       String?
-  course_id                 String?                 
-  created_at                DateTime?               @default(now())
-  eligible_for_ects         Boolean?                @default(true)
-  email                     String
-  grade                     String?
-  id                        String                  @id @default(uuid())
-  student_number            String?
-  updated_at                DateTime?               @updatedAt
-  user_id                   String?                 
-  user_upstream_id          Int?
-  course                    Course?                 @relation(fields: [course_id], references: [id])
-  user                      User?                   @relation(fields: [user_id], references: [id])
-  completions_registered    CompletionRegistered[]
-  completion_date           DateTime?
-  tier                      Int?
+  certificate_id                            String?
+  completion_language                       String?
+  course_id                                 String?
+  created_at                                DateTime?               @default(now())
+  eligible_for_ects                         Boolean?                @default(true)
+  email                                     String
+  grade                                     String?
+  id                                        String                  @id @default(uuid())
+  student_number                            String?
+  updated_at                                DateTime?               @updatedAt
+  user_id                                   String?
+  user_upstream_id                          Int?
+  course                                    Course?                 @relation(fields: [course_id], references: [id])
+  user                                      User?                   @relation(fields: [user_id], references: [id])
+  completions_registered                    CompletionRegistered[]
+  completion_date                           DateTime?
+  tier                                      Int?
+  completion_registration_attempt_date      DateTime?
 
   @@map("completion")
 }
@@ -66,6 +68,7 @@ model CompletionRegistered {
   course                                           Course?       @relation(fields: [course_id], references: [id])
   organization                                     Organization? @relation(fields: [organization_id], references: [id])
   user                                             User?         @relation(fields: [user_id], references: [id])
+  registration_date                                DateTime?
 
   @@map("completion_registered")
 }
@@ -123,6 +126,8 @@ model Course {
   study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
   upcoming_active_link                               Boolean?
   tier                                               Int?
+  stored_data                                        StoredData[]                        
+  ownerships                                         CourseOwnership[]
 
   @@map("course")
 }
@@ -353,6 +358,19 @@ model Service {
   @@map("service")
 }
 
+model StoredData {
+  created_at                     DateTime?                      @default(now())
+  updated_at                     DateTime?                      @updatedAt
+  data                           String
+  course_id                      String
+  user_id                        String
+  course                         Course?                        @relation(fields: [course_id], references: [id])
+  user                           User?                          @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, course_id])
+  @@map("stored_data")
+}
+
 model StudyModule {
   created_at                DateTime?                  @default(now())
   id                        String                     @id @default(uuid())
@@ -407,6 +425,8 @@ model User {
   access_tokens                  AccessToken[]
   password                       String?
   password_throttle              Json?
+  stored_data                    StoredData[]
+  course_ownerships              CourseOwnership[]
 
   @@map("user")
 }
@@ -502,6 +522,7 @@ model VerifiedUser {
   created_at                               DateTime?     @default(now())
   display_name                             String?
   id                                       String        @id @default(uuid())
+  edu_person_principal_name                String
   personal_unique_code                     String
   home_organization                        String
   person_affiliation                       String
@@ -509,12 +530,13 @@ model VerifiedUser {
   updated_at                               DateTime?     @updatedAt
   user_id                                  String?       
   user                                     User?         @relation(fields: [user_id], references: [id])
+  organization                             String
   organizational_unit                      String
   mail                                     String
 
   @@map("verified_user")
-  @@unique([user_id, personal_unique_code])
-  @@unique([user_id, personal_unique_code, home_organization])
+  @@unique([user_id, edu_person_principal_name])
+  @@unique([user_id, edu_person_principal_name, home_organization])
 }
 
 model AuthorizationCode {
@@ -555,6 +577,19 @@ model AccessToken {
   valid                                    Boolean      @default(true)
 
   @@map("access_tokens")
+}
+
+model CourseOwnership {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  user_id                                  String?
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  user                                     User?         @relation(fields: [user_id], references: [id])  
+
+  @@unique([user_id, course_id])
+  @@map("course_ownership")
 }
 
 enum CourseStatus {

@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client"
+
 import { UserInfo } from "../../domain/UserInfo"
 
 export const normalUser = {
@@ -221,6 +222,8 @@ export const users: Prisma.UserCreateInput[] = [
     username: "existing_user",
     password:
       "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "20000000000000000000000000000103",
@@ -230,6 +233,8 @@ export const users: Prisma.UserCreateInput[] = [
     username: "second_user_admin",
     password:
       "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "20000000000000000000000000000104",
@@ -248,6 +253,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 4,
     username: "fourth_user",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "20000000000000000000000000000106",
@@ -255,6 +262,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 5,
     username: "fifth_user",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -269,6 +278,7 @@ export const completions: Prisma.CompletionCreateInput[] = [
     eligible_for_ects: true,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "30000000-0000-0000-0000-000000000103",
@@ -278,6 +288,7 @@ export const completions: Prisma.CompletionCreateInput[] = [
     user_upstream_id: 1,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "12400000-0000-0000-0000-000000000001",
@@ -286,6 +297,7 @@ export const completions: Prisma.CompletionCreateInput[] = [
     email: "what@ever.com",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "30000000-0000-0000-0000-000000000104",
@@ -296,6 +308,7 @@ export const completions: Prisma.CompletionCreateInput[] = [
     eligible_for_ects: true,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "30000000-0000-0000-0000-000000000105",
@@ -306,6 +319,7 @@ export const completions: Prisma.CompletionCreateInput[] = [
     eligible_for_ects: true,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -394,6 +408,11 @@ export const abEnrollments: Prisma.AbEnrollmentCreateInput[] = [
     user: { connect: { id: "20000000000000000000000000000103" } },
     ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
     group: 2,
+  },
+  {
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
+    group: 3,
   },
 ]
 
@@ -652,7 +671,7 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     course_code: "alias2",
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000001" } },
-    link: "avoin-link",
+    link: "avoin-link-alias2",
     tiers: null,
   },
   {
@@ -660,7 +679,7 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     course_code: "alias3",
     language: "en_US",
     course: { connect: { id: "00000000000000000000000000000666" } },
-    link: "avoin-link",
+    link: "avoin-link-alias3",
     tiers: null,
   },
 ]
@@ -720,30 +739,65 @@ export const verifiedUsers: Prisma.VerifiedUserCreateInput[] = [
     id: "65400000000000000000000000000001",
     user: { connect: { id: "20000000000000000000000000000103" } },
     display_name: "admin",
+    edu_person_principal_name: "admin@university.fi",
     personal_unique_code: "personal:unique:code:university.fi:admin",
     home_organization: "university.fi",
     person_affiliation: "member;student;staff",
     organizational_unit: "unit",
     mail: "admin@university.fi",
+    organization: "university.fi",
   },
   {
     id: "65400000000000000000000000000002",
     user: { connect: { id: "20000000000000000000000000000104" } },
     display_name: "third user",
+    edu_person_principal_name: "third@university.fi",
     personal_unique_code: "personal:unique:code:university.fi:third",
     home_organization: "university.fi",
     person_affiliation: "member;student",
     organizational_unit: "unit",
     mail: "third@university.fi",
+    organization: "university.fi",
   },
   {
     id: "65400000000000000000000000000003",
     user: { connect: { id: "20000000000000000000000000000104" } },
     display_name: "third user",
+    edu_person_principal_name: "third@second-university.fi",
     personal_unique_code: "personal:unique:code:second-university.fi:third",
     home_organization: "second-university.fi",
     person_affiliation: "member;student",
     organizational_unit: "unit",
     mail: "third@second-university.fi",
+    organization: "second-university.fi",
+  },
+]
+
+export const storedData: Prisma.StoredDataCreateInput[] = [
+  {
+    // user1, course2
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    data: "user1_foo",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    // user3, course1
+    user: { connect: { id: "20000000000000000000000000000104" } },
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    data: "user3_foo",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+]
+
+export const courseOwnerships: Prisma.CourseOwnershipCreateInput[] = [
+  {
+    id: "61200000-0000-0000-0000-000000000001",
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]

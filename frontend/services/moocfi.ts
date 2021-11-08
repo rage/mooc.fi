@@ -1,7 +1,6 @@
+import { DOMAIN, FRONTEND_URL, isProduction } from "/config"
 import axios from "axios"
 import Cookies from "universal-cookie"
-
-import { FRONTEND_URL, DOMAIN, isProduction } from "/config"
 
 const cookies = new Cookies()
 const domain = isProduction ? DOMAIN : "localhost"
@@ -24,7 +23,7 @@ export const getAuthorization = async (code: string | string[]) => {
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 
@@ -41,7 +40,7 @@ export const decision = async (code: string | string[]) => {
   })
     .then((response) => response.data)
     .then(
-      (json) =>
+      (json: any) =>
         `${json.redirectUri}?code=${code}&tmc=${
           tmcToken || cookies.get("tmc_token")
         }`,
@@ -61,7 +60,7 @@ export const signIn = async (email: string, password: string) => {
     headers: { "Content-Type": "application/json" },
   })
     .then((response) => response.data)
-    .then((json) => {
+    .then((json: any) => {
       cookies.set("access_token", json.access_token ?? "", {
         domain,
         path: "/",
@@ -87,7 +86,7 @@ export const getClients = async () => {
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 
@@ -110,7 +109,7 @@ export const createClient = async (
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 
@@ -126,7 +125,7 @@ export const showClient = async (id: string | string[]) => {
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 
@@ -142,7 +141,7 @@ export const updateClient = async (id: string | string[]) => {
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 
@@ -159,7 +158,7 @@ export const regenerateClient = async (id: string | string[]) => {
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 
@@ -176,7 +175,7 @@ export const deleteClient = async (id: string | string[]) => {
     },
   })
     .then((response) => response.data)
-    .then((json) => json)
+    .then((json: any) => json)
     .catch((error) => error)
 }
 

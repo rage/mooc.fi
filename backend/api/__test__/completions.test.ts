@@ -123,13 +123,13 @@ describe("API", () => {
       ])
     })
 
-    it("returns course instructions", async () => {
+    it("/api/completionInstructions - returns course instructions", async () => {
       const res = await completionInstructions({})
 
       expect(res.status).toBe(200)
     })
 
-    it("returns course with multiple tiered registration links", async () => {
+    it("/api/completionTiers - returns course with multiple tiered registration links", async () => {
       const res = await completionTiers({
         headers: { Authorization: "Bearer normal" },
       })

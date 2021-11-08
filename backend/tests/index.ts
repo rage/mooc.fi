@@ -12,8 +12,18 @@ import binPrisma from "../prisma"
 import server from "../server"
 
 require("sharp") // ensure correct zlib thingy
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 const DEBUG = Boolean(process.env.DEBUG)
+
+function fail(reason = "fail was called in a test") {
+  throw new Error(reason)
+}
+
+// @ts-ignore: jest has no explicit fail anymore
+global.fail = fail
 
 export const logger = {
   format: {

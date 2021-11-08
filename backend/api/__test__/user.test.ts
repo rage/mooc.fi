@@ -221,7 +221,7 @@ describe("API", () => {
       const res = await postUpdatePersonAffiliation({
         data: {
           person_affiliation: "member;student;staff",
-          personal_unique_code: "personal:unique:code:university.fi:admin",
+          edu_person_principal_name: "admin@university.fi",
           home_organization: "university.fi",
         },
         headers: { authorization: "Bearer admin" },
@@ -254,7 +254,7 @@ describe("API", () => {
       const res = await postUpdatePersonAffiliation({
         data: {
           person_affiliation: "member;student;staff;wizard",
-          personal_unique_code: "personal:unique:code:university.fi:admin",
+          edu_person_principal_name: "admin@university.fi",
           home_organization: "university.fi",
         },
         headers: { authorization: "Bearer admin" },
@@ -292,8 +292,7 @@ describe("API", () => {
       const res = await postUpdatePersonAffiliation({
         data: {
           person_affiliation: "member;student;wizard",
-          personal_unique_code:
-            "personal:unique:code:second-university.fi:third",
+          edu_person_principal_name: "third@second-university.fi",
           home_organization: "second-university.fi",
         },
         headers: { authorization: "Bearer third" },

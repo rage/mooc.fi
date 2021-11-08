@@ -8,6 +8,7 @@ export const VERIFIED_USER_MUTATION = gql`
     $person_affiliation: String!
     $mail: String!
     $organizational_unit: String!
+    $edu_person_principal_name: $String!
   ) {
     addVerifiedUser(
       verified_user: {
@@ -17,17 +18,18 @@ export const VERIFIED_USER_MUTATION = gql`
         person_affiliation: $person_affiliation
         mail: $mail
         organizational_unit: $organizational_unit
+        edu_person_principal_name: $edu_person_principal_name
       }
     ) {
       id
-      personal_unique_code
+      edu_person_principal_name
     }
   }
 `
 
 export const VERIFIED_USER_QUERY = gql`
-  query verifiedUser($personal_unique_code: String!) {
-    verifiedUser(personal_unique_code: $personal_unique_code) {
+  query verifiedUser($edu_person_principal_name: String!) {
+    verifiedUser(edu_person_principal_name: $edu_person_principal_name) {
       id
       user {
         id

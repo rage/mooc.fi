@@ -9,6 +9,7 @@ import {
   completions,
   completionsRegistered,
   courseAliases,
+  courseOwnerships,
   courses,
   emailTemplateThresholds,
   exerciseCompletions,
@@ -16,6 +17,7 @@ import {
   openUniversityRegistrationLink,
   organizations,
   services,
+  storedData,
   study_modules,
   userCourseProgresses,
   userCourseServiceProgresses,
@@ -85,6 +87,11 @@ export const seed = async (prisma: PrismaClient) => {
   const seededClients = await create("client", client)
   const seededAccessTokens = await create("accessToken", accessToken)
   const seededVerifiedUsers = await create("verifiedUser", verifiedUsers)
+  const seededStoredData = await create("storedData", storedData)
+  const seededCourseOwnerships = await create(
+    "courseOwnership",
+    courseOwnerships,
+  )
 
   return {
     courses: seededCourses,
@@ -108,5 +115,7 @@ export const seed = async (prisma: PrismaClient) => {
     clients: seededClients,
     accessTokens: seededAccessTokens,
     verifiedUsers: seededVerifiedUsers,
+    storedData: seededStoredData,
+    courseOwnerships: seededCourseOwnerships,
   }
 }

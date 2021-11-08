@@ -12,8 +12,10 @@ import {
 } from "./completions"
 import { progress, progressV2 } from "./progress"
 import { registerCompletions } from "./registerCompletions"
+import { getStoredData, postStoredData } from "./storedData"
 import { tierProgress } from "./tierProgress"
 import {
+  connectUser,
   getUser,
   registerUser,
   updatePassword,
@@ -56,4 +58,7 @@ export function apiRouter(ctx: ApiContext) {
     .get("/user-course-progress/:slug", userCourseProgress(ctx))
     .patch("/user", updateUser(ctx))
     .post("/user/update-person-affiliation", updatePersonAffiliation(ctx))
+    .post("/user/connect", connectUser(ctx))
+    .post("/stored-data/:slug", postStoredData(ctx))
+    .get("/stored-data/:slug", getStoredData(ctx))
 }
