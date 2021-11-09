@@ -113,11 +113,9 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 6000) })
-          try {
-            serverInstance = app.listen(port)
-          } catch {
-            throw new Error("port in use")
-          }
+          serverInstance = app.listen(port).on("error", (err) => {
+            throw err
+          })
           DEBUG && console.log(`got port ${port}`)
 
           return {
