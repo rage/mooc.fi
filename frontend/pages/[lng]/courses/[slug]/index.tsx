@@ -15,12 +15,13 @@ import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourseStatsSubscriptions"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Card, Paper, Typography } from "@material-ui/core"
 
@@ -49,6 +50,36 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
+const UserCourseStatsSubscriptionsQuery = gql`
+  query UserCourseStatsSubscriptions {
+    currentUser {
+      id
+      course_stats_subscriptions {
+        id
+        email_template {
+          id
+        }
+      }
+    }
+  }
+`
+
+const UserCourseStatsSubscribeMutation = gql`
+  mutation UserCourseStatsSubscribe($id: ID!) {
+    createCourseStatsSubscription(id: $id) {
+      id
+    }
+  }
+`
+
+const UserCourseStatsUnsubscribeMutation = gql`
+  mutation UserCourseStatsUnsubscribe($id: ID!) {
+    deleteCourseStatsSubscription(id: $id) {
+      id
+    }
+  }
+`
+
 const recheckCompletionsMutation = gql`
   mutation RecheckCompletionMutation($slug: String) {
     recheckCompletions(slug: $slug)
@@ -69,13 +100,20 @@ const Course = () => {
 
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
-
+  const [subscribing, setSubscribing] = useState(false)
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
       variables: { slug },
     },
   )
+  const client = useApolloClient()
+
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useQuery<UserCourseStatsSubscriptions>(UserCourseStatsSubscriptionsQuery)
 
   useBreadcrumbs([
     {
@@ -110,12 +148,16 @@ const Course = () => {
     }
   }
 
-  if (loading || !data) {
+  if (loading || userLoading || !data || !userData) {
     return <Spinner />
   }
 
-  if (error) {
-    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
+  if (error || userError) {
+    return (
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error || userError)}
+      />
+    )
   }
 
   if (!data.course) {
@@ -125,6 +167,34 @@ const Course = () => {
       </>
     )
   }
+
+  const subscription = userData?.currentUser?.course_stats_subscriptions?.find(
+    (sub) => sub.email_template?.id === data?.course?.course_stats_email?.id,
+  )
+  const isSubscribed = Boolean(subscription)
+
+  const handleSubscribe = async () => {
+    setSubscribing(true)
+
+    try {
+      await client.mutate({
+        mutation: !isSubscribed
+          ? UserCourseStatsSubscribeMutation
+          : UserCourseStatsUnsubscribeMutation,
+        variables: {
+          id: !isSubscribed
+            ? data?.course?.course_stats_email?.id
+            : subscription!.id,
+        },
+        refetchQueries: [{ query: UserCourseStatsSubscriptionsQuery }],
+      })
+    } catch {
+      //
+    } finally {
+      setSubscribing(false)
+    }
+  }
+
   return (
     <section>
       <DashboardTabBar slug={slug} selectedValue={0} />
@@ -163,15 +233,20 @@ const Course = () => {
             />
           )}
           {data.course?.course_stats_email !== null ? (
-            <LangLink
-              href={`/email-templates/${data.course.course_stats_email?.id}`}
-              prefetch={false}
-              passHref
-            >
-              <Card style={{ width: "300px", minHeight: "50px" }}>
-                Course stats email: {data.course.course_stats_email?.name}
-              </Card>
-            </LangLink>
+            <>
+              <LangLink
+                href={`/email-templates/${data.course.course_stats_email?.id}`}
+                prefetch={false}
+                passHref
+              >
+                <Card style={{ width: "300px", minHeight: "50px" }}>
+                  Course stats email: {data.course.course_stats_email?.name}
+                </Card>
+              </LangLink>
+              <Button onClick={handleSubscribe} disabled={subscribing}>
+                {isSubscribed ? "Unsubscribe" : "Subscribe"}
+              </Button>
+            </>
           ) : (
             <CreateEmailTemplateDialog
               buttonText="Create course stats email"
