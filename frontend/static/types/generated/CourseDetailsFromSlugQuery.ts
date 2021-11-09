@@ -13,6 +13,12 @@ export interface CourseDetailsFromSlugQuery_course_completion_email {
   id: string
 }
 
+export interface CourseDetailsFromSlugQuery_course_course_stats_email {
+  __typename: "EmailTemplate"
+  id: string
+  name: string | null
+}
+
 export interface CourseDetailsFromSlugQuery_course {
   __typename: "Course"
   id: string
@@ -22,6 +28,7 @@ export interface CourseDetailsFromSlugQuery_course {
   teacher_in_charge_email: string
   start_date: string
   completion_email: CourseDetailsFromSlugQuery_course_completion_email | null
+  course_stats_email: CourseDetailsFromSlugQuery_course_course_stats_email | null
 }
 
 export interface CourseDetailsFromSlugQuery {

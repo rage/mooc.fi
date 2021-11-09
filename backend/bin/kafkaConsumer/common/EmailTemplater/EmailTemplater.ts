@@ -14,6 +14,7 @@ export class EmailTemplater {
     started_course_count: Templates.StartedCourseCount,
     completed_course_count: Templates.CompletedCourseCount,
     at_least_one_exercise_count: Templates.AtLeastOneExerciseCount,
+    current_date: Templates.CurrentDate,
   }
   emailTemplate: EmailTemplate
   user: User

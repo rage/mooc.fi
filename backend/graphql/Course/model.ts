@@ -55,6 +55,8 @@ export const Course = objectType({
     t.model.upcoming_active_link()
     t.model.tier()
     t.model.handles_completions_for()
+    t.model.course_stats_email_id()
+    t.model.course_stats_email()
 
     t.string("description")
     t.string("instructions")

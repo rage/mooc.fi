@@ -13,6 +13,11 @@ export interface AllCoursesDetails_courses_completion_email {
   id: string
 }
 
+export interface AllCoursesDetails_courses_course_stats_email {
+  __typename: "EmailTemplate"
+  id: string
+}
+
 export interface AllCoursesDetails_courses {
   __typename: "Course"
   id: string
@@ -22,6 +27,7 @@ export interface AllCoursesDetails_courses {
   teacher_in_charge_email: string
   start_date: string
   completion_email: AllCoursesDetails_courses_completion_email | null
+  course_stats_email: AllCoursesDetails_courses_course_stats_email | null
 }
 
 export interface AllCoursesDetails {
