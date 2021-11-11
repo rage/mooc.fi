@@ -1,12 +1,12 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: resync-user-app-datum
+  name: course-stats-emailer
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  schedule: "0 3 1 * *"
-  # at 3:00 am, 1st day of every month
+  # every monday at 7:16am 
+  schedule: "16 7 * * 1"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   jobTemplate:
@@ -19,9 +19,9 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: resync-user-app-datum
+            - name: course-stats-emailer
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run fetch-user-app-datum"]
+              command: ["sh", "-c", "npm run course-stats-emailer"]
               envFrom:
               - secretRef:
                   name: backend-secret
@@ -31,5 +31,3 @@ spec:
                     secretKeyRef:
                       name: redis
                       key: redis-password
-                - name: CONFIG_NAME
-                  value: "resyncUserAppDatum"
