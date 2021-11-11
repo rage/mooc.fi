@@ -37,6 +37,7 @@ export const User = objectType({
     t.model.research_consent()
     t.model.ab_enrollments()
     t.model.course_ownerships()
+    t.model.course_stats_subscriptions()
 
     t.list.nonNull.field("completions", {
       type: "Completion",

@@ -1,14 +1,20 @@
 import { render } from "micromustache"
+
+import { EmailTemplate, PrismaClient, User } from "@prisma/client"
+
 import * as Templates from "./templates"
-import { PrismaClient, EmailTemplate, User } from "@prisma/client"
+import ITemplateConstructor from "./types/ITemplateConstructor"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
 import Template from "./types/Template"
-import ITemplateConstructor from "./types/ITemplateConstructor"
 
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {
     completion_link: Templates.CompletionLink,
     grade: Templates.Grade,
+    started_course_count: Templates.StartedCourseCount,
+    completed_course_count: Templates.CompletedCourseCount,
+    at_least_one_exercise_count: Templates.AtLeastOneExerciseCount,
+    current_date: Templates.CurrentDate,
   }
   emailTemplate: EmailTemplate
   user: User
