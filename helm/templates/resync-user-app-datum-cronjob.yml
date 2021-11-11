@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: resynd-user-app-datum
+  name: resync-user-app-datum
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
@@ -19,7 +19,7 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: fetch-user-app-datum
+            - name: resync-user-app-datum
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
               command: ["sh", "-c", "npm run fetch-user-app-datum"]
               envFrom:
