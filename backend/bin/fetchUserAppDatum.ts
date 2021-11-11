@@ -14,7 +14,7 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
-const CONFIG_NAME = "userAppDatum"
+const CONFIG_NAME = process.env.CONFIG_NAME ?? "userAppDatum"
 
 let course
 let old: UserCourseSetting
