@@ -229,6 +229,9 @@ export const createCompletion = async ({
       user_id: user.id,
       course_id: handlerCourse.id,
     },
+    orderBy: {
+      created_at: "asc",
+    },
   })
   if (completions.length < 1) {
     logger?.info("No existing completion found, creating new...")
