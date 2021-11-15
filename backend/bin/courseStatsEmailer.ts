@@ -21,3 +21,8 @@ const courseStatsEmailer = async () => {
 }
 
 courseStatsEmailer()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    logger.error(error)
+    process.exit(1)
+  })

@@ -18,7 +18,7 @@ export class StartedCourseCount extends Template {
             SELECT 
               COUNT(DISTINCT user_id) 
             FROM user_course_setting 
-            WHERE course_id = '${course.id}';
+            WHERE course_id = ${course.id};
           `
         )?.[0]?.count
 
@@ -52,7 +52,7 @@ export class CompletedCourseCount extends Template {
           SELECT 
             COUNT(DISTINCT user_id) 
           FROM completion 
-          WHERE course_id = '${course.id}';
+          WHERE course_id = ${course.id};
         `
         )?.[0]?.count
 
@@ -87,7 +87,7 @@ export class AtLeastOneExerciseCount extends Template {
             COUNT(DISTINCT user_id) 
           FROM exercise_completion ec
           JOIN exercise e ON ec.exercise_id = e.id
-          WHERE course_id = '${course.id}';
+          WHERE course_id = ${course.id};
         `
         )?.[0]?.count
 
