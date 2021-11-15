@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: resync-user-app-datum
@@ -9,6 +9,8 @@ spec:
   # at 3:00 am, 1st day of every month
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     metadata:
       labels:

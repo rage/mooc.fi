@@ -42,24 +42,39 @@ spec:
       http:
         paths:
           - path: /api
+            pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}-backend
-              servicePort: 80
+              service:
+                name: {{ $fullName }}-backend
+                port:
+                  number: 80
           - path: /kafka-bridge/api/v0
+            pathType: Prefix
             backend:
-              serviceName: kafka-bridge
-              servicePort: 80
+              service:
+                name: kafka-bridge
+                port:
+                  number: 80
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}-frontend
-              servicePort: 80
+              service:
+                name: {{ $fullName }}-frontend
+                port:
+                  number: 80
           - path: /Shibboleth.sso
+            pathType: Prefix
             backend:
-              serviceName: shibbo-test
-              servicePort: 80
+              service:
+                name: shibbo-test
+                port:
+                  number: 80
           - path: /connect
+            pathType: Prefix
             backend:
-              serviceName: shibbo-test
-              servicePort: 80
+              service:
+                name: shibbo-test
+                port:
+                  number: 80
     {{- end }}
   {{- end }}
