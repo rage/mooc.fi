@@ -1,14 +1,16 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: course-stats-emailer
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  # every monday at 7:16am 
+  # every monday at 7:16am
   schedule: "16 7 * * 1"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     metadata:
       labels:
