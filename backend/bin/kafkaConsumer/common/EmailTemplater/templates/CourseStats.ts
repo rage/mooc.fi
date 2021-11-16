@@ -26,7 +26,7 @@ export class StartedCourseCount extends Template {
       },
       {
         prefix: "startedcoursecount",
-        expireTime: 60 * 60 * 1000, // hour,
+        expireTime: 60 * 60, // hour,
         key: `${course.id}`,
       },
     )
@@ -60,7 +60,7 @@ export class CompletedCourseCount extends Template {
       },
       {
         prefix: "completedcoursecount",
-        expireTime: 60 * 60 * 1000, // hour,
+        expireTime: 60 * 60, // hour,
         key: `${course.id}`,
       },
     )
@@ -95,7 +95,7 @@ export class AtLeastOneExerciseCount extends Template {
       },
       {
         prefix: "atleastoneexercisecount",
-        expireTime: 60 * 60 * 1000, // hour,
+        expireTime: 60 * 60, // hour,
         key: `${course.id}`,
       },
     )
