@@ -1,23 +1,35 @@
-import { useState, useContext } from "react"
+import { useContext, useState } from "react"
+
+import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
-import { useQuery, ApolloConsumer } from "@apollo/client"
-import { SubtitleNoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { EmailTemplate } from "/static/types/generated/EmailTemplate"
-import { EmailTemplateQuery } from "/graphql/queries/email-templates"
-import { Paper, TextField, Button } from "@material-ui/core"
-import {
-  UpdateEmailTemplateMutation,
-  DeleteEmailTemplateMutation,
-} from "/graphql/mutations/email-templates"
-import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 import CustomSnackbar from "/components/CustomSnackbar"
-import LanguageContext from "/contexts/LanguageContext"
-import Router from "next/router"
-import withAdmin from "/lib/with-admin"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import Spinner from "/components/Spinner"
+import { SubtitleNoBackground } from "/components/Text/headers"
+import LanguageContext from "/contexts/LanguageContext"
+import {
+  DeleteEmailTemplateMutation,
+  UpdateEmailTemplateMutation,
+} from "/graphql/mutations/email-templates"
+import { EmailTemplateQuery } from "/graphql/queries/email-templates"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { EmailTemplate } from "/static/types/generated/EmailTemplate"
+import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
+import { useQueryParameter } from "/util/useQueryParameter"
+import Router from "next/router"
+import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
+
+import { ApolloConsumer, useQuery } from "@apollo/client"
+import { Button, Collapse, Paper, TextField } from "@material-ui/core"
+
+const templateValues = [
+  "grade",
+  "completion_link",
+  "started_course_count",
+  "completed_course_count",
+  "at_least_one_exercise_count",
+  "current_date",
+]
 
 const EmailTemplateView = () => {
   // TODO: Get rid of any
@@ -35,7 +47,7 @@ const EmailTemplateView = () => {
   const [templateType, setTemplateType] = useState<string | null | undefined>()
   const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
-
+  const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
 
   interface SnackbarData {
@@ -127,7 +139,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="txt-body"
-              label="Email Text Body"
+              label="Email text body"
               multiline
               rows="4"
               maxRows="40"
@@ -189,6 +201,25 @@ const EmailTemplateView = () => {
                 />
               </>
             ) : null}
+            <CollapseButton
+              open={isHelpOpen}
+              label="Help"
+              onClick={() => setIsHelpOpen((s) => !s)}
+            />
+            <Collapse in={isHelpOpen}>
+              <p>
+                You can use template values in the email body by adding them
+                inside double curly brackets, like <code>{`{{ this }}`}</code>.
+                Available template values:
+                <ul>
+                  {templateValues.map((value) => (
+                    <li>
+                      <code>{value}</code>
+                    </li>
+                  ))}
+                </ul>
+              </p>
+            </Collapse>
             <br></br>
             <br></br>
             <ApolloConsumer>
@@ -218,7 +249,7 @@ const EmailTemplateView = () => {
                       console.log(data)
                       setSnackbarData({
                         type: "success",
-                        message: "Saved succesfully",
+                        message: "Saved successfully",
                       })
                     } catch {
                       setSnackbarData({

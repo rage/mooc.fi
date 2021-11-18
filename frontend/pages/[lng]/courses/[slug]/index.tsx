@@ -1,27 +1,29 @@
 import { useState } from "react"
-import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import CourseDashboard from "/components/Dashboard/CourseDashboard"
+
 import { WideContainer } from "/components/Container"
-import { useMutation, useQuery } from "@apollo/client"
-import { gql } from "@apollo/client"
-import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import { Card, Typography, Button, Paper } from "@material-ui/core"
-import LangLink from "/components/LangLink"
-import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import Spinner from "/components/Spinner"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import withAdmin from "/lib/with-admin"
-import CoursesTranslations from "/translations/courses"
-import styled from "@emotion/styled"
 import {
   AllCompletionsQuery,
   PreviousPageCompletionsQuery,
 } from "/components/Dashboard/CompletionsList"
+import CourseDashboard from "/components/Dashboard/CourseDashboard"
+import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
+import LangLink from "/components/LangLink"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import Spinner from "/components/Spinner"
+import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourseStatsSubscriptions"
+import CoursesTranslations from "/translations/courses"
+import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Button, Card, Paper, Typography } from "@material-ui/core"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -40,6 +42,40 @@ export const CourseDetailsFromSlugQuery = gql`
         name
         id
       }
+      course_stats_email {
+        id
+        name
+      }
+    }
+  }
+`
+
+const UserCourseStatsSubscriptionsQuery = gql`
+  query UserCourseStatsSubscriptions {
+    currentUser {
+      id
+      course_stats_subscriptions {
+        id
+        email_template {
+          id
+        }
+      }
+    }
+  }
+`
+
+const UserCourseStatsSubscribeMutation = gql`
+  mutation UserCourseStatsSubscribe($id: ID!) {
+    createCourseStatsSubscription(id: $id) {
+      id
+    }
+  }
+`
+
+const UserCourseStatsUnsubscribeMutation = gql`
+  mutation UserCourseStatsUnsubscribe($id: ID!) {
+    deleteCourseStatsSubscription(id: $id) {
+      id
     }
   }
 `
@@ -64,13 +100,20 @@ const Course = () => {
 
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
-
+  const [subscribing, setSubscribing] = useState(false)
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
       variables: { slug },
     },
   )
+  const client = useApolloClient()
+
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useQuery<UserCourseStatsSubscriptions>(UserCourseStatsSubscriptionsQuery)
 
   useBreadcrumbs([
     {
@@ -105,12 +148,16 @@ const Course = () => {
     }
   }
 
-  if (loading || !data) {
+  if (loading || userLoading || !data || !userData) {
     return <Spinner />
   }
 
-  if (error) {
-    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
+  if (error || userError) {
+    return (
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error || userError)}
+      />
+    )
   }
 
   if (!data.course) {
@@ -120,6 +167,34 @@ const Course = () => {
       </>
     )
   }
+
+  const subscription = userData?.currentUser?.course_stats_subscriptions?.find(
+    (sub) => sub.email_template?.id === data?.course?.course_stats_email?.id,
+  )
+  const isSubscribed = Boolean(subscription)
+
+  const handleSubscribe = async () => {
+    setSubscribing(true)
+
+    try {
+      await client.mutate({
+        mutation: !isSubscribed
+          ? UserCourseStatsSubscribeMutation
+          : UserCourseStatsUnsubscribeMutation,
+        variables: {
+          id: !isSubscribed
+            ? data?.course?.course_stats_email?.id
+            : subscription!.id,
+        },
+        refetchQueries: [{ query: UserCourseStatsSubscriptionsQuery }],
+      })
+    } catch {
+      //
+    } finally {
+      setSubscribing(false)
+    }
+  }
+
   return (
     <section>
       <DashboardTabBar slug={slug} selectedValue={0} />
@@ -154,6 +229,29 @@ const Course = () => {
             <CreateEmailTemplateDialog
               buttonText="Create completion email"
               course={data.course}
+              type="completion"
+            />
+          )}
+          {data.course?.course_stats_email !== null ? (
+            <>
+              <LangLink
+                href={`/email-templates/${data.course.course_stats_email?.id}`}
+                prefetch={false}
+                passHref
+              >
+                <Card style={{ width: "300px", minHeight: "50px" }}>
+                  Course stats email: {data.course.course_stats_email?.name}
+                </Card>
+              </LangLink>
+              <Button onClick={handleSubscribe} disabled={subscribing}>
+                {isSubscribed ? "Unsubscribe" : "Subscribe"}
+              </Button>
+            </>
+          ) : (
+            <CreateEmailTemplateDialog
+              buttonText="Create course stats email"
+              course={data.course}
+              type="course-stats"
             />
           )}
           <Button

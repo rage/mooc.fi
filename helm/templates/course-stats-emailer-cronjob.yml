@@ -1,12 +1,13 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: remove-duplicate-completions
+  name: course-stats-emailer
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  schedule: "4/30 * * * *"
-  startingDeadlineSeconds: 1800
+  # every monday at 7:16am
+  schedule: "16 7 * * 1"
+  startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 3
@@ -15,21 +16,14 @@ spec:
       labels:
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
-      activeDeadlineSeconds: 3600
+      activeDeadlineSeconds: 7200
       template:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: remove-duplicate-completions
+            - name: course-stats-emailer
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run remove-duplicate-completions"]
-              resources:
-                limits:
-                  memory: 256Mi
-                  cpu: 20m
-                requests:
-                  memory: 100Mi
-                  cpu: 10m
+              command: ["sh", "-c", "npm run course-stats-emailer"]
               envFrom:
               - secretRef:
                   name: backend-secret
