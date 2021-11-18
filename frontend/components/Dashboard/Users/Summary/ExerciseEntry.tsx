@@ -1,45 +1,44 @@
-import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
 import React from "react"
+
 import {
-  useCollapseContext,
-  // ActionType,
-  // CollapsablePart,
-} from "./CollapseContext"
-// import CollapseButton from "/components/Buttons/CollapseButton"
-import { useTranslator } from "/util/useTranslator"
-import ProfileTranslations from "/translations/profile"
-import {
+  UserSummary_user_user_course_summary_course_exercises,
   UserSummary_user_user_course_summary_exercise_completions,
   UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
 } from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+// import CollapseButton from "/components/Buttons/CollapseButton"
+import { useTranslator } from "/util/useTranslator"
+
+import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
+
+import { useCollapseContext } from "./CollapseContext"
 
 interface ExerciseEntryProps {
-  exerciseCompletion: UserSummary_user_user_course_summary_exercise_completions
+  exercise: UserSummary_user_user_course_summary_course_exercises & {
+    exercise_completions: UserSummary_user_user_course_summary_exercise_completions[]
+  }
 }
 
 const round = (num: number, precision: number = 100) =>
   Math.round(num * precision) / precision
 
-export default function ExerciseEntry({
-  exerciseCompletion,
-}: ExerciseEntryProps) {
+export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
   const t = useTranslator(ProfileTranslations)
   // @ts-ignore: collapse disabled
   const { state, dispatch } = useCollapseContext()
 
   const isOpen =
-    state[exerciseCompletion.exercise?.course?.id ?? "_"]?.exercises[
-      exerciseCompletion?.id ?? "_"
+    state[exercise.course_id ?? "_"]?.exercises[
+      exercise.exercise_completions?.[0]?.id ?? "_"
     ] ?? false
+  const exerciseCompletion = exercise.exercise_completions?.[0]
 
-  console.log(exerciseCompletion)
   return (
     <>
       <TableRow>
-        <TableCell>{exerciseCompletion.exercise?.name}</TableCell>
+        <TableCell>{exercise.name}</TableCell>
         <TableCell>
-          {round(exerciseCompletion.n_points ?? 0)}/
-          {exerciseCompletion.exercise?.max_points}
+          {round(exerciseCompletion.n_points ?? 0)}/{exercise?.max_points}
         </TableCell>
         <TableCell>
           {exerciseCompletion.completed ? t("yes") : t("no")}

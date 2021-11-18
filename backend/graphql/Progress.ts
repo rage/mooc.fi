@@ -14,13 +14,13 @@ export const Progress = objectType({
 
         const progresses = await ctx.prisma.course
           .findUnique({
-            where: { id: course_id }
+            where: { id: course_id },
           })
           .user_course_progresses({
             where: { user_id },
-            orderBy: { created_at: "asc" } 
-          }) 
-        
+            orderBy: { created_at: "asc" },
+          })
+
         return progresses?.[0] ?? null
       },
     })
@@ -32,7 +32,7 @@ export const Progress = objectType({
 
         const progresses = await ctx.prisma.course
           .findUnique({
-            where: { id: course_id }
+            where: { id: course_id },
           })
           .user_course_service_progresses({
             where: { user_id },

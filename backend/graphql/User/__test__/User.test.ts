@@ -1,10 +1,7 @@
 import { gql } from "graphql-request"
 import { orderBy } from "lodash"
 
-import {
-  fakeTMCCurrent,
-  getTestContext,
-} from "../../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
 import {
   adminUserDetails,
   normalUser,
@@ -51,6 +48,7 @@ const tmc = fakeTMCCurrent({
   "Bearer admin": [200, adminUserDetails],
 })
 
+// @ts-ignore: not used
 const sortByExercise = (data: any) => {
   if (!data?.exercise_completions) {
     return data

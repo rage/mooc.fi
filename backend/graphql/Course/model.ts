@@ -1,10 +1,4 @@
-import {
-  booleanArg,
-  intArg,
-  nullable,
-  objectType,
-  stringArg,
-} from "nexus"
+import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
 
@@ -85,8 +79,8 @@ export const Course = objectType({
         return ctx.prisma.course
           .findUnique({
             where: {
-              id: parent.id
-            }
+              id: parent.id,
+            },
           })
           .completions({
             where: {
@@ -94,7 +88,7 @@ export const Course = objectType({
                 id: user_id ?? undefined,
                 upstream_id: user_upstream_id ?? undefined,
               },
-            }
+            },
           })
       },
     })

@@ -1,4 +1,5 @@
-import { objectType, extendType, idArg, arg, nonNull } from "nexus"
+import { UserInputError } from "apollo-server-errors"
+import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin } from "../accessControl"
 
@@ -48,14 +49,40 @@ export const UserCourseServiceProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        return await ctx.prisma.userCourseServiceProgress.findFirst({
+
+        let baseQuery
+
+        if (user_id) {
+          baseQuery = ctx.prisma.user.findUnique({
+            where: { id: user_id },
+          })
+        }
+        if (course_id) {
+          baseQuery = ctx.prisma.course.findUnique({
+            where: { id: course_id },
+          })
+        }
+        if (service_id) {
+          baseQuery = ctx.prisma.service.findUnique({
+            where: { id: service_id },
+          })
+        }
+        if (!baseQuery) {
+          throw new UserInputError(
+            "provide at least one of user_id, course_id, service_id",
+          )
+        }
+
+        const progresses = await baseQuery.user_course_service_progresses({
           where: {
-            user_id: user_id,
-            course_id: course_id,
-            service_id: service_id,
+            course_id,
+            service_id,
+            user_id,
           },
           orderBy: { created_at: "asc" },
         })
+
+        return progresses?.[0]
       },
     })
 

@@ -13,10 +13,7 @@ import {
 
 import { Prisma } from "@prisma/client"
 
-import {
-  isAdmin,
-  Role,
-} from "../accessControl"
+import { isAdmin, Role } from "../accessControl"
 import { filterNull } from "../util/db-functions"
 
 export const Exercise = objectType({
@@ -37,8 +34,6 @@ export const Exercise = objectType({
     t.model.timestamp()
     t.model.updated_at()
 
-    // t.prismaFields({ filter: ["exercise_completions"] })
-
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
@@ -53,7 +48,7 @@ export const Exercise = objectType({
       resolve: async (parent, args, ctx: Context) => {
         const { orderBy, user_id: user_id_arg } = args
         const isAdmin = ctx.role === Role.ADMIN
-        const user_id = isAdmin && user_id_arg? user_id_arg : ctx?.user?.id
+        const user_id = isAdmin && user_id_arg ? user_id_arg : ctx?.user?.id
 
         if (!user_id) {
           throw new AuthenticationError("not logged in")

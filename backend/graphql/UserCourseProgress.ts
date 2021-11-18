@@ -48,16 +48,16 @@ export const UserCourseProgress = objectType({
       resolve: async (parent, _, ctx) => {
         const settings = await ctx.prisma.userCourseProgress
           .findUnique({
-            where: { id: parent.id}
+            where: { id: parent.id },
           })
           .user()
           .user_course_settings({
             where: { course_id: parent.course_id },
             orderBy: {
-              created_at: "desc" // TODO: returning always the _newest_ setting?
-            }
+              created_at: "desc", // TODO: returning always the _newest_ setting?
+            },
           })
-        
+
         return settings?.[0]
       },
     })
@@ -74,28 +74,28 @@ export const UserCourseProgress = objectType({
         const exercises = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id
-            }
+              id: course_id,
+            },
           })
           .exercises({
             where: {
               NOT: {
-                deleted: true 
-              }
+                deleted: true,
+              },
             },
             select: {
               id: true,
               exercise_completions: {
                 where: {
-                  user_id
-                }
-              }
-            }
+                  user_id,
+                },
+              },
+            },
           })
 
         const completedExerciseCount = exercises.reduce(
           (acc, curr) => acc + (curr.exercise_completions?.length || 0),
-          0
+          0,
         )
         const totalProgress =
           (courseProgress?.reduce(
@@ -165,23 +165,25 @@ export const UserCourseProgressQueries = extendType({
         const { skip, take, cursor, user_id, course_id, course_slug } = args
 
         if (!course_id && !course_slug) {
-          throw new UserInputError("must provide either course_id or course_slug")
+          throw new UserInputError(
+            "must provide either course_id or course_slug",
+          )
         }
 
         return ctx.prisma.course
           .findUnique({
             where: {
               id: course_id ?? undefined,
-              slug: course_slug ?? undefined
-            }
+              slug: course_slug ?? undefined,
+            },
           })
           .user_course_progresses({
             skip: skip ?? undefined,
             take: take ?? undefined,
             cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
             where: {
-              user_id
-            }
+              user_id,
+            },
           })
       },
     })

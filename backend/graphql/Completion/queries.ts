@@ -1,26 +1,11 @@
-import {
-  ForbiddenError,
-  UserInputError,
-} from "apollo-server-core"
-import {
-  extendType,
-  idArg,
-  intArg,
-  nonNull,
-  stringArg,
-} from "nexus"
+import { ForbiddenError, UserInputError } from "apollo-server-core"
+import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
-import {
-  findManyCursorConnection,
-} from "@devoxa/prisma-relay-cursor-connection"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
 // import { convertPagination } from "../../util/db-functions"
-import {
-  isAdmin,
-  isOrganization,
-  or,
-} from "../../accessControl"
+import { isAdmin, isOrganization, or } from "../../accessControl"
 import { buildUserSearch } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
@@ -47,27 +32,27 @@ export const CompletionQueries = extendType({
         let completions = await ctx.prisma.course
           .findUnique({
             where: {
-              slug: course
-            }
+              slug: course,
+            },
           })
           .completions({
             where: {
-              completion_language
-            }
+              completion_language,
+            },
           })
 
         if (!completions) {
           completions = await ctx.prisma.courseAlias
-            .findunique({
+            .findUnique({
               where: {
-                course_code: course
-              }
+                course_code: course,
+              },
             })
             .course()
             .completions({
               where: {
-                completion_language
-              }
+                completion_language,
+              },
             })
 
           if (!completions) {
@@ -156,19 +141,22 @@ export const CompletionQueries = extendType({
             completion_language,
             ...(search
               ? {
-                user: buildUserSearch(search)
-              } : {})
+                  user: buildUserSearch(search),
+                }
+              : {}),
           },
         }
 
         return findManyCursorConnection(
-          (args) => ctx.prisma.course
-            .findUnique({
-              where: { slug: course }
-            })
-            .completions({
-              ...args, ...baseArgs
-            }),
+          (args) =>
+            ctx.prisma.course
+              .findUnique({
+                where: { slug: course },
+              })
+              .completions({
+                ...args,
+                ...baseArgs,
+              }),
           () => ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
           { first, last, before, after },
           {

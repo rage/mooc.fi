@@ -1,22 +1,13 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
-import {
-  omit,
-  orderBy,
-} from "lodash"
+import { omit, orderBy } from "lodash"
 import { mocked } from "ts-jest/utils"
 
 import { Course } from "@prisma/client"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import {
-  fakeTMCCurrent,
-  getTestContext,
-} from "../../../tests/__helpers"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../tests/data"
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
 jest.mock("../../../services/kafkaProducer")
@@ -40,7 +31,12 @@ const courseQuery = gql`
 `
 
 const fullCourseQuery = gql`
-  query course($id: ID, $slug: String, $language: String, $includeDeletedExercises: Boolean) {
+  query course(
+    $id: ID
+    $slug: String
+    $language: String
+    $includeDeletedExercises: Boolean
+  ) {
     course(id: $id, slug: $slug, language: $language) {
       id
       name
@@ -490,7 +486,7 @@ describe("Course", () => {
       })
     })
   })
-  
+
   describe("queries", () => {
     beforeAll(() => tmc.setup())
     afterAll(() => tmc.teardown())
@@ -581,9 +577,11 @@ describe("Course", () => {
           })
 
           ;[resId, resSlug].map((res) =>
-            expect(sortExercises(sortStudyModules(res.course))).toMatchSnapshot({
-              id: expect.any(String),
-            }),
+            expect(sortExercises(sortStudyModules(res.course))).toMatchSnapshot(
+              {
+                id: expect.any(String),
+              },
+            ),
           )
         })
 
