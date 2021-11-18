@@ -1,8 +1,10 @@
 import { ForbiddenError } from "apollo-server-core"
-import { Context } from "../context"
-import { Role, or, isVisitor, isAdmin } from "../accessControl"
+import { arg, extendType, idArg, nonNull, objectType } from "nexus"
+
 import { OrganizationRole } from "@prisma/client"
-import { objectType, extendType, idArg, arg, nonNull } from "nexus"
+
+import { isAdmin, isVisitor, or, Role } from "../accessControl"
+import { Context } from "../context"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",
@@ -30,11 +32,21 @@ export const UserOrganizationQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
 
-        if (!user_id && !organization_id) {
+        let baseQuery
+        if (user_id) {
+          baseQuery = ctx.prisma.user.findUnique({
+            where: { id: user_id },
+          })
+        } else if (organization_id) {
+          baseQuery = ctx.prisma.organization.findUnique({
+            where: { id: organization_id },
+          })
+        }
+        if (!baseQuery) {
           throw new Error("must provide at least one of user/organization id")
         }
 
-        return ctx.prisma.userOrganization.findMany({
+        return baseQuery.user_organizations({
           where: {
             user_id,
             organization_id,

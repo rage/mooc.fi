@@ -170,8 +170,7 @@ export const UserCourseSettingQueries = extendType({
                   id: course_id,
                 },
               })
-            }
-            if (user_id || user_upstream_id) {
+            } else if (user_id || user_upstream_id) {
               baseQuery = ctx.prisma.user.findUnique({
                 where: {
                   id: user_id ?? undefined,

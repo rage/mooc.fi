@@ -167,19 +167,23 @@ export const CompletionMutations = extendType({
             slug: slug ?? undefined,
           },
         })
-
         if (!course) {
           throw new Error("course not found")
         }
-
         // find users on course with points
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            course_id: course.id,
-            n_points: { gt: 0 },
-          },
-          orderBy: { created_at: "asc" },
-        })
+        const progresses = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
+          .user_course_progresses({
+            where: {
+              n_points: { gt: 0 },
+            },
+            orderBy: { created_at: "asc" },
+          })
 
         const progressByUser = groupBy(progresses, "user_id")
         const userIds = Object.keys(progressByUser)
@@ -187,12 +191,18 @@ export const CompletionMutations = extendType({
           .filter((key) => key !== "null")
 
         // find users with completions
-        const completions = await ctx.prisma.completion.findMany({
-          where: {
-            course_id: course.id,
-            user_id: { in: userIds },
-          },
-        })
+        const completions = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
+          .completions({
+            where: {
+              user_id: { in: userIds },
+            },
+          })
 
         // filter users without completions
         const userIdsWithoutCompletions = difference(

@@ -1,8 +1,9 @@
-import { Message, ExerciseData } from "./interfaces"
 import { DateTime } from "luxon"
-import { ok, err, Result } from "../../../util/result"
+
+import { err, ok, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "../common/kafkaContext"
+import { ExerciseData, Message } from "./interfaces"
 
 export const saveToDatabase = async (
   context: KafkaContext,
@@ -65,13 +66,21 @@ const handleExercise = async ({
   timestamp,
   service_id,
 }: HandleExerciseConfig) => {
-  const existingExercise = await prisma.exercise.findFirst({
-    where: {
-      course_id: course_id,
-      service_id: service_id,
-      custom_id: exercise.id,
-    },
-  })
+  const existingExercise = (
+    await prisma.course
+      .findUnique({
+        where: {
+          id: course_id,
+        },
+      })
+      .exercises({
+        where: {
+          service_id,
+          custom_id: exercise.id,
+        },
+      })
+  )?.[0]
+
   if (existingExercise) {
     // FIXME: well this is weird
     if (

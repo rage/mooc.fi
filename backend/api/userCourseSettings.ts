@@ -1,7 +1,8 @@
-import { ApiContext } from "."
 import { Request, Response } from "express"
-import { omit, intersection } from "lodash"
+import { intersection, omit } from "lodash"
+
 import { getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
   return async (req: Request<{ slug: string }>, res: Response) => {
@@ -19,15 +20,21 @@ export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const settings = await prisma.userCourseSetting.findFirst({
-      where: {
-        course: {
-          slug,
-        },
-        user_id: user.id,
-      },
-      orderBy: { created_at: "asc" },
-    })
+    const settings = (
+      await prisma.course
+        .findUnique({
+          where: {
+            slug,
+          },
+        })
+        .user_course_settings({
+          where: {
+            user_id: user.id,
+          },
+          orderBy: { created_at: "desc" }, // TODO: get newest setting?
+          take: 1,
+        })
+    )?.[0]
 
     const overwrittenKeys = intersection(
       Object.keys(omit(settings, "other") ?? {}),
@@ -70,15 +77,21 @@ export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const existingSetting = await prisma.userCourseSetting.findFirst({
-      where: {
-        course: {
-          slug,
-        },
-        user_id: user.id,
-      },
-      orderBy: { created_at: "asc" },
-    })
+    const existingSetting = (
+      await prisma.course
+        .findUnique({
+          where: {
+            slug,
+          },
+        })
+        .user_course_settings({
+          where: {
+            user_id: user.id,
+          },
+          orderBy: { created_at: "desc" }, // TODO: get newest setting?
+          take: 1,
+        })
+    )?.[0]
 
     if (!existingSetting) {
       const existingCourse = await prisma.course.findFirst({

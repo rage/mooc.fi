@@ -1,3 +1,5 @@
+import { UserInputError } from "apollo-server-core"
+import { omit } from "lodash"
 import {
   arg,
   booleanArg,
@@ -8,11 +10,11 @@ import {
   nullable,
   stringArg,
 } from "nexus"
-import { UserInputError } from "apollo-server-core"
+
+import { Course, CourseTranslation, Prisma } from "@prisma/client"
+
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
-import { omit } from "lodash"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
@@ -137,14 +139,7 @@ export const CourseQueries = extendType({
         }
         if (!hidden) {
           searchQuery.push({
-            OR: [
-              {
-                hidden: false,
-              },
-              {
-                hidden: null,
-              },
-            ],
+            NOT: { hidden: true },
           })
         }
         if (handledBy) {
