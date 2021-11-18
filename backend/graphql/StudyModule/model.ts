@@ -1,7 +1,17 @@
-import { objectType, arg, stringArg } from "nexus"
-import { filterNull } from "../../util/db-functions"
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
 import { omit } from "lodash"
+import {
+  arg,
+  objectType,
+  stringArg,
+} from "nexus"
+
+import {
+  Course,
+  CourseTranslation,
+  Prisma,
+} from "@prisma/client"
+
+import { filterNull } from "../../util/db-functions"
 
 export const StudyModule = objectType({
   name: "StudyModule",
@@ -29,22 +39,24 @@ export const StudyModule = objectType({
 
         const courses: (Course & {
           course_translations?: CourseTranslation[]
-        })[] = await ctx.prisma.course.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
-          where: { study_modules: { some: { id: parent.id } } },
-          ...(language
-            ? {
+        })[] = await ctx.prisma.studyModule
+          .findUnique({
+            where: { id: parent.id }
+          })
+          .courses({
+            orderBy: (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+            ...(language
+              ? {
                 include: {
                   course_translations: {
                     where: {
-                      language: { equals: language },
-                    },
-                  },
-                },
-              }
-            : {}),
-        })
+                      language: { equals: language }
+                    }
+                  }
+                }
+              } : {}
+            )
+          })
 
         const values = courses.map((course) => ({
           ...omit(course, "course_translations"),
