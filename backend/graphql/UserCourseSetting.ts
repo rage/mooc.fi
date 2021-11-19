@@ -158,6 +158,7 @@ export const UserCourseSettingQueries = extendType({
                 }
               : {}),
             course_id,
+            // TODO: should this only return unique and only the oldest/newest?
           },
         }
 

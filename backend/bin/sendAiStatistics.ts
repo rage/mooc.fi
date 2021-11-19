@@ -263,13 +263,13 @@ const getGlobalStats = async (): Promise<string> => {
     .from("course")
     .where({ slug: "elements-of-ai" })
   const totalUsers = (
-    await Knex.count()
+    await Knex.count() // FIXME: should this be distinct?
       .from("user_course_setting")
       .whereNotNull("language")
       .andWhere({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (
-    await Knex.count()
+    await Knex.count() // FIXME: should this be distinct?
       .from("completion")
       .whereNotNull("completion_language")
       .andWhere({ course_id: course[0].id })
@@ -289,32 +289,32 @@ const getGlobalStatsBAI = async (): Promise<string> => {
     .where({ slug: "building-ai" })
 
   const totalUsers = (
-    await Knex.count()
+    await Knex.count() // FIXME: should this be distinct?
       .from("user_course_setting")
       .where({ course_id: course[0].id })
   )[0].count
 
-  const totalCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id })
-  )[0].count
+  const totalCompletions = // FIXME: should this be distinct?
+  (await Knex.count().from("completion").where({ course_id: course[0].id }))[0]
+    .count
 
   const beginnerCompletions = (
     await Knex.count()
-      .from("completion")
+      .from("completion") // FIXME: should this be distinct?
       .where({ course_id: course[0].id })
       .andWhere({ tier: 1 })
   )[0].count
 
   const intermediateCompletions = (
     await Knex.count()
-      .from("completion")
+      .from("completion") // FIXME: should this be distinct?
       .where({ course_id: course[0].id })
       .andWhere({ tier: 2 })
   )[0].count
 
   const advancedCompletions = (
     await Knex.count()
-      .from("completion")
+      .from("completion") // FIXME: should this be distinct?
       .where({ course_id: course[0].id })
       .andWhere({ tier: 3 })
   )[0].count
