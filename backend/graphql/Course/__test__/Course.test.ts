@@ -663,7 +663,7 @@ describe("Course", () => {
           })
 
           expect(res.courses?.map((c: Course) => c.id).sort()).toMatchSnapshot(
-            `courses-hidden-${hidden || "null"}`,
+            `courses-hidden-${hidden}`,
           )
         }
       })

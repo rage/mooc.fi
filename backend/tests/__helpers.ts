@@ -226,6 +226,9 @@ export function fakeTMCCurrent(
         .reply(function () {
           const auth = this.req.headers.authorization
 
+          if (!Array.isArray(users[auth])) {
+            throw new Error(`Invalid fakeTMCCurrent entry for auth ${auth}`)
+          }
           return users[auth]
         })
     },
@@ -243,6 +246,9 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
           .persist()
           .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
           .reply(function () {
+            if (!Array.isArray(reply)) {
+              throw new Error(`Invalid fakeTMCSpecific entry ${reply}`)
+            }
             return reply
           })
       }

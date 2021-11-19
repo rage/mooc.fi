@@ -138,8 +138,17 @@ export const CourseQueries = extendType({
           })
         }
         if (!hidden) {
+          // somehow NOT: { hidden: true } doesn't work
+          // neither does { hidden: { not: true }}
           searchQuery.push({
-            NOT: { hidden: true },
+            OR: [
+              {
+                hidden: false,
+              },
+              {
+                hidden: null,
+              },
+            ],
           })
         }
         if (handledBy) {
