@@ -294,9 +294,9 @@ const getGlobalStatsBAI = async (): Promise<string> => {
       .where({ course_id: course[0].id })
   )[0].count
 
-  const totalCompletions = // FIXME: should this be distinct?
-  (await Knex.count().from("completion").where({ course_id: course[0].id }))[0]
-    .count
+  const totalCompletions = ( // FIXME: should this be distinct?
+    await Knex.count().from("completion").where({ course_id: course[0].id })
+  )[0].count
 
   const beginnerCompletions = (
     await Knex.count()
