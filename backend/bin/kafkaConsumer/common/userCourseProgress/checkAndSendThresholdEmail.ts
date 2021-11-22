@@ -1,10 +1,13 @@
+import { v4 as uuidv4 } from "uuid"
+
+import { Course, User } from "@prisma/client"
+
+import { KafkaContext } from "../kafkaContext"
+import { CombinedUserCourseProgress } from "./userFunctions"
+
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import { User, Course } from "@prisma/client"
-import { CombinedUserCourseProgress } from "./userFunctions"
-import { KafkaContext } from "../kafkaContext"
-import { v4 as uuidv4 } from "uuid"
 
 interface Props {
   user: User

@@ -97,3 +97,11 @@ export class RemoveDuplicateCompletionsError extends CustomError {
     super(message)
   }
 }
+
+export class CourseStatsEmailerError extends CustomError {
+  name = "CourseStatsEmailerError"
+
+  constructor(message: string, readonly Erorr?: Error) {
+    super(message)
+  }
+}

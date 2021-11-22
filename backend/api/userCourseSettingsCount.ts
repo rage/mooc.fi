@@ -86,7 +86,7 @@ export function userCourseSettingsCount({ knex }: ApiContext) {
       },
       {
         prefix: "usercoursesettingscount",
-        expireTime: 3600000, // hour
+        expireTime: 60 * 60, // hour
         key: `${course}-${language}`,
       },
     )

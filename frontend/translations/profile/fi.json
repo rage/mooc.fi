@@ -49,11 +49,10 @@
     "connectText": "Tällä sivulla voit kytkeä MOOC.fi-tilisi oppilaitoksiesi tileihin, tai poistaa liitoksia.",
     "connectExisting": "Olemassaolevat yhteydet",
     "disconnectWarningTitle": "Olet poistamassa kytkentää",
-    "disconnectWarningDescription": "Oletko varma, että haluat poistaa kytkennän {{organization}}-tiliisi?",
+    "disconnectWarningDescription": "Oletko varma, että haluat poistaa kytkennän <b>{{organization}}</b>-tiliisi?",
     "disconnectWarningConfirmationText": "Kyllä",
     "disconnectWarningCancellationText": "Ei",
     "myProfile": "Oma profiili",
-    "connectHYCaption": "Kytke tili käyttäen Helsingin yliopiston tunnuksia",
-    "connectHakaCaption": "Kytke tili käyttäen <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">Haka-käyttäjätunnistusjärjestelmän</a> tunnukseen"
-
+    "connectHYCaption": "Kytke tili Helsingin yliopiston tunnukseen",
+    "connectHakaCaption": "Kytke tili <a href=\"https://www.csc.fi/haka-kayttajatunnistusjarjestelma\" target=\"_blank\">HAKA-luottamusverkoston</a> tunnukseen"
 }

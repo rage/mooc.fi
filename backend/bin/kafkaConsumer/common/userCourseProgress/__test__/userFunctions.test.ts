@@ -1,8 +1,9 @@
-import { getTestContext } from "../../../../../tests/__helpers"
+import { Completion, Course, User } from "@prisma/client"
+
+import { getTestContext } from "../../../../../tests"
 import { seed } from "../../../../../tests/data/seed"
 import { KafkaContext } from "../../kafkaContext"
 import { createCompletion } from "../userFunctions"
-import { Completion, Course, User } from "@prisma/client"
 
 const ctx = getTestContext()
 

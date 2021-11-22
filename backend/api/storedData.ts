@@ -1,6 +1,7 @@
 import { Request, Response } from "express-serve-static-core"
+import { omit } from "lodash"
 
-import { getUser } from "../util/server-functions"
+import { getUser, requireCourseOwnership } from "../util/server-functions"
 import { ApiContext } from "./"
 
 export function postStoredData({ knex, prisma }: ApiContext) {
@@ -78,5 +79,52 @@ export function postStoredData({ knex, prisma }: ApiContext) {
         .status(500)
         .json({ message: "error creating or updating stored data", error })
     }
+  }
+}
+
+export function getStoredData({ knex, prisma }: ApiContext) {
+  return async function (req: Request<{ slug: string }>, res: Response) {
+    const { slug } = req.params
+    const course = await prisma.course.findFirst({ where: { slug } })
+
+    if (!course) {
+      return res
+        .status(401)
+        .json({ error: `course with slug ${slug} doesn't exist` })
+    }
+
+    const ownershipResult = await requireCourseOwnership({
+      course_id: course.id,
+      knex,
+    })(req, res)
+
+    if (ownershipResult.isErr()) {
+      return ownershipResult.error
+    }
+
+    const storedData = await prisma.storedData.findMany({
+      where: {
+        course_id: course.id,
+      },
+      include: {
+        user: {
+          include: {
+            completions: {
+              where: {
+                course_id: course.id,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    const mappedStoredData = storedData.map((data) => ({
+      user: omit(data.user, ["completions", "password", "password_throttle"]),
+      completions: data.user?.completions,
+      storedData: omit(data, "user"),
+    }))
+
+    return res.status(200).json(mappedStoredData)
   }
 }

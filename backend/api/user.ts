@@ -8,7 +8,7 @@ import {
   authenticateUser,
   getCurrentUserDetails,
   getUsersByEmail,
-  updateUser,
+  updateUser as updateTMCUser,
 } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"
 import {
@@ -17,6 +17,10 @@ import {
   validatePassword,
 } from "../util/validateAuth"
 import { ApiContext } from "./"
+
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 const argon2 = require("argon2")
 
@@ -162,7 +166,7 @@ export function updatePassword(ctx: ApiContext) {
         password_repeat: confirmPassword,
       }
 
-      await updateUser(user.upstream_id, updateDetails, tmcUser.token)
+      await updateTMCUser(user.upstream_id, updateDetails, tmcUser.token ?? "")
 
       const hashPassword = await argon2Hash(password)
 
@@ -270,6 +274,9 @@ export function registerUser(ctx: ApiContext) {
           }
         }
       }
+
+      const real_student_number = getStudentNumber(personalUniqueCode)
+
       newUser = await ctx.prisma.user.create({
         data: {
           username: mail,
@@ -278,6 +285,7 @@ export function registerUser(ctx: ApiContext) {
           last_name: lastName,
           administrator: false,
           upstream_id,
+          real_student_number,
         },
       })
 
@@ -414,4 +422,192 @@ export function connectUser(ctx: ApiContext) {
       })
     }
   }
+}
+
+const updateableUserFields = [
+  "administrator",
+  "email",
+  "first_name",
+  "last_name",
+  "real_student_number",
+  "research_consent",
+  "student_number",
+  "upstream_id",
+  "username",
+]
+
+export function updateUser(ctx: ApiContext) {
+  return async (
+    req: Request<
+      {},
+      {},
+      Omit<Partial<User>, "created_at" | "updated_at" | "id"> & {
+        secret: string
+      }
+    >,
+    res: Response,
+  ) => {
+    const token = req.headers.authorization ?? ""
+    const auth = await requireAuth(token, ctx)
+
+    if (auth.error) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "Not logged in.",
+      })
+    }
+
+    const data: Partial<User> = Object.entries(req.body)
+      .filter(
+        ([key, _]) => key !== "secret" && updateableUserFields.includes(key),
+      )
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({
+        status: 400,
+        success: false,
+        message: "No data provided",
+      })
+    }
+
+    const { secret } = req.body
+
+    if (secret !== process.env.UPDATE_USER_SECRET) {
+      return res.status(405).json({
+        status: 405,
+        success: false,
+        message: "Not allowed",
+      })
+    }
+
+    try {
+      const updatedUser = await ctx.prisma.user.update({
+        where: {
+          id: auth.id,
+        },
+        data,
+        select: {
+          upstream_id: true,
+          email: true,
+          first_name: true,
+          last_name: true,
+          created_at: true,
+          updated_at: true,
+          real_student_number: true,
+          username: true,
+        },
+      })
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "User updated",
+        data: updatedUser,
+      })
+    } catch {
+      return res.status(500).json({
+        status: 500,
+        success: false,
+        message: "User update not successful",
+      })
+    }
+  }
+}
+
+export function updatePersonAffiliation(ctx: ApiContext) {
+  return async (
+    req: Request<
+      {},
+      {},
+      {
+        edu_person_principal_name: string
+        person_affiliation: string
+        home_organization: string
+      }
+    >,
+    res: Response,
+  ) => {
+    const token = req.headers.authorization ?? ""
+    const auth = await await requireAuth(token, ctx)
+
+    if (auth.error) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "Not logged in.",
+      })
+    }
+
+    const {
+      person_affiliation,
+      edu_person_principal_name,
+      home_organization,
+    } = req.body
+
+    if (!edu_person_principal_name || !home_organization) {
+      return res.status(400).json({
+        status: 400,
+        success: false,
+        message: "No edu_person_principal_name or home_organization provided",
+      })
+    }
+
+    try {
+      const existing = await ctx.prisma.verifiedUser.findUnique({
+        where: {
+          user_id_edu_person_principal_name_home_organization: {
+            user_id: auth.id,
+            edu_person_principal_name,
+            home_organization,
+          },
+        },
+      })
+
+      if (existing?.person_affiliation === person_affiliation) {
+        return res.status(200).json({
+          status: 200,
+          success: true,
+          message: "No change",
+        })
+      }
+
+      await ctx.prisma.verifiedUser.update({
+        where: {
+          user_id_edu_person_principal_name_home_organization: {
+            user_id: auth.id,
+            edu_person_principal_name,
+            home_organization,
+          },
+        },
+        data: {
+          person_affiliation,
+          person_affiliation_updated_at: new Date().toISOString(),
+        },
+      })
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "Person affiliation updated",
+      })
+    } catch (error: any) {
+      return res.status(500).json({
+        status: 500,
+        success: false,
+        message: "Verified user update not successful",
+      })
+    }
+  }
+}
+
+function getStudentNumber(personalUniqueCode: string) {
+  const codes = personalUniqueCode.split(";").map((code) => code.split(":"))
+
+  const codeWithStudentID = codes.find((code) =>
+    code.some((field) => field === "helsinki.fi"),
+  )
+
+  return codeWithStudentID?.[codeWithStudentID.length - 1]
 }

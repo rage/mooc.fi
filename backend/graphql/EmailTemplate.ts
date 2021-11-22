@@ -1,12 +1,13 @@
+import { UserInputError } from "apollo-server-core"
 import {
-  objectType,
   extendType,
   idArg,
-  stringArg,
-  nonNull,
   intArg,
+  nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
-import { UserInputError } from "apollo-server-core"
+
 import { isAdmin } from "../accessControl"
 
 export const EmailTemplate = objectType({
@@ -25,6 +26,7 @@ export const EmailTemplate = objectType({
     t.model.triggered_automatically_by_course_id()
     t.model.exercise_completions_threshold()
     t.model.points_threshold()
+    t.model.course_stats_subscriptions()
   },
 })
 

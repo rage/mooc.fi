@@ -1,11 +1,12 @@
-import { getTestContext } from "../../../../../tests/__helpers"
-import { seed } from "../../../../../tests/data/seed"
-import { KafkaContext } from "../../kafkaContext"
-import { getCombinedUserCourseProgress } from "../userFunctions"
 import { Course, User } from "@prisma/client"
+
+import { getTestContext } from "../../../../../tests"
+import { seed } from "../../../../../tests/data"
+import { KafkaContext } from "../../kafkaContext"
 import { checkAndSendThresholdEmail } from "../checkAndSendThresholdEmail"
 import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"
+import { getCombinedUserCourseProgress } from "../userFunctions"
 
 const ctx = getTestContext()
 

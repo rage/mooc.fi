@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import { TMC_HOST } from "/config"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isSignedIn, signIn } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
@@ -14,8 +15,6 @@ import {
   InputLabel,
   Link,
 } from "@material-ui/core"
-
-const TMC_HOST = process.env.TMC_HOST || "https://tmc.mooc.fi"
 
 const StyledForm = styled.form`
   padding: 1em;

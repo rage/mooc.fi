@@ -4,7 +4,6 @@ import { GraphQLClient } from "graphql-request"
 import { Server } from "http"
 import { knex, Knex } from "knex"
 import { nanoid } from "nanoid"
-import nock from "nock"
 import winston from "winston"
 
 import { PrismaClient, User } from "@prisma/client"
@@ -18,6 +17,13 @@ require("dotenv-safe").config({
 })
 
 const DEBUG = Boolean(process.env.DEBUG)
+
+function fail(reason = "fail was called in a test") {
+  throw new Error(reason)
+}
+
+// @ts-ignore: jest has no explicit fail anymore
+global.fail = fail
 
 export const logger = {
   format: {
@@ -49,13 +55,12 @@ export type TestContext = {
   version: number
   port: number
 }
-
 let version = 1
 
 export function getTestContext(): TestContext {
-  let testContext = {
+  let testContext = ({
     logger: logger.createLogger() as winston.Logger,
-  } as TestContext
+  } as unknown) as TestContext
 
   const ctx = createTestContext(testContext)
 
@@ -90,7 +95,7 @@ function createTestContext(testContext: TestContext) {
   let serverInstance: Server | null = null
   let port: number | null = null
 
-  const prismaCtx = prismaTestContext()
+  const prismaCtx = createPrismaTestContext()
 
   return {
     async before() {
@@ -109,11 +114,9 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 6000) })
-          try {
-            serverInstance = app.listen(port)
-          } catch {
-            throw new Error("port in use")
-          }
+          serverInstance = app.listen(port).on("error", (err) => {
+            throw err
+          })
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -139,7 +142,7 @@ function createTestContext(testContext: TestContext) {
   }
 }
 
-function prismaTestContext() {
+function createPrismaTestContext() {
   // const knexBinary = join(__dirname, "..", "node_modules", ".bin", "knex")
 
   let schemaName = ""
@@ -210,86 +213,4 @@ function prismaTestContext() {
   }
 }
 
-type FakeTMCRecord = Record<string, [number, object]>
-
-export function fakeTMCCurrent(
-  users: FakeTMCRecord,
-  url = "/api/v8/users/current?show_user_fields=1&extra_fields=1",
-) {
-  return {
-    setup() {
-      nock(process.env.TMC_HOST || "")
-        .persist()
-        .get(url)
-        .reply(function () {
-          const auth = this.req.headers.authorization
-
-          return users[auth]
-        })
-    },
-    teardown() {
-      nock.cleanAll()
-    },
-  }
-}
-
-export function fakeTMCSpecific(users: Record<number, [number, object]>) {
-  return {
-    setup() {
-      for (const [user_id, reply] of Object.entries(users)) {
-        nock(process.env.TMC_HOST || "")
-          .persist()
-          .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
-          .reply(function () {
-            return reply
-          })
-      }
-    },
-    teardown() {
-      nock.cleanAll()
-    },
-  }
-}
-
-export const fakeGetAccessToken = (reply: [number, string]) =>
-  nock(process.env.TMC_HOST || "")
-    .post("/oauth/token")
-    .reply(() => [reply[0], { access_token: reply[1] }])
-
-export const fakeUserDetailReply = (reply: [number, object]) =>
-  nock(process.env.TMC_HOST || "")
-    .get("/api/v8/users/recently_changed_user_details")
-    .reply(reply[0], () => reply[1])
-
-export const fakeTMCUserCreate = (reply: [number, object]) =>
-  nock(process.env.TMC_HOST || "")
-    .post("/api/v8/users")
-    .reply(() => [reply[0], reply[1]])
-
-export const fakeTMCUserEmailNotFound = (reply: [number, object]) =>
-  nock(process.env.TMC_HOST || "")
-    .post(
-      "/oauth/token",
-      JSON.stringify({
-        username: "incorrect-email@user.com",
-        password: "password",
-        grant_type: "password",
-        client_id: process.env.TMC_CLIENT_ID,
-        client_secret: process.env.TMC_CLIENT_SECRET,
-      }),
-    )
-    .reply(() => [reply[0], reply[1]])
-
-export const fakeTMCUserWrongPassword = (reply: [number, object]) =>
-  nock(process.env.TMC_HOST || "")
-    .post(
-      "/oauth/token",
-      JSON.stringify({
-        username: "e@mail.com",
-        password: "incorrect-password",
-        grant_type: "password",
-        client_id: process.env.TMC_CLIENT_ID,
-        client_secret: process.env.TMC_CLIENT_SECRET,
-      }),
-    )
-    .reply(() => [reply[0], reply[1]])
+export * from "./util"

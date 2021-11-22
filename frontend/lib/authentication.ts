@@ -1,4 +1,4 @@
-import { DOMAIN, isProduction } from "/config"
+import { DOMAIN, isProduction, TMC_HOST } from "/config"
 import axios from "axios"
 //import TmcClient from "tmc-client-js"
 import { NextPageContext as NextContext } from "next"
@@ -14,7 +14,6 @@ import {
   validateToken,
 } from "../packages/moocfi-auth"
 
-const TMC_HOST = process.env.TMC_HOST || "https://tmc.mooc.fi"
 /*
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
@@ -71,9 +70,8 @@ export const signIn = async ({
     password,
     priority,
   })
-  console.log("signIn res", res)
-  const details = await getUserDetails(res?.tmc_token)
-  console.log("signIn details", details)
+  const details = await getUserDetails(res?.access_token) //tmc_token
+
   //document.cookie = `access_token=${res.accessToken};path=/`
   //document.cookie = `admin=${details.administrator};path=/`
 

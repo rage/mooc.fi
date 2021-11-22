@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { AUTH_URL, FRONTEND_URL } from "../config"
+import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
 import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
@@ -12,7 +12,11 @@ export const signInHandler: AuthenticationHandlerCallback = (
   res,
   _next,
 ) => async (_err, user) => {
-  const { edupersonprincipalname } = user
+  const {
+    edupersonprincipalname,
+    edupersonaffiliation,
+    schachomeorganization,
+  } = user
   const language = req.query.language || req.params.language || "en"
 
   let errorType = undefined
@@ -35,6 +39,24 @@ export const signInHandler: AuthenticationHandlerCallback = (
         client_secret,
       })
 
+      try {
+        // @ts-ignore: ignore return value for now
+        const { data: updateData } = await axios.post(
+          `${API_URL}/user/update-person-affiliation`,
+          {
+            edu_person_principal_name: edupersonprincipalname,
+            person_affiliation: edupersonaffiliation,
+            home_organization: schachomeorganization,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${data.access_token}`,
+            },
+          },
+        )
+      } catch {
+        // we'll just ignore the affiliation update error
+      }
       /*req.login(user, (err) => {
           if (err) {
             console.log("login error", err)

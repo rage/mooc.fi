@@ -1,4 +1,5 @@
-import { objectType, stringArg, intArg, nullable, booleanArg } from "nexus"
+import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
+
 import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({
@@ -55,6 +56,8 @@ export const Course = objectType({
     t.model.upcoming_active_link()
     t.model.tier()
     t.model.handles_completions_for()
+    t.model.course_stats_email_id()
+    t.model.course_stats_email()
 
     t.string("description")
     t.string("instructions")

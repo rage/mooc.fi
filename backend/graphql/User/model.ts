@@ -1,12 +1,13 @@
+import { uniq } from "lodash"
 import {
-  objectType,
-  stringArg,
+  booleanArg,
   idArg,
   nonNull,
   nullable,
-  booleanArg,
+  objectType,
+  stringArg,
 } from "nexus"
-import { uniq } from "lodash"
+
 import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
@@ -37,6 +38,8 @@ export const User = objectType({
     t.model.ab_enrollments()
     //t.model.password()
     //t.model.password_throttle()
+    t.model.course_ownerships()
+    t.model.course_stats_subscriptions()
 
     t.list.nonNull.field("completions", {
       type: "Completion",

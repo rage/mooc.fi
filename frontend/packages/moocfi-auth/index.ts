@@ -149,11 +149,8 @@ export const getToken = async (data: Data) => {
     })
 }
 
-const clearCookies = (context: any = {}, domain: string) => {
+const clearCookies = (_context: any = {}, domain: string) => {
   const cookies = new Cookies()
-  console.log(
-    `clearing tokens - have context ${Boolean(context)}; domain ${domain}`,
-  )
 
   cookies.remove("access_token", { domain, path: "/" })
   cookies.remove("tmc_token", { domain, path: "/" })
@@ -189,7 +186,7 @@ export const removeToken = async (
       return json
     })
     .catch((error) => {
-      console.log("error removing token", error.response)
+      // TODO: check which error we got, some warrant for clearing cookies
       return error.response.data
     })
 }
@@ -219,11 +216,8 @@ export const validateToken = async (
     })
 }
 
-const getCookie = (field: string) => (ctx?: NextPageContext) => {
-  // const cookies = new Cookies()
-
-  return nookies.get(ctx)[field] // cookies.get(field)
-}
+const getCookie = (field: string) => (ctx?: NextPageContext) =>
+  nookies.get(ctx)[field]
 
 export const getAccessToken = getCookie("access_token")
 export const getTMCToken = getCookie("tmc_token")

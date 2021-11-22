@@ -118,7 +118,10 @@ function RegisterCompletionText({
             <Typography variant="body1" paragraph align="center">
               {tier.name}
             </Typography>
-            <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
+            <LinkButton
+              link={tier.link}
+              onRegistrationClick={onRegistrationClick}
+            />
           </div>
         ))
       ) : (

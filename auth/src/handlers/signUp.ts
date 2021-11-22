@@ -109,6 +109,7 @@ export const signUpHandler: AuthenticationHandlerCallback = (
 
   let redirectUrl = ""
 
+  // TODO: show these on the actual sign-up page
   if (status.error) {
     status.query.push(`error=${status.type}`)
     redirectUrl = `${FRONTEND_URL}/${language}/sign-up`

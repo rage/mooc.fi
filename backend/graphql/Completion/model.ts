@@ -80,6 +80,11 @@ export const Completion = objectType({
           throw new Error("course not found")
         }
 
+        // TODO/FIXME:
+        // - register-completion/[slug] uses /api/completionTiers if there are tiers
+        // - this _always_ returns the parent course registration link, regardless of the tier
+        // - should this return the tier registration link?
+
         let filter
         if (
           !parent.completion_language ||

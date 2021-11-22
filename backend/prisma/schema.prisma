@@ -8,15 +8,16 @@ datasource db {
 }
 
 model AbEnrollment {
-  user_id                   String                 
+  id                        String                  @id @default(uuid())
+  user_id                   String?                 
   ab_study_id               String                 
   group                     Int?
   created_at                DateTime?               @default(now())
   updated_at                DateTime?               @updatedAt
-  user                      User                    @relation(fields: [user_id], references: [id])
+  user                      User?                   @relation(fields: [user_id], references: [id])
   ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
 
-  @@id([user_id, ab_study_id])
+  @@unique([user_id, ab_study_id])
   @@map("ab_enrollment")
 }
 
@@ -101,7 +102,7 @@ model Course {
   teacher_in_charge_email                            String
   teacher_in_charge_name                             String
   updated_at                                         DateTime?                           @updatedAt
-  completion_email                                   EmailTemplate?                      @relation(fields: [completion_email_id], references: [id])
+  completion_email                                   EmailTemplate?                      @relation("courseTocourse_completion_email", fields: [completion_email_id], references: [id])
   completions_handled_by                             Course?                             @relation("courseTocourse_completions_handled_by", fields: [completions_handled_by_id], references: [id])
   inherit_settings_from                              Course?                             @relation("courseTocourse_inherit_settings_from", fields: [inherit_settings_from_id], references: [id])
   owner_organization                                 Organization?                       @relation(fields: [owner_organization_id], references: [id])
@@ -126,6 +127,9 @@ model Course {
   upcoming_active_link                               Boolean?
   tier                                               Int?
   stored_data                                        StoredData[]                        
+  ownerships                                         CourseOwnership[]
+  course_stats_email_id                              String?
+  course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
 
   @@map("course")
 }
@@ -198,20 +202,22 @@ model EmailDelivery {
 }
 
 model EmailTemplate {
-  created_at                               DateTime?        @default(now())
-  html_body                                String?
-  id                                       String           @id @default(uuid())
-  name                                     String?
-  title                                    String?
-  txt_body                                 String?
-  template_type                            String?
-  exercise_completions_threshold           Int?
-  points_threshold                         Int?
-  updated_at                               DateTime?        @updatedAt
-  triggered_automatically_by_course_id     String?     
-  triggered_automatically_by_course        Course?          @relation("emailTemplateToCourse_triggered", fields: [triggered_automatically_by_course_id], references: [id])
-  courses                                  Course[]
+  created_at                               DateTime?                  @default(now())
+  html_body                                String?          
+  id                                       String                     @id @default(uuid())
+  name                                     String?          
+  title                                    String?          
+  txt_body                                 String?          
+  template_type                            String?          
+  exercise_completions_threshold           Int?         
+  points_threshold                         Int?         
+  updated_at                               DateTime?                  @updatedAt
+  triggered_automatically_by_course_id     String?              
+  triggered_automatically_by_course        Course?                    @relation("emailTemplateToCourse_triggered", fields: [triggered_automatically_by_course_id], references: [id])
+  courses                                  Course[]                   @relation("courseTocourse_completion_email")
+  stats_courses                            Course[]                   @relation("courseTocourse_course_stats_email")
   email_deliveries                         EmailDelivery[]
+  course_stats_subscriptions               CourseStatsSubscription[]
 
   @@map("email_template")
 }
@@ -424,6 +430,8 @@ model User {
   password                       String?
   password_throttle              Json?
   stored_data                    StoredData[]
+  course_ownerships              CourseOwnership[]
+  course_stats_subscriptions     CourseStatsSubscription[]
 
   @@map("user")
 }
@@ -574,6 +582,32 @@ model AccessToken {
   valid                                    Boolean      @default(true)
 
   @@map("access_tokens")
+}
+
+model CourseOwnership {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  user_id                                  String?
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  user                                     User?         @relation(fields: [user_id], references: [id])  
+
+  @@unique([user_id, course_id])
+  @@map("course_ownership")
+}
+
+model CourseStatsSubscription {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  id                                       String           @id @default(uuid())
+  user_id                                  String?
+  email_template_id                        String?
+  user                                     User?            @relation(fields: [user_id], references: [id])
+  email_template                           EmailTemplate?   @relation(fields: [email_template_id], references: [id])
+
+  @@unique([user_id, email_template_id])
+  @@map("course_stats_subscription")
 }
 
 enum CourseStatus {
