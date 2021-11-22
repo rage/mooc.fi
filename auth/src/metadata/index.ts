@@ -14,6 +14,9 @@ import {
   SP_URL,
 } from "../config"
 
+const METADATA_DIR = __dirname + "/../../metadata"
+const CERTS_DIR = __dirname + "/../../certs"
+
 type MetadataConfig = {
   metadataURL: string
   certURL: string
@@ -28,24 +31,26 @@ const getCertFilename = (filename: string) =>
 const getMetadataFilename = (filename: string) =>
   filename.match(/^.*\/(.*\.xml)$/)?.[1]
 
+const ensureDirectories = () => {
+  for (const dir in [METADATA_DIR, CERTS_DIR]) {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir)
+    }
+  }
+}
+
 const metadataConfig: Record<string, MetadataConfig> = {
   hy: {
     metadataURL: HY_METADATA_URL,
     certURL: HY_METADATA_CERTIFICATE_URL,
-    metadataFile:
-      __dirname + `/../../metadata/${getMetadataFilename(HY_METADATA_URL)}`,
-    certFile:
-      __dirname +
-      `/../../certs/${getCertFilename(HY_METADATA_CERTIFICATE_URL)}`,
+    metadataFile: `${METADATA_DIR}/${getMetadataFilename(HY_METADATA_URL)}`,
+    certFile: `${CERTS_DIR}/${getCertFilename(HY_METADATA_CERTIFICATE_URL)}`,
   },
   haka: {
     metadataURL: HAKA_METADATA_URL,
     certURL: HAKA_METADATA_CERTIFICATE_URL,
-    metadataFile:
-      __dirname + `/../../metadata/${getMetadataFilename(HAKA_METADATA_URL)}`,
-    certFile:
-      __dirname +
-      `/../../certs/${getCertFilename(HAKA_METADATA_CERTIFICATE_URL)}`,
+    metadataFile: `${METADATA_DIR}/${getMetadataFilename(HAKA_METADATA_URL)}`,
+    certFile: `${CERTS_DIR}/${getCertFilename(HAKA_METADATA_CERTIFICATE_URL)}`,
   },
 }
 
@@ -72,7 +77,7 @@ async function getKeyInfoProvider(provider: string): Promise<FileKeyInfo> {
     const { data } = await axios.get<string>(certURL)
     console.log("getKeyInfoProvider: got data from", certURL)
     fs.writeFileSync(certFile, data)
-    console.log("getKeyINfoProvider: wrote certfile", certFile)
+    console.log("getKeyInfoProvider: wrote certfile", certFile)
     return new FileKeyInfo(certFile)
   } catch (error: unknown) {
     throw new Error(
@@ -142,6 +147,8 @@ async function getAndCheckMetadata(provider: string) {
 
 export async function getPassportConfig(provider: string) {
   try {
+    ensureDirectories()
+
     const metadata = await getAndCheckMetadata(provider)
     const reader = new MetadataReader(metadata)
     const ipConfig = toPassportConfig(reader)
