@@ -24,7 +24,7 @@ type MetadataConfig = {
 const isError = (err: unknown): err is Error => err instanceof Error
 const getErrorMessage = (err: unknown) => (isError(err) ? err.message : err)
 const getCertFilename = (filename: string) =>
-  filename.match(/^.*\/(.*\.(crt|key|pem))$/)?.[1]
+  filename.match(/^.*\/(.*\.(crt|key|pem))(.*)?$/)?.[1]
 const getMetadataFilename = (filename: string) =>
   filename.match(/^.*\/(.*\.xml)$/)?.[1]
 
