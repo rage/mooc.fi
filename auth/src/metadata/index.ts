@@ -64,12 +64,15 @@ async function getKeyInfoProvider(provider: string): Promise<FileKeyInfo> {
   const { certURL, certFile } = metadataConfig[provider]
 
   if (fs.existsSync(certFile)) {
+    console.log("getKeyInfoProvider: found certFile", certFile)
     return new FileKeyInfo(certFile)
   }
 
   try {
     const { data } = await axios.get<string>(certURL)
+    console.log("getKeyInfoProvider: got data from", certURL)
     fs.writeFileSync(certFile, data)
+    console.log("getKeyINfoProvider: wrote certfile", certFile)
     return new FileKeyInfo(certFile)
   } catch (error: unknown) {
     throw new Error(
@@ -115,17 +118,18 @@ async function getAndCheckMetadata(provider: string) {
     if (!isMetadataCurrent(xml)) {
       throw new Error(`expired, will fetch new metadata for ${provider}...`)
     }
+    console.log("getAndCheckMetadata: got recent metadata", metadataFile)
   } catch {
     const { data } = await axios.get<string>(metadataURL)
     xml = data
     if (!xml) {
       throw new Error(`could not fetch metadata for ${provider}`)
     }
-
+    console.log("getAndCheckMetadata: got data from", metadataURL)
     try {
       await validateMetadata(provider, xml)
       fs.writeFileSync(metadataFile, xml) //new XMLSerializer().serializeToString(meta))
-      console.log(`wrote ${provider} metadata`)
+      console.log(`getAndCheckMetadata: wrote ${provider} metadata`)
     } catch (error: unknown) {
       throw new Error(
         `error validating or writing metadata: ${getErrorMessage(error)}`,
