@@ -21,6 +21,9 @@ type MetadataConfig = {
   certFile: string
 }
 
+const isError = (err: unknown): err is Error => err instanceof Error
+const getErrorMessage = (err: unknown) => (isError(err) ? err.message : err)
+
 const metadataConfig: Record<string, MetadataConfig> = {
   hy: {
     metadataURL: HY_METADATA_URL,
@@ -59,7 +62,11 @@ async function getKeyInfoProvider(provider: string): Promise<FileKeyInfo> {
     fs.writeFileSync(certFile, data)
     return new FileKeyInfo(certFile)
   } catch (error: unknown) {
-    throw new Error(`could not load certificate for provider ${provider}`)
+    throw new Error(
+      `could not load certificate for provider ${provider}: ${getErrorMessage(
+        error,
+      )}`,
+    )
   }
 }
 
@@ -71,7 +78,13 @@ async function validateMetadata(provider: string, metadata: string) {
     "/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
   )?.[0]
   const sig = new SignedXml()
-  sig.keyInfoProvider = await getKeyInfoProvider(provider)
+  try {
+    sig.keyInfoProvider = await getKeyInfoProvider(provider)
+  } catch (error: unknown) {
+    throw new Error(
+      `error getting key info provider: ${getErrorMessage(error)}`,
+    )
+  }
   sig.loadSignature(signature as string)
   if (!sig.checkSignature(metadata)) {
     throw new Error(sig.validationErrors.join("\n"))
@@ -105,9 +118,7 @@ async function getAndCheckMetadata(provider: string) {
       console.log(`wrote ${provider} metadata`)
     } catch (error: unknown) {
       throw new Error(
-        `error validating or writing metadata: ${
-          error instanceof Error ? error.message : error
-        }`,
+        `error validating or writing metadata: ${getErrorMessage(error)}`,
       )
     }
   }
@@ -129,8 +140,7 @@ export async function getPassportConfig(provider: string) {
       disableRequestedAuthnContext: true,
     }
   } catch (error: unknown) {
-    if (error instanceof Error) throw error
-    throw new Error(`${error}`)
+    throw new Error(`${getErrorMessage(error)}`)
   }
 }
 // parse("hy")
