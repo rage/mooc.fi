@@ -17,6 +17,8 @@
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.11.1",
     "@types/passport": "^1.0.7",
+    "@types/passport-saml-metadata": "^2.2.1",
+    "@types/xml-crypto": "^1.4.2",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.13",
     "prettier": "^2.4.1",
@@ -28,6 +30,7 @@
   "dependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@xmldom/xmldom": "^0.7.5",
     "axios": "^0.23.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -37,6 +40,8 @@
     "nookies": "^2.5.2",
     "passport": "^0.5.0",
     "passport-saml": "^3.2.0",
-    "unfuck-utf8-headers-middleware": "^1.0.1"
+    "passport-saml-metadata": "^2.5.0",
+    "unfuck-utf8-headers-middleware": "^1.0.1",
+    "xml-crypto": "^2.1.3"
   }
 }
