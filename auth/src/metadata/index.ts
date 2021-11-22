@@ -50,8 +50,6 @@ const isMetadataCurrent = (metadata: string) => {
 async function getKeyInfoProvider(provider: string): Promise<FileKeyInfo> {
   const { certURL, certFile } = metadataConfig[provider]
 
-  let keyInfoProvider
-
   if (fs.existsSync(certFile)) {
     return new FileKeyInfo(certFile)
   }
