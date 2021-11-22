@@ -9,7 +9,11 @@ import {
   RequestGet,
   RequestPost,
 } from "../../tests"
-import { adminUserDetails, normalUserDetails, seed } from "../../tests/data"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  seed,
+} from "../../tests/data"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
@@ -121,7 +125,7 @@ describe("server", () => {
     beforeEach(async () => {
       await seed(ctx.prisma)
       const { post } = createRequestHelpers(ctx.port)
-      postPasswordReset = post("/auth/passwordReset", {})
+      postPasswordReset = post("/auth/passwordReset", defaultHeaders)
     })
 
     it("missing email", async () => {
