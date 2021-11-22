@@ -9,11 +9,7 @@ import {
   RequestGet,
   RequestPost,
 } from "../../tests"
-import {
-  adminUserDetails,
-  normalUserDetails,
-  seed,
-} from "../../tests/data"
+import { adminUserDetails, normalUserDetails, seed } from "../../tests/data"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
