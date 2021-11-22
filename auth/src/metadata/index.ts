@@ -23,19 +23,29 @@ type MetadataConfig = {
 
 const isError = (err: unknown): err is Error => err instanceof Error
 const getErrorMessage = (err: unknown) => (isError(err) ? err.message : err)
+const getCertFilename = (filename: string) =>
+  filename.match(/^.*\/(.*\.(crt|key|pem))$/)?.[1]
+const getMetadataFilename = (filename: string) =>
+  filename.match(/^.*\/(.*\.xml)$/)?.[1]
 
 const metadataConfig: Record<string, MetadataConfig> = {
   hy: {
     metadataURL: HY_METADATA_URL,
     certURL: HY_METADATA_CERTIFICATE_URL,
-    metadataFile: __dirname + "/../../metadata/hy-metadata.xml",
-    certFile: __dirname + "/../../certs/hy-test.crt",
+    metadataFile:
+      __dirname + `/../../metadata/${getMetadataFilename(HY_METADATA_URL)}`,
+    certFile:
+      __dirname +
+      `/../../certs/${getCertFilename(HY_METADATA_CERTIFICATE_URL)}`,
   },
   haka: {
     metadataURL: HAKA_METADATA_URL,
     certURL: HAKA_METADATA_CERTIFICATE_URL,
-    metadataFile: __dirname + "/../../metadata/haka-metadata.xml",
-    certFile: __dirname + "/../../certs/haka-test.crt",
+    metadataFile:
+      __dirname + `/../../metadata/${getMetadataFilename(HAKA_METADATA_URL)}`,
+    certFile:
+      __dirname +
+      `/../../certs/${getCertFilename(HAKA_METADATA_CERTIFICATE_URL)}`,
   },
 }
 
