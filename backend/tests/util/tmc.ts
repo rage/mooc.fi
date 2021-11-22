@@ -1,5 +1,9 @@
 import nock from "nock"
 
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
+
 type FakeTMCRecord = Record<string, [number, object]>
 
 export function fakeTMCCurrent(
@@ -64,10 +68,8 @@ export const fakeTMCUserEmailNotFound = (reply: [number, object]) =>
         username: "incorrect-email@user.com",
         password: "password",
         grant_type: "password",
-        client_id:
-          "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
-        client_secret:
-          "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+        client_id: process.env.TMC_CLIENT_ID,
+        client_secret: process.env.TMC_CLIENT_SECRET,
       }),
     )
     .reply(() => [reply[0], reply[1]])
@@ -80,10 +82,8 @@ export const fakeTMCUserWrongPassword = (reply: [number, object]) =>
         username: "e@mail.com",
         password: "incorrect-password",
         grant_type: "password",
-        client_id:
-          "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
-        client_secret:
-          "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
+        client_id: process.env.TMC_CLIENT_ID,
+        client_secret: process.env.TMC_CLIENT_SECRET,
       }),
     )
     .reply(() => [reply[0], reply[1]])
