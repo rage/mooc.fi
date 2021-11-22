@@ -1,12 +1,13 @@
-import axios, { Method } from "axios"
-
 import {
+  createRequestHelpers,
   fakeGetAccessToken,
   fakeTMCCurrent,
   fakeTMCUserCreate,
   fakeTMCUserEmailNotFound,
   fakeTMCUserWrongPassword,
   getTestContext,
+  RequestGet,
+  RequestPost,
 } from "../../tests"
 import { adminUserDetails, normalUserDetails, seed } from "../../tests/data"
 
@@ -17,32 +18,6 @@ const tmc = fakeTMCCurrent({
 })
 
 describe("server", () => {
-  interface RequestParams {
-    data?: any
-    headers?: any
-    params?: Record<string, any>
-  }
-  const request = (method: Method) => (
-    route: string = "",
-    defaultHeaders: any,
-  ) => async ({
-    data = null,
-    headers = defaultHeaders,
-    params = {},
-  }: RequestParams) =>
-    await axios({
-      method,
-      url: `http://localhost:${ctx.port}${route}`,
-      data,
-      headers,
-      params,
-    })
-
-  const get = (route: string = "", defaultHeaders: any) =>
-    request("GET")(route, defaultHeaders)
-  const post = (route: string = "", defaultHeaders: any) =>
-    request("POST")(route, defaultHeaders)
-
   beforeEach(() => {
     tmc.setup()
     fakeTMCUserCreate([200, { success: true, message: "User created." }])
@@ -62,10 +37,12 @@ describe("server", () => {
   describe("/auth/signUp", () => {
     const defaultHeaders = {}
 
-    const postSignUp = post("/auth/signUp", defaultHeaders)
+    let postSignUp: RequestPost
 
     beforeEach(async () => {
       await seed(ctx.prisma)
+      const { post } = createRequestHelpers(ctx.port)
+      postSignUp = post("/auth/signUp", defaultHeaders)
     })
 
     it("errors on invalid email", async () => {
@@ -140,10 +117,11 @@ describe("server", () => {
   describe("passwordReset", () => {
     const defaultHeaders = {}
 
-    const postPasswordReset = post("/auth/passwordReset", defaultHeaders)
-
+    let postPasswordReset: RequestPost
     beforeEach(async () => {
       await seed(ctx.prisma)
+      const { post } = createRequestHelpers(ctx.port)
+      postPasswordReset = post("/auth/passwordReset", {})
     })
 
     it("missing email", async () => {
@@ -195,12 +173,16 @@ describe("server", () => {
       authorization: "Bearer nonToken",
     }
 
-    const postToken = post("/auth/token", defaultHeaders)
-    const validateToken = get("/auth/validate", validateHeaders)
-    const validateNonToken = get("/auth/validate", nonValidateHeaders)
+    let postToken: RequestPost
+    let validateToken: RequestGet
+    let validateNonToken: RequestGet
 
     beforeEach(async () => {
       await seed(ctx.prisma)
+      const { get, post } = createRequestHelpers(ctx.port)
+      postToken = post("/auth/token", defaultHeaders)
+      validateToken = get("/auth/validate", validateHeaders)
+      validateNonToken = get("/auth/validate", nonValidateHeaders)
     })
 
     it("invalid grant_type", async () => {
@@ -435,9 +417,9 @@ describe("server", () => {
     let consentToken =
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMzMTAsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMjAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAzIiwiYWRtaW4iOnRydWUsIm5vbmNlIjoiNWMwOGQwZjRhMzYxMTdkZmJlZGIzZWI3NzA1ZTUzZTIiLCJqd3RpZCI6Ijk5NzUzYWJlZTEyZGZkYTM5YWY1OGQyODRkZDQ0MzAxYjMxNGYzMmZhN2Y1OGE0OGFlMGYxZmEwNzUzMDBkZDMxM2E0OTM0MjkyZjVjMDAzNTY0Y2YyMjY3NjRhMDllY2M1ZjRlODhiZTc0YzhkNzcwZmU1NmM1NTA4YzNkYjlmIiwiaWF0IjoxNjE5MDA3MzEwLCJhdWQiOiJuYXRpdmUiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMDAvYXV0aC90b2tlbiIsInN1YiI6IlprQnRZV2xzTG1OdmJRPT0ifQ.qvPIfJxToS3k_Vu6ixIVarW3DCPmddGTSedYKc5yUt6yn7i_q99ps38A5w1LgKq_2_G8gBw6WzV7ulOpstx0L3stBxpoHv073WVrCo2v-mw7EMbUJHKCiggPUOLtcYF4B4rK64x0vo1NnlcBIBATYmq2gr_jEXX4gBx-6JEmzsMCOCzT4ZYft0rRkn3930giGtGpcP5C4acl12USrc6QNVGcbN0U1J9wWvo45Qe2QVdV-xG96PR2KiOfVsrZ-5YVMJjwiD6heEbghdyo00yifIPDSTRr0Zpjmwr1a7bUFSen93h-iEHiFVZ1_GfM9a_HqvXdtY0-8_eAJi8f9WVrjw"
 
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
+    let getAuthorize: RequestGet
+    let getAuthorizeNonToken: RequestGet
+    let getAuthorizeConsent: RequestGet
 
     const defaultHeaders = {
       authorization: `Bearer ${token}`,
@@ -451,9 +433,13 @@ describe("server", () => {
       authorization: `Bearer ${consentToken}`,
     }
 
-    const getAuthorize = get("/auth/authorize", defaultHeaders)
-    const getAuthorizeNonToken = get("/auth/authorize", nonUserHeaders)
-    const getAuthorizeConsent = get("/auth/authorize", consentHeaders)
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get } = createRequestHelpers(ctx.port)
+      getAuthorize = get("/auth/authorize", defaultHeaders)
+      getAuthorizeNonToken = get("/auth/authorize", nonUserHeaders)
+      getAuthorizeConsent = get("/auth/authorize", consentHeaders)
+    })
 
     it("error on invalid code", async () => {
       return getAuthorize({
@@ -496,10 +482,6 @@ describe("server", () => {
     let token =
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMwNzIsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMzg0MzczYjEtZGY0Ny00MDQ1LWE1YmUtZjQ4NzE4YjYzN2M4IiwiYWRtaW4iOmZhbHNlLCJub25jZSI6IjRmZjA3NGMzNjgxZjZmMDlkNjdjNDdkZDk0OGI1YmM2Iiwiand0aWQiOiJhYjAyOTllZDE4M2ZmM2E1ZmE4NTFiYzQ5YTc0OWIxMzczZGQ1MWNjYTFkMThjM2UwZTgwNDk1MTI0YzRiYzMyMTc5MDg2MGZiMThlYzUxNmZiMjkyNjg0YWNjMGUzNmNmNzIyY2U1NzExMzYxZjhlOGNmYmU0MzU2ZGZlMzQ5OSIsImlhdCI6MTYxOTAwNzA3MiwiYXVkIjoibmF0aXZlIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwL2F1dGgvdG9rZW4iLCJzdWIiOiJaVUJ0WVdsc0xtTnZiUT09In0.h8DTbBzFMGL0_tU1_krt4O8BqlEgWzhfreXGTsOLHKRS53apzrjIcMbjsvnxHAbfns8EGxRzdd36x-yCbMCnvKS5y6jP1sWcsfsUPUco8A9GtTO0zwWa8kse7j-MrEoaixfpz9LWak27OAW48XONU8wSAzDabhJdvNEqH2ydT8y3lm1a53gApttC-V6dee7PAnDZPOWFSbIXqlI5-9UffQ7iSebu549Vm0692K0HWbSBU2pewJqZTXfWPCJ6xl4MTlE1FEBqLkG6Mpzu4bRcBvS8niqE7JVsZxDd_3jQNHoHfb7ipAbgCMbvbAhD3B5q13Ak2KAumqdTUKvaOwj5ng"
 
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
-
     const defaultHeaders = {
       authorization: `Bearer ${token}`,
     }
@@ -508,9 +490,17 @@ describe("server", () => {
       authorization: "Bearer nonToken",
     }
 
-    const getDecision = get("/auth/decision/code", defaultHeaders)
-    const getDecisionNonCode = get("/auth/decision/non-code", defaultHeaders)
-    const getDecisionNonToken = get("/auth/decision/code", nonUserHeaders)
+    let getDecision: RequestGet
+    let getDecisionNonCode: RequestGet
+    let getDecisionNonToken: RequestGet
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get } = createRequestHelpers(ctx.port)
+      getDecision = get("/auth/decision/code", defaultHeaders)
+      getDecisionNonCode = get("/auth/decision/non-code", defaultHeaders)
+      getDecisionNonToken = get("/auth/decision/code", nonUserHeaders)
+    })
 
     it("error on authorization code", async () => {
       return getDecisionNonCode({})
@@ -539,10 +529,6 @@ describe("server", () => {
     let token =
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMwNzIsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMzg0MzczYjEtZGY0Ny00MDQ1LWE1YmUtZjQ4NzE4YjYzN2M4IiwiYWRtaW4iOmZhbHNlLCJub25jZSI6IjRmZjA3NGMzNjgxZjZmMDlkNjdjNDdkZDk0OGI1YmM2Iiwiand0aWQiOiJhYjAyOTllZDE4M2ZmM2E1ZmE4NTFiYzQ5YTc0OWIxMzczZGQ1MWNjYTFkMThjM2UwZTgwNDk1MTI0YzRiYzMyMTc5MDg2MGZiMThlYzUxNmZiMjkyNjg0YWNjMGUzNmNmNzIyY2U1NzExMzYxZjhlOGNmYmU0MzU2ZGZlMzQ5OSIsImlhdCI6MTYxOTAwNzA3MiwiYXVkIjoibmF0aXZlIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwL2F1dGgvdG9rZW4iLCJzdWIiOiJaVUJ0WVdsc0xtTnZiUT09In0.h8DTbBzFMGL0_tU1_krt4O8BqlEgWzhfreXGTsOLHKRS53apzrjIcMbjsvnxHAbfns8EGxRzdd36x-yCbMCnvKS5y6jP1sWcsfsUPUco8A9GtTO0zwWa8kse7j-MrEoaixfpz9LWak27OAW48XONU8wSAzDabhJdvNEqH2ydT8y3lm1a53gApttC-V6dee7PAnDZPOWFSbIXqlI5-9UffQ7iSebu549Vm0692K0HWbSBU2pewJqZTXfWPCJ6xl4MTlE1FEBqLkG6Mpzu4bRcBvS8niqE7JVsZxDd_3jQNHoHfb7ipAbgCMbvbAhD3B5q13Ak2KAumqdTUKvaOwj5ng"
 
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
-
     const defaultHeaders = {
       authorization: `Bearer ${token}`,
     }
@@ -551,8 +537,15 @@ describe("server", () => {
       authorization: "Bearer nonToken",
     }
 
-    const postSignOut = post("/auth/signOut", defaultHeaders)
-    const postSignOutNonToken = post("/auth/signOut", nonUserHeaders)
+    let postSignOut: RequestPost
+    let postSignOutNonToken: RequestPost
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { post } = createRequestHelpers(ctx.port)
+      postSignOut = post("/auth/signOut", defaultHeaders)
+      postSignOutNonToken = post("/auth/signOut", nonUserHeaders)
+    })
 
     it("error on token validation", async () => {
       return postSignOutNonToken({})
@@ -575,10 +568,6 @@ describe("server", () => {
     let adminToken =
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMzMTAsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMjAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAzIiwiYWRtaW4iOnRydWUsIm5vbmNlIjoiNWMwOGQwZjRhMzYxMTdkZmJlZGIzZWI3NzA1ZTUzZTIiLCJqd3RpZCI6Ijk5NzUzYWJlZTEyZGZkYTM5YWY1OGQyODRkZDQ0MzAxYjMxNGYzMmZhN2Y1OGE0OGFlMGYxZmEwNzUzMDBkZDMxM2E0OTM0MjkyZjVjMDAzNTY0Y2YyMjY3NjRhMDllY2M1ZjRlODhiZTc0YzhkNzcwZmU1NmM1NTA4YzNkYjlmIiwiaWF0IjoxNjE5MDA3MzEwLCJhdWQiOiJuYXRpdmUiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMDAvYXV0aC90b2tlbiIsInN1YiI6IlprQnRZV2xzTG1OdmJRPT0ifQ.qvPIfJxToS3k_Vu6ixIVarW3DCPmddGTSedYKc5yUt6yn7i_q99ps38A5w1LgKq_2_G8gBw6WzV7ulOpstx0L3stBxpoHv073WVrCo2v-mw7EMbUJHKCiggPUOLtcYF4B4rK64x0vo1NnlcBIBATYmq2gr_jEXX4gBx-6JEmzsMCOCzT4ZYft0rRkn3930giGtGpcP5C4acl12USrc6QNVGcbN0U1J9wWvo45Qe2QVdV-xG96PR2KiOfVsrZ-5YVMJjwiD6heEbghdyo00yifIPDSTRr0Zpjmwr1a7bUFSen93h-iEHiFVZ1_GfM9a_HqvXdtY0-8_eAJi8f9WVrjw"
 
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
-
     const defaultHeaders = {
       authorization: `Bearer ${adminToken}`,
     }
@@ -591,31 +580,46 @@ describe("server", () => {
       authorization: `Bearer ${token}`,
     }
 
-    const postClients = post("/auth/clients", defaultHeaders)
-    const postClientsNonToken = post("/auth/clients", nonUserHeaders)
-    const postClientsNonAdmin = post("/auth/clients", nonAdminHeaders)
+    let postClients: RequestPost
+    let postClientsNonToken: RequestPost
+    let postClientsNonAdmin: RequestPost
 
-    const getClients = get("/auth/clients", defaultHeaders)
-    const getClientsNonToken = get("/auth/clients", nonUserHeaders)
-    const getClientsNonAdmin = get("/auth/clients", nonAdminHeaders)
+    let getClients: RequestGet
+    let getClientsNonToken: RequestGet
+    let getClientsNonAdmin: RequestGet
 
-    const showClient = get("/auth/client/native", defaultHeaders)
-    const showClientNonToken = get("/auth/client/native", nonUserHeaders)
-    const showClientNonAdmin = get("/auth/client/native", nonAdminHeaders)
+    let showClient: RequestGet
+    let showClientNonToken: RequestGet
+    let showClientNonAdmin: RequestGet
 
-    const deleteClient = post("/auth/deleteClient/native", defaultHeaders)
-    const deleteClientInvalid = post(
-      "/auth/deleteClient/non-native",
-      defaultHeaders,
-    )
-    const deleteClientNonToken = post(
-      "/auth/deleteClient/native",
-      nonUserHeaders,
-    )
-    const deleteClientNonAdmin = post(
-      "/auth/deleteClient/native",
-      nonAdminHeaders,
-    )
+    let deleteClient: RequestPost
+    let deleteClientInvalid: RequestPost
+    let deleteClientNonToken: RequestPost
+    let deleteClientNonAdmin: RequestPost
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get, post } = createRequestHelpers(ctx.port)
+      postClients = post("/auth/clients", defaultHeaders)
+      postClientsNonToken = post("/auth/clients", nonUserHeaders)
+      postClientsNonAdmin = post("/auth/clients", nonAdminHeaders)
+
+      getClients = get("/auth/clients", defaultHeaders)
+      getClientsNonToken = get("/auth/clients", nonUserHeaders)
+      getClientsNonAdmin = get("/auth/clients", nonAdminHeaders)
+
+      showClient = get("/auth/client/native", defaultHeaders)
+      showClientNonToken = get("/auth/client/native", nonUserHeaders)
+      showClientNonAdmin = get("/auth/client/native", nonAdminHeaders)
+
+      deleteClient = post("/auth/deleteClient/native", defaultHeaders)
+      deleteClientInvalid = post(
+        "/auth/deleteClient/non-native",
+        defaultHeaders,
+      )
+      deleteClientNonToken = post("/auth/deleteClient/native", nonUserHeaders)
+      deleteClientNonAdmin = post("/auth/deleteClient/native", nonAdminHeaders)
+    })
 
     //Post client
     it("error create client on invalid token", async () => {
@@ -738,19 +742,26 @@ describe("server", () => {
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTA1NDMzMTAsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiMjAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMTAzIiwiYWRtaW4iOnRydWUsIm5vbmNlIjoiNWMwOGQwZjRhMzYxMTdkZmJlZGIzZWI3NzA1ZTUzZTIiLCJqd3RpZCI6Ijk5NzUzYWJlZTEyZGZkYTM5YWY1OGQyODRkZDQ0MzAxYjMxNGYzMmZhN2Y1OGE0OGFlMGYxZmEwNzUzMDBkZDMxM2E0OTM0MjkyZjVjMDAzNTY0Y2YyMjY3NjRhMDllY2M1ZjRlODhiZTc0YzhkNzcwZmU1NmM1NTA4YzNkYjlmIiwiaWF0IjoxNjE5MDA3MzEwLCJhdWQiOiJuYXRpdmUiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMDAvYXV0aC90b2tlbiIsInN1YiI6IlprQnRZV2xzTG1OdmJRPT0ifQ.qvPIfJxToS3k_Vu6ixIVarW3DCPmddGTSedYKc5yUt6yn7i_q99ps38A5w1LgKq_2_G8gBw6WzV7ulOpstx0L3stBxpoHv073WVrCo2v-mw7EMbUJHKCiggPUOLtcYF4B4rK64x0vo1NnlcBIBATYmq2gr_jEXX4gBx-6JEmzsMCOCzT4ZYft0rRkn3930giGtGpcP5C4acl12USrc6QNVGcbN0U1J9wWvo45Qe2QVdV-xG96PR2KiOfVsrZ-5YVMJjwiD6heEbghdyo00yifIPDSTRr0Zpjmwr1a7bUFSen93h-iEHiFVZ1_GfM9a_HqvXdtY0-8_eAJi8f9WVrjw"
     const course = "00000000000000000000000000000002"
 
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
-
     const defaultHeaders = {
       authorization: `Bearer ${token}`,
     }
 
-    const getUser = get(`/api/getUser/${course}`, defaultHeaders)
-    const getUserNonToken = get(`/api/getUser/${course}`, {})
+    let getUser: RequestGet
+    let getUserNonToken: RequestGet
 
-    const updatePassword = post(`/api/updatePassword`, defaultHeaders)
-    const updatePasswordNonToken = post(`/api/updatePassword`, {})
+    let updatePassword: RequestPost
+    let updatePasswordNonToken: RequestPost
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get, post } = createRequestHelpers(ctx.port)
+
+      getUser = get(`/api/getUser/${course}`, defaultHeaders)
+      getUserNonToken = get(`/api/getUser/${course}`, {})
+
+      updatePassword = post(`/api/updatePassword`, defaultHeaders)
+      updatePasswordNonToken = post(`/api/updatePassword`, {})
+    })
 
     //Get User
     it("error get user on invalid token", async () => {
