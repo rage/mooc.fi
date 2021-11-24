@@ -1,5 +1,6 @@
 import axios from "axios"
 import fs from "fs"
+import { SamlConfig } from "passport-saml"
 import { MetadataReader, toPassportConfig } from "passport-saml-metadata"
 import { FileKeyInfo, SignedXml, xpath } from "xml-crypto"
 
@@ -16,6 +17,11 @@ import {
 
 const METADATA_DIR = __dirname + "/../../metadata"
 const CERTS_DIR = __dirname + "/../../certs"
+
+type SpConfig = Omit<
+  SamlConfig,
+  "entryPoint" | "logoutUrl" | "cert" | "identifierFormat"
+>
 
 type MetadataConfig = {
   metadataURL: string
@@ -41,12 +47,16 @@ const ensureDirectories = () => {
   }
 }
 
-const createMetadataConfig = (metadataURL: string, certURL: string) => ({
+const createMetadataConfig = (
+  metadataURL: string,
+  certURL: string,
+): MetadataConfig => ({
   metadataURL,
   certURL,
   metadataFile: `${METADATA_DIR}/${getMetadataFilename(metadataURL)}`,
   certFile: `${CERTS_DIR}/${getCertFilename(certURL)}`,
 })
+
 const metadataConfig: Record<string, MetadataConfig> = {
   hy: createMetadataConfig(HY_METADATA_URL, HY_METADATA_CERTIFICATE_URL),
   haka: createMetadataConfig(HAKA_METADATA_URL, HAKA_METADATA_CERTIFICATE_URL),
@@ -143,20 +153,25 @@ async function getAndCheckMetadata(provider: string) {
   return xml
 }
 
-export async function getPassportConfig(provider: string) {
+export async function getPassportConfig(provider: string): Promise<SamlConfig> {
   try {
     ensureDirectories()
 
     const metadata = await getAndCheckMetadata(provider)
     const reader = new MetadataReader(metadata)
     const ipConfig = toPassportConfig(reader)
-
-    return {
-      ...ipConfig,
+    const spConfig: SpConfig = {
       issuer: SP_URL,
       privateKey: MOOCFI_PRIVATE_KEY,
-      validateInResponseTo: false,
-      disableRequestedAuthnContext: true,
+      forceAuthn: true,
+      // validateInResponseTo: false,
+      // disableRequestedAuthnContext: true,
+    }
+
+    console.log(`created ipConfig for provider ${provider}: ${ipConfig}`)
+    return {
+      ...ipConfig,
+      ...spConfig,
     }
   } catch (error: unknown) {
     throw new Error(`${getErrorMessage(error)}`)

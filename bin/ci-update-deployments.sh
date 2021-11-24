@@ -30,6 +30,7 @@ if [[ "$BRANCH" == "staging" ]]; then
     echo "Removing unwanted jobs and deployments in staging"
     rm ./helm/templates/send-ai-statistics-cronjob.yml
     rm ./helm/templates/background-emailer-deployment.yml
+    rm ./helm/templates/course-stats-emailer-cronjob.yml
   fi
   echo "Deploying staging..."
  
