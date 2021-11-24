@@ -168,7 +168,9 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
       // disableRequestedAuthnContext: true,
     }
 
-    console.log(`created ipConfig for provider ${provider}: ${ipConfig}`)
+    console.log(
+      `created ipConfig for provider ${provider}: ${JSON.stringify(ipConfig)}`,
+    )
     return {
       ...ipConfig,
       ...spConfig,
