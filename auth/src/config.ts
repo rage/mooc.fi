@@ -23,7 +23,6 @@ export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
 export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
 export const SP_URL = process.env.SP_URL ?? ""
 
-console.log(SP_URL)
 export const SP_PATH = new URL(SP_URL).pathname
 
 export const MOOCFI_CERTIFICATE = isProduction

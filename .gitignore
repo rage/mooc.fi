@@ -19,6 +19,3 @@ sourcemap
 auth/shibboleth
 idp
 idp/*.pem
-certs
-auth/metadata
-!auth/src/metadata

@@ -32,26 +32,24 @@ const getMetadataFilename = (filename: string) =>
   filename.match(/^.*\/(.*\.xml)$/)?.[1]
 
 const ensureDirectories = () => {
-  for (const dir in [METADATA_DIR, CERTS_DIR]) {
+  for (const dir of [METADATA_DIR, CERTS_DIR]) {
+    console.log(`check if directory ${dir} exists`)
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
+      console.log(`create directory ${dir}`)
+      fs.mkdirSync(dir, { recursive: true })
     }
   }
 }
 
+const createMetadataConfig = (metadataURL: string, certURL: string) => ({
+  metadataURL,
+  certURL,
+  metadataFile: `${METADATA_DIR}/${getMetadataFilename(metadataURL)}`,
+  certFile: `${CERTS_DIR}/${getCertFilename(certURL)}`,
+})
 const metadataConfig: Record<string, MetadataConfig> = {
-  hy: {
-    metadataURL: HY_METADATA_URL,
-    certURL: HY_METADATA_CERTIFICATE_URL,
-    metadataFile: `${METADATA_DIR}/${getMetadataFilename(HY_METADATA_URL)}`,
-    certFile: `${CERTS_DIR}/${getCertFilename(HY_METADATA_CERTIFICATE_URL)}`,
-  },
-  haka: {
-    metadataURL: HAKA_METADATA_URL,
-    certURL: HAKA_METADATA_CERTIFICATE_URL,
-    metadataFile: `${METADATA_DIR}/${getMetadataFilename(HAKA_METADATA_URL)}`,
-    certFile: `${CERTS_DIR}/${getCertFilename(HAKA_METADATA_CERTIFICATE_URL)}`,
-  },
+  hy: createMetadataConfig(HY_METADATA_URL, HY_METADATA_CERTIFICATE_URL),
+  haka: createMetadataConfig(HAKA_METADATA_URL, HAKA_METADATA_CERTIFICATE_URL),
 }
 
 const isMetadataCurrent = (metadata: string) => {
