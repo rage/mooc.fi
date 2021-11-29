@@ -30,18 +30,22 @@ export const SP_PATH = new URL(SP_URL).pathname
 export const MOOCFI_CERTIFICATE = convertKeyToSingleLine(
   isProduction
     ? process.env.MOOCFI_CERTIFICATE ?? ""
-    : fs.readFileSync(__dirname + "/../certs/mooc.fi.crt").toString() ?? "",
+    : fs
+        .readFileSync(__dirname + "/../certs/mooc.fi.crt", "utf-8")
+        .toString() ?? "",
 )
 export const MOOCFI_PRIVATE_KEY = convertKeyToSingleLine(
   isProduction
     ? process.env.MOOCFI_PRIVATE_KEY ?? ""
-    : fs.readFileSync(__dirname + "/../certs/mooc.fi.key").toString() ?? "",
+    : fs
+        .readFileSync(__dirname + "/../certs/mooc.fi.key", "utf-8")
+        .toString() ?? "",
 )
 export const HY_CERTIFICATE = convertKeyToSingleLine(
-  isProduction ? process.env.HY_CERTIFICATE ?? "" : MOOCFI_CERTIFICATE,
+  isProduction ? process.env.HY_CERTIFICATE ?? "" : "",
 )
 export const HAKA_CERTIFICATE = convertKeyToSingleLine(
-  isProduction ? process.env.HAKA_CERTIFICATE ?? "" : MOOCFI_CERTIFICATE,
+  isProduction ? process.env.HAKA_CERTIFICATE ?? "" : "",
 )
 
 export const {
