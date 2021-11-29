@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express"
 import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
+import { PASSPORT_STRATEGY } from "../config"
 import { decodeRelayState } from "../util"
 import { handlers } from "./"
 
@@ -12,16 +13,13 @@ export type AuthenticationHandlerCallback = (
 ) => (err: any, user: Profile) => Promise<void>
 
 export const callbackHandler: RequestHandler = (req, res, next) => {
-  const relayState = req.params.RelayState || req.body.RelayState
-  const action = req.params.action || decodeRelayState(relayState)?.action
-
-  const decodedRelayState = decodeRelayState(
-    req.params.RelayState || req.body.RelayState,
-  ) ?? {
+  const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
+  const decodedRelayState = decodeRelayState(relayState) ?? {
     action: req.params.action || req.query.action, // TODO: this might be dangerous
     provider: req.params.provider || req.query.provider,
     language: ((req.query.language || req.params.language) as string) ?? "en",
   }
+  const { action, language, provider } = decodedRelayState
   console.log("callback relaystate", decodedRelayState)
 
   if (!Object.keys(handlers).includes(action)) {
@@ -29,10 +27,17 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
   }
 
   passport.authenticate(
-    "hy-haka",
+    PASSPORT_STRATEGY,
     {
       additionalParams: {
-        RelayState: relayState,
+        action,
+        language,
+        provider,
+        RelayState:
+          relayState ??
+          Buffer.from(JSON.stringify({ language, provider, action })).toString(
+            "base64",
+          ),
       },
     } as AuthenticateOptions,
     handlers[action](req, res, next),

@@ -4,7 +4,13 @@ import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
-import { DOMAIN, PORT, SHIBBOLETH_HEADERS, SP_PATH } from "./config"
+import {
+  DOMAIN,
+  PASSPORT_STRATEGY,
+  PORT,
+  SHIBBOLETH_HEADERS,
+  SP_PATH,
+} from "./config"
 import { callbackHandler, metadataHandler } from "./handlers/index"
 import { getPassportConfig } from "./metadata"
 import { createSamlStrategy } from "./saml"
@@ -50,7 +56,7 @@ async function createApp() {
   }
 
   const strategy = createSamlStrategy(passportConfig)
-  passport.use("hy-haka", strategy)
+  passport.use(PASSPORT_STRATEGY, strategy)
 
   // not used?
   /*passport.serializeUser((user, done) => {

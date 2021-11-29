@@ -1,14 +1,8 @@
 import { Request } from "express"
-import {
-  MultiSamlStrategy,
-  SamlConfig,
-} from "passport-saml"
+import { MultiSamlStrategy, SamlConfig } from "passport-saml"
 
-import { SP_URL } from "../config"
-import {
-  convertObjectKeysToLowerCase,
-  encodeRelayState,
-} from "../util"
+import { PASSPORT_STRATEGY, SP_URL } from "../config"
+import { convertObjectKeysToLowerCase, encodeRelayState } from "../util"
 
 /*const samlProviders: Record<string, string> = {
   hy: HY_IDP_URL,
@@ -55,12 +49,13 @@ const createStrategyOptions = (config: Record<string, SamlConfig>) => (
   console.log("strategyOptions created relayState", relayState)
   return {
     ...config[provider],
-    name: "hy-haka",
+    name: PASSPORT_STRATEGY,
     callbackUrl: `${SP_URL}/callbacks/${provider}/`,
     // callbackUrl: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     additionalParams: {
       action,
       language,
+      provider,
       ...(relayState ? { RelayState: relayState } : {}),
     },
     /*...(relayState

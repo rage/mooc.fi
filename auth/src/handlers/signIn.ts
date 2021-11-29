@@ -17,6 +17,7 @@ export const signInHandler: AuthenticationHandlerCallback = (
     edupersonaffiliation,
     schachomeorganization,
   } = user
+  console.log("in signin handler")
   const language = req.query.language || req.params.language || "en"
 
   let errorType = undefined
@@ -57,11 +58,11 @@ export const signInHandler: AuthenticationHandlerCallback = (
       } catch {
         // we'll just ignore the affiliation update error
       }
-      /*req.login(user, (err) => {
-          if (err) {
-            console.log("login error", err)
-          }
-        })*/
+      req.login(user, (err) => {
+        if (err) {
+          console.log("login error", err)
+        }
+      })
 
       req.logout()
       res

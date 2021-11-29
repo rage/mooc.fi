@@ -42,10 +42,12 @@ export const MOOCFI_PRIVATE_KEY = convertKeyToSingleLine(
         .toString() ?? "",
 )
 export const HY_CERTIFICATE = convertKeyToSingleLine(
-  isProduction ? process.env.HY_CERTIFICATE ?? "" : "",
+  process.env.HY_CERTIFICATE ?? "",
+  // isProduction ? process.env.HY_CERTIFICATE ?? "" : "",
 )
 export const HAKA_CERTIFICATE = convertKeyToSingleLine(
-  isProduction ? process.env.HAKA_CERTIFICATE ?? "" : "",
+  process.env.HAKA_CERTIFICATE ?? "",
+  // isProduction ? process.env.HAKA_CERTIFICATE ?? "" : "",
 )
 
 export const {
@@ -102,3 +104,5 @@ export const defaultHeaders: Record<HeaderField, string> = {
   ou: "Department of Computer Science",
   SHIB_LOGOUT_URL: "https://example.com/logout",
 }
+
+export const PASSPORT_STRATEGY = "hy-haka"

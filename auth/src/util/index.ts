@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 
 export const encodeRelayState = (req: Request) => {
-  const { provider, action } = req.params
+  const { provider, action } = req.params || req.query
   const language = req.query.language || req.params.language || "en"
 
   const relayState = Buffer.from(
