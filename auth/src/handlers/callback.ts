@@ -26,6 +26,7 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
     throw new Error(`unknown action ${action}`) // TODO: something more sensible
   }
 
+  console.log("using handler", handlers[action].name)
   passport.authenticate(
     PASSPORT_STRATEGY,
     {
@@ -34,10 +35,7 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
         language,
         provider,
         RelayState:
-          relayState ??
-          Buffer.from(JSON.stringify({ language, provider, action })).toString(
-            "base64",
-          ),
+          relayState ?? JSON.stringify({ language, provider, action }),
       },
     } as AuthenticateOptions,
     handlers[action](req, res, next),

@@ -4,9 +4,7 @@ export const encodeRelayState = (req: Request) => {
   const { provider, action } = req.params || req.query
   const language = req.query.language || req.params.language || "en"
 
-  const relayState = Buffer.from(
-    JSON.stringify({ language, provider, action }),
-  ).toString("base64")
+  const relayState = JSON.stringify({ language, provider, action })
 
   return relayState
 }
@@ -16,7 +14,7 @@ export const decodeRelayState = (state: string): Record<string, any> | null => {
     return null
   }
 
-  return JSON.parse(Buffer.from(state, "base64").toString("utf-8"))
+  return JSON.parse(state)
 }
 
 export const convertObjectKeysToLowerCase = <T extends Record<string, any>>(

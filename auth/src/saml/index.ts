@@ -50,7 +50,7 @@ const createStrategyOptions = (config: Record<string, SamlConfig>) => (
   return {
     ...config[provider],
     name: PASSPORT_STRATEGY,
-    callbackUrl: `${SP_URL}/callbacks/${provider}/`,
+    callbackUrl: `${SP_URL}/callbacks/${provider}`,
     // callbackUrl: `${SP_URL}/callbacks/${provider}/${action}/${language}`,
     additionalParams: {
       action,
