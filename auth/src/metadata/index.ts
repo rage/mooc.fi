@@ -175,9 +175,11 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
       privateKey: MOOCFI_PRIVATE_KEY,
       forceAuthn: true,
       signatureAlgorithm: "sha256",
+      cacheProvider: undefined,
       // digestAlgorithm: "sha256",
 
-      validateInResponseTo: true,
+      // FIXME: would need a cache provider to wotk with MultiSamlStrategy?
+      // validateInResponseTo: true,
       disableRequestedAuthnContext: true,
     }
 
