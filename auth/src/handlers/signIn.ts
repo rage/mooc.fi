@@ -12,12 +12,12 @@ export const signInHandler: AuthenticationHandlerCallback = (
   res,
   _next,
 ) => async (_err, user) => {
+  console.log("signInHandler: user", user)
   const {
     edupersonprincipalname,
     edupersonaffiliation,
     schachomeorganization,
-  } = user
-  console.log("in signin handler")
+  } = user ?? {}
   const language = req.query.language || req.params.language || "en"
 
   let errorType = undefined
