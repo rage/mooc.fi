@@ -14,16 +14,16 @@ const samlCertificates: Record<string, string> = {
   haka: HAKA_CERTIFICATE,
 }*/
 
-export const createSamlStrategy = async (config: Record<string, SamlConfig>) =>
+export const createSamlStrategy = (config: Record<string, SamlConfig>) =>
   new MultiSamlStrategy(
     {
       passReqToCallback: true,
-      getSamlOptions: async (req, done) => {
+      getSamlOptions: (req, done) => {
         const _config = createStrategyOptions(config)(req)
         return done(null, _config)
       },
     },
-    async (req, profile: any, done) => {
+    (_req, profile: any, done) => {
       console.log("got profile", profile)
       if (!profile) {
         return done(new Error("IdP returned no data"))

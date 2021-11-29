@@ -55,7 +55,7 @@ async function createApp() {
     haka: await getPassportConfig("haka"),
   }
 
-  const strategy = await createSamlStrategy(passportConfig)
+  const strategy = createSamlStrategy(passportConfig)
   passport.use(PASSPORT_STRATEGY, strategy)
 
   // not used?

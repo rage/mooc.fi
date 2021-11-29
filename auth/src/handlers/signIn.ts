@@ -13,6 +13,7 @@ export const signInHandler: AuthenticationHandlerCallback = (
   next,
 ) => (err, user) => {
   console.log("signInHandler: user", user)
+
   const {
     edupersonprincipalname,
     edupersonaffiliation,
@@ -23,6 +24,12 @@ export const signInHandler: AuthenticationHandlerCallback = (
   let errorType: any = undefined
 
   try {
+    if (err) {
+      errorType = "auth-fail"
+      console.log("failed with handler error", err)
+      throw new Error(err)
+    }
+
     if (!edupersonprincipalname) {
       errorType = "auth-fail"
       throw new Error("Authorization failed")
@@ -99,7 +106,7 @@ export const signInHandler: AuthenticationHandlerCallback = (
   } catch (error: any) {
     console.log("I have errored", error)
     req.logout()
-    res.redirect(
+    return res.redirect(
       `${FRONTEND_URL}/${language}/sign-in?error=${
         errorType ?? "unknown"
       }&message=${decodeURIComponent(error?.response?.data.message)}`,
