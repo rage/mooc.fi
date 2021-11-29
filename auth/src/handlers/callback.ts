@@ -18,8 +18,8 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
   const decodedRelayState = decodeRelayState(
     req.params.RelayState || req.body.RelayState,
   ) ?? {
-    action: req.params.action,
-    provider: req.params.provider,
+    action: req.params.action || req.query.action, // TODO: this might be dangerous
+    provider: req.params.provider || req.query.provider,
     language: ((req.query.language || req.params.language) as string) ?? "en",
   }
   console.log("callback relaystate", decodedRelayState)

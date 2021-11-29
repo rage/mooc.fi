@@ -18,6 +18,11 @@ import {
 const METADATA_DIR = __dirname + "/../../metadata"
 const CERTS_DIR = __dirname + "/../../certs"
 
+type IpConfig = Pick<
+  SamlConfig,
+  "entryPoint" | "logoutUrl" | "cert" | "identifierFormat"
+>
+
 type SpConfig = Omit<
   SamlConfig,
   "entryPoint" | "logoutUrl" | "cert" | "identifierFormat"
@@ -159,19 +164,28 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
 
     const metadata = await getAndCheckMetadata(provider)
     const reader = new MetadataReader(metadata)
-    const ipConfig = toPassportConfig(reader)
+    const ipConfig: IpConfig = {
+      ...toPassportConfig(reader),
+      identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+    }
     const spConfig: SpConfig = {
+      audience: SP_URL,
       issuer: SP_URL,
+      decryptionPvk: MOOCFI_PRIVATE_KEY,
       privateKey: MOOCFI_PRIVATE_KEY,
       forceAuthn: true,
       signatureAlgorithm: "sha256",
-      digestAlgorithm: "sha256",
-      // validateInResponseTo: false,
-      // disableRequestedAuthnContext: true,
+      // digestAlgorithm: "sha256",
+
+      validateInResponseTo: true,
+      disableRequestedAuthnContext: true,
     }
 
     console.log(
       `created ipConfig for provider ${provider}: ${JSON.stringify(ipConfig)}`,
+    )
+    console.log(
+      `created spoConfig for provider ${provider}: ${JSON.stringify(spConfig)}`,
     )
     return {
       ...ipConfig,

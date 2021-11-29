@@ -11,7 +11,7 @@ export const encodeRelayState = (req: Request) => {
   return relayState
 }
 
-export const decodeRelayState = (state: string) => {
+export const decodeRelayState = (state: string): Record<string, any> | null => {
   if (!state) {
     return null
   }
