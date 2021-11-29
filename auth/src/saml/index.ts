@@ -1,17 +1,8 @@
 import { Request } from "express"
-import {
-  MultiSamlStrategy,
-  SamlConfig,
-} from "passport-saml"
+import { MultiSamlStrategy, SamlConfig } from "passport-saml"
 
-import {
-  PASSPORT_STRATEGY,
-  SP_URL,
-} from "../config"
-import {
-  convertObjectKeysToLowerCase,
-  encodeRelayState,
-} from "../util"
+import { PASSPORT_STRATEGY, SP_URL } from "../config"
+import { convertObjectKeysToLowerCase, encodeRelayState } from "../util"
 
 /*const samlProviders: Record<string, string> = {
   hy: HY_IDP_URL,
@@ -34,6 +25,9 @@ export const createSamlStrategy = (config: Record<string, SamlConfig>) =>
     },
     (_req, profile: any, done) => {
       console.log("got profile", profile)
+      if (!profile) {
+        done(new Error("IdP returned no data"))
+      }
       done(null, convertObjectKeysToLowerCase(profile))
     },
   )
