@@ -55,19 +55,19 @@ async function createApp() {
     haka: await getPassportConfig("haka"),
   }
 
-  const strategy = createSamlStrategy(passportConfig)
+  const strategy = await createSamlStrategy(passportConfig)
   passport.use(PASSPORT_STRATEGY, strategy)
 
   // not used?
-  /*passport.serializeUser((user, done) => {
-  console.log("serialize", user)
-  done(null, user)
-})
-passport.deserializeUser((user, done) => {
-  console.log("deserialize", user)
+  passport.serializeUser(async (user, done) => {
+    console.log("serialize", user)
+    return done(null, user)
+  })
+  passport.deserializeUser(async (user, done) => {
+    console.log("deserialize", user)
 
-  done(null, user as any)
-})*/
+    return done(null, user as any)
+  })
 
   const router = Router()
     .get("/:action/:provider", callbackHandler)

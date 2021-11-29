@@ -10,8 +10,8 @@ const client_secret = "native"
 export const signInHandler: AuthenticationHandlerCallback = (
   req,
   res,
-  _next,
-) => async (_err, user) => {
+  next,
+) => (err, user) => {
   console.log("signInHandler: user", user)
   const {
     edupersonprincipalname,
@@ -20,7 +20,7 @@ export const signInHandler: AuthenticationHandlerCallback = (
   } = user ?? {}
   const language = req.query.language || req.params.language || "en"
 
-  let errorType = undefined
+  let errorType: any = undefined
 
   try {
     if (!edupersonprincipalname) {
@@ -32,50 +32,70 @@ export const signInHandler: AuthenticationHandlerCallback = (
       throw new Error("Already signed in")
     }
 
-    try {
-      const { data } = await axios.post<any>(`${AUTH_URL}/token`, {
-        grant_type,
-        response_type,
-        edu_person_principal_name: edupersonprincipalname,
-        client_secret,
-      })
-
+    ;(async () => {
       try {
-        // @ts-ignore: ignore return value for now
-        const { data: updateData } = await axios.post(
-          `${API_URL}/user/update-person-affiliation`,
-          {
-            edu_person_principal_name: edupersonprincipalname,
-            person_affiliation: edupersonaffiliation,
-            home_organization: schachomeorganization,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${data.access_token}`,
-            },
-          },
-        )
-      } catch {
-        // we'll just ignore the affiliation update error
-      }
-      req.login(user, (err) => {
-        if (err) {
-          console.log("login error", err)
-        }
-      })
-
-      req.logout()
-      res
-        .setMOOCCookies({
-          access_token: data.access_token ?? "",
-          mooc_token: data.access_token ?? "",
-          admin: data.admin ?? "",
+        const { data } = await axios.post<any>(`${AUTH_URL}/token`, {
+          grant_type,
+          response_type,
+          edu_person_principal_name: edupersonprincipalname,
+          client_secret,
         })
-        .redirect(`${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}`)
-    } catch (error: any) {
-      errorType = "no-user-found"
-      throw error
-    }
+
+        try {
+          // @ts-ignore: ignore return value for now
+          const { data: updateData } = await axios.post(
+            `${API_URL}/user/update-person-affiliation`,
+            {
+              edu_person_principal_name: edupersonprincipalname,
+              person_affiliation: edupersonaffiliation,
+              home_organization: schachomeorganization,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${data.access_token}`,
+              },
+            },
+          )
+        } catch {
+          // we'll just ignore the affiliation update error
+        }
+        await new Promise<void>((resolve, reject) =>
+          req.login(user, (err) => {
+            if (err) {
+              console.log("login error", err)
+              reject(err)
+            } else {
+              resolve()
+            }
+          }),
+        )
+
+        req.logout()
+        return res
+          .setMOOCCookies({
+            access_token: data.access_token ?? "",
+            mooc_token: data.access_token ?? "",
+            admin: data.admin ?? "",
+          })
+          .redirect(
+            `${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}`,
+          )
+      } catch (error: any) {
+        errorType = "no-user-found"
+        throw error
+      }
+    })().catch((error) => {
+      req.logout()
+      if (!res.headersSent) {
+        res.redirect(
+          `${FRONTEND_URL}/${language}/sign-in?error=${
+            errorType ?? "unknown"
+          }&message=${decodeURIComponent(error?.response?.data.message)}`,
+        )
+      } else {
+        next(error)
+      }
+    })
   } catch (error: any) {
     console.log("I have errored", error)
     req.logout()

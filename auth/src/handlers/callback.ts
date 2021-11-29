@@ -10,7 +10,7 @@ export type AuthenticationHandlerCallback = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => (err: any, user: Profile) => Promise<void>
+) => (err: any, user: Profile) => Promise<void> | void
 
 export const callbackHandler: RequestHandler = (req, res, next) => {
   const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
