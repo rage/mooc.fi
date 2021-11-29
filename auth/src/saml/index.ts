@@ -20,8 +20,8 @@ export const createSamlStrategy = (config: Record<string, SamlConfig>) =>
       passReqToCallback: true,
       getSamlOptions(req, done) {
         const _config = createStrategyOptions(config)(req)
-        console.log(_config)
-        done(null, createStrategyOptions(config)(req))
+        console.log("strategy options", _config)
+        done(null, _config)
       },
     },
     (_req, profile: any, done) => {
@@ -46,6 +46,7 @@ const createStrategyOptions = (config: Record<string, SamlConfig>) => (
     throw new Error(`invalid provider ${provider}`)
   }
 
+  console.log("strategyOptions created relayState", relayState)
   return {
     ...config[provider],
     name: "hy-haka",

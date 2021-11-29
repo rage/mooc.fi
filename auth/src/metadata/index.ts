@@ -185,7 +185,7 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
       `created ipConfig for provider ${provider}: ${JSON.stringify(ipConfig)}`,
     )
     console.log(
-      `created spoConfig for provider ${provider}: ${JSON.stringify(spConfig)}`,
+      `created spConfig for provider ${provider}: ${JSON.stringify(spConfig)}`,
     )
     return {
       ...ipConfig,
