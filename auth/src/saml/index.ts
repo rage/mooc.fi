@@ -20,15 +20,15 @@ export const createSamlStrategy = (config: Record<string, SamlConfig>) =>
       passReqToCallback: true,
       getSamlOptions(req, done) {
         const _config = createStrategyOptions(config)(req)
-        done(null, _config)
+        return done(null, _config)
       },
     },
     (_req, profile: any, done) => {
       console.log("got profile", profile)
       if (!profile) {
-        done(new Error("IdP returned no data"))
+        return done(new Error("IdP returned no data"))
       }
-      done(null, convertObjectKeysToLowerCase(profile))
+      return done(null, convertObjectKeysToLowerCase(profile))
     },
   )
 
