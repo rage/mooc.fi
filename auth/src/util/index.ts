@@ -46,4 +46,4 @@ export const setLocalCookiesMiddleware = (
 }
 
 export const convertKeyToSingleLine = (s: string) =>
-  s.replace(/\n/g, "").replace(/-----(.*)-----/g, "")
+  s.replace(/-----(.*)-----/g, "").replace(/\n/g, "")
