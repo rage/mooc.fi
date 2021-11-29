@@ -164,6 +164,8 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
       issuer: SP_URL,
       privateKey: MOOCFI_PRIVATE_KEY,
       forceAuthn: true,
+      signatureAlgorithm: "sha256",
+      digestAlgorithm: "sha256",
       // validateInResponseTo: false,
       // disableRequestedAuthnContext: true,
     }
