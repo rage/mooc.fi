@@ -34,6 +34,7 @@ const requiredFields: Array<keyof HYHakaProfile> = [
 ]
 
 export const getProfile = (profile: HYHakaProfile | undefined | null) => {
+  console.log("got profile", profile)
   if (!profile) {
     return Promise.reject(new Error("No profile"))
   }

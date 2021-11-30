@@ -14,7 +14,7 @@ export type AuthenticationHandlerCallback = (
 
 export const callbackHandler: RequestHandler = (req, res, next) => {
   const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
-  const decodedRelayState = decodeRelayState(relayState) ?? {
+  const decodedRelayState = decodeRelayState(req) ?? {
     action: req.params.action || req.query.action, // TODO: this might be dangerous
     provider: req.params.provider || req.query.provider,
     language: ((req.query.language || req.params.language) as string) ?? "en",

@@ -59,11 +59,11 @@ async function createApp() {
   passport.use(PASSPORT_STRATEGY, strategy)
 
   // not used?
-  passport.serializeUser(async (user, done) => {
+  passport.serializeUser((user, done) => {
     console.log("serialize", user)
     return done(null, user)
   })
-  passport.deserializeUser(async (user, done) => {
+  passport.deserializeUser((user, done) => {
     console.log("deserialize", user)
 
     return done(null, user as any)
