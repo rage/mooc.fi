@@ -27,11 +27,7 @@ export interface HYHakaProfile extends Profile {
   [SURNAME]: string
 }
 
-const requiredFields: Array<keyof HYHakaProfile> = [
-  EDU_PERSON_PRINCIPAL_NAME,
-  EDU_PERSON_AFFILIATION,
-  SCHAC_HOME_ORGANIZATION,
-]
+const requiredFields: Array<keyof HYHakaProfile> = [EDU_PERSON_PRINCIPAL_NAME]
 
 export const getProfile = (profile: HYHakaProfile | undefined | null) => {
   console.log("got profile", profile)

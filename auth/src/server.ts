@@ -76,11 +76,6 @@ async function createApp() {
       urlencoded({ extended: false }),
       callbackHandler,
     )
-    .post(
-      "/callbacks/:provider/:action/:language",
-      urlencoded({ extended: false }),
-      callbackHandler,
-    )
     .get("/:action/:provider/metadata", metadataHandler(strategy))
 
   app.use(SP_PATH, router)
