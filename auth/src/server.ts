@@ -59,7 +59,7 @@ async function createApp() {
   passport.use(PASSPORT_STRATEGY, strategy)
 
   // not used?
-  passport.serializeUser(async (user, done) => {
+  /* passport.serializeUser(async (user, done) => {
     console.log("serialize", user)
     return done(null, user)
   })
@@ -67,7 +67,7 @@ async function createApp() {
     console.log("deserialize", user)
 
     return done(null, user as any)
-  })
+  })*/
 
   const router = Router()
     .get("/:action/:provider", callbackHandler)

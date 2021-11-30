@@ -31,9 +31,6 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
     PASSPORT_STRATEGY,
     {
       additionalParams: {
-        action,
-        language,
-        provider,
         RelayState:
           relayState ?? JSON.stringify({ language, provider, action }),
       },

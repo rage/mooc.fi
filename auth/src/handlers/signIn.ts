@@ -15,10 +15,11 @@ export const signInHandler: AuthenticationHandlerCallback = (
   console.log("signInHandler: user", user)
 
   const {
-    edupersonprincipalname,
-    edupersonaffiliation,
-    schachomeorganization,
+    edu_person_principal_name,
+    edu_person_affiliation,
+    schac_home_organization,
   } = user ?? {}
+  console.log("request", req)
   const language = req.query.language || req.params.language || "en"
 
   let errorType: any = undefined
@@ -30,7 +31,7 @@ export const signInHandler: AuthenticationHandlerCallback = (
       throw new Error(err)
     }
 
-    if (!edupersonprincipalname) {
+    if (!edu_person_principal_name) {
       errorType = "auth-fail"
       throw new Error("Authorization failed")
     }
@@ -44,7 +45,7 @@ export const signInHandler: AuthenticationHandlerCallback = (
         const { data } = await axios.post<any>(`${AUTH_URL}/token`, {
           grant_type,
           response_type,
-          edu_person_principal_name: edupersonprincipalname,
+          edu_person_principal_name,
           client_secret,
         })
 
@@ -53,9 +54,9 @@ export const signInHandler: AuthenticationHandlerCallback = (
           const { data: updateData } = await axios.post(
             `${API_URL}/user/update-person-affiliation`,
             {
-              edu_person_principal_name: edupersonprincipalname,
-              person_affiliation: edupersonaffiliation,
-              home_organization: schachomeorganization,
+              edu_person_principal_name,
+              person_affiliation: edu_person_affiliation,
+              home_organization: schac_home_organization,
             },
             {
               headers: {
