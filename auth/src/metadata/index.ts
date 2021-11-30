@@ -1,12 +1,22 @@
 import axios from "axios"
 import fs from "fs"
 import { SamlConfig } from "passport-saml"
-import { MetadataReader, toPassportConfig } from "passport-saml-metadata"
-import { FileKeyInfo, SignedXml, xpath } from "xml-crypto"
+import {
+  MetadataReader,
+  toPassportConfig,
+} from "passport-saml-metadata"
+import {
+  FileKeyInfo,
+  SignedXml,
+  xpath,
+} from "xml-crypto"
 
 import { DOMParser } from "@xmldom/xmldom"
 
-import { MOOCFI_PRIVATE_KEY, SP_URL } from "../config"
+import {
+  MOOCFI_PRIVATE_KEY,
+  SP_URL,
+} from "../config"
 import {
   CERTS_DIR,
   METADATA_DIR,
@@ -152,7 +162,6 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
       forceAuthn: true,
       signatureAlgorithm: "sha256",
       cacheProvider: undefined,
-      // digestAlgorithm: "sha256",
 
       // FIXME: would need a cache provider to wotk with MultiSamlStrategy?
       // validateInResponseTo: true,
