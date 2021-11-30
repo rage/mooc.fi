@@ -1,6 +1,7 @@
 import axios from "axios"
 
 import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
+import { decodeRelayState } from "../util"
 import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
@@ -19,8 +20,10 @@ export const signInHandler: AuthenticationHandlerCallback = (
     edu_person_affiliation,
     schac_home_organization,
   } = user ?? {}
-  console.log("request", req)
-  const language = req.query.language || req.params.language || "en"
+
+  const relayState = decodeRelayState(req)
+  const language =
+    req.query.language || req.params.language || relayState?.language || "en"
 
   let errorType: any = undefined
 
