@@ -1,5 +1,9 @@
 import cors from "cors"
-import express, { CookieOptions, Router, urlencoded } from "express"
+import express, {
+  CookieOptions,
+  Router,
+  urlencoded,
+} from "express"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
@@ -11,8 +15,12 @@ import {
   SHIBBOLETH_HEADERS,
   SP_PATH,
 } from "./config"
-import { callbackHandler, metadataHandler } from "./handlers/index"
+import {
+  callbackHandler,
+  metadataHandler,
+} from "./handlers/index"
 import { getPassportConfig } from "./metadata"
+import { metadataConfig } from "./metadata/config"
 import { createSamlStrategy } from "./saml"
 import { setLocalCookiesMiddleware } from "./util"
 
@@ -51,8 +59,8 @@ async function createApp() {
   app.use(passport.initialize())
 
   const passportConfig = {
-    hy: await getPassportConfig("hy"),
-    haka: await getPassportConfig("haka"),
+    hy: await getPassportConfig(metadataConfig["hy"]),
+    haka: await getPassportConfig(metadataConfig["haka"]),
   }
 
   const strategy = createSamlStrategy(passportConfig)

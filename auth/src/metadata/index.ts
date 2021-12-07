@@ -20,7 +20,6 @@ import {
 import {
   CERTS_DIR,
   METADATA_DIR,
-  metadataConfig,
   MetadataConfig,
 } from "./config"
 
@@ -136,14 +135,12 @@ async function getAndCheckMetadata(config: MetadataConfig) {
   return xml
 }
 
-export async function getPassportConfig(provider: string): Promise<SamlConfig> {
+export async function getPassportConfig(config: MetadataConfig): Promise<SamlConfig> {
   try {
     ensureDirectories()
 
-    const config = metadataConfig[provider]
-
     if (!config) {
-      throw new Error(`unknown provider ${provider}`)
+      throw new Error(`missing configuration!`)
     }
 
     const metadata = await getAndCheckMetadata(config)
@@ -168,12 +165,6 @@ export async function getPassportConfig(provider: string): Promise<SamlConfig> {
       disableRequestedAuthnContext: true,
     }
 
-    console.log(
-      `created ipConfig for provider ${provider}: ${JSON.stringify(ipConfig)}`,
-    )
-    console.log(
-      `created spConfig for provider ${provider}: ${JSON.stringify(spConfig)}`,
-    )
     return {
       ...ipConfig,
       ...spConfig,
