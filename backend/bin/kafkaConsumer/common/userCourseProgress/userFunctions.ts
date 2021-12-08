@@ -140,7 +140,7 @@ export const getUserCourseSettings = async ({
           user_id: user.id,
         },
         orderBy: {
-          created_at: "desc", // TODO: get newest setting?
+          created_at: "asc",
         },
       },
       inherit_settings_from: {
@@ -150,7 +150,7 @@ export const getUserCourseSettings = async ({
               user_id: user.id,
             },
             orderBy: {
-              created_at: "desc", // TODO: get newest setting?
+              created_at: "asc",
             },
           },
         },

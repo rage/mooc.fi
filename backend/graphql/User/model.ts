@@ -255,7 +255,7 @@ export const User = objectType({
             where: { id: parent.id },
           })
           .user_course_settings({
-            orderBy: { created_at: "desc" }, // TODO: get newest settings?
+            orderBy: { created_at: "asc" },
           })
 
         const courseIds = uniq(settings.map((s) => s.course_id)).filter(

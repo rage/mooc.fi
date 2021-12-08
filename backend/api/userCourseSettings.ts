@@ -31,7 +31,7 @@ export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
           where: {
             user_id: user.id,
           },
-          orderBy: { created_at: "desc" }, // TODO: get newest setting?
+          orderBy: { created_at: "asc" },
           take: 1,
         })
     )?.[0]
@@ -88,7 +88,7 @@ export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
           where: {
             user_id: user.id,
           },
-          orderBy: { created_at: "desc" }, // TODO: get newest setting?
+          orderBy: { created_at: "asc" },
           take: 1,
         })
     )?.[0]

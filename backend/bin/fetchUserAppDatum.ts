@@ -111,7 +111,7 @@ const fetchUserAppDatum = async () => {
             course_id: course.id,
           },
           orderBy: {
-            created_at: "asc", // TODO: this is set to oldest, should it be newest?
+            created_at: "asc",
           },
         })
     )?.[0]

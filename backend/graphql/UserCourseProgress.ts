@@ -54,7 +54,7 @@ export const UserCourseProgress = objectType({
           .user_course_settings({
             where: { course_id: parent.course_id },
             orderBy: {
-              created_at: "desc", // TODO: returning always the _newest_ setting?
+              created_at: "asc",
             },
           })
 

@@ -54,7 +54,7 @@ export const UserCourseSettingQueries = extendType({
               where: {
                 user_id,
               },
-              orderBy: { created_at: "desc" }, // TODO: get newest settings?
+              orderBy: { created_at: "asc" },
             },
             inherit_settings_from: {
               include: {
@@ -62,7 +62,7 @@ export const UserCourseSettingQueries = extendType({
                   where: {
                     user_id,
                   },
-                  orderBy: { created_at: "desc" }, // TODO: get newest settings?
+                  orderBy: { created_at: "asc" },
                 },
               },
             },
