@@ -322,7 +322,10 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
         .status(200)
         .json({ message: "Completion created", completion: updatedCompletion })
     }
-    if (existingCompletion.updated_at! !== updatedCompletion.updated_at!) {
+    if (
+      existingCompletion.updated_at?.getTime() !==
+      updatedCompletion.updated_at?.getTime()
+    ) {
       return res
         .status(200)
         .json({ message: "Completion updated", completion: updatedCompletion })
