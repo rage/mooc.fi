@@ -66,9 +66,9 @@ function CourseEntry({ data }: CourseEntryProps) {
     data.course?.exercises?.filter(notEmpty).map((exercise) => ({
       ...exercise,
       exercise_completions:
-        data.exercise_completions
-          ?.filter((ec) => ec?.exercise_id === exercise.id)
-          .filter(notEmpty) || [],
+        data.exercise_completions?.filter(
+          (ec) => ec?.exercise_id === exercise.id && !notEmpty(ec),
+        ) ?? [],
     })) ?? []
 
   return (
