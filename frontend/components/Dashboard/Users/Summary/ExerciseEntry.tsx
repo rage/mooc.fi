@@ -9,7 +9,12 @@ import ProfileTranslations from "/translations/profile"
 // import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 
-import { Chip, TableCell, TableRow } from "@material-ui/core"
+import {
+  Chip,
+  Collapse,
+  TableCell,
+  TableRow,
+} from "@material-ui/core"
 
 import { useCollapseContext } from "./CollapseContext"
 
