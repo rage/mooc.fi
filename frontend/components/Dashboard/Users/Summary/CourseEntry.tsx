@@ -63,16 +63,13 @@ function CourseEntry({ data }: CourseEntryProps) {
   const isOpen = state[data?.course?.id ?? "_"]?.open
   // TODO: subheaders for parts?
   const exercisesWithCompletions =
-    data.course?.exercises
-      ?.filter(notEmpty)
-      .map((exercise) => ({
-        ...exercise,
-        exercise_completions:
-          data.exercise_completions
-            ?.filter((ec) => ec?.exercise_id === exercise.id)
-            .filter(notEmpty) || [],
-      }))
-      .filter(notEmpty) ?? []
+    data.course?.exercises?.filter(notEmpty).map((exercise) => ({
+      ...exercise,
+      exercise_completions:
+        data.exercise_completions
+          ?.filter((ec) => ec?.exercise_id === exercise.id)
+          .filter(notEmpty) || [],
+    })) ?? []
 
   return (
     <CourseEntryCard>
