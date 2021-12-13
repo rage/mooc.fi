@@ -167,16 +167,15 @@ export const CompletionMutations = extendType({
             slug: slug ?? undefined,
           },
         })
-
         if (!course) {
           throw new Error("course not found")
         }
-
         // find users on course with points
         const progresses = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course.id,
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
             },
           })
           .user_course_progresses({
@@ -195,7 +194,8 @@ export const CompletionMutations = extendType({
         const completions = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course.id,
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
             },
           })
           .completions({

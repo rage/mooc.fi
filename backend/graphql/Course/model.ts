@@ -1,4 +1,4 @@
-import { intArg, nullable, objectType, stringArg } from "nexus"
+import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
 
@@ -43,7 +43,7 @@ export const Course = objectType({
     t.model.course_aliases()
     t.model.course_organizations()
     t.model.course_variants()
-    t.model.exercises()
+    // t.model.exercises()
     t.model.open_university_registration_links()
     // t.model.user_course_progresses()
     // t.model.user_course_service_progresses()
@@ -76,15 +76,38 @@ export const Course = objectType({
           throw new Error("needs user_id or user_upstream_id")
         }
 
-        return ctx.prisma.completion.findMany({
-          where: {
-            user: {
-              id: user_id ?? undefined,
-              upstream_id: user_upstream_id ?? undefined,
+        return ctx.prisma.course
+          .findUnique({
+            where: {
+              id: parent.id,
             },
-            course_id: parent.id,
-          },
-        })
+          })
+          .completions({
+            where: {
+              user: {
+                id: user_id ?? undefined,
+                upstream_id: user_upstream_id ?? undefined,
+              },
+            },
+          })
+      },
+    })
+
+    t.list.field("exercises", {
+      type: "Exercise",
+      args: {
+        includeDeleted: booleanArg({ default: false }),
+      },
+      resolve: async (parent, args, ctx) => {
+        const { includeDeleted } = args
+
+        return ctx.prisma.course
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .exercises({
+            ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
+          })
       },
     })
   },

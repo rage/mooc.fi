@@ -99,15 +99,22 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
-    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
-      where: {
-        user: { upstream_id: e.user_id },
-        course_id: course.id,
-      },
-      orderBy: {
-        created_at: "asc",
-      },
-    })
+    const existingUserCourseSetting = (
+      await prisma.user
+        .findUnique({
+          where: {
+            upstream_id: e.user_id,
+          },
+        })
+        .user_course_settings({
+          where: {
+            course_id: course.id,
+          },
+          orderBy: {
+            created_at: "asc",
+          },
+        })
+    )?.[0]
 
     if (!existingUserCourseSetting) {
       old = await prisma.userCourseSetting.create({

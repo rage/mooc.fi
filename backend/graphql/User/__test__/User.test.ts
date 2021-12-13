@@ -1,12 +1,13 @@
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMCCurrent } from "../../../tests/__helpers"
+import { orderBy } from "lodash"
+
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
 import {
   adminUserDetails,
   normalUser,
   normalUserDetails,
 } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
-import { orderBy } from "lodash"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
@@ -47,6 +48,7 @@ const tmc = fakeTMCCurrent({
   "Bearer admin": [200, adminUserDetails],
 })
 
+// @ts-ignore: not used
 const sortByExercise = (data: any) => {
   if (!data?.exercise_completions) {
     return data
@@ -175,16 +177,22 @@ describe("User", () => {
                 course {
                   id
                   name
+                  exercises {
+                    id
+                    name
+                    course_id
+                    part
+                    section
+                    max_points
+                  }
                 }
                 exercise_completions {
                   id
+                  exercise_id
                   timestamp
                   n_points
-                  exercise {
-                    id
-                    name
-                    max_points
-                  }
+                  attempted
+                  completed
                   exercise_completion_required_actions {
                     id
                     value
@@ -198,18 +206,16 @@ describe("User", () => {
         const sortedRes = {
           currentUser: {
             ...res?.currentUser,
-            user_course_summary: orderBy(
-              [
-                ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
-                  ...cs,
-                  exercise_completions: orderBy(
-                    cs?.exercise_completions?.map(sortByExercise),
-                    ["id"],
-                  ),
-                })),
-              ],
-              "course.id",
-            ),
+            user_course_summary: [
+              ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
+                ...cs,
+                course: {
+                  ...cs.course,
+                  exercises: orderBy(cs.course.exercises, ["name"]),
+                },
+                exercise_completions: orderBy(cs?.exercise_completions, ["id"]),
+              })),
+            ],
           },
         }
 

@@ -102,22 +102,23 @@ export function getStoredData({ knex, prisma }: ApiContext) {
       return ownershipResult.error
     }
 
-    const storedData = await prisma.storedData.findMany({
-      where: {
-        course_id: course.id,
-      },
-      include: {
-        user: {
-          include: {
-            completions: {
-              where: {
-                course_id: course.id,
+    const storedData = await prisma.course
+      .findUnique({
+        where: { id: course.id },
+      })
+      .stored_data({
+        include: {
+          user: {
+            include: {
+              completions: {
+                where: {
+                  course_id: course.id,
+                },
               },
             },
           },
         },
-      },
-    })
+      })
 
     const mappedStoredData = storedData.map((data) => ({
       user: omit(data.user, "completions"),
