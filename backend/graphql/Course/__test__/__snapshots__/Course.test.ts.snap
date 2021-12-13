@@ -1177,7 +1177,7 @@ Array [
 ]
 `;
 
-exports[`Course queries courses filters hidden: courses-hidden-null 1`] = `
+exports[`Course queries courses filters hidden: courses-hidden-false 1`] = `
 Array [
   "00000000-0000-0000-0000-000000000001",
   "00000000-0000-0000-0000-000000000002",
@@ -1185,7 +1185,7 @@ Array [
 ]
 `;
 
-exports[`Course queries courses filters hidden: courses-hidden-null 2`] = `
+exports[`Course queries courses filters hidden: courses-hidden-null 1`] = `
 Array [
   "00000000-0000-0000-0000-000000000001",
   "00000000-0000-0000-0000-000000000002",

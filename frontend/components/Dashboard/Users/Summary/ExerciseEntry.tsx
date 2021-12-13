@@ -1,18 +1,17 @@
-import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
 import React from "react"
-import {
-  useCollapseContext,
-  // ActionType,
-  // CollapsablePart,
-} from "./CollapseContext"
-// import CollapseButton from "/components/Buttons/CollapseButton"
-import { useTranslator } from "/util/useTranslator"
-import ProfileTranslations from "/translations/profile"
+
 import {
   UserSummary_user_user_course_summary_course_exercises,
   UserSummary_user_user_course_summary_exercise_completions,
   UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
 } from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+// import CollapseButton from "/components/Buttons/CollapseButton"
+import { useTranslator } from "/util/useTranslator"
+
+import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
+
+import { useCollapseContext } from "./CollapseContext"
 
 interface ExerciseEntryProps {
   exercise: UserSummary_user_user_course_summary_course_exercises & {
@@ -32,7 +31,6 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
     state[exercise.course_id ?? "_"]?.exercises[
       exercise.exercise_completions?.[0]?.id ?? "_"
     ] ?? false
-
   const exerciseCompletion = exercise.exercise_completions?.[0]
 
   // TODO: the rare (and invalid) case of multiple exercise_completions?

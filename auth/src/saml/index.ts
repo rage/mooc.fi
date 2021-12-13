@@ -6,15 +6,9 @@ import {
   VerifiedCallback,
 } from "passport-saml"
 
-import {
-  PASSPORT_STRATEGY,
-  SP_URL,
-} from "../config"
+import { PASSPORT_STRATEGY, SP_URL } from "../config"
 import { encodeRelayState } from "../util"
-import {
-  getProfile,
-  HYHakaProfile,
-} from "./common"
+import { getProfile, HYHakaProfile } from "./common"
 
 export const createSamlStrategy = (config: Record<string, SamlConfig>) =>
   new MultiSamlStrategy(

@@ -9,6 +9,7 @@ import {
   completionInstructions,
   completions,
   completionTiers,
+  recheckCompletion,
 } from "./completions"
 import { progress, progressV2 } from "./progress"
 import { registerCompletions } from "./registerCompletions"
@@ -61,4 +62,5 @@ export function apiRouter(ctx: ApiContext) {
     .post("/user/connect", connectUser(ctx))
     .post("/stored-data/:slug", postStoredData(ctx))
     .get("/stored-data/:slug", getStoredData(ctx))
+    .post("/recheck-completion", recheckCompletion(ctx))
 }

@@ -1,22 +1,24 @@
-import { User, Course } from "@prisma/client"
-import {
-  BAIexercises,
-  BAItiers,
-  BAITierNames,
-  requiredByTier,
-  BAIbadge,
-  pointsNeeded,
-  exerciseCompletionsNeeded,
-} from "../../../../config/courseConfig"
-import { DatabaseInputError } from "../../../lib/errors"
-import prisma from "../../../../prisma"
-import {
-  getExerciseCompletionsForCourses,
-  createCompletion,
-} from "./userFunctions"
-import { ExerciseCompletionPart, TierProgress } from "./interfaces"
 import { range } from "lodash"
+
+import { Course, User } from "@prisma/client"
+
+import {
+  BAIbadge,
+  BAIexercises,
+  BAITierNames,
+  BAItiers,
+  exerciseCompletionsNeeded,
+  pointsNeeded,
+  requiredByTier,
+} from "../../../../config/courseConfig"
+import prisma from "../../../../prisma"
+import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
+import { ExerciseCompletionPart, TierProgress } from "./interfaces"
+import {
+  createCompletion,
+  getExerciseCompletionsForCourses,
+} from "./userFunctions"
 
 const checkBAIProjectCompletion = async (
   user: User,
@@ -88,13 +90,16 @@ export const checkBAICompletion = async ({
     exerciseCompletionsForCourses,
   )
 
-  const existingProgresses = await prisma.userCourseProgress.findMany({
-    where: {
-      course_id: handlerCourse.id,
-      user_id: user.id,
-    },
-    orderBy: { created_at: "asc" },
-  })
+  const existingProgresses = await prisma.course
+    .findUnique({
+      where: { id: handlerCourse.id },
+    })
+    .user_course_progresses({
+      where: {
+        user_id: user.id,
+      },
+      orderBy: { created_at: "asc" },
+    })
 
   if (existingProgresses.length < 1) {
     logger?.info("No existing progress found, creating new...")

@@ -1,3 +1,5 @@
+import { Request, Response } from "express"
+
 import {
   Completion,
   Course,
@@ -5,7 +7,12 @@ import {
   OpenUniversityRegistrationLink,
 } from "@prisma/client"
 
-import { getOrganization, getUser } from "../util/server-functions"
+import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import {
+  getOrganization,
+  getUser,
+  requireAdmin,
+} from "../util/server-functions"
 import { ApiContext } from "./"
 
 const JSONStream = require("JSONStream")
@@ -174,5 +181,157 @@ export function completionTiers({ knex }: ApiContext) {
 
       return res.status(200).json({ tierData })
     }
+  }
+}
+
+export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
+  return async function (
+    req: Request<
+      {},
+      {},
+      {
+        course_id?: string
+        slug?: string
+        user_id?: string
+        user_upstream_id?: number
+      }
+    >,
+    res: Response,
+  ) {
+    const adminRes = await requireAdmin(knex)(req, res)
+
+    if (adminRes !== true) {
+      return adminRes
+    }
+
+    const { course_id, slug, user_id, user_upstream_id } = req.body
+
+    if (!course_id && !slug) {
+      return res.status(400).json({
+        message: "Missing course_id and slug - please provide exactly one",
+      })
+    }
+    if (course_id && slug) {
+      return res
+        .status(400)
+        .json({ message: "Please provide exactly one of course_id and slug" })
+    }
+    if (!user_id && !user_upstream_id) {
+      return res.status(400).json({
+        message:
+          "Missing user_id and user_upstream_id - please provide exactly one",
+      })
+    }
+    if (user_id && user_upstream_id) {
+      return res.status(400).json({
+        message: "Please provide exactly one of user_id and user_upstream_id",
+      })
+    }
+
+    const course = await prisma.course.findUnique({
+      where: {
+        id: course_id ?? undefined,
+        slug: slug ?? undefined,
+      },
+    })
+
+    if (!course) {
+      return res.status(405).json({ message: "course not found" })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: user_id ?? undefined,
+        upstream_id: user_upstream_id ?? undefined,
+      },
+    })
+
+    if (!user) {
+      return res.status(405).json({ message: "user not found" })
+    }
+
+    const progresses = await prisma.user
+      .findUnique({
+        where: {
+          id: user_id ?? undefined,
+          upstream_id: user_upstream_id ?? undefined,
+        },
+      })
+      .user_course_progresses({
+        where: {
+          course_id: course.id,
+        },
+        orderBy: { created_at: "asc" },
+      })
+
+    if (progresses.length < 1) {
+      return res.status(401).json({ message: "No progresses found" })
+    }
+
+    const existingCompletion = (
+      await prisma.user
+        .findUnique({
+          where: {
+            id: user_id ?? undefined,
+            upstream_id: user_upstream_id ?? undefined,
+          },
+        })
+        .completions({
+          where: {
+            course_id: course.completions_handled_by_id ?? course.id,
+          },
+          orderBy: { created_at: "asc" },
+          take: 1,
+        })
+    )?.[0]
+
+    await generateUserCourseProgress({
+      user,
+      course,
+      userCourseProgress: progresses[0],
+      context: {
+        // not very optimal, but
+        logger,
+        prisma,
+        consumer: undefined as any,
+        mutex: undefined as any,
+        knex,
+        topic_name: "",
+      },
+    })
+
+    const updatedCompletion = (
+      await prisma.user
+        .findUnique({
+          where: {
+            id: user_id ?? undefined,
+            upstream_id: user_upstream_id ?? undefined,
+          },
+        })
+        .completions({
+          where: {
+            course_id: course.completions_handled_by_id ?? course.id,
+          },
+          orderBy: { created_at: "asc" },
+          take: 1,
+        })
+    )?.[0]
+
+    if (!existingCompletion && updatedCompletion) {
+      return res
+        .status(200)
+        .json({ message: "Completion created", completion: updatedCompletion })
+    }
+    if (
+      existingCompletion.updated_at?.getTime() !==
+      updatedCompletion.updated_at?.getTime()
+    ) {
+      return res
+        .status(200)
+        .json({ message: "Completion updated", completion: updatedCompletion })
+    }
+    return res
+      .status(200)
+      .json({ message: "No change", completion: existingCompletion })
   }
 }

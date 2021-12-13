@@ -46,56 +46,36 @@ export const UserCourseProgress = objectType({
     t.nullable.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
-        return (
-          await ctx.prisma.userCourseProgress
-            .findUnique({
-              where: { id: parent.id },
-            })
-            .user()
-            .user_course_settings({
-              where: { course_id: parent.course_id },
-              orderBy: { created_at: "asc" },
-            })
-        )?.[0]
-
-        /*const { course_id, user_id } =
-          (await ctx.prisma.userCourseProgress.findUnique({
+        const settings = await ctx.prisma.userCourseProgress
+          .findUnique({
             where: { id: parent.id },
-            select: {
-              course_id: true,
-              user_id: true,
+          })
+          .user()
+          .user_course_settings({
+            where: { course_id: parent.course_id },
+            orderBy: {
+              created_at: "asc",
             },
-          })) || {}
+          })
 
-        if (!course_id || !user_id) {
-          throw new Error("course or user not found")
-        }
-
-        return await ctx.prisma.userCourseSetting.findFirst({
-          where: {
-            course_id,
-            user_id,
-          },
-          orderBy: {
-            created_at: "asc",
-          },
-        })*/
+        return settings?.[0] ?? null
       },
     })
 
     t.field("exercise_progress", {
       type: "ExerciseProgress",
-      resolve: async (parent, _, ctx) => {
-        const { course_id, user_id, progress } = parent
-
+      resolve: async ({ course_id, user_id, progress }, _, ctx) => {
         if (!course_id || !user_id) {
           throw new Error("no course or user found")
         }
 
-        const courseProgress: any = progress || []
+        const courseProgress: any = progress ?? []
+
         const exercises = await ctx.prisma.course
           .findUnique({
-            where: { id: course_id },
+            where: {
+              id: course_id,
+            },
           })
           .exercises({
             where: {
@@ -114,10 +94,9 @@ export const UserCourseProgress = objectType({
           })
 
         const completedExerciseCount = exercises.reduce(
-          (acc, curr) => acc + (curr.exercise_completions?.length ?? 0),
+          (acc, curr) => acc + (curr.exercise_completions?.length || 0),
           0,
         )
-
         const totalProgress =
           (courseProgress?.reduce(
             (acc: number, curr: any) => acc + curr.progress,
@@ -186,7 +165,9 @@ export const UserCourseProgressQueries = extendType({
         const { skip, take, cursor, user_id, course_id, course_slug } = args
 
         if (!course_id && !course_slug) {
-          throw new Error("must provide course_id or course_slug")
+          throw new UserInputError(
+            "must provide either course_id or course_slug",
+          )
         }
 
         return ctx.prisma.course
@@ -204,24 +185,6 @@ export const UserCourseProgressQueries = extendType({
               user_id,
             },
           })
-        /*return ctx.prisma.userCourseProgress.findMany({
-          skip: skip ?? undefined,
-          take: take ?? undefined,
-          cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
-          where: {
-            user_id,
-            course: {
-              OR: [
-                {
-                  id: course_id ?? undefined,
-                },
-                {
-                  slug: course_slug ?? undefined,
-                },
-              ],
-            },
-          },
-        })*/
       },
     })
   },

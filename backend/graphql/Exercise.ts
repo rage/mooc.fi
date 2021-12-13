@@ -1,18 +1,20 @@
-import {
-  objectType,
-  extendType,
-  arg,
-  idArg,
-  intArg,
-  stringArg,
-  nonNull,
-  nullable,
-} from "nexus"
-import { Prisma } from "@prisma/client"
-import { isAdmin, Role } from "../accessControl"
-import { filterNull } from "../util/db-functions"
 import { Context } from "/context"
 import { AuthenticationError } from "apollo-server-core"
+import {
+  arg,
+  extendType,
+  idArg,
+  intArg,
+  nonNull,
+  nullable,
+  objectType,
+  stringArg,
+} from "nexus"
+
+import { Prisma } from "@prisma/client"
+
+import { isAdmin, Role } from "../accessControl"
+import { filterNull } from "../util/db-functions"
 
 export const Exercise = objectType({
   name: "Exercise",
@@ -31,8 +33,6 @@ export const Exercise = objectType({
     t.model.service()
     t.model.timestamp()
     t.model.updated_at()
-
-    // t.prismaFields({ filter: ["exercise_completions"] })
 
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
@@ -58,7 +58,6 @@ export const Exercise = objectType({
           .findUnique({ where: { id: parent.id } })
           .exercise_completions({
             where: {
-              // @ts-ignore: context typing problem, FIXME
               user_id,
             },
             orderBy:

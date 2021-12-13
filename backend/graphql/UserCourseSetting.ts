@@ -1,16 +1,18 @@
-import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { buildUserSearch } from "../util/db-functions"
-import { isAdmin } from "../accessControl"
+import { ForbiddenError, UserInputError } from "apollo-server-core"
 import {
-  objectType,
   extendType,
   idArg,
   intArg,
-  stringArg,
   nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
-import { Prisma } from "@prisma/client"
+
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
+
+import { isAdmin } from "../accessControl"
+import { buildUserSearch } from "../util/db-functions"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
@@ -52,6 +54,7 @@ export const UserCourseSettingQueries = extendType({
               where: {
                 user_id,
               },
+              orderBy: { created_at: "asc" },
             },
             inherit_settings_from: {
               include: {
@@ -59,6 +62,7 @@ export const UserCourseSettingQueries = extendType({
                   where: {
                     user_id,
                   },
+                  orderBy: { created_at: "asc" },
                 },
               },
             },
@@ -66,26 +70,8 @@ export const UserCourseSettingQueries = extendType({
         })
 
         const result =
-          settingsData?.inherit_settings_from?.user_course_settings?.[0] ||
-          settingsData?.user_course_settings?.[0] ||
-          null
-
-        /*const inheritSettingsCourse = await ctx.prisma.course
-          .findUnique({ where: { id: course_id } })
-          .inherit_settings_from()
-
-        if (inheritSettingsCourse) {
-          course_id = inheritSettingsCourse.id
-        }
-
-        const result = (await ctx.prisma.course.findUnique({
-          where: { id: course_id }
-        })
-          .user_course_settings({
-            where: {
-              user_id
-            }
-          }))?.[0]*/
+          settingsData?.inherit_settings_from?.user_course_settings?.[0] ??
+          settingsData?.user_course_settings?.[0]
 
         if (!result) {
           throw new UserInputError("Not found")
@@ -172,33 +158,33 @@ export const UserCourseSettingQueries = extendType({
                 }
               : {}),
             course_id,
+            // TODO: should this only return unique and only the oldest/newest?
           },
         }
 
         return findManyCursorConnection(
           async (args) => {
+            let baseQuery
             if (course_id) {
-              return ctx.prisma.course
-                .findUnique({
-                  where: { id: course_id },
-                })
-                .user_course_settings({
-                  ...args,
-                  ...baseArgs,
-                })
+              baseQuery = ctx.prisma.course.findUnique({
+                where: {
+                  id: course_id,
+                },
+              })
+            } else if (user_id || user_upstream_id) {
+              baseQuery = ctx.prisma.user.findUnique({
+                where: {
+                  id: user_id ?? undefined,
+                  upstream_id: user_upstream_id ?? undefined,
+                },
+              })
             }
-            if (user_id || user_upstream_id) {
-              return ctx.prisma.user
-                .findUnique({
-                  where: {
-                    id: user_id ?? undefined,
-                    upstream_id: user_upstream_id ?? undefined,
-                  },
-                })
-                .user_course_settings({ ...args, ...baseArgs })
+            if (!baseQuery) {
+              throw new UserInputError(
+                "need to provide one of course_id, user_id, user_upstream_id",
+              )
             }
-
-            return ctx.prisma.userCourseSetting.findMany({
+            return await baseQuery?.user_course_settings({
               ...args,
               ...baseArgs,
             })

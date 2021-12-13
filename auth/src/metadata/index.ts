@@ -1,27 +1,13 @@
 import axios from "axios"
 import fs from "fs"
 import { SamlConfig } from "passport-saml"
-import {
-  MetadataReader,
-  toPassportConfig,
-} from "passport-saml-metadata"
-import {
-  FileKeyInfo,
-  SignedXml,
-  xpath,
-} from "xml-crypto"
+import { MetadataReader, toPassportConfig } from "passport-saml-metadata"
+import { FileKeyInfo, SignedXml, xpath } from "xml-crypto"
 
 import { DOMParser } from "@xmldom/xmldom"
 
-import {
-  MOOCFI_PRIVATE_KEY,
-  SP_URL,
-} from "../config"
-import {
-  CERTS_DIR,
-  METADATA_DIR,
-  MetadataConfig,
-} from "./config"
+import { MOOCFI_PRIVATE_KEY, SP_URL } from "../config"
+import { CERTS_DIR, METADATA_DIR, MetadataConfig } from "./config"
 
 type IpConfig = Pick<
   SamlConfig,
@@ -135,7 +121,9 @@ async function getAndCheckMetadata(config: MetadataConfig) {
   return xml
 }
 
-export async function getPassportConfig(config: MetadataConfig): Promise<SamlConfig> {
+export async function getPassportConfig(
+  config: MetadataConfig,
+): Promise<SamlConfig> {
   try {
     ensureDirectories()
 

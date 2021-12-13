@@ -1,4 +1,11 @@
 import {
+  UserSummary_user_user_course_summary_course_exercises,
+  UserSummary_user_user_course_summary_exercise_completions,
+} from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
+import {
   Paper,
   Table,
   TableBody,
@@ -7,13 +14,8 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core"
+
 import ExerciseEntry from "./ExerciseEntry"
-import {
-  UserSummary_user_user_course_summary_course_exercises,
-  UserSummary_user_user_course_summary_exercise_completions,
-} from "/static/types/generated/UserSummary"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 interface ExerciseListProps {
   exercises: (UserSummary_user_user_course_summary_course_exercises & {

@@ -1,18 +1,21 @@
-import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
-import { CardTitle } from "/components/Text/headers"
-import styled from "@emotion/styled"
-import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
-import { sortBy } from "lodash"
 import React from "react"
-import ExerciseList from "./ExerciseList"
+
+import CollapseButton from "/components/Buttons/CollapseButton"
+import { CardTitle } from "/components/Text/headers"
+import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
+import { sortBy } from "lodash"
+
+import styled from "@emotion/styled"
+import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
+
 import {
-  useCollapseContext,
   ActionType,
   CollapsablePart,
+  useCollapseContext,
 } from "./CollapseContext"
-import CollapseButton from "/components/Buttons/CollapseButton"
 import Completion from "./Completion"
+import ExerciseList from "./ExerciseList"
 import ProgressEntry from "./ProgressEntry"
 
 interface CourseEntryProps {
@@ -49,26 +52,6 @@ const CourseEntryCardSkeleton = () => (
 function CourseEntry({ data }: CourseEntryProps) {
   const { state, dispatch } = useCollapseContext()
 
-  // @ts-ignore: not used
-  /*const exercisesPerPart =
-    data?.exercise_completions
-      ?.filter(notEmpty)
-      .reduce<
-        Record<
-          number,
-          UserSummary_user_user_course_summary_exercise_completions[]
-        >
-      >(
-        (acc, curr) => ({
-          ...acc,
-          [curr.exercise?.part ?? 0]: sortBy(
-            (acc[curr.exercise?.part ?? 0] ?? []).concat(curr),
-            (ec) => ec.exercise?.section,
-          ),
-        }),
-        {},
-      ) ?? {}*/
-
   if (!data) {
     return <CourseEntryCardSkeleton />
   }
@@ -80,13 +63,16 @@ function CourseEntry({ data }: CourseEntryProps) {
   const isOpen = state[data?.course?.id ?? "_"]?.open
   // TODO: subheaders for parts?
   const exercisesWithCompletions =
-    data.course?.exercises?.filter(notEmpty).map((exercise) => ({
-      ...exercise,
-      exercise_completions:
-        data.exercise_completions
-          ?.filter((ec) => ec?.exercise_id === exercise.id)
-          .filter(notEmpty) || [],
-    })) ?? []
+    data.course?.exercises
+      ?.filter(notEmpty)
+      .map((exercise) => ({
+        ...exercise,
+        exercise_completions:
+          data.exercise_completions
+            ?.filter((ec) => ec?.exercise_id === exercise.id)
+            .filter(notEmpty) || [],
+      }))
+      .filter(notEmpty) ?? []
 
   return (
     <CourseEntryCard>

@@ -1,11 +1,12 @@
 import {
-  objectType,
-  inputObjectType,
   extendType,
-  stringArg,
   idArg,
+  inputObjectType,
   nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
+
 import { isAdmin } from "../accessControl"
 
 export const CourseTranslation = objectType({

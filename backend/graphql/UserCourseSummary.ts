@@ -18,36 +18,25 @@ export const UserCourseSummary = objectType({
         })
       },
     })
-
     t.field("completion", {
       type: "Completion",
       resolve: async ({ user_id, course_id }, _, ctx) => {
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
+        const completions = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .completions({
+            where: {
+              user_id,
+            },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
 
-        return (
-          (
-            await ctx.prisma.course
-              .findUnique({
-                where: {
-                  id: course_id,
-                },
-              })
-              .completions({
-                where: { user_id },
-                orderBy: { created_at: "asc" },
-                take: 1,
-              })
-          )?.[0] ?? null
-        )
-        /*return ctx.prisma.completion.findFirst({
-          where: {
-            user_id,
-            course_id,
-          },
-          orderBy: { created_at: "asc" },
-        })*/
+        return completions?.[0] ?? null
       },
     })
     t.field("user_course_progress", {
@@ -56,29 +45,19 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-        return (
-          (
-            await ctx.prisma.course
-              .findUnique({
-                where: {
-                  id: course_id,
-                },
-              })
-              .user_course_progresses({
-                where: { user_id },
-                orderBy: { created_at: "asc" },
-                take: 1,
-              })
-          )?.[0] ?? null
-        )
+        const progresses = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .user_course_progresses({
+            where: {
+              user_id,
+            },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
 
-        /*return ctx.prisma.userCourseProgress.findFirst({
-          where: {
-            user_id,
-            course_id,
-          },
-          orderBy: { created_at: "asc" },
-        })*/
+        return progresses?.[0] ?? null
       },
     })
     t.list.field("user_course_service_progresses", {
@@ -87,26 +66,18 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
+        const progresses = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .user_course_service_progresses({
+            where: {
+              user_id,
+            },
+            orderBy: { created_at: "asc" },
+          })
 
-        return (
-          (await ctx.prisma.course
-            .findUnique({
-              where: {
-                id: course_id,
-              },
-            })
-            .user_course_service_progresses({
-              where: { user_id },
-              orderBy: { created_at: "asc" },
-            })) ?? []
-        )
-
-        /*return ctx.prisma.userCourseServiceProgress.findMany({
-          where: {
-            user_id,
-            course_id,
-          },
-        })*/
+        return progresses ?? []
       },
     })
 
@@ -116,15 +87,14 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-
         return ctx.prisma.user
           .findUnique({
-            where: {
-              id: user_id,
-            },
+            where: { id: user_id },
           })
           .exercise_completions({
-            where: { exercise: { course_id } },
+            where: {
+              exercise: { course_id },
+            },
             orderBy: { created_at: "asc" },
           })
       },

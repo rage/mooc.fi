@@ -80,15 +80,6 @@ export const User = objectType({
                   : undefined,
             },
           })
-        /*return ctx.prisma.completion.findMany({
-          where: {
-            user_id: parent.id,
-            course:
-              course_id || course_slug
-                ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
-                : undefined,
-          },
-        })*/
       },
     })
 
@@ -119,13 +110,11 @@ export const User = objectType({
 
         return ctx.prisma.user
           .findUnique({
-            where: {
-              id: parent.id,
-            },
+            where: { id: parent.id },
           })
           .completions_registered({
             where: {
-              organization_id,
+              organization_id: organization_id ?? undefined,
               course:
                 course_id || course_slug
                   ? {
@@ -135,16 +124,6 @@ export const User = objectType({
                   : undefined,
             },
           })
-        /*return ctx.prisma.completionRegistered.findMany({
-          where: {
-            user_id: parent.id,
-            organization_id: organization_id ?? undefined,
-            course:
-              course_id || course_slug
-                ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
-                : undefined,
-          },
-        })*/
       },
     })
 
@@ -183,27 +162,8 @@ export const User = objectType({
         })
 
         const progresses =
-          data?.completions_handled_by?.user_course_progresses ||
+          data?.completions_handled_by?.user_course_progresses ??
           data?.user_course_progresses
-
-        /*const handlerCourse = await ctx.prisma.course
-          .findUnique({
-            where: {
-              id: course_id ?? undefined,
-              slug: course_slug ?? undefined,
-            },
-          })
-          .completions_handled_by()
-
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            course: {
-              id: handlerCourse?.id ?? course_id ?? undefined,
-              slug: handlerCourse ? undefined : course_slug ?? undefined,
-            },
-            user: { id: parent.id },
-          },
-        })*/
 
         return (
           progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
@@ -243,24 +203,6 @@ export const User = objectType({
         })
 
         return courses.map((course) => ({ course, user: parent }))
-        /*const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
-          {
-            where: { user_id: parent.id },
-          },
-        )
-        const progresses = await Promise.all(
-          user_course_progressess.map(async (p) => {
-            const course = await ctx.prisma.userCourseProgress
-              .findUnique({ where: { id: p.id } })
-              .course()
-            return {
-              course,
-              user: parent,
-            }
-          }),
-        )
-
-        return progresses as any*/
       },
     })
 
@@ -273,17 +215,17 @@ export const User = objectType({
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        return (
-          await ctx.prisma.user
-            .findUnique({
-              where: { id: parent.id },
-            })
-            .user_course_progresses({
-              where: { course_id },
-              orderBy: { created_at: "asc" },
-              take: 1,
-            })
-        )?.[0]
+        const progresses = await ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .user_course_progresses({
+            where: { course_id },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
+
+        return progresses?.[0]
       },
     })
 
@@ -304,36 +246,25 @@ export const User = objectType({
                 : {}),
             },
           })
-        /*return ctx.prisma.exerciseCompletion.findMany({
-          where: {
-            user_id: parent.id,
-            ...(!includeDeleted
-              ? { exercise: { deleted: { not: true } } }
-              : {}),
-          },
-        })*/
       },
     })
 
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
-      resolve: async ({ id }, _, ctx) => {
+      resolve: async (parent, _, ctx) => {
         const settings = await ctx.prisma.user
           .findUnique({
-            where: { id },
+            where: { id: parent.id },
           })
           .user_course_settings({
-            orderBy: { created_at: "desc" },
+            orderBy: { created_at: "asc" },
           })
 
         const courseIds = uniq(settings.map((s) => s.course_id)).filter(
           (key) => key !== null && key !== "null",
         )
 
-        return courseIds.map((course_id) => ({
-          user_id: id,
-          course_id,
-        }))
+        return courseIds.map((course_id) => ({ user_id: parent.id, course_id }))
       },
     })
   },

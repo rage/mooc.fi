@@ -102,6 +102,11 @@ const fullCourseQuery = gql`
         id
         language
       }
+      exercises(includeDeleted: $includeDeletedExercises) {
+        id
+        name
+        deleted
+      }
       upcoming_active_link
       automatic_completions
       automatic_completions_eligible_for_ects
@@ -353,6 +358,7 @@ const courseCompletionsQuery = gql`
     }
   }
 `
+
 // study_modules may be returned in any order, let's just sort them so snapshots are equal
 const sortStudyModules = (course: any) => {
   if (!course?.study_modules) {
@@ -661,7 +667,7 @@ describe("Course", () => {
           })
 
           expect(res.courses?.map((c: Course) => c.id).sort()).toMatchSnapshot(
-            `courses-hidden-${hidden || "null"}`,
+            `courses-hidden-${hidden}`,
           )
         }
       })
