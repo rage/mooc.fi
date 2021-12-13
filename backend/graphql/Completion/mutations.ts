@@ -1,5 +1,5 @@
 import { AuthenticationError } from "apollo-server-errors"
-import { difference, groupBy } from "lodash"
+import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -216,21 +216,36 @@ export const CompletionMutations = extendType({
           },
         })
 
-        for (const user of users) {
-          await generateUserCourseProgress({
-            user,
-            course,
-            userCourseProgress: progressByUser[user.id][0],
-            context: {
-              // not very optimal, but
-              logger: ctx.logger,
-              prisma: ctx.prisma,
-              consumer: undefined as any,
-              mutex: undefined as any,
-              knex: ctx.knex,
-              topic_name: "",
-            },
-          })
+        const queue = chunk(users, 50)
+        let processed = 0
+
+        for (const userChunk of queue) {
+          try {
+            const promises = userChunk.map((user) =>
+              generateUserCourseProgress({
+                user,
+                course,
+                userCourseProgress: progressByUser[user.id][0],
+                context: {
+                  // not very optimal, but
+                  logger: ctx.logger,
+                  prisma: ctx.prisma,
+                  consumer: undefined as any,
+                  mutex: undefined as any,
+                  knex: ctx.knex,
+                  topic_name: "",
+                },
+              }),
+            )
+            await Promise.all(promises)
+            processed += userChunk.length
+            ctx.logger.info(`${processed} users processed`)
+          } catch (e: unknown) {
+            const message = e instanceof Error ? `${e.message}, ${e.stack}` : e
+            ctx.logger.error(`error processing after ${processed}: ${message}`)
+
+            return `error processing after ${processed}: ${message}`
+          }
         }
 
         return `${users.length} users rechecked`
