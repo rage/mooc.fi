@@ -68,7 +68,7 @@ function CourseEntry({ data }: CourseEntryProps) {
       exercise_completions:
         data.exercise_completions
           ?.filter((ec) => ec?.exercise_id === exercise.id)
-          .filter(notEmpty) || [],
+          .filter(notEmpty) ?? [],
     })) ?? []
 
   return (

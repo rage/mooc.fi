@@ -41,20 +41,20 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
           {round(exerciseCompletion?.n_points ?? 0)}/{exercise?.max_points ?? 0}
         </TableCell>
         <TableCell>
-          {exerciseCompletion.completed ? t("yes") : t("no")}
+          {exerciseCompletion?.completed ? t("yes") : t("no")}
         </TableCell>
         <TableCell>
-          {exerciseCompletion.attempted ? t("yes") : t("no")}
+          {exerciseCompletion?.attempted ? t("yes") : t("no")}
         </TableCell>
         <TableCell>
-          {exerciseCompletion.exercise_completion_required_actions.map(
+          {exerciseCompletion?.exercise_completion_required_actions.map(
             (
               action: UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
             ) => (
               // @ts-ignore: translator key
               <Chip key={action.id} label={t(action.value) ?? action.value} />
             ),
-          )}
+          ) ?? null}
         </TableCell>
         {/*<TableCell>
           <CollapseButton
