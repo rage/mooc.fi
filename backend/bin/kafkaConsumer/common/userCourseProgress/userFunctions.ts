@@ -26,8 +26,16 @@ export const getCombinedUserCourseProgress = async ({
   context: KafkaContext
 }): Promise<CombinedUserCourseProgress> => {
   /* Get UserCourseServiceProgresses */
-  const userCourseServiceProgresses =
-    await prisma.userCourseServiceProgress.findMany({
+  const baseQuery = user?.id
+    ? prisma.user.findUnique({ where: { id: user.id } })
+    : course?.id
+    ? prisma.course.findUnique({ where: { id: course.id } })
+    : null
+  if (!baseQuery) {
+    throw new Error("has to have at least one of user and course")
+  }
+  const userCourseServiceProgresses = await baseQuery.user_course_service_progresses(
+    {
       where: {
         user_id: user?.id,
         course_id: course?.id,
@@ -121,7 +129,40 @@ export const getUserCourseSettings = async ({
   course_id: string
   context: KafkaContext
 }): Promise<UserCourseSetting | null> => {
-  let userCourseSetting = await prisma.userCourseSetting.findFirst({
+  const result = await prisma.course.findUnique({
+    where: {
+      id: course_id,
+    },
+    include: {
+      user_course_settings: {
+        where: {
+          user_id: user.id,
+        },
+        orderBy: {
+          created_at: "asc",
+        },
+      },
+      inherit_settings_from: {
+        include: {
+          user_course_settings: {
+            where: {
+              user_id: user.id,
+            },
+            orderBy: {
+              created_at: "asc",
+            },
+          },
+        },
+      },
+    },
+  })
+
+  return (
+    result?.inherit_settings_from?.user_course_settings?.[0] ??
+    result?.user_course_settings?.[0] ??
+    null
+  )
+  /*let userCourseSetting = await prisma.userCourseSetting.findFirst({
     where: {
       user_id: user.id,
       course_id,
@@ -148,7 +189,7 @@ export const getUserCourseSettings = async ({
     }
   }
 
-  return userCourseSetting
+  return userCourseSetting*/
 }
 
 interface CheckCompletion {
@@ -223,12 +264,20 @@ export const createCompletion = async ({
     course_id,
     context,
   })
-  const completions = await prisma.completion.findMany({
-    where: {
-      user_id: user.id,
-      course_id: handlerCourse.id,
-    },
-  })
+  const completions = await prisma.user
+    .findUnique({
+      where: {
+        id: user.id,
+      },
+    })
+    .completions({
+      where: {
+        course_id: handlerCourse.id,
+      },
+      orderBy: {
+        created_at: "asc",
+      },
+    })
   if (completions.length < 1) {
     logger?.info("No existing completion found, creating new...")
     await prisma.completion.create({

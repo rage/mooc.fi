@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: update-course-statuses
@@ -8,6 +8,8 @@ spec:
   schedule: "0 4 * * *"
   startingDeadlineSeconds: 900
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     metadata:
       labels:

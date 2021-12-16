@@ -8,5 +8,7 @@ export const StoredData = objectType({
     t.model.data()
     t.model.created_at()
     t.model.updated_at()
+    t.model.user()
+    t.model.course()
   },
 })

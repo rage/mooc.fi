@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express"
-import { ApiContext } from ".."
+
+import { ApiContext } from "../"
 import { requireAdmin } from "../../util/server-functions"
 
 export function abStudiesRouter({ knex, prisma }: ApiContext) {
@@ -97,13 +98,14 @@ export function abStudiesRouter({ knex, prisma }: ApiContext) {
         .json({ message: `ab_study with id ${id} not found` })
     }
 
-    const groupByUser = enrollments.reduce(
-      (acc, curr) => ({
+    const groupByUser = enrollments.reduce((acc, curr) => {
+      if (!curr.user) return acc
+
+      return {
         ...acc,
         [curr.user.upstream_id]: curr.group,
-      }),
-      {},
-    )
+      }
+    }, {})
 
     return res.status(400).json({ study_id: id, users: groupByUser })
   }

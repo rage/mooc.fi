@@ -1,11 +1,12 @@
 import {
-  objectType,
-  inputObjectType,
   extendType,
-  stringArg,
   idArg,
+  inputObjectType,
   nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
+
 import { isAdmin } from "../accessControl"
 
 export const CourseTranslation = objectType({
@@ -52,7 +53,7 @@ export const CourseTranslationUpsertInput = inputObjectType({
 export const CourseTranslationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("CourseTranslations", {
+    t.list.field("courseTranslations", {
       type: "CourseTranslation",
       args: {
         language: stringArg(),

@@ -1,26 +1,28 @@
-import { ApolloClient, ApolloConsumer, gql, useQuery } from "@apollo/client"
 import { useContext, useState } from "react"
+
+import CustomSnackbar from "/components/CustomSnackbar"
+import Spinner from "/components/Spinner"
+import LanguageContext from "/contexts/LanguageContext"
+import { UpdateCourseMutation } from "/graphql/mutations/courses"
+import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
+import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
+import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import { updateCourse } from "/static/types/generated/updateCourse"
+import omit from "lodash/omit"
+import Router from "next/router"
+
+import { ApolloClient, ApolloConsumer, gql, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  TextField,
+  DialogTitle,
   InputLabel,
   NativeSelect,
+  TextField,
 } from "@material-ui/core"
-import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
-import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
-import Router from "next/router"
-import LanguageContext from "/contexts/LanguageContext"
-import CustomSnackbar from "/components/CustomSnackbar"
-import { updateCourse } from "/static/types/generated/updateCourse"
-import { UpdateCourseMutation } from "/graphql/mutations/courses"
-import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import omit from "lodash/omit"
-import Spinner from "/components/Spinner"
 
 export const AllCoursesDetails = gql`
   query AllCoursesDetails {
@@ -35,6 +37,9 @@ export const AllCoursesDetails = gql`
         name
         id
       }
+      course_stats_email {
+        id
+      }
     }
   }
 `
@@ -42,15 +47,17 @@ export const AllCoursesDetails = gql`
 interface CreateEmailTemplateDialogParams {
   course?: CourseDetailsData
   buttonText: string
+  type?: string
 }
 
 const CreateEmailTemplateDialog = ({
   course,
   buttonText,
+  type = "completion",
 }: CreateEmailTemplateDialogParams) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [nameInput, setNameInput] = useState("")
-  const [templateType, setTemplateType] = useState("completion")
+  const [templateType, setTemplateType] = useState(type)
   const [selectedCourse, setSelectedCourse] = useState<
     CourseDetailsData | undefined
   >(undefined)
@@ -116,6 +123,17 @@ const CreateEmailTemplateDialog = ({
           },
         })
       }
+      if ((course || selectedCourse) && templateType === "course-stats") {
+        await client.mutate<updateCourse>({
+          mutation: UpdateCourseMutation,
+          variables: {
+            course: {
+              ...omit(course ?? selectedCourse, "__typename", "id"),
+              course_stats_email: data?.addEmailTemplate?.id,
+            },
+          },
+        })
+      }
       const url =
         "/" + language + "/email-templates/" + data?.addEmailTemplate?.id
       Router.push(url)
@@ -164,6 +182,7 @@ const CreateEmailTemplateDialog = ({
               >
                 <option value="completion">Completion e-mail</option>
                 <option value="threshold">Threshold e-mail</option>
+                <option value="course-stats">Course stats e-mail</option>
               </NativeSelect>
               <br />
               <br />

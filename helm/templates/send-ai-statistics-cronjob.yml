@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: send-ai-statistics
@@ -8,6 +8,8 @@ spec:
   schedule: "1 7 * * *"
   startingDeadlineSeconds: 500
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     metadata:
       labels:

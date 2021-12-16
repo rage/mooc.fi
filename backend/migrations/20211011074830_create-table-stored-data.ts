@@ -24,17 +24,9 @@ export async function up(knex: Knex): Promise<void> {
     ALTER TABLE ONLY stored_data
       ADD CONSTRAINT stored_data_course FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE;
   `)
-
-  await knex.raw(`
-    CREATE UNIQUE INDEX IF NOT EXISTS "stored_data.course_id_user_id._UNIQUE"
-      ON stored_data USING btree (course_id, user_id);
-  `)
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.raw(`
-    DROP INDEX IF EXISTS "stored_data.course_id_user_id._UNIQUE";
-  `)
   await knex.raw(`
     DROP TABLE stored_data;
   `)

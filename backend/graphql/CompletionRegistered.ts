@@ -139,14 +139,16 @@ export const CompletionRegisteredMutations = extendType({
 
 const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
-    const course = await ctx.prisma.completion
-      .findUnique({ where: { id: entry.completion_id } })
-      .course()
-    const user = await ctx.prisma.completion
-      .findUnique({ where: { id: entry.completion_id } })
-      .user()
+    const { user_id, course_id } =
+      (await ctx.prisma.completion.findUnique({
+        where: { id: entry.completion_id },
+        select: {
+          course_id: true,
+          user_id: true,
+        },
+      })) ?? {}
 
-    if (!course || !user) {
+    if (!course_id || !user_id) {
       // TODO/FIXME: we now fail silently if course/user not found
       return Promise.resolve()
     }
@@ -159,11 +161,11 @@ const buildPromises = (array: any[], ctx: Context) => {
         organization: {
           connect: { id: ctx.organization?.id },
         },
-        course: { connect: { id: course.id } },
+        course: { connect: { id: course_id } },
         real_student_number: entry.student_number,
         // TODO: where to get registration_date here?
         // receives CompletionArg as parameter! Is this used anywhere?
-        user: { connect: { id: user.id } },
+        user: { connect: { id: user_id } },
       },
     })
   })

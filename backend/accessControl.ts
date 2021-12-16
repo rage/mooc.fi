@@ -17,6 +17,27 @@ export const isOrganization = (_: any, _args: any, ctx: Context, _info: any) =>
   ctx.role === Role.ORGANIZATION
 export const isVisitor = (_: any, _args: any, ctx: Context, _info: any) =>
   ctx.role === Role.VISITOR
+export const isCourseOwner = (course_id: string) => async (
+  _: any,
+  _args: any,
+  ctx: Context,
+  _info: any,
+) => {
+  if (!isUser(_, _args, ctx, _info) || !ctx.user?.id) {
+    return false
+  }
+
+  const ownership = await ctx.prisma.courseOwnership.findUnique({
+    where: {
+      user_id_course_id: {
+        user_id: ctx.user?.id,
+        course_id,
+      },
+    },
+  })
+
+  return Boolean(ownership)
+}
 
 type AuthorizeFunction = (
   root: any,

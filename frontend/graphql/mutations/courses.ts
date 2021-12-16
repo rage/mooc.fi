@@ -107,6 +107,13 @@ export const UpdateCourseMutation = gql`
         id
         language
       }
+      course_stats_email {
+        id
+        name
+        title
+        txt_body
+        html_body
+      }
     }
   }
 `

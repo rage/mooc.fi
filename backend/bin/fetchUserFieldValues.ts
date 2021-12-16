@@ -13,7 +13,7 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
-const CONFIG_NAME = "userFieldValues"
+const CONFIG_NAME = process.env.CONFIG_NAME ?? "userFieldValues"
 
 const logger = sentryLogger({ service: "fetch-user-field-values" })
 

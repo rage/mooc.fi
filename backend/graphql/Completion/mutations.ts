@@ -1,5 +1,5 @@
 import { AuthenticationError } from "apollo-server-errors"
-import { difference, groupBy } from "lodash"
+import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -167,19 +167,23 @@ export const CompletionMutations = extendType({
             slug: slug ?? undefined,
           },
         })
-
         if (!course) {
           throw new Error("course not found")
         }
-
         // find users on course with points
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            course_id: course.id,
-            n_points: { gt: 0 },
-          },
-          orderBy: { created_at: "asc" },
-        })
+        const progresses = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
+          .user_course_progresses({
+            where: {
+              n_points: { gt: 0 },
+            },
+            orderBy: { created_at: "asc" },
+          })
 
         const progressByUser = groupBy(progresses, "user_id")
         const userIds = Object.keys(progressByUser)
@@ -187,12 +191,18 @@ export const CompletionMutations = extendType({
           .filter((key) => key !== "null")
 
         // find users with completions
-        const completions = await ctx.prisma.completion.findMany({
-          where: {
-            course_id: course.id,
-            user_id: { in: userIds },
-          },
-        })
+        const completions = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
+          .completions({
+            where: {
+              user_id: { in: userIds },
+            },
+          })
 
         // filter users without completions
         const userIdsWithoutCompletions = difference(
@@ -206,21 +216,36 @@ export const CompletionMutations = extendType({
           },
         })
 
-        for (const user of users) {
-          await generateUserCourseProgress({
-            user,
-            course,
-            userCourseProgress: progressByUser[user.id][0],
-            context: {
-              // not very optimal, but
-              logger: ctx.logger,
-              prisma: ctx.prisma,
-              consumer: undefined as any,
-              mutex: undefined as any,
-              knex: ctx.knex,
-              topic_name: "",
-            },
-          })
+        const queue = chunk(users, 50)
+        let processed = 0
+
+        for (const userChunk of queue) {
+          try {
+            const promises = userChunk.map((user) =>
+              generateUserCourseProgress({
+                user,
+                course,
+                userCourseProgress: progressByUser[user.id][0],
+                context: {
+                  // not very optimal, but
+                  logger: ctx.logger,
+                  prisma: ctx.prisma,
+                  consumer: undefined as any,
+                  mutex: undefined as any,
+                  knex: ctx.knex,
+                  topic_name: "",
+                },
+              }),
+            )
+            await Promise.all(promises)
+            processed += userChunk.length
+            ctx.logger.info(`${processed} users processed`)
+          } catch (e: unknown) {
+            const message = e instanceof Error ? `${e.message}, ${e.stack}` : e
+            ctx.logger.error(`error processing after ${processed}: ${message}`)
+
+            return `error processing after ${processed}: ${message}`
+          }
         }
 
         return `${users.length} users rechecked`

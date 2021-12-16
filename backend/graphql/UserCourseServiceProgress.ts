@@ -1,4 +1,5 @@
-import { objectType, extendType, idArg, arg, nonNull } from "nexus"
+import { UserInputError } from "apollo-server-errors"
+import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin } from "../accessControl"
 
@@ -48,14 +49,38 @@ export const UserCourseServiceProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        return await ctx.prisma.userCourseServiceProgress.findFirst({
+
+        let baseQuery
+
+        if (user_id) {
+          baseQuery = ctx.prisma.user.findUnique({
+            where: { id: user_id },
+          })
+        } else if (course_id) {
+          baseQuery = ctx.prisma.course.findUnique({
+            where: { id: course_id },
+          })
+        } else if (service_id) {
+          baseQuery = ctx.prisma.service.findUnique({
+            where: { id: service_id },
+          })
+        }
+        if (!baseQuery) {
+          throw new UserInputError(
+            "provide at least one of user_id, course_id, service_id",
+          )
+        }
+
+        const progresses = await baseQuery.user_course_service_progresses({
           where: {
-            user_id: user_id,
-            course_id: course_id,
-            service_id: service_id,
+            course_id,
+            service_id,
+            user_id,
           },
           orderBy: { created_at: "asc" },
         })
+
+        return progresses?.[0]
       },
     })
 
@@ -122,28 +147,30 @@ export const UserCourseServiceProgressMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { service_id, progress, user_course_progress_id } = args
 
-        const course = await ctx.prisma.userCourseProgress
-          .findUnique({ where: { id: user_course_progress_id } })
-          .course()
-        const user = await ctx.prisma.userCourseProgress
-          .findUnique({ where: { id: user_course_progress_id } })
-          .user()
+        const { course_id, user_id } =
+          (await ctx.prisma.userCourseProgress.findUnique({
+            where: { id: user_course_progress_id },
+            select: {
+              course_id: true,
+              user_id: true,
+            },
+          })) ?? {}
 
-        if (!course || !user) {
+        if (!course_id || !user_id) {
           throw new Error("course or user not found")
         }
 
         return ctx.prisma.userCourseServiceProgress.create({
           data: {
             course: {
-              connect: { id: course.id },
+              connect: { id: course_id },
             },
             progress: progress,
             service: {
               connect: { id: service_id },
             },
             user: {
-              connect: { id: user.id },
+              connect: { id: user_id },
             },
             user_course_progress: {
               connect: { id: user_course_progress_id },
