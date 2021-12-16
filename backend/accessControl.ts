@@ -25,19 +25,26 @@ type AuthorizeFunction = (
   info: any,
 ) => boolean
 
-export const or =
-  (...predicates: AuthorizeFunction[]) =>
-  (root: any, args: any, ctx: Context, info: any) =>
-    predicates.some((p) => p(root, args, ctx, info))
+export const or = (...predicates: AuthorizeFunction[]) => (
+  root: any,
+  args: any,
+  ctx: Context,
+  info: any,
+) => predicates.some((p) => p(root, args, ctx, info))
 
-export const and =
-  (...predicates: AuthorizeFunction[]) =>
-  (root: any, args: any, ctx: Context, info: any) =>
-    predicates.every((p) => p(root, args, ctx, info))
+export const and = (...predicates: AuthorizeFunction[]) => (
+  root: any,
+  args: any,
+  ctx: Context,
+  info: any,
+) => predicates.every((p) => p(root, args, ctx, info))
 
-export const not =
-  (fn: AuthorizeFunction) => (root: any, args: any, ctx: Context, info: any) =>
-    !fn(root, args, ctx, info)
+export const not = (fn: AuthorizeFunction) => (
+  root: any,
+  args: any,
+  ctx: Context,
+  info: any,
+) => !fn(root, args, ctx, info)
 
 /*const checkAccess = (
   ctx: Context,

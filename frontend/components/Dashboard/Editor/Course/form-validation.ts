@@ -116,8 +116,10 @@ const testUnique = <T extends FormValues>(
   field: string,
 ) =>
   function (this: Yup.TestContext, value?: any): boolean {
-    const { context, path }: { context?: any; path?: string | undefined } =
-      this.options
+    const {
+      context,
+      path,
+    }: { context?: any; path?: string | undefined } = this.options
     if (!context) {
       return true
     }

@@ -127,7 +127,8 @@ const Courses = [
         language: "fi_FI",
         description:
           "Course gives a practical introduction to data analysis using a large number of programming exercises and a project delving into the realm of a selected field of science. Starts on June 19th.",
-        link: "https://saskeli.github.io/data-analysis-with-python-summer-2019/",
+        link:
+          "https://saskeli.github.io/data-analysis-with-python-summer-2019/",
       },
       {
         id: "sefdtgw4ya",
@@ -135,7 +136,8 @@ const Courses = [
         language: "en_US",
         description:
           "Course gives a practical introduction to data analysis using a large number of programming exercises and a project delving into the realm of a selected field of science. Starts on June 19th.",
-        link: "https://saskeli.github.io/data-analysis-with-python-summer-2019/",
+        link:
+          "https://saskeli.github.io/data-analysis-with-python-summer-2019/",
       },
     ],
     promote: false,

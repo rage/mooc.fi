@@ -17,8 +17,11 @@ interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
 }
 const CourseImageInput = (props: ImageInputProps) => {
-  const { values, setFieldValue, initialValues } =
-    useFormikContext<CourseFormValues>()
+  const {
+    values,
+    setFieldValue,
+    initialValues,
+  } = useFormikContext<CourseFormValues>()
   const { courses } = props
   const { language } = useLanguageContext()
   const t = useTranslator(CoursesTranslations)
