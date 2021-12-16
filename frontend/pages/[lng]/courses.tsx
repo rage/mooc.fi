@@ -82,14 +82,13 @@ function useCourseSearch() {
 
   useEffect(() => {
     const params = [
-      ...(["search", "handledBy"] as Array<
-        keyof typeof searchVariables
-      >).map((field) =>
-        notEmptyOrEmptyString(searchVariables[field])
-          ? `${field}=${encodeURIComponent(
-              searchVariables[field]?.toString() ?? "",
-            )}`
-          : "",
+      ...(["search", "handledBy"] as Array<keyof typeof searchVariables>).map(
+        (field) =>
+          notEmptyOrEmptyString(searchVariables[field])
+            ? `${field}=${encodeURIComponent(
+                searchVariables[field]?.toString() ?? "",
+              )}`
+            : "",
       ),
       !searchVariables.hidden ? `hidden=false` : "",
       searchVariables.status?.length &&

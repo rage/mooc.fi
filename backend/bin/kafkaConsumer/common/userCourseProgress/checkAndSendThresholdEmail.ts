@@ -22,14 +22,13 @@ export const checkAndSendThresholdEmail = async ({
   combinedUserCourseProgress,
   context,
 }: Props) => {
-  const courseEmailThresholdTemplates = await context.prisma.emailTemplate.findMany(
-    {
+  const courseEmailThresholdTemplates =
+    await context.prisma.emailTemplate.findMany({
       where: {
         triggered_automatically_by_course_id: course.id,
         template_type: "threshold",
       },
-    },
-  )
+    })
 
   // Sort threshold emails ascending, send highest threshold email as last.
   const templatesThatFulfillPoints = courseEmailThresholdTemplates

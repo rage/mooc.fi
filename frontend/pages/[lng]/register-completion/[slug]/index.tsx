@@ -114,11 +114,10 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
-  const [
-    updateRegistrationAttemptDate,
-  ] = useMutation<UpdateRegistrationAttemptDate>(
-    UpdateRegistrationAttemptDateMutation,
-  )
+  const [updateRegistrationAttemptDate] =
+    useMutation<UpdateRegistrationAttemptDate>(
+      UpdateRegistrationAttemptDateMutation,
+    )
 
   const course_exists = Boolean(courseData?.course?.id)
 

@@ -6,10 +6,11 @@ import se from "./se.json"
 import { TranslationDictionary } from "/translations"
 
 export type RegisterCompletionTranslations = typeof en & typeof fi & typeof se
-const RegisterCompletionTranslations: TranslationDictionary<RegisterCompletionTranslations> = {
-  en,
-  fi,
-  se,
-}
+const RegisterCompletionTranslations: TranslationDictionary<RegisterCompletionTranslations> =
+  {
+    en,
+    fi,
+    se,
+  }
 
 export default RegisterCompletionTranslations

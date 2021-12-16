@@ -17,27 +17,24 @@ export const isOrganization = (_: any, _args: any, ctx: Context, _info: any) =>
   ctx.role === Role.ORGANIZATION
 export const isVisitor = (_: any, _args: any, ctx: Context, _info: any) =>
   ctx.role === Role.VISITOR
-export const isCourseOwner = (course_id: string) => async (
-  _: any,
-  _args: any,
-  ctx: Context,
-  _info: any,
-) => {
-  if (!isUser(_, _args, ctx, _info) || !ctx.user?.id) {
-    return false
-  }
+export const isCourseOwner =
+  (course_id: string) =>
+  async (_: any, _args: any, ctx: Context, _info: any) => {
+    if (!isUser(_, _args, ctx, _info) || !ctx.user?.id) {
+      return false
+    }
 
-  const ownership = await ctx.prisma.courseOwnership.findUnique({
-    where: {
-      user_id_course_id: {
-        user_id: ctx.user?.id,
-        course_id,
+    const ownership = await ctx.prisma.courseOwnership.findUnique({
+      where: {
+        user_id_course_id: {
+          user_id: ctx.user?.id,
+          course_id,
+        },
       },
-    },
-  })
+    })
 
-  return Boolean(ownership)
-}
+    return Boolean(ownership)
+  }
 
 type AuthorizeFunction = (
   root: any,
@@ -46,26 +43,19 @@ type AuthorizeFunction = (
   info: any,
 ) => boolean
 
-export const or = (...predicates: AuthorizeFunction[]) => (
-  root: any,
-  args: any,
-  ctx: Context,
-  info: any,
-) => predicates.some((p) => p(root, args, ctx, info))
+export const or =
+  (...predicates: AuthorizeFunction[]) =>
+  (root: any, args: any, ctx: Context, info: any) =>
+    predicates.some((p) => p(root, args, ctx, info))
 
-export const and = (...predicates: AuthorizeFunction[]) => (
-  root: any,
-  args: any,
-  ctx: Context,
-  info: any,
-) => predicates.every((p) => p(root, args, ctx, info))
+export const and =
+  (...predicates: AuthorizeFunction[]) =>
+  (root: any, args: any, ctx: Context, info: any) =>
+    predicates.every((p) => p(root, args, ctx, info))
 
-export const not = (fn: AuthorizeFunction) => (
-  root: any,
-  args: any,
-  ctx: Context,
-  info: any,
-) => !fn(root, args, ctx, info)
+export const not =
+  (fn: AuthorizeFunction) => (root: any, args: any, ctx: Context, info: any) =>
+    !fn(root, args, ctx, info)
 
 /*const checkAccess = (
   ctx: Context,
