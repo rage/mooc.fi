@@ -50,6 +50,7 @@ export const CourseCreateArg = inputObjectType({
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
+    t.nullable.id("course_stats_email")
   },
 })
 
@@ -106,5 +107,6 @@ export const CourseUpsertArg = inputObjectType({
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
+    t.nullable.id("course_stats_email")
   },
 })

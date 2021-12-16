@@ -16,6 +16,13 @@ require("sharp") // ensure correct zlib thingy
 
 const DEBUG = Boolean(process.env.DEBUG)
 
+function fail(reason = "fail was called in a test") {
+  throw new Error(reason)
+}
+
+// @ts-ignore: jest has no explicit fail anymore
+global.fail = fail
+
 export const logger = {
   format: {
     printf: jest.fn(),
@@ -106,11 +113,9 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 6000) })
-          try {
-            serverInstance = app.listen(port)
-          } catch {
-            throw new Error("port in use")
-          }
+          serverInstance = app.listen(port).on("error", (err) => {
+            throw err
+          })
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -221,6 +226,9 @@ export function fakeTMCCurrent(
         .reply(function () {
           const auth = this.req.headers.authorization
 
+          if (!Array.isArray(users[auth])) {
+            throw new Error(`Invalid fakeTMCCurrent entry for auth ${auth}`)
+          }
           return users[auth]
         })
     },
@@ -238,6 +246,9 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
           .persist()
           .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
           .reply(function () {
+            if (!Array.isArray(reply)) {
+              throw new Error(`Invalid fakeTMCSpecific entry ${reply}`)
+            }
             return reply
           })
       }

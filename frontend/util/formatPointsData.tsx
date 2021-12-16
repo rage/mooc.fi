@@ -1,6 +1,6 @@
-import { groupBy, mapValues, flatten } from "lodash"
 import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
 import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
+import { flatten, groupBy, mapValues } from "lodash"
 
 export type formattedGroupPointsDictionary = {
   total: number
@@ -53,8 +53,8 @@ function formatPointsData({
           return {
             service: o?.service?.name,
             group: o2.group,
-            max_points: o2.max_points,
-            n_points: o2.n_points,
+            max_points: o2.max_points ?? 0,
+            n_points: o2.n_points ?? 0,
             progress: o2.progress,
           }
         }) as ServiceGroupPoints[],

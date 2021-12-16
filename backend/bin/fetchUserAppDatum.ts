@@ -14,7 +14,7 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
-const CONFIG_NAME = "userAppDatum"
+const CONFIG_NAME = process.env.CONFIG_NAME ?? "userAppDatum"
 
 let course
 let old: UserCourseSetting
@@ -99,15 +99,22 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
-    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
-      where: {
-        user: { upstream_id: e.user_id },
-        course_id: course.id,
-      },
-      orderBy: {
-        created_at: "asc",
-      },
-    })
+    const existingUserCourseSetting = (
+      await prisma.user
+        .findUnique({
+          where: {
+            upstream_id: e.user_id,
+          },
+        })
+        .user_course_settings({
+          where: {
+            course_id: course.id,
+          },
+          orderBy: {
+            created_at: "asc",
+          },
+        })
+    )?.[0]
 
     if (!existingUserCourseSetting) {
       old = await prisma.userCourseSetting.create({
@@ -124,23 +131,23 @@ const fetchUserAppDatum = async () => {
 
     switch (e.field_name) {
       case "language":
-        saveLanguage(e)
+        await saveLanguage(e)
         break
       case "country":
-        saveCountry(e)
+        await saveCountry(e)
         break
       case "research":
-        saveResearch(e)
+        await saveResearch(e)
         break
       case "marketing":
-        saveMarketing(e)
+        await saveMarketing(e)
         break
       case "course_variant": //course_variant and deadline are functionally the same (deadline is used in elements-of-ai)
       case "deadline": // deadline does not tell when the deadline is but what is the course variant
-        saveCourseVariant(e)
+        await saveCourseVariant(e)
         break
       default:
-        saveOther(e)
+        await saveOther(e)
     }
     if (index % saveInterval == 0) {
       await saveProgress(prisma, new Date(e.updated_at))

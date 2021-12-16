@@ -28,10 +28,6 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
     return
   }
 
-  /*const user = await prisma.email_delivery.findOne({ where: { id: emailDelivery.id } }).user_email_deliveryTouser()
-  const emailTemplate = await prisma
-    .email_delivery.findOne({ where: { id: emailDelivery.id } })
-    .email_template_email_deliveryToemail_template()*/
   logger.info(`Delivering email ${email_template.name} to ${user.email}`)
 
   try {

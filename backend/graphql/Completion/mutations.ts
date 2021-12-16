@@ -1,3 +1,5 @@
+import { AuthenticationError } from "apollo-server-errors"
+import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -8,12 +10,13 @@ import {
   nullable,
   stringArg,
 } from "nexus"
-
-import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
-import { difference, groupBy } from "lodash"
-import { notEmpty } from "../../util/notEmpty"
+
+import { Completion } from "@prisma/client"
+
+import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
   type: "Mutation",
@@ -95,7 +98,7 @@ export const CompletionMutations = extendType({
 
         const databaseUsersByUpstreamId = groupBy(foundUsers, "upstream_id")
 
-        const newCompletions = completions.map((o) => {
+        const newCompletions: Completion[] = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
           return {
             id: uuidv4(),
@@ -113,6 +116,7 @@ export const CompletionMutations = extendType({
             certificate_id: null,
             eligible_for_ects: true,
             tier: o.tier ?? null,
+            completion_registration_attempt_date: null, // TODO: some date here?
           }
         })
 
@@ -163,19 +167,23 @@ export const CompletionMutations = extendType({
             slug: slug ?? undefined,
           },
         })
-
         if (!course) {
           throw new Error("course not found")
         }
-
         // find users on course with points
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            course_id: course.id,
-            n_points: { gt: 0 },
-          },
-          orderBy: { created_at: "asc" },
-        })
+        const progresses = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
+          .user_course_progresses({
+            where: {
+              n_points: { gt: 0 },
+            },
+            orderBy: { created_at: "asc" },
+          })
 
         const progressByUser = groupBy(progresses, "user_id")
         const userIds = Object.keys(progressByUser)
@@ -183,12 +191,18 @@ export const CompletionMutations = extendType({
           .filter((key) => key !== "null")
 
         // find users with completions
-        const completions = await ctx.prisma.completion.findMany({
-          where: {
-            course_id: course.id,
-            user_id: { in: userIds },
-          },
-        })
+        const completions = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
+          .completions({
+            where: {
+              user_id: { in: userIds },
+            },
+          })
 
         // filter users without completions
         const userIdsWithoutCompletions = difference(
@@ -202,24 +216,75 @@ export const CompletionMutations = extendType({
           },
         })
 
-        for (const user of users) {
-          await generateUserCourseProgress({
-            user,
-            course,
-            userCourseProgress: progressByUser[user.id][0],
-            context: {
-              // not very optimal, but
-              logger: ctx.logger,
-              prisma: ctx.prisma,
-              consumer: undefined as any,
-              mutex: undefined as any,
-              knex: ctx.knex,
-              topic_name: "",
-            },
-          })
+        const queue = chunk(users, 50)
+        let processed = 0
+
+        for (const userChunk of queue) {
+          try {
+            const promises = userChunk.map((user) =>
+              generateUserCourseProgress({
+                user,
+                course,
+                userCourseProgress: progressByUser[user.id][0],
+                context: {
+                  // not very optimal, but
+                  logger: ctx.logger,
+                  prisma: ctx.prisma,
+                  consumer: undefined as any,
+                  mutex: undefined as any,
+                  knex: ctx.knex,
+                  topic_name: "",
+                },
+              }),
+            )
+            await Promise.all(promises)
+            processed += userChunk.length
+            ctx.logger.info(`${processed} users processed`)
+          } catch (e: unknown) {
+            const message = e instanceof Error ? `${e.message}, ${e.stack}` : e
+            ctx.logger.error(`error processing after ${processed}: ${message}`)
+
+            return `error processing after ${processed}: ${message}`
+          }
         }
 
         return `${users.length} users rechecked`
+      },
+    })
+
+    t.field("updateRegistrationAttemptDate", {
+      type: "Completion",
+      args: {
+        id: nonNull(idArg()),
+        completion_registration_attempt_date: nonNull(
+          arg({ type: "DateTime" }),
+        ),
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id, completion_registration_attempt_date }, ctx) => {
+        if (ctx.role === Role.USER) {
+          const existingCompletion = await ctx.prisma.completion.findFirst({
+            where: {
+              id,
+              user_id: ctx.user?.id,
+            },
+          })
+
+          if (!existingCompletion || !ctx.user?.id) {
+            throw new AuthenticationError(
+              "not authorized to edit this completion",
+            )
+          }
+        }
+
+        return ctx.prisma.completion.update({
+          where: {
+            id,
+          },
+          data: {
+            completion_registration_attempt_date,
+          },
+        })
       },
     })
   },

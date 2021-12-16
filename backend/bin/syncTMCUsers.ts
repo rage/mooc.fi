@@ -1,11 +1,13 @@
 // import { PrismaClient } from "@prisma/client"
 import axios from "axios"
+import { groupBy, orderBy } from "lodash"
+
+import { PrismaClient } from "@prisma/client"
+
 import { getAccessToken } from "../services/tmc_completion_script"
 import { notEmpty } from "../util/notEmpty"
-import sentryLogger from "./lib/logger"
-import type { PrismaClient } from "@prisma/client"
 import { TMCError } from "./lib/errors"
-import { groupBy, orderBy } from "lodash"
+import sentryLogger from "./lib/logger"
 
 const URL = `${
   process.env.TMC_HOST || ""
@@ -67,6 +69,7 @@ export const deleteUsers = async (changes: Change[], prisma: PrismaClient) => {
     .filter(notEmpty)
 
   logger.info(`found ${deletedUsers.length} deleted users in TMC`)
+
   const deleted = await prisma.user.deleteMany({
     where: { username: { in: deletedUsers } },
   })

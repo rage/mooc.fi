@@ -1,11 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "helm.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -18,6 +14,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/permanent-redirect-code: "301"
     nginx.ingress.kubernetes.io/server-snippet: |
      location /ws {
         deny all;
@@ -42,24 +39,39 @@ spec:
       http:
         paths:
           - path: /api
+            pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}-backend
-              servicePort: 80
+              service:
+                name: {{ $fullName }}-backend
+                port:
+                  number: 80
           - path: /kafka-bridge/api/v0
+            pathType: Prefix
             backend:
-              serviceName: kafka-bridge
-              servicePort: 80
+              service:
+                name: kafka-bridge
+                port:
+                  number: 80
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}-frontend
-              servicePort: 80
+              service:
+                name: {{ $fullName }}-frontend
+                port:
+                  number: 80
           - path: /Shibboleth.sso
+            pathType: Prefix
             backend:
-              serviceName: shibbo-test
-              servicePort: 80
+              service:
+                name: shibbo-test
+                port:
+                  number: 80
           - path: /connect
+            pathType: Prefix
             backend:
-              serviceName: shibbo-test
-              servicePort: 80
+              service:
+                name: shibbo-test
+                port:
+                  number: 80
     {{- end }}
   {{- end }}

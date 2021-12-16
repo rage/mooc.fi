@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
-import { ApiContext } from "."
+
 import { getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 export function userCourseProgress({ knex, prisma }: ApiContext) {
   return async (req: Request<{ slug: string }>, res: Response) => {
@@ -14,20 +15,21 @@ export function userCourseProgress({ knex, prisma }: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const userCourseProgresses = await prisma.userCourseProgress.findFirst({
-      where: {
-        user_id: user.id,
-        course: {
-          slug,
+    const userCourseProgresses = await prisma.user
+      .findUnique({
+        where: { id: user.id },
+      })
+      .user_course_progresses({
+        where: {
+          course: { slug },
         },
-      },
-      orderBy: {
-        created_at: "asc",
-      },
-    })
+        orderBy: {
+          created_at: "asc",
+        },
+      })
 
     res.json({
-      data: userCourseProgresses,
+      data: userCourseProgresses?.[0],
     })
   }
 }

@@ -71,6 +71,15 @@ export interface updateCourse_updateCourse_user_course_settings_visibilities {
   language: string
 }
 
+export interface updateCourse_updateCourse_course_stats_email {
+  __typename: "EmailTemplate"
+  id: string
+  name: string | null
+  title: string | null
+  txt_body: string | null
+  html_body: string | null
+}
+
 export interface updateCourse_updateCourse {
   __typename: "Course"
   id: string
@@ -87,6 +96,7 @@ export interface updateCourse_updateCourse {
   course_aliases: updateCourse_updateCourse_course_aliases[]
   completion_email: updateCourse_updateCourse_completion_email | null
   user_course_settings_visibilities: updateCourse_updateCourse_user_course_settings_visibilities[]
+  course_stats_email: updateCourse_updateCourse_course_stats_email | null
 }
 
 export interface updateCourse {

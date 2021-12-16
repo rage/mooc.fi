@@ -1,10 +1,12 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
+
 import { isAdmin } from "../accessControl"
 import { Context } from "../context"
 
 export const ABEnrollment = objectType({
   name: "AbEnrollment",
   definition(t) {
+    t.model.id()
     t.model.user_id()
     t.model.ab_study_id()
     t.model.group()
@@ -66,7 +68,10 @@ export const ABEnrollmentMutations = extendType({
 
           return ctx.prisma.abEnrollment.update({
             where: {
-              user_id_ab_study_id: { user_id, ab_study_id },
+              user_id_ab_study_id: {
+                user_id,
+                ab_study_id,
+              },
             },
             data: abEnrollment,
           })

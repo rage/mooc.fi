@@ -24,12 +24,20 @@ async function getCompletionDataFromDB(
   { course, first, after, last, before, skip }: CompletionOptionTypes,
   ctx: Context,
 ) {
-  const courseObject = await ctx.prisma.course.findUnique({
+  const completions = await ctx.prisma.course
+    .findUnique({
+      where: { slug: course },
+    })
+    .completions({
+      ...convertPagination({ first, after, last, before, skip }),
+    })
+  return completions
+  /*const courseObject = await ctx.prisma.course.findUnique({
     where: { slug: course },
   })
 
   return ctx.prisma.completion.findMany({
     ...convertPagination({ first, after, last, before, skip }),
     where: { course: { id: courseObject?.id } },
-  })
+  })*/
 }

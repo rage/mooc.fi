@@ -1,5 +1,6 @@
 import { ForbiddenError } from "apollo-server-core"
 import { objectType } from "nexus"
+
 import { UserCourseProgress } from "@prisma/client"
 
 export const Completion = objectType({
@@ -20,6 +21,7 @@ export const Completion = objectType({
     t.model.course()
     t.model.completion_date()
     t.model.tier()
+    t.model.completion_registration_attempt_date()
 
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
@@ -70,13 +72,39 @@ export const Completion = objectType({
     t.nullable.field("completion_link", {
       type: "String",
       resolve: async (parent, _, ctx) => {
-        const course = await ctx.prisma.completion
+        if (!parent.course_id) {
+          return null
+        }
+        const link = (
+          await ctx.prisma.course
+            .findUnique({
+              where: { id: parent.course_id },
+            })
+            .open_university_registration_links({
+              where: {
+                ...(parent.completion_language &&
+                parent.completion_language !== "unknown"
+                  ? {
+                      language: parent.completion_language,
+                    }
+                  : {}),
+              },
+            })
+        )?.[0]
+
+        return link?.link ?? null
+        /*const course = await ctx.prisma.completion
           .findUnique({ where: { id: parent.id } })
           .course()
 
         if (!course) {
           throw new Error("course not found")
         }
+
+        // TODO/FIXME:
+        // - register-completion/[slug] uses /api/completionTiers if there are tiers
+        // - this _always_ returns the parent course registration link, regardless of the tier
+        // - should this return the tier registration link?
 
         let filter
         if (
@@ -98,18 +126,20 @@ export const Completion = objectType({
           },
         )
 
-        return avoinLink?.link ?? null
+        return avoinLink?.link ?? null*/
       },
     })
 
     t.field("registered", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        const registered = await ctx.prisma.completionRegistered.findFirst({
-          where: { completion_id: parent.id },
-        })
+        const registered = await ctx.prisma.completion
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .completions_registered()
 
-        return Boolean(registered)
+        return registered.length > 0
       },
     })
 

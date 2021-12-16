@@ -1,8 +1,9 @@
-import { Typography, Paper, Button, Tooltip } from "@material-ui/core"
+import RegisterCompletionTranslations from "/translations/register-completion"
+import { useTranslator } from "/util/useTranslator"
+
+import { Button, Paper, Tooltip, Typography } from "@material-ui/core"
 import { Theme } from "@material-ui/core/styles"
 import { createStyles, makeStyles } from "@material-ui/styles"
-import { useTranslator } from "/util/useTranslator"
-import RegisterCompletionTranslations from "/translations/register-completion"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,9 +32,24 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function LinkButton(props: any) {
+interface LinkButtonProps {
+  link: string
+  onRegistrationClick: Function
+}
+
+function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   const classes = useStyles()
   const t = useTranslator(RegisterCompletionTranslations)
+
+  const onClick = () => {
+    try {
+      window.open(link, "_blank", "noopener noreferrer")
+      onRegistrationClick()
+    } catch {
+      console.error("error opening registration link")
+    }
+  }
+
   return (
     <Tooltip
       title={t("linkAria")}
@@ -44,11 +60,9 @@ function LinkButton(props: any) {
         variant="contained"
         color="secondary"
         size="medium"
-        href={props.link}
-        {...props}
+        className={classes.button}
         role="link"
-        target="_blank"
-        rel="noopener noreferrer"
+        onClick={onClick}
       >
         {t("link")}
       </Button>
@@ -60,8 +74,14 @@ type RegProps = {
   email: String
   link: string
   tiers: any
+  onRegistrationClick: Function
 }
-function RegisterCompletionText(props: RegProps) {
+function RegisterCompletionText({
+  email,
+  link,
+  tiers,
+  onRegistrationClick,
+}: RegProps) {
   const classes = useStyles()
   const t = useTranslator(RegisterCompletionTranslations)
   return (
@@ -84,7 +104,7 @@ function RegisterCompletionText(props: RegProps) {
         {t("Instructions2")}
       </Typography>
       <Typography variant="body1" paragraph>
-        {t("Instructions3")} {props.email}
+        {t("Instructions3")} {email}
       </Typography>
       <Typography variant="body1" paragraph>
         {t("Instructions4")}
@@ -92,17 +112,20 @@ function RegisterCompletionText(props: RegProps) {
       <Typography variant="body1" paragraph>
         {t("grades")}
       </Typography>
-      {props.tiers.length > 0 ? (
-        props.tiers.map((tier: any, i: number) => (
+      {tiers.length > 0 ? (
+        tiers.map((tier: any, i: number) => (
           <div key={i} className={classes.registrationButtons}>
             <Typography variant="body1" paragraph align="center">
               {tier.name}
             </Typography>
-            <LinkButton className={classes.button} link={tier.link} />
+            <LinkButton
+              link={tier.link}
+              onRegistrationClick={onRegistrationClick}
+            />
           </div>
         ))
       ) : (
-        <LinkButton className={classes.button} link={props.link} />
+        <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
       )}
     </Paper>
   )
