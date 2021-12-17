@@ -5,7 +5,7 @@ import {
   CircularProgress,
   Checkbox,
   Tooltip,
-} from "@material-ui/core"
+} from "@mui/material"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"

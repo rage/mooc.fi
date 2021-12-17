@@ -20,7 +20,7 @@ import Router from "next/router"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
 import { ApolloConsumer, useQuery } from "@apollo/client"
-import { Button, Collapse, Paper, TextField } from "@material-ui/core"
+import { Button, Collapse, Paper, TextField } from "@mui/material"
 
 const templateValues = [
   "grade",

@@ -22,7 +22,7 @@ import {
   InputLabel,
   NativeSelect,
   TextField,
-} from "@material-ui/core"
+} from "@mui/material"
 
 export const AllCoursesDetails = gql`
   query AllCoursesDetails {

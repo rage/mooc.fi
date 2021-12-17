@@ -9,12 +9,7 @@ import getTranslator from "/translations"
 import SignUpTranslations from "/translations/sign-up"
 
 import styled from "@emotion/styled"
-import {
-  CircularProgress,
-  Paper,
-  TextField,
-  Typography,
-} from "@material-ui/core"
+import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
 
 const StyledPaper = styled(Paper)`
   display: flex;

@@ -1,4 +1,4 @@
-import { Card, Typography } from "@material-ui/core"
+import { Card, Typography } from "@mui/material"
 import styled from "@emotion/styled"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import React from "react"

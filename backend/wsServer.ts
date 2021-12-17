@@ -34,7 +34,6 @@ export const pushMessageToClient = async (
 ) => {
   const userCourseObjectString = JSON.stringify({ userId, courseId })
   const connection = connectionByUserCourse.get(userCourseObjectString)
-  await redisClient?.connect()
 
   if (connection) {
     if (connection.connected) {
@@ -69,7 +68,6 @@ wsServer.on("request", (request: any) => {
       const accessToken = data.accessToken
       const courseId = data.courseId
       try {
-        await redisClient?.connect()
         let user: UserInfo = JSON.parse(
           (await redisClient?.get(accessToken)) ?? "",
         )

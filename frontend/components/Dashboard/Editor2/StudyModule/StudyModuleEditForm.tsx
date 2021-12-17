@@ -10,7 +10,7 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 import styled from "@emotion/styled"
 import { useEffect, useState } from "react"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
 import useDebounce from "/util/useDebounce"
 

@@ -7,7 +7,7 @@ import notEmpty from "/util/notEmpty"
 import { sortBy } from "lodash"
 
 import styled from "@emotion/styled"
-import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
+import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
 
 import {
   ActionType,

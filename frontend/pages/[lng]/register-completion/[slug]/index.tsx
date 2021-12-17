@@ -22,7 +22,7 @@ import axios from "axios"
 
 import { gql, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@material-ui/core"
+import { Paper, SvgIcon, Typography } from "@mui/material"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"

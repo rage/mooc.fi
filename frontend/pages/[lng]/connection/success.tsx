@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Card, Typography } from "@material-ui/core"
+import { Card, Typography } from "@mui/material"
 import React from "react"
 import Container from "/components/Container"
 import { formatDateTime } from "/components/DataFormatFunctions"

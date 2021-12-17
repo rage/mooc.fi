@@ -22,7 +22,7 @@
     [
       "babel-plugin-import",
       {
-        "libraryName": "@material-ui/core",
+        "libraryName": "@mui/material",
         "libraryDirectory": "", //"esm", // or '' if your bundler does not support ES modules
         "camel2DashComponentName": false
       },
@@ -31,7 +31,7 @@
     [
       "babel-plugin-import",
       {
-        "libraryName": "@material-ui/icons",
+        "libraryName": "@mui/icons-material",
         "libraryDirectory": "", // "esm", // or '' if your bundler does not support ES modules
         "camel2DashComponentName": false
       },
@@ -40,7 +40,7 @@
     [
       "babel-plugin-import",
       {
-        "libraryName": "@material-ui/utils",
+        "libraryName": "@mui/utils", // TODO/FIXME: does this exist?
         "libraryDirectory": "", // "esm", // or '' if your bundler does not support ES modules
         "camel2DashComponentName": false
       },

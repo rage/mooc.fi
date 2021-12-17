@@ -24,14 +24,19 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
+let connected = false
+
 redisClient?.on("error", (err: any) => {
   logger.error("Redis error: " + err)
 })
+redisClient?.on("ready", () => {
+  logger.info("Redis connected")
+  connected = true
+})
 
-/*export const getAsync = redisClient
-  ? promisify(redisClient?.get).bind(redisClient)
-  : async (_: any) => Promise.reject() // this doesn't actually get run ever, but*/
-
+const isPromise = <T>(value: any): value is Promise<T> => {
+  return value && typeof value.then === "function"
+}
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
   options: {
@@ -41,39 +46,39 @@ export async function redisify<T>(
     params?: any
   },
 ) {
+  const resolveValue = async () =>
+    isPromise(fn) ? await fn : params ? fn(...params) : fn()
+
   const { prefix, expireTime, key, params } = options
 
-  await redisClient?.connect()
+  if (!connected) {
+    await redisClient?.connect()
+  }
 
-  /*if (!redisClient?.connected) {
-    return fn instanceof Promise ? fn : params ? fn(...params) : fn()
-  }*/
+  if (!connected) {
+    return resolveValue()
+  }
+
   const prefixedKey = `${prefix}:${key}`
+  try {
+    const res = await redisClient?.get(prefixedKey)
 
-  return await redisClient
-    ?.get(prefixedKey)
-    .then(async (res: any) => {
-      if (res) {
-        logger.info(`Cache hit: ${prefix}`)
-        return await JSON.parse(res)
-      }
-      logger.info(`Cache miss: ${prefix}`)
+    if (res) {
+      logger.info(`Cache hit: ${prefix}`)
+      return JSON.parse(res)
+    }
+    logger.info(`Cache miss: ${prefix}`)
 
-      const value =
-        fn instanceof Promise
-          ? await fn
-          : params
-          ? await fn(...params)
-          : await fn()
+    const value = await resolveValue()
 
-      redisClient?.set(prefixedKey, JSON.stringify(value))
-      redisClient?.expire(prefixedKey, expireTime)
-
-      return value
+    redisClient?.set(prefixedKey, JSON.stringify(value), {
+      EX: expireTime,
     })
-    .catch(() => {
-      return fn instanceof Promise ? fn : params ? fn(...params) : fn()
-    })
+
+    return value
+  } catch {
+    return resolveValue()
+  }
 }
 
 export const publisher =
@@ -93,12 +98,10 @@ export const subscriber =
     : null
 
 export const invalidate = async (prefix: string, key: string) => {
-  await redisClient?.connect()
-  /*if (!redisClient?.connected) {
-    return
-  }*/
-
   redisClient?.del(`${prefix}:${key}`)
 }
+
+publisher?.connect()
+subscriber?.connect()
 
 export default redisClient

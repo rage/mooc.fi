@@ -12,8 +12,8 @@ import {
   TextField,
   CardContent,
   Skeleton,
-} from "@material-ui/core"
-import CancelIcon from "@material-ui/icons/Cancel"
+} from "@mui/material"
+import CancelIcon from "@mui/icons-material/Cancel"
 import ErrorMessage from "/components/ErrorMessage"
 import {
   Organizations,
@@ -353,6 +353,7 @@ const Register = () => {
                     cancelFilterDebounce("")
                     setSearchBox("")
                   }}
+                  size="large"
                 >
                   <CancelIcon />
                 </IconButton>

@@ -1,22 +1,24 @@
+import { useState } from "react"
+
+import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+import { Clear, Search } from "@mui/icons-material"
 import {
+  Button,
   Checkbox,
-  OutlinedInput,
-  MenuItem,
   FormControl,
   FormControlLabel,
   IconButton,
   InputAdornment,
+  MenuItem,
+  OutlinedInput,
   Select,
+  SelectChangeEvent,
   TextField,
-  Button,
-} from "@material-ui/core"
-import { useState } from "react"
-import { Clear, Search } from "@material-ui/icons"
-
-import styled from "@emotion/styled"
-import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+} from "@mui/material"
 
 const Container = styled.div`
   background-color: white;
@@ -133,9 +135,7 @@ export default function FilterMenu({
     })
   }
 
-  const handleHandledByChange = (
-    e: React.ChangeEvent<{ name?: string; value: any }>,
-  ) => {
+  const handleHandledByChange = (e: SelectChangeEvent<string>) => {
     setHandledBy(e.target.value)
     setSearchVariables({
       ...searchVariables,
@@ -166,6 +166,7 @@ export default function FilterMenu({
                   disabled={searchString === ""}
                   edge="end"
                   aria-label="clear search"
+                  size="large"
                 >
                   <Clear />
                 </IconButton>

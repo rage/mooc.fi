@@ -9,7 +9,7 @@ import {
   TableRow,
   TableHead,
   Skeleton,
-} from "@material-ui/core"
+} from "@mui/material"
 import styled from "@emotion/styled"
 import range from "lodash/range"
 import LangLink from "/components/LangLink"

@@ -1,6 +1,6 @@
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import { RegularContainer as Container } from "/components/Container"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import styled from "@emotion/styled"
 import { gql } from "@apollo/client"
 import ProfileTranslations from "/translations/profile"

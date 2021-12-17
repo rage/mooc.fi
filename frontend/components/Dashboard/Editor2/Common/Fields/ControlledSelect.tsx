@@ -12,7 +12,7 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import { MenuItem, TextField } from "@material-ui/core"
+import { MenuItem, TextField } from "@mui/material"
 
 interface ControlledSelectProps<T> extends ControlledFieldProps {
   items: T[]

@@ -1,11 +1,11 @@
 import styled from "@emotion/styled"
-import { Button, Avatar, Paper } from "@material-ui/core"
+import { Button, Avatar, Paper } from "@mui/material"
 import {
   formatDateTime,
   mapLangToLanguage,
 } from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
-import DoneIcon from "@material-ui/icons/Done"
+import DoneIcon from "@mui/icons-material/Done"
 import { CardTitle, CardSubtitle } from "components/Text/headers"
 import { addDomain } from "/util/imageUtils"
 import LangLink from "/components/LangLink"

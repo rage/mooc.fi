@@ -13,7 +13,7 @@ import {
   CircularProgress,
   Checkbox as MUICheckbox,
   Tooltip,
-} from "@material-ui/core"
+} from "@mui/material"
 import { FormikErrors, FormikTouched, useFormikContext } from "formik"
 import { FormValues } from "./types"
 import styled from "@emotion/styled"

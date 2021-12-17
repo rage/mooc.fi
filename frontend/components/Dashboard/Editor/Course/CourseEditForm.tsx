@@ -1,56 +1,58 @@
-import { useCallback, useState, useMemo, memo } from "react"
-import {
-  InputLabel,
-  FormControl,
-  FormControlLabel,
-  List,
-  ListItem,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  FormGroup,
-  MenuItem,
-  Tabs,
-  Tab,
-} from "@material-ui/core"
-import {
-  Formik,
-  Field,
-  Form,
-  FormikHelpers,
-  yupToFormErrors,
-  useFormikContext,
-} from "formik"
+import { memo, useCallback, useMemo, useState } from "react"
 
-import { CheckboxWithLabel } from "formik-material-ui"
-import * as Yup from "yup"
-import CourseTranslationEditForm from "./CourseTranslationEditForm"
-import CourseVariantEditForm from "./CourseVariantEditForm"
-import CourseAliasEditForm from "./CourseAliasEditForm"
-import CourseLanguageSelector from "./CourseLanguageSelector"
-import CourseImageInput from "./CourseImageInput"
-import { statuses as statusesT } from "./form-validation"
-import { CourseFormValues } from "./types"
-import styled from "@emotion/styled"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
-  StyledTextField,
-  StyledFieldWithAnchor,
-  EnumeratingAnchor,
-  inputLabelProps,
   CheckboxField,
+  EnumeratingAnchor,
+  FormSubtitle,
+  inputLabelProps,
+  StyledFieldWithAnchor,
+  StyledTextField,
   TabSection,
 } from "/components/Dashboard/Editor/common"
-import CoursesTranslations from "/translations/courses"
-import DatePickerField from "./DatePickers"
-import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
-import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
+import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
-import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
 import { useTranslator } from "/util/useTranslator"
+import {
+  Field,
+  Form,
+  Formik,
+  FormikHelpers,
+  useFormikContext,
+  yupToFormErrors,
+} from "formik"
+import { CheckboxWithLabel } from "formik-mui"
+import * as Yup from "yup"
+
+import styled from "@emotion/styled"
+import AdapterLuxon from "@mui/lab/AdapterLuxon"
+import LocalizationProvider from "@mui/lab/LocalizationProvider"
+import {
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  InputLabel,
+  List,
+  ListItem,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Tab,
+  Tabs,
+} from "@mui/material"
+
+import CourseAliasEditForm from "./CourseAliasEditForm"
+import CourseImageInput from "./CourseImageInput"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTranslationEditForm from "./CourseTranslationEditForm"
+import CourseVariantEditForm from "./CourseVariantEditForm"
+import DatePickerField from "./DatePickers"
+import { statuses as statusesT } from "./form-validation"
+import { CourseFormValues } from "./types"
 
 interface CoverProps {
   covered: boolean

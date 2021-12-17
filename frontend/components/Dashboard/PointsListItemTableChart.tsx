@@ -2,7 +2,7 @@ import { formattedGroupPoints } from "/util/formatPointsData"
 import { CardSubtitle } from "components/Text/headers"
 
 import styled from "@emotion/styled"
-import LinearProgress from "@material-ui/core/LinearProgress"
+import LinearProgress from "@mui/material/LinearProgress"
 
 const ChartContainer = styled.div`
   display: flex;

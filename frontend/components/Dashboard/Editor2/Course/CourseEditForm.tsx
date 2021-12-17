@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form"
 import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { Tabs, Tab, FormControl, FormLabel, FormGroup } from "@material-ui/core"
+import { Tabs, Tab, FormControl, FormLabel, FormGroup } from "@mui/material"
 import {
   ControlledTextField,
   ControlledSelect,

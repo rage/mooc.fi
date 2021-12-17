@@ -1,4 +1,4 @@
-import Card from "@material-ui/core/Card"
+import Card from "@mui/material/Card"
 import styled from "@emotion/styled"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 

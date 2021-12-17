@@ -1,9 +1,9 @@
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useTranslator } from "/util/useTranslator"
 
-import { Button, Paper, Tooltip, Typography } from "@material-ui/core"
-import { Theme } from "@material-ui/core/styles"
-import { createStyles, makeStyles } from "@material-ui/styles"
+import { Button, Paper, Tooltip, Typography } from "@mui/material"
+import { Theme } from "@mui/material/styles"
+import { createStyles, makeStyles } from "@mui/styles"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

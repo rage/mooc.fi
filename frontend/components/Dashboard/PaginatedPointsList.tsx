@@ -13,8 +13,7 @@ import { range } from "lodash"
 
 import { gql, useLazyQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Grid, Skeleton, Slider, TextField } from "@material-ui/core"
-import Button from "@material-ui/core/Button"
+import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
 
 import PointsList from "./DashboardPointsList"
 

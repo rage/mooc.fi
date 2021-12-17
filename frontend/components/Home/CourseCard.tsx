@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { Grid, Chip, Skeleton } from "@material-ui/core"
+import { Grid, Chip, Skeleton } from "@mui/material"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"

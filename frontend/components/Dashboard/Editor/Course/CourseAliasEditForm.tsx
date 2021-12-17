@@ -7,10 +7,10 @@ import {
   StyledTextField,
   inputLabelProps,
 } from "/components/Dashboard/Editor/common"
-import { FormControl, FormGroup, Typography } from "@material-ui/core"
+import { FormControl, FormGroup, Typography } from "@mui/material"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import AddIcon from "@material-ui/icons/Add"
-import RemoveIcon from "@material-ui/icons/Remove"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
 import styled from "@emotion/styled"
 import { initialAlias } from "./form-validation"
 import { useTranslator } from "/util/useTranslator"
