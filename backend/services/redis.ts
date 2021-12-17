@@ -33,6 +33,7 @@ redisClient?.on("ready", () => {
   logger.info("Redis connected")
   connected = true
 })
+redisClient?.connect()
 
 const isPromise = <T>(value: any): value is Promise<T> => {
   return value && typeof value.then === "function"
@@ -50,10 +51,6 @@ export async function redisify<T>(
     isPromise(fn) ? await fn : params ? fn(...params) : fn()
 
   const { prefix, expireTime, key, params } = options
-
-  if (!connected) {
-    await redisClient?.connect()
-  }
 
   if (!connected) {
     return resolveValue()
