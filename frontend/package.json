@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "post-install": "cd node_modules/cweb-bin/lib && node install.js && cd ../../..",
+    "postinstall": "cd node_modules/cweb-bin/lib && node install.js && cd ../../..",
     "dev": "node server.js",
     "build": "NODE_ENV=production next build",
     "export": "next export",
@@ -21,14 +21,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/client": "^3.4.16",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
-    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+    "@apollo/client": "^3.5.6",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.5",
+    "@babel/plugin-proposal-optional-chaining": "^7.16.5",
     "@date-io/core": "^2.11.0",
     "@date-io/luxon": "^2.11.1",
-    "@emotion/react": "^11.4.1",
+    "@emotion/react": "^11.7.1",
     "@emotion/server": "^11.4.0",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/styled": "^11.6.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
@@ -82,7 +82,7 @@
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
     "react-ga": "^3.3.0",
-    "react-hook-form": "^7.17.4",
+    "react-hook-form": "^7.22.1",
     "responsive-loader": "^2.3.0",
     "sharp": "^0.29.1",
     "styled-jsx": "^3.4.4",
@@ -94,9 +94,9 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-react": "^7.16.5",
     "@cypress/code-coverage": "^3.8.5",
-    "@emotion/babel-plugin": "^11.3.0",
+    "@emotion/babel-plugin": "^11.7.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@testing-library/cypress": "^7.0.6",
     "@types/luxon": "^1.26.5",
@@ -115,7 +115,7 @@
     "istanbul-lib-coverage": "^3.0.0",
     "nyc": "^15.1.0",
     "source-map-support": "^0.5.20",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.4"
   },
   "nyc": {
     "exclude": [
