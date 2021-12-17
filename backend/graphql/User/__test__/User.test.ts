@@ -206,16 +206,22 @@ describe("User", () => {
         const sortedRes = {
           currentUser: {
             ...res?.currentUser,
-            user_course_summary: [
-              ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
-                ...cs,
-                course: {
-                  ...cs.course,
-                  exercises: orderBy(cs.course.exercises, ["name"]),
-                },
-                exercise_completions: orderBy(cs?.exercise_completions, ["id"]),
-              })),
-            ],
+            user_course_summary: orderBy(
+              [
+                ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
+                  ...cs,
+                  course: {
+                    ...cs.course,
+                    exercises: orderBy(cs.course.exercises, ["name"]),
+                  },
+                  exercise_completions: orderBy(cs?.exercise_completions, [
+                    "id",
+                  ]),
+                })),
+              ],
+              "course.name",
+              "asc",
+            ),
           },
         }
 
