@@ -1,6 +1,5 @@
 import * as redis from "redis"
 import * as winston from "winston"
-import { promisify } from "util"
 
 const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
@@ -29,9 +28,9 @@ redisClient?.on("error", (err: any) => {
   logger.error("Redis error: " + err)
 })
 
-export const getAsync = redisClient
+/*export const getAsync = redisClient
   ? promisify(redisClient?.get).bind(redisClient)
-  : async (_: any) => Promise.reject() // this doesn't actually get run ever, but
+  : async (_: any) => Promise.reject() // this doesn't actually get run ever, but*/
 
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
@@ -44,12 +43,15 @@ export async function redisify<T>(
 ) {
   const { prefix, expireTime, key, params } = options
 
-  if (!redisClient?.connected) {
+  await redisClient?.connect()
+
+  /*if (!redisClient?.connected) {
     return fn instanceof Promise ? fn : params ? fn(...params) : fn()
-  }
+  }*/
   const prefixedKey = `${prefix}:${key}`
 
-  return await getAsync(prefixedKey)
+  return await redisClient
+    ?.get(prefixedKey)
     .then(async (res: any) => {
       if (res) {
         logger.info(`Cache hit: ${prefix}`)
@@ -90,12 +92,13 @@ export const subscriber =
       })
     : null
 
-export const invalidate = (prefix: string, key: string) => {
-  if (!redisClient?.connected) {
+export const invalidate = async (prefix: string, key: string) => {
+  await redisClient?.connect()
+  /*if (!redisClient?.connected) {
     return
-  }
+  }*/
 
-  redisClient.del(`${prefix}:${key}`)
+  redisClient?.del(`${prefix}:${key}`)
 }
 
 export default redisClient

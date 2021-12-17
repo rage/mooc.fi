@@ -234,12 +234,12 @@ export const CourseMutations = extendType({
         const existingVisibilities = await ctx.prisma.course
           .findUnique({ where: { slug } })
           .user_course_settings_visibilities()
-        existingVisibilities?.forEach((visibility) =>
-          invalidate(
+        for (const visibility of existingVisibilities) {
+          await invalidate(
             "usercoursesettingscount",
             `${slug}-${visibility.language}`,
-          ),
-        )
+          )
+        }
 
         // this had different logic so it's not done with the same helper
         const existingStudyModules = await ctx.prisma.course

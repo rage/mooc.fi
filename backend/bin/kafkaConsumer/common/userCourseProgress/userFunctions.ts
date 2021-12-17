@@ -299,7 +299,7 @@ export const createCompletion = async ({
       },
     })
     // TODO: this only sends the completion email for the first tier completed
-    pushMessageToClient(
+    await pushMessageToClient(
       user.upstream_id,
       course_id,
       MessageType.COURSE_CONFIRMED,
