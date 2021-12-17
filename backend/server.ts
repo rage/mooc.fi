@@ -1,16 +1,20 @@
-const PRODUCTION = process.env.NODE_ENV === "production"
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} from "apollo-server-core"
+import { ApolloServer } from "apollo-server-express"
+import cors from "cors"
+import express from "express"
+import { graphqlUploadExpress } from "graphql-upload"
+import { Knex } from "knex"
+import morgan from "morgan"
+import * as winston from "winston"
 
 import { PrismaClient } from "@prisma/client"
-import cors from "cors"
-import morgan from "morgan"
-import express from "express"
-import schema from "./schema"
-import { ApolloServer } from "apollo-server-express"
-import * as winston from "winston"
-import { Knex } from "knex"
+
 import { apiRouter } from "./api"
-import { graphqlUploadExpress } from "graphql-upload"
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
+import schema from "./schema"
+
+const PRODUCTION = process.env.NODE_ENV === "production"
 
 const helmet = require("helmet")
 const bodyParser = require("body-parser")

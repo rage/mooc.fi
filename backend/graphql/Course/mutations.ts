@@ -1,15 +1,27 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
-import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
+import {
+  arg,
+  extendType,
+  idArg,
+  nonNull,
+  stringArg,
+} from "nexus"
 
-import { Course, Prisma } from "@prisma/client"
+import {
+  Course,
+  Prisma,
+} from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
-import { deleteImage, uploadImage } from "../Image"
+import {
+  deleteImage,
+  uploadImage,
+} from "../Image"
 
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&

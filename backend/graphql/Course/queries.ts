@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import {
   arg,
@@ -11,9 +11,18 @@ import {
   stringArg,
 } from "nexus"
 
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import {
+  Course,
+  CourseTranslation,
+  Prisma,
+} from "@prisma/client"
 
-import { isAdmin, isUser, or, Role } from "../../accessControl"
+import {
+  isAdmin,
+  isUser,
+  or,
+  Role,
+} from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 

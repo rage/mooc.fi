@@ -1,7 +1,19 @@
-import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { convertPagination, buildUserSearch } from "../../util/db-functions"
-import { extendType, idArg, stringArg, intArg } from "nexus"
+import {
+  ForbiddenError,
+  UserInputError,
+} from "apollo-server-express"
+import {
+  extendType,
+  idArg,
+  intArg,
+  stringArg,
+} from "nexus"
+
 import { isAdmin } from "../../accessControl"
+import {
+  buildUserSearch,
+  convertPagination,
+} from "../../util/db-functions"
 
 export const UserQueries = extendType({
   type: "Query",

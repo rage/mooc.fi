@@ -1,11 +1,13 @@
-import { AuthenticationError } from "apollo-server-core"
-import TmcClient from "../services/tmc"
-import { Role } from "../accessControl"
-import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
-import { PrismaClient } from "@prisma/client"
-import { Context } from "../context"
+import { AuthenticationError } from "apollo-server-express"
 import { plugin } from "nexus"
+
+import { PrismaClient } from "@prisma/client"
+
+import { Role } from "../accessControl"
+import { Context } from "../context"
+import { redisify } from "../services/redis"
+import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 
 export const moocfiAuthPlugin = () =>

@@ -1,21 +1,25 @@
+import { UserInputError } from "apollo-server-express"
+import { randomBytes } from "crypto"
 import {
-  objectType,
-  extendType,
-  stringArg,
   arg,
   booleanArg,
+  extendType,
   idArg,
   intArg,
   nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
-
-import { UserInputError } from "apollo-server-core"
-import { Role, isAdmin } from "../accessControl"
-import { Context } from "../context"
-import { randomBytes } from "crypto"
 import { promisify } from "util"
-import { filterNull } from "../util/db-functions"
+
 import { Prisma } from "@prisma/client"
+
+import {
+  isAdmin,
+  Role,
+} from "../accessControl"
+import { Context } from "../context"
+import { filterNull } from "../util/db-functions"
 
 export const Organization = objectType({
   name: "Organization",

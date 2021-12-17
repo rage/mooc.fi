@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-express"
 import {
   extendType,
   idArg,

@@ -1,5 +1,5 @@
 import { Context } from "/context"
-import { AuthenticationError } from "apollo-server-core"
+import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
   extendType,
@@ -13,7 +13,10 @@ import {
 
 import { Prisma } from "@prisma/client"
 
-import { isAdmin, Role } from "../accessControl"
+import {
+  isAdmin,
+  Role,
+} from "../accessControl"
 import { filterNull } from "../util/db-functions"
 
 export const Exercise = objectType({
