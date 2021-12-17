@@ -1,24 +1,22 @@
-import { useState, useEffect, ChangeEvent } from "react"
-import { gql } from "@apollo/client"
+import { ChangeEvent, useEffect, useState } from "react"
+
 import ErrorBoundary from "/components/ErrorBoundary"
-import { useLazyQuery } from "@apollo/client"
-
-import PointsList from "./DashboardPointsList"
-
-import Button from "@material-ui/core/Button"
-import useDebounce from "/util/useDebounce"
-
-import { TextField, Grid, Slider, Skeleton } from "@material-ui/core"
-
-import { range } from "lodash"
-import styled from "@emotion/styled"
+import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
+import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 import {
   UserCourseSettings as StudentProgressData,
   UserCourseSettings_userCourseSettings_pageInfo,
 } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
-import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
+import useDebounce from "/util/useDebounce"
+import { range } from "lodash"
+
+import { gql, useLazyQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Grid, Skeleton, Slider, TextField } from "@material-ui/core"
+import Button from "@material-ui/core/Button"
+
+import PointsList from "./DashboardPointsList"
 
 export const StudentProgresses = gql`
   query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {
@@ -85,17 +83,15 @@ function PaginatedPointsList(props: Props) {
       fetchPolicy: "cache-first",
     })
 
-  useEffect(
-    () =>
-      getData({
-        variables: {
-          course_id: courseId,
-          after: null,
-          search,
-        },
-      }),
-    [search],
-  )
+  useEffect(() => {
+    getData({
+      variables: {
+        course_id: courseId,
+        after: null,
+        search,
+      },
+    })
+  }, [search])
 
   if (error) {
     return <p>ERROR: {JSON.stringify(error)}</p>

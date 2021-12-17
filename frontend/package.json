@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cd node_modules/cweb-bin/lib && node install.js && cd ../../..",
+    "postinstall": "cd node_modules/cwebp-bin/lib && node install.js && cd ../../..",
     "dev": "node server.js",
     "build": "NODE_ENV=production next build",
     "export": "next export",
