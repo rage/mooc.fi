@@ -14,10 +14,7 @@ import { promisify } from "util"
 
 import { Prisma } from "@prisma/client"
 
-import {
-  isAdmin,
-  Role,
-} from "../accessControl"
+import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"
 import { filterNull } from "../util/db-functions"
 

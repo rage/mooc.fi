@@ -1,20 +1,9 @@
 import { ForbiddenError } from "apollo-server-express"
-import {
-  arg,
-  extendType,
-  idArg,
-  nonNull,
-  objectType,
-} from "nexus"
+import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { OrganizationRole } from "@prisma/client"
 
-import {
-  isAdmin,
-  isVisitor,
-  or,
-  Role,
-} from "../accessControl"
+import { isAdmin, isVisitor, or, Role } from "../accessControl"
 import { Context } from "../context"
 
 export const UserOrganization = objectType({

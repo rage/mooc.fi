@@ -1,11 +1,5 @@
 import { AuthenticationError } from "apollo-server-express"
-import {
-  arg,
-  booleanArg,
-  extendType,
-  nonNull,
-  stringArg,
-} from "nexus"
+import { arg, booleanArg, extendType, nonNull, stringArg } from "nexus"
 
 import { Context } from "../../context"
 import { invalidate } from "../../services/redis"

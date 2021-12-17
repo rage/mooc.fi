@@ -4,11 +4,7 @@ import { DateTime } from "luxon"
 
 import { ExerciseCompletion } from "@prisma/client"
 
-import {
-  err,
-  ok,
-  Result,
-} from "../../../../util/result"
+import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"

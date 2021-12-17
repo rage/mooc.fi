@@ -1,9 +1,5 @@
 import { AuthenticationError } from "apollo-server-express"
-import {
-  chunk,
-  difference,
-  groupBy,
-} from "lodash"
+import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -18,15 +14,8 @@ import { v4 as uuidv4 } from "uuid"
 
 import { Completion } from "@prisma/client"
 
-import {
-  isAdmin,
-  isUser,
-  or,
-  Role,
-} from "../../accessControl"
-import {
-  generateUserCourseProgress,
-} from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({

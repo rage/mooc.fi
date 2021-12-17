@@ -1,25 +1,11 @@
 import { Context } from "/context"
-import {
-  ForbiddenError,
-  UserInputError,
-} from "apollo-server-express"
+import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { chunk } from "lodash"
-import {
-  arg,
-  extendType,
-  intArg,
-  list,
-  objectType,
-  stringArg,
-} from "nexus"
+import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
-import {
-  isAdmin,
-  isOrganization,
-  or,
-} from "../accessControl"
+import { isAdmin, isOrganization, or } from "../accessControl"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",

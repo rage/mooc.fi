@@ -5,10 +5,7 @@ import {
   fakeTMCSpecific,
   getTestContext,
 } from "../../../../../tests/__helpers"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../../../tests/data"
+import { adminUserDetails, normalUserDetails } from "../../../../../tests/data"
 import { seed } from "../../../../../tests/data/seed"
 import { DatabaseInputError } from "../../../../lib/errors"
 import { KafkaContext } from "../../kafkaContext"
