@@ -1,4 +1,4 @@
-import { uniq } from "lodash"
+import { uniqBy } from "lodash"
 import {
   booleanArg,
   idArg,
@@ -250,19 +250,51 @@ export const User = objectType({
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
       resolve: async (parent, _, ctx) => {
-        const settings = await ctx.prisma.user
+        // not very optimal, as the exercise completions will be queried twice if that field is selected
+        const exerciseCompletionCourses = await ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
           })
-          .user_course_settings({
-            orderBy: { created_at: "asc" },
+          .exercise_completions({
+            select: {
+              exercise: {
+                select: {
+                  course: {
+                    select: {
+                      id: true,
+                      inherit_settings_from_id: true,
+                      completions_handled_by_id: true,
+                    },
+                  },
+                },
+              },
+            },
           })
 
-        const courseIds = uniq(settings.map((s) => s.course_id)).filter(
-          (key) => key !== null && key !== "null",
+        // get entries for user/course_id combination
+        const summaryEntries = exerciseCompletionCourses
+          .flatMap((ec) => ({
+            user_id: parent.id,
+            course_id: ec?.exercise?.course?.id,
+            inherit_settings_from_id:
+              ec?.exercise?.course?.inherit_settings_from_id,
+            completions_handled_by_id:
+              ec?.exercise?.course?.completions_handled_by_id,
+          }))
+          .filter(({ course_id }) => Boolean(course_id))
+
+        // find unique course combinations (possible language versions separately)
+        const summary = uniqBy(
+          summaryEntries,
+          ({
+            course_id,
+            inherit_settings_from_id,
+            completions_handled_by_id,
+          }) =>
+            `${course_id}-${inherit_settings_from_id}-${completions_handled_by_id}`,
         )
 
-        return courseIds.map((course_id) => ({ user_id: parent.id, course_id }))
+        return summary
       },
     })
   },
