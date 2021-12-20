@@ -41,7 +41,7 @@ class MyDocument extends Document {
       styles: [
         ...emotionStyleTags,
         ...React.Children.toArray(initialProps.styles),
-        // sheets.getStyleElement(),
+        sheets.getStyleElement(),
       ],
     }
   }
