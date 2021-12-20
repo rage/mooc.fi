@@ -1,7 +1,4 @@
-import {
-  RedisClientType,
-  RedisModules,
-} from "redis"
+import { RedisClientType, RedisModules } from "redis"
 import * as winston from "winston"
 
 import { redisify } from "../redis"
