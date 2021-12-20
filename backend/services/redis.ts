@@ -14,7 +14,7 @@ const redisClient =
       })
     : undefined
 
-const logger = winston.createLogger({
+const _logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -24,13 +24,14 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
+// @ts-ignore: not used for now
 let connected = false
 
 redisClient?.on("error", (err: any) => {
-  logger.error("Redis error: " + err)
+  _logger.error("Redis error: " + err)
 })
 redisClient?.on("ready", () => {
-  logger.info("Redis connected")
+  _logger.info("Redis connected")
   connected = true
 })
 redisClient?.connect()
@@ -38,6 +39,7 @@ redisClient?.connect()
 const isPromise = <T>(value: any): value is Promise<T> => {
   return value && typeof value.then === "function"
 }
+
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
   options: {
@@ -46,19 +48,24 @@ export async function redisify<T>(
     key: string
     params?: any
   },
+  client: typeof redisClient = redisClient,
+  logger: winston.Logger = _logger,
 ) {
-  const resolveValue = async () =>
-    isPromise(fn) ? await fn : params ? fn(...params) : fn()
-
   const { prefix, expireTime, key, params } = options
 
-  if (!connected) {
-    return resolveValue()
+  const resolveValue = async () =>
+    isPromise(fn) ? await fn : params ? await fn(...params) : await fn()
+
+  if (params && isPromise(fn)) {
+    logger.warn(`Prefix ${prefix}: params ignored with a promise`)
   }
 
   const prefixedKey = `${prefix}:${key}`
+  let value: T | undefined
+  let resolveSuccess = false
+
   try {
-    const res = await redisClient?.get(prefixedKey)
+    const res = await client?.get(prefixedKey)
 
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
@@ -66,15 +73,26 @@ export async function redisify<T>(
     }
     logger.info(`Cache miss: ${prefix}`)
 
-    const value = await resolveValue()
+    value = await resolveValue()
+    resolveSuccess = true
 
-    redisClient?.set(prefixedKey, JSON.stringify(value), {
+    await client?.set(prefixedKey, JSON.stringify(value), {
       EX: expireTime,
     })
 
     return value
-  } catch {
-    return resolveValue()
+  } catch (e1) {
+    try {
+      if (!resolveSuccess) {
+        return await resolveValue()
+      }
+      return value
+    } catch (e2) {
+      logger.error(
+        `Could not resolve value for ${prefixedKey}; error: `,
+        e2 instanceof Error ? e2.message : e2,
+      )
+    }
   }
 }
 
