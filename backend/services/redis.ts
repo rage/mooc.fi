@@ -39,6 +39,13 @@ redisClient?.connect()
 const isPromise = <T>(value: any): value is Promise<T> => {
   return value && typeof value.then === "function"
 }
+const isAsync = <T>(
+  fn: (...props: any[]) => Promise<T> | T,
+): fn is (...props: any[]) => Promise<T> => {
+  return (
+    fn && typeof fn === "function" && fn.constructor.name === "AsyncFunction"
+  )
+}
 
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
@@ -54,7 +61,15 @@ export async function redisify<T>(
   const { prefix, expireTime, key, params } = options
 
   const resolveValue = async () =>
-    isPromise(fn) ? await fn : params ? await fn(...params) : await fn()
+    isPromise(fn)
+      ? await fn
+      : isAsync(fn)
+      ? params
+        ? await fn(...params)
+        : await fn()
+      : params
+      ? fn(...params)
+      : fn()
 
   if (params && isPromise(fn)) {
     logger.warn(`Prefix ${prefix}: params ignored with a promise`)
