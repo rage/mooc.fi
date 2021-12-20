@@ -19,18 +19,17 @@ import Head from "next/head"
 import Router from "next/router"
 
 import { ApolloProvider } from "@apollo/client"
-import createCache from "@emotion/cache"
 import { CacheProvider, Global } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
-import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles"
+import { ThemeProvider } from "@mui/material/styles"
 
+import createEmotionCache from "../src/createEmotionCache"
 import Layout from "./_layout"
 
 fontAwesomeConfig.autoAddCss = false
 
-export const cache = createCache({ key: "css", prepend: true })
-
+const clientSideEmotionCache = createEmotionCache()
 const getPageTranslator = getTranslator(PageTranslations)
 class MyApp extends App {
   constructor(props) {
@@ -118,6 +117,7 @@ class MyApp extends App {
       asUrl,
       hrefUrl,
       currentUser,
+      emotionCache = clientSideEmotionCache,
     } = this.props
 
     // give router to translator to get query parameters
@@ -130,7 +130,7 @@ class MyApp extends App {
 
     return (
       <>
-        <CacheProvider value={cache}>
+        <CacheProvider value={emotionCache}>
           <Head>
             <meta
               name="viewport"
@@ -138,40 +138,38 @@ class MyApp extends App {
             />
             <title>{title}</title>
           </Head>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <ApolloProvider client={apollo}>
-                <LoginStateContext.Provider value={this.state}>
-                  <LanguageContext.Provider
-                    value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-                  >
-                    <ConfirmProvider>
-                      <BreadcrumbContext.Provider
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <ApolloProvider client={apollo}>
+              <LoginStateContext.Provider value={this.state}>
+                <LanguageContext.Provider
+                  value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
+                >
+                  <ConfirmProvider>
+                    <BreadcrumbContext.Provider
+                      value={{
+                        breadcrumbs: this.state.breadcrumbs,
+                        setBreadcrumbs: this.setBreadcrumbs,
+                      }}
+                    >
+                      <AlertContext.Provider
                         value={{
-                          breadcrumbs: this.state.breadcrumbs,
-                          setBreadcrumbs: this.setBreadcrumbs,
+                          alerts: this.state.alerts,
+                          addAlert: this.addAlert,
+                          removeAlert: this.removeAlert,
                         }}
                       >
-                        <AlertContext.Provider
-                          value={{
-                            alerts: this.state.alerts,
-                            addAlert: this.addAlert,
-                            removeAlert: this.removeAlert,
-                          }}
-                        >
-                          <Layout>
-                            <Global styles={fontCss} />
-                            <Component {...pageProps} />
-                          </Layout>
-                        </AlertContext.Provider>
-                      </BreadcrumbContext.Provider>
-                    </ConfirmProvider>
-                  </LanguageContext.Provider>
-                </LoginStateContext.Provider>
-              </ApolloProvider>
-            </ThemeProvider>
-          </StyledEngineProvider>
+                        <Layout>
+                          <Global styles={fontCss} />
+                          <Component {...pageProps} />
+                        </Layout>
+                      </AlertContext.Provider>
+                    </BreadcrumbContext.Provider>
+                  </ConfirmProvider>
+                </LanguageContext.Provider>
+              </LoginStateContext.Provider>
+            </ApolloProvider>
+          </ThemeProvider>
         </CacheProvider>
       </>
     )

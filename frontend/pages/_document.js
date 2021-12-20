@@ -1,12 +1,12 @@
 import React from "react"
-import Document, { Html, Head, Main, NextScript } from "next/document"
-import { ServerStyleSheets } from "@mui/styles"
-import theme from "/src/theme"
-import { cache } from "./_app"
-import createEmotionServer from "@emotion/server/create-instance"
-// import flush from "styled-jsx/server"
 
-const { extractCritical } = createEmotionServer(cache)
+import Document, { Head, Html, Main, NextScript } from "next/document"
+
+import createEmotionServer from "@emotion/server/create-instance"
+import { ServerStyleSheets } from "@mui/styles"
+
+import createEmotionCache from "../src/createEmotionCache"
+import theme from "../src/theme"
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -14,27 +14,34 @@ class MyDocument extends Document {
 
     const originalRenderPage = ctx.renderPage
 
+    const cache = createEmotionCache()
+    const { extractCriticalToChunks } = createEmotionServer(cache)
+
     ctx.renderPage = () =>
       originalRenderPage({
-        enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+        enhanceApp: (App) =>
+          function EnhanceApp(props) {
+            return sheets.collect(<App emotionCache={cache} {...props} />)
+          },
       })
 
     const initialProps = await Document.getInitialProps(ctx)
-    const styles = extractCritical(initialProps.html)
-
+    const emotionStyles = extractCriticalToChunks(initialProps.html)
+    const emotionStyleTags = emotionStyles.styles.map((style) => (
+      <style
+        data-emotion-css={`${style.key} ${style.ids.join(" ")}`}
+        key={style.key}
+        dangerouslySetInnerHTML={{ __html: style.css }}
+      />
+    ))
     return {
       ...initialProps,
 
       // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
       styles: [
+        ...emotionStyleTags,
         ...React.Children.toArray(initialProps.styles),
-        sheets.getStyleElement(),
-        <style
-          key="emotion-style-tag"
-          data-emotion={`css ${styles.ids.join(" ")}`}
-          dangerouslySetInnerHTML={{ __html: styles.css }}
-        />,
-        //flush(),
+        // sheets.getStyleElement(),
       ],
     }
   }
