@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { LinearProgress } from "@material-ui/core"
+import { LinearProgress } from "@mui/material"
 import { CardSubtitle } from "/components/Text/headers"
 
 const ColoredProgressBar = styled(({ ...props }) => (

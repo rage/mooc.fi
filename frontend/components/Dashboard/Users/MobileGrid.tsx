@@ -13,7 +13,7 @@ import {
   TableRow,
   TableCell,
   Skeleton,
-} from "@material-ui/core"
+} from "@mui/material"
 import LangLink from "/components/LangLink"
 import {
   UserDetailsContains_userDetailsContains_edges,

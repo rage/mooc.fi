@@ -14,7 +14,7 @@ import {
   Input,
   InputLabel,
   Link,
-} from "@material-ui/core"
+} from "@mui/material"
 
 const StyledForm = styled.form`
   padding: 1em;

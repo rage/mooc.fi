@@ -1,5 +1,3 @@
-import React from "react"
-
 import Container from "/components/Container"
 import OrganizationButtons from "/components/OrganizationButtons"
 import SignInForm from "/components/SignInForm"
@@ -12,7 +10,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
 import styled from "@emotion/styled"
-import { Paper, Typography } from "@material-ui/core"
+import { Paper, Typography } from "@mui/material"
 
 const StyledPaper = styled(Paper)`
   display: flex;

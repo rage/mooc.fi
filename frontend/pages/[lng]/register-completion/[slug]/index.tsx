@@ -23,7 +23,7 @@ import axios from "axios"
 
 import { gql, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@material-ui/core"
+import { Paper, SvgIcon, Typography } from "@mui/material"
 
 const BASE_URL = isProduction
   ? BACKEND_URL ?? "https://www.mooc.fi/api"
@@ -115,11 +115,10 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
-  const [
-    updateRegistrationAttemptDate,
-  ] = useMutation<UpdateRegistrationAttemptDate>(
-    UpdateRegistrationAttemptDateMutation,
-  )
+  const [updateRegistrationAttemptDate] =
+    useMutation<UpdateRegistrationAttemptDate>(
+      UpdateRegistrationAttemptDateMutation,
+    )
 
   const course_exists = Boolean(courseData?.course?.id)
 

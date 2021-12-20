@@ -1,30 +1,32 @@
 import { useCallback, useContext } from "react"
-import CourseEditForm from "./CourseEditForm"
-import { useMutation, useApolloClient } from "@apollo/client"
-import { CourseFormValues } from "./types"
-import courseEditSchema from "./form-validation"
-import { FormikHelpers } from "formik"
+
+import LanguageContext from "/contexts/LanguageContext"
+import {
+  AddCourseMutation,
+  DeleteCourseMutation,
+  UpdateCourseMutation,
+} from "/graphql/mutations/courses"
 import {
   AllCoursesQuery,
   AllEditorCoursesQuery,
   CheckSlugQuery,
   CourseEditorCoursesQuery,
+  CourseQuery,
 } from "/graphql/queries/courses"
-import {
-  AddCourseMutation,
-  UpdateCourseMutation,
-  DeleteCourseMutation,
-} from "/graphql/mutations/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseQuery } from "/graphql/queries/courses"
-import { PureQueryOptions } from "@apollo/client"
-import { toCourseForm, fromCourseForm } from "./serialization"
-import Router from "next/router"
-import LanguageContext from "/contexts/LanguageContext"
-import CoursesTranslations from "/translations/courses"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
+import { FormikHelpers } from "formik"
+import Router from "next/router"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+
+import CourseEditForm from "./CourseEditForm"
+import courseEditSchema from "./form-validation"
+import { fromCourseForm, toCourseForm } from "./serialization"
+import { CourseFormValues } from "./types"
 
 const CourseEdit = ({
   course,

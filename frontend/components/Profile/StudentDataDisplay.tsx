@@ -1,13 +1,16 @@
-import React, { PropsWithChildren } from "react"
-import Typography from "@material-ui/core/Typography"
-import Box from "@material-ui/core/Box"
-import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
-import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
-import ProfileSettings from "/components/Profile/ProfileSettings"
-import notEmpty from "/util/notEmpty"
-import OrganizationConnectionList from "./OrganizationConnection/OrganizationConnectionList"
+import { PropsWithChildren } from "react"
+
 import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
+import ProfileSettings from "/components/Profile/ProfileSettings"
 import { CurrentUserUserOverView_currentUser } from "/static/types/generated/CurrentUserUserOverView"
+import notEmpty from "/util/notEmpty"
+import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
+import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
+
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
+
+import OrganizationConnectionList from "./OrganizationConnection/OrganizationConnectionList"
 
 interface TabPanelProps {
   index: any

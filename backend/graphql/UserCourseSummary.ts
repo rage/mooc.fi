@@ -6,6 +6,9 @@ export const UserCourseSummary = objectType({
   definition(t) {
     t.id("course_id")
     t.id("user_id")
+    t.id("inherit_settings_from_id")
+    t.id("completions_handled_by_id")
+
     t.field("course", {
       type: "Course",
       resolve: async ({ course_id }, _, ctx) => {
@@ -20,13 +23,17 @@ export const UserCourseSummary = objectType({
     })
     t.field("completion", {
       type: "Completion",
-      resolve: async ({ user_id, course_id }, _, ctx) => {
+      resolve: async (
+        { user_id, course_id, completions_handled_by_id },
+        _,
+        ctx,
+      ) => {
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
         const completions = await ctx.prisma.course
           .findUnique({
-            where: { id: course_id },
+            where: { id: completions_handled_by_id ?? course_id },
           })
           .completions({
             where: {

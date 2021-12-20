@@ -3,7 +3,7 @@ import React from "react"
 import OrganizationButton from "/components/Buttons/OrganizationButton"
 
 import styled from "@emotion/styled"
-import { Alert, Paper } from "@material-ui/core"
+import { Alert, Paper } from "@mui/material"
 
 interface OrganizationButtonProps {
   hyVisible?: boolean

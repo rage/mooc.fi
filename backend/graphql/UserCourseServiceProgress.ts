@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-errors"
+import { UserInputError } from "apollo-server-express"
 import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin } from "../accessControl"

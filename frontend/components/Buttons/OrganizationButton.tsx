@@ -4,7 +4,7 @@ import HYLogo from "/components/HYLogo"
 import Link from "next/link"
 
 import styled from "@emotion/styled"
-import { Button, Typography } from "@material-ui/core"
+import { Button, Typography } from "@mui/material"
 
 type Variant = "hy" | "haka"
 

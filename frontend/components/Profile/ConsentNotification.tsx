@@ -1,11 +1,11 @@
-import Warning from "@material-ui/icons/Warning"
+import Warning from "@mui/icons-material/Warning"
 import styled from "@emotion/styled"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 import React from "react"
 import LangLink from "/components/LangLink"
 import { useLanguageContext } from "/contexts/LanguageContext"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 
 const ConsentNotificationWrapper = styled.div`
   display: flex;

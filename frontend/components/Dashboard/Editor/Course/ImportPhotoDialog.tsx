@@ -12,7 +12,7 @@ import {
   MenuItem,
   DialogActions,
   Button,
-} from "@material-ui/core"
+} from "@mui/material"
 import { Field, useFormikContext } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"

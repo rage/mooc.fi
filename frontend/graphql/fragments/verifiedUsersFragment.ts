@@ -13,6 +13,7 @@ export const VerifiedUsersFragment = gql`
       display_name
       mail
       organizational_unit
+      edu_person_principal_name
     }
   }
 `

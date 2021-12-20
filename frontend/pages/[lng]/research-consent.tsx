@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react"
 import styled from "@emotion/styled"
-import { Paper, CircularProgress } from "@material-ui/core"
+import { Paper, CircularProgress } from "@mui/material"
 import LanguageContext from "/contexts/LanguageContext"
 import { useMutation, useQuery } from "@apollo/client"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
@@ -102,14 +102,8 @@ function useResearchConsent() {
 const ResearchConsentPage = () => {
   const t = useTranslator(SignupTranslations)
 
-  const {
-    loading,
-    research,
-    handleInput,
-    onSubmit,
-    formError,
-    submitting,
-  } = useResearchConsent()
+  const { loading, research, handleInput, onSubmit, formError, submitting } =
+    useResearchConsent()
 
   return (
     <StyledPaper>

@@ -1,5 +1,6 @@
-import { Typography } from "@material-ui/core"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+
+import { Typography } from "@mui/material"
 
 interface ErrorProps {
   statusCode: number

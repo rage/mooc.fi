@@ -13,7 +13,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-} from "@material-ui/core"
+} from "@mui/material"
 import styled from "@emotion/styled"
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import { useEffect, useState } from "react"

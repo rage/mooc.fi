@@ -1,4 +1,5 @@
-import { DOMAIN, isProduction, TMC_HOST } from "/config"
+import { DOMAIN, isProduction } from "/config"
+import { getUserDetails } from "/lib/account"
 import axios from "axios"
 //import TmcClient from "tmc-client-js"
 import { NextPageContext as NextContext } from "next"
@@ -159,15 +160,22 @@ export const getAccessToken = async (ctx: NextContext | undefined) => {
   // return nookies.get(ctx)["access_token"]
 }
 
-export async function getUserDetails(accessToken: string) {
-  const res = await axios.get(
-    `${TMC_HOST}/api/v8/users/current?show_user_fields=true`,
+export async function userDetails(accessToken: string) {
+  const res = await axios.get<
+    {},
     {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+      data: {
+        id: string
+        username: string
+        mail: string
+        administrator: boolean
+      }
+    }
+  >(`https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
-  )
+  })
   return res.data
 }

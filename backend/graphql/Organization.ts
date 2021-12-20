@@ -1,21 +1,22 @@
+import { UserInputError } from "apollo-server-express"
+import { randomBytes } from "crypto"
 import {
-  objectType,
-  extendType,
-  stringArg,
   arg,
   booleanArg,
+  extendType,
   idArg,
   intArg,
   nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
-
-import { UserInputError } from "apollo-server-core"
-import { Role, isAdmin } from "../accessControl"
-import { Context } from "../context"
-import { randomBytes } from "crypto"
 import { promisify } from "util"
-import { filterNull } from "../util/db-functions"
+
 import { Prisma } from "@prisma/client"
+
+import { isAdmin, Role } from "../accessControl"
+import { Context } from "../context"
+import { filterNull } from "../util/db-functions"
 
 export const Organization = objectType({
   name: "Organization",
@@ -101,22 +102,12 @@ export const OrganizationQueries = extendType({
         take: intArg(),
         skip: intArg(),
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
-        /*first: schema.intArg(),
-        after: schema.idArg(),
-        last: schema.intArg(),
-        before: schema.idArg(),*/
         orderBy: arg({ type: "OrganizationOrderByInput" }),
         hidden: booleanArg(),
       },
       authorize: organizationPermission,
       resolve: async (_, args, ctx) => {
-        const {
-          /*first, last, after, before, */ take,
-          skip,
-          cursor,
-          orderBy,
-          hidden,
-        } = args
+        const { take, skip, cursor, orderBy, hidden } = args
 
         const orgs = await ctx.prisma.organization.findMany({
           take: take ?? undefined,
@@ -126,10 +117,6 @@ export const OrganizationQueries = extendType({
                 id: cursor.id ?? undefined,
               }
             : undefined,
-          /*first: first ?? undefined,
-          last: last ?? undefined,
-          after: after ? { id: after } : undefined,
-          before: before ? { id: before } : undefined,*/
           orderBy:
             (filterNull(orderBy) as Prisma.OrganizationOrderByInput) ??
             undefined,
@@ -181,20 +168,6 @@ export const OrganizationMutations = extendType({
             },
           },
         })
-        // FIXME: return value not used
-        /*await ctx.prisma.organization_translation.create({
-          data: {
-            name: name ?? "",
-            language: "fi_FI", //placeholder
-            organization_organizationToorganization_translation: {
-              connect: { id: org.id },
-            },
-          },
-        })
-
-        const newOrg = await ctx.prisma.organization.findOne({
-          where: { id: org.id },
-        })*/
 
         return org
       },

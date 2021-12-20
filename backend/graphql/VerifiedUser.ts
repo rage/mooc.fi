@@ -1,4 +1,4 @@
-import { AuthenticationError } from "apollo-server-core"
+import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
   extendType,

@@ -1,9 +1,9 @@
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { FieldArray, getIn, useFormikContext } from "formik"
-import { Grid, FormControl, FormGroup, Typography } from "@material-ui/core"
+import { Grid, FormControl, FormGroup, Typography } from "@mui/material"
 import { initialVariant } from "./form-validation"
-import AddIcon from "@material-ui/icons/Add"
-import RemoveIcon from "@material-ui/icons/Remove"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
 import {
   StyledTextField,
   StyledFieldWithAnchor,

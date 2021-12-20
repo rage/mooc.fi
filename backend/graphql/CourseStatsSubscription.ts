@@ -44,14 +44,13 @@ export const CourseStatsSubscriptionMutations = extendType({
         const { role, user } = ctx
 
         if (role === Role.USER) {
-          const ownsSubscription = await ctx.prisma.courseStatsSubscription.findFirst(
-            {
+          const ownsSubscription =
+            await ctx.prisma.courseStatsSubscription.findFirst({
               where: {
                 id,
                 user: { id: user?.id },
               },
-            },
-          )
+            })
 
           if (!ownsSubscription) {
             throw new Error("You do not own this subscription")

@@ -1,5 +1,5 @@
 import { Context } from "/context"
-import { ForbiddenError, UserInputError } from "apollo-server-core"
+import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { chunk } from "lodash"
 import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
 

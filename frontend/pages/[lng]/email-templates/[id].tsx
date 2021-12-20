@@ -20,7 +20,7 @@ import Router from "next/router"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
 import { ApolloConsumer, useQuery } from "@apollo/client"
-import { Button, Collapse, Paper, TextField } from "@material-ui/core"
+import { Button, Collapse, Paper, TextField } from "@mui/material"
 
 const templateValues = [
   "grade",
@@ -239,7 +239,8 @@ const EmailTemplateView = () => {
                             title: title,
                             txt_body: txtBody,
                             html_body: htmlBody,
-                            triggered_automatically_by_course_id: triggeredByCourseId,
+                            triggered_automatically_by_course_id:
+                              triggeredByCourseId,
                             exercise_completions_threshold: exerciseThreshold,
                             points_threshold: pointsThreshold,
                             template_type: templateType,

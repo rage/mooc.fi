@@ -1,4 +1,4 @@
-import { ForbiddenError } from "apollo-server-core"
+import { ForbiddenError } from "apollo-server-express"
 import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { OrganizationRole } from "@prisma/client"
@@ -122,8 +122,6 @@ export const UserOrganizationMutations = extendType({
       type: "UserOrganization",
       args: {
         id: nonNull(idArg()),
-        /*       userId: schema.idArg(),
-        organizationId: schema.idArg(), */
         role: arg({ type: "OrganizationRole" }),
       },
       authorize: or(isVisitor, isAdmin),

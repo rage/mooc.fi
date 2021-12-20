@@ -8,9 +8,9 @@ import { CurrentUserUserOverView_currentUser_verified_users } from "/static/type
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 
-// import { Paper } from "@material-ui/core"
+// import { Paper } from "@mui/material"
 // import styled from "@emotion/styled"
 import OrganizationConnectionEntry from "./OrganizationConnectionEntry"
 

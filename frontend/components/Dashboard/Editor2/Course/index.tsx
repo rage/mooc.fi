@@ -1,34 +1,37 @@
-import { useForm, FormProvider, SubmitErrorHandler } from "react-hook-form"
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import { useCallback, useEffect, useState } from "react"
+
+import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
+import { FormStatus } from "/components/Dashboard/Editor2/types"
+import { useAnchorContext } from "/contexts/AnchorContext"
+import {
+  AddCourseMutation,
+  DeleteCourseMutation,
+  UpdateCourseMutation,
+} from "/graphql/mutations/courses"
 import {
   AllCoursesQuery,
   AllEditorCoursesQuery,
   CheckSlugQuery,
   CourseEditorCoursesQuery,
+  CourseQuery,
 } from "/graphql/queries/courses"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
-import { useState, useCallback, useEffect } from "react"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
-import {
-  AddCourseMutation,
-  UpdateCourseMutation,
-  DeleteCourseMutation,
-} from "/graphql/mutations/courses"
-import { CourseFormValues } from "./types"
-import { fromCourseForm, toCourseForm } from "./serialization"
-import { CourseQuery } from "/graphql/queries/courses"
 import notEmpty from "/util/notEmpty"
-import { EditorContext } from "../EditorContext"
-import { useAnchorContext } from "/contexts/AnchorContext"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
-import CourseEditForm from "./CourseEditForm"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
-import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import { useTranslator } from "/util/useTranslator"
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+
+import { EditorContext } from "../EditorContext"
+import CourseEditForm from "./CourseEditForm"
+import { fromCourseForm, toCourseForm } from "./serialization"
+import { CourseFormValues } from "./types"
 
 interface CourseEditorProps {
   course?: CourseDetails_course
@@ -106,7 +109,10 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
       })
       setStatus({ message: null })
     } catch (err: any) {
-      setStatus({ message: err, error: true })
+      setStatus({
+        message: err instanceof Error ? err.message : err,
+        error: true,
+      })
     }
   }, [])
 

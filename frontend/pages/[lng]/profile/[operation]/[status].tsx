@@ -1,9 +1,10 @@
-import { Container, Typography } from "@material-ui/core"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import ProfileTranslations from "/translations/profile"
 import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
 import { useTranslator } from "/util/useTranslator"
+
+import { Container, Typography } from "@mui/material"
 
 interface ConnectionStatusProps {
   status: "success" | "failure"

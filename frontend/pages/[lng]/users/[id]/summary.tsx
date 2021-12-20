@@ -19,7 +19,7 @@ import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 
 import { gql, useQuery } from "@apollo/client"
-import { Paper } from "@material-ui/core"
+import { Paper } from "@mui/material"
 
 const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {
@@ -52,7 +52,6 @@ const UserSummaryQuery = gql`
           exercise_id
           created_at
           updated_at
-          n_points
           attempted
           completed
           timestamp

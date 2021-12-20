@@ -1,21 +1,42 @@
 import { Component } from "react"
-import { TextField, CircularProgress } from "@material-ui/core"
+
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import LangLink from "/components/LangLink"
+import LanguageContext from "/contexts/LanguageContext"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
-import SignUpTranslations from "/translations/sign-up"
-import LangLink from "/components/LangLink"
-import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import getTranslator from "/translations"
+import SignUpTranslations from "/translations/sign-up"
+
+import styled from "@emotion/styled"
+import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
 import capitalizeFirstLetter from "/util/capitalizeFirstLetter"
-import LanguageContext from "/contexts/LanguageContext"
-import {
-  StyledPaper,
-  Row,
-  Form,
-  Header,
-  InfoBox,
-  StyledTypography,
-} from "./common"
+
+const StyledPaper = styled(Paper)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+`
+const Row = styled.div`
+  margin-bottom: 1.5rem;
+`
+const Form = styled.form`
+  width: 100%;
+`
+const Header = styled(Typography)<any>`
+  margin: 1em;
+`
+
+const InfoBox = styled.div`
+  margin-bottom: 2rem;
+`
+
+const StyledTypography = styled(Typography)<any>`
+  margin-bottom: 2rem;
+`
 
 interface state {
   email?: string

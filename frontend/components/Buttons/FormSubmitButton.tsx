@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Button from "@material-ui/core/Button"
+import Button from "@mui/material/Button"
 
 export const FormSubmitButton = styled(Button)`
   margin-bottom: 0.5rem;

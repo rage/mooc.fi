@@ -10,9 +10,9 @@ import {
   Input,
   InputLabel,
   Link,
-} from "@material-ui/core"
-import Paper from "@material-ui/core/Paper"
-import Typography from "@material-ui/core/Typography"
+} from "@mui/material"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
 
 import { FormSubmitButton as SubmitButton } from "../../components/Buttons/FormSubmitButton"
 import Container from "../../components/Container"

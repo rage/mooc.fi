@@ -176,7 +176,7 @@ export function updatePassword(ctx: ApiContext) {
         .where("id", user.id)
 
       await invalidateAuth(user.id, ctx)
-      invalidate(["userdetails", "user"], token)
+      await invalidate(["userdetails", "user"], token)
 
       return res.status(200).json({
         status: 200,
@@ -540,11 +540,8 @@ export function updatePersonAffiliation(ctx: ApiContext) {
       })
     }
 
-    const {
-      person_affiliation,
-      edu_person_principal_name,
-      home_organization,
-    } = req.body
+    const { person_affiliation, edu_person_principal_name, home_organization } =
+      req.body
 
     if (!edu_person_principal_name || !home_organization) {
       return res.status(400).json({

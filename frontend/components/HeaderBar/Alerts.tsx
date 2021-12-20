@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import AlertContext from "/contexts/AlertContext"
-import Alert from "@material-ui/lab/Alert"
-import AlertTitle from "@material-ui/lab/AlertTitle"
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
 import { useRouter } from "next/router"
 
 const Alerts = () => {

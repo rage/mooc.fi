@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import {
   ControlledTextField,
   ControlledHiddenField,

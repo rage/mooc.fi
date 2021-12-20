@@ -1,8 +1,8 @@
-import { Chip, ChipProps } from "@material-ui/core"
-import CheckCircle from "@material-ui/icons/CheckCircle"
-import Schedule from "@material-ui/icons/Schedule"
-import AlarmOff from "@material-ui/icons/AlarmOff"
-import Error from "@material-ui/icons/Error"
+import { Chip, ChipProps } from "@mui/material"
+import CheckCircle from "@mui/icons-material/CheckCircle"
+import Schedule from "@mui/icons-material/Schedule"
+import AlarmOff from "@mui/icons-material/AlarmOff"
+import Error from "@mui/icons-material/Error"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import styled from "@emotion/styled"
 

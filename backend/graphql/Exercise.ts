@@ -1,5 +1,5 @@
 import { Context } from "/context"
-import { AuthenticationError } from "apollo-server-core"
+import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
   extendType,
@@ -114,15 +114,8 @@ export const ExerciseMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const {
-          custom_id,
-          name,
-          part,
-          section,
-          max_points,
-          course,
-          service,
-        } = args
+        const { custom_id, name, part, section, max_points, course, service } =
+          args
 
         ctx.prisma
         return ctx.prisma.exercise.create({

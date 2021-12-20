@@ -18,5 +18,5 @@ export interface DeleteVerifiedUser {
 }
 
 export interface DeleteVerifiedUserVariables {
-  personal_unique_code: string
+  edu_person_principal_name: string
 }

@@ -1,15 +1,16 @@
+import compression from "compression"
+// import * as winston from "winston"
+import express from "express"
+import morgan from "morgan"
+import * as Kafka from "node-rdkafka"
+import { promisify } from "util"
+
+import { KafkaError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
+
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-
-import * as Kafka from "node-rdkafka"
-// import * as winston from "winston"
-import express from "express"
-import compression from "compression"
-import morgan from "morgan"
-import { promisify } from "util"
-import sentryLogger from "./lib/logger"
-import { KafkaError } from "./lib/errors"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
 

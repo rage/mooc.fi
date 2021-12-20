@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { Paper, Typography } from "@material-ui/core"
+import { Paper, Typography } from "@mui/material"
 
 export const StyledPaper = styled(Paper)`
   display: flex;

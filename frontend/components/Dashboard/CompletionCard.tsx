@@ -7,9 +7,9 @@ import {
   Typography,
   ListItemIcon,
   Icon,
-} from "@material-ui/core"
-import DoneIcon from "@material-ui/icons/Done"
-import CloseIcon from "@material-ui/icons/Close"
+} from "@mui/material"
+import DoneIcon from "@mui/icons-material/Done"
+import CloseIcon from "@mui/icons-material/Close"
 import styled from "@emotion/styled"
 
 //map language code stored to database to human readable language

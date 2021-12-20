@@ -2,7 +2,7 @@ import { memo } from "react"
 import styled from "@emotion/styled"
 import { addDomain } from "/util/imageUtils"
 import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 
 const ComponentStyle = `
   width: 100%;

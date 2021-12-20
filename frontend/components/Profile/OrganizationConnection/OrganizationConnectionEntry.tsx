@@ -14,13 +14,7 @@ import { useConfirm } from "material-ui-confirm"
 import styled from "@emotion/styled"
 import { faUnlink } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  Button,
-  Card,
-  CardContent,
-  Collapse,
-  Typography,
-} from "@material-ui/core"
+import { Button, Card, CardContent, Collapse, Typography } from "@mui/material"
 
 interface ConnectionEntryProps {
   data: CurrentUserUserOverView_currentUser_verified_users

@@ -41,8 +41,6 @@ export const UserCourseProgress = objectType({
       },
     })
 
-    // t.prismaFields(["*"])
-
     t.nullable.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
@@ -213,14 +211,8 @@ export const UserCourseProgressMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const {
-          user_id,
-          course_id,
-          progress,
-          max_points,
-          n_points,
-          extra,
-        } = args
+        const { user_id, course_id, progress, max_points, n_points, extra } =
+          args
 
         return ctx.prisma.userCourseProgress.create({
           data: {

@@ -9,7 +9,7 @@ import ProfileTranslations from "/translations/profile"
 // import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 
-import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
+import { Chip, Collapse, TableCell, TableRow } from "@mui/material"
 
 import { useCollapseContext } from "./CollapseContext"
 
@@ -40,7 +40,7 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
       <TableRow>
         <TableCell>{exercise.name}</TableCell>
         <TableCell>
-          {round(exerciseCompletion?.n_points ?? 0)}/{exercise?.max_points}
+          {round(exerciseCompletion?.n_points ?? 0)}/{exercise?.max_points ?? 0}
         </TableCell>
         <TableCell>
           {exerciseCompletion?.completed ? t("yes") : t("no")}
@@ -56,7 +56,7 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
               // @ts-ignore: translator key
               <Chip key={action.id} label={t(action.value) ?? action.value} />
             ),
-          )}
+          ) ?? null}
         </TableCell>
         {/*<TableCell>
             <CollapseButton
@@ -72,6 +72,7 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
             />
             </TableCell>*/}
       </TableRow>
+      {/* TODO/FIXME: not shown ever since collapse is disabled */}
       <TableRow>
         <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={5}>
           <Collapse in={isOpen}>{JSON.stringify(exerciseCompletion)}</Collapse>

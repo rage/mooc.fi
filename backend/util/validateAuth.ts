@@ -18,7 +18,8 @@ if (isNullOrUndefined(publicKey) || publicKey === "") {
 }
 
 export function validateEmail(value: string): value is string {
-  const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const mailRegex =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
   return mailRegex.test(value)
 }
@@ -66,7 +67,7 @@ export async function requireAuth(
           .update({ valid: false })
           .where("access_token", token)
 
-        invalidate(["userdetails", "user"], token)
+        await invalidate(["userdetails", "user"], token)
 
         reject({ error: err })
       }

@@ -1,12 +1,13 @@
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
-import config from "../kafkaConfig"
+
+import { Result } from "../../../util/result"
 import {
   DatabaseInputError,
   KafkaMessageError,
   ValidationError,
 } from "../../lib/errors"
-import { Result } from "../../../util/result"
+import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 
 // Each partition has their own commit counter

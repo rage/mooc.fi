@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-errors"
+import { UserInputError } from "apollo-server-express"
 import { Knex } from "knex"
 import { DateTime } from "luxon"
 

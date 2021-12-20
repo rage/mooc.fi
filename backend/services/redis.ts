@@ -1,6 +1,5 @@
 import * as redis from "redis"
 import * as winston from "winston"
-import { promisify } from "util"
 
 const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
@@ -15,7 +14,7 @@ const redisClient =
       })
     : undefined
 
-const logger = winston.createLogger({
+const _logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -25,14 +24,28 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-redisClient?.on("ready", () => logger.info("Redis client connected"))
-redisClient?.on("error", (err: any) => {
-  logger.error("Redis error: " + err)
-})
+// @ts-ignore: not used for now
+let connected = false
 
-export const getAsync = redisClient
-  ? promisify(redisClient?.get).bind(redisClient)
-  : async (_: any) => Promise.reject() // this doesn't actually get run ever, but
+redisClient?.on("error", (err: any) => {
+  _logger.error("Redis error: " + err)
+})
+redisClient?.on("ready", () => {
+  _logger.info("Redis connected")
+  connected = true
+})
+redisClient?.connect()
+
+const isPromise = <T>(value: any): value is Promise<T> => {
+  return value && typeof value.then === "function"
+}
+const isAsync = <T>(
+  fn: (...props: any[]) => Promise<T> | T,
+): fn is (...props: any[]) => Promise<T> => {
+  return (
+    fn && typeof fn === "function" && fn.constructor.name === "AsyncFunction"
+  )
+}
 
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
@@ -42,37 +55,60 @@ export async function redisify<T>(
     key: string
     params?: any
   },
+  client: typeof redisClient = redisClient,
+  logger: winston.Logger = _logger,
 ) {
   const { prefix, expireTime, key, params } = options
 
-  if (!redisClient?.connected) {
-    return fn instanceof Promise ? fn : params ? fn(...params) : fn()
+  const resolveValue = async () =>
+    isPromise(fn)
+      ? await fn
+      : isAsync(fn)
+      ? params
+        ? await fn(...params)
+        : await fn()
+      : params
+      ? fn(...params)
+      : fn()
+
+  if (params && isPromise(fn)) {
+    logger.warn(`Prefix ${prefix}: params ignored with a promise`)
   }
+
   const prefixedKey = `${prefix}:${key}`
+  let value: T | undefined
+  let resolveSuccess = false
 
-  return await getAsync(prefixedKey)
-    .then(async (res: any) => {
-      if (res) {
-        logger.info(`Cache hit: ${prefix}`)
-        return await JSON.parse(res)
+  try {
+    const res = await client?.get(prefixedKey)
+
+    if (res) {
+      logger.info(`Cache hit: ${prefix}`)
+      return JSON.parse(res)
+    }
+    logger.info(`Cache miss: ${prefix}`)
+
+    value = await resolveValue()
+    resolveSuccess = true
+
+    await client?.set(prefixedKey, JSON.stringify(value), {
+      EX: expireTime,
+    })
+
+    return value
+  } catch (e1) {
+    try {
+      if (!resolveSuccess) {
+        return await resolveValue()
       }
-      logger.info(`Cache miss: ${prefix}`)
-
-      const value =
-        fn instanceof Promise
-          ? await fn
-          : params
-          ? await fn(...params)
-          : await fn()
-
-      redisClient?.set(prefixedKey, JSON.stringify(value))
-      redisClient?.expire(prefixedKey, expireTime)
-
       return value
-    })
-    .catch(() => {
-      return fn instanceof Promise ? fn : params ? fn(...params) : fn()
-    })
+    } catch (e2) {
+      logger.error(
+        `Could not resolve value for ${prefixedKey}; error: `,
+        e2 instanceof Error ? e2.message : e2,
+      )
+    }
+  }
 }
 
 export const publisher =
@@ -91,24 +127,18 @@ export const subscriber =
       })
     : null
 
-publisher?.on("error", (err: any) => {
-  logger.error("Redis publisher error: " + err)
-})
-
-subscriber?.on("error", (err: any) => {
-  logger.error("Redis subscriber error: " + err)
-})
-
-export const invalidate = (prefix: string | string[], key: string) => {
-  if (!redisClient?.connected) {
+export const invalidate = async (prefix: string | string[], key: string) => {
+  if (Array.isArray(prefix)) {
+    for (const p of prefix) {
+      await invalidate(p, key)
+    }
     return
   }
 
-  if (Array.isArray(prefix)) {
-    prefix.forEach((p) => invalidate(p, key))
-  } else {
-    redisClient.del(`${prefix}:${key}`)
-  }
+  await redisClient?.del(`${prefix}:${key}`)
 }
+
+publisher?.connect()
+subscriber?.connect()
 
 export default redisClient

@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
@@ -234,12 +234,12 @@ export const CourseMutations = extendType({
         const existingVisibilities = await ctx.prisma.course
           .findUnique({ where: { slug } })
           .user_course_settings_visibilities()
-        existingVisibilities?.forEach((visibility) =>
-          invalidate(
+        for (const visibility of existingVisibilities) {
+          await invalidate(
             "usercoursesettingscount",
             `${slug}-${visibility.language}`,
-          ),
-        )
+          )
+        }
 
         // this had different logic so it's not done with the same helper
         const existingStudyModules = await ctx.prisma.course
@@ -323,7 +323,8 @@ export const CourseMutations = extendType({
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-            user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
+            user_course_settings_visibilities:
+              userCourseSettingsVisibilityMutation,
           }),
         })
 

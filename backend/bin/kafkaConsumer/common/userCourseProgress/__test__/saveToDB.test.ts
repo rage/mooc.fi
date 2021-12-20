@@ -32,15 +32,14 @@ describe("userCourseProgress/saveToDatabase", () => {
   it("create progresses when no previous ones exist", async () => {
     await saveToDatabase(kafkaContext, message)
 
-    const userCourseServiceProgresses = await ctx.prisma.userCourseServiceProgress.findMany(
-      {
+    const userCourseServiceProgresses =
+      await ctx.prisma.userCourseServiceProgress.findMany({
         where: {
           course_id: message.course_id,
           user_id: "20000000000000000000000000000102",
           service_id: "40000000-0000-0000-0000-000000000102",
         },
-      },
-    )
+      })
     expect(userCourseServiceProgresses.length).toBe(1)
     expect(userCourseServiceProgresses[0].progress).toEqual(message.progress)
 
@@ -126,15 +125,14 @@ describe("userCourseProgress/saveToDatabase", () => {
     it("should update the eldest and remove all others", async () => {
       await saveToDatabase(kafkaContext, message)
 
-      const userCourseServiceProgresses = await ctx.prisma.userCourseServiceProgress.findMany(
-        {
+      const userCourseServiceProgresses =
+        await ctx.prisma.userCourseServiceProgress.findMany({
           where: {
             course_id: message.course_id,
             user_id: "20000000000000000000000000000102",
             service_id: "40000000-0000-0000-0000-000000000102",
           },
-        },
-      )
+        })
       expect(userCourseServiceProgresses.length).toBe(1)
       expect(userCourseServiceProgresses[0].id).toEqual(
         "99900000-0000-0000-0000-000000000102",
@@ -153,15 +151,14 @@ describe("userCourseProgress/saveToDatabase", () => {
 
       expect(res.isOk()).toBe(true)
 
-      const userCourseServiceProgresses = await ctx.prisma.userCourseServiceProgress.findMany(
-        {
+      const userCourseServiceProgresses =
+        await ctx.prisma.userCourseServiceProgress.findMany({
           where: {
             course_id: message.course_id,
             user_id: "20000000000000000000000000000102",
             service_id: "40000000-0000-0000-0000-000000000102",
           },
-        },
-      )
+        })
 
       expect(userCourseServiceProgresses[0].progress).not.toEqual(
         message.progress,

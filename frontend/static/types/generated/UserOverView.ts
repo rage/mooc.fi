@@ -19,6 +19,7 @@ export interface UserOverView_currentUser_verified_users {
   display_name: string | null
   mail: string
   organizational_unit: string
+  edu_person_principal_name: string
 }
 
 export interface UserOverView_currentUser {

@@ -1,7 +1,8 @@
-import styled from "@emotion/styled"
-import LinearProgress from "@material-ui/core/LinearProgress"
 import { formattedGroupPoints } from "/util/formatPointsData"
 import { CardSubtitle } from "components/Text/headers"
+
+import styled from "@emotion/styled"
+import LinearProgress from "@mui/material/LinearProgress"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -34,7 +35,8 @@ interface Props {
 function PointsListItemTableChart(props: Props) {
   const { title, points, cuttervalue, showDetailed } = props
   const value =
-    (points.courseProgress.n_points / points.courseProgress.max_points) * 100
+    (points.courseProgress.n_points / (points.courseProgress.max_points ?? 1)) *
+    100
   const services = points?.service_progresses?.length
     ? points.service_progresses
     : null
@@ -83,7 +85,7 @@ function PointsListItemTableChart(props: Props) {
                 </CardSubtitle>
                 <ColoredProgressBar
                   variant="determinate"
-                  value={(s["n_points"] / s["max_points"]) * 100}
+                  value={(s["n_points"] / (s["max_points"] ?? 1)) * 100}
                   style={{ padding: "0.5rem", flex: 1 }}
                   color="secondary"
                 />

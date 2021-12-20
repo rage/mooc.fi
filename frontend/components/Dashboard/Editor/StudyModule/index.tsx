@@ -1,27 +1,29 @@
 import { useCallback, useContext } from "react"
-import StudyModuleEditForm from "./StudyModuleEditForm"
-import { StudyModuleFormValues } from "./types"
-import { useMutation, useApolloClient } from "@apollo/client"
+
+import LanguageContext from "/contexts/LanguageContext"
 import {
   AddStudyModuleMutation,
-  UpdateStudyModuleMutation,
   DeleteStudyModuleMutation,
+  UpdateStudyModuleMutation,
 } from "/graphql/mutations/study-modules"
 import {
-  AllModulesQuery,
   AllEditorModulesQuery,
+  AllModulesQuery,
   CheckModuleSlugQuery,
 } from "/graphql/queries/study-modules"
-import studyModuleEditSchema from "./form-validation"
-import { FormikHelpers } from "formik"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
-import { PureQueryOptions } from "@apollo/client"
-import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
-import Router from "next/router"
-import LanguageContext from "/contexts/LanguageContext"
+import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
+import { FormikHelpers } from "formik"
+import Router from "next/router"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+
+import studyModuleEditSchema from "./form-validation"
+import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
+import StudyModuleEditForm from "./StudyModuleEditForm"
+import { StudyModuleFormValues } from "./types"
 
 const StudyModuleEdit = ({
   module,

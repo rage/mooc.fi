@@ -1,6 +1,6 @@
-import { ApiContext } from "."
-import { requireAuth } from "../util/validateAuth"
 import { invalidate } from "../services/redis"
+import { requireAuth } from "../util/validateAuth"
+import { ApiContext } from "./"
 
 export function signOut(ctx: ApiContext) {
   return async (req: any, res: any) => {
@@ -8,7 +8,7 @@ export function signOut(ctx: ApiContext) {
 
     let auth = await requireAuth(rawToken, ctx)
     if (auth.error) {
-      invalidate(["userdetails", "user"], rawToken)
+      await invalidate(["userdetails", "user"], rawToken)
 
       return res.status(403).json({
         status: 403,
@@ -22,7 +22,7 @@ export function signOut(ctx: ApiContext) {
       .update({ valid: false })
       .where("access_token", rawToken.replace("Bearer ", ""))
 
-    invalidate(["userdetails", "user"], rawToken)
+    await invalidate(["userdetails", "user"], rawToken)
 
     return res.status(200).json({
       success: true,

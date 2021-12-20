@@ -1,18 +1,19 @@
-import { gql } from "@apollo/client"
-import { useQuery, useMutation } from "@apollo/client"
-import { Alert } from "@material-ui/core"
-import { useRouter } from "next/router"
-import React from "react"
-import { useEffect } from "react"
+import React, { useEffect } from "react"
+
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import OrganizationConnectionList from "../../../components/Profile/OrganizationConnection/OrganizationConnectionList"
 import Spinner from "/components/Spinner"
 import { useLanguageContext } from "/contexts/LanguageContext"
 import withSignedIn from "/lib/with-signed-in"
+import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
 import { DeleteVerifiedUserTest } from "/static/types/generated/DeleteVerifiedUserTest"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { CurrentUserUserOverView_currentUser_verified_users } from "/static/types/generated/CurrentUserUserOverView"
+import { useRouter } from "next/router"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import { Alert } from "@mui/material"
+
+import OrganizationConnectionList from "../../../components/Profile/OrganizationConnection/OrganizationConnectionList"
 
 export const ConnectionTestQuery = gql`
   query ConnectionTest {
@@ -40,8 +41,8 @@ export const ConnectionTestQuery = gql`
 `
 
 export const DeleteVerifiedUserMutation = gql`
-  mutation DeleteVerifiedUserTest($personal_unique_code: String!) {
-    deleteVerifiedUser(personal_unique_code: $personal_unique_code) {
+  mutation DeleteVerifiedUserTest($edu_person_principal_name: String!) {
+    deleteVerifiedUser(edu_person_principal_name: $edu_person_principal_name) {
       id
       personal_unique_code
     }
@@ -53,16 +54,14 @@ function ConnectionTest(props: any) {
   const { language } = useLanguageContext()
 
   const { data, error, loading } = useQuery(ConnectionTestQuery)
-  const [
-    deleteVerifiedUser,
-    { data: deleteData, error: deleteError },
-  ] = useMutation<DeleteVerifiedUserTest>(DeleteVerifiedUserMutation, {
-    refetchQueries: [
-      {
-        query: ConnectionTestQuery,
-      },
-    ],
-  })
+  const [deleteVerifiedUser, { data: deleteData, error: deleteError }] =
+    useMutation<DeleteVerifiedUserTest>(DeleteVerifiedUserMutation, {
+      refetchQueries: [
+        {
+          query: ConnectionTestQuery,
+        },
+      ],
+    })
   const router = useRouter()
 
   const connectionSuccess = useQueryParameter("success", false)
@@ -99,7 +98,7 @@ function ConnectionTest(props: any) {
     user: CurrentUserUserOverView_currentUser_verified_users,
   ) =>
     deleteVerifiedUser({
-      variables: { personal_unique_code: user.personal_unique_code },
+      variables: { edu_person_principal_name: user.edu_person_principal_name },
     })
 
   return (

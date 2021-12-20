@@ -1,6 +1,6 @@
 import { useState, useCallback, MouseEvent as ReactMouseEvent } from "react"
 import { FormFieldGroup } from "./CourseEditForm"
-import { FormControl, Button } from "@material-ui/core"
+import { FormControl, Button } from "@mui/material"
 import { Field, useFormikContext, FieldInputProps } from "formik"
 import CoursesTranslations from "/translations/courses"
 import { useLanguageContext } from "/contexts/LanguageContext"
@@ -17,11 +17,8 @@ interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
 }
 const CourseImageInput = (props: ImageInputProps) => {
-  const {
-    values,
-    setFieldValue,
-    initialValues,
-  } = useFormikContext<CourseFormValues>()
+  const { values, setFieldValue, initialValues } =
+    useFormikContext<CourseFormValues>()
   const { courses } = props
   const { language } = useLanguageContext()
   const t = useTranslator(CoursesTranslations)

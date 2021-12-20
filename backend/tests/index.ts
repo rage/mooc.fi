@@ -58,9 +58,9 @@ export type TestContext = {
 let version = 1
 
 export function getTestContext(): TestContext {
-  let testContext = ({
+  let testContext = {
     logger: logger.createLogger() as winston.Logger,
-  } as unknown) as TestContext
+  } as unknown as TestContext
 
   const ctx = createTestContext(testContext)
 

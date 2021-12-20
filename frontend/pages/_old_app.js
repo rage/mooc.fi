@@ -18,22 +18,17 @@ import App from "next/app"
 import Head from "next/head"
 import Router from "next/router"
 
-import createCache from "@emotion/cache"
 import { CacheProvider, Global } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@material-ui/core"
-import { ThemeProvider } from "@material-ui/core/styles"
+import { CssBaseline } from "@mui/material"
+import { ThemeProvider } from "@mui/material/styles"
 
-import { DOMAIN } from "../config"
-import { validateToken } from "../packages/moocfi-auth"
-// import { StyledEngineProvider } from "@material-ui/styled-engine"
-// import { ApolloProvider } from "@apollo/client"
+import createEmotionCache from "../src/createEmotionCache"
 import Layout from "./_layout"
 
 fontAwesomeConfig.autoAddCss = false
 
-export const cache = createCache({ key: "css", prepend: true })
-
+const clientSideEmotionCache = createEmotionCache()
 const getPageTranslator = getTranslator(PageTranslations)
 class MyApp extends App {
   constructor(props) {
@@ -113,7 +108,8 @@ class MyApp extends App {
       asUrl = "/",
       hrefUrl,
       currentUser,
-    } = pageProps
+      emotionCache = clientSideEmotionCache,
+    } = this.props
 
     // give router to translator to get query parameters
     const t = getPageTranslator(lng, Router.router)
@@ -125,7 +121,7 @@ class MyApp extends App {
 
     return (
       <>
-        <CacheProvider value={cache}>
+        <CacheProvider value={emotionCache}>
           <Head>
             <meta
               name="viewport"

@@ -2,7 +2,7 @@
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 
-import { Alert } from "@material-ui/core"
+import { Alert } from "@mui/material"
 
 type SignUpError =
   | "verify-user"

@@ -18,17 +18,17 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import createCache from "@emotion/cache"
-import { CacheProvider, Global } from "@emotion/react"
+import { CacheProvider, EmotionCache, Global } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@material-ui/core"
-import { ThemeProvider } from "@material-ui/core/styles"
+import { CssBaseline } from "@mui/material"
+import { ThemeProvider } from "@mui/material/styles"
 
+import createEmotionCache from "../src/createEmotionCache"
 import Layout from "./_layout"
 
 fontAwesomeConfig.autoAddCss = false
 
-export const cache = createCache({ key: "css", prepend: true })
+const clientSideEmotionCache = createEmotionCache()
 
 interface AppState {
   loggedIn: boolean
@@ -41,7 +41,14 @@ interface AppState {
   updateUser: (user: any) => void
 }
 
-export function MyApp({ Component, pageProps }: AppProps) {
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache
+}
+export function MyApp({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}: MyAppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -127,7 +134,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <CacheProvider value={cache}>
+      <CacheProvider value={emotionCache}>
         <Head>
           <meta
             name="viewport"

@@ -1,13 +1,16 @@
-import { CircularProgress, TextField } from "@material-ui/core"
 import React, { useEffect } from "react"
-import { StyledPaper, Row, Form, Header, StyledTypography } from "./common"
+
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import { createTMCAccount, getUserDetails } from "/lib/account"
+import { UpdateUser } from "/static/types/generated/UpdateUser"
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
-import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { Controller, useForm } from "react-hook-form"
+
 import { MutationFunction } from "@apollo/client"
-import { UpdateUser } from "/static/types/generated/UpdateUser"
-import { createTMCAccount, getUserDetails } from "/lib/account"
+import { CircularProgress, TextField } from "@mui/material"
+
+import { Form, Header, Row, StyledPaper, StyledTypography } from "./common"
 
 interface EditDetailsFromProps {
   firstName: string
@@ -57,13 +60,8 @@ const EditDetailsForm = ({
   }, [])
 
   const updateDetails = async () => {
-    const {
-      first_name,
-      last_name,
-      email,
-      password,
-      password_confirmation,
-    } = getValues()
+    const { first_name, last_name, email, password, password_confirmation } =
+      getValues()
 
     let upstream_id = upstreamId
 

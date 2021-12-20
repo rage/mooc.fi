@@ -14,7 +14,7 @@ import {
   Checkbox,
   List,
   ListItem,
-} from "@material-ui/core"
+} from "@mui/material"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import styled from "@emotion/styled"
 import {

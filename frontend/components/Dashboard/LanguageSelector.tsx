@@ -1,4 +1,4 @@
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import LanguageSelectorForm from "./LanguageSelectorForm"
 import styled from "@emotion/styled"
 

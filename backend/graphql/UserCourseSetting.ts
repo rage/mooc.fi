@@ -1,4 +1,4 @@
-import { ForbiddenError, UserInputError } from "apollo-server-core"
+import { ForbiddenError, UserInputError } from "apollo-server-express"
 import {
   extendType,
   idArg,

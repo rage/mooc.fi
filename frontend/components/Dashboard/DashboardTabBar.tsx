@@ -1,13 +1,15 @@
-import { useState, ChangeEvent } from "react"
-import AppBar from "@material-ui/core/AppBar"
-import Tabs from "@material-ui/core/Tabs"
-import Tab from "@material-ui/core/Tab"
-import styled from "@emotion/styled"
-import ViewListIcon from "@material-ui/icons/ViewList"
-import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
-import DashboardIcon from "@material-ui/icons/Dashboard"
-import EditIcon from "@material-ui/icons/Edit"
+import { ChangeEvent, useState } from "react"
+
 import LangLink from "/components/LangLink"
+
+import styled from "@emotion/styled"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import EditIcon from "@mui/icons-material/Edit"
+import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
+import ViewListIcon from "@mui/icons-material/ViewList"
+import { AppBar } from "@mui/material"
+import Tab from "@mui/material/Tab"
+import Tabs from "@mui/material/Tabs"
 
 const TabBarContainer = styled.div`
   flex-grow: 1;

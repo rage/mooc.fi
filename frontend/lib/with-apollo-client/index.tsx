@@ -1,20 +1,19 @@
 import { DOMAIN } from "/config"
 import { getAccessToken } from "/lib/authentication"
 import { validateToken } from "/packages/moocfi-auth"
-import { NextPageContext } from "next"
 import { AppContext } from "next/app"
-// import { NextPageContext } from "next"
 import { renderToString } from "react-dom/server"
 
+import { getMarkupFromTree } from "@apollo/client/react/ssr"
+
+import fetchUserDetails from "./fetch-user-details"
+import getApollo, { initNewApollo } from "./get-apollo"
 import {
   ApolloClient,
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client"
-import { getMarkupFromTree } from "@apollo/client/react/ssr"
-
-import fetchUserDetails from "./fetch-user-details"
-import getApollo, { initNewApollo } from "./get-apollo"
+import { NextPageContext } from "next"
 
 interface Props {
   // Server side rendered state. Prevents queries from running again in the frontend.
