@@ -22,7 +22,7 @@ import axios from "axios"
 
 import { gql, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@material-ui/core"
+import { Paper, SvgIcon, Typography } from "@mui/material"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -114,11 +114,10 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
-  const [
-    updateRegistrationAttemptDate,
-  ] = useMutation<UpdateRegistrationAttemptDate>(
-    UpdateRegistrationAttemptDateMutation,
-  )
+  const [updateRegistrationAttemptDate] =
+    useMutation<UpdateRegistrationAttemptDate>(
+      UpdateRegistrationAttemptDateMutation,
+    )
 
   const course_exists = Boolean(courseData?.course?.id)
 
@@ -145,7 +144,9 @@ function RegisterCompletionPage() {
   useEffect(() => {
     if (language) {
       axios
-        .get(`${BASE_URL}/api/completionInstructions/${courseSlug}/${language}`)
+        .get<{}, any>(
+          `${BASE_URL}/api/completionInstructions/${courseSlug}/${language}`,
+        )
         .then((res) => res.data)
         .then((json) => {
           setInstructions(json)
@@ -163,7 +164,7 @@ function RegisterCompletionPage() {
         },
       })
         .then((res) => res.data)
-        .then((json) => {
+        .then((json: any) => {
           setTiers(json.tierData)
         })
     }

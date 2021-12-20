@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import Language from "@material-ui/icons/Language"
+import Language from "@mui/icons-material/Language"
 import styled from "@emotion/styled"
 import LanguageContext from "/contexts/LanguageContext"
 import Link from "next/link"

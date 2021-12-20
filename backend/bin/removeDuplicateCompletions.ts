@@ -28,7 +28,7 @@ const removeDuplicateCompletions = async () => {
                     WHERE rn != 1
                   ))
         `)
-  } catch (e) {
+  } catch (e: any) {
     logger.error(
       new RemoveDuplicateCompletionsError(
         "Remove duplicate completions crashed",

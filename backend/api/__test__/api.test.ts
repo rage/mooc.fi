@@ -17,21 +17,21 @@ describe("API", () => {
     headers?: any
     params?: Record<string, any>
   }
-  const request = (method: Method) => (
-    route: string = "",
-    defaultHeaders: any,
-  ) => async ({
-    data = null,
-    headers = defaultHeaders,
-    params = {},
-  }: RequestParams) =>
-    await axios({
-      method,
-      url: `http://localhost:${ctx.port}${route}`,
-      data,
-      headers,
-      params,
-    })
+  const request =
+    (method: Method) =>
+    (route: string = "", defaultHeaders: any) =>
+    async ({
+      data = null,
+      headers = defaultHeaders,
+      params = {},
+    }: RequestParams) =>
+      await axios({
+        method,
+        url: `http://localhost:${ctx.port}${route}`,
+        data,
+        headers,
+        params,
+      })
 
   const get = (route: string = "", defaultHeaders: any) =>
     request("GET")(route, defaultHeaders)

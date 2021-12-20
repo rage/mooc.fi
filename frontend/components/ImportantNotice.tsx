@@ -1,7 +1,7 @@
-import { Typography, Paper, SvgIcon } from "@material-ui/core"
+import { Typography, Paper, SvgIcon } from "@mui/material"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
-import { createStyles, makeStyles } from "@material-ui/styles"
+import { createStyles, makeStyles } from "@mui/styles"
 import { useTranslator } from "/util/useTranslator"
 
 const useStyles = makeStyles(() =>

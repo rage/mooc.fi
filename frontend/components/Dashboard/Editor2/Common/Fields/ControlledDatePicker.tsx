@@ -4,10 +4,10 @@ import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import DatePicker from "@material-ui/lab/DatePicker"
-import { TextField } from "@material-ui/core"
-import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
-import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
+import DatePicker from "@mui/lab/DatePicker"
+import { TextField } from "@mui/material"
+import LocalizationProvider from "@mui/lab/LocalizationProvider"
+import AdapterLuxon from "@mui/lab/AdapterLuxon"
 
 export function ControlledDatePicker(props: ControlledFieldProps) {
   const { watch, setValue, trigger } = useFormContext()

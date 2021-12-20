@@ -1,8 +1,8 @@
-import CardActions from "@material-ui/core/CardActions"
-import Typography from "@material-ui/core/Typography"
+import CardActions from "@mui/material/CardActions"
+import Typography from "@mui/material/Typography"
 import styled from "@emotion/styled"
-import Report from "@material-ui/icons/Report"
-import Refresh from "@material-ui/icons/Refresh"
+import Report from "@mui/icons-material/Report"
+import Refresh from "@mui/icons-material/Refresh"
 import {
   ErrorMessageBackground as StyledCard,
   ErrorMessageContentArea as StyledCardContent,

@@ -1,8 +1,8 @@
 import LangLink from "/components/LangLink"
-import Grid from "@material-ui/core/Grid"
+import Grid from "@mui/material/Grid"
 import styled from "@emotion/styled"
 import { mime } from "/util/imageUtils"
-import Button from "@material-ui/core/Button"
+import Button from "@mui/material/Button"
 import { CardTitle } from "components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import {

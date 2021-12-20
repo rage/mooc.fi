@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import LangLink from "/components/LangLink"
-import { Skeleton } from "@material-ui/core"
+import { Skeleton } from "@mui/material"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 
 import ModuleImage from "/components/Home/ModuleImage"

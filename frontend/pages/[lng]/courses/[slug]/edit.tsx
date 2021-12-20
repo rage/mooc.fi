@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react"
-import Typography from "@material-ui/core/Typography"
-import Paper from "@material-ui/core/Paper"
+import Typography from "@mui/material/Typography"
+import Paper from "@mui/material/Paper"
 import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "@emotion/styled"
@@ -34,15 +34,10 @@ const EditCourse = ({ router }: EditCourseProps) => {
   const slug = useQueryParameter("slug") ?? ""
   const beta = useQueryParameter("beta", false)
 
-  const {
-    loading,
-    error,
-    courseData,
-    studyModulesData,
-    coursesData,
-  } = useEditorCourses({
-    slug,
-  })
+  const { loading, error, courseData, studyModulesData, coursesData } =
+    useEditorCourses({
+      slug,
+    })
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null

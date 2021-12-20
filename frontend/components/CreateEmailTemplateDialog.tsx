@@ -22,7 +22,7 @@ import {
   InputLabel,
   NativeSelect,
   TextField,
-} from "@material-ui/core"
+} from "@mui/material"
 
 export const AllCoursesDetails = gql`
   query AllCoursesDetails {
@@ -63,9 +63,8 @@ const CreateEmailTemplateDialog = ({
   >(undefined)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { language } = useContext(LanguageContext)
-  const { loading, error, data } = useQuery<{ courses: CourseDetailsData[] }>(
-    AllCoursesDetails,
-  )
+  const { loading, error, data } =
+    useQuery<{ courses: CourseDetailsData[] }>(AllCoursesDetails)
 
   if (loading) {
     return <Spinner />

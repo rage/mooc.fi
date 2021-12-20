@@ -22,14 +22,14 @@ module.exports = {
       {
         paths: [
           {
-            name: "@material-ui/core",
+            name: "@mui/material",
             importNames: ["Grid"],
-            message: "Don't use Grid from @material-ui",
+            message: "Don't use Grid from @mui/material",
           },
           {
-            name: "@material-ui/core/Grid",
+            name: "@mui/material/Grid",
             importNames: ["default"],
-            message: "Don't use Grid from @material-ui",
+            message: "Don't use Grid from @mui/material",
           },
         ],
       },
@@ -39,8 +39,8 @@ module.exports = {
       {
         paths: [
           {
-            name: "@material-ui/core/Grid",
-            message: "Don't use Grid from @material-ui",
+            name: "@mui/material/Grid",
+            message: "Don't use Grid from @mui/material",
           },
         ],
       },

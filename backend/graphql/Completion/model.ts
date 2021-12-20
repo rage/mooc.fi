@@ -1,4 +1,4 @@
-import { ForbiddenError } from "apollo-server-core"
+import { ForbiddenError } from "apollo-server-express"
 import { objectType } from "nexus"
 
 import { UserCourseProgress } from "@prisma/client"

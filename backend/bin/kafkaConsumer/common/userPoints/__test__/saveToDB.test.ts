@@ -1,15 +1,16 @@
+import { UserInputError } from "apollo-server-express"
+
 import {
-  getTestContext,
-  fakeTMCSpecific,
   fakeGetAccessToken,
+  fakeTMCSpecific,
+  getTestContext,
 } from "../../../../../tests/__helpers"
-import { seed } from "../../../../../tests/data/seed"
 import { adminUserDetails, normalUserDetails } from "../../../../../tests/data"
-import { Message } from "../interfaces"
-import { KafkaContext } from "../../kafkaContext"
-import { saveToDatabase } from "../saveToDB"
+import { seed } from "../../../../../tests/data/seed"
 import { DatabaseInputError } from "../../../../lib/errors"
-import { UserInputError } from "apollo-server-errors"
+import { KafkaContext } from "../../kafkaContext"
+import { Message } from "../interfaces"
+import { saveToDatabase } from "../saveToDB"
 
 const ctx = getTestContext()
 const tmc = fakeTMCSpecific({

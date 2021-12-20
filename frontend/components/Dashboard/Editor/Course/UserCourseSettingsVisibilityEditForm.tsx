@@ -9,7 +9,7 @@ import {
   FormControl,
   TextField,
   FormGroup,
-} from "@material-ui/core"
+} from "@mui/material"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,

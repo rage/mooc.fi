@@ -6,7 +6,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core"
+} from "@mui/material"
 import React from "react"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"

@@ -1,4 +1,4 @@
-import { Typography, Skeleton } from "@material-ui/core"
+import { Typography, Skeleton } from "@mui/material"
 import styled from "@emotion/styled"
 import { range } from "lodash"
 import dynamic from "next/dynamic"

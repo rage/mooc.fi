@@ -1,12 +1,12 @@
 import { useContext } from "react"
 import styled from "@emotion/styled"
-import AppBar, { AppBarProps } from "@material-ui/core/AppBar"
-import Toolbar from "@material-ui/core/Toolbar"
+import AppBar, { AppBarProps } from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
 import LoggedInUserMenu from "./HeaderBar/LoggedInUserMenu"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { whichIsActive } from "/components/HeaderBar/Header"
 import LanguageContext from "/contexts/LanguageContext"
-import { BoxProps } from "@material-ui/system"
+import { BoxProps } from "@mui/system"
 
 const StyledBottomNavigation = styled(AppBar)<AppBarProps & BoxProps>`
   @media (min-width: 1050px) {

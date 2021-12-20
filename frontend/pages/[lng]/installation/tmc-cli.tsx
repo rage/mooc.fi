@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import getUserOS from "/util/getUserOS"
 import OSSelector from "/components/Installation/OSSelector"
 import MDX_Linux from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"

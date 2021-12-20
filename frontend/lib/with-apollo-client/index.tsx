@@ -1,10 +1,11 @@
-import getApollo, { initNewApollo } from "./get-apollo"
-import Head from "next/head"
-import { getMarkupFromTree } from "@apollo/client/react/ssr"
-import { renderToString } from "react-dom/server"
-import { AppContext } from "next/app"
 import { getAccessToken } from "/lib/authentication"
+import { AppContext } from "next/app"
+import { renderToString } from "react-dom/server"
+
+import { getMarkupFromTree } from "@apollo/client/react/ssr"
+
 import fetchUserDetails from "./fetch-user-details"
+import getApollo, { initNewApollo } from "./get-apollo"
 
 interface Props {
   // Server side rendered state. Prevents queries from running again in the frontend.
@@ -79,10 +80,6 @@ const withApolloClient = (App: any) => {
       // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
       console.error("Error while running `getDataFromTree`", error)
     }
-
-    // getDataFromTree does not call componentWillUnmount
-    // head side effect therefore need to be cleared manually
-    Head.rewind()
 
     // Extract query data from the Apollo store
     const apolloState = apollo.cache.extract()

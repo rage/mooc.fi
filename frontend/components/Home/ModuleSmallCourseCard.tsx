@@ -1,4 +1,4 @@
-import { Grid, Typography, Skeleton } from "@material-ui/core"
+import { Grid, Typography, Skeleton } from "@mui/material"
 import styled from "@emotion/styled"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import HomeTranslations from "/translations/home"

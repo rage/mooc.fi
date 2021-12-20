@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@material-ui/core"
+import { Grid, Typography } from "@mui/material"
 import { FieldArray, useFormikContext } from "formik"
 import { CourseTranslationFormValues, CourseFormValues } from "./types"
 

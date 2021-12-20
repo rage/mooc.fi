@@ -5,7 +5,7 @@ import {
   Input,
   FormHelperText,
   Link,
-} from "@material-ui/core"
+} from "@mui/material"
 
 import { signIn, isSignedIn } from "/lib/authentication"
 import LoginStateContext from "/contexts/LoginStateContext"

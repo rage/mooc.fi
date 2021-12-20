@@ -5,7 +5,7 @@ import {
 } from "/components/Dashboard/Editor/common"
 import CoursesTranslations from "/translations/courses"
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { useTranslator } from "/util/useTranslator"

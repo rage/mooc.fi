@@ -111,7 +111,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
 
   try {
     details = await tmc.getUserDetailsById(user_id)
-  } catch (e) {
+  } catch (e: any) {
     logger.error(new TMCError(`couldn't find user ${user_id}`, e))
     throw e
   }
@@ -132,7 +132,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     })
 
     return result
-  } catch (e) {
+  } catch (e: any) {
     logger.error(
       new DatabaseInputError(
         `Failed to upsert user with upstream id ${

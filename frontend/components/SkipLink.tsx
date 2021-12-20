@@ -1,5 +1,5 @@
-import { createStyles, makeStyles } from "@material-ui/styles"
-import { Typography } from "@material-ui/core"
+import { createStyles, makeStyles } from "@mui/styles"
+import { Typography } from "@mui/material"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 

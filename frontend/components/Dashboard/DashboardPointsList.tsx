@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core"
+import { Grid } from "@mui/material"
 import PointsListItemCard from "./PointsListItemCard"
 import { UserCourseSettings_userCourseSettings_edges as Points } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"

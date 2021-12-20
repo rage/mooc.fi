@@ -1,4 +1,4 @@
-import { Card, Typography } from "@material-ui/core"
+import { Card, Typography } from "@mui/material"
 import styled from "@emotion/styled"
 
 const Title = styled(Typography)<any>`

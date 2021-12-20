@@ -23,7 +23,7 @@ import { useConfirm } from "material-ui-confirm"
 
 import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Button, Card, Paper, Typography } from "@material-ui/core"
+import { Button, Card, Paper, Typography } from "@mui/material"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;

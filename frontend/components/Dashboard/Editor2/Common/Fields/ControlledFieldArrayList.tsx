@@ -5,13 +5,13 @@ import {
   FieldArrayWithId,
   Path,
 } from "react-hook-form"
-import { FormGroup, Typography } from "@material-ui/core"
+import { FormGroup, Typography } from "@mui/material"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { useConfirm } from "material-ui-confirm"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import AddIcon from "@material-ui/icons/Add"
-import RemoveIcon from "@material-ui/icons/Remove"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
 import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
 import styled from "@emotion/styled"
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"

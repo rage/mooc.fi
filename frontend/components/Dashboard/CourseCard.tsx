@@ -5,10 +5,10 @@ import {
   Typography,
   TypographyProps,
   BoxProps,
-} from "@material-ui/core"
-import DashboardIcon from "@material-ui/icons/Dashboard"
-import EditIcon from "@material-ui/icons/Edit"
-import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
+} from "@mui/material"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import EditIcon from "@mui/icons-material/Edit"
+import { Add as AddIcon, AddCircle as AddCircleIcon } from "@mui/icons-material"
 import CourseImage from "/components/CourseImage"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import styled from "@emotion/styled"

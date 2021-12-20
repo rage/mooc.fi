@@ -1,5 +1,5 @@
-import Paper from "@material-ui/core/Paper"
-import Typography from "@material-ui/core/Typography"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
 import SignInForm from "/components/SignInForm"
 import Container from "/components/Container"
 import SignInTranslations from "/translations/common"

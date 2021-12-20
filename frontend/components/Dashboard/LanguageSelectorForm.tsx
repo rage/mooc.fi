@@ -1,9 +1,4 @@
-import {
-  FormControlLabel,
-  FormControl,
-  RadioGroup,
-  Radio,
-} from "@material-ui/core"
+import { FormControlLabel, FormControl, RadioGroup, Radio } from "@mui/material"
 
 interface LanguageSelectorProps {
   handleLanguageChange: any

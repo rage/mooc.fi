@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import ButtonBase from "@material-ui/core/ButtonBase"
+import ButtonBase from "@mui/material/ButtonBase"
 
 export const ClickableButtonBase = styled(ButtonBase)`
   background-color: white;

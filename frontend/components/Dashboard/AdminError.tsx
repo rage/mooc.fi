@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 

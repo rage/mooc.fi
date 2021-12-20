@@ -1,11 +1,11 @@
-import { Snackbar } from "@material-ui/core"
-import CheckCircleIcon from "@material-ui/icons/CheckCircle"
-import ErrorIcon from "@material-ui/icons/Error"
-import InfoIcon from "@material-ui/icons/Info"
-import CloseIcon from "@material-ui/icons/Close"
-import IconButton from "@material-ui/core/IconButton"
-import WarningIcon from "@material-ui/icons/Warning"
 import styled from "@emotion/styled"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import CloseIcon from "@mui/icons-material/Close"
+import ErrorIcon from "@mui/icons-material/Error"
+import InfoIcon from "@mui/icons-material/Info"
+import WarningIcon from "@mui/icons-material/Warning"
+import { Snackbar, SnackbarCloseReason } from "@mui/material"
+import IconButton from "@mui/material/IconButton"
 
 interface CustomSnackbarProps {
   open: boolean
@@ -35,7 +35,8 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
     opacity: 0.9;
     margin-right: 1rem;
   `
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+  // actual event type: React.SyntheticEvent<Element, Event>
+  const handleClose = (event: any, reason?: SnackbarCloseReason) => {
     event?.preventDefault()
     if (reason === "clickaway") {
       return
@@ -64,6 +65,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
           aria-label="close"
           color="inherit"
           onClick={handleClose}
+          size="large"
         >
           <CloseIcon />
         </IconButton>

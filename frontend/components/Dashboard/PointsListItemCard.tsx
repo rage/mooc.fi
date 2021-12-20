@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid } from "@material-ui/core"
+import { Grid } from "@mui/material"
 import PointsItemTable from "./PointsItemTable"
 import styled from "@emotion/styled"
 import { gql } from "@apollo/client"

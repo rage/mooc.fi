@@ -1,13 +1,14 @@
-import { Message } from "./interfaces"
 import { DateTime } from "luxon"
-import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
-import { generateUserCourseProgress } from "./generateUserCourseProgress"
-import { pushMessageToClient, MessageType } from "../../../../wsServer"
-import { ok, err, Result } from "../../../../util/result"
 
+import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
+
+import { err, ok, Result } from "../../../../util/result"
+import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
-import { KafkaContext } from "../kafkaContext"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
+import { KafkaContext } from "../kafkaContext"
+import { generateUserCourseProgress } from "./generateUserCourseProgress"
+import { Message } from "./interfaces"
 
 export const saveToDatabase = async (
   context: KafkaContext,
@@ -123,7 +124,7 @@ export const saveToDatabase = async (
     context,
   })
 
-  pushMessageToClient(
+  await pushMessageToClient(
     message.user_id,
     message.course_id,
     MessageType.PROGRESS_UPDATED,

@@ -1,5 +1,6 @@
-import { objectType, inputObjectType, extendType, arg, nonNull } from "nexus"
-import { ForbiddenError, AuthenticationError } from "apollo-server-core"
+import { AuthenticationError, ForbiddenError } from "apollo-server-express"
+import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
+
 import { Context } from "../context"
 
 export const VerifiedUser = objectType({

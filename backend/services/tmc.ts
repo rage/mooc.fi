@@ -1,5 +1,6 @@
 import axios from "axios"
-import { UserInfo, OrganizationInfo } from "../domain/UserInfo"
+
+import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
 
 const BASE_URL = process.env.TMC_HOST || ""
@@ -14,9 +15,9 @@ export interface UserFieldValue {
 }
 
 export default class TmcClient {
-  accessToken: String | null
+  accessToken: string | null
 
-  constructor(accessToken: String | null = null) {
+  constructor(accessToken: string | null = null) {
     this.accessToken = accessToken
   }
 
@@ -24,7 +25,7 @@ export default class TmcClient {
     const res = await axios.get(
       `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
       {
-        headers: { Authorization: this.accessToken },
+        headers: { Authorization: this.accessToken ?? "" },
       },
     )
 

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 
 export const H1NoBackground = styled(Typography)<any>`
   padding-top: 0.7em;

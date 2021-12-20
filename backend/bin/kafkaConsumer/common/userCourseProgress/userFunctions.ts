@@ -34,14 +34,13 @@ export const getCombinedUserCourseProgress = async ({
   if (!baseQuery) {
     throw new Error("has to have at least one of user and course")
   }
-  const userCourseServiceProgresses = await baseQuery.user_course_service_progresses(
-    {
+  const userCourseServiceProgresses =
+    await baseQuery.user_course_service_progresses({
       where: {
         user_id: user?.id,
         course_id: course?.id,
       },
-    },
-  )
+    })
 
   /*
    * Get rid of everything we dont neeed. After this the array looks like this:
@@ -300,7 +299,7 @@ export const createCompletion = async ({
       },
     })
     // TODO: this only sends the completion email for the first tier completed
-    pushMessageToClient(
+    await pushMessageToClient(
       user.upstream_id,
       course_id,
       MessageType.COURSE_CONFIRMED,
@@ -329,7 +328,7 @@ export const createCompletion = async ({
       if (updated.length > 0) {
         logger?.info("Existing completion found, updated tier")
       }
-    } catch (error) {
+    } catch (error: any) {
       logger?.error(
         new DatabaseInputError("Error updating tier", completions[0], error),
       )

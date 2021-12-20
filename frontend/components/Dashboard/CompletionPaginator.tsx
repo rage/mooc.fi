@@ -1,6 +1,6 @@
-import { Grid, IconButton } from "@material-ui/core"
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
-import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"
+import { Grid, IconButton } from "@mui/material"
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft"
 
 interface PaginatorProps {
   getNext: () => void
@@ -16,7 +16,7 @@ function Paginator(props: PaginatorProps) {
       <Grid container direction="row" alignItems="center">
         <Grid item>
           {hasPrevious ? (
-            <IconButton onClick={getPrevious}>
+            <IconButton onClick={getPrevious} size="large">
               <KeyboardArrowLeftIcon />
             </IconButton>
           ) : (
@@ -25,7 +25,7 @@ function Paginator(props: PaginatorProps) {
         </Grid>
         <Grid item>
           {hasNext ? (
-            <IconButton onClick={getNext}>
+            <IconButton onClick={getNext} size="large">
               <KeyboardArrowRightIcon />
             </IconButton>
           ) : (

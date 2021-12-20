@@ -40,7 +40,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
         error: { set: false },
       },
     })
-  } catch (e) {
+  } catch (e: any) {
     logger.error(new EmailTemplaterError("Sending failed", e))
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },

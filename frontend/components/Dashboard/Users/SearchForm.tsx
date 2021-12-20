@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from "react"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { H1NoBackground } from "/components/Text/headers"
-import { TextField, useMediaQuery } from "@material-ui/core"
+import { TextField, useMediaQuery } from "@mui/material"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import UsersTranslations from "/translations/users"
 import styled from "@emotion/styled"
@@ -19,13 +19,8 @@ const StyledButton = styled(ButtonWithPaddingAndMargin)`
 `
 
 const SearchForm = () => {
-  const {
-    page,
-    rowsPerPage,
-    searchVariables,
-    setPage,
-    setSearchVariables,
-  } = useContext(UserSearchContext)
+  const { page, rowsPerPage, searchVariables, setPage, setSearchVariables } =
+    useContext(UserSearchContext)
   const t = useTranslator(UsersTranslations)
 
   const [searchFormText, setSearchFormText] = useState(searchVariables.search)

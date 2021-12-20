@@ -1,12 +1,13 @@
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
-import config from "../kafkaConfig"
+
+import { Result } from "../../../util/result"
 import {
   DatabaseInputError,
   KafkaMessageError,
   ValidationError,
 } from "../../lib/errors"
-import { Result } from "../../../util/result"
+import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 
 // Each partition has their own commit counter
@@ -42,7 +43,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   let message: Message
   try {
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
-  } catch (error) {
+  } catch (error: any) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
     await commit(context, kafkaMessage)
     release()
@@ -51,7 +52,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 
   try {
     await MessageYupSchema.validate(message)
-  } catch (error) {
+  } catch (error: any) {
     logger.error(new ValidationError("JSON validation failed", message, error))
     await commit(context, kafkaMessage)
     release()
@@ -68,7 +69,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     } else {
       if (saveResult.hasError()) logger.error(saveResult.error)
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
       new DatabaseInputError(
         "Could not save event to database",

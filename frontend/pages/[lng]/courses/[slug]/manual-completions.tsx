@@ -1,17 +1,17 @@
 import { useState } from "react"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import { withRouter } from "next/router"
 import withAdmin from "/lib/with-admin"
-import { Container, TextField, Button } from "@material-ui/core"
+import { Container, TextField, Button } from "@mui/material"
 import * as Papa from "papaparse"
 import styled from "@emotion/styled"
-import Alert from "@material-ui/lab/Alert"
-import AlertTitle from "@material-ui/lab/AlertTitle"
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
 import { gql, useMutation, useQuery } from "@apollo/client"
 import { useQueryParameter } from "/util/useQueryParameter"
-import DatePicker from "@material-ui/lab/DatePicker"
-import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
-import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
+import DatePicker from "@mui/lab/DatePicker"
+import LocalizationProvider from "@mui/lab/LocalizationProvider"
+import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -59,17 +59,15 @@ const ManualCompletions = () => {
     "info" | "error" | "success" | "warning" | undefined
   >("info")
   const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
-  const [
-    addCompletions,
-    { loading: mutationLoading, error: mutationError },
-  ] = useMutation(AddManualCompletionQuery, {
-    onCompleted: () => {
-      setInput("")
-      setMessage("Completions added")
-      setMessageTitle("Success")
-      setMessageSeverity("success")
-    },
-  })
+  const [addCompletions, { loading: mutationLoading, error: mutationError }] =
+    useMutation(AddManualCompletionQuery, {
+      onCompleted: () => {
+        setInput("")
+        setMessage("Completions added")
+        setMessageTitle("Success")
+        setMessageSeverity("success")
+      },
+    })
   const slug = useQueryParameter("slug") ?? ""
   const {
     data: courseData,

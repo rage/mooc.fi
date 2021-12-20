@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-express"
 import {
   arg,
   extendType,
@@ -213,14 +213,8 @@ export const UserCourseProgressMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const {
-          user_id,
-          course_id,
-          progress,
-          max_points,
-          n_points,
-          extra,
-        } = args
+        const { user_id, course_id, progress, max_points, n_points, extra } =
+          args
 
         return ctx.prisma.userCourseProgress.create({
           data: {

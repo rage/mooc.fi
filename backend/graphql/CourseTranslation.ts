@@ -111,15 +111,8 @@ export const CourseTranslationMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const {
-          id,
-          language,
-          name,
-          description,
-          instructions,
-          link,
-          course,
-        } = args
+        const { id, language, name, description, instructions, link, course } =
+          args
 
         return ctx.prisma.courseTranslation.update({
           where: { id },

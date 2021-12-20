@@ -1,18 +1,15 @@
 import { Component } from "react"
-import {
-  TextField,
-  Typography,
-  Paper,
-  CircularProgress,
-} from "@material-ui/core"
+
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import LangLink from "/components/LangLink"
+import LanguageContext from "/contexts/LanguageContext"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
-import LanguageContext from "/contexts/LanguageContext"
-import SignUpTranslations from "/translations/sign-up"
-import LangLink from "/components/LangLink"
-import styled from "@emotion/styled"
-import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import getTranslator from "/translations"
+import SignUpTranslations from "/translations/sign-up"
+
+import styled from "@emotion/styled"
+import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -116,7 +113,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
       })
 
       this.props.onComplete()
-    } catch (error) {
+    } catch (error: any) {
       try {
         let message = ""
         Object.entries(error).forEach((o: any) => {
@@ -137,7 +134,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
           message = t("commonProblem") + JSON.stringify(error)
         }
         this.setState({ error: message, submitting: false, errorObj: error })
-      } catch (_error2) {
+      } catch (_error2: any) {
         this.setState({ error: JSON.stringify(error), submitting: false })
       }
 

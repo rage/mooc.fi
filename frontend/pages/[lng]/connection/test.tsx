@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
-import { Alert } from "@material-ui/core"
+import { Alert } from "@mui/material"
 import React from "react"
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
