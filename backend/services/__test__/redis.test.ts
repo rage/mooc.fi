@@ -1,4 +1,7 @@
-import { RedisClientType, RedisModules } from "redis"
+import {
+  RedisClientType,
+  RedisModules,
+} from "redis"
 import * as winston from "winston"
 
 import { redisify } from "../redis"
@@ -174,9 +177,9 @@ describe("redisify", () => {
       )
 
       expect(res).toEqual("foo")
-      expect(redis.get).toHaveBeenCalledWith("bar:baz")
+      expect(getMock).toHaveBeenCalledWith("bar:baz")
       expect(logger.info).toHaveBeenCalledWith("Cache hit: bar")
-      expect(redis.set).not.toHaveBeenCalled()
+      expect(setMock).not.toHaveBeenCalled()
     })
   })
 })
