@@ -10,7 +10,8 @@ import { PASSPORT_STRATEGY, SP_URL } from "../config"
 import { encodeRelayState } from "../util"
 import { getProfile, HYHakaProfile } from "./common"
 
-export type Provider = "haka" | "hy" | "hy-haka"
+export type Provider = "haka" | "hy"
+export type SamlStrategyType = Provider | "hy-haka"
 
 export const createSamlStrategy = (config: Record<string, SamlConfig>) =>
   new MultiSamlStrategy(

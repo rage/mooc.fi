@@ -8,15 +8,9 @@ import {
 } from "passport-saml"
 
 import { SP_PATH, SP_URL } from "../config"
-import {
-  callbackHandler,
-  HandlerAction,
-  handlers,
-  metadataHandler,
-  singleCallbackHandler,
-} from "../handlers"
+import { createCallbackHandler, metadataHandler } from "../handlers"
 import { Optional } from "../util"
-import { Provider } from "./"
+import { SamlStrategyType } from "./"
 
 export const DISPLAY_NAME = "urn:oid:2.16.840.1.113730.3.1.241"
 export const EDU_PERSON_AFFILIATION = "urn:oid:1.3.6.1.4.1.5923.1.1.1.1"
@@ -69,35 +63,29 @@ export const getProfile = (profile: HYHakaProfile | undefined | null) => {
   })
 }
 interface SamlEndpointConfig {
-  provider: Provider
+  strategyName: SamlStrategyType
   strategy: SamlStrategy
 }
 
 export const createRouter = ({
-  provider,
+  strategyName,
   strategy,
 }: SamlEndpointConfig): Router => {
   const router = Router()
 
-  passport.use(provider, strategy)
+  passport.use(strategyName, strategy)
 
-  for (const action of Object.keys(handlers)) {
-    router.get(
-      `${SP_PATH}/${action}/${provider}`,
-      singleCallbackHandler(action as HandlerAction, provider),
-    )
-    router.get(
-      `${SP_PATH}/${action}/${provider}/metadata`,
-      metadataHandler(strategy),
-    )
-  }
+  const callbackHandler = createCallbackHandler(strategyName)
 
-  router.get(`${SP_PATH}/callbacks/${provider}`, callbackHandler)
-  router.post(
-    `${SP_PATH}/callbacks/${provider}`,
-    urlencoded({ extended: false }),
-    callbackHandler,
-  )
+  router
+    .get(`${SP_PATH}/:action/:provider`, callbackHandler)
+    .get(`${SP_PATH}/:action/:provider/metadata`, metadataHandler(strategy))
+    .post(
+      `${SP_PATH}/callbacks/:provider`,
+      urlencoded({ extended: false }),
+      callbackHandler,
+    )
+
   return router
 }
 

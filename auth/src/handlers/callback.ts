@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express"
 import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
-import { Provider } from "../saml"
+import { SamlStrategyType } from "../saml"
 import { decodeRelayState } from "../util"
 import { HandlerAction, handlers } from "./"
 
@@ -12,51 +12,34 @@ export type AuthenticationHandlerCallback = (
   next: NextFunction,
 ) => (err: any, user: Profile) => Promise<void> | void
 
-export const callbackHandler: RequestHandler = (req, res, next) => {
-  const decodedRelayState = decodeRelayState(req) ?? {
-    action: req.params.action || req.query.action, // TODO: this might be dangerous
-    provider: req.params.provider || req.query.provider,
-    language: ((req.query.language || req.params.language) as string) ?? "en",
-  }
-
-  const { action } = decodedRelayState
-
-  return singleCallbackHandler(action as HandlerAction, "hy-haka")(
-    req,
-    res,
-    next,
-  )
-}
-
-type SingleCallbackHandler = (
-  action: HandlerAction,
-  provider: Provider,
-) => RequestHandler
-
-export const singleCallbackHandler: SingleCallbackHandler =
-  (action: HandlerAction, provider: Provider) => (req, res, next) => {
+type CallbackHandler = (strategyName?: SamlStrategyType) => RequestHandler
+export const createCallbackHandler: CallbackHandler =
+  (strategyName: SamlStrategyType = "hy-haka") =>
+  (req, res, next) => {
     const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
     const decodedRelayState = decodeRelayState(req) ?? {
-      action, // TODO: this might be dangerous
-      provider,
+      action: req.params.action || req.query.action, // TODO: this might be dangerous
+      provider: req.params.provider || req.query.provider,
       language: ((req.query.language || req.params.language) as string) ?? "en",
     }
-    const { language } = decodedRelayState
+
+    const { action, provider, language } = decodedRelayState
+
     console.log("callback relaystate", decodedRelayState)
 
     if (!Object.keys(handlers).includes(action)) {
       throw new Error(`unknown action ${action}`) // TODO: something more sensible
     }
 
-    console.log("using handler", handlers[action].name)
+    console.log("using handler", handlers[action as HandlerAction].name)
     passport.authenticate(
-      provider,
+      strategyName,
       {
         additionalParams: {
           RelayState:
             relayState ?? JSON.stringify({ language, provider, action }),
         },
       } as AuthenticateOptions,
-      handlers[action](req, res, next),
+      handlers[action as HandlerAction](req, res, next),
     )(req, res, next)
   }

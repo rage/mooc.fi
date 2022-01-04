@@ -12,7 +12,7 @@ import {
   SP_PATH,
   USE_MULTISAML,
 } from "./config"
-import { callbackHandler, metadataHandler } from "./handlers/index"
+import { createCallbackHandler, metadataHandler } from "./handlers/index"
 import { getPassportConfig } from "./metadata"
 import { metadataConfig } from "./metadata/config"
 import { createSamlStrategy } from "./saml"
@@ -64,6 +64,7 @@ async function createApp() {
     const strategy = createSamlStrategy(passportConfig)
     passport.use(PASSPORT_STRATEGY, strategy)
 
+    const callbackHandler = createCallbackHandler()
     const router = Router()
       .get("/:action/:provider", callbackHandler)
       .post(
@@ -82,11 +83,11 @@ async function createApp() {
     passport.use("haka", hakaStrategy)
 
     const hyRouter = createRouter({
-      provider: "hy",
+      strategyName: "hy",
       strategy: hyStrategy,
     })
     const hakaRouter = createRouter({
-      provider: "haka",
+      strategyName: "haka",
       strategy: hakaStrategy,
     })
 
