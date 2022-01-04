@@ -75,7 +75,7 @@ export async function redisify<T>(
     logger.warn(`Prefix ${prefix}: params ignored with a promise`)
   }
 
-  if (!redisClient) {
+  if (!client) {
     return await resolveValue()
   }
 
