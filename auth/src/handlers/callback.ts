@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from "express"
 import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
-import { PASSPORT_STRATEGY } from "../config"
 import { Provider } from "../saml"
 import { decodeRelayState } from "../util"
 import { HandlerAction, handlers } from "./"
@@ -20,9 +19,9 @@ export const callbackHandler: RequestHandler = (req, res, next) => {
     language: ((req.query.language || req.params.language) as string) ?? "en",
   }
 
-  const { action, provider } = decodedRelayState
+  const { action } = decodedRelayState
 
-  return singleCallbackHandler(action as HandlerAction, provider as Provider)(
+  return singleCallbackHandler(action as HandlerAction, "hy-haka")(
     req,
     res,
     next,
@@ -51,7 +50,7 @@ export const singleCallbackHandler: SingleCallbackHandler =
 
     console.log("using handler", handlers[action].name)
     passport.authenticate(
-      PASSPORT_STRATEGY,
+      provider,
       {
         additionalParams: {
           RelayState:
