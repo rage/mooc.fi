@@ -12,7 +12,7 @@ import {
   SP_PATH,
   USE_MULTISAML,
 } from "./config"
-import { callbackHandler, handlers, metadataHandler } from "./handlers/index"
+import { callbackHandler, metadataHandler } from "./handlers/index"
 import { getPassportConfig } from "./metadata"
 import { metadataConfig } from "./metadata/config"
 import { createSamlStrategy } from "./saml"
@@ -84,12 +84,10 @@ async function createApp() {
     const hyRouter = createRouter({
       provider: "hy",
       strategy: hyStrategy,
-      handlers,
     })
     const hakaRouter = createRouter({
       provider: "haka",
       strategy: hakaStrategy,
-      handlers,
     })
 
     app.use(hyRouter)

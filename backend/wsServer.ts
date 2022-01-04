@@ -125,7 +125,6 @@ const createSubscriber = async () => {
   await subscriber?.connect()
 
   subscriber?.subscribe("websocket", (message: any) => {
-    console.log("Websocket message?", message)
     const data = JSON.parse(message)
     if (data instanceof Object && data.userId && data.courseId && data.type) {
       const userId = data.userId

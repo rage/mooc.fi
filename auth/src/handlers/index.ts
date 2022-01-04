@@ -4,7 +4,9 @@ import { metadataHandler } from "./metadata"
 import { signInHandler } from "./signIn"
 import { signUpHandler } from "./signUp"
 
-export const handlers: Record<string, AuthenticationHandlerCallback> = {
+export type HandlerAction = "sign-in" | "sign-up" | "connect"
+
+export const handlers: Record<HandlerAction, AuthenticationHandlerCallback> = {
   "sign-in": signInHandler,
   "sign-up": signUpHandler,
   connect: connectHandler,
