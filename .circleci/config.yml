@@ -50,7 +50,8 @@ jobs:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.13
       - jq/install
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
