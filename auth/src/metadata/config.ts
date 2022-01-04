@@ -21,7 +21,7 @@ const getCertFilename = (filename: string) =>
 const getMetadataFilename = (filename: string) =>
   filename.match(/^.*\/(.*\.xml)$/)?.[1]
 
-const createMetadataConfig = (
+export const createMetadataConfig = (
   name: string,
   metadataURL: string,
   certURL: string,

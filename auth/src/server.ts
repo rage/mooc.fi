@@ -10,11 +10,15 @@ import {
   PORT,
   SHIBBOLETH_HEADERS,
   SP_PATH,
+  USE_MULTISAML,
 } from "./config"
-import { callbackHandler, metadataHandler } from "./handlers/index"
+import { callbackHandler, handlers, metadataHandler } from "./handlers/index"
 import { getPassportConfig } from "./metadata"
 import { metadataConfig } from "./metadata/config"
 import { createSamlStrategy } from "./saml"
+import { createRouter } from "./saml/common"
+import { HakaStrategy } from "./saml/haka"
+import { HyStrategy } from "./saml/hy"
 import { setLocalCookiesMiddleware } from "./util"
 
 const isProduction = process.env.NODE_ENV === "production"
@@ -56,9 +60,41 @@ async function createApp() {
     haka: await getPassportConfig(metadataConfig["haka"]),
   }
 
-  const strategy = createSamlStrategy(passportConfig)
-  passport.use(PASSPORT_STRATEGY, strategy)
+  if (USE_MULTISAML) {
+    const strategy = createSamlStrategy(passportConfig)
+    passport.use(PASSPORT_STRATEGY, strategy)
 
+    const router = Router()
+      .get("/:action/:provider", callbackHandler)
+      .post(
+        "/callbacks/:provider",
+        urlencoded({ extended: false }),
+        callbackHandler,
+      )
+      .get("/:action/:provider/metadata", metadataHandler(strategy))
+
+    app.use(SP_PATH, router)
+  } else {
+    const hyStrategy = new HyStrategy(passportConfig["hy"]).getStrategy()
+    const hakaStrategy = new HakaStrategy(passportConfig["haka"]).getStrategy()
+
+    passport.use("hy", hyStrategy)
+    passport.use("haka", hakaStrategy)
+
+    const hyRouter = createRouter({
+      provider: "hy",
+      strategy: hyStrategy,
+      handlers,
+    })
+    const hakaRouter = createRouter({
+      provider: "haka",
+      strategy: hakaStrategy,
+      handlers,
+    })
+
+    app.use(hyRouter)
+    app.use(hakaRouter)
+  }
   // not used?
   passport.serializeUser((user, done) => {
     console.log("serialize", user)
@@ -70,16 +106,6 @@ async function createApp() {
     return done(null, user as any)
   })
 
-  const router = Router()
-    .get("/:action/:provider", callbackHandler)
-    .post(
-      "/callbacks/:provider",
-      urlencoded({ extended: false }),
-      callbackHandler,
-    )
-    .get("/:action/:provider/metadata", metadataHandler(strategy))
-
-  app.use(SP_PATH, router)
   app.listen(PORT, () => {
     console.log(`Listening at port ${PORT}`)
   })

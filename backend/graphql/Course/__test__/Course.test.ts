@@ -1,7 +1,7 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
+import { mocked } from "jest-mock"
 import { omit, orderBy } from "lodash"
-import { mocked } from "ts-jest/utils"
 
 import { Course } from "@prisma/client"
 
