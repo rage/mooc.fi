@@ -97,3 +97,5 @@ export const defaultHeaders: Record<HeaderField, string> = {
 }
 
 export const PASSPORT_STRATEGY = "hy-haka"
+
+export const { USE_MULTISAML } = process.env
