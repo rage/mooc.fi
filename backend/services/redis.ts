@@ -115,7 +115,7 @@ export async function redisify<T>(
   }
 }
 
-export const publisher =
+/*export const publisher =
   !NEXUS_REFLECTION && !TEST
     ? redis.createClient({
         url: REDIS_URL,
@@ -129,7 +129,10 @@ export const subscriber =
         url: REDIS_URL,
         password: process.env.REDIS_PASSWORD,
       })
-    : null
+    : null*/
+
+/*publisher?.connect()
+subscriber?.connect()*/
 
 export const invalidate = async (prefix: string | string[], key: string) => {
   if (Array.isArray(prefix)) {
@@ -141,8 +144,5 @@ export const invalidate = async (prefix: string | string[], key: string) => {
 
   await redisClient?.del(`${prefix}:${key}`)
 }
-
-publisher?.connect()
-subscriber?.connect()
 
 export default redisClient
