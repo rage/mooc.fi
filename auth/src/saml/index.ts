@@ -10,7 +10,7 @@ import {
 import { Strategy as DummyStrategy } from "@voxpelli/passport-dummy"
 
 import { SP_PATH, SP_URL } from "../config"
-import { createCallbackHandler, metadataHandler } from "../handlers"
+import { createCallbackHandler, Handlers, metadataHandler } from "../handlers"
 import { MetadataConfig } from "../metadata"
 import { Optional } from "../util"
 
@@ -29,17 +29,19 @@ export const SURNAME = "urn:oid:2.5.4.4"
 interface SamlEndpointConfig {
   strategyName: StrategyName
   strategy: SamlStrategy | DummyStrategy
+  handlers: Handlers
 }
 
 export const createRouter = ({
   strategyName,
   strategy,
+  handlers,
 }: SamlEndpointConfig): Router => {
   const router = Router()
 
   passport.use(strategyName, strategy)
 
-  const callbackHandler = createCallbackHandler(strategyName)
+  const callbackHandler = createCallbackHandler(handlers)(strategyName)
 
   console.log("strategyName", strategyName)
   router
@@ -116,3 +118,4 @@ export abstract class MoocStrategy<ProfileType extends Profile> {
 
 export * from "./hy"
 export * from "./haka"
+export * from "./test"

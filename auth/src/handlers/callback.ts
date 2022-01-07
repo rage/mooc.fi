@@ -4,7 +4,7 @@ import { Profile } from "passport-saml"
 
 import { StrategyName } from "../saml"
 import { decodeRelayState } from "../util"
-import { HandlerAction, handlers } from "./"
+import { HandlerAction } from "./"
 
 export type AuthenticationHandlerCallback = (
   req: Request,
@@ -14,8 +14,12 @@ export type AuthenticationHandlerCallback = (
 
 type CallbackHandler = (strategyName: StrategyName) => RequestHandler
 
-export const createCallbackHandler: CallbackHandler =
-  (strategyName: StrategyName) => (req, res, next) => {
+export const createCallbackHandler =
+  (
+    handlers: Record<HandlerAction, AuthenticationHandlerCallback>,
+  ): CallbackHandler =>
+  (strategyName: StrategyName) =>
+  (req, res, next) => {
     const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
     const decodedRelayState = decodeRelayState(req) ?? {
       action: req.params.action || req.query.action, // TODO: this might be dangerous

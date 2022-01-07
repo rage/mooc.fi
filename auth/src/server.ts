@@ -1,18 +1,25 @@
 import cors from "cors"
-import express, { CookieOptions } from "express"
+import express, { CookieOptions, Express } from "express"
+import { Server } from "http"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
-import { DOMAIN, PORT, SHIBBOLETH_HEADERS } from "./config"
+import {
+  DOMAIN,
+  isProduction,
+  isTest,
+  PORT,
+  SHIBBOLETH_HEADERS,
+} from "./config"
+import { handlers } from "./handlers"
 import { createRouter, HakaStrategy, HyStrategy } from "./saml"
-import { TestStrategy } from "./saml/test"
 import { setLocalCookiesMiddleware } from "./util"
 
-const isProduction = process.env.NODE_ENV === "production"
-const isTest = true || process.env.NODE_ENV === "test"
-
-async function createApp() {
+export default async function createApp(): Promise<{
+  app: Express
+  server: Server
+}> {
   const app = express()
 
   app.set("port", PORT)
@@ -44,35 +51,26 @@ async function createApp() {
   app.use(setLocalCookiesMiddleware)
   app.use(passport.initialize())
 
-  const hyStrategy = (await HyStrategy.initialize()).instance
-  const hakaStrategy = (await HakaStrategy.initialize()).instance
+  if (!isTest) {
+    const hyStrategy = (await HyStrategy.initialize()).instance
+    const hakaStrategy = (await HakaStrategy.initialize()).instance
 
-  passport.use("hy", hyStrategy)
-  passport.use("haka", hakaStrategy)
+    passport.use("hy", hyStrategy)
+    passport.use("haka", hakaStrategy)
 
-  const hyRouter = createRouter({
-    strategyName: "hy",
-    strategy: hyStrategy,
-  })
-  const hakaRouter = createRouter({
-    strategyName: "haka",
-    strategy: hakaStrategy,
-  })
-
-  app.use(hyRouter)
-  app.use(hakaRouter)
-
-  if (isTest) {
-    const testStrategyBuilder = await TestStrategy.initialize()
-    const testStrategy = testStrategyBuilder.instance
-
-    passport.use("test", testStrategy)
-
-    const testRouter = createRouter({
-      strategyName: "test",
-      strategy: testStrategy,
+    const hyRouter = createRouter({
+      strategyName: "hy",
+      strategy: hyStrategy,
+      handlers,
     })
-    app.use(testRouter)
+    const hakaRouter = createRouter({
+      strategyName: "haka",
+      strategy: hakaStrategy,
+      handlers,
+    })
+
+    app.use(hyRouter)
+    app.use(hakaRouter)
   }
   // not used?
   passport.serializeUser((user, done) => {
@@ -85,11 +83,13 @@ async function createApp() {
     return done(null, user as any)
   })
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Listening at port ${PORT}`)
   })
 
-  return app
+  return { app, server }
 }
 
-createApp()
+if (!isTest) {
+  createApp()
+}
