@@ -1,27 +1,16 @@
 import cors from "cors"
-import express, { CookieOptions, Router, urlencoded } from "express"
+import express, { CookieOptions } from "express"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
-import {
-  DOMAIN,
-  PASSPORT_STRATEGY,
-  PORT,
-  SHIBBOLETH_HEADERS,
-  SP_PATH,
-  USE_MULTISAML,
-} from "./config"
-import { createCallbackHandler, metadataHandler } from "./handlers/index"
-import { getPassportConfig } from "./metadata"
-import { metadataConfig } from "./metadata/config"
-import { createSamlStrategy } from "./saml"
-import { createRouter } from "./saml/common"
-import { HakaStrategy } from "./saml/haka"
-import { HyStrategy } from "./saml/hy"
+import { DOMAIN, PORT, SHIBBOLETH_HEADERS } from "./config"
+import { createRouter, HakaStrategy, HyStrategy } from "./saml"
+import { TestStrategy } from "./saml/test"
 import { setLocalCookiesMiddleware } from "./util"
 
 const isProduction = process.env.NODE_ENV === "production"
+const isTest = true || process.env.NODE_ENV === "test"
 
 async function createApp() {
   const app = express()
@@ -55,44 +44,35 @@ async function createApp() {
   app.use(setLocalCookiesMiddleware)
   app.use(passport.initialize())
 
-  const passportConfig = {
-    hy: await getPassportConfig(metadataConfig["hy"]),
-    haka: await getPassportConfig(metadataConfig["haka"]),
-  }
+  const hyStrategy = (await HyStrategy.initialize()).instance
+  const hakaStrategy = (await HakaStrategy.initialize()).instance
 
-  if (USE_MULTISAML) {
-    const strategy = createSamlStrategy(passportConfig)
-    passport.use(PASSPORT_STRATEGY, strategy)
+  passport.use("hy", hyStrategy)
+  passport.use("haka", hakaStrategy)
 
-    const callbackHandler = createCallbackHandler()
-    const router = Router()
-      .get("/:action/:provider", callbackHandler)
-      .post(
-        "/callbacks/:provider",
-        urlencoded({ extended: false }),
-        callbackHandler,
-      )
-      .get("/:action/:provider/metadata", metadataHandler(strategy))
+  const hyRouter = createRouter({
+    strategyName: "hy",
+    strategy: hyStrategy,
+  })
+  const hakaRouter = createRouter({
+    strategyName: "haka",
+    strategy: hakaStrategy,
+  })
 
-    app.use(SP_PATH, router)
-  } else {
-    const hyStrategy = new HyStrategy(passportConfig["hy"]).getStrategy()
-    const hakaStrategy = new HakaStrategy(passportConfig["haka"]).getStrategy()
+  app.use(hyRouter)
+  app.use(hakaRouter)
 
-    passport.use("hy", hyStrategy)
-    passport.use("haka", hakaStrategy)
+  if (isTest) {
+    const testStrategyBuilder = await TestStrategy.initialize()
+    const testStrategy = testStrategyBuilder.instance
 
-    const hyRouter = createRouter({
-      strategyName: "hy",
-      strategy: hyStrategy,
+    passport.use("test", testStrategy)
+
+    const testRouter = createRouter({
+      strategyName: "test",
+      strategy: testStrategy,
     })
-    const hakaRouter = createRouter({
-      strategyName: "haka",
-      strategy: hakaStrategy,
-    })
-
-    app.use(hyRouter)
-    app.use(hakaRouter)
+    app.use(testRouter)
   }
   // not used?
   passport.serializeUser((user, done) => {

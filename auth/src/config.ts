@@ -1,9 +1,16 @@
 import fs from "fs"
+import path from "path"
 import { URL } from "url"
 
-require("dotenv").config()
+require("dotenv").config({
+  path: path.join(
+    __dirname,
+    `../.env${process.env.NODE_ENV === "development" ? ".development" : ""}`,
+  ),
+})
 
 export const isProduction = process.env.NODE_ENV === "production"
+export const isTest = process.env.NODE_ENV === "test"
 
 /*export const HY_ORGANIZATION_SECRET =
   process.env.HY_ORGANIZATION_SECRET || "hy_secret"
@@ -24,6 +31,7 @@ export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
 export const SP_URL = process.env.SP_URL ?? ""
 
 export const SP_PATH = new URL(SP_URL).pathname
+console.log("SP_PATH", SP_PATH)
 
 export const MOOCFI_CERTIFICATE = isProduction
   ? process.env.MOOCFI_CERTIFICATE ?? ""

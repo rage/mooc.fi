@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express"
 import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
-import { SamlStrategyType } from "../saml"
+import { StrategyName } from "../saml"
 import { decodeRelayState } from "../util"
 import { HandlerAction, handlers } from "./"
 
@@ -12,14 +12,14 @@ export type AuthenticationHandlerCallback = (
   next: NextFunction,
 ) => (err: any, user: Profile) => Promise<void> | void
 
-type CallbackHandler = (strategyName?: SamlStrategyType) => RequestHandler
+type CallbackHandler = (strategyName: StrategyName) => RequestHandler
+
 export const createCallbackHandler: CallbackHandler =
-  (strategyName: SamlStrategyType = "hy-haka") =>
-  (req, res, next) => {
+  (strategyName: StrategyName) => (req, res, next) => {
     const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
     const decodedRelayState = decodeRelayState(req) ?? {
       action: req.params.action || req.query.action, // TODO: this might be dangerous
-      provider: req.params.provider || req.query.provider,
+      provider: strategyName, // req.params.provider || req.query.provider,
       language: ((req.query.language || req.params.language) as string) ?? "en",
     }
 

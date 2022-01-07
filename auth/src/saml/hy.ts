@@ -1,7 +1,7 @@
-import { Profile, SamlConfig } from "passport-saml"
+import { Profile, SamlConfig, Strategy as SamlStrategy } from "passport-saml"
 
 import { HY_METADATA_CERTIFICATE_URL, HY_METADATA_URL } from "../config"
-import { createMetadataConfig } from "../metadata/config"
+import { createMetadataConfig, getPassportConfig } from "../metadata"
 import {
   DISPLAY_NAME,
   EDU_PERSON_AFFILIATION,
@@ -13,7 +13,7 @@ import {
   SCHAC_HOME_ORGANIZATION,
   SCHAC_PERSONAL_UNIQUE_CODE,
   SURNAME,
-} from "./common"
+} from "./"
 
 export interface HYProfile extends Profile {
   nameID?: Profile["nameID"]
@@ -32,16 +32,28 @@ export interface HYProfile extends Profile {
   [SURNAME]: string
 }
 
-const requiredFields: Array<keyof HYProfile> = [EDU_PERSON_PRINCIPAL_NAME]
-
-export const metadataConfig = createMetadataConfig(
+const metadataConfig = createMetadataConfig(
   "hy",
   HY_METADATA_URL,
   HY_METADATA_CERTIFICATE_URL,
 )
 
 export class HyStrategy extends MoocStrategy<HYProfile> {
-  constructor(readonly config: SamlConfig) {
-    super("hy", config)
+  private constructor(readonly config: SamlConfig) {
+    super("hy", config, metadataConfig, [EDU_PERSON_PRINCIPAL_NAME])
+  }
+
+  static get metadataConfig() {
+    return metadataConfig
+  }
+
+  static async initialize() {
+    const passportConfig = await getPassportConfig(metadataConfig)
+
+    return new this(passportConfig)
+  }
+
+  get instance() {
+    return super.instance as SamlStrategy
   }
 }

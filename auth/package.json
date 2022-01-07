@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc",
-    "dev": "ts-node-dev --no-notify --respawn --files src/server.ts --transpileOnly",
+    "dev": "NODE_ENV=development ts-node-dev --no-notify --respawn --files src/server.ts --transpileOnly",
     "start": "ts-node --transpile-only --files src/server.ts"
   },
   "author": "",
@@ -30,6 +30,7 @@
   "dependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@voxpelli/passport-dummy": "^1.0.0",
     "@xmldom/xmldom": "^0.7.5",
     "axios": "^0.24.0",
     "cors": "^2.8.5",

@@ -5,7 +5,7 @@ import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
 import { AuthenticationHandlerCallback } from "./"
 
 export const connectHandler: AuthenticationHandlerCallback =
-  (req, res, _next) => async (_err, user) => {
+  (req, res, _next) => (_err, user) => {
     console.log("connect with user", user)
 
     const {
@@ -42,47 +42,41 @@ export const connectHandler: AuthenticationHandlerCallback =
         throw new Error("Required attributes missing")
       }
 
-      const client = new GraphQLClient(BACKEND_URL, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
-      const result = await client.request(VERIFIED_USER_MUTATION, {
-        display_name: displayname,
-        edu_personal_principal_name: edupersonprincipalname,
-        personal_unique_code: schacpersonaluniquecode,
-        home_organization: schachomeorganization,
-        person_affiliation: edupersonaffiliation,
-        mail,
-        organizational_unit: ou,
-        first_name: givenName,
-        last_name: sn,
-        organization: o,
-      })
-      console.log(result)
+      ;(async () => {
+        const client = new GraphQLClient(BACKEND_URL, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+        const result = await client.request(VERIFIED_USER_MUTATION, {
+          display_name: displayname,
+          edu_personal_principal_name: edupersonprincipalname,
+          personal_unique_code: schacpersonaluniquecode,
+          home_organization: schachomeorganization,
+          person_affiliation: edupersonaffiliation,
+          mail,
+          organizational_unit: ou,
+          first_name: givenName,
+          last_name: sn,
+          organization: o,
+        })
+        console.log(result)
 
-      /*axios
-      .get(`${FRONTEND_URL}/Shibboleth.sso/Logout`, {
-        headers: {
-          cookie: req.headers.cookie,
-          ...shibHeaders,
-        },
+        await new Promise<void>((resolve, reject) =>
+          req.login(user, (err) => {
+            if (err) {
+              console.log("login error", err)
+              reject(err)
+            } else {
+              resolve()
+            }
+          }),
+        )
+        req.logout()
+        res.redirect(
+          `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
+        )
+      })().catch((error) => {
+        throw error
       })
-      .then((res) => console.log("logged out with", res))
-      .catch((error) => console.log("error with logout", error)) // we don't care
-
-    Object.keys(res.locals.cookie).forEach((key) => {
-      shibCookies.forEach((prefix) => {
-        if (key.startsWith(prefix)) {
-          res.clearCookie(key)
-        }
-      })
-    })*/
-      /*req.login(user, (err) => {
-        console.log("express login error", err)
-      })*/
-      req.logout()
-      res.redirect(
-        `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
-      )
     } catch (error) {
       console.log("I've errored with", error)
       const errorMessage = error instanceof Error ? error.message : error
