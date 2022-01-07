@@ -106,7 +106,7 @@ const createSubscriber = async () => {
   const subscriber = redisClient?.duplicate()
   await subscriber?.connect()
 
-  subscriber?.subscribe("websocket", (_channel: any, message: any) => {
+  subscriber?.subscribe("websocket", (message: any) => {
     const data = JSON.parse(message)
     if (data instanceof Object && data.userId && data.courseId && data.type) {
       const userId = data.userId
