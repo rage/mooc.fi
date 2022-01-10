@@ -16,6 +16,11 @@ import { handlers } from "./handlers"
 import { createRouter, HakaStrategy, HyStrategy } from "./saml"
 import { setLocalCookiesMiddleware } from "./util"
 
+global.debug = {} as typeof console
+if (process.env.NODE_ENV !== "production") {
+  Object.setPrototypeOf(debug, console)
+}
+
 export default async function createApp(): Promise<{
   app: Express
   server: Server

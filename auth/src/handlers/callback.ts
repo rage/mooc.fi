@@ -3,14 +3,18 @@ import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
 import { StrategyName } from "../saml"
-import { decodeRelayState } from "../util"
+import { decodeRelayState, parseDescriptionFromSamlError } from "../util"
 import { HandlerAction } from "./"
 
+export type AuthenticationHandler = (
+  err: any,
+  user: Profile | undefined,
+) => Promise<void> | void
 export type AuthenticationHandlerCallback = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => (err: any, user: Profile) => Promise<void> | void
+) => AuthenticationHandler
 
 type CallbackHandler = (strategyName: StrategyName) => RequestHandler
 
@@ -43,7 +47,16 @@ export const createCallbackHandler =
           RelayState:
             relayState ?? JSON.stringify({ language, provider, action }),
         },
+        session: false,
       } as AuthenticateOptions,
-      handlers[action as HandlerAction](req, res, next),
+      (err, user?: Profile) => {
+        if (err || !user) {
+          const description = parseDescriptionFromSamlError(err, req)
+          debug.error(`SAML authentication failed: ${description}, ${err}`)
+        }
+
+        return handlers[action as HandlerAction](req, res, next)(err, user)
+      },
+      // handlers[action as HandlerAction](req, res, next),
     )(req, res, next)
   }

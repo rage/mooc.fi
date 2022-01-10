@@ -71,8 +71,7 @@ export const signIn = async ({
     password,
     priority,
   })
-  const details = await getUserDetails(res?.access_token) //tmc_token
-
+  const details = await getUserDetails(res?.tmc_token)
   //document.cookie = `access_token=${res.accessToken};path=/`
   //document.cookie = `admin=${details.administrator};path=/`
 

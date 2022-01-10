@@ -105,14 +105,34 @@ export abstract class MoocStrategy<ProfileType extends Profile> {
   }
 
   get instance(): SamlStrategy | DummyStrategy {
-    return new SamlStrategy(
-      this.strategyOptions,
-      (profile: Optional<Profile>, done: VerifiedCallback) => {
-        this.getProfile(profile as ProfileType)
-          .then((profile) => done(null, profile))
+    const testing = false
+    if (testing) {
+      const testProfile = {
+        [EDU_PERSON_AFFILIATION]: "",
+        [EDU_PERSON_PRINCIPAL_NAME]: "test",
+        [SCHAC_HOME_ORGANIZATION]: "helsinki.fi",
+        [ORGANIZATIONAL_UNIT]: "organizational_unit",
+        [SCHAC_PERSONAL_UNIQUE_CODE]:
+          "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:121345678",
+        [DISPLAY_NAME]: "test",
+        [GIVEN_NAME]: "test",
+        [MAIL]: "test@mail.com",
+      }
+      return new DummyStrategy({ allow: true }, (done) => {
+        this.getProfile(testProfile as any)
+          .then((user) => (console.log("dummy?", user), done(null, user)))
           .catch(done)
-      },
-    )
+      })
+    } else {
+      return new SamlStrategy(
+        this.strategyOptions,
+        (profile: Optional<Profile>, done: VerifiedCallback) => {
+          this.getProfile(profile as ProfileType)
+            .then((profile) => done(null, profile))
+            .catch(done)
+        },
+      )
+    }
   }
 }
 

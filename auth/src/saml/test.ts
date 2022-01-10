@@ -26,7 +26,7 @@ export class TestStrategy extends MoocStrategy<DummyProfile> {
   testProfile: DummyProfile = testProfile
 
   constructor() {
-    super("dummy", {} as SamlConfig, {} as MetadataConfig, [])
+    super("test", {} as SamlConfig, {} as MetadataConfig, [])
   }
 
   static async initialize() {

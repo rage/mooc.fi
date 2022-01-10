@@ -217,7 +217,6 @@ export function registerUser(ctx: ApiContext) {
       homeOrganization,
       personAffiliation,
       mail,
-      organization,
       organizationalUnit,
     } = req.body
 
@@ -277,7 +276,46 @@ export function registerUser(ctx: ApiContext) {
 
       const real_student_number = getStudentNumber(personalUniqueCode)
 
-      newUser = await ctx.prisma.user.create({
+      await ctx.knex
+        .transaction(async (trx) => {
+          newUser = (
+            await trx<User, User[]>("user")
+              .insert({
+                upstream_id,
+                username: mail,
+                email: mail,
+                first_name: firstName,
+                last_name: lastName,
+                administrator: false,
+                real_student_number,
+              })
+              .returning("*")
+          )?.[0]
+
+          newVerifiedUser = (
+            await trx<VerifiedUser, VerifiedUser[]>("verified_user")
+              .insert({
+                user_id: newUser.id,
+                home_organization: homeOrganization,
+                mail,
+                organizational_unit: organizationalUnit,
+                person_affiliation: personAffiliation,
+                person_affiliation_updated_at: new Date(),
+                personal_unique_code: personalUniqueCode,
+                display_name: displayName,
+                edu_person_principal_name: eduPersonPrincipalName,
+                // organization, // TODO: where does o go then?
+              })
+              .returning("*")
+          )?.[0]
+        })
+        .catch((err) => {
+          throw err
+        })
+
+      // TODO/FIXME: whenever prisma is updated to >=2.29, use interactiveTransitions --
+      // ctx.prisma.$transaction(async (prisma) => { ... }
+      /*newUser = await ctx.prisma.user.create({
         data: {
           username: mail,
           email: mail,
@@ -288,7 +326,6 @@ export function registerUser(ctx: ApiContext) {
           real_student_number,
         },
       })
-
       newVerifiedUser = await ctx.prisma.verifiedUser.create({
         data: {
           user: { connect: { id: newUser.id } },
@@ -299,9 +336,9 @@ export function registerUser(ctx: ApiContext) {
           personal_unique_code: personalUniqueCode,
           display_name: displayName,
           edu_person_principal_name: eduPersonPrincipalName,
-          organization, // TODO: where does o go then?
+          // organization, // TODO: where does o go then?
         },
-      })
+      })*/
 
       return res.status(200).json({
         status: 200,
@@ -311,7 +348,8 @@ export function registerUser(ctx: ApiContext) {
         tmc_user: existingTMCUser,
         message: "User created",
       })
-    } catch {
+    } catch (error) {
+      console.log("caught error", error)
       return res.status(500).json({
         status: 500,
         success: false,
@@ -600,7 +638,8 @@ export function updatePersonAffiliation(ctx: ApiContext) {
 }
 
 function getStudentNumber(personalUniqueCode: string) {
-  const codes = personalUniqueCode.split(";").map((code) => code.split(":"))
+  const codes =
+    personalUniqueCode?.split(";").map((code) => code.split(":")) ?? []
 
   const codeWithStudentID = codes.find((code) =>
     code.some((field) => field === "helsinki.fi"),

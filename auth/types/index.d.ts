@@ -33,3 +33,5 @@ declare module "@voxpelli/passport-dummy" {
 
   export const version: string
 }
+
+declare var debug: typeof console
