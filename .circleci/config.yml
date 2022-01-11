@@ -86,6 +86,12 @@ jobs:
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
       - run:
+          name: "Install deps for tests"
+          command: |
+            cd auth
+            npm ci
+            cd ..
+      - run:
           name: "Tests"
           command: "bin/run-auth-tests.sh"
       - run:

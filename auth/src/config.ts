@@ -33,15 +33,19 @@ export const SP_URL = process.env.SP_URL ?? ""
 
 export const SP_PATH = new URL(SP_URL).pathname
 
-export const MOOCFI_CERTIFICATE = isProduction
-  ? process.env.MOOCFI_CERTIFICATE ?? ""
-  : fs.readFileSync(__dirname + "/../certs/mooc.fi.crt", "utf-8").toString() ??
-    ""
+export const MOOCFI_CERTIFICATE =
+  isProduction || isTest
+    ? process.env.MOOCFI_CERTIFICATE ?? ""
+    : fs
+        .readFileSync(__dirname + "/../certs/mooc.fi.crt", "utf-8")
+        .toString() ?? ""
 
-export const MOOCFI_PRIVATE_KEY = isProduction
-  ? process.env.MOOCFI_PRIVATE_KEY ?? ""
-  : fs.readFileSync(__dirname + "/../certs/mooc.fi.key", "utf-8").toString() ??
-    ""
+export const MOOCFI_PRIVATE_KEY =
+  isProduction || isTest
+    ? process.env.MOOCFI_PRIVATE_KEY ?? ""
+    : fs
+        .readFileSync(__dirname + "/../certs/mooc.fi.key", "utf-8")
+        .toString() ?? ""
 
 export const HY_CERTIFICATE = process.env.HY_CERTIFICATE ?? ""
 // isProduction ? process.env.HY_CERTIFICATE ?? "" : "",
