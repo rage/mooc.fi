@@ -86,11 +86,11 @@ jobs:
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
       - run:
-          name: "Build image"
-          command: "bin/build-docker-auth.sh"
-      - run:
           name: "Tests"
           command: "bin/run-auth-tests.sh"
+      - run:
+          name: "Build image"
+          command: "bin/build-docker-auth.sh"
       - store_test_results:
           path: ~/project/auth/coverage/junit/
       - store_artifacts:
