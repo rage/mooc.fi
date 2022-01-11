@@ -22,6 +22,7 @@
     "@types/xml-crypto": "^1.4.2",
     "dotenv": "^10.0.0",
     "jest": "^27.4.7",
+    "jest-junit": "^13.0.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",

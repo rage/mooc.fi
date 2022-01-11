@@ -2,8 +2,8 @@ import axios from "axios"
 import { Express } from "express"
 import { Server } from "http"
 
-import { AuthenticationHandlerCallback, Handlers } from "../handlers"
-import { createTestApp } from "./helpers"
+import { AuthenticationHandlerCallback, Handlers } from "../"
+import { createTestApp } from "../../__test__/helpers"
 
 const testHandlers: Handlers & {
   [key: string]: AuthenticationHandlerCallback
@@ -36,8 +36,6 @@ describe("callback", () => {
     const res = await axios.get(
       `http://localhost:${app.settings.port}/test/test`,
     )
-
-    console.log(res)
 
     expect(testSpy).toHaveBeenCalled()
   })

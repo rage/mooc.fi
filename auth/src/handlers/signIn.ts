@@ -12,14 +12,12 @@ const client_secret = "native"
 const errorHandler =
   (language: string, errorType: string, error: any) =>
   (req: Request, res: Response, next: NextFunction) => {
-    debug.log("in errorHandler", errorType, error)
     req.logout()
     if (!res.headersSent) {
-      console.log("headers not sent?")
       return res.redirect(
-        `${FRONTEND_URL}/${language}/sign-in?error=${
-          errorType ?? "unknown"
-        }&message=${decodeURIComponent(error)}`,
+        `${FRONTEND_URL}/${language}/sign-in?error=${errorType ?? "unknown"}${
+          error ? `&message=${encodeURIComponent(error)}` : ""
+        }`,
       )
     } else {
       return next(error)
@@ -40,7 +38,7 @@ export const signInHandler: AuthenticationHandlerCallback =
     const language =
       req.query.language || req.params.language || relayState?.language || "en"
 
-    let errorType: any = undefined
+    let errorType: string
 
     if (err || !user || !edu_person_principal_name) {
       return errorHandler(language, "auth-fail", err)(req, res, next)
@@ -57,7 +55,6 @@ export const signInHandler: AuthenticationHandlerCallback =
         edu_person_principal_name,
         client_secret,
       })
-
       try {
         // @ts-ignore: ignore return value for now
         const { data: updateData } = await axios.post(
@@ -80,6 +77,9 @@ export const signInHandler: AuthenticationHandlerCallback =
       await new Promise<void>((resolve, reject) =>
         req.login(user, (err) => {
           if (err) {
+            // TODO: what to actually do here?
+            // Do we even need the login/logout if there is no session?
+            // Now this will just unceremoniously bail out -- need try/catch?
             debug.log("login error", err)
             reject(err)
           } else {
