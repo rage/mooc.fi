@@ -8,15 +8,11 @@ import winston from "winston"
 
 import { PrismaClient, User } from "@prisma/client"
 
+import { DATABASE_URL, DEBUG } from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
 
 require("sharp") // ensure correct zlib thingy
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-const DEBUG = Boolean(process.env.DEBUG)
 
 function fail(reason = "fail was called in a test") {
   throw new Error(reason)
@@ -113,7 +109,7 @@ function createTestContext(testContext: TestContext) {
 
       while (true) {
         try {
-          port = await getPort({ port: makeRange(4001, 6000) })
+          port = await getPort({ port: makeRange(4001, 4999) })
           serverInstance = app.listen(port).on("error", (err) => {
             throw err
           })
@@ -155,7 +151,7 @@ function createPrismaTestContext() {
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
+      databaseUrl = `${DATABASE_URL}?schema=${schemaName}` // `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
       // Set the required environment variable to contain the connection string
       // to our database test schema
       // process.env.DATABASE_URL = databaseUrl

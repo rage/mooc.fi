@@ -58,24 +58,76 @@ jobs:
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
-      - run:
-          name: "Preparing DB for tests"
-          command: "bin/prepare-db-for-tests.sh"
-      - run:
-          name: "Tests"
-          command: "bin/run-backend-tests.sh"
-      - store_test_results:
-          path: ~/project/backend/coverage/junit/
-      - store_artifacts:
-          path: ~/project/backend/coverage/jest
-          destination: backend-tests
-      - run:
-          name: "Upload coverage"
-          command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-backend-image.sh"
+      # - run:
+      #     name: "Preparing DB for tests"
+      #     command: "bin/prepare-db-for-tests.sh"
+      # - run:
+      #     name: "Tests"
+      #     command: "bin/run-backend-tests.sh"
+      # - store_test_results:
+      #     path: ~/project/backend/coverage/junit/
+      # - store_artifacts:
+      #     path: ~/project/backend/coverage/jest
+      #     destination: backend-tests
+      # - run:
+      #     name: "Upload coverage"
+      #     command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
+      # - run:
+      #     name: "Push image if on master/staging"
+      #     command: "bin/push-docker-backend-image.sh"
 
+  test_backend:
+    docker:
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+          POSTGRES_PASSWORD: ""
+    environment:
+      DATABASE_URL: postgres://root@localhost/circle_test?sslmode=disable
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_NAME: circle_test
+      RUNNING_IN_CI: "true"
+      NODE_ENV: test
+    parallelism: 3
+    steps: 
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - jq/install
+      - docker/install-docker-tools:
+          docker-compose-version: 1.29.2
+      - restore_cache:
+          keys:
+            - node-backend-{{ .Branch }}-{{ checksum "backend/package-lock.json" }}
+            - node-backend-{{ .Branch }}
+      - run:
+          name: "Install dependencies"
+          command: |
+            cd backend
+            npm ci
+            cd ..
+      - save_cache:
+          key: node-backend-{{ .Branch }}-{{ checksum "backend/package-lock.json" }}
+          paths:
+            - backend/node_modules
+      - run:
+          name: "Wait for database"
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: "Download env"
+          command: cd backend && npm run download-env && cd ..
+      - run:
+          name: "Run tests"
+          command: |
+            cd backend
+            npm run test
+            cd ..
+               
   build_auth:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
@@ -112,12 +164,14 @@ workflows:
   build-deploy:
     jobs:
       - build_frontend
+      - test_backend
       - build_backend
       - build_auth
       - code_style
       - deploy_to_production:
           requires:
             - build_frontend
+            - test_backend
             - build_backend
             - build_auth
             - code_style
