@@ -5,10 +5,6 @@ import { Course, User } from "@prisma/client"
 import { KafkaContext } from "../kafkaContext"
 import { CombinedUserCourseProgress } from "./userFunctions"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
 interface Props {
   user: User
   course: Course

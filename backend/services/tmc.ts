@@ -1,13 +1,10 @@
 import axios from "axios"
 
+import { TMC_CLIENT_ID, TMC_CLIENT_SECRET, TMC_HOST } from "../config"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-const BASE_URL = process.env.TMC_HOST || ""
+const BASE_URL = TMC_HOST || ""
 
 export interface UserFieldValue {
   id: number
@@ -154,8 +151,8 @@ export const authenticateUser = async (
       username,
       password,
       grant_type: "password",
-      client_id: process.env.TMC_CLIENT_ID,
-      client_secret: process.env.TMC_CLIENT_SECRET,
+      client_id: TMC_CLIENT_ID,
+      client_secret: TMC_CLIENT_SECRET,
     }),
     headers: { "Content-Type": "application/json" },
   })

@@ -1,6 +1,8 @@
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 
+import { KAFKA_HOST } from "../config"
+
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -20,7 +22,7 @@ export default class KafkaProducer {
     queue = []
     disconnect = false
     producer = new Kafka.Producer({
-      "metadata.broker.list": process.env.KAFKA_HOST,
+      "metadata.broker.list": KAFKA_HOST,
       dr_cb: true,
     })
     producer.connect()

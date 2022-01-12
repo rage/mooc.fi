@@ -3,6 +3,7 @@ import { omit } from "lodash"
 
 import { User, UserCourseSetting, VerifiedUser } from "@prisma/client"
 
+import { UPDATE_USER_SECRET } from "../config"
 import { invalidate } from "../services/redis"
 import {
   authenticateUser,
@@ -17,10 +18,6 @@ import {
   validatePassword,
 } from "../util/validateAuth"
 import { ApiContext } from "./"
-
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
 
 const argon2 = require("argon2")
 
@@ -474,7 +471,7 @@ export function updateUser(ctx: ApiContext) {
 
     const { secret } = req.body
 
-    if (secret !== process.env.UPDATE_USER_SECRET) {
+    if (secret !== UPDATE_USER_SECRET) {
       return res.status(405).json({
         status: 405,
         success: false,

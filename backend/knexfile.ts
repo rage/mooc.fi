@@ -1,8 +1,8 @@
 import { DATABASE_URL_WITHOUT_SCHEMA, SEARCH_PATH } from "./config"
 
-require("dotenv-safe").config({
+/*require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
-})
+})*/
 
 /*let url = process.env.DATABASE_URL
 if (url && url?.lastIndexOf("?") !== -1) {

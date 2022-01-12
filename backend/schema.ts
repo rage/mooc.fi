@@ -1,23 +1,20 @@
-const PRODUCTION = process.env.NODE_ENV === "production"
-
-require("dotenv-safe").config({
-  allowEmptyValues: PRODUCTION,
-})
-if (process.env.NEXUS_REFLECTION) {
-  require("sharp")
-}
-
-import { makeSchema, connectionPlugin, fieldAuthorizePlugin } from "nexus"
-import { nexusPrisma } from "nexus-plugin-prisma"
-import * as types from "./graphql"
 import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
+import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
+import { nexusPrisma } from "nexus-plugin-prisma"
 import * as path from "path"
-import { loggerPlugin } from "./middlewares/logger"
-import { sentryPlugin } from "./middlewares/sentry"
+import { join } from "path"
+
+import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
+import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
-import { join } from "path"
+import { loggerPlugin } from "./middlewares/logger"
+import { sentryPlugin } from "./middlewares/sentry"
+
+if (NEXUS_REFLECTION) {
+  require("sharp")
+}
 
 const createPlugins = () => {
   const plugins = [
@@ -52,11 +49,7 @@ const createPlugins = () => {
     sentryPlugin(),
   ]
 
-  if (
-    PRODUCTION &&
-    !process.env.NEXUS_REFLECTION &&
-    process.env.NEW_RELIC_LICENSE_KEY
-  ) {
+  if (isProduction && !NEXUS_REFLECTION && NEW_RELIC_LICENSE_KEY) {
     const { newRelicPlugin } = require("./middlewares/newrelic")
     plugins.push(newRelicPlugin())
   }
@@ -86,5 +79,5 @@ export default makeSchema({
     schema: __dirname + "/generated/schema.graphql",
   },
   shouldGenerateArtifacts: true,
-  shouldExitAfterGenerateArtifacts: Boolean(process.env.NEXUS_REFLECTION),
+  shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),
 })

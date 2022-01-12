@@ -6,6 +6,7 @@ import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
 import {
   DOMAIN,
+  isProduction,
   PASSPORT_STRATEGY,
   PORT,
   SHIBBOLETH_HEADERS,
@@ -20,8 +21,6 @@ import { createRouter } from "./saml/common"
 import { HakaStrategy } from "./saml/haka"
 import { HyStrategy } from "./saml/hy"
 import { setLocalCookiesMiddleware } from "./util"
-
-const isProduction = process.env.NODE_ENV === "production"
 
 async function createApp() {
   const app = express()

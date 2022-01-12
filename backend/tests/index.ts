@@ -8,7 +8,7 @@ import winston from "winston"
 
 import { PrismaClient, User } from "@prisma/client"
 
-import { DATABASE_URL, DEBUG } from "../config"
+import { DATABASE_URL, DB_USER, DEBUG } from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
 
@@ -154,7 +154,7 @@ function createPrismaTestContext() {
       databaseUrl = `${DATABASE_URL}?schema=${schemaName}` // `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
       // Set the required environment variable to contain the connection string
       // to our database test schema
-      // process.env.DATABASE_URL = databaseUrl
+      // DATABASE_URL = databaseUrl
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
       knexClient = knex({
@@ -193,7 +193,7 @@ function createPrismaTestContext() {
             || ' CASCADE' 
           FROM pg_tables 
           WHERE schemaname = '${schemaName}'
-          AND tableowner = 'prisma'
+          AND tableowner = '${DB_USER}'
         ); 
       END $$;
       `)

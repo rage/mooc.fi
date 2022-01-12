@@ -1,17 +1,23 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import { User, EmailTemplate } from "@prisma/client"
 import * as nodemailer from "nodemailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
-import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
-import prisma from "../../../../prisma"
 
-const email_host = process.env.SMTP_HOST
-const email_user = process.env.SMTP_USER
-const email_pass = process.env.SMTP_PASS
-const email_port = process.env.SMTP_PORT
-const email_from = process.env.SMTP_FROM
+import { EmailTemplate, User } from "@prisma/client"
+
+import {
+  SMTP_FROM,
+  SMTP_HOST,
+  SMTP_PASS,
+  SMTP_PORT,
+  SMTP_USER,
+} from "../../../../config"
+import prisma from "../../../../prisma"
+import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
+
+const email_host = SMTP_HOST
+const email_user = SMTP_USER
+const email_pass = SMTP_PASS
+const email_port = SMTP_PORT
+const email_from = SMTP_FROM
 
 export async function sendEmailTemplateToUser(
   user: User,

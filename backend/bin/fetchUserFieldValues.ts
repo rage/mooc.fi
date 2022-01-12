@@ -2,6 +2,7 @@ import { DateTime } from "luxon"
 
 import { PrismaClient } from "@prisma/client"
 
+import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
@@ -9,11 +10,7 @@ import { convertUpdate } from "../util/db-functions"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-const CONFIG_NAME = process.env.CONFIG_NAME ?? "userFieldValues"
+const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userFieldValues"
 
 const logger = sentryLogger({ service: "fetch-user-field-values" })
 
@@ -22,7 +19,7 @@ const fetcUserFieldValues = async () => {
   const tmc = new TmcClient()
 
   const existingConfig = await prisma.userAppDatumConfig.findFirst({
-    where: { name: CONFIG_NAME },
+    where: { name: USER_APP_DATUM_CONFIG_NAME },
   })
   const latestTimeStamp = existingConfig?.timestamp
 

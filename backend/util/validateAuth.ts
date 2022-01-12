@@ -4,14 +4,13 @@ import jwt from "jsonwebtoken"
 import { AccessToken } from "@prisma/client"
 
 import { ApiContext } from "../auth"
+import { isProduction, PUBLIC_KEY, PUBLIC_KEY_TEST } from "../config"
 import { invalidate } from "../services/redis"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 
-const isProduction = process.env.NODE_ENV === "production"
-
 const publicKey = isProduction
-  ? process.env.PUBLIC_KEY
-  : fs.readFileSync(process.env.PUBLIC_KEY_TEST ?? "")
+  ? PUBLIC_KEY
+  : fs.readFileSync(PUBLIC_KEY_TEST ?? "")
 
 if (isNullOrUndefined(publicKey) || publicKey === "") {
   throw new Error("No public key set in env")

@@ -1,13 +1,10 @@
 import * as redis from "redis"
 import * as winston from "winston"
 
-const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD
-const NEXUS_REFLECTION = process.env.NEXUS_REFLECTION
-const TEST = process.env.NODE_ENV === "test"
+import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
 
 const redisClient =
-  !NEXUS_REFLECTION && !TEST
+  !NEXUS_REFLECTION && !isTest
     ? redis.createClient({
         url: REDIS_URL,
         password: REDIS_PASSWORD,
@@ -116,18 +113,18 @@ export async function redisify<T>(
 }
 
 /*export const publisher =
-  !NEXUS_REFLECTION && !TEST
+  !NEXUS_REFLECTION && !isTest
     ? redis.createClient({
         url: REDIS_URL,
-        password: process.env.REDIS_PASSWORD,
+        password: REDIS_PASSWORD,
       })
     : null
 
 export const subscriber =
-  !NEXUS_REFLECTION && !TEST
+  !NEXUS_REFLECTION && !isTest
     ? redis.createClient({
         url: REDIS_URL,
-        password: process.env.REDIS_PASSWORD,
+        password: REDIS_PASSWORD,
       })
     : null*/
 

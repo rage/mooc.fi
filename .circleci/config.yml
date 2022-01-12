@@ -58,34 +58,20 @@ jobs:
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
-      # - run:
-      #     name: "Preparing DB for tests"
-      #     command: "bin/prepare-db-for-tests.sh"
-      # - run:
-      #     name: "Tests"
-      #     command: "bin/run-backend-tests.sh"
-      # - store_test_results:
-      #     path: ~/project/backend/coverage/junit/
-      # - store_artifacts:
-      #     path: ~/project/backend/coverage/jest
-      #     destination: backend-tests
-      # - run:
-      #     name: "Upload coverage"
-      #     command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
-      # - run:
-      #     name: "Push image if on master/staging"
-      #     command: "bin/push-docker-backend-image.sh"
+      - run:
+          name: "Push image if on master/staging"
+          command: "bin/push-docker-backend-image.sh"
 
   test_backend:
     docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-      - image: circleci/postgres:9.6.5-alpine-ram
+      - image: cimg/node:14.18.3 # eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+      - image: cimg/postgres:11.13
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
     environment:
-      DATABASE_URL: postgres://root@localhost/circle_test?sslmode=disable
+      DATABASE_URL: postgres://root@localhost/circle_test
       DB_HOST: localhost
       DB_PORT: 5432
       DB_USER: root
@@ -93,7 +79,7 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-    parallelism: 3
+    parallelism: 4
     steps: 
       - checkout
       - setup_remote_docker:
@@ -101,10 +87,23 @@ jobs:
       - jq/install
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
+      - run:
+          name: "Install psql client"
+          command: |
+            sudo apt-get update
+            sudo apt-get install postgresql-client 
+      - run:
+          name: "Wait for database"
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: "Create extensions"
+          command: | 
+            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - restore_cache:
           keys:
             - node-backend-{{ .Branch }}-{{ checksum "backend/package-lock.json" }}
             - node-backend-{{ .Branch }}
+            - node-backend
       - run:
           name: "Install dependencies"
           command: |
@@ -116,17 +115,33 @@ jobs:
           paths:
             - backend/node_modules
       - run:
-          name: "Wait for database"
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+          name: "Set environment"
+          command: |
+            cd backend
+            npm run download-env
+            cp .env.example .env
+            cd ..
       - run:
-          name: "Download env"
-          command: cd backend && npm run download-env && cd ..
+          name: "Set up Prisma"
+          command: |
+            cd backend
+            npm run generate
+            cd ..
       - run:
           name: "Run tests"
           command: |
             cd backend
-            npm run test
+            TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
+            npm run test:ci $TEST
             cd ..
+      - store_test_results:
+          path: ~/project/backend/coverage/junit/
+      - store_artifacts:
+          path: ~/project/backend/coverage/jest
+          destination: backend-tests
+      - run:
+          name: "Upload coverage"
+          command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
                
   build_auth:
     docker:
@@ -165,7 +180,14 @@ workflows:
     jobs:
       - build_frontend
       - test_backend
-      - build_backend
+      - build_backend:
+          requires:
+            - test_backend
+          filters:
+            branches:
+              only: 
+                - master
+                - staging
       - build_auth
       - code_style
       - deploy_to_production:

@@ -4,13 +4,10 @@ import { DateTime } from "luxon"
 
 import { OpenUniversityRegistrationLink } from "@prisma/client"
 
+import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
 import prisma from "../prisma"
 import { AvoinError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
-
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 
@@ -99,9 +96,9 @@ const fetch = async () => {
 const getInfoWithCourseCode = async (
   course_code: string,
 ): Promise<AvoinLinkData[]> => {
-  const url = process.env.AVOIN_COURSE_URL + course_code
+  const url = AVOIN_COURSE_URL + course_code
   const res = await axios.get(url, {
-    headers: { Authorized: "Basic " + process.env.AVOIN_TOKEN },
+    headers: { Authorized: "Basic " + AVOIN_TOKEN },
   })
   return await res.data
 }
