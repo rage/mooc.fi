@@ -13,7 +13,6 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
-    working_directory: ~/project/backend
   backend_build:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
@@ -61,6 +60,15 @@ jobs:
           name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
 
+  prepare:
+    executor: backend_test
+    steps:
+      - run: 
+          name: "Create workspace directories"
+          command: |
+            mkdir -p ~/project/test-workspace
+            mkdir -p ~/project/build-workspace
+
   prepare_backend_test:
     executor: backend_test
     # environment:
@@ -72,9 +80,10 @@ jobs:
     #   DB_NAME: circle_test
     #   RUNNING_IN_CI: "true"
     #   NODE_ENV: test
+    working_directory: ~/project/test-workspace/backend
     steps: 
       - checkout:
-          path: ~/project
+          path: ~/project/test-workspace
       # - setup_remote_docker:
       #     version: 19.03.13
       - jq/install
@@ -115,9 +124,9 @@ jobs:
           command: |
             npm run generate
       - persist_to_workspace:
-          root: .
+          root: ~/project/test-workspace
           paths: 
-           - backend
+           - .
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -143,7 +152,7 @@ jobs:
     parallelism: 8
     steps: 
       - attach_workspace:
-          at: backend
+          at: ~/project/test-workspace
       - run:
           name: "Debug directory"
           command: |
@@ -182,7 +191,7 @@ jobs:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: .
+          root: ~/project/test-workspace
           paths:
             - coverage
       # - run:
@@ -193,7 +202,7 @@ jobs:
     executor: backend_test
     steps:
       - attach_workspace:
-          at: backend
+          at: ~/project/test-workspace
       - run:
           name: "Upload test results"
           command: |
@@ -204,6 +213,7 @@ jobs:
     executor: backend_build
     #docker:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    working_directory: ~/project/build-workspace
     steps:
       - checkout
       - setup_remote_docker:
@@ -215,7 +225,7 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - persist_to_workspace:
-          root: .
+          root: ~/project/build-workspace
           paths:
             - .
 
@@ -225,7 +235,7 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
-          at: .
+          at: ~/project/build-workspace
       - run:
           name: "Debug directory"
           command: |
@@ -272,7 +282,10 @@ workflows:
     jobs:
       - code_style
       - build_frontend
-      - prepare_backend_test
+      - prepare
+      - prepare_backend_test:
+          requires:
+            - prepare
       - test_backend:
           requires:
             - prepare_backend_test
