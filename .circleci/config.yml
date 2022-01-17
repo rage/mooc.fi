@@ -71,10 +71,8 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-    working_directory: ~/project/backend
     steps: 
-      - checkout:
-          path: ~/project
+      - checkout
       - run: mkdir -p /tmp/backend-tests
       # - setup_remote_docker:
       #     version: 19.03.13
@@ -93,7 +91,8 @@ jobs:
       #     name: "Create extensions"
       #     command: | 
       #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
-      - node/install-packages
+      - node/install-packages:
+        - app-dir: ./backend
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
@@ -109,11 +108,14 @@ jobs:
       - run:
           name: "Set environment"
           command: |
+            cd backend
             npm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
-          command: npm run generate
+          command: |
+            cd backend
+            npm run generate
       - persist_to_workspace:
           root: /tmp/backend-tests
           paths: 
