@@ -13,6 +13,7 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
+    working_directory: ~/project/backend
   backend_build:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
@@ -62,16 +63,15 @@ jobs:
 
   prepare_backend_test:
     executor: backend_test
-    environment:
-      DATABASE_URL: postgres://root@localhost/circle_test
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: root
-      DB_PASSWORD: ""
-      DB_NAME: circle_test
-      RUNNING_IN_CI: "true"
-      NODE_ENV: test
-    working_directory: ~/project/backend
+    # environment:
+    #   DATABASE_URL: postgres://root@localhost/circle_test
+    #   DB_HOST: localhost
+    #   DB_PORT: 5432
+    #   DB_USER: root
+    #   DB_PASSWORD: ""
+    #   DB_NAME: circle_test
+    #   RUNNING_IN_CI: "true"
+    #   NODE_ENV: test
     steps: 
       - checkout:
           path: ~/project
@@ -80,18 +80,18 @@ jobs:
       - jq/install
       # - docker/install-docker-tools:
       #     docker-compose-version: 1.29.2
-      - run:
-          name: "Install psql client"
-          command: |
-            sudo apt-get update
-            sudo apt-get install postgresql-client 
-      - run:
-          name: "Wait for database"
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: "Create extensions"
-          command: | 
-            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+      # - run:
+      #     name: "Install psql client"
+      #     command: |
+      #       sudo apt-get update
+      #       sudo apt-get install postgresql-client 
+      # - run:
+      #     name: "Wait for database"
+      #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      # - run:
+      #     name: "Create extensions"
+      #     command: | 
+      #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - node/install-packages
       # - restore_cache:
       #     keys:
@@ -112,11 +112,12 @@ jobs:
             cp .env.example .env
       - run:
           name: "Set up Prisma"
-          command: npm run generate
+          command: |
+            npm run generate
       - persist_to_workspace:
           root: .
           paths: 
-           - .
+           - backend
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -139,18 +140,27 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-    parallelism: 4
-    working_directory: ~/project/backend
+    parallelism: 8
     steps: 
       - attach_workspace:
-          at: .
+          at: backend
       - run:
-          name: "Debug"
+          name: "Debug directory"
           command: |
             pwd
             ls -la
-            ls node_modules
-            cat package.json
+      - run:
+          name: "Install psql client"
+          command: |
+            sudo apt-get update
+            sudo apt-get install postgresql-client 
+      - run:
+          name: "Wait for database"
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: "Create extensions"
+          command: | 
+            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - run:
           name: "Parallel #"
           command: |
@@ -163,8 +173,10 @@ jobs:
           command: |
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
-            npm run test:ci -- $TEST
+            npm run test:ci -- --runTestsByPath $TEST
       - store_test_results:
+          path: ./coverage/junit/
+      - store_artifacts:
           path: ./coverage/junit/
       - store_artifacts:
           path: ./coverage/jest
@@ -181,11 +193,12 @@ jobs:
     executor: backend_test
     steps:
       - attach_workspace:
-          at: .
+          at: backend
       - run:
           name: "Upload test results"
           command: |
             ls -la
+            ls coverage
   
   build_backend:
     executor: backend_build
@@ -213,6 +226,11 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: "Debug directory"
+          command: |
+            pwd
+            ls -la
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
