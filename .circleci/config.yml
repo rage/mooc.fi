@@ -163,7 +163,7 @@ jobs:
           command: |
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
-            npm run test:ci --runTestsByPath $TEST
+            npm run test:ci -- --runTestsByPath $TEST
       - store_test_results:
           path: ./coverage/junit/
       - store_artifacts:
