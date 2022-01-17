@@ -144,10 +144,10 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
-    # working_directory: ~/project/backend
+    working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: /tmp/backend-tests/backend
+          at: /tmp/backend-tests
       - run:
           name: "Debug directory"
           command: |
@@ -186,7 +186,7 @@ jobs:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: /tmp/backend-tests
+          root: /tmp/backend-tests/backend
           paths:
             - coverage
       # - run:
@@ -198,7 +198,7 @@ jobs:
     working_directory: ~/project/backend
     steps:
       - attach_workspace:
-          at: /tmp/backend-tests/backend
+          at: /tmp/backend-tests
       - run:
           name: "Upload test results"
           command: |
