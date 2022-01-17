@@ -90,8 +90,8 @@ jobs:
       #     name: "Create extensions"
       #     command: | 
       #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
-      - node/install-packages
-      #    app-dir: ./backend
+      - node/install-packages:
+          app-dir: ~/project/backend
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
