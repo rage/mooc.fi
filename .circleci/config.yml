@@ -139,7 +139,7 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-    parallelism: 4
+    parallelism: 8
     working_directory: ~/project/backend
     steps: 
       - attach_workspace:
@@ -157,13 +157,6 @@ jobs:
           command: | 
             psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - run:
-          name: "Debug"
-          command: |
-            pwd
-            ls -la
-            ls node_modules
-            cat package.json
-      - run:
           name: "Parallel #"
           command: |
             echo $CIRCLE_NODE_INDEX
@@ -179,6 +172,8 @@ jobs:
       - store_test_results:
           path: ./coverage/junit/
       - store_artifacts:
+          path: ./coverage/junit/
+      - store_artifacts:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
@@ -191,6 +186,7 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
+    working_directory: ~/project/backend
     steps:
       - attach_workspace:
           at: .
@@ -216,7 +212,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - .
+            - ./backend
 
   push_backend:
     executor: backend_build
@@ -224,7 +220,7 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
-          at: .
+          at: ./backend
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
