@@ -147,8 +147,6 @@ jobs:
     working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: .
-      - attach_workspace:
           at: ~/project/backend
       - run:
           name: "Debug directory"
@@ -200,8 +198,6 @@ jobs:
     working_directory: ~/project/backend
     steps:
       - attach_workspace:
-          at: .
-      - attach_workspace:
           at: ~/project/backend
       - run:
           name: "Upload test results"
@@ -224,7 +220,7 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - persist_to_workspace:
-          root: ~/projecct
+          root: ~/project
           paths:
             - .
             - backend
@@ -236,8 +232,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - attach_workspace:
-          at: ~/project/backend
       - run:
           name: "Debug directory"
           command: |
