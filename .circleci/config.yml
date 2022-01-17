@@ -150,6 +150,7 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
+    working_directory: ~/project/test-workspace/backend
     steps: 
       - attach_workspace:
           at: ~/project/test-workspace
@@ -178,20 +179,21 @@ jobs:
       - run:
           name: "Run tests"
           environment:
-            JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
+            JEST_JUNIT_OUTPUT_DIR: ~/project/test-workspace/backend/coverage/junit/
           command: |
+            mkdir -p ~/project/test-workspace/backend/coverage/{junit,jest}
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
       - store_test_results:
-          path: ./coverage/junit/
+          path: ~/project/test-workspace/backend/coverage/junit/
       - store_artifacts:
-          path: ./coverage/junit/
+          path: ~/project/test-workspace/backend/coverage/junit/
       - store_artifacts:
-          path: ./coverage/jest
+          path: ~/project/test-workspace/backend/coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: ~/project/test-workspace
+          root: ~/project/test-workspace/backend
           paths:
             - coverage
       # - run:
@@ -200,14 +202,15 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
+    working_directory: ~/project/test-workspace/backend
     steps:
       - attach_workspace:
           at: ~/project/test-workspace
       - run:
           name: "Upload test results"
           command: |
+            pwd
             ls -la
-            ls coverage
   
   build_backend:
     executor: backend_build
@@ -233,6 +236,7 @@ jobs:
     executor: backend_build
     #docker:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    working_directory: ~/project/build-workspace
     steps:
       - attach_workspace:
           at: ~/project/build-workspace
