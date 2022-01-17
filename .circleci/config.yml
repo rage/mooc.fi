@@ -61,7 +61,7 @@ jobs:
           command: "bin/push-docker-frontend-image.sh"
 
   prepare_backend_test:
-    executor: node/default
+    executor: backend_test
     # environment:
     #   DATABASE_URL: postgres://root@localhost/circle_test
     #   DB_HOST: localhost
@@ -71,10 +71,8 @@ jobs:
     #   DB_NAME: circle_test
     #   RUNNING_IN_CI: "true"
     #   NODE_ENV: test
-    working_directory: ~/project/backend
     steps: 
-      - checkout:
-          path: ~/project
+      - checkout
       # - setup_remote_docker:
       #     version: 19.03.13
       - jq/install
@@ -110,16 +108,19 @@ jobs:
       - run:
           name: "Set environment"
           command: |
+            cd backend
             npm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
           command: |
+            cd backend
             npm run generate
       - persist_to_workspace:
-          root: ~/project/backend-test
+          root: .
           paths: 
            - .
+           - backend
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -145,7 +146,7 @@ jobs:
     parallelism: 8
     steps: 
       - attach_workspace:
-          at: ~/project-backend-test
+          at: backend
       - run:
           name: "Debug directory"
           command: |
@@ -195,7 +196,7 @@ jobs:
     executor: backend_test
     steps:
       - attach_workspace:
-          at: ~/project/backend-test
+          at: backend
       - run:
           name: "Upload test results"
           command: |
@@ -216,10 +217,9 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - persist_to_workspace:
-          root: ~/project/backend-build
+          root: .
           paths:
             - .
-            - backend
 
   push_backend:
     executor: backend_build
@@ -227,7 +227,7 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
-          at: ~/project/backend-build
+          at: .
       - run:
           name: "Debug directory"
           command: |
