@@ -274,10 +274,10 @@ workflows:
     jobs:
       - code_style
       - build_frontend
-      - prepare_backend
+      - prepare_backend_test
       - test_backend:
           requires:
-            - prepare_backend
+            - prepare_backend_test
       - upload_backend_test_results:
           requires: 
             - test_backend
