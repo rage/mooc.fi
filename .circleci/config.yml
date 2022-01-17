@@ -150,6 +150,7 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
+    working_directory: ~/project/test-workspace
     steps: 
       - attach_workspace:
           at: ~/project/test-workspace
