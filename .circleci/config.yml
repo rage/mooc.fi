@@ -60,15 +60,6 @@ jobs:
           name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
 
-  prepare:
-    executor: backend_test
-    steps:
-      - run: 
-          name: "Create workspace directories"
-          command: |
-            mkdir -p ~/project/test-workspace
-            mkdir -p ~/project/build-workspace
-
   prepare_backend_test:
     executor: backend_test
     # environment:
@@ -149,6 +140,7 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
+      JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
     parallelism: 8
     working_directory: ~/project/test-workspace/backend
     steps: 
@@ -177,23 +169,23 @@ jobs:
             echo $CIRCLE_NODE_INDEX
             echo ${CIRCLE_NODE_INDEX}
       - run:
+          name: "Create coverage directories"
+          command: mkdir -p ~/project/test-workspace/coverage/{junit,jest}
+      - run:
           name: "Run tests"
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ~/project/test-workspace/backend/coverage/junit/
           command: |
-            mkdir -p ~/project/test-workspace/backend/coverage/{junit,jest}
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
       - store_test_results:
-          path: ~/project/test-workspace/backend/coverage/junit/
+          path: ~/project/test-workspace/coverage/junit/
       - store_artifacts:
-          path: ~/project/test-workspace/backend/coverage/junit/
+          path: ~/project/test-workspace/coverage/junit/
       - store_artifacts:
-          path: ~/project/test-workspace/backend/coverage/jest
+          path: ~/project/test-workspace/coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: ~/project/test-workspace/backend
+          root: ~/project/test-workspace
           paths:
             - coverage
       # - run:
@@ -202,7 +194,7 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
-    working_directory: ~/project/test-workspace/backend
+    working_directory: ~/project/test-workspace/coverage
     steps:
       - attach_workspace:
           at: ~/project/test-workspace
@@ -287,9 +279,7 @@ workflows:
       - code_style
       - build_frontend
       - prepare
-      - prepare_backend_test:
-          requires:
-            - prepare
+      - prepare_backend_test
       - test_backend:
           requires:
             - prepare_backend_test
