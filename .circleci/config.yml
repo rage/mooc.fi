@@ -24,13 +24,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-root-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
             - node-root-{{ .Branch }}
       - run:
           name: "Install dependencies"
-          command: "npm ci"
+          command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
       - save_cache:
-          key: node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: node-root-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
       - run:
@@ -92,14 +92,14 @@ jobs:
             psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - restore_cache:
           keys:
-            - node-backend-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
             - node-backend-{{ .Branch }}
             - node-backend
       - run:
           name: "Install dependencies"
-          command: npm ci
+          command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
       - save_cache:
-          key: node-backend-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
       - run:
