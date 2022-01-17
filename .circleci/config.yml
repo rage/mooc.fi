@@ -278,7 +278,6 @@ workflows:
     jobs:
       - code_style
       - build_frontend
-      - prepare
       - prepare_backend_test
       - test_backend:
           requires:
