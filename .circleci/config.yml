@@ -61,16 +61,16 @@ jobs:
           command: "bin/push-docker-frontend-image.sh"
 
   prepare_backend_test:
-    executor: backend_test
-    environment:
-      DATABASE_URL: postgres://root@localhost/circle_test
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: root
-      DB_PASSWORD: ""
-      DB_NAME: circle_test
-      RUNNING_IN_CI: "true"
-      NODE_ENV: test
+    executor: node/default
+    # environment:
+    #   DATABASE_URL: postgres://root@localhost/circle_test
+    #   DB_HOST: localhost
+    #   DB_PORT: 5432
+    #   DB_USER: root
+    #   DB_PASSWORD: ""
+    #   DB_NAME: circle_test
+    #   RUNNING_IN_CI: "true"
+    #   NODE_ENV: test
     working_directory: ~/project/backend
     steps: 
       - checkout:
@@ -106,6 +106,7 @@ jobs:
       #     key: node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
       #     paths:
       #       - node_modules
+      - run: mkdir -p ~/project/backend-test
       - run:
           name: "Set environment"
           command: |
@@ -116,10 +117,9 @@ jobs:
           command: |
             npm run generate
       - persist_to_workspace:
-          root: ~/project
+          root: ~/project/backend-test
           paths: 
            - .
-           - backend
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -143,10 +143,9 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
-    working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: .
+          at: ~/project-backend-test
       - run:
           name: "Debug directory"
           command: |
@@ -185,7 +184,7 @@ jobs:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: ~/project/backend
+          root: ~/project/backend-test
           paths:
             - coverage
       # - run:
@@ -194,10 +193,9 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
-    working_directory: ~/project/backend
     steps:
       - attach_workspace:
-          at: ~/project/backend
+          at: ~/project/backend-test
       - run:
           name: "Upload test results"
           command: |
@@ -218,7 +216,7 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - persist_to_workspace:
-          root: ~/project
+          root: ~/project/backend-build
           paths:
             - .
             - backend
@@ -229,7 +227,7 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
-          at: .
+          at: ~/project/backend-build
       - run:
           name: "Debug directory"
           command: |
@@ -276,10 +274,10 @@ workflows:
     jobs:
       - code_style
       - build_frontend
-      - prepare_backend_test
+      - prepare_backend
       - test_backend:
           requires:
-            - prepare_backend_test
+            - prepare_backend
       - upload_backend_test_results:
           requires: 
             - test_backend
