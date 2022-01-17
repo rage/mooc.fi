@@ -3,6 +3,7 @@ orbs:
   helm: circleci/helm@1.1.2
   docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
+  node: cirlceci/node@5.0.0
 executors:
   backend_test: 
     docker:
