@@ -80,18 +80,18 @@ jobs:
       - jq/install
       # - docker/install-docker-tools:
       #     docker-compose-version: 1.29.2
-      - run:
-          name: "Install psql client"
-          command: |
-            sudo apt-get update
-            sudo apt-get install postgresql-client 
-      - run:
-          name: "Wait for database"
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: "Create extensions"
-          command: | 
-            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+      # - run:
+      #     name: "Install psql client"
+      #     command: |
+      #       sudo apt-get update
+      #       sudo apt-get install postgresql-client 
+      # - run:
+      #     name: "Wait for database"
+      #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      # - run:
+      #     name: "Create extensions"
+      #     command: | 
+      #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - node/install-packages
       # - restore_cache:
       #     keys:
@@ -144,6 +144,18 @@ jobs:
     steps: 
       - attach_workspace:
           at: .
+      - run:
+          name: "Install psql client"
+          command: |
+            sudo apt-get update
+            sudo apt-get install postgresql-client 
+      - run:
+          name: "Wait for database"
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: "Create extensions"
+          command: | 
+            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - run:
           name: "Debug"
           command: |
