@@ -157,15 +157,15 @@ jobs:
       - run:
           name: "Run tests"
           environment:
-            JEST_JUNIT_OUTPUT_DIR: ~/project/backend/coverage/junit/
+            JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
           command: |
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci $TEST
       - store_test_results:
-          path: ~/project/backend/coverage/junit/
+          path: ./coverage/junit/
       - store_artifacts:
-          path: ~/project/backend/coverage/jest
+          path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
           root: .
