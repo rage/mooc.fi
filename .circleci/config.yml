@@ -3,23 +3,38 @@ orbs:
   helm: circleci/helm@1.1.2
   docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
+  node: circleci/node@5.0.0
+executors:
+  backend_test: 
+    docker:
+      - image: cimg/node:14.18.3
+      - image: cimg/postgres:11.13
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+          POSTGRES_PASSWORD: ""
+  backend_build:
+    docker:
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
+
 jobs:
   code_style:
     docker:
       - image: circleci/node:14
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-root-{{ .Branch }}
-      - run:
-          name: "Install dependencies"
-          command: "npm ci"
-      - save_cache:
-          key: node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
+      - node/install-packages
+      # - restore_cache:
+      #     keys:
+      #       - node-root-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      #       - node-root-{{ .Branch }}
+      # - run:
+      #     name: "Install dependencies"
+      #     command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
+      # - save_cache:
+      #     key: node-root-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      #     paths:
+      #       - node_modules
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
@@ -45,31 +60,8 @@ jobs:
           name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
 
-  build_backend:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 19.03.13
-      - jq/install
-      - docker/install-docker-tools:
-          docker-compose-version: 1.29.2
-      - run:
-          name: "Build backend image"
-          command: "bin/build-docker-backend.sh"
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-backend-image.sh"
-
-  test_backend:
-    docker:
-      - image: cimg/node:14.18.3 # eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-      - image: cimg/postgres:11.13
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle_test
-          POSTGRES_PASSWORD: ""
+  prepare_backend_test:
+    executor: backend_test
     environment:
       DATABASE_URL: postgres://root@localhost/circle_test
       DB_HOST: localhost
@@ -79,14 +71,15 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-    parallelism: 4
+    working_directory: ~/project/backend
     steps: 
-      - checkout
-      - setup_remote_docker:
-          version: 19.03.13
+      - checkout:
+          path: ~/project
+      # - setup_remote_docker:
+      #     version: 19.03.13
       - jq/install
-      - docker/install-docker-tools:
-          docker-compose-version: 1.29.2
+      # - docker/install-docker-tools:
+      #     docker-compose-version: 1.29.2
       - run:
           name: "Install psql client"
           command: |
@@ -99,50 +92,131 @@ jobs:
           name: "Create extensions"
           command: | 
             psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
-      - restore_cache:
-          keys:
-            - node-backend-{{ .Branch }}-{{ checksum "backend/package-lock.json" }}
-            - node-backend-{{ .Branch }}
-            - node-backend
-      - run:
-          name: "Install dependencies"
-          command: |
-            cd backend
-            npm ci
-            cd ..
-      - save_cache:
-          key: node-backend-{{ .Branch }}-{{ checksum "backend/package-lock.json" }}
-          paths:
-            - backend/node_modules
+      - node/install-packages
+      # - restore_cache:
+      #     keys:
+      #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      #       - node-backend-{{ .Branch }}
+      #       - node-backend
+      # - run:
+      #     name: "Install dependencies"
+      #     command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
+      # - save_cache:
+      #     key: node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      #     paths:
+      #       - node_modules
       - run:
           name: "Set environment"
           command: |
-            cd backend
             npm run download-env
             cp .env.example .env
-            cd ..
       - run:
           name: "Set up Prisma"
+          command: npm run generate
+      - persist_to_workspace:
+          root: .
+          paths: 
+           - .
+
+ # trying to get the test reports from parallel runs to be aggregated
+  # - most likely just output to json, then create just one big json from it
+  # - then create lcov and junit reports from it
+  test_backend:
+    executor: backend_test
+    # docker:
+    #   - image: cimg/node:14.18.3 # eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    #   - image: cimg/postgres:11.13
+    #     environment:
+    #       POSTGRES_USER: root
+    #       POSTGRES_DB: circle_test
+    #       POSTGRES_PASSWORD: ""
+    environment:
+      DATABASE_URL: postgres://root@localhost/circle_test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_NAME: circle_test
+      RUNNING_IN_CI: "true"
+      NODE_ENV: test
+    parallelism: 4
+    working_directory: ~/project/backend
+    steps: 
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Debug"
           command: |
-            cd backend
-            npm run generate
-            cd ..
+            pwd
+            ls -la
+            ls node_modules
+            cat package.json
+      - run:
+          name: "Parallel #"
+          command: |
+            echo $CIRCLE_NODE_INDEX
+            echo ${CIRCLE_NODE_INDEX}
       - run:
           name: "Run tests"
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
           command: |
-            cd backend
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
-            npm run test:ci $TEST
-            cd ..
+            echo $TEST
+            npm run test:ci -- $TEST
       - store_test_results:
-          path: ~/project/backend/coverage/junit/
+          path: ./coverage/junit/
       - store_artifacts:
-          path: ~/project/backend/coverage/jest
+          path: ./coverage/jest
           destination: backend-tests
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      # - run:
+      #     name: "Upload coverage"
+      #     command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
+
+  upload_backend_test_results:
+    executor: backend_test
+    steps:
+      - attach_workspace:
+          at: .
       - run:
-          name: "Upload coverage"
-          command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
-               
+          name: "Upload test results"
+          command: |
+            ls -la
+  
+  build_backend:
+    executor: backend_build
+    #docker:
+    #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - jq/install
+      # - docker/install-docker-tools:
+      #     docker-compose-version: 1.29.2
+      - run:
+          name: "Build backend image"
+          command: "bin/build-docker-backend.sh"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  push_backend:
+    executor: backend_build
+    #docker:
+    #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Push image if on master/staging"
+          command: "bin/push-docker-backend-image.sh"
+
   build_auth:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
@@ -178,23 +252,28 @@ workflows:
   version: 2
   build-deploy:
     jobs:
+      - code_style
       - build_frontend
-      - test_backend
-      - build_backend:
+      - prepare_backend_test
+      - test_backend:
+          requires:
+            - prepare_backend_test
+      - upload_backend_test_results:
+          requires: 
+            - test_backend
+      - build_backend
+      - push_backend:
           requires:
             - test_backend
-          filters:
-            branches:
-              only: 
-                - master
-                - staging
+            - build_backend
       - build_auth
-      - code_style
       - deploy_to_production:
           requires:
             - build_frontend
             - test_backend
+            - upload_backend_test_results
             - build_backend
+            - push_backend
             - build_auth
             - code_style
           filters:
