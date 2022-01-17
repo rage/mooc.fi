@@ -142,11 +142,22 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: "Debug"
+          command: |
+            pwd
+            ls -la
+      - run:
+          name: "Parallel #"
+          command: |
+            echo $CIRCLE_NODE_INDEX
+            echo ${CIRCLE_NODE_INDEX}
+      - run:
           name: "Run tests"
           environment:
             JEST_JUNIT_OUTPUT_DIR: ~/project/backend/coverage/junit/
           command: |
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
+            echo $TEST
             npm run test:ci $TEST
       - store_test_results:
           path: ~/project/backend/coverage/junit/
