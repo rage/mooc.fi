@@ -116,7 +116,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/backend-tests
           paths: 
-           - ..
+           - .
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -212,7 +212,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/backend-build
           paths:
-            - ~/project
+            - .
 
   push_backend:
     executor: backend_build
