@@ -149,6 +149,8 @@ jobs:
           command: |
             pwd
             ls -la
+            ls node_modules
+            cat package.json
       - run:
           name: "Parallel #"
           command: |
