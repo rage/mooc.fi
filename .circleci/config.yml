@@ -144,7 +144,12 @@ jobs:
     working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: /tmp/backend-tests
+          at: /tmp/backend-tests/backend
+      - run:
+          name: "Debug directory"
+          command: |
+            pwd
+            ls -la
       - run:
           name: "Install psql client"
           command: |
@@ -223,6 +228,11 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/backend-build
+      - run:
+          name: "Debug directory"
+          command: |
+            pwd
+            ls -la
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
