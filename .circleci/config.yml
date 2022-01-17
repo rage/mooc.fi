@@ -75,6 +75,7 @@ jobs:
     steps: 
       - checkout:
           path: ~/project
+      - run: mkdir -p /tmp/backend-tests
       # - setup_remote_docker:
       #     version: 19.03.13
       - jq/install
@@ -201,6 +202,7 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - checkout
+      - run: mkdir -p /tmp/backend-build
       - setup_remote_docker:
           version: 19.03.13
       - jq/install
