@@ -13,6 +13,7 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
+    working_directory: ~/project/backend
   backend_build:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
@@ -72,7 +73,8 @@ jobs:
     #   RUNNING_IN_CI: "true"
     #   NODE_ENV: test
     steps: 
-      - checkout
+      - checkout:
+          path: ~/project
       # - setup_remote_docker:
       #     version: 19.03.13
       - jq/install
@@ -90,9 +92,7 @@ jobs:
       #     name: "Create extensions"
       #     command: | 
       #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
-      - node/install-packages:
-          app-dir: ~/project/backend
-          cache-path: ~/project/backend/.npm
+      - node/install-packages
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
@@ -108,18 +108,16 @@ jobs:
       - run:
           name: "Set environment"
           command: |
-            cd backend
             npm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
           command: |
-            cd backend
             npm run generate
       - persist_to_workspace:
           root: .
           paths: 
-           - .
+           - backend
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -143,7 +141,6 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
-    working_directory: ~/project/backend
     steps: 
       - attach_workspace:
           at: backend
@@ -194,7 +191,6 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
-    working_directory: ~/project/backend
     steps:
       - attach_workspace:
           at: backend
