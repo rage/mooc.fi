@@ -92,6 +92,7 @@ jobs:
       #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - node/install-packages:
           app-dir: ~/project/backend
+          cache-path: ~/project/backend/.npm
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
@@ -120,7 +121,6 @@ jobs:
           root: .
           paths: 
            - .
-           - backend
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -144,9 +144,10 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
+    working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: backend
+          at: .
       - run:
           name: "Debug directory"
           command: |
@@ -185,7 +186,7 @@ jobs:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: ~/project/backend-test
+          root: .
           paths:
             - coverage
       # - run:
@@ -194,13 +195,15 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
+    working_directory: ~/project/backend
     steps:
       - attach_workspace:
-          at: backend
+          at: .
       - run:
           name: "Upload test results"
           command: |
             ls -la
+            ls coverage
   
   build_backend:
     executor: backend_build
