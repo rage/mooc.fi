@@ -181,6 +181,7 @@ jobs:
           environment:
             JEST_JUNIT_OUTPUT_DIR: ~/project/test-workspace/backend/coverage/junit/
           command: |
+            mkdir -p ~/project/test-workspace/backend/coverage/{junit,jest}
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
@@ -208,8 +209,8 @@ jobs:
       - run:
           name: "Upload test results"
           command: |
+            pwd
             ls -la
-            ls coverage
   
   build_backend:
     executor: backend_build
@@ -235,6 +236,7 @@ jobs:
     executor: backend_build
     #docker:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    working_directory: ~/project/build-workspace
     steps:
       - attach_workspace:
           at: ~/project/build-workspace
