@@ -144,7 +144,7 @@ jobs:
     working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: /tmp/backend-tests/backend
+          at: /tmp/backend-tests
       - run:
           name: "Debug directory"
           command: |
