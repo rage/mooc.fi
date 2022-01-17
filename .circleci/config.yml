@@ -105,7 +105,6 @@ jobs:
       #     key: node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
       #     paths:
       #       - node_modules
-      - run: mkdir -p ~/project/backend-test
       - run:
           name: "Set environment"
           command: |
@@ -147,7 +146,7 @@ jobs:
     working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: .
+          at: backend
       - run:
           name: "Debug directory"
           command: |
@@ -198,7 +197,7 @@ jobs:
     working_directory: ~/project/backend
     steps:
       - attach_workspace:
-          at: .
+          at: backend
       - run:
           name: "Upload test results"
           command: |
