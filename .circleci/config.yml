@@ -117,7 +117,7 @@ jobs:
           command: |
             npm run generate
       - persist_to_workspace:
-          root: /tmp/backend-tests
+          root: ~/project
           paths: 
            - .
            - backend
@@ -147,7 +147,9 @@ jobs:
     working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: /tmp/backend-tests
+          at: .
+      - attach_workspace:
+          at: ~/project/backend
       - run:
           name: "Debug directory"
           command: |
@@ -186,7 +188,7 @@ jobs:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: /tmp/backend-tests/backend
+          root: ~/project/backend
           paths:
             - coverage
       # - run:
@@ -198,7 +200,9 @@ jobs:
     working_directory: ~/project/backend
     steps:
       - attach_workspace:
-          at: /tmp/backend-tests
+          at: .
+      - attach_workspace:
+          at: ~/project/backend
       - run:
           name: "Upload test results"
           command: |
@@ -220,7 +224,7 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - persist_to_workspace:
-          root: /tmp/backend-build
+          root: ~/projecct
           paths:
             - .
             - backend
@@ -231,7 +235,9 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
-          at: /tmp/backend-build
+          at: .
+      - attach_workspace:
+          at: ~/project/backend
       - run:
           name: "Debug directory"
           command: |
