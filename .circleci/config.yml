@@ -13,9 +13,11 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
+    working_directory: ~/project/test-workspace
   backend_build:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
+    working_directory: ~/project/build-workspace
 
 jobs:
   code_style:
@@ -150,7 +152,7 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
-    working_directory: ~/project/test-workspace
+    working_directory: ~/project/test-workspace/backend
     steps: 
       - attach_workspace:
           at: ~/project/test-workspace
@@ -192,7 +194,7 @@ jobs:
           path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: ~/project/test-workspace
+          root: ~/project/test-workspace/backend
           paths:
             - coverage
       # - run:
@@ -201,6 +203,7 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
+    working_directory: ~/project/test-workspace/backend
     steps:
       - attach_workspace:
           at: ~/project/test-workspace
@@ -214,7 +217,6 @@ jobs:
     executor: backend_build
     #docker:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-    working_directory: ~/project/build-workspace
     steps:
       - checkout
       - setup_remote_docker:
