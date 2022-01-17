@@ -71,9 +71,11 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
+    working_directory: ~/project/backend
     steps: 
-      - checkout
-      - run: mkdir -p /tmp/backend-tests
+      - checkout:
+          path: ~/project
+      - run: mkdir -p /tmp/backend-tests/backend
       # - setup_remote_docker:
       #     version: 19.03.13
       - jq/install
@@ -91,8 +93,8 @@ jobs:
       #     name: "Create extensions"
       #     command: | 
       #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
-      - node/install-packages:
-          app-dir: ./backend
+      - node/install-packages
+      #    app-dir: ./backend
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
@@ -108,18 +110,17 @@ jobs:
       - run:
           name: "Set environment"
           command: |
-            cd backend
             npm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
           command: |
-            cd backend
             npm run generate
       - persist_to_workspace:
           root: /tmp/backend-tests
           paths: 
            - .
+           - backend
 
  # trying to get the test reports from parallel runs to be aggregated
   # - most likely just output to json, then create just one big json from it
@@ -143,7 +144,7 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
-    working_directory: ~/project/backend
+    # working_directory: ~/project/backend
     steps: 
       - attach_workspace:
           at: /tmp/backend-tests/backend
@@ -222,6 +223,7 @@ jobs:
           root: /tmp/backend-build
           paths:
             - .
+            - backend
 
   push_backend:
     executor: backend_build
