@@ -23,19 +23,7 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
-      - run: node --version
       - node/install-packages
-      # - restore_cache:
-      #     keys:
-      #       - node-root-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-      #       - node-root-{{ .Branch }}
-      # - run:
-      #     name: "Install dependencies"
-      #     command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
-      # - save_cache:
-      #     key: node-root-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-      #     paths:
-      #       - node_modules
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
@@ -63,49 +51,12 @@ jobs:
 
   prepare_backend_test:
     executor: backend_test
-    # environment:
-    #   DATABASE_URL: postgres://root@localhost/circle_test
-    #   DB_HOST: localhost
-    #   DB_PORT: 5432
-    #   DB_USER: root
-    #   DB_PASSWORD: ""
-    #   DB_NAME: circle_test
-    #   RUNNING_IN_CI: "true"
-    #   NODE_ENV: test
     working_directory: ~/project/backend
     steps: 
       - checkout:
           path: ~/project
-      # - setup_remote_docker:
-      #     version: 19.03.13
       - jq/install
-      # - docker/install-docker-tools:
-      #     docker-compose-version: 1.29.2
-      # - run:
-      #     name: "Install psql client"
-      #     command: |
-      #       sudo apt-get update
-      #       sudo apt-get install postgresql-client 
-      # - run:
-      #     name: "Wait for database"
-      #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      # - run:
-      #     name: "Create extensions"
-      #     command: | 
-      #       psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - node/install-packages
-      # - restore_cache:
-      #     keys:
-      #       - node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-      #       - node-backend-{{ .Branch }}
-      #       - node-backend
-      # - run:
-      #     name: "Install dependencies"
-      #     command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
-      # - save_cache:
-      #     key: node-backend-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-      #     paths:
-      #       - node_modules
       - run:
           name: "Set environment"
           command: |
@@ -125,13 +76,6 @@ jobs:
   # - then create lcov and junit reports from it
   test_backend:
     executor: backend_test
-    # docker:
-    #   - image: cimg/node:14.18.3 # eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-    #   - image: cimg/postgres:11.13
-    #     environment:
-    #       POSTGRES_USER: root
-    #       POSTGRES_DB: circle_test
-    #       POSTGRES_PASSWORD: ""
     environment:
       DATABASE_URL: postgres://root@localhost/circle_test
       DB_HOST: localhost
@@ -190,22 +134,26 @@ jobs:
       #     name: "Upload coverage"
       #     command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
 
-  upload_backend_test_results:
+  upload_backend_coverage:
     executor: backend_test
     working_directory: ~/project/backend/coverage
     steps:
       - attach_workspace:
-          at: ~/project
+          at: ~/project/backend
       - run:
-          name: "Upload test results"
+          name: "Debug workspace"
+          command: find .
+      - run:
+          name: "Combine coverage"
           command: |
-            pwd
-            ls -la
+            echo "Not implemented yet"
+      - run:
+          name: "Upload coverage"
+          command: |
+            echo "Not implemented yet"
   
   build_backend:
     executor: backend_build
-    #docker:
-    #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - checkout
       - setup_remote_docker:
@@ -230,8 +178,6 @@ jobs:
 
   push_backend:
     executor: backend_build
-    #docker:
-    #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
           at: ~/project
@@ -291,7 +237,7 @@ workflows:
       - test_backend:
           requires:
             - prepare_backend_test
-      - upload_backend_test_results:
+      - upload_backend_coverage:
           requires: 
             - test_backend
       - build_backend
@@ -304,7 +250,7 @@ workflows:
           requires:
             - build_frontend
             - test_backend
-            - upload_backend_test_results
+            - upload_backend_coverage
             - build_backend
             - push_backend
             - build_auth
