@@ -60,6 +60,32 @@ jobs:
           name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
 
+  prepare_backend:
+    executor: backend_build
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - jq/install
+      - node/install-packages:
+          app-dir: ~/project/backend
+          cache-path: ~/project/backend/.npm
+      -  run:
+          name: "Set environment"
+          command: |
+            cd backend
+            npm run download-env
+            cp .env.example .env
+      - run:
+          name: "Set up Prisma"
+          command: |
+            cd backend
+            npm run generate
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
   prepare_backend_test:
     executor: backend_test
     # environment:
@@ -142,10 +168,10 @@ jobs:
       NODE_ENV: test
       JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
     parallelism: 8
-    working_directory: ~/project/test-workspace/backend
+    working_directory: ~/project/backend
     steps: 
       - attach_workspace:
-          at: ~/project/test-workspace
+          at: ~/project
       - run:
           name: "Debug directory"
           command: |
@@ -185,7 +211,7 @@ jobs:
           path: ~/project/test-workspace/coverage/jest
           destination: backend-tests
       - persist_to_workspace:
-          root: ~/project/test-workspace
+          root: ~/project/backend
           paths:
             - coverage
       # - run:
@@ -194,10 +220,10 @@ jobs:
 
   upload_backend_test_results:
     executor: backend_test
-    working_directory: ~/project/test-workspace/coverage
+    working_directory: ~/project/backend/coverage
     steps:
       - attach_workspace:
-          at: ~/project/test-workspace
+          at: ~/project
       - run:
           name: "Upload test results"
           command: |
@@ -208,19 +234,20 @@ jobs:
     executor: backend_build
     #docker:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-    working_directory: ~/project/build-workspace
     steps:
-      - checkout
-      - setup_remote_docker:
-          version: 19.03.13
-      - jq/install
+      - attach_workspace:
+          at: ~/project
+      # - checkout
+      # - setup_remote_docker:
+      #     version: 19.03.13
+      # - jq/install
       # - docker/install-docker-tools:
       #     docker-compose-version: 1.29.2
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - persist_to_workspace:
-          root: ~/project/build-workspace
+          root: .
           paths:
             - .
 
@@ -228,15 +255,19 @@ jobs:
     executor: backend_build
     #docker:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-    working_directory: ~/project/build-workspace
     steps:
       - attach_workspace:
-          at: ~/project/build-workspace
+          at: ~/project
       - run:
           name: "Debug directory"
           command: |
             pwd
             ls -la
+      - run:
+          name: "Remove coverage data"
+          command: |
+            cd backend
+            rm -rf coverage
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
@@ -278,10 +309,12 @@ workflows:
     jobs:
       - code_style
       - build_frontend
-      - prepare_backend_test
+      - prepare_backend
+      #- prepare_backend_test
       - test_backend:
           requires:
-            - prepare_backend_test
+            - prepare_backend
+            #- prepare_backend_test
       - upload_backend_test_results:
           requires: 
             - test_backend
