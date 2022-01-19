@@ -125,7 +125,7 @@ jobs:
       - run:
           name: "Upload coverage"
           command: |
-            curl https://uploader.codecov.io/latest/linux/codecov -os /tmp/codecov
+            curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
             chmod +x /tmp/codecov
             /tmp/codecov -F backend
       #- run:
@@ -222,7 +222,7 @@ jobs:
       - run:
           name: "Upload coverage"
           command: |
-            curl https://uploader.codecov.io/latest/linux/codecov -os /tmp/codecov
+            curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
             chmod +x /tmp/codecov
             cd ~/project/auth
             /tmp/codecov -F auth
