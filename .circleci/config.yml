@@ -4,7 +4,6 @@ orbs:
   docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
   node: circleci/node@5.0.0
-  codecov: codecov/codecov@3.2.2
 executors:
   backend_test: 
     docker:
@@ -131,10 +130,9 @@ jobs:
           root: ~/project/backend
           paths:
             - coverage
-      - codecov/upload
-      # - run:
-      #     name: "Upload coverage"
-      #     command: bash <(curl -s https://codecov.io/bash)"
+      - run:
+          name: "Upload coverage"
+          command: bash <(curl -s https://codecov.io/bash)"
 
   upload_backend_coverage:
     executor: backend_test
