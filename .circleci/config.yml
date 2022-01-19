@@ -124,7 +124,13 @@ jobs:
             - coverage
       - run:
           name: "Upload coverage"
-          command: bash <(curl -s https://codecov.io/bash)
+          command: |
+            curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
+            chmod +x /tmp/codecov
+            /tmp/codecov -F backend
+      #- run:
+      #    name: "Upload coverage"
+      #    command: bash <(curl -s https://codecov.io/bash)
 
   # could combine the artifacts in this step if needed, now the codecov/junit stuff combines automatically
   # upload_backend_coverage:
@@ -215,7 +221,12 @@ jobs:
           destination: auth-tests
       - run:
           name: "Upload coverage"
-          command: "cd ~/project/auth && bash <(curl -s https://codecov.io/bash)"
+          command: |
+            curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
+            chmod +x /tmp/codecov
+            cd ~/project/auth
+            /tmp/codecov -F auth
+          # command: "cd ~/project/auth && bash <(curl -s https://codecov.io/bash)"
       - run:
           name: "Push image if on master"
           command: "bin/push-docker-auth-image.sh"  
