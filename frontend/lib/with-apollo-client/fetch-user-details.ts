@@ -1,5 +1,6 @@
-import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client"
 import { VerifiedUsersFragment } from "/graphql/fragments/verifiedUsersFragment"
+
+import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client"
 
 export const UserDetailQuery = gql`
   query UserOverView {

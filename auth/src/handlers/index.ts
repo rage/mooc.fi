@@ -5,8 +5,9 @@ import { signInHandler } from "./signIn"
 import { signUpHandler } from "./signUp"
 
 export type HandlerAction = "sign-in" | "sign-up" | "connect"
+export type Handlers = Record<HandlerAction, AuthenticationHandlerCallback>
 
-export const handlers: Record<HandlerAction, AuthenticationHandlerCallback> = {
+export const handlers: Handlers = {
   "sign-in": signInHandler,
   "sign-up": signUpHandler,
   connect: connectHandler,

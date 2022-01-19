@@ -1,8 +1,9 @@
 import React, { useContext } from "react"
+
 import { RegularContainer } from "/components/Container"
 import SignUpError from "/components/SignUp/SignUpError"
-import { useQueryParameter } from "/util/useQueryParameter"
 import LoginStateContext from "/contexts/LoginStateContext"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 function SignUpErrorPage() {
   const type = useQueryParameter("type", false)
@@ -10,7 +11,6 @@ function SignUpErrorPage() {
 
   const { currentUser } = useContext(LoginStateContext)
 
-  console.log("type", type)
   return (
     <div>
       <RegularContainer>

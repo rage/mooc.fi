@@ -39,8 +39,8 @@ class MyDocument extends Document {
 
       // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
       styles: [
-        ...emotionStyleTags,
         ...React.Children.toArray(initialProps.styles),
+        ...emotionStyleTags,
         sheets.getStyleElement(),
       ],
     }
