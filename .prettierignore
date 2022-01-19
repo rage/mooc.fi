@@ -4,3 +4,4 @@ __generated__
 node_modules
 .next
 sourcemap
+backend/coverage
