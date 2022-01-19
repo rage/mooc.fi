@@ -170,20 +170,17 @@ jobs:
             echo $CIRCLE_NODE_INDEX
             echo ${CIRCLE_NODE_INDEX}
       - run:
-          name: "Create coverage directories"
-          command: mkdir -p ~/project/test-workspace/coverage/{junit,jest}
-      - run:
           name: "Run tests"
           command: |
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
       - store_test_results:
-          path: ~/project/test-workspace/coverage/junit/
+          path: ./coverage/junit/
       - store_artifacts:
-          path: ~/project/test-workspace/coverage/junit/
+          path: ./coverage/junit/
       - store_artifacts:
-          path: ~/project/test-workspace/coverage/jest
+          path: ./coverage/jest
           destination: backend-tests
       - persist_to_workspace:
           root: ~/project/backend
@@ -237,6 +234,8 @@ jobs:
     steps:
       - attach_workspace:
           at: moocfi-backend.tar.gz
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: "Debug directory"
           command: |
