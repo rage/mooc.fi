@@ -2,19 +2,22 @@ import { Request, Response } from "express"
 
 import { AccessToken, AuthorizationCode, Client, User } from "@prisma/client"
 
+import {
+  BACKEND_URL,
+  isProduction,
+  PRIVATE_KEY,
+  PRIVATE_KEY_TEST,
+} from "../config"
 import { authenticateUser } from "../services/tmc"
 import { argon2Hash } from "../util/hashPassword"
 import { throttle } from "../util/throttle"
 import { requireAuth } from "../util/validateAuth"
 import { ApiContext } from "./"
 
-const isProduction = process.env.NODE_ENV === "production"
-const BACKEND_URL = process.env.BACKEND_URL ?? "https://mooc.fi"
-
 const fs = require("fs")
 const privateKey = isProduction
-  ? process.env.PRIVATE_KEY
-  : fs.readFileSync(process.env.PRIVATE_KEY_TEST)
+  ? PRIVATE_KEY
+  : fs.readFileSync(PRIVATE_KEY_TEST)
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")

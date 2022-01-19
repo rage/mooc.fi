@@ -1,7 +1,9 @@
+import { plugin } from "nexus"
+
+import { isProduction } from "../config"
+import { Context } from "../context"
 // import { log } from "nexus"
 import { Sentry } from "../services/sentry"
-import { Context } from "../context"
-import { plugin } from "nexus"
 
 export const sentryPlugin = () =>
   plugin({
@@ -19,7 +21,7 @@ export const sentryPlugin = () =>
 
           return result
         } catch (error) {
-          if (process.env.NODE_ENV === "production") {
+          if (isProduction) {
             Sentry.withScope((scope) => {
               scope.setFingerprint(["{{ default }}", config.fieldConfig.name])
               scope.setExtra("type", config.parentTypeConfig.name)

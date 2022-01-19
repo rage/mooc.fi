@@ -5,4 +5,4 @@ node_modules
 build
 .env
 .env.dev
-coverage/
+coverage/*

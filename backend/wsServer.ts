@@ -1,12 +1,10 @@
 import { createServer } from "http"
 import * as WebSocketServer from "websocket"
 
+import { isTest, NEXUS_REFLECTION } from "./config"
 import { UserInfo } from "./domain/UserInfo"
 import redisClient from "./services/redis"
 import { getCurrentUserDetails } from "./services/tmc"
-
-const NEXUS_REFLECTION = process.env.NEXUS_REFLECTION
-const TEST = process.env.NODE_ENV === "test"
 
 const webSocketsServerPort = 9000
 
@@ -106,7 +104,7 @@ wsServer.on("request", (request: any) => {
 })
 
 const createSubscriber = async () => {
-  if (!redisClient && !TEST && !NEXUS_REFLECTION) {
+  if (!redisClient && !isTest && !NEXUS_REFLECTION) {
     let tries = 0
 
     console.log(

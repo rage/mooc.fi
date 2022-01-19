@@ -2,6 +2,7 @@ import { DateTime } from "luxon"
 
 import { PrismaClient, UserCourseSetting } from "@prisma/client"
 
+import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
@@ -10,11 +11,7 @@ import { notEmpty } from "../util/notEmpty"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-const CONFIG_NAME = process.env.CONFIG_NAME ?? "userAppDatum"
+const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 
 let course
 let old: UserCourseSetting
@@ -26,7 +23,7 @@ const fetchUserAppDatum = async () => {
   const tmc = new TmcClient()
 
   const existingConfig = await prisma.userAppDatumConfig.findFirst({
-    where: { name: CONFIG_NAME },
+    where: { name: USER_APP_DATUM_CONFIG_NAME },
   })
   const latestTimeStamp = existingConfig?.timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
 

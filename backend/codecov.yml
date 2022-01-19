@@ -7,6 +7,6 @@ coverage:
       default:
         informational: true
 ignore:
-  - "*/tests/**/*"
-  - "*/__test__/**/*"
+  - "tests/**/*"
+  - "__test__/**/*"
   - "__mocks__/**/*"

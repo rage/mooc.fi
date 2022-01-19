@@ -1,16 +1,13 @@
+import { AI_SLACK_URL } from "../config"
 import prisma from "../prisma"
 import Knex from "../services/knex"
 import sentryLogger from "./lib/logger"
 import SlackPoster from "./lib/slackPoster"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
 const logger = sentryLogger({ service: "send-ai-statistics" })
 const slackPoster: SlackPoster = new SlackPoster(logger)
 
-const url: string | undefined = process.env.AI_SLACK_URL
+const url: string | undefined = AI_SLACK_URL
 
 if (!url) {
   throw "no AI_SLACK_URL env variable"

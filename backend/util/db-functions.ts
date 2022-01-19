@@ -1,6 +1,10 @@
-import { notEmpty } from "./notEmpty"
-import { isNullOrUndefined } from "./isNullOrUndefined"
+import { Knex } from "knex"
+
 import { Prisma } from "@prisma/client"
+
+import { CIRCLECI } from "../config"
+import { isNullOrUndefined } from "./isNullOrUndefined"
+import { notEmpty } from "./notEmpty"
 
 const flatten = (arr: any[]) => arr.reduce((acc, val) => acc.concat(val), [])
 const titleCase = (s?: string) =>
@@ -120,3 +124,29 @@ export const convertUpdate = <T extends object>(input: {
     }),
     {},
   )
+
+export const createUUIDExtension = async (knex: Knex) => {
+  if (CIRCLECI) {
+    return
+  }
+
+  try {
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
+    )
+  } catch (error) {
+    console.warn(
+      "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
+      error,
+    )
+  }
+
+  try {
+    // if uuid-ossp already exists, but in another schema
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
+    await knex.raw(`ALTER EXTENSION "uuid-ossp" SET SCHEMA "extensions";`)
+  } catch {
+    // we can probably ignore this
+  }
+}

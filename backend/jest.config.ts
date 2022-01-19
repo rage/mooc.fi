@@ -30,7 +30,8 @@ export default {
     "/node_modules/",
     "/generated/",
     "/migrations/",
-    "/test/",
+    "<rootDir>/test",
+    "__test__",
   ],
 
   // Indicates which provider should be used to instrument code for coverage

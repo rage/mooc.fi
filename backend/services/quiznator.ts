@@ -1,10 +1,12 @@
+import { QUIZNATOR_HOST, QUIZNATOR_TOKEN } from "../config"
+
 const axios = require("axios")
 
 async function getPassedUsernamesByTag(tag: string) {
   const res = await axios.get(
-    `${process.env.QUIZNATOR_HOST}/api/v1/course-state/completed?courseIds=${tag}`,
+    `${QUIZNATOR_HOST}/api/v1/course-state/completed?courseIds=${tag}`,
     {
-      headers: { Authorization: "Bearer " + process.env.QUIZNATOR_TOKEN },
+      headers: { Authorization: "Bearer " + QUIZNATOR_TOKEN },
     },
   )
   const usernames = res.data

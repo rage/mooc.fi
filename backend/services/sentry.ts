@@ -1,15 +1,14 @@
-import rootdir from "../root"
-
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import * as Sentry from "@sentry/node"
-import { RewriteFrames } from "@sentry/integrations"
 import * as path from "path"
 
+import { RewriteFrames } from "@sentry/integrations"
+import * as Sentry from "@sentry/node"
+
+import { GIT_COMMIT, SENTRY_DSN } from "../config"
+import rootdir from "../root"
+
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  release: `moocfi-backend@${process.env.GIT_COMMIT}`,
+  dsn: SENTRY_DSN,
+  release: `moocfi-backend@${GIT_COMMIT}`,
   beforeBreadcrumb(breadcrumb, _hint) {
     if (breadcrumb.type === "http") {
       if (
