@@ -16,6 +16,7 @@ executors:
   backend_build:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
+      - image: cimg/node:14.18.3
 
 jobs:
   code_style:
@@ -23,6 +24,7 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
+      - run: node --version
       - node/install-packages
       # - restore_cache:
       #     keys:
