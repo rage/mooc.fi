@@ -81,7 +81,8 @@ jobs:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.13
       - jq/install
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
@@ -102,6 +103,9 @@ jobs:
       - store_artifacts:
           path: ~/project/auth/coverage/jest
           destination: auth-tests
+      - run:
+          name: "Upload coverage"
+          command: "cd ~/project/auth && bash <(curl -s https://codecov.io/bash)"
       - run:
           name: "Push image if on master"
           command: "bin/push-docker-auth-image.sh"  
