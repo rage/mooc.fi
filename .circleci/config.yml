@@ -134,23 +134,23 @@ jobs:
           name: "Upload coverage"
           command: bash <(curl -s https://codecov.io/bash)
 
-  upload_backend_coverage:
-    executor: backend_test
-    working_directory: ~/project/backend/coverage
-    steps:
-      - attach_workspace:
-          at: ~/project/backend
-      - run:
-          name: "Debug workspace"
-          command: find .
-      - run:
-          name: "Combine coverage"
-          command: |
-            echo "Not implemented yet"
-      - run:
-          name: "Upload coverage"
-          command: |
-            echo "Not implemented yet"
+  # upload_backend_coverage:
+  #   executor: backend_test
+  #   working_directory: ~/project/backend/coverage
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/project/backend
+  #     - run:
+  #         name: "Debug workspace"
+  #         command: find .
+  #     - run:
+  #         name: "Combine coverage"
+  #         command: |
+  #           echo "Not implemented yet"
+  #     - run:
+  #         name: "Upload coverage"
+  #         command: |
+  #           echo "Not implemented yet"
   
   build_backend:
     executor: backend_build
@@ -237,9 +237,9 @@ workflows:
       - test_backend:
           requires:
             - prepare_backend_test
-      - upload_backend_coverage:
-          requires: 
-            - test_backend
+      #- upload_backend_coverage:
+      #    requires: 
+      #      - test_backend
       - build_backend
       - push_backend:
           requires:
@@ -250,7 +250,7 @@ workflows:
           requires:
             - build_frontend
             - test_backend
-            - upload_backend_coverage
+            #- upload_backend_coverage
             - build_backend
             - push_backend
             - build_auth

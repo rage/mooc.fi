@@ -31,6 +31,7 @@ export default {
     "/generated/",
     "/migrations/",
     "/test/",
+    "**/__test__/",
   ],
 
   // Indicates which provider should be used to instrument code for coverage
