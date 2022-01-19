@@ -98,11 +98,9 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
 
     const courseMutation = newCourse ? addCourse : updateCourse
 
-    console.log("would mutate", mutationVariables)
     try {
       setStatus({ message: t("statusSaving") })
 
-      console.log("trying to save")
       await courseMutation({
         variables: { course: mutationVariables },
         refetchQueries: () => refetchQueries,

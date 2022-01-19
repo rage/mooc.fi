@@ -7,7 +7,6 @@ import { FileKeyInfo, SignedXml, xpath } from "xml-crypto"
 import { DOMParser } from "@xmldom/xmldom"
 
 import { MOOCFI_PRIVATE_KEY, SP_URL } from "../config"
-import { CERTS_DIR, METADATA_DIR, MetadataConfig } from "./config"
 
 type IpConfig = Pick<
   SamlConfig,
@@ -21,6 +20,34 @@ type SpConfig = Omit<
 
 const isError = (err: unknown): err is Error => err instanceof Error
 const getErrorMessage = (err: unknown) => (isError(err) ? err.message : err)
+
+export type MetadataConfig = {
+  name: string
+  metadataURL: string
+  certURL: string
+  metadataFile: string
+  certFile: string
+}
+
+export const METADATA_DIR = __dirname + "/../../metadata"
+export const CERTS_DIR = __dirname + "/../../certs"
+
+const getCertFilename = (filename: string) =>
+  filename.match(/^.*\/(.*\.(crt|key|pem))(.*)?$/)?.[1]
+const getMetadataFilename = (filename: string) =>
+  filename.match(/^.*\/(.*\.xml)$/)?.[1]
+
+export const createMetadataConfig = (
+  name: string,
+  metadataURL: string,
+  certURL: string,
+): MetadataConfig => ({
+  name,
+  metadataURL,
+  certURL,
+  metadataFile: `${METADATA_DIR}/${getMetadataFilename(metadataURL)}`,
+  certFile: `${CERTS_DIR}/${getCertFilename(certURL)}`,
+})
 
 const ensureDirectories = () => {
   for (const dir of [METADATA_DIR, CERTS_DIR]) {

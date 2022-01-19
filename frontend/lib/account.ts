@@ -155,7 +155,7 @@ export const getUserDetails = async (
   const res = await axios.get(
     `${TMC_HOST}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
     {
-      headers: { Authorization: accessToken },
+      headers: { Authorization: `Bearer ${accessToken}` },
     },
   )
 
