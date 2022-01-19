@@ -2,24 +2,32 @@ import { NextFunction, Request, RequestHandler, Response } from "express"
 import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
-import { SamlStrategyType } from "../saml"
-import { decodeRelayState } from "../util"
-import { HandlerAction, handlers } from "./"
+import { StrategyName } from "../saml"
+import { decodeRelayState, parseDescriptionFromSamlError } from "../util"
+import { HandlerAction } from "./"
 
+export type AuthenticationHandler = (
+  err: any,
+  user: Profile | undefined,
+) => Promise<void> | void
 export type AuthenticationHandlerCallback = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => (err: any, user: Profile) => Promise<void> | void
+) => AuthenticationHandler
 
-type CallbackHandler = (strategyName?: SamlStrategyType) => RequestHandler
-export const createCallbackHandler: CallbackHandler =
-  (strategyName: SamlStrategyType = "hy-haka") =>
+type CallbackHandler = (strategyName: StrategyName) => RequestHandler
+
+export const createCallbackHandler =
+  (
+    handlers: Record<HandlerAction, AuthenticationHandlerCallback>,
+  ): CallbackHandler =>
+  (strategyName: StrategyName) =>
   (req, res, next) => {
     const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
     const decodedRelayState = decodeRelayState(req) ?? {
       action: req.params.action || req.query.action, // TODO: this might be dangerous
-      provider: req.params.provider || req.query.provider,
+      provider: strategyName, // req.params.provider || req.query.provider,
       language: ((req.query.language || req.params.language) as string) ?? "en",
     }
 
@@ -39,7 +47,16 @@ export const createCallbackHandler: CallbackHandler =
           RelayState:
             relayState ?? JSON.stringify({ language, provider, action }),
         },
+        session: false,
       } as AuthenticateOptions,
-      handlers[action as HandlerAction](req, res, next),
+      (err, user?: Profile) => {
+        if (err || !user) {
+          const description = parseDescriptionFromSamlError(err, req)
+          debug.error(`SAML authentication failed: ${description}, ${err}`)
+        }
+
+        return handlers[action as HandlerAction](req, res, next)(err, user)
+      },
+      // handlers[action as HandlerAction](req, res, next),
     )(req, res, next)
   }

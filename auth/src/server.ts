@@ -1,29 +1,30 @@
 import cors from "cors"
-import express, { CookieOptions, Router, urlencoded } from "express"
+import express, { CookieOptions, Express } from "express"
+import { Server } from "http"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
 
 import {
   DOMAIN,
-  PASSPORT_STRATEGY,
+  isProduction,
+  isTest,
   PORT,
   SHIBBOLETH_HEADERS,
-  SP_PATH,
-  USE_MULTISAML,
 } from "./config"
-import { createCallbackHandler, metadataHandler } from "./handlers/index"
-import { getPassportConfig } from "./metadata"
-import { metadataConfig } from "./metadata/config"
-import { createSamlStrategy } from "./saml"
-import { createRouter } from "./saml/common"
-import { HakaStrategy } from "./saml/haka"
-import { HyStrategy } from "./saml/hy"
+import { handlers } from "./handlers"
+import { createRouter, HakaStrategy, HyStrategy } from "./saml"
 import { setLocalCookiesMiddleware } from "./util"
 
-const isProduction = process.env.NODE_ENV === "production"
+global.debug = {} as typeof console
+if (process.env.NODE_ENV !== "production") {
+  Object.setPrototypeOf(debug, console)
+}
 
-async function createApp() {
+export default async function createApp(): Promise<{
+  app: Express
+  server: Server
+}> {
   const app = express()
 
   app.set("port", PORT)
@@ -55,29 +56,9 @@ async function createApp() {
   app.use(setLocalCookiesMiddleware)
   app.use(passport.initialize())
 
-  const passportConfig = {
-    hy: await getPassportConfig(metadataConfig["hy"]),
-    haka: await getPassportConfig(metadataConfig["haka"]),
-  }
-
-  if (USE_MULTISAML) {
-    const strategy = createSamlStrategy(passportConfig)
-    passport.use(PASSPORT_STRATEGY, strategy)
-
-    const callbackHandler = createCallbackHandler()
-    const router = Router()
-      .get("/:action/:provider", callbackHandler)
-      .post(
-        "/callbacks/:provider",
-        urlencoded({ extended: false }),
-        callbackHandler,
-      )
-      .get("/:action/:provider/metadata", metadataHandler(strategy))
-
-    app.use(SP_PATH, router)
-  } else {
-    const hyStrategy = new HyStrategy(passportConfig["hy"]).getStrategy()
-    const hakaStrategy = new HakaStrategy(passportConfig["haka"]).getStrategy()
+  if (!isTest) {
+    const hyStrategy = (await HyStrategy.initialize()).instance
+    const hakaStrategy = (await HakaStrategy.initialize()).instance
 
     passport.use("hy", hyStrategy)
     passport.use("haka", hakaStrategy)
@@ -85,10 +66,12 @@ async function createApp() {
     const hyRouter = createRouter({
       strategyName: "hy",
       strategy: hyStrategy,
+      handlers,
     })
     const hakaRouter = createRouter({
       strategyName: "haka",
       strategy: hakaStrategy,
+      handlers,
     })
 
     app.use(hyRouter)
@@ -105,11 +88,13 @@ async function createApp() {
     return done(null, user as any)
   })
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Listening at port ${PORT}`)
   })
 
-  return app
+  return { app, server }
 }
 
-createApp()
+if (!isTest) {
+  createApp()
+}

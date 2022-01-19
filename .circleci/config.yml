@@ -86,8 +86,22 @@ jobs:
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
       - run:
+          name: "Install deps for tests"
+          command: |
+            cd auth
+            npm ci
+            cd ..
+      - run:
+          name: "Tests"
+          command: "bin/run-auth-tests.sh"
+      - run:
           name: "Build image"
           command: "bin/build-docker-auth.sh"
+      - store_test_results:
+          path: ~/project/auth/coverage/junit/
+      - store_artifacts:
+          path: ~/project/auth/coverage/jest
+          destination: auth-tests
       - run:
           name: "Push image if on master"
           command: "bin/push-docker-auth-image.sh"  

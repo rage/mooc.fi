@@ -11,8 +11,8 @@ export interface UserOverView_currentUser_verified_users {
   __typename: "VerifiedUser"
   id: string
   home_organization: string
-  person_affiliation: string
-  person_affiliation_updated_at: any
+  person_affiliation: string | null
+  person_affiliation_updated_at: any | null
   updated_at: any | null
   created_at: any | null
   personal_unique_code: string

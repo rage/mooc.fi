@@ -14,8 +14,8 @@ export interface ConnectionTest_currentUser_verified_users {
   personal_unique_code: string
   display_name: string | null
   home_organization: string
-  person_affiliation: string
-  person_affiliation_updated_at: any
+  person_affiliation: string | null
+  person_affiliation_updated_at: any | null
   updated_at: any | null
   mail: string
   organizational_unit: string

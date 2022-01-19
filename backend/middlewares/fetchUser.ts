@@ -2,13 +2,14 @@ import { UserInfo } from "/domain/UserInfo"
 import { AuthenticationError } from "apollo-server-express"
 import { plugin } from "nexus"
 
+import { User } from "@prisma/client"
+
 import { Role } from "../accessControl"
 import { Context } from "../context"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 import { isNewToken } from "../util/server-functions"
-import { User } from "@prisma/client"
 
 export const moocfiAuthPlugin = () =>
   plugin({
@@ -100,9 +101,7 @@ const getUserNewToken = async (ctx: Context, rawToken: string) => {
         key: rawToken,
       },
     )
-  } catch {
-    // console.log(e)
-  }
+  } catch {}
 
   if (!user) {
     return

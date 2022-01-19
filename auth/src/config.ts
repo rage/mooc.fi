@@ -1,9 +1,17 @@
 import fs from "fs"
+import path from "path"
 import { URL } from "url"
 
-require("dotenv").config()
-
 export const isProduction = process.env.NODE_ENV === "production"
+export const isTest = process.env.NODE_ENV === "test"
+export const isDev = process.env.NODE_ENV === "development"
+
+require("dotenv").config({
+  path: path.join(
+    __dirname,
+    `../.env${isDev ? ".development" : isTest ? ".test" : ""}`,
+  ),
+})
 
 /*export const HY_ORGANIZATION_SECRET =
   process.env.HY_ORGANIZATION_SECRET || "hy_secret"
@@ -25,15 +33,19 @@ export const SP_URL = process.env.SP_URL ?? ""
 
 export const SP_PATH = new URL(SP_URL).pathname
 
-export const MOOCFI_CERTIFICATE = isProduction
-  ? process.env.MOOCFI_CERTIFICATE ?? ""
-  : fs.readFileSync(__dirname + "/../certs/mooc.fi.crt", "utf-8").toString() ??
-    ""
+export const MOOCFI_CERTIFICATE =
+  isProduction || isTest
+    ? process.env.MOOCFI_CERTIFICATE ?? ""
+    : fs
+        .readFileSync(__dirname + "/../certs/mooc.fi.crt", "utf-8")
+        .toString() ?? ""
 
-export const MOOCFI_PRIVATE_KEY = isProduction
-  ? process.env.MOOCFI_PRIVATE_KEY ?? ""
-  : fs.readFileSync(__dirname + "/../certs/mooc.fi.key", "utf-8").toString() ??
-    ""
+export const MOOCFI_PRIVATE_KEY =
+  isProduction || isTest
+    ? process.env.MOOCFI_PRIVATE_KEY ?? ""
+    : fs
+        .readFileSync(__dirname + "/../certs/mooc.fi.key", "utf-8")
+        .toString() ?? ""
 
 export const HY_CERTIFICATE = process.env.HY_CERTIFICATE ?? ""
 // isProduction ? process.env.HY_CERTIFICATE ?? "" : "",
