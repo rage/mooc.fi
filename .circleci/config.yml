@@ -221,11 +221,12 @@ jobs:
           command: |
             REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
             TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-            docker save $TAG | gzip > ~/project/moocfi-backend.tar.gz
+            mkdir -p ~/project/build
+            docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
       - persist_to_workspace:
           root: ~/project
           paths:
-            - moocfi-backend.tar.gz
+            - build
 
   push_backend:
     executor: backend_build
@@ -233,7 +234,7 @@ jobs:
     #  - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - attach_workspace:
-          at: moocfi-backend.tar.gz
+          at: ~/project
       - setup_remote_docker:
           version: 19.03.13
       - run:
@@ -244,7 +245,7 @@ jobs:
       - run:
           name: "Restore image"
           command: |
-            docker load < moocfi-backend.tar.gz
+            docker load < ./build/moocfi-backend.tar.gz
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
