@@ -318,7 +318,9 @@ workflows:
       - upload_backend_test_results:
           requires: 
             - test_backend
-      - build_backend
+      - build_backend:
+          requires:
+            - prepare_backend
       - push_backend:
           requires:
             - test_backend
