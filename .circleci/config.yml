@@ -245,6 +245,11 @@ workflows:
           requires:
             - test_backend
             - build_backend
+          filters:
+            branches:
+              only:
+                - master
+                - staging
       - build_auth
       - deploy_to_production:
           requires:
