@@ -2,17 +2,12 @@ import axios from "axios"
 import { NextFunction, Request, Response } from "express"
 
 import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
+import { decodeRelayState } from "../util"
 import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
 const response_type = "token"
 const client_secret = "native"
-
-interface StatusType {
-  error: boolean
-  type: string
-  query: string[]
-}
 
 const errorHandler =
   (language: string, errorType: string, query: string[], error?: any) =>
@@ -23,7 +18,7 @@ const errorHandler =
     // TODO: show these on the actual sign-up page
     query.push(`error=${errorType ?? "unknown"}`)
     if (error) {
-      query.push(`message=${decodeURIComponent(error)}`)
+      query.push(`message=${encodeURIComponent(error)}`)
     }
     redirectUrl = `${FRONTEND_URL}/${language}/sign-up?${query.join("&")}`
 
@@ -49,9 +44,12 @@ export const signUpHandler: AuthenticationHandlerCallback =
       edu_person_principal_name,
     } = user ?? {}
 
+    const relayState = decodeRelayState(req)
     const language = ((Array.isArray(req.query.language)
       ? req.query.language[0]
-      : req.query.language) ?? "en") as string
+      : req.query.language) ||
+      relayState?.language ||
+      "en") as string
 
     const query = [] as string[]
     let errorType = ""
@@ -59,10 +57,9 @@ export const signUpHandler: AuthenticationHandlerCallback =
     // confidently default to an error
 
     if (err || !user || !edu_person_principal_name) {
-      return errorHandler(language, "unknown", query, err)(req, res, next)
+      return errorHandler(language, "auth-fail", query, err)(req, res, next)
     }
 
-    // ;(async () => {
     try {
       const { data } = await axios.post(`${API_URL}/user/register`, {
         eduPersonPrincipalName: edu_person_principal_name,
@@ -108,7 +105,7 @@ export const signUpHandler: AuthenticationHandlerCallback =
         language,
         errorType,
         query,
-        error?.response,
+        error?.response?.message,
       )(req, res, next)
     }
 
@@ -126,6 +123,7 @@ export const signUpHandler: AuthenticationHandlerCallback =
         admin: tokenData.admin ?? "",
       })
 
+      // TODO: I think login errors could be just ignored
       await new Promise<void>((resolve, reject) =>
         req.login(user, (err) => {
           if (err) {
@@ -144,15 +142,11 @@ export const signUpHandler: AuthenticationHandlerCallback =
       req.logout()
       return errorHandler(language, errorType, query, error)(req, res, next)
     }
-    //})().catch((error) => {
-    //  req.logout()
-    //  return errorHandler(language, errorType, query, error)(req, res, next)
-    //})
 
     // TODO: find something else than this
     let redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details`
 
-    if (query) {
+    if (query.length) {
       redirectUrl += `?${query.join("&")}`
     }
 
