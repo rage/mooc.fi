@@ -3,7 +3,12 @@ import passport, { AuthenticateOptions } from "passport"
 import { Profile } from "passport-saml"
 
 import { StrategyName } from "../saml"
-import { decodeRelayState, parseDescriptionFromSamlError } from "../util"
+import {
+  decodeRelayState,
+  getQueryString,
+  parseDescriptionFromSamlError,
+  RelayState,
+} from "../util"
 import { HandlerAction } from "./"
 
 export type AuthenticationHandler = (
@@ -24,14 +29,20 @@ export const createCallbackHandler =
   ): CallbackHandler =>
   (strategyName: StrategyName) =>
   (req, res, next) => {
-    const relayState = req.body.RelayState || req.query.RelayState // TODO: dangerous, switch order?
-    const decodedRelayState = decodeRelayState(req) ?? {
-      action: req.params.action || req.query.action, // TODO: this might be dangerous
-      provider: strategyName, // req.params.provider || req.query.provider,
-      language: ((req.query.language || req.params.language) as string) ?? "en",
-    }
+    const relayState =
+      req.body.RelayState || getQueryString(req.query.RelayState) // TODO: dangerous, switch order?
+    const decodedRelayState =
+      decodeRelayState(req) ??
+      ({
+        action: req.params.action || getQueryString(req.query.action), // TODO: this might be dangerous
+        provider: strategyName, // req.params.provider || req.query.provider,
+        language:
+          ((getQueryString(req.query.language) ||
+            req.params.language) as string) ?? "en",
+        origin: getQueryString(req.query.origin) || req.params.origin,
+      } as RelayState)
 
-    const { action, provider, language } = decodedRelayState
+    const { action, provider, language, origin } = decodedRelayState
 
     console.log("callback relaystate", decodedRelayState)
 
@@ -45,7 +56,8 @@ export const createCallbackHandler =
       {
         additionalParams: {
           RelayState:
-            relayState ?? JSON.stringify({ language, provider, action }),
+            relayState ??
+            JSON.stringify({ language, provider, action, origin }),
         },
         session: false,
       } as AuthenticateOptions,

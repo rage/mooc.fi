@@ -6,7 +6,8 @@ import { FileKeyInfo, SignedXml, xpath } from "xml-crypto"
 
 import { DOMParser } from "@xmldom/xmldom"
 
-import { MOOCFI_PRIVATE_KEY, SP_URL } from "../config"
+import { CERTS_DIR, METADATA_DIR, MOOCFI_PRIVATE_KEY, SP_URL } from "../config"
+import { getErrorMessage } from "../util"
 
 type IpConfig = Pick<
   SamlConfig,
@@ -18,10 +19,46 @@ type SpConfig = Omit<
   "entryPoint" | "logoutUrl" | "cert" | "identifierFormat"
 >
 
-const isError = (err: unknown): err is Error => err instanceof Error
-const getErrorMessage = (err: unknown) => (isError(err) ? err.message : err)
+async function getPassportConfig(config: MetadataConfig): Promise<SamlConfig> {
+  try {
+    ensureDirectories()
 
-export type MetadataConfig = {
+    if (!config) {
+      throw new Error(`missing configuration!`)
+    }
+
+    const metadata = await getAndCheckMetadata(config)
+    const reader = new MetadataReader(metadata)
+
+    const ipConfig: IpConfig = {
+      ...toPassportConfig(reader),
+      identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+    }
+
+    const spConfig: SpConfig = {
+      audience: SP_URL,
+      issuer: SP_URL,
+      decryptionPvk: MOOCFI_PRIVATE_KEY,
+      privateKey: MOOCFI_PRIVATE_KEY,
+      forceAuthn: true,
+      signatureAlgorithm: "sha256",
+      cacheProvider: undefined,
+
+      // FIXME: would need a cache provider to wotk with MultiSamlStrategy?
+      // validateInResponseTo: true,
+      disableRequestedAuthnContext: true,
+    }
+
+    return {
+      ...ipConfig,
+      ...spConfig,
+    }
+  } catch (error: unknown) {
+    throw new Error(`${getErrorMessage(error)}`)
+  }
+}
+
+type MetadataConfig = {
   name: string
   metadataURL: string
   certURL: string
@@ -29,15 +66,12 @@ export type MetadataConfig = {
   certFile: string
 }
 
-export const METADATA_DIR = __dirname + "/../../metadata"
-export const CERTS_DIR = __dirname + "/../../certs"
-
 const getCertFilename = (filename: string) =>
   filename.match(/^.*\/(.*\.(crt|key|pem))(.*)?$/)?.[1]
 const getMetadataFilename = (filename: string) =>
   filename.match(/^.*\/(.*\.xml)$/)?.[1]
 
-export const createMetadataConfig = (
+const createMetadataConfig = (
   name: string,
   metadataURL: string,
   certURL: string,
@@ -126,7 +160,7 @@ async function getAndCheckMetadata(config: MetadataConfig) {
     if (!isMetadataCurrent(xml)) {
       throw new Error(`expired, will fetch new metadata for ${name}...`)
     }
-    console.log("getAndCheckMetadata: got recent metadata", metadataFile)
+    debug.log("getAndCheckMetadata: got recent metadata", metadataFile)
   } catch {
     const { data } = await axios.get<string>(metadataURL)
     xml = data
@@ -148,43 +182,10 @@ async function getAndCheckMetadata(config: MetadataConfig) {
   return xml
 }
 
-export async function getPassportConfig(
-  config: MetadataConfig,
-): Promise<SamlConfig> {
-  try {
-    ensureDirectories()
-
-    if (!config) {
-      throw new Error(`missing configuration!`)
-    }
-
-    const metadata = await getAndCheckMetadata(config)
-    const reader = new MetadataReader(metadata)
-
-    const ipConfig: IpConfig = {
-      ...toPassportConfig(reader),
-      identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-    }
-
-    const spConfig: SpConfig = {
-      audience: SP_URL,
-      issuer: SP_URL,
-      decryptionPvk: MOOCFI_PRIVATE_KEY,
-      privateKey: MOOCFI_PRIVATE_KEY,
-      forceAuthn: true,
-      signatureAlgorithm: "sha256",
-      cacheProvider: undefined,
-
-      // FIXME: would need a cache provider to wotk with MultiSamlStrategy?
-      // validateInResponseTo: true,
-      disableRequestedAuthnContext: true,
-    }
-
-    return {
-      ...ipConfig,
-      ...spConfig,
-    }
-  } catch (error: unknown) {
-    throw new Error(`${getErrorMessage(error)}`)
-  }
+export {
+  CERTS_DIR,
+  createMetadataConfig,
+  getPassportConfig,
+  METADATA_DIR,
+  MetadataConfig,
 }

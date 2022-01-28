@@ -1,14 +1,14 @@
-import { Response } from "express"
+import { Request, Response } from "express"
 import nock from "nock"
 
 import { handlers } from "../"
-import { next, req, res as _res, testProfile } from "../../__test__"
+import { next, req, res, testProfile } from "../../__test__"
 import { BACKEND_URL, FRONTEND_URL } from "../../config"
 
 // jest.mock("graphql-request")
 
-const res = {
-  ..._res,
+const resWithAccessToken = {
+  ...res,
   locals: {
     cookie: {
       access_token: "access_token",
@@ -41,56 +41,83 @@ describe("connect", () => {
         },
       })
 
-    await handler(req, res, next)(undefined, testProfile)
+    await handler(req, resWithAccessToken, next)(undefined, testProfile)
 
     expect(req.login).toHaveBeenCalled()
     expect(req.logout).toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith(
-      `${FRONTEND_URL}/fi/profile/connect/success`,
+      `${FRONTEND_URL}/fi/profile/?tab=connections&success=true`,
     )
   })
 
-  it("redirects on error passed to handler", async () => {
-    await handler(req, res, next)("error", undefined)
+  it("errors on error passed to handler", async () => {
+    await handler(req, resWithAccessToken, next)("error", undefined)
 
     expect(req.login).not.toHaveBeenCalled()
     expect(req.logout).toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith(
-      `${FRONTEND_URL}/fi/profile/connect/failure?error=auth-fail`,
+      `${FRONTEND_URL}/fi/profile/?tab=connections&success=false&error=auth-fail&message=error`,
     )
   })
 
-  it("redirects on no user passed to handler", async () => {
-    await handler(req, res, next)(undefined, undefined)
+  it("errors on no user passed to handler", async () => {
+    await handler(req, resWithAccessToken, next)(undefined, undefined)
 
     expect(req.login).not.toHaveBeenCalled()
     expect(req.logout).toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith(
-      `${FRONTEND_URL}/fi/profile/connect/failure?error=auth-fail`,
+      `${FRONTEND_URL}/fi/profile/?tab=connections&success=false&error=no-user`,
     )
   })
 
-  it("redirects on no edu_person_principal_name", async () => {
-    await handler(req, res, next)(undefined, {})
+  it("errors on no edu_person_principal_name", async () => {
+    await handler(req, resWithAccessToken, next)(undefined, {})
 
     expect(req.login).not.toHaveBeenCalled()
     expect(req.logout).toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith(
-      `${FRONTEND_URL}/fi/profile/connect/failure?error=auth-fail`,
+      `${FRONTEND_URL}/fi/profile/?tab=connections&success=false&error=no-user`,
     )
   })
 
-  it("redirects on mutation error", async () => {
-    nock(BACKEND_URL).post("/").reply(401, {
-      data: {},
-    })
-
+  it("errors on no access_token", async () => {
     await handler(req, res, next)(undefined, testProfile)
 
     expect(req.login).not.toHaveBeenCalled()
     expect(req.logout).toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith(
-      `${FRONTEND_URL}/fi/profile/connect/failure?error=auth-fail`,
+      `${FRONTEND_URL}/fi/profile/?tab=connections&success=false&error=not-logged-in`,
+    )
+  })
+
+  it("errors on mutation error", async () => {
+    nock(BACKEND_URL).post("/").reply(401, {
+      data: {},
+    })
+
+    await handler(req, resWithAccessToken, next)(undefined, testProfile)
+
+    expect(req.login).not.toHaveBeenCalled()
+    expect(req.logout).toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith(
+      `${FRONTEND_URL}/fi/profile/?tab=connections&success=false&error=auth-fail&message=GraphQL%20error`,
+    )
+  })
+
+  it("adjusts redirect URL according to origin", async () => {
+    const reqWithOrigin = {
+      ...req,
+      query: {
+        ...req.query,
+        origin: "connect",
+      },
+    } as unknown as Request
+    await handler(reqWithOrigin, resWithAccessToken, next)("error", undefined)
+
+    expect(req.login).not.toHaveBeenCalled()
+    expect(req.logout).toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith(
+      `${FRONTEND_URL}/fi/profile/connect/failure?error=auth-fail&message=error`,
     )
   })
 })

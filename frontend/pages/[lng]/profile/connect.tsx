@@ -1,14 +1,16 @@
-import { useQuery } from "@apollo/client"
 import React from "react"
+
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import OrganizationConnectionList from "/components/Profile/OrganizationConnection/OrganizationConnectionList"
+import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
 import Spinner from "/components/Spinner"
 import { UserOverViewQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import { CurrentUserUserOverView } from "/static/types/generated/CurrentUserUserOverView"
-import useDisconnect from "/components/Profile/OrganizationConnection/useDisconnect"
+
+import { useQuery } from "@apollo/client"
 
 function Connection() {
   const { data, loading, error } =
@@ -44,6 +46,7 @@ function Connection() {
         <OrganizationConnectionList
           data={data?.currentUser?.verified_users}
           onDisconnect={onDisconnect}
+          origin="connect"
         />
       </Container>
     </>
