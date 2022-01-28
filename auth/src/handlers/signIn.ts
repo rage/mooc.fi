@@ -35,8 +35,12 @@ export const signInHandler: AuthenticationHandlerCallback =
     } = user ?? {}
 
     const relayState = decodeRelayState(req)
-    const language =
-      req.query.language || req.params.language || relayState?.language || "en"
+    const language = ((Array.isArray(req.query.language)
+      ? req.query.language[0]
+      : req.query.language) ||
+      req.params.language ||
+      relayState?.language ||
+      "en") as string
 
     let errorType: string
 

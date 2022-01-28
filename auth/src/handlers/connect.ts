@@ -1,22 +1,22 @@
 import { NextFunction, Request, Response } from "express"
 import { GraphQLClient } from "graphql-request"
 
-import { BACKEND_URL, FRONTEND_URL, requiredFields } from "../config"
+import { BACKEND_URL, FRONTEND_URL } from "../config"
 import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
+import { decodeRelayState } from "../util"
 import { AuthenticationHandlerCallback } from "./"
 
 const errorHandler =
   (language: string, errorType: string, error: any) =>
   (req: Request, res: Response, next: NextFunction) => {
-    console.log("I've errored with", error)
+    req.logout()
     const errorMessage = error instanceof Error ? error.message : error
-    const encodedError = Buffer.from(
-      JSON.stringify({ error: errorMessage }),
-    ).toString("base64")
+    const encodedError = encodeURIComponent(errorMessage)
 
+    // TODO: add message?
     if (!res.headersSent) {
       res.redirect(
-        `${FRONTEND_URL}/${language}/profile/connect/failure?error=${encodedError}`,
+        `${FRONTEND_URL}/${language}/profile/connect/failure?error=${errorType}`,
       )
     } else {
       next(error)
@@ -24,7 +24,7 @@ const errorHandler =
   }
 
 export const connectHandler: AuthenticationHandlerCallback =
-  (req, res, next) => (err, user) => {
+  (req, res, next) => async (err, user) => {
     console.log("connect with user", user)
 
     const {
@@ -41,12 +41,14 @@ export const connectHandler: AuthenticationHandlerCallback =
     } = user ?? {}
 
     const { access_token: accessToken } = res.locals.cookie
-    const language =
-      (Array.isArray(req.query.language)
-        ? (req.query.language[0] as string)
-        : (req.query.language as string)) ||
+    console.log("accessToken", accessToken)
+    const relayState = decodeRelayState(req)
+    const language = ((Array.isArray(req.query.language)
+      ? req.query.language[0]
+      : req.query.language) ||
+      relayState?.language ||
       req.params.language ||
-      "en"
+      "en") as string
 
     if (err || !user || !edu_person_principal_name) {
       return errorHandler(language, "auth-fail", err)(req, res, next)
@@ -56,7 +58,7 @@ export const connectHandler: AuthenticationHandlerCallback =
     }
 
     console.log("user", user)
-    if (!requiredFields.every((field) => Boolean(user[field]))) {
+    /*if (!requiredFields.every((field) => Boolean(user[field]))) {
       debug.log(
         "missing required fields - needed: ",
         requiredFields,
@@ -64,11 +66,12 @@ export const connectHandler: AuthenticationHandlerCallback =
         Object.keys(user),
       )
       return errorHandler(language, "auth-fail", err)(req, res, next)
-    }
+    }*/
 
     console.log(accessToken)
     console.log(JSON.stringify(req.headers, null, 2))
-    ;(async () => {
+    //;(async () => {
+    try {
       const client = new GraphQLClient(BACKEND_URL, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
@@ -100,7 +103,9 @@ export const connectHandler: AuthenticationHandlerCallback =
       res.redirect(
         `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
       )
-    })().catch((error) => {
+      //})().catch((error) => {
+    } catch (error) {
       return errorHandler(language, "auth-fail", error)(req, res, next)
-    })
+    }
+    //})
   }
