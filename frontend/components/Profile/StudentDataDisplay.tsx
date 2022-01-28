@@ -56,6 +56,7 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
         <OrganizationConnectionList
           data={data?.verified_users}
           onDisconnect={onDisconnect}
+          origin="profile"
         />
       </TabPanel>
       <TabPanel index={3} value={tab}>

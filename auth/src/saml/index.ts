@@ -43,7 +43,6 @@ export const createRouter = ({
 
   const callbackHandler = createCallbackHandler(handlers)(strategyName)
 
-  console.log("strategyName", strategyName)
   router
     .get(`/:action/${strategyName}`, callbackHandler)
     .post(
@@ -75,7 +74,6 @@ export abstract class MoocStrategy<ProfileType extends Profile> {
   }
 
   getProfile(profile: Optional<ProfileType>) {
-    console.log("got profile", profile)
     if (!profile) {
       return Promise.reject(new Error("No profile"))
     }

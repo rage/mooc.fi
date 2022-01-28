@@ -2,7 +2,7 @@ import axios from "axios"
 import { NextFunction, Request, Response } from "express"
 
 import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
-import { decodeRelayState } from "../util"
+import { decodeRelayState, getQueryString } from "../util"
 import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
@@ -35,9 +35,7 @@ export const signInHandler: AuthenticationHandlerCallback =
     } = user ?? {}
 
     const relayState = decodeRelayState(req)
-    const language = ((Array.isArray(req.query.language)
-      ? req.query.language[0]
-      : req.query.language) ||
+    const language = (getQueryString(req.query.language) ||
       req.params.language ||
       relayState?.language ||
       "en") as string

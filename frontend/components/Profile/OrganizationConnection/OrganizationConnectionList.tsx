@@ -16,6 +16,7 @@ import OrganizationConnectionEntry from "./OrganizationConnectionEntry"
 
 interface ConnectionListProps {
   data?: CurrentUserUserOverView_currentUser_verified_users[]
+  origin?: string
   onDisconnect: DisconnectFunction
 }
 
@@ -30,7 +31,11 @@ interface ConnectionListProps {
   }
 `*/
 
-function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
+function ConnectionList({
+  data = [],
+  onDisconnect,
+  origin,
+}: ConnectionListProps) {
   const { language } = useLanguageContext()
 
   const t = useTranslator(ProfileTranslations)
@@ -44,10 +49,14 @@ function ConnectionList({ data = [], onDisconnect }: ConnectionListProps) {
 
   const HY_CONNECT_URL = isProduction
     ? `/sp/connect/hy?language=${language}`
-    : `http://localhost:5000/connect/hy?language=${language}`
+    : `http://localhost:5000/connect/hy?language=${language}${
+        origin ? `&origin=${origin}` : ""
+      }`
   const HAKA_CONNECT_URL = isProduction
     ? `/sp/connect/haka?language=${language}`
-    : `http://localhost:5000/connect/haka?language=${language}`
+    : `http://localhost:5000/connect/haka?language=${language}${
+        origin ? `&origin=${origin}` : ""
+      }`
 
   return (
     <>

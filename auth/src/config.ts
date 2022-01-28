@@ -2,9 +2,9 @@ import fs from "fs"
 import path from "path"
 import { URL } from "url"
 
-export const isProduction = process.env.NODE_ENV === "production"
-export const isTest = process.env.NODE_ENV === "test"
-export const isDev = process.env.NODE_ENV === "development"
+const isProduction = process.env.NODE_ENV === "production"
+const isTest = process.env.NODE_ENV === "test"
+const isDev = process.env.NODE_ENV === "development"
 
 require("dotenv").config({
   path: path.join(
@@ -17,43 +17,39 @@ require("dotenv").config({
   process.env.HY_ORGANIZATION_SECRET || "hy_secret"
 export const HY_ORGANIZATION_ID =
   process.env.HY_ORGANIZATION_ID || "hy_organization"*/
-export const PORT = process.env.PORT || 5000
-export const BACKEND_URL =
+const PORT = process.env.PORT || 5000
+const BACKEND_URL =
   process.env.BACKEND_URL ?? (!isProduction ? "http://localhost:4000" : "")
-export const FRONTEND_URL =
+const FRONTEND_URL =
   process.env.FRONTEND_URL ?? (!isProduction ? "http://localhost:3000" : "")
-export const AUTH_URL =
+const AUTH_URL =
   process.env.AUTH_URL ?? (!isProduction ? "http://localhost:4000" : "")
-export const API_URL =
+const API_URL =
   process.env.API_URL ?? (!isProduction ? "http://localhost:4000/api" : "")
-export const DOMAIN = new URL(FRONTEND_URL).hostname
-export const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
-export const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
-export const SP_URL = process.env.SP_URL ?? ""
+const DOMAIN = new URL(FRONTEND_URL).hostname
+const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
+const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
+const SP_URL = process.env.SP_URL ?? ""
 
-export const SP_PATH = new URL(SP_URL).pathname
+const SP_PATH = new URL(SP_URL).pathname
 
-export const MOOCFI_CERTIFICATE =
+const MOOCFI_CERTIFICATE =
   isProduction || isTest
     ? process.env.MOOCFI_CERTIFICATE ?? ""
     : fs
         .readFileSync(__dirname + "/../certs/mooc.fi.crt", "utf-8")
         .toString() ?? ""
 
-export const MOOCFI_PRIVATE_KEY =
+const MOOCFI_PRIVATE_KEY =
   isProduction || isTest
     ? process.env.MOOCFI_PRIVATE_KEY ?? ""
     : fs
         .readFileSync(__dirname + "/../certs/mooc.fi.key", "utf-8")
         .toString() ?? ""
 
-export const HY_CERTIFICATE = process.env.HY_CERTIFICATE ?? ""
-// isProduction ? process.env.HY_CERTIFICATE ?? "" : "",
-
-export const HAKA_CERTIFICATE = process.env.HAKA_CERTIFICATE ?? ""
-// isProduction ? process.env.HAKA_CERTIFICATE ?? "" : "",
-
-export const {
+const {
+  HY_CERTIFICATE = "",
+  HAKA_CERTIFICATE = "",
   HY_METADATA_URL = "",
   HY_METADATA_CERTIFICATE_URL = "",
   HAKA_METADATA_URL = "",
@@ -73,7 +69,7 @@ if (!HY_CERTIFICATE || !HAKA_CERTIFICATE) {
   ? `${FRONTEND_URL}/Shibboleth.sso/Logout?return=`
   : ""
 */
-export const SHIBBOLETH_HEADERS = [
+const SHIBBOLETH_HEADERS = [
   "displayname",
   "givenName",
   "sn",
@@ -86,14 +82,14 @@ export const SHIBBOLETH_HEADERS = [
   "SHIB_LOGOUT_URL",
   "edupersonprincipalname",
 ] as const
-export type HeaderField = typeof SHIBBOLETH_HEADERS[number]
-export const requiredFields: HeaderField[] = [
+type HeaderField = typeof SHIBBOLETH_HEADERS[number]
+const requiredFields: HeaderField[] = [
   "schacpersonaluniquecode",
   "schachomeorganization",
   "edupersonprincipalname",
 ]
 
-export const defaultHeaders: Record<HeaderField, string> = {
+const defaultHeaders: Record<HeaderField, string> = {
   displayname: "kissa kissanen",
   givenName: "kissa",
   sn: "kissanen",
@@ -108,6 +104,38 @@ export const defaultHeaders: Record<HeaderField, string> = {
   SHIB_LOGOUT_URL: "https://example.com/logout",
 }
 
-export const PASSPORT_STRATEGY = "hy-haka"
+const METADATA_DIR = __dirname + "/../metadata"
+const CERTS_DIR = __dirname + "/../certs"
 
-export const { USE_MULTISAML } = process.env
+const { USE_MULTISAML } = process.env
+
+export {
+  API_URL,
+  AUTH_URL,
+  BACKEND_URL,
+  CERTS_DIR,
+  defaultHeaders,
+  DOMAIN,
+  FRONTEND_URL,
+  HAKA_CERTIFICATE,
+  HAKA_IDP_URL,
+  HAKA_METADATA_CERTIFICATE_URL,
+  HAKA_METADATA_URL,
+  HeaderField,
+  HY_CERTIFICATE,
+  HY_IDP_URL,
+  HY_METADATA_CERTIFICATE_URL,
+  HY_METADATA_URL,
+  isDev,
+  isProduction,
+  isTest,
+  METADATA_DIR,
+  MOOCFI_CERTIFICATE,
+  MOOCFI_PRIVATE_KEY,
+  PORT,
+  requiredFields,
+  SHIBBOLETH_HEADERS,
+  SP_PATH,
+  SP_URL,
+  USE_MULTISAML,
+}

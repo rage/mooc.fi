@@ -1,16 +1,38 @@
 import { NextFunction, Request, Response } from "express"
 import { XMLParser } from "fast-xml-parser"
 
-export const encodeRelayState = (req: Request) => {
-  const { provider, action } = req.params || req.query
-  const language = req.query.language || req.params.language || "en"
+import { HandlerAction } from "../handlers"
+import { StrategyName } from "../saml"
 
-  const relayState = JSON.stringify({ language, provider, action })
+export const getQueryString = (
+  qs?: string | string[] | qs.ParsedQs | qs.ParsedQs[],
+) => {
+  if (Array.isArray(qs)) {
+    return qs[0] as string
+  }
+  return qs as string
+}
+
+export type RelayState = {
+  action: HandlerAction
+  provider: StrategyName
+  language: string
+  origin: string
+}
+
+export const encodeRelayState = (req: Request) => {
+  const provider = req.params.provider || getQueryString(req.query.provider)
+  const action = req.params.action || getQueryString(req.query.action)
+  const language =
+    getQueryString(req.query.language) || req.params.language || "en"
+  const origin = getQueryString(req.query.origin) || req.params.origin
+
+  const relayState = JSON.stringify({ language, provider, action, origin })
 
   return relayState
 }
 
-export const decodeRelayState = (req: Request): Record<string, any> | null => {
+export const decodeRelayState = (req: Request): RelayState | null => {
   const state = req.body.RelayState || req.query.RelayState
 
   if (!state) {
@@ -130,3 +152,7 @@ export const convertKeyToSingleLine = (s: string) =>
   s.replace(/-----(.*)-----/g, "").replace(/\n/g, "")
 
 export type Optional<T> = T | undefined | null
+
+export const isError = (err: unknown): err is Error => err instanceof Error
+export const getErrorMessage = (err: unknown) =>
+  isError(err) ? err.message : err
