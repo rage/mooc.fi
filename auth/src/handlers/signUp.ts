@@ -60,6 +60,8 @@ export const signUpHandler: AuthenticationHandlerCallback =
       return errorHandler(language, "auth-fail", query, err)(req, res, next)
     }
 
+    let redirectToDetails = false
+
     try {
       const { data } = await axios.post(`${API_URL}/user/register`, {
         eduPersonPrincipalName: edu_person_principal_name,
@@ -72,11 +74,15 @@ export const signUpHandler: AuthenticationHandlerCallback =
         organizationalUnit: organizational_unit,
         displayName: display_name,
         homeOrganization: schac_home_organization,
+        registerNewTMCUser: true,
       })
+      // what if no tmc id at all?
+      if (data?.tmc_id < 0) {
+        redirectToDetails = true
+      }
     } catch (error: any) {
       errorType = "sign-up-error"
       const { data } = error?.response
-      console.log("sign-up-error", data)
       if (data.user?.id) {
         // user already exists
 
@@ -90,9 +96,9 @@ export const signUpHandler: AuthenticationHandlerCallback =
               admin: data.user.administrator ?? "",
             })
           } else {
+            query.push(`email=${encodeURIComponent(data.user.email)}`)
             // not verified, not logged in
             // errorType?
-            query.push(`email=${encodeURIComponent(data.user.email)}`)
             // TODO: prompt user to login with previous details and verify account
           }
         } else {
@@ -143,8 +149,14 @@ export const signUpHandler: AuthenticationHandlerCallback =
       return errorHandler(language, errorType, query, error)(req, res, next)
     }
 
+    let redirectUrl = ""
+
     // TODO: find something else than this
-    let redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details`
+    if (redirectToDetails) {
+      redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details`
+    } else {
+      redirectUrl = `${FRONTEND_URL}/${language === "en" ? "" : `${language}/`}`
+    }
 
     if (query.length) {
       redirectUrl += `?${query.join("&")}`

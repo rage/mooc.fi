@@ -1,6 +1,14 @@
 import { ApiContext } from "../../auth"
-import { createRequestHelpers, getTestContext, RequestPost } from "../../tests"
-import { seed } from "../../tests/data"
+import {
+  createRequestHelpers,
+  fakeGetAccessToken,
+  fakeTMCBasicInfoByEmails,
+  fakeTMCCurrent,
+  fakeTMCUserCreate,
+  getTestContext,
+  RequestPost,
+} from "../../tests"
+import { adminUserDetails, normalUserDetails, seed } from "../../tests/data"
 
 const ctx = getTestContext()
 
@@ -321,6 +329,182 @@ describe("API", () => {
         beforeSecond?.person_affiliation_updated_at! <
           afterSecond?.person_affiliation_updated_at!,
       ).toBeTruthy()
+    })
+  })
+
+  describe("/user/register", () => {
+    let postRegisterUser: RequestPost
+    const tmc = fakeTMCCurrent({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer admin": [200, adminUserDetails],
+    })
+
+    beforeEach(async () => {
+      tmc.setup()
+      await seed(ctx.prisma)
+      const { post } = createRequestHelpers(ctx.port)
+      postRegisterUser = post("/api/user/register", {})
+      fakeGetAccessToken([200, "normal"])
+    })
+
+    afterAll(() => {
+      tmc.teardown()
+    })
+
+    it("errors on required fields missing", async () => {
+      try {
+        await postRegisterUser({})
+        fail()
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(400)
+        expect(response.data.success).toBe(false)
+        expect(response.data.message).toBe("Missing required fields.")
+      }
+    })
+
+    it("errors on existing user", async () => {
+      fakeTMCBasicInfoByEmails([
+        200,
+        [
+          {
+            id: 1,
+          },
+        ],
+      ])
+
+      try {
+        await postRegisterUser({
+          data: {
+            mail: "e@mail.com",
+            eduPersonPrincipalName: "whatever",
+            homeOrganization: "wherever",
+            personalUniqueCode: "personal:unique:code:university.fi:whatever",
+            organizationalUnit: "unit",
+          },
+        })
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(401)
+        expect(response.data.success).toBe(false)
+        expect(response.data.user?.email).toBe("e@mail.com")
+        expect(response.data.message).toBe(
+          "User or verified user already exists",
+        )
+      }
+    })
+
+    it("errors on existing verified user", async () => {
+      fakeTMCBasicInfoByEmails([
+        200,
+        [
+          {
+            id: 1,
+          },
+        ],
+      ])
+
+      try {
+        await postRegisterUser({
+          data: {
+            mail: "nonexisting-e@mail.com",
+            eduPersonPrincipalName: "admin@university.fi",
+            homeOrganization: "university.fi",
+            personalUniqueCode: "personal:unique:code:university.fi:admin",
+            organizationalUnit: "unit",
+          },
+        })
+      } catch (err: any) {
+        const { response } = err
+        expect(response.status).toBe(401)
+        expect(response.data.success).toBe(false)
+        expect(response.data.verified_user?.edu_person_principal_name).toBe(
+          "admin@university.fi",
+        )
+        expect(response.data.message).toBe(
+          "User or verified user already exists",
+        )
+      }
+    })
+
+    it("creates a temporary upstream_id when no existing TMC user is found", async () => {
+      fakeTMCBasicInfoByEmails([200, []])
+
+      const res = await postRegisterUser({
+        data: {
+          mail: "new-user@mail.com",
+          eduPersonPrincipalName: "new-user@university.fi",
+          homeOrganization: "university.fi",
+          personalUniqueCode: "peronal:unique:code:university.fi:new-user",
+          organizationalUnit: "unit",
+        },
+      })
+
+      const newUser = await ctx.prisma.user.findFirst({
+        where: {
+          email: "new-user@mail.com",
+        },
+      })
+      const newVerifiedUser = await ctx.prisma.verifiedUser.findFirst({
+        where: {
+          mail: "new-user@mail.com",
+        },
+      })
+
+      expect(newUser?.id).not.toBeNull()
+      expect(newVerifiedUser?.edu_person_principal_name).toBe(
+        "new-user@university.fi",
+      )
+
+      expect(res.status).toBe(200)
+      expect(res.data.success).toBe(true)
+      expect(res.data.tmc_id).toBeLessThan(0)
+      expect(res.data.message).toBe("User created")
+    })
+
+    it("registers a new user when no existing TMC user is found and registerNewTMCUser is true", async () => {
+      fakeTMCBasicInfoByEmails([200, []])
+      fakeTMCBasicInfoByEmails([200, [{ id: 123456 }]])
+      fakeTMCUserCreate([
+        200,
+        {
+          success: true,
+        },
+      ])
+      fakeGetAccessToken([200, "normal"])
+
+      const res = await postRegisterUser({
+        data: {
+          mail: "new-user@mail.com",
+          eduPersonPrincipalName: "new-user@university.fi",
+          homeOrganization: "university.fi",
+          personalUniqueCode: "peronal:unique:code:university.fi:new-user",
+          organizationalUnit: "unit",
+          registerNewTMCUser: true,
+        },
+      })
+
+      const newUser = await ctx.prisma.user.findFirst({
+        where: {
+          email: "new-user@mail.com",
+        },
+      })
+      const newVerifiedUser = await ctx.prisma.verifiedUser.findFirst({
+        where: {
+          mail: "new-user@mail.com",
+        },
+      })
+
+      expect(newUser?.id).not.toBeNull()
+      expect(newUser?.upstream_id).toBe(123456)
+      expect(newVerifiedUser?.edu_person_principal_name).toBe(
+        "new-user@university.fi",
+      )
+
+      expect(res.status).toBe(200)
+      expect(res.data.success).toBe(true)
+      expect(res.data.tmc_id).toBe(123456)
+      expect(res.data.message).toBe("User created")
     })
   })
 })

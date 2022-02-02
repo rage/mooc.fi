@@ -207,7 +207,7 @@ export const updateUser = async (
 export const getUsersByEmail = async (
   emails: string[],
 ): Promise<UserInfo[]> => {
-  return await axios.post(
+  const res = await axios.post(
     `${BASE_URL}/api/v8/users/basic_info_by_emails`,
     { emails },
     {
@@ -218,4 +218,5 @@ export const getUsersByEmail = async (
       },
     },
   )
+  return res?.data
 }
