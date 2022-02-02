@@ -1,3 +1,4 @@
+import crypto from "crypto"
 import { Request, Response } from "express"
 import { omit } from "lodash"
 
@@ -7,6 +8,7 @@ import { UPDATE_USER_SECRET } from "../config"
 import { invalidate } from "../services/redis"
 import {
   authenticateUser,
+  createUser as createTMCUser,
   getCurrentUserDetails,
   getUsersByEmail,
   updateUser as updateTMCUser,
@@ -201,6 +203,7 @@ interface RegisterUserParams {
   mail: string
   organization: string
   organizationalUnit: string
+  registerNewTMCUser?: boolean
 }
 
 export function registerUser(ctx: ApiContext) {
@@ -215,7 +218,23 @@ export function registerUser(ctx: ApiContext) {
       personAffiliation,
       mail,
       organizationalUnit,
+      registerNewTMCUser,
     } = req.body
+
+    const requiredFields = [
+      "eduPersonPrincipalName",
+      "personalUniqueCode",
+      "homeOrganization",
+      "mail",
+      "organizationalUnit",
+    ] // TODO: if organizationalUnit not required, set it as optional in the schema
+    if (!requiredFields.every((field) => field in req.body)) {
+      return res.status(400).json({
+        status: 400,
+        success: false,
+        message: "Missing required fields.",
+      })
+    }
 
     const existingUser = await ctx.prisma.user.findFirst({
       where: {
@@ -233,7 +252,7 @@ export function registerUser(ctx: ApiContext) {
       },
     })
 
-    const existingTMCUser = (await getUsersByEmail([mail]))?.[0]
+    let existingTMCUser = (await getUsersByEmail([mail]))?.[0]
 
     if (existingUser || existingVerifiedUser) {
       const accessToken = await ctx.prisma.accessToken.findFirst({
@@ -258,6 +277,24 @@ export function registerUser(ctx: ApiContext) {
     let newVerifiedUser: VerifiedUser | undefined
 
     try {
+      if (!existingTMCUser && registerNewTMCUser) {
+        try {
+          const password = crypto.randomBytes(16).toString("hex")
+
+          const createUserResult = await createTMCUser(
+            mail,
+            mail,
+            password,
+            password,
+          )
+          if (createUserResult.success) {
+            existingTMCUser = (await getUsersByEmail([mail]))?.[0]
+          }
+        } catch {
+          // do we just ignore that we couldn't create new user?
+        }
+      }
+
       let upstream_id = existingTMCUser?.id
 
       if (!upstream_id) {
@@ -343,6 +380,7 @@ export function registerUser(ctx: ApiContext) {
         user: newUser,
         verified_user: newVerifiedUser,
         tmc_user: existingTMCUser,
+        tmc_id: upstream_id,
         message: "User created",
       })
     } catch (error) {

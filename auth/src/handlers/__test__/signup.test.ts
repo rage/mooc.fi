@@ -25,6 +25,7 @@ describe("signup", () => {
       user: {},
       verified_user: {},
       tmc_user: undefined,
+      tmc_id: 1,
       message: "User created",
     },
   }
@@ -40,6 +41,7 @@ describe("signup", () => {
         },
         verified_user: {},
         tmc_user: undefined,
+        tmc_id: 1,
         message: "User or verified user already exists",
       },
     },
@@ -82,6 +84,32 @@ describe("signup", () => {
       }
 
       return okRegisterResponse
+    })
+    await handler(req, res, next)(undefined, testProfile)
+
+    expect(req.login).toHaveBeenCalledWith(testProfile, expect.any(Function))
+    expect(req.logout).toHaveBeenCalled()
+    expect(res.setMOOCCookies).toHaveBeenCalledWith({
+      access_token: "access_token",
+      mooc_token: "access_token",
+      admin: false,
+    })
+    expect(res.redirect).toHaveBeenCalledWith(`${FRONTEND_URL}/fi/`)
+  })
+
+  it("redirects to edit user details on non-successful TMC user creation", async () => {
+    mockedAxios.post.mockImplementation(async (url: string) => {
+      if (url.includes("token")) {
+        return okTokenResponse
+      }
+
+      return {
+        ...okRegisterResponse,
+        data: {
+          ...okRegisterResponse.data,
+          tmc_id: -1,
+        },
+      }
     })
     await handler(req, res, next)(undefined, testProfile)
 
