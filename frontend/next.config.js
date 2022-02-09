@@ -11,6 +11,9 @@ const withMDX = require("@next/mdx")({
 })
 
 const nextConfiguration = {
+  images: {
+    disableStaticImages: true,
+  },
   publicRuntimeConfig: {
     localeSubpaths:
       typeof process.env.LOCALE_SUBPATHS === "string"
