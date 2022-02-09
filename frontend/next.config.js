@@ -48,7 +48,12 @@ module.exports = withPlugins(
     ],
     withBundleAnalyzer,
     // withCSS,
-    withMDX,
+    [
+      withMDX,
+      {
+        pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+      },
+    ],
   ],
   nextConfiguration,
 )
