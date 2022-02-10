@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+/*/// <reference types="cypress" />
 /// <reference types="@testing-library/cypress" />
 
 const fixtures = require("../../fixtures/users/completions.json")
@@ -77,3 +77,4 @@ describe("user course completion", () => {
     })
   })
 })
+*/

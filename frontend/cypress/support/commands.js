@@ -23,7 +23,7 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-import "@testing-library/cypress/add-commands"
+/*import "@testing-library/cypress/add-commands"
 import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command"
 
 const mockGraphQl = ({ query, result, variables }) =>
@@ -78,4 +78,4 @@ Cypress.Commands.add("signOut", () =>
   cy.request({ url: "http://localhost:4001/signout", method: "POST" }),
 )
 
-addMatchImageSnapshotCommand()
+addMatchImageSnapshotCommand()*/

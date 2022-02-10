@@ -1,3 +1,4 @@
+/*
 /// <reference types="cypress" />
 /// <reference types="@testing-library/cypress" />
 
@@ -32,7 +33,7 @@ describe("front page", () => {
 
     cy.get("h1").contains("High-quality, open, and free courses for everyone!")
   })
- */
+ **
 
   describe("snapshots", () => {
     before(() => {
@@ -95,3 +96,4 @@ describe("front page", () => {
     })
   })
 })
+*/

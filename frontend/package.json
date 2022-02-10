@@ -91,30 +91,15 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.8.5",
-    "@istanbuljs/nyc-config-typescript": "^1.0.1",
-    "@testing-library/cypress": "^7.0.6",
     "@types/luxon": "^2.0.9",
     "@types/papaparse": "^5.3.2",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "@types/styled-jsx": "^3.4.4",
-    "@types/testing-library__cypress": "^5.0.8",
     "apollo": "^2.33.9",
     "cors": "^2.8.5",
-    "cypress": "^6.0.1",
-    "cypress-image-snapshot": "^4.0.0",
     "express-graphql": "^0.12.0",
-    "istanbul-lib-coverage": "^3.0.0",
-    "nyc": "^15.1.0",
     "source-map-support": "^0.5.21",
     "typescript": "^4.5.5"
-  },
-  "nyc": {
-    "exclude": [
-      "pages/api/__coverage__.js"
-    ],
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "all": true
   }
 }

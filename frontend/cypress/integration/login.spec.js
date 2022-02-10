@@ -1,3 +1,4 @@
+/*
 /// <reference types="cypress" />
 /// <reference types="@testing-library/cypress" />
 
@@ -21,3 +22,4 @@ describe("login", () => {
     cy.getByTestId("login-button").click()
   })
 })
+*/
