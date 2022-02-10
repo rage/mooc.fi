@@ -2,11 +2,21 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "/*": ["./*"],
-      "@static/*": ["./static/*"],
-      "@pages/*": ["pages/*"],
-      "@lib/*": ["./lib/*"],
-      "@components/*": ["./components/*"]
+      "/*": [
+        "./*"
+      ],
+      "@static/*": [
+        "./static/*"
+      ],
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@lib/*": [
+        "./lib/*"
+      ],
+      "@components/*": [
+        "./components/*"
+      ]
     },
     "typeRoots": [
       "node_modules/@types",
@@ -15,7 +25,10 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": ["dom", "es2017"],
+    "lib": [
+      "dom",
+      "es2017"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -30,8 +43,16 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "incremental": true
   },
-  "exclude": ["node_modules", "schema.graphql"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "exclude": [
+    "node_modules",
+    "schema.graphql"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
