@@ -1,60 +1,58 @@
-import { createStyles, makeStyles } from "@mui/styles"
-import { Typography } from "@mui/material"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    link: {
-      left: -999,
-      position: "absolute",
-      top: "auto",
-      height: 1,
-      width: 1,
-      overflow: "hidden",
-      zIndex: -999,
-      "&:focus": {
-        color: "white",
-        backgroundColor: "black",
-        left: "auto",
-        top: "auto",
-        width: "30%",
-        height: "auto",
-        overflow: "auto",
-        margin: 10,
-        padding: 5,
-        borderRadius: 15,
-        textAlign: "center",
-        fontSize: "1.2em",
-        zIndex: 999,
-      },
-      "&:active": {
-        color: "white",
-        backgroundColor: "black",
-        left: "auto",
-        top: "auto",
-        width: "30%",
-        height: "auto",
-        overflow: "auto",
-        margin: 10,
-        padding: 5,
-        borderRadius: 15,
-        textAlign: "center",
-        fontSize: "1.2em",
-        zIndex: 999,
-      },
-    },
-  }),
-)
+import styled from "@emotion/styled"
+import { Typography } from "@mui/material"
+
+const SkipLinkContainer = styled.a`
+  left: -999;
+  position: absolute;
+  top: auto;
+  height: 1;
+  width: 1;
+  overflow: hidden;
+  z-index: -999;
+
+  &:focus {
+    color: white;
+    background-color: black;
+    left: auto;
+    top: auto;
+    width: 30%;
+    height: auto;
+    overflow: auto;
+    margin: 10;
+    padding: 5;
+    border-radius: 15;
+    text-align: center;
+    font-size: 1.2em;
+    z-index: 999;
+  }
+
+  &:active {
+    color: white;
+    background-color: black;
+    left: auto;
+    top: auto;
+    width: 30%;
+    height: auto;
+    overflow: auto;
+    margin: 10;
+    padding: 5;
+    border-radius: 15;
+    text-align: center;
+    font-size: 1.2em;
+    z-index: 999;
+  }
+`
 
 function SkipLink() {
-  const classes = useStyles()
   const t = useTranslator(CommonTranslations)
 
   return (
-    <a href="#main" className={classes.link}>
+    <SkipLinkContainer href="#main">
       <Typography variant="body1">{t("skiplink")}</Typography>
-    </a>
+    </SkipLinkContainer>
   )
 }
 

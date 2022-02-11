@@ -1,11 +1,10 @@
-import { createStyles, makeStyles } from "@mui/styles"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from "@emotion/styled"
 import {
-  faTwitter,
   faFacebook,
+  faTwitter,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const StyledIcon = styled(FontAwesomeIcon)`
   color: white;
@@ -39,24 +38,19 @@ const MaintainedContainer = styled.div`
   }
 `
 
+const LogoImage = styled.img`
+  height: 75;
+`
+
 function UniversityLogo() {
-  const classes = useStyles()
   return (
-    <img
+    <LogoImage
       alt="Logo of the University of Helsinki"
       src="/static/images/uh-logo.png"
-      className={classes.logoImage}
     />
   )
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    logoImage: {
-      height: 75,
-    },
-  }),
-)
 function Footer() {
   return (
     <FooterBar>
