@@ -17,14 +17,12 @@ import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import {
-  Field,
   Form,
   Formik,
   FormikHelpers,
   useFormikContext,
   yupToFormErrors,
 } from "formik"
-import { CheckboxWithLabel } from "formik-mui"
 import * as Yup from "yup"
 
 import styled from "@emotion/styled"
@@ -288,14 +286,12 @@ const renderForm =
                       {studyModules?.map(
                         (module: CourseEditorStudyModules_study_modules) => (
                           <ModuleListItem key={module.id}>
-                            <Field
+                            <CheckboxField
                               id={`study_modules[${module.id}]`}
                               label={module.name}
-                              type="checkbox"
-                              name={`study_modules[${module.id}]`}
-                              checked={values?.study_modules?.[module.id]}
-                              component={CheckboxWithLabel}
-                              Label={{ label: module.name }}
+                              checked={
+                                values?.study_modules?.[module.id] ?? false
+                              }
                             />
                           </ModuleListItem>
                         ),
