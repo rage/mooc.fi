@@ -4,6 +4,7 @@ import { Server } from "http"
 import morgan from "morgan"
 import passport from "passport"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
+import * as winston from "winston"
 
 import {
   DOMAIN,
@@ -51,6 +52,7 @@ export default async function createApp(): Promise<{
     next()
   })
   app.use(morgan("combined"))
+  winston
 
   app.use(shibbolethCharsetMiddleware(SHIBBOLETH_HEADERS as any))
   app.use(setLocalCookiesMiddleware)

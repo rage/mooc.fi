@@ -3,51 +3,62 @@ import { GraphQLClient } from "graphql-request"
 
 import { BACKEND_URL, FRONTEND_URL } from "../config"
 import { VERIFIED_USER_MUTATION } from "../graphql/verifiedUser"
-import { decodeRelayState, getErrorMessage, getQueryString } from "../util"
+import {
+  buildQueryString,
+  decodeRelayState,
+  getErrorMessage,
+  getQueryString,
+} from "../util"
 import { AuthenticationHandlerCallback } from "./"
 
-const getRedirectURL = (
-  language: string,
-  origin: string = "profile",
-  success: boolean,
-  query: Record<string, any> = {},
-) => {
-  const queryString = Object.keys(query)
-    .sort()
-    .map((key) => (Boolean(query[key]) ? `${key}=${query[key]}` : undefined))
-    .filter((key) => Boolean(key))
-    .join("&")
+interface GetRedirectURLParams {
+  language: string
+  origin?: string
+  success?: boolean
+  query?: Array<string>
+}
 
+const getRedirectURL = ({
+  language,
+  origin = "profile",
+  success = false,
+  query = [],
+}: GetRedirectURLParams) => {
   switch (origin) {
     case "connect":
       return `${FRONTEND_URL}/${language}/profile/connect/${
         success ? "success" : "failure"
-      }${queryString ? `?${queryString}` : ""}`
+      }${buildQueryString(query)}`
     case "profile":
     default:
-      return `${FRONTEND_URL}/${language}/profile/?tab=connections&success=${success}${
-        queryString ? `&${queryString}` : ""
-      }`
+      query.unshift(`success=${success}`)
+      query.unshift(`tab=connections`)
+
+      return `${FRONTEND_URL}/${language}/profile/${buildQueryString(query)}`
   }
 }
 
+interface ErrorHandlerParams {
+  language: string
+  errorType?: string
+  error?: any
+  origin?: string
+}
+
 const errorHandler =
-  (language: string, errorType: string, error: any, origin?: string) =>
+  ({ language, errorType, error, origin }: ErrorHandlerParams) =>
   (req: Request, res: Response, next: NextFunction) => {
     req.logout()
-    const errorMessage = error instanceof Error ? error.message : error
-    const encodedError = errorMessage
-      ? encodeURIComponent(errorMessage)
-      : undefined
+    const errorMessage = getErrorMessage(error) // error instanceof Error ? error.message : error
+
+    const query = [
+      `error=${errorType ?? "unknown"}`,
+      `message=${encodeURIComponent(errorMessage)}`,
+    ]
 
     // TODO: add message?
     if (!res.headersSent) {
-      res.redirect(
-        getRedirectURL(language, origin, false, {
-          error: errorType,
-          message: encodedError,
-        }),
-      )
+      res.redirect(getRedirectURL({ language, origin, success: false, query }))
     } else {
       next(error)
     }
@@ -80,23 +91,26 @@ export const connectHandler: AuthenticationHandlerCallback =
       req.params.origin
 
     if (err) {
-      return errorHandler(language, "auth-fail", err, origin)(req, res, next)
+      return errorHandler({
+        language,
+        errorType: "auth-fail",
+        error: err,
+        origin,
+      })(req, res, next)
     }
     if (!user || !edu_person_principal_name) {
-      return errorHandler(
+      return errorHandler({
         language,
-        "no-user",
-        undefined,
+        errorType: "no-user",
         origin,
-      )(req, res, next)
+      })(req, res, next)
     }
     if (!accessToken) {
-      return errorHandler(
+      return errorHandler({
         language,
-        "not-logged-in",
-        undefined,
+        errorType: "not-logged-in",
         origin,
-      )(req, res, next)
+      })(req, res, next)
     }
 
     try {
@@ -132,12 +146,13 @@ export const connectHandler: AuthenticationHandlerCallback =
         }),
       )
       req.logout()
-      res.redirect(
-        getRedirectURL(language, origin, true),
-        // `${FRONTEND_URL}/${language}/profile/connect/success`, // ?id=${result.addVerifiedUser.id}
-      )
-      //})().catch((error) => {
+      res.redirect(getRedirectURL({ language, origin, success: true }))
     } catch (error) {
-      return errorHandler(language, "auth-fail", error, origin)(req, res, next)
+      return errorHandler({
+        language,
+        errorType: "auth-fail",
+        error,
+        origin,
+      })(req, res, next)
     }
   }

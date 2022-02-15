@@ -4,6 +4,7 @@ import { Profile } from "passport-saml"
 
 import { StrategyName } from "../saml"
 import {
+  createLogger,
   decodeRelayState,
   getQueryString,
   parseDescriptionFromSamlError,
@@ -22,6 +23,8 @@ export type AuthenticationHandlerCallback = (
 ) => AuthenticationHandler
 
 type CallbackHandler = (strategyName: StrategyName) => RequestHandler
+
+const logger = createLogger({ service: "callback" })
 
 export const createCallbackHandler =
   (
@@ -64,7 +67,7 @@ export const createCallbackHandler =
       (err, user?: Profile) => {
         if (err || !user) {
           const description = parseDescriptionFromSamlError(err, req)
-          debug.error(`SAML authentication failed: ${description}, ${err}`)
+          logger.error(`SAML authentication failed: ${description}, ${err}`)
         }
 
         return handlers[action as HandlerAction](req, res, next)(err, user)

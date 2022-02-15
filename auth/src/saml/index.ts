@@ -6,13 +6,14 @@ import {
   Strategy as SamlStrategy,
   VerifiedCallback,
 } from "passport-saml"
+import * as winston from "winston"
 
 import { Strategy as DummyStrategy } from "@voxpelli/passport-dummy"
 
 import { SP_PATH, SP_URL } from "../config"
 import { createCallbackHandler, Handlers, metadataHandler } from "../handlers"
 import { MetadataConfig } from "../metadata"
-import { Optional } from "../util"
+import { createLogger, Optional } from "../util"
 
 export type StrategyName = "haka" | "hy" | "test"
 
@@ -62,12 +63,16 @@ export const createRouter = ({
 }
 
 export abstract class MoocStrategy<ProfileType extends Profile> {
+  logger: winston.Logger
+
   constructor(
     readonly provider: string,
     readonly config: SamlConfig,
     readonly _metadataConfig: MetadataConfig,
     readonly required: Array<keyof ProfileType> = [],
-  ) {}
+  ) {
+    this.logger = createLogger({ service: "strategy", provider })
+  }
 
   static async initialize(): Promise<void | MoocStrategy<any>> {
     throw new TypeError("should be overridden")
@@ -75,9 +80,13 @@ export abstract class MoocStrategy<ProfileType extends Profile> {
 
   getProfile(profile: Optional<ProfileType>) {
     if (!profile) {
+      this.logger.error("no profile") // TODO: add some info on actual profile?
+
       return Promise.reject(new Error("No profile"))
     }
     if (!this.required.every((field) => profile[field])) {
+      this.logger.error("missing required fields") // TODO: ditto
+
       return Promise.reject(new Error("Missing required fields"))
     }
 
