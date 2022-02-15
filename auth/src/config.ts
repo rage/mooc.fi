@@ -27,8 +27,6 @@ const AUTH_URL =
 const API_URL =
   process.env.API_URL ?? (!isProduction ? "http://localhost:4000/api" : "")
 const DOMAIN = new URL(FRONTEND_URL).hostname
-const HY_IDP_URL = process.env.HY_IDP_URL ?? ""
-const HAKA_IDP_URL = process.env.HAKA_IDP_URL ?? ""
 const SP_URL = process.env.SP_URL ?? ""
 
 const SP_PATH = new URL(SP_URL).pathname
@@ -58,9 +56,6 @@ const {
 
 if (isProduction && (!BACKEND_URL || !FRONTEND_URL)) {
   throw new Error("BACKEND_URL and FRONTEND_URL must be set")
-}
-if (!HY_IDP_URL || !HAKA_IDP_URL) {
-  throw new Error("HY_IDP_URL and HAKA_IDP_URL must be set")
 }
 if (!HY_CERTIFICATE || !HAKA_CERTIFICATE) {
   throw new Error("HY_CERTIFICATE and HAKA_CERTIFICATE must be set")
@@ -118,12 +113,10 @@ export {
   DOMAIN,
   FRONTEND_URL,
   HAKA_CERTIFICATE,
-  HAKA_IDP_URL,
   HAKA_METADATA_CERTIFICATE_URL,
   HAKA_METADATA_URL,
   HeaderField,
   HY_CERTIFICATE,
-  HY_IDP_URL,
   HY_METADATA_CERTIFICATE_URL,
   HY_METADATA_URL,
   isDev,

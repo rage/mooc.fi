@@ -2,22 +2,33 @@ import axios from "axios"
 import { NextFunction, Request, Response } from "express"
 
 import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
-import { decodeRelayState, getQueryString } from "../util"
+import { buildQueryString, decodeRelayState, getQueryString } from "../util"
 import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
 const response_type = "token"
 const client_secret = "native"
 
+interface ErrorHandlerParams {
+  language: string
+  errorType?: string
+  query?: Array<string>
+  error?: any
+}
+
 const errorHandler =
-  (language: string, errorType: string, error: any) =>
+  ({ language, errorType, query = [], error }: ErrorHandlerParams) =>
   (req: Request, res: Response, next: NextFunction) => {
     req.logout()
+
+    query.push(`error=${errorType ?? "unknown"}`)
+    if (error) {
+      query.push(`message=${encodeURIComponent(error)}`)
+    }
+
     if (!res.headersSent) {
       return res.redirect(
-        `${FRONTEND_URL}/${language}/sign-in?error=${errorType ?? "unknown"}${
-          error ? `&message=${encodeURIComponent(error)}` : ""
-        }`,
+        `${FRONTEND_URL}/${language}/sign-in${buildQueryString(query)}`,
       )
     } else {
       return next(error)
@@ -43,11 +54,19 @@ export const signInHandler: AuthenticationHandlerCallback =
     let errorType: string
 
     if (err || !user || !edu_person_principal_name) {
-      return errorHandler(language, "auth-fail", err)(req, res, next)
+      return errorHandler({
+        language,
+        errorType: "auth-fail",
+        error: err,
+      })(req, res, next)
     }
 
     if (res.locals.access_token) {
-      return errorHandler(language, "already-signed-in", err)(req, res, next)
+      return errorHandler({
+        language,
+        errorType: "already-signed-in",
+        error: err,
+      })(req, res, next)
     }
 
     try {
@@ -100,10 +119,10 @@ export const signInHandler: AuthenticationHandlerCallback =
         .redirect(`${FRONTEND_URL}/${language !== "en" ? `${language}/` : ""}`)
     } catch (error: any) {
       errorType = "no-user-found"
-      return errorHandler(language, errorType, error?.response?.data.message)(
-        req,
-        res,
-        next,
-      )
+      return errorHandler({
+        language,
+        errorType,
+        error: error?.response?.data.message,
+      })(req, res, next)
     }
   }

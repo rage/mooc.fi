@@ -7,7 +7,9 @@ import { FileKeyInfo, SignedXml, xpath } from "xml-crypto"
 import { DOMParser } from "@xmldom/xmldom"
 
 import { CERTS_DIR, METADATA_DIR, MOOCFI_PRIVATE_KEY, SP_URL } from "../config"
-import { getErrorMessage } from "../util"
+import { createLogger, getErrorMessage } from "../util"
+
+const logger = createLogger({ service: "metadata" })
 
 type IpConfig = Pick<
   SamlConfig,
@@ -85,10 +87,15 @@ const createMetadataConfig = (
 
 const ensureDirectories = () => {
   for (const dir of [METADATA_DIR, CERTS_DIR]) {
-    console.log(`check if directory ${dir} exists`)
     if (!fs.existsSync(dir)) {
-      console.log(`create directory ${dir}`)
-      fs.mkdirSync(dir, { recursive: true })
+      logger.info(`directory ${dir} didn't exist, creating...`)
+      try {
+        fs.mkdirSync(dir, { recursive: true })
+      } catch (error: unknown) {
+        throw new Error(
+          `could not create directory ${dir}: ${getErrorMessage(error)}`,
+        )
+      }
     }
   }
 }
@@ -110,19 +117,20 @@ async function getKeyInfoProvider(
   const { certURL, certFile, name } = config
 
   if (fs.existsSync(certFile)) {
-    console.log("getKeyInfoProvider: found certFile", certFile)
+    logger.info("getKeyInfoProvider: found certFile", certFile)
     return new FileKeyInfo(certFile)
   }
 
   try {
     const { data } = await axios.get<string>(certURL)
-    console.log("getKeyInfoProvider: got data from", certURL)
+    logger.info("getKeyInfoProvider: got data from", certURL)
     fs.writeFileSync(certFile, data)
-    console.log("getKeyInfoProvider: wrote certfile", certFile)
+    logger.info("getKeyInfoProvider: wrote certfile", certFile)
+
     return new FileKeyInfo(certFile)
   } catch (error: unknown) {
     throw new Error(
-      `could not load certificate for provider ${name}: ${getErrorMessage(
+      `getKeyInfoProvider: could not load certificate for provider ${name}: ${getErrorMessage(
         error,
       )}`,
     )
@@ -141,7 +149,9 @@ async function validateMetadata(config: MetadataConfig, metadata: string) {
     sig.keyInfoProvider = await getKeyInfoProvider(config)
   } catch (error: unknown) {
     throw new Error(
-      `error getting key info provider: ${getErrorMessage(error)}`,
+      `validateMetadata: error getting key info provider: ${getErrorMessage(
+        error,
+      )}`,
     )
   }
   sig.loadSignature(signature as string)
@@ -153,30 +163,35 @@ async function validateMetadata(config: MetadataConfig, metadata: string) {
 async function getAndCheckMetadata(config: MetadataConfig) {
   const { metadataURL, metadataFile, name } = config
 
-  let xml: string
+  let xml: string = ""
 
   try {
     xml = fs.readFileSync(metadataFile).toString()
+
     if (!isMetadataCurrent(xml)) {
-      throw new Error(`expired, will fetch new metadata for ${name}...`)
-    }
-    debug.log("getAndCheckMetadata: got recent metadata", metadataFile)
-  } catch {
-    const { data } = await axios.get<string>(metadataURL)
-    xml = data
-    if (!xml) {
-      throw new Error(`could not fetch metadata for ${name}`)
-    }
-    console.log("getAndCheckMetadata: got data from", metadataURL)
-    try {
-      await validateMetadata(config, xml)
-      fs.writeFileSync(metadataFile, xml) //new XMLSerializer().serializeToString(meta))
-      console.log(`getAndCheckMetadata: wrote ${name} metadata`)
-    } catch (error: unknown) {
-      throw new Error(
-        `error validating or writing metadata: ${getErrorMessage(error)}`,
+      logger.info(
+        `getAndCheckMetadata: metadata for ${name} expired, fetching new...`,
+      )
+      const { data } = await axios.get<string>(metadataURL)
+      xml = data
+
+      if (!xml) {
+        throw new Error(`could not fetch metadata for ${name}`)
+      }
+      logger.info(
+        `getAndCheckMetadata: got metadata for ${name} from ${metadataURL}`,
       )
     }
+
+    await validateMetadata(config, xml)
+    fs.writeFileSync(metadataFile, xml)
+    logger.info("getAndCheckMetadata: wrote metadata", metadataFile)
+  } catch (error: any) {
+    logger.error(
+      `getAndCheckMetadata: error validating or writing metadata: ${getErrorMessage(
+        error,
+      )}`,
+    )
   }
 
   return xml

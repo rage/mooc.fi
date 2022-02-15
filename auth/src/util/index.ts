@@ -154,5 +154,26 @@ export const convertKeyToSingleLine = (s: string) =>
 export type Optional<T> = T | undefined | null
 
 export const isError = (err: unknown): err is Error => err instanceof Error
-export const getErrorMessage = (err: unknown) =>
-  isError(err) ? err.message : err
+export const getErrorMessage = <T>(err: T) => (isError(err) ? err.message : err)
+
+export * from "./logger"
+
+export const buildQueryString = (query: Array<string>) => {
+  let queryString = query
+    .map((item) => item.split("="))
+    .filter(
+      ([_, value]) =>
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        value !== "undefined",
+    )
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&")
+
+  if (queryString) {
+    queryString = `?${queryString}`
+  }
+
+  return queryString
+}

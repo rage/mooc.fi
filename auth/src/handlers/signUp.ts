@@ -2,25 +2,39 @@ import axios from "axios"
 import { NextFunction, Request, Response } from "express"
 
 import { API_URL, AUTH_URL, FRONTEND_URL } from "../config"
-import { decodeRelayState } from "../util"
+import { buildQueryString, decodeRelayState, getQueryString } from "../util"
 import { AuthenticationHandlerCallback } from "./callback"
 
 const grant_type = "client_authorize"
 const response_type = "token"
 const client_secret = "native"
 
+interface ErrorHandlerParams {
+  language: string
+  errorType?: string
+  query?: Array<string>
+  error?: any
+}
+
 const errorHandler =
-  (language: string, errorType: string, query: string[], error?: any) =>
+  ({
+    language,
+    errorType = "unknown",
+    query = [],
+    error,
+  }: ErrorHandlerParams) =>
   (req: Request, res: Response, next: NextFunction) => {
     req.logout()
     let redirectUrl = ""
 
     // TODO: show these on the actual sign-up page
-    query.push(`error=${errorType ?? "unknown"}`)
+    query.push(`error=${errorType}`)
     if (error) {
       query.push(`message=${encodeURIComponent(error)}`)
     }
-    redirectUrl = `${FRONTEND_URL}/${language}/sign-up?${query.join("&")}`
+    redirectUrl = `${FRONTEND_URL}/${language}/sign-up${buildQueryString(
+      query,
+    )}`
 
     if (!res.headersSent) {
       return res.redirect(redirectUrl)
@@ -45,19 +59,23 @@ export const signUpHandler: AuthenticationHandlerCallback =
     } = user ?? {}
 
     const relayState = decodeRelayState(req)
-    const language = ((Array.isArray(req.query.language)
-      ? req.query.language[0]
-      : req.query.language) ||
+    const language = (getQueryString(req.query.language) ||
       relayState?.language ||
       "en") as string
 
-    const query = [] as string[]
+    const query: Array<string> = []
+
     let errorType = ""
 
     // confidently default to an error
 
     if (err || !user || !edu_person_principal_name) {
-      return errorHandler(language, "auth-fail", query, err)(req, res, next)
+      return errorHandler({
+        language,
+        errorType: "auth-fail",
+        query,
+        error: err,
+      })(req, res, next)
     }
 
     let redirectToDetails = false
@@ -107,12 +125,12 @@ export const signUpHandler: AuthenticationHandlerCallback =
           // TODO: show some info to user about this, redirect to details?
         }
       }
-      return errorHandler(
+      return errorHandler({
         language,
         errorType,
         query,
-        error?.response?.message,
-      )(req, res, next)
+        error: error?.response?.message,
+      })(req, res, next)
     }
 
     try {
@@ -145,21 +163,25 @@ export const signUpHandler: AuthenticationHandlerCallback =
     } catch (error) {
       errorType = "token-issue"
       // couldn't issue a token
-      req.logout()
-      return errorHandler(language, errorType, query, error)(req, res, next)
+      return errorHandler({
+        language,
+        errorType,
+        query,
+        error,
+      })(req, res, next)
     }
 
     let redirectUrl = ""
 
     // TODO: find something else than this
     if (redirectToDetails) {
-      redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details`
+      redirectUrl = `${FRONTEND_URL}/${language}/sign-up/edit-details${buildQueryString(
+        query,
+      )}`
     } else {
-      redirectUrl = `${FRONTEND_URL}/${language === "en" ? "" : `${language}/`}`
-    }
-
-    if (query.length) {
-      redirectUrl += `?${query.join("&")}`
+      redirectUrl = `${FRONTEND_URL}/${
+        language === "en" ? "" : `${language}/`
+      }${buildQueryString(query)}`
     }
 
     return res.redirect(redirectUrl)
