@@ -1,16 +1,18 @@
-import * as Yup from "yup"
+import { FormValues } from "/components/Dashboard/Editor/types"
+import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { DateTime } from "luxon"
+import * as Yup from "yup"
+
+import { ApolloClient, DocumentNode } from "@apollo/client"
+
 import {
+  CourseAliasFormValues,
   CourseFormValues,
   CourseTranslationFormValues,
   CourseVariantFormValues,
-  CourseAliasFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { ApolloClient, DocumentNode } from "@apollo/client"
-import { FormValues } from "/components/Dashboard/Editor/types"
-import { DateTime } from "luxon"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -67,8 +69,8 @@ export const initialValues: CourseFormValues = {
   user_course_settings_visibilities: [],
   upcoming_active_link: false,
   tier: undefined,
-  automatic_completions: undefined,
-  automatic_completions_eligible_for_ects: undefined,
+  automatic_completions: false,
+  automatic_completions_eligible_for_ects: false,
   exercise_completions_needed: undefined,
   points_needed: undefined,
 }

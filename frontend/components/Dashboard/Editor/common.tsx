@@ -1,11 +1,20 @@
 import { PropsWithChildren, useContext } from "react"
 
 import AnchorContext from "/contexts/AnchorContext"
-import { Field } from "formik"
-import { CheckboxWithLabel, TextField } from "formik-mui"
+import { Field, useFormikContext } from "formik"
+import { TextField } from "formik-mui"
 
 import styled from "@emotion/styled"
-import { FormControl, FormGroup, InputLabel, Typography } from "@mui/material"
+import {
+  Checkbox,
+  CheckboxProps,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelProps,
+  FormGroup,
+  InputLabel,
+  Typography,
+} from "@mui/material"
 
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
@@ -76,17 +85,36 @@ export const CheckboxField = ({
   id: string
   label: string
   checked: boolean
-}) => (
-  <Field
-    id={id}
-    label={label}
-    type="checkbox"
-    name={id}
-    checked={checked}
-    component={CheckboxWithLabel}
-    Label={{ label: label }}
-  />
-)
+}) => {
+  const { setFieldValue } = useFormikContext<any>()
+
+  return (
+    <Field
+      id={id}
+      label={label}
+      type="checkbox"
+      name={id}
+      checked={checked}
+      component={(props: any) => (
+        <CheckboxWithLabel
+          onChange={(e) => setFieldValue(id, e.target.checked)}
+          {...props}
+        />
+      )}
+      Label={{ label: label }}
+    />
+  )
+}
+interface CheckboxWithLabelProps extends CheckboxProps {
+  Label: Omit<FormControlLabelProps, "checked" | "name" | "value" | "control">
+}
+
+export const CheckboxWithLabel = ({
+  Label,
+  ...props
+}: CheckboxWithLabelProps) => {
+  return <FormControlLabel control={<Checkbox {...props} />} {...Label} />
+}
 
 interface EnumeratingAnchorProps {
   id: string

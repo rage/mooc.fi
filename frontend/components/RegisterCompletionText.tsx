@@ -1,36 +1,34 @@
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useTranslator } from "/util/useTranslator"
 
+import styled from "@emotion/styled"
 import { Button, Paper, Tooltip, Typography } from "@mui/material"
-import { Theme } from "@mui/material/styles"
-import { createStyles, makeStyles } from "@mui/styles"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      padding: "1em",
-      margin: "1em",
-      display: "flex",
-      flexDirection: "column",
-    },
-    button: {
-      width: "65%",
-      margin: "auto",
-      marginBottom: "1em",
-    },
-    tooltip: {
-      backgroundColor: theme.palette.common.white,
-      fontSize: 11,
-      color: "black",
-      border: "1px solid black",
-    },
-    registrationButtons: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-  }),
-)
+const LinkTooltip = styled(Tooltip)`
+  background-color: white;
+  font-size: 11px;
+  color: black;
+  border: 1px solid black;
+`
+
+const RegisterCompletionContainer = styled(Paper)`
+  padding: 1em;
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+`
+
+const RegistrationLinkButton = styled(Button)`
+  width: 65%;
+  margin: auto;
+  margin-bottom: 1em;
+`
+
+const RegistrationButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 
 interface LinkButtonProps {
   link: string
@@ -38,7 +36,6 @@ interface LinkButtonProps {
 }
 
 function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
-  const classes = useStyles()
   const t = useTranslator(RegisterCompletionTranslations)
 
   const onClick = () => {
@@ -51,22 +48,17 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   }
 
   return (
-    <Tooltip
-      title={t("linkAria")}
-      classes={{ tooltip: classes.tooltip }}
-      placement="bottom"
-    >
-      <Button
+    <LinkTooltip title={t("linkAria")} placement="bottom">
+      <RegistrationLinkButton
         variant="contained"
         color="secondary"
         size="medium"
-        className={classes.button}
         role="link"
         onClick={onClick}
       >
-        {t("link")}
-      </Button>
-    </Tooltip>
+        <Typography variant="h4">{t("link")}</Typography>
+      </RegistrationLinkButton>
+    </LinkTooltip>
   )
 }
 
@@ -82,10 +74,9 @@ function RegisterCompletionText({
   tiers,
   onRegistrationClick,
 }: RegProps) {
-  const classes = useStyles()
   const t = useTranslator(RegisterCompletionTranslations)
   return (
-    <Paper className={classes.paper}>
+    <RegisterCompletionContainer>
       <Typography variant="body1" paragraph>
         {t("credits_details")}
       </Typography>
@@ -114,7 +105,7 @@ function RegisterCompletionText({
       </Typography>
       {tiers.length > 0 ? (
         tiers.map((tier: any, i: number) => (
-          <div key={i} className={classes.registrationButtons}>
+          <RegistrationButtons key={i}>
             <Typography variant="body1" paragraph align="center">
               {tier.name}
             </Typography>
@@ -122,12 +113,12 @@ function RegisterCompletionText({
               link={tier.link}
               onRegistrationClick={onRegistrationClick}
             />
-          </div>
+          </RegistrationButtons>
         ))
       ) : (
         <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
       )}
-    </Paper>
+    </RegisterCompletionContainer>
   )
 }
 
