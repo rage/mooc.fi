@@ -1,9 +1,11 @@
-import styled from "@emotion/styled"
 import { H2NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+
+import styled from "@emotion/styled"
 
 export const ContentContainer = styled.div`
   margin: 1rem;
   padding-left: 1rem;
+  min-width: 33%;
 `
 const ModuleHeader = styled(H2NoBackground)`
   color: white;
@@ -34,7 +36,7 @@ const ModuleDescriptionText = styled(SubtitleNoBackground)`
 
 interface DescriptionProps {
   name: string
-  description: string
+  description: string | JSX.Element
 }
 const ModuleDescription = (props: DescriptionProps) => {
   const { name, description } = props
