@@ -1,6 +1,5 @@
 import CustomModule from "/components/Home/ModuleDisplay/CustomModule"
-import LUTContent from "/static/md_pages/lut_content.mdx"
-import LUTDescription from "/static/md_pages/lut_description.mdx"
+import LUT from "/static/md_pages/lut_module.mdx"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 import Module from "./ModuleDisplay/ModuleDisplay"
@@ -39,8 +38,6 @@ type ModuleComponent =
     }
   | {
       type: "custom-module"
-      name: string
-      description: string | JSX.Element
       children: JSX.Element
     }
 
@@ -62,9 +59,7 @@ const ModuleList = ({
 
   moduleComponentList.push({
     type: "custom-module",
-    name: "LUT",
-    description: <LUTDescription />,
-    children: <LUTContent />,
+    children: <LUT />,
   })
 
   return (
@@ -80,11 +75,7 @@ const ModuleList = ({
           )
         } else {
           return (
-            <CustomModule
-              name={component.name}
-              description={component.description}
-              {...moduleColors[idx % moduleColors.length]}
-            >
+            <CustomModule {...moduleColors[idx % moduleColors.length]}>
               {component.children}
             </CustomModule>
           )

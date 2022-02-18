@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react"
 
-import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardText } from "/components/Text/paragraphs"
 
@@ -29,12 +28,13 @@ const ContentArea = styled.div`
   flex: 1;
 `
 
-const CustomModuleContainer = styled(ContentContainer)`
+const CustomModuleContainer = styled.div`
   margin-top: calc(2rem - 24px);
   margin-left: calc(2rem - 24px);
   padding-top: 1rem;
   padding-left: 1rem;
   width: calc(100% - 24px);
+  min-width: 33%;
 `
 
 interface CustomModuleContentProps {}
