@@ -8,7 +8,6 @@ import {
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
-import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
 import { KafkaContext } from "../kafkaContext"
 import {
   ExerciseCompletionPart,
@@ -308,7 +307,14 @@ export const createCompletion = async ({
       .findUnique({ where: { id: course_id } })
       .completion_email()
     if (template) {
-      await sendEmailTemplateToUser(user, template)
+      await prisma.emailDelivery.create({
+        data: {
+          user_id: user.id,
+          email_template_id: template.id,
+          sent: false,
+          error: false,
+        },
+      })
     }
   } else if (!isNullOrUndefined(tier)) {
     const eligible_for_ects =
@@ -333,18 +339,6 @@ export const createCompletion = async ({
         new DatabaseInputError("Error updating tier", completions[0], error),
       )
     }
-    /*await prisma.completion.update({
-      where: {
-        id: completions[0]!.id,
-      },
-      data: {
-        tier,
-        eligible_for_ects:
-          tier === 1
-            ? false
-            : handlerCourse.automatic_completions_eligible_for_ects,
-      },
-    })*/
   }
 }
 
