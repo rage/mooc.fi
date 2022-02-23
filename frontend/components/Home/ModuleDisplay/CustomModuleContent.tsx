@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react"
 
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardText } from "/components/Text/paragraphs"
+import ReactGA from "react-ga"
 
 import styled from "@emotion/styled"
 
@@ -37,19 +38,43 @@ const CustomModuleContainer = styled.div`
   min-width: 33%;
 `
 
-interface CustomModuleContentProps {}
+interface CustomModuleContentProps {
+  link?: string
+  name?: string
+  label?: string
+}
 
 const CustomModuleContent = ({
   children,
+  link,
+  name,
+  label,
 }: PropsWithChildren<CustomModuleContentProps>) => {
+  const CustomModuleContentWrapper = ({ children }: PropsWithChildren<{}>) =>
+    link ? (
+      <ReactGA.OutboundLink
+        eventLabel={`custommodulesite: ${name}`}
+        to={link}
+        target="_blank"
+        style={{ textDecoration: "none", width: "100%" }}
+        aria-label={label}
+      >
+        {children}
+      </ReactGA.OutboundLink>
+    ) : (
+      <>{children}</>
+    )
+
   return (
     <CustomModuleContainer>
       <Background focusRipple component="div" role="none">
-        <ContentArea>
-          <CardText component="p" paragraph variant="body1">
-            {children}
-          </CardText>
-        </ContentArea>
+        <CustomModuleContentWrapper>
+          <ContentArea>
+            <CardText component="p" paragraph variant="body1">
+              {children}
+            </CardText>
+          </ContentArea>
+        </CustomModuleContentWrapper>
       </Background>
     </CustomModuleContainer>
   )

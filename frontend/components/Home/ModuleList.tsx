@@ -1,4 +1,3 @@
-import CustomModule from "/components/Home/ModuleDisplay/CustomModule"
 import LUT from "/static/md_pages/lut_module.mdx"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
@@ -38,7 +37,7 @@ type ModuleComponent =
     }
   | {
       type: "custom-module"
-      children: JSX.Element
+      module: JSX.Element
     }
 
 const ModuleList = ({
@@ -49,7 +48,7 @@ const ModuleList = ({
   loading: boolean
 }) => {
   if (loading) {
-    ;<Module key="skeletonmodule" {...moduleColors[0]} />
+    return <Module key="skeletonmodule" {...moduleColors[0]} />
   }
 
   const moduleComponentList: Array<ModuleComponent> = modules.map((module) => ({
@@ -59,7 +58,7 @@ const ModuleList = ({
 
   moduleComponentList.push({
     type: "custom-module",
-    children: <LUT />,
+    module: <LUT />,
   })
 
   return (
@@ -74,11 +73,7 @@ const ModuleList = ({
             />
           )
         } else {
-          return (
-            <CustomModule {...moduleColors[idx % moduleColors.length]}>
-              {component.children}
-            </CustomModule>
-          )
+          return component.module
         }
       })}
     </>

@@ -3,11 +3,17 @@ import { PropsWithChildren } from "react"
 import { CenteredContent } from "/components/Home/ModuleDisplay/Common"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 
+import styled from "@emotion/styled"
+
 interface CustomModuleProps {
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
 }
+
+const CustomModuleSection = styled.section`
+  margin-bottom: 3em;
+`
 
 function CustomModule({
   backgroundColor,
@@ -16,7 +22,7 @@ function CustomModule({
   children,
 }: PropsWithChildren<CustomModuleProps>) {
   return (
-    <section style={{ marginBottom: "3em" }}>
+    <CustomModuleSection>
       <ModuleDisplayBackground
         backgroundColor={backgroundColor}
         hueRotateAngle={hueRotateAngle}
@@ -24,7 +30,7 @@ function CustomModule({
       >
         <CenteredContent>{children}</CenteredContent>
       </ModuleDisplayBackground>
-    </section>
+    </CustomModuleSection>
   )
 }
 
