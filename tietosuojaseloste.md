@@ -36,8 +36,8 @@ Palvelun sisältämät avoimet verkkokurssit tarvitsevat henkilötietojasi muun 
 - sekä tietyissä tapauksissa sopimukseen tai suostumukseen (artikla 6.1 a ja b)
 
 ## 5. Rekisterin tietosisältö
-- *Yksilöimistiedot*: opiskelijoiden rekisteröitymisen yhteydessä syöttämät perustiedot (mm. nimi, sähköpostiosoite ja opiskelijanumero)
-- *Opiskelua koskevat tiedot*: kurssien käytössä syntyvät tiedot; esimerkiksi kurssiympäristön käytöstä syntyvät lokitiedot,  tehtäväpalautukset, tehtäväpalautusten arvioinnit ja muihin kurssiaktiviteetteihin käyttäjän itsensä syöttämät tiedot.
+- **Yksilöimistiedot**: opiskelijoiden rekisteröitymisen yhteydessä syöttämät perustiedot (mm. nimi, sähköpostiosoite ja opiskelijanumero)
+- **Opiskelua koskevat tiedot**: kurssien käytössä syntyvät tiedot; esimerkiksi kurssiympäristön käytöstä syntyvät lokitiedot,  tehtäväpalautukset, tehtäväpalautusten arvioinnit ja muihin kurssiaktiviteetteihin käyttäjän itsensä syöttämät tiedot.
 
 Lisäksi käytämme Google analytics-palvelua analysoidessamme käyttäjien toimintaa sivustollamme.
 
@@ -91,27 +91,27 @@ Käyttäjiä ei profiloida henkilökohtaisten ominaisuuksien perusteella.
 
 Rekisteröidyllä on, ellei tietosuojalainsäädännöstä muuta johdu:
 
-*Tietojen tarkastusoikeus (oikeus saada pääsy henkilötietoihin) ja oikeus tietojen oikaisemiseen*
+**Tietojen tarkastusoikeus (oikeus saada pääsy henkilötietoihin) ja oikeus tietojen oikaisemiseen**
 
 _Yksilöivät tiedot_ voi tarkistaa ja niitä voi muokata kirjautumalla palveluun http://tmc.mooc.fi/ ja klikkaamalla käyttäjätunnustasi sivun oikeassa yläreunassa ja menemällä välilehdelle _tilin asetukset_. _Opiskelua koskevat tiedot_ voi tarkistaa jokaisen kurssin osalta erikseen kirjautumalla kyseisen kurssin kotisivulle. Mikäli opiskelua koskevat tiedot ovat virheellisiä voit pyytää niiden oikaisemista lähettämällä sähköpostia osoitteeseen mooc@cs.helsinki.fi
 
-*Oikeus tietojen poistamiseen*
+**Oikeus tietojen poistamiseen**
 
 Käyttäjätunnuksen poistaminen tapahtuu kirjautumalla palveluun http://tmc.mooc.fi/, klikkaamalla käyttäjätunnustasi sivun oikeassa yläreunassa ja menemällä välilehdelle tilin asetukset. Paina tämän jälkeen sivun alareunassa olevaa _poista käyttäjätunnus_ -nappulaa. Saat sähköpostiisi viestin josta sinun tulee vielä vahvistaa tilisi poisto. Tällöin kaikki tunnistetiedot poistetaan. Opiskelua koskevat tiedot voidaan säilyttää anonymisoidussa muodossa vaikka _Yksilöivät tiedot_ poistetaankin. 
 
-*Oikeus käsittelyn rajoittamiseen*
+**Oikeus käsittelyn rajoittamiseen**
 
 Rekisteröidyllä on tietyissä tilanteissa oikeus pyytää henkilötietojensa käsittelyn rajoittamista siksi aikaa, kunnes hänen tietonsa on asianmukaisesti tarkistettu ja korjattu tai täydennetty.
 
-*Vastustamisoikeus*
+**Vastustamisoikeus**
 
 Henkilöllä on tietyissä tilanteissa oikeus henkilökohtaiseen, erityiseen tilanteeseensa perustuen milloin tahansa vastustaa henkilötietojensa käsittelyä.
 
-*Oikeus siirtää tiedot järjestelmästä toiseen*
+**Oikeus siirtää tiedot järjestelmästä toiseen**
 
 Rekisteröidyllä on tietyissä tilanteissa oikeus saada häntä koskevat henkilötiedot, jotka hän on toimittanut rekisterinpitäjälle, jäsennellyssä, yleisesti käytetyssä ja koneellisesti luettavassa muodossa, ja oikeus siirtää tiedot toiselle rekisterinpitäjälle. 
 
-*Oikeus tehdä valitus valvontaviranomaiselle*
+**Oikeus tehdä valitus valvontaviranomaiselle**
 
 Rekisteröidyllä on oikeus tehdä valitus erityisesti vakinaisen asuin- tai työpaikkansa sijainnin mukaiselle valvontaviranomaiselle, jos hän katsoo, että henkilötietojen käsittelyssä rikotaan EU:n yleistä tietosuoja-asetusta (EU) 2016/679. Rekisteröidyllä on lisäksi oikeus käyttää hallinnollisia muutoksenhakukeinoja sekä muita oikeussuojakeinoja.
 
