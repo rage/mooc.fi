@@ -1,6 +1,11 @@
 import { PropsWithChildren } from "react"
 
-import { H2NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import {
+  CardTitle,
+  H2NoBackground,
+  SubtitleNoBackground,
+} from "/components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
 
 import styled from "@emotion/styled"
 
@@ -67,4 +72,22 @@ export const ModuleDescriptionText = ({
   <ModuleDescriptionTextBase variant="subtitle1" component="h3" {...props}>
     {children}
   </ModuleDescriptionTextBase>
+)
+
+export const ModuleCardTitle = ({
+  children,
+  ...props
+}: PropsWithChildren<{}>) => (
+  <CardTitle component="h3" align="center" variant="h3" {...props}>
+    {children}
+  </CardTitle>
+)
+
+export const ModuleCardText = ({
+  children,
+  ...props
+}: PropsWithChildren<{}>) => (
+  <CardText component="p" variant="body1" align="left" {...props}>
+    {children}
+  </CardText>
 )

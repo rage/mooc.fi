@@ -1,6 +1,7 @@
 import {ContentContainer, ModuleHeader, ModuleDescriptionText} from "/components/Home/ModuleDisplay/Common"
-import CustomModuleContent from "/components/Home/ModuleDisplay/CustomModuleContent"
+import CustomModuleContent from "/components/Home/ModuleDisplay/CustomModule/CustomModuleContent"
 import CustomModule from "/components/Home/ModuleDisplay/CustomModule"
+import OutboundLink from "/components/OutboundLink"
 
 <ContentContainer>
 
@@ -14,17 +15,18 @@ LUT-yliopisto tarjoaa ohjelmistotuotannon opintoja joustavina etäopintoina. Opi
 
 </ContentContainer>
 
-<CustomModuleContent link="https://www.lut.fi/ko/opiskelu/avoin-yliopisto/ohjelmistotuotanto" label="Ohjelmistotuotannon opintokokonaisuus">
+<CustomModuleContent>
 
 ### Kesällä 2022 LUT-yliopisto tarjoaa intensiiviversiot osasta kursseista. Ilmoittautuminen kesäopintoihin päättyy 8.5.2022.
+
 - Software Engineering Models and Modeling (englanniksi)
 - User Interfaces and Usability (englanniksi)
 - Ohjelmistotuotanto
 - Ohjelmistojen laadunhallinta (jatkuva ilmoittautuminen)
 
-Löydät lisätietoa ohjelmistotuotannon opintokokonaisuudesta ja yksittäisistä kursseista, sekä kurssi-ilmoittautumisen LUTin sivuilta.
+Löydät lisätietoa ohjelmistotuotannon opintokokonaisuudesta ja yksittäisistä kursseista, sekä kurssi-ilmoittautumisen <OutboundLink eventLabel="custommodulesite: LUT" to="https://www.lut.fi/ko/opiskelu/avoin-yliopisto/ohjelmistotuotanto">LUTin sivuilta</OutboundLink>.
 </CustomModuleContent>
 
 export default ({ children }) => (
-  <CustomModule children={children} backgroundColor="#000000" />
+  <CustomModule children={children} backgroundColor="#000000" id="lut" />
 )

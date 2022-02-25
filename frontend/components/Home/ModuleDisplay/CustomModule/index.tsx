@@ -9,6 +9,7 @@ interface CustomModuleProps {
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
+  id: string
 }
 
 const CustomModuleSection = styled.section`
@@ -20,9 +21,10 @@ function CustomModule({
   hueRotateAngle,
   brightness,
   children,
+  id,
 }: PropsWithChildren<CustomModuleProps>) {
   return (
-    <CustomModuleSection>
+    <CustomModuleSection id={id}>
       <ModuleDisplayBackground
         backgroundColor={backgroundColor}
         hueRotateAngle={hueRotateAngle}
