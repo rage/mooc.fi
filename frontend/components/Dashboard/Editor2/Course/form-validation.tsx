@@ -1,15 +1,17 @@
-import * as Yup from "yup"
+import { testUnique } from "/components/Dashboard/Editor2/Common"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { DateTime } from "luxon"
+import * as Yup from "yup"
+
+import { ApolloClient, DocumentNode } from "@apollo/client"
+
 import {
+  CourseAliasFormValues,
   CourseFormValues,
   CourseTranslationFormValues,
   CourseVariantFormValues,
-  CourseAliasFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { ApolloClient, DocumentNode } from "@apollo/client"
-import { DateTime } from "luxon"
-import { testUnique } from "/components/Dashboard/Editor2/Common"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,
@@ -199,10 +201,10 @@ const courseEditSchema = ({
     support_email: Yup.string().email(t("courseEmailInvalid")),
     exercise_completions_needed: Yup.number()
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
-      .positive(),
+      .min(0),
     points_needed: Yup.number()
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
-      .positive(),
+      .min(0),
   })
 }
 
