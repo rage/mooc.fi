@@ -230,8 +230,8 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
 
     const course = await prisma.course.findUnique({
       where: {
-        id: course_id ?? undefined,
-        slug: slug ?? undefined,
+        id: course_id,
+        slug: slug,
       },
     })
 
@@ -241,8 +241,8 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
 
     const user = await prisma.user.findUnique({
       where: {
-        id: user_id ?? undefined,
-        upstream_id: user_upstream_id ?? undefined,
+        id: user_id,
+        upstream_id: user_upstream_id,
       },
     })
 
@@ -253,8 +253,7 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
     const progresses = await prisma.user
       .findUnique({
         where: {
-          id: user_id ?? undefined,
-          upstream_id: user_upstream_id ?? undefined,
+          id: user.id,
         },
       })
       .user_course_progresses({
@@ -272,8 +271,7 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
       await prisma.user
         .findUnique({
           where: {
-            id: user_id ?? undefined,
-            upstream_id: user_upstream_id ?? undefined,
+            id: user.id,
           },
         })
         .completions({
@@ -304,8 +302,7 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
       await prisma.user
         .findUnique({
           where: {
-            id: user_id ?? undefined,
-            upstream_id: user_upstream_id ?? undefined,
+            id: user.id,
           },
         })
         .completions({
