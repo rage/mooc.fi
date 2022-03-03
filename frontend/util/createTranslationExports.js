@@ -31,11 +31,11 @@ const traverse = (dir) => {
           .join("\n")
         const languages = res.map((r) => r.basename)
         const typename = `${camelCase(basename)}Translations`
-        const exports = `${imports}
-import { TranslationDictionary } from "/translations"\n
+        const exports = `import { TranslationDictionary } from "/translations"\n
+${imports}\n
 export type ${typename} = ${languages
           .map((lang) => `typeof ${lang}`)
-          .join(" & ")}
+          .join(" | ")}\n
 const ${typename}: TranslationDictionary<${typename}> = { ${languages.join(
           ", ",
         )} }\n
