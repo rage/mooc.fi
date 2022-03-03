@@ -94,6 +94,7 @@
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@testing-library/cypress": "^7.0.6",
     "@types/luxon": "^2.0.9",
+    "@types/mdx-js__react": "^1.5.5",
     "@types/papaparse": "^5.3.2",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",

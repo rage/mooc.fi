@@ -1,6 +1,8 @@
+import { ContentContainer } from "/components/Home/ModuleDisplay/Common"
+
 import { Skeleton } from "@mui/material"
+
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
-import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 
 const ModuleDisplaySkeleton = () => {
   return (

@@ -1,5 +1,8 @@
-import Module from "./ModuleDisplay/ModuleDisplay"
+import PartnerDivider from "/components/PartnerDivider"
+import LUT from "/static/md_pages/lut_module.mdx"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+
+import Module from "./ModuleDisplay/ModuleDisplay"
 
 const moduleColors: Array<{
   backgroundColor: string
@@ -28,25 +31,69 @@ const moduleColors: Array<{
   },
 ]
 
+type ModuleComponent =
+  | {
+      type: "module"
+      module: AllModules_study_modules_with_courses
+    }
+  | {
+      type: "custom-module"
+      module: JSX.Element
+    }
+  | {
+      type: "divider"
+    }
+
+const customModuleComponents: Array<ModuleComponent> = [
+  {
+    type: "divider",
+  },
+  {
+    type: "custom-module",
+    module: <LUT />,
+  },
+]
+
 const ModuleList = ({
   modules,
   loading,
 }: {
   modules: AllModules_study_modules_with_courses[]
   loading: boolean
-}) =>
-  loading ? (
-    <Module key="skeletonmodule" {...moduleColors[0]} />
-  ) : (
+}) => {
+  if (loading) {
+    return <Module key="skeletonmodule" {...moduleColors[0]} />
+  }
+
+  let moduleComponentList: Array<ModuleComponent> = modules.map((module) => ({
+    type: "module",
+    module,
+  }))
+
+  moduleComponentList = moduleComponentList.concat(customModuleComponents)
+
+  return (
     <>
-      {modules.map((module, idx) => (
-        <Module
-          key={`module-list-module-${module.id}`}
-          module={module}
-          {...moduleColors[idx % moduleColors.length]}
-        />
-      ))}
+      {moduleComponentList.map((component, idx) => {
+        if (component.type === "module") {
+          return (
+            <Module
+              key={`module-list-module-${component.module.id}`}
+              module={component.module}
+              {...moduleColors[idx % moduleColors.length]}
+            />
+          )
+        }
+        if (component.type === "divider") {
+          return <PartnerDivider style={{ padding: "0 0.5rem 0 0.5rem" }} />
+        }
+
+        if (component.type === "custom-module") {
+          return component.module
+        }
+      })}
     </>
   )
+}
 
 export default ModuleList

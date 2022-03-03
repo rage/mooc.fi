@@ -9,7 +9,7 @@ import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 
 import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
+import { Button } from "@mui/material"
 import Grid from "@mui/material/Grid"
 
 const NaviItemBase = styled(ClickableDiv)`
@@ -37,35 +37,20 @@ type NaviItem = {
 
 interface NaviCardProps {
   item: NaviItem
-  count?: number
 }
 
-const gridLayout = (count: number): { [key: string]: number } =>
-  count % 2 === 1
-    ? {
-        xs: 12,
-        sm: 6,
-        md: 4,
-        lg: 4,
-      }
-    : {
-        xs: 12,
-        sm: 6,
-        md: 6,
-        lg: count <= 2 ? 6 : 3,
-      }
+const Background = styled(FullCoverTextBackground)`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
 
-function NaviCard(props: NaviCardProps) {
-  const { item, count } = props
-  const gridProps =
-    count !== undefined
-      ? gridLayout(count)
-      : {
-          xs: 12,
-        }
+function WideNaviCard(props: NaviCardProps) {
+  const { item } = props
 
   return (
-    <Grid item {...gridProps}>
+    <Grid item xs={12}>
       <LangLink href={item.link} passHref prefetch={false}>
         <StyledLink aria-label={item.linkText}>
           <NaviItemBase>
@@ -85,7 +70,7 @@ function NaviCard(props: NaviCardProps) {
                 />
               </picture>
             ) : null}
-            <FullCoverTextBackground style={{ width: "100%" }}>
+            <Background>
               <CardTitle
                 component="h2"
                 variant="h3"
@@ -93,7 +78,11 @@ function NaviCard(props: NaviCardProps) {
                 style={{ maxWidth: "70%" }}
               >
                 {item.titleImg ? (
-                  <img src={item.titleImg} alt="" style={{ width: "70%" }} />
+                  <img
+                    src={item.titleImg}
+                    alt={item.title}
+                    style={{ width: "70%", maxWidth: "20vh" }}
+                  />
                 ) : (
                   item.title
                 )}
@@ -107,11 +96,14 @@ function NaviCard(props: NaviCardProps) {
                 {item.text}
               </CardText>
               {item.linkText ? (
-                <Button fullWidth aria-disabled="true">
+                <Button
+                  aria-disabled="true"
+                  style={{ width: "20%", maxHeight: "37px" }}
+                >
                   {item.linkText}
                 </Button>
               ) : undefined}
-            </FullCoverTextBackground>
+            </Background>
           </NaviItemBase>
         </StyledLink>
       </LangLink>
@@ -119,4 +111,4 @@ function NaviCard(props: NaviCardProps) {
   )
 }
 
-export default NaviCard
+export default WideNaviCard
