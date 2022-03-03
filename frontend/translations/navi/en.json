@@ -15,14 +15,5 @@
       "link": "/teachers"
     }
   ],
-  "customNaviItems": [
-    {
-      "title": "LUT",
-      "text": "kissa kissa kissa kissa kissa kissa kissa kissa kissa",
-      "titleImg": "/static/images/LUT-LOGO-PNG.png",
-      "link": "#lut",
-      "linkText": "LUT"
-    }
-  ],
-  "partners": "Content from our partners"
+  "customNaviItems": []
 }
