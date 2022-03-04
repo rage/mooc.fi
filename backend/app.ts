@@ -1,23 +1,21 @@
-const PRODUCTION = process.env.NODE_ENV === "production"
+import * as winston from "winston"
+
+import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
+import prisma from "./prisma"
+import server from "./server"
+import knex from "./services/knex"
+import { attachPrismaEvents } from "./util/prismaLogger"
+import { wsListen } from "./wsServer"
 
 require("sharp") // image library sharp seems to crash without this require
-require("dotenv-safe").config({
-  allowEmptyValues: PRODUCTION,
-})
-if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
-  if (process.env.NEW_RELIC_LICENSE_KEY) {
+
+if (isProduction && !NEXUS_REFLECTION) {
+  if (NEW_RELIC_LICENSE_KEY) {
     require("newrelic")
   } else {
     console.log("New Relic license key missing")
   }
 }
-
-import { wsListen } from "./wsServer"
-import server from "./server"
-import prisma from "./prisma"
-import * as winston from "winston"
-import knex from "./services/knex"
-import { attachPrismaEvents } from "./util/prismaLogger"
 
 const logger = winston.createLogger({
   level: "info",
@@ -46,7 +44,7 @@ const startApp = async () => {
     console.log(e)
   })*/
 
-  if (!process.env.NEXUS_REFLECTION) {
+  if (!NEXUS_REFLECTION) {
     app.listen(4000, () => {
       console.log("server running on port 4000")
     })

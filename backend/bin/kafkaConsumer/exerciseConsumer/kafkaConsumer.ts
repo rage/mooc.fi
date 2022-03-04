@@ -1,21 +1,16 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-import { Mutex } from "../../lib/await-semaphore"
+import { LibrdKafkaError } from "node-rdkafka"
 
 import prisma from "../../../prisma"
-import sentryLogger from "../../lib/logger"
-
-import { handleMessage } from "../common/handleMessage"
-import { Message } from "./interfaces"
-import { MessageYupSchema } from "./validate"
-import { saveToDatabase } from "./saveToDB"
-import config from "../kafkaConfig"
-import { createKafkaConsumer } from "../common/createKafkaConsumer"
-import { KafkaError } from "../../lib/errors"
-import { LibrdKafkaError } from "node-rdkafka"
 import knex from "../../../services/knex"
+import { Mutex } from "../../lib/await-semaphore"
+import { KafkaError } from "../../lib/errors"
+import sentryLogger from "../../lib/logger"
+import { createKafkaConsumer } from "../common/createKafkaConsumer"
+import { handleMessage } from "../common/handleMessage"
+import config from "../kafkaConfig"
+import { Message } from "./interfaces"
+import { saveToDatabase } from "./saveToDB"
+import { MessageYupSchema } from "./validate"
 
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 

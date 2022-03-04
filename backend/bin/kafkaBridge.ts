@@ -5,18 +5,18 @@ import morgan from "morgan"
 import * as Kafka from "node-rdkafka"
 import { promisify } from "util"
 
+import {
+  KAFKA_BRIDGE_SECRET,
+  KAFKA_BRIDGE_SERVER_HOST,
+  KAFKA_BRIDGE_SERVER_PORT,
+  KAFKA_HOST,
+} from "../config"
 import { KafkaError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-const SECRET = process.env.KAFKA_BRIDGE_SECRET
-
 const logger = sentryLogger({ service: "kafka-bridge" })
 
-if (!SECRET) {
+if (!KAFKA_BRIDGE_SECRET) {
   console.error("No secret defined in KAFKA_BRIDGE_SECRET, exiting.")
   process.exit(-1)
 }
@@ -33,7 +33,7 @@ if (!SECRET) {
  */
 const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
-  "metadata.broker.list": process.env.KAFKA_HOST,
+  "metadata.broker.list": KAFKA_HOST,
 })
 
 let flushProducer = promisify(producer.flush.bind(producer))
@@ -66,13 +66,13 @@ app.use(compression())
 app.use(express.json())
 app.use(morgan("combined"))
 
-const port = parseInt(process.env.KAFKA_BRIDGE_SERVER_PORT || "3003")
-const host = process.env.KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
+const port = parseInt(KAFKA_BRIDGE_SERVER_PORT || "3003")
+const host = KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 
 app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (
     !req.headers.authorization ||
-    req?.headers?.authorization?.split(" ")[1] !== SECRET
+    req?.headers?.authorization?.split(" ")[1] !== KAFKA_BRIDGE_SECRET
   ) {
     return res.status(403).json({ error: "Not authorized" }).send()
   }

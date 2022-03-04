@@ -1,10 +1,6 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
-import sentryLogger from "./lib/logger"
 import { createKafkaConsumer } from "./kafkaConsumer/common/createKafkaConsumer"
 import { KafkaError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({
   service: "kafka-status",

@@ -1,5 +1,7 @@
 import { Knex } from "knex"
 
+import { DEBUG } from "../config"
+
 export async function up(knex: Knex): Promise<void> {
   // updated_at
   await knex.raw(
@@ -99,7 +101,7 @@ export async function up(knex: Knex): Promise<void> {
       `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
     )*/
   } catch {
-    Boolean(process.env.DEBUG) &&
+    Boolean(DEBUG) &&
       console.warn(
         "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
       )

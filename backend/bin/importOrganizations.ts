@@ -1,13 +1,10 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
-import { TMCError } from "./lib/errors"
+import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
+import { TMCError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
 const tmc = new TmcClient()
 
