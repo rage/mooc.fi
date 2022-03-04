@@ -29,3 +29,4 @@ docker push "$TAG"
 
 echo "Pushing latest"
 docker push eu.gcr.io/moocfi/moocfi-frontend:latest
+  
