@@ -9,7 +9,7 @@ import winston from "winston"
 
 import { PrismaClient, User } from "@prisma/client"
 
-import { DEBUG, TMC_HOST } from "../config"
+import { DATABASE_URL, DB_USER, DEBUG, TMC_HOST } from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
 
@@ -111,7 +111,7 @@ function createTestContext(testContext: TestContext) {
 
       while (true) {
         try {
-          port = await getPort({ port: makeRange(4001, 6000) })
+          port = await getPort({ port: makeRange(4001, 4999) })
           serverInstance = app.listen(port).on("error", (err) => {
             throw err
           })
@@ -153,10 +153,7 @@ function prismaTestContext() {
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
-      // Set the required environment variable to contain the connection string
-      // to our database test schema
-      // process.env.DATABASE_URL = databaseUrl
+      databaseUrl = `${DATABASE_URL}?schema=${schemaName}`
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
       knexClient = knex({
@@ -195,7 +192,7 @@ function prismaTestContext() {
             || ' CASCADE' 
           FROM pg_tables 
           WHERE schemaname = '${schemaName}'
-          AND tableowner = 'prisma'
+          AND tableowner = '${DB_USER}'
         ); 
       END $$;
       `)
