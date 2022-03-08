@@ -1,3 +1,5 @@
+// superseded by _app.tsx, left here for reference
+
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
 import React from "react"
