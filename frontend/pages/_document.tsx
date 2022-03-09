@@ -1,6 +1,12 @@
 import React from "react"
 
-import Document, { Head, Html, Main, NextScript } from "next/document"
+import Document, {
+  DocumentContext,
+  Head,
+  Html,
+  Main,
+  NextScript,
+} from "next/document"
 
 import createEmotionServer from "@emotion/server/create-instance"
 import { ServerStyleSheets } from "@mui/styles"
@@ -9,7 +15,7 @@ import createEmotionCache from "../src/createEmotionCache"
 import theme from "../src/theme"
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
+  static async getInitialProps(ctx: DocumentContext) {
     const sheets = new ServerStyleSheets()
 
     const originalRenderPage = ctx.renderPage
@@ -19,7 +25,7 @@ class MyDocument extends Document {
 
     ctx.renderPage = () =>
       originalRenderPage({
-        enhanceApp: (App) =>
+        enhanceApp: (App: any) =>
           function EnhanceApp(props) {
             return sheets.collect(<App emotionCache={cache} {...props} />)
           },
@@ -34,6 +40,7 @@ class MyDocument extends Document {
         dangerouslySetInnerHTML={{ __html: style.css }}
       />
     ))
+
     return {
       ...initialProps,
 
