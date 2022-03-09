@@ -27,10 +27,10 @@ const StyledLink = styled.a`
 `
 
 type NaviItem = {
-  title: string
+  title?: string
   text: string
   linkText: string
-  img: string
+  img?: string
   link: string
   titleImg?: string
 }
