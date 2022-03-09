@@ -85,7 +85,12 @@ const ModuleList = ({
           )
         }
         if (component.type === "divider") {
-          return <PartnerDivider style={{ padding: "0 0.5rem 0 0.5rem" }} />
+          return (
+            <PartnerDivider
+              key={`divider-${idx}`}
+              style={{ padding: "0 0.5rem 0 0.5rem" }}
+            />
+          )
         }
 
         if (component.type === "custom-module") {
