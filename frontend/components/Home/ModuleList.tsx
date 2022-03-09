@@ -38,6 +38,7 @@ type ModuleComponent =
     }
   | {
       type: "custom-module"
+      id?: string
       module: JSX.Element
     }
   | {
@@ -50,6 +51,7 @@ const customModuleComponents: Array<ModuleComponent> = [
   },
   {
     type: "custom-module",
+    id: "lut",
     module: <LUT />,
   },
 ]
@@ -94,7 +96,11 @@ const ModuleList = ({
         }
 
         if (component.type === "custom-module") {
-          return component.module
+          return component.id ? (
+            <section id={component.id}>{component.module}</section>
+          ) : (
+            component.module
+          )
         }
       })}
     </>

@@ -1,6 +1,5 @@
 import {ContentContainer, ModuleHeader, ModuleDescriptionText} from "/components/Home/ModuleDisplay/Common"
-import CustomModuleContent from "/components/Home/ModuleDisplay/CustomModule/CustomModuleContent"
-import CustomModule from "/components/Home/ModuleDisplay/CustomModule"
+import {CustomModule, CustomModuleContent} from "/components/Home/ModuleDisplay/CustomModule"
 import OutboundLink from "/components/OutboundLink"
 
 <ContentContainer>
@@ -28,5 +27,5 @@ Löydät lisätietoa ohjelmistotuotannon opintokokonaisuudesta ja yksittäisist�
 </CustomModuleContent>
 
 export default ({ children }) => (
-  <CustomModule children={children} backgroundColor="#000000" id="lut" />
+  <CustomModule children={children} backgroundColor="#000000" />
 )
