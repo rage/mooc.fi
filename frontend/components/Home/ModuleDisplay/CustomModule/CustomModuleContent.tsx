@@ -55,7 +55,7 @@ const components = {
   p: ModuleCardText,
 }
 
-const CustomModuleContent = ({
+export const CustomModuleContent = ({
   children,
 }: PropsWithChildren<CustomModuleContentProps>) => {
   return (
@@ -68,5 +68,3 @@ const CustomModuleContent = ({
     </MDXProvider>
   )
 }
-
-export default CustomModuleContent
