@@ -260,10 +260,10 @@ const courseEditSchema = ({
     support_email: Yup.string().email(t("courseEmailInvalid")),
     exercise_completions_needed: Yup.number()
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
-      .positive(),
+      .min(0),
     points_needed: Yup.number()
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
-      .positive(),
+      .min(0),
   })
 
 const validateSlug = ({
