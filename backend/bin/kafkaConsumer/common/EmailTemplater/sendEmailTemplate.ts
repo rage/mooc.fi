@@ -1,35 +1,35 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import { User, EmailTemplate } from "@prisma/client"
 import * as nodemailer from "nodemailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
-import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
-import prisma from "../../../../prisma"
 
-const email_host = process.env.SMTP_HOST
-const email_user = process.env.SMTP_USER
-const email_pass = process.env.SMTP_PASS
-const email_port = process.env.SMTP_PORT
-const email_from = process.env.SMTP_FROM
+import { EmailTemplate, User } from "@prisma/client"
+
+import {
+  SMTP_FROM,
+  SMTP_HOST,
+  SMTP_PASS,
+  SMTP_PORT,
+  SMTP_USER,
+} from "../../../../config"
+import prisma from "../../../../prisma"
+import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
 
 export async function sendEmailTemplateToUser(
   user: User,
   template: EmailTemplate,
 ) {
   const options: SMTPTransport.Options = {
-    host: email_host,
-    port: parseInt(email_port || ""),
+    host: SMTP_HOST,
+    port: parseInt(SMTP_PORT || ""),
     secure: false, // true for 465, false for other ports
     auth: {
-      user: email_user, // generated ethereal user
-      pass: email_pass, // generated ethereal password
+      user: SMTP_USER, // generated ethereal user
+      pass: SMTP_PASS, // generated ethereal password
     },
   }
   let transporter = nodemailer.createTransport(options)
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: email_from, // sender address
+    from: SMTP_FROM, // sender address
     to: user.email, // list of receivers
     subject: template.title ?? undefined, // Subject line
     text: await ApplyTemplate(template, user), // plain text body

@@ -10,15 +10,12 @@ import * as winston from "winston"
 import { PrismaClient } from "@prisma/client"
 
 import { apiRouter } from "./api"
+import { DEBUG, isProduction, isTest } from "./config"
 import schema from "./schema"
-
-const PRODUCTION = process.env.NODE_ENV === "production"
 
 const helmet = require("helmet")
 const bodyParser = require("body-parser")
 
-const DEBUG = Boolean(process.env.DEBUG)
-const TEST = process.env.NODE_ENV === "test"
 interface ServerContext {
   prisma: PrismaClient
   logger: winston.Logger
@@ -37,7 +34,7 @@ const createExpressAppWithContext = ({
   app.use(cors())
   app.use(helmet.frameguard())
   app.use(bodyParser.json())
-  if (!TEST) {
+  if (!isTest) {
     app.use(morgan("combined"))
   }
   app.use(graphqlUploadExpress())
@@ -60,7 +57,7 @@ export default async (serverContext: ServerContext) => {
     schema,
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground({
-        endpoint: PRODUCTION ? "/api" : "/",
+        endpoint: isProduction ? "/api" : "/",
       }),
     ],
     introspection: true,
@@ -71,7 +68,7 @@ export default async (serverContext: ServerContext) => {
 
   const app = createExpressAppWithContext(serverContext)
 
-  apollo.applyMiddleware({ app, path: PRODUCTION ? "/api" : "/" })
+  apollo.applyMiddleware({ app, path: isProduction ? "/api" : "/" })
 
   return {
     apollo,

@@ -1,25 +1,29 @@
 version: 2.1
 orbs:
   helm: circleci/helm@1.1.2
-  docker: circleci/docker@1.5.0
+  docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
+  node: circleci/node@5.0.0
+executors:
+  backend_test: 
+    docker:
+      - image: cimg/node:14.18.3
+      - image: cimg/postgres:11.13
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+          POSTGRES_PASSWORD: ""
+  backend_build:
+    docker:
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
+
 jobs:
   code_style:
     docker:
       - image: circleci/node:14
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-root-{{ .Branch }}
-      - run:
-          name: "Install dependencies"
-          command: "npm ci"
-      - save_cache:
-          key: node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
+      - node/install-packages
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
@@ -42,15 +46,114 @@ jobs:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - run:
-          name: "Push image if on master"
+          name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
 
+  prepare_backend_test:
+    executor: backend_test
+    working_directory: ~/project/backend
+    steps: 
+      - checkout:
+          path: ~/project
+      - jq/install
+      - node/install-packages
+      - run:
+          name: "Set environment"
+          command: |
+            npm run download-env
+            cp .env.example .env
+      - run:
+          name: "Set up Prisma"
+          command: |
+            npm run generate
+      - persist_to_workspace:
+          root: ~/project
+          paths: 
+           - .
+
+  test_backend:
+    executor: backend_test
+    environment:
+      DATABASE_URL: postgres://root@localhost/circle_test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_NAME: circle_test
+      RUNNING_IN_CI: "true"
+      NODE_ENV: test
+      JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
+    parallelism: 8
+    working_directory: ~/project/backend
+    steps: 
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: "Install psql client"
+          command: |
+            sudo apt-get update
+            sudo apt-get install postgresql-client 
+      - run:
+          name: "Wait for database"
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: "Create extensions"
+          command: | 
+            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+      - run:
+          name: "Run tests"
+          command: |
+            TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
+            echo $TEST
+            npm run test:ci -- --runTestsByPath $TEST
+      - store_test_results:
+          path: ./coverage/junit/
+      - store_artifacts:
+          path: ./coverage/junit/
+      - store_artifacts:
+          path: ./coverage/jest
+          destination: backend-tests
+      - persist_to_workspace:
+          root: ~/project/backend
+          paths:
+            - coverage
+      - run:
+          name: "Upload coverage"
+          command: |
+            curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
+            chmod +x /tmp/codecov
+            /tmp/codecov -F backend
+      #- run:
+      #    name: "Upload coverage"
+      #    command: bash <(curl -s https://codecov.io/bash)
+
+  # could combine the artifacts in this step if needed, now the codecov/junit stuff combines automatically
+  # upload_backend_coverage:
+  #   executor: backend_test
+  #   working_directory: ~/project/backend/coverage
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/project/backend
+  #     - run:
+  #         name: "Debug workspace"
+  #         command: find .
+  #     - run:
+  #         name: "Combine coverage"
+  #         command: |
+  #           echo "Not implemented yet"
+  #     - run:
+  #         name: "Upload coverage"
+  #         command: |
+  #           echo "Not implemented yet"
+  
+  # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
+  # - only that the node version is different in backend image?
   build_backend:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    executor: backend_build
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.13
       - jq/install
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
@@ -58,38 +161,70 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - run:
-          name: "Preparing DB for tests"
-          command: "bin/prepare-db-for-tests.sh"
+          name: "Persist image"
+          command: |
+            REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
+            TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
+            mkdir -p ~/project/build
+            docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - build
+
+  push_backend:
+    executor: backend_build
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
-          name: "Tests"
-          command: "bin/run-backend-tests.sh"
-      - store_test_results:
-          path: ~/project/backend/coverage/junit/
-      - store_artifacts:
-          path: ~/project/backend/coverage/jest
-          destination: backend-tests
+          name: "Restore image"
+          command: |
+            docker load < ./build/moocfi-backend.tar.gz
       - run:
-          name: "Upload coverage"
-          command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
-      - run:
-          name: "Push image if on master"
+          name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
 
-  build_shibbo:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-    steps:
-      - checkout
-      - setup_remote_docker
-      - jq/install
-      - docker/install-docker-tools:
-          docker-compose-version: 1.29.2
-      - run:
-          name: "Build image"
-          command: "bin/build-docker-shibbo.sh"
-      - run:
-          name: "Push image if on master"
-          command: "bin/push-docker-shibbo-image.sh"  
+  # build_auth:
+  #   docker:
+  #     - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker:
+  #         version: 19.03.13
+  #     - jq/install
+  #     - docker/install-docker-tools:
+  #         docker-compose-version: 1.29.2
+  #     - run:
+  #         name: "Install deps for tests"
+  #         command: |
+  #           cd auth
+  #           npm ci
+  #           cd ..
+  #     - run:
+  #         name: "Tests"
+  #         command: "bin/run-auth-tests.sh"
+  #     - run:
+  #         name: "Build image"
+  #         command: "bin/build-docker-auth.sh"
+  #     - store_test_results:
+  #         path: ~/project/auth/coverage/junit/
+  #     - store_artifacts:
+  #         path: ~/project/auth/coverage/jest
+  #         destination: auth-tests
+  #     - run:
+  #         name: "Upload coverage"
+  #         command: |
+  #           curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
+  #           chmod +x /tmp/codecov
+  #           cd ~/project/auth
+  #           /tmp/codecov -F auth
+  #         # command: "cd ~/project/auth && bash <(curl -s https://codecov.io/bash)"
+  #     - run:
+  #         name: "Push image if on master"
+  #         command: "bin/push-docker-auth-image.sh"  
     
   deploy_to_production:
     docker:
@@ -110,17 +245,37 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build_frontend
-      - build_backend
-      - build_shibbo
       - code_style
+      - build_frontend
+      - prepare_backend_test
+      - test_backend:
+          requires:
+            - prepare_backend_test
+      #- upload_backend_coverage:
+      #    requires: 
+      #      - test_backend
+      - build_backend
+      - push_backend:
+          requires:
+            - test_backend
+            - build_backend
+          filters:
+            branches:
+              only:
+                - master
+                - staging
+      # - build_auth
       - deploy_to_production:
           requires:
             - build_frontend
+            - test_backend
+            #- upload_backend_coverage
             - build_backend
-            - build_shibbo
+            - push_backend
+            # - build_auth
             - code_style
           filters:
             branches:
               only:
                 - master
+                - staging

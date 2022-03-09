@@ -1,12 +1,10 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import { User, Course, UserCourseProgress } from "@prisma/client"
+import { Course, User, UserCourseProgress } from "@prisma/client"
+
 import { BAItiers } from "../../../../config/courseConfig"
-import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
-import { checkBAICompletion } from "./generateBAIUserCourseProgress"
 import { KafkaContext } from "../kafkaContext"
 import { checkAndSendThresholdEmail } from "./checkAndSendThresholdEmail"
+import { checkBAICompletion } from "./generateBAIUserCourseProgress"
+import { checkCompletion, getCombinedUserCourseProgress } from "./userFunctions"
 
 interface Props {
   user: User
