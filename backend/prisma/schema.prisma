@@ -7,24 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Completion {
-  certificate_id            String?
-  completion_language       String?
-  course_id                 String?                 
-  created_at                DateTime?               @default(now())
-  eligible_for_ects         Boolean?                @default(true)
-  email                     String
-  grade                     String?
+model AbEnrollment {
   id                        String                  @id @default(uuid())
-  student_number            String?
-  updated_at                DateTime?               @updatedAt
   user_id                   String?                 
-  user_upstream_id          Int?
-  course                    Course?                 @relation(fields: [course_id], references: [id])
+  ab_study_id               String                 
+  group                     Int?
+  created_at                DateTime?               @default(now())
+  updated_at                DateTime?               @updatedAt
   user                      User?                   @relation(fields: [user_id], references: [id])
-  completions_registered    CompletionRegistered[]
-  completion_date           DateTime?
-  tier                      Int?
+  ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
+
+  @@unique([user_id, ab_study_id])
+  @@map("ab_enrollment")
+}
+
+model AbStudy {
+  id                        String                  @id @default(uuid())
+  group_count               Int
+  name                      String
+  created_at                DateTime?               @default(now())
+  updated_at                DateTime?               @updatedAt
+  ab_enrollments            AbEnrollment[]
+
+  @@map("ab_study")
+}
+
+model Completion {
+  certificate_id                            String?
+  completion_language                       String?
+  course_id                                 String?
+  created_at                                DateTime?               @default(now())
+  eligible_for_ects                         Boolean?                @default(true)
+  email                                     String
+  grade                                     String?
+  id                                        String                  @id @default(uuid())
+  student_number                            String?
+  updated_at                                DateTime?               @updatedAt
+  user_id                                   String?
+  user_upstream_id                          Int?
+  course                                    Course?                 @relation(fields: [course_id], references: [id])
+  user                                      User?                   @relation(fields: [user_id], references: [id])
+  completions_registered                    CompletionRegistered[]
+  completion_date                           DateTime?
+  tier                                      Int?
+  completion_registration_attempt_date      DateTime?
 
   @@map("completion")
 }
@@ -42,6 +68,7 @@ model CompletionRegistered {
   course                                           Course?       @relation(fields: [course_id], references: [id])
   organization                                     Organization? @relation(fields: [organization_id], references: [id])
   user                                             User?         @relation(fields: [user_id], references: [id])
+  registration_date                                DateTime?
 
   @@map("completion_registered")
 }
@@ -75,7 +102,7 @@ model Course {
   teacher_in_charge_email                            String
   teacher_in_charge_name                             String
   updated_at                                         DateTime?                           @updatedAt
-  completion_email                                   EmailTemplate?                      @relation(fields: [completion_email_id], references: [id])
+  completion_email                                   EmailTemplate?                      @relation("courseTocourse_completion_email", fields: [completion_email_id], references: [id])
   completions_handled_by                             Course?                             @relation("courseTocourse_completions_handled_by", fields: [completions_handled_by_id], references: [id])
   inherit_settings_from                              Course?                             @relation("courseTocourse_inherit_settings_from", fields: [inherit_settings_from_id], references: [id])
   owner_organization                                 Organization?                       @relation(fields: [owner_organization_id], references: [id])
@@ -84,6 +111,7 @@ model Course {
   completions_registered                             CompletionRegistered[]
   handles_completions_for                            Course[]                            @relation("courseTocourse_completions_handled_by")
   other_course_courseTocourse_inherit_settings_from  Course[]                            @relation("courseTocourse_inherit_settings_from")
+  triggered_automatically_email                      EmailTemplate[]                     @relation("emailTemplateToCourse_triggered")
   course_aliases                                     CourseAlias[]
   course_organizations                               CourseOrganization[]
   course_translations                                CourseTranslation[]
@@ -98,6 +126,10 @@ model Course {
   study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
   upcoming_active_link                               Boolean?
   tier                                               Int?
+  stored_data                                        StoredData[]                        
+  ownerships                                         CourseOwnership[]
+  course_stats_email_id                              String?
+  course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
 
   @@map("course")
 }
@@ -130,6 +162,7 @@ model CourseTranslation {
   course_id                         String?   
   created_at                        DateTime? @default(now())
   description                       String
+  instructions                      String?
   id                                String    @id @default(uuid())
   language                          String
   link                              String?
@@ -144,6 +177,7 @@ model CourseVariant {
   course_id                     String?   
   created_at                    DateTime? @default(now())
   description                   String?
+  instructions                  String?
   id                            String    @id @default(uuid())
   slug                          String
   updated_at                    DateTime? @updatedAt
@@ -168,15 +202,22 @@ model EmailDelivery {
 }
 
 model EmailTemplate {
-  created_at       DateTime?        @default(now())
-  html_body        String?
-  id               String           @id @default(uuid())
-  name             String?
-  title            String?
-  txt_body         String?
-  updated_at       DateTime?        @updatedAt
-  courses          Course[]
-  email_deliveries EmailDelivery[]
+  created_at                               DateTime?                  @default(now())
+  html_body                                String?          
+  id                                       String                     @id @default(uuid())
+  name                                     String?          
+  title                                    String?          
+  txt_body                                 String?          
+  template_type                            String?          
+  exercise_completions_threshold           Int?         
+  points_threshold                         Int?         
+  updated_at                               DateTime?                  @updatedAt
+  triggered_automatically_by_course_id     String?              
+  triggered_automatically_by_course        Course?                    @relation("emailTemplateToCourse_triggered", fields: [triggered_automatically_by_course_id], references: [id])
+  courses                                  Course[]                   @relation("courseTocourse_completion_email")
+  stats_courses                            Course[]                   @relation("courseTocourse_course_stats_email")
+  email_deliveries                         EmailDelivery[]
+  course_stats_subscriptions               CourseStatsSubscription[]
 
   @@map("email_template")
 }
@@ -214,7 +255,8 @@ model ExerciseCompletion {
   user                                   User?                                  @relation(fields: [user_id], references: [id])
   exercise_completion_required_actions   ExerciseCompletionRequiredAction[]
   attempted                              Boolean?
-
+  original_submission_date               DateTime?
+  
   @@map("exercise_completion")
 }
 
@@ -256,6 +298,7 @@ model OpenUniversityRegistrationLink {
   stop_date                                        DateTime?
   updated_at                                       DateTime? @updatedAt
   course                                           Course?   @relation(fields: [course_id], references: [id])
+  tiers                                            Json?
 
   @@map("open_university_registration_link")
 }
@@ -320,6 +363,19 @@ model Service {
   @@map("service")
 }
 
+model StoredData {
+  created_at                     DateTime?                      @default(now())
+  updated_at                     DateTime?                      @updatedAt
+  data                           String
+  course_id                      String
+  user_id                        String
+  course                         Course?                        @relation(fields: [course_id], references: [id])
+  user                           User?                          @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, course_id])
+  @@map("stored_data")
+}
+
 model StudyModule {
   created_at                DateTime?                  @default(now())
   id                        String                     @id @default(uuid())
@@ -370,8 +426,10 @@ model User {
   user_course_settings           UserCourseSetting[]
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
-  reports                        Report[]
-  report_jobs                    ReportJob[]
+  ab_enrollments                 AbEnrollment[]
+  stored_data                    StoredData[]
+  course_ownerships              CourseOwnership[]
+  course_stats_subscriptions     CourseStatsSubscription[]
 
   @@map("user")
 }
@@ -477,42 +535,31 @@ model VerifiedUser {
   @@map("verified_user")
 }
 
-// model Report {
-//   id                                      String         @id @default(uuid())
-//   created_at                              DateTime?      @default(now())
-//   updated_at                              DateTime?      @updatedAt
-//   name                                    String?
-//   user_id                                 String
-//   user                                    User           @relation(fields: [user_id], references: [id])
-//   result                                  Json
-//   params                                  Json
-//   report_job                              ReportJob?
-// 
-//   @@map("report")
-// }
+model CourseOwnership {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  user_id                                  String?
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  user                                     User?         @relation(fields: [user_id], references: [id])  
 
-// - user selects what they want to query, params and all
-// - report job is created with the params
-// - job runs the queries in sequence and stores the results in report
-// - when it's finished, it's finished -- some mechanism to inform user 
-// - old reports from user show up in the frontend, with the option to refresh them
-//   ie. create new job with same parameters
-// - frontend just visualizes the report data then
+  @@unique([user_id, course_id])
+  @@map("course_ownership")
+}
 
-// model ReportJob {
-//   id                                      String         @id @default(uuid())
-//   created_at                              DateTime?      @default(now())
-//   updated_at                              DateTime?      @updatedAt
-//   name                                    String?
-//   user_id                                 String
-//   user                                    User           @relation(fields: [user_id], references: [id])
-//   params                                  Json
-//   report_id                               String?
-//   report                                  Report?        @relation(fields: [report_id], references: [id]) 
-//   finished                                Boolean
-// 
-//   @@map("report_job")
-// }
+model CourseStatsSubscription {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  id                                       String           @id @default(uuid())
+  user_id                                  String?
+  email_template_id                        String?
+  user                                     User?            @relation(fields: [user_id], references: [id])
+  email_template                           EmailTemplate?   @relation(fields: [email_template_id], references: [id])
+
+  @@unique([user_id, email_template_id])
+  @@map("course_stats_subscription")
+}
 
 enum CourseStatus {
   Active

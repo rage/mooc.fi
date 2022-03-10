@@ -1,11 +1,9 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
 import { Completion, User } from "@prisma/client"
+
 import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
 import knex from "../services/knex"
 import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/generateBAIUserCourseProgress"
+import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "update-bai-completion-tiers" })
 

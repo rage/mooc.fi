@@ -1,18 +1,26 @@
-require("sharp") // ensure correct zlib thingy
-
-import { PrismaClient, User } from "@prisma/client"
-import { Server } from "http"
+import type { ApolloServer } from "apollo-server-express"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
-import { nanoid } from "nanoid"
+import { Server } from "http"
 import { knex, Knex } from "knex"
-import server from "../server"
-import type { ApolloServer } from "apollo-server-express"
-import winston from "winston"
+import { nanoid } from "nanoid"
 import nock from "nock"
-import binPrisma from "../prisma"
+import winston from "winston"
 
-const DEBUG = Boolean(process.env.DEBUG)
+import { PrismaClient, User } from "@prisma/client"
+
+import { DATABASE_URL, DB_USER, DEBUG, TMC_HOST } from "../config"
+import binPrisma from "../prisma"
+import server from "../server"
+
+require("sharp") // ensure correct zlib thingy
+
+function fail(reason = "fail was called in a test") {
+  throw new Error(reason)
+}
+
+// @ts-ignore: jest has no explicit fail anymore
+global.fail = fail
 
 export const logger = {
   format: {
@@ -55,7 +63,7 @@ export function getTestContext(): TestContext {
   const ctx = createTestContext(testContext)
 
   // beforeEach
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     const { port, prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
@@ -65,17 +73,14 @@ export function getTestContext(): TestContext {
       knex: knexClient,
       version,
     })
-    done()
   })
-  afterEach(async (done) => {
+  afterEach(async () => {
     await ctx.clean()
-    done()
   })
 
-  afterAll(async (done) => {
+  afterAll(async () => {
     await ctx.after()
     await binPrisma.$disconnect()
-    done()
   })
   return testContext
 }
@@ -94,7 +99,7 @@ function createTestContext(testContext: TestContext) {
     async before() {
       const { prisma, knexClient } = await prismaCtx.before()
 
-      const { apollo, app } = server({
+      const { apollo, app } = await server({
         prisma,
         knex: knexClient,
         logger: testContext.logger,
@@ -106,12 +111,10 @@ function createTestContext(testContext: TestContext) {
 
       while (true) {
         try {
-          port = await getPort({ port: makeRange(4001, 6000) })
-          try {
-            serverInstance = app.listen(port)
-          } catch {
-            throw new Error("port in use")
-          }
+          port = await getPort({ port: makeRange(4001, 4999) })
+          serverInstance = app.listen(port).on("error", (err) => {
+            throw err
+          })
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -150,10 +153,7 @@ function prismaTestContext() {
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
-      // Set the required environment variable to contain the connection string
-      // to our database test schema
-      // process.env.DATABASE_URL = databaseUrl
+      databaseUrl = `${DATABASE_URL}?schema=${schemaName}`
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
       knexClient = knex({
@@ -192,7 +192,7 @@ function prismaTestContext() {
             || ' CASCADE' 
           FROM pg_tables 
           WHERE schemaname = '${schemaName}'
-          AND tableowner = 'prisma'
+          AND tableowner = '${DB_USER}'
         ); 
       END $$;
       `)
@@ -216,12 +216,15 @@ export function fakeTMCCurrent(
 ) {
   return {
     setup() {
-      nock(process.env.TMC_HOST || "")
+      nock(TMC_HOST || "")
         .persist()
         .get(url)
         .reply(function () {
           const auth = this.req.headers.authorization
 
+          if (!Array.isArray(users[auth])) {
+            throw new Error(`Invalid fakeTMCCurrent entry for auth ${auth}`)
+          }
           return users[auth]
         })
     },
@@ -235,10 +238,13 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
   return {
     setup() {
       for (const [user_id, reply] of Object.entries(users)) {
-        nock(process.env.TMC_HOST || "")
+        nock(TMC_HOST || "")
           .persist()
           .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
           .reply(function () {
+            if (!Array.isArray(reply)) {
+              throw new Error(`Invalid fakeTMCSpecific entry ${reply}`)
+            }
             return reply
           })
       }
@@ -250,11 +256,11 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
 }
 
 export const fakeGetAccessToken = (reply: [number, string]) =>
-  nock(process.env.TMC_HOST || "")
+  nock(TMC_HOST || "")
     .post("/oauth/token")
     .reply(() => [reply[0], { access_token: reply[1] }])
 
 export const fakeUserDetailReply = (reply: [number, object]) =>
-  nock(process.env.TMC_HOST || "")
+  nock(TMC_HOST || "")
     .get("/api/v8/users/recently_changed_user_details")
     .reply(reply[0], () => reply[1])

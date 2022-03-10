@@ -38,15 +38,10 @@ const NewCourse = () => {
   const clone = useQueryParameter("clone", false)
   const beta = useQueryParameter("beta", false)
 
-  const {
-    loading,
-    error,
-    coursesData,
-    studyModulesData,
-    courseData,
-  } = useEditorCourses({
-    slug: clone,
-  })
+  const { loading, error, coursesData, studyModulesData, courseData } =
+    useEditorCourses({
+      slug: clone,
+    })
 
   useBreadcrumbs([
     {

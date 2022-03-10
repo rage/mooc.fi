@@ -5,7 +5,7 @@ import {
 } from "/components/Dashboard/Editor/common"
 import CoursesTranslations from "/translations/courses"
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { useTranslator } from "/util/useTranslator"
@@ -70,6 +70,20 @@ const CourseTranslationListItem = (props: Props) => {
         label={t("courseDescription")}
         InputLabelProps={inputLabelProps}
         error={getIn(errors, `[${index}].description`)}
+        fullWidth
+        multiline
+        rows={5}
+        autoComplete="off"
+        variant="outlined"
+        component={StyledTextField}
+      />
+      <StyledFieldWithAnchor
+        id={`course_translations[${index}].instructions`}
+        name={`course_translations[${index}].instructions`}
+        type="textarea"
+        label={t("courseInstructions")}
+        InputLabelProps={inputLabelProps}
+        error={getIn(errors, `[${index}].instructions`)}
         fullWidth
         multiline
         rows={5}

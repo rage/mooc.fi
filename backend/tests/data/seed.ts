@@ -1,17 +1,26 @@
 import type { PrismaClient } from "@prisma/client"
+
 import {
-  courses,
-  study_modules,
-  organizations,
-  users,
+  abEnrollments,
+  abStudies,
   completions,
-  services,
-  userCourseSettings,
-  exercises,
+  completionsRegistered,
+  courseAliases,
+  courseOwnerships,
+  courses,
+  emailTemplateThresholds,
   exerciseCompletions,
+  exercises,
+  openUniversityRegistrationLink,
+  organizations,
+  services,
+  storedData,
+  study_modules,
   userCourseProgresses,
   userCourseServiceProgresses,
-} from "."
+  userCourseSettings,
+  users,
+} from "./"
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 
@@ -39,6 +48,8 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseSetting",
     userCourseSettings,
   )
+  const seededAbStudies = await create("abStudy", abStudies)
+  const seededAbEnrollments = await create("abEnrollment", abEnrollments)
   const seededExercises = await create("exercise", exercises)
   const seededExerciseCompletions = await create(
     "exerciseCompletion",
@@ -52,6 +63,24 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseServiceProgress",
     userCourseServiceProgresses,
   )
+  const seededEmailThresholdtemplates = await create(
+    "emailTemplate",
+    emailTemplateThresholds,
+  )
+  const seededCompletionsRegistered = await create(
+    "completionRegistered",
+    completionsRegistered,
+  )
+  const seededCourseAliases = await create("courseAlias", courseAliases)
+  const seededOpenUniversityRegistrationLink = await create(
+    "openUniversityRegistrationLink",
+    openUniversityRegistrationLink,
+  )
+  const seededStoredData = await create("storedData", storedData)
+  const seededCourseOwnerships = await create(
+    "courseOwnership",
+    courseOwnerships,
+  )
 
   return {
     courses: seededCourses,
@@ -61,9 +90,17 @@ export const seed = async (prisma: PrismaClient) => {
     completions: seededCompletions,
     services: seededServices,
     userCourseSettings: seededUserCourseSettings,
+    abStudies: seededAbStudies,
+    abEnrollments: seededAbEnrollments,
     exercises: seededExercises,
     exerciseCompletions: seededExerciseCompletions,
     userCourseProgresses: seededUserCourseProgresses,
     userCourseServiceProgresses: seededUserCourseServiceProgresses,
+    emailTemplates: seededEmailThresholdtemplates,
+    completionsRegistered: seededCompletionsRegistered,
+    courseAliases: seededCourseAliases,
+    openUniversityRegistrationLink: seededOpenUniversityRegistrationLink,
+    storedData: seededStoredData,
+    courseOwnerships: seededCourseOwnerships,
   }
 }

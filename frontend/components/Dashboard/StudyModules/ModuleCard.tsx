@@ -1,7 +1,7 @@
-import { Grid, Typography, Skeleton } from "@material-ui/core"
-import EditIcon from "@material-ui/icons/Edit"
-import AddIcon from "@material-ui/icons/Add"
-import AddCircleIcon from "@material-ui/icons/AddCircle"
+import { Grid, Typography, Skeleton } from "@mui/material"
+import EditIcon from "@mui/icons-material/Edit"
+import AddIcon from "@mui/icons-material/Add"
+import AddCircleIcon from "@mui/icons-material/AddCircle"
 import styled from "@emotion/styled"
 import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
@@ -135,8 +135,9 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
           ) : module ? (
-            <LangLink href={`/study-modules/${module.slug}/edit`}>
-              <a>
+            <LangLink href={`/study-modules/${module.slug}/edit`} passHref>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a aria-label={`Edit study module ${module.name}`}>
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"
@@ -148,8 +149,9 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               </a>
             </LangLink>
           ) : (
-            <LangLink href={`/study-modules/new`}>
-              <a>
+            <LangLink href={`/study-modules/new`} passHref>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a aria-label="Create new study module">
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"

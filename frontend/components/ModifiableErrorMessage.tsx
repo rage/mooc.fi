@@ -2,11 +2,11 @@ import {
   ErrorMessageBackground as StyledCard,
   ErrorMessageContentArea as StyledCardContent,
 } from "/components/Surfaces/ErrorMessageBackground"
-import Report from "@material-ui/icons/Report"
-import Typography from "@material-ui/core/Typography"
+import Report from "@mui/icons-material/Report"
+import Typography from "@mui/material/Typography"
 import styled from "@emotion/styled"
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
-import Refresh from "@material-ui/icons/Refresh"
+import Refresh from "@mui/icons-material/Refresh"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 

@@ -1,64 +1,88 @@
-import { Typography, Paper, Button, Tooltip } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { useTranslator } from "/util/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
+import { useTranslator } from "/util/useTranslator"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      padding: "1em",
-      margin: "1em",
-      display: "flex",
-      flexDirection: "column",
-    },
-    button: {
-      width: "65%",
-      margin: "auto",
-      marginBottom: "1em",
-    },
-    tooltip: {
-      backgroundColor: theme.palette.common.white,
-      fontSize: 11,
-      color: "black",
-      border: "1px solid black",
-    },
-  }),
-)
+import styled from "@emotion/styled"
+import { Button, Paper, Tooltip, Typography } from "@mui/material"
 
-function LinkButton(props: any) {
-  const classes = useStyles()
+const LinkTooltip = styled(Tooltip)`
+  background-color: white;
+  font-size: 11px;
+  color: black;
+  border: 1px solid black;
+`
+
+const RegisterCompletionContainer = styled(Paper)`
+  padding: 1em;
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+`
+
+const RegistrationLinkButton = styled(Button)`
+  width: 65%;
+  margin: auto;
+  margin-bottom: 1em;
+`
+
+const RegistrationButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+interface LinkButtonProps {
+  link: string
+  onRegistrationClick: Function
+}
+
+function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   const t = useTranslator(RegisterCompletionTranslations)
+
+  const onClick = () => {
+    try {
+      window.open(link, "_blank", "noopener noreferrer")
+      onRegistrationClick()
+    } catch {
+      console.error("error opening registration link")
+    }
+  }
+
   return (
-    <Tooltip
-      title={t("linkAria")}
-      classes={{ tooltip: classes.tooltip }}
-      placement="bottom"
-    >
-      <Button
+    <LinkTooltip title={t("linkAria")} placement="bottom">
+      <RegistrationLinkButton
         variant="contained"
         color="secondary"
         size="medium"
-        href={props.link}
-        {...props}
         role="link"
-        target="_blank"
-        rel="noopener noreferrer"
+        onClick={onClick}
       >
-        {t("link")}
-      </Button>
-    </Tooltip>
+        <Typography variant="h4">{t("link")}</Typography>
+      </RegistrationLinkButton>
+    </LinkTooltip>
   )
 }
 
 type RegProps = {
   email: String
   link: string
+  tiers: any
+  onRegistrationClick: Function
 }
-function RegisterCompletionText(props: RegProps) {
-  const classes = useStyles()
+function RegisterCompletionText({
+  email,
+  link,
+  tiers,
+  onRegistrationClick,
+}: RegProps) {
   const t = useTranslator(RegisterCompletionTranslations)
   return (
-    <Paper className={classes.paper}>
+    <RegisterCompletionContainer>
+      <Typography variant="body1" paragraph>
+        {t("credits_details")}
+      </Typography>
+      <Typography variant="body1" paragraph>
+        {t("donow")}
+      </Typography>
       <Typography
         variant="h4"
         component="h2"
@@ -71,7 +95,7 @@ function RegisterCompletionText(props: RegProps) {
         {t("Instructions2")}
       </Typography>
       <Typography variant="body1" paragraph>
-        {t("Instructions3")} {props.email}
+        {t("Instructions3")} {email}
       </Typography>
       <Typography variant="body1" paragraph>
         {t("Instructions4")}
@@ -79,8 +103,22 @@ function RegisterCompletionText(props: RegProps) {
       <Typography variant="body1" paragraph>
         {t("grades")}
       </Typography>
-      <LinkButton className={classes.button} link={props.link} />
-    </Paper>
+      {tiers.length > 0 ? (
+        tiers.map((tier: any, i: number) => (
+          <RegistrationButtons key={i}>
+            <Typography variant="body1" paragraph align="center">
+              {tier.name}
+            </Typography>
+            <LinkButton
+              link={tier.link}
+              onRegistrationClick={onRegistrationClick}
+            />
+          </RegistrationButtons>
+        ))
+      ) : (
+        <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
+      )}
+    </RegisterCompletionContainer>
   )
 }
 

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import Card from "@material-ui/core/Card"
-import CardContent from "@material-ui/core/CardContent"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
 
 export const ErrorMessageBackground = styled(Card)`
   background-color: #c25450;

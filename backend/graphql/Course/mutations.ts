@@ -1,16 +1,16 @@
-import { Prisma } from "@prisma/client"
-
-import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
-import { uploadImage, deleteImage } from "../Image"
+import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
-import { invalidate } from "../../services/redis"
-import { UserInputError } from "apollo-server-core"
-import { Context } from "../../context"
-import { isAdmin } from "../../accessControl"
-import { Course } from "@prisma/client"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { extendType, arg, idArg, stringArg, nonNull } from "nexus"
+import { Course, Prisma } from "@prisma/client"
+
+import { isAdmin } from "../../accessControl"
+import { Context } from "../../context"
+import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
+import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
+import { deleteImage, uploadImage } from "../Image"
+
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
@@ -47,6 +47,7 @@ export const CourseMutations = extendType({
           completions_handled_by,
           user_course_settings_visibilities,
           completion_email,
+          course_stats_email,
         } = course
 
         let photo = null
@@ -94,9 +95,12 @@ export const CourseMutations = extendType({
             user_course_settings_visibilities: {
               create: user_course_settings_visibilities?.filter(filterNull),
             },
-            // don't think this will be passed by parameter, but let's be sure
+            // don't think these will be passed by parameter, but let's be sure
             completion_email: !!completion_email
               ? { connect: { id: completion_email } }
+              : undefined,
+            course_stats_email: !!course_stats_email
+              ? { connect: { id: course_stats_email } }
               : undefined,
           },
         })
@@ -142,6 +146,7 @@ export const CourseMutations = extendType({
           inherit_settings_from,
           completions_handled_by,
           user_course_settings_visibilities,
+          course_stats_email,
         } = course
         let { end_date } = course
 
@@ -229,12 +234,12 @@ export const CourseMutations = extendType({
         const existingVisibilities = await ctx.prisma.course
           .findUnique({ where: { slug } })
           .user_course_settings_visibilities()
-        existingVisibilities?.forEach((visibility) =>
-          invalidate(
+        for (const visibility of existingVisibilities) {
+          await invalidate(
             "usercoursesettingscount",
             `${slug}-${visibility.language}`,
-          ),
-        )
+          )
+        }
 
         // this had different logic so it's not done with the same helper
         const existingStudyModules = await ctx.prisma.course
@@ -313,9 +318,13 @@ export const CourseMutations = extendType({
             completion_email: completion_email
               ? { connect: { id: completion_email } }
               : undefined,
+            course_stats_email: course_stats_email
+              ? { connect: { id: course_stats_email } }
+              : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-            user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
+            user_course_settings_visibilities:
+              userCourseSettingsVisibilityMutation,
           }),
         })
 

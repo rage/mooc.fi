@@ -1,15 +1,16 @@
 // import { PrismaClient } from "@prisma/client"
 import axios from "axios"
-import { getAccessToken } from "../services/tmc_completion_script"
-import { notEmpty } from "../util/notEmpty"
-import sentryLogger from "./lib/logger"
-import type { PrismaClient } from "@prisma/client"
-import { TMCError } from "./lib/errors"
 import { groupBy, orderBy } from "lodash"
 
-const URL = `${
-  process.env.TMC_HOST || ""
-}/api/v8/users/recently_changed_user_details`
+import { PrismaClient } from "@prisma/client"
+
+import { isTest, TMC_HOST } from "../config"
+import { getAccessToken } from "../services/tmc_completion_script"
+import { notEmpty } from "../util/notEmpty"
+import { TMCError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
+
+const URL = `${TMC_HOST || ""}/api/v8/users/recently_changed_user_details`
 
 export interface Change {
   id: number
@@ -126,7 +127,7 @@ export const updateEmails = async (changes: Change[], prisma: PrismaClient) => {
   return counter
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (!isTest) {
   syncTMCUsers()
     .then(() => process.exit(0))
     .catch((error) => {

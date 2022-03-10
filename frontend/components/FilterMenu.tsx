@@ -1,23 +1,24 @@
+import { useState } from "react"
+
+import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+import { Clear, Search } from "@mui/icons-material"
 import {
+  Button,
   Checkbox,
-  InputLabel,
-  OutlinedInput,
-  MenuItem,
   FormControl,
   FormControlLabel,
   IconButton,
   InputAdornment,
+  MenuItem,
+  OutlinedInput,
   Select,
+  SelectChangeEvent,
   TextField,
-  Button,
-} from "@material-ui/core"
-import { useEffect, useRef, useState } from "react"
-import { Clear, Search } from "@material-ui/icons"
-
-import styled from "@emotion/styled"
-import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+} from "@mui/material"
 
 const Container = styled.div`
   background-color: white;
@@ -99,10 +100,10 @@ export default function FilterMenu({
   )
   const [handledBy, setHandledBy] = useState(initialHandledBy ?? "")
 
-  const inputLabel = useRef<any>(null)
+  /*const inputLabel = useRef<any>(null)
   const [labelWidth, setLabelWidth] = useState(0)
 
-  useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])
+  useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])*/
 
   const onSubmit = () => {
     setSearchVariables({
@@ -113,19 +114,18 @@ export default function FilterMenu({
     })
   }
 
-  const handleStatusChange = (value: string) => (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const newStatus = e.target.checked
-      ? [...(searchVariables?.status || []), value]
-      : searchVariables?.status?.filter((v) => v !== value) || []
+  const handleStatusChange =
+    (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newStatus = e.target.checked
+        ? [...(searchVariables?.status || []), value]
+        : searchVariables?.status?.filter((v) => v !== value) || []
 
-    setStatus(newStatus)
-    setSearchVariables({
-      ...searchVariables,
-      status: newStatus,
-    })
-  }
+      setStatus(newStatus)
+      setSearchVariables({
+        ...searchVariables,
+        status: newStatus,
+      })
+    }
 
   const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHidden(e.target.checked)
@@ -135,9 +135,7 @@ export default function FilterMenu({
     })
   }
 
-  const handleHandledByChange = (
-    e: React.ChangeEvent<{ name?: string; value: any }>,
-  ) => {
+  const handleHandledByChange = (e: SelectChangeEvent<string>) => {
     setHandledBy(e.target.value)
     setSearchVariables({
       ...searchVariables,
@@ -167,6 +165,8 @@ export default function FilterMenu({
                   }}
                   disabled={searchString === ""}
                   edge="end"
+                  aria-label="clear search"
+                  size="large"
                 >
                   <Clear />
                 </IconButton>
@@ -213,21 +213,14 @@ export default function FilterMenu({
           ) : null}
           {showHandler ? (
             <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
-              <InputLabel
-                id="handledBy"
-                shrink={Boolean(handledBy)}
-                ref={inputLabel}
-              >
-                {t("handledBy")}
-              </InputLabel>
               <Select
                 value={loading ? "" : handledBy}
                 variant="outlined"
                 onChange={handleHandledByChange}
+                label={t("handledBy")}
                 input={
                   <OutlinedInput
                     notched={Boolean(handledBy)}
-                    labelWidth={labelWidth}
                     name="handledBy"
                     id="handledBy"
                   />

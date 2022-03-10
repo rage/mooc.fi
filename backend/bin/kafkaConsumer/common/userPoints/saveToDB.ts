@@ -1,13 +1,15 @@
-import { Message } from "./interfaces"
-import { ExerciseCompletion } from "@prisma/client"
-import { DateTime } from "luxon"
-import { checkCompletion } from "../userCourseProgress/userFunctions"
-import { ok, err, Result } from "../../../../util/result"
-import { DatabaseInputError } from "../../../lib/errors"
-import { KafkaContext } from "../kafkaContext"
+import { UserInputError } from "apollo-server-express"
 import { Knex } from "knex"
-import { UserInputError } from "apollo-server-errors"
+import { DateTime } from "luxon"
+
+import { ExerciseCompletion } from "@prisma/client"
+
+import { err, ok, Result } from "../../../../util/result"
+import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
+import { KafkaContext } from "../kafkaContext"
+import { checkCompletion } from "../userCourseProgress/userFunctions"
+import { Message } from "./interfaces"
 
 // @ts-ignore: not used
 const isUserInDB = async (user_id: number, knex: Knex) => {
@@ -63,19 +65,26 @@ export const saveToDatabase = async (
   }
 
   logger.info("Getting the completion")
-  const exerciseCompleted = await prisma.exerciseCompletion.findFirst({
-    take: 1,
-    where: {
-      exercise: {
-        custom_id: message.exercise_id?.toString(),
-      },
-      user: { upstream_id: Number(message.user_id) },
-    },
-    orderBy: { timestamp: "desc" },
-    include: {
-      exercise_completion_required_actions: true,
-    },
-  })
+  const exerciseCompleted = (
+    await prisma.user
+      .findUnique({
+        where: {
+          upstream_id: Number(message.user_id),
+        },
+      })
+      .exercise_completions({
+        where: {
+          exercise: {
+            custom_id: message.exercise_id?.toString(),
+          },
+        },
+        orderBy: { timestamp: "desc" },
+        include: {
+          exercise_completion_required_actions: true,
+        },
+        take: 1,
+      })
+  )?.[0]
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion
@@ -98,6 +107,9 @@ export const saveToDatabase = async (
         create: required_actions.map((value) => ({ value })),
       },
       timestamp: timestamp.toJSDate(),
+      original_submission_date: message.original_submission_date
+        ? DateTime.fromISO(message.original_submission_date).toJSDate()
+        : null,
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
     try {
@@ -142,6 +154,11 @@ export const saveToDatabase = async (
           deleteMany: deletedActions.map((da) => ({ id: da.id })),
         },
         timestamp: { set: timestamp.toJSDate() },
+        original_submission_date: {
+          set: message.original_submission_date
+            ? DateTime.fromISO(message.original_submission_date).toJSDate()
+            : null,
+        },
       },
     })
   }

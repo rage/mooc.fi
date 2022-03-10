@@ -1,14 +1,15 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
+
+import { FormStatus, FormValues } from "/components/Dashboard/Editor2/types"
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form"
 
-export interface EditorContext<T extends Record<string, any>> {
+export interface EditorContext<T extends FormValues> {
   status: FormStatus
   setStatus: Dispatch<SetStateAction<FormStatus>>
   tab: number
   setTab: Dispatch<SetStateAction<number>>
   onSubmit: SubmitHandler<T>
-  onError: SubmitErrorHandler<Record<string, any>>
+  onError: SubmitErrorHandler<T>
   onCancel: () => void
   onDelete: (id: string) => void
   initialValues: T

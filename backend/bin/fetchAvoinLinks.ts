@@ -1,14 +1,13 @@
 import axios from "axios"
-import { DateTime } from "luxon"
 import { maxBy } from "lodash"
-import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
-import { OpenUniversityRegistrationLink } from "@prisma/client"
-import { AvoinError } from "./lib/errors"
+import { DateTime } from "luxon"
 
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
+import { OpenUniversityRegistrationLink } from "@prisma/client"
+
+import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
+import prisma from "../prisma"
+import { AvoinError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 
@@ -32,15 +31,17 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 
   const now: DateTime = DateTime.fromJSDate(new Date())
 
-  const alternatives = res.map((data) => {
-    const linkStartDate: DateTime = DateTime.fromISO(data.alkupvm)
-    const linkStopDate: DateTime = DateTime.fromISO(data.loppupvm)
-    return {
-      link: data.oodi_id,
-      stopDate: linkStopDate,
-      startTime: linkStartDate,
-    } as Link
-  })
+  const alternatives = res
+    .map((data) => {
+      const linkStartDate: DateTime = DateTime.fromISO(data.alkupvm)
+      const linkStopDate: DateTime = DateTime.fromISO(data.loppupvm)
+      return {
+        link: data.oodi_id,
+        stopDate: linkStopDate,
+        startTime: linkStartDate,
+      } as Link
+    })
+    .filter((link) => Boolean(link.link))
 
   let openLinks = alternatives.filter(
     (o) => o.startTime < now && o.stopDate > now,
@@ -55,7 +56,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 
   logger.info(`Best link found was: ${JSON.stringify(bestLink)}`)
 
-  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
+  const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?s=${bestLink.link}`
 
   logger.info("Updating link to " + url)
   await prisma.openUniversityRegistrationLink.update({
@@ -78,7 +79,7 @@ const fetch = async () => {
     logger.info(`Processing link ${p.link}, ${p.course_code}, ${p.language}`)
     try {
       await processLink(p)
-    } catch (e) {
+    } catch (e: any) {
       logger.error(
         new AvoinError(
           `Processing link failed for course code ${p.course_code}`,
@@ -95,9 +96,9 @@ const fetch = async () => {
 const getInfoWithCourseCode = async (
   course_code: string,
 ): Promise<AvoinLinkData[]> => {
-  const url = process.env.AVOIN_COURSE_URL + course_code
+  const url = AVOIN_COURSE_URL + course_code
   const res = await axios.get(url, {
-    headers: { Authorized: "Basic " + process.env.AVOIN_TOKEN },
+    headers: { Authorized: "Basic " + AVOIN_TOKEN },
   })
   return await res.data
 }

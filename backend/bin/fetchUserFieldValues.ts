@@ -1,16 +1,16 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import TmcClient from "../services/tmc"
-import { PrismaClient } from "@prisma/client"
-import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
-import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
-import { DatabaseInputError, TMCError } from "./lib/errors"
-import { convertUpdate } from "../util/db-functions"
 
-const CONFIG_NAME = "userFieldValues"
+import { PrismaClient } from "@prisma/client"
+
+import { CONFIG_NAME } from "../config"
+import { UserInfo } from "../domain/UserInfo"
+import prisma from "../prisma"
+import TmcClient from "../services/tmc"
+import { convertUpdate } from "../util/db-functions"
+import { DatabaseInputError, TMCError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
+
+const FETCH_USER_FIELD_VALUES_CONFIG_NAME = CONFIG_NAME ?? "userFieldValues"
 
 const logger = sentryLogger({ service: "fetch-user-field-values" })
 
@@ -19,7 +19,7 @@ const fetcUserFieldValues = async () => {
   const tmc = new TmcClient()
 
   const existingConfig = await prisma.userAppDatumConfig.findFirst({
-    where: { name: CONFIG_NAME },
+    where: { name: FETCH_USER_FIELD_VALUES_CONFIG_NAME },
   })
   const latestTimeStamp = existingConfig?.timestamp
 
@@ -108,7 +108,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
 
   try {
     details = await tmc.getUserDetailsById(user_id)
-  } catch (e) {
+  } catch (e: any) {
     logger.error(new TMCError(`couldn't find user ${user_id}`, e))
     throw e
   }
@@ -129,7 +129,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     })
 
     return result
-  } catch (e) {
+  } catch (e: any) {
     logger.error(
       new DatabaseInputError(
         `Failed to upsert user with upstream id ${

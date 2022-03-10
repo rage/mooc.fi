@@ -1,5 +1,6 @@
-import { ApiContext } from "."
+import { Request, Response } from "express"
 import { redisify } from "../services/redis"
+import { ApiContext } from "./"
 
 type UserCourseSettingsCountResult =
   | {
@@ -14,11 +15,11 @@ type UserCourseSettingsCountResult =
     }
 
 export function userCourseSettingsCount({ knex }: ApiContext) {
-  return async (req: any, res: any) => {
-    const {
-      course,
-      language,
-    }: { course: string; language: string } = req.params
+  return async (
+    req: Request<{ course: string; language: string }>,
+    res: Response,
+  ) => {
+    const { course, language } = req.params
 
     if (!course || !language) {
       return res
@@ -86,7 +87,7 @@ export function userCourseSettingsCount({ knex }: ApiContext) {
       },
       {
         prefix: "usercoursesettingscount",
-        expireTime: 3600000, // hour
+        expireTime: 60 * 60, // hour
         key: `${course}-${language}`,
       },
     )

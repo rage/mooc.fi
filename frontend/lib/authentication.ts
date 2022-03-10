@@ -1,9 +1,10 @@
-import TmcClient from "tmc-client-js"
-import { NextPageContext as NextContext } from "next"
-import nookies from "nookies"
-import { ApolloClient } from "@apollo/client"
 import axios from "axios"
+import { NextPageContext as NextContext } from "next"
 import Router from "next/router"
+import nookies from "nookies"
+import TmcClient from "tmc-client-js"
+
+import { ApolloClient } from "@apollo/client"
 
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
@@ -115,14 +116,21 @@ export const getAccessToken = (ctx: NextContext | undefined) => {
 }
 
 export async function userDetails(accessToken: string) {
-  const res = await axios.get(
-    `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`,
+  const res = await axios.get<
+    {},
     {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+      data: {
+        id: string
+        username: string
+        mail: string
+        administrator: boolean
+      }
+    }
+  >(`https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
-  )
+  })
   return res.data
 }

@@ -1,27 +1,33 @@
+import React, { useCallback, useEffect, useState } from "react"
+
+import CollapseButton from "/components/Buttons/CollapseButton"
+import { DatedInt } from "/components/Dashboard/Courses/Statistics/types"
+import { useLanguageContext } from "/contexts/LanguageContext"
+import CoursesTranslations from "/translations/courses"
+import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
+import { flatten } from "lodash"
+import { DateTime } from "luxon"
+import dynamic from "next/dynamic"
+
 import {
-  Paper,
-  Typography,
-  Skeleton,
+  ApolloError,
+  OperationVariables,
+  QueryLazyOptions,
+} from "@apollo/client"
+import styled, { StyledComponent } from "@emotion/styled"
+import {
   Alert,
   AlertTitle,
-  Collapse,
-  Checkbox,
-  FormControlLabel,
   Button,
-} from "@material-ui/core"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import dynamic from "next/dynamic"
-import { DateTime } from "luxon"
-import styled, { StyledComponent } from "@emotion/styled"
-import { DatedInt } from "/components/Dashboard/Courses/Statistics/types"
-import { ApolloError, OperationVariables, QueryLazyOptions } from "@apollo/client"
-import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
-import { useLanguageContext } from "/contexts/LanguageContext"
-import React, { useCallback, useEffect, useState } from "react"
-import { FormControl } from "@material-ui/core"
-import { flatten } from "lodash"
-import notEmpty from "/util/notEmpty"
+  Checkbox,
+  Collapse,
+  FormControl,
+  FormControlLabel,
+  Paper,
+  Skeleton,
+  Typography,
+} from "@mui/material"
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
@@ -29,11 +35,11 @@ const ChartWrapper: StyledComponent<any> = styled((props: any[]) => (
   <Paper elevation={3} {...props} />
 ))`
   padding: 0.5rem;
-  & + ${() => ChartWrapper} {
+`
+/*  & + ${() => ChartWrapper} {
     margin-top: 1em;
   }
-`
-
+*/
 const ChartHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -45,11 +51,11 @@ const FilterMenu = styled.div`
   justify-content: space-between;
 `
 
-const FilterColumn: any = styled(FormControl)`
-  /*& + ${() => FilterColumn} {
+const FilterColumn: any = styled(FormControl)``
+/*  & + ${() => FilterColumn} {
     border-left: 1px ridge grey;
-  }*/
-`
+  }
+*/
 interface GraphEntry {
   value?: {
     updated_at: string
@@ -79,23 +85,26 @@ interface Filter {
 
 interface SeriesEntry {
   name: string
-  data: Array<{ x: number, y: number | null }>
+  data: Array<{ x: number; y: number | null }>
 }
-/*interface SeriesEntry {
-  name: string
-  [key: string]: any
-}*/
 
 type Series = SeriesEntry | SeriesEntry[]
+// type ArrayElement<T extends readonly unknown[]> = T extends readonly (infer E)[] ? E : never
+
+//type SeriesEntry = ArrayElement<ApexAxisChartSeries>
+//type Series = SeriesEntry | SeriesEntry[]
 
 function useGraphFilter(values: GraphValues[]) {
   const getFilters = (_values: GraphValues[]) =>
-    flatten(_values.map((v) => { 
-      if (Array.isArray(v)) {
-        return v.map((v2) => ({ name: v2.name, label: v2.label }))
-      }
-      return { name: v.name, label: v.label }
-    }))
+    flatten(
+      _values.map((v) => {
+        if (Array.isArray(v)) {
+          return v.map((v2) => ({ name: v2.name, label: v2.label }))
+        }
+        return { name: v.name, label: v.label }
+      }),
+    )
+
   const mapGraphEntry = (value: GraphEntry): SeriesEntry => ({
     name: value.label,
     data: (value?.value?.data ?? []).map((e) => ({
@@ -105,20 +114,21 @@ function useGraphFilter(values: GraphValues[]) {
   })
 
   console.log(values)
-  const calculateSeries = (_values: GraphValues[]): Series[] => 
+  const calculateSeries = (_values: GraphValues[]): Series[] =>
     _values.map((value) => {
       if (Array.isArray(value)) return value.map(mapGraphEntry)
 
       return mapGraphEntry(value)
     })
-  
+
   const getLoading = (_values: GraphValues[]) =>
     _values.map((v) => {
-      if (Array.isArray(v)) return v.reduce((acc, curr) => acc || (curr.loading ?? false), false)
+      if (Array.isArray(v))
+        return v.reduce((acc, curr) => acc || (curr.loading ?? false), false)
 
       return v.loading ?? false
     })
-  
+
   const filterValues = getFilters(values)
   const [filter, setFilter] = useState<Filter[]>(filterValues)
   const [series, setSeries] = useState(calculateSeries(values))
@@ -132,19 +142,19 @@ function useGraphFilter(values: GraphValues[]) {
   useEffect(() => {
     const filterNames = filter.map((f) => f.name)
     console.log(filterNames)
-    const tmp = values.map((v) => {
-      if (Array.isArray(v)) {
-        const arr = v.filter((v2) => filterNames.includes(v2.name)) 
-        return arr.length > 0 ? arr : undefined
-      }
+    const tmp = values
+      .map((v) => {
+        if (Array.isArray(v)) {
+          const arr = v.filter((v2) => filterNames.includes(v2.name))
+          return arr.length > 0 ? arr : undefined
+        }
 
-      return filterNames.includes(v.name) ? v : undefined
-    }).filter(notEmpty)
-    
+        return filterNames.includes(v.name) ? v : undefined
+      })
+      .filter(notEmpty)
+
     console.log("temp", tmp)
-    setSeries(
-      calculateSeries(tmp),
-    )
+    setSeries(calculateSeries(tmp))
   }, [filter])
 
   return {
@@ -185,7 +195,7 @@ function ChartSkeleton() {
 }
 
 interface ChartsProps {
-  series: Series[]
+  series: ApexAxisChartSeries //Series[]
   error?: ApolloError
   loading?: boolean
   separate: boolean
@@ -198,6 +208,7 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
   const [isFilterVisible, setIsFilterVisible] = useState(false)
   const [separate, setSeparate] = useState(true)
 
+  console.log("values", values)
   const {
     filterValues,
     filter,
@@ -206,21 +217,18 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
     loading: seriesLoading,
   } = useGraphFilter(values)
 
-  console.log(series)
+  console.log("series", series)
 
-
-  const handleFilterChange = (filterValue: Filter) => (
-    _: any,
-    checked: boolean,
-  ) =>
-    checked
-      ? setFilter((prev) => prev.concat(filterValue))
-      : setFilter((prev) => prev.filter((f) => f.name !== filterValue.name))
+  const handleFilterChange =
+    (filterValue: Filter) => (_: any, checked: boolean) =>
+      checked
+        ? setFilter((prev) => prev.concat(filterValue))
+        : setFilter((prev) => prev.filter((f) => f.name !== filterValue.name))
 
   const updatedAtFormatted = updated_at
     ? DateTime.fromISO(updated_at)
-      .setLocale(language ?? "en")
-      .toLocaleString(DateTime.DATETIME_FULL)
+        .setLocale(language ?? "en")
+        .toLocaleString(DateTime.DATETIME_FULL)
     : undefined
 
   const refreshSeries = () => {
@@ -296,10 +304,16 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
   )
 }
 
-const getChartName = (s: Series) => 
+const getChartName = (s: Series) =>
   Array.isArray(s) ? s.map((s2) => s2.name).join("-") : s.name
 
-function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps) {
+function Charts({
+  loading,
+  error,
+  separate,
+  series,
+  seriesLoading,
+}: ChartsProps) {
   const { language } = useLanguageContext()
 
   const options: ApexCharts.ApexOptions = {
@@ -321,16 +335,19 @@ function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps
         rotateAlways: true,
         hideOverlappingLabels: false,
         formatter: (_value, timestamp, _opts) => {
-          return DateTime.fromMillis(Number(timestamp) ?? 0).toLocaleString({
-            locale: language ?? "en",
-          })
+          return DateTime.fromMillis(Number(timestamp) ?? 0).toLocaleString(
+            {},
+            {
+              locale: language ?? "en",
+            },
+          )
         },
       },
       tickPlacement: "on",
     },
     chart: {
       animations: {
-        enabled: false
+        enabled: false,
       },
       group: "group",
     },
@@ -355,14 +372,20 @@ function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps
     },
   }
 
-  const chartOptions = useCallback(() => series.map((_, index) => ({
-    ...options,
-    colors: colors.slice(index % colors.length).concat(colors.slice(0, index % colors.length)),
-    chart: {
-      ...options.chart,
-      id: `chart-${index}`
-    }
-  })), [series])
+  const chartOptions = useCallback(
+    () =>
+      series.map((_, index) => ({
+        ...options,
+        colors: colors
+          .slice(index % colors.length)
+          .concat(colors.slice(0, index % colors.length)),
+        chart: {
+          ...options.chart,
+          id: `chart-${index}`,
+        },
+      })),
+    [series],
+  )
 
   if (loading) {
     return (

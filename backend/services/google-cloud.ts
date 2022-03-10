@@ -1,21 +1,26 @@
-import { Storage } from "@google-cloud/storage"
-import * as shortid from "shortid"
 import * as mime from "mime-types"
+import * as shortid from "shortid"
 
-const isProduction = process.env.NODE_ENV === "production"
-const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
-const isReflection = process.env.NEXUS_REFLECTION
+import { Storage } from "@google-cloud/storage"
 
-if (!bucketName && isProduction && !isReflection) {
+import {
+  GOOGLE_CLOUD_STORAGE_BUCKET,
+  GOOGLE_CLOUD_STORAGE_KEYFILE,
+  GOOGLE_CLOUD_STORAGE_PROJECT,
+  isProduction,
+  NEXUS_REFLECTION,
+} from "../config"
+
+if (!GOOGLE_CLOUD_STORAGE_BUCKET && isProduction && !NEXUS_REFLECTION) {
   console.error("no bucket name defined in GOOGLE_CLOUD_STORAGE_BUCKET")
   process.exit(1)
 }
 
 const storage =
-  isProduction && !isReflection
+  isProduction && !NEXUS_REFLECTION
     ? new Storage({
-        projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT,
-        keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE,
+        projectId: GOOGLE_CLOUD_STORAGE_PROJECT,
+        keyFilename: GOOGLE_CLOUD_STORAGE_KEYFILE,
       })
     : {
         bucket: () => ({
@@ -31,7 +36,7 @@ const storage =
       }
 // FIXME: doesn't actually upload in dev even with base64 set to false unless isproduction is true
 
-const bucket = storage.bucket(bucketName ?? "") // this shouldn't ever happen in production
+const bucket = storage.bucket(GOOGLE_CLOUD_STORAGE_BUCKET ?? "") // this shouldn't ever happen in production
 
 export const uploadImage = async ({
   imageBuffer,

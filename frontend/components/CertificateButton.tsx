@@ -1,15 +1,15 @@
 import { useContext, useEffect, useState, useReducer } from "react"
-import Button from "@material-ui/core/Button"
+import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import Dialog from "@material-ui/core/Dialog"
-import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import Dialog from "@mui/material/Dialog"
+import DialogContent from "@mui/material/DialogContent"
 import {
   TextField,
   DialogActions,
   DialogContentText,
   CircularProgress,
-} from "@material-ui/core"
+} from "@mui/material"
 import CompletionsTranslations from "/translations/completions"
 import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
 import { checkCertificate, createCertificate } from "/lib/certificates"
@@ -253,7 +253,6 @@ const CertificateButton = ({ course }: CertificateProps) => {
                 {t("nameFormIntro")}
               </DialogContentText>
               <StyledTextField
-                autoFocus
                 id="first-name"
                 label={t("nameFormFirstName")}
                 value={firstName}
@@ -262,7 +261,6 @@ const CertificateButton = ({ course }: CertificateProps) => {
                 fullWidth
               />
               <StyledTextField
-                autoFocus
                 id="last-name"
                 label={t("nameFormLastName")}
                 defaultValue={lastName}

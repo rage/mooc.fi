@@ -13,7 +13,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-} from "@material-ui/core"
+} from "@mui/material"
 import styled from "@emotion/styled"
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import { useEffect, useState } from "react"
@@ -128,7 +128,11 @@ export default function ImportPhotoDialog({
         />
         <ImageContainer>
           {selected ? (
-            <img src={addDomain(selected.photo?.compressed)} height="200" />
+            <img
+              src={addDomain(selected.photo?.compressed)}
+              alt={selected.photo?.name ?? "selected image"}
+              height="200"
+            />
           ) : (
             <ImagePlaceholder />
           )}

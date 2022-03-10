@@ -43,9 +43,10 @@ export const toCourseForm = ({
         study_module_order: course.study_module_order ?? undefined,
         status: course.status ?? CourseStatus.Upcoming,
         course_translations: (course.course_translations || []).map((c) => {
-          const open_university_course_link = course?.open_university_registration_links?.find(
-            (l) => l.language === c.language,
-          )
+          const open_university_course_link =
+            course?.open_university_registration_links?.find(
+              (l) => l.language === c.language,
+            )
 
           return {
             ...omit(c, ["__typename", "id"]),
@@ -57,6 +58,7 @@ export const toCourseForm = ({
               link: open_university_course_link?.link ?? "",
               course_code: open_university_course_link?.course_code ?? "",
             },
+            instructions: c.instructions ?? undefined,
           }
         }),
         study_modules: modules?.reduce(

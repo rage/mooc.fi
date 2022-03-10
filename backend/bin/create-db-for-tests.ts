@@ -20,7 +20,7 @@ const knex = require("knex")({
 const createDb = async () => {
   try {
     await knex.raw("CREATE DATABASE testing;")
-  } catch (e) {
+  } catch (e: any) {
     console.error(`Error creating test db: ${e.stack || e}`)
   }
 }

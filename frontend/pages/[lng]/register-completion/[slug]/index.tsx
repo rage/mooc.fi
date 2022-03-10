@@ -1,22 +1,33 @@
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
-import { Typography, Paper, SvgIcon } from "@material-ui/core"
-import RegisterCompletionText from "/components/RegisterCompletionText"
-import ImportantNotice from "/components/ImportantNotice"
-import RegisterCompletionTranslations from "/translations/register-completion"
-import { useContext } from "react"
-import { useQueryParameter } from "/util/useQueryParameter"
-import Spinner from "/components/Spinner"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import styled from "@emotion/styled"
-import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "/contexts/LoginStateContext"
-import { CheckSlugQuery } from "/graphql/queries/courses"
-import { useTranslator } from "/util/useTranslator"
+import { useContext, useEffect, useState } from "react"
+
 import RegisterCompletion from "/components/Home/RegisterCompletion"
+import ImportantNotice from "/components/ImportantNotice"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import RegisterCompletionText from "/components/RegisterCompletionText"
+import Spinner from "/components/Spinner"
+import LanguageContext from "/contexts/LanguageContext"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { UpdateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
+import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { getAccessToken } from "/lib/authentication"
+import withSignedIn from "/lib/with-signed-in"
 import { CheckSlug } from "/static/types/generated/CheckSlug"
+import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
+import { UpdateRegistrationAttemptDate } from "/static/types/generated/UpdateRegistrationAttemptDate"
+import RegisterCompletionTranslations from "/translations/register-completion"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+import axios from "axios"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Paper, SvgIcon, Typography } from "@mui/material"
+
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://www.mooc.fi"
+    : "http://localhost:4000"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -81,7 +92,10 @@ export const UserOverViewQuery = gql`
 `
 
 function RegisterCompletionPage() {
+  const accessToken = getAccessToken(undefined)
   const { currentUser } = useContext(LoginStateContext)
+  const [instructions, setInstructions] = useState("")
+  const [tiers, setTiers] = useState([])
 
   const courseSlug = (useQueryParameter("slug") ?? "").replace(/\./g, "")
 
@@ -100,8 +114,61 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const [updateRegistrationAttemptDate] =
+    useMutation<UpdateRegistrationAttemptDate>(
+      UpdateRegistrationAttemptDateMutation,
+    )
 
   const course_exists = Boolean(courseData?.course?.id)
+
+  const completion =
+    userData?.currentUser?.completions?.find(
+      (c) => c.course?.slug == courseSlug,
+    ) ?? undefined
+
+  const onRegistrationClick = () => {
+    if (!completion?.id) {
+      return
+    }
+
+    updateRegistrationAttemptDate({
+      variables: {
+        id: completion.id,
+        completion_registration_attempt_date: new Date(),
+      },
+    })
+  }
+
+  const { language } = useContext(LanguageContext)
+
+  useEffect(() => {
+    if (language) {
+      axios
+        .get<{}, any>(
+          `${BASE_URL}/api/completionInstructions/${courseSlug}/${language}`,
+        )
+        .then((res) => res.data)
+        .then((json) => {
+          setInstructions(json)
+        })
+        .catch((error) => {
+          setInstructions(error.response.data)
+        })
+
+      axios({
+        method: "GET",
+        url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((res) => res.data)
+        .then((json: any) => {
+          setTiers(json.tierData)
+        })
+    }
+  }, [language])
 
   useBreadcrumbs([
     {
@@ -126,11 +193,6 @@ function RegisterCompletionPage() {
       />
     )
   }
-
-  const completion =
-    userData?.currentUser?.completions?.find(
-      (c) => c.course?.slug == courseSlug,
-    ) ?? undefined
 
   if (!currentUser) {
     return (
@@ -195,7 +257,8 @@ function RegisterCompletionPage() {
         <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("open_university_registration_not_open")}{" "}
-            {completion.course?.name} {completion.completion_language}.
+            <strong>{completion.course?.name}</strong> (
+            {completion.completion_language}).
           </Typography>
         </StyledPaper>
       </RegisterCompletion>
@@ -212,18 +275,19 @@ function RegisterCompletionPage() {
           {t("credits", { ects: completion.course?.ects })}
         </StyledText>
       )}
-      <StyledPaper>
-        <Typography variant="body1" paragraph>
-          {t("credits_details")}
-        </Typography>
-        <Typography variant="body1" paragraph>
-          {t("donow")}
-        </Typography>
-      </StyledPaper>
+      {instructions && (
+        <StyledPaper>
+          <Typography variant="body1" paragraph>
+            {instructions}
+          </Typography>
+        </StyledPaper>
+      )}
       <ImportantNotice email={completion.email} />
       <RegisterCompletionText
         email={completion.email}
         link={courseLinkWithLanguage}
+        tiers={tiers}
+        onRegistrationClick={onRegistrationClick}
       />
       <StyledPaperColumn>
         <Typography variant="body1">

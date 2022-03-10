@@ -1,23 +1,20 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import { Mutex } from "../../lib/await-semaphore"
-
-import { handleMessage } from "../common/handleMessage"
-import { Message } from "../common/userCourseProgress/interfaces"
-import {
-  MessageYupSchema,
-  handleNullProgress,
-} from "../common/userCourseProgress/validate"
-import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
-import prisma from "../../../prisma"
-import sentryLogger from "../../lib/logger"
-import config from "../kafkaConfig"
-import { createKafkaConsumer } from "../common/createKafkaConsumer"
-import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
+
+import prisma from "../../../prisma"
 import knex from "../../../services/knex"
+import { Mutex } from "../../lib/await-semaphore"
+import { KafkaError } from "../../lib/errors"
+import sentryLogger from "../../lib/logger"
+import { createKafkaConsumer } from "../common/createKafkaConsumer"
+import { handleMessage } from "../common/handleMessage"
 import { handledRecently, setHandledRecently } from "../common/messageHashCache"
+import { Message } from "../common/userCourseProgress/interfaces"
+import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
+import {
+  handleNullProgress,
+  MessageYupSchema,
+} from "../common/userCourseProgress/validate"
+import config from "../kafkaConfig"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]

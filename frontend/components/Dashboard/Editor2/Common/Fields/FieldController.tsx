@@ -4,7 +4,7 @@ import { FieldProps } from "."
 import { Controller } from "react-hook-form"
 import { ErrorMessage } from "@hookform/error-message"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
-import { FormHelperText } from "@material-ui/core"
+import { FormHelperText } from "@mui/material"
 import notEmpty from "/util/notEmpty"
 
 export interface FieldControllerProps<T> extends FieldProps {

@@ -1,17 +1,26 @@
-import type { PrismaClient } from "@prisma/client"
-import { Knex } from "knex"
 import { Router } from "express"
+import { Knex } from "knex"
+import * as winston from "winston"
 
-import { completions } from "./completions"
-import { userCourseSettingsCount } from "./userCourseSettingsCount"
+import type { PrismaClient } from "@prisma/client"
+
+import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
+import {
+  completionInstructions,
+  completions,
+  completionTiers,
+  recheckCompletion,
+} from "./completions"
 import { progress, progressV2 } from "./progress"
-import { tierProgress } from "./tierProgress"
 import { registerCompletions } from "./registerCompletions"
+import { getStoredData, postStoredData } from "./storedData"
+import { tierProgress } from "./tierProgress"
+import { userCourseProgress } from "./userCourseProgress"
 import {
   userCourseSettingsGet,
   userCourseSettingsPost,
 } from "./userCourseSettings"
-import * as winston from "winston"
+import { userCourseSettingsCount } from "./userCourseSettingsCount"
 
 export interface ApiContext {
   prisma: PrismaClient
@@ -22,6 +31,8 @@ export interface ApiContext {
 export function apiRouter(ctx: ApiContext) {
   return Router()
     .get("/completions/:course", completions(ctx))
+    .get("/completionTiers/:id", completionTiers(ctx))
+    .get("/completionInstructions/:id/:language", completionInstructions(ctx))
     .get("/progress/:id", progress(ctx))
     .get("/progressv2/:id", progressV2(ctx))
     .post("/register-completions", registerCompletions(ctx))
@@ -32,4 +43,10 @@ export function apiRouter(ctx: ApiContext) {
     )
     .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
     .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
+    .use("/ab-studies", abStudiesRouter(ctx))
+    .use("/ab-enrollments", abEnrollmentRouter(ctx))
+    .get("/user-course-progress/:slug", userCourseProgress(ctx))
+    .post("/stored-data/:slug", postStoredData(ctx))
+    .get("/stored-data/:slug", getStoredData(ctx))
+    .post("/recheck-completion", recheckCompletion(ctx))
 }

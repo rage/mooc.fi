@@ -1,9 +1,9 @@
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { FieldArray, getIn, useFormikContext } from "formik"
-import { Grid, FormControl, FormGroup, Typography } from "@material-ui/core"
+import { Grid, FormControl, FormGroup, Typography } from "@mui/material"
 import { initialVariant } from "./form-validation"
-import AddIcon from "@material-ui/icons/Add"
-import RemoveIcon from "@material-ui/icons/Remove"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
 import {
   StyledTextField,
   StyledFieldWithAnchor,
@@ -64,6 +64,19 @@ const CourseVariantEditForm = () => {
                             value={variant.description}
                             label={t("courseDescription")}
                             errors={[getIn(errors, `[${index}].description`)]}
+                            variant="outlined"
+                            InputLabelProps={inputLabelProps}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <StyledFieldWithAnchor
+                            id={`course_variants[${index}].instructions`}
+                            name={`course_variants[${index}].instructions`}
+                            type="text"
+                            component={StyledTextField}
+                            value={variant.instructions}
+                            label={t("courseInstructions")}
+                            errors={[getIn(errors, `[${index}].instructions`)]}
                             variant="outlined"
                             InputLabelProps={inputLabelProps}
                           />

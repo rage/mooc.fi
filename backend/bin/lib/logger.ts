@@ -1,5 +1,7 @@
-import WinstonSentry from "winston-sentry-log"
 import winston, { format } from "winston"
+import WinstonSentry from "winston-sentry-log"
+
+import { isProduction } from "../../config"
 import { Sentry } from "../../services/sentry"
 
 interface LoggerOptions {
@@ -13,7 +15,7 @@ const myFormat = format.printf(({ level, message, timestamp, ...metadata }) => {
 export default function logger({ service }: LoggerOptions) {
   const transports: winston.transport[] = [new winston.transports.Console()]
 
-  if (process.env.NODE_ENV === "production") {
+  if (isProduction) {
     transports.push(
       new WinstonSentry({
         tags: {

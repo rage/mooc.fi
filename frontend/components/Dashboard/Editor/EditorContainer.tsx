@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react"
 import { WideContainer } from "/components/Container"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import styled from "@emotion/styled"
 
 const Header = styled(Typography)<any>`

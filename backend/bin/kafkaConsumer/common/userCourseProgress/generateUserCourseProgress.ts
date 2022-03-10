@@ -1,11 +1,10 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import { User, Course, UserCourseProgress } from "@prisma/client"
+import { Course, User, UserCourseProgress } from "@prisma/client"
+
 import { BAItiers } from "../../../../config/courseConfig"
-import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
-import { checkBAICompletion } from "./generateBAIUserCourseProgress"
 import { KafkaContext } from "../kafkaContext"
+import { checkAndSendThresholdEmail } from "./checkAndSendThresholdEmail"
+import { checkBAICompletion } from "./generateBAIUserCourseProgress"
+import { checkCompletion, getCombinedUserCourseProgress } from "./userFunctions"
 
 interface Props {
   user: User
@@ -31,6 +30,13 @@ export const generateUserCourseProgress = async ({
   } else {
     await checkCompletion({ user, course, combinedProgress: combined, context })
   }
+
+  await checkAndSendThresholdEmail({
+    user,
+    course,
+    combinedUserCourseProgress: combined,
+    context,
+  })
 
   await context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },

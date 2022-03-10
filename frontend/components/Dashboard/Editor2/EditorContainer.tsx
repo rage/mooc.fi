@@ -1,20 +1,22 @@
+import { PropsWithChildren, useState } from "react"
+
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormStatus, FormValues } from "/components/Dashboard/Editor2/types"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+import { useConfirm } from "material-ui-confirm"
+import { Path, useFormContext } from "react-hook-form"
+
+import styled from "@emotion/styled"
 import {
+  Checkbox,
+  CircularProgress,
   Container,
   Grid,
   Paper,
-  CircularProgress,
-  Checkbox,
   Tooltip,
-} from "@material-ui/core"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+} from "@mui/material"
 
-import styled from "@emotion/styled"
-import { PropsWithChildren, useState } from "react"
-import { useConfirm } from "material-ui-confirm"
-import { useFormContext } from "react-hook-form"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useEditorContext } from "./EditorContext"
 
 const isProduction = process.env.NODE_ENV === "production"
@@ -27,21 +29,16 @@ const Status = styled.p<any>`
   color: ${(props: FormStatus) => (props.error ? "#FF0000" : "default")};
 `
 
-function EditorContainer<T extends Record<string, any>>({
+function EditorContainer<T extends FormValues>({
   children,
 }: PropsWithChildren<{}>) {
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const {
-    status,
-    onSubmit,
-    onError,
-    onCancel,
-    onDelete,
-  } = useEditorContext<T>()
-  const { handleSubmit, formState, watch } = useFormContext()
-  const id = watch("id")
+  const { status, onSubmit, onError, onCancel, onDelete } =
+    useEditorContext<T>()
+  const { handleSubmit, formState, watch } = useFormContext<T>()
+  const id = watch("id" as Path<T>)
 
   const { isSubmitting, isSubmitted, isDirty } = formState
 
@@ -59,7 +56,7 @@ function EditorContainer<T extends Record<string, any>>({
               <StyledButton
                 color="primary"
                 disabled={!isDirty || isSubmitting}
-                onClick={() => handleSubmit<T>(onSubmit, onError)()}
+                onClick={() => handleSubmit(onSubmit, onError)()}
                 style={{ width: "100%" }}
               >
                 {isSubmitting ? <CircularProgress size={20} /> : t("save")}

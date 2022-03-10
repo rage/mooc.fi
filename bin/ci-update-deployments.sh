@@ -22,3 +22,17 @@ if [[ "$BRANCH" == "master" ]]; then
   echo "Deploying..."
   helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi --install
 fi
+
+if [[ "$BRANCH" == "staging" ]]; then
+  if [ -n "$CIRCLE_SHA1" ]; then
+    echo "Removing kafka deployments in staging"
+    rm -rf ./helm/templates/kafka
+    echo "Removing unwanted jobs and deployments in staging"
+    rm ./helm/templates/send-ai-statistics-cronjob.yml
+    rm ./helm/templates/background-emailer-deployment.yml
+    rm ./helm/templates/course-stats-emailer-cronjob.yml
+  fi
+  echo "Deploying staging..."
+
+  helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi-staging --install -f helm/values.staging.yaml
+fi

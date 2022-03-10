@@ -2,8 +2,8 @@ import { useContext, useEffect } from "react"
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { SingletonRouter, withRouter } from "next/router"
-import Typography from "@material-ui/core/Typography"
-import Paper from "@material-ui/core/Paper"
+import Typography from "@mui/material/Typography"
+import Paper from "@mui/material/Paper"
 import { WideContainer } from "/components/Container"
 import styled from "@emotion/styled"
 import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
@@ -131,16 +131,9 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <LangLink href="/study-modules">
-                <a
-                  onClick={() =>
-                    //redirectTimeout && clearTimeout(redirectTimeout)
-                    {}
-                  }
-                  href=""
-                >
-                  {t("redirectLinkText")}
-                </a>
+              <LangLink href="/study-modules" passHref>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a>{t("redirectLinkText")}</a>
               </LangLink>
               {t("redirectMessagePost")}
             </Typography>

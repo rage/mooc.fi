@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react"
 
 export interface Alert {
+  id?: number
   title?: string
   message?: string
   component?: JSX.Element

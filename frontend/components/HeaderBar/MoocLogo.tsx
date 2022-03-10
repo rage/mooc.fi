@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
-import Avatar from "@material-ui/core/Avatar"
+import Typography from "@mui/material/Typography"
+import Avatar from "@mui/material/Avatar"
 import LangLink from "/components/LangLink"
 
 const MoocLogoText = styled(Typography)<any>`
@@ -40,7 +40,7 @@ const MoocLogoLink = styled.a`
 `
 const MoocLogo = () => {
   return (
-    <LangLink href="/">
+    <LangLink href="/" passHref>
       <MoocLogoLink aria-label="MOOC.fi homepage">
         <MoocLogoAvatar alt="MOOC logo" src="/static/images/moocfi.svg" />
         <MoocLogoText>MOOC.fi</MoocLogoText>

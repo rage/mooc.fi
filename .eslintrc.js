@@ -1,6 +1,11 @@
 module.exports = {
   parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-  plugins: ["@typescript-eslint", "eslint-custom-rules", "react-hooks"],
+  plugins: [
+    "@typescript-eslint",
+    "eslint-custom-rules",
+    "react-hooks",
+    "jsx-a11y",
+  ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: "module", // Allows for the use of imports
@@ -17,14 +22,14 @@ module.exports = {
       {
         paths: [
           {
-            name: "@material-ui/core",
+            name: "@mui/material",
             importNames: ["Grid"],
-            message: "Don't use Grid from @material-ui",
+            message: "Don't use Grid from @mui/material",
           },
           {
-            name: "@material-ui/core/Grid",
+            name: "@mui/material/Grid",
             importNames: ["default"],
-            message: "Don't use Grid from @material-ui",
+            message: "Don't use Grid from @mui/material",
           },
         ],
       },
@@ -34,8 +39,8 @@ module.exports = {
       {
         paths: [
           {
-            name: "@material-ui/core/Grid",
-            message: "Don't use Grid from @material-ui",
+            name: "@mui/material/Grid",
+            message: "Don't use Grid from @mui/material",
           },
         ],
       },
@@ -46,6 +51,7 @@ module.exports = {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
+  extends: ["plugin:jsx-a11y/recommended", "plugin:@next/next/recommended"],
   settings: {
     react: {
       version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use

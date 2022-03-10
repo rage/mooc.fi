@@ -1,23 +1,25 @@
-import { gql, useQuery } from "@apollo/client"
-import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
-import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
-import Container from "/components/Container"
-import { UserSummary } from "/static/types/generated/UserSummary"
-import notEmpty from "/util/notEmpty"
 import React, { useEffect, useReducer, useState } from "react"
+
+import Container from "/components/Container"
 import CollapseContext, {
   ActionType,
   collapseReducer,
   createInitialState,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
+import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
+import ErrorMessage from "/components/ErrorMessage"
+import FilterMenu from "/components/FilterMenu"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { UserCourseSummaryUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { UserCourseSummaryUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
-import ErrorMessage from "/components/ErrorMessage"
-import FilterMenu from "/components/FilterMenu"
-import { Paper } from "@material-ui/core"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { UserSummary } from "/static/types/generated/UserSummary"
+import notEmpty from "/util/notEmpty"
+import { useQueryParameter } from "/util/useQueryParameter"
+
+import { gql, useQuery } from "@apollo/client"
+import { Paper } from "@mui/material"
 
 const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {
@@ -34,12 +36,22 @@ const UserSummaryQuery = gql`
             id
             uncompressed
           }
+          exercises {
+            id
+            name
+            custom_id
+            course_id
+            part
+            section
+            max_points
+            deleted
+          }
         }
         exercise_completions {
           id
+          exercise_id
           created_at
           updated_at
-          n_points
           attempted
           completed
           timestamp
@@ -47,19 +59,6 @@ const UserSummaryQuery = gql`
           exercise_completion_required_actions {
             id
             value
-          }
-          exercise {
-            id
-            name
-            custom_id
-            course_id
-            course {
-              id
-              name
-            }
-            part
-            section
-            max_points
           }
         }
         ...UserCourseSummaryUserCourseProgressFragment

@@ -1,31 +1,53 @@
-import { useState, useContext } from "react"
+import { useContext, useState } from "react"
+
+import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
-import { useQuery, ApolloConsumer } from "@apollo/client"
-import { SubtitleNoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { EmailTemplate } from "/static/types/generated/EmailTemplate"
-import { EmailTemplateQuery } from "/graphql/queries/email-templates"
-import { Paper, TextField, Button } from "@material-ui/core"
-import {
-  UpdateEmailTemplateMutation,
-  DeleteEmailTemplateMutation,
-} from "/graphql/mutations/email-templates"
-import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 import CustomSnackbar from "/components/CustomSnackbar"
+import Spinner from "/components/Spinner"
+import { SubtitleNoBackground } from "/components/Text/headers"
 import LanguageContext from "/contexts/LanguageContext"
-import Router from "next/router"
-import withAdmin from "/lib/with-admin"
+import {
+  DeleteEmailTemplateMutation,
+  UpdateEmailTemplateMutation,
+} from "/graphql/mutations/email-templates"
+import { EmailTemplateQuery } from "/graphql/queries/email-templates"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { EmailTemplate } from "/static/types/generated/EmailTemplate"
+import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
+import { useQueryParameter } from "/util/useQueryParameter"
+import Router from "next/router"
+import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
+
+import { ApolloConsumer, useQuery } from "@apollo/client"
+import { Button, Collapse, Paper, TextField } from "@mui/material"
+
+const templateValues = [
+  "grade",
+  "completion_link",
+  "started_course_count",
+  "completed_course_count",
+  "at_least_one_exercise_count",
+  "current_date",
+]
 
 const EmailTemplateView = () => {
+  // TODO: Get rid of any
   const [emailTemplate, setEmailTemplate] = useState<any>()
   const [name, setName] = useState<any>()
   const [txtBody, setTxtBody] = useState<any>()
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
+  const [exerciseThreshold, setExerciseThreshold] = useState<
+    Number | null | undefined
+  >()
+  const [pointsThreshold, setPointsThreshold] = useState<
+    Number | null | undefined
+  >()
+  const [templateType, setTemplateType] = useState<string | null | undefined>()
+  const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
-
+  const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
 
   interface SnackbarData {
@@ -56,9 +78,8 @@ const EmailTemplateView = () => {
     },
   ])
 
-  //TODO add circular progress
   if (loading) {
-    return null
+    return <Spinner />
   }
   //TODO fix error message
   if (error || !data) {
@@ -70,6 +91,12 @@ const EmailTemplateView = () => {
     setTxtBody(data.email_template?.txt_body)
     setHtmlBody(data.email_template?.html_body)
     setTitle(data.email_template?.title)
+    setTemplateType(data.email_template?.template_type)
+    setExerciseThreshold(data.email_template?.exercise_completions_threshold)
+    setPointsThreshold(data.email_template?.points_threshold)
+    setTriggeredByCourseId(
+      data.email_template?.triggered_automatically_by_course_id,
+    )
     setDidInit(true)
     setEmailTemplate(data.email_template)
   }
@@ -100,7 +127,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="title"
-              label="Title"
+              label="Email Subject"
               variant="outlined"
               value={title ?? ""}
               onChange={(e) => {
@@ -112,7 +139,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="txt-body"
-              label="txt_body"
+              label="Email text body"
               multiline
               rows="4"
               maxRows="40"
@@ -127,7 +154,7 @@ const EmailTemplateView = () => {
             <br></br>
             <TextField
               id="html-body"
-              label="html_body (disabled)"
+              label="Email HTML Body (disabled)"
               multiline
               rows="4"
               maxRows="40"
@@ -139,6 +166,60 @@ const EmailTemplateView = () => {
                 setHtmlBody(e.target.value)
               }}
             />
+            <br></br>
+            <br></br>
+            {templateType === "threshold" ? (
+              <>
+                <TextField
+                  type="number"
+                  label="Exercise Completions threshold (not supported)"
+                  fullWidth
+                  autoComplete="off"
+                  variant="outlined"
+                  style={{ width: "60%" }}
+                  value={exerciseThreshold}
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setExerciseThreshold(Number(e.target.value))
+                  }}
+                  disabled
+                />
+                <br />
+                <br />
+                <TextField
+                  type="number"
+                  label="Points threshold"
+                  fullWidth
+                  autoComplete="off"
+                  variant="outlined"
+                  style={{ width: "60%" }}
+                  value={pointsThreshold}
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setPointsThreshold(Number(e.target.value))
+                  }}
+                />
+              </>
+            ) : null}
+            <CollapseButton
+              open={isHelpOpen}
+              label="Help"
+              onClick={() => setIsHelpOpen((s) => !s)}
+            />
+            <Collapse in={isHelpOpen}>
+              <p>
+                You can use template values in the email body by adding them
+                inside double curly brackets, like <code>{`{{ this }}`}</code>.
+                Available template values:
+                <ul>
+                  {templateValues.map((value) => (
+                    <li>
+                      <code>{value}</code>
+                    </li>
+                  ))}
+                </ul>
+              </p>
+            </Collapse>
             <br></br>
             <br></br>
             <ApolloConsumer>
@@ -158,13 +239,18 @@ const EmailTemplateView = () => {
                             title: title,
                             txt_body: txtBody,
                             html_body: htmlBody,
+                            triggered_automatically_by_course_id:
+                              triggeredByCourseId,
+                            exercise_completions_threshold: exerciseThreshold,
+                            points_threshold: pointsThreshold,
+                            template_type: templateType,
                           },
                         },
                       )
                       console.log(data)
                       setSnackbarData({
                         type: "success",
-                        message: "Saved succesfully",
+                        message: "Saved successfully",
                       })
                     } catch {
                       setSnackbarData({

@@ -1,9 +1,11 @@
-import { objectType, extendType, stringArg, intArg, arg, list } from "nexus"
-import { chunk } from "lodash"
-import { or, isOrganization, isAdmin } from "../accessControl"
-import { ForbiddenError, UserInputError } from "apollo-server-core"
-import { Prisma } from "@prisma/client"
 import { Context } from "/context"
+import { ForbiddenError, UserInputError } from "apollo-server-express"
+import { chunk } from "lodash"
+import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
+
+import { Prisma } from "@prisma/client"
+
+import { isAdmin, isOrganization, or } from "../accessControl"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -20,6 +22,7 @@ export const CompletionRegistered = objectType({
     t.model.course()
     t.model.organization()
     t.model.user()
+    t.model.registration_date()
   },
 })
 
@@ -136,14 +139,16 @@ export const CompletionRegisteredMutations = extendType({
 
 const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
-    const course = await ctx.prisma.completion
-      .findUnique({ where: { id: entry.completion_id } })
-      .course()
-    const user = await ctx.prisma.completion
-      .findUnique({ where: { id: entry.completion_id } })
-      .user()
+    const { user_id, course_id } =
+      (await ctx.prisma.completion.findUnique({
+        where: { id: entry.completion_id },
+        select: {
+          course_id: true,
+          user_id: true,
+        },
+      })) ?? {}
 
-    if (!course || !user) {
+    if (!course_id || !user_id) {
       // TODO/FIXME: we now fail silently if course/user not found
       return Promise.resolve()
     }
@@ -156,9 +161,11 @@ const buildPromises = (array: any[], ctx: Context) => {
         organization: {
           connect: { id: ctx.organization?.id },
         },
-        course: { connect: { id: course.id } },
+        course: { connect: { id: course_id } },
         real_student_number: entry.student_number,
-        user: { connect: { id: user.id } },
+        // TODO: where to get registration_date here?
+        // receives CompletionArg as parameter! Is this used anywhere?
+        user: { connect: { id: user_id } },
       },
     })
   })

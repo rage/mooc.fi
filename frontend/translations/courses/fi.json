@@ -36,6 +36,7 @@
   "confirmationNo": "Ei",
   "courseLanguage": "Kieli",
   "courseDescription": "Kuvaus",
+  "courseInstructions": "Instructions",
   "courseLink": "Linkki",
   "courseOpenCode": "Avoimen yliopiston kurssikoodi",
   "courseOpenLink": "Avoimen yliopiston kurssilinkki",
@@ -115,5 +116,4 @@
   "started_cumulative": "Aloitettu, kumulatiivinen",
   "completed_cumulative": "Suoritettu, kumulatiivinen",
   "at_least_one_exercise_cumulative": "Ainakin yksi tehtävä palautettu, kumulatiivinen"
-
 }

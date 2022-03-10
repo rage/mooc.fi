@@ -1,8 +1,9 @@
 import { createServer } from "http"
 import * as WebSocketServer from "websocket"
-import redisClient, * as redis from "./services/redis"
-import { getCurrentUserDetails } from "./services/tmc"
+
 import { UserInfo } from "./domain/UserInfo"
+import redisClient from "./services/redis"
+import { getCurrentUserDetails } from "./services/tmc"
 
 const webSocketsServerPort = 9000
 
@@ -25,7 +26,7 @@ export enum MessageType {
   COURSE_CONFIRMED = "COURSE_CONFIRMED",
 }
 
-export const pushMessageToClient = (
+export const pushMessageToClient = async (
   userId: number,
   courseId: string,
   type: MessageType,
@@ -43,13 +44,13 @@ export const pushMessageToClient = (
       )
     } else {
       connectionByUserCourse.delete(userCourseObjectString)
-      redis.publisher?.publish(
+      redisClient?.publish(
         "websocket",
         JSON.stringify({ userId, courseId, type, message: payload }),
       )
     }
   } else {
-    redis.publisher?.publish(
+    redisClient?.publish(
       "websocket",
       JSON.stringify({ userId, courseId, type, message: payload }),
     )
@@ -67,11 +68,13 @@ wsServer.on("request", (request: any) => {
       const courseId = data.courseId
       try {
         let user: UserInfo = JSON.parse(
-          (await redis.getAsync(accessToken)) ?? "",
+          (await redisClient?.get(accessToken)) ?? "",
         )
         if (!user) {
           user = await getCurrentUserDetails(accessToken)
-          redisClient?.set(accessToken, JSON.stringify(user), "EX", 3600)
+          redisClient?.set(accessToken, JSON.stringify(user), {
+            EX: 3600,
+          })
         }
         const userCourseObject = {
           userId: user.id,
@@ -98,26 +101,31 @@ wsServer.on("request", (request: any) => {
   })
 })
 
-redis.subscriber?.on("message", (_channel: any, message: any) => {
-  const data = JSON.parse(message)
-  if (data instanceof Object && data.userId && data.courseId && data.type) {
-    const userId = data.userId
-    const courseId = data.courseId
-    const userCourseObjectString = JSON.stringify({ userId, courseId })
-    const connection = connectionByUserCourse.get(userCourseObjectString)
-    if (connection) {
-      if (connection.connected) {
-        connection.sendUTF(
-          JSON.stringify({
-            type: data.type,
-            message: data.message,
-          }),
-        )
-      } else {
-        connectionByUserCourse.delete(userCourseObjectString)
+const createSubscriber = async () => {
+  const subscriber = redisClient?.duplicate()
+  await subscriber?.connect()
+
+  subscriber?.subscribe("websocket", (message: any) => {
+    const data = JSON.parse(message)
+    if (data instanceof Object && data.userId && data.courseId && data.type) {
+      const userId = data.userId
+      const courseId = data.courseId
+      const userCourseObjectString = JSON.stringify({ userId, courseId })
+      const connection = connectionByUserCourse.get(userCourseObjectString)
+      if (connection) {
+        if (connection.connected) {
+          connection.sendUTF(
+            JSON.stringify({
+              type: data.type,
+              message: data.message,
+            }),
+          )
+        } else {
+          connectionByUserCourse.delete(userCourseObjectString)
+        }
       }
     }
-  }
-})
+  })
+}
 
-redis.subscriber?.subscribe("websocket")
+createSubscriber()

@@ -3,7 +3,7 @@ set -eo pipefail
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ "$BRANCH" != "master" ]]; then
+if [[ "$BRANCH" != "master" && "$BRANCH" != "staging" ]]; then
   exit 0
 fi
 
@@ -29,3 +29,4 @@ docker push "$TAG"
 
 echo "Pushing latest"
 docker push eu.gcr.io/moocfi/moocfi-frontend:latest
+  

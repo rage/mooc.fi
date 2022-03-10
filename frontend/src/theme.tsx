@@ -1,7 +1,7 @@
-import { createMuiTheme } from "@material-ui/core/styles"
-import { amber } from "@material-ui/core/colors"
+import { amber } from "@mui/material/colors"
+import { createTheme } from "@mui/material/styles"
 
-const rawTheme = createMuiTheme({
+const rawTheme = createTheme({
   palette: {
     primary: {
       main: "#378170",
@@ -12,6 +12,12 @@ const rawTheme = createMuiTheme({
   },
   typography: {
     fontFamily: "roboto",
+    button: {
+      label: {
+        textTransform: "none",
+        fontFamily: "Open Sans Condensed",
+      },
+    },
   },
   components: {
     MuiTextField: {
@@ -37,12 +43,9 @@ const rawTheme = createMuiTheme({
         color: "primary",
       },
       styleOverrides: {
-        label: {
-          textTransform: "none",
-          fontFamily: "Open Sans Condensed",
-        },
         root: {
           textTransform: "none",
+          fontFamily: "Open Sans Condensed",
         },
       },
     },

@@ -1,15 +1,15 @@
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
+
 import {
   ApolloClient,
   ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
-  // defaultDataIdFromObject,
 } from "@apollo/client"
-import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
-import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
+import { onError } from "@apollo/client/link/error"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -82,30 +82,10 @@ function create(initialState: any, originalAccessToken?: string) {
           return `Course:${object.slug}:${object.id}`
         case "StudyModule":
           return `StudyModule:${object.slug}:${object.id}`
-        case "CourseStatistics":
-          return `CourseStatistics:${object.course_id}`
-          //console.log("object", object)
-          // return defaultDataIdFromObject(object)
         default:
           return defaultDataIdFromObject(object)
       }
     },*/
-    /*typePolicies: {
-      CourseStatistics: {
-        merge(existing: Array<{ date: string, value: number }>, incoming: Array<{ date: string, value: number }>) {
-          let merged = existing.reduce((acc, curr) => {
-            if (curr.date === null || curr.date === "null") return acc
-
-            return { ...acc, [curr.date]: curr.value }
-          }, {} as Record<string, number>)
-          incoming.forEach((entry) => {
-            if (entry.date !== null || entry.date !== "null") merged[entry.date] = entry.value
-          })
-
-          return merged
-        }
-      }
-    }*/
   })
 
   return new ApolloClient<NormalizedCacheObject>({

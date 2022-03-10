@@ -1,11 +1,12 @@
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import { RegularContainer as Container } from "/components/Container"
-import { Typography } from "@material-ui/core"
-import styled from "@emotion/styled"
-import { gql } from "@apollo/client"
-import ProfileTranslations from "/translations/profile"
 import { CompletionListItem } from "/components/Home/Completions"
+import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+
+import { gql } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Typography } from "@mui/material"
 
 const completionsFragment = gql`
   fragment UserCompletions on User {
@@ -16,6 +17,7 @@ const completionsFragment = gql`
       created_at
       tier
       eligible_for_ects
+      completion_date
       course {
         id
         slug

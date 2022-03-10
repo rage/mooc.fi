@@ -65,7 +65,7 @@ export interface Message {
   user_id: number
   course_id: string
   service_id: string
-  progress: [PointsByGroup]
+  progress: PointsByGroup[]
   message_format_version: Number
 }
 
@@ -109,7 +109,7 @@ export interface Message {
   timestamp: string
   course_id: string
   service_id: string
-  data: [ExerciseData]
+  data: ExerciseData[]
   message_format_version: Number
 }
 
@@ -161,7 +161,7 @@ export interface Message {
   user_id: Number
   course_id: string
   service_id: string
-  required_actions: string | null
+  required_actions: string[]
   message_format_version: Number
 }
 ```
@@ -179,7 +179,7 @@ Message:
 | user_id | user id from tmc | can be queryed from tmc api with email
 | course_id | course id from points db | this is broadcasted in kafka topic courses when a course is created
 | service_id | service_id from points db | each service has one id and this should be stored in services own db
-| required_action | what user needs to do to complete the exercise | this field is optional
+| required_actions | Array of strings, which describe what user needs to do to complete the exercise | this field is optional
 | message_format_version | which version of message format is used | messages with wrong number are not processed
 
 

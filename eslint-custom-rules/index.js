@@ -42,13 +42,14 @@ module.exports = {
       meta: {
         type: "problem",
         docs: {
-          description: "Warns if Grid component is imported from @material-ui",
+          description: "Warns if Grid component is imported from @mui/material",
           category: "Best Practices",
           recommended: "error",
         },
         schema: [],
         messages: {
-          noMaterialUiGridImport: "Do not use Grid component from @material-ui",
+          noMaterialUiGridImport:
+            "Do not use Grid component from @mui/material",
         },
       },
       create: function (context) {
@@ -59,7 +60,7 @@ module.exports = {
               specifiers,
             } = node
 
-            if (importedFrom.indexOf("@material-ui") < 0) {
+            if (importedFrom.indexOf("@mui/material") < 0) {
               return
             }
             const importedFromGrid = !!importedFrom.match(/Grid$/)

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
-import SvgIcon, { SvgIconProps } from "@material-ui/core/SvgIcon"
+import Typography from "@mui/material/Typography"
+import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon"
 
 const InfoBoxIcon = (props: SvgIconProps) => {
   return (
@@ -37,25 +37,24 @@ const InfoBoxBackground = styled.div`
   margin-left: 40%;
   @media (max-width: 2000px) {
     width: 30%;
-    margin-left 35%;
-    bottom: -60px;
+    margin-left: 35%;
+    bottom: -50px;
   }
   @media (max-width: 1449px) {
     width: 45%;
-    margin-left 27.5%;
-    bottom: -60px;
+    margin-left: 27.5%;
+    bottom: -50px;
   }
   @media (max-width: 768px) {
     width: 60%;
-    margin-left 20%;
-    bottom: -60px;
+    margin-left: 20%;
+    bottom: -50px;
   }
   @media (max-width: 500px) {
     width: 80%;
-    margin-left 10%;
-    bottom: -60px;
+    margin-left: 10%;
+    bottom: -50px;
   }
-  
 `
 const Info = styled(Typography)<any>`
   margin-left: 1rem;

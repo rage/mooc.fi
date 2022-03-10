@@ -1,10 +1,11 @@
-import { Skeleton, Typography } from "@material-ui/core"
 import { DatedInt } from "/components/Dashboard/Courses/Statistics/types"
-import styled from "@emotion/styled"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { DateTime } from "luxon"
-import { useLanguageContext } from "/contexts/LanguageContext"
+
+import styled from "@emotion/styled"
+import { Skeleton, Typography } from "@mui/material"
 
 interface CourseStatisticsEntryProps {
   name: string
@@ -22,11 +23,11 @@ const StatisticsEntryWrapper: any = styled.div`
   justify-content: space-between;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
-  & + & {
+`
+/*   & + & {
     border-top: 1px ridge;
   }
-`
-
+*/
 const LabelWrapper = styled.div`
   display: flex;
   flex-direction: column;

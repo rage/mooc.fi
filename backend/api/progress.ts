@@ -15,8 +15,8 @@ interface ExerciseCompletionResult {
 }
 
 export function progress({ knex }: ApiContext) {
-  return async (req: any, res: any) => {
-    const { id }: { id: string } = req.params
+  return async (req: Request<{ id: string }>, res: any) => {
+    const { id } = req.params
 
     if (!id) {
       return res.status(400).json({ message: "must provide id" })

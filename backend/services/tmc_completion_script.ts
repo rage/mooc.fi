@@ -1,18 +1,24 @@
 import axios from "axios"
 
+import {
+  TMC_CLIENT_ID,
+  TMC_CLIENT_SECRET,
+  TMC_HOST,
+  TMC_PASSWORD,
+  TMC_USERNAME,
+} from "../config"
+
 let _accessToken: string | null = null
 
 async function fetchAccessToken(): Promise<string> {
   console.log("Fetching tmc access token...")
   try {
     const response = await axios.post(
-      `${process.env.TMC_HOST}/oauth/token`,
-      `client_secret=${
-        process.env.TMC_CLIENT_SECRET
-      }&username=${encodeURIComponent(
-        process.env.TMC_USERNAME || "",
+      `${TMC_HOST}/oauth/token`,
+      `client_secret=${TMC_CLIENT_SECRET}&client_id=${TMC_CLIENT_ID}&username=${encodeURIComponent(
+        TMC_USERNAME || "",
       )}&password=${encodeURIComponent(
-        process.env.TMC_PASSWORD || "",
+        TMC_PASSWORD || "",
       )}&grant_type=password`,
       {
         headers: {
@@ -38,7 +44,7 @@ export async function getAccessToken() {
 
 async function getBasicInfoByUsernames(usernames: string[]) {
   const res = await axios.post(
-    `${process.env.TMC_HOST}/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
+    `${TMC_HOST}/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
     {
       usernames: usernames,
     },

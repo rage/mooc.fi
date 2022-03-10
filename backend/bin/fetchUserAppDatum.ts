@@ -1,17 +1,17 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-import TmcClient from "../services/tmc"
-import { PrismaClient, UserCourseSetting } from "@prisma/client"
-import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
+
+import { PrismaClient, UserCourseSetting } from "@prisma/client"
+
+import { CONFIG_NAME } from "../config"
+import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
-import { DatabaseInputError, TMCError } from "./lib/errors"
+import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
+import { DatabaseInputError, TMCError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
-const CONFIG_NAME = "userAppDatum"
+const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 
 let course
 let old: UserCourseSetting
@@ -23,7 +23,7 @@ const fetchUserAppDatum = async () => {
   const tmc = new TmcClient()
 
   const existingConfig = await prisma.userAppDatumConfig.findFirst({
-    where: { name: CONFIG_NAME },
+    where: { name: USER_APP_DATUM_CONFIG_NAME },
   })
   const latestTimeStamp = existingConfig?.timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
 
@@ -96,12 +96,23 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
-    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
-      where: {
-        user: { upstream_id: e.user_id },
-        course_id: course.id,
-      },
-    })
+    const existingUserCourseSetting = (
+      await prisma.user
+        .findUnique({
+          where: {
+            upstream_id: e.user_id,
+          },
+        })
+        .user_course_settings({
+          where: {
+            course_id: course.id,
+          },
+          orderBy: {
+            created_at: "asc",
+          },
+        })
+    )?.[0]
+
     if (!existingUserCourseSetting) {
       old = await prisma.userCourseSetting.create({
         data: {
@@ -117,23 +128,23 @@ const fetchUserAppDatum = async () => {
 
     switch (e.field_name) {
       case "language":
-        saveLanguage(e)
+        await saveLanguage(e)
         break
       case "country":
-        saveCountry(e)
+        await saveCountry(e)
         break
       case "research":
-        saveResearch(e)
+        await saveResearch(e)
         break
       case "marketing":
-        saveMarketing(e)
+        await saveMarketing(e)
         break
       case "course_variant": //course_variant and deadline are functionally the same (deadline is used in elements-of-ai)
       case "deadline": // deadline does not tell when the deadline is but what is the course variant
-        saveCourseVariant(e)
+        await saveCourseVariant(e)
         break
       default:
-        saveOther(e)
+        await saveOther(e)
     }
     if (index % saveInterval == 0) {
       await saveProgress(prisma, new Date(e.updated_at))
@@ -257,7 +268,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     })
 
     return result
-  } catch (e) {
+  } catch (e: any) {
     logger.error(
       new DatabaseInputError(
         `Failed to upsert user with upstream id ${

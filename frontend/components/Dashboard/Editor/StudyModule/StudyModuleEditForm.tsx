@@ -15,13 +15,13 @@ import {
   Typography,
   InputAdornment,
   Tooltip,
-} from "@material-ui/core"
+} from "@mui/material"
 import * as Yup from "yup"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "@emotion/styled"
 import useDebounce from "/util/useDebounce"
-import HelpIcon from "@material-ui/icons/Help"
+import HelpIcon from "@mui/icons-material/Help"
 import {
   StyledField,
   StyledTextField,
@@ -58,11 +58,8 @@ const pixel =
 
 // capitalized to please the hook linter
 const RenderForm = () => {
-  const {
-    errors,
-    values,
-    isSubmitting,
-  } = useFormikContext<StudyModuleFormValues>()
+  const { errors, values, isSubmitting } =
+    useFormikContext<StudyModuleFormValues>()
 
   const t = useTranslator(ModulesTranslations)
   const confirm = useConfirm()

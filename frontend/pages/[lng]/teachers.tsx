@@ -1,5 +1,5 @@
-import Typography from "@material-ui/core/Typography"
-import Button from "@material-ui/core/Button"
+import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {

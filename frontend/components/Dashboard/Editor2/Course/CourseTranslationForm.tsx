@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import {
   ControlledTextField,
   ControlledHiddenField,
@@ -76,6 +76,14 @@ export default function CourseTranslationForm() {
                 name={`course_translations.${index}.description`}
                 label={t("courseDescription")}
                 defaultValue={item.description}
+                type="textarea"
+                rows={5}
+                revertable
+              />
+              <ControlledTextField
+                name={`course_translations.${index}.instructions`}
+                label={t("courseInstructions")}
+                defaultValue={item.instructions}
                 type="textarea"
                 rows={5}
                 revertable

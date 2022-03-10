@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import PersonalInfoBox from "./PersonalInfoBox"
 
 const HeaderBackground = styled.div`
@@ -11,7 +11,9 @@ const HeaderBackground = styled.div`
 
 const HeaderTitle = styled(Typography)<any>`
   padding: 0.5em;
-  font-size: 64px;
+  @media (min-width: 768px) {
+    font-size: 64px;
+  }
   @media (max-width: 768px) {
     font-size: 56px;
   }

@@ -11,12 +11,16 @@ const withMDX = require("@next/mdx")({
 })
 
 const nextConfiguration = {
+  images: {
+    disableStaticImages: true,
+  },
   publicRuntimeConfig: {
     localeSubpaths:
       typeof process.env.LOCALE_SUBPATHS === "string"
         ? process.env.LOCALE_SUBPATHS
         : "none",
   },
+  trailingSlash: true,
 }
 
 module.exports = withPlugins(
@@ -44,7 +48,12 @@ module.exports = withPlugins(
     ],
     withBundleAnalyzer,
     // withCSS,
-    withMDX,
+    [
+      withMDX,
+      {
+        pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+      },
+    ],
   ],
   nextConfiguration,
 )

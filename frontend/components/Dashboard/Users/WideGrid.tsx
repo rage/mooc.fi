@@ -9,7 +9,7 @@ import {
   TableRow,
   TableHead,
   Skeleton,
-} from "@material-ui/core"
+} from "@mui/material"
 import styled from "@emotion/styled"
 import range from "lodash/range"
 import LangLink from "/components/LangLink"
@@ -74,10 +74,10 @@ const WideGrid = () => {
               <StyledTableCell align="right">
                 {t("userStudentNumber")}
               </StyledTableCell>
-              <StyledTableCell align="right">
-                {/*t("summary")*/}
-                {/*t("completions")*/}
-              </StyledTableCell>
+              {/*<StyledTableCell align="right">
+                {t("summary")}
+                {("completions")}
+            </StyledTableCell>*/}
             </TableRow>
           </TableHead>
           <RenderResults />

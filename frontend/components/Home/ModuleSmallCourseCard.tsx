@@ -1,13 +1,16 @@
-import { Grid, Typography, Skeleton } from "@material-ui/core"
-import styled from "@emotion/styled"
+import {
+  ModuleCardText,
+  ModuleCardTitle,
+} from "/components/Home/ModuleDisplay/Common"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import HomeTranslations from "/translations/home"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
-import ReactGA from "react-ga"
-import { CardTitle } from "components/Text/headers"
-import { CardText } from "/components/Text/paragraphs"
-import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { useTranslator } from "/util/useTranslator"
+import ReactGA from "react-ga"
+
+import styled from "@emotion/styled"
+import { Grid, Skeleton, Typography } from "@mui/material"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -56,7 +59,7 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
     }
   `
       : undefined}
-  @media (max-width: 960px) {
+  @media (min-width: 960px) {
     min-height: 150px;
   }
   @media (min-width: 600px) and (max-width: 960px) {
@@ -104,7 +107,7 @@ function ModuleSmallCourseCard({
 
   return (
     <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
-      <Background focusRipple component="div">
+      <Background focusRipple component="div" role="none">
         {course ? (
           <ReactGA.OutboundLink
             eventLabel={`modulecoursesite: ${course ? course.name : ""}`}
@@ -129,12 +132,8 @@ function ModuleSmallCourseCard({
                 </Header>
               )}
             <ContentArea>
-              <CardTitle component="h3" align="center" variant="h3">
-                {course.name}
-              </CardTitle>
-              <CardText component="p" paragraph variant="body1" align="left">
-                {course.description}
-              </CardText>
+              <ModuleCardTitle>{course.name}</ModuleCardTitle>
+              <ModuleCardText>{course.description}</ModuleCardText>
             </ContentArea>
           </ReactGA.OutboundLink>
         ) : (

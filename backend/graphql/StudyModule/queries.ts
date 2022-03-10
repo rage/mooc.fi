@@ -1,9 +1,11 @@
-import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
-import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
-import { UserInputError } from "apollo-server-core"
-import { isAdmin, or, isUser, Role } from "../../accessControl"
-import { filterNull } from "../../util/db-functions"
+import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
+import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
+
+import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
+
+import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { filterNull } from "../../util/db-functions"
 
 export const StudyModuleQueries = extendType({
   type: "Query",
@@ -49,14 +51,13 @@ export const StudyModuleQueries = extendType({
         }
 
         if (language) {
-          const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
-            {
+          const module_translation =
+            await ctx.prisma.studyModuleTranslation.findFirst({
               where: {
                 study_module_id: study_module.id,
                 language,
               },
-            },
-          )
+            })
 
           if (!module_translation) {
             if (!translationFallback) {

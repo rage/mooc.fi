@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useEffect, useState } from "react"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
@@ -12,7 +12,7 @@ import {
   MenuItem,
   DialogActions,
   Button,
-} from "@material-ui/core"
+} from "@mui/material"
 import { Field, useFormikContext } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"
@@ -49,16 +49,20 @@ const ImportPhotoDialog = ({
   courses,
 }: ImportPhotoDialogProps) => {
   const { values, setFieldValue } = useFormikContext<CourseFormValues>()
-
+  const [selectedCourse, setSelectedCourse] = useState(
+    courses?.find((course) => course.id === values.import_photo) ?? {
+      photo: undefined,
+    },
+  )
   const t = useTranslator(CoursesTranslations)
 
-  const selectedCourse = useCallback(
-    () =>
+  useEffect(() => {
+    setSelectedCourse(
       courses?.find((course) => course.id === values.import_photo) ?? {
         photo: undefined,
       },
-    [values.import_photo],
-  )
+    )
+  }, [values.import_photo])
 
   const fetchBase64 = (
     photo: CourseEditorCourses_courses_photo,
@@ -95,7 +99,7 @@ const ImportPhotoDialog = ({
   }
 
   const handleSelection = () => {
-    const { photo } = selectedCourse()
+    const { photo } = selectedCourse
 
     if (!photo) {
       return
@@ -136,7 +140,8 @@ const ImportPhotoDialog = ({
         <ImageContainer>
           {values.import_photo ? (
             <img
-              src={addDomain(selectedCourse()?.photo?.compressed)}
+              src={addDomain(selectedCourse?.photo?.compressed)}
+              alt={selectedCourse?.photo?.name ?? "image from other course"}
               height="200"
             />
           ) : (

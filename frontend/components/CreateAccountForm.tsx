@@ -1,18 +1,15 @@
 import { Component } from "react"
-import {
-  TextField,
-  Typography,
-  Paper,
-  CircularProgress,
-} from "@material-ui/core"
+
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import LangLink from "/components/LangLink"
+import LanguageContext from "/contexts/LanguageContext"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
-import LanguageContext from "/contexts/LanguageContext"
-import SignUpTranslations from "/translations/sign-up"
-import LangLink from "/components/LangLink"
-import styled from "@emotion/styled"
-import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import getTranslator from "/translations"
+import SignUpTranslations from "/translations/sign-up"
+
+import styled from "@emotion/styled"
+import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -116,7 +113,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
       })
 
       this.props.onComplete()
-    } catch (error) {
+    } catch (error: any) {
       try {
         let message = ""
         Object.entries(error).forEach((o: any) => {
@@ -137,7 +134,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
           message = t("commonProblem") + JSON.stringify(error)
         }
         this.setState({ error: message, submitting: false, errorObj: error })
-      } catch (_error2) {
+      } catch (_error2: any) {
         this.setState({ error: JSON.stringify(error), submitting: false })
       }
 
@@ -236,6 +233,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               name="email"
               autoComplete="lolled"
               label={t("formLabelEmail")}
+              placeholder={t("formLabelEmail")}
               error={this.state.errorObj.email}
               fullWidth
               value={this.state.email}
@@ -252,6 +250,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type="text"
               label={t("formLabelFirstName")}
+              placeholder={t("formLabelFirstName")}
               name="first_name"
               autoComplete="lolled"
               fullWidth
@@ -264,6 +263,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type="text"
               label={t("formLabelLastName")}
+              placeholder={t("formLabelLastName")}
               name="last_name"
               autoComplete="lolled"
               fullWidth
@@ -276,6 +276,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
               label={t("formLabelPassword")}
+              placeholder={t("formLabelPassword")}
               name="password"
               autoComplete="lolled"
               error={this.state.errorObj.password}
@@ -289,6 +290,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
               label={t("formLabelPasswordAgain")}
+              placeholder={t("formLabelPasswordAgain")}
               name="password_confirmation"
               autoComplete="lolled"
               error={this.state.errorObj.password_confirmation}
@@ -322,7 +324,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <LangLink href={`/sign-in`}>
+          <LangLink href={`/sign-in`} passHref>
+            {/*LangLink passes href*/}
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <a>{t("signIn")}</a>
           </LangLink>
         </Row>

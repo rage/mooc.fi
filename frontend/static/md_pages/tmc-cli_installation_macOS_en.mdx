@@ -1,0 +1,155 @@
+import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
+
+<ContentBox>
+
+## Installing to Linux
+---
+### Contents
+1. [Install using the install script](#using-script)
+2. [Install manually](#manual-installation)
+3. [Getting started](#getting-started)
+---
+
+</ContentBox>
+
+<ContentBox>
+
+Follow the instructions below to install the Test My Code client
+
+Note: this software has not been tested on a macOS device (yet), so some functionalities might not work.
+
+<SectionBox>
+
+### Install using the install script<a name="using-script"></a>
+
+`cd` into the directory where you want to download tmc-cli-rust and run the following command:
+
+64 bit MacOS:
+
+> `curl -0 https://raw.githubusercontent.com/rage/tmc-cli-rust/dev/scripts/install.sh | bash -s x86_64 mac`
+        
+32 bit MacOS:
+    
+> `curl -0 https://raw.githubusercontent.com/rage/tmc-cli-rust/dev/scripts/install.sh | bash -s i686 mac`
+
+</SectionBox>
+
+<SectionBox>
+
+### Install manually<a name="manual-installation"></a>
+
+If using the installer is not an option for you, you can download the [latest release](https://github.com/rage/tmc-cli-rust/releases/latest) manually.
+
+After downloading 'tmc-cli-rust', navigate to the directory it's located in and make it an executable with the command
+
+> `chmod u+x ./tmc-cli-rust`
+
+To use the software from any directory, you can add it to your environmental variables with the following command (substituting DIRECTORY for the location where tmc-cli-rust resides at.)
+
+> `echo "alias tmc='DIRECTORY/tmc-cli-rust'" >> "$HOME/.bashrc"`
+
+</SectionBox>
+
+<SectionBox>
+
+### Tab-completion from commandline<a name="tab-completion"></a>
+
+If your shell is Bash, you can generate shell completion scripts by running the following commands:
+
+Create the completions directory if it doesn't exist
+
+> `mkdir -p ~/.local/share/tmc-autocomplete`
+
+Generate the completions script to the directory
+
+> `tmc generate-completions --bash > ~/.local/share/tmc-autocomplete/tmc.bash`
+
+Add the file to your bash configuration so that bash knows where to look for the completions
+
+> `echo "source ~/.local/share/tmc-autocomplete/tmc.bash" >> ~/.bashrc`
+
+For Zsh, run these commands:
+
+> `mkdir -p ~/.local/share/tmc-autocomplete`
+
+Generate the completions script to the directory
+
+> `tmc generate-completions --zsh > ~/.local/share/tmc-autocomplete/_tmc`
+
+Add the file to your zsh configuration:
+
+> `echo "fpath(~/.local/share/tmc-autocomplete/_tmc " '$fpath)' >> "~/.zshrc"`
+
+> `echo "compdef _tmc tmc" >> ".zshrc"`
+
+Make sure to have the appropriate software configuration for completions to work. For Bash, this might be `bash-completion`. For Zsh, consider `zsh-completions`.
+
+</SectionBox>
+
+</ContentBox>
+
+<ContentBox>
+
+<SectionBox>
+
+### Getting started <a name="getting-started"></a>
+
+#### Commands
+
+> `tmc [FLAGS] [SUBCOMMAND]`
+
+FLAG | Description
+:--- | :---
+`-h, --help` | Prints help information
+`-d, --no-update` | Disable auto update temporarily
+`-V, --version` | Prints version information
+
+#### Logging in
+
+You can log in using `tmc login`. This saves your TMC login information to a configuration file in `<linux config path>` - you will only have to log in once.
+
+
+The application will ask you to select an organization afterwards.
+
+#### Logging out
+
+You can log out using 'tmc logout'. This will remove your login token from the configuration file.
+
+> `~ $ tmc logout`
+
+#### Listing courses
+
+Once you have logged in, you can list all the available courses on the server with
+
+> `~ $ tmc courses`
+
+#### Downloading course exercises
+
+Either
+- Navigate to a suitable directory in which you wish to download your exercises. Then, run 
+
+> `tmc download [COURSE_NAME] .` 
+
+- Enter suitable filepath as an argument 
+
+> `tmc download [COURSE_NAME] [FILEPATH]`
+
+This will download all available exercises into it.
+
+#### Running tests
+
+After you've completed an exercise and wish to run tests on it, navigate to the exercise directory and run `tmc test`. If you are in the course root directory, you can also give the name of the exercise as argument: `tmc test exercise1`.
+
+> `~/tmc-courses/test-course/exercise1 $ tmc test`
+
+#### Listing exercises
+
+If you want to see your current progress, you can view the status of all course exercises with `tmc exercises [course]`.
+
+> `~/tmc-courses/test-course/ $ tmc exercises test-course`
+
+
+</SectionBox>
+
+</ContentBox>
+

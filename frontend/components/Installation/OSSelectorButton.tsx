@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import ButtonBase from "@material-ui/core/ButtonBase"
-import Typography from "@material-ui/core/Typography"
+import ButtonBase from "@mui/material/ButtonBase"
+import Typography from "@mui/material/Typography"
 import styled from "@emotion/styled"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { userOsType } from "/util/getUserOS"

@@ -1,5 +1,13 @@
-import { objectType, extendType, idArg, stringArg, nonNull } from "nexus"
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-express"
+import {
+  extendType,
+  idArg,
+  intArg,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus"
+
 import { isAdmin } from "../accessControl"
 
 export const EmailTemplate = objectType({
@@ -14,6 +22,11 @@ export const EmailTemplate = objectType({
     t.model.txt_body()
     t.model.courses()
     t.model.email_deliveries()
+    t.model.template_type()
+    t.model.triggered_automatically_by_course_id()
+    t.model.exercise_completions_threshold()
+    t.model.points_threshold()
+    t.model.course_stats_subscriptions()
   },
 })
 
@@ -52,10 +65,23 @@ export const EmailTemplateMutations = extendType({
         html_body: stringArg(),
         txt_body: stringArg(),
         title: stringArg(),
+        template_type: stringArg(),
+        triggered_automatically_by_course_id: stringArg(),
+        exercise_completions_threshold: intArg(),
+        points_threshold: intArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const { name, html_body, txt_body, title } = args
+        const {
+          name,
+          html_body,
+          txt_body,
+          title,
+          template_type,
+          triggered_automatically_by_course_id,
+          exercise_completions_threshold,
+          points_threshold,
+        } = args
 
         if (name == "") throw new UserInputError("Name is empty!")
 
@@ -65,6 +91,10 @@ export const EmailTemplateMutations = extendType({
             html_body,
             txt_body,
             title,
+            template_type,
+            triggered_automatically_by_course_id,
+            exercise_completions_threshold,
+            points_threshold,
           },
         })
       },
@@ -78,10 +108,24 @@ export const EmailTemplateMutations = extendType({
         html_body: stringArg(),
         txt_body: stringArg(),
         title: stringArg(),
+        template_type: stringArg(),
+        triggered_automatically_by_course_id: stringArg(),
+        exercise_completions_threshold: intArg(),
+        points_threshold: intArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
-        const { id, name, html_body, txt_body, title } = args
+        const {
+          id,
+          name,
+          html_body,
+          txt_body,
+          title,
+          template_type,
+          triggered_automatically_by_course_id,
+          exercise_completions_threshold,
+          points_threshold,
+        } = args
 
         return ctx.prisma.emailTemplate.update({
           where: {
@@ -92,6 +136,10 @@ export const EmailTemplateMutations = extendType({
             html_body,
             txt_body,
             title,
+            template_type,
+            triggered_automatically_by_course_id,
+            exercise_completions_threshold,
+            points_threshold,
           },
         })
       },

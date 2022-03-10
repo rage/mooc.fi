@@ -1,5 +1,5 @@
 import { MouseEvent as ReactMouseEvent } from "react"
-import { ButtonBase, Tooltip } from "@material-ui/core"
+import { ButtonBase, Tooltip } from "@mui/material"
 import styled from "@emotion/styled"
 
 const CloseButton = styled(ButtonBase)`
@@ -51,7 +51,11 @@ const ImagePreview = ({
 
   return (
     <div {...rest}>
-      <img src={file} height={height} />
+      <img
+        src={file}
+        height={height}
+        alt={file} // TODO: might be gibberish if base64 image
+      />
       {onClose && (
         <Tooltip title="Remove picture">
           <CloseButton onClick={(e: ReactMouseEvent) => onClose(e)}>

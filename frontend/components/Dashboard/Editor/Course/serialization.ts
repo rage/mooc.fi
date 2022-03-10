@@ -46,9 +46,11 @@ export const toCourseForm = ({
         course_translations: (course.course_translations || []).map((c) => ({
           ...omit(c, "__typename"),
           link: c.link || "",
-          open_university_course_link: course?.open_university_registration_links?.find(
-            (l) => l.language === c.language,
-          ),
+          open_university_course_link:
+            course?.open_university_registration_links?.find(
+              (l) => l.language === c.language,
+            ),
+          instructions: c.instructions ?? undefined,
         })),
         study_modules: modules?.reduce(
           (acc, module) => ({

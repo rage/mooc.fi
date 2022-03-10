@@ -1,15 +1,16 @@
-import LangLink from "/components/LangLink"
-import Grid from "@material-ui/core/Grid"
-import styled from "@emotion/styled"
-import { mime } from "/util/imageUtils"
-import Button from "@material-ui/core/Button"
-import { CardTitle } from "components/Text/headers"
-import { CardText } from "/components/Text/paragraphs"
 import {
   BackgroundImage,
   FullCoverTextBackground,
 } from "/components/Images/CardBackgroundFullCover"
+import LangLink from "/components/LangLink"
+import { CardText } from "/components/Text/paragraphs"
+import { mime } from "/util/imageUtils"
 import { ClickableDiv } from "components/Surfaces/ClickableCard"
+import { CardTitle } from "components/Text/headers"
+
+import styled from "@emotion/styled"
+import Button from "@mui/material/Button"
+import Grid from "@mui/material/Grid"
 
 const NaviItemBase = styled(ClickableDiv)`
   width: 100%;
@@ -31,11 +32,12 @@ type NaviItem = {
   linkText: string
   img: string
   link: string
+  titleImg?: string
 }
 
 interface NaviCardProps {
   item: NaviItem
-  count: number
+  count?: number
 }
 
 const gridLayout = (count: number): { [key: string]: number } =>
@@ -55,33 +57,46 @@ const gridLayout = (count: number): { [key: string]: number } =>
 
 function NaviCard(props: NaviCardProps) {
   const { item, count } = props
+  const gridProps =
+    count !== undefined
+      ? gridLayout(count)
+      : {
+          xs: 12,
+        }
+
   return (
-    <Grid item {...gridLayout(count)}>
-      <LangLink href={item.link} prefetch={false}>
+    <Grid item {...gridProps}>
+      <LangLink href={item.link} passHref prefetch={false}>
         <StyledLink aria-label={item.linkText}>
           <NaviItemBase>
-            <picture>
-              <source
-                srcSet={require(`../../static/images/${item.img}?webp`)}
-                type="image/webp"
-              />
-              <source
-                srcSet={require(`../../static/images/${item.img}`)}
-                type={mime(item.img)}
-              />
-              <BackgroundImage
-                src={require(`../../static/images/${item.img}`)}
-                alt=""
-              />
-            </picture>
+            {item.img ? (
+              <picture>
+                <source
+                  srcSet={require(`../../static/images/${item.img}?webp`)}
+                  type="image/webp"
+                />
+                <source
+                  srcSet={require(`../../static/images/${item.img}`)}
+                  type={mime(item.img)}
+                />
+                <BackgroundImage
+                  src={require(`../../static/images/${item.img}`)}
+                  alt=""
+                />
+              </picture>
+            ) : null}
             <FullCoverTextBackground style={{ width: "100%" }}>
               <CardTitle
-                component="h3"
+                component="h2"
                 variant="h3"
                 align="left"
                 style={{ maxWidth: "70%" }}
               >
-                {item.title}
+                {item.titleImg ? (
+                  <img src={item.titleImg} alt="" style={{ width: "70%" }} />
+                ) : (
+                  item.title
+                )}
               </CardTitle>
               <CardText
                 component="p"
@@ -91,9 +106,11 @@ function NaviCard(props: NaviCardProps) {
               >
                 {item.text}
               </CardText>
-              <Button fullWidth aria-disabled="true">
-                {item.linkText}
-              </Button>
+              {item.linkText ? (
+                <Button fullWidth aria-disabled="true">
+                  {item.linkText}
+                </Button>
+              ) : undefined}
             </FullCoverTextBackground>
           </NaviItemBase>
         </StyledLink>

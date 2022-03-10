@@ -1,0 +1,6 @@
+shibboleth/*
+shibboleth-staging/*
+docs/*
+node_modules
+build
+.env

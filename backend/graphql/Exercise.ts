@@ -1,18 +1,20 @@
+import { Context } from "/context"
+import { AuthenticationError } from "apollo-server-express"
 import {
-  objectType,
-  extendType,
   arg,
+  extendType,
   idArg,
   intArg,
-  stringArg,
   nonNull,
   nullable,
+  objectType,
+  stringArg,
 } from "nexus"
+
 import { Prisma } from "@prisma/client"
-import { isAdmin } from "../accessControl"
+
+import { isAdmin, Role } from "../accessControl"
 import { filterNull } from "../util/db-functions"
-import { Context } from "/context"
-import { AuthenticationError } from "apollo-server-core"
 
 export const Exercise = objectType({
   name: "Exercise",
@@ -32,8 +34,6 @@ export const Exercise = objectType({
     t.model.timestamp()
     t.model.updated_at()
 
-    // t.prismaFields({ filter: ["exercise_completions"] })
-
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
@@ -43,19 +43,21 @@ export const Exercise = objectType({
             type: "ExerciseCompletionOrderByInput",
           }),
         ),
+        user_id: nullable(idArg()),
       },
       resolve: async (parent, args, ctx: Context) => {
-        const { orderBy } = args
+        const { orderBy, user_id: user_id_arg } = args
+        const isAdmin = ctx.role === Role.ADMIN
+        const user_id = isAdmin && user_id_arg ? user_id_arg : ctx?.user?.id
 
-        if (!ctx?.user?.id) {
+        if (!user_id) {
           throw new AuthenticationError("not logged in")
         }
         return ctx.prisma.exercise
           .findUnique({ where: { id: parent.id } })
           .exercise_completions({
             where: {
-              // @ts-ignore: context typing problem, FIXME
-              user_id: ctx?.user?.id, // { id: ctx?.user?.id },
+              user_id,
             },
             orderBy:
               (filterNull(orderBy) as Prisma.ExerciseCompletionOrderByInput) ??
@@ -111,15 +113,8 @@ export const ExerciseMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const {
-          custom_id,
-          name,
-          part,
-          section,
-          max_points,
-          course,
-          service,
-        } = args
+        const { custom_id, name, part, section, max_points, course, service } =
+          args
 
         ctx.prisma
         return ctx.prisma.exercise.create({

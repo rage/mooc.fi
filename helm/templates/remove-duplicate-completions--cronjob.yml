@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: remove-duplicate-completions
@@ -8,6 +8,8 @@ spec:
   schedule: "4/30 * * * *"
   startingDeadlineSeconds: 1800
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     metadata:
       labels:
@@ -23,10 +25,10 @@ spec:
               command: ["sh", "-c", "npm run remove-duplicate-completions"]
               resources:
                 limits:
-                  memory: 500Mi
+                  memory: 256Mi
                   cpu: 20m
                 requests:
-                  memory: 256Mi
+                  memory: 100Mi
                   cpu: 10m
               envFrom:
               - secretRef:
