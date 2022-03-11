@@ -1,13 +1,7 @@
 import { gql } from "graphql-request"
 
-import {
-  fakeTMCCurrent,
-  getTestContext,
-} from "../../../tests/__helpers"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../tests/data"
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
 const recheckMutation = gql`

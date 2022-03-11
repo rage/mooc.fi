@@ -8,16 +8,16 @@
 // ====================================================
 
 export interface CreateRegistrationAttemptDate_createRegistrationAttemptDate {
-  __typename: "Completion";
-  id: string;
-  completion_registration_attempt_date: any | null;
+  __typename: "Completion"
+  id: string
+  completion_registration_attempt_date: any | null
 }
 
 export interface CreateRegistrationAttemptDate {
-  createRegistrationAttemptDate: CreateRegistrationAttemptDate_createRegistrationAttemptDate | null;
+  createRegistrationAttemptDate: CreateRegistrationAttemptDate_createRegistrationAttemptDate | null
 }
 
 export interface CreateRegistrationAttemptDateVariables {
-  id: string;
-  completion_registration_attempt_date: any;
+  id: string
+  completion_registration_attempt_date: any
 }
