@@ -35,7 +35,7 @@ Array [
         "certificate_id": null,
         "completion_date": "1900-01-01T08:00:00.000Z",
         "completion_language": null,
-        "completion_registration_attempt_date": null,
+        "completion_registration_attempt_date": "2022-01-01T08:00:00.000Z",
         "course_id": "00000000-0000-0000-0000-000000000001",
         "created_at": "1900-01-01T08:00:00.000Z",
         "eligible_for_ects": true,

@@ -8,22 +8,22 @@
 // ====================================================
 
 export interface UserCourseStatsSubscriptions_currentUser_course_stats_subscriptions_email_template {
-  __typename: "EmailTemplate"
-  id: string
+  __typename: "EmailTemplate";
+  id: string;
 }
 
 export interface UserCourseStatsSubscriptions_currentUser_course_stats_subscriptions {
-  __typename: "CourseStatsSubscription"
-  id: string
-  email_template: UserCourseStatsSubscriptions_currentUser_course_stats_subscriptions_email_template | null
+  __typename: "CourseStatsSubscription";
+  id: string;
+  email_template: UserCourseStatsSubscriptions_currentUser_course_stats_subscriptions_email_template | null;
 }
 
 export interface UserCourseStatsSubscriptions_currentUser {
-  __typename: "User"
-  id: string
-  course_stats_subscriptions: UserCourseStatsSubscriptions_currentUser_course_stats_subscriptions[]
+  __typename: "User";
+  id: string;
+  course_stats_subscriptions: UserCourseStatsSubscriptions_currentUser_course_stats_subscriptions[];
 }
 
 export interface UserCourseStatsSubscriptions {
-  currentUser: UserCourseStatsSubscriptions_currentUser | null
+  currentUser: UserCourseStatsSubscriptions_currentUser | null;
 }

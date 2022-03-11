@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface UserCourseStatsSubscribe_createCourseStatsSubscription {
-  __typename: "CourseStatsSubscription"
-  id: string
+  __typename: "CourseStatsSubscription";
+  id: string;
 }
 
 export interface UserCourseStatsSubscribe {
-  createCourseStatsSubscription: UserCourseStatsSubscribe_createCourseStatsSubscription | null
+  createCourseStatsSubscription: UserCourseStatsSubscribe_createCourseStatsSubscription | null;
 }
 
 export interface UserCourseStatsSubscribeVariables {
-  id: string
+  id: string;
 }

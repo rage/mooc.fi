@@ -1,4 +1,8 @@
-import { useContext, useEffect, useState } from "react"
+import {
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
@@ -7,22 +11,36 @@ import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import LanguageContext from "/contexts/LanguageContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { UpdateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
+import {
+  CreateRegistrationAttemptDateMutation,
+} from "/graphql/mutations/completion"
 import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { getAccessToken } from "/lib/authentication"
 import withSignedIn from "/lib/with-signed-in"
 import { CheckSlug } from "/static/types/generated/CheckSlug"
-import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
-import { UpdateRegistrationAttemptDate } from "/static/types/generated/UpdateRegistrationAttemptDate"
+import {
+  CreateRegistrationAttemptDate,
+} from "/static/types/generated/CreateRegistrationAttemptDate"
+import {
+  RegisterCompletionUserOverView as UserOverViewData,
+} from "/static/types/generated/RegisterCompletionUserOverView"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import axios from "axios"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import {
+  gql,
+  useMutation,
+  useQuery,
+} from "@apollo/client"
 import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@mui/material"
+import {
+  Paper,
+  SvgIcon,
+  Typography,
+} from "@mui/material"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -114,9 +132,9 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
-  const [updateRegistrationAttemptDate] =
-    useMutation<UpdateRegistrationAttemptDate>(
-      UpdateRegistrationAttemptDateMutation,
+  const [createRegistrationAttemptDate] =
+    useMutation<CreateRegistrationAttemptDate>(
+      CreateRegistrationAttemptDateMutation,
     )
 
   const course_exists = Boolean(courseData?.course?.id)
@@ -131,7 +149,7 @@ function RegisterCompletionPage() {
       return
     }
 
-    updateRegistrationAttemptDate({
+    createRegistrationAttemptDate({
       variables: {
         id: completion.id,
         completion_registration_attempt_date: new Date(),

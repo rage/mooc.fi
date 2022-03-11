@@ -1,7 +1,13 @@
 import { gql } from "graphql-request"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
+import {
+  fakeTMCCurrent,
+  getTestContext,
+} from "../../../tests/__helpers"
+import {
+  adminUserDetails,
+  normalUserDetails,
+} from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
 const recheckMutation = gql`
@@ -10,12 +16,12 @@ const recheckMutation = gql`
   }
 `
 
-const updateRegistrationAttemptDateMutation = gql`
-  mutation UpdateRegistrationAttemptDate(
+const createRegistrationAttemptDateMutation = gql`
+  mutation CreateRegistrationAttemptDate(
     $id: ID!
     $completion_registration_attempt_date: DateTime!
   ) {
-    updateRegistrationAttemptDate(
+    createRegistrationAttemptDate(
       id: $id
       completion_registration_attempt_date: $completion_registration_attempt_date
     ) {
@@ -115,7 +121,7 @@ describe("Completion", () => {
       })
     })
 
-    describe("updateRegistrationAttemptDate", () => {
+    describe("createRegistrationAttemptDate", () => {
       beforeEach(async () => {
         tmc.setup()
       })
@@ -123,10 +129,10 @@ describe("Completion", () => {
       afterAll(() => tmc.teardown())
 
       describe("user", () => {
-        it("errors on editing completion not owned", async () => {
+        it("errors on creating attempt date on completion not owned", async () => {
           return ctx.client
             .request(
-              updateRegistrationAttemptDateMutation,
+              createRegistrationAttemptDateMutation,
               {
                 id: "12400000-0000-0000-0000-000000000001",
                 completion_registration_attempt_date: new Date(),
@@ -144,7 +150,7 @@ describe("Completion", () => {
             })
         })
 
-        it("can edit own completion", async () => {
+        it("can create attempt date on own completion", async () => {
           const before = await ctx.prisma.completion.findFirst({
             where: {
               id: "30000000-0000-0000-0000-000000000102",
@@ -152,7 +158,7 @@ describe("Completion", () => {
           })
 
           const res = await ctx.client.request(
-            updateRegistrationAttemptDateMutation,
+            createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000102",
               completion_registration_attempt_date: new Date(
@@ -165,7 +171,7 @@ describe("Completion", () => {
           )
 
           expect(
-            res.updateRegistrationAttemptDate
+            res.createRegistrationAttemptDate
               .completion_registration_attempt_date,
           ).toEqual("2021-01-01T08:00:00.000Z")
 
@@ -180,10 +186,44 @@ describe("Completion", () => {
             new Date("2021-01-01T08:00:00.000Z"),
           )
         })
+
+        it("won't change existing attempt date", async () => {
+          const before = await ctx.prisma.completion.findFirst({
+            where: {
+              id: "30000000-0000-0000-0000-000000000103",
+            },
+          })
+
+          const res = await ctx.client.request(
+            createRegistrationAttemptDateMutation,
+            {
+              id: "30000000-0000-0000-0000-000000000103",
+              completion_registration_attempt_date: new Date(
+                "2022-02-01T10:00:00.00+02:00",
+              ),
+            },
+            {
+              Authorization: "Bearer normal",
+            },
+          )
+
+          expect(
+            res.createRegistrationAttemptDate
+              .completion_registration_attempt_date,
+          ).toEqual(before?.completion_registration_attempt_date?.toISOString())
+
+          const after = await ctx.prisma.completion.findFirst({
+            where: {
+              id: "30000000-0000-0000-0000-000000000103",
+            },
+          })
+
+          expect(before).toEqual(after)
+        })
       })
 
       describe("admin", () => {
-        it("can edit other completions", async () => {
+        it("can create attempt date on other completions", async () => {
           const before = await ctx.prisma.completion.findFirst({
             where: {
               id: "30000000-0000-0000-0000-000000000102",
@@ -191,7 +231,7 @@ describe("Completion", () => {
           })
 
           const res = await ctx.client.request(
-            updateRegistrationAttemptDateMutation,
+            createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000102",
               completion_registration_attempt_date: new Date(
@@ -204,7 +244,7 @@ describe("Completion", () => {
           )
 
           expect(
-            res.updateRegistrationAttemptDate
+            res.createRegistrationAttemptDate
               .completion_registration_attempt_date,
           ).toEqual("2021-01-01T08:00:00.000Z")
 

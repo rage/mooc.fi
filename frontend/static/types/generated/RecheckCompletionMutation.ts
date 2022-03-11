@@ -8,9 +8,9 @@
 // ====================================================
 
 export interface RecheckCompletionMutation {
-  recheckCompletions: string | null
+  recheckCompletions: string | null;
 }
 
 export interface RecheckCompletionMutationVariables {
-  slug?: string | null
+  slug?: string | null;
 }

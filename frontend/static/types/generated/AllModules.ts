@@ -8,19 +8,19 @@
 // ====================================================
 
 export interface AllModules_study_modules {
-  __typename: "StudyModule"
-  id: string
-  slug: string
-  name: string
-  description: string | null
-  image: string | null
-  order: number | null
+  __typename: "StudyModule";
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  image: string | null;
+  order: number | null;
 }
 
 export interface AllModules {
-  study_modules: (AllModules_study_modules | null)[] | null
+  study_modules: (AllModules_study_modules | null)[] | null;
 }
 
 export interface AllModulesVariables {
-  language?: string | null
+  language?: string | null;
 }
