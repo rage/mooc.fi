@@ -161,17 +161,6 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - run:
-          name: "Debug directories"
-          command: |
-            echo "Current"
-            ls -la
-            echo "Backend"
-            ls -la ./backend
-            echo "Sourcemap"
-            ls -la ./backend/sourcemap
-            echo ".."
-            ls -la ..
-      - run:
           name: "Persist image"
           command: |
             REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
@@ -195,17 +184,6 @@ jobs:
           name: "Restore image"
           command: |
             docker load < ./build/moocfi-backend.tar.gz
-      - run:
-          name: "Debug directories"
-          command: |
-            echo "Current"
-            ls -la
-            echo "Backend"
-            ls -la ./backend
-            echo "Sourcemap"
-            ls -la ./backend/sourcemap
-            echo ".."
-            ls -la ..
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
