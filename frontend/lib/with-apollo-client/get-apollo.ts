@@ -82,6 +82,10 @@ function create(initialState: any, originalAccessToken?: string) {
           return `Course:${object.slug}:${object.id}`
         case "StudyModule":
           return `StudyModule:${object.slug}:${object.id}`
+        case "CourseStatistics":
+          return `CourseStatistics:${object.course_id}`
+          //console.log("object", object)
+          // return defaultDataIdFromObject(object)
         default:
           return defaultDataIdFromObject(object)
       }

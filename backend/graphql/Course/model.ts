@@ -116,5 +116,11 @@ export const Course = objectType({
       authorize: isAdmin,
       resolve: ({ id }) => ({ course_id: id }),
     })
+
+    t.field("course_statistics", {
+      type: "CourseStatistics",
+      authorize: isAdmin,
+      resolve: ({ id }) => ({ course_id: id }),
+    })
   },
 })

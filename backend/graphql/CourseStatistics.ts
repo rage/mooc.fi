@@ -1,5 +1,17 @@
 import { Sql } from "@prisma/client/runtime"
+<<<<<<< HEAD
 import { arg, enumType, intArg, nonNull, objectType } from "nexus"
+=======
+import {
+  arg,
+  enumType,
+  intArg,
+  nonNull,
+  nullable,
+  objectType,
+  stringArg,
+} from "nexus"
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
 import { redisify } from "../services/redis"
 import { Context } from "../context"
 import { UserInputError } from "apollo-server-express"
@@ -78,7 +90,10 @@ type TimeGroupUnit =
   | "timezone_minute"
   | "week"
   | "year"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
 interface CourseStatisticsValue {
   value?: number
   date?: number
@@ -128,6 +143,10 @@ const createStatisticsQuery = async ({
   const queryFn = async () => {
     const data = (await ctx.prisma.$queryRaw(query, ...values)) ?? []
 
+<<<<<<< HEAD
+=======
+    console.log("data", data)
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
     return {
       updated_at: Date.now(),
       unit,
@@ -144,6 +163,21 @@ const createStatisticsQuery = async ({
   })
 }
 
+<<<<<<< HEAD
+=======
+/*const createCourseStatisticsResolver = <
+  TypeName extends string,
+  FieldName extends string
+>(
+  path: FieldName,
+  query: string | TemplateStringsArray | Sql,
+): FieldResolver<TypeName, FieldName> => async (
+  { course_id },
+  _,
+  ctx,
+): Promise<any> => {}
+*/
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
 export const CourseStatistics = objectType({
   name: "CourseStatistics",
   definition(t) {
@@ -178,10 +212,17 @@ export const CourseStatistics = objectType({
           path: "started_by_unit",
           ctx,
           query: `
+<<<<<<< HEAD
             select floor(extract(${unit} from created_at)) as unit_value, count(distinct ucs.user_id) as value
             from user_course_setting ucs
             where course_id = $1
             group by floor(extract(${unit} from created_at));
+=======
+            select round(extract(${unit} from created_at)) as unit_value, count(distinct ucs.user_id) as value
+            from user_course_setting ucs
+            where course_id = $1
+            group by round(extract(${unit} from created_at));
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
           `,
           values: [course_id],
           unit,
@@ -248,7 +289,11 @@ export const CourseStatistics = objectType({
             left join
               user_course_setting ucs
               on date_trunc('${unit}', ucs.created_at) <= series.date
+<<<<<<< HEAD
             where course_id = $1
+=======
+              and course_id = $1
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
             group by date
             order by date;
           `,
@@ -352,7 +397,11 @@ export const CourseStatistics = objectType({
           query: `
             SELECT COUNT(DISTINCT user_id) as value, now() as date
             FROM exercise_completion ec
+<<<<<<< HEAD
             LEFT JOIN exercise e ON ec.exercise_id = e.id
+=======
+            JOIN exercise e ON ec.exercise_id = e.id
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
             WHERE course_id = $1;
           `,
           values: [course_id],
@@ -426,7 +475,11 @@ export const CourseStatistics = objectType({
             left join
               exercise e
               on ec.exercise_id = e.id
+<<<<<<< HEAD
             where e.course_id = $1
+=======
+              and e.course_id = $1
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
             group by date
             order by date;
           `,

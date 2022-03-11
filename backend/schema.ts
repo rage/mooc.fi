@@ -1,7 +1,24 @@
+<<<<<<< HEAD
 import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
+=======
+const PRODUCTION = process.env.NODE_ENV === "production"
+
+require("dotenv-safe").config({
+  allowEmptyValues: PRODUCTION,
+})
+if (process.env.NEXUS_REFLECTION) {
+  require("sharp")
+}
+
+import { makeSchema, connectionPlugin, fieldAuthorizePlugin } from "nexus"
+import { nexusPrisma } from "nexus-plugin-prisma"
+import * as types from "./graphql"
+import { DateTimeResolver /*JSONObjectResolver*/ } from "graphql-scalars"
+// import { GraphQLScalarType } from "graphql/type"
+>>>>>>> 69aa809a2f9f1e756a4fd36f4a8f128745269a2d
 import * as path from "path"
 import { join } from "path"
 
@@ -30,14 +47,15 @@ const createPlugins = () => {
       shouldGenerateArtifacts: true,
       scalars: {
         DateTime: DateTimeResolver,
-        Json: new GraphQLScalarType({
+        /*Json: new GraphQLScalarType({
           ...JSONObjectResolver,
           name: "Json",
           description:
-            "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
-        }),
+          "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
+        }),*/
       },
     }),
+
     connectionPlugin({
       nexusFieldName: "connection",
       includeNodesField: true,
