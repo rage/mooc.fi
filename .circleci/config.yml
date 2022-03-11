@@ -189,10 +189,10 @@ jobs:
           command: |
             echo "Current"
             ls -la
-            echo "Build"
-            ls -la ./build
+            echo "Backend"
+            ls -la ./backend
             echo "Sourcemap"
-            ls -la ./sourcemap
+            ls -la ./backend/sourcemap
             echo ".."
             ls -la ..
       - run:
