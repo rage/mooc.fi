@@ -185,6 +185,17 @@ jobs:
           command: |
             docker load < ./build/moocfi-backend.tar.gz
       - run:
+          name: "Debug directories"
+          command: |
+            echo "Current"
+            ls -la
+            echo "Build"
+            ls -la ./build
+            echo "Sourcemap"
+            ls -la ./sourcemap
+            echo ".."
+            ls -la ..
+      - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
 
