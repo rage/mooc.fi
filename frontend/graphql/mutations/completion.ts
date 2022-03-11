@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client"
 
-export const UpdateRegistrationAttemptDateMutation = gql`
-  mutation UpdateRegistrationAttemptDate(
+export const CreateRegistrationAttemptDateMutation = gql`
+  mutation CreateRegistrationAttemptDate(
     $id: ID!
     $completion_registration_attempt_date: DateTime!
   ) {
-    updateRegistrationAttemptDate(
+    createRegistrationAttemptDate(
       id: $id
       completion_registration_attempt_date: $completion_registration_attempt_date
     ) {

@@ -4,20 +4,20 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: UpdateRegistrationAttemptDate
+// GraphQL mutation operation: CreateRegistrationAttemptDate
 // ====================================================
 
-export interface UpdateRegistrationAttemptDate_updateRegistrationAttemptDate {
+export interface CreateRegistrationAttemptDate_createRegistrationAttemptDate {
   __typename: "Completion"
   id: string
   completion_registration_attempt_date: any | null
 }
 
-export interface UpdateRegistrationAttemptDate {
-  updateRegistrationAttemptDate: UpdateRegistrationAttemptDate_updateRegistrationAttemptDate | null
+export interface CreateRegistrationAttemptDate {
+  createRegistrationAttemptDate: CreateRegistrationAttemptDate_createRegistrationAttemptDate | null
 }
 
-export interface UpdateRegistrationAttemptDateVariables {
+export interface CreateRegistrationAttemptDateVariables {
   id: string
   completion_registration_attempt_date: any
 }

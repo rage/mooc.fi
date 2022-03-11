@@ -252,7 +252,7 @@ export const CompletionMutations = extendType({
       },
     })
 
-    t.field("updateRegistrationAttemptDate", {
+    t.field("createRegistrationAttemptDate", {
       type: "Completion",
       args: {
         id: nonNull(idArg()),
@@ -275,6 +275,16 @@ export const CompletionMutations = extendType({
               "not authorized to edit this completion",
             )
           }
+        }
+
+        const existing = await ctx.prisma.completion.findFirst({
+          where: {
+            id,
+          },
+        })
+
+        if (existing?.completion_registration_attempt_date) {
+          return existing
         }
 
         return ctx.prisma.completion.update({

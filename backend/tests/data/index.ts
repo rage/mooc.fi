@@ -280,6 +280,7 @@ export const completions: Prisma.CompletionCreateInput[] = [
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
     completion_date: "1900-01-01T10:00:00.00+02:00",
+    completion_registration_attempt_date: "2022-01-01T10:00:00.00+02:00",
   },
   {
     id: "12400000-0000-0000-0000-000000000001",
