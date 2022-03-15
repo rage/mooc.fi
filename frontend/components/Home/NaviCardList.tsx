@@ -28,7 +28,7 @@ function NaviCardList() {
   return (
     <Container>
       <Grid container spacing={3} style={{ marginBottom: "3em" }}>
-        {language === "fi" && <UkraineInfo />}
+        <UkraineInfo />
         {items.map((item) => (
           <NaviCard
             key={`navi-${item.title}`}

@@ -2,6 +2,8 @@ import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCo
 import OutboundLink from "/components/OutboundLink"
 import { ShadowedDiv } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
@@ -69,19 +71,18 @@ const InfoContainer = styled.div`
 `
 
 function UkraineInfo() {
+  const t = useTranslator(CommonTranslations)
+
   return (
     <Grid item xs={12}>
       <NaviItemBase>
         <FlagBackground>
           <InfoContainer>
             <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
-              Auta Ukrainan konfliktista kärsiviä.
+              {t("ukraineText")}
             </CardTitle>
-            <OutboundLink
-              eventLabel="custom: ukraina"
-              to="https://www.punainenristi.fi/lahjoita/katastrofirahasto/"
-            >
-              Lahjoita Suomen Punaisen Ristin katastofirahastoon
+            <OutboundLink eventLabel="custom: ukraina" to={t("ukraineLink")}>
+              {t("ukraineLinkText")}
             </OutboundLink>
           </InfoContainer>
         </FlagBackground>
