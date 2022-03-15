@@ -2,7 +2,6 @@ import Container from "/components/Container"
 import UkraineInfo from "/components/Home/UkraineInfo"
 import WideNaviCard from "/components/Home/WideNaviCard"
 import PartnerDivider from "/components/PartnerDivider"
-import { useLanguageContext } from "/contexts/LanguageContext"
 import NaviTranslations from "/translations/navi"
 import { useTranslator } from "/util/useTranslator"
 
@@ -19,7 +18,6 @@ type NaviItem = {
 }
 
 function NaviCardList() {
-  const { language } = useLanguageContext()
   const t = useTranslator(NaviTranslations)
 
   const items = t("naviItems") as NaviItem[]
@@ -28,7 +26,7 @@ function NaviCardList() {
   return (
     <Container>
       <Grid container spacing={3} style={{ marginBottom: "3em" }}>
-        {language === "fi" && <UkraineInfo />}
+        <UkraineInfo />
         {items.map((item) => (
           <NaviCard
             key={`navi-${item.title}`}
