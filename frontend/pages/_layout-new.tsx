@@ -17,12 +17,12 @@ const FooterDownPusherWrapper = styled.div`
   justify-content: space-between;
 `
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const NewLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
 
-  const path = router?.asPath?.replace(/#(.*)/, "")?.replace(/^\/new/, "")
-
-  const isHomePage = !!path?.match(/^\/(fi|en|se|\[lng\])?\/?$/)
+  const isHomePage = !!router?.asPath
+    ?.replace(/#(.*)/, "")
+    .match(/^\/(fi|en|se|\[lng\])?\/?$/)
 
   // {!isHomePage && <DashboardBreadCrumbs />}
   return (
@@ -32,7 +32,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div>
           <Header />
           <main id="main">
-            <div>New layout</div>
             {!isHomePage && <Breadcrumbs />}
             <Alerts />
             {children}
@@ -45,4 +44,4 @@ const Layout = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export default Layout
+export default NewLayout

@@ -24,7 +24,8 @@ import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
 import createEmotionCache from "../src/createEmotionCache"
-import Layout from "./_layout"
+import OriginalLayout from "./_layout"
+import NewLayout from "./_layout-new"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -152,6 +153,7 @@ export function MyApp({
 
   const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
+  const Layout = pageProps?.isNew ? OriginalLayout : NewLayout
   return (
     <>
       <CacheProvider value={emotionCache}>
@@ -202,12 +204,12 @@ const originalGetInitialProps = MyApp.getInitialProps
 
 const languages = ["en", "fi", "se"]
 
-function createPath(originalUrl: string) {
+function createPath(originalUrl: string, prefix?: string) {
   let url = ""
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
+    url = prefix + originalUrl.replace("/en", "/fi")
   } else if (originalUrl?.startsWith("/se")) {
     url = originalUrl.replace("/se", "/fi")
   } else if (originalUrl?.startsWith("/fi")) {
@@ -216,7 +218,7 @@ function createPath(originalUrl: string) {
     url = "/en" + (originalUrl ?? "/")
   }
 
-  return url
+  return prefix + url
 }
 
 MyApp.getInitialProps = async (props: AppContext) => {
@@ -226,9 +228,18 @@ MyApp.getInitialProps = async (props: AppContext) => {
   let asUrl = "/"
   let hrefUrl = "/"
 
+  let path = ctx?.asPath
+  let prefix = ""
+
+  console.log("path?", path)
+  if (path?.substring(1, 4) === "new") {
+    path = path.substring(4)
+    prefix = "/new"
+  }
+
   if (typeof window !== "undefined") {
-    if (languages.includes(ctx?.asPath?.substring(1, 3) ?? "")) {
-      lng = ctx?.asPath?.substring(1, 3) ?? ""
+    if (languages.includes(path?.substring(1, 3) ?? "")) {
+      lng = path?.substring(1, 3) ?? ""
     }
 
     asUrl = ctx?.asPath ?? ""
@@ -245,7 +256,12 @@ MyApp.getInitialProps = async (props: AppContext) => {
 
     // @ts-ignore: TODO: check what it really is
     asUrl = ctx?.req?.originalUrl ?? ""
+
     hrefUrl = ctx.pathname //.req.path
+  }
+
+  if (asUrl?.startsWith("/new")) {
+    asUrl = asUrl.substring(4)
   }
 
   let originalProps: any = {}
@@ -274,8 +290,9 @@ MyApp.getInitialProps = async (props: AppContext) => {
       admin,
       lng,
       asUrl,
-      languageSwitchUrl: createPath(asUrl),
+      languageSwitchUrl: createPath(asUrl, prefix),
       hrefUrl,
+      isNew: prefix === "/new",
     },
   }
 }
