@@ -3,9 +3,11 @@ import { useContext, useEffect, useState } from "react"
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import styled from "@emotion/styled"
-import withSignedIn from "/lib/with-signed-in"
+import RegisterCompletionText from "/components/RegisterCompletionText"
+import Spinner from "/components/Spinner"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import LoginStateContext from "/contexts/LoginStateContext"
+import { CreateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
 import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { getAccessToken } from "/lib/authentication"
@@ -16,9 +18,16 @@ import { RegisterCompletionUserOverView as UserOverViewData } from "/static/type
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import RegisterCompletion from "/components/Home/RegisterCompletion"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import { CheckSlug } from "/static/types/generated/CheckSlug"
+import axios from "axios"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Paper, SvgIcon, Typography } from "@mui/material"
+
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://www.mooc.fi"
+    : "http://localhost:4000"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -130,7 +139,7 @@ function RegisterCompletionPage() {
     })
   }
 
-  const { language } = useContext(LanguageContext)
+  const { language } = useLanguageContext()
 
   useEffect(() => {
     if (language) {
@@ -160,20 +169,6 @@ function RegisterCompletionPage() {
         })
     }
   }, [language])
-
-  useBreadcrumbs([
-    {
-      translation: "registerCompletion",
-    },
-    {
-      label:
-        courseData?.course?.name ??
-        (!courseLoading && !course_exists ? courseSlug : undefined),
-      href: `/register-completion/${courseSlug}`,
-    },
-  ])
-
-  const course_exists = Boolean(courseData?.course?.id)
 
   useBreadcrumbs([
     {

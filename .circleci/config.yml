@@ -185,10 +185,7 @@ jobs:
           command: |
             docker load < ./build/moocfi-backend.tar.gz
       - run:
-          name: "Upload coverage"
-          command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
-      - run:
-          name: "Push image if on master"
+          name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
 
   # build_auth:

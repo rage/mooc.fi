@@ -1,6 +1,8 @@
 import * as faker from "faker"
-import { Exercise } from "@prisma/client"
 import { sample } from "lodash"
+
+import { Exercise } from "@prisma/client"
+
 import prisma from "../prisma"
 
 const createExercise = () => ({

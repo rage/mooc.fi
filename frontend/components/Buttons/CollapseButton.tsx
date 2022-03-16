@@ -1,6 +1,6 @@
-import { IconButton, Typography } from "@material-ui/core"
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown"
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
+import { IconButton, Typography } from "@mui/material"
 
 interface CollapseButtonProps {
   open: boolean

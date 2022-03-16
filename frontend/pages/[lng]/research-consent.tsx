@@ -1,16 +1,17 @@
-import { useContext, useState, useEffect } from "react"
-import styled from "@emotion/styled"
-import { Paper, CircularProgress } from "@material-ui/core"
-import LanguageContext from "/contexts/LanguageContext"
-import { useMutation, useQuery } from "@apollo/client"
-import ResearchConsent from "/components/Dashboard/ResearchConsent"
-import SignupTranslations from "/translations/sign-up"
-import { gql } from "@apollo/client"
+import { useContext, useEffect, useState } from "react"
+
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import withSignedIn from "/lib/with-signed-in"
-import Router from "next/router"
-import { useTranslator } from "/util/useTranslator"
+import ResearchConsent from "/components/Dashboard/ResearchConsent"
+import LanguageContext from "/contexts/LanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
+import SignupTranslations from "/translations/sign-up"
+import { useTranslator } from "/util/useTranslator"
+import Router from "next/router"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { CircularProgress, Paper } from "@mui/material"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -102,14 +103,8 @@ function useResearchConsent() {
 const ResearchConsentPage = () => {
   const t = useTranslator(SignupTranslations)
 
-  const {
-    loading,
-    research,
-    handleInput,
-    onSubmit,
-    formError,
-    submitting,
-  } = useResearchConsent()
+  const { loading, research, handleInput, onSubmit, formError, submitting } =
+    useResearchConsent()
 
   return (
     <StyledPaper>

@@ -22,7 +22,6 @@ Object {
     "user_course_summary": Array [
       Object {
         "course": Object {
-<<<<<<< HEAD
           "exercises": Array [
             Object {
               "course_id": "00000000-0000-0000-0000-000000000002",
@@ -33,59 +32,35 @@ Object {
               "section": null,
             },
           ],
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
           "id": "00000000-0000-0000-0000-000000000002",
           "name": "course1",
         },
         "course_id": "00000000-0000-0000-0000-000000000002",
         "exercise_completions": Array [
           Object {
-<<<<<<< HEAD
             "attempted": true,
             "completed": false,
-=======
-            "exercise": Object {
-              "id": "50000000-0000-0000-0000-000000000003",
-              "max_points": 3,
-              "name": "exercise 3",
-            },
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
             "exercise_completion_required_actions": Array [
               Object {
                 "id": "66666666-0000-0000-0000-000000000003",
                 "value": "TOO_MANY_DUCKS",
               },
             ],
-<<<<<<< HEAD
             "exercise_id": "50000000-0000-0000-0000-000000000003",
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
             "id": "60000000-0000-0000-0000-000000000003",
             "n_points": 4,
             "timestamp": "1900-01-01T08:00:00.000Z",
           },
           Object {
-<<<<<<< HEAD
             "attempted": true,
             "completed": false,
-=======
-            "exercise": Object {
-              "id": "50000000-0000-0000-0000-000000000004",
-              "max_points": null,
-              "name": "deleted exercise 4",
-            },
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
             "exercise_completion_required_actions": Array [
               Object {
                 "id": "66666666-0000-0000-0000-000000000004",
                 "value": "existing",
               },
             ],
-<<<<<<< HEAD
             "exercise_id": "50000000-0000-0000-0000-000000000004",
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
             "id": "60000000-0000-0000-0000-000000000004",
             "n_points": 1,
             "timestamp": "2000-01-01T08:00:00.000Z",
@@ -95,7 +70,6 @@ Object {
       },
       Object {
         "course": Object {
-<<<<<<< HEAD
           "exercises": Array [
             Object {
               "course_id": "00000000-0000-0000-0000-000000000001",
@@ -114,45 +88,25 @@ Object {
               "section": 2,
             },
           ],
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
           "id": "00000000-0000-0000-0000-000000000001",
           "name": "course2",
         },
         "course_id": "00000000-0000-0000-0000-000000000001",
         "exercise_completions": Array [
           Object {
-<<<<<<< HEAD
             "attempted": null,
             "completed": true,
             "exercise_completion_required_actions": Array [],
             "exercise_id": "50000000-0000-0000-0000-000000000001",
-=======
-            "exercise": Object {
-              "id": "50000000-0000-0000-0000-000000000001",
-              "max_points": 2,
-              "name": "exercise 1",
-            },
-            "exercise_completion_required_actions": Array [],
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
             "id": "60000000-0000-0000-0000-000000000001",
             "n_points": 6,
             "timestamp": "1900-01-01T08:00:00.000Z",
           },
           Object {
-<<<<<<< HEAD
             "attempted": null,
             "completed": false,
             "exercise_completion_required_actions": Array [],
             "exercise_id": "50000000-0000-0000-0000-000000000002",
-=======
-            "exercise": Object {
-              "id": "50000000-0000-0000-0000-000000000002",
-              "max_points": 3,
-              "name": "exercise 2",
-            },
-            "exercise_completion_required_actions": Array [],
->>>>>>> 279cf0b6 (cumulative stats started; some graphs)
             "id": "60000000-0000-0000-0000-000000000002",
             "n_points": 0,
             "timestamp": "1900-01-01T08:00:00.000Z",

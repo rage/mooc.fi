@@ -14,13 +14,7 @@ import {
   FormGroup,
   InputLabel,
   Typography,
-} from "@material-ui/core"
-import { Field } from "formik"
-import { TextField } from "formik-material-ui"
-import styled from "@emotion/styled"
-import { PropsWithChildren, useContext } from "react"
-import AnchorContext from "/contexts/AnchorContext"
-import { CheckboxWithLabel } from "formik-material-ui"
+} from "@mui/material"
 
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
@@ -50,7 +44,7 @@ export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
   }
 
   &:focus {
-    bordercolor: "#3f51b5";
+    border-color: "#3f51b5";
   }
 
   @media (hover: none) {

@@ -1,7 +1,4 @@
-import {
-  LibrdKafkaError,
-  Message as KafkaMessage,
-} from "node-rdkafka"
+import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
@@ -10,10 +7,7 @@ import { KafkaError } from "../../lib/errors"
 import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
-import {
-  handledRecently,
-  setHandledRecently,
-} from "../common/messageHashCache"
+import { handledRecently, setHandledRecently } from "../common/messageHashCache"
 import { Message } from "../common/userCourseProgress/interfaces"
 import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
 import {

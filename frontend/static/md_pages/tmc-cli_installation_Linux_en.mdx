@@ -8,7 +8,8 @@ import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
 1. [Install using Flatpak](#using-flatpak)
 2. [Install using the install script](#using-script)
 3. [Install manually](#manual-installation)
-4. [Getting started](#getting-started)
+4. [Commands](#commands)
+5. [Usage manual](#usage-manual)
 ---
 
 </ContentBox>
@@ -53,7 +54,7 @@ After restarting the terminal, this should work:
 
 ### Install manually<a name="manual-installation"></a>
 
-If using the installers is not an option for you, you can download the [latest release](https://github.com/rage/tmc-cli-rust/releases/latest) manually.
+If using the installer is not an option for you, you can download the [latest release](https://github.com/rage/tmc-cli-rust/releases/latest) manually.
 
 After downloading 'tmc-cli-rust', navigate to the directory it's located in and make it an executable with the command
 
@@ -65,17 +66,53 @@ To use the software from any directory, you can add it to your environmental var
 
 </SectionBox>
 
+<SectionBox>
+
+### Tab-completion from commandline<a name="tab-completion"></a>
+
+If your shell is Bash, you can generate shell completion scripts by running the following commands:
+
+Create the completions directory if it doesn't exist
+
+> `mkdir -p ~/.local/share/tmc-autocomplete`
+
+Generate the completions script to the directory
+
+> `tmc generate-completions --bash > ~/.local/share/tmc-autocomplete/tmc.bash`
+
+Add the file to your bash configuration so that bash knows where to look for the completions
+
+> `echo "source ~/.local/share/tmc-autocomplete/tmc.bash" >> ~/.bashrc`
+
+For Zsh, run these commands:
+
+> `mkdir -p ~/.local/share/tmc-autocomplete`
+
+Generate the completions script to the directory
+
+> `tmc generate-completions --zsh > ~/.local/share/tmc-autocomplete/_tmc`
+
+Add the file to your zsh configuration:
+
+> `echo "fpath(~/.local/share/tmc-autocomplete/_tmc " '$fpath)' >> "~/.zshrc"`
+
+> `echo "compdef _tmc tmc" >> ".zshrc"`
+
+Make sure to have the appropriate software configuration for completions to work. For Bash, this might be `bash-completion`. For Zsh, consider `zsh-completions`.
+
+</SectionBox>
+
 </ContentBox>
 
 <ContentBox>
 
 <SectionBox>
 
-### Getting started <a name="getting-started"></a>
+### Commands <a name="commands"></a>
 
-#### Commands
+        tmc [FLAGS] [SUBCOMMAND]
 
-> `tmc [FLAGS] [SUBCOMMAND]`
+#### Flags
 
 FLAG | Description
 :--- | :---
@@ -83,50 +120,235 @@ FLAG | Description
 `-d, --no-update` | Disable auto update temporarily
 `-V, --version` | Prints version information
 
-#### Logging in
+#### Subcommands
 
-You can log in using `tmc login`. This saves your TMC login information to a configuration file in `<linux config path>` - you will only have to log in once.
+SUBCOMMAND | Description
+:--- | :---
+`courses` | List the available courses
+`download` | Downloads course exercises
+`exercises` | List the exercises for a specific course
+`help` | Prints this message or the help of the given subcommand(s)
+`login` | Login to TMC server
+`logout` | Logout from TMC server
+`organization` | Change organization
+`paste` | Submit exercise to TMC pastebin
+`submit` | Submit exercises to TMC server
+`test` | Run local exercise tests
+`update` | Update exercises
 
+### Usage manual <a name="usage-manual"></a>
 
-The application will ask you to select an organization afterwards.
+Manual for using the program.
+
+#### Login
+
+You can log in using `tmc login`. This saves your TMC login information to a configuration file in /home/username/tmc-config/tmc-tmc_cli_rust (or %APPDATA%\tmc-tmc_cli_rust on Windows) - you will only have to log in once.
+
+```
+~ $ tmc login
+Email / username: username
+Password: 
+Logged in successfully!
+```
+
+After you have logged in, you can choose your organization with interactive menu. To see all organizations, select *View all organizations* with keyboard arrows. Press keyboard characters to filter.
+
+```
+Select your organization:            Press keys
+>> MOOC                              to filter
+   Helsingin Yliopisto
+   View all organizations
+
+```
+
+After you have selected your organization, you can choose course with interactive menu. Exercises of the course will be downloaded. Press keyboard characters to filter. If you don't want to download anything, select *Don't download anything* with keyboard arrows.
+
+```
+Select your course:                  Press keys
+>> Don't download anything           to filter
+   2013 Object-oriented programming,
+   2013 Object-oriented programming,
+   Aikatauluton Ohjelmoinnin MOOC, Oh
+   Aikatauluton Ohjelmoinnin MOOC, Oh
+   Cyber Security Base Advanced Topic
+   Java Programming I                
+   Java Programming II
+   Ohjelmoinnin MOOC 2021
+   Securing Software 2020
+   Securing Software 2021
+```
+
+When filtering, only courses with filtered name are shown.
+
+```
+Select your course:                  ohjelmoinn
+>> Aikatauluton Ohjelmoinnin MOOC, Oh
+   Aikatauluton Ohjelmoinnin MOOC, Oh
+   Ohjelmoinnin MOOC 2021
+```
+
+After course is selected, exercises are downloaded. Download folder is informed for the user.
+
+```
+Successfully downloaded 15 out of 15 exercises.
+ 100%[█████████████████████████] [00:00:00]
+Exercises downloaded successfully to /home/user/.local/share/tmc/tmc_cli_rust\
+```
+
+#### Organization
+
+You can change your organization with the command `tmc organization`. To see all organizations, select *View all organizations* with keyboard arrows. All available organizations will be listed. You can choose your organization with interactive menu.
+
+```
+~ $ tmc organization
+```
 
 #### Logging out
 
 You can log out using 'tmc logout'. This will remove your login token from the configuration file.
 
-> `~ $ tmc logout`
+```
+~ $ tmc logout
+Logged out successfully.
+```
 
 #### Listing courses
 
-Once you have logged in, you can list all the available courses on the server with
-
-> `~ $ tmc courses`
+Once you have logged in, you can list all the available courses on the server with `tmc courses`.
+```
+~ $ tmc courses
+```
 
 #### Downloading course exercises
 
-Either
-- Navigate to a suitable directory in which you wish to download your exercises. Then, run 
+*Either*
 
-> `tmc download [COURSE_NAME] .` 
+When you have already selected your organization, simply run `tmc download` and select right course to download with interactive menu.
 
-- Enter suitable filepath as an argument 
+*Or*
 
-> `tmc download [COURSE_NAME] [FILEPATH]`
+Navigate to a suitable directory in which you wish to download your exercises. Then, run `tmc download -d` to download to the current directory after course is selected with interactive menu. 
 
-This will download all available exercises into it.
+*Or*
+
+Give suitable course name as an argument `tmc download -c [COURSE_NAME]`.
+
+*Or*
+
+Give suitable course name as an argument and use `-d` flag to download to the current directory: `tmc download -c [COURSE_NAME] -d`.
+
+```
+~ $ tmc download
+Fetching courses...
+Successfully downloaded 37 out of 37 exercises.
+ 100%[█████████████████████████] [00:00:01]
+```
 
 #### Running tests
 
-After you've completed an exercise and wish to run tests on it, navigate to the exercise directory and run `tmc-cli-rust test`. If you are in the course root directory, you can also give the name of the exercise as argument: `tmc-cli-rust test exercise1`.
+After you've completed an exercise and wish to run tests on it, navigate to the exercise directory and run `tmc test`. If you are in the course root directory, you can also give the name of the exercise as argument: `tmc test exercise1`.
 
-> `~/tmc-courses/test-course/exercise1 $ tmc test`
+```
+~ $ tmc test
+
+Testing: exercise1
+
+Test results: 1/1 tests passed
+All tests passed! Submit to server with 'tmc submit'
+ 100%[████████████████████████████████████████████████████████████████]
+```
+
+*Or*
+
+Navigate to the exercise directory and run `tmc test`.
+
+```
+~/tmc-courses/test-course/exercise1 $ tmc test
+
+Testing: exercise1
+
+Test results: 1/1 tests passed
+All tests passed! Submit to server with 'tmc submit'
+ 100%[████████████████████████████████████████████████████████████████]
+
+```
 
 #### Listing exercises
 
 If you want to see your current progress, you can view the status of all course exercises with `tmc exercises [course]`.
 
-> `~/tmc-courses/test-course/ $ tmc exercises test-course`
+```
+~/tmc-courses/test-course/ $ tmc exercises test-course
+Course name: test-course
+Deadline: none
+Soft deadline: none
+  Completed: exercise1
+  Completed: exercise2
+  Not completed: exercise3
+```
 
+#### Paste
+
+*Either*
+
+When you want to send your current solution for an exercise to someone else for review, just write command `tmc paste`. You can choose course and exercise with interactive menu. Give your paste message when program asks *Write a paste message, enter sends it*.
+
+```
+~ $ tmc paste
+Write a paste message, enter sends it:
+example paste message
+
+Paste finished, running at https://examplewebpage
+ 100%[█████████████████████████] [00:00:00]
+```
+
+*Or*
+
+Navigate to the exercise directory and run `tmc paste`. Give your paste message when program asks *Write a paste message, enter sends it*.
+
+```
+~/tmc-courses/test-course/exercise1 $ tmc paste
+Write a paste message, enter sends it:
+example paste message
+
+Paste finished, running at https://examplewebpage
+ 100%[█████████████████████████] [00:00:00]
+```
+
+#### Submit
+
+*Either*
+
+You can send your solution to the server with `tmc submit`. You can choose course and exercise with interactive menu.
+
+```
+~ $ tmc submit
+You can view your submission at: https://examplewebpage
+Submission finished processing!
+ 100%[█████████████████████████] [00:00:02]
+All tests passed on server!
+Points permanently awarded: [1.excercise1]
+Model solution: https://examplewebpage
+
+```
+
+*Or*
+
+Navigate to the exercise directory and run `tmc submit`.
+
+```
+~/tmc-courses/test-course/exercise1 $ tmc submit
+You can view your submission at: https://examplewebpage
+Submission finished processing!
+ 100%[█████████████████████████] [00:00:02]
+All tests passed on server!
+Points permanently awarded: [1.excercise1]
+Model solution: https://examplewebpage
+```
+
+#### Update
+
+If some updates have done to the exercises by your organization, you can download the latest exercises with `tmc update`. You can choose course with interactive menu.
 
 </SectionBox>
 

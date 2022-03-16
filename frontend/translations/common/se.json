@@ -54,5 +54,9 @@
     "search": "Search...",
     "reset": "Reset",
     "showAll": "Show all",
-    "hideAll": "Hide all"
+    "hideAll": "Hide all",
+    "partners": "Content from our partners",
+    "ukraineText": "Help the victims of the conflict in Ukraine.",
+    "ukraineLink": "https://www.redcross.fi/donate/disaster-relief-fund/",
+    "ukraineLinkText": "Donate to the Finnish Red Cross Disaster Relief Fund"
 }

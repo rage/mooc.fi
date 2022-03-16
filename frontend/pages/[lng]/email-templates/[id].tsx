@@ -15,12 +15,21 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
-import CustomSnackbar from "/components/CustomSnackbar"
-import LanguageContext from "/contexts/LanguageContext"
+import { useQueryParameter } from "/util/useQueryParameter"
 import Router from "next/router"
-import withAdmin from "/lib/with-admin"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
+
+import { ApolloConsumer, useQuery } from "@apollo/client"
+import { Button, Collapse, Paper, TextField } from "@mui/material"
+
+const templateValues = [
+  "grade",
+  "completion_link",
+  "started_course_count",
+  "completed_course_count",
+  "at_least_one_exercise_count",
+  "current_date",
+]
 
 const EmailTemplateView = () => {
   // TODO: Get rid of any

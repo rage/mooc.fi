@@ -1,6 +1,18 @@
-import { Completion } from "@prisma/client"
+import { Request, Response } from "express"
 
-import { getOrganization } from "../util/server-functions"
+import {
+  Completion,
+  Course,
+  CourseTranslation,
+  OpenUniversityRegistrationLink,
+} from "@prisma/client"
+
+import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import {
+  getOrganization,
+  getUser,
+  requireAdmin,
+} from "../util/server-functions"
 import { ApiContext } from "./"
 
 const JSONStream = require("JSONStream")
@@ -40,10 +52,20 @@ export function completions({ knex }: ApiContext) {
     } else {
       course_id = course.id
     }
-    const sql = knex.select<any, Completion[]>("*").from("completion").where({
-      course_id,
-      eligible_for_ects: true,
-    })
+    const sql = knex
+      .select<any, Completion[]>("completion.*")
+      .from("completion")
+      .fullOuterJoin(
+        "completion_registered",
+        "completion.id",
+        "completion_registered.completion_id",
+      )
+      .where({
+        "completion.course_id": course_id,
+        eligible_for_ects: true,
+        ...(!registered && { "completion_registered.id": null }),
+      })
+
     res.set("Content-Type", "application/json")
 
     // TODO/FIXME: typings broke on Knex update

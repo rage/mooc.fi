@@ -1,20 +1,20 @@
 import { useContext } from "react"
-import Typography from "@material-ui/core/Typography"
-import LangLink from "components/LangLink"
-import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
-import CommonTranslations from "/translations/common"
 
+import LoginStateContext from "/contexts/LoginStateContext"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+import LangLink from "components/LangLink"
+
+import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
-  faSearch,
-  faList,
   faEnvelope,
+  faList,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons"
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import LoginStateContext from "/contexts/LoginStateContext"
-import { useTranslator } from "/util/useTranslator"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
 
 interface ButtonProps {
   active: any

@@ -1,3 +1,14 @@
+import React from "react"
+
+import CollapseButton from "/components/Buttons/CollapseButton"
+import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
+import PointsProgress from "/components/Dashboard/PointsProgress"
+import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
+import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
+import { UserSummary_user_user_course_summary_course } from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
 import {
   Collapse,
   Paper,
@@ -6,21 +17,13 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core"
-import React from "react"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
-import PointsProgress from "/components/Dashboard/PointsProgress"
+} from "@mui/material"
+
 import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
 } from "./CollapseContext"
-import { UserSummary_user_user_course_summary_course } from "/static/types/generated/UserSummary"
-import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
-import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 interface ProgressEntryProps {
   userCourseProgress?: UserCourseProgressFragment | null

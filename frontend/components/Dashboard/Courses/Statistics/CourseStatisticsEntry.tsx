@@ -1,10 +1,11 @@
-import { Skeleton, Typography } from "@material-ui/core"
 import { DatedInt } from "/components/Dashboard/Courses/Statistics/types"
-import styled from "@emotion/styled"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { DateTime } from "luxon"
-import { useLanguageContext } from "/contexts/LanguageContext"
+
+import styled from "@emotion/styled"
+import { Skeleton, Typography } from "@mui/material"
 
 interface CourseStatisticsEntryProps {
   name: string

@@ -18,15 +18,7 @@ import {
   Select,
   SelectChangeEvent,
   TextField,
-  Button,
-} from "@material-ui/core"
-import { useEffect, useRef, useState } from "react"
-import { Clear, Search } from "@material-ui/icons"
-
-import styled from "@emotion/styled"
-import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+} from "@mui/material"
 
 const Container = styled.div`
   background-color: white;
@@ -221,21 +213,14 @@ export default function FilterMenu({
           ) : null}
           {showHandler ? (
             <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
-              <InputLabel
-                id="handledBy"
-                shrink={Boolean(handledBy)}
-                ref={inputLabel}
-              >
-                {t("handledBy")}
-              </InputLabel>
               <Select
                 value={loading ? "" : handledBy}
                 variant="outlined"
+                label={t("handledBy")}
                 onChange={handleHandledByChange}
                 input={
                   <OutlinedInput
                     notched={Boolean(handledBy)}
-                    labelWidth={labelWidth}
                     name="handledBy"
                     id="handledBy"
                   />

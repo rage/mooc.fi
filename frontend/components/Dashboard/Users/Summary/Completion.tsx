@@ -1,3 +1,15 @@
+import React from "react"
+
+import CollapseButton from "/components/Buttons/CollapseButton"
+import { formatDateTime } from "/components/DataFormatFunctions"
+import { CompletionListItem } from "/components/Home/Completions"
+import {
+  UserSummary_user_user_course_summary_completion,
+  UserSummary_user_user_course_summary_course,
+} from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
 import {
   Collapse,
   Paper,
@@ -6,22 +18,13 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core"
-import React from "react"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import { CompletionListItem } from "/components/Home/Completions"
-import { formatDateTime } from "/components/DataFormatFunctions"
+} from "@mui/material"
+
 import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
 } from "./CollapseContext"
-import {
-  UserSummary_user_user_course_summary_completion,
-  UserSummary_user_user_course_summary_course,
-} from "/static/types/generated/UserSummary"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 interface CompletionProps {
   completion?: UserSummary_user_user_course_summary_completion

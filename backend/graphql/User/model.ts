@@ -7,8 +7,6 @@ import {
   objectType,
   stringArg,
 } from "nexus"
-import { groupBy } from "lodash"
-import { notEmpty } from "../../util/notEmpty"
 
 import { notEmpty } from "../../util/notEmpty"
 
@@ -297,38 +295,6 @@ export const User = objectType({
         )
 
         return summary
-      },
-    })
-
-    t.list.field("user_course_summary", {
-      type: "UserCourseSummary",
-      resolve: async ({ id }, _, ctx) => {
-        // TODO: might be better to query UserCourseSettings?
-        const exerciseCompletions = groupBy(
-          await ctx.prisma.exerciseCompletion.findMany({
-            where: {
-              user_id: id,
-            },
-            include: {
-              exercise: true,
-              exercise_completion_required_actions: true,
-            },
-          }),
-          (exerciseCompletion) => exerciseCompletion.exercise?.course_id,
-        )
-        const courses = await ctx.prisma.course.findMany({
-          where: {
-            id: { in: Object.keys(exerciseCompletions) ?? [] },
-          },
-        })
-        return courses
-          .map((course) => ({
-            user_id: id,
-            course_id: course.id,
-            course,
-            exercise_completions: exerciseCompletions[course.id] ?? [],
-          }))
-          .filter(notEmpty)
       },
     })
   },

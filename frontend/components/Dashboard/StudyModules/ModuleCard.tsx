@@ -1,13 +1,14 @@
-import { Grid, Typography, Skeleton } from "@mui/material"
-import EditIcon from "@mui/icons-material/Edit"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import LangLink from "/components/LangLink"
+import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
+import { mime } from "/util/imageUtils"
+
+import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
-import styled from "@emotion/styled"
-import { mime } from "/util/imageUtils"
-import LangLink from "/components/LangLink"
-import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
-import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import EditIcon from "@mui/icons-material/Edit"
+import { Grid, Skeleton, Typography } from "@mui/material"
 
 const Base = styled(ClickableDiv)`
   width: 100%;
@@ -135,8 +136,9 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
           ) : module ? (
-            <LangLink href={`/study-modules/${module.slug}/edit`}>
-              <a>
+            <LangLink href={`/study-modules/${module.slug}/edit`} passHref>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a aria-label={`Edit study module ${module.name}`}>
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"

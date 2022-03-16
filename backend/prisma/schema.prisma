@@ -426,8 +426,10 @@ model User {
   user_course_settings           UserCourseSetting[]
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
-  reports                        Report[]
-  report_jobs                    ReportJob[]
+  ab_enrollments                 AbEnrollment[]
+  stored_data                    StoredData[]
+  course_ownerships              CourseOwnership[]
+  course_stats_subscriptions     CourseStatsSubscription[]
 
   @@map("user")
 }
@@ -533,6 +535,31 @@ model VerifiedUser {
   @@map("verified_user")
 }
 
+model CourseOwnership {
+  created_at                               DateTime?     @default(now())
+  updated_at                               DateTime?     @updatedAt
+  id                                       String        @id @default(uuid())
+  user_id                                  String?
+  course_id                                String?
+  course                                   Course?       @relation(fields: [course_id], references: [id])
+  user                                     User?         @relation(fields: [user_id], references: [id])  
+
+  @@unique([user_id, course_id])
+  @@map("course_ownership")
+}
+
+model CourseStatsSubscription {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  id                                       String           @id @default(uuid())
+  user_id                                  String?
+  email_template_id                        String?
+  user                                     User?            @relation(fields: [user_id], references: [id])
+  email_template                           EmailTemplate?   @relation(fields: [email_template_id], references: [id])
+
+  @@unique([user_id, email_template_id])
+  @@map("course_stats_subscription")
+}
 // model Report {
 //   id                                      String         @id @default(uuid())
 //   created_at                              DateTime?      @default(now())

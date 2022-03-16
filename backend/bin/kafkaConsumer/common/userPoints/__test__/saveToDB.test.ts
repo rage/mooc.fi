@@ -1,14 +1,11 @@
-import { UserInputError } from "apollo-server-errors"
+import { UserInputError } from "apollo-server-express"
 
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
   getTestContext,
 } from "../../../../../tests/__helpers"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../../../tests/data"
+import { adminUserDetails, normalUserDetails } from "../../../../../tests/data"
 import { seed } from "../../../../../tests/data/seed"
 import { DatabaseInputError } from "../../../../lib/errors"
 import { KafkaContext } from "../../kafkaContext"
@@ -58,6 +55,7 @@ describe("userPoints/saveToDatabase", () => {
     timestamp: "2000-01-01T10:00:00.00+02:00",
     user_id: 1,
     required_actions: ["test1", "test2"],
+    original_submission_date: "2000-01-01T10:00:00.00+02:00",
   }
 
   describe("errors", () => {

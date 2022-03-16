@@ -1,15 +1,17 @@
-import { useContext, useState, ChangeEvent } from "react"
-import AppBar from "@mui/material/AppBar"
-import Tabs from "@mui/material/Tabs"
-import Tab from "@mui/material/Tab"
-import styled from "@emotion/styled"
-import ViewListIcon from "@material-ui/icons/ViewList"
-import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
-import DashboardIcon from "@material-ui/icons/Dashboard"
-import EditIcon from "@material-ui/icons/Edit"
-import EqualizerIcon from "@material-ui/icons/Equalizer"
+import { ChangeEvent, useContext, useState } from "react"
+
 import LanguageContext from "/contexts/LanguageContext"
 import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import EditIcon from "@mui/icons-material/Edit"
+import EqualizerIcon from "@mui/icons-material/Equalizer"
+import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
+import ViewListIcon from "@mui/icons-material/ViewList"
+import AppBar from "@mui/material/AppBar"
+import Tab from "@mui/material/Tab"
+import Tabs from "@mui/material/Tabs"
 
 const TabBarContainer = styled.div`
   flex-grow: 1;
@@ -59,6 +61,11 @@ const routes: Route[] = [
     label: "Points",
     icon: <ScatterplotIcon />,
     path: "/points",
+  },
+  {
+    label: "Statistics",
+    icon: <EqualizerIcon />,
+    path: "/statistics",
   },
   {
     label: "Edit",

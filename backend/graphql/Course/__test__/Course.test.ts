@@ -1,22 +1,13 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
 import { mocked } from "jest-mock"
-import {
-  omit,
-  orderBy,
-} from "lodash"
+import { omit, orderBy } from "lodash"
 
 import { Course } from "@prisma/client"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import {
-  fakeTMCCurrent,
-  getTestContext,
-} from "../../../tests/__helpers"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../tests/data"
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
 jest.mock("../../../services/kafkaProducer")

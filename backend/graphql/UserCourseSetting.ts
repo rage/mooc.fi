@@ -1,7 +1,4 @@
-import {
-  ForbiddenError,
-  UserInputError,
-} from "apollo-server-core"
+import { ForbiddenError, UserInputError } from "apollo-server-core"
 import {
   extendType,
   idArg,
@@ -11,9 +8,7 @@ import {
   stringArg,
 } from "nexus"
 
-import {
-  findManyCursorConnection,
-} from "@devoxa/prisma-relay-cursor-connection"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
@@ -155,16 +150,18 @@ export const UserCourseSettingQueries = extendType({
 
         const baseArgs = {
           where: {
-            ...orCondition.length ? {
-            user: {
-              OR: orCondition,
-            } } : {},
+            ...(orCondition.length
+              ? {
+                  user: {
+                    OR: orCondition,
+                  },
+                }
+              : {}),
             course_id,
             // TODO: should this only return unique and only the oldest/newest?
           },
         }
 
-        console.log(baseArgs)
         return findManyCursorConnection(
           async (args) => {
             let baseQuery

@@ -1,5 +1,8 @@
 import { Knex } from "knex"
 
+import { extensionPath } from "../config"
+import { createUUIDExtension } from "../util/db-functions"
+
 export async function up(knex: Knex): Promise<void> {
   // updated_at
   await knex.raw(

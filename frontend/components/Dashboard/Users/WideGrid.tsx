@@ -1,23 +1,25 @@
 import { useCallback, useContext } from "react"
+
+import Pagination from "/components/Dashboard/Users/Pagination"
+import LangLink from "/components/LangLink"
+import UserSearchContext from "/contexts/UserSearchContext"
+import UsersTranslations from "/translations/users"
+import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
+import range from "lodash/range"
+
+import styled from "@emotion/styled"
 import {
   Button,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableFooter,
-  TableRow,
   TableHead,
-  Skeleton,
+  TableRow,
 } from "@mui/material"
-import styled from "@emotion/styled"
-import range from "lodash/range"
-import LangLink from "/components/LangLink"
-import Pagination from "/components/Dashboard/Users/Pagination"
-import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexts/UserSearchContext"
-import { useTranslator } from "/util/useTranslator"
-import notEmpty from "/util/notEmpty"
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -74,10 +76,10 @@ const WideGrid = () => {
               <StyledTableCell align="right">
                 {t("userStudentNumber")}
               </StyledTableCell>
-              <StyledTableCell align="right">
-                {/*t("summary")*/}
-                {/*t("completions")*/}
-              </StyledTableCell>
+              {/*<StyledTableCell align="right">
+                {t("summary")}
+                {t("completions")}
+            </StyledTableCell>*/}
             </TableRow>
           </TableHead>
           <RenderResults />

@@ -1,42 +1,23 @@
 import Container from "/components/Container"
-import CourseStatisticsEntry
-  from "/components/Dashboard/Courses/Statistics/CourseStatisticsEntry"
+import CourseStatisticsEntry from "/components/Dashboard/Courses/Statistics/CourseStatisticsEntry"
 import Graph from "/components/Dashboard/Courses/Statistics/Graph"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-// import Spinner from "/components/Spinner"
 // import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import type { CourseStatistics } from "/static/types/generated/CourseStatistics"
-import {
-  CourseStatisticsAtLeastOneExerciseByInterval,
-} from "/static/types/generated/CourseStatisticsAtLeastOneExerciseByInterval"
-import {
-  CourseStatisticsAtLeastOneExerciseCumulative,
-} from "/static/types/generated/CourseStatisticsAtLeastOneExerciseCumulative"
-import {
-  CourseStatisticsCompletedCumulative,
-} from "/static/types/generated/CourseStatisticsCompletedCumulative"
-import {
-  CourseStatisticsStartedCumulative,
-} from "/static/types/generated/CourseStatisticsStartedCumulative"
+import { CourseStatistics } from "/static/types/generated/CourseStatistics"
+import { CourseStatisticsAtLeastOneExerciseByInterval } from "/static/types/generated/CourseStatisticsAtLeastOneExerciseByInterval"
+import { CourseStatisticsAtLeastOneExerciseCumulative } from "/static/types/generated/CourseStatisticsAtLeastOneExerciseCumulative"
+import { CourseStatisticsCompletedCumulative } from "/static/types/generated/CourseStatisticsCompletedCumulative"
+import { CourseStatisticsStartedCumulative } from "/static/types/generated/CourseStatisticsStartedCumulative"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import {
-  gql,
-  useLazyQuery,
-  useQuery,
-} from "@apollo/client"
-import {
-  Alert,
-  AlertTitle,
-  Paper,
-  Skeleton,
-} from "@material-ui/core"
+import { gql, useLazyQuery, useQuery } from "@apollo/client"
+import { Alert, AlertTitle, Paper, Skeleton } from "@mui/material"
 
 export const CourseStatisticsQuery = gql`
   query CourseStatistics($slug: String) {
@@ -133,7 +114,11 @@ const CourseStatisticsAtLeastOneExerciseCumulativeQuery = gql`
 `
 
 const CourseStatisticsAtLeastOneExerciseByIntervalQuery = gql`
-  query CourseStatisticsAtLeastOneExerciseByIntervalQuery($slug: String, $number: Int, $unit: IntervalUnit) {
+  query CourseStatisticsAtLeastOneExerciseByInterval(
+    $slug: String
+    $number: Int
+    $unit: IntervalUnit
+  ) {
     course(slug: $slug) {
       id
       slug
@@ -148,7 +133,7 @@ const CourseStatisticsAtLeastOneExerciseByIntervalQuery = gql`
           }
         }
       }
-    }    
+    }
   }
 `
 
@@ -163,49 +148,66 @@ function CourseStatisticsPage() {
     error: currentError,
   } = useQuery<CourseStatistics>(CourseStatisticsQuery, {
     variables: { slug },
+    ssr: false,
   })
-  const [getStartedCumulative, {
-    data: startedCumulativeData,
-    loading: startedCumulativeLoading,
-    error: startedCumulativeError,
-  }] = useLazyQuery<CourseStatisticsStartedCumulative>(
+
+  const [
+    getStartedCumulative,
+    {
+      data: startedCumulativeData,
+      loading: startedCumulativeLoading,
+      error: startedCumulativeError,
+    },
+  ] = useLazyQuery<CourseStatisticsStartedCumulative>(
     CourseStatisticsStartedCumulativeQuery,
     {
       variables: { slug },
+      ssr: false,
     },
   )
-  const [getCompletedCumulative, {
-    data: completedCumulativeData,
-    loading: completedCumulativeLoading,
-    error: completedCumulativeError,
-  }] = useLazyQuery<CourseStatisticsCompletedCumulative>(
+  const [
+    getCompletedCumulative,
+    {
+      data: completedCumulativeData,
+      loading: completedCumulativeLoading,
+      error: completedCumulativeError,
+    },
+  ] = useLazyQuery<CourseStatisticsCompletedCumulative>(
     CourseStatisticsCompletedCumulativeQuery,
     {
       variables: { slug },
+      ssr: false,
     },
   )
-  const [getAtLeastOneExerciseCumulative, {
-    data: atLeastOneExerciseCumulativeData,
-    loading: atLeastOneExerciseCumulativeLoading,
-    error: atLeastOneExerciseCumulativeError,
-  }] = useLazyQuery<CourseStatisticsAtLeastOneExerciseCumulative>(
+  const [
+    getAtLeastOneExerciseCumulative,
+    {
+      data: atLeastOneExerciseCumulativeData,
+      loading: atLeastOneExerciseCumulativeLoading,
+      error: atLeastOneExerciseCumulativeError,
+    },
+  ] = useLazyQuery<CourseStatisticsAtLeastOneExerciseCumulative>(
     CourseStatisticsAtLeastOneExerciseCumulativeQuery,
     {
       variables: { slug },
+      ssr: false,
     },
   )
 
-  const [getAtLeastOneExerciseByInterval, {
-    data: atLeastOneExerciseByIntervalData,
-    loading: atLeastOneExerciseByIntervalLoading,
-    error: atLeastOneExerciseByIntervalError,
-  }] = useLazyQuery<CourseStatisticsAtLeastOneExerciseByInterval>(
+  const [
+    getAtLeastOneExerciseByInterval,
+    {
+      data: atLeastOneExerciseByIntervalData,
+      loading: atLeastOneExerciseByIntervalLoading,
+      error: atLeastOneExerciseByIntervalError,
+    },
+  ] = useLazyQuery<CourseStatisticsAtLeastOneExerciseByInterval>(
     CourseStatisticsAtLeastOneExerciseByIntervalQuery,
     {
       variables: { slug, unit: "day" },
+      ssr: false,
     },
   )
-
 
   const course_exists = Boolean(currentData?.course?.id)
 
@@ -300,15 +302,17 @@ function CourseStatisticsPage() {
             {
               name: "completed_cumulative",
               label: t("completed_cumulative"),
+              fetch: getCompletedCumulative,
               value:
                 completedCumulativeData?.course?.course_statistics
                   ?.completed_cumulative,
               loading: completedCumulativeLoading,
               error: completedCumulativeError,
             },
-            [{
+            {
               name: "at_least_one_exercise",
               label: t("at_least_one_exercise_cumulative"),
+              fetch: getAtLeastOneExerciseCumulative,
               value:
                 atLeastOneExerciseCumulativeData?.course?.course_statistics
                   ?.at_least_one_exercise_cumulative,
@@ -318,12 +322,13 @@ function CourseStatisticsPage() {
             {
               name: "at_least_one_exercise_by_interval",
               label: "At least one exercise",
+              fetch: getAtLeastOneExerciseByInterval,
               value:
                 atLeastOneExerciseByIntervalData?.course?.course_statistics
                   ?.at_least_one_exercise_by_interval,
               loading: atLeastOneExerciseByIntervalLoading,
               error: atLeastOneExerciseByIntervalError,
-            }],
+            },
           ]}
           label="Stats"
           updated_at={
@@ -355,6 +360,6 @@ function CourseStatisticsPage() {
       </Container>
     </>
   )
-} 
+}
 
 export default withAdmin(CourseStatisticsPage)

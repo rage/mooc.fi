@@ -1,8 +1,11 @@
 import { useContext } from "react"
-import Language from "@mui/icons-material/Language"
-import styled from "@emotion/styled"
+
 import LanguageContext from "/contexts/LanguageContext"
 import Link from "next/link"
+
+import styled from "@emotion/styled"
+import Language from "@mui/icons-material/Language"
+
 // import LangLink from "/components/LangLink"
 
 const SwitchLink = styled.a`
@@ -28,8 +31,8 @@ const LanguageSwitch = () => {
   const { language, url } = useContext(LanguageContext)
 
   return (
-    <Link href={url === "/" ? "/" : url}>
-      <SwitchLink href={hrefUrl}>
+    <Link href={url} passHref>
+      <SwitchLink>
         <Language style={{ marginRight: "0.4rem" }} />
         <p style={{ margin: "auto" }} data-testid="language-switch">
           {language === "en" ? "Suomi" : "English"}

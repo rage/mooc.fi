@@ -1,6 +1,7 @@
 import { createContext, Dispatch, useContext } from "react"
-import { produce } from "immer"
+
 import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
+import { produce } from "immer"
 
 export type ExerciseState = Record<string, boolean>
 export type CourseState = {
@@ -123,9 +124,8 @@ export const collapseReducer = (
           })
         case CollapsablePart.EXERCISE:
           return produce(state, (draft) => {
-            draft[action.course].exercises[action.collapsableId] = !draft[
-              action.course
-            ].exercises[action.collapsableId]
+            draft[action.course].exercises[action.collapsableId] =
+              !draft[action.course].exercises[action.collapsableId]
           })
         case CollapsablePart.COMPLETION:
           return produce(state, (draft) => {
@@ -182,8 +182,8 @@ export const collapseReducer = (
           return produce(state, (draft) => {
             Object.keys(draft[action.course].exercises).forEach(
               (e) =>
-                (draft[action.course].exercises[e] = !draft[action.course]
-                  .exercises[e]),
+                (draft[action.course].exercises[e] =
+                  !draft[action.course].exercises[e]),
             )
           })
         }

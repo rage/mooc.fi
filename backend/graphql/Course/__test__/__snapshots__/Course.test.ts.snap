@@ -913,7 +913,6 @@ Object {
   "ects": null,
   "end_date": "12/31/2100",
   "exercise_completions_needed": 1,
-<<<<<<< HEAD:backend/graphql/Course/__test__/__snapshots__/Course.test.ts.snap
   "exercises": Array [
     Object {
       "deleted": false,
@@ -921,8 +920,6 @@ Object {
       "name": "exercise 3",
     },
   ],
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs):backend/tests/__snapshots__/Course.test.ts.snap
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
@@ -1000,7 +997,6 @@ Object {
   "ects": null,
   "end_date": "12/31/2100",
   "exercise_completions_needed": 1,
-<<<<<<< HEAD:backend/graphql/Course/__test__/__snapshots__/Course.test.ts.snap
   "exercises": Array [
     Object {
       "deleted": false,
@@ -1008,8 +1004,6 @@ Object {
       "name": "exercise 3",
     },
   ],
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs):backend/tests/__snapshots__/Course.test.ts.snap
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
@@ -1032,7 +1026,6 @@ Object {
     "uncompressed_mimetype": "image/jpeg",
   },
   "points_needed": 3,
-<<<<<<< HEAD:backend/graphql/Course/__test__/__snapshots__/Course.test.ts.snap
   "promote": null,
   "slug": "course1",
   "start_date": "01/01/1900",
@@ -1122,8 +1115,6 @@ Object {
     "uncompressed_mimetype": "image/jpeg",
   },
   "points_needed": 3,
-=======
->>>>>>> 279cf0b6 (cumulative stats started; some graphs):backend/tests/__snapshots__/Course.test.ts.snap
   "promote": null,
   "slug": "course1",
   "start_date": "01/01/1900",

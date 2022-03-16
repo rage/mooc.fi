@@ -1,10 +1,4 @@
-import {
-  arg,
-  enumType,
-  intArg,
-  nonNull,
-  objectType,
-} from "nexus"
+import { arg, enumType, intArg, nonNull, objectType } from "nexus"
 
 import { Sql } from "@prisma/client/runtime"
 
@@ -442,5 +436,5 @@ export const CourseStatistics = objectType({
         })
       },
     })
-  }
+  },
 })

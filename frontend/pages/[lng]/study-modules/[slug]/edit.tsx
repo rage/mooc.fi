@@ -1,24 +1,25 @@
 import { useContext, useEffect } from "react"
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { SingletonRouter, withRouter } from "next/router"
-import Typography from "@mui/material/Typography"
-import Paper from "@mui/material/Paper"
+
 import { WideContainer } from "/components/Container"
-import styled from "@emotion/styled"
-import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
-import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
-import LangLink from "/components/LangLink"
-import LanguageContext from "/contexts/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { H1NoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import withAdmin from "/lib/with-admin"
-import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
+import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
+import LangLink from "/components/LangLink"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { H1NoBackground } from "/components/Text/headers"
+import LanguageContext from "/contexts/LanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
+import StudyModulesTranslations from "/translations/study-modules"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+import { SingletonRouter, withRouter } from "next/router"
+
+import { gql, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -131,16 +132,9 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <LangLink href="/study-modules">
-                <a
-                  onClick={() =>
-                    //redirectTimeout && clearTimeout(redirectTimeout)
-                    {}
-                  }
-                  href=""
-                >
-                  {t("redirectLinkText")}
-                </a>
+              <LangLink href="/study-modules" passHref>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a>{t("redirectLinkText")}</a>
               </LangLink>
               {t("redirectMessagePost")}
             </Typography>
