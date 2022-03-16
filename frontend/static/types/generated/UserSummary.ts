@@ -49,10 +49,10 @@ export interface UserSummary_user_user_course_summary_exercise_completions {
   exercise_id: string | null
   created_at: any | null
   updated_at: any | null
+  n_points: number | null
   attempted: boolean | null
   completed: boolean | null
   timestamp: any
-  n_points: number | null
   exercise_completion_required_actions: UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions[]
 }
 

@@ -3,7 +3,7 @@ import {
   ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
-  defaultDataIdFromObject,
+  // defaultDataIdFromObject,
 } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
 import { createUploadLink } from "apollo-upload-client"
@@ -65,16 +65,47 @@ function create(initialState: any, originalAccessToken?: string) {
 
   // these cache settings are mainly for the breadcrumbs
   const cache: InMemoryCache = new InMemoryCache({
-    dataIdFromObject: (object: any) => {
+    typePolicies: {
+      /*Course: {
+        keyFields: ["id", "slug"]
+      },
+      StudyModule: {
+        keyFields: ["id", "slug"]
+      },*/
+      CourseStatistics: {
+        keyFields: ["course_id"],
+      },
+    },
+    /*dataIdFromObject: (object: any) => {
       switch (object.__typename) {
         case "Course":
           return `Course:${object.slug}:${object.id}`
         case "StudyModule":
           return `StudyModule:${object.slug}:${object.id}`
+        case "CourseStatistics":
+          return `CourseStatistics:${object.course_id}`
+          //console.log("object", object)
+          // return defaultDataIdFromObject(object)
         default:
           return defaultDataIdFromObject(object)
       }
-    },
+    },*/
+    /*typePolicies: {
+      CourseStatistics: {
+        merge(existing: Array<{ date: string, value: number }>, incoming: Array<{ date: string, value: number }>) {
+          let merged = existing.reduce((acc, curr) => {
+            if (curr.date === null || curr.date === "null") return acc
+
+            return { ...acc, [curr.date]: curr.value }
+          }, {} as Record<string, number>)
+          incoming.forEach((entry) => {
+            if (entry.date !== null || entry.date !== "null") merged[entry.date] = entry.value
+          })
+
+          return merged
+        }
+      }
+    }*/
   })
 
   return new ApolloClient<NormalizedCacheObject>({

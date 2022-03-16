@@ -1,19 +1,19 @@
 import Container from "/components/Container"
-import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
-import { useQuery } from "@apollo/client"
-import { gql } from "@apollo/client"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
-import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
-import Spinner from "/components/Spinner"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
-import withAdmin from "/lib/with-admin"
-import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
+import Spinner from "/components/Spinner"
+import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import CoursesTranslations from "/translations/courses"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+
+import { gql, useQuery } from "@apollo/client"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -34,9 +34,9 @@ const Points = () => {
     CourseDetailsFromSlugQuery,
     {
       variables: { slug: slug },
+      ssr: false,
     },
   )
-
   useBreadcrumbs([
     {
       translation: "courses",

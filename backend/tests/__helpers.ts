@@ -115,6 +115,7 @@ function createTestContext(testContext: TestContext) {
           serverInstance = app.listen(port).on("error", (err) => {
             throw err
           })
+
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -243,7 +244,9 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
           .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
           .reply(function () {
             if (!Array.isArray(reply)) {
-              throw new Error(`Invalid fakeTMCSpecific entry ${reply}`)
+              throw new Error(
+                `Invalid fakeTMCSpecific entry ${reply} - provide an array`,
+              )
             }
             return reply
           })

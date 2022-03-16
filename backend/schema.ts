@@ -2,6 +2,7 @@ import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
+// import { GraphQLScalarType } from "graphql/type"
 import * as path from "path"
 import { join } from "path"
 
@@ -38,6 +39,7 @@ const createPlugins = () => {
         }),
       },
     }),
+
     connectionPlugin({
       nexusFieldName: "connection",
       includeNodesField: true,

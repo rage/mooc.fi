@@ -1,12 +1,5 @@
-import { omit } from "lodash"
 import { useEffect, useState } from "react"
-import {
-  FieldValues,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-  useFormContext,
-} from "react-hook-form"
+
 import {
   ControlledFieldProps,
   FieldController,
@@ -15,10 +8,19 @@ import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
-import { TextField, Tooltip, IconButton } from "@mui/material"
-import HistoryIcon from "@mui/icons-material/History"
+import { get, omit, set } from "lodash"
+import {
+  FieldValues,
+  Path,
+  PathValue,
+  UnpackNestedValue,
+  useFormContext,
+} from "react-hook-form"
+
 import HelpIcon from "@mui/icons-material/Help"
-import { get, set } from "lodash"
+import HistoryIcon from "@mui/icons-material/History"
+import { IconButton, TextField, Tooltip } from "@mui/material"
+
 export interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
   disabled?: boolean

@@ -1,10 +1,11 @@
+import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import {
   UserPoints as UserPointsData,
   UserPoints_currentUser_progresses,
 } from "/static/types/generated/UserPoints"
-import Grid from "@mui/material/Grid"
-import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import notEmpty from "/util/notEmpty"
+
+import Grid from "@mui/material/Grid"
 
 interface GridProps {
   data: UserPointsData

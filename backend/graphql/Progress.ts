@@ -8,9 +8,9 @@ export const Progress = objectType({
 
     t.nullable.field("user_course_progress", {
       type: "UserCourseProgress",
-      resolve: async (parent, _, ctx) => {
-        const course_id = parent.course?.id
-        const user_id = parent.user?.id
+      resolve: async ({ course, user }, _, ctx) => {
+        const course_id = course?.id
+        const user_id = user?.id
 
         const progresses = await ctx.prisma.course
           .findUnique({
@@ -24,6 +24,7 @@ export const Progress = objectType({
         return progresses?.[0] ?? null
       },
     })
+
     t.list.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async (parent, _, ctx) => {

@@ -1,6 +1,8 @@
 import * as faker from "faker"
-import { Exercise } from "@prisma/client"
 import { sample } from "lodash"
+
+import { Exercise } from "@prisma/client"
+
 import prisma from "../prisma"
 
 const createExercise = () => ({
@@ -9,7 +11,7 @@ const createExercise = () => ({
   part: Math.round(Math.random() * 3 + 1),
   section: Math.round(Math.random() * 3 + 1),
   timestamp: new Date(),
-  custom_id: faker.random.uuid(),
+  custom_id: faker.datatype.uuid(),
 })
 
 const createExerciseCompletion = (exercise: Exercise) => ({

@@ -38,7 +38,7 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
       <TableRow>
         <TableCell>{exercise.name}</TableCell>
         <TableCell>
-          {round(exerciseCompletion?.n_points ?? 0)}/{exercise?.max_points ?? 0}
+          {round(exerciseCompletion?.n_points ?? 0)}/{exercise.max_points ?? 0}
         </TableCell>
         <TableCell>
           {exerciseCompletion?.completed ? t("yes") : t("no")}
@@ -70,7 +70,6 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
           />
           </TableCell>*/}
       </TableRow>
-      {/* TODO/FIXME: not shown ever since collapse is disabled */}
       <TableRow>
         <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={5}>
           <Collapse in={isOpen}>{JSON.stringify(exerciseCompletion)}</Collapse>

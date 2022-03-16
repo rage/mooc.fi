@@ -21,6 +21,7 @@ export const UserCourseSummary = objectType({
         })
       },
     })
+
     t.field("completion", {
       type: "Completion",
       resolve: async (
@@ -31,6 +32,7 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
+
         const completions = await ctx.prisma.course
           .findUnique({
             where: { id: completions_handled_by_id ?? course_id },
@@ -46,6 +48,7 @@ export const UserCourseSummary = objectType({
         return completions?.[0]
       },
     })
+
     t.field("user_course_progress", {
       type: "UserCourseProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {

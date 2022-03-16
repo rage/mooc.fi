@@ -171,7 +171,7 @@ jobs:
           root: ~/project
           paths:
             - build
-            - backend/sourcemap
+            - backend/sourcemp
 
   push_backend:
     executor: backend_build

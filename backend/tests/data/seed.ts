@@ -48,8 +48,6 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseSetting",
     userCourseSettings,
   )
-  const seededAbStudies = await create("abStudy", abStudies)
-  const seededAbEnrollments = await create("abEnrollment", abEnrollments)
   const seededExercises = await create("exercise", exercises)
   const seededExerciseCompletions = await create(
     "exerciseCompletion",
@@ -67,6 +65,8 @@ export const seed = async (prisma: PrismaClient) => {
     "emailTemplate",
     emailTemplateThresholds,
   )
+  const seededAbStudies = await create("abStudy", abStudies)
+  const seededAbEnrollments = await create("abEnrollment", abEnrollments)
   const seededCompletionsRegistered = await create(
     "completionRegistered",
     completionsRegistered,

@@ -108,5 +108,12 @@
   "helpExerciseCompletionsNeeded": "How many exercise completions are needed to pass the course?",
   "helpPointsNeeded": "How many points are needed to pass the course?",
   "helpAutomaticCompletions": "Does the course have automatic completions?",
-  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?"
+  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?",
+  "started": "Started",
+  "completed": "Completed",
+  "atLeastOneExercise": "At least one exercise submitted",
+  "updated": "Updated",
+  "started_cumulative": "Cumulative started",
+  "completed_cumulative": "Cumulative completed",
+  "at_least_one_exercise_cumulative": "Cumulative at least one exercise submitted"
 }

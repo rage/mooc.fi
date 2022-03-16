@@ -108,5 +108,13 @@
   "helpExerciseCompletionsNeeded": "Kuinka monta tehtävää pitää olla suoritettuna läpipääsyyn?",
   "helpPointsNeeded": "Kuinka paljon pisteitä tarvitaan läpipääsyyn?",
   "helpAutomaticCompletions": "Merkitäänkö kurssisuoritus automaattisesti?",
-  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?"
+  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?",
+  "started": "Aloitettu",
+  "completed": "Suoritettu",
+  "atLeastOneExercise": "Ainakin yksi tehtävä palautettu",
+  "updated": "Päivitetty",
+  "started_cumulative": "Aloitettu, kumulatiivinen",
+  "completed_cumulative": "Suoritettu, kumulatiivinen",
+  "at_least_one_exercise_cumulative": "Ainakin yksi tehtävä palautettu, kumulatiivinen"
+
 }

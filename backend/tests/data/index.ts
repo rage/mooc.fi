@@ -558,49 +558,6 @@ export const userCourseProgresses: Prisma.UserCourseProgressCreateInput[] = [
   },
 ]
 
-export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreateInput[] =
-  [
-    {
-      course: { connect: { id: "00000000000000000000000000000002" } },
-      user: { connect: { id: "20000000000000000000000000000104" } },
-      service: {
-        connect: { id: "40000000-0000-0000-0000-000000000102" },
-      },
-      progress: [{ group: "week1", max_points: 3, n_points: 3 }],
-    },
-  ]
-
-export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
-  {
-    id: "00000000000000000000000000000012",
-    template_type: "threshold",
-    txt_body: "Awesome feature",
-    created_at: "1901-01-01T10:00:00.00+02:00",
-    updated_at: "1901-01-01T10:00:00.00+02:00",
-    title: "Win",
-    points_threshold: 2,
-    name: "value",
-    triggered_automatically_by_course: {
-      connect: { id: "00000000000000000000000000000667" },
-    },
-    exercise_completions_threshold: 2,
-  },
-  {
-    id: "00000000000000000000000000000013",
-    template_type: "threshold",
-    txt_body: "Another",
-    created_at: "1901-01-01T10:00:00.00+02:00",
-    updated_at: "1901-01-01T10:00:00.00+02:00",
-    title: "Win",
-    points_threshold: 60,
-    name: "value",
-    triggered_automatically_by_course: {
-      connect: { id: "00000000000000000000000000000667" },
-    },
-    exercise_completions_threshold: 100,
-  },
-]
-
 export const completionsRegistered: Prisma.CompletionRegisteredCreateInput[] = [
   {
     id: "66000000-0000-0000-0000-000000000102",
@@ -610,24 +567,6 @@ export const completionsRegistered: Prisma.CompletionRegisteredCreateInput[] = [
     real_student_number: "4",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
-  },
-]
-
-export const courseAliases: Prisma.CourseAliasCreateInput[] = [
-  {
-    id: "67000000-0000-0000-0000-000000000001",
-    course: { connect: { id: "00000000000000000000000000000002" } },
-    course_code: "alias",
-  },
-  {
-    id: "67000000-0000-0000-0000-000000000002",
-    course: { connect: { id: "00000000000000000000000000000001" } },
-    course_code: "alias2",
-  },
-  {
-    id: "67000000-0000-0000-0000-000000000003",
-    course: { connect: { id: "00000000000000000000000000000666" } },
-    course_code: "alias3",
   },
 ]
 
@@ -677,6 +616,67 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
       tiers: null,
     },
   ]
+
+export const courseAliases: Prisma.CourseAliasCreateInput[] = [
+  {
+    id: "67000000-0000-0000-0000-000000000001",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    course_code: "alias",
+  },
+  {
+    id: "67000000-0000-0000-0000-000000000002",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    course_code: "alias2",
+  },
+  {
+    id: "67000000-0000-0000-0000-000000000003",
+    course: { connect: { id: "00000000000000000000000000000666" } },
+    course_code: "alias3",
+  },
+]
+
+export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreateInput[] =
+  [
+    {
+      course: { connect: { id: "00000000000000000000000000000002" } },
+      user: { connect: { id: "20000000000000000000000000000104" } },
+      service: {
+        connect: { id: "40000000-0000-0000-0000-000000000102" },
+      },
+      progress: [{ group: "week1", max_points: 3, n_points: 3 }],
+    },
+  ]
+
+export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
+  {
+    id: "00000000000000000000000000000012",
+    template_type: "threshold",
+    txt_body: "Awesome feature",
+    created_at: "1901-01-01T10:00:00.00+02:00",
+    updated_at: "1901-01-01T10:00:00.00+02:00",
+    title: "Win",
+    points_threshold: 2,
+    name: "value",
+    triggered_automatically_by_course: {
+      connect: { id: "00000000000000000000000000000667" },
+    },
+    exercise_completions_threshold: 2,
+  },
+  {
+    id: "00000000000000000000000000000013",
+    template_type: "threshold",
+    txt_body: "Another",
+    created_at: "1901-01-01T10:00:00.00+02:00",
+    updated_at: "1901-01-01T10:00:00.00+02:00",
+    title: "Win",
+    points_threshold: 60,
+    name: "value",
+    triggered_automatically_by_course: {
+      connect: { id: "00000000000000000000000000000667" },
+    },
+    exercise_completions_threshold: 100,
+  },
+]
 
 export const storedData: Prisma.StoredDataCreateInput[] = [
   {

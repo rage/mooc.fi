@@ -1,20 +1,10 @@
-import { useState, useEffect, useContext } from "react"
-import { gql } from "@apollo/client"
-import { useQuery, useMutation } from "@apollo/client"
-import {
-  Button,
-  Card,
-  Container,
-  IconButton,
-  InputAdornment,
-  Grid,
-  Typography,
-  TextField,
-  CardContent,
-  Skeleton,
-} from "@mui/material"
-import CancelIcon from "@mui/icons-material/Cancel"
+import { useContext, useEffect, useState } from "react"
+
+import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
 import {
   Organizations,
   Organizations_organizations,
@@ -23,16 +13,27 @@ import {
   UserOrganizations,
   UserOrganizations_userOrganizations,
 } from "/static/types/generated/UserOrganizations"
-import useDebounce from "/util/useDebounce"
-import styled from "@emotion/styled"
 import RegistrationTranslations from "/translations/register"
-import { WideContainer } from "/components/Container"
-import { range } from "lodash"
-import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "/contexts/LoginStateContext"
 import notEmpty from "/util/notEmpty"
+import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { range } from "lodash"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import CancelIcon from "@mui/icons-material/Cancel"
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material"
 
 export const OrganizationsQuery = gql`
   query Organizations {

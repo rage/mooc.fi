@@ -216,8 +216,8 @@ export default function FilterMenu({
               <Select
                 value={loading ? "" : handledBy}
                 variant="outlined"
-                onChange={handleHandledByChange}
                 label={t("handledBy")}
+                onChange={handleHandledByChange}
                 input={
                   <OutlinedInput
                     notched={Boolean(handledBy)}

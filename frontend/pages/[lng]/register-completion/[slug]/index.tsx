@@ -5,7 +5,7 @@ import ImportantNotice from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
-import LanguageContext from "/contexts/LanguageContext"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { CreateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
 import { CheckSlugQuery } from "/graphql/queries/courses"
@@ -139,7 +139,7 @@ function RegisterCompletionPage() {
     })
   }
 
-  const { language } = useContext(LanguageContext)
+  const { language } = useLanguageContext()
 
   useEffect(() => {
     if (language) {

@@ -1,23 +1,28 @@
-import styled from "@emotion/styled"
-import { Button, Avatar, Paper } from "@mui/material"
+import CertificateButton from "/components/CertificateButton"
 import {
   formatDateTime,
   mapLangToLanguage,
 } from "/components/DataFormatFunctions"
-import ProfileTranslations from "/translations/profile"
-import DoneIcon from "@mui/icons-material/Done"
-import { CardTitle, CardSubtitle } from "components/Text/headers"
-import { addDomain } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
-import CertificateButton from "components/CertificateButton"
-import { useTranslator } from "/util/useTranslator"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import { CardSubtitle, CardTitle } from "/components/Text/headers"
+import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
+import {
+  ProfileUserOverView_currentUser_completions,
+  ProfileUserOverView_currentUser_completions_course,
+} from "/static/types/generated/ProfileUserOverView"
 import {
   UserSummary_user_user_course_summary_completion,
   UserSummary_user_user_course_summary_course,
 } from "/static/types/generated/UserSummary"
-import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
-import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
+import ProfileTranslations from "/translations/profile"
+import { addDomain } from "/util/imageUtils"
+import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+import DoneIcon from "@mui/icons-material/Done"
+import { Paper } from "@mui/material"
+import Avatar from "@mui/material/Avatar"
+import Button from "@mui/material/Button"
 
 const StyledButton = styled(Button)`
   //height: 50%;
@@ -51,7 +56,6 @@ const ListItemContainer = styled(Paper)`
   align-items: center;
   padding: 0.5rem;
 `
-
 const Row = styled.section`
   display: flex;
   grid-gap: 0.5rem;
@@ -68,6 +72,7 @@ const Column = styled.div`
   display: flex;
   flex-direction: column;
 `
+
 const CompletionColumn = styled(Column)``
 const RegistrationColumn = styled(Column)`
   width: 40%;
@@ -185,6 +190,7 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
               </StyledA>
             </LangLink>
           ) : null}
+
           {hasCertificate && course ? (
             <CertificateButton course={course} />
           ) : null}

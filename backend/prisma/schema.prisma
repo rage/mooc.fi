@@ -560,6 +560,42 @@ model CourseStatsSubscription {
   @@unique([user_id, email_template_id])
   @@map("course_stats_subscription")
 }
+// model Report {
+//   id                                      String         @id @default(uuid())
+//   created_at                              DateTime?      @default(now())
+//   updated_at                              DateTime?      @updatedAt
+//   name                                    String?
+//   user_id                                 String
+//   user                                    User           @relation(fields: [user_id], references: [id])
+//   result                                  Json
+//   params                                  Json
+//   report_job                              ReportJob?
+// 
+//   @@map("report")
+// }
+
+// - user selects what they want to query, params and all
+// - report job is created with the params
+// - job runs the queries in sequence and stores the results in report
+// - when it's finished, it's finished -- some mechanism to inform user 
+// - old reports from user show up in the frontend, with the option to refresh them
+//   ie. create new job with same parameters
+// - frontend just visualizes the report data then
+
+// model ReportJob {
+//   id                                      String         @id @default(uuid())
+//   created_at                              DateTime?      @default(now())
+//   updated_at                              DateTime?      @updatedAt
+//   name                                    String?
+//   user_id                                 String
+//   user                                    User           @relation(fields: [user_id], references: [id])
+//   params                                  Json
+//   report_id                               String?
+//   report                                  Report?        @relation(fields: [report_id], references: [id]) 
+//   finished                                Boolean
+// 
+//   @@map("report_job")
+// }
 
 enum CourseStatus {
   Active

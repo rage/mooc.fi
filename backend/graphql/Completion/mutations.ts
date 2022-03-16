@@ -243,11 +243,9 @@ export const CompletionMutations = extendType({
           } catch (e: unknown) {
             const message = e instanceof Error ? `${e.message}, ${e.stack}` : e
             ctx.logger.error(`error processing after ${processed}: ${message}`)
-
             return `error processing after ${processed}: ${message}`
           }
         }
-
         return `${users.length} users rechecked`
       },
     })

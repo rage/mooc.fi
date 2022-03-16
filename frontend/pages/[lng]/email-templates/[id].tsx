@@ -78,6 +78,7 @@ const EmailTemplateView = () => {
     },
   ])
 
+  //TODO add circular progress
   if (loading) {
     return <Spinner />
   }

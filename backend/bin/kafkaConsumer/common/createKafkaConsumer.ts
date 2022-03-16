@@ -1,3 +1,4 @@
+import checkConnectionInInterval from "/bin/kafkaConsumer/common/connectedChecker"
 import * as Kafka from "node-rdkafka"
 import { ConsumerGlobalConfig } from "node-rdkafka"
 import { v4 } from "uuid"
@@ -5,6 +6,7 @@ import winston from "winston"
 
 import type { PrismaClient } from "@prisma/client"
 
+import { KafkaError } from "../../../bin/lib/errors"
 import {
   KAFKA_CONSUMER_GROUP,
   KAFKA_DEBUG_CONTEXTS,
@@ -12,8 +14,6 @@ import {
   KAFKA_TOP_OF_THE_QUEUE,
 } from "../../../config"
 import { attachPrismaEvents } from "../../../util/prismaLogger"
-import { KafkaError } from "../../lib/errors"
-import checkConnectionInInterval from "./connectedChecker"
 
 const logCommit =
   (logger: winston.Logger) => (err: any, topicPartitions: any) => {

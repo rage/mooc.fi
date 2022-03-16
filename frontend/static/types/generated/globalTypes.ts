@@ -13,6 +13,13 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
+export enum IntervalUnit {
+  day = "day",
+  month = "month",
+  week = "week",
+  year = "year",
+}
+
 export enum OrganizationRole {
   OrganizationAdmin = "OrganizationAdmin",
   Student = "Student",

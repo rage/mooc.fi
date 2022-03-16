@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
 
+import PointsList from "/components/Dashboard/DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
 import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
@@ -14,8 +15,6 @@ import { range } from "lodash"
 import { gql, useLazyQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
-
-import PointsList from "./DashboardPointsList"
 
 export const StudentProgresses = gql`
   query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {
