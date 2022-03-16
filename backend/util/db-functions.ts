@@ -5,8 +5,6 @@ import { Prisma } from "@prisma/client"
 import { CIRCLECI } from "../config"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
-import { isNullOrUndefined } from "./isNullOrUndefined"
-import { Prisma } from "@prisma/client"
 
 const flatten = (arr: any[]) => arr.reduce((acc, val) => acc.concat(val), [])
 const titleCase = (s?: string) =>
