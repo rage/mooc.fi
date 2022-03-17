@@ -1,26 +1,30 @@
-import React, { useContext, useEffect, useState } from "react"
-import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
-import { useQuery } from "@apollo/client"
-import CourseGrid from "/components/Dashboard/CourseGrid"
+import React, {
+  useEffect,
+  useState,
+} from "react"
+
 import { WideContainer } from "/components/Container"
-import styled from "@emotion/styled"
+import CourseGrid from "/components/Dashboard/CourseGrid"
+import FilterMenu from "/components/FilterMenu"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import {
   AllEditorCoursesQuery,
   HandlerCoursesQuery,
 } from "/graphql/queries/courses"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
+import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
+import { CourseStatus } from "/static/types/generated/globalTypes"
+import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import CoursesTranslations from "/translations/courses"
-import LanguageContext from "/contexts/LanguageContext"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useRouter } from "next/router"
-import FilterMenu from "/components/FilterMenu"
-import { HandlerCourses } from "/static/types/generated/HandlerCourses"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -37,9 +41,8 @@ const notEmptyOrEmptyString = (value: any) =>
   notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
-  const { language } = useContext(LanguageContext)
   const router = useRouter()
-
+  
   useBreadcrumbs([
     {
       translation: "courses",
@@ -99,8 +102,9 @@ function useCourseSearch() {
     ].filter(Boolean)
 
     const query = params.length ? `?${params.join("&")}` : ""
-    const href = `/${language}/courses/${query}`
+    const href = `/courses/${query}`
     if (router?.asPath !== href) {
+      console.log("I got here with", router?.asPath, href)
       router.push(href, undefined, { shallow: true })
     }
   }, [searchVariables])

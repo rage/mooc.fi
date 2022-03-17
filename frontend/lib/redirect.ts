@@ -1,6 +1,6 @@
 import { NextPageContext as NextContext } from "next"
-import nookies from "nookies"
 import Router from "next/router"
+import nookies from "nookies"
 
 export interface RedirectType {
   context: NextContext
@@ -15,6 +15,7 @@ export default function redirect({
   savePage = true,
   shallow = true,
 }: RedirectType) {
+  console.log("I'm in redirect with", context, target)
   let language = context?.query?.lng ?? "fi"
 
   if (savePage && context?.pathname /* context?.req?.originalUrl */) {

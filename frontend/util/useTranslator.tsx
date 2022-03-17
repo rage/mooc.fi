@@ -1,11 +1,11 @@
-import { useRouter } from "next/router"
-import { useContext, useMemo } from "react"
-import LanguageContext from "/contexts/LanguageContext"
+import { useMemo } from "react"
+
 import getTranslator, {
   combineDictionaries,
   Translation,
   TranslationDictionary,
 } from "/translations"
+import { useRouter } from "next/router"
 
 export const useTranslator = <
   T extends Translation,
@@ -21,7 +21,6 @@ export const useTranslator = <
         TranslationDictionary<V>,
       ]
 ) => {
-  const { language } = useContext(LanguageContext)
   const router = useRouter()
 
   const combinedDict = combineDictionaries(dicts)
@@ -31,8 +30,8 @@ export const useTranslator = <
     dicts[2] ?? {},
   ])*/
   const translator = useMemo(
-    () => getTranslator(combinedDict)(language, router),
-    [dicts, language],
+    () => getTranslator(combinedDict)(router?.locale ?? "fi", router),
+    [dicts, router?.locale],
   )
 
   return translator

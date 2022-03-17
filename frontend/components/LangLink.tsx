@@ -1,9 +1,18 @@
-import { useContext, Children, cloneElement, PropsWithChildren } from "react"
-import Link, { LinkProps } from "next/link"
-import LanguageContext from "/contexts/LanguageContext"
-import { parse, format } from "url"
+import {
+  Children,
+  cloneElement,
+  PropsWithChildren,
+  useContext,
+} from "react"
 
-export default function LangLink(props: PropsWithChildren<LinkProps>): any {
+import LanguageContext from "/contexts/LanguageContext"
+import Link, { LinkProps } from "next/link"
+import {
+  format,
+  parse,
+} from "url"
+
+function LangLink(props: PropsWithChildren<LinkProps>): any {
   const { as: _as, href: _href, children } = props
   const { language } = useContext(LanguageContext)
   const isFi = language === "fi"
@@ -56,3 +65,5 @@ export default function LangLink(props: PropsWithChildren<LinkProps>): any {
     </Link>
   )
 }
+
+export default Link
