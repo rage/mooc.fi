@@ -25,13 +25,22 @@ const StyledButton = styled(Button)<ButtonProps>`
   margin: 1rem;
   font-size: 22px;
   border-radius: 0px;
+  display: inline-flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 0.5rem;
+
   @media (max-width: 510px) {
     font-size: 20px;
     margin: 0.75rem;
   }
-  @media (max-width: 450px) {
+  @media (max-width: 480px) {
     font-size: 16px;
     margin: 0.5rem;
+  }
+  @media (max-width: 450px) {
+    font-size: 12px;
+    margin: 0.2rem;
   }
   color: ${(props) => (props.active ? "#378170" : "black")};
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
@@ -44,7 +53,7 @@ const ButtonLabel = styled(Typography)<any>`
     font-size: 14px;
   }
   @media (max-width: 450px) {
-    font-sise: 12px;
+    font-size: 12px;
   }
 `
 
@@ -58,54 +67,46 @@ const UserMenu = () => {
     <nav role="navigation">
       {admin && (
         <>
-          <Link href={`/courses`}>
+          <Link href={`/courses`} passHref>
             <StyledButton
               color="inherit"
               variant="text"
               active={active == "courses" ? 1 : null}
               style={{ marginLeft: "1em" }}
             >
-              <div>
-                <FontAwesomeIcon icon={faChalkboardTeacher} />
-                <ButtonLabel>{t("courses")}</ButtonLabel>
-              </div>
+              <FontAwesomeIcon icon={faChalkboardTeacher} />
+              <ButtonLabel>{t("courses")}</ButtonLabel>
             </StyledButton>
           </Link>
 
-          <Link href={`/study-modules`}>
+          <Link href={`/study-modules`} passHref>
             <StyledButton
               color="inherit"
               variant="text"
               active={active == "study-modules" ? 1 : null}
             >
-              <div>
-                <FontAwesomeIcon icon={faList} />
-                <ButtonLabel>{t("modules")}</ButtonLabel>
-              </div>
+              <FontAwesomeIcon icon={faList} />
+              <ButtonLabel>{t("modules")}</ButtonLabel>
             </StyledButton>
           </Link>
-          <Link href={`/users/search`}>
+          <Link href={`/users/search`} passHref>
             <StyledButton
               color="inherit"
               variant="text"
               active={active == "users" ? 1 : null}
             >
-              <div>
-                <FontAwesomeIcon icon={faSearch} />
-                <ButtonLabel>{t("userSearch")}</ButtonLabel>
-              </div>
+              <FontAwesomeIcon icon={faSearch} />
+              <ButtonLabel>{t("userSearch")}</ButtonLabel>
             </StyledButton>
           </Link>
-          <Link href={`/email-templates`}>
+          <Link href={`/email-templates`} passHref>
             <StyledButton
               color="inherit"
               variant="text"
               active={active == "email-templates" ? 1 : null}
             >
-              <div>
-                <FontAwesomeIcon icon={faEnvelope} />
-                <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
-              </div>
+              <FontAwesomeIcon icon={faEnvelope} />
+              <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
             </StyledButton>
           </Link>
         </>
