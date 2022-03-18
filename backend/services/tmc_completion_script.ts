@@ -1,6 +1,7 @@
 import axios from "axios"
 
 import {
+  RATELIMIT_PROTECTION_SAFE_API_KEY,
   TMC_CLIENT_ID,
   TMC_CLIENT_SECRET,
   TMC_HOST,
@@ -23,6 +24,8 @@ async function fetchAccessToken(): Promise<string> {
       {
         headers: {
           "content-type": "application/x-www-form-urlencoded",
+          "RATELIMIT-PROTECTION-SAFE-API-KEY":
+            RATELIMIT_PROTECTION_SAFE_API_KEY,
         },
       },
     )
