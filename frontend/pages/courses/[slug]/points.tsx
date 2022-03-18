@@ -5,7 +5,6 @@ import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
@@ -30,7 +29,6 @@ const Points = () => {
   const t = useTranslator(CoursesTranslations)
 
   const slug = useQueryParameter("slug")
-  const lng = useQueryParameter("lng")
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
@@ -73,24 +71,18 @@ const Points = () => {
   return (
     <>
       <NextSeo title={title} />
-      <CourseLanguageContext.Provider value={lng}>
-        <DashboardTabBar slug={slug} selectedValue={2} />
+      <DashboardTabBar slug={slug} selectedValue={2} />
 
-        <Container>
-          <H1NoBackground component="h1" variant="h1" align="center">
-            {data.course.name}
-          </H1NoBackground>
-          <SubtitleNoBackground
-            component="p"
-            variant="subtitle1"
-            align="center"
-          >
-            {t("points")}
-          </SubtitleNoBackground>
-          <PointsExportButton slug={slug} />
-          <PaginatedPointsList courseId={data.course.id} />
-        </Container>
-      </CourseLanguageContext.Provider>
+      <Container>
+        <H1NoBackground component="h1" variant="h1" align="center">
+          {data.course.name}
+        </H1NoBackground>
+        <SubtitleNoBackground component="p" variant="subtitle1" align="center">
+          {t("points")}
+        </SubtitleNoBackground>
+        <PointsExportButton slug={slug} />
+        <PaginatedPointsList courseId={data.course.id} />
+      </Container>
     </>
   )
 }

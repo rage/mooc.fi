@@ -16,7 +16,7 @@ import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import { NextSeo } from "next-seo"
-import { SingletonRouter, withRouter } from "next/router"
+import { useRouter } from "next/router"
 
 import { gql, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -38,9 +38,10 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-const Completions = ({ router }: { router: SingletonRouter }) => {
+const Completions = () => {
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug")
+  const router = useRouter()
 
   const [lng, changeLng] = useState("")
   const [searchString, setSearchString] = useState("")
@@ -137,4 +138,4 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
 
 Completions.displayName = "Completions"
 
-export default withRouter(withAdmin(Completions) as any)
+export default withAdmin(Completions)

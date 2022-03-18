@@ -27,19 +27,6 @@ export const UserOverViewQuery = gql`
       last_name
       student_number
       email
-      verified_users {
-        id
-        organization {
-          slug
-          organization_translations {
-            language
-            name
-          }
-        }
-        created_at
-        personal_unique_code
-        display_name
-      }
       completions {
         id
         completion_language
@@ -65,6 +52,22 @@ export const UserOverViewQuery = gql`
   ${CompletionsRegisteredFragment}
 `
 
+// TODO: not visible in here, so don't query it?
+/*
+      verified_users {
+        id
+        organization {
+          slug
+          organization_translations {
+            language
+            name
+          }
+        }
+        created_at
+        personal_unique_code
+        display_name
+      }
+*/
 const tabs: Record<string, number> = {
   points: 0,
   completions: 1,

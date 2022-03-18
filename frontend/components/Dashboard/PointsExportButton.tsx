@@ -1,13 +1,15 @@
 import { useState } from "react"
-import { gql, ApolloConsumer } from "@apollo/client"
-import XLSX from "xlsx"
-import styled from "@emotion/styled"
+
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_userCourseProgresses,
 } from "/static/types/generated/ExportUserCourseProgesses"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { ApolloClient } from "@apollo/client"
+import XLSX from "xlsx"
+
+import { ApolloClient, gql, useApolloClient } from "@apollo/client"
+import styled from "@emotion/styled"
+
 const PointsExportButtonContainer = styled.div`
   margin-bottom: 1rem;
 `
@@ -17,49 +19,42 @@ export interface PointsExportButtonProps {
 }
 function PointsExportButton(props: PointsExportButtonProps) {
   const { slug } = props
+  const client = useApolloClient()
 
   const [infotext, setInfotext] = useState("")
 
   return (
-    <ApolloConsumer>
-      {(client) => (
-        <PointsExportButtonContainer>
-          <StyledButton
-            color="secondary"
-            disabled={!(infotext == "" || infotext == "ready")}
-            onClick={async () => {
-              try {
-                setInfotext("Downloading data")
-                const data = await dowloadInChunks(slug, client, setInfotext)
-                setInfotext("constructing csv")
-                let objects = await flatten(data)
-                console.log(data)
-                console.log(objects)
-                const sheet = XLSX.utils.json_to_sheet(objects)
-                console.log("sheet", sheet)
-                const workbook: XLSX.WorkBook = {
-                  SheetNames: [],
-                  Sheets: {},
-                }
-                XLSX.utils.book_append_sheet(
-                  workbook,
-                  sheet,
-                  "UserCourseProgress",
-                )
-                await XLSX.writeFile(workbook, slug + "-points.csv"),
-                  { bookType: "csv", type: "string" }
-                setInfotext("ready")
-              } catch (e) {
-                setInfotext(`Error: ${e}`)
-              }
-            }}
-          >
-            Export
-          </StyledButton>
-          {infotext}
-        </PointsExportButtonContainer>
-      )}
-    </ApolloConsumer>
+    <PointsExportButtonContainer>
+      <StyledButton
+        color="secondary"
+        disabled={!(infotext == "" || infotext == "ready")}
+        onClick={async () => {
+          try {
+            setInfotext("Downloading data")
+            const data = await dowloadInChunks(slug, client, setInfotext)
+            setInfotext("constructing csv")
+            let objects = await flatten(data)
+            console.log(data)
+            console.log(objects)
+            const sheet = XLSX.utils.json_to_sheet(objects)
+            console.log("sheet", sheet)
+            const workbook: XLSX.WorkBook = {
+              SheetNames: [],
+              Sheets: {},
+            }
+            XLSX.utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
+            await XLSX.writeFile(workbook, slug + "-points.csv"),
+              { bookType: "csv", type: "string" }
+            setInfotext("ready")
+          } catch (e) {
+            setInfotext(`Error: ${e}`)
+          }
+        }}
+      >
+        Export
+      </StyledButton>
+      {infotext}
+    </PointsExportButtonContainer>
   )
 }
 

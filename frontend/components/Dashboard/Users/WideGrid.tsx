@@ -21,9 +21,7 @@ import {
   TableRow,
 } from "@mui/material"
 
-const TableWrapper = styled.div`
-  overflow-x: auto;
-`
+const TableWrapper = styled.div``
 
 const StyledTableCell = styled(TableCell)`
   background-color: black;
@@ -35,6 +33,11 @@ const StyledPaper = styled(Paper)`
   margin-top: 5px;
 `
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`
+
 const WideGrid = () => {
   const t = useTranslator(UsersTranslations)
   const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
@@ -42,15 +45,13 @@ const WideGrid = () => {
   const PaginationComponent = useCallback(
     () => (
       <TableRow>
-        <td colSpan={5} align="center">
-          {loading ? (
-            <TableCell>
-              <Skeleton />
-            </TableCell>
-          ) : (
-            <Pagination />
-          )}
-        </td>
+        {loading ? (
+          <TableCell>
+            <Skeleton />
+          </TableCell>
+        ) : (
+          <Pagination />
+        )}
       </TableRow>
     ),
     [data, rowsPerPage, page, loading],
@@ -76,10 +77,7 @@ const WideGrid = () => {
               <StyledTableCell align="right">
                 {t("userStudentNumber")}
               </StyledTableCell>
-              {/*<StyledTableCell align="right">
-                {t("summary")}
-                {("completions")}
-            </StyledTableCell>*/}
+              <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <RenderResults />
@@ -136,14 +134,14 @@ const RenderResults = () => {
             <TableCell align="right">{last_name}</TableCell>
             <TableCell align="right">{student_number}</TableCell>
             <TableCell align="right">
-              <Link href={`/users/${upstream_id}/summary`} passHref>
-                <Button variant="contained" style={{ marginRight: "0.5rem" }}>
-                  {t("summary")}
-                </Button>
-              </Link>
-              <Link href={`/users/${upstream_id}/completions`} passHref>
-                <Button variant="contained">{t("completions")}</Button>
-              </Link>
+              <ButtonContainer>
+                <Link href={`/users/${upstream_id}/summary`} passHref>
+                  <Button variant="contained">{t("summary")}</Button>
+                </Link>
+                <Link href={`/users/${upstream_id}/completions`} passHref>
+                  <Button variant="contained">{t("completions")}</Button>
+                </Link>
+              </ButtonContainer>
             </TableCell>
           </TableRow>
         )

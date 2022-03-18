@@ -14,6 +14,7 @@ import { CourseEditorCourses_courses } from "/static/types/generated/CourseEdito
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+import { useRouter } from "next/router"
 import { useFormContext } from "react-hook-form"
 
 import { Button } from "@mui/material"

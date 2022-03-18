@@ -186,30 +186,8 @@ export function MyApp({
 // @ts-ignore: initialProps
 const originalGetInitialProps = MyApp.getInitialProps
 
-const languages = ["en", "fi", "se"]
-
-function createPath(originalUrl: string) {
-  let url = ""
-  if (originalUrl?.match(/^\/en\/?$/)) {
-    url = "/"
-  } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
-  } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se", "/fi")
-  } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi", "/en")
-  } else {
-    url = "/en" + (originalUrl ?? "/")
-  }
-
-  return url
-}
-
 MyApp.getInitialProps = async (props: AppContext) => {
   const { ctx, Component } = props
-
-  let asUrl = "/"
-  let hrefUrl = "/"
 
   let originalProps: any = {}
 

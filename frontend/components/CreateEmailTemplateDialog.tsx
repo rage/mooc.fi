@@ -10,7 +10,7 @@ import { updateCourse } from "/static/types/generated/updateCourse"
 import omit from "lodash/omit"
 import Router from "next/router"
 
-import { ApolloClient, ApolloConsumer, gql, useQuery } from "@apollo/client"
+import { gql, useApolloClient, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -63,6 +63,7 @@ const CreateEmailTemplateDialog = ({
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { loading, error, data } =
     useQuery<{ courses: CourseDetailsData[] }>(AllCoursesDetails)
+  const client = useApolloClient()
 
   if (loading) {
     return <Spinner />
@@ -99,7 +100,7 @@ const CreateEmailTemplateDialog = ({
           )
         })
 
-  const handleCreate = async (client: ApolloClient<object>) => {
+  const handleCreate = async () => {
     try {
       const { data } = await client.mutate<AddEmailTemplate>({
         mutation: AddEmailTemplateMutation,
@@ -202,13 +203,9 @@ const CreateEmailTemplateDialog = ({
           <Button onClick={handleDialogClose} color="primary">
             Cancel
           </Button>
-          <ApolloConsumer>
-            {(client) => (
-              <Button onClick={() => handleCreate(client)} color="primary">
-                Create
-              </Button>
-            )}
-          </ApolloConsumer>
+          <Button onClick={() => handleCreate()} color="primary">
+            Create
+          </Button>
         </DialogActions>
       </Dialog>
       <CustomSnackbar

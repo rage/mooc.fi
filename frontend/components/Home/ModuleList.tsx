@@ -97,7 +97,12 @@ const ModuleList = ({
 
         if (component.type === "custom-module") {
           return component.id ? (
-            <section id={component.id}>{component.module}</section>
+            <section
+              id={component.id}
+              key={`module-list-module-${component.id}`}
+            >
+              {component.module}
+            </section>
           ) : (
             component.module
           )

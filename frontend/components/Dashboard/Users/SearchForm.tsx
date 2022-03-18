@@ -1,13 +1,15 @@
 import { useCallback, useContext, useState } from "react"
-import UserSearchContext from "/contexts/UserSearchContext"
-import { H1NoBackground } from "/components/Text/headers"
-import { TextField, useMediaQuery } from "@mui/material"
+
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import UsersTranslations from "/translations/users"
-import styled from "@emotion/styled"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
+import { H1NoBackground } from "/components/Text/headers"
+import UserSearchContext from "/contexts/UserSearchContext"
+import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+import { TextField, useMediaQuery } from "@mui/material"
 
 const StyledForm = styled.form`
   display: flex;
@@ -40,7 +42,7 @@ const SearchForm = () => {
     setSearchFormText(event.target.value as string)
   }
 
-  const isMobile = useMediaQuery("(max-width:800px)", { noSsr: true })
+  const isMobile = useMediaQuery("(max-width:900px)", { noSsr: true })
   const GridComponent = isMobile ? MobileGrid : WideGrid
 
   return (

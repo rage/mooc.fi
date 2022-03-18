@@ -11,14 +11,16 @@ import {
 } from "/graphql/mutations/email-templates"
 import { EmailTemplateQuery } from "/graphql/queries/email-templates"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { NextSeo } from "next-seo"
 import Router from "next/router"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
-import { ApolloConsumer, useQuery } from "@apollo/client"
+import { useApolloClient, useQuery } from "@apollo/client"
 import { Button, Collapse, Paper, TextField } from "@mui/material"
 
 const templateValues = [
@@ -48,7 +50,7 @@ const EmailTemplateView = () => {
   const [didInit, setDidInit] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
-
+  const client = useApolloClient()
   interface SnackbarData {
     type: "error" | "success" | "warning" | "error"
     message: string
@@ -74,7 +76,7 @@ const EmailTemplateView = () => {
       href: `/email-templates/${id}`,
     },
   ])
-  const title = useSubtitle(data?.email_template?.name ?? "")
+  const pageTitle = useSubtitle(data?.email_template?.name ?? "")
 
   if (loading) {
     return <Spinner />
@@ -101,7 +103,7 @@ const EmailTemplateView = () => {
 
   return (
     <>
-      <NextSeo title={title} />
+      <NextSeo title={pageTitle} />
       <section>
         <WideContainer>
           <Paper>
@@ -222,82 +224,72 @@ const EmailTemplateView = () => {
               </Collapse>
               <br></br>
               <br></br>
-              <ApolloConsumer>
-                {(client) => (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={async () => {
-                      if (emailTemplate == null) return
-                      try {
-                        const { data } =
-                          await client.mutate<UpdateEmailTemplate>({
-                            mutation: UpdateEmailTemplateMutation,
-                            variables: {
-                              id: emailTemplate.id,
-                              name: name,
-                              title: title,
-                              txt_body: txtBody,
-                              html_body: htmlBody,
-                              triggered_automatically_by_course_id:
-                                triggeredByCourseId,
-                              exercise_completions_threshold: exerciseThreshold,
-                              points_threshold: pointsThreshold,
-                              template_type: templateType,
-                            },
-                          })
-                        console.log(data)
-                        setSnackbarData({
-                          type: "success",
-                          message: "Saved successfully",
-                        })
-                      } catch {
-                        setSnackbarData({
-                          type: "error",
-                          message: "Error: Could not save",
-                        })
-                      }
-                      setIsSnackbarOpen(true)
-                    }}
-                  >
-                    Update
-                  </Button>
-                )}
-              </ApolloConsumer>
-              <ApolloConsumer>
-                {(client) => (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={async () => {
-                      if (emailTemplate == null) return
-                      try {
-                        const { data } =
-                          await client.mutate<DeleteEmailTemplate>({
-                            mutation: DeleteEmailTemplateMutation,
-                            variables: { id: emailTemplate.id },
-                          })
-                        console.log(data)
-                        setSnackbarData({
-                          type: "success",
-                          message: "Deleted successfully",
-                        })
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  if (emailTemplate == null) return
+                  try {
+                    const { data } = await client.mutate<UpdateEmailTemplate>({
+                      mutation: UpdateEmailTemplateMutation,
+                      variables: {
+                        id: emailTemplate.id,
+                        name: name,
+                        title: title,
+                        txt_body: txtBody,
+                        html_body: htmlBody,
+                        triggered_automatically_by_course_id:
+                          triggeredByCourseId,
+                        exercise_completions_threshold: exerciseThreshold,
+                        points_threshold: pointsThreshold,
+                        template_type: templateType,
+                      },
+                    })
+                    console.log(data)
+                    setSnackbarData({
+                      type: "success",
+                      message: "Saved successfully",
+                    })
+                  } catch {
+                    setSnackbarData({
+                      type: "error",
+                      message: "Error: Could not save",
+                    })
+                  }
+                  setIsSnackbarOpen(true)
+                }}
+              >
+                Update
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  if (emailTemplate == null) return
+                  try {
+                    const { data } = await client.mutate<DeleteEmailTemplate>({
+                      mutation: DeleteEmailTemplateMutation,
+                      variables: { id: emailTemplate.id },
+                    })
+                    console.log(data)
+                    setSnackbarData({
+                      type: "success",
+                      message: "Deleted successfully",
+                    })
 
-                        const url = "/email-templates/"
-                        setTimeout(() => Router.push(url), 5000)
-                      } catch {
-                        setSnackbarData({
-                          type: "error",
-                          message: "Error: Could not delete",
-                        })
-                      }
-                      setIsSnackbarOpen(true)
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
-              </ApolloConsumer>
+                    const url = "/email-templates/"
+                    setTimeout(() => Router.push(url), 5000)
+                  } catch {
+                    setSnackbarData({
+                      type: "error",
+                      message: "Error: Could not delete",
+                    })
+                  }
+                  setIsSnackbarOpen(true)
+                }}
+              >
+                Delete
+              </Button>
 
               <SubtitleNoBackground
                 component="p"
