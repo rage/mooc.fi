@@ -1,9 +1,9 @@
-import FAQTranslations from "/translations/faq"
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
-import { useTranslator } from "/util/useTranslator"
-import { useFAQPage } from "/hooks/useFAQPage"
-import { useQueryParameter } from "/util/useQueryParameter"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useFAQPage } from "/hooks/useFAQPage"
+import FAQTranslations from "/translations/faq"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
 
 export default function FAQTopic() {
   const t = useTranslator(FAQTranslations)
@@ -21,6 +21,7 @@ export default function FAQTopic() {
       href: `/faq/${topic}`,
     },
   ])
+  // TODO: add dynamic title
 
   return FAQPage({
     title,

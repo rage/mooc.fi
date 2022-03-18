@@ -1,28 +1,30 @@
-import React, { useContext, useMemo } from "react"
-import CourseHighlights from "./CourseHighlights"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useQuery } from "@apollo/client"
-import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
-import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
-import ModuleNavi from "./ModuleNavi"
-import ModuleList from "./ModuleList"
-import LanguageContext from "/contexts/LanguageContext"
-import HomeTranslations from "/translations/home"
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import React, { useMemo } from "react"
+
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { AllCoursesQuery } from "/graphql/queries/courses"
+import { AllModulesQuery } from "/graphql/queries/study-modules"
+import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
+import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
+import { CourseStatus } from "/static/types/generated/globalTypes"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import HomeTranslations from "/translations/home"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+
+import CourseHighlights from "./CourseHighlights"
+import ModuleList from "./ModuleList"
+import ModuleNavi from "./ModuleNavi"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
-import { AllCoursesQuery } from "/graphql/queries/courses"
-import { AllModulesQuery } from "/graphql/queries/study-modules"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
-
 const CourseAndModuleList = () => {
-  const lngCtx = useContext(LanguageContext)
+  const { locale = "fi" } = useRouter()
   const t = useTranslator(HomeTranslations)
-  const language = mapNextLanguageToLocaleCode(lngCtx.language)
+  const language = mapNextLanguageToLocaleCode(locale)
 
   const {
     loading: coursesLoading,

@@ -1,21 +1,21 @@
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
-import Spinner from "/components/Spinner"
+import React, { ChangeEvent, useEffect, useState } from "react"
+
+import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
+import ConsentNotification from "/components/Profile/ConsentNotification"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
+import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
-import withSignedIn from "/lib/with-signed-in"
+import Spinner from "/components/Spinner"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import React, { ChangeEvent, useState } from "react"
-import ProfileTabs from "/components/Profile/ProfileTabs"
-import ConsentNotification from "/components/Profile/ConsentNotification"
-import { useRouter } from "next/router"
-import { useLanguageContext } from "/contexts/LanguageContext"
+import withSignedIn from "/lib/with-signed-in"
+import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useEffect } from "react"
-import Container from "/components/Container"
+import { useRouter } from "next/router"
+
+import { gql, useQuery } from "@apollo/client"
+
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
 export const UserOverViewQuery = gql`
@@ -78,7 +78,6 @@ const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
 function Profile() {
   const _tab = useQueryParameter("tab", false) || "points"
   const router = useRouter()
-  const { language } = useLanguageContext()
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
 
@@ -86,9 +85,7 @@ function Profile() {
     // setTab(newValue)
     router.replace(
       router.pathname,
-      `/${language}/profile${
-        newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""
-      }`,
+      `/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`,
       { shallow: true },
     )
   }

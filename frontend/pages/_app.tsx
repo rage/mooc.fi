@@ -1,42 +1,23 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
-import {
-  useEffect,
-  useReducer,
-} from "react"
+import { useEffect, useReducer } from "react"
 
 import AlertContext, { Alert } from "/contexts/AlertContext"
-import {
-  Breadcrumb,
-  BreadcrumbContext,
-} from "/contexts/BreadcrumbContext"
+import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import {
-  isAdmin,
-  isSignedIn,
-} from "/lib/authentication"
-import {
-  initGA,
-  logPageView,
-} from "/lib/gtag"
+import { isAdmin, isSignedIn } from "/lib/authentication"
+import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { fontCss } from "/src/fonts"
 import theme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 import { ConfirmProvider } from "material-ui-confirm"
-import type {
-  AppContext,
-  AppProps,
-} from "next/app"
+import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import {
-  CacheProvider,
-  EmotionCache,
-  Global,
-} from "@emotion/react"
+import { CacheProvider, EmotionCache, Global } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -157,16 +138,7 @@ export function MyApp({
     }
   }, [router])
 
-  const {
-    lng = "fi",
-    languageSwitchUrl = "/en/",
-    asUrl = "/",
-    hrefUrl,
-  } = pageProps
-
-  const titleString =
-    t("title", { title: "..." })?.[hrefUrl] ||
-    t("title", { title: "..." })?.[asUrl]
+  const titleString = t("title", { title: "..." })?.[router?.pathname ?? ""]
 
   const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
@@ -183,27 +155,27 @@ export function MyApp({
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <LoginStateContext.Provider value={state}>
-              <ConfirmProvider>
-                <BreadcrumbContext.Provider
+            <ConfirmProvider>
+              <BreadcrumbContext.Provider
+                value={{
+                  breadcrumbs: state.breadcrumbs,
+                  setBreadcrumbs: setBreadcrumbs,
+                }}
+              >
+                <AlertContext.Provider
                   value={{
-                    breadcrumbs: state.breadcrumbs,
-                    setBreadcrumbs: setBreadcrumbs,
+                    alerts: state.alerts,
+                    addAlert: addAlert,
+                    removeAlert: removeAlert,
                   }}
                 >
-                  <AlertContext.Provider
-                    value={{
-                      alerts: state.alerts,
-                      addAlert: addAlert,
-                      removeAlert: removeAlert,
-                    }}
-                  >
-                    <Layout>
-                      <Global styles={fontCss} />
-                      <Component {...pageProps} />
-                    </Layout>
-                  </AlertContext.Provider>
-                </BreadcrumbContext.Provider>
-              </ConfirmProvider>
+                  <Layout>
+                    <Global styles={fontCss} />
+                    <Component {...pageProps} />
+                  </Layout>
+                </AlertContext.Provider>
+              </BreadcrumbContext.Provider>
+            </ConfirmProvider>
           </LoginStateContext.Provider>
         </ThemeProvider>
       </CacheProvider>

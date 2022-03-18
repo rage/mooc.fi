@@ -1,20 +1,21 @@
 import { useContext } from "react"
-import Typography from "@mui/material/Typography"
-import LangLink from "components/LangLink"
-import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
-import CommonTranslations from "/translations/common"
 
+import { useActiveTab } from "/components/HeaderBar/Header"
+import LoginStateContext from "/contexts/LoginStateContext"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
-  faSearch,
-  faList,
   faEnvelope,
+  faList,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons"
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import LoginStateContext from "/contexts/LoginStateContext"
-import { useTranslator } from "/util/useTranslator"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
 
 interface ButtonProps {
   active: any
@@ -47,21 +48,17 @@ const ButtonLabel = styled(Typography)<any>`
   }
 `
 
-interface UserMenuprops {
-  active?: string
-}
-
-const UserMenu = (props: UserMenuprops) => {
+const UserMenu = () => {
   const { admin } = useContext(LoginStateContext)
   const t = useTranslator(CommonTranslations)
 
-  const { active } = props
+  const active = useActiveTab()
 
   return (
     <nav role="navigation">
       {admin && (
         <>
-          <LangLink href={`/courses`}>
+          <Link href={`/courses`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -73,9 +70,9 @@ const UserMenu = (props: UserMenuprops) => {
                 <ButtonLabel>{t("courses")}</ButtonLabel>
               </div>
             </StyledButton>
-          </LangLink>
+          </Link>
 
-          <LangLink href={`/study-modules`}>
+          <Link href={`/study-modules`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -86,8 +83,8 @@ const UserMenu = (props: UserMenuprops) => {
                 <ButtonLabel>{t("modules")}</ButtonLabel>
               </div>
             </StyledButton>
-          </LangLink>
-          <LangLink href={`/users/search`}>
+          </Link>
+          <Link href={`/users/search`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -98,8 +95,8 @@ const UserMenu = (props: UserMenuprops) => {
                 <ButtonLabel>{t("userSearch")}</ButtonLabel>
               </div>
             </StyledButton>
-          </LangLink>
-          <LangLink href={`/email-templates`}>
+          </Link>
+          <Link href={`/email-templates`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -110,7 +107,7 @@ const UserMenu = (props: UserMenuprops) => {
                 <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
               </div>
             </StyledButton>
-          </LangLink>
+          </Link>
         </>
       )}
     </nav>

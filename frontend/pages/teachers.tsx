@@ -1,21 +1,22 @@
-import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
+import { H1NoBackground } from "/components/Text/headers"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import TeachersTranslations from "/translations/teachers"
+import { useTranslator } from "/util/useTranslator"
+import { useRouter } from "next/router"
+
 import styled from "@emotion/styled"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-  faGraduationCap,
+  faBook,
   faBookOpen,
+  faComments,
+  faGraduationCap,
   faLaptop,
   faPlusSquare,
   faUserFriends,
-  faBook,
-  faComments,
 } from "@fortawesome/free-solid-svg-icons"
-import { useLanguageContext } from "/contexts/LanguageContext"
-import TeachersTranslations from "/translations/teachers"
-import { H1NoBackground } from "/components/Text/headers"
-import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -43,7 +44,7 @@ const StyledButton = styled(Button)`
 
 const ForTeachers = () => {
   const t = useTranslator(TeachersTranslations)
-  const { language } = useLanguageContext()
+  const { locale } = useRouter()
 
   useBreadcrumbs([
     {
@@ -108,7 +109,7 @@ const ForTeachers = () => {
         </StyledButton>
         <TextBlock />
       </ContentBlock>
-      {language === "fi" ? (
+      {locale === "fi" ? (
         <section>
           <ContentBlock>
             <StyledIcon icon={faUserFriends} size="3x" />

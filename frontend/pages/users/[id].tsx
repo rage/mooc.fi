@@ -1,16 +1,17 @@
-import Container from "/components/Container"
-import { gql, useQuery, useApolloClient } from "@apollo/client"
-import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
-import { Grid } from "@mui/material"
-import Button from "@mui/material/Button"
-import { CircularProgress } from "@mui/material"
-import { useQueryParameter } from "/util/useQueryParameter"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import withAdmin from "/lib/with-admin"
-import CommonTranslations from "/translations/common"
 import { useState } from "react"
-import { useTranslator } from "/util/useTranslator"
+
+import Container from "/components/Container"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
+import CommonTranslations from "/translations/common"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+
+import { gql, useApolloClient, useQuery } from "@apollo/client"
+import { CircularProgress, Grid } from "@mui/material"
+import Button from "@mui/material/Button"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
@@ -33,6 +34,8 @@ const UserPage = () => {
       href: `/users/${id}`,
     },
   ])
+
+  // TODO: edit query to get username for title?
 
   if (error) {
     return (

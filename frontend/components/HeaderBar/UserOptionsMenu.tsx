@@ -1,11 +1,13 @@
-import { signOut } from "/lib/authentication"
-import { useApolloClient } from "@apollo/client"
-import CommonTranslations from "/translations/common"
-import LangLink from "/components/LangLink"
-import nookies from "nookies"
-import ProfileButton from "./ProfileButton"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
+import { signOut } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
+import Link from "next/link"
+import nookies from "nookies"
+
+import { useApolloClient } from "@apollo/client"
+
+import ProfileButton from "./ProfileButton"
 
 interface Props {
   isSignedIn: boolean
@@ -30,9 +32,10 @@ const UserOptionsMenu = (props: Props) => {
       </>
     )
   }
+
   return (
     <>
-      <LangLink href={`/sign-in`} passHref>
+      <Link href={`/sign-in`} passHref>
         <HeaderMenuButton
           color="inherit"
           variant="text"
@@ -40,12 +43,12 @@ const UserOptionsMenu = (props: Props) => {
         >
           {t("loginShort")}
         </HeaderMenuButton>
-      </LangLink>
-      <LangLink href={`/sign-up`} prefetch={false} passHref>
+      </Link>
+      <Link href={`/sign-up`} prefetch={false} passHref>
         <HeaderMenuButton color="inherit" variant="text">
           {t("signUp")}
         </HeaderMenuButton>
-      </LangLink>
+      </Link>
     </>
   )
 }

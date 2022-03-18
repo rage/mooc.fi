@@ -2,11 +2,11 @@ import {
   BackgroundImage,
   FullCoverTextBackground,
 } from "/components/Images/CardBackgroundFullCover"
-import LangLink from "/components/LangLink"
 import { CardText } from "/components/Text/paragraphs"
 import { mime } from "/util/imageUtils"
 import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
+import Link from "next/link"
 
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
@@ -51,7 +51,7 @@ function WideNaviCard(props: NaviCardProps) {
 
   return (
     <Grid item xs={12}>
-      <LangLink href={item.link} passHref prefetch={false}>
+      <Link href={item.link} passHref prefetch={false}>
         <StyledLink aria-label={item.linkText}>
           <NaviItemBase>
             {item.img ? (
@@ -106,7 +106,7 @@ function WideNaviCard(props: NaviCardProps) {
             </Background>
           </NaviItemBase>
         </StyledLink>
-      </LangLink>
+      </Link>
     </Grid>
   )
 }

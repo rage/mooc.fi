@@ -1,10 +1,11 @@
-import styled from "@emotion/styled"
-import LangLink from "/components/LangLink"
 import { useContext } from "react"
-import LanguageContext from "/contexts/LanguageContext"
-import { whichIsActive } from "/components/HeaderBar/Header"
+
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
+import { useActiveTab } from "/components/HeaderBar/Header"
 import LoginStateContext from "/contexts/LoginStateContext"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
 
 interface ButtonProps {
   active: any
@@ -22,15 +23,14 @@ const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
 
 const ProfileButton = () => {
   const { currentUser } = useContext(LoginStateContext)
-  const { url } = useContext(LanguageContext)
-  const active = whichIsActive({ url })
+  const active = useActiveTab()
 
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : "Oma profiili"
 
   return (
-    <LangLink href={`/profile`}>
+    <Link href={`/profile`} passHref>
       <StyledButton
         color="inherit"
         variant="text"
@@ -38,7 +38,7 @@ const ProfileButton = () => {
       >
         {userDisplayName}
       </StyledButton>
-    </LangLink>
+    </Link>
   )
 }
 

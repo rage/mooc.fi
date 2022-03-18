@@ -1,6 +1,5 @@
-import { useCallback, useContext } from "react"
+import { useCallback } from "react"
 
-import LanguageContext from "/contexts/LanguageContext"
 import {
   AddStudyModuleMutation,
   DeleteStudyModuleMutation,
@@ -11,7 +10,7 @@ import {
   AllModulesQuery,
   CheckModuleSlugQuery,
 } from "/graphql/queries/study-modules"
-import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
+import { StudyModuleQuery } from "/pages/study-modules/[slug]/edit"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
@@ -30,7 +29,6 @@ const StudyModuleEdit = ({
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(ModulesTranslations)
 
   const [addStudyModule] = useMutation(AddStudyModuleMutation)
@@ -81,7 +79,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push(`/${language}/study-modules`, undefined, {
+        Router.push(`/study-modules`, undefined, {
           shallow: true,
         })
       } catch (err: any) {
@@ -96,7 +94,7 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { id: values.id } })
-      Router.push(`/${language}/study-modules`, undefined, {
+      Router.push(`/study-modules`, undefined, {
         shallow: true,
       })
     }
@@ -104,7 +102,7 @@ const StudyModuleEdit = ({
 
   const onCancel = useCallback(
     () =>
-      Router.push(`/${language}/study-modules`, undefined, {
+      Router.push(`/study-modules`, undefined, {
         shallow: true,
       }),
     [],

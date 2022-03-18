@@ -1,8 +1,7 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
-import LanguageContext from "/contexts/LanguageContext"
 import { UpdateCourseMutation } from "/graphql/mutations/courses"
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
@@ -62,7 +61,6 @@ const CreateEmailTemplateDialog = ({
     CourseDetailsData | undefined
   >(undefined)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
-  const { language } = useContext(LanguageContext)
   const { loading, error, data } =
     useQuery<{ courses: CourseDetailsData[] }>(AllCoursesDetails)
 
@@ -134,8 +132,7 @@ const CreateEmailTemplateDialog = ({
           },
         })
       }
-      const url =
-        "/" + language + "/email-templates/" + data?.addEmailTemplate?.id
+      const url = "/email-templates/" + data?.addEmailTemplate?.id
       Router.push(url)
     } catch {
       setIsErrorSnackbarOpen(true)

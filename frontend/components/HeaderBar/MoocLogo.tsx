@@ -1,7 +1,8 @@
+import Link from "next/link"
+
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
 import Avatar from "@mui/material/Avatar"
-import LangLink from "/components/LangLink"
+import Typography from "@mui/material/Typography"
 
 const MoocLogoText = styled(Typography)<any>`
   font-family: "Open Sans Condensed Light", sans-serif;
@@ -38,15 +39,13 @@ const MoocLogoLink = styled.a`
     cursor: pointer;
   }
 `
-const MoocLogo = () => {
-  return (
-    <LangLink href="/" passHref>
-      <MoocLogoLink aria-label="MOOC.fi homepage">
-        <MoocLogoAvatar alt="MOOC logo" src="/static/images/moocfi.svg" />
-        <MoocLogoText>MOOC.fi</MoocLogoText>
-      </MoocLogoLink>
-    </LangLink>
-  )
-}
+const MoocLogo = () => (
+  <Link href="/" passHref>
+    <MoocLogoLink aria-label="MOOC.fi homepage">
+      <MoocLogoAvatar alt="MOOC logo" src="/static/images/moocfi.svg" />
+      <MoocLogoText>MOOC.fi</MoocLogoText>
+    </MoocLogoLink>
+  </Link>
+)
 
 export default MoocLogo

@@ -1,12 +1,12 @@
 import { Component } from "react"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import LangLink from "/components/LangLink"
-import LanguageContext from "/contexts/LanguageContext"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
 import getTranslator from "/translations"
 import SignUpTranslations from "/translations/sign-up"
+import Link from "next/link"
+import { NextRouter, withRouter } from "next/router"
 
 import styled from "@emotion/styled"
 import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
@@ -59,13 +59,12 @@ export function capitalizeFirstLetter(string: String) {
 
 export interface CreateAccountFormProps {
   onComplete: Function
+  router: NextRouter
 }
 
 const getSignUpTranslator = getTranslator(SignUpTranslations)
 
 class CreateAccountForm extends Component<CreateAccountFormProps> {
-  static contextType = LanguageContext
-
   constructor(props: CreateAccountFormProps) {
     super(props)
   }
@@ -88,7 +87,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   onClick = async (e: any) => {
     e.preventDefault()
 
-    const t = getSignUpTranslator(this.context.language)
+    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
 
     this.setState({ submitting: true, triedSubmitting: true })
 
@@ -151,7 +150,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 
   validate = () => {
-    const t = getSignUpTranslator(this.context.language)
+    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
 
     let newState: state = {
       error: "",
@@ -215,7 +214,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 
   render() {
-    const t = getSignUpTranslator(this.context.language)
+    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
 
     return (
       <StyledPaper>
@@ -324,11 +323,11 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <LangLink href={`/sign-in`} passHref>
-            {/*LangLink passes href*/}
+          <Link href={`/sign-in`} passHref>
+            {/*Link passes href*/}
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <a>{t("signIn")}</a>
-          </LangLink>
+          </Link>
         </Row>
 
         {this.state.error && (
@@ -344,4 +343,4 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 }
 
-export default CreateAccountForm
+export default withRouter(CreateAccountForm)

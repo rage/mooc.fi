@@ -1,15 +1,16 @@
-import { gql, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Card, Typography } from "@mui/material"
 import React from "react"
+
 import Container from "/components/Container"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
-// import { useLanguageContext } from "/contexts/LanguageContext";
 import withSignedIn from "/lib/with-signed-in"
 import { ConnectedUser } from "/static/types/generated/ConnectedUser"
+
+import { gql, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Card, Typography } from "@mui/material"
 
 export const ConnectedUserQuery = gql`
   query ConnectedUser {
@@ -39,7 +40,6 @@ const ConnectionEntryCard = styled(Card)`
 `
 
 function ConnectionSuccess() {
-  // const { language } = useLanguageContext()
   const { data, error, loading } = useQuery<ConnectedUser>(ConnectedUserQuery)
 
   if (error) {

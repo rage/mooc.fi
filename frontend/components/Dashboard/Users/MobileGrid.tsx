@@ -1,30 +1,32 @@
-import { useCallback, FC, useContext } from "react"
-import {
-  Grid,
-  Card,
-  Button,
-  CardContent,
-  Typography,
-  CardActions,
-  Paper,
-  CardActionArea,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Skeleton,
-} from "@mui/material"
-import LangLink from "/components/LangLink"
+import { FC, useCallback, useContext } from "react"
+
+import Pagination from "/components/Dashboard/Users/Pagination"
+import UserSearchContext from "/contexts/UserSearchContext"
 import {
   UserDetailsContains_userDetailsContains_edges,
   UserDetailsContains_userDetailsContains_edges_node,
 } from "/static/types/generated/UserDetailsContains"
-import Pagination from "/components/Dashboard/Users/Pagination"
-import styled from "@emotion/styled"
-import range from "lodash/range"
 import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/util/useTranslator"
+import range from "lodash/range"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Grid,
+  Paper,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from "@mui/material"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;
@@ -167,12 +169,12 @@ const DataCard = ({
       <CardActions style={{ justifyContent: "flex-end" }}>
         {row ? (
           <>
-            <LangLink href={`/users/${upstream_id}/summary`} passHref>
+            <Link href={`/users/${upstream_id}/summary`} passHref>
               <Button variant="contained">{t("summary")}</Button>
-            </LangLink>
-            <LangLink href={`/users/${upstream_id}/completions`} passHref>
+            </Link>
+            <Link href={`/users/${upstream_id}/completions`} passHref>
               <Button variant="contained">{t("completions")}</Button>
-            </LangLink>
+            </Link>
           </>
         ) : (
           <Skeleton />

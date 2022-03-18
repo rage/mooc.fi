@@ -1,23 +1,25 @@
 import { useCallback, useContext } from "react"
+
+import Pagination from "/components/Dashboard/Users/Pagination"
+import UserSearchContext from "/contexts/UserSearchContext"
+import UsersTranslations from "/translations/users"
+import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
+import range from "lodash/range"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
 import {
   Button,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableFooter,
-  TableRow,
   TableHead,
-  Skeleton,
+  TableRow,
 } from "@mui/material"
-import styled from "@emotion/styled"
-import range from "lodash/range"
-import LangLink from "/components/LangLink"
-import Pagination from "/components/Dashboard/Users/Pagination"
-import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexts/UserSearchContext"
-import { useTranslator } from "/util/useTranslator"
-import notEmpty from "/util/notEmpty"
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -134,14 +136,14 @@ const RenderResults = () => {
             <TableCell align="right">{last_name}</TableCell>
             <TableCell align="right">{student_number}</TableCell>
             <TableCell align="right">
-              <LangLink href={`/users/${upstream_id}/summary`} passHref>
+              <Link href={`/users/${upstream_id}/summary`} passHref>
                 <Button variant="contained" style={{ marginRight: "0.5rem" }}>
                   {t("summary")}
                 </Button>
-              </LangLink>
-              <LangLink href={`/users/${upstream_id}/completions`} passHref>
+              </Link>
+              <Link href={`/users/${upstream_id}/completions`} passHref>
                 <Button variant="contained">{t("completions")}</Button>
-              </LangLink>
+              </Link>
             </TableCell>
           </TableRow>
         )

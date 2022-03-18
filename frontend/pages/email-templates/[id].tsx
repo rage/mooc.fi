@@ -1,11 +1,10 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { SubtitleNoBackground } from "/components/Text/headers"
-import LanguageContext from "/contexts/LanguageContext"
 import {
   DeleteEmailTemplateMutation,
   UpdateEmailTemplateMutation,
@@ -65,8 +64,6 @@ const EmailTemplateView = () => {
     variables: { id: id },
   })
 
-  const { language } = useContext(LanguageContext)
-
   useBreadcrumbs([
     {
       translation: "emailTemplates",
@@ -77,6 +74,7 @@ const EmailTemplateView = () => {
       href: `/email-templates/${id}`,
     },
   ])
+  const title = useSubtitle(data?.email_template?.name ?? "")
 
   if (loading) {
     return <Spinner />
@@ -102,229 +100,230 @@ const EmailTemplateView = () => {
   }
 
   return (
-    <section>
-      <WideContainer>
-        <Paper>
-          <form>
-            <SubtitleNoBackground
-              component="p"
-              variant="subtitle1"
-              align="center"
-            >
-              id: {data.email_template?.id}
-            </SubtitleNoBackground>
-            <TextField
-              id="name"
-              label="Name"
-              variant="outlined"
-              value={name ?? ""}
-              onChange={(e) => {
-                e.preventDefault()
-                setName(e.target.value)
-              }}
-            />
-            <br></br>
-            <br></br>
-            <TextField
-              id="title"
-              label="Email Subject"
-              variant="outlined"
-              value={title ?? ""}
-              onChange={(e) => {
-                e.preventDefault()
-                setTitle(e.target.value)
-              }}
-            />
-            <br></br>
-            <br></br>
-            <TextField
-              id="txt-body"
-              label="Email text body"
-              multiline
-              rows="4"
-              maxRows="40"
-              value={txtBody ?? ""}
-              variant="outlined"
-              onChange={(e) => {
-                e.preventDefault()
-                setTxtBody(e.target.value)
-              }}
-            />
-            <br></br>
-            <br></br>
-            <TextField
-              id="html-body"
-              label="Email HTML Body (disabled)"
-              multiline
-              rows="4"
-              maxRows="40"
-              disabled={true}
-              value={htmlBody ?? ""}
-              variant="outlined"
-              onChange={(e) => {
-                e.preventDefault()
-                setHtmlBody(e.target.value)
-              }}
-            />
-            <br></br>
-            <br></br>
-            {templateType === "threshold" ? (
-              <>
-                <TextField
-                  type="number"
-                  label="Exercise Completions threshold (not supported)"
-                  fullWidth
-                  autoComplete="off"
-                  variant="outlined"
-                  style={{ width: "60%" }}
-                  value={exerciseThreshold}
-                  onChange={(e) => {
-                    e.preventDefault()
-                    setExerciseThreshold(Number(e.target.value))
-                  }}
-                  disabled
-                />
-                <br />
-                <br />
-                <TextField
-                  type="number"
-                  label="Points threshold"
-                  fullWidth
-                  autoComplete="off"
-                  variant="outlined"
-                  style={{ width: "60%" }}
-                  value={pointsThreshold}
-                  onChange={(e) => {
-                    e.preventDefault()
-                    setPointsThreshold(Number(e.target.value))
-                  }}
-                />
-              </>
-            ) : null}
-            <CollapseButton
-              open={isHelpOpen}
-              label="Help"
-              onClick={() => setIsHelpOpen((s) => !s)}
-            />
-            <Collapse in={isHelpOpen}>
-              <p>
-                You can use template values in the email body by adding them
-                inside double curly brackets, like <code>{`{{ this }}`}</code>.
-                Available template values:
-                <ul>
-                  {templateValues.map((value) => (
-                    <li>
-                      <code>{value}</code>
-                    </li>
-                  ))}
-                </ul>
-              </p>
-            </Collapse>
-            <br></br>
-            <br></br>
-            <ApolloConsumer>
-              {(client) => (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={async () => {
-                    if (emailTemplate == null) return
-                    try {
-                      const { data } = await client.mutate<UpdateEmailTemplate>(
-                        {
-                          mutation: UpdateEmailTemplateMutation,
-                          variables: {
-                            id: emailTemplate.id,
-                            name: name,
-                            title: title,
-                            txt_body: txtBody,
-                            html_body: htmlBody,
-                            triggered_automatically_by_course_id:
-                              triggeredByCourseId,
-                            exercise_completions_threshold: exerciseThreshold,
-                            points_threshold: pointsThreshold,
-                            template_type: templateType,
-                          },
-                        },
-                      )
-                      console.log(data)
-                      setSnackbarData({
-                        type: "success",
-                        message: "Saved successfully",
-                      })
-                    } catch {
-                      setSnackbarData({
-                        type: "error",
-                        message: "Error: Could not save",
-                      })
-                    }
-                    setIsSnackbarOpen(true)
-                  }}
-                >
-                  Update
-                </Button>
-              )}
-            </ApolloConsumer>
-            <ApolloConsumer>
-              {(client) => (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={async () => {
-                    if (emailTemplate == null) return
-                    try {
-                      const { data } = await client.mutate<DeleteEmailTemplate>(
-                        {
-                          mutation: DeleteEmailTemplateMutation,
-                          variables: { id: emailTemplate.id },
-                        },
-                      )
-                      console.log(data)
-                      setSnackbarData({
-                        type: "success",
-                        message: "Deleted successfully",
-                      })
+    <>
+      <NextSeo title={title} />
+      <section>
+        <WideContainer>
+          <Paper>
+            <form>
+              <SubtitleNoBackground
+                component="p"
+                variant="subtitle1"
+                align="center"
+              >
+                id: {data.email_template?.id}
+              </SubtitleNoBackground>
+              <TextField
+                id="name"
+                label="Name"
+                variant="outlined"
+                value={name ?? ""}
+                onChange={(e) => {
+                  e.preventDefault()
+                  setName(e.target.value)
+                }}
+              />
+              <br></br>
+              <br></br>
+              <TextField
+                id="title"
+                label="Email Subject"
+                variant="outlined"
+                value={title ?? ""}
+                onChange={(e) => {
+                  e.preventDefault()
+                  setTitle(e.target.value)
+                }}
+              />
+              <br></br>
+              <br></br>
+              <TextField
+                id="txt-body"
+                label="Email text body"
+                multiline
+                rows="4"
+                maxRows="40"
+                value={txtBody ?? ""}
+                variant="outlined"
+                onChange={(e) => {
+                  e.preventDefault()
+                  setTxtBody(e.target.value)
+                }}
+              />
+              <br></br>
+              <br></br>
+              <TextField
+                id="html-body"
+                label="Email HTML Body (disabled)"
+                multiline
+                rows="4"
+                maxRows="40"
+                disabled={true}
+                value={htmlBody ?? ""}
+                variant="outlined"
+                onChange={(e) => {
+                  e.preventDefault()
+                  setHtmlBody(e.target.value)
+                }}
+              />
+              <br></br>
+              <br></br>
+              {templateType === "threshold" ? (
+                <>
+                  <TextField
+                    type="number"
+                    label="Exercise Completions threshold (not supported)"
+                    fullWidth
+                    autoComplete="off"
+                    variant="outlined"
+                    style={{ width: "60%" }}
+                    value={exerciseThreshold}
+                    onChange={(e) => {
+                      e.preventDefault()
+                      setExerciseThreshold(Number(e.target.value))
+                    }}
+                    disabled
+                  />
+                  <br />
+                  <br />
+                  <TextField
+                    type="number"
+                    label="Points threshold"
+                    fullWidth
+                    autoComplete="off"
+                    variant="outlined"
+                    style={{ width: "60%" }}
+                    value={pointsThreshold}
+                    onChange={(e) => {
+                      e.preventDefault()
+                      setPointsThreshold(Number(e.target.value))
+                    }}
+                  />
+                </>
+              ) : null}
+              <CollapseButton
+                open={isHelpOpen}
+                label="Help"
+                onClick={() => setIsHelpOpen((s) => !s)}
+              />
+              <Collapse in={isHelpOpen}>
+                <p>
+                  You can use template values in the email body by adding them
+                  inside double curly brackets, like <code>{`{{ this }}`}</code>
+                  . Available template values:
+                  <ul>
+                    {templateValues.map((value) => (
+                      <li>
+                        <code>{value}</code>
+                      </li>
+                    ))}
+                  </ul>
+                </p>
+              </Collapse>
+              <br></br>
+              <br></br>
+              <ApolloConsumer>
+                {(client) => (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={async () => {
+                      if (emailTemplate == null) return
+                      try {
+                        const { data } =
+                          await client.mutate<UpdateEmailTemplate>({
+                            mutation: UpdateEmailTemplateMutation,
+                            variables: {
+                              id: emailTemplate.id,
+                              name: name,
+                              title: title,
+                              txt_body: txtBody,
+                              html_body: htmlBody,
+                              triggered_automatically_by_course_id:
+                                triggeredByCourseId,
+                              exercise_completions_threshold: exerciseThreshold,
+                              points_threshold: pointsThreshold,
+                              template_type: templateType,
+                            },
+                          })
+                        console.log(data)
+                        setSnackbarData({
+                          type: "success",
+                          message: "Saved successfully",
+                        })
+                      } catch {
+                        setSnackbarData({
+                          type: "error",
+                          message: "Error: Could not save",
+                        })
+                      }
+                      setIsSnackbarOpen(true)
+                    }}
+                  >
+                    Update
+                  </Button>
+                )}
+              </ApolloConsumer>
+              <ApolloConsumer>
+                {(client) => (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={async () => {
+                      if (emailTemplate == null) return
+                      try {
+                        const { data } =
+                          await client.mutate<DeleteEmailTemplate>({
+                            mutation: DeleteEmailTemplateMutation,
+                            variables: { id: emailTemplate.id },
+                          })
+                        console.log(data)
+                        setSnackbarData({
+                          type: "success",
+                          message: "Deleted successfully",
+                        })
 
-                      const url = "/" + language + "/email-templates/"
-                      setTimeout(() => Router.push(url), 5000)
-                    } catch {
-                      setSnackbarData({
-                        type: "error",
-                        message: "Error: Could not delete",
-                      })
-                    }
-                    setIsSnackbarOpen(true)
-                  }}
-                >
-                  Delete
-                </Button>
-              )}
-            </ApolloConsumer>
+                        const url = "/email-templates/"
+                        setTimeout(() => Router.push(url), 5000)
+                      } catch {
+                        setSnackbarData({
+                          type: "error",
+                          message: "Error: Could not delete",
+                        })
+                      }
+                      setIsSnackbarOpen(true)
+                    }}
+                  >
+                    Delete
+                  </Button>
+                )}
+              </ApolloConsumer>
 
-            <SubtitleNoBackground
-              component="p"
-              variant="subtitle1"
-              align="center"
-            >
-              created_at: {data.email_template?.created_at}
-            </SubtitleNoBackground>
-            <SubtitleNoBackground
-              component="p"
-              variant="subtitle1"
-              align="center"
-            >
-              updated_at: {data.email_template?.updated_at}
-            </SubtitleNoBackground>
-          </form>
-        </Paper>
-        <CustomSnackbar
-          open={isSnackbarOpen}
-          setOpen={setIsSnackbarOpen}
-          type={snackbarData.type}
-          message={snackbarData.message}
-        />
-      </WideContainer>
-    </section>
+              <SubtitleNoBackground
+                component="p"
+                variant="subtitle1"
+                align="center"
+              >
+                created_at: {data.email_template?.created_at}
+              </SubtitleNoBackground>
+              <SubtitleNoBackground
+                component="p"
+                variant="subtitle1"
+                align="center"
+              >
+                updated_at: {data.email_template?.updated_at}
+              </SubtitleNoBackground>
+            </form>
+          </Paper>
+          <CustomSnackbar
+            open={isSnackbarOpen}
+            setOpen={setIsSnackbarOpen}
+            type={snackbarData.type}
+            message={snackbarData.message}
+          />
+        </WideContainer>
+      </section>
+    </>
   )
 }
 

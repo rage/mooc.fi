@@ -1,19 +1,16 @@
 import { useContext } from "react"
 
-import CreateAccountForm from "/components/CreateAccountForm"
-
 import { RegularContainer } from "/components/Container"
-import withSignedOut from "/lib/with-signed-out"
+import CreateAccountForm from "/components/CreateAccountForm"
 import AlertContext from "/contexts/AlertContext"
-import LanguageContext from "/contexts/LanguageContext"
-import SignUpTranslations from "/translations/sign-up"
 import LoginStateContext from "/contexts/LoginStateContext"
-import Router from "next/router"
-import { useTranslator } from "/util/useTranslator"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedOut from "/lib/with-signed-out"
+import SignUpTranslations from "/translations/sign-up"
+import { useTranslator } from "/util/useTranslator"
+import Router from "next/router"
 
 const SignUpPage = () => {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(SignUpTranslations)
 
   useBreadcrumbs([
@@ -28,13 +25,13 @@ const SignUpPage = () => {
 
   const onStepComplete = () => {
     logInOrOut()
-    Router.push(`/${language}/research-consent`)
+    Router.push(`/research-consent`)
 
     addAlert({
       title: t("confirmEmailTitle"),
       message: t("confirmEmailInfo"),
       severity: "info",
-      ignorePages: [Router.pathname, "/[lng]/research-consent"],
+      ignorePages: [Router.pathname, "/research-consent"],
     })
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0)

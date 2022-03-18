@@ -1,18 +1,18 @@
-import { useContext, useEffect, useState } from "react"
-import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
+import { useEffect, useState } from "react"
+
 import Container from "/components/Container"
-import { gql, useLazyQuery } from "@apollo/client"
+import SearchForm from "/components/Dashboard/Users/SearchForm"
+import { Breadcrumb } from "/contexts/BreadcrumbContext"
+import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import LanguageContext from "/contexts/LanguageContext"
+import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
-import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
-import SearchForm from "/components/Dashboard/Users/SearchForm"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import { Breadcrumb } from "/contexts/BreadcrumbContext"
+
+import { gql, useLazyQuery } from "@apollo/client"
 
 const UserSearch = () => {
-  const { language } = useContext(LanguageContext)
   const router = useRouter()
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
@@ -59,12 +59,10 @@ const UserSearch = () => {
     const query = params.length ? `?${params.join("&")}` : ""
     const href =
       searchVariables.search !== ""
-        ? `/${language}/users/search/${encodeURIComponent(
-            searchVariables.search,
-          )}${query}`
-        : `/${language}/users/search${query}`
+        ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
+        : `/users/search${query}`
 
-    if (router?.pathname !== "/[lng]/users/search") {
+    if (router?.pathname !== "/users/search") {
       loadData({
         variables: searchVariables,
       })

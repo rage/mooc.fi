@@ -1,20 +1,24 @@
 import { useState } from "react"
-import Typography from "@mui/material/Typography"
-import { withRouter } from "next/router"
+
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { Container, TextField, Button } from "@mui/material"
-import * as Papa from "papaparse"
-import styled from "@emotion/styled"
-import Alert from "@mui/material/Alert"
-import AlertTitle from "@mui/material/AlertTitle"
-import { gql, useMutation, useQuery } from "@apollo/client"
 import { useQueryParameter } from "/util/useQueryParameter"
-import DatePicker from "@mui/lab/DatePicker"
-import LocalizationProvider from "@mui/lab/LocalizationProvider"
-import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { NextSeo } from "next-seo"
+import { withRouter } from "next/router"
+import * as Papa from "papaparse"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import AdapterLuxon from "@mui/lab/AdapterLuxon"
+import DatePicker from "@mui/lab/DatePicker"
+import LocalizationProvider from "@mui/lab/LocalizationProvider"
+import { Button, Container, TextField } from "@mui/material"
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
+import Typography from "@mui/material/Typography"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -91,6 +95,7 @@ const ManualCompletions = () => {
       href: `/courses/${slug}/manual-completions`,
     },
   ])
+  const title = useSubtitle(courseData?.course?.name)
 
   const onSubmit = () => {
     setSubmitting(true)
@@ -219,58 +224,61 @@ const ManualCompletions = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h3" component="h1">
-        Manually add completions
-      </Typography>
-      {message && (
-        <Alert severity={messageSeverity}>
-          <AlertTitle>{messageTitle}</AlertTitle>
-          <pre>{message}</pre>
-        </Alert>
-      )}
-      {mutationLoading && <p>Loading...</p>}
-      {mutationError && (
-        <Alert severity="error">
-          <AlertTitle>Error while adding completions:</AlertTitle>
-          <pre>{JSON.stringify(mutationError, undefined, 2)}</pre>
-        </Alert>
-      )}
-      <br />
-      <Typography>
-        Completion date (optional) - if provided, will be default for every
-        completion with no date set
-      </Typography>
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
-        <DatePicker
-          inputFormat="yyyy-MM-dd"
-          onChange={setCompletionDate}
-          value={completionDate}
-          renderInput={(props: any) => (
-            <TextField {...props} variant="outlined" />
-          )}
+    <>
+      <NextSeo title={title} />
+      <Container>
+        <Typography variant="h3" component="h1">
+          Manually add completions
+        </Typography>
+        {message && (
+          <Alert severity={messageSeverity}>
+            <AlertTitle>{messageTitle}</AlertTitle>
+            <pre>{message}</pre>
+          </Alert>
+        )}
+        {mutationLoading && <p>Loading...</p>}
+        {mutationError && (
+          <Alert severity="error">
+            <AlertTitle>Error while adding completions:</AlertTitle>
+            <pre>{JSON.stringify(mutationError, undefined, 2)}</pre>
+          </Alert>
+        )}
+        <br />
+        <Typography>
+          Completion date (optional) - if provided, will be default for every
+          completion with no date set
+        </Typography>
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <DatePicker
+            inputFormat="yyyy-MM-dd"
+            onChange={setCompletionDate}
+            value={completionDate}
+            renderInput={(props: any) => (
+              <TextField {...props} variant="outlined" />
+            )}
+          />
+        </LocalizationProvider>
+        <Typography>
+          Format: csv with header with fields:{" "}
+          <code>user_id[,grade][,completion_date]</code> - optional date in ISO
+          8601 format. At least one comma in header required, so if only user_id
+          is given, please give header as <code>user_id,</code>
+        </Typography>
+        <br />
+        <StyledTextField
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          label="csv"
+          fullWidth
+          rows={20}
+          maxRows={5000}
+          multiline
         />
-      </LocalizationProvider>
-      <Typography>
-        Format: csv with header with fields:{" "}
-        <code>user_id[,grade][,completion_date]</code> - optional date in ISO
-        8601 format. At least one comma in header required, so if only user_id
-        is given, please give header as <code>user_id,</code>
-      </Typography>
-      <br />
-      <StyledTextField
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        label="csv"
-        fullWidth
-        rows={20}
-        maxRows={5000}
-        multiline
-      />
-      <Button disabled={submitting} onClick={onSubmit}>
-        Add completions
-      </Button>
-    </Container>
+        <Button disabled={submitting} onClick={onSubmit}>
+          Add completions
+        </Button>
+      </Container>
+    </>
   )
 }
 

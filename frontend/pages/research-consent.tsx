@@ -1,16 +1,16 @@
-import { useContext, useState, useEffect } from "react"
-import styled from "@emotion/styled"
-import { Paper, CircularProgress } from "@mui/material"
-import LanguageContext from "/contexts/LanguageContext"
-import { useMutation, useQuery } from "@apollo/client"
-import ResearchConsent from "/components/Dashboard/ResearchConsent"
-import SignupTranslations from "/translations/sign-up"
-import { gql } from "@apollo/client"
+import { useEffect, useState } from "react"
+
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import withSignedIn from "/lib/with-signed-in"
-import Router from "next/router"
-import { useTranslator } from "/util/useTranslator"
+import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
+import SignupTranslations from "/translations/sign-up"
+import { useTranslator } from "/util/useTranslator"
+import Router from "next/router"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { CircularProgress, Paper } from "@mui/material"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -48,7 +48,6 @@ const updateResearchConsentMutation = gql`
 `
 
 function useResearchConsent() {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(SignupTranslations)
 
   useBreadcrumbs([
@@ -79,7 +78,7 @@ function useResearchConsent() {
       setFormError("")
       setSubmitting(true)
       await updateConsent({ variables: { value: research === "1" } })
-      Router.push(language === "fi" ? "/" : `/${language}`)
+      Router.push("/")
     } catch (e) {
       setSubmitting(false)
       console.log(e)

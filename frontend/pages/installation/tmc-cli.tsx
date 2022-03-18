@@ -1,23 +1,24 @@
-import { useState, useContext, useEffect } from "react"
-import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
-import getUserOS from "/util/getUserOS"
+import { useEffect, useState } from "react"
+
+import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
-import MDX_Linux from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
-import MDX_Linux_en from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
-import MDX_Windows from "/static/md_pages/tmc-cli_installation_Windows_en.mdx"
-import MDX_Windows_en from "/static/md_pages/tmc-cli_installation_Windows_en.mdx"
-import MDX_MAC from "/static/md_pages/tmc-cli_installation_macOS_en.mdx"
-import MDX_MAC_en from "/static/md_pages/tmc-cli_installation_macOS_en.mdx"
+import Spinner from "/components/Spinner"
+import UserOSContext from "/contexts/UserOSContext"
 import MDX_Any from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
 import MDX_Any_en from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
-import UserOSContext from "/contexts/UserOSContext"
-import { userOsType } from "/util/getUserOS"
-import NoOsMessage from "/components/Installation/NoOsMessage"
-import LanguageContext from "/contexts/LanguageContext"
+import MDX_Linux from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
+import MDX_Linux_en from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
+import MDX_MAC from "/static/md_pages/tmc-cli_installation_macOS_en.mdx"
+import MDX_MAC_en from "/static/md_pages/tmc-cli_installation_macOS_en.mdx"
+import MDX_Windows from "/static/md_pages/tmc-cli_installation_Windows_en.mdx"
+import MDX_Windows_en from "/static/md_pages/tmc-cli_installation_Windows_en.mdx"
 import InstallationTranslations from "/translations/installation"
-import Spinner from "/components/Spinner"
+import getUserOS, { userOsType } from "/util/getUserOS"
 import { useTranslator } from "/util/useTranslator"
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import Typography from "@mui/material/Typography"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -92,8 +93,8 @@ export const ContentBox = styled.div`
 const NetBeans = () => {
   const [userOS, setUserOs] = useState<userOsType>(getUserOS())
   const [render, setRender] = useState(false)
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(InstallationTranslations)
+  const { locale } = useRouter()
 
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)
@@ -131,7 +132,7 @@ const NetBeans = () => {
           {render ? (
             <>
               <OSSelector />
-              {language == "fi"
+              {locale == "fi"
                 ? mapOsToInstructions[userOS].fi
                 : mapOsToInstructions[userOS].en}
             </>

@@ -1,22 +1,23 @@
-import { useState, useContext, useEffect } from "react"
+import { useEffect, useState } from "react"
+
+import NoOsMessage from "/components/Installation/NoOsMessage"
+import OSSelector from "/components/Installation/OSSelector"
+import Spinner from "/components/Spinner"
+import UserOSContext from "/contexts/UserOSContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import MDX_Linux_en from "/static/md_pages/vscode_installation_Linux_en.mdx"
+import MDX_Linux from "/static/md_pages/vscode_installation_Linux_fi.mdx"
+import MDX_MAC_en from "/static/md_pages/vscode_installation_macOS_en.mdx"
+import MDX_MAC from "/static/md_pages/vscode_installation_macOS_fi.mdx"
+import MDX_Windows_en from "/static/md_pages/vscode_installation_Windows_en.mdx"
+import MDX_Windows from "/static/md_pages/vscode_installation_Windows_fi.mdx"
+import InstallationTranslations from "/translations/installation"
+import getUserOS, { userOsType } from "/util/getUserOS"
+import { useTranslator } from "/util/useTranslator"
+import { useRouter } from "next/router"
+
 import styled from "@emotion/styled"
 import Typography from "@mui/material/Typography"
-import getUserOS from "/util/getUserOS"
-import OSSelector from "/components/Installation/OSSelector"
-import MDX_Linux from "/static/md_pages/vscode_installation_Linux_fi.mdx"
-import MDX_Linux_en from "/static/md_pages/vscode_installation_Linux_en.mdx"
-import MDX_Windows from "/static/md_pages/vscode_installation_Windows_fi.mdx"
-import MDX_Windows_en from "/static/md_pages/vscode_installation_Windows_en.mdx"
-import MDX_MAC from "/static/md_pages/vscode_installation_macOS_fi.mdx"
-import MDX_MAC_en from "/static/md_pages/vscode_installation_macOS_en.mdx"
-import UserOSContext from "/contexts/UserOSContext"
-import { userOsType } from "/util/getUserOS"
-import NoOsMessage from "/components/Installation/NoOsMessage"
-import LanguageContext from "/contexts/LanguageContext"
-import InstallationTranslations from "/translations/installation"
-import Spinner from "/components/Spinner"
-import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -90,8 +91,8 @@ export const ContentBox = styled.div`
 const VSCode = () => {
   const [userOS, setUserOs] = useState<userOsType>(getUserOS())
   const [render, setRender] = useState(false)
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(InstallationTranslations)
+  const { locale } = useRouter()
 
   useBreadcrumbs([
     {
@@ -139,7 +140,7 @@ const VSCode = () => {
           {render ? (
             <>
               <OSSelector excludeZip={true} />
-              {language == "fi"
+              {locale == "fi"
                 ? mapOsToInstructions[userOS].fi
                 : mapOsToInstructions[userOS].en}
             </>

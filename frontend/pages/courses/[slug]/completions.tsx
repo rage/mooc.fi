@@ -1,25 +1,27 @@
-import { useContext, useState } from "react"
-import { ChangeEvent } from "react"
-import CompletionsList from "/components/Dashboard/CompletionsList"
+import { ChangeEvent, useState } from "react"
+
 import { WideContainer } from "/components/Container"
-import CourseLanguageContext from "/contexts/CourseLanguageContext"
-import LanguageContext from "/contexts/LanguageContext"
-import LanguageSelector from "/components/Dashboard/LanguageSelector"
-import { withRouter, SingletonRouter } from "next/router"
+import CompletionsList from "/components/Dashboard/CompletionsList"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import { useQuery } from "@apollo/client"
-import { gql } from "@apollo/client"
-import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
-import Spinner from "/components/Spinner"
+import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import Spinner from "/components/Spinner"
+import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import CourseLanguageContext from "/contexts/CourseLanguageContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import CoursesTranslations from "/translations/courses"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+import { NextSeo } from "next-seo"
+import { SingletonRouter, withRouter } from "next/router"
+
+import { gql, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
-import { useTranslator } from "/util/useTranslator"
-import CoursesTranslations from "/translations/courses"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+
 // import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
@@ -37,7 +39,6 @@ export const CourseDetailsFromSlugQuery = gql`
 `
 
 const Completions = ({ router }: { router: SingletonRouter }) => {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug")
 
@@ -48,7 +49,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   const handleLanguageChange = (event: ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes
 
-    const href = `/${language}/courses/${slug}/completions?language=${
+    const href = `/courses/${slug}/completions?language=${
       (event.target as HTMLInputElement).value
     }`
     changeLng((event.target as HTMLInputElement).value as string)
@@ -76,6 +77,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
       href: `/courses/${slug}/completions`,
     },
   ])
+  const title = useSubtitle(data?.course?.name)
 
   if (loading || !data) {
     return <Spinner />
@@ -93,36 +95,43 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
     )
   }
   return (
-    <CourseLanguageContext.Provider value={lng}>
-      <DashboardTabBar slug={slug} selectedValue={1} />
+    <>
+      <NextSeo title={title} />
+      <CourseLanguageContext.Provider value={lng}>
+        <DashboardTabBar slug={slug} selectedValue={1} />
 
-      <WideContainer>
-        <H1NoBackground component="h1" variant="h1" align="center">
-          {data.course.name}
-        </H1NoBackground>
-        <SubtitleNoBackground component="p" variant="subtitle1" align="center">
-          {t("completions")}
-        </SubtitleNoBackground>
-        <ContentArea>
-          <LanguageSelector
-            handleLanguageChange={handleLanguageChange}
-            languageValue={lng}
-          />
-          <TextField
-            id="searchString"
-            label="Search"
-            value={searchString}
-            autoComplete="off"
-            variant="outlined"
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSearchString(e.target.value)
-            }
-            onKeyDown={(e) => e.key === "Enter" && setSearch(searchString)}
-          />
-          <CompletionsList search={search} />
-        </ContentArea>
-      </WideContainer>
-    </CourseLanguageContext.Provider>
+        <WideContainer>
+          <H1NoBackground component="h1" variant="h1" align="center">
+            {data.course.name}
+          </H1NoBackground>
+          <SubtitleNoBackground
+            component="p"
+            variant="subtitle1"
+            align="center"
+          >
+            {t("completions")}
+          </SubtitleNoBackground>
+          <ContentArea>
+            <LanguageSelector
+              handleLanguageChange={handleLanguageChange}
+              languageValue={lng}
+            />
+            <TextField
+              id="searchString"
+              label="Search"
+              value={searchString}
+              autoComplete="off"
+              variant="outlined"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setSearchString(e.target.value)
+              }
+              onKeyDown={(e) => e.key === "Enter" && setSearch(searchString)}
+            />
+            <CompletionsList search={search} />
+          </ContentArea>
+        </WideContainer>
+      </CourseLanguageContext.Provider>
+    </>
   )
 }
 

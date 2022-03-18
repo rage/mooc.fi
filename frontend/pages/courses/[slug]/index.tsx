@@ -8,11 +8,11 @@ import {
 } from "/components/Dashboard/CompletionsList"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import LangLink from "/components/LangLink"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
 import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourseStatsSubscriptions"
@@ -20,6 +20,8 @@ import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
+import { NextSeo } from "next-seo"
+import Link from "next/link"
 
 import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -125,6 +127,7 @@ const Course = () => {
       href: `/courses/${slug}`,
     },
   ])
+  const title = useSubtitle(data?.course?.name)
 
   const [recheckCompletions] = useMutation(recheckCompletionsMutation, {
     variables: {
@@ -196,84 +199,91 @@ const Course = () => {
   }
 
   return (
-    <section>
-      <DashboardTabBar slug={slug} selectedValue={0} />
+    <>
+      <NextSeo title={title} />
+      <section>
+        <DashboardTabBar slug={slug} selectedValue={0} />
 
-      <WideContainer>
-        <H1NoBackground component="h1" variant="h1" align="center">
-          {data.course?.name}
-        </H1NoBackground>
-        <Title
-          component="p"
-          variant="subtitle2"
-          align="center"
-          gutterBottom={true}
-        >
-          {data.course?.id}
-        </Title>
-        <SubtitleNoBackground component="p" variant="subtitle1" align="center">
-          {t("courseHome")}
-        </SubtitleNoBackground>
-        <Row>
-          {data.course?.completion_email != null ? (
-            <LangLink
-              href={`/email-templates/${data.course.completion_email?.id}`}
-              prefetch={false}
-              passHref
-            >
-              <Card style={{ width: "300px", minHeight: "50px" }}>
-                Completion Email: {data.course.completion_email?.name}
-              </Card>
-            </LangLink>
-          ) : (
-            <CreateEmailTemplateDialog
-              buttonText="Create completion email"
-              course={data.course}
-              type="completion"
-            />
-          )}
-          {data.course?.course_stats_email !== null ? (
-            <>
-              <LangLink
-                href={`/email-templates/${data.course.course_stats_email?.id}`}
+        <WideContainer>
+          <H1NoBackground component="h1" variant="h1" align="center">
+            {data.course?.name}
+          </H1NoBackground>
+          <Title
+            component="p"
+            variant="subtitle2"
+            align="center"
+            gutterBottom={true}
+          >
+            {data.course?.id}
+          </Title>
+          <SubtitleNoBackground
+            component="p"
+            variant="subtitle1"
+            align="center"
+          >
+            {t("courseHome")}
+          </SubtitleNoBackground>
+          <Row>
+            {data.course?.completion_email != null ? (
+              <Link
+                href={`/email-templates/${data.course.completion_email?.id}`}
                 prefetch={false}
                 passHref
               >
                 <Card style={{ width: "300px", minHeight: "50px" }}>
-                  Course stats email: {data.course.course_stats_email?.name}
+                  Completion Email: {data.course.completion_email?.name}
                 </Card>
-              </LangLink>
-              <Button onClick={handleSubscribe} disabled={subscribing}>
-                {isSubscribed ? "Unsubscribe" : "Subscribe"}
-              </Button>
-            </>
-          ) : (
-            <CreateEmailTemplateDialog
-              buttonText="Create course stats email"
-              course={data.course}
-              type="course-stats"
-            />
-          )}
-          <Button
-            color="primary"
-            onClick={() => {
-              confirm({
-                title: "Are you sure?",
-                description:
-                  "Don't do this unless you really know what you're doing. This might mess things up!",
-                confirmationText: "Yes, I'm sure",
-                cancellationText: "Cancel",
-              }).then(handleRecheck)
-            }}
-            disabled={checking}
-          >
-            Re-check completions
-          </Button>
-          {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
-        </Row>
-        <CourseDashboard />
-      </WideContainer>
-    </section>
+              </Link>
+            ) : (
+              <CreateEmailTemplateDialog
+                buttonText="Create completion email"
+                course={data.course}
+                type="completion"
+              />
+            )}
+            {data.course?.course_stats_email !== null ? (
+              <>
+                <Link
+                  href={`/email-templates/${data.course.course_stats_email?.id}`}
+                  prefetch={false}
+                  passHref
+                >
+                  <Card style={{ width: "300px", minHeight: "50px" }}>
+                    Course stats email: {data.course.course_stats_email?.name}
+                  </Card>
+                </Link>
+                <Button onClick={handleSubscribe} disabled={subscribing}>
+                  {isSubscribed ? "Unsubscribe" : "Subscribe"}
+                </Button>
+              </>
+            ) : (
+              <CreateEmailTemplateDialog
+                buttonText="Create course stats email"
+                course={data.course}
+                type="course-stats"
+              />
+            )}
+            <Button
+              color="primary"
+              onClick={() => {
+                confirm({
+                  title: "Are you sure?",
+                  description:
+                    "Don't do this unless you really know what you're doing. This might mess things up!",
+                  confirmationText: "Yes, I'm sure",
+                  cancellationText: "Cancel",
+                }).then(handleRecheck)
+              }}
+              disabled={checking}
+            >
+              Re-check completions
+            </Button>
+            {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
+          </Row>
+          <CourseDashboard />
+        </WideContainer>
+      </section>
+    </>
   )
 }
 

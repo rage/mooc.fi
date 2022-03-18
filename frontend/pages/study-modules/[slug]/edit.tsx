@@ -1,24 +1,26 @@
-import { useContext, useEffect } from "react"
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { SingletonRouter, withRouter } from "next/router"
-import Typography from "@mui/material/Typography"
-import Paper from "@mui/material/Paper"
+import { useEffect } from "react"
+
 import { WideContainer } from "/components/Container"
-import styled from "@emotion/styled"
-import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
-import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
-import LangLink from "/components/LangLink"
-import LanguageContext from "/contexts/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { H1NoBackground } from "/components/Text/headers"
-import { useQueryParameter } from "/util/useQueryParameter"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import withAdmin from "/lib/with-admin"
-import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
+import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useSubtitle from "/hooks/useSubtitle"
+import withAdmin from "/lib/with-admin"
+import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
+import StudyModulesTranslations from "/translations/study-modules"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+import { useRouter } from "next/router"
+
+import { gql, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -47,13 +49,8 @@ const ErrorContainer = styled(Paper)`
   padding: 1em;
 `
 
-interface EditStudyModuleProps {
-  router: SingletonRouter
-}
-
-const EditStudyModule = (props: EditStudyModuleProps) => {
-  const { router } = props
-  const { language } = useContext(LanguageContext)
+const EditStudyModule = () => {
+  const router = useRouter()
   const t = useTranslator(StudyModulesTranslations)
 
   const slug = useQueryParameter("slug")
@@ -79,6 +76,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
       href: `/study-modules/${slug}/edit`,
     },
   ])
+  const title = useSubtitle(data?.study_module?.name)
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null
@@ -105,45 +103,48 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
-  const listLink = `${language ? "/" + language : ""}/study-modules`
+  const listLink = "/study-modules"
 
   return (
-    <section>
-      <WideContainer>
-        <H1NoBackground component="h1" variant="h1" align="center">
-          {t("editStudyModule")}
-        </H1NoBackground>
-        {loading ? (
-          <FormSkeleton />
-        ) : data?.study_module ? (
-          beta ? (
-            <StudyModuleEdit2 module={data.study_module} />
+    <>
+      <NextSeo title={title} />
+      <section>
+        <WideContainer>
+          <H1NoBackground component="h1" variant="h1" align="center">
+            {t("editStudyModule")}
+          </H1NoBackground>
+          {loading ? (
+            <FormSkeleton />
+          ) : data?.study_module ? (
+            beta ? (
+              <StudyModuleEdit2 module={data.study_module} />
+            ) : (
+              <StudyModuleEdit module={data.study_module} />
+            )
           ) : (
-            <StudyModuleEdit module={data.study_module} />
-          )
-        ) : (
-          <ErrorContainer elevation={2}>
-            <Typography
-              variant="body1"
-              dangerouslySetInnerHTML={{
-                __html: t("moduleWithIdNotFound", { slug }),
-              }}
-            />
-            <Typography variant="body2">
-              {t("redirectMessagePre")}
-              <LangLink href="/study-modules" passHref>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a>{t("redirectLinkText")}</a>
-              </LangLink>
-              {t("redirectMessagePost")}
-            </Typography>
-          </ErrorContainer>
-        )}
-      </WideContainer>
-    </section>
+            <ErrorContainer elevation={2}>
+              <Typography
+                variant="body1"
+                dangerouslySetInnerHTML={{
+                  __html: t("moduleWithIdNotFound", { slug }),
+                }}
+              />
+              <Typography variant="body2">
+                {t("redirectMessagePre")}
+                <Link href="/study-modules" passHref>
+                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                  <a>{t("redirectLinkText")}</a>
+                </Link>
+                {t("redirectMessagePost")}
+              </Typography>
+            </ErrorContainer>
+          )}
+        </WideContainer>
+      </section>
+    </>
   )
 }
 
 EditStudyModule.displayName = "EditStudyModule"
 
-export default withRouter(withAdmin(EditStudyModule) as any)
+export default withAdmin(EditStudyModule)

@@ -1,18 +1,19 @@
 import { WideContainer } from "/components/Container"
-import { AllEmailTemplatesQuery } from "/graphql/queries/email-templates"
-import { useQuery } from "@apollo/client"
+import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import AdminError from "/components/Dashboard/AdminError"
 import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"
-import styled from "@emotion/styled"
+import { AllEmailTemplatesQuery } from "/graphql/queries/email-templates"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
 import { AllEmailTemplates } from "/static/types/generated/AllEmailTemplates"
+import notEmpty from "/util/notEmpty"
+import Link from "next/link"
+
+import { useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
-import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import LangLink from "/components/LangLink"
-import withAdmin from "/lib/with-admin"
-import notEmpty from "/util/notEmpty"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -57,7 +58,7 @@ const EmailTemplates = (admin: Boolean) => {
           {data?.email_templates?.filter(notEmpty).map((p) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
-                <LangLink
+                <Link
                   href={`/email-templates/${p.id}`}
                   prefetch={false}
                   passHref
@@ -71,7 +72,7 @@ const EmailTemplates = (admin: Boolean) => {
                       Content: {p.txt_body}
                     </Typography>
                   </Paper>
-                </LangLink>
+                </Link>
                 <br></br>
               </li>
             )

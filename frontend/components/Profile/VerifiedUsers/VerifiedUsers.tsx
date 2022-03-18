@@ -1,10 +1,13 @@
-import { Paper, Button } from "@mui/material"
 import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
-import styled from "@emotion/styled"
-import VerifiedUser from "./VerifiedUser"
-import LaunchIcon from "@mui/icons-material/Launch"
 import Link from "next/link"
-import { useLanguageContext } from "/contexts/LanguageContext"
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import LaunchIcon from "@mui/icons-material/Launch"
+import { Button, Paper } from "@mui/material"
+
+import VerifiedUser from "./VerifiedUser"
+
 // import axios from "axios"
 // import { getAccessToken } from "/lib/authentication"
 
@@ -26,14 +29,14 @@ const Container = styled(Paper)`
 `
 
 function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
-  const { language } = useLanguageContext()
+  const { locale } = useRouter()
 
   const HY_CONNECT_URL = isProduction
-    ? `https://mooc.fi/connect/hy?language=${language}`
-    : `http://localhost:5000/hy?language=${language}`
+    ? `https://mooc.fi/connect/hy?language=${locale}`
+    : `http://localhost:5000/hy?language=${locale}`
   const HAKA_CONNECT_URL = isProduction
-    ? `https://mooc.fi/connect/haka?language=${language}`
-    : `http://localhost:5000/haka?language=${language}`
+    ? `https://mooc.fi/connect/haka?language=${locale}`
+    : `http://localhost:5000/haka?language=${locale}`
 
   const isConnected = (slug: string) =>
     Boolean(

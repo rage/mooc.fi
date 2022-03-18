@@ -1,28 +1,30 @@
-import { useFormContext } from "react-hook-form"
+import { useState } from "react"
+
+import {
+  FormFieldGroup,
+  FormSubtitle,
+} from "/components/Dashboard/Editor2/Common"
 import {
   ControlledHiddenField,
   ControlledImageInput,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
-import CoursesTranslations from "/translations/courses"
+import { useFormContext } from "react-hook-form"
+
 import { Button } from "@mui/material"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { useState } from "react"
+
 import ImportPhotoDialog from "./ImportPhotoDialog"
-import { useLanguageContext } from "/contexts/LanguageContext"
-import {
-  FormSubtitle,
-  FormFieldGroup,
-} from "/components/Dashboard/Editor2/Common"
 
 interface CourseImageFormProps {
   courses?: CourseEditorCourses_courses[]
 }
 export default function CourseImageForm({ courses }: CourseImageFormProps) {
-  const { language } = useLanguageContext()
+  const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
   const { watch, setValue } = useFormContext()
   const { initialValues } = useEditorContext<CourseFormValues>()
@@ -57,7 +59,7 @@ export default function CourseImageForm({ courses }: CourseImageFormProps) {
       )
       .map((course) => {
         const translation = (course.course_translations?.filter(
-          (t) => t.language === language,
+          (t) => t.language === locale,
         ) ?? [])[0]
 
         return {
