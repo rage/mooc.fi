@@ -24,7 +24,8 @@ async function fetchAccessToken(): Promise<string> {
       {
         headers: {
           "content-type": "application/x-www-form-urlencoded",
-          "RATELIMIT-PROTECTION-SAFE-API-KEY": RATELIMIT_PROTECTION_SAFE_API_KEY,
+          "RATELIMIT-PROTECTION-SAFE-API-KEY":
+            RATELIMIT_PROTECTION_SAFE_API_KEY,
         },
       },
     )
