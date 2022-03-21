@@ -21,7 +21,9 @@ import {
   TableRow,
 } from "@mui/material"
 
-const TableWrapper = styled.div``
+const TableWrapper = styled.div`
+  overflow-x: auto;
+`
 
 const StyledTableCell = styled(TableCell)`
   background-color: black;
