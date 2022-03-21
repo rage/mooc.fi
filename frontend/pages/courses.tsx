@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-} from "react"
+import React, { useEffect, useState } from "react"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
