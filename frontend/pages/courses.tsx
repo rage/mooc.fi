@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react"
+import React, {
+  useEffect,
+  useState,
+} from "react"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
@@ -101,7 +104,6 @@ function useCourseSearch() {
     const query = params.length ? `?${params.join("&")}` : ""
     const href = `/courses/${query}`
     if (router?.asPath !== href) {
-      console.log("I got here with", router?.asPath, href)
       router.push(href, undefined, { shallow: true })
     }
   }, [searchVariables])
