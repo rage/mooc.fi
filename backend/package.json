@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test:ci": "jest --ci --runInBand --coverage --reporters=default --reporters=jest-junit",
-    "upgrade-interactive": "npm-check --update",
+    "upgrade-interactive": "npx npm-check --update",
     "fetch-ai-completions": "node ./dist/bin/fetchAiCompletions.js",
     "fetch-organizations": "node ./dist/bin/importOrganizations.js",
     "fetch-user-app-datum": "node ./dist/bin/fetchUserAppDatum.js",

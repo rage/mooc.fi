@@ -1,8 +1,7 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
-import LanguageContext from "/contexts/LanguageContext"
 import { UpdateCourseMutation } from "/graphql/mutations/courses"
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
@@ -11,7 +10,7 @@ import { updateCourse } from "/static/types/generated/updateCourse"
 import omit from "lodash/omit"
 import Router from "next/router"
 
-import { ApolloClient, ApolloConsumer, gql, useQuery } from "@apollo/client"
+import { gql, useApolloClient, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -62,9 +61,9 @@ const CreateEmailTemplateDialog = ({
     CourseDetailsData | undefined
   >(undefined)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
-  const { language } = useContext(LanguageContext)
   const { loading, error, data } =
     useQuery<{ courses: CourseDetailsData[] }>(AllCoursesDetails)
+  const client = useApolloClient()
 
   if (loading) {
     return <Spinner />
@@ -101,7 +100,7 @@ const CreateEmailTemplateDialog = ({
           )
         })
 
-  const handleCreate = async (client: ApolloClient<object>) => {
+  const handleCreate = async () => {
     try {
       const { data } = await client.mutate<AddEmailTemplate>({
         mutation: AddEmailTemplateMutation,
@@ -134,8 +133,7 @@ const CreateEmailTemplateDialog = ({
           },
         })
       }
-      const url =
-        "/" + language + "/email-templates/" + data?.addEmailTemplate?.id
+      const url = "/email-templates/" + data?.addEmailTemplate?.id
       Router.push(url)
     } catch {
       setIsErrorSnackbarOpen(true)
@@ -205,13 +203,9 @@ const CreateEmailTemplateDialog = ({
           <Button onClick={handleDialogClose} color="primary">
             Cancel
           </Button>
-          <ApolloConsumer>
-            {(client) => (
-              <Button onClick={() => handleCreate(client)} color="primary">
-                Create
-              </Button>
-            )}
-          </ApolloConsumer>
+          <Button onClick={() => handleCreate()} color="primary">
+            Create
+          </Button>
         </DialogActions>
       </Dialog>
       <CustomSnackbar

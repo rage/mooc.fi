@@ -1,23 +1,25 @@
 import { useCallback, useContext } from "react"
+
+import Pagination from "/components/Dashboard/Users/Pagination"
+import UserSearchContext from "/contexts/UserSearchContext"
+import UsersTranslations from "/translations/users"
+import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
+import range from "lodash/range"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
 import {
   Button,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableFooter,
-  TableRow,
   TableHead,
-  Skeleton,
+  TableRow,
 } from "@mui/material"
-import styled from "@emotion/styled"
-import range from "lodash/range"
-import LangLink from "/components/LangLink"
-import Pagination from "/components/Dashboard/Users/Pagination"
-import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexts/UserSearchContext"
-import { useTranslator } from "/util/useTranslator"
-import notEmpty from "/util/notEmpty"
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -33,6 +35,11 @@ const StyledPaper = styled(Paper)`
   margin-top: 5px;
 `
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`
+
 const WideGrid = () => {
   const t = useTranslator(UsersTranslations)
   const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
@@ -40,15 +47,13 @@ const WideGrid = () => {
   const PaginationComponent = useCallback(
     () => (
       <TableRow>
-        <td colSpan={5} align="center">
-          {loading ? (
-            <TableCell>
-              <Skeleton />
-            </TableCell>
-          ) : (
-            <Pagination />
-          )}
-        </td>
+        {loading ? (
+          <TableCell>
+            <Skeleton />
+          </TableCell>
+        ) : (
+          <Pagination />
+        )}
       </TableRow>
     ),
     [data, rowsPerPage, page, loading],
@@ -74,10 +79,7 @@ const WideGrid = () => {
               <StyledTableCell align="right">
                 {t("userStudentNumber")}
               </StyledTableCell>
-              {/*<StyledTableCell align="right">
-                {t("summary")}
-                {("completions")}
-            </StyledTableCell>*/}
+              <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <RenderResults />
@@ -134,14 +136,14 @@ const RenderResults = () => {
             <TableCell align="right">{last_name}</TableCell>
             <TableCell align="right">{student_number}</TableCell>
             <TableCell align="right">
-              <LangLink href={`/users/${upstream_id}/summary`} passHref>
-                <Button variant="contained" style={{ marginRight: "0.5rem" }}>
-                  {t("summary")}
-                </Button>
-              </LangLink>
-              <LangLink href={`/users/${upstream_id}/completions`} passHref>
-                <Button variant="contained">{t("completions")}</Button>
-              </LangLink>
+              <ButtonContainer>
+                <Link href={`/users/${upstream_id}/summary`} passHref>
+                  <Button variant="contained">{t("summary")}</Button>
+                </Link>
+                <Link href={`/users/${upstream_id}/completions`} passHref>
+                  <Button variant="contained">{t("completions")}</Button>
+                </Link>
+              </ButtonContainer>
             </TableCell>
           </TableRow>
         )

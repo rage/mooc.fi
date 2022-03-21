@@ -1,9 +1,8 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
-import LanguageContext from "/contexts/LanguageContext"
 import {
   AddStudyModuleMutation,
   DeleteStudyModuleMutation,
@@ -15,7 +14,7 @@ import {
   CheckModuleSlugQuery,
 } from "/graphql/queries/study-modules"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
+import { StudyModuleQuery } from "/pages/study-modules/[slug]/edit"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import ModulesTranslations from "/translations/study-modules"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
@@ -36,7 +35,6 @@ const StudyModuleEdit = ({
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(ModulesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const client = useApolloClient()
@@ -95,7 +93,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push(`/${language}/study-modules`, undefined, {
+        Router.push(`/study-modules`, undefined, {
           shallow: true,
         })
       } catch (err: any) {
@@ -121,14 +119,14 @@ const StudyModuleEdit = ({
 
   const onDelete = useCallback(async (id: string) => {
     await deleteStudyModule({ variables: { id } })
-    Router.push(`/${language}/study-modules`, undefined, {
+    Router.push(`/study-modules`, undefined, {
       shallow: true,
     })
   }, [])
 
   const onCancel = useCallback(
     () =>
-      Router.push(`/${language}/study-modules`, undefined, {
+      Router.push(`/study-modules`, undefined, {
         shallow: true,
       }),
     [],

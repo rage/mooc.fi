@@ -1,16 +1,18 @@
-import { ReactElement } from "react"
+import { ReactElement, useContext } from "react"
+
+import LoginStateContext from "/contexts/LoginStateContext"
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
 import { AppBar, Toolbar } from "@mui/material"
-import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@mui/material/CssBaseline"
-import useScrollTrigger from "@mui/material/useScrollTrigger"
 import Slide from "@mui/material/Slide"
+import useScrollTrigger from "@mui/material/useScrollTrigger"
+
+import LanguageSwitch from "./LanguageSwitch"
 import LoggedInUserMenu from "./LoggedInUserMenu"
 import MoocLogo from "./MoocLogo"
-import LoginStateContext from "/contexts/LoginStateContext"
 import UserOptionsMenu from "./UserOptionsMenu"
-import styled from "@emotion/styled"
-import LanguageContext from "/contexts/LanguageContext"
-import { useContext } from "react"
 
 interface Props {
   window?: () => Window
@@ -42,17 +44,16 @@ const MenuContainer = styled.div`
   flex: 1;
 `
 
-export function whichIsActive({ url }: { url: string }) {
-  const urlParts = url.split("/")
-  const active = urlParts.length >= 3 ? urlParts[2] : ""
+export function useActiveTab() {
+  const { pathname } = useRouter()
 
-  return active
+  return pathname.match(
+    "^/(courses|study-modules|email-templates|profile|users)",
+  )?.[1]
 }
 
 function Header() {
-  const { url } = useContext(LanguageContext)
   const { loggedIn, logInOrOut } = useContext(LoginStateContext)
-  const active = whichIsActive({ url })
 
   return (
     <>
@@ -63,9 +64,7 @@ function Header() {
             <MoocLogo />
             <MenuContainer>
               <HiddenMenuContainer>
-                {loggedIn && (
-                  <LoggedInUserMenu active={active ? active : undefined} />
-                )}
+                {loggedIn && <LoggedInUserMenu />}
               </HiddenMenuContainer>
             </MenuContainer>
             <UserOptionsMenu isSignedIn={loggedIn} logInOrOut={logInOrOut} />

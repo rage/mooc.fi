@@ -21,6 +21,10 @@ const nextConfiguration = {
         : "none",
   },
   trailingSlash: true,
+  i18n: {
+    locales: ["en", "fi"],
+    defaultLocale: "fi",
+  },
 }
 
 module.exports = withPlugins(

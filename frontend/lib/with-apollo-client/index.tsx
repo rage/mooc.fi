@@ -8,7 +8,6 @@ import {
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client"
-import { getMarkupFromTree } from "@apollo/client/react/ssr"
 
 import fetchUserDetails from "./fetch-user-details"
 import getApollo, { initNewApollo } from "./get-apollo"
@@ -84,6 +83,8 @@ const withApolloClient = (App: any) => {
       if (res?.finished) {
         return props
       }
+
+      const { getMarkupFromTree } = await import("@apollo/client/react/ssr")
 
       // Run the graphql queries on server and pass the results to frontend by using the Apollo cache.
 

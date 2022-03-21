@@ -6,7 +6,6 @@ import React from "react"
 
 import AlertContext from "/contexts/AlertContext"
 import { BreadcrumbContext } from "/contexts/BreadcrumbContext"
-import LanguageContext from "/contexts/LanguageContext"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
@@ -144,31 +143,31 @@ class MyApp extends App {
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
-                <LanguageContext.Provider
+                {/*<LanguageContext.Provider
                   value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-                >
-                  <ConfirmProvider>
-                    <BreadcrumbContext.Provider
+                  >*/}
+                <ConfirmProvider>
+                  <BreadcrumbContext.Provider
+                    value={{
+                      breadcrumbs: this.state.breadcrumbs,
+                      setBreadcrumbs: this.setBreadcrumbs,
+                    }}
+                  >
+                    <AlertContext.Provider
                       value={{
-                        breadcrumbs: this.state.breadcrumbs,
-                        setBreadcrumbs: this.setBreadcrumbs,
+                        alerts: this.state.alerts,
+                        addAlert: this.addAlert,
+                        removeAlert: this.removeAlert,
                       }}
                     >
-                      <AlertContext.Provider
-                        value={{
-                          alerts: this.state.alerts,
-                          addAlert: this.addAlert,
-                          removeAlert: this.removeAlert,
-                        }}
-                      >
-                        <Layout>
-                          <Global styles={fontCss} />
-                          <Component {...pageProps} />
-                        </Layout>
-                      </AlertContext.Provider>
-                    </BreadcrumbContext.Provider>
-                  </ConfirmProvider>
-                </LanguageContext.Provider>
+                      <Layout>
+                        <Global styles={fontCss} />
+                        <Component {...pageProps} />
+                      </Layout>
+                    </AlertContext.Provider>
+                  </BreadcrumbContext.Provider>
+                </ConfirmProvider>
+                {/*</LanguageContext.Provider>*/}
               </LoginStateContext.Provider>
             </ApolloProvider>
           </ThemeProvider>

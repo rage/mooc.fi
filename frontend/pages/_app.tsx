@@ -4,7 +4,6 @@ import { useEffect, useReducer } from "react"
 
 import AlertContext, { Alert } from "/contexts/AlertContext"
 import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
-import LanguageContext from "/contexts/LanguageContext"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
@@ -139,16 +138,7 @@ export function MyApp({
     }
   }, [router])
 
-  const {
-    lng = "fi",
-    languageSwitchUrl = "/en/",
-    asUrl = "/",
-    hrefUrl,
-  } = pageProps
-
-  const titleString =
-    t("title", { title: "..." })?.[hrefUrl] ||
-    t("title", { title: "..." })?.[asUrl]
+  const titleString = t("title", { title: "..." })?.[router?.pathname ?? ""]
 
   const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
@@ -165,31 +155,27 @@ export function MyApp({
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <LoginStateContext.Provider value={state}>
-            <LanguageContext.Provider
-              value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-            >
-              <ConfirmProvider>
-                <BreadcrumbContext.Provider
+            <ConfirmProvider>
+              <BreadcrumbContext.Provider
+                value={{
+                  breadcrumbs: state.breadcrumbs,
+                  setBreadcrumbs: setBreadcrumbs,
+                }}
+              >
+                <AlertContext.Provider
                   value={{
-                    breadcrumbs: state.breadcrumbs,
-                    setBreadcrumbs: setBreadcrumbs,
+                    alerts: state.alerts,
+                    addAlert: addAlert,
+                    removeAlert: removeAlert,
                   }}
                 >
-                  <AlertContext.Provider
-                    value={{
-                      alerts: state.alerts,
-                      addAlert: addAlert,
-                      removeAlert: removeAlert,
-                    }}
-                  >
-                    <Layout>
-                      <Global styles={fontCss} />
-                      <Component {...pageProps} />
-                    </Layout>
-                  </AlertContext.Provider>
-                </BreadcrumbContext.Provider>
-              </ConfirmProvider>
-            </LanguageContext.Provider>
+                  <Layout>
+                    <Global styles={fontCss} />
+                    <Component {...pageProps} />
+                  </Layout>
+                </AlertContext.Provider>
+              </BreadcrumbContext.Provider>
+            </ConfirmProvider>
           </LoginStateContext.Provider>
         </ThemeProvider>
       </CacheProvider>
@@ -200,53 +186,8 @@ export function MyApp({
 // @ts-ignore: initialProps
 const originalGetInitialProps = MyApp.getInitialProps
 
-const languages = ["en", "fi", "se"]
-
-function createPath(originalUrl: string) {
-  let url = ""
-  if (originalUrl?.match(/^\/en\/?$/)) {
-    url = "/"
-  } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace("/en", "/fi")
-  } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace("/se", "/fi")
-  } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace("/fi", "/en")
-  } else {
-    url = "/en" + (originalUrl ?? "/")
-  }
-
-  return url
-}
-
 MyApp.getInitialProps = async (props: AppContext) => {
   const { ctx, Component } = props
-
-  let lng = "fi"
-  let asUrl = "/"
-  let hrefUrl = "/"
-
-  if (typeof window !== "undefined") {
-    if (languages.includes(ctx?.asPath?.substring(1, 3) ?? "")) {
-      lng = ctx?.asPath?.substring(1, 3) ?? ""
-    }
-
-    asUrl = ctx?.asPath ?? ""
-    hrefUrl = ctx.pathname
-  } else {
-    const maybeLng = (ctx.query.lng as string) ?? "fi"
-
-    if (languages.includes(maybeLng)) {
-      lng = maybeLng
-    } else {
-      ctx?.res?.writeHead(302, { location: "/404" })
-      ctx?.res?.end()
-    }
-
-    // @ts-ignore: TODO: check what it really is
-    asUrl = ctx?.req?.originalUrl ?? ""
-    hrefUrl = ctx.pathname //.req.path
-  }
 
   let originalProps: any = {}
 
@@ -272,10 +213,6 @@ MyApp.getInitialProps = async (props: AppContext) => {
       ...originalProps.pageProps,
       signedIn,
       admin,
-      lng,
-      asUrl,
-      languageSwitchUrl: createPath(asUrl),
-      hrefUrl,
     },
   }
 }

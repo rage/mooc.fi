@@ -1,16 +1,13 @@
-import styled from "@emotion/styled"
-import LangLink from "/components/LangLink"
-import { Skeleton } from "@mui/material"
-import { AllModules_study_modules } from "/static/types/generated/AllModules"
-
 import ModuleImage from "/components/Home/ModuleImage"
-
-import { CardTitle } from "/components/Text/headers"
-
-import { CardText } from "/components/Text/paragraphs"
-
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
+import { CardTitle } from "/components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
+import { AllModules_study_modules } from "/static/types/generated/AllModules"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
+import { Skeleton } from "@mui/material"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;
@@ -47,7 +44,7 @@ const GridItem = styled.div`
 
 const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
   <GridItem>
-    <LangLink href={`#${module ? module.slug : ""}`}>
+    <Link href={`#${module ? module.slug : ""}`}>
       <Base component="div">
         {module ? (
           <>
@@ -70,7 +67,7 @@ const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
           </>
         )}
       </Base>
-    </LangLink>
+    </Link>
   </GridItem>
 )
 

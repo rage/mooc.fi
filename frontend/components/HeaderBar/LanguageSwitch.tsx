@@ -1,9 +1,8 @@
-import { useContext } from "react"
-import Language from "@mui/icons-material/Language"
-import styled from "@emotion/styled"
-import LanguageContext from "/contexts/LanguageContext"
 import Link from "next/link"
-// import LangLink from "/components/LangLink"
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import Language from "@mui/icons-material/Language"
 
 const SwitchLink = styled.a`
   font-size: 14px;
@@ -24,16 +23,25 @@ const SwitchLink = styled.a`
   }
 `
 
+const LanguageIcon = styled(Language)`
+  margin-right: 0.4rem;
+`
+
+const LanguageName = styled.p`
+  margin: auto;
+`
+
 const LanguageSwitch = () => {
-  const { language, url } = useContext(LanguageContext)
+  const { locale, asPath } = useRouter()
+  const newLocale = locale === "en" ? "fi" : "en"
 
   return (
-    <Link href={url} passHref>
+    <Link href={asPath} locale={newLocale} passHref>
       <SwitchLink>
-        <Language style={{ marginRight: "0.4rem" }} />
-        <p style={{ margin: "auto" }} data-testid="language-switch">
-          {language === "en" ? "Suomi" : "English"}
-        </p>
+        <LanguageIcon />
+        <LanguageName data-testid="language-switch">
+          {locale === "en" ? "Suomi" : "English"}
+        </LanguageName>
       </SwitchLink>
     </Link>
   )

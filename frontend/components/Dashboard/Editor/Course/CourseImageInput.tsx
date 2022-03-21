@@ -1,26 +1,30 @@
-import { useState, useCallback, MouseEvent as ReactMouseEvent } from "react"
-import { FormFieldGroup } from "./CourseEditForm"
-import { FormControl, Button } from "@mui/material"
-import { Field, useFormikContext, FieldInputProps } from "formik"
-import CoursesTranslations from "/translations/courses"
-import { useLanguageContext } from "/contexts/LanguageContext"
-import { CourseFormValues } from "./types"
-import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
-import ImagePreview from "/components/Dashboard/ImagePreview"
-import { addDomain } from "/util/imageUtils"
+import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react"
+
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
+import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
+import ImagePreview from "/components/Dashboard/ImagePreview"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import CoursesTranslations from "/translations/courses"
+import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+import { Field, FieldInputProps, useFormikContext } from "formik"
+import { useRouter } from "next/router"
+
+import { Button, FormControl } from "@mui/material"
+
+import { FormFieldGroup } from "./CourseEditForm"
+import { CourseFormValues } from "./types"
 
 interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
 }
+
 const CourseImageInput = (props: ImageInputProps) => {
   const { values, setFieldValue, initialValues } =
     useFormikContext<CourseFormValues>()
   const { courses } = props
-  const { language } = useLanguageContext()
+  const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -32,7 +36,7 @@ const CourseImageInput = (props: ImageInputProps) => {
       )
       .map((course) => {
         const translation = (course.course_translations?.filter(
-          (t) => t.language === language,
+          (t) => t.language === locale,
         ) ?? [])[0]
 
         return {

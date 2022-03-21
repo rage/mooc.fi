@@ -1,12 +1,13 @@
-import { useState, ChangeEvent } from "react"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
-import ResearchConsent from "/components/Dashboard/ResearchConsent"
-import { gql } from "@apollo/client"
-import { useMutation } from "@apollo/client"
+import { ChangeEvent, useState } from "react"
+
 import CustomSnackbar from "/components/CustomSnackbar"
-import { UserOverViewQuery } from "/pages/[lng]/profile"
+import ResearchConsent from "/components/Dashboard/ResearchConsent"
+import { UserOverViewQuery } from "/pages/profile"
+import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+
+import { gql, useMutation } from "@apollo/client"
 
 const updateResearchConsentMutation = gql`
   mutation updateUpdateAccountResearchConsent($value: Boolean!) {

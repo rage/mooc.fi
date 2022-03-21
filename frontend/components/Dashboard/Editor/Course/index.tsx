@@ -1,6 +1,5 @@
-import { useCallback, useContext } from "react"
+import { useCallback } from "react"
 
-import LanguageContext from "/contexts/LanguageContext"
 import {
   AddCourseMutation,
   DeleteCourseMutation,
@@ -37,7 +36,6 @@ const CourseEdit = ({
   modules?: CourseEditorStudyModules_study_modules[]
   courses?: CourseEditorCourses_courses[]
 }) => {
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(CoursesTranslations)
 
   const [addCourse] = useMutation(AddCourseMutation)
@@ -93,7 +91,7 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push(`/${language}/courses`, undefined, { shallow: true })
+        Router.push(`/courses`, undefined, { shallow: true })
       } catch (err: any) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -106,12 +104,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      Router.push(`/${language}/courses`, undefined, { shallow: true })
+      Router.push(`/courses`, undefined, { shallow: true })
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    Router.push(`/${language}/courses`, undefined, { shallow: true })
+    Router.push(`/courses`, undefined, { shallow: true })
   }, [])
 
   return (

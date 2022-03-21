@@ -1,9 +1,10 @@
-import { useContext, useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+
 import { FAQComponent } from "/components/Home/FAQ/Common"
-import LanguageContext from "/contexts/LanguageContext"
+import { useRouter } from "next/router"
 
 export function useFAQPage(topic: string) {
-  const { language } = useContext(LanguageContext)
+  const { locale } = useRouter()
 
   const [render, setRender] = useState(false)
   const [error, setError] = useState(false)
@@ -16,7 +17,7 @@ export function useFAQPage(topic: string) {
 
   const Component = FAQComponent({
     mdxImport: () =>
-      import(`../static/md_pages/${sanitizedTopic}_${language}.mdx`),
+      import(`../static/md_pages/${sanitizedTopic}_${locale}.mdx`),
     onSuccess: (mdx: any) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")

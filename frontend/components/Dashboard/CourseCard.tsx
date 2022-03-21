@@ -1,22 +1,25 @@
 import { PropsWithChildren } from "react"
+
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import CourseImage from "/components/CourseImage"
+import { CardTitle } from "/components/Text/headers"
+import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
+import { CourseStatus } from "/static/types/generated/globalTypes"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
+import { Add as AddIcon, AddCircle as AddCircleIcon } from "@mui/icons-material"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import EditIcon from "@mui/icons-material/Edit"
 import {
+  BoxProps,
   CardActions,
   Skeleton,
   Typography,
   TypographyProps,
-  BoxProps,
 } from "@mui/material"
-import DashboardIcon from "@mui/icons-material/Dashboard"
-import EditIcon from "@mui/icons-material/Edit"
-import { Add as AddIcon, AddCircle as AddCircleIcon } from "@mui/icons-material"
-import CourseImage from "/components/CourseImage"
-import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
-import styled from "@emotion/styled"
-import LangLink from "/components/LangLink"
-import { CardTitle } from "/components/Text/headers"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+
 import CourseStatusBadge from "./CourseStatusBadge"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 
 const CardBase = styled.div<{ ishidden?: number }>`
   position: relative;
@@ -174,7 +177,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
           ) : course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
-            <LangLink href={`/courses/new`} passHref>
+            <Link href={`/courses/new`} passHref>
               <StyledLink aria-label={`Create new course`}>
                 <div
                   style={{
@@ -188,7 +191,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                   <AddCircleIcon fontSize="large" />
                 </div>
               </StyledLink>
-            </LangLink>
+            </Link>
           )}
         </CourseCardImageContainer>
         <CourseCardContent style={{ gridColumn: "span 2" }}>
@@ -245,7 +248,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
               </>
             ) : course ? (
               <>
-                <LangLink href={`/courses/${course.slug}`}>
+                <Link href={`/courses/${course.slug}`} passHref>
                   <StyledLink
                     aria-label={`To the homepage of course ${course.name}`}
                   >
@@ -253,8 +256,8 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                       Dashboard
                     </StyledButton>
                   </StyledLink>
-                </LangLink>
-                <LangLink href={`/courses/new?clone=${course.slug}`} passHref>
+                </Link>
+                <Link href={`/courses/new?clone=${course.slug}`} passHref>
                   <StyledLink aria-label={`Clone course ${course.name}`}>
                     <StyledButton
                       variant="text"
@@ -264,8 +267,8 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                       Clone...
                     </StyledButton>
                   </StyledLink>
-                </LangLink>
-                <LangLink
+                </Link>
+                <Link
                   href={`/courses/${course.slug}/edit`}
                   passHref
                   prefetch={false}
@@ -275,17 +278,17 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                       Edit
                     </StyledButton>
                   </StyledLink>
-                </LangLink>
+                </Link>
               </>
             ) : (
-              <LangLink href={`/courses/new`} passHref>
+              <Link href={`/courses/new`} passHref>
                 <StyledLink aria-label="Create new course">
                   <StyledButton variant="text" color="secondary">
                     <AddIcon />
                     Create
                   </StyledButton>
                 </StyledLink>
-              </LangLink>
+              </Link>
             )}
           </CourseCardActionArea>
         </CourseCardContent>

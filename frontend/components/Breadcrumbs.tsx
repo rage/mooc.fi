@@ -1,11 +1,12 @@
-import { Skeleton } from "@mui/material"
-import LangLink from "/components/LangLink"
-import styled from "@emotion/styled"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
-import { useTranslator } from "/util/useTranslator"
-import BreadcrumbsTranslations from "/translations/breadcrumbs"
 import { isTranslationKey } from "/translations"
+import BreadcrumbsTranslations from "/translations/breadcrumbs"
+import { useTranslator } from "/util/useTranslator"
 import { memoize } from "lodash"
+import Link from "next/link"
+
+import styled from "@emotion/styled"
+import { Skeleton } from "@mui/material"
 
 const BreadcrumbList = styled.ul`
   list-style: none;
@@ -99,9 +100,9 @@ function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
           {text || <Skeleton width="100px" />}
         </BreadcrumbNonLink>
       ) : (
-        <LangLink href={href}>
+        <Link href={href} passHref>
           <BreadcrumbLink>{text}</BreadcrumbLink>
-        </LangLink>
+        </Link>
       )}
     </BreadcrumbItem>
   )
