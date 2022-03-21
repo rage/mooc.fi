@@ -1,13 +1,11 @@
-import { Children, cloneElement, PropsWithChildren, useContext } from "react"
-
-import LanguageContext from "/contexts/LanguageContext"
-import Link, { LinkProps } from "next/link"
-import { format, parse } from "url"
-
 /**
  *  @deprecated Use Link instead without language specified in the path
  */
-function LangLink(props: PropsWithChildren<LinkProps>): any {
+function LangLink() {
+  throw new Error("deprecated")
+}
+
+/*function LangLink(props: PropsWithChildren<LinkProps>): any {
   const { as: _as, href: _href, children } = props
   const { language } = useContext(LanguageContext)
   const isFi = language === "fi"
@@ -59,6 +57,6 @@ function LangLink(props: PropsWithChildren<LinkProps>): any {
       {children}
     </Link>
   )
-}
+}*/
 
 export default LangLink
