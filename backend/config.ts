@@ -74,7 +74,7 @@ export const SMTP_PASS = process.env.SMTP_PASS
 export const TMC_HOST = process.env.TMC_HOST
 export const TMC_CLIENT_ID = process.env.TMC_CLIENT_ID
 export const TMC_CLIENT_SECRET = process.env.TMC_CLIENT_SECRET
-export const TMC_PASSWORD = process.env.TMC_PASSwORD
+export const TMC_PASSWORD = process.env.TMC_PASSWORD
 export const TMC_USERNAME = process.env.TMC_USERNAME
 export const RATELIMIT_PROTECTION_SAFE_API_KEY =
   process.env.RATELIMIT_PROTECTION_SAFE_API_KEY ?? ""
