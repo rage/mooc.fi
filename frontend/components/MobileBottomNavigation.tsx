@@ -1,6 +1,4 @@
-import { useContext } from "react"
-
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 
 import styled from "@emotion/styled"
 import AppBar, { AppBarProps } from "@mui/material/AppBar"
@@ -18,7 +16,7 @@ const StyledBottomNavigation = styled(AppBar)<AppBarProps & BoxProps>`
 `
 
 const MobileBottomNavigation = () => {
-  const { loggedIn } = useContext(LoginStateContext)
+  const { loggedIn } = useLoginStateContext()
 
   return loggedIn ? (
     <StyledBottomNavigation

@@ -51,6 +51,8 @@ export interface AllCourses_courses {
   description: string | null
   link: string | null
   upcoming_active_link: boolean | null
+  start_date: string
+  end_date: string | null
   study_modules: AllCourses_courses_study_modules[]
   course_translations: AllCourses_courses_course_translations[]
   user_course_settings_visibilities: AllCourses_courses_user_course_settings_visibilities[]

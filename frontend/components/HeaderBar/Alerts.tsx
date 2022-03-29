@@ -1,11 +1,11 @@
-import { useContext } from "react"
-import AlertContext from "/contexts/AlertContext"
-import Alert from "@mui/material/Alert"
-import AlertTitle from "@mui/material/AlertTitle"
+import { useAlertContext } from "/contexts/AlertContext"
 import { useRouter } from "next/router"
 
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
+
 const Alerts = () => {
-  const { alerts, removeAlert } = useContext(AlertContext)
+  const { alerts, removeAlert } = useAlertContext()
   const router = useRouter()
 
   return (

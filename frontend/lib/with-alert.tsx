@@ -1,8 +1,7 @@
-import { useContext } from "react"
-import AlertContext from "/contexts/AlertContext"
+import { useAlertContext } from "/contexts/AlertContext"
 
 export default (Component: any) => (props: any) => {
-  const { addAlert } = useContext(AlertContext)
+  const { addAlert } = useAlertContext()
 
   return <Component {...props} addAlert={addAlert} />
 }

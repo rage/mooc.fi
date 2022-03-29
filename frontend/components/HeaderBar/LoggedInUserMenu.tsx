@@ -1,7 +1,5 @@
-import { useContext } from "react"
-
 import { useActiveTab } from "/components/HeaderBar/Header"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 import Link from "next/link"
@@ -58,7 +56,7 @@ const ButtonLabel = styled(Typography)<any>`
 `
 
 const UserMenu = () => {
-  const { admin } = useContext(LoginStateContext)
+  const { admin } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
 
   const active = useActiveTab()

@@ -1,6 +1,6 @@
-import { ReactElement, useContext } from "react"
+import { ReactElement } from "react"
 
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
@@ -53,7 +53,7 @@ export function useActiveTab() {
 }
 
 function Header() {
-  const { loggedIn, logInOrOut } = useContext(LoginStateContext)
+  const { loggedIn } = useLoginStateContext()
 
   return (
     <>
@@ -67,8 +67,7 @@ function Header() {
                 {loggedIn && <LoggedInUserMenu />}
               </HiddenMenuContainer>
             </MenuContainer>
-            <UserOptionsMenu isSignedIn={loggedIn} logInOrOut={logInOrOut} />
-
+            <UserOptionsMenu />
             <LanguageSwitch />
           </StyledToolbar>
         </AppBar>

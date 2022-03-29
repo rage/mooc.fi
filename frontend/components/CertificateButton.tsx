@@ -1,7 +1,7 @@
-import { useContext, useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 
-import AlertContext from "/contexts/AlertContext"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useAlertContext } from "/contexts/AlertContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/queries/currentUser"
 import { updateAccount } from "/lib/account"
 import { checkCertificate, createCertificate } from "/lib/certificates"
@@ -139,8 +139,8 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
 
 const CertificateButton = ({ course }: CertificateProps) => {
   const t = useTranslator(CompletionsTranslations)
-  const { currentUser, updateUser } = useContext(LoginStateContext)
-  const { addAlert } = useContext(AlertContext)
+  const { currentUser, updateUser } = useLoginStateContext()
+  const { addAlert } = useAlertContext()
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")

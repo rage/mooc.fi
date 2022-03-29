@@ -1,4 +1,5 @@
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
@@ -9,16 +10,12 @@ import { useApolloClient } from "@apollo/client"
 
 import ProfileButton from "./ProfileButton"
 
-interface Props {
-  isSignedIn: boolean
-  logInOrOut: any
-}
-const UserOptionsMenu = (props: Props) => {
+const UserOptionsMenu = () => {
   const client = useApolloClient()
-  const { isSignedIn, logInOrOut } = props
+  const { loggedIn, logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
 
-  if (isSignedIn) {
+  if (loggedIn) {
     return (
       <>
         <ProfileButton />

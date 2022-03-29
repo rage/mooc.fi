@@ -21,6 +21,8 @@ export const AllCoursesQuery = gql`
       description
       link
       upcoming_active_link
+      start_date
+      end_date
       study_modules {
         id
         slug

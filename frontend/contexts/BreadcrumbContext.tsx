@@ -1,4 +1,5 @@
-import { createContext, useContext } from "react"
+import React, { createContext, useContext, useState } from "react"
+
 import { BreadcrumbsTranslations } from "/translations/breadcrumbs"
 
 export interface Breadcrumb {
@@ -23,3 +24,17 @@ export const useBreadcrumbContext = () => {
 
   return context
 }
+
+export const BreadcrumbProvider = React.memo(function BreadcrumbProvider({
+  children,
+}: {
+  children: JSX.Element
+}) {
+  const [breadcrumbs, setBreadcrumbs] = useState<Array<Breadcrumb>>([])
+
+  return (
+    <BreadcrumbContext.Provider value={{ breadcrumbs, setBreadcrumbs }}>
+      {children}
+    </BreadcrumbContext.Provider>
+  )
+})
