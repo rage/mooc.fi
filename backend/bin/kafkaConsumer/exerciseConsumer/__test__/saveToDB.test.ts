@@ -147,7 +147,7 @@ describe("exerciseConsumer/saveToDatabase", () => {
     jest.clearAllMocks()
   })
 
-  it("can handle exercises with both number and string exercise parts", async () => {
+  it("can handle exercises with number and correct string exercise parts", async () => {
     const message: Message = {
       timestamp: "2021-02-01T10:00:00.00+02:00",
       service_id: "40000000-0000-0000-0000-000000000102",
@@ -162,7 +162,7 @@ describe("exerciseConsumer/saveToDatabase", () => {
         },
         {
           id: "newexercise2",
-          name: "updated exercise 2",
+          name: "new exercise 2",
           max_points: 2,
           part: "osa02",
           section: 2,
@@ -188,28 +188,5 @@ describe("exerciseConsumer/saveToDatabase", () => {
     })
     expect(new1?.part).toEqual(1)
     expect(new2?.part).toEqual(2)
-  })
-
-  it("will error on invalid string exercise part", async () => {
-    const message: Message = {
-      timestamp: "2021-02-01T10:00:00.00+02:00",
-      service_id: "40000000-0000-0000-0000-000000000102",
-      course_id: "00000000-0000-0000-0000-000000000001",
-      data: [
-        {
-          id: "newexercise1",
-          name: "new exercise 1",
-          max_points: 1,
-          part: "kissa",
-          section: 1,
-        },
-      ],
-      message_format_version: 1,
-    }
-
-    try {
-      await saveToDatabase(kafkaContext, message)
-      fail()
-    } catch {}
   })
 })
