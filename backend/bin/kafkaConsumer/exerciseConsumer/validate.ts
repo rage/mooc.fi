@@ -5,7 +5,15 @@ const CURRENT_MESSAGE_FORMAT_VERSION = 1
 const ExerciseDataYupSchema = yup.object().shape({
   name: yup.string().required(),
   id: yup.string().required(),
-  part: yup.number().required(),
+  part: yup
+    .number()
+    .required()
+    .transform((value, input) => {
+      if (isNaN(value)) {
+        return Number(input?.match(/^osa(\d+)$/)?.[1])
+      }
+      return value
+    }),
   section: yup.number().required(),
   max_points: yup.number().required(),
 })
