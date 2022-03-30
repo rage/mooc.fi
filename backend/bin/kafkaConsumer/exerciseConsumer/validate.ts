@@ -2,17 +2,22 @@ import * as yup from "yup"
 
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 
-const ExerciseDataYupSchema = yup.object().shape({
+export const ExerciseDataYupSchema = yup.object().shape({
   name: yup.string().required(),
   id: yup.string().required(),
   part: yup
     .number()
     .required()
     .transform((value, input) => {
-      if (isNaN(value)) {
-        return Number(input?.match(/^osa(\d+)$/)?.[1])
+      if (!isNaN(value)) {
+        return value
       }
-      return value
+      if (typeof input === "string") {
+        const part = Number(input?.match(/^osa(\d+)$/)?.[1])
+
+        return part
+      }
+      return Number(value?.toString()) // we try our best
     }),
   section: yup.number().required(),
   max_points: yup.number().required(),

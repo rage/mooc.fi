@@ -64,10 +64,12 @@ const parseExercisePart = (part: string | number) => {
   if (typeof part === "number") {
     return part
   }
-  const match = part.match(/^osa(\d+)$/)
+  const parsedPart = Number(part.match(/^osa(\d+)$/)?.[1])
 
-  return Number(match?.[1])
+  // invalid string patterns are already handled by validation, but let's be sure
+  return isNaN(parsedPart) ? null : parsedPart
 }
+
 const handleExercise = async ({
   context: { prisma, logger },
   exercise,
