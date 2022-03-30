@@ -59,6 +59,15 @@ interface HandleExerciseConfig {
   timestamp: DateTime
   service_id: string
 }
+
+const parseExercisePart = (part: string | number) => {
+  if (typeof part === "number") {
+    return part
+  }
+  const match = part.match(/^osa(\d+)$/)
+
+  return Number(match?.[1])
+}
 const handleExercise = async ({
   context: { prisma, logger },
   exercise,
@@ -81,6 +90,8 @@ const handleExercise = async ({
       })
   )?.[0]
 
+  const exercisePart = parseExercisePart(exercise.part)
+
   if (existingExercise) {
     // FIXME: well this is weird
     if (
@@ -99,7 +110,7 @@ const handleExercise = async ({
       data: {
         name: exercise.name,
         custom_id: exercise.id,
-        part: { set: Number(exercise.part) },
+        part: { set: exercisePart },
         section: { set: Number(exercise.section) },
         max_points: { set: Number(exercise.max_points) },
         timestamp: timestamp.toJSDate(),
@@ -111,7 +122,7 @@ const handleExercise = async ({
       data: {
         name: exercise.name,
         custom_id: exercise.id,
-        part: Number(exercise.part),
+        part: exercisePart,
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
         course: { connect: { id: course_id } },
