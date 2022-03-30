@@ -10,6 +10,7 @@ import {
 } from "/static/types/generated/AllCourses"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
+import moocLogoUrl from "/static/images/moocfi.svg"
 
 const CardWrapper = styled.div`
   position: relative;
@@ -38,7 +39,7 @@ const _CardHeader = styled.div`
     width: 100%;
     height: 100%;
     background-image: url(${require("/static/images/moocfi.svg")});
-    background-clip: content-box;
+    background-clip: content-box;{...props}
     background-repeat: no-repeat;
     background-size: 40%;
     filter: opacity(0.4);
@@ -49,7 +50,7 @@ const _CardHeader = styled.div`
 */
 
 const BackgroundImage = styled.img`
-  opacity: 0.6;
+  opacity: 0.4;
   position: absolute;
   left: 70%;
   top: 0.5rem;
@@ -63,7 +64,7 @@ const CardHeader = ({ children }: { children: JSX.Element }) => {
   return (
     <_CardHeader>
       {children}
-      <BackgroundImage src={require("../../static/images/moocfi.svg")} />
+      <BackgroundImage src={moocLogoUrl} />
     </_CardHeader>
   )
 }
@@ -71,11 +72,14 @@ const CardHeader = ({ children }: { children: JSX.Element }) => {
 const CardBody = styled.div`
   background-color: #fff;
   z-index: 100;
-  height: 100%;
   padding: 2rem;
 `
+const CardDescription = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+`
 
-const Row = styled.div`
+const CardActionArea = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -105,11 +109,11 @@ const CourseCard = ({
         <Title variant="h6">{name}</Title>
       </CardHeader>
       <CardBody>
-        <Row>{description}</Row>
-        <Row>
+        <CardDescription>{description}</CardDescription>
+        <CardActionArea>
           <Date>{date}</Date>
           <Button>Kurssin tiedot</Button>
-        </Row>
+        </CardActionArea>
       </CardBody>
     </CardWrapper>
   )

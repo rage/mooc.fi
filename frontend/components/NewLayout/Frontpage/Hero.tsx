@@ -70,7 +70,7 @@ function Hero() {
     <HeroContainer>
       <HeroContent />
       <BackgroundImage
-        src={require("../../static/images/new/hero.png")}
+        src={require("../../../static/images/new/hero.png")}
         alt=""
       />
     </HeroContainer>

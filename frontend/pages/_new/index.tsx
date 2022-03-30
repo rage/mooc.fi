@@ -1,9 +1,9 @@
 import EmailSubscribe from "/components/Home/EmailSubscribe"
-import CourseList from "/components/NewLayout/CourseList"
-import Hero from "/components/NewLayout/Hero"
-import Modules from "/components/NewLayout/Modules"
-import News from "/components/NewLayout/News"
-import SelectedCourses from "/components/NewLayout/SelectedCourses"
+import CourseList from "/components/NewLayout/Frontpage/CourseList"
+import Hero from "/components/NewLayout/Frontpage/Hero"
+import Modules from "/components/NewLayout/Frontpage/Modules"
+import News from "/components/NewLayout/Frontpage/News"
+import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
 
 import styled from "@emotion/styled"
 
