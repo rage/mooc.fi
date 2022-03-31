@@ -30,8 +30,7 @@
     "/research-consent": "Research consent",
     "/register-completion": "Register completion",
     "/faq": "Frequently asked questions",
-    "/faq/registering_completions": "Frequenty asked questions: Registering completions",
-    "/faq/suoritusten_rekisterointi": "Frequenty asked questions: Registering completions",
+    "/faq/[topic]": "Usein kysytyt kysymykset - {{title}}",
     "/": "Home"
   },
   "breadcrumb": {

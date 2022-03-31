@@ -5,6 +5,10 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(FontAwesomeIcon)`
   color: white;
@@ -24,7 +28,7 @@ const FooterBar = styled.footer`
 `
 
 const SocialContainer = styled.div`
-  padding: 2rem 0;
+  padding: 1.5rem 0;
 `
 
 const EmailContainer = styled.div`
@@ -32,7 +36,23 @@ const EmailContainer = styled.div`
 `
 
 const MaintainedContainer = styled.div`
+  a {
+    color: white;
+  }
+`
+
+const BottomRowContainer = styled.div`
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: row;
   padding: 2rem 0;
+`
+const PolicyContainer = styled.div`
+  :before {
+    content: "|";
+    margin-right: 0.5rem;
+  }
+  margin-left: 0.5rem;
   a {
     color: white;
   }
@@ -52,6 +72,9 @@ function UniversityLogo() {
 }
 
 function Footer() {
+  const t = useTranslator(HomeTranslations)
+  const { locale } = useRouter()
+
   return (
     <FooterBar>
       <EmailContainer>mooc@cs.helsinki.fi</EmailContainer>
@@ -82,18 +105,25 @@ function Footer() {
           <StyledIcon icon={faYoutube} size="3x" />
         </a>
       </SocialContainer>
-      <MaintainedContainer>
-        This site is maintained by the{" "}
-        <a
-          aria-label="Rage research group homepage"
-          href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          RAGE research group
-        </a>
-        .
-      </MaintainedContainer>
+      <BottomRowContainer>
+        <MaintainedContainer>
+          This site is maintained by the{" "}
+          <a
+            aria-label="Rage research group homepage"
+            href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            RAGE research group
+          </a>
+          .
+        </MaintainedContainer>
+        {locale === "fi" && (
+          <PolicyContainer>
+            <Link href={t("privacyPolicyLink")}>{t("privacyPolicy")}</Link>
+          </PolicyContainer>
+        )}
+      </BottomRowContainer>
     </FooterBar>
   )
 }
