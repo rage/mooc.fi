@@ -10,6 +10,7 @@ export function useFAQPage(topic: string) {
   const [error, setError] = useState(false)
   const [title, setTitle] = useState("")
   const [ingress, setIngress] = useState("")
+  const [breadcrumb, setBreadcrumb] = useState("")
 
   useEffect(() => setRender(true), [])
 
@@ -21,7 +22,7 @@ export function useFAQPage(topic: string) {
     onSuccess: (mdx: any) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")
-
+      setBreadcrumb(mdx?.meta?.breadcrumb ?? mdx?.meta?.title ?? "")
       return mdx
     },
     onError: () => setError(true),
@@ -33,5 +34,6 @@ export function useFAQPage(topic: string) {
     error,
     title,
     ingress,
+    breadcrumb,
   }
 }

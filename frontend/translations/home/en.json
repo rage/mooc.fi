@@ -22,5 +22,7 @@
     "showLimited": "Show less",
     "showAll": "Show all",
     "moduleCourseTitle": "Courses belonging to this module",
-    "coursePageAvailable": "Course page available"
+    "coursePageAvailable": "Course page available",
+    "privacyPolicy": "Privacy policy",
+    "privacyPolicyLink": "/faq/tietosuojaseloste"
 }
