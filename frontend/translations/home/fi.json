@@ -22,5 +22,7 @@
     "showLimited": "Näytä vain rajatut",
     "showAll": "Näytä kaikki",
     "moduleCourseTitle": "Opintokokonaisuuteen kuuluvat kurssit",
-    "coursePageAvailable": "Kurssisivu jo nähtävillä"
+    "coursePageAvailable": "Kurssisivu jo nähtävillä",
+    "privacyPolicy": "Tietosuojaseloste",
+    "privacyPolicyLink": "/faq/tietosuojaseloste"
 }

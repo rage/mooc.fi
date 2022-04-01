@@ -143,11 +143,13 @@ export function FAQPage({ error, title, ingress, content }: FAQPageProps) {
               {title}
             </Title>
           </TitleBackground>
-          <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
-            <Title component="p" variant="subtitle1" align="center">
-              {ingress}
-            </Title>
-          </TitleBackground>
+          {ingress && (
+            <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
+              <Title component="p" variant="subtitle1" align="center">
+                {ingress}
+              </Title>
+            </TitleBackground>
+          )}
         </>
       )}
       <Content>{content}</Content>

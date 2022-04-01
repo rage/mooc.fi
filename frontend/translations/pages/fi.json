@@ -30,8 +30,7 @@
     "/research-consent": "Osallistuminen tutkimukseen",
     "/register-completion": "Rekisteröi suoritus",
     "/faq": "Usein kysytyt kysymykset",
-    "/faq/suoritusten_rekisterointi": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
-    "/faq/registering_completions": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
+    "/faq/[topic]": "Usein kysytyt kysymykset - {{title}}",
     "/": "Etusivu"
   },
   "breadcrumb": {
