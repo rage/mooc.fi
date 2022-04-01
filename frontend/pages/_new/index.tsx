@@ -6,6 +6,7 @@ import News from "/components/NewLayout/Frontpage/News"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
 
 import styled from "@emotion/styled"
+import Hype from "/components/NewLayout/Frontpage/Hype"
 
 const HomeContainer = styled.div`
   * + * {
@@ -18,6 +19,7 @@ const Home = () => {
     <HomeContainer>
       <Hero />
       <News />
+      <Hype />
       <SelectedCourses />
       <Modules />
       <CourseList />

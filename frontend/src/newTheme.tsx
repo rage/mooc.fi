@@ -1,5 +1,5 @@
 import { amber } from "@mui/material/colors"
-import { createTheme } from "@mui/material/styles"
+import { createTheme, Theme } from "@mui/material/styles"
 
 const rawTheme = createTheme({
   palette: {
@@ -53,16 +53,16 @@ const rawTheme = createTheme({
   },
 })
 
-const theme = {
+const theme: Theme = {
   ...rawTheme,
   typography: {
     ...rawTheme.typography,
+    // FIXME: disrepancy as h2 is larger than h1?
     h1: {
       ...rawTheme.typography.h1,
       paddingBottom: "1rem",
       fontSize: 40,
       fontFamily: "Roboto",
-      fontWeight: 400,
       "@media (min-width: 600px)": {
         fontSize: 30,
       },

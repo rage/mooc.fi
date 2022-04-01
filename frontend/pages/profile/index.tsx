@@ -47,13 +47,6 @@ export const UserOverViewQuery = gql`
         ...CompletionsRegisteredFragment
       }
       research_consent
-    }
-  }
-  ${CompletionsRegisteredFragment}
-`
-
-// TODO: not visible in here, so don't query it?
-/*
       verified_users {
         id
         organization {
@@ -67,7 +60,11 @@ export const UserOverViewQuery = gql`
         personal_unique_code
         display_name
       }
-*/
+    }
+  }
+  ${CompletionsRegisteredFragment}
+`
+
 const tabs: Record<string, number> = {
   points: 0,
   completions: 1,

@@ -11,21 +11,19 @@ import {
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 import moocLogoUrl from "/static/images/moocfi.svg"
+import {
+  CardBody,
+  CardDescription,
+  CardWrapper,
+} from "/components/NewLayout/Common/Card"
+import { CardTitle } from "/components/Text/headers"
+import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 
-const CardWrapper = styled.div`
+const CardHeader = styled.div`
   position: relative;
-  border-radius: 4px;
-  box-sizing: border-box;
-  box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
-  border: 1px solid #ececec;
-  min-height: 300px;
-  overflow: hidden;
-`
-
-const _CardHeader = styled.div`
   background-color: #ffad14;
   height: 52px;
-  padding-left: 2rem;
+  padding-left: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   overflow: hidden;
@@ -54,43 +52,22 @@ const BackgroundImage = styled.img`
   position: absolute;
   left: 70%;
   top: 0.5rem;
-  width: 28%;
+  width: 25%;
   height: auto;
-  clip: rect(0, auto, calc(52px - 0.5rem), auto);
+  clip: rect(0, auto, calc(52px - 1rem), auto);
   z-index: 0;
-`
-
-const CardHeader = ({ children }: { children: JSX.Element }) => {
-  return (
-    <_CardHeader>
-      {children}
-      <BackgroundImage src={moocLogoUrl} />
-    </_CardHeader>
-  )
-}
-
-const CardBody = styled.div`
-  background-color: #fff;
-  z-index: 100;
-  padding: 2rem;
-`
-const CardDescription = styled.div`
-  display: flex;
-  flex: 1 1 auto;
 `
 
 const CardActionArea = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `
 
-const Date = styled.div``
-
-const Title = styled(Typography)`
-  z-index: 4;
-  position: relative;
-`
+const Date = styled((props: any) => (
+  <Typography variant="subtitle2" {...props} />
+))``
 
 const CourseCard = ({
   name,
@@ -106,7 +83,8 @@ const CourseCard = ({
   return (
     <CardWrapper>
       <CardHeader>
-        <Title variant="h6">{name}</Title>
+        <CardTitle>{name}</CardTitle>
+        <BackgroundImage src={moocLogoUrl} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
@@ -119,41 +97,36 @@ const CourseCard = ({
   )
 }
 
-const CoursesContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  align-items: center;
-  padding-top: 2rem;
-  width: 100%;
-`
-
-const CoursesGrid = styled.div`
+export const CoursesGrid = styled.div`
   display: grid;
-  gap: 1rem;
+  grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   padding: 2rem;
+  justify-content: center;
+  width: 80%;
 `
 
 function SelectedCourses() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, error, data } = useQuery<AllCourses>(AllCoursesQuery, {
+  const { loading, data } = useQuery<AllCourses>(AllCoursesQuery, {
     variables: { language },
   })
 
   return (
-    <CoursesContainer>
-      <Typography variant="h1">Suosittuja kursseja</Typography>
+    <SectionContainer>
+      <SectionTitle>Suosittuja kursseja</SectionTitle>
       {loading && <p>Loading...</p>}
       <CoursesGrid>
         {data?.courses &&
           data.courses
             .slice(0, 3)
             .filter(notEmpty)
-            .map((course, index) => <CourseCard key={index} {...course} />)}
+            .map((course, index) => (
+              <CourseCard key={`course-${index}`} {...course} />
+            ))}
       </CoursesGrid>
-    </CoursesContainer>
+    </SectionContainer>
   )
 }
 
