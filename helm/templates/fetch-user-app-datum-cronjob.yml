@@ -32,3 +32,5 @@ spec:
                     secretKeyRef:
                       name: redis
                       key: redis-password
+                - name: CONFIG_NAME
+                  value: "userAppDatum"

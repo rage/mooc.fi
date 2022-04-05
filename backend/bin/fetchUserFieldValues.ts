@@ -164,9 +164,9 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
   await prisma.userAppDatumConfig.upsert({
-    where: { name: CONFIG_NAME },
+    where: { name: FETCH_USER_FIELD_VALUES_CONFIG_NAME },
     create: {
-      name: CONFIG_NAME,
+      name: FETCH_USER_FIELD_VALUES_CONFIG_NAME,
       timestamp: dateToDB,
     },
     update: {
