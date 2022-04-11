@@ -11,4 +11,7 @@ export const SectionContainer = styled.section`
   align-items: center;
   padding-top: 2rem;
   margin: auto;
+  @media (max-width: 400px) {
+    margin: 0;
+  }
 `

@@ -15,6 +15,7 @@ import {
   CardBody,
   CardDescription,
   CardWrapper,
+  CardHeaderImage,
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
@@ -27,35 +28,6 @@ const CardHeader = styled.div`
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   overflow: hidden;
-`
-
-/*  &:before {
-    content: "";
-    position: absolute;
-    top: 20%;
-    left: 60%;
-    width: 100%;
-    height: 100%;
-    background-image: url(${require("/static/images/moocfi.svg")});
-    background-clip: content-box;{...props}
-    background-repeat: no-repeat;
-    background-size: 40%;
-    filter: opacity(0.4);
-  }
-  &:after {
-    position: relative;
-  }
-*/
-
-const BackgroundImage = styled.img`
-  opacity: 0.4;
-  position: absolute;
-  left: 70%;
-  top: 0.5rem;
-  width: 25%;
-  height: auto;
-  clip: rect(0, auto, calc(52px - 1rem), auto);
-  z-index: 0;
 `
 
 const CardActionArea = styled.div`
@@ -84,7 +56,7 @@ const CourseCard = ({
     <CardWrapper>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <BackgroundImage src={moocLogoUrl} />
+        <CardHeaderImage src={moocLogoUrl} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
@@ -104,6 +76,11 @@ export const CoursesGrid = styled.div`
   padding: 2rem;
   justify-content: center;
   width: 80%;
+  @media (max-width: 500px) {
+    padding: 0;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
 `
 
 function SelectedCourses() {

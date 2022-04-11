@@ -11,7 +11,16 @@ export const CardWrapper = styled.div`
   flex-direction: column;
 `
 
-export const BackgroundImage = styled.img`
+export const CardHeader = styled.div`
+  height: 140px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+`
+
+export const CardHeaderImage = styled.img`
   opacity: 0.4;
   position: absolute;
   left: 70%;
@@ -45,4 +54,21 @@ export const CardTitle = styled((props: any) => (
   <Typography variant="h6" {...props} />
 ))`
   z-index: 1;
+`
+
+export const CardHeaderBackground = styled.span<{
+  image: string
+  hue?: number
+  brightness?: number
+}>`
+  opacity: 0.4;
+  filter: hue-rotate(${(props) => props.hue ?? 0}deg)
+    brightness(${(props) => props.brightness ?? 1});
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-image: url(${(props) => `../../../static/images/${props.image}`});
 `
