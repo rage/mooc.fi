@@ -52,10 +52,13 @@ export async function redisify<T>(
     key: string
     params?: any
   },
-  client: typeof redisClient = redisClient,
-  logger: winston.Logger = _logger,
+  ctx: {
+    client?: typeof redisClient
+    logger?: winston.Logger
+  } = {},
 ) {
   const { prefix, expireTime, key, params } = options
+  const { logger = _logger, client = redisClient } = ctx
 
   const resolveValue = async () =>
     isPromise(fn)

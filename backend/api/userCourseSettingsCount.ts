@@ -13,7 +13,7 @@ type UserCourseSettingsCountResult =
       error: true
     }
 
-export function userCourseSettingsCount({ knex }: ApiContext) {
+export function userCourseSettingsCount({ knex, logger }: ApiContext) {
   return async (req: any, res: any) => {
     const { course, language }: { course: string; language: string } =
       req.params
@@ -86,6 +86,9 @@ export function userCourseSettingsCount({ knex }: ApiContext) {
         prefix: "usercoursesettingscount",
         expireTime: 60 * 60, // hour
         key: `${course}-${language}`,
+      },
+      {
+        logger,
       },
     )
 

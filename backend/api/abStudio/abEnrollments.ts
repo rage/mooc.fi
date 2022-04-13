@@ -1,20 +1,22 @@
-import { AbEnrollment } from ".prisma/client"
 import { Request, Response, Router } from "express"
-import { ApiContext } from ".."
-import { getUser } from "../../util/server-functions"
 
-export function abEnrollmentRouter({ knex, prisma }: ApiContext) {
+import { ApiContext } from "../"
+import { getUser } from "../../util/server-functions"
+import { AbEnrollment } from ".prisma/client"
+
+export function abEnrollmentRouter(ctx: ApiContext) {
   async function abEnrollmentGet(
     req: Request<{ ab_study_id: string }>,
     res: Response,
   ) {
+    const { knex, prisma } = ctx
     const { ab_study_id } = req.params
 
     if (!ab_study_id) {
       return res.status(400).json({ message: "must provide ab_study_id" })
     }
 
-    const userResult = await getUser(knex)(req, res)
+    const userResult = await getUser(ctx)(req, res)
 
     if (userResult.isErr()) {
       return userResult.error

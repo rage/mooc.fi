@@ -1,10 +1,11 @@
+import { groupBy } from "lodash"
+
 import { getTestContext } from "../../../../tests/__helpers"
 import { seed } from "../../../../tests/data/seed"
-import { saveToDatabase } from "../saveToDB"
-import { ExerciseData, Message } from "../interfaces"
-import { KafkaContext } from "../../common/kafkaContext"
 import { DatabaseInputError } from "../../../lib/errors"
-import { groupBy } from "lodash"
+import { KafkaContext } from "../../common/kafkaContext"
+import { ExerciseData, Message } from "../interfaces"
+import { saveToDatabase } from "../saveToDB"
 
 const ctx = getTestContext()
 
@@ -26,7 +27,7 @@ describe("exerciseConsumer/saveToDatabase", () => {
     const message: Message = {
       timestamp: "foo",
       service_id: "foo",
-      course_id: "00000000000000000000000000000668",
+      course_id: "00000000000000000000000000000669",
       data: [{} as ExerciseData],
       message_format_version: 1,
     }

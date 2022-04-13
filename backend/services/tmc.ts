@@ -1,8 +1,15 @@
 import axios from "axios"
+import * as winston from "winston"
 
-import { TMC_HOST } from "../config"
+import {
+  RATELIMIT_PROTECTION_SAFE_API_KEY,
+  TMC_CLIENT_ID,
+  TMC_CLIENT_SECRET,
+  TMC_HOST,
+  TMC_PASSWORD,
+  TMC_USERNAME,
+} from "../config"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
-import { getAccessToken } from "./tmc_completion_script"
 
 export interface UserFieldValue {
   id: number
@@ -11,6 +18,65 @@ export interface UserFieldValue {
   value: string
   created_at: string
   updated_at: string
+}
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: "tmc" },
+  transports: [new winston.transports.Console()],
+})
+
+let _accessToken: string | null = null
+
+async function fetchAccessToken(): Promise<string> {
+  logger.info("Fetching tmc access token...")
+  try {
+    const response = await axios.post(
+      `${TMC_HOST}/oauth/token`,
+      `client_secret=${TMC_CLIENT_SECRET}&client_id=${TMC_CLIENT_ID}&username=${encodeURIComponent(
+        TMC_USERNAME || "",
+      )}&password=${encodeURIComponent(
+        TMC_PASSWORD || "",
+      )}&grant_type=password`,
+      {
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+          "RATELIMIT-PROTECTION-SAFE-API-KEY":
+            RATELIMIT_PROTECTION_SAFE_API_KEY,
+        },
+      },
+    )
+
+    return response.data.access_token
+  } catch (error) {
+    logger.error(error)
+    return ""
+  }
+}
+
+export async function getAccessToken() {
+  if (_accessToken) {
+    return _accessToken
+  }
+  _accessToken = await fetchAccessToken()
+  return _accessToken
+}
+
+export async function getBasicInfoByUsernames(usernames: string[]) {
+  const res = await axios.post(
+    `${TMC_HOST}/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
+    {
+      usernames: usernames,
+    },
+    {
+      headers: { Authorization: `Bearer ${await getAccessToken()}` },
+    },
+  )
+  return res.data
 }
 
 export default class TmcClient {

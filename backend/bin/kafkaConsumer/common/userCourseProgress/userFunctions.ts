@@ -120,11 +120,11 @@ export const getExerciseCompletionsForCourses = async ({
 }
 
 export const getUserCourseSettings = async ({
-  user,
+  user_id,
   course_id,
   context: { prisma },
 }: {
-  user: User
+  user_id: string
   course_id: string
   context: KafkaContext
 }): Promise<UserCourseSetting | null> => {
@@ -135,7 +135,7 @@ export const getUserCourseSettings = async ({
     include: {
       user_course_settings: {
         where: {
-          user_id: user.id,
+          user_id,
         },
         orderBy: {
           created_at: "asc",
@@ -145,7 +145,7 @@ export const getUserCourseSettings = async ({
         include: {
           user_course_settings: {
             where: {
-              user_id: user.id,
+              user_id,
             },
             orderBy: {
               created_at: "asc",
@@ -259,7 +259,7 @@ export const createCompletion = async ({
   const { logger, prisma } = context
 
   const userCourseSettings = await getUserCourseSettings({
-    user,
+    user_id: user.id,
     course_id,
     context,
   })

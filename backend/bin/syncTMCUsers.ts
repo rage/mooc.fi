@@ -1,11 +1,12 @@
 // import { PrismaClient } from "@prisma/client"
 import axios from "axios"
 import { groupBy, orderBy } from "lodash"
+import * as winston from "winston"
 
 import { PrismaClient } from "@prisma/client"
 
 import { isTest, TMC_HOST } from "../config"
-import { getAccessToken } from "../services/tmc_completion_script"
+import { getAccessToken } from "../services/tmc"
 import { notEmpty } from "../util/notEmpty"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
@@ -23,17 +24,22 @@ export interface Change {
   email: string | null
 }
 
-const logger = sentryLogger({ service: "sync-tmc-users" })
+const _logger = sentryLogger({ service: "sync-tmc-users" })
 
-export const syncTMCUsers = async (_prisma?: PrismaClient) => {
-  let prisma: PrismaClient | undefined
+export interface SyncTMCUsersContext {
+  prisma: PrismaClient
+  logger: winston.Logger
+}
 
-  if (!_prisma) {
-    prisma = (await import("../prisma")).default
-  } else {
-    prisma = _prisma
+export const syncTMCUsers = async (
+  ctx: SyncTMCUsersContext = {} as SyncTMCUsersContext,
+) => {
+  const { logger = _logger } = ctx
+
+  if (!ctx.prisma) {
+    ctx.prisma = (await import("../prisma")).default
   }
-  if (!prisma) {
+  if (!ctx.prisma) {
     throw new Error("couldn't get a Prisma instance")
   }
 
@@ -49,8 +55,8 @@ export const syncTMCUsers = async (_prisma?: PrismaClient) => {
       throw new TMCError("Error syncing TMC users", response.data.error)
     })
 
-  const deletedUsers = await deleteUsers(res, prisma)
-  const updatedUsers = await updateEmails(res, prisma)
+  const deletedUsers = await deleteUsers(res, ctx)
+  const updatedUsers = await updateEmails(res, ctx)
 
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
@@ -61,7 +67,10 @@ export const syncTMCUsers = async (_prisma?: PrismaClient) => {
   }
 }
 
-export const deleteUsers = async (changes: Change[], prisma: PrismaClient) => {
+export const deleteUsers = async (
+  changes: Change[],
+  { prisma, logger }: SyncTMCUsersContext,
+) => {
   const deletedUsers = changes
     .filter((user) => user.change_type === "deleted" && user.new_value === "t")
     .map((user) => user.username)
@@ -78,7 +87,10 @@ export const deleteUsers = async (changes: Change[], prisma: PrismaClient) => {
   return deleted.count
 }
 
-export const updateEmails = async (changes: Change[], prisma: PrismaClient) => {
+export const updateEmails = async (
+  changes: Change[],
+  { prisma, logger }: SyncTMCUsersContext,
+) => {
   const emailChanges = changes.filter(
     (user) => user.change_type === "email_changed" && user.username !== null,
   )
@@ -132,7 +144,7 @@ if (!isTest) {
   syncTMCUsers()
     .then(() => process.exit(0))
     .catch((error) => {
-      logger.error(error)
+      _logger.error(error)
       process.exit(1)
     })
 }

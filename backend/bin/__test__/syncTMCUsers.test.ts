@@ -105,7 +105,7 @@ describe("syncTMCUsers", () => {
 
   describe("user deletion", () => {
     it("deletes users", async () => {
-      const count = await deleteUsers(changes, ctx.prisma)
+      const count = await deleteUsers(changes, ctx)
 
       expect(count).toBe(1)
 
@@ -122,7 +122,7 @@ describe("syncTMCUsers", () => {
     it("updates emails", async () => {
       const prismaUpdateSpy = jest.spyOn(ctx.prisma.user, "update")
 
-      const count = await updateEmails(changes, ctx.prisma)
+      const count = await updateEmails(changes, ctx)
 
       expect(count).toBe(2)
 
@@ -149,7 +149,7 @@ describe("syncTMCUsers", () => {
   it("full test", async () => {
     fakeUserDetailReply([200, { changes }])
 
-    const { deletedUsers, updatedUsers } = await syncTMCUsers(ctx.prisma)
+    const { deletedUsers, updatedUsers } = await syncTMCUsers(ctx)
 
     expect(deletedUsers).toBe(1)
     expect(updatedUsers).toBe(1)
@@ -158,6 +158,6 @@ describe("syncTMCUsers", () => {
   it("throws error on error", async () => {
     fakeUserDetailReply([403, { error: "asdf" }])
 
-    expect(syncTMCUsers(ctx.prisma)).rejects.toThrowError(TMCError)
+    expect(syncTMCUsers(ctx)).rejects.toThrowError(TMCError)
   })
 })

@@ -28,15 +28,15 @@ export const seed = async (prisma: PrismaClient) => {
   const create = async <K extends ExcludeInternalKeys<keyof PrismaClient>, T>(
     key: K,
     data: T[],
-  ) =>
-    Promise.all(
-      data.map(async (datum) => {
-        // @ts-ignore: key
-        return await prisma[key].create({
-          data: datum,
-        })
-      }),
-    )
+  ) => {
+    const created = []
+    for (const datum of data) {
+      // @ts-ignore: key
+      created.push(await prisma[key].create({ data: datum }))
+    }
+
+    return created
+  }
 
   const seededModules = await create("studyModule", study_modules)
   const seededCourses = await create("course", courses)
