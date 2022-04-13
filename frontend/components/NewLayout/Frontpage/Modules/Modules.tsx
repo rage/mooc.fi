@@ -1,14 +1,15 @@
-import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button } from "@mui/material"
-import Link from "next/link"
-import { useRouter } from "next/router"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import { ModuleCard } from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
 import { AllModules } from "/static/types/generated/AllModules"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
+import Link from "next/link"
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Button } from "@mui/material"
 
 const ModulesGrid = styled.div`
   display: grid;
@@ -24,7 +25,7 @@ const ModulesGrid = styled.div`
   }
 `
 
-const ShowMore = styled(Button)`
+/*const ShowMore = styled(Button)`
   --color: #eee;
   --height: calc(50px + 1rem);
   --half-height: calc(25px + 0.5rem);
@@ -86,7 +87,8 @@ const Arrow = styled.div`
     border-left: 30px solid blue;
     float: right;
   }
-`
+`*/
+
 function Modules() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
