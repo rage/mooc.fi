@@ -67,11 +67,12 @@ export function userCourseSettingsCount({ knex, logger }: ApiContext) {
         }
 
         let { count } = (
-          await knex
+          await knex("user_course_setting")
             .countDistinct("id as count")
-            .from("user_course_setting")
-            .where({ course_id, language: language })
+            .where({ course_id, language })
         )?.[0]
+
+        count = Number(count)
 
         if (count < 100) {
           count = -1

@@ -61,8 +61,9 @@ const CreateEmailTemplateDialog = ({
     CourseDetailsData | undefined
   >(undefined)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
-  const { loading, error, data } =
-    useQuery<{ courses: CourseDetailsData[] }>(AllCoursesDetails)
+  const { loading, error, data } = useQuery<{ courses: CourseDetailsData[] }>(
+    AllCoursesDetails,
+  )
   const client = useApolloClient()
 
   if (loading) {
