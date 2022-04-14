@@ -1,8 +1,9 @@
+import { Completion, Course, User } from "@prisma/client"
+
 import { getTestContext } from "../../../../../tests/__helpers"
 import { seed } from "../../../../../tests/data/seed"
 import { KafkaContext } from "../../kafkaContext"
-import { createCompletion } from "../userFunctions"
-import { Completion, Course, User } from "@prisma/client"
+import { createCompletion, getUserCourseSettings } from "../userFunctions"
 
 const ctx = getTestContext()
 
@@ -172,5 +173,85 @@ describe("createCompletion", () => {
       })
       expect(existingCompletion).toEqual(updatedCompletion)
     })
+  })
+})
+
+describe("getUserCourseSettings", () => {
+  const HANDLER_COURSE_ID = "00000000-0000-0000-0000-000000000666"
+  const INHERITING_COURSE_ID = "00000000-0000-0000-0000-000000000668"
+  const USER_ID = "20000000-0000-0000-0000-000000000103"
+  const kafkaContext = {} as KafkaContext
+
+  beforeEach(async () => {
+    await seed(ctx.prisma)
+    Object.assign(kafkaContext, {
+      prisma: ctx.prisma,
+      knex: ctx.knex,
+      logger: ctx.logger,
+      consumer: null as any,
+      mutex: null as any,
+    })
+  })
+
+  it("should return inherited settings if they exist", async () => {
+    const handler = await ctx.prisma.userCourseSetting.create({
+      data: {
+        course: { connect: { id: HANDLER_COURSE_ID } },
+        user: { connect: { id: USER_ID } },
+        language: "en",
+        country: "en",
+        marketing: false,
+        research: true,
+      },
+    })
+    await ctx.prisma.userCourseSetting.create({
+      data: {
+        course: { connect: { id: INHERITING_COURSE_ID } },
+        user: { connect: { id: USER_ID } },
+        language: "fi",
+        country: "fi",
+        marketing: true,
+        research: true,
+      },
+    })
+
+    const settings = await getUserCourseSettings({
+      user_id: USER_ID,
+      course_id: INHERITING_COURSE_ID,
+      context: kafkaContext,
+    })
+
+    expect(settings).toEqual(handler)
+  })
+
+  it("should return settings if no inheriting found", async () => {
+    const created = await ctx.prisma.userCourseSetting.create({
+      data: {
+        course: { connect: { id: INHERITING_COURSE_ID } },
+        user: { connect: { id: USER_ID } },
+        language: "fi",
+        country: "fi",
+        marketing: true,
+        research: true,
+      },
+    })
+
+    const settings = await getUserCourseSettings({
+      user_id: USER_ID,
+      course_id: INHERITING_COURSE_ID,
+      context: kafkaContext,
+    })
+
+    expect(settings).toEqual(created)
+  })
+
+  it("should return null if no settings found", async () => {
+    const settings = await getUserCourseSettings({
+      user_id: USER_ID,
+      course_id: INHERITING_COURSE_ID,
+      context: kafkaContext,
+    })
+
+    expect(settings).toBeNull()
   })
 })

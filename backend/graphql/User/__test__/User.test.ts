@@ -76,11 +76,6 @@ describe("User", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
       })
-      /*beforeEach(async () => {
-        await ctx.prisma.user.create({
-          data: normalUser,
-        })
-      })*/
 
       it("shows current user when logged in", async () => {
         ctx!.client.setHeader("Authorization", "Bearer normal")

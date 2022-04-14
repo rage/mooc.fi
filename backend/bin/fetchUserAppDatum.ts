@@ -150,17 +150,6 @@ const fetchUserAppDatum = async () => {
       await saveProgress(prisma, new Date(e.updated_at))
     }
   }
-  /*if (!p || p == "undefined" || p == null) {
-      logger.warning(
-        "not p:",
-        p,
-        "i is",
-        i,
-        "while data.length is",
-        data.length,
-      )
-      continue
-    }*/
 
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
 
@@ -285,17 +274,6 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     throw e
   }
 }
-
-// FIXME: not used anywhere
-/* const currentDate = () => {
-  var today = new Date()
-  var date =
-    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
-  var time =
-    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
-  var dateTime = date + " " + time
-  return encodeURIComponent(dateTime)
-} */
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 

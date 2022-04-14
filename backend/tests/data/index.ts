@@ -186,7 +186,7 @@ export const courses: Prisma.CourseCreateInput[] = [
     },
   },
   {
-    id: "00000000000000000000000000000666",
+    id: "00000000-0000-0000-0000-000000000666",
     name: "handler",
     slug: "handler",
     start_date: "01/01/1900",
@@ -196,7 +196,7 @@ export const courses: Prisma.CourseCreateInput[] = [
     hidden: false,
   },
   {
-    id: "00000000000000000000000000000667",
+    id: "00000000-0000-0000-0000-000000000667",
     name: "handled",
     slug: "handled",
     start_date: "01/01/1900",
@@ -205,6 +205,19 @@ export const courses: Prisma.CourseCreateInput[] = [
     teacher_in_charge_name: "foo",
     hidden: true,
     completions_handled_by: {
+      connect: { id: "00000000000000000000000000000666" },
+    },
+  },
+  {
+    id: "00000000-0000-0000-0000-000000000668",
+    name: "inherits",
+    slug: "inherits",
+    start_date: "01/01/1900",
+    end_date: "12/31/2100",
+    teacher_in_charge_email: "t@mail.com",
+    teacher_in_charge_name: "foo",
+    hidden: true,
+    inherit_settings_from: {
       connect: { id: "00000000000000000000000000000666" },
     },
   },

@@ -3,9 +3,10 @@ import { Request, Response, Router } from "express"
 import { ApiContext } from "../"
 import { requireAdmin } from "../../util/server-functions"
 
-export function abStudiesRouter({ knex, prisma }: ApiContext) {
+export function abStudiesRouter(ctx: ApiContext) {
   async function abStudiesGet(req: Request<{ id?: string }>, res: Response) {
-    const adminRes = await requireAdmin(knex)(req, res)
+    const { prisma } = ctx
+    const adminRes = await requireAdmin(ctx)(req, res)
 
     if (adminRes !== true) {
       return adminRes
@@ -25,7 +26,8 @@ export function abStudiesRouter({ knex, prisma }: ApiContext) {
   }
 
   async function abStudiesPost(req: Request, res: Response) {
-    const adminRes = await requireAdmin(knex)(req, res)
+    const { prisma } = ctx
+    const adminRes = await requireAdmin(ctx)(req, res)
 
     if (adminRes !== true) {
       return adminRes
@@ -61,7 +63,8 @@ export function abStudiesRouter({ knex, prisma }: ApiContext) {
     req: Request<{ id: string }>,
     res: Response,
   ) {
-    const adminRes = await requireAdmin(knex)(req, res)
+    const { prisma } = ctx
+    const adminRes = await requireAdmin(ctx)(req, res)
 
     if (adminRes !== true) {
       return adminRes

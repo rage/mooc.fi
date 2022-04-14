@@ -30,8 +30,10 @@ describe("redisify", () => {
           expireTime: 1,
           key: "baz",
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("foo")
@@ -48,8 +50,10 @@ describe("redisify", () => {
           expireTime: 1,
           key: "baz",
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("foo")
@@ -67,8 +71,10 @@ describe("redisify", () => {
           key: "baz",
           params: ["foo", "bar"],
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("foo bar")
@@ -86,8 +92,10 @@ describe("redisify", () => {
           key: "baz",
           params: ["foo", "bar"],
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("foo bar")
@@ -105,8 +113,10 @@ describe("redisify", () => {
           key: "baz",
           params: ["foo", "bar"],
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("foo")
@@ -127,8 +137,10 @@ describe("redisify", () => {
           expireTime: 1,
           key: "baz",
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("bar")
@@ -144,8 +156,10 @@ describe("redisify", () => {
           expireTime: 1,
           key: "baz",
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual(undefined)
@@ -169,8 +183,10 @@ describe("redisify", () => {
           expireTime: 1,
           key: "baz",
         },
-        redis as any,
-        logger,
+        {
+          client: redis as any,
+          logger,
+        },
       )
 
       expect(res).toEqual("foo")

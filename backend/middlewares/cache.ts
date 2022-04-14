@@ -1,7 +1,8 @@
 import { createHash } from "crypto"
-import { redisify } from "../services/redis"
-import { Context } from "../context"
 import { plugin } from "nexus"
+
+import { Context } from "../context"
+import { redisify } from "../services/redis"
 
 export const cachePlugin = () =>
   plugin({
@@ -36,6 +37,9 @@ export const cachePlugin = () =>
             prefix: "graphql-response",
             expireTime: 300,
             key: hash,
+          },
+          {
+            logger: context.logger,
           },
         )
         return res

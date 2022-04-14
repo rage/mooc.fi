@@ -1,12 +1,12 @@
 import {
-  getTestContext,
-  fakeTMCSpecific,
   fakeGetAccessToken,
+  fakeTMCSpecific,
+  getTestContext,
 } from "../../../../tests/__helpers"
-import { seed } from "../../../../tests/data/seed"
 import { adminUserDetails, normalUserDetails } from "../../../../tests/data"
-import { KafkaContext } from "../kafkaContext"
+import { seed } from "../../../../tests/data/seed"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
+import { KafkaContext } from "../kafkaContext"
 
 const ctx = getTestContext()
 const tmc = fakeTMCSpecific({
@@ -87,7 +87,7 @@ describe("getUserWithRaceCondition", () => {
       9999,
     )
     expect(user).not.toBeNull()
-    expect(ctx.logger.error).not.toHaveBeenCalled()
-    expect(ctx.logger.info).toHaveBeenCalled()
+    expect(kafkaContext.logger.error).not.toHaveBeenCalled()
+    expect(kafkaContext.logger.info).toHaveBeenCalled()
   })
 })

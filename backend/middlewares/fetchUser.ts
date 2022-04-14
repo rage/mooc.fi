@@ -65,6 +65,9 @@ const getUser = async (ctx: Context, rawToken: string) => {
         expireTime: 3600,
         key: rawToken,
       },
+      {
+        logger: ctx.logger,
+      },
     )
   } catch (e) {
     // console.log("error", e)

@@ -61,42 +61,6 @@ export const CompletionQueries = extendType({
         }
 
         return completions
-        /*const courseWithSlug = await ctx.prisma.course.findUnique({
-          where: {
-            slug: course,
-          },
-        })
-
-        if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.prisma.courseAlias
-            .findUnique({
-              where: {
-                course_code: course,
-              },
-            })
-            .course()
-
-          if (!courseFromAvoinCourse) {
-            throw new UserInputError("Invalid course identifier")
-          }
-          course = courseFromAvoinCourse.slug
-        }
-        const courseObject = await ctx.prisma.course.findUnique({
-          where: {
-            slug: course,
-          },
-        })
-
-        if (completion_language) {
-          return await Knex.select("*").from("completion").where({
-            course_id: courseObject?.id,
-            completion_language: completion_language,
-          })
-        } else {
-          return await Knex.select("*")
-            .from("completion")
-            .where({ course_id: courseObject?.id })
-        }*/
       },
     })
 
