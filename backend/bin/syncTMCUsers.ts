@@ -32,9 +32,11 @@ export interface SyncTMCUsersContext {
 }
 
 export const syncTMCUsers = async (
-  ctx: SyncTMCUsersContext = {} as SyncTMCUsersContext,
+  ctx: SyncTMCUsersContext = {
+    logger: _logger,
+  } as SyncTMCUsersContext,
 ) => {
-  const { logger = _logger } = ctx
+  const { logger } = ctx
 
   if (!ctx.prisma) {
     ctx.prisma = (await import("../prisma")).default
