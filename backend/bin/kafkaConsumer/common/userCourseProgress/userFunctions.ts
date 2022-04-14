@@ -372,3 +372,5 @@ export class CombinedUserCourseProgress {
       (this.progress[index].max_points || 1)
   }
 }
+
+// languages moved to /backend/config/languageConfig.ts
