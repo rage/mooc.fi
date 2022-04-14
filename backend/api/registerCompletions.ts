@@ -12,9 +12,10 @@ interface RegisterCompletion {
   registration_date?: string
 }
 
-export function registerCompletions({ knex, prisma }: ApiContext) {
+export function registerCompletions(ctx: ApiContext) {
   return async (req: any, res: any) => {
-    const organizationResult = await getOrganization(knex)(req, res)
+    const { prisma } = ctx
+    const organizationResult = await getOrganization(ctx)(req, res)
 
     if (organizationResult.isErr()) {
       return organizationResult.error

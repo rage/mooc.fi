@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
-import { Knex } from "knex"
 
 import { CourseOwnership, Organization, User } from "@prisma/client"
 
+import { ApiContext } from "../api"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
@@ -15,16 +15,16 @@ interface GetUserReturn {
 
 export function requireCourseOwnership({
   course_id,
-  knex,
+  ctx,
 }: {
   course_id: string
-  knex: Knex
+  ctx: ApiContext
 }) {
   return async function (
     req: Request,
     res: Response,
   ): Promise<Result<CourseOwnership | GetUserReturn, any>> {
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult
@@ -32,7 +32,7 @@ export function requireCourseOwnership({
 
     const { user } = getUserResult.value
     const ownership = (
-      await knex
+      await ctx.knex
         .select<any, CourseOwnership[]>("*")
         .from("course_ownership")
         .where("course_id", course_id)
@@ -50,12 +50,12 @@ export function requireCourseOwnership({
   }
 }
 
-export function requireAdmin(knex: Knex) {
+export function requireAdmin(ctx: ApiContext) {
   return async function (
     req: Request,
     res: Response,
   ): Promise<Response<any> | boolean> {
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isOk() && getUserResult.value.details.administrator) {
       return true
@@ -68,7 +68,7 @@ export function requireAdmin(knex: Knex) {
   }
 }
 
-export function getUser(knex: Knex) {
+export function getUser({ knex, logger }: ApiContext) {
   return async function (
     req: any,
     res: any,
@@ -89,9 +89,12 @@ export function getUser(knex: Knex) {
           expireTime: 3600,
           key: rawToken,
         },
+        {
+          logger,
+        },
       )
     } catch (e) {
-      console.log("error", e)
+      logger.error("error", e)
     }
 
     if (!details) {
@@ -141,7 +144,7 @@ export function getUser(knex: Knex) {
   }
 }
 
-export function getOrganization(knex: Knex) {
+export function getOrganization({ knex }: ApiContext) {
   return async function (
     req: any,
     res: any,

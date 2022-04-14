@@ -122,8 +122,6 @@ export const UserOrganizationMutations = extendType({
       type: "UserOrganization",
       args: {
         id: nonNull(idArg()),
-        /*       userId: schema.idArg(),
-        organizationId: schema.idArg(), */
         role: arg({ type: "OrganizationRole" }),
       },
       authorize: or(isVisitor, isAdmin),

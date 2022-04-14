@@ -37,10 +37,7 @@ const doIt = async () => {
         course: { slug: "elements-of-ai" },
       },
     })
-    /*const exists = await prisma.$exists.completion({
-      user_upstream_id: x[i].user_id,
-      course: { slug: "elements-of-ai" },
-    })*/
+
     if (existing.length > 0) counter++
   }
   console.log(counter)

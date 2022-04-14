@@ -75,10 +75,6 @@ export const StudyModuleMutations = extendType({
         const removedTranslationIds = existingTranslationIds
           .filter((id) => !moduleTranslationIds.includes(id))
           .map((id) => ({ id }))
-        /*       const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = pullAll(
-          (existingTranslations || []).map(t => t.id),
-          (study_module_translations || []).map(t => t.id).filter(v => !!v),
-        ).map(_id => ({ id: _id })) */
 
         const translationMutation = {
           create: newTranslations.length ? newTranslations : undefined,

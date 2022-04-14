@@ -1,7 +1,7 @@
-import { ApiContext } from "."
 import { getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
-export function tierProgress({ knex }: ApiContext) {
+export function tierProgress(ctx: ApiContext) {
   return async (req: any, res: any) => {
     const { id }: { id: string } = req.params
 
@@ -9,7 +9,7 @@ export function tierProgress({ knex }: ApiContext) {
       return res.status(400).json({ message: "must provide course id" })
     }
 
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -17,7 +17,7 @@ export function tierProgress({ knex }: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const data = await knex
+    const data = await ctx.knex
       .select<any, any>("course_id", "extra")
       .from("user_course_progress")
       .where("user_course_progress.course_id", id)

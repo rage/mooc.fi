@@ -1,10 +1,11 @@
-import { objectType, extendType, arg, booleanArg, idArg, nonNull } from "nexus"
-import {
-  uploadImage as uploadStorageImage,
-  deleteImage as deleteStorageImage,
-} from "../services/google-cloud"
-import { Context } from "../context"
+import { arg, booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
+
 import { isAdmin } from "../accessControl"
+import { Context } from "../context"
+import {
+  deleteImage as deleteStorageImage,
+  uploadImage as uploadStorageImage,
+} from "../services/google-cloud"
 
 const sharp = require("sharp")
 
@@ -56,13 +57,6 @@ export const ImageMutations = extendType({
     })
   },
 })
-
-// FIXME: not used anywhere
-/* const getImageBuffer = (image: string) => {
-  const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")
-
-  return new Buffer(base64EncodedImageString, "base64")
-} */
 
 const readFS = (stream: NodeJS.ReadStream): Promise<Buffer> => {
   let chunkList: any[] | Uint8Array[] = []

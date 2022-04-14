@@ -21,16 +21,6 @@ if (!KAFKA_BRIDGE_SECRET) {
   process.exit(-1)
 }
 
-/* const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  defaultMeta: { service: "kafka-consumer-user-points" },
-  transports: [new winston.transports.Console()],
-})
- */
 const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
   "metadata.broker.list": KAFKA_HOST,
@@ -114,12 +104,3 @@ app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
 app.listen(port, host, () =>
   console.log(`Kafka bridge listening on ${host}:${port}!`),
 )
-
-// FIXME: (?) not used anywhere
-/* const logCommit = (err: any, topicPartitions: any) => {
-  if (err) {
-    logger.error("Error in commit:" + err)
-  } else {
-    logger.info("Committed. topicPartitions:" + topicPartitions)
-  }
-} */

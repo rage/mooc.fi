@@ -1,7 +1,9 @@
-import { ApiContext } from "."
 import { Request } from "express"
+
 import { Completion } from "@prisma/client"
+
 import { getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 interface ExerciseCompletionResult {
   user_id: string
@@ -14,15 +16,16 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
-export function progress({ knex }: ApiContext) {
+export function progress(ctx: ApiContext) {
   return async (req: Request<{ id: string }>, res: any) => {
+    const { knex } = ctx
     const { id } = req.params
 
     if (!id) {
       return res.status(400).json({ message: "must provide id" })
     }
 
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -63,8 +66,9 @@ export function progress({ knex }: ApiContext) {
   }
 }
 
-export function progressV2({ knex }: ApiContext) {
+export function progressV2(ctx: ApiContext) {
   return async (req: Request<{ id: string }>, res: any) => {
+    const { knex } = ctx
     const { id }: { id: string } = req.params
     const { deleted = "" } = req.query
 
@@ -74,7 +78,7 @@ export function progressV2({ knex }: ApiContext) {
       return res.status(400).json({ message: "must provide id" })
     }
 
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error

@@ -17,9 +17,10 @@ import { ApiContext } from "./"
 
 const JSONStream = require("JSONStream")
 
-export function completions({ knex }: ApiContext) {
+export function completions(ctx: ApiContext) {
   return async function (req: any, res: any) {
-    const organizationResult = await getOrganization(knex)(req, res)
+    const { knex } = ctx
+    const organizationResult = await getOrganization(ctx)(req, res)
 
     if (organizationResult.isErr()) {
       return organizationResult.error
@@ -113,9 +114,10 @@ export function completionInstructions({ knex }: ApiContext) {
   }
 }
 
-export function completionTiers({ knex }: ApiContext) {
+export function completionTiers(ctx: ApiContext) {
   return async function (req: any, res: any) {
-    const getUserResult = await getUser(knex)(req, res)
+    const { knex } = ctx
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -184,7 +186,7 @@ export function completionTiers({ knex }: ApiContext) {
   }
 }
 
-export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
+export function recheckCompletion(ctx: ApiContext) {
   return async function (
     req: Request<
       {},
@@ -198,7 +200,8 @@ export function recheckCompletion({ prisma, logger, knex }: ApiContext) {
     >,
     res: Response,
   ) {
-    const adminRes = await requireAdmin(knex)(req, res)
+    const { prisma, logger, knex } = ctx
+    const adminRes = await requireAdmin(ctx)(req, res)
 
     if (adminRes !== true) {
       return adminRes

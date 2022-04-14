@@ -4,15 +4,16 @@ import { intersection, omit } from "lodash"
 import { getUser } from "../util/server-functions"
 import { ApiContext } from "./"
 
-export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
+export function userCourseSettingsGet(ctx: ApiContext) {
   return async (req: Request<{ slug: string }>, res: Response) => {
+    const { prisma, logger } = ctx
     const { slug } = req.params
 
     if (!slug) {
       return res.status(400).json({ message: "must provide slug" })
     }
 
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -60,8 +61,9 @@ export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
   }
 }
 
-export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
+export function userCourseSettingsPost(ctx: ApiContext) {
   return async (req: Request<{ slug: string }>, res: Response) => {
+    const { prisma } = ctx
     const { slug } = req.params
 
     if (!slug) {
@@ -69,7 +71,7 @@ export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
     }
     const { body } = req
 
-    const getUserResult = await getUser(knex)(req, res)
+    const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
