@@ -93,40 +93,6 @@ export const Completion = objectType({
         )?.[0]
 
         return link?.link ?? null
-        /*const course = await ctx.prisma.completion
-          .findUnique({ where: { id: parent.id } })
-          .course()
-
-        if (!course) {
-          throw new Error("course not found")
-        }
-
-        // TODO/FIXME:
-        // - register-completion/[slug] uses /api/completionTiers if there are tiers
-        // - this _always_ returns the parent course registration link, regardless of the tier
-        // - should this return the tier registration link?
-
-        let filter
-        if (
-          !parent.completion_language ||
-          parent.completion_language === "unknown"
-        ) {
-          filter = {
-            course_id: course.id,
-          }
-        } else {
-          filter = {
-            course_id: course.id,
-            language: parent.completion_language,
-          }
-        }
-        const avoinLink = await ctx.prisma.openUniversityRegistrationLink.findFirst(
-          {
-            where: filter,
-          },
-        )
-
-        return avoinLink?.link ?? null*/
       },
     })
 

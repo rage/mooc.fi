@@ -147,16 +147,6 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   }
 }
 
-// FIXME: not used anywhere
-/* const currentDate = () => {
-  var today = new Date()
-  var date =
-    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
-  var time =
-    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
-  var dateTime = date + " " + time
-  return encodeURIComponent(dateTime)
-} */
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 async function saveProgress(prisma: PrismaClient, dateToDB: Date) {

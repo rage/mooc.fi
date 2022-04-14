@@ -11,13 +11,7 @@ import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
 import { deleteImage, uploadImage } from "../Image"
 
-/* const shallowCompare = (obj1: object, obj2: object) =>
-  Object.keys(obj1).length === Object.keys(obj2).length &&
-  Object.keys(obj1).every(
-    key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
-  ) */
-
-const filterNull = <T>(value: T | null | undefined): value is T =>
+const isNotNull = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined
 
 export const CourseMutations = extendType({
@@ -72,7 +66,7 @@ export const CourseMutations = extendType({
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translations: {
-              create: course_translations?.filter(filterNull),
+              create: course_translations?.filter(isNotNull),
             },
             study_modules: !!study_modules
               ? {
@@ -82,10 +76,10 @@ export const CourseMutations = extendType({
                 }
               : undefined,
             open_university_registration_links: {
-              create: open_university_registration_links?.filter(filterNull),
+              create: open_university_registration_links?.filter(isNotNull),
             },
-            course_variants: { create: course_variants?.filter(filterNull) },
-            course_aliases: { create: course_aliases?.filter(filterNull) },
+            course_variants: { create: course_variants?.filter(isNotNull) },
+            course_aliases: { create: course_aliases?.filter(isNotNull) },
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : undefined,
@@ -93,7 +87,7 @@ export const CourseMutations = extendType({
               ? { connect: { id: completions_handled_by } }
               : undefined,
             user_course_settings_visibilities: {
-              create: user_course_settings_visibilities?.filter(filterNull),
+              create: user_course_settings_visibilities?.filter(isNotNull),
             },
             // don't think these will be passed by parameter, but let's be sure
             completion_email: !!completion_email

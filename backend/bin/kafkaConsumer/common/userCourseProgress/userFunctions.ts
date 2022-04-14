@@ -128,6 +128,8 @@ export const getUserCourseSettings = async ({
   course_id: string
   context: KafkaContext
 }): Promise<UserCourseSetting | null> => {
+  // - if the course inherits user course settings from some course, get settings from that one
+  // - if not, get if from the course itself or null if none exists
   const result = await prisma.course.findUnique({
     where: {
       id: course_id,
@@ -161,34 +163,6 @@ export const getUserCourseSettings = async ({
     result?.user_course_settings?.[0] ??
     null
   )
-  /*let userCourseSetting = await prisma.userCourseSetting.findFirst({
-    where: {
-      user_id: user.id,
-      course_id,
-    },
-    orderBy: {
-      created_at: "asc",
-    },
-  })
-
-  if (!userCourseSetting) {
-    const inheritCourse = await prisma.course
-      .findUnique({ where: { id: course_id } })
-      .inherit_settings_from()
-    if (inheritCourse) {
-      userCourseSetting = await prisma.userCourseSetting.findFirst({
-        where: {
-          user_id: user.id,
-          course_id: inheritCourse.id,
-        },
-        orderBy: {
-          created_at: "asc",
-        },
-      })
-    }
-  }
-
-  return userCourseSetting*/
 }
 
 interface CheckCompletion {
@@ -263,6 +237,7 @@ export const createCompletion = async ({
     course_id,
     context,
   })
+
   const completions = await prisma.user
     .findUnique({
       where: {
@@ -277,6 +252,7 @@ export const createCompletion = async ({
         created_at: "asc",
       },
     })
+
   if (completions.length < 1) {
     logger?.info("No existing completion found, creating new...")
     await prisma.completion.create({
