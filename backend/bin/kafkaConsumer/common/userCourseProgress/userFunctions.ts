@@ -5,6 +5,10 @@ import {
   UserCourseSetting,
 } from "@prisma/client"
 
+import {
+  completionLanguageMap,
+  LanguageAbbreviation,
+} from "../../../../config/languageConfig"
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
@@ -254,17 +258,20 @@ export const createCompletion = async ({
     })
 
   if (completions.length < 1) {
-    logger?.info("No existing completion found, creating new...")
-    await prisma.completion.create({
+    logger.info("No existing completion found, creating new...")
+
+    const { language } = userCourseSettings ?? {}
+    const completion_language =
+      completionLanguageMap[language as LanguageAbbreviation] ?? null
+
+    const newCompletion = await prisma.completion.create({
       data: {
         course: { connect: { id: handlerCourse.id } },
         email: user.email,
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,
         student_number: user.student_number,
-        completion_language: userCourseSettings?.language
-          ? languageCodeMapping[userCourseSettings.language]
-          : null,
+        completion_language,
         eligible_for_ects:
           tier === 1
             ? false
@@ -273,15 +280,28 @@ export const createCompletion = async ({
         tier: !isNullOrUndefined(tier) ? tier : undefined,
       },
     })
+
+    if (!userCourseSettings) {
+      logger.warn(
+        `No user course settings found for user ${user.id} on course ${course_id} (handler ${handlerCourse.id}), created completion ${newCompletion.id} anyway; completion_language will be null`,
+      )
+    } else if (language && !completion_language) {
+      logger.warn(
+        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway`,
+      )
+    }
+
     // TODO: this only sends the completion email for the first tier completed
     await pushMessageToClient(
       user.upstream_id,
       course_id,
       MessageType.COURSE_CONFIRMED,
     )
+
     const template = await prisma.course
       .findUnique({ where: { id: course_id } })
       .completion_email()
+
     if (template) {
       await prisma.emailDelivery.create({
         data: {
@@ -311,7 +331,7 @@ export const createCompletion = async ({
         logger?.info("Existing completion found, updated tier")
       }
     } catch (error: any) {
-      logger?.error(
+      logger.error(
         new DatabaseInputError("Error updating tier", completions[0], error),
       )
     }
@@ -351,38 +371,4 @@ export class CombinedUserCourseProgress {
       (this.progress[index].n_points || 0) /
       (this.progress[index].max_points || 1)
   }
-}
-
-const languageCodeMapping: Record<string, string> = {
-  fi: "fi_FI",
-  en: "en_US",
-  se: "sv_SE",
-  ee: "et_EE",
-  de: "de_DE",
-  fr: "fr_FR",
-  it: "it_IT",
-  hu: "hu_HU",
-  lv: "lv_LV",
-  da: "da_DK",
-  nl: "nl_NL",
-  hr: "hr_HR",
-  lt: "lt_LT",
-  ga: "ga_IE",
-  bg: "bg_BG",
-  cs: "cs_CZ",
-  el: "el_GR",
-  mt: "mt_MT",
-  pt: "pt_PT",
-  ro: "ro_RO",
-  sk: "sk_SK",
-  sl: "sl_SI",
-  no: "nb_NO",
-  "fr-be": "fr_BE",
-  "nl-be": "nl_BE",
-  "en-ie": "en_IE",
-  pl: "pl_PL",
-  "de-at": "de_AT",
-  es: "es_ES",
-  "el-cy": "el_CY",
-  "en-lu": "en_LU",
 }
