@@ -26,7 +26,11 @@ import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import {
+  type PureQueryOptions,
+  useApolloClient,
+  useMutation,
+} from "@apollo/client"
 
 import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"

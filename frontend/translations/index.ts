@@ -1,5 +1,5 @@
 import notEmpty from "/util/notEmpty"
-import { memoize } from "lodash"
+import memoize from "lodash/memoize"
 import { NextRouter } from "next/router"
 
 const defaultLanguage = "en"

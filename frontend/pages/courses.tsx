@@ -52,11 +52,11 @@ function useCourseSearch() {
     .filter(notEmptyOrEmptyString)
 
   const initialSearchVariables: SearchVariables = {
-    search: useQueryParameter("search", false) || "",
+    search: useQueryParameter("search", false) ?? "",
     hidden:
-      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
+      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ??
       true,
-    handledBy: useQueryParameter("handledBy", false) || null,
+    handledBy: useQueryParameter("handledBy", false) ?? null,
     status: statusParam.length ? statusParam : ["Active", "Upcoming"],
   }
 
@@ -72,7 +72,7 @@ function useCourseSearch() {
     error: editorError,
     data: editorData,
   } = useQuery<AllEditorCourses>(AllEditorCoursesQuery, {
-    variables: searchVariables || initialSearchVariables,
+    variables: searchVariables ?? initialSearchVariables,
   })
   const {
     loading: handlersLoading,
@@ -81,25 +81,34 @@ function useCourseSearch() {
   } = useQuery<HandlerCourses>(HandlerCoursesQuery)
 
   useEffect(() => {
-    const params = [
-      ...(["search", "handledBy"] as Array<keyof typeof searchVariables>).map(
-        (field) =>
-          notEmptyOrEmptyString(searchVariables[field])
-            ? `${field}=${encodeURIComponent(
-                searchVariables[field]?.toString() ?? "",
-              )}`
-            : "",
-      ),
-      !searchVariables.hidden ? `hidden=false` : "",
+    const params = []
+
+    for (const field of ["search", "handledBy"] as Array<
+      keyof typeof searchVariables
+    >) {
+      if (notEmptyOrEmptyString(searchVariables[field])) {
+        params.push(
+          `${field}=${encodeURIComponent(
+            searchVariables[field]?.toString() ?? "",
+          )}`,
+        )
+      }
+    }
+    if (!searchVariables.hidden) {
+      params.push("hidden=false")
+    }
+    if (
       searchVariables.status?.length &&
       JSON.stringify(searchVariables.status.sort()) !==
         JSON.stringify(["Active", "Upcoming"])
-        ? `status=${searchVariables.status.join(",")}`
-        : "",
-    ].filter(Boolean)
+    ) {
+      params.push(`status=${searchVariables.status.sort().join(",")}`)
+    }
 
     const query = params.length ? `?${params.join("&")}` : ""
+
     const href = `/courses/${query}`
+
     if (router?.asPath !== href) {
       router.push(href, undefined, { shallow: true })
     }

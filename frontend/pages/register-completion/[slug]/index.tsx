@@ -191,7 +191,7 @@ function RegisterCompletionPage() {
   if (userError || courseError) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(userError || courseError, undefined, 2)}
+        errorMessage={JSON.stringify(userError ?? courseError, undefined, 2)}
       />
     )
   }

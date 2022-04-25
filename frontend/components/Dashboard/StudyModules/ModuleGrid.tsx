@@ -1,7 +1,9 @@
-import { Grid } from "@mui/material"
-import ModuleCard from "./ModuleCard"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
-import { range } from "lodash"
+import range from "lodash/range"
+
+import { Grid } from "@mui/material"
+
+import ModuleCard from "./ModuleCard"
 
 interface ModuleGridProps {
   modules?: AllEditorModulesWithTranslations_study_modules[]

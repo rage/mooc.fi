@@ -1,7 +1,9 @@
-import { Grid } from "@mui/material"
-import PointsListItemCard from "./PointsListItemCard"
 import { UserCourseSettings_userCourseSettings_edges as Points } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
+
+import { Grid } from "@mui/material"
+
+import PointsListItemCard from "./PointsListItemCard"
 
 interface Props {
   pointsForUser: Points[]
@@ -25,12 +27,12 @@ const PointsList = (props: Props) => {
               cutterValue={cutterValue}
               showPersonalDetails={true}
               personalDetails={{
-                firstName: p.node.user.first_name || "n/a",
-                lastName: p.node.user.last_name || "n/a",
-                email: p.node.user.email || "n/a",
+                firstName: p.node.user.first_name ?? "n/a",
+                lastName: p.node.user.last_name ?? "n/a",
+                email: p.node.user.email ?? "n/a",
                 sid:
-                  p.node.user.real_student_number ||
-                  p.node.user.student_number ||
+                  p.node.user.real_student_number ??
+                  p.node.user.student_number ??
                   "n/a",
               }}
               key={`pointslistitemcard_${p.node.id}`}

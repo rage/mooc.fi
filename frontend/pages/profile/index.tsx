@@ -76,7 +76,7 @@ const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
 )
 
 function Profile() {
-  const _tab = useQueryParameter("tab", false) || "points"
+  const _tab = useQueryParameter("tab", false) ?? "points"
   const router = useRouter()
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
@@ -111,10 +111,10 @@ function Profile() {
     return <Spinner />
   }
 
-  const first_name = data?.currentUser?.first_name || "No first name"
-  const last_name = data?.currentUser?.last_name || "No last name"
-  const email = data?.currentUser?.email || "no email"
-  const studentNumber = data?.currentUser?.student_number || "no student number"
+  const first_name = data?.currentUser?.first_name ?? "No first name"
+  const last_name = data?.currentUser?.last_name ?? "No last name"
+  const email = data?.currentUser?.email ?? "no email"
+  const studentNumber = data?.currentUser?.student_number ?? "no student number"
   const { research_consent } = data?.currentUser ?? {}
 
   return (

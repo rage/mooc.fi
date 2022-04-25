@@ -1,14 +1,14 @@
-import { mime } from "/util/imageUtils"
+import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
-import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
+import { mime } from "/util/imageUtils"
 
 const ModuleImage = ({
   module,
 }: {
   module?: AllModules_study_modules | AllModules_study_modules_with_courses
 }) => {
-  const imageUrl = module ? module.image || `${module.slug}.jpg` : ""
+  const imageUrl = module?.image ?? module ? `${module.slug}.jpg` : ""
 
   try {
     return (

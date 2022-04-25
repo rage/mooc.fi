@@ -16,10 +16,10 @@ const Alerts = () => {
           <Alert
             key={`alert-${idx}`}
             onClose={() => removeAlert(alert)}
-            severity={alert.severity || "info"}
+            severity={alert.severity ?? "info"}
           >
             {alert.title ? <AlertTitle>{alert.title}</AlertTitle> : null}
-            {alert.message || alert.component}
+            {alert.message ?? alert.component}
           </Alert>
         ))}
     </>

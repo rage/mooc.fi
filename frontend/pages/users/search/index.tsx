@@ -79,7 +79,7 @@ const UserSearch = () => {
       <Container>
         <UserSearchContext.Provider
           value={{
-            data: data || ({} as UserDetailsContains),
+            data: data ?? ({} as UserDetailsContains),
             loading,
             page,
             rowsPerPage,

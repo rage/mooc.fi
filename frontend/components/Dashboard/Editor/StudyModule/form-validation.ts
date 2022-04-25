@@ -1,9 +1,11 @@
 import * as Yup from "yup"
+
+import { type ApolloClient, type DocumentNode } from "@apollo/client"
+
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { ApolloClient, DocumentNode } from "@apollo/client"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,
@@ -83,12 +85,12 @@ const studyModuleEditSchema = ({
                 values: { study_module_translations },
               } = context
 
-              if (!value || value === "") {
+              if (!value) {
                 return true // previous should have caught the empty
               }
 
               const currentIndexMatch =
-                (path || "").match(/^.*\[(\d+)\].*$/) || []
+                (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
               const currentIndex =
                 currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
               const otherTranslationLanguages = study_module_translations
@@ -122,7 +124,7 @@ const validateSlug = ({
     this: Yup.TestContext,
     value?: string | null,
   ): Promise<boolean> {
-    if (!value || value === "") {
+    if (!value) {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
 

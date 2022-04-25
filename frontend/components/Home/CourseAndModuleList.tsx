@@ -42,7 +42,7 @@ const CourseAndModuleList = () => {
 
   const modulesWithCourses = useMemo(
     (): AllModules_study_modules_with_courses[] =>
-      (study_modules || [])
+      (study_modules ?? [])
         .filter(notEmpty)
         .map((module) => {
           const moduleCourses =
@@ -68,7 +68,7 @@ const CourseAndModuleList = () => {
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
       ["Active", "Upcoming", "Ended"].map((status) =>
-        (courses || [])
+        (courses ?? [])
           .filter(notEmpty)
           .filter((c) => !c.hidden && c.status === status),
       ),

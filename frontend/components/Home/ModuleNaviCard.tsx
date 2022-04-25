@@ -44,7 +44,7 @@ const GridItem = styled.div`
 
 const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
   <GridItem>
-    <Link href={`#${module ? module.slug : ""}`}>
+    <Link href={`#${module?.slug ?? ""}`} passHref>
       <Base component="div">
         {module ? (
           <>

@@ -4,9 +4,9 @@ import { AppContext } from "next/app"
 import { renderToString } from "react-dom/server"
 
 import {
-  ApolloClient,
+  type ApolloClient,
   ApolloProvider,
-  NormalizedCacheObject,
+  type NormalizedCacheObject,
 } from "@apollo/client"
 
 import fetchUserDetails from "./fetch-user-details"

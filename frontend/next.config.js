@@ -31,6 +31,17 @@ const nextConfiguration = {
       // would label things with [local] or something; will break styling if not set to never
       autoLabel: "never",
     },
+    modularizeImports: {
+      "@mui/icons-material": {
+        transform: "@mui/icons-material/{{member}}",
+      },
+      "@mui/material": {
+        transform: "@mui/material/{{member}}",
+      },
+      lodash: {
+        transform: "lodash/{{member}}",
+      },
+    },
   },
 }
 

@@ -1,14 +1,15 @@
-import styled from "@emotion/styled"
-import { Grid, Chip, Skeleton } from "@mui/material"
-import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
-import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
+import ReactGA from "react-ga"
+
+import styled from "@emotion/styled"
+import { Chip, Grid, Skeleton } from "@mui/material"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;
@@ -75,7 +76,7 @@ export default function CourseCard({ course }: CourseCardProps) {
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <CardLinkWithGA
         eventLabel={`coursesite: ${course?.name ?? ""}`}
-        to={course ? course.link || "" : ""}
+        to={course?.link ?? ""}
         target="_blank"
       >
         <Background
@@ -83,7 +84,6 @@ export default function CourseCard({ course }: CourseCardProps) {
           disabled={
             !course ||
             !course.link ||
-            course.link === "" ||
             (course?.status === "Upcoming" && !course?.upcoming_active_link)
           }
           component="div"

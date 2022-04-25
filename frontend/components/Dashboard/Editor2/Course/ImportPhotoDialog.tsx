@@ -1,22 +1,24 @@
-import { useFormContext } from "react-hook-form"
+import { useEffect, useState } from "react"
+
+import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
 } from "/static/types/generated/CourseEditorCourses"
-import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
+import { useTranslator } from "/util/useTranslator"
+import { useFormContext } from "react-hook-form"
+
+import styled from "@emotion/styled"
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  Button,
+  DialogTitle,
 } from "@mui/material"
-import styled from "@emotion/styled"
-import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
-import { useEffect, useState } from "react"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -89,9 +91,9 @@ export default function ImportPhotoDialog({
   const photo = watch("import_photo")
 
   const handleSelection = () => {
-    const photo = (
-      courses?.find((course) => course.id === getValues("import_photo")) ?? {}
-    ).photo
+    const photo = courses?.find(
+      (course) => course.id === getValues("import_photo"),
+    )?.photo
 
     if (!photo) {
       return

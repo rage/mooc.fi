@@ -106,8 +106,8 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
       })
 
       await authenticate({
-        email: this.state.email || "",
-        password: this.state.password || "",
+        email: this.state.email ?? "",
+        password: this.state.password ?? "",
         redirect: false,
       })
 
@@ -307,7 +307,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
           <Row>
             <SubmitButton
               onClick={this.onClick}
-              disabled={this.state.submitting || !this.state.canSubmit}
+              disabled={this.state.submitting ?? !this.state.canSubmit}
               variant="contained"
               color="secondary"
               fullWidth

@@ -2,7 +2,7 @@ import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
 import { useTranslator } from "/util/useTranslator"
-import { memoize } from "lodash"
+import memoize from "lodash/memoize"
 import Link from "next/link"
 
 import styled from "@emotion/styled"
@@ -91,13 +91,13 @@ function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
     ? t(translation)
     : translation
 
-  const text = label || _translation || undefined
+  const text = label ?? _translation
 
   return (
     <BreadcrumbItem>
       {!text || !href ? (
         <BreadcrumbNonLink>
-          {text || <Skeleton width="100px" />}
+          {text ?? <Skeleton width="100px" />}
         </BreadcrumbNonLink>
       ) : (
         <Link href={href} passHref>

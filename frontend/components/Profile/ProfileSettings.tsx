@@ -34,7 +34,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     message: t("researchOkAnswer"),
   }
 
-  const { research_consent } = data || {}
+  const { research_consent } = data ?? {}
   const [researchConsent, setResearchConsent] = useState<string | undefined>(
     research_consent === null || typeof research_consent === "undefined"
       ? undefined

@@ -9,7 +9,7 @@ import {
 } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
-import { range } from "lodash"
+import range from "lodash/range"
 
 import { gql, useLazyQuery } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -152,7 +152,7 @@ function PaginatedPointsList(props: Props) {
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {data?.userCourseSettings?.totalCount || 0} results
+            {data?.userCourseSettings?.totalCount ?? 0} results
           </div>
           <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button

@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { AlertProvider } from "/contexts/AlertContext"
 import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
+import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
@@ -69,6 +70,8 @@ export function MyApp({
       router.events.off("routeChangeComplete", logPageView)
     }
   }, [router])
+
+  useScrollToHash()
 
   const titleString = t("title", { title: "..." })?.[router?.pathname ?? ""]
 

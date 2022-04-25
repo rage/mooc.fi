@@ -1,14 +1,16 @@
 import { useContext, useState } from "react"
-import { gql } from "@apollo/client"
+
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { AllCompletions as AllCompletionsData } from "/static/types/generated/AllCompletions"
 import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
-import { CircularProgress } from "@mui/material"
-import CompletionsListWithData from "./CompletionsListWithData"
-import CourseLanguageContext from "/contexts/CourseLanguageContext"
-import { useQuery } from "@apollo/client"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import { gql, useQuery } from "@apollo/client"
+import { CircularProgress } from "@mui/material"
+
+import CompletionsListWithData from "./CompletionsListWithData"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(
@@ -203,9 +205,9 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
         })
       }
       hasPrevious={
-        data.completionsPaginated?.pageInfo?.hasPreviousPage || false
+        data.completionsPaginated?.pageInfo?.hasPreviousPage ?? false
       }
-      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage || false}
+      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage ?? false}
       // pageNumber={queryDetails.page}
     />
   )

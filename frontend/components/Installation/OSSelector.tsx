@@ -1,14 +1,17 @@
-import OSSelectorButton from "./OSSelectorButton"
+import { useContext } from "react"
+
+import userOsContext from "/contexts/UserOSContext"
+
 import styled from "@emotion/styled"
 import {
-  faWindows as Windows,
-  faLinux as Linux,
   faApple as MAC,
+  faLinux as Linux,
+  faWindows as Windows,
 } from "@fortawesome/free-brands-svg-icons"
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
 
-import userOsContext from "/contexts/UserOSContext"
-import { useContext } from "react"
+import OSSelectorButton from "./OSSelectorButton"
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -33,6 +36,7 @@ const Container = styled.div`
   top: -3.5rem;
   left: 33%;
 `
+
 interface Props {
   excludeZip?: boolean
 }
@@ -49,9 +53,9 @@ const OSSelector = (props: Props) => {
         active={OS === "Windows"}
       />
       <OSSelectorButton OSName="macOS" Icon={MAC} active={OS === "macOS"} />
-      {excludeZip || (
+      {!excludeZip ? (
         <OSSelectorButton OSName="ZIP" Icon={AnyOS} active={OS === "ZIP"} />
-      )}
+      ) : null}
     </Container>
   )
 }

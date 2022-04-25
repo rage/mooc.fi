@@ -17,7 +17,7 @@ import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
-import { range } from "lodash"
+import range from "lodash/range"
 
 import { gql, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -89,9 +89,9 @@ const Header = styled(Typography)<any>`
   margin-top: 1em;
 `
 
-const FormContainer = styled(Container)`
-  spacing: 4;
-`
+const FormContainer = styled((props: any) => (
+  <Container spacing={4} {...props} />
+))``
 
 interface OrganizationCardProps {
   name: string
@@ -251,7 +251,7 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    if (!searchFilter || searchFilter === "") {
+    if (!searchFilter) {
       setFilteredOrganizations(organizations)
 
       return

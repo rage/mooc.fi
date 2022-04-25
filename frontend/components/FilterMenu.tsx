@@ -87,7 +87,7 @@ export default function FilterMenu({
     hidden: showHidden = true,
     status: showStatus = true,
     handler: showHandler = true,
-  } = fields || {}
+  } = fields ?? {}
   const {
     search: initialSearch,
     hidden: initialHidden,
@@ -117,8 +117,8 @@ export default function FilterMenu({
   const handleStatusChange =
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newStatus = e.target.checked
-        ? [...(searchVariables?.status || []), value]
-        : searchVariables?.status?.filter((v) => v !== value) || []
+        ? [...(searchVariables?.status ?? []), value]
+        : searchVariables?.status?.filter((v) => v !== value) ?? []
 
       setStatus(newStatus)
       setSearchVariables({

@@ -1,10 +1,11 @@
+import range from "lodash/range"
+
 import styled from "@emotion/styled"
 import { Container, Paper, Skeleton } from "@mui/material"
-import { range } from "lodash"
 
-const FormContainer = styled(Container)`
-  spacing: 4;
-`
+const FormContainer = styled((props: any) => (
+  <Container spacing={4} {...props} />
+))``
 
 const FormBackground = styled(Paper)`
   padding: 1em;

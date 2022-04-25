@@ -1,17 +1,18 @@
-import { initialValues } from "./form-validation"
-import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import { omit } from "lodash"
 import {
-  CourseDetails_course_photo,
   CourseDetails_course,
+  CourseDetails_course_photo,
 } from "/static/types/generated/CourseDetails"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import {
-  CourseStatus,
   CourseCreateArg,
+  CourseStatus,
   CourseUpsertArg,
 } from "/static/types/generated/globalTypes"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import omit from "lodash/omit"
 import { DateTime } from "luxon"
+
+import { initialValues } from "./form-validation"
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -42,7 +43,7 @@ export const toCourseForm = ({
         order: course.order ?? undefined,
         study_module_order: course.study_module_order ?? undefined,
         status: course.status ?? CourseStatus.Upcoming,
-        course_translations: (course.course_translations || []).map((c) => {
+        course_translations: (course.course_translations ?? []).map((c) => {
           const open_university_course_link =
             course?.open_university_registration_links?.find(
               (l) => l.language === c.language,
@@ -72,7 +73,7 @@ export const toCourseForm = ({
           course?.course_variants?.map((c) => ({
             ...omit(c, ["__typename", "id"]),
             _id: c.id ?? undefined,
-            description: c.description || undefined,
+            description: c.description ?? undefined,
           })) ?? [],
         course_aliases:
           course?.course_aliases?.map((c) => ({
@@ -119,19 +120,19 @@ export const fromCourseForm = ({
   const course_translations =
     values?.course_translations?.map((c: CourseTranslationFormValues) => ({
       ...omit(c, ["open_university_course_link", "_id"]),
-      link: c.link || "",
-      description: c.description || "",
-      id: !c._id || c._id === "" ? undefined : c._id,
+      link: c.link ?? "",
+      description: c.description ?? "",
+      id: c._id ?? undefined,
     })) ?? []
 
   const course_variants = (values?.course_variants ?? []).map((v) => ({
     ...omit(v, ["__typename", "_id"]),
-    id: !v._id || v._id === "" ? undefined : v._id,
+    id: v._id ?? undefined,
   }))
 
   const course_aliases = (values?.course_aliases ?? []).map((a) => ({
     ...omit(a, ["__typename", "_id"]),
-    id: !a._id || a._id === "" ? undefined : a._id,
+    id: a._id ?? undefined,
     course_code: a.course_code ?? undefined,
   }))
 
@@ -139,7 +140,7 @@ export const fromCourseForm = ({
     values?.user_course_settings_visibilities ?? []
   ).map((v) => ({
     ...omit(v, ["__typename", "_id"]),
-    id: !v._id || v._id === "" ? undefined : v._id,
+    id: v._id ?? undefined,
   }))
 
   const open_university_registration_links = values?.course_translations
@@ -174,7 +175,7 @@ export const fromCourseForm = ({
     })
     .filter((v) => !!v)
 
-  const study_modules = Object.keys(values.study_modules || {})
+  const study_modules = Object.keys(values.study_modules ?? {})
     .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map((id) => ({ id }))
 

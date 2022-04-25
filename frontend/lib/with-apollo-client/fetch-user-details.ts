@@ -1,4 +1,8 @@
-import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client"
+import {
+  type ApolloClient,
+  gql,
+  type NormalizedCacheObject,
+} from "@apollo/client"
 
 export const UserDetailQuery = gql`
   query UserOverView {

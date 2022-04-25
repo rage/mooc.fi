@@ -10,7 +10,7 @@ import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
 import styled from "@emotion/styled"
-import { IconProp } from "@fortawesome/fontawesome-svg-core"
+import type { IconProp } from "@fortawesome/fontawesome-svg-core"
 import {
   faChalkboardTeacher,
   faDashboard,

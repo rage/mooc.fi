@@ -3,7 +3,7 @@ import { CourseStatus } from "/static/types/generated/globalTypes"
 import { DateTime } from "luxon"
 import * as Yup from "yup"
 
-import { ApolloClient, DocumentNode } from "@apollo/client"
+import { type ApolloClient, DocumentNode } from "@apollo/client"
 
 import {
   CourseAliasFormValues,
@@ -221,7 +221,7 @@ const validateSlug = ({
     this: Yup.TestContext,
     value?: string | null,
   ): Promise<boolean> {
-    if (!value || value === "") {
+    if (!value) {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
 

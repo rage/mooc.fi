@@ -1,17 +1,19 @@
-import { yupResolver } from "@hookform/resolvers/yup"
-import { Typography } from "@mui/material"
-import { omit } from "lodash"
 import {
   createContext,
   PropsWithChildren,
   useCallback,
   useContext,
 } from "react"
-import styled from "@emotion/styled"
-import { useAnchorContext } from "/contexts/AnchorContext"
-import * as Yup from "yup"
-import { FormValues } from "/components/Dashboard/Editor2/types"
+
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormValues } from "/components/Dashboard/Editor2/types"
+import { useAnchorContext } from "/contexts/AnchorContext"
+import omit from "lodash/omit"
+import * as Yup from "yup"
+
+import styled from "@emotion/styled"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { Typography } from "@mui/material"
 
 export const FormSubtitle = styled(Typography)<any>`
   padding: 20px 0px 20px 0px;
@@ -122,11 +124,11 @@ export const testUnique = <Root extends FormValues, Child extends FormValues>(
 
     const fieldValues = context.values[valueField]
 
-    if (!value || value === "" || !isArray(fieldValues)) {
+    if (!value || !isArray(fieldValues)) {
       return true // previous should have caught the empty
     }
 
-    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndexMatch = (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
     const otherValues = fieldValues

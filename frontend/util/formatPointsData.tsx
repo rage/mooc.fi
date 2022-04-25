@@ -1,6 +1,8 @@
 import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
 import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
-import { flatten, groupBy, mapValues } from "lodash"
+import flatten from "lodash/flatten"
+import groupBy from "lodash/groupBy"
+import mapValues from "lodash/mapValues"
 
 export type formattedGroupPointsDictionary = {
   total: number

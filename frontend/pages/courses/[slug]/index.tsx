@@ -158,7 +158,7 @@ const Course = () => {
   if (error || userError) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(error || userError)}
+        errorMessage={JSON.stringify(error ?? userError)}
       />
     )
   }

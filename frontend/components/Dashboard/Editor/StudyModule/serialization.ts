@@ -1,14 +1,15 @@
 import {
-  StudyModuleFormValues,
-  StudyModuleTranslationFormValues,
-} from "./types"
-import { initialValues } from "./form-validation"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
-import { omit } from "lodash"
-import {
   StudyModuleCreateArg,
   StudyModuleUpsertArg,
 } from "/static/types/generated/globalTypes"
+import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
+import omit from "lodash/omit"
+
+import { initialValues } from "./form-validation"
+import {
+  StudyModuleFormValues,
+  StudyModuleTranslationFormValues,
+} from "./types"
 
 export const toStudyModuleForm = ({
   module,
@@ -18,7 +19,7 @@ export const toStudyModuleForm = ({
   module
     ? {
         ...module,
-        image: module.image || "",
+        image: module.image ?? "",
         new_slug: module.slug,
         order: module.order ?? undefined,
         study_module_translations: module?.study_module_translations ?? [],
@@ -33,7 +34,7 @@ export const fromStudyModuleForm = ({
   const study_module_translations = values?.study_module_translations?.map(
     (c: StudyModuleTranslationFormValues) => ({
       ...omit(c, "__typename"),
-      id: !c.id || c.id === "" ? null : c.id,
+      id: c.id ?? null,
     }),
   )
 

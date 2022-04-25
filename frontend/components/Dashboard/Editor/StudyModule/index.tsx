@@ -17,7 +17,11 @@ import { useTranslator } from "/util/useTranslator"
 import { FormikHelpers } from "formik"
 import Router from "next/router"
 
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import {
+  type PureQueryOptions,
+  useApolloClient,
+  useMutation,
+} from "@apollo/client"
 
 import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"

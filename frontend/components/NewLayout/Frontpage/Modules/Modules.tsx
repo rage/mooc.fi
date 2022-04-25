@@ -101,14 +101,11 @@ function Modules() {
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
       {loading && <p>Loading...</p>}
       <ModulesGrid>
-        {data?.study_modules &&
-          data.study_modules
-            .filter(notEmpty)
-            .map((module, index) => (
-              <ModuleCard key={`module-${index}`} module={module} hue={100} />
-            ))}
+        {data?.study_modules?.filter(notEmpty).map((module, index) => (
+          <ModuleCard key={`module-${index}`} module={module} hue={100} />
+        ))}
       </ModulesGrid>
-      <Link href="/_new/study-modules">
+      <Link href="/_new/study-modules" passHref>
         <Button>Näytä kaikki kokonaisuudet</Button>
       </Link>
     </SectionContainer>

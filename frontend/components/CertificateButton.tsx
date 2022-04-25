@@ -201,7 +201,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
           },
         })
         updateUser({
-          ...(currentUser || { email: "", id: "" }),
+          ...(currentUser ?? { email: "", id: "" }),
           first_name: firstName,
           last_name: lastName,
         } as UserOverView_currentUser)

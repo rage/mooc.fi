@@ -1,18 +1,19 @@
-import { initialValues } from "./form-validation"
-import { getIn } from "formik"
-import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import { omit } from "lodash"
 import {
-  CourseDetails_course_photo,
   CourseDetails_course,
+  CourseDetails_course_photo,
 } from "/static/types/generated/CourseDetails"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import {
-  CourseStatus,
   CourseCreateArg,
+  CourseStatus,
   CourseUpsertArg,
 } from "/static/types/generated/globalTypes"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { getIn } from "formik"
+import omit from "lodash/omit"
 import { DateTime } from "luxon"
+
+import { initialValues } from "./form-validation"
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -43,9 +44,9 @@ export const toCourseForm = ({
         order: course.order ?? undefined,
         study_module_order: course.study_module_order ?? undefined,
         status: course.status ?? CourseStatus.Upcoming,
-        course_translations: (course.course_translations || []).map((c) => ({
+        course_translations: (course.course_translations ?? []).map((c) => ({
           ...omit(c, "__typename"),
-          link: c.link || "",
+          link: c.link ?? "",
           open_university_course_link:
             course?.open_university_registration_links?.find(
               (l) => l.language === c.language,
@@ -62,7 +63,7 @@ export const toCourseForm = ({
         course_variants:
           course?.course_variants?.map((c) => ({
             ...c,
-            description: c.description || undefined,
+            description: c.description ?? undefined,
           })) ?? [],
         course_aliases: course?.course_aliases ?? [],
         new_slug: course.slug,
@@ -73,7 +74,7 @@ export const toCourseForm = ({
         completions_handled_by: course.completions_handled_by?.id,
         has_certificate: course?.has_certificate ?? false,
         user_course_settings_visibilities:
-          course?.user_course_settings_visibilities || [],
+          course?.user_course_settings_visibilities ?? [],
         upcoming_active_link: course?.upcoming_active_link ?? false,
         tier: course?.tier ?? undefined,
         automatic_completions: course?.automatic_completions ?? false,
@@ -98,8 +99,8 @@ export const fromCourseForm = ({
   const course_translations =
     values?.course_translations?.map((c: CourseTranslationFormValues) => ({
       ...omit(c, "open_university_course_link"),
-      link: c.link || "",
-      id: !c.id || c.id === "" ? undefined : c.id,
+      link: c.link ?? "",
+      id: c.id ?? undefined,
     })) ?? []
 
   const course_variants = (values?.course_variants ?? []).map((v) =>
@@ -146,7 +147,7 @@ export const fromCourseForm = ({
     })
     .filter((v) => !!v)
 
-  const study_modules = Object.keys(values.study_modules || {})
+  const study_modules = Object.keys(values.study_modules ?? {})
     .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map((id) => ({ id }))
 
