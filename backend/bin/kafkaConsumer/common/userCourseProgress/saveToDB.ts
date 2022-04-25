@@ -33,7 +33,7 @@ export const saveToDatabase = async (
     )
   }
 
-  const userCourseProgresses = await knex<unknown, UserCourseProgress[]>(
+  const userCourseProgresses = await knex<any, UserCourseProgress[]>(
     "user_course_progress",
   )
     .where("user_id", user.id)
@@ -60,7 +60,7 @@ export const saveToDatabase = async (
   }
 
   const userCourseServiceProgresses = await knex<
-    unknown,
+    any,
     UserCourseServiceProgress[]
   >("user_course_service_progress")
     .where("user_id", user.id)
