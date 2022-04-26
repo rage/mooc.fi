@@ -1,6 +1,6 @@
-import styled from "@emotion/styled"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
-import { mime } from "/util/imageUtils"
+
+import styled from "@emotion/styled"
 
 interface RootProps {
   backgroundColor: string
@@ -29,15 +29,21 @@ interface DisplayBackgroundProps {
 }
 const ModuleDisplayBackground = (props: DisplayBackgroundProps) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
-  const imageUrl = "/static/images/backgroundPattern.svg"
+
+  // webp for svg?
+  // const imageUrl = "/static/images/backgroundPattern.svg"
+  // <source srcSet={`${imageUrl}?webp`} type="image/webp" />
 
   return (
     <Background backgroundColor={backgroundColor}>
       <picture style={{ zIndex: -1 }}>
-        <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-        <source srcSet={imageUrl} type={mime(imageUrl)} />
+        <source
+          srcSet={require("../../../static/images/backgroundPattern.svg")}
+          type="image/svg+xml"
+        />
         <BackgroundImage
-          src={imageUrl}
+          src={require("../../../static/images/backgroundPattern.svg")}
+          loading="lazy"
           aria-hidden
           hueRotateAngle={hueRotateAngle}
           brightness={brightness}

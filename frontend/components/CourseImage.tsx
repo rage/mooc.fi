@@ -1,7 +1,9 @@
 import { memo } from "react"
-import styled from "@emotion/styled"
-import { addDomain } from "/util/imageUtils"
+
 import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
+import { addDomain } from "/util/imageUtils"
+
+import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
 
 const ComponentStyle = `
@@ -36,8 +38,9 @@ const CourseImage = memo((props: CourseImageProps) => {
           <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
           <ImageComponent
             src={addDomain(photo.uncompressed)}
-            {...rest}
+            loading="lazy"
             alt=""
+            {...rest}
           />
         </>
       ) : (
