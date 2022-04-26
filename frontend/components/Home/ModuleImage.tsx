@@ -8,7 +8,7 @@ const ModuleImage = ({
 }: {
   module?: AllModules_study_modules | AllModules_study_modules_with_courses
 }) => {
-  const imageUrl = module?.image ?? module ? `${module.slug}.jpg` : ""
+  const imageUrl = module?.image ?? (module ? `${module.slug}.jpg` : "")
 
   try {
     return (

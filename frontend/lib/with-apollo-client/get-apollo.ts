@@ -1,15 +1,16 @@
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
+
 import {
   ApolloClient,
   ApolloLink,
+  defaultDataIdFromObject,
   InMemoryCache,
   NormalizedCacheObject,
-  defaultDataIdFromObject,
 } from "@apollo/client"
-import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
-import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
+import { onError } from "@apollo/client/link/error"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -26,7 +27,7 @@ function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]
-    if (!accessToken && !process.browser) {
+    if (!accessToken && typeof window === "undefined") {
       accessToken = originalAccessToken
     }
 
@@ -48,12 +49,12 @@ function create(initialState: any, originalAccessToken?: string) {
       ? "https://www.mooc.fi/api/"
       : "http://localhost:4000",
     credentials: "same-origin",
-    fetch: fetch,
+    fetch,
   })
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
+      graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
           `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
             locations,
@@ -78,11 +79,12 @@ function create(initialState: any, originalAccessToken?: string) {
   })
 
   return new ApolloClient<NormalizedCacheObject>({
-    link: process.browser
-      ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
-      : authLink.concat(uploadLink),
+    link:
+      typeof window === "undefined"
+        ? authLink.concat(uploadLink)
+        : ApolloLink.from([errorLink, authLink.concat(uploadLink)]),
     cache: cache.restore(initialState || {}),
-    ssrMode: !process.browser, // isBrowser,
+    ssrMode: typeof window === "undefined",
     ssrForceFetchDelay: 100,
     defaultOptions: {
       watchQuery: {
@@ -102,7 +104,7 @@ let previousAccessToken: string | undefined = undefined
 export default function getApollo(initialState: any, accessToken?: string) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
-  if (!process.browser) {
+  if (typeof window === "undefined") {
     return create(initialState, accessToken)
   }
 

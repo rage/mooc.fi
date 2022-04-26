@@ -78,11 +78,21 @@ function WideNaviCard(props: NaviCardProps) {
                 style={{ maxWidth: "70%" }}
               >
                 {item.titleImg ? (
-                  <img
-                    src={item.titleImg}
-                    alt={item.title}
-                    style={{ width: "70%", maxWidth: "20vh" }}
-                  />
+                  <picture>
+                    <source
+                      srcSet={require(`../../static/images/${item.titleImg}?webp`)}
+                      type="image/webp"
+                    />
+                    <source
+                      srcSet={require(`../../static/images/${item.titleImg}`)}
+                      type={mime(item.titleImg)}
+                    />
+                    <img
+                      src={require(`../../static/images/${item.titleImg}`)}
+                      alt={item.title}
+                      style={{ width: "70%", maxWidth: "20vh" }}
+                    />
+                  </picture>
                 ) : (
                   item.title
                 )}

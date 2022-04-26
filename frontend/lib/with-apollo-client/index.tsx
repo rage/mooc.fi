@@ -39,7 +39,7 @@ const withApolloClient = (App: any) => {
     )
   }
 
-  withApollo.displayName = "withApollo(App)"
+  withApollo.displayName = `withApollo(${App.displayName ?? "App"})`
   withApollo.getInitialProps = async (ctx: AppContext | NextPageContext) => {
     const inAppContext = isAppContext(ctx)
 
