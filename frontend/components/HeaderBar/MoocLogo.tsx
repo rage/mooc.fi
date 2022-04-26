@@ -42,7 +42,10 @@ const MoocLogoLink = styled.a`
 const MoocLogo = () => (
   <Link href="/" passHref>
     <MoocLogoLink aria-label="MOOC.fi homepage">
-      <MoocLogoAvatar alt="MOOC logo" src="/static/images/moocfi.svg" />
+      <MoocLogoAvatar
+        alt="MOOC logo"
+        src={require("../../static/images/moocfi.svg")}
+      />
       <MoocLogoText>MOOC.fi</MoocLogoText>
     </MoocLogoLink>
   </Link>

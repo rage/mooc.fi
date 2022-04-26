@@ -46,6 +46,11 @@ const Background = styled(FullCoverTextBackground)`
   align-items: center;
 `
 
+const TitleImage = styled.img`
+  width: 70%;
+  max-width: 20vh;
+`
+
 function WideNaviCard(props: NaviCardProps) {
   const { item } = props
 
@@ -54,7 +59,7 @@ function WideNaviCard(props: NaviCardProps) {
       <Link href={item.link} passHref prefetch={false}>
         <StyledLink aria-label={item.linkText}>
           <NaviItemBase>
-            {item.img ? (
+            {item.img && (
               <picture>
                 <source
                   srcSet={require(`../../static/images/${item.img}?webp`)}
@@ -66,10 +71,11 @@ function WideNaviCard(props: NaviCardProps) {
                 />
                 <BackgroundImage
                   src={require(`../../static/images/${item.img}`)}
+                  loading="lazy"
                   alt=""
                 />
               </picture>
-            ) : null}
+            )}
             <Background>
               <CardTitle
                 component="h2"
@@ -78,11 +84,20 @@ function WideNaviCard(props: NaviCardProps) {
                 style={{ maxWidth: "70%" }}
               >
                 {item.titleImg ? (
-                  <img
-                    src={item.titleImg}
-                    alt={item.title}
-                    style={{ width: "70%", maxWidth: "20vh" }}
-                  />
+                  <picture>
+                    <source
+                      srcSet={require(`../../static/images/${item.titleImg}?webp`)}
+                      type="image/webp"
+                    />
+                    <source
+                      srcSet={require(`../../static/images/${item.titleImg}`)}
+                      type={mime(item.titleImg)}
+                    />
+                    <TitleImage
+                      src={require(`../../static/images/${item.titleImg}`)}
+                      alt={item.title}
+                    />
+                  </picture>
                 ) : (
                   item.title
                 )}
@@ -95,14 +110,14 @@ function WideNaviCard(props: NaviCardProps) {
               >
                 {item.text}
               </CardText>
-              {item.linkText ? (
+              {item.linkText && (
                 <Button
                   aria-disabled="true"
                   style={{ width: "20%", maxHeight: "37px" }}
                 >
                   {item.linkText}
                 </Button>
-              ) : undefined}
+              )}
             </Background>
           </NaviItemBase>
         </StyledLink>

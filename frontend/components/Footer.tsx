@@ -1,3 +1,8 @@
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
+import Link from "next/link"
+import { useRouter } from "next/router"
+
 import styled from "@emotion/styled"
 import {
   faFacebook,
@@ -5,10 +10,6 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(FontAwesomeIcon)`
   color: white;
@@ -64,10 +65,21 @@ const LogoImage = styled.img`
 
 function UniversityLogo() {
   return (
-    <LogoImage
-      alt="Logo of the University of Helsinki"
-      src="/static/images/uh-logo.png"
-    />
+    <picture>
+      <source
+        srcSet={require(`../static/images/uh-logo.png?webp`)}
+        type="image/webp"
+      />
+      <source
+        srcSet={require(`../static/images/uh-logo.png`)}
+        type="image/png"
+      />
+      <LogoImage
+        alt="Logo of the University of Helsinki"
+        src={require(`../static/images/uh-logo.png`)}
+        loading="lazy"
+      />
+    </picture>
   )
 }
 

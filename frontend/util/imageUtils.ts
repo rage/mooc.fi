@@ -10,10 +10,11 @@ const mimetypes: { [key: string]: string } = {
   png: "image/png",
   gif: "image/gif",
   webp: "image/webp",
+  svg: "image/svg+xml",
 }
 
 export const mime = (filename?: string): string => {
-  const { length: l, [l - 1]: type } = (filename || "").split(".")
+  const { length: l, [l - 1]: type } = (filename ?? "").split(".")
 
-  return mimetypes[type] || mimetypes.jpg
+  return mimetypes[type] ?? mimetypes.jpg
 }

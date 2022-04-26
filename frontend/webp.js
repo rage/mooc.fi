@@ -1,5 +1,6 @@
 import imagemin from "imagemin"
 import webp from "imagemin-webp"
+
 const outputFolder = "./static/images"
 const PNG = "./static/images/*.png"
 const JPEG = "./static/images/*.jpg"

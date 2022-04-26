@@ -19,7 +19,7 @@ import CourseHighlights from "./CourseHighlights"
 import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
 
-const highlightsBanner = "/static/images/backgroundPattern.svg"
+// const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 const CourseAndModuleList = () => {
   const { locale = "fi" } = useRouter()
@@ -99,7 +99,7 @@ const CourseAndModuleList = () => {
           courses={promotedCourses}
           loading={coursesLoading}
           title={t("highlightTitle")}
-          headerImage={highlightsBanner}
+          headerImage="backgroundPattern.svg"
           subtitle={t("highlightSubtitle")}
           backgroundColor="#4D78A3"
           hueRotateAngle={177}
@@ -111,7 +111,7 @@ const CourseAndModuleList = () => {
           courses={activeCourses}
           loading={coursesLoading}
           title={t("allCoursesTitle")}
-          headerImage={highlightsBanner}
+          headerImage="backgroundPattern.svg"
           backgroundColor="#ffffff"
           hueRotateAngle={34}
           brightness={1}
@@ -122,7 +122,7 @@ const CourseAndModuleList = () => {
           courses={upcomingCourses}
           loading={coursesLoading}
           title={t("upcomingCoursesTitle")}
-          headerImage={highlightsBanner}
+          headerImage="backgroundPattern.svg"
           backgroundColor="#007DC8"
           hueRotateAngle={0}
           brightness={5.5}
@@ -140,7 +140,7 @@ const CourseAndModuleList = () => {
         courses={endedCourses}
         loading={coursesLoading}
         title={t("endedCoursesTitle")}
-        headerImage={highlightsBanner}
+        headerImage="backgroundPattern.svg"
         backgroundColor="#ffffff"
         hueRotateAngle={58}
         brightness={1}

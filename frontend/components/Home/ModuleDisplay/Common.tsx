@@ -6,6 +6,7 @@ import {
   SubtitleNoBackground,
 } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
+import { mime } from "/util/imageUtils"
 
 import styled from "@emotion/styled"
 
@@ -53,6 +54,28 @@ export const ModuleHeader = ({ children, ...props }: PropsWithChildren<{}>) => (
   <ModuleHeaderBase component="h2" variant="h2" align="left" {...props}>
     {children}
   </ModuleHeaderBase>
+)
+
+const ModuleImageBase = styled.img`
+  width: 100%;
+`
+
+export const ModuleImage = ({ src, alt }: { src: string; alt?: string }) => (
+  <picture>
+    <source
+      srcSet={require(`../../../static/images/${src}?webp`)}
+      type="image/webp"
+    />
+    <source
+      srcSet={require(`../../../static/images/${src}`)}
+      type={mime(src)}
+    />
+    <ModuleImageBase
+      src={require(`../../../static/images/${src}`)}
+      alt={alt}
+      loading="lazy"
+    />
+  </picture>
 )
 
 const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`

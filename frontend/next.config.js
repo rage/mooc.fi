@@ -1,7 +1,6 @@
 const withPlugins = require("next-compose-plugins")
 const withFonts = require("next-fonts")
 const withOptimizedImages = require("next-optimized-images")
-const sharp = require("responsive-loader/sharp")
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 })
@@ -43,7 +42,8 @@ module.exports = withPlugins(
         },
         inlineImageLimit: -1,
         responsive: {
-          adapter: sharp,
+          adapter: require("responsive-loader/sharp"),
+          sizes: [320, 640, 960, 1200, 1800, 2400],
           placeholder: true,
           placeholderSize: 50,
           optimizeImagesInDev: true,
