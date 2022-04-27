@@ -130,6 +130,7 @@ model Course {
   ownerships                                         CourseOwnership[]
   course_stats_email_id                              String?
   course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
+  course_tags                                        CourseTag[]         
 
   @@map("course")
 }
@@ -559,6 +560,43 @@ model CourseStatsSubscription {
 
   @@unique([user_id, email_template_id])
   @@map("course_stats_subscription")
+}
+
+model Tag {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  id                                       String           @id @default(uuid())
+  name                                     String           @unique
+  color                                    String?                 
+  tag_translations                         TagTranslation[]
+  course_tags                              CourseTag[]         
+
+  @@map("tag")
+}
+
+model TagTranslation {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  tag_id                                   String          
+  language                                 String
+  name                                     String
+  description                              String?
+  tag                                      Tag?             @relation(fields: [tag_id], references: [id])
+
+  @@id([tag_id, language])
+  @@map("tag_translation")
+}
+
+model CourseTag {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  course_id                                String
+  tag_id                                   String
+  course                                   Course?          @relation(fields: [course_id], references: [id])
+  tag                                      Tag?             @relation(fields: [tag_id], references: [id])
+
+  @@id([course_id, tag_id])
+  @@map("course_tag")
 }
 
 enum CourseStatus {
