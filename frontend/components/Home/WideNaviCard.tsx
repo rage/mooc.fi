@@ -71,7 +71,6 @@ function WideNaviCard(props: NaviCardProps) {
                 />
                 <BackgroundImage
                   src={require(`../../static/images/${item.img}`)}
-                  loading="lazy"
                   alt=""
                 />
               </picture>

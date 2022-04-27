@@ -1,9 +1,13 @@
 import { Component as ReactComponent } from "react"
-import { NextPageContext as NextContext } from "next"
-import { isAdmin, isSignedIn } from "/lib/authentication"
+
 import AdminError from "/components/Dashboard/AdminError"
-import redirect from "/lib/redirect"
 import LoginStateContext from "/contexts/LoginStateContext"
+import {
+  isAdmin,
+  isSignedIn,
+} from "/lib/authentication"
+import redirect from "/lib/redirect"
+import { NextPageContext as NextContext } from "next"
 
 let prevContext: NextContext | null = null
 

@@ -81,8 +81,8 @@ function NaviCard(props: NaviCardProps) {
                 />
                 <BackgroundImage
                   src={require(`../../static/images/${item.img}`)}
-                  loading="lazy"
                   alt=""
+                  aria-hidden
                 />
               </picture>
             ) : null}

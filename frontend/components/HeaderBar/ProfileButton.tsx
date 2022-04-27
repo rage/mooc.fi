@@ -30,7 +30,7 @@ const ProfileButton = () => {
     : "Oma profiili"
 
   return (
-    <Link href={`/profile`} passHref>
+    <Link href={`/profile`} passHref prefetch={false}>
       <StyledButton
         color="inherit"
         variant="text"

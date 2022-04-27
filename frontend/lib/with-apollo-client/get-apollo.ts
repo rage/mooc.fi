@@ -1,15 +1,16 @@
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
+
 import {
   ApolloClient,
   ApolloLink,
+  defaultDataIdFromObject,
   InMemoryCache,
   NormalizedCacheObject,
-  defaultDataIdFromObject,
 } from "@apollo/client"
-import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
-import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
+import { onError } from "@apollo/client/link/error"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -23,6 +24,7 @@ const cypress = process.env.CYPRESS === "true"
     window.Cypress.env("CYPRESS") === "true") */
 
 function create(initialState: any, originalAccessToken?: string) {
+  console.log("initialState...", initialState)
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]

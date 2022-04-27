@@ -1,7 +1,10 @@
-import { getAccessToken } from "/lib/authentication"
+import {
+  getAccessToken,
+  isAdmin,
+  isSignedIn,
+} from "/lib/authentication"
 import { NextPageContext } from "next"
 import { AppContext } from "next/app"
-import { renderToString } from "react-dom/server"
 
 import {
   ApolloClient,
@@ -20,8 +23,7 @@ interface Props {
 }
 
 const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
-  // @ts-ignore: ctx.ctx doesn't exist in NextPageContext
-  return Boolean(ctx?.ctx)
+  return 'Component' in ctx
 }
 
 const withApolloClient = (App: any) => {
@@ -31,7 +33,7 @@ const withApolloClient = (App: any) => {
     accessToken,
     ...pageProps
   }: Props) => {
-    const apolloClient = apollo ?? getApollo(apolloState, accessToken)
+    const apolloClient = apollo ?? getApollo(apolloState?.data, accessToken)
     return (
       <ApolloProvider client={apolloClient}>
         <App {...pageProps} />
@@ -40,66 +42,64 @@ const withApolloClient = (App: any) => {
   }
 
   withApollo.displayName = "withApollo(App)"
-  withApollo.getInitialProps = async (ctx: AppContext | NextPageContext) => {
-    const inAppContext = isAppContext(ctx)
+  withApollo.getInitialProps = async (pageCtx: AppContext | NextPageContext) => {
+    const inAppContext = isAppContext(pageCtx)
+    const ctx = inAppContext ? pageCtx.ctx : pageCtx
 
-    const { AppTree } = ctx
-    const Component = inAppContext ? ctx.Component : undefined
+    const { AppTree } = pageCtx
 
-    const res = inAppContext ? ctx?.ctx?.res : ctx?.res
-
-    let props: any = {
-      pageProps: {},
-    }
-    if (App.getInitialProps) {
-      props = await App.getInitialProps(ctx)
-    }
-
+    let pageProps = {} as any
+    const apolloState = {} as any
+ 
     // @ts-ignore: ctx in ctx
     // const inAppContext = Boolean(ctx?.ctx)
 
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
     // @ts-ignore: ctx in ctx
-    const accessToken = getAccessToken(inAppContext ? ctx?.ctx : ctx)
+    const accessToken = getAccessToken(ctx)
     // It is important to use a new apollo since the page has changed because
     // 1. access token might have changed
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
     //  @ts-ignore: ignore type error on ctx
     const apollo = initNewApollo(accessToken)
-    // @ts-ignore: ignore
-    apollo.toJSON = () => null
+
+    if (App.getInitialProps) {
+      (ctx as any).apolloClient = apollo 
+      pageProps = await App.getInitialProps(pageCtx)
+    }
+
     // UserDetailsContext uses this
     const currentUser = await fetchUserDetails(apollo)
+    const signedIn = isSignedIn(ctx)
+    const admin = isAdmin(ctx)
 
-    props.pageProps.currentUser = currentUser
+    pageProps = {
+      ...pageProps,
+      currentUser,
+      signedIn,
+      admin
+    }
 
     if (typeof window === "undefined") {
-      if (inAppContext) {
-        props = { ...props, apollo }
-      } else {
-        props = { pageProps: { ...props, apollo } }
+      if (ctx?.res?.headersSent || ctx?.res?.finished) {
+        return pageProps
       }
-      if (res?.finished) {
-        return props
-      }
+      const props = { ...pageProps, apolloState, apollo };
+      const appTreeProps =
+        inAppContext ? props : { pageProps: props };
 
-      const { getMarkupFromTree } = await import("@apollo/client/react/ssr")
+      const { getDataFromTree } = await import("@apollo/client/react/ssr")
 
       // Run the graphql queries on server and pass the results to frontend by using the Apollo cache.
-
+      console.log("appTreeProps", appTreeProps)
       try {
         // getDataFromTree is using getMarkupFromTree anyway?
-        await getMarkupFromTree({
-          renderFunction: renderToString,
-          tree: (
-            <AppTree
-              {...props}
-              pageProps={props?.pageProps ?? {}}
-              Component={Component}
-            />
-          ),
-        })
+        await getDataFromTree(
+          <AppTree
+            {...appTreeProps}
+          />
+        )
         // Run all GraphQL queries
       } catch (error) {
         // Prevent Apollo Client GraphQL errors from crashing SSR.
@@ -107,15 +107,18 @@ const withApolloClient = (App: any) => {
         // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
         console.error("Error while running `getDataFromTree`", error)
       }
+
+      // Extract query data from the Apollo store
+      apolloState.data = apollo.cache.extract()
     }
 
-    // Extract query data from the Apollo store
-    const apolloState = apollo.cache.extract()
+    (apollo as any).toJSON = () => null
 
     return {
-      ...props,
+      ...pageProps,
       accessToken,
       apolloState,
+      apollo
     }
   }
 

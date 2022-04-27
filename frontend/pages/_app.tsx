@@ -1,23 +1,40 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
-import { useEffect, useReducer } from "react"
+import {
+  useEffect,
+  useReducer,
+} from "react"
 
 import AlertContext, { Alert } from "/contexts/AlertContext"
-import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
+import {
+  Breadcrumb,
+  BreadcrumbContext,
+} from "/contexts/BreadcrumbContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import { initGA, logPageView } from "/lib/gtag"
+import {
+  initGA,
+  logPageView,
+} from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { fontCss } from "/src/fonts"
 import theme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 import { ConfirmProvider } from "material-ui-confirm"
-import type { AppContext, AppProps } from "next/app"
+import { NextPageContext } from "next"
+import App, {
+  AppContext,
+  AppInitialProps,
+  type AppProps,
+} from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CacheProvider, EmotionCache, Global } from "@emotion/react"
+import {
+  CacheProvider,
+  EmotionCache,
+  Global,
+} from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -42,6 +59,9 @@ interface AppState {
 }
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
+  currentUser: any
+  signedIn: boolean
+  admin: boolean
 }
 
 const reducer = (state: AppState, action: any) => {
@@ -83,7 +103,13 @@ export function MyApp({
   Component,
   pageProps,
   emotionCache = clientSideEmotionCache,
+  signedIn,
+  admin,
+  currentUser
 }: MyAppProps) {
+  console.log("pageProps", pageProps)
+  console.log("signedIn, admin, currentUser", signedIn, admin, currentUser)
+
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -102,25 +128,25 @@ export function MyApp({
     dispatch({ type: "setBreadcrumbs", payload: breadcrumbs })
 
   const [state, dispatch] = useReducer(reducer, {
-    loggedIn: pageProps?.signedIn,
+    loggedIn: signedIn,
     logInOrOut,
     alerts: [],
     breadcrumbs: [],
-    admin: pageProps?.admin,
+    admin,
     validated: pageProps?.validated,
-    currentUser: pageProps?.currentUser,
+    currentUser,
     updateUser,
     nextAlertId: 0,
   })
 
   useEffect(() => {
-    if (pageProps?.currentUser !== state.currentUser) {
+    if (currentUser !== state.currentUser) {
       dispatch({
         type: "updateUser",
-        payload: { user: pageProps?.currentUser, admin: pageProps?.admin },
+        payload: { user: currentUser, admin },
       })
     }
-  }, [pageProps?.currentUser])
+  }, [currentUser])
 
   useEffect(() => {
     initGA()
@@ -184,37 +210,59 @@ export function MyApp({
 }
 
 // @ts-ignore: initialProps
-const originalGetInitialProps = MyApp.getInitialProps
-
-MyApp.getInitialProps = async (props: AppContext) => {
-  const { ctx, Component } = props
-
-  let originalProps: any = {}
-
-  if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(props)) || {}
-  }
-  if (Component.getInitialProps) {
-    originalProps = {
-      ...originalProps,
-      pageProps: {
-        ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) || {}),
-      },
-    }
-  }
-
-  const signedIn = isSignedIn(ctx)
-  const admin = isAdmin(ctx)
-
-  return {
-    ...originalProps,
-    pageProps: {
-      ...originalProps.pageProps,
-      signedIn,
-      admin,
-    },
-  }
-}
+// const originalGetInitialProps = MyApp.getInitialProps
+// 
+ const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
+   return 'Component' in ctx
+ }
+ MyApp.getInitialProps = async (appContext: AppContext | NextPageContext) => {
+   /*const { ctx, Component } = props
+ 
+   let originalProps: any = {}
+ 
+   if (originalGetInitialProps) {
+     originalProps = (await originalGetInitialProps(props)) || {}
+   }
+ 
+   if (Component.getInitialProps) {
+     originalProps = {
+       ...originalProps,
+       pageProps: {
+         ...originalProps?.pageProps,
+         ...((await Component.getInitialProps(ctx)) || {}),
+       },
+     }
+   }
+ 
+   const signedIn = isSignedIn(ctx)
+   const admin = isAdmin(ctx)
+ 
+   return {
+     ...originalProps,
+     pageProps: {
+       ...originalProps.pageProps,
+       signedIn,
+       admin,
+     },
+   }*/
+ 
+   const ctx = isAppContext(appContext) ? appContext.ctx : appContext
+ 
+   const appProps = isAppContext(appContext) ? await App.getInitialProps(appContext) : {} as AppInitialProps
+ 
+   const componentInitialProps = isAppContext(appContext) && appContext.Component.getInitialProps ? await appContext?.Component?.getInitialProps(ctx) : {}
+ 
+   console.log("componentInitialProps", componentInitialProps)
+   /*const signedIn = isSignedIn(ctx)
+   const admin = isAdmin(ctx)*/
+ 
+   appProps.pageProps = {
+     ...appProps.pageProps,
+     ...componentInitialProps,
+ /*    signedIn,
+     admin*/
+   }
+   return { ...appProps }
+ }
 
 export default withApolloClient(MyApp)
