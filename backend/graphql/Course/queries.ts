@@ -11,7 +11,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import { Course, CourseTag, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -59,36 +59,66 @@ export const CourseQueries = extendType({
           throw new Error("course not found")
         }
 
-        let description = ""
-        let link = ""
-        let name = course.name
+        const returnedCourse = {
+          ...course,
+          description: "",
+          link: "",
+        } as any
 
         if (language) {
-          const course_translation =
-            await ctx.prisma.courseTranslation.findFirst({
-              where: {
-                course_id: course.id,
-                language,
-              },
-            })
+          const course_translation = (
+            await ctx.prisma.course
+              .findUnique({
+                where: {
+                  id: course.id,
+                },
+              })
+              .course_translations({
+                where: {
+                  language,
+                },
+                take: 1,
+              })
+          )?.[0]
 
           if (!course_translation) {
             if (!translationFallback) {
               return Promise.resolve(null)
             }
           } else {
-            description = course_translation.description ?? ""
-            link = course_translation.link ?? ""
-            name = course_translation.name
+            returnedCourse.description = course_translation.description ?? ""
+            returnedCourse.link = course_translation.link ?? ""
+            returnedCourse.name = course_translation.name
           }
+
+          const course_tags = await ctx.prisma.course
+            .findUnique({
+              where: {
+                id: course.id,
+              },
+            })
+            .course_tags({
+              where: {
+                tag: {
+                  tag_translations: {
+                    some: {
+                      language,
+                    },
+                  },
+                },
+              },
+            })
+
+          returnedCourse.course_tags = course_tags
         }
 
-        return {
+        return returnedCourse
+        /*return {
           ...course,
           name,
           description,
           link,
-        }
+        }*/
       },
     })
 
@@ -163,6 +193,7 @@ export const CourseQueries = extendType({
 
         const courses: (Course & {
           course_translations?: CourseTranslation[]
+          course_tags?: CourseTag[]
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
@@ -175,6 +206,17 @@ export const CourseQueries = extendType({
                   course_translations: {
                     where: {
                       language: { equals: language },
+                    },
+                  },
+                  course_tags: {
+                    where: {
+                      tag: {
+                        tag_translations: {
+                          some: {
+                            language,
+                          },
+                        },
+                      },
                     },
                   },
                 },

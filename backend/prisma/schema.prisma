@@ -566,7 +566,6 @@ model Tag {
   created_at                               DateTime?        @default(now())
   updated_at                               DateTime?        @updatedAt
   id                                       String           @id @default(uuid())
-  name                                     String           @unique
   color                                    String?                 
   tag_translations                         TagTranslation[]
   course_tags                              CourseTag[]         
@@ -584,6 +583,7 @@ model TagTranslation {
   tag                                      Tag?             @relation(fields: [tag_id], references: [id])
 
   @@id([tag_id, language])
+  @@unique([name, language])
   @@map("tag_translation")
 }
 

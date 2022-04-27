@@ -1,4 +1,4 @@
-// generated Fri Mar 19 2021 15:20:33 GMT+0200 (GMT+02:00)
+// generated Wed Apr 27 2022 15:10:14 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
@@ -9,6 +9,7 @@ export * from "./CourseAlias"
 export * from "./CourseOrganization"
 export * from "./CourseOwnership"
 export * from "./CourseStatsSubscription"
+export * from "./CourseTag"
 export * from "./CourseTranslation"
 export * from "./CourseVariant"
 export * from "./EmailDelivery"
@@ -27,6 +28,8 @@ export * from "./Service"
 export * from "./StoredData"
 export * from "./StudyModule"
 export * from "./StudyModuleTranslation"
+export * from "./Tag"
+export * from "./TagTranslation"
 export * from "./Upload"
 export * from "./User"
 export * from "./UserAppDatumConfig"

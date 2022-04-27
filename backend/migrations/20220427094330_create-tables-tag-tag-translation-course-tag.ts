@@ -9,13 +9,12 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "tag" (
       "id" uuid NOT NULL DEFAULT ${extensionPath}uuid_generate_v4(),
-      "name" text UNIQUE NOT NULL,
       "color" text,
       "created_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updated_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP 
     );
   `)
-  
+
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "tag_translation" (
       "tag_id" uuid NOT NULL,
@@ -39,9 +38,6 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     ALTER TABLE "tag"
       ADD CONSTRAINT tag_pkey PRIMARY KEY ("id");
-  `);
-  await knex.raw(`
-    CREATE INDEX IF NOT EXISTS "tag.name" ON "tag" USING btree ("name");
   `)
 
   await knex.raw(`
@@ -53,8 +49,12 @@ export async function up(knex: Knex): Promise<void> {
     ALTER TABLE "course_tag"
       ADD CONSTRAINT course_tag_pkey PRIMARY KEY ("course_id", "tag_id");
   `)
-}
 
+  await knex.raw(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "tag_translation.name_language._UNIQUE" 
+      ON "tag_translation" ("name", "language");
+  `)
+}
 
 export async function down(knex: Knex): Promise<void> {
   await knex.raw(`
@@ -67,4 +67,3 @@ export async function down(knex: Knex): Promise<void> {
     DROP TABLE IF EXISTS "course_tag";
   `)
 }
-

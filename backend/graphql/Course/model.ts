@@ -57,6 +57,7 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
+    t.model.course_tags()
 
     t.string("description")
     t.string("instructions")
