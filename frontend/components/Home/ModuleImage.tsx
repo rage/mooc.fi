@@ -23,6 +23,7 @@ const ModuleImage = ({
         />
         <BackgroundImage
           src={require(`../../static/images/${imageUrl}`)}
+          loading="lazy"
           alt=""
         />
       </picture>

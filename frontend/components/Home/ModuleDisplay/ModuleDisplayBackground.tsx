@@ -43,6 +43,7 @@ const ModuleDisplayBackground = (props: DisplayBackgroundProps) => {
         />
         <BackgroundImage
           src={require("../../../static/images/backgroundPattern.svg")}
+          loading="lazy"
           aria-hidden
           hueRotateAngle={hueRotateAngle}
           brightness={brightness}

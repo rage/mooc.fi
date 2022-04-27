@@ -81,6 +81,7 @@ function NaviCard(props: NaviCardProps) {
                 />
                 <BackgroundImage
                   src={require(`../../static/images/${item.img}`)}
+                  loading="lazy"
                   alt=""
                 />
               </picture>
@@ -93,7 +94,21 @@ function NaviCard(props: NaviCardProps) {
                 style={{ maxWidth: "70%" }}
               >
                 {item.titleImg ? (
-                  <img src={item.titleImg} alt="" style={{ width: "70%" }} />
+                  <picture>
+                    <source
+                      srcSet={require(`../../static/images/${item.titleImg}?webp`)}
+                      type="image/webp"
+                    />
+                    <source
+                      srcSet={require(`../../static/images/${item.titleImg}`)}
+                      type={mime(item.titleImg)}
+                    />
+                    <img
+                      src={require(`../../static/images/${item.titleImg}`)}
+                      alt=""
+                      style={{ width: "70%" }}
+                    />
+                  </picture>
                 ) : (
                   item.title
                 )}

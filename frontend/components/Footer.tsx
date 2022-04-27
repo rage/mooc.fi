@@ -77,6 +77,7 @@ function UniversityLogo() {
       <LogoImage
         alt="Logo of the University of Helsinki"
         src={require(`../static/images/uh-logo.png`)}
+        loading="lazy"
       />
     </picture>
   )

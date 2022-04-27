@@ -99,7 +99,7 @@ const CourseAndModuleList = () => {
           courses={promotedCourses}
           loading={coursesLoading}
           title={t("highlightTitle")}
-          headerImage={require("../../static/images/backgroundPattern.svg")}
+          headerImage="backgroundPattern.svg"
           subtitle={t("highlightSubtitle")}
           backgroundColor="#4D78A3"
           hueRotateAngle={177}
@@ -111,7 +111,7 @@ const CourseAndModuleList = () => {
           courses={activeCourses}
           loading={coursesLoading}
           title={t("allCoursesTitle")}
-          headerImage={require("../../static/images/backgroundPattern.svg")}
+          headerImage="backgroundPattern.svg"
           backgroundColor="#ffffff"
           hueRotateAngle={34}
           brightness={1}
@@ -122,7 +122,7 @@ const CourseAndModuleList = () => {
           courses={upcomingCourses}
           loading={coursesLoading}
           title={t("upcomingCoursesTitle")}
-          headerImage={require("../../static/images/backgroundPattern.svg")}
+          headerImage="backgroundPattern.svg"
           backgroundColor="#007DC8"
           hueRotateAngle={0}
           brightness={5.5}
@@ -140,7 +140,7 @@ const CourseAndModuleList = () => {
         courses={endedCourses}
         loading={coursesLoading}
         title={t("endedCoursesTitle")}
-        headerImage={require("../../static/images/backgroundPattern.svg")}
+        headerImage="backgroundPattern.svg"
         backgroundColor="#ffffff"
         hueRotateAngle={58}
         brightness={1}

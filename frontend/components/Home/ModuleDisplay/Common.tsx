@@ -70,7 +70,11 @@ export const ModuleImage = ({ src, alt }: { src: string; alt?: string }) => (
       srcSet={require(`../../../static/images/${src}`)}
       type={mime(src)}
     />
-    <ModuleImageBase src={require(`../../../static/images/${src}`)} alt={alt} />
+    <ModuleImageBase
+      src={require(`../../../static/images/${src}`)}
+      alt={alt}
+      loading="lazy"
+    />
   </picture>
 )
 
