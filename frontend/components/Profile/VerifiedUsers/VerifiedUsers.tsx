@@ -1,4 +1,5 @@
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
+// TODO/FIXME: don't have these types generated as we're not querying them, fix when applicable
+// import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
@@ -14,7 +15,7 @@ import VerifiedUser from "./VerifiedUser"
 const isProduction = process.env.NODE_ENV === "production"
 
 interface VerifiedUsersProps {
-  data?: ProfileUserOverView_currentUser_verified_users[]
+  data?: any[] // ProfileUserOverView_currentUser_verified_users[]
 }
 
 const Container = styled(Paper)`
@@ -60,13 +61,13 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
         </>
       ))}
       {!isConnected("hy") && (
-        <Link href={HY_CONNECT_URL}>
+        <Link href={HY_CONNECT_URL} passHref>
           <Button color="primary" startIcon={<LaunchIcon />}>
             Connect to HY
           </Button>
         </Link>
       )}
-      <Link href={HAKA_CONNECT_URL}>
+      <Link href={HAKA_CONNECT_URL} passHref>
         <Button color="secondary" startIcon={<LaunchIcon />}>
           Connect to another organization
         </Button>

@@ -11,10 +11,11 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { CourseEmailDetailsQuery } from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import { CourseEmailDetails } from "/static/types/generated/CourseEmailDetails"
 import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourseStatsSubscriptions"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -29,27 +30,6 @@ import { Button, Card, Paper, Typography } from "@mui/material"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
-`
-
-export const CourseDetailsFromSlugQuery = gql`
-  query CourseDetailsFromSlugQuery($slug: String) {
-    course(slug: $slug) {
-      id
-      slug
-      name
-      teacher_in_charge_name
-      teacher_in_charge_email
-      start_date
-      completion_email {
-        name
-        id
-      }
-      course_stats_email {
-        id
-        name
-      }
-    }
-  }
 `
 
 const UserCourseStatsSubscriptionsQuery = gql`
@@ -103,8 +83,8 @@ const Course = () => {
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
   const [subscribing, setSubscribing] = useState(false)
-  const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseDetailsFromSlugQuery,
+  const { data, loading, error } = useQuery<CourseEmailDetails>(
+    CourseEmailDetailsQuery,
     {
       variables: { slug },
     },

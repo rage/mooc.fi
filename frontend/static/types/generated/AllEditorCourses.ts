@@ -47,6 +47,25 @@ export interface AllEditorCourses_courses_user_course_settings_visibilities {
   language: string
 }
 
+export interface AllEditorCourses_courses_course_tags_tag_tag_translations {
+  __typename: "TagTranslation"
+  language: string
+  name: string
+  description: string | null
+}
+
+export interface AllEditorCourses_courses_course_tags_tag {
+  __typename: "Tag"
+  id: string
+  color: string | null
+  tag_translations: AllEditorCourses_courses_course_tags_tag_tag_translations[]
+}
+
+export interface AllEditorCourses_courses_course_tags {
+  __typename: "CourseTag"
+  tag: AllEditorCourses_courses_course_tags_tag | null
+}
+
 export interface AllEditorCourses_courses {
   __typename: "Course"
   id: string
@@ -69,6 +88,7 @@ export interface AllEditorCourses_courses {
   course_aliases: AllEditorCourses_courses_course_aliases[]
   user_course_settings_visibilities: AllEditorCourses_courses_user_course_settings_visibilities[]
   upcoming_active_link: boolean | null
+  course_tags: AllEditorCourses_courses_course_tags[]
 }
 
 export interface AllEditorCourses_currentUser {

@@ -1,40 +1,18 @@
+import {
+  AdminCourseFragment,
+  AdminDetailedCourseFragment,
+  CourseEmailDetailsFragment,
+  UserCourseFragment,
+} from "/graphql/fragments/course"
+
 import { gql } from "@apollo/client"
 
 export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
     courses(orderBy: { order: asc }, language: $language) {
-      id
-      slug
-      name
-      order
-      study_module_order
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-      promote
-      status
-      start_point
-      study_module_start_point
-      hidden
-      description
-      link
-      upcoming_active_link
-      study_modules {
-        id
-        slug
-      }
-      course_translations {
-        id
-        language
-        name
-      }
-      user_course_settings_visibilities {
-        id
-        language
-      }
+      ...UserCourseFragment
     }
+    ${UserCourseFragment}
   }
 `
 
@@ -52,52 +30,14 @@ export const AllEditorCoursesQuery = gql`
       handledBy: $handledBy
       status: $status
     ) {
-      id
-      name
-      slug
-      order
-      status
-      hidden
-      tier
-      instructions
-      completions_handled_by {
-        id
-      }
-      start_date
-      end_date
-      support_email
-      teacher_in_charge_email
-      teacher_in_charge_name
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-      course_translations {
-        id
-        language
-        name
-      }
-      course_variants {
-        id
-        slug
-        description
-      }
-      course_aliases {
-        id
-        course_code
-      }
-      user_course_settings_visibilities {
-        id
-        language
-      }
-      upcoming_active_link
+      ...AdminCourseFragment
     }
     currentUser {
       id
       administrator
     }
   }
+  ${AdminCourseFragment}
 `
 
 export const CheckSlugQuery = gql`
@@ -159,72 +99,26 @@ export const HandlerCoursesQuery = gql`
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
     course(slug: $slug) {
-      id
-      name
-      slug
-      ects
-      order
-      study_module_order
-      teacher_in_charge_name
-      teacher_in_charge_email
-      support_email
-      start_date
-      end_date
-      tier
-      photo {
-        id
-        compressed
-        compressed_mimetype
-        uncompressed
-        uncompressed_mimetype
-      }
-      promote
-      start_point
-      hidden
-      study_module_start_point
-      status
-      course_translations {
-        id
-        name
-        language
-        description
-        instructions
-        link
-      }
-      open_university_registration_links {
-        id
-        course_code
-        language
-        link
-      }
-      study_modules {
-        id
-      }
-      course_variants {
-        id
-        slug
-        description
-      }
-      course_aliases {
-        id
-        course_code
-      }
-      inherit_settings_from {
-        id
-      }
-      completions_handled_by {
-        id
-      }
-      has_certificate
-      user_course_settings_visibilities {
-        id
-        language
-      }
-      upcoming_active_link
-      automatic_completions
-      automatic_completions_eligible_for_ects
-      exercise_completions_needed
-      points_needed
+      ...AdminDetailedCourseFragment
     }
   }
+  ${AdminDetailedCourseFragment}
+`
+
+export const CourseEmailDetailsQuery = gql`
+  query CourseEmailDetails($slug: String) {
+    course(slug: $slug) {
+      ...CourseEmailDetailsFragment
+    }
+  }
+  ${CourseEmailDetailsFragment}
+`
+
+export const AllCourseEmailDetailsQuery = gql`
+  query AllCourseEmailDetails {
+    courses {
+      ...CourseEmailDetailsFragment
+    }
+  }
+  ${CourseEmailDetailsFragment}
 `

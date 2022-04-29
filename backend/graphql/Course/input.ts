@@ -1,4 +1,4 @@
-import { inputObjectType } from "nexus"
+import { inputObjectType, nonNull } from "nexus"
 
 export const CourseCreateArg = inputObjectType({
   name: "CourseCreateArg",
@@ -20,19 +20,19 @@ export const CourseCreateArg = inputObjectType({
     t.nonNull.string("start_date")
     t.string("end_date")
     t.list.field("study_modules", {
-      type: "StudyModuleWhereUniqueInput",
+      type: nonNull("StudyModuleWhereUniqueInput"),
     })
     t.list.nullable.field("course_translations", {
-      type: "CourseTranslationCreateInput",
+      type: nonNull("CourseTranslationCreateInput"),
     })
     t.list.nullable.field("open_university_registration_links", {
-      type: "OpenUniversityRegistrationLinkCreateInput",
+      type: nonNull("OpenUniversityRegistrationLinkCreateInput"),
     })
     t.list.nullable.field("course_variants", {
-      type: "CourseVariantCreateInput",
+      type: nonNull("CourseVariantCreateInput"),
     })
     t.list.nullable.field("course_aliases", {
-      type: "CourseAliasCreateInput",
+      type: nonNull("CourseAliasCreateInput"),
     })
     t.int("order")
     t.int("study_module_order")
@@ -44,13 +44,16 @@ export const CourseCreateArg = inputObjectType({
     t.nullable.id("completions_handled_by")
     t.nullable.boolean("has_certificate")
     t.list.nullable.field("user_course_settings_visibilities", {
-      type: "UserCourseSettingsVisibilityCreateInput",
+      type: nonNull("UserCourseSettingsVisibilityCreateInput"),
     })
     t.nullable.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
     t.nullable.id("course_stats_email")
+    t.list.nullable.field("course_tags", {
+      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
+    })
   },
 })
 
@@ -77,19 +80,19 @@ export const CourseUpsertArg = inputObjectType({
     t.nonNull.string("start_date")
     t.string("end_date")
     t.list.field("study_modules", {
-      type: "StudyModuleWhereUniqueInput",
+      type: nonNull("StudyModuleWhereUniqueInput"),
     })
     t.list.nullable.field("course_translations", {
-      type: "CourseTranslationUpsertInput",
+      type: nonNull("CourseTranslationUpsertInput"),
     })
     t.list.nullable.field("open_university_registration_links", {
-      type: "OpenUniversityRegistrationLinkUpsertInput",
+      type: nonNull("OpenUniversityRegistrationLinkUpsertInput"),
     })
     t.list.nullable.field("course_variants", {
-      type: "CourseVariantUpsertInput",
+      type: nonNull("CourseVariantUpsertInput"),
     })
     t.list.nullable.field("course_aliases", {
-      type: "CourseAliasUpsertInput",
+      type: nonNull("CourseAliasUpsertInput"),
     })
     t.int("order")
     t.int("study_module_order")
@@ -101,12 +104,15 @@ export const CourseUpsertArg = inputObjectType({
     t.nullable.id("completions_handled_by")
     t.nullable.boolean("has_certificate")
     t.list.nullable.field("user_course_settings_visibilities", {
-      type: "UserCourseSettingsVisibilityUpsertInput",
+      type: nonNull("UserCourseSettingsVisibilityUpsertInput"),
     })
     t.nullable.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
     t.nullable.id("course_stats_email")
+    t.list.nullable.field("course_tags", {
+      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
+    })
   },
 })

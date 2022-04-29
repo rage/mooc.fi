@@ -719,3 +719,61 @@ export const courseOwnerships: Prisma.CourseOwnershipCreateInput[] = [
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
+
+export const tags: Prisma.TagCreateInput[] = [
+  {
+    id: "48100000-0000-0000-0000-000000000001",
+    color: "#ff0000",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    tag_translations: {
+      create: [
+        {
+          language: "en_US",
+          name: "tag1 in english",
+          description: "tag1 description",
+        },
+        {
+          language: "fi_FI",
+          name: "tag1 in finnish",
+          description: "tag1 kuvaus",
+        },
+      ],
+    },
+  },
+  {
+    id: "48100000-0000-0000-0000-000000000002",
+    color: "#00ff00",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    tag_translations: {
+      create: [
+        {
+          language: "en_US",
+          name: "tag2 in english",
+          description: "tag2 description",
+        },
+        {
+          language: "fi_FI",
+          name: "tag2 in finnish",
+          description: "tag2 kuvaus",
+        },
+      ],
+    },
+  },
+]
+
+export const courseTags: Prisma.CourseTagCreateInput[] = [
+  {
+    tag: { connect: { id: "48100000-0000-0000-0000-000000000001" } }, // tag1
+    course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    tag: { connect: { id: "48100000-0000-0000-0000-000000000002" } }, // tag2
+    course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+]

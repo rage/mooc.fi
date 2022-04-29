@@ -6,55 +6,55 @@
 import { CourseStatus } from "./globalTypes"
 
 // ====================================================
-// GraphQL query operation: AllCourses
+// GraphQL fragment: UserCourseFragment
 // ====================================================
 
-export interface AllCourses_courses_photo {
+export interface UserCourseFragment_photo {
   __typename: "Image"
   id: string
   compressed: string | null
   uncompressed: string
 }
 
-export interface AllCourses_courses_study_modules {
+export interface UserCourseFragment_study_modules {
   __typename: "StudyModule"
   id: string
   slug: string
 }
 
-export interface AllCourses_courses_course_translations {
+export interface UserCourseFragment_course_translations {
   __typename: "CourseTranslation"
   id: string
   language: string
   name: string
 }
 
-export interface AllCourses_courses_user_course_settings_visibilities {
+export interface UserCourseFragment_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
 }
 
-export interface AllCourses_courses_course_tags_tag_tag_translations {
+export interface UserCourseFragment_course_tags_tag_tag_translations {
   __typename: "TagTranslation"
   language: string
   name: string
   description: string | null
 }
 
-export interface AllCourses_courses_course_tags_tag {
+export interface UserCourseFragment_course_tags_tag {
   __typename: "Tag"
   id: string
   color: string | null
-  tag_translations: AllCourses_courses_course_tags_tag_tag_translations[]
+  tag_translations: UserCourseFragment_course_tags_tag_tag_translations[]
 }
 
-export interface AllCourses_courses_course_tags {
+export interface UserCourseFragment_course_tags {
   __typename: "CourseTag"
-  tag: AllCourses_courses_course_tags_tag | null
+  tag: UserCourseFragment_course_tags_tag | null
 }
 
-export interface AllCourses_courses {
+export interface UserCourseFragment {
   __typename: "Course"
   id: string
   slug: string
@@ -63,23 +63,15 @@ export interface AllCourses_courses {
   status: CourseStatus | null
   hidden: boolean | null
   study_module_order: number | null
-  photo: AllCourses_courses_photo | null
+  photo: UserCourseFragment_photo | null
   promote: boolean | null
   start_point: boolean | null
   study_module_start_point: boolean | null
   description: string | null
   link: string | null
   upcoming_active_link: boolean | null
-  study_modules: AllCourses_courses_study_modules[]
-  course_translations: AllCourses_courses_course_translations[]
-  user_course_settings_visibilities: AllCourses_courses_user_course_settings_visibilities[]
-  course_tags: AllCourses_courses_course_tags[]
-}
-
-export interface AllCourses {
-  courses: (AllCourses_courses | null)[] | null
-}
-
-export interface AllCoursesVariables {
-  language?: string | null
+  study_modules: UserCourseFragment_study_modules[]
+  course_translations: UserCourseFragment_course_translations[]
+  user_course_settings_visibilities: UserCourseFragment_user_course_settings_visibilities[]
+  course_tags: UserCourseFragment_course_tags[]
 }
