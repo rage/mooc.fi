@@ -17,6 +17,8 @@ export const UserOrganization = objectType({
     t.model.role()
     t.model.user_id()
     t.model.user()
+    t.model.confirmed()
+    t.model.user_organization_join_confirmations()
   },
 })
 

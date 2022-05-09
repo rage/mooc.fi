@@ -27,6 +27,7 @@ export const EmailTemplate = objectType({
     t.model.exercise_completions_threshold()
     t.model.points_threshold()
     t.model.course_stats_subscriptions()
+    t.model.joined_organization()
   },
 })
 
