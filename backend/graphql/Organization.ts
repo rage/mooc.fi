@@ -50,6 +50,7 @@ export const Organization = objectType({
     t.model.organization_translations()
     t.model.user_organizations()
     t.model.verified_users()
+    t.model.required_confirmation()
     t.model.required_organization_email()
     t.model.join_organization_email_template_id()
     t.model.join_organization_email_template()

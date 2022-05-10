@@ -1,9 +1,9 @@
 import { ForbiddenError } from "apollo-server-express"
 import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
-import { OrganizationRole } from "@prisma/client"
+import { OrganizationRole, User } from "@prisma/client"
 
-import { isAdmin, isVisitor, or, Role } from "../accessControl"
+import { isAdmin, isUser, isVisitor, or, Role } from "../accessControl"
 import { Context } from "../context"
 
 export const UserOrganization = objectType({
@@ -31,10 +31,16 @@ export const UserOrganizationQueries = extendType({
         user_id: idArg(),
         organization_id: idArg(),
       },
+      authorize: or(isUser, isAdmin),
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
 
+        if (user_id && ctx.role !== Role.ADMIN) {
+          throw new ForbiddenError("invalid credentials to do that")
+        }
+
         let baseQuery
+
         if (user_id) {
           baseQuery = ctx.prisma.user.findUnique({
             where: { id: user_id },
@@ -44,13 +50,17 @@ export const UserOrganizationQueries = extendType({
             where: { id: organization_id },
           })
         }
+        if (!user_id && !ctx.user?.id) {
+          throw new Error("no user id")
+        }
+
         if (!baseQuery) {
           throw new Error("must provide at least one of user/organization id")
         }
 
         return baseQuery.user_organizations({
           where: {
-            user_id,
+            user_id: user_id ?? ctx.user!.id,
             organization_id,
           },
         })
@@ -87,19 +97,43 @@ export const UserOrganizationMutations = extendType({
     t.field("addUserOrganization", {
       type: "UserOrganization",
       args: {
-        user_id: nonNull(idArg()),
+        user_id: idArg(),
         organization_id: nonNull(idArg()),
       },
-      authorize: or(isVisitor, isAdmin),
-      resolve: async (_, args, ctx) => {
-        const { user_id, organization_id } = args
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { user_id, organization_id }, ctx) => {
+        let user: User | null
+
+        if (user_id) {
+          if (ctx.role !== Role.ADMIN) {
+            throw new ForbiddenError("invalid credentials to do that")
+          }
+
+          user = await ctx.prisma.user.findUnique({
+            where: { id: user_id },
+          })
+        } else {
+          user = ctx.user ?? null
+        }
+
+        if (!user) {
+          throw new Error("no such user")
+        }
+
+        const organization = await ctx.prisma.organization.findUnique({
+          where: { id: organization_id },
+        })
+
+        if (!organization) {
+          throw new Error("no such organization")
+        }
 
         const exists = await ctx.prisma.userOrganization.findFirst({
           select: {
             id: true,
           },
           where: {
-            user_id,
+            user_id: user.id,
             organization_id,
           },
         })
@@ -108,15 +142,67 @@ export const UserOrganizationMutations = extendType({
           throw new Error("this user/organization relation already exists")
         }
 
-        return ctx.prisma.userOrganization.create({
+        const confirmed = !organization.required_confirmation
+
+        const userOrganization = await ctx.prisma.userOrganization.create({
           data: {
-            user: { connect: { id: user_id } },
+            user: { connect: { id: user.id } },
             organization: {
               connect: { id: organization_id },
             },
             role: OrganizationRole.Student,
+            confirmed,
           },
         })
+
+        if (!confirmed) {
+          if (!user?.email) {
+            throw new Error("user has no email")
+          }
+
+          const { required_organization_email } = organization
+
+          if (required_organization_email) {
+            if (!user.email?.match(required_organization_email)) {
+              throw new Error("user email does not match organization email")
+            }
+          }
+
+          const emailTemplate = organization.join_organization_email_template_id
+            ? await ctx.prisma.emailTemplate.findUnique({
+                where: {
+                  id: organization.join_organization_email_template_id,
+                },
+              })
+            : null
+
+          if (!emailTemplate) {
+            throw new Error("no email template found")
+          }
+
+          // TODO: how to generate the activation link and have it render in the email template?
+          // Probably have to do it in the email cronjob?
+          const emailDelivery = await ctx.prisma.emailDelivery.create({
+            data: {
+              user_id,
+              email_template_id: emailTemplate.id,
+              sent: false,
+              error: false,
+            },
+          })
+
+          await ctx.prisma.userOrganizationJoinConfirmation.create({
+            data: {
+              email: user.email,
+              user_organization: { connect: { id: userOrganization.id } },
+              email_delivery: { connect: { id: emailDelivery.id } },
+              confirmation_link: "https://replace.me",
+              expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
+            },
+          })
+        }
+
+        return userOrganization
       },
     })
 
@@ -127,10 +213,10 @@ export const UserOrganizationMutations = extendType({
         role: arg({ type: "OrganizationRole" }),
       },
       authorize: or(isVisitor, isAdmin),
-      resolve: (_, args, ctx: Context) => {
+      resolve: async (_, args, ctx: Context) => {
         const { id, role } = args
 
-        checkUser(ctx, id)
+        await checkUser(ctx, id)
 
         return ctx.prisma.userOrganization.update({
           data: {
@@ -151,7 +237,8 @@ export const UserOrganizationMutations = extendType({
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx: Context) => {
         const { id } = args
-        checkUser(ctx, id)
+
+        await checkUser(ctx, id)
 
         return ctx.prisma.userOrganization.delete({
           where: { id },

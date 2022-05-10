@@ -330,6 +330,7 @@ model Organization {
   website                             String?
   creator                             User?                     @relation(fields: [creator_id], references: [id])
   /// regex to check user email against
+  required_confirmation               Boolean?                  @default(true)   
   required_organization_email         String?
   join_organization_email_template_id String?
   completions_registered              CompletionRegistered[]
@@ -580,8 +581,8 @@ model UserOrganizationJoinConfirmation {
   expired              Boolean?          @default(false)
   confirmed            Boolean?          @default(false)
   confirmed_at         DateTime?
-  user_organization_id String?
-  user_organization    UserOrganization? @relation(fields: [user_organization_id], references: [id])
+  user_organization_id String
+  user_organization    UserOrganization  @relation(fields: [user_organization_id], references: [id])
   email_delivery_id    String?
   email_delivery       EmailDelivery?    @relation(fields: [email_delivery_id], references: [id])
 

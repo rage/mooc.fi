@@ -3,6 +3,10 @@ import { Knex } from "knex"
 export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     ALTER TABLE "organization"
+      ADD COLUMN IF NOT EXISTS "required_confirmation" BOOLEAN DEFAULT true;
+  `)
+  await knex.raw(`
+    ALTER TABLE "organization"
       ADD COLUMN IF NOT EXISTS "required_organization_email" TEXT;
   `)
   await knex.raw(`
@@ -27,5 +31,9 @@ export async function down(knex: Knex): Promise<void> {
   await knex.raw(`
     ALTER TABLE "organization"
       DROP COLUMN IF EXISTS "required_organization_email";
+  `)
+  await knex.raw(`
+    ALTER TABLE "organization"
+      DROP COLUMN IF EXISTS "required_confirmation";
   `)
 }

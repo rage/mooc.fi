@@ -1,20 +1,10 @@
-import { useState, useEffect, useContext } from "react"
-import { gql } from "@apollo/client"
-import { useQuery, useMutation } from "@apollo/client"
-import {
-  Button,
-  Card,
-  Container,
-  IconButton,
-  InputAdornment,
-  Grid,
-  Typography,
-  TextField,
-  CardContent,
-  Skeleton,
-} from "@mui/material"
-import CancelIcon from "@mui/icons-material/Cancel"
+import { useContext, useEffect, useState } from "react"
+
+import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
 import {
   Organizations,
   Organizations_organizations,
@@ -23,16 +13,27 @@ import {
   UserOrganizations,
   UserOrganizations_userOrganizations,
 } from "/static/types/generated/UserOrganizations"
-import useDebounce from "/util/useDebounce"
-import styled from "@emotion/styled"
 import RegistrationTranslations from "/translations/register"
-import { WideContainer } from "/components/Container"
-import { range } from "lodash"
-import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "/contexts/LoginStateContext"
 import notEmpty from "/util/notEmpty"
+import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { range } from "lodash"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import CancelIcon from "@mui/icons-material/Cancel"
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -40,6 +41,8 @@ export const OrganizationsQuery = gql`
       id
       slug
       hidden
+      required_confirmation
+      required_organization_email
       organization_translations {
         language
         name
@@ -50,19 +53,34 @@ export const OrganizationsQuery = gql`
 `
 
 export const UserOrganizationsQuery = gql`
-  query UserOrganizations($user_id: ID) {
-    userOrganizations(user_id: $user_id) {
+  query UserOrganizations {
+    userOrganizations {
       id
+      confirmed
       organization {
         id
+      }
+      user_organization_join_confirmations {
+        id
+        confirmed
+        confirmed_at
+        created_at
+        updated_at
+        expired
+        expires_at
+        email_delivery {
+          id
+          sent
+          updated_at
+        }
       }
     }
   }
 `
 
 export const AddUserOrganizationMutation = gql`
-  mutation addUserOrganization($user_id: ID!, $organization_id: ID!) {
-    addUserOrganization(user_id: $user_id, organization_id: $organization_id) {
+  mutation addUserOrganization($organization_id: ID!) {
+    addUserOrganization(organization_id: $organization_id) {
       id
     }
   }
@@ -179,9 +197,8 @@ function useRegisterOrganization(searchFilter: string) {
     data: userOrganizationsData,
     error: userOrganizationsError,
     // loading: userOrganizationsLoading,
-  } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
-    variables: { user_id: currentUser!.id },
-  })
+  } = useQuery<UserOrganizations>(UserOrganizationsQuery)
+
   const [addUserOrganization] = useMutation(AddUserOrganizationMutation, {
     refetchQueries: [
       {
@@ -275,6 +292,7 @@ function useRegisterOrganization(searchFilter: string) {
   }, [searchFilter, organizations])
 
   const toggleMembership = (id: string) => async () => {
+    // TODO: error handling if mutations don't succeed
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.userOrganizations
         ?.filter(notEmpty)
@@ -294,7 +312,6 @@ function useRegisterOrganization(searchFilter: string) {
     } else {
       await addUserOrganization({
         variables: {
-          user_id: currentUser!.id,
           organization_id: id,
         },
       })

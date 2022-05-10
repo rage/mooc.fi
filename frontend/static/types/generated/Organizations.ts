@@ -19,6 +19,8 @@ export interface Organizations_organizations {
   id: string
   slug: string
   hidden: boolean | null
+  required_confirmation: boolean | null
+  required_organization_email: string | null
   organization_translations: Organizations_organizations_organization_translations[]
 }
 

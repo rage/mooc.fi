@@ -26,20 +26,24 @@ export async function sendEmailTemplateToUser(
       pass: SMTP_PASS, // generated ethereal password
     },
   }
-  let transporter = nodemailer.createTransport(options)
+  const transporter = nodemailer.createTransport(options)
   // send mail with defined transport object
-  let info = await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: SMTP_FROM, // sender address
     to: user.email, // list of receivers
     subject: template.title ?? undefined, // Subject line
-    text: await ApplyTemplate(template, user), // plain text body
+    text: await applyTemplate(template, user), // plain text body
     html: template.html_body ?? undefined, // html body
   })
   console.log("Message sent: %s", info.messageId)
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
-const ApplyTemplate = async (email_template: EmailTemplate, user: User) => {
-  const templater = new EmailTemplater(email_template, user, prisma)
+const applyTemplate = async (email_template: EmailTemplate, user: User) => {
+  const templater = new EmailTemplater({
+    emailTemplate: email_template,
+    user,
+    prisma,
+  })
   return await templater.resolve()
 }

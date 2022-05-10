@@ -6,6 +6,7 @@ import * as Templates from "./templates"
 import ITemplateConstructor from "./types/ITemplateConstructor"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
 import Template from "./types/Template"
+import { TemplateParams } from "./types/TemplateParams"
 
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {
@@ -20,10 +21,11 @@ export class EmailTemplater {
   user: User
   prisma: PrismaClient
 
-  constructor(emailTemplate: EmailTemplate, user: User, prisma: PrismaClient) {
+  constructor({ emailTemplate, user, prisma }: TemplateParams) {
     this.emailTemplate = emailTemplate
     this.user = user
     this.prisma = prisma
+
     this.prepare()
   }
 

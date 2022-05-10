@@ -17,6 +17,5 @@ export interface addUserOrganization {
 }
 
 export interface addUserOrganizationVariables {
-  user_id: string
   organization_id: string
 }
