@@ -10,13 +10,22 @@ import {
   SMTP_PORT,
   SMTP_USER,
 } from "../../../../config"
-import prisma from "../../../../prisma"
-import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
+import { EmailTemplater } from "./EmailTemplater"
+import { TemplateContext } from "./types/TemplateContext"
 
-export async function sendEmailTemplateToUser(
-  user: User,
-  template: EmailTemplate,
-) {
+interface SendEmailTemplateToUserOptions {
+  user: User
+  template: EmailTemplate
+  email?: string
+  context: TemplateContext
+}
+
+export async function sendEmailTemplateToUser({
+  user,
+  template,
+  email,
+  context = {} as TemplateContext,
+}: SendEmailTemplateToUserOptions) {
   const options: SMTPTransport.Options = {
     host: SMTP_HOST,
     port: parseInt(SMTP_PORT || ""),
@@ -30,20 +39,31 @@ export async function sendEmailTemplateToUser(
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: SMTP_FROM, // sender address
-    to: user.email, // list of receivers
+    to: email ?? user.email, // list of receivers
     subject: template.title ?? undefined, // Subject line
-    text: await applyTemplate(template, user), // plain text body
+    text: await applyTemplate(template, user, context), // plain text body
     html: template.html_body ?? undefined, // html body
   })
-  console.log("Message sent: %s", info.messageId)
+
+  const logMessage = `Message sent: ${info.messageId}`
+
+  if (context.logger) {
+    context.logger.info(logMessage)
+  } else {
+    console.log(logMessage)
+  }
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
-const applyTemplate = async (email_template: EmailTemplate, user: User) => {
+const applyTemplate = async (
+  email_template: EmailTemplate,
+  user: User,
+  context: TemplateContext,
+) => {
   const templater = new EmailTemplater({
     emailTemplate: email_template,
     user,
-    prisma,
+    context,
   })
   return await templater.resolve()
 }

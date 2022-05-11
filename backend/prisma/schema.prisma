@@ -194,6 +194,8 @@ model EmailDelivery {
   id                                  String                            @id @default(uuid())
   sent                                Boolean                           @default(false)
   updated_at                          DateTime?                         @updatedAt
+  /// use either this email to send to or if not specified, the one in the user profile 
+  email                               String?
   user_id                             String?
   email_template                      EmailTemplate?                    @relation(fields: [email_template_id], references: [id])
   user                                User?                             @relation(fields: [user_id], references: [id])
@@ -526,6 +528,7 @@ model UserOrganization {
   user                                 User?                              @relation(fields: [user_id], references: [id])
   organization                         Organization?                      @relation(fields: [organization_id], references: [id])
   confirmed                            Boolean?                           @default(false)
+  confirmed_at                         DateTime?
   user_organization_join_confirmations UserOrganizationJoinConfirmation[]
 
   @@map("user_organization")

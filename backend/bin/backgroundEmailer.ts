@@ -28,10 +28,17 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
     return
   }
 
-  logger.info(`Delivering email ${email_template.name} to ${user.email}`)
+  const email = emailDelivery.email ?? user.email
+
+  logger.info(`Delivering email ${email_template.name} to ${email}`)
 
   try {
-    await sendEmailTemplateToUser(user, email_template)
+    await sendEmailTemplateToUser({
+      user,
+      template: email_template,
+      email,
+      context: { prisma, logger },
+    })
     logger.info("Marking email as delivered")
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },

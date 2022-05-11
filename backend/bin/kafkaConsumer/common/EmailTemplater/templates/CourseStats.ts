@@ -3,7 +3,7 @@ import Template from "../types/Template"
 
 export class StartedCourseCount extends Template {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
+    const course = await this.context.prisma.course.findFirst({
       where: { course_stats_email: { id: this.emailTemplate.id } },
     })
 
@@ -14,7 +14,7 @@ export class StartedCourseCount extends Template {
     const startedCourse = await redisify<string>(
       async () => {
         const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          await this.context.prisma.$queryRaw<Array<{ count: number }>>`
             SELECT 
               COUNT(DISTINCT user_id) 
             FROM user_course_setting 
@@ -37,7 +37,7 @@ export class StartedCourseCount extends Template {
 
 export class CompletedCourseCount extends Template {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
+    const course = await this.context.prisma.course.findFirst({
       where: { course_stats_email: { id: this.emailTemplate.id } },
     })
 
@@ -48,7 +48,7 @@ export class CompletedCourseCount extends Template {
     const completedCourse = await redisify<string>(
       async () => {
         const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          await this.context.prisma.$queryRaw<Array<{ count: number }>>`
           SELECT 
             COUNT(DISTINCT user_id) 
           FROM completion 
@@ -71,7 +71,7 @@ export class CompletedCourseCount extends Template {
 
 export class AtLeastOneExerciseCount extends Template {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
+    const course = await this.context.prisma.course.findFirst({
       where: { course_stats_email: { id: this.emailTemplate.id } },
     })
 
@@ -82,7 +82,7 @@ export class AtLeastOneExerciseCount extends Template {
     const atLeastOneExercise = await redisify<string>(
       async () => {
         const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          await this.context.prisma.$queryRaw<Array<{ count: number }>>`
           SELECT 
             COUNT(DISTINCT user_id) 
           FROM exercise_completion ec

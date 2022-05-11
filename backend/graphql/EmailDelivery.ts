@@ -13,5 +13,6 @@ export const EmailDelivery = objectType({
     t.model.sent()
     t.model.user_id()
     t.model.user()
+    t.model.email()
   },
 })

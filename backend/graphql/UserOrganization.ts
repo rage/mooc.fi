@@ -1,5 +1,5 @@
 import { ForbiddenError } from "apollo-server-express"
-import { arg, extendType, idArg, nonNull, objectType } from "nexus"
+import { arg, extendType, idArg, nonNull, objectType, stringArg } from "nexus"
 
 import { OrganizationRole, User } from "@prisma/client"
 
@@ -18,6 +18,7 @@ export const UserOrganization = objectType({
     t.model.user_id()
     t.model.user()
     t.model.confirmed()
+    t.model.confirmed_at()
     t.model.user_organization_join_confirmations()
   },
 })
@@ -99,9 +100,10 @@ export const UserOrganizationMutations = extendType({
       args: {
         user_id: idArg(),
         organization_id: nonNull(idArg()),
+        email: stringArg(),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { user_id, organization_id }, ctx) => {
+      resolve: async (_, { user_id, organization_id, email }, ctx) => {
         let user: User | null
 
         if (user_id) {
@@ -152,26 +154,33 @@ export const UserOrganizationMutations = extendType({
             },
             role: OrganizationRole.Student,
             confirmed,
+            ...(confirmed ? { confirmed_at: new Date() } : {}),
           },
         })
 
         if (!confirmed) {
-          if (!user?.email) {
-            throw new Error("user has no email")
+          const emailToSendTo = email ?? user.email
+          if (!emailToSendTo) {
+            throw new Error(
+              "no email specified and no email found in user profile",
+            )
           }
 
-          const { required_organization_email } = organization
+          const {
+            required_organization_email,
+            join_organization_email_template_id,
+          } = organization
 
           if (required_organization_email) {
-            if (!user.email?.match(required_organization_email)) {
+            if (!emailToSendTo.match(required_organization_email)) {
               throw new Error("user email does not match organization email")
             }
           }
 
-          const emailTemplate = organization.join_organization_email_template_id
+          const emailTemplate = join_organization_email_template_id
             ? await ctx.prisma.emailTemplate.findUnique({
                 where: {
-                  id: organization.join_organization_email_template_id,
+                  id: join_organization_email_template_id,
                 },
               })
             : null
