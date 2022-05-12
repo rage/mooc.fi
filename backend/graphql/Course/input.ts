@@ -39,7 +39,7 @@ export const CourseCreateArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.nullable.id("completion_email")
+    t.nullable.id("completion_email_id")
     t.nullable.id("inherit_settings_from")
     t.nullable.id("completions_handled_by")
     t.nullable.boolean("has_certificate")
@@ -50,7 +50,7 @@ export const CourseCreateArg = inputObjectType({
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
-    t.nullable.id("course_stats_email")
+    t.nullable.id("course_stats_email_id")
   },
 })
 
@@ -96,7 +96,7 @@ export const CourseUpsertArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.nullable.id("completion_email")
+    t.nullable.id("completion_email_id")
     t.nullable.id("inherit_settings_from")
     t.nullable.id("completions_handled_by")
     t.nullable.boolean("has_certificate")
@@ -107,6 +107,6 @@ export const CourseUpsertArg = inputObjectType({
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
-    t.nullable.id("course_stats_email")
+    t.nullable.id("course_stats_email_id")
   },
 })
