@@ -7,10 +7,15 @@ import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
 import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
 import { updateCourse } from "/static/types/generated/updateCourse"
-import omit from "lodash/omit"
+import { omit } from "lodash"
 import Router from "next/router"
 
-import { gql, useApolloClient, useQuery } from "@apollo/client"
+import {
+  gql,
+  OperationVariables,
+  useApolloClient,
+  useQuery,
+} from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -112,28 +117,37 @@ const CreateEmailTemplateDialog = ({
             templateType === "threshold" ? selectedCourse?.id : null,
         },
       })
-      if ((course || selectedCourse) && templateType === "completion") {
+
+      const updateableCourse = course ?? selectedCourse
+
+      if (updateableCourse) {
+        const connectVariables = {} as OperationVariables
+
+        if (templateType === "completion") {
+          connectVariables.completion_email_id = data?.addEmailTemplate?.id
+        }
+        if (templateType === "course-stats") {
+          connectVariables.course_stats_email_id = data?.addEmailTemplate?.id
+        }
+
         await client.mutate<updateCourse>({
           mutation: UpdateCourseMutation,
           variables: {
             course: {
-              ...omit(course ?? selectedCourse, "__typename", "id"),
-              completion_email: data?.addEmailTemplate?.id,
+              // - already has slug and can't have both
+              // - let's also strip the queried emails as we don't want to update the other one if the one is updated/created
+              ...omit(updateableCourse, [
+                "__typename",
+                "id",
+                "completion_email",
+                "course_stats_email",
+              ]),
+              ...connectVariables,
             },
           },
         })
       }
-      if ((course || selectedCourse) && templateType === "course-stats") {
-        await client.mutate<updateCourse>({
-          mutation: UpdateCourseMutation,
-          variables: {
-            course: {
-              ...omit(course ?? selectedCourse, "__typename", "id"),
-              course_stats_email: data?.addEmailTemplate?.id,
-            },
-          },
-        })
-      }
+
       const url = "/email-templates/" + data?.addEmailTemplate?.id
       Router.push(url)
     } catch {
@@ -166,8 +180,7 @@ const CreateEmailTemplateDialog = ({
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
           />
-          {/* If we end up from course edit dashboard here, we have course and we know it
-          is a completion type. Could be refactored to own Dialog */}
+          {/* If we have a course, we are coming from the course dashboard */}
           {!course && (
             <>
               <InputLabel htmlFor="select">Template type</InputLabel>

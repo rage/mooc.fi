@@ -1,11 +1,14 @@
-import { Card, Typography } from "@mui/material"
-import styled from "@emotion/styled"
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
+// import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
 import React from "react"
+
 import { CardTitle } from "/components/Text/headers"
 
+import styled from "@emotion/styled"
+import { Card, Typography } from "@mui/material"
+
+// FIXME/DELETE: we don't have the verified user thing implemented for now so these types aren't generated
 interface VerifiedUserProps {
-  data: ProfileUserOverView_currentUser_verified_users
+  data: any // ProfileUserOverView_currentUser_verified_users
 }
 
 const VerifiedUserCard = styled(Card)`
