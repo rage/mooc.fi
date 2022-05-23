@@ -1,6 +1,7 @@
-import { extendType, idArg, nonNull, objectType } from "nexus"
+import { extendType, idArg, nonNull, objectType, stringArg } from "nexus"
 
-import { isUser } from "../accessControl"
+import { isAdmin, isUser, or } from "../accessControl"
+import { calculateActivationCode } from "../util/calculate-activation-code"
 
 export const UserOrganizationJoinConfirmation = objectType({
   name: "UserOrganizationJoinConfirmation",
@@ -9,7 +10,6 @@ export const UserOrganizationJoinConfirmation = objectType({
     t.model.created_at()
     t.model.updated_at()
     t.model.email()
-    t.model.confirmation_link()
     t.model.expired()
     t.model.expires_at()
     t.model.confirmed()
@@ -21,6 +21,29 @@ export const UserOrganizationJoinConfirmation = objectType({
   },
 })
 
+export const UserOrganizationJoinConfirmationQueries = extendType({
+  type: "Query",
+  definition(t) {
+    t.field("userOrganizationJoinConfirmation", {
+      type: "UserOrganizationJoinConfirmation",
+      args: {
+        id: nonNull(idArg()),
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id }, ctx) => {
+        return ctx.prisma.userOrganizationJoinConfirmation.findFirst({
+          where: {
+            id,
+            user_organization: {
+              user: { id: ctx.user?.id },
+            },
+          },
+        })
+      },
+    })
+  },
+})
+
 export const UserOrganizationJoinConfirmationMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -28,13 +51,18 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
       type: "UserOrganizationJoinConfirmation",
       args: {
         id: nonNull(idArg()),
-        // TODO: some sort of token etc.
+        code: nonNull(stringArg()),
       },
-      authorize: isUser,
-      resolve: async (_, { id }, ctx) => {
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id, code }, ctx) => {
         const userOrganizationJoinConfirmation =
-          await ctx.prisma.userOrganizationJoinConfirmation.findUnique({
-            where: { id },
+          await ctx.prisma.userOrganizationJoinConfirmation.findFirst({
+            where: {
+              id,
+              user_organization: {
+                user: { id: ctx.user?.id },
+              },
+            },
           })
 
         if (!userOrganizationJoinConfirmation) {
@@ -62,6 +90,29 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           })
 
           throw new Error("confirmation link has expired")
+        }
+
+        const userOrganization = await ctx.prisma.userOrganization.findFirst({
+          where: {
+            id: userOrganizationJoinConfirmation.user_organization_id,
+          },
+          include: {
+            organization: true,
+          },
+        })
+
+        if (!userOrganization || !userOrganization?.organization) {
+          throw new Error("invalid user/organization relation")
+        }
+
+        const activationCode = calculateActivationCode({
+          user: ctx.user!,
+          organization: userOrganization.organization,
+          userOrganizationJoinConfirmation,
+        })
+
+        if (activationCode !== code) {
+          throw new Error("invalid activation code")
         }
 
         const confirmationDate = new Date()

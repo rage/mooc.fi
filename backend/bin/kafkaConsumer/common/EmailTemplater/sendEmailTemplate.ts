@@ -1,7 +1,7 @@
 import * as nodemailer from "nodemailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
 
-import { EmailTemplate, User } from "@prisma/client"
+import { EmailTemplate, Organization, User } from "@prisma/client"
 
 import {
   SMTP_FROM,
@@ -15,6 +15,7 @@ import { TemplateContext } from "./types/TemplateContext"
 
 interface SendEmailTemplateToUserOptions {
   user: User
+  organization?: Organization
   template: EmailTemplate
   email?: string
   context: TemplateContext
@@ -22,6 +23,7 @@ interface SendEmailTemplateToUserOptions {
 
 export async function sendEmailTemplateToUser({
   user,
+  organization,
   template,
   email,
   context = {} as TemplateContext,
@@ -41,7 +43,7 @@ export async function sendEmailTemplateToUser({
     from: SMTP_FROM, // sender address
     to: email ?? user.email, // list of receivers
     subject: template.title ?? undefined, // Subject line
-    text: await applyTemplate(template, user, context), // plain text body
+    text: await applyTemplate({ template, user, organization }, context), // plain text body
     html: template.html_body ?? undefined, // html body
   })
 
@@ -55,14 +57,19 @@ export async function sendEmailTemplateToUser({
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
+interface ApplyTemplateParams {
+  user: User
+  organization?: Organization
+  template: EmailTemplate
+}
 const applyTemplate = async (
-  email_template: EmailTemplate,
-  user: User,
+  { template, user, organization }: ApplyTemplateParams,
   context: TemplateContext,
 ) => {
   const templater = new EmailTemplater({
-    emailTemplate: email_template,
+    emailTemplate: template,
     user,
+    organization,
     context,
   })
   return await templater.resolve()

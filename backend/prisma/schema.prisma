@@ -200,6 +200,8 @@ model EmailDelivery {
   email_template                      EmailTemplate?                    @relation(fields: [email_template_id], references: [id])
   user                                User?                             @relation(fields: [user_id], references: [id])
   user_organization_join_confirmation UserOrganizationJoinConfirmation?
+  organization_id                     String?
+  organization                        Organization?                     @relation(fields: [organization_id], references: [id])
 
   @@map("email_delivery")
 }
@@ -221,8 +223,8 @@ model EmailTemplate {
   stats_courses                        Course[]                  @relation("courseTocourse_course_stats_email")
   email_deliveries                     EmailDelivery[]
   course_stats_subscriptions           CourseStatsSubscription[]
-  /// If an organization requires an email confirmation, it's joined to the template with this
-  joined_organization                  Organization?
+  /// organizations that require confirmation to join can use the same template
+  joined_organizations                 Organization[]
 
   @@map("email_template")
 }
@@ -342,6 +344,7 @@ model Organization {
   user_organizations                  UserOrganization[]
   verified_users                      VerifiedUser[]
   join_organization_email_template    EmailTemplate?            @relation(fields: [join_organization_email_template_id], references: [id])
+  email_deliveries                    EmailDelivery[]
 
   @@map("organization")
 }
@@ -579,7 +582,6 @@ model UserOrganizationJoinConfirmation {
   updated_at           DateTime?         @updatedAt
   id                   String            @id @default(uuid())
   email                String
-  confirmation_link    String
   expires_at           DateTime?
   expired              Boolean?          @default(false)
   confirmed            Boolean?          @default(false)

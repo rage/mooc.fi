@@ -14,5 +14,7 @@ export const EmailDelivery = objectType({
     t.model.user_id()
     t.model.user()
     t.model.email()
+    t.model.organization_id()
+    t.model.organization()
   },
 })

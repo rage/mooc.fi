@@ -10,11 +10,12 @@ const BATCH_SIZE = 100
 const logger = sentryLogger({ service: "background-emailer" })
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
-  const { user, email_template } =
+  const { user, email_template, organization } =
     (await prisma.emailDelivery.findUnique({
       where: { id: emailDelivery.id },
       select: {
         user: true,
+        organization: true,
         email_template: true,
       },
     })) ?? {}
@@ -37,6 +38,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       user,
       template: email_template,
       email,
+      organization: organization ?? undefined,
       context: { prisma, logger },
     })
     logger.info("Marking email as delivered")

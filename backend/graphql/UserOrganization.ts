@@ -194,7 +194,9 @@ export const UserOrganizationMutations = extendType({
           const emailDelivery = await ctx.prisma.emailDelivery.create({
             data: {
               user_id,
+              email: emailToSendTo,
               email_template_id: emailTemplate.id,
+              organization_id,
               sent: false,
               error: false,
             },
@@ -205,7 +207,6 @@ export const UserOrganizationMutations = extendType({
               email: user.email,
               user_organization: { connect: { id: userOrganization.id } },
               email_delivery: { connect: { id: emailDelivery.id } },
-              confirmation_link: "https://replace.me",
               expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
             },
           })
