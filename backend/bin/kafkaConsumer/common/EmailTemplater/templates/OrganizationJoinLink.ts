@@ -22,6 +22,7 @@ export class OrganizationJoinLink extends Template {
             where: {
               expired: false,
             },
+            orderBy: { created_at: "desc" },
           },
         },
       })

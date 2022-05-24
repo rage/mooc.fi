@@ -19,6 +19,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
         email_template: true,
       },
     })) ?? {}
+
   if (!email_template || !user) {
     // TODO: should this update the delivery with error?
     logger.error(
@@ -31,7 +32,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
 
   const email = emailDelivery.email ?? user.email
 
-  logger.info(`Delivering email ${email_template.name} to ${email}`)
+  logger.info(`Delivering email "${email_template.name}" to ${email}`)
 
   try {
     await sendEmailTemplateToUser({
@@ -42,6 +43,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       context: { prisma, logger },
     })
     logger.info("Marking email as delivered")
+
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: {

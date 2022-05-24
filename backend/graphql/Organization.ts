@@ -173,6 +173,24 @@ export const OrganizationMutations = extendType({
         return org
       },
     })
+    t.field("updateOrganizationEmailTemplate", {
+      type: "Organization",
+      args: {
+        id: nonNull(idArg()),
+        email_template_id: nonNull(idArg()),
+      },
+      authorize: isAdmin,
+      resolve: async (_, { id, email_template_id }, ctx) => {
+        return ctx.prisma.organization.update({
+          where: {
+            id,
+          },
+          data: {
+            join_organization_email_template_id: email_template_id,
+          },
+        })
+      },
+    })
   },
 })
 

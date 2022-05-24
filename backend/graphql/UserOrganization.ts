@@ -101,9 +101,14 @@ export const UserOrganizationMutations = extendType({
         user_id: idArg(),
         organization_id: nonNull(idArg()),
         email: stringArg(),
+        redirect: stringArg(),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { user_id, organization_id, email }, ctx) => {
+      resolve: async (
+        _,
+        { user_id, organization_id, email, redirect },
+        ctx,
+      ) => {
         let user: User | null
 
         if (user_id) {
@@ -193,7 +198,7 @@ export const UserOrganizationMutations = extendType({
           // Probably have to do it in the email cronjob?
           const emailDelivery = await ctx.prisma.emailDelivery.create({
             data: {
-              user_id,
+              user_id: user.id,
               email: emailToSendTo,
               email_template_id: emailTemplate.id,
               organization_id,
@@ -204,9 +209,10 @@ export const UserOrganizationMutations = extendType({
 
           await ctx.prisma.userOrganizationJoinConfirmation.create({
             data: {
-              email: user.email,
+              email: emailToSendTo,
               user_organization: { connect: { id: userOrganization.id } },
               email_delivery: { connect: { id: emailDelivery.id } },
+              redirect,
               expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
             },
           })

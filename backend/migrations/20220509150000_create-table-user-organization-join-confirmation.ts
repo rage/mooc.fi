@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     CREATE TABLE IF NOT EXISTS "user_organization_join_confirmation" (
       "id" uuid NOT NULL DEFAULT ${extensionPath}uuid_generate_v4(),
       "email" TEXT NOT NULL,
+      "redirect" TEXT,
       "user_organization_id" UUID NOT NULL,
       "email_delivery_id" UUID,
       "expired" BOOLEAN NOT NULL DEFAULT FALSE,

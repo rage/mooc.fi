@@ -582,6 +582,7 @@ model UserOrganizationJoinConfirmation {
   updated_at           DateTime?         @updatedAt
   id                   String            @id @default(uuid())
   email                String
+  redirect             String?
   expires_at           DateTime?
   expired              Boolean?          @default(false)
   confirmed            Boolean?          @default(false)

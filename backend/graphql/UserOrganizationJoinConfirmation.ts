@@ -10,6 +10,7 @@ export const UserOrganizationJoinConfirmation = objectType({
     t.model.created_at()
     t.model.updated_at()
     t.model.email()
+    t.model.redirect()
     t.model.expired()
     t.model.expires_at()
     t.model.confirmed()
@@ -70,8 +71,10 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
         }
 
         if (userOrganizationJoinConfirmation.confirmed) {
-          // hunky dory, or should I error?
-          return userOrganizationJoinConfirmation
+          // TODO: do I just return the existing membership or throw this?
+          throw new Error(
+            "this user organization membership has already been confirmed",
+          )
         }
 
         if (userOrganizationJoinConfirmation.expired) {
