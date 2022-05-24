@@ -21,6 +21,9 @@ export const calculateActivationCode = ({
     .createHash("sha256")
     .update(
       userOrganizationJoinConfirmation.id +
+        userOrganizationJoinConfirmation.expires_at +
+        userOrganizationJoinConfirmation.email +
+        userOrganizationJoinConfirmation.email_delivery_id +
         organization.id +
         user.id +
         organization.secret_key,

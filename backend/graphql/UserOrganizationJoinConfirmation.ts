@@ -66,6 +66,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
             },
           })
 
+        // user is not associated with this confirmation or confirmation id is invalid
         if (!userOrganizationJoinConfirmation) {
           throw new Error("invalid confirmation id")
         }
@@ -77,20 +78,23 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           )
         }
 
-        if (userOrganizationJoinConfirmation.expired) {
-          throw new Error("confirmation link has expired")
-        }
-
-        if (
+        // confirmation expired or will expire now
+        const confirmationWillExpire =
           userOrganizationJoinConfirmation.expires_at &&
           userOrganizationJoinConfirmation.expires_at < new Date()
+
+        if (
+          userOrganizationJoinConfirmation.expired ||
+          confirmationWillExpire
         ) {
-          await ctx.prisma.userOrganizationJoinConfirmation.update({
-            where: { id },
-            data: {
-              expired: { set: true },
-            },
-          })
+          if (confirmationWillExpire) {
+            await ctx.prisma.userOrganizationJoinConfirmation.update({
+              where: { id },
+              data: {
+                expired: { set: true },
+              },
+            })
+          }
 
           throw new Error("confirmation link has expired")
         }
@@ -133,6 +137,74 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           data: {
             confirmed: { set: true },
             confirmed_at: confirmationDate,
+          },
+        })
+      },
+    })
+
+    t.field("refreshUserOrganizationJoinConfirmation", {
+      type: "UserOrganizationJoinConfirmation",
+      args: {
+        id: nonNull(idArg()),
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id }, ctx) => {
+        const userOrganizationJoinConfirmation =
+          await ctx.prisma.userOrganizationJoinConfirmation.findUnique({
+            where: { id },
+            include: {
+              user_organization: {
+                include: {
+                  organization: {
+                    select: {
+                      id: true,
+                      join_organization_email_template_id: true,
+                    },
+                  },
+                },
+              },
+            },
+          })
+
+        if (!userOrganizationJoinConfirmation) {
+          throw new Error("invalid confirmation id")
+        }
+
+        if (userOrganizationJoinConfirmation.confirmed) {
+          throw new Error(
+            "this user organization membership has already been confirmed",
+          )
+        }
+
+        const { email, user_organization } = userOrganizationJoinConfirmation
+        const { user_id, organization_id, organization } = user_organization
+
+        if (!organization?.join_organization_email_template_id) {
+          throw new Error("join organization email template is not set")
+        }
+
+        // TODO: find previous email delivery to prevent sending inactive activation links?
+        const emailDelivery = await ctx.prisma.emailDelivery.create({
+          data: {
+            user_id,
+            email,
+            email_template_id:
+              organization?.join_organization_email_template_id,
+            organization_id,
+            sent: false,
+            error: false,
+          },
+        })
+
+        // TODO: or expire old and create new?
+        return ctx.prisma.userOrganizationJoinConfirmation.update({
+          where: { id },
+          data: {
+            email,
+            user_organization: { connect: { id: user_organization.id } },
+            email_delivery: { connect: { id: emailDelivery.id } },
+            expired: false,
+            expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
           },
         })
       },

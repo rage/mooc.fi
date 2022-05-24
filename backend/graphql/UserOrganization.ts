@@ -194,8 +194,6 @@ export const UserOrganizationMutations = extendType({
             throw new Error("no email template found")
           }
 
-          // TODO: how to generate the activation link and have it render in the email template?
-          // Probably have to do it in the email cronjob?
           const emailDelivery = await ctx.prisma.emailDelivery.create({
             data: {
               user_id: user.id,
