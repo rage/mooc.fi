@@ -1,7 +1,13 @@
 import axios, { Method } from "axios"
-import { omit, orderBy } from "lodash"
+import {
+  omit,
+  orderBy,
+} from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import {
+  fakeTMCCurrent,
+  getTestContext,
+} from "../../tests/__helpers"
 import {
   adminUserDetails,
   normalUserDetails,
@@ -62,7 +68,7 @@ describe("API", () => {
     it("errors on non-existent secret", async () => {
       return postCompletions({
         data: { foo: 1 },
-        headers: { Authorization: "Basic koira" },
+        headers: { Authorization: "Basic foobar" },
       })
         .then(() => fail())
         .catch(({ response }) => {
