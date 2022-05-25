@@ -11,6 +11,7 @@ export const UserOrganizationJoinConfirmation = objectType({
     t.model.updated_at()
     t.model.email()
     t.model.redirect()
+    t.model.language()
     t.model.expired()
     t.model.expires_at()
     t.model.confirmed()

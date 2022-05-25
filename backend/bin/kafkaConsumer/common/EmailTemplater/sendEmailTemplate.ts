@@ -42,6 +42,8 @@ export async function sendEmailTemplateToUser({
 
   const text = await applyTemplate({ template, user, organization }, context)
 
+  // debug
+  console.log("text", text)
   const info = await transporter.sendMail({
     from: SMTP_FROM, // sender address
     to: email ?? user.email, // list of receivers

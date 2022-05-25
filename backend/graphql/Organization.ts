@@ -48,12 +48,17 @@ export const Organization = objectType({
     t.model.courses()
     t.model.course_organizations()
     t.model.organization_translations()
-    t.model.user_organizations()
-    t.model.verified_users()
+    t.model.user_organizations({
+      authorize: isAdmin,
+    })
+    t.model.verified_users({
+      authorize: isAdmin,
+    })
     t.model.required_confirmation()
     t.model.required_organization_email()
     t.model.join_organization_email_template_id()
     t.model.join_organization_email_template()
+    t.model.una()
   },
 })
 
@@ -73,24 +78,30 @@ export const OrganizationQueries = extendType({
   definition(t) {
     t.nullable.field("organization", {
       type: "Organization",
+      description:
+        "Get organization by id or slug. Admins can also query hidden courses. Fields that can be queried is more limited on normal users.",
       args: {
         id: idArg(),
+        slug: stringArg(),
         hidden: booleanArg(),
       },
       authorize: organizationPermission,
-      resolve: async (_, args, ctx) => {
-        const { id, hidden } = args
-
-        if (!id) {
-          throw new UserInputError("must provide id")
+      resolve: async (_, { id, slug, hidden }, ctx) => {
+        if ((!id && !slug) || (id && slug)) {
+          throw new UserInputError("must provide either id or slug")
         }
 
         return await ctx.prisma.organization.findFirst({
-          where: { id, hidden },
+          where: {
+            id: id ?? undefined,
+            slug: slug ?? undefined,
+            hidden,
+          },
         })
       },
     })
 
+    // just to create types
     t.crud.organizations({
       ordering: true,
       pagination: true,
@@ -105,10 +116,11 @@ export const OrganizationQueries = extendType({
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
         orderBy: arg({ type: "OrganizationOrderByInput" }),
         hidden: booleanArg(),
+        una: booleanArg(),
       },
       authorize: organizationPermission,
       resolve: async (_, args, ctx) => {
-        const { take, skip, cursor, orderBy, hidden } = args
+        const { take, skip, cursor, orderBy, hidden, una } = args
 
         const orgs = await ctx.prisma.organization.findMany({
           take: take ?? undefined,
@@ -123,6 +135,7 @@ export const OrganizationQueries = extendType({
             undefined,
           where: {
             hidden,
+            una,
           },
         })
 
@@ -173,6 +186,7 @@ export const OrganizationMutations = extendType({
         return org
       },
     })
+
     t.field("updateOrganizationEmailTemplate", {
       type: "Organization",
       args: {

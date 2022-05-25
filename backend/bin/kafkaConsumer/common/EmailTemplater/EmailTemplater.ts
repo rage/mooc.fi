@@ -17,7 +17,11 @@ export class EmailTemplater {
     completed_course_count: Templates.CompletedCourseCount,
     at_least_one_exercise_count: Templates.AtLeastOneExerciseCount,
     current_date: Templates.CurrentDate,
-    organization_join_link: Templates.OrganizationJoinLink,
+    organization_activation_link: Templates.OrganizationActivationLink,
+    organization_name: Templates.OrganizationName,
+    user_full_name: Templates.UserFullName,
+    user_first_name: Templates.UserFirstName,
+    user_last_name: Templates.UserLastName,
   }
   emailTemplate: EmailTemplate
   user: User

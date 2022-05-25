@@ -194,7 +194,7 @@ model EmailDelivery {
   id                                  String                            @id @default(uuid())
   sent                                Boolean                           @default(false)
   updated_at                          DateTime?                         @updatedAt
-  /// use either this email to send to or if not specified, the one in the user profile 
+  /// use either this email to send to or if not specified, the one in the user profile
   email                               String?
   user_id                             String?
   email_template                      EmailTemplate?                    @relation(fields: [email_template_id], references: [id])
@@ -333,10 +333,12 @@ model Organization {
   verified_at                         DateTime?
   website                             String?
   creator                             User?                     @relation(fields: [creator_id], references: [id])
+  required_confirmation               Boolean?                  @default(true)
   /// regex to check user email against
-  required_confirmation               Boolean?                  @default(true)   
   required_organization_email         String?
   join_organization_email_template_id String?
+  /// member of Una Europa
+  una                                 Boolean?                  @default(false)
   completions_registered              CompletionRegistered[]
   courses                             Course[]
   course_organizations                CourseOrganization[]
@@ -532,6 +534,7 @@ model UserOrganization {
   organization                         Organization?                      @relation(fields: [organization_id], references: [id])
   confirmed                            Boolean?                           @default(false)
   confirmed_at                         DateTime?
+  consented                            Boolean?                           @default(false)
   user_organization_join_confirmations UserOrganizationJoinConfirmation[]
 
   @@map("user_organization")
@@ -578,19 +581,20 @@ model CourseStatsSubscription {
 }
 
 model UserOrganizationJoinConfirmation {
-  created_at           DateTime?         @default(now())
-  updated_at           DateTime?         @updatedAt
-  id                   String            @id @default(uuid())
-  email                String
-  redirect             String?
-  expires_at           DateTime?
-  expired              Boolean?          @default(false)
-  confirmed            Boolean?          @default(false)
-  confirmed_at         DateTime?
-  user_organization_id String
-  user_organization    UserOrganization  @relation(fields: [user_organization_id], references: [id])
-  email_delivery_id    String?
-  email_delivery       EmailDelivery?    @relation(fields: [email_delivery_id], references: [id])
+  created_at               DateTime?        @default(now())
+  updated_at               DateTime?        @updatedAt
+  id                       String           @id @default(uuid())
+  email                    String
+  language                 String?          @default("fi")
+  redirect                 String?
+  expires_at               DateTime?
+  expired                  Boolean?         @default(false)
+  confirmed                Boolean?         @default(false)
+  confirmed_at             DateTime?
+  user_organization_id     String
+  user_organization        UserOrganization @relation(fields: [user_organization_id], references: [id])
+  email_delivery_id        String?
+  email_delivery           EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
 
   @@map("user_organization_join_confirmation")
 }

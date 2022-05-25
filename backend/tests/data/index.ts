@@ -65,11 +65,69 @@ export const thirdUserDetails: UserInfo = {
   extra_fields: {},
 }
 
+export const emailTemplateOrganizations: Prisma.EmailTemplateCreateInput[] = [
+  {
+    id: "48383100000000000000000000000101",
+    name: "organization join email",
+    title: "organization join email",
+    txt_body:
+      "You're joining organization {{ organization_name }}. Click this to confirm: {{ organization_activation_link }}",
+    template_type: "join-organization",
+  },
+]
+
 export const organizations: Prisma.OrganizationCreateInput[] = [
   {
     id: "10000000000000000000000000000102",
     secret_key: "kissa",
     slug: "test",
+    required_confirmation: true,
+    required_organization_email: "organization.fi$",
+    join_organization_email_template: {
+      connect: { id: "48383100000000000000000000000101" },
+    },
+    organization_translations: {
+      create: [
+        {
+          id: "10800000000000000000000000000102",
+          name: "test organization 1",
+          language: "fi_FI",
+        },
+      ],
+    },
+  },
+  {
+    id: "10000000000000000000000000000103",
+    secret_key: "koira",
+    slug: "test2",
+    required_confirmation: false,
+    organization_translations: {
+      create: [
+        {
+          id: "10800000000000000000000000000103",
+          name: "test organization 2",
+          language: "fi_FI",
+        },
+      ],
+    },
+  },
+  {
+    id: "10000000000000000000000000000104",
+    secret_key: "joku_kolmas_eläin",
+    slug: "test3",
+    required_confirmation: true,
+    join_organization_email_template: {
+      connect: { id: "48383100000000000000000000000101" },
+    },
+    organization_translations: {
+      create: [
+        {
+          id: "10800000000000000000000000000104",
+          name: "test organization 3",
+          language: "fi_FI",
+        },
+      ],
+    },
   },
 ]
 
@@ -268,6 +326,18 @@ export const users: Prisma.UserCreateInput[] = [
     username: "fifth_user",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+]
+
+export const userOrganizations: Prisma.UserOrganizationCreateInput[] = [
+  {
+    id: "96900000000000000000000000000101",
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    organization: { connect: { id: "10000000000000000000000000000103" } },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    confirmed: true,
+    consented: true,
   },
 ]
 

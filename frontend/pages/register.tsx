@@ -218,6 +218,7 @@ function useRegisterOrganization(searchFilter: string) {
     ],
   })
 
+  console.log(organizationsData, userOrganizationsData)
   // TODO: do something else
   useEffect(() => {
     if (

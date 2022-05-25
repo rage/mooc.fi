@@ -1,9 +1,17 @@
-import { ForbiddenError } from "apollo-server-express"
-import { arg, extendType, idArg, nonNull, objectType, stringArg } from "nexus"
+import { ForbiddenError, UserInputError } from "apollo-server-express"
+import {
+  arg,
+  booleanArg,
+  extendType,
+  idArg,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus"
 
 import { OrganizationRole, User } from "@prisma/client"
 
-import { isAdmin, isUser, isVisitor, or, Role } from "../accessControl"
+import { isAdmin, isUser, or, Role } from "../accessControl"
 import { Context } from "../context"
 
 export const UserOrganization = objectType({
@@ -19,6 +27,7 @@ export const UserOrganization = objectType({
     t.model.user()
     t.model.confirmed()
     t.model.confirmed_at()
+    t.model.consented()
     t.model.user_organization_join_confirmations()
   },
 })
@@ -34,37 +43,33 @@ export const UserOrganizationQueries = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, args, ctx) => {
-        const { user_id, organization_id } = args
+        // TODO/FIXME: admin could query all user organizations?
+        const { user_id: user_id_param, organization_id } = args
 
-        if (user_id && ctx.role !== Role.ADMIN) {
+        if (
+          user_id_param &&
+          user_id_param !== ctx.user?.id &&
+          ctx.role !== Role.ADMIN
+        ) {
           throw new ForbiddenError("invalid credentials to do that")
         }
 
-        let baseQuery
+        const user_id = user_id_param ?? ctx.user?.id
 
-        if (user_id) {
-          baseQuery = ctx.prisma.user.findUnique({
-            where: { id: user_id },
-          })
-        } else if (organization_id) {
-          baseQuery = ctx.prisma.organization.findUnique({
-            where: { id: organization_id },
-          })
-        }
-        if (!user_id && !ctx.user?.id) {
+        if (!user_id) {
           throw new Error("no user id")
         }
 
-        if (!baseQuery) {
-          throw new Error("must provide at least one of user/organization id")
-        }
-
-        return baseQuery.user_organizations({
-          where: {
-            user_id: user_id ?? ctx.user!.id,
-            organization_id,
-          },
-        })
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: user_id },
+          })
+          .user_organizations({
+            where: {
+              user_id: user_id ?? ctx.user!.id,
+              organization_id,
+            },
+          })
       },
     })
   },
@@ -102,16 +107,17 @@ export const UserOrganizationMutations = extendType({
         organization_id: nonNull(idArg()),
         email: stringArg(),
         redirect: stringArg(),
+        language: stringArg(),
       },
       authorize: or(isUser, isAdmin),
       resolve: async (
         _,
-        { user_id, organization_id, email, redirect },
+        { user_id, organization_id, email, redirect, language },
         ctx,
       ) => {
         let user: User | null
 
-        if (user_id) {
+        if (user_id && user_id !== ctx.user?.id) {
           if (ctx.role !== Role.ADMIN) {
             throw new ForbiddenError("invalid credentials to do that")
           }
@@ -182,23 +188,17 @@ export const UserOrganizationMutations = extendType({
             }
           }
 
-          const emailTemplate = join_organization_email_template_id
-            ? await ctx.prisma.emailTemplate.findUnique({
-                where: {
-                  id: join_organization_email_template_id,
-                },
-              })
-            : null
-
-          if (!emailTemplate) {
-            throw new Error("no email template found")
+          if (!join_organization_email_template_id) {
+            throw new Error(
+              "no email template associated with this organization",
+            )
           }
 
           const emailDelivery = await ctx.prisma.emailDelivery.create({
             data: {
               user_id: user.id,
               email: emailToSendTo,
-              email_template_id: emailTemplate.id,
+              email_template_id: join_organization_email_template_id,
               organization_id,
               sent: false,
               error: false,
@@ -211,6 +211,7 @@ export const UserOrganizationMutations = extendType({
               user_organization: { connect: { id: userOrganization.id } },
               email_delivery: { connect: { id: emailDelivery.id } },
               redirect,
+              language,
               expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
             },
           })
@@ -225,16 +226,22 @@ export const UserOrganizationMutations = extendType({
       args: {
         id: nonNull(idArg()),
         role: arg({ type: "OrganizationRole" }),
+        consent: booleanArg(),
       },
-      authorize: or(isVisitor, isAdmin),
-      resolve: async (_, args, ctx: Context) => {
-        const { id, role } = args
-
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id, role, consent }, ctx: Context) => {
         await checkUser(ctx, id)
+
+        if (!role && !consent) {
+          throw new UserInputError("must provide at least one of role/consent")
+        }
 
         return ctx.prisma.userOrganization.update({
           data: {
-            role: { set: role ?? OrganizationRole.Student },
+            ...(role
+              ? { role: { set: role ?? OrganizationRole.Student } }
+              : {}),
+            ...(consent ? { consent: { set: consent } } : {}),
           },
           where: {
             id,
@@ -248,7 +255,7 @@ export const UserOrganizationMutations = extendType({
       args: {
         id: nonNull(idArg()),
       },
-      authorize: or(isVisitor, isAdmin),
+      authorize: or(isUser, isAdmin),
       resolve: async (_, args, ctx: Context) => {
         const { id } = args
 

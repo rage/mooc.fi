@@ -17,9 +17,17 @@ export async function up(knex: Knex): Promise<void> {
     ALTER TABLE ONLY "organization"
       ADD CONSTRAINT "organization_email_template_join_organization_email_template_id_fkey" FOREIGN KEY ("join_organization_email_template_id") REFERENCES email_template("id") ON DELETE CASCADE;
   `)
+  await knex.raw(`
+    ALTER TABLE "organization"
+      ADD COLUMN IF NOT EXISTS "una" BOOLEAN DEFAULT false;
+  `)
 }
 
 export async function down(knex: Knex): Promise<void> {
+  await knex.raw(`
+    ALTER TABLE "organization"
+      DROP COLUMN IF EXISTS "una";
+  `)
   await knex.raw(`
     ALTER TABLE ONLY "organization"
       DROP CONSTRAINT "organization_email_template_join_organization_email_template_id_fkey";

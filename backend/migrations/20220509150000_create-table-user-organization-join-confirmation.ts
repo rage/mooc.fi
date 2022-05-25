@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
       "id" uuid NOT NULL DEFAULT ${extensionPath}uuid_generate_v4(),
       "email" TEXT NOT NULL,
       "redirect" TEXT,
+      "language" TEXT DEFAULT 'fi',
       "user_organization_id" UUID NOT NULL,
       "email_delivery_id" UUID,
       "expired" BOOLEAN NOT NULL DEFAULT FALSE,
@@ -27,7 +28,7 @@ export async function up(knex: Knex): Promise<void> {
   `)
   await knex.raw(`
     ALTER TABLE "user_organization_join_confirmation"
-      ADD CONSTRAINT user_organization_join_confirmation_user_organization_fkey FOREIGN KEY ("user_organization_id") REFERENCES "user_organization"("id") ON DELETE CASCADE;
+      ADD CONSTRAINT user_organization_join_confirmation_user_organization_fkey FOREIGN KEY ("user_organization_id") REFERENCES "user_organization"("id") ON DELETE SET NULL;
   `)
   await knex.raw(`
     ALTER TABLE "user_organization_join_confirmation"

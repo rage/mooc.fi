@@ -1,7 +1,8 @@
+import { FRONTEND_URL } from "../../../../../config"
 import { calculateActivationCode } from "../../../../../util/calculate-activation-code"
 import Template from "../types/Template"
 
-export class OrganizationJoinLink extends Template {
+export class OrganizationActivationLink extends Template {
   async resolve() {
     if (!this.organization) {
       throw new Error(
@@ -46,6 +47,30 @@ export class OrganizationJoinLink extends Template {
       userOrganizationJoinConfirmation: user_organization_join_confirmations[0],
     })
 
-    return `https://mooc.fi/en/organization/${this.organization.slug}/activate/${user_organization_join_confirmations[0].id}?code=${activationCode}`
+    const language = user_organization_join_confirmations[0].language
+    const baseUrl = `${FRONTEND_URL}/${
+      language && language !== "fi" ? `${language}/` : ""
+    }`
+
+    return `${baseUrl}/organization/${this.organization.slug}/activate/${user_organization_join_confirmations[0].id}?code=${activationCode}`
+  }
+}
+
+export class OrganizationName extends Template {
+  async resolve() {
+    if (!this.organization) {
+      throw new Error(
+        "no organization - are you sure you're using the right template?",
+      )
+    }
+
+    const organizationTranslation =
+      await this.context.prisma.organizationTranslation.findFirst({
+        where: {
+          organization_id: this.organization.id,
+        },
+      })
+
+    return organizationTranslation?.name ?? ""
   }
 }
