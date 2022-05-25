@@ -1,13 +1,7 @@
 import axios, { Method } from "axios"
-import {
-  omit,
-  orderBy,
-} from "lodash"
+import { omit, orderBy } from "lodash"
 
-import {
-  fakeTMCCurrent,
-  getTestContext,
-} from "../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
 import {
   adminUserDetails,
   normalUserDetails,
