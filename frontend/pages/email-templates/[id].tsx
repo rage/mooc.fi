@@ -29,6 +29,7 @@ const templateValues = [
   "started_course_count",
   "completed_course_count",
   "at_least_one_exercise_count",
+  "at_least_one_exercise_but_not_completed_emails",
   "current_date",
 ]
 
