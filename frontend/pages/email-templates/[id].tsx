@@ -4,7 +4,7 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
-import { SubtitleNoBackground } from "/components/Text/headers"
+import { CardTitle, SubtitleNoBackground } from "/components/Text/headers"
 import {
   DeleteEmailTemplateMutation,
   UpdateEmailTemplateMutation,
@@ -15,22 +15,33 @@ import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
+import {
+  emailTemplateDescriptions,
+  emailTemplateNames,
+  EmailTemplateType,
+} from "/types/emailTemplates"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { NextSeo } from "next-seo"
 import Router from "next/router"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
 import { useApolloClient, useQuery } from "@apollo/client"
-import { Button, Collapse, Paper, TextField } from "@mui/material"
+import styled from "@emotion/styled"
+import {
+  Button,
+  Card,
+  CardContent,
+  Collapse,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material"
 
-const templateValues = [
-  "grade",
-  "completion_link",
-  "started_course_count",
-  "completed_course_count",
-  "at_least_one_exercise_count",
-  "current_date",
-]
+const TemplateList = styled.div`
+  * + * {
+    margin-top: 0.5rem;
+  }
+`
 
 const EmailTemplateView = () => {
   // TODO: Get rid of any
@@ -45,12 +56,15 @@ const EmailTemplateView = () => {
   const [pointsThreshold, setPointsThreshold] = useState<
     Number | null | undefined
   >()
-  const [templateType, setTemplateType] = useState<string | null | undefined>()
+  const [templateType, setTemplateType] = useState<
+    EmailTemplateType | null | undefined
+  >()
   const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
   const client = useApolloClient()
+
   interface SnackbarData {
     type: "error" | "success" | "warning" | "error"
     message: string
@@ -86,12 +100,13 @@ const EmailTemplateView = () => {
     return <p>Error has occurred</p>
   }
 
+  console.log("data", data)
   if (data && !didInit) {
     setName(data.email_template?.name)
     setTxtBody(data.email_template?.txt_body)
     setHtmlBody(data.email_template?.html_body)
     setTitle(data.email_template?.title)
-    setTemplateType(data.email_template?.template_type)
+    setTemplateType(data.email_template?.template_type as EmailTemplateType)
     setExerciseThreshold(data.email_template?.exercise_completions_threshold)
     setPointsThreshold(data.email_template?.points_threshold)
     setTriggeredByCourseId(
@@ -106,15 +121,15 @@ const EmailTemplateView = () => {
       <NextSeo title={pageTitle} />
       <section>
         <WideContainer>
-          <Paper>
+          <Paper style={{ padding: "0.5rem" }}>
             <form>
-              <SubtitleNoBackground
-                component="p"
-                variant="subtitle1"
-                align="center"
-              >
+              <SubtitleNoBackground variant="h4" align="center">
                 id: {data.email_template?.id}
+                {templateType && (
+                  <p>type: {emailTemplateNames[templateType]}</p>
+                )}
               </SubtitleNoBackground>
+              <Typography variant="h4"></Typography>
               <TextField
                 id="name"
                 label="Name"
@@ -209,21 +224,53 @@ const EmailTemplateView = () => {
                 onClick={() => setIsHelpOpen((s) => !s)}
               />
               <Collapse in={isHelpOpen}>
-                <p>
-                  You can use template values in the email body by adding them
-                  inside double curly brackets, like <code>{`{{ this }}`}</code>
-                  . Available template values:
-                  <ul>
-                    {templateValues.map((value) => (
-                      <li>
-                        <code>{value}</code>
-                      </li>
-                    ))}
-                  </ul>
-                </p>
+                <div style={{ margin: "0.5rem", padding: "0.5rem" }}>
+                  <Typography variant="subtitle2">
+                    You can use these template values in the email:
+                  </Typography>
+                  <TemplateList>
+                    {emailTemplateDescriptions
+                      .filter((value) => {
+                        if (value.types?.length && templateType) {
+                          return value.types.includes(templateType)
+                        }
+                        return true
+                      })
+                      .map((value) => (
+                        <Card key={value.name} style={{ padding: "0.5rem" }}>
+                          <CardTitle>
+                            <code>
+                              {`{{ `}
+                              {value.name}
+                              {` }}`}
+                            </code>
+                          </CardTitle>
+                          {(value.description || value.types?.length) && (
+                            <CardContent>
+                              <Typography variant="body1">
+                                {value.description}
+                              </Typography>
+                              {value.types?.length && (
+                                <p>
+                                  Limited to template type
+                                  {value.types.length > 1 ? "s" : ""}{" "}
+                                  {value.types.map((type, index) => (
+                                    <>
+                                      {index > 0 ? ", " : ""}
+                                      <strong>
+                                        {emailTemplateNames[type] ?? type}
+                                      </strong>
+                                    </>
+                                  ))}
+                                </p>
+                              )}
+                            </CardContent>
+                          )}
+                        </Card>
+                      ))}
+                  </TemplateList>
+                </div>
               </Collapse>
-              <br></br>
-              <br></br>
               <Button
                 variant="contained"
                 color="primary"
@@ -290,7 +337,6 @@ const EmailTemplateView = () => {
               >
                 Delete
               </Button>
-
               <SubtitleNoBackground
                 component="p"
                 variant="subtitle1"

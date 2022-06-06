@@ -5,6 +5,7 @@ import Spinner from "/components/Spinner"
 import { UpdateCourseMutation } from "/graphql/mutations/courses"
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import { EmailTemplateType } from "/types/emailTemplates"
 import { omit } from "lodash"
 import Router from "next/router"
 
@@ -58,12 +59,6 @@ interface CreateEmailTemplateDialogParams {
   buttonText: string
   type?: EmailTemplateType
 }
-
-type EmailTemplateType =
-  | "completion"
-  | "course-stats"
-  | "threshold"
-  | "join-organization"
 
 const CreateEmailTemplateDialog = ({
   course,

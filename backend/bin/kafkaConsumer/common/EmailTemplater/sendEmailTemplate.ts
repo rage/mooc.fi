@@ -38,12 +38,10 @@ export async function sendEmailTemplateToUser({
     },
   }
   const transporter = nodemailer.createTransport(options)
-  // send mail with defined transport object
 
   const text = await applyTemplate({ template, user, organization }, context)
 
-  // debug
-  console.log("text", text)
+  // send mail with defined transport object
   const info = await transporter.sendMail({
     from: SMTP_FROM, // sender address
     to: email ?? user.email, // list of receivers
