@@ -44,9 +44,12 @@ export const AllCoursesDetails = gql`
 
 export const UpdateOrganizationEmailTemplateMutation = gql`
   mutation updateOrganizationEmailTemplate($id: ID!, $email_template_id: ID!) {
-    updateOrganization(id: $id, email_template_id: $email_template_id) {
+    updateOrganizationEmailTemplate(
+      id: $id
+      email_template_id: $email_template_id
+    ) {
       id
-      email_template {
+      join_organization_email_template {
         id
       }
     }

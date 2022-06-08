@@ -58,7 +58,6 @@ export const Organization = objectType({
     t.model.required_organization_email()
     t.model.join_organization_email_template_id()
     t.model.join_organization_email_template()
-    t.model.una()
   },
 })
 
@@ -116,11 +115,10 @@ export const OrganizationQueries = extendType({
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
         orderBy: arg({ type: "OrganizationOrderByInput" }),
         hidden: booleanArg(),
-        una: booleanArg(),
       },
       authorize: organizationPermission,
       resolve: async (_, args, ctx) => {
-        const { take, skip, cursor, orderBy, hidden, una } = args
+        const { take, skip, cursor, orderBy, hidden } = args
 
         const orgs = await ctx.prisma.organization.findMany({
           take: take ?? undefined,
@@ -135,7 +133,6 @@ export const OrganizationQueries = extendType({
             undefined,
           where: {
             hidden,
-            una,
           },
         })
 

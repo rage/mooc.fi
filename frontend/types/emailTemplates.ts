@@ -58,7 +58,13 @@ export const emailTemplateDescriptions: Array<EmailTemplateDescription> = [
   {
     name: "organization_activation_link",
     description:
-      "Activation link to confirm joining organization, if organization is set up to require email confirmation",
+      "Activation link including the activation code to confirm joining organization, if organization is set up to require email confirmation",
+    types: ["join-organization"],
+  },
+  {
+    name: "organization_activation_code",
+    description:
+      "Activation code (without the link) to confirm joining organization, if organization is set up to require email confirmation",
     types: ["join-organization"],
   },
   {

@@ -337,8 +337,6 @@ model Organization {
   /// regex to check user email against
   required_organization_email         String?
   join_organization_email_template_id String?
-  /// member of Una Europa
-  una                                 Boolean?                  @default(false)
   completions_registered              CompletionRegistered[]
   courses                             Course[]
   course_organizations                CourseOrganization[]

@@ -57,12 +57,24 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id, code }, ctx) => {
+        if (!ctx.user?.id) {
+          // just to be sure, should never happen
+          throw new Error("not logged in")
+        }
+
         const userOrganizationJoinConfirmation =
           await ctx.prisma.userOrganizationJoinConfirmation.findFirst({
             where: {
               id,
               user_organization: {
-                user: { id: ctx.user?.id },
+                user: { id: ctx.user.id },
+              },
+            },
+            include: {
+              user_organization: {
+                include: {
+                  organization: true,
+                },
               },
             },
           })
@@ -79,10 +91,12 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           )
         }
 
+        const now = new Date()
+
         // confirmation expired or will expire now
         const confirmationWillExpire =
           userOrganizationJoinConfirmation.expires_at &&
-          userOrganizationJoinConfirmation.expires_at < new Date()
+          userOrganizationJoinConfirmation.expires_at < now
 
         if (
           userOrganizationJoinConfirmation.expired ||
@@ -100,22 +114,15 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           throw new Error("confirmation link has expired")
         }
 
-        const userOrganization = await ctx.prisma.userOrganization.findFirst({
-          where: {
-            id: userOrganizationJoinConfirmation.user_organization_id,
-          },
-          include: {
-            organization: true,
-          },
-        })
+        const { user_organization } = userOrganizationJoinConfirmation
 
-        if (!userOrganization || !userOrganization?.organization) {
+        if (!user_organization || !user_organization?.organization) {
           throw new Error("invalid user/organization relation")
         }
 
         const activationCode = calculateActivationCode({
           user: ctx.user!,
-          organization: userOrganization.organization,
+          organization: user_organization.organization,
           userOrganizationJoinConfirmation,
         })
 
@@ -123,13 +130,11 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           throw new Error("invalid activation code")
         }
 
-        const confirmationDate = new Date()
-
         await ctx.prisma.userOrganization.update({
-          where: { id: userOrganizationJoinConfirmation.user_organization_id },
+          where: { id: user_organization.id },
           data: {
             confirmed: { set: true },
-            confirmed_at: confirmationDate,
+            confirmed_at: now,
           },
         })
 
@@ -137,7 +142,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           where: { id },
           data: {
             confirmed: { set: true },
-            confirmed_at: confirmationDate,
+            confirmed_at: now,
           },
         })
       },
@@ -184,18 +189,36 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           throw new Error("join organization email template is not set")
         }
 
-        // TODO: find previous email delivery to prevent sending inactive activation links?
-        const emailDelivery = await ctx.prisma.emailDelivery.create({
-          data: {
-            user_id,
-            email,
-            email_template_id:
-              organization?.join_organization_email_template_id,
-            organization_id,
-            sent: false,
-            error: false,
-          },
-        })
+        const now = Date.now()
+
+        // find email deliveries for this user/organization that are still in the queue
+        // and update them so that we don't accidentally send expired activation links
+        const { count: expiredDeliveryCount } =
+          await ctx.prisma.emailDelivery.updateMany({
+            where: {
+              user_id,
+              email,
+              email_template_id:
+                organization.join_organization_email_template_id,
+              organization_id,
+              sent: false,
+              error: false,
+            },
+            data: {
+              error: true,
+              error_message: `New activation link requested at ${new Date(
+                now,
+              )}`,
+            },
+          })
+
+        if (expiredDeliveryCount) {
+          ctx.logger.info(
+            `Found ${expiredDeliveryCount} expired email deliver${
+              expiredDeliveryCount > 1 ? "ies" : "y"
+            } still in the send queue; updated`,
+          )
+        }
 
         // TODO: or expire old and create new?
         return ctx.prisma.userOrganizationJoinConfirmation.update({
@@ -203,9 +226,19 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           data: {
             email,
             user_organization: { connect: { id: user_organization.id } },
-            email_delivery: { connect: { id: emailDelivery.id } },
+            email_delivery: {
+              create: {
+                user_id,
+                email,
+                email_template_id:
+                  organization?.join_organization_email_template_id,
+                organization_id,
+                sent: false,
+                error: false,
+              },
+            },
             expired: false,
-            expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
+            expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
           },
         })
       },

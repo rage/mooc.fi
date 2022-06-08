@@ -28,7 +28,15 @@ export const calculateActivationCode = ({
         user.id +
         organization.secret_key,
     )
-    .digest("hex")
+    .digest("base64")
+    .split("")
+    .reduce(
+      (acc: number, curr: string, index: number) =>
+        (acc * Math.max(1, curr.charCodeAt(0)) * (index + 1)) % 99999,
+      1,
+    )
+    .toString()
+    .padStart(5, "0")
 
   return activationCode
 }

@@ -75,7 +75,7 @@ export const UserOrganizationQueries = extendType({
   },
 })
 
-const checkUser = async (ctx: Context, id: any) => {
+const checkUserCredentials = async (ctx: Context, id: any) => {
   const { user, role } = ctx
 
   let existingUser
@@ -194,22 +194,22 @@ export const UserOrganizationMutations = extendType({
             )
           }
 
-          const emailDelivery = await ctx.prisma.emailDelivery.create({
-            data: {
-              user_id: user.id,
-              email: emailToSendTo,
-              email_template_id: join_organization_email_template_id,
-              organization_id,
-              sent: false,
-              error: false,
-            },
-          })
-
+          // TODO: wonder if we can ever run into a race condition where the email delivery
+          // exists before the join confirmation and the template doesn't find it?
           await ctx.prisma.userOrganizationJoinConfirmation.create({
             data: {
               email: emailToSendTo,
               user_organization: { connect: { id: userOrganization.id } },
-              email_delivery: { connect: { id: emailDelivery.id } },
+              email_delivery: {
+                create: {
+                  user_id: user.id,
+                  email: emailToSendTo,
+                  email_template_id: join_organization_email_template_id,
+                  organization_id,
+                  sent: false,
+                  error: false,
+                },
+              },
               redirect,
               language,
               expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
@@ -226,14 +226,16 @@ export const UserOrganizationMutations = extendType({
       args: {
         id: nonNull(idArg()),
         role: arg({ type: "OrganizationRole" }),
-        consent: booleanArg(),
+        consented: booleanArg(),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { id, role, consent }, ctx: Context) => {
-        await checkUser(ctx, id)
+      resolve: async (_, { id, role, consented }, ctx: Context) => {
+        await checkUserCredentials(ctx, id)
 
-        if (!role && !consent) {
-          throw new UserInputError("must provide at least one of role/consent")
+        if (!role && !consented) {
+          throw new UserInputError(
+            "must provide at least one of role/consented",
+          )
         }
 
         return ctx.prisma.userOrganization.update({
@@ -241,7 +243,7 @@ export const UserOrganizationMutations = extendType({
             ...(role
               ? { role: { set: role ?? OrganizationRole.Student } }
               : {}),
-            ...(consent ? { consent: { set: consent } } : {}),
+            ...(consented ? { consented: { set: consented } } : {}),
           },
           where: {
             id,
@@ -259,7 +261,7 @@ export const UserOrganizationMutations = extendType({
       resolve: async (_, args, ctx: Context) => {
         const { id } = args
 
-        await checkUser(ctx, id)
+        await checkUserCredentials(ctx, id)
 
         return ctx.prisma.userOrganization.delete({
           where: { id },

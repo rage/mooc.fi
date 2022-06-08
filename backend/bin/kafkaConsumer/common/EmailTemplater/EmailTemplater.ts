@@ -20,6 +20,7 @@ export class EmailTemplater {
       Templates.AtLeastOneExerciseButNotCompletedEmails,
     current_date: Templates.CurrentDate,
     organization_activation_link: Templates.OrganizationActivationLink,
+    organization_activation_code: Templates.OrganizationActivationCode,
     organization_name: Templates.OrganizationName,
     user_full_name: Templates.UserFullName,
     user_first_name: Templates.UserFirstName,

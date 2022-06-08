@@ -27,8 +27,8 @@ const userOrganizationJoinConfirmationQuery = gql`
   }
 `
 
-const userOrganizationJoinConfirmationMutation = gql`
-  mutation UserOrganizationJoinConfirmation($id: ID!, $code: String!) {
+const confirmUserOrganizationJoinMutation = gql`
+  mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
     confirmUserOrganizationJoin(id: $id, code: $code) {
       id
       confirmed
@@ -51,7 +51,7 @@ const OrganizationMembershipActivationPage = () => {
   const loaded = useRef(false)
 
   const [confirmUserOrganizationJoin, { data, loading, error }] = useMutation(
-    userOrganizationJoinConfirmationMutation,
+    confirmUserOrganizationJoinMutation,
     {
       variables: {
         id: joinConfirmationId,
