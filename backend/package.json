@@ -32,7 +32,7 @@
     "seedExercises": "node ./dist/bin/seedExercises.js",
     "createExports": "ts-node ./bin/createExports.ts",
     "kafka-bridge": "node ./dist/bin/kafkaBridge.js",
-    "background-emailer": "node ./dist/bin/backgroundEmailer.js",    
+    "background-emailer": "node ./dist/bin/backgroundEmailer.js",
     "update-course-statuses": "node ./dist/bin/updateCourseStatuses.js",
     "remove-duplicate-completions": "node ./dist/bin/removeDuplicateCompletions.js",
     "download-env": "node ./bin/downloadEnv.js",
