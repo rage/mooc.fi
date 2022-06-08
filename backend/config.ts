@@ -99,3 +99,7 @@ export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"
 
 export const extensionPath = CIRCLECI ? "public." : "extensions."
+
+// addresses to send Linköping completions, separated by ;
+export const LINKOPING_COMPLETION_RECIPIENTS =
+  process.env.LINKOPING_COMPLETION_RECIPIENTS
