@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: linkoping-stats-emailer
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  # first day of month at 12:00pm
+  schedule: "0 12 1 * *"
+  startingDeadlineSeconds: 3600
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      activeDeadlineSeconds: 7200
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: linkoping-stats-emailer
+              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              command: ["sh", "-c", "npm run linkoping-stats-emailer"]
+              envFrom:
+              - secretRef:
+                  name: backend-secret
+              env:
+                - name: REDIS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: redis
+                      key: redis-password

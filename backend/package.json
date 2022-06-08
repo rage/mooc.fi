@@ -15,6 +15,7 @@
     "sync-tmc-users": "node ./dist/bin/syncTMCUsers.js",
     "send-ai-statistics": "node ./dist/bin/sendAiStatistics.js",
     "course-stats-emailer": "node ./dist/bin/courseStatsEmailer.js",
+    "linkoping-stats-emailer": "node ./dist/bin/linkopingStatsEmailer.js",
     "import-organizations": "node ./dist/bin/importOrganizations.js",
     "parse-file": "node ./dist/bin/parseFile.js",
     "start-kafka-consumers": "concurrently --kill-others --restart-tries 2 npm:kafka-consumer-*",

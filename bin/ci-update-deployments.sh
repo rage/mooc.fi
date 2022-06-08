@@ -31,6 +31,7 @@ if [[ "$BRANCH" == "staging" ]]; then
     rm ./helm/templates/send-ai-statistics-cronjob.yml
     rm ./helm/templates/background-emailer-deployment.yml
     rm ./helm/templates/course-stats-emailer-cronjob.yml
+    rm ./helm/templates/linkoping-stats-emailer-cronjob.yml
   fi
   echo "Deploying staging..."
 

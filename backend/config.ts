@@ -100,3 +100,7 @@ export const REDIS_PASSWORD = process.env.REDIS_PASSWORD
 export const PRISMA_LOG_LEVELS = process.env.PRISMA_LOG_LEVELS
 
 export const extensionPath = CIRCLECI ? "public." : "extensions."
+
+// addresses to send Linköping completions, separated by ;
+export const LINKOPING_COMPLETION_RECIPIENTS =
+  process.env.LINKOPING_COMPLETION_RECIPIENTS
