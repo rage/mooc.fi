@@ -429,6 +429,7 @@ model User {
   updated_at                     DateTime?                   @updatedAt
   upstream_id                    Int                         @unique
   username                       String                      @unique
+  organizational_email           String?
   completions                    Completion[]
   completions_registered         CompletionRegistered[]
   email_deliveries               EmailDelivery[]

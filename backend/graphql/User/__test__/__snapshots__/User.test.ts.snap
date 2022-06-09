@@ -15,6 +15,20 @@ Object {
 }
 `;
 
+exports[`User queries currentUser shows current user when logged in 1`] = `
+Object {
+  "currentUser": Object {
+    "administrator": false,
+    "email": "e@mail.com",
+    "first_name": "first",
+    "id": Any<String>,
+    "last_name": "last",
+    "upstream_id": 1,
+    "username": "user",
+  },
+}
+`;
+
 exports[`User queries user_course_summary returns courses with completions 1`] = `
 Object {
   "currentUser": Object {

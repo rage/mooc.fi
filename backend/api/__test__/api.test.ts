@@ -1,7 +1,11 @@
 import axios, { Method } from "axios"
 import { omit, orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import {
+  fakeTMCCurrent,
+  getTestContext,
+  orderedSnapshot,
+} from "../../tests/__helpers"
 import {
   adminUserDetails,
   normalUserDetails,
@@ -118,7 +122,11 @@ describe("API", () => {
         },
       })
 
-      expect(orderBy(addedCompletions, "completion_id")).toMatchSnapshot([
+      expect(
+        orderedSnapshot(addedCompletions, {
+          __root: "completion_id",
+        }),
+      ).toMatchSnapshot([
         {
           id: expect.any(String),
           created_at: expect.any(Date),
@@ -832,7 +840,7 @@ describe("API", () => {
           headers: { Authorization: "Bearer normal" },
         })
 
-        expect(res.data).toMatchSnapshot()
+        expect(orderedSnapshot(res.data)).toMatchSnapshot()
       })
     })
   })

@@ -1,7 +1,10 @@
 import { gql } from "graphql-request"
-import { orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import {
+  fakeTMCCurrent,
+  getTestContext,
+  orderedSnapshot,
+} from "../../../tests/__helpers"
 import {
   adminUserDetails,
   normalUser,
@@ -48,22 +51,6 @@ const tmc = fakeTMCCurrent({
   "Bearer admin": [200, adminUserDetails],
 })
 
-// @ts-ignore: not used
-const sortByExercise = (data: any) => {
-  if (!data?.exercise_completions) {
-    return data
-  }
-
-  return {
-    ...data,
-    exercise_completions: orderBy(
-      data.exercise_completions.map((ec: any) => ec.exercise),
-      ["id"],
-      ["asc"],
-    ),
-  }
-}
-
 describe("User", () => {
   describe("queries", () => {
     beforeEach(() => {
@@ -94,32 +81,17 @@ describe("User", () => {
       }
     `)
 
-        expect(res).toMatchInlineSnapshot(
-          {
-            currentUser: {
-              id: expect.any(String),
-              administrator: false,
-              email: "e@mail.com",
-              first_name: "first",
-              last_name: "last",
-              username: "user",
-              upstream_id: 1,
-            },
+        expect(res).toMatchSnapshot({
+          currentUser: {
+            id: expect.any(String),
+            administrator: false,
+            email: "e@mail.com",
+            first_name: "first",
+            last_name: "last",
+            username: "user",
+            upstream_id: 1,
           },
-          `
-              Object {
-                "currentUser": Object {
-                  "administrator": false,
-                  "email": "e@mail.com",
-                  "first_name": "first",
-                  "id": Any<String>,
-                  "last_name": "last",
-                  "upstream_id": 1,
-                  "username": "user",
-                },
-              }
-          `,
-        )
+        })
 
         jest.clearAllMocks()
       })
@@ -141,16 +113,7 @@ describe("User", () => {
       }
     `)
 
-        expect(res).toMatchInlineSnapshot(
-          {
-            currentUser: null,
-          },
-          `
-        Object {
-          "currentUser": null,
-        }
-      `,
-        )
+        expect(res.currentUser).toBeNull()
       })
     })
 
@@ -198,27 +161,11 @@ describe("User", () => {
           }
         `)
 
-        const sortedRes = {
-          currentUser: {
-            ...res?.currentUser,
-            user_course_summary: orderBy(
-              [
-                ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
-                  ...cs,
-                  course: {
-                    ...cs.course,
-                    exercises: orderBy(cs.course.exercises, ["name"]),
-                  },
-                  exercise_completions: orderBy(cs?.exercise_completions, [
-                    "id",
-                  ]),
-                })),
-              ],
-              "course.name",
-              "asc",
-            ),
-          },
-        }
+        const sortedRes = orderedSnapshot(res, {
+          user_course_summary: "course.name",
+          exercises: "name",
+          exercise_completions: "id",
+        })
 
         expect(sortedRes).toMatchSnapshot()
       })

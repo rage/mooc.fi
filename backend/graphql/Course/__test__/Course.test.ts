@@ -1,12 +1,16 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
-import { omit, orderBy } from "lodash"
 import { mocked } from "jest-mock"
+import { omit } from "lodash"
 
 import { Course } from "@prisma/client"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import {
+  fakeTMCCurrent,
+  getTestContext,
+  orderedSnapshot,
+} from "../../../tests/__helpers"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
@@ -17,366 +21,6 @@ const tmc = fakeTMCCurrent({
   "Bearer normal": [200, normalUserDetails],
   "Bearer admin": [200, adminUserDetails],
 })
-
-const courseQuery = gql`
-  query course($id: ID, $slug: String, $language: String) {
-    course(id: $id, slug: $slug, language: $language) {
-      id
-      name
-      slug
-      description
-      link
-    }
-  }
-`
-
-const fullCourseQuery = gql`
-  query course(
-    $id: ID
-    $slug: String
-    $language: String
-    $includeDeletedExercises: Boolean
-  ) {
-    course(id: $id, slug: $slug, language: $language) {
-      id
-      name
-      slug
-      ects
-      order
-      study_module_order
-      teacher_in_charge_name
-      teacher_in_charge_email
-      support_email
-      start_date
-      end_date
-      tier
-      photo {
-        id
-        compressed
-        compressed_mimetype
-        uncompressed
-        uncompressed_mimetype
-      }
-      promote
-      start_point
-      hidden
-      study_module_start_point
-      status
-      course_translations {
-        id
-        name
-        language
-        description
-        link
-      }
-      open_university_registration_links {
-        id
-        course_code
-        language
-        link
-      }
-      study_modules {
-        id
-      }
-      course_variants {
-        id
-        slug
-        description
-      }
-      course_aliases {
-        id
-        course_code
-      }
-      inherit_settings_from {
-        id
-      }
-      completions_handled_by {
-        id
-      }
-      has_certificate
-      user_course_settings_visibilities {
-        id
-        language
-      }
-      exercises(includeDeleted: $includeDeletedExercises) {
-        id
-        name
-        deleted
-      }
-      upcoming_active_link
-      automatic_completions
-      automatic_completions_eligible_for_ects
-      exercise_completions_needed
-      points_needed
-    }
-  }
-`
-
-const coursesQuery = gql`
-  query AllCourses(
-    $language: String
-    $orderBy: CourseOrderByInput
-    $search: String
-    $hidden: Boolean
-    $handledBy: String
-  ) {
-    courses(
-      orderBy: $orderBy
-      language: $language
-      search: $search
-      hidden: $hidden
-      handledBy: $handledBy
-    ) {
-      id
-      slug
-      name
-      order
-      study_module_order
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-      promote
-      status
-      start_point
-      study_module_start_point
-      hidden
-      description
-      link
-      upcoming_active_link
-      study_modules {
-        id
-        slug
-      }
-      course_translations {
-        id
-        language
-        name
-      }
-      user_course_settings_visibilities {
-        id
-        language
-      }
-    }
-  }
-`
-
-const courseExistsQuery = gql`
-  query courseExists($slug: String!) {
-    course_exists(slug: $slug)
-  }
-`
-
-const courseCompletionsQuery = gql`
-  query courseCompletions(
-    $slug: String
-    $user_id: String
-    $user_upstream_id: Int
-  ) {
-    course(slug: $slug) {
-      id
-      completions(user_id: $user_id, user_upstream_id: $user_upstream_id) {
-        id
-        user {
-          id
-          username
-        }
-        completion_language
-        email
-        user_upstream_id
-      }
-    }
-  }
-`
-
-const createCourseMutation = gql`
-  mutation createCourse($course: CourseCreateArg!) {
-    addCourse(course: $course) {
-      id
-      name
-      slug
-      ects
-      order
-      study_module_order
-      teacher_in_charge_name
-      teacher_in_charge_email
-      support_email
-      start_date
-      end_date
-      tier
-      photo {
-        id
-        original
-        compressed
-        compressed_mimetype
-        uncompressed
-        uncompressed_mimetype
-      }
-      promote
-      start_point
-      hidden
-      study_module_start_point
-      status
-      course_translations {
-        id
-        name
-        language
-        description
-        link
-      }
-      open_university_registration_links {
-        id
-        course_code
-        language
-        link
-      }
-      study_modules {
-        id
-      }
-      course_variants {
-        id
-        slug
-        description
-      }
-      course_aliases {
-        id
-        course_code
-      }
-      inherit_settings_from {
-        id
-      }
-      completions_handled_by {
-        id
-      }
-      has_certificate
-      user_course_settings_visibilities {
-        id
-        language
-      }
-      upcoming_active_link
-      automatic_completions
-      automatic_completions_eligible_for_ects
-      exercise_completions_needed
-      points_needed
-    }
-  }
-`
-
-const updateCourseMutation = gql`
-  mutation updateCourse($course: CourseUpsertArg!) {
-    updateCourse(course: $course) {
-      id
-      name
-      slug
-      ects
-      order
-      study_module_order
-      teacher_in_charge_name
-      teacher_in_charge_email
-      support_email
-      start_date
-      end_date
-      tier
-      photo {
-        id
-        original
-        compressed
-        compressed_mimetype
-        uncompressed
-        uncompressed_mimetype
-      }
-      promote
-      start_point
-      hidden
-      study_module_start_point
-      status
-      course_translations {
-        id
-        name
-        language
-        description
-        link
-      }
-      open_university_registration_links {
-        id
-        course_code
-        language
-        link
-      }
-      study_modules {
-        id
-      }
-      course_variants {
-        id
-        slug
-        description
-      }
-      course_aliases {
-        id
-        course_code
-      }
-      inherit_settings_from {
-        id
-      }
-      completions_handled_by {
-        id
-      }
-      has_certificate
-      user_course_settings_visibilities {
-        id
-        language
-      }
-      upcoming_active_link
-      automatic_completions
-      automatic_completions_eligible_for_ects
-      exercise_completions_needed
-      points_needed
-    }
-  }
-`
-
-const deleteCourseMutation = gql`
-  mutation deleteCourse($id: ID, $slug: String) {
-    deleteCourse(id: $id, slug: $slug) {
-      id
-    }
-  }
-`
-
-const handlerCoursesQuery = gql`
-  query handlerCourses {
-    handlerCourses {
-      id
-      handles_completions_for {
-        id
-      }
-    }
-  }
-`
-
-// study_modules may be returned in any order, let's just sort them so snapshots are equal
-const sortStudyModules = (course: any) => {
-  if (!course?.study_modules) {
-    return course
-  }
-
-  return {
-    ...course,
-    study_modules: orderBy(course.study_modules, ["id"], ["asc"]),
-  }
-}
-
-const sortExercises = (course: any) => {
-  if (!course?.exercises) {
-    return course
-  }
-
-  return {
-    ...course,
-    exercises: orderBy(course.exercises, ["id"]),
-  }
-}
 
 describe("Course", () => {
   afterAll(() => jest.clearAllMocks())
@@ -443,10 +87,11 @@ describe("Course", () => {
           },
         )
 
-        expect({
-          ...res,
-          completions: orderBy(res.completions, "id"),
-        }).toMatchSnapshot()
+        expect(
+          orderedSnapshot(res, {
+            completions: "id",
+          }),
+        ).toMatchSnapshot()
       })
 
       it("works with user_upstream_id", async () => {
@@ -461,10 +106,11 @@ describe("Course", () => {
           },
         )
 
-        expect({
-          ...res,
-          completions: orderBy(res.completions, "id"),
-        }).toMatchSnapshot()
+        expect(
+          orderedSnapshot(res, {
+            completions: "id",
+          }),
+        ).toMatchSnapshot()
       })
 
       it("shouldn't return anything with non-existent user", async () => {
@@ -479,10 +125,11 @@ describe("Course", () => {
           },
         )
 
-        expect({
-          ...res,
-          completions: orderBy(res.completions, "id"),
-        }).toMatchSnapshot()
+        expect(
+          orderedSnapshot(res, {
+            completions: "id",
+          }),
+        ).toMatchSnapshot()
       })
     })
   })
@@ -577,11 +224,14 @@ describe("Course", () => {
           })
 
           ;[resId, resSlug].map((res) =>
-            expect(sortExercises(sortStudyModules(res.course))).toMatchSnapshot(
-              {
-                id: expect.any(String),
-              },
-            ),
+            expect(
+              orderedSnapshot(res.course, {
+                study_modules: "id",
+                exercises: "id",
+              }),
+            ).toMatchSnapshot({
+              id: expect.any(String),
+            }),
           )
         })
 
@@ -591,7 +241,11 @@ describe("Course", () => {
             includeDeletedExercises: true,
           })
 
-          expect(sortExercises(sortStudyModules(res.course))).toMatchSnapshot()
+          expect(
+            orderedSnapshot(res.course, {
+              study_modules: "id",
+            }),
+          ).toMatchSnapshot()
         })
       })
     })
@@ -605,7 +259,9 @@ describe("Course", () => {
         const res = await ctx.client.request(coursesQuery)
 
         expect(
-          orderBy(res.courses.map(sortStudyModules), ["id"]),
+          orderedSnapshot(res.courses, {
+            study_modules: "id",
+          }),
         ).toMatchSnapshot()
       })
 
@@ -615,9 +271,11 @@ describe("Course", () => {
             orderBy: { name: order },
           })
 
-          expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
-            `courses-order-${order}`,
-          )
+          expect(
+            orderedSnapshot(res.courses, {
+              study_modules: "id",
+            }),
+          ).toMatchSnapshot(`courses-order-${order}`)
         }
       })
 
@@ -628,7 +286,9 @@ describe("Course", () => {
           })
 
           expect(
-            orderBy(res.courses?.map(sortStudyModules), ["id"]),
+            orderedSnapshot(res.courses, {
+              study_modules: "id",
+            }),
           ).toMatchSnapshot(`courses-language-${language}`)
         }
       })
@@ -1122,3 +782,340 @@ describe("Course", () => {
     })
   })
 })
+
+const courseQuery = gql`
+  query course($id: ID, $slug: String, $language: String) {
+    course(id: $id, slug: $slug, language: $language) {
+      id
+      name
+      slug
+      description
+      link
+    }
+  }
+`
+
+const fullCourseQuery = gql`
+  query course(
+    $id: ID
+    $slug: String
+    $language: String
+    $includeDeletedExercises: Boolean
+  ) {
+    course(id: $id, slug: $slug, language: $language) {
+      id
+      name
+      slug
+      ects
+      order
+      study_module_order
+      teacher_in_charge_name
+      teacher_in_charge_email
+      support_email
+      start_date
+      end_date
+      tier
+      photo {
+        id
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
+      promote
+      start_point
+      hidden
+      study_module_start_point
+      status
+      course_translations {
+        id
+        name
+        language
+        description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
+      study_modules {
+        id
+      }
+      course_variants {
+        id
+        slug
+        description
+      }
+      course_aliases {
+        id
+        course_code
+      }
+      inherit_settings_from {
+        id
+      }
+      completions_handled_by {
+        id
+      }
+      has_certificate
+      user_course_settings_visibilities {
+        id
+        language
+      }
+      exercises(includeDeleted: $includeDeletedExercises) {
+        id
+        name
+        deleted
+      }
+      upcoming_active_link
+      automatic_completions
+      automatic_completions_eligible_for_ects
+      exercise_completions_needed
+      points_needed
+    }
+  }
+`
+
+const coursesQuery = gql`
+  query AllCourses(
+    $language: String
+    $orderBy: CourseOrderByInput
+    $search: String
+    $hidden: Boolean
+    $handledBy: String
+  ) {
+    courses(
+      orderBy: $orderBy
+      language: $language
+      search: $search
+      hidden: $hidden
+      handledBy: $handledBy
+    ) {
+      id
+      slug
+      name
+      order
+      study_module_order
+      photo {
+        id
+        compressed
+        uncompressed
+      }
+      promote
+      status
+      start_point
+      study_module_start_point
+      hidden
+      description
+      link
+      upcoming_active_link
+      study_modules {
+        id
+        slug
+      }
+      course_translations {
+        id
+        language
+        name
+      }
+      user_course_settings_visibilities {
+        id
+        language
+      }
+    }
+  }
+`
+
+const courseExistsQuery = gql`
+  query courseExists($slug: String!) {
+    course_exists(slug: $slug)
+  }
+`
+
+const courseCompletionsQuery = gql`
+  query courseCompletions(
+    $slug: String
+    $user_id: String
+    $user_upstream_id: Int
+  ) {
+    course(slug: $slug) {
+      id
+      completions(user_id: $user_id, user_upstream_id: $user_upstream_id) {
+        id
+        user {
+          id
+          username
+        }
+        completion_language
+        email
+        user_upstream_id
+      }
+    }
+  }
+`
+
+const createCourseMutation = gql`
+  mutation createCourse($course: CourseCreateArg!) {
+    addCourse(course: $course) {
+      id
+      name
+      slug
+      ects
+      order
+      study_module_order
+      teacher_in_charge_name
+      teacher_in_charge_email
+      support_email
+      start_date
+      end_date
+      tier
+      photo {
+        id
+        original
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
+      promote
+      start_point
+      hidden
+      study_module_start_point
+      status
+      course_translations {
+        id
+        name
+        language
+        description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
+      study_modules {
+        id
+      }
+      course_variants {
+        id
+        slug
+        description
+      }
+      course_aliases {
+        id
+        course_code
+      }
+      inherit_settings_from {
+        id
+      }
+      completions_handled_by {
+        id
+      }
+      has_certificate
+      user_course_settings_visibilities {
+        id
+        language
+      }
+      upcoming_active_link
+      automatic_completions
+      automatic_completions_eligible_for_ects
+      exercise_completions_needed
+      points_needed
+    }
+  }
+`
+
+const updateCourseMutation = gql`
+  mutation updateCourse($course: CourseUpsertArg!) {
+    updateCourse(course: $course) {
+      id
+      name
+      slug
+      ects
+      order
+      study_module_order
+      teacher_in_charge_name
+      teacher_in_charge_email
+      support_email
+      start_date
+      end_date
+      tier
+      photo {
+        id
+        original
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
+      promote
+      start_point
+      hidden
+      study_module_start_point
+      status
+      course_translations {
+        id
+        name
+        language
+        description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
+      study_modules {
+        id
+      }
+      course_variants {
+        id
+        slug
+        description
+      }
+      course_aliases {
+        id
+        course_code
+      }
+      inherit_settings_from {
+        id
+      }
+      completions_handled_by {
+        id
+      }
+      has_certificate
+      user_course_settings_visibilities {
+        id
+        language
+      }
+      upcoming_active_link
+      automatic_completions
+      automatic_completions_eligible_for_ects
+      exercise_completions_needed
+      points_needed
+    }
+  }
+`
+
+const deleteCourseMutation = gql`
+  mutation deleteCourse($id: ID, $slug: String) {
+    deleteCourse(id: $id, slug: $slug) {
+      id
+    }
+  }
+`
+
+const handlerCoursesQuery = gql`
+  query handlerCourses {
+    handlerCourses {
+      id
+      handles_completions_for {
+        id
+      }
+    }
+  }
+`

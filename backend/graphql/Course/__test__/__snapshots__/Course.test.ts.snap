@@ -2,7 +2,6 @@
 
 exports[`Course model completions shouldn't return anything with non-existent user 1`] = `
 Object {
-  "completions": Array [],
   "course": Object {
     "completions": Array [],
     "id": "00000000-0000-0000-0000-000000000002",
@@ -12,7 +11,6 @@ Object {
 
 exports[`Course model completions works with user_id 1`] = `
 Object {
-  "completions": Array [],
   "course": Object {
     "completions": Array [
       Object {
@@ -33,7 +31,6 @@ Object {
 
 exports[`Course model completions works with user_upstream_id 1`] = `
 Object {
-  "completions": Array [],
   "course": Object {
     "completions": Array [
       Object {
@@ -1208,36 +1205,6 @@ Array [
   Object {
     "course_translations": Array [
       Object {
-        "id": "00000000-0000-0000-0000-000000000022",
-        "language": "fi_FI",
-        "name": "course2_fi_FI",
-      },
-    ],
-    "description": "",
-    "hidden": null,
-    "id": "00000000-0000-0000-0000-000000000001",
-    "link": "",
-    "name": "course2",
-    "order": null,
-    "photo": null,
-    "promote": null,
-    "slug": "course2",
-    "start_point": null,
-    "status": "Upcoming",
-    "study_module_order": null,
-    "study_module_start_point": null,
-    "study_modules": Array [
-      Object {
-        "id": "00000000-0000-0000-0000-000000000102",
-        "slug": "module1",
-      },
-    ],
-    "upcoming_active_link": false,
-    "user_course_settings_visibilities": Array [],
-  },
-  Object {
-    "course_translations": Array [
-      Object {
         "id": "00000000-0000-0000-0000-000000000011",
         "language": "en_US",
         "name": "course1_en_US",
@@ -1270,6 +1237,36 @@ Array [
         "id": "00000000-0000-0000-0000-000000000101",
         "slug": "module2",
       },
+      Object {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "slug": "module1",
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [
       Object {
         "id": "00000000-0000-0000-0000-000000000102",
         "slug": "module1",
@@ -1393,36 +1390,6 @@ Array [
   Object {
     "course_translations": Array [
       Object {
-        "id": "00000000-0000-0000-0000-000000000022",
-        "language": "fi_FI",
-        "name": "course2_fi_FI",
-      },
-    ],
-    "description": "course2_description_fi_FI",
-    "hidden": null,
-    "id": "00000000-0000-0000-0000-000000000001",
-    "link": "",
-    "name": "course2",
-    "order": null,
-    "photo": null,
-    "promote": null,
-    "slug": "course2",
-    "start_point": null,
-    "status": "Upcoming",
-    "study_module_order": null,
-    "study_module_start_point": null,
-    "study_modules": Array [
-      Object {
-        "id": "00000000-0000-0000-0000-000000000102",
-        "slug": "module1",
-      },
-    ],
-    "upcoming_active_link": false,
-    "user_course_settings_visibilities": Array [],
-  },
-  Object {
-    "course_translations": Array [
-      Object {
         "id": "00000000-0000-0000-0000-000000000011",
         "language": "en_US",
         "name": "course1_en_US",
@@ -1455,6 +1422,36 @@ Array [
         "id": "00000000-0000-0000-0000-000000000101",
         "slug": "module2",
       },
+      Object {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "slug": "module1",
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "course2_description_fi_FI",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [
       Object {
         "id": "00000000-0000-0000-0000-000000000102",
         "slug": "module1",

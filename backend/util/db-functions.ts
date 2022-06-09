@@ -27,6 +27,9 @@ export const buildUserSearch = (
         email: { contains: search, mode: "insensitive" },
       },
       {
+        organizational_email: { contains: search, mode: "insensitive" },
+      },
+      {
         student_number: { contains: search },
       },
       {

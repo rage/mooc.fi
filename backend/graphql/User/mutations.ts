@@ -1,6 +1,7 @@
 import { AuthenticationError } from "apollo-server-express"
 import { arg, booleanArg, extendType, nonNull, stringArg } from "nexus"
 
+import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { Context } from "../../context"
 import { invalidate } from "../../services/redis"
 import hashUser from "../../util/hashUser"
@@ -68,7 +69,7 @@ export const UserMutations = extendType({
       args: {
         user: nonNull(
           arg({
-            type: "UserArg",
+            type: "UserInsertArg",
           }),
         ),
       },
@@ -86,6 +87,39 @@ export const UserMutations = extendType({
           data: {
             ...user,
             administrator: false,
+          },
+        })
+      },
+    })
+
+    t.field("updateUser", {
+      type: "User",
+      args: {
+        user: nonNull(
+          arg({
+            type: "UserUpdateArg",
+          }),
+        ),
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { user }, ctx) => {
+        const { id, email, ...rest } = user
+        const { user: currentUser } = ctx
+
+        if (!currentUser) {
+          throw new AuthenticationError("not logged in")
+        }
+
+        if (ctx.role !== Role.ADMIN && id && currentUser.id !== id) {
+          throw new Error("cannot update other users")
+        }
+
+        // TODO: sync changes with TMC here?
+        return ctx.prisma.user.update({
+          where: { id: id ?? currentUser.id },
+          data: {
+            ...rest,
+            ...(email ? { email } : {}), // can't be null
           },
         })
       },

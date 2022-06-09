@@ -3,6 +3,7 @@ import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { Server } from "http"
 import { knex, Knex } from "knex"
+import { orderBy } from "lodash"
 import { nanoid } from "nanoid"
 import nock from "nock"
 import winston from "winston"
@@ -264,3 +265,62 @@ export const fakeUserDetailReply = (reply: [number, object]) =>
   nock(TMC_HOST || "")
     .get("/api/v8/users/recently_changed_user_details")
     .reply(reply[0], () => reply[1])
+
+const ORDER_ROOT = "__root"
+type OrderRecord<T> = (T extends (infer E)[]
+  ? { [key in keyof E]?: string | Array<string> }
+  : { [key in keyof T]?: string | Array<string> }) & {
+  [ORDER_ROOT]?: string | Array<string>
+}
+
+export function orderedSnapshot<T extends Record<string, any>>(
+  data: T,
+  order?: OrderRecord<T>,
+): T
+export function orderedSnapshot<T extends Record<string, any>>(
+  data: Array<T>,
+  order?: OrderRecord<T>,
+): Array<T>
+export function orderedSnapshot<T extends Record<string, any>>(
+  data: T | Array<T>,
+  order: OrderRecord<T> = {} as OrderRecord<T>,
+) {
+  if (Array.isArray(data)) {
+    return orderBy(
+      data.map((v) => orderedSnapshot(v, order), order[ORDER_ROOT] ?? "id"),
+    )
+  }
+
+  return Object.entries(data).reduce((acc, [key, value]) => {
+    if (Array.isArray(value)) {
+      return {
+        ...acc,
+        [key]: orderBy(
+          value.map((v) => orderedSnapshot(v, order)),
+          order[key] ?? "id",
+        ),
+      }
+    }
+
+    // don't order class instances such as Date
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      !isClassInstance(value)
+    ) {
+      return {
+        ...acc,
+        [key]: orderedSnapshot(value, order),
+      }
+    }
+
+    return {
+      ...acc,
+      [key]: value,
+    }
+  }, {} as T)
+}
+
+function isClassInstance(obj: object) {
+  return obj.constructor && obj.constructor.name !== "Object"
+}
