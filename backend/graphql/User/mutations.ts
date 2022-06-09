@@ -69,7 +69,7 @@ export const UserMutations = extendType({
       args: {
         user: nonNull(
           arg({
-            type: "UserInsertArg",
+            type: "UserCreateArg",
           }),
         ),
       },

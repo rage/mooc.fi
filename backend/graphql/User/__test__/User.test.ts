@@ -13,7 +13,7 @@ import {
 import { seed } from "../../../tests/data/seed"
 
 const addUserMutation = gql`
-  mutation AddUser($user: UserInsertArg!) {
+  mutation AddUser($user: UserCreateArg!) {
     addUser(user: $user) {
       id
       email
