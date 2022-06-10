@@ -84,6 +84,10 @@ export function completionInstructions({ knex }: ApiContext) {
       await knex.select<any, Course[]>("id").from("course").where("slug", id)
     )[0]
 
+    if (!course) {
+      return res.status(404).json("")
+    }
+
     switch (language) {
       case "en":
         language = "en_US"
