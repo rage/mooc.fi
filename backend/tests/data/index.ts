@@ -789,3 +789,37 @@ export const courseOwnerships: Prisma.CourseOwnershipCreateInput[] = [
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
+
+export const userOrganizationJoinConfirmations: Prisma.UserOrganizationJoinConfirmationCreateInput[] =
+  [
+    {
+      id: "61300000-0000-0000-0000-000000000001",
+      user_organization: {
+        connect: { id: "96900000000000000000000000000101" },
+      },
+      /*
+      associated with:
+        user: { connect: { id: "20000000000000000000000000000102" } },
+        organization: { connect: { id: "10000000000000000000000000000103" } },
+    */
+      email_delivery: {
+        create: {
+          id: "61400000-0000-0000-0000-000000000001",
+          email_template: {
+            connect: { id: "48383100000000000000000000000101" },
+          },
+          user: { connect: { id: "20000000000000000000000000000102" } },
+          organization: { connect: { id: "10000000000000000000000000000103" } },
+          email: "what@ever.com",
+          error: false,
+          sent: false,
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+        },
+      },
+      created_at: "1900-01-01T10:00:00.00+02:00",
+      updated_at: "1900-01-01T10:00:00.00+02:00",
+      confirmed: true,
+      email: "what@ever.com",
+    },
+  ]

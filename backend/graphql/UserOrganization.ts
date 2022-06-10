@@ -166,6 +166,8 @@ export const UserOrganizationMutations = extendType({
             role: OrganizationRole.Student,
             confirmed,
             ...(confirmed ? { confirmed_at: new Date() } : {}),
+            // we assume that the consent is given in the frontend
+            consented: true,
           },
         })
 
@@ -232,7 +234,7 @@ export const UserOrganizationMutations = extendType({
       resolve: async (_, { id, role, consented }, ctx: Context) => {
         await checkUserCredentials(ctx, id)
 
-        if (!role && !consented) {
+        if (!role && (consented === null || typeof consented === "undefined")) {
           throw new UserInputError(
             "must provide at least one of role/consented",
           )
@@ -243,7 +245,9 @@ export const UserOrganizationMutations = extendType({
             ...(role
               ? { role: { set: role ?? OrganizationRole.Student } }
               : {}),
-            ...(consented ? { consented: { set: consented } } : {}),
+            ...(consented !== null && typeof consented !== "undefined"
+              ? { consented: { set: consented } }
+              : {}),
           },
           where: {
             id,

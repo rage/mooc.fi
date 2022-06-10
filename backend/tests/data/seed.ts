@@ -20,6 +20,7 @@ import {
   userCourseProgresses,
   userCourseServiceProgresses,
   userCourseSettings,
+  userOrganizationJoinConfirmations,
   userOrganizations,
   users,
 } from "./"
@@ -91,6 +92,10 @@ export const seed = async (prisma: PrismaClient) => {
     "courseOwnership",
     courseOwnerships,
   )
+  const seededUserOrganizationJoinConfirmations = await create(
+    "userOrganizationJoinConfirmation",
+    userOrganizationJoinConfirmations,
+  )
 
   return {
     courses: seededCourses,
@@ -114,5 +119,6 @@ export const seed = async (prisma: PrismaClient) => {
     courseOwnerships: seededCourseOwnerships,
     emailTemplateOrganizations: seededEmailTemplateOrganizations,
     userOrganizations: seededUserOrganizations,
+    userOrganizationJoinConfirmations: seededUserOrganizationJoinConfirmations,
   }
 }

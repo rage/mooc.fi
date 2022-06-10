@@ -130,19 +130,17 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           throw new Error("invalid activation code")
         }
 
-        await ctx.prisma.userOrganization.update({
-          where: { id: user_organization.id },
-          data: {
-            confirmed: { set: true },
-            confirmed_at: now,
-          },
-        })
-
         return await ctx.prisma.userOrganizationJoinConfirmation.update({
           where: { id },
           data: {
             confirmed: { set: true },
             confirmed_at: now,
+            user_organization: {
+              update: {
+                confirmed: { set: true },
+                confirmed_at: now,
+              },
+            },
           },
         })
       },
@@ -155,9 +153,19 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id }, ctx) => {
+        if (!ctx.user?.id) {
+          // just to be sure, should never happen
+          throw new Error("not logged in")
+        }
+
         const userOrganizationJoinConfirmation =
-          await ctx.prisma.userOrganizationJoinConfirmation.findUnique({
-            where: { id },
+          await ctx.prisma.userOrganizationJoinConfirmation.findFirst({
+            where: {
+              id,
+              user_organization: {
+                user: { id: ctx.user.id },
+              },
+            },
             include: {
               user_organization: {
                 include: {
