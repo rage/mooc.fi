@@ -1,11 +1,12 @@
 import {
-  objectType,
-  inputObjectType,
   extendType,
   idArg,
-  stringArg,
+  inputObjectType,
   nonNull,
+  objectType,
+  stringArg,
 } from "nexus"
+
 import { isAdmin } from "../accessControl"
 
 export const OpenUniversityRegistrationLink = objectType({
@@ -21,7 +22,8 @@ export const OpenUniversityRegistrationLink = objectType({
     t.model.link()
     t.model.start_date()
     t.model.stop_date()
-    t.nullable.field("tiers", {
+
+    t.nullable.list.field("tiers", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.openUniversityRegistrationLink.findUnique({
