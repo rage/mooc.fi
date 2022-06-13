@@ -12,6 +12,8 @@ import { OrganizationRole } from "./globalTypes"
 export interface updateUserOrganization_updateUserOrganization {
   __typename: "UserOrganization"
   id: string
+  role: OrganizationRole | null
+  consented: boolean | null
 }
 
 export interface updateUserOrganization {
@@ -21,4 +23,5 @@ export interface updateUserOrganization {
 export interface updateUserOrganizationVariables {
   id: string
   role?: OrganizationRole | null
+  consented?: boolean | null
 }

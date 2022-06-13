@@ -3,6 +3,14 @@ import { useContext, useEffect, useState } from "react"
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
+import {
+  UserOrganizationFragment,
+  UserOrganizationJoinConfirmationFragment,
+} from "/graphql/fragments/userOrganization"
+import {
+  addUserOrganizationMutation,
+  deleteUserOrganizationMutation,
+} from "/graphql/mutations/userOrganization"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import {
@@ -55,51 +63,14 @@ export const OrganizationsQuery = gql`
 export const UserOrganizationsQuery = gql`
   query UserOrganizations {
     userOrganizations {
-      id
-      confirmed
-      organization {
-        id
-      }
+      ...UserOrganizationFragment
       user_organization_join_confirmations {
-        id
-        confirmed
-        confirmed_at
-        created_at
-        updated_at
-        expired
-        expires_at
-        email_delivery {
-          id
-          sent
-          updated_at
-        }
+        ...UserOrganizationJoinConfirmationFragment
       }
     }
   }
-`
-
-export const AddUserOrganizationMutation = gql`
-  mutation addUserOrganization($organization_id: ID!) {
-    addUserOrganization(organization_id: $organization_id) {
-      id
-    }
-  }
-`
-
-export const UpdateUserOrganizationMutation = gql`
-  mutation updateUserOrganization($id: ID!, $role: OrganizationRole) {
-    updateUserOrganization(id: $id, role: $role) {
-      id
-    }
-  }
-`
-
-export const DeleteUserOrganizationMutation = gql`
-  mutation deleteUserOrganization($id: ID!) {
-    deleteUserOrganization(id: $id) {
-      id
-    }
-  }
+  ${UserOrganizationFragment}
+  ${UserOrganizationJoinConfirmationFragment}
 `
 
 const Header = styled(Typography)<any>`
@@ -199,7 +170,7 @@ function useRegisterOrganization(searchFilter: string) {
     // loading: userOrganizationsLoading,
   } = useQuery<UserOrganizations>(UserOrganizationsQuery)
 
-  const [addUserOrganization] = useMutation(AddUserOrganizationMutation, {
+  const [addUserOrganization] = useMutation(addUserOrganizationMutation, {
     refetchQueries: [
       {
         query: UserOrganizationsQuery,
@@ -209,7 +180,7 @@ function useRegisterOrganization(searchFilter: string) {
   })
 
   // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
-  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
+  const [deleteUserOrganization] = useMutation(deleteUserOrganizationMutation, {
     refetchQueries: [
       {
         query: UserOrganizationsQuery,

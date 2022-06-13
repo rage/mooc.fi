@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 
+import { confirmUserOrganizationJoinMutation } from "/graphql/mutations/userOrganization"
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
 
@@ -22,22 +23,6 @@ const userOrganizationJoinConfirmationQuery = gql`
       email_delivery {
         id
         sent
-      }
-    }
-  }
-`
-
-const confirmUserOrganizationJoinMutation = gql`
-  mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
-    confirmUserOrganizationJoin(id: $id, code: $code) {
-      id
-      confirmed
-      confirmed_at
-      user_organization {
-        id
-        user_id
-        organization_id
-        confirmed
       }
     }
   }
