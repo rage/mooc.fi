@@ -32,6 +32,8 @@ const UserSummaryQuery = gql`
           name
           slug
           has_certificate
+          exercise_completions_needed
+          points_needed
           photo {
             id
             uncompressed
@@ -78,6 +80,16 @@ const UserSummaryQuery = gql`
           student_number
           email
           ...CompletionsRegisteredFragment
+        }
+        required_for_completion {
+          type
+          current_amount
+          required_amount
+          required_actions {
+            id
+            exercise_completion_id
+            value
+          }
         }
       }
     }
@@ -134,6 +146,7 @@ function UserSummaryView() {
     )
   }
 
+  console.log("data", data)
   return (
     <Container>
       <CollapseContext.Provider

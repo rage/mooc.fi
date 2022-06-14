@@ -68,6 +68,10 @@ export default makeSchema({
         module: require.resolve(".prisma/client/index.d.ts"),
         alias: "prisma",
       },
+      {
+        module: path.join(__dirname, "typeDefs.ts"),
+        alias: "t",
+      },
     ],
   },
   plugins: createPlugins(),
@@ -80,4 +84,5 @@ export default makeSchema({
   },
   shouldGenerateArtifacts: true,
   shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),
+  prettierConfig: require.resolve("../.prettierrc.yaml"),
 })

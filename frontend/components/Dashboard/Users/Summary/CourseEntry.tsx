@@ -101,6 +101,7 @@ function CourseEntry({ data }: CourseEntryProps) {
             userCourseServiceProgresses={data.user_course_service_progresses?.filter(
               notEmpty,
             )}
+            exerciseCompletions={data.exercise_completions?.filter(notEmpty)}
           />
           <ExerciseList
             exercises={sortBy(exercisesWithCompletions, ["name"])}

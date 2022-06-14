@@ -19,6 +19,12 @@ export enum OrganizationRole {
   Teacher = "Teacher",
 }
 
+export enum RequiredForCompletionType {
+  NOT_ENOUGH_EXERCISE_COMPLETIONS = "NOT_ENOUGH_EXERCISE_COMPLETIONS",
+  NOT_ENOUGH_POINTS = "NOT_ENOUGH_POINTS",
+  REQUIRED_ACTIONS = "REQUIRED_ACTIONS",
+}
+
 export interface CourseAliasCreateInput {
   course?: string | null
   course_code: string
