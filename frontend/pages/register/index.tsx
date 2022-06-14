@@ -4,10 +4,6 @@ import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
 import {
-  UserOrganizationFragment,
-  UserOrganizationJoinConfirmationFragment,
-} from "/graphql/fragments/userOrganization"
-import {
   addUserOrganizationMutation,
   deleteUserOrganizationMutation,
 } from "/graphql/mutations/userOrganization"
@@ -27,7 +23,7 @@ import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 import { range } from "lodash"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import CancelIcon from "@mui/icons-material/Cancel"
 import {
@@ -42,36 +38,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-
-export const OrganizationsQuery = gql`
-  query Organizations {
-    organizations {
-      id
-      slug
-      hidden
-      required_confirmation
-      required_organization_email
-      organization_translations {
-        language
-        name
-        information
-      }
-    }
-  }
-`
-
-export const UserOrganizationsQuery = gql`
-  query UserOrganizations {
-    userOrganizations {
-      ...UserOrganizationFragment
-      user_organization_join_confirmations {
-        ...UserOrganizationJoinConfirmationFragment
-      }
-    }
-  }
-  ${UserOrganizationFragment}
-  ${UserOrganizationJoinConfirmationFragment}
-`
+import {
+  OrganizationsQuery,
+  UserOrganizationsQuery,
+} from "/graphql/queries/organizations"
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;
