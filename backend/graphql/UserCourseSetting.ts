@@ -9,10 +9,10 @@ import {
 } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
-import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
 import { buildUserSearch } from "../util/db-functions"
+import { notEmpty } from "../util/notEmpty"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
@@ -138,58 +138,68 @@ export const UserCourseSettingQueries = extendType({
           }
         }
 
-        const orCondition: Prisma.UserWhereInput[] = []
-
-        if (search && search !== "") {
-          orCondition.push(buildUserSearch(search))
+        if (!course_id && !user_id && !user_upstream_id) {
+          throw new UserInputError(
+            "Needs at least one of course_id, user_id or user_upstream_id",
+          )
         }
 
-        if (user_id) orCondition.push({ id: user_id })
-        if (user_upstream_id)
-          orCondition.push({ upstream_id: user_upstream_id })
-
-        const baseArgs = {
-          where: {
-            ...(orCondition.length
-              ? {
-                  user: {
-                    OR: orCondition,
-                  },
-                }
-              : {}),
-            course_id,
-            // TODO: should this only return unique and only the oldest/newest?
-          },
-        }
+        const userSearch =
+          search && search !== "" ? buildUserSearch(search) : null
+        const userConditions = [
+          user_id || user_upstream_id
+            ? {
+                id: user_id ?? undefined,
+                upstream_id: user_upstream_id ?? undefined,
+              }
+            : undefined,
+          userSearch,
+        ].filter(notEmpty)
 
         return findManyCursorConnection(
-          (args) => {
-            let baseQuery
+          (connectionArgs) => {
             if (course_id) {
-              baseQuery = ctx.prisma.course.findUnique({
-                where: {
-                  id: course_id,
-                },
-              })
-            } else if (user_id || user_upstream_id) {
-              baseQuery = ctx.prisma.user.findUnique({
+              return ctx.prisma.course
+                .findUnique({
+                  where: {
+                    id: course_id,
+                  },
+                })
+                .user_course_settings({
+                  where: {
+                    user: {
+                      AND: userConditions,
+                    },
+                  },
+                  ...connectionArgs,
+                })
+            }
+
+            return ctx.prisma.user
+              .findFirst({
+                // could be findUnique if userSearch not specified
                 where: {
                   id: user_id ?? undefined,
                   upstream_id: user_upstream_id ?? undefined,
+                  ...(userSearch ? { user: userSearch } : {}),
                 },
               })
-            }
-            if (!baseQuery) {
-              throw new UserInputError(
-                "need to provide one of course_id, user_id, user_upstream_id",
-              )
-            }
-            return baseQuery?.user_course_settings({
-              ...args,
-              ...baseArgs,
-            })
+              .user_course_settings({
+                where: {
+                  course_id,
+                },
+                ...connectionArgs,
+              })
           },
-          () => ctx.prisma.userCourseSetting.count(baseArgs),
+          () =>
+            ctx.prisma.userCourseSetting.count({
+              where: {
+                course_id: course_id ?? undefined,
+                user: {
+                  AND: userConditions,
+                },
+              },
+            }),
           { first, last, before, after },
         )
       },

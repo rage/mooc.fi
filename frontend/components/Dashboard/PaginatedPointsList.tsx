@@ -80,13 +80,13 @@ function PaginatedPointsList(props: Props) {
   const [getData, { data, loading, error, fetchMore }] =
     useLazyQuery<StudentProgressData>(StudentProgresses, {
       fetchPolicy: "cache-first",
+      ssr: false,
     })
 
   useEffect(() => {
     getData({
       variables: {
         course_id: courseId,
-        after: null,
         search,
       },
     })
