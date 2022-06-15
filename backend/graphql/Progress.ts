@@ -12,6 +12,10 @@ export const Progress = objectType({
         const course_id = parent.course?.id
         const user_id = parent.user?.id
 
+        if (!course_id) {
+          return null
+        }
+
         const progresses = await ctx.prisma.course
           .findUnique({
             where: { id: course_id },
@@ -29,6 +33,10 @@ export const Progress = objectType({
       resolve: async (parent, _, ctx) => {
         const course_id = parent.course?.id
         const user_id = parent.user?.id
+
+        if (!course_id) {
+          return null
+        }
 
         const progresses = await ctx.prisma.course
           .findUnique({

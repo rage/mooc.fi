@@ -163,7 +163,7 @@ export const UserCourseSettingQueries = extendType({
         }
 
         return findManyCursorConnection(
-          async (args) => {
+          (args) => {
             let baseQuery
             if (course_id) {
               baseQuery = ctx.prisma.course.findUnique({
@@ -184,7 +184,7 @@ export const UserCourseSettingQueries = extendType({
                 "need to provide one of course_id, user_id, user_upstream_id",
               )
             }
-            return await baseQuery?.user_course_settings({
+            return baseQuery?.user_course_settings({
               ...args,
               ...baseArgs,
             })
