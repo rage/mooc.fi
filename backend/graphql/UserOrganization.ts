@@ -1,6 +1,5 @@
-import { ForbiddenError, UserInputError } from "apollo-server-express"
+import { ForbiddenError } from "apollo-server-express"
 import {
-  arg,
   booleanArg,
   extendType,
   idArg,
@@ -227,24 +226,14 @@ export const UserOrganizationMutations = extendType({
       type: "UserOrganization",
       args: {
         id: nonNull(idArg()),
-        role: arg({ type: "OrganizationRole" }),
-        consented: booleanArg(),
+        consented: nonNull(booleanArg()),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { id, role, consented }, ctx: Context) => {
+      resolve: async (_, { id, consented }, ctx: Context) => {
         await checkUserCredentials(ctx, id)
-
-        if (!role && (consented === null || typeof consented === "undefined")) {
-          throw new UserInputError(
-            "must provide at least one of role/consented",
-          )
-        }
 
         return ctx.prisma.userOrganization.update({
           data: {
-            ...(role
-              ? { role: { set: role ?? OrganizationRole.Student } }
-              : {}),
             ...(consented !== null && typeof consented !== "undefined"
               ? { consented: { set: consented } }
               : {}),

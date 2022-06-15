@@ -8,6 +8,8 @@ export const UserOverViewQuery = gql`
       first_name
       last_name
       email
+      student_number
+      real_student_number
       completions {
         id
         completion_language
@@ -36,6 +38,19 @@ export const UserOverViewQuery = gql`
         }
       }
       research_consent
+    }
+  }
+`
+
+export const UserDetailQuery = gql`
+  query UserOverView {
+    currentUser {
+      id
+      first_name
+      last_name
+      email
+      student_number
+      real_student_number
     }
   }
 `

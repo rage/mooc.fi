@@ -29,14 +29,9 @@ export const addUserOrganizationMutation = gql`
 `
 
 export const updateUserOrganizationMutation = gql`
-  mutation updateUserOrganization(
-    $id: ID!
-    $role: OrganizationRole
-    $consented: Boolean
-  ) {
-    updateUserOrganization(id: $id, role: $role, consented: $consented) {
+  mutation updateUserOrganization($id: ID!, $consented: Boolean!) {
+    updateUserOrganization(id: $id, consented: $consented) {
       id
-      role
       consented
     }
   }

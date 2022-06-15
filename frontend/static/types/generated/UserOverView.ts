@@ -13,6 +13,8 @@ export interface UserOverView_currentUser {
   first_name: string | null
   last_name: string | null
   email: string
+  student_number: string | null
+  real_student_number: string | null
 }
 
 export interface UserOverView {

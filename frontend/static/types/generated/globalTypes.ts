@@ -13,12 +13,6 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
-export enum OrganizationRole {
-  OrganizationAdmin = "OrganizationAdmin",
-  Student = "Student",
-  Teacher = "Teacher",
-}
-
 export interface CourseAliasCreateInput {
   course?: string | null
   course_code: string

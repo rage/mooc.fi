@@ -1,39 +1,30 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { createRef, useContext, useEffect, useState } from "react"
+
+import LoginStateContext from "/contexts/LoginStateContext"
+import {
+  addUserOrganizationMutation,
+  deleteUserOrganizationMutation,
+} from "/graphql/mutations/organization"
+import { CurrentUserOrganizationsQuery } from "/graphql/queries/organizations"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
+import { Organizations_organizations } from "/static/types/generated/Organizations"
+import HomeTranslations from "/translations/home"
+import RegistrationTranslations from "/translations/register"
+import notEmpty from "/util/notEmpty"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+
+import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
+import Send from "@mui/icons-material/Send"
+import { Link } from "@mui/material"
 import Button from "@mui/material/Button"
 import Checkbox from "@mui/material/Checkbox"
 import FormControl from "@mui/material/FormControl"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import Send from "@mui/icons-material/Send"
 import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
-import { createRef, useContext, useEffect, useState } from "react"
-import ErrorMessage from "/components/ErrorMessage"
-import {
-  AddUserOrganizationMutation,
-  DeleteUserOrganizationMutation,
-  OrganizationByIdQuery,
-  UserOrganizationsQuery,
-} from "/graphql/queries/organizations"
-import HomeTranslations from "/translations/home"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
-import LoginStateContext from "/contexts/LoginStateContext"
-import withSignedIn from "/lib/with-signed-in"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import { Link } from "@mui/material"
-import RegistrationTranslations from "/translations/register"
-import { UserOrganizations } from "/static/types/generated/UserOrganizations"
-import { Organizations_organizations } from "/static/types/generated/Organizations"
-import notEmpty from "/util/notEmpty"
-
-export const UserOrganizationalIdentifierQuery = gql`
-  query ShowUserUserOverView($id: ID) {
-    user(id: $id) {
-      student_number
-    }
-  }
-`
 
 const Container = styled.div`
   display: grid;
@@ -86,31 +77,30 @@ const RegisterToOrganization = () => {
   const [confirmationStatus, setConfirmationStatus] = useState("notSent") // notSent, sent, expired or incorrectFormat
   const [email, setEmail] = useState("")
   const [consented, setConsented] = useState(false)
-  const [organizationalIdentifier, setOrganizationalIdentifier] = useState("")
+  const [organizationalIdentifier, setOrganizationalIdentifier] = useState(
+    currentUser?.student_number,
+  )
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})
   const formRef = createRef<HTMLFormElement>()
   const { data: userOrganizationsData, error: userOrganizationsError } =
-    useQuery<UserOrganizations>(UserOrganizationsQuery, {
-      variables: { user_id: currentUser!.id },
-    })
-  const [addUserOrganization] = useMutation(AddUserOrganizationMutation, {
+    useQuery<CurrentUserOrganizations>(CurrentUserOrganizationsQuery)
+
+  const [addUserOrganization] = useMutation(addUserOrganizationMutation, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
-        variables: { user_id: currentUser!.id },
+        query: CurrentUserOrganizationsQuery,
       },
     ],
   })
 
   // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
-  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
+  const [deleteUserOrganization] = useMutation(deleteUserOrganizationMutation, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
-        variables: { user_id: currentUser!.id },
+        query: CurrentUserOrganizationsQuery,
       },
     ],
   })
@@ -122,20 +112,11 @@ const RegisterToOrganization = () => {
     },
   ])
 
-  const { loading, error, data } = useQuery(UserOrganizationalIdentifierQuery, {
-    variables: { id: currentUser?.id },
-  })
-
   useEffect(() => {
     const fetchConfirmationSentInformation = async () => {
       // TODO: fetch whether confirmation has been sent and how long ago
     }
-    const fetchOrganizationalIdentifier = async () => {
-      const orgId = data?.user?.student_number
-      setOrganizationalIdentifier(orgId)
-    }
     fetchConfirmationSentInformation()
-    fetchOrganizationalIdentifier()
   }, [])
 
   useEffect(() => {
@@ -147,7 +128,7 @@ const RegisterToOrganization = () => {
     }
 
     const mIds =
-      userOrganizationsData.userOrganizations
+      userOrganizationsData?.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.id)
         .filter(notEmpty) ?? []
 
@@ -313,7 +294,8 @@ const RegisterToOrganization = () => {
               </StyledFormControl>
             </FieldWrapper>
             <StyledButton
-              variant={consented ? "contained" : "disabled"}
+              variant="contained"
+              disabled={!consented}
               color="primary"
               onClick={() => {
                 if (formRef?.current) {
