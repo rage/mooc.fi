@@ -1,15 +1,17 @@
+import notEmpty from "/util/notEmpty"
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
+
 import {
   ApolloClient,
   ApolloLink,
+  defaultDataIdFromObject,
   InMemoryCache,
   NormalizedCacheObject,
-  defaultDataIdFromObject,
 } from "@apollo/client"
-import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
-import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
+import { onError } from "@apollo/client/link/error"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -74,6 +76,33 @@ function create(initialState: any, originalAccessToken?: string) {
         default:
           return defaultDataIdFromObject(object)
       }
+    },
+    typePolicies: {
+      Query: {
+        fields: {
+          userCourseSettings: {
+            // for "fetch more" type querying of user points
+            keyArgs: false,
+            merge: (existing, incoming) => {
+              const existingEdges = (existing?.edges ?? []).filter(notEmpty)
+              const incomingEdges = (incoming?.edges ?? []).filter(notEmpty)
+              const pageInfo = incoming?.pageInfo ?? {
+                hasNextPage: false,
+                endCursor: null,
+                __typename: "PageInfo",
+              }
+
+              const edges = [...existingEdges, ...incomingEdges]
+
+              return {
+                pageInfo,
+                edges,
+                totalCount: incoming?.totalCount ?? null,
+              }
+            },
+          },
+        },
+      },
     },
   })
 

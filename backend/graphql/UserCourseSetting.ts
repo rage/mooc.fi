@@ -1,4 +1,5 @@
 import { ForbiddenError, UserInputError } from "apollo-server-express"
+import { pick } from "lodash"
 import {
   extendType,
   idArg,
@@ -98,32 +99,29 @@ export const UserCourseSettingQueries = extendType({
       },
     })
 
-    t.field("userCourseSettings", {
-      type: "QueryUserCourseSettings_type_Connection",
-      args: {
+    t.connection("userCourseSettings", {
+      type: "UserCourseSetting",
+      additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
         course_id: idArg(),
         search: stringArg(),
-        skip: intArg({ default: 0 }),
-        first: intArg(),
-        last: intArg(),
-        before: stringArg(),
+        skip: intArg(),
         after: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx, __) => {
+      resolve: async (_, args, ctx) => {
         const {
           first,
           last,
-          before,
-          after,
+          // after,
           user_id,
           user_upstream_id,
           search,
         } = args
 
         let { course_id } = args
+
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
@@ -144,17 +142,11 @@ export const UserCourseSettingQueries = extendType({
           )
         }
 
-        const userSearch =
-          search && search !== "" ? buildUserSearch(search) : null
-        const userConditions = [
-          user_id || user_upstream_id
-            ? {
-                id: user_id ?? undefined,
-                upstream_id: user_upstream_id ?? undefined,
-              }
-            : undefined,
-          userSearch,
-        ].filter(notEmpty)
+        const { userSearch, userConditions } = getUserCourseSettingSearch({
+          user_id,
+          user_upstream_id,
+          search,
+        })
 
         return findManyCursorConnection(
           (connectionArgs) => {
@@ -191,37 +183,84 @@ export const UserCourseSettingQueries = extendType({
                 ...connectionArgs,
               })
           },
-          () =>
-            ctx.prisma.userCourseSetting.count({
+          async () => {
+            // this might or might not get run
+            const count = await ctx.prisma.userCourseSetting.count({
               where: {
                 course_id: course_id ?? undefined,
                 user: {
                   AND: userConditions,
                 },
               },
-            }),
-          { first, last, before, after },
+            })
+
+            return count
+          },
+          pick(args, ["first", "last", "before", "after"]),
         )
       },
-    })
-
-    t.connection("userCourseSettings_type", {
-      // hack to generate connection type
-      type: "UserCourseSetting",
-      additionalArgs: {
-        user_id: idArg(),
-        user_upstream_id: intArg(),
-        course_id: idArg(),
-        search: stringArg(),
-        skip: intArg({ default: 0 }),
-      },
-      authorize: () => false,
-      nodes: async (_, _args, _ctx, __) => {
-        return []
-      },
       extendConnection(t) {
-        t.int("totalCount")
+        t.int("totalCount", {
+          args: {
+            user_id: idArg(),
+            user_upstream_id: intArg(),
+            course_id: idArg(),
+            search: stringArg(),
+          },
+          resolve: async (
+            _,
+            { user_id, user_upstream_id, course_id, search },
+            ctx,
+          ) => {
+            if (!course_id && !user_id && !user_upstream_id) {
+              throw new UserInputError(
+                "Needs at least one of course_id, user_id or user_upstream_id",
+              )
+            }
+
+            const { userConditions } = getUserCourseSettingSearch({
+              user_id,
+              user_upstream_id,
+              search,
+            })
+
+            return await ctx.prisma.userCourseSetting.count({
+              where: {
+                course_id: course_id ?? undefined,
+                user: {
+                  AND: userConditions,
+                },
+              },
+            })
+          },
+        })
       },
     })
   },
 })
+
+interface GetUserCourseSettingSearchArgs {
+  search?: string | null
+  user_id?: string | null
+  user_upstream_id?: number | null
+}
+
+const getUserCourseSettingSearch = ({
+  search,
+  user_id,
+  user_upstream_id,
+}: GetUserCourseSettingSearchArgs) => {
+  const userSearch = search && search !== "" ? buildUserSearch(search) : null
+
+  const userConditions = [
+    user_id || user_upstream_id
+      ? {
+          id: user_id ?? undefined,
+          upstream_id: user_upstream_id ?? undefined,
+        }
+      : undefined,
+    userSearch,
+  ].filter(notEmpty)
+
+  return { userSearch, userConditions }
+}

@@ -3,10 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react"
 import ErrorBoundary from "/components/ErrorBoundary"
 import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
-import {
-  UserCourseSettings as StudentProgressData,
-  UserCourseSettings_userCourseSettings_pageInfo,
-} from "/static/types/generated/UserCourseSettings"
+import { UserCourseSettings as StudentProgressData } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 import { range } from "lodash"
@@ -18,10 +15,16 @@ import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
 import PointsList from "./DashboardPointsList"
 
 export const StudentProgresses = gql`
-  query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {
+  query UserCourseSettings(
+    $course_id: ID!
+    $skip: Int
+    $after: String
+    $search: String
+  ) {
     userCourseSettings(
       course_id: $course_id
       first: 15
+      after: $after
       skip: $skip
       search: $search
     ) {
@@ -79,8 +82,9 @@ function PaginatedPointsList(props: Props) {
   // use lazy query to prevent running query on each render
   const [getData, { data, loading, error, fetchMore }] =
     useLazyQuery<StudentProgressData>(StudentProgresses, {
-      fetchPolicy: "cache-first",
+      // fetchPolicy: "cache-first",
       ssr: false,
+      // notifyOnNetworkStatusChange :true
     })
 
   useEffect(() => {
@@ -156,49 +160,15 @@ function PaginatedPointsList(props: Props) {
           </div>
           <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button
-            onClick={() =>
-              fetchMore?.({
-                query: StudentProgresses,
+            onClick={() => {
+              fetchMore({
                 variables: {
                   course_id: courseId,
-                  skip: data?.userCourseSettings?.edges?.length ?? 0,
+                  after: data?.userCourseSettings?.pageInfo?.endCursor,
                   search: search !== "" ? search : undefined,
                 },
-
-                updateQuery: (
-                  previousResult,
-                  {
-                    fetchMoreResult,
-                  }: { fetchMoreResult?: StudentProgressData },
-                ) => {
-                  const previousData = (
-                    previousResult?.userCourseSettings?.edges ?? []
-                  ).filter(notEmpty)
-                  const newData = (
-                    fetchMoreResult?.userCourseSettings?.edges ?? []
-                  ).filter(notEmpty)
-                  const newPageInfo: UserCourseSettings_userCourseSettings_pageInfo =
-                    fetchMoreResult?.userCourseSettings?.pageInfo ?? {
-                      hasNextPage: false,
-                      endCursor: null,
-                      __typename: "PageInfo",
-                    }
-
-                  return {
-                    userCourseSettings: {
-                      pageInfo: {
-                        ...newPageInfo,
-                        __typename: "PageInfo",
-                      },
-                      edges: [...previousData, ...newData],
-                      __typename: "QueryUserCourseSettings_type_Connection",
-                      totalCount:
-                        fetchMoreResult!.userCourseSettings?.totalCount ?? null,
-                    },
-                  }
-                },
               })
-            }
+            }}
             disabled={!data?.userCourseSettings?.pageInfo.hasNextPage}
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}
