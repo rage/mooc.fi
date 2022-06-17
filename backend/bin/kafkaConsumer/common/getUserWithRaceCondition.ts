@@ -1,7 +1,8 @@
 import { User } from "@prisma/client"
-import { KafkaContext } from "./kafkaContext"
+
 import { TMCError } from "../../lib/errors"
 import getUserFromTMCAndCreate from "./getUserFromTMC"
+import { KafkaContext } from "./kafkaContext"
 
 export async function getUserWithRaceCondition(
   context: KafkaContext,
@@ -20,7 +21,7 @@ export async function getUserWithRaceCondition(
         user = (await knex("user").where("upstream_id", user_id).limit(1))[0]
       } catch {}
       if (!user) {
-        logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+        logger.error(new TMCError(`couldn't find user`, { user_id }, e))
         throw e
       }
       logger.info("Mitigated race condition with user imports")

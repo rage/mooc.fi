@@ -166,9 +166,6 @@ function prismaTestContext() {
       // Run the migrations to ensure our schema has the required structure
       await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
       await knexClient.raw(`SET SEARCH_PATH TO "${schemaName}";`)
-      //await knexClient.raw(
-      //  `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${schemaName}";`,
-      //)
       await knexClient.migrate.latest({
         schemaName,
         database: databaseUrl,

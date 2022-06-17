@@ -16,6 +16,7 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
@@ -65,16 +66,13 @@ export const CompletionMutations = extendType({
         course_id: nonNull(stringArg()),
       },
       authorize: isAdmin,
-      resolve: async (_, args, { knex }) => {
+      resolve: async (_, args, ctx) => {
         const { course_id } = args
 
-        const course = (
-          await knex
-            .select(["id", "completion_email_id"])
-            .from("course")
-            .where("id", course_id)
-            .limit(1)
-        )[0]
+        const course = await getCourseOrCompletionHandlerCourse(ctx)({
+          id: course_id,
+        })
+
         if (!course) {
           throw new Error("Course not found")
         }
@@ -109,7 +107,7 @@ export const CompletionMutations = extendType({
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
-            course_id: course_id,
+            course_id: course.id ?? course_id,
             user_id: databaseUser.id,
             grade: o.grade ?? null,
             completion_date: o.completion_date,
@@ -120,6 +118,7 @@ export const CompletionMutations = extendType({
           }
         })
 
+        // TODO/FIXME: do we have the completion emails set in the language versions or not?
         const newEmailDeliveries = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
           return {
@@ -133,7 +132,7 @@ export const CompletionMutations = extendType({
           }
         })
 
-        const res = await knex.transaction(async (trx) => {
+        const res = await ctx.knex.transaction(async (trx) => {
           const inserted = await trx
             .batchInsert("completion", newCompletions)
             .returning("*")
@@ -174,8 +173,7 @@ export const CompletionMutations = extendType({
         const progresses = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id ?? undefined,
-              slug: slug ?? undefined,
+              id: course.id,
             },
           })
           .user_course_progresses({
@@ -194,8 +192,7 @@ export const CompletionMutations = extendType({
         const completions = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id ?? undefined,
-              slug: slug ?? undefined,
+              id: course.completions_handled_by_id ?? course.id,
             },
           })
           .completions({

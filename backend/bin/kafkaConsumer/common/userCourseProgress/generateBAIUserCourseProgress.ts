@@ -24,14 +24,14 @@ const checkBAIProjectCompletion = async (
   user: User,
   { knex }: KafkaContext,
 ) => {
-  const completions = await knex("exercise_completion")
+  const exerciseCompletions = await knex("exercise_completion")
     .select("exercise_completion.completed")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
     .whereIn("exercise.custom_id", Object.keys(BAIbadge))
     .andWhere("exercise_completion.user_id", user.id)
     .andWhere("exercise_completion.completed", true)
 
-  return completions.length > 0
+  return exerciseCompletions.length > 0
 }
 
 interface CheckBAICompletion {
@@ -55,22 +55,10 @@ export const checkBAICompletion = async ({
         .completions_handled_by()
 
   if (!handlerCourse) {
-    logger?.error(
-      new DatabaseInputError(
-        `No handler course found for ${course.id}`,
-        course,
-      ),
-    )
+    logger?.error(new DatabaseInputError(`No handler course found`, course))
     return
   }
 
-  // this is not needed if we hard code the course ids, as the function it's
-  // passed to only needs the ids
-  /*const tierCourses = (await prisma.course
-    .findOne({ where: { id: handlerCourse.id } })
-    .handles_completions_for())
-    .map(c => c.id)
-  */
   logger?.info("Getting exercise completions")
   const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses({
     user,
@@ -92,7 +80,7 @@ export const checkBAICompletion = async ({
 
   const existingProgresses = await prisma.course
     .findUnique({
-      where: { id: handlerCourse.id },
+      where: { id: course.id },
     })
     .user_course_progresses({
       where: {
@@ -106,7 +94,7 @@ export const checkBAICompletion = async ({
     await prisma.userCourseProgress.create({
       data: {
         course: {
-          connect: { id: handlerCourse.id },
+          connect: { id: course.id },
         },
         user: { connect: { id: user.id } },
         ...newProgress,

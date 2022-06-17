@@ -105,7 +105,7 @@ const fetchUserAppDatum = async () => {
         })
         .user_course_settings({
           where: {
-            course_id: course.id,
+            course_id: course.inherit_settings_from_id ?? course.id,
           },
           orderBy: {
             created_at: "asc",
@@ -119,7 +119,9 @@ const fetchUserAppDatum = async () => {
           user: {
             connect: { upstream_id: e.user_id },
           },
-          course: { connect: { id: course.id } },
+          course: {
+            connect: { id: course.inherit_settings_from_id ?? course.id },
+          },
         },
       })
     } else {
@@ -237,7 +239,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   try {
     details = await tmc.getUserDetailsById(user_id)
   } catch (e) {
-    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    logger.error(new TMCError(`couldn't find user`, { user_id }, e))
     throw e
   }
 
@@ -260,10 +262,8 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   } catch (e: any) {
     logger.error(
       new DatabaseInputError(
-        `Failed to upsert user with upstream id ${
-          details.id
-        }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
-        details,
+        `Failed to upsert user`,
+        { details, prismaDetails },
         e,
       ),
     )

@@ -25,12 +25,7 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    return err(
-      new DatabaseInputError(
-        `Invalid user or course: user ${message.user_id}, course ${message.course_id}`,
-        message,
-      ),
-    )
+    return err(new DatabaseInputError(`Invalid user or course`, message))
   }
 
   const userCourseProgresses = await knex<any, UserCourseProgress[]>(

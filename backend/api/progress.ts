@@ -1,6 +1,6 @@
 import { Request } from "express"
 
-import { Completion } from "@prisma/client"
+import { Completion, Course } from "@prisma/client"
 
 import { getUser } from "../util/server-functions"
 import { ApiContext } from "./"
@@ -107,18 +107,18 @@ export function progressV2(ctx: ApiContext) {
     }
 
     const exercise_completions = await exerciseCompletionsPromise
-    const { completions_handled_by_id = id } =
-      (
-        await knex
-          .select("completions_handled_by_id")
-          .from("course")
-          .where("id", id)
-      )[0] ?? {}
+    const course = (
+      await knex
+        .select<any, Course[]>("*")
+        .from("course")
+        .where("id", id)
+        .limit(1)
+    )?.[0]
 
     const completions = await knex
       .select<any, Completion[]>("*")
       .from("completion")
-      .where("course_id", completions_handled_by_id)
+      .where("course_id", course?.completions_handled_by_id ?? course?.id)
       .andWhere("user_id", user.id)
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(

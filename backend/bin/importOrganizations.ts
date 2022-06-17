@@ -101,7 +101,7 @@ const getUserFromTmc = async (user_id: Number) => {
   try {
     details = await tmc.getUserDetailsById(user_id)
   } catch (e) {
-    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    logger.error(new TMCError(`couldn't find user`, { user_id }, e))
     throw e
   }
 

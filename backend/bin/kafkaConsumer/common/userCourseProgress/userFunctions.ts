@@ -213,7 +213,7 @@ export const checkCompletion = async ({
     await createCompletion({
       user,
       course_id: course.id,
-      handlerCourse,
+      handlerCourse: handlerCourse,
       context,
     })
   }

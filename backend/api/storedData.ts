@@ -114,7 +114,7 @@ export function getStoredData(ctx: ApiContext) {
             include: {
               completions: {
                 where: {
-                  course_id: course.id,
+                  course_id: course.completions_handled_by_id ?? course.id,
                 },
               },
             },

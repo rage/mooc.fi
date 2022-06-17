@@ -15,13 +15,21 @@ export function userCourseProgress(ctx: ApiContext) {
 
     const { user } = getUserResult.value
 
+    const course = await ctx.prisma.course.findUnique({
+      where: { slug },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+
     const userCourseProgresses = await ctx.prisma.user
       .findUnique({
         where: { id: user.id },
       })
       .user_course_progresses({
         where: {
-          course: { slug },
+          course_id: course.id,
         },
         orderBy: {
           created_at: "asc",

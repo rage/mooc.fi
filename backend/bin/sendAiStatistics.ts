@@ -36,6 +36,7 @@ const getDataByLanguage = async (langInfo: LanguageInfo) => {
   const englishInLang = await prisma.userCourseSetting.findMany({
     where: {
       country,
+      course: { slug: "elements-of-ai" },
       language: "en",
     },
   })

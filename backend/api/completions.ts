@@ -30,15 +30,14 @@ export function completions(ctx: ApiContext) {
 
     const { registered } = req.query
 
-    let course_id: string
-
-    const course = (
+    let course = (
       await knex
-        .select("id")
+        .select<any, Course[]>("*")
         .from("course")
         .where({ slug: req.params.course })
         .limit(1)
-    )[0]
+    )?.[0]
+
     if (!course) {
       const course_alias = (
         await knex
@@ -49,10 +48,18 @@ export function completions(ctx: ApiContext) {
       if (!course_alias) {
         return res.status(404).json({ message: "Course not found" })
       }
-      course_id = course_alias.course_id
-    } else {
-      course_id = course.id
+      course = (
+        await knex
+          .select<any, Course[]>("*")
+          .from("course")
+          .where({ id: course_alias.course_id })
+          .limit(1)
+      )?.[0]
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" })
+      }
     }
+
     const sql = knex
       .select<any, Completion[]>("completion.*")
       .from("completion")
@@ -62,7 +69,7 @@ export function completions(ctx: ApiContext) {
         "completion_registered.completion_id",
       )
       .where({
-        "completion.course_id": course_id,
+        "completion.course_id": course?.completions_handled_by_id ?? course?.id,
         eligible_for_ects: true,
         ...(!registered && { "completion_registered.id": null }),
       })
@@ -129,18 +136,19 @@ export function completionTiers(ctx: ApiContext) {
 
     const { user } = getUserResult.value
 
+    // TODO/FIXME: is this supposed to be the id or the slug? used as slug but named id
     const id = req.params.id
     let tierData: any = []
 
     const course = (
-      await knex.select<any, Course[]>("id").from("course").where("slug", id)
+      await knex.select<any, Course[]>("*").from("course").where("slug", id)
     )[0]
 
     const completion = (
       await knex
         .select<any, Completion[]>("tier")
         .from("completion")
-        .where("course_id", course.id)
+        .where("course_id", course.completions_handled_by_id ?? course.id)
         .andWhere("user_id", user.id)
     )?.[0]
 
@@ -238,7 +246,7 @@ export function recheckCompletion(ctx: ApiContext) {
     const course = await prisma.course.findUnique({
       where: {
         id: course_id,
-        slug: slug,
+        slug,
       },
     })
 

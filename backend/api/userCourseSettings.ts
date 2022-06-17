@@ -21,21 +21,35 @@ export function userCourseSettingsGet(ctx: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const settings = (
-      await prisma.course
-        .findUnique({
-          where: {
-            slug,
-          },
-        })
-        .user_course_settings({
+    const course = await prisma.course.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        user_course_settings: {
           where: {
             user_id: user.id,
           },
           orderBy: { created_at: "asc" },
           take: 1,
-        })
-    )?.[0]
+        },
+        inherit_settings_from: {
+          include: {
+            user_course_settings: {
+              where: {
+                user_id: user.id,
+              },
+              orderBy: { created_at: "asc" },
+              take: 1,
+            },
+          },
+        },
+      },
+    })
+
+    const settings =
+      course?.inherit_settings_from?.user_course_settings?.[0] ??
+      course?.user_course_settings?.[0]
 
     const overwrittenKeys = intersection(
       Object.keys(omit(settings, "other") ?? {}),
@@ -79,32 +93,38 @@ export function userCourseSettingsPost(ctx: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const existingSetting = (
-      await prisma.course
-        .findUnique({
-          where: {
-            slug,
-          },
-        })
-        .user_course_settings({
+    const course = await prisma.course.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        user_course_settings: {
           where: {
             user_id: user.id,
           },
           orderBy: { created_at: "asc" },
           take: 1,
-        })
-    )?.[0]
-
-    if (!existingSetting) {
-      const existingCourse = await prisma.course.findFirst({
-        where: {
-          slug,
         },
-      })
-      if (!existingCourse) {
-        return res.status(400).json({ message: "no course found" })
-      }
+        inherit_settings_from: {
+          include: {
+            user_course_settings: {
+              where: {
+                user_id: user.id,
+              },
+              orderBy: { created_at: "asc" },
+              take: 1,
+            },
+          },
+        },
+      },
+    })
+
+    if (!course) {
+      return res.status(400).json({ message: "no course found" })
     }
+    const existingSetting =
+      course?.inherit_settings_from?.user_course_settings?.[0] ??
+      course?.user_course_settings?.[0]
 
     if (Object.keys(body).length === 0) {
       return res
@@ -146,7 +166,9 @@ export function userCourseSettingsPost(ctx: ApiContext) {
       await prisma.userCourseSetting.create({
         data: {
           ...settingValues,
-          course: { connect: { slug } },
+          course: {
+            connect: { id: course.inherit_settings_from_id ?? course.id },
+          },
           user: { connect: { id: user.id } },
         },
       })

@@ -1,3 +1,7 @@
+import { Request, Response } from "express"
+
+import { Course, UserCourseSettingsVisibility } from "@prisma/client"
+
 import { redisify } from "../services/redis"
 import { ApiContext } from "./"
 
@@ -14,11 +18,13 @@ type UserCourseSettingsCountResult =
     }
 
 export function userCourseSettingsCount({ knex, logger }: ApiContext) {
-  return async (req: any, res: any) => {
-    const { course, language }: { course: string; language: string } =
-      req.params
+  return async (
+    req: Request<{ slug: string; language: string }>,
+    res: Response,
+  ) => {
+    const { slug, language } = req.params
 
-    if (!course || !language) {
+    if (!slug || !language) {
       return res
         .status(400)
         .json({ message: "Course and/or language not specified" })
@@ -28,42 +34,48 @@ export function userCourseSettingsCount({ knex, logger }: ApiContext) {
       async () => {
         let course_id: string
 
-        const { id } =
-          (
+        let course = (
+          await knex
+            .select<any, Course[]>("*")
+            .from("course")
+            .where({
+              slug,
+            })
+            .limit(1)
+        )?.[0]
+
+        if (!course) {
+          course = (
             await knex
-              .select("course.id")
-              .from("course")
-              .join("user_course_settings_visibility", {
-                "course.id": "user_course_settings_visibility.course_id",
-              })
+              .select<any, Course[]>("course.*")
+              .from("course_alias")
+              .join("course", { "course.id": "course_alias.course_id" })
               .where({
-                slug: course,
-                "user_course_settings_visibility.language": language,
+                course_code: slug,
               })
               .limit(1)
-          )[0] ?? {}
+          )?.[0]
 
-        if (!id) {
-          const courseAlias = (
-            await knex
-              .select("course_alias.course_id")
-              .from("course_alias")
-              .join("course", { "course_alias.course_id": "course.id" })
-              .join("user_course_settings_visibility", {
-                "course.id": "user_course_settings_visibility.course_id",
-              })
-              .where({
-                course_code: course,
-                "user_course_settings_visibility.language": language,
-              })
-          )[0]
-          course_id = courseAlias?.course_id
-        } else {
-          course_id = id
+          if (!course) {
+            return { course: slug, language, error: true }
+          }
         }
 
-        if (!course_id) {
-          return { course, language, error: true }
+        course_id = course.inherit_settings_from_id ?? course.id
+
+        const visibility = (
+          await knex
+            .select<any, UserCourseSettingsVisibility[]>("*")
+            .from("user_course_settings_visibility")
+            .where({
+              course_id: course_id,
+              language,
+            })
+            .limit(1)
+        )?.[0]
+
+        if (!visibility) {
+          return { course: slug, language, error: true }
         }
 
         let { count } = (
@@ -81,12 +93,12 @@ export function userCourseSettingsCount({ knex, logger }: ApiContext) {
           count = Math.floor(Number(count) / factor) * factor
         }
 
-        return { course, language, count: Number(count) }
+        return { course: slug, language, count: Number(count) }
       },
       {
         prefix: "usercoursesettingscount",
         expireTime: 60 * 60, // hour
-        key: `${course}-${language}`,
+        key: `${slug}-${language}`,
       },
       {
         logger,
