@@ -31,7 +31,7 @@ export interface ApiContext {
 export function apiRouter(ctx: ApiContext) {
   return Router()
     .get("/completions/:course", completions(ctx))
-    .get("/completionTiers/:id", completionTiers(ctx))
+    .get("/completionTiers/:slug", completionTiers(ctx))
     .get("/completionInstructions/:id/:language", completionInstructions(ctx))
     .get("/progress/:id", progress(ctx))
     .get("/progressv2/:id", progressV2(ctx))

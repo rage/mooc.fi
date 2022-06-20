@@ -1,3 +1,4 @@
+import { err } from "/util/result"
 import { Request, Response } from "express"
 
 import {
@@ -76,8 +77,7 @@ export function completions(ctx: ApiContext) {
 
     res.set("Content-Type", "application/json")
 
-    // TODO/FIXME: typings broke on Knex update
-    const stream = (sql.stream() as any).pipe(JSONStream.stringify()).pipe(res)
+    const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
     req.on("close", stream.end.bind(stream))
   }
 }
@@ -126,7 +126,7 @@ export function completionInstructions({ knex }: ApiContext) {
 }
 
 export function completionTiers(ctx: ApiContext) {
-  return async function (req: any, res: any) {
+  return async function (req: Request<{ slug: string }>, res: Response) {
     const { knex } = ctx
     const getUserResult = await getUser(ctx)(req, res)
 
@@ -135,14 +135,17 @@ export function completionTiers(ctx: ApiContext) {
     }
 
     const { user } = getUserResult.value
+    const { slug } = req.params
 
-    // TODO/FIXME: is this supposed to be the id or the slug? used as slug but named id
-    const id = req.params.id
     let tierData: any = []
 
     const course = (
-      await knex.select<any, Course[]>("*").from("course").where("slug", id)
-    )[0]
+      await knex.select<any, Course[]>("*").from("course").where("slug", slug)
+    )?.[0]
+
+    if (!course) {
+      return err(res.status(404).json({ message: "course not found" }))
+    }
 
     const completion = (
       await knex
@@ -151,6 +154,10 @@ export function completionTiers(ctx: ApiContext) {
         .where("course_id", course.completions_handled_by_id ?? course.id)
         .andWhere("user_id", user.id)
     )?.[0]
+
+    if (!completion) {
+      return err(res.status(404).json({ message: "completion not found" }))
+    }
 
     // TODO/FIXME: note - this now happily ignores completion_language and just gets the first one
     // - as it's now only used in BAI, shouldn't be a problem?

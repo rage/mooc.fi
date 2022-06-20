@@ -19,13 +19,20 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       },
     })) ?? {}
   if (!email_template || !user) {
-    // TODO: should this update the delivery with error?
     logger.error(
       new EmailTemplaterError(
         "No email template or user found while sending email",
         { email_template, user_id: user?.id },
       ),
     )
+    await prisma.emailDelivery.update({
+      where: { id: emailDelivery.id },
+      data: {
+        error: { set: true },
+        error_message: "No email template or user found while sending email",
+      },
+    })
+
     return
   }
 

@@ -16,7 +16,6 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
@@ -69,14 +68,15 @@ export const CompletionMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { course_id } = args
 
-        const course = await getCourseOrCompletionHandlerCourse(ctx)({
-          id: course_id,
+        const course = await ctx.prisma.course.findUnique({
+          where: { id: course_id },
         })
 
         if (!course) {
           throw new Error("Course not found")
         }
         const completions = (args.completions ?? []).filter(notEmpty)
+
         const foundUsers = await knex
           .select([
             "id",
@@ -107,7 +107,7 @@ export const CompletionMutations = extendType({
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
-            course_id: course.id ?? course_id,
+            course_id: course.completions_handled_by_id ?? course_id,
             user_id: databaseUser.id,
             grade: o.grade ?? null,
             completion_date: o.completion_date,
@@ -118,7 +118,6 @@ export const CompletionMutations = extendType({
           }
         })
 
-        // TODO/FIXME: do we have the completion emails set in the language versions or not?
         const newEmailDeliveries = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
           return {

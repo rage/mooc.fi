@@ -158,7 +158,6 @@ export const deleteImage = async ({
     return false
   }
 
-  // TODO: (?) do something with return statuses
   const compressed = image.compressed
     ? await deleteStorageImage(image.compressed)
     : false
