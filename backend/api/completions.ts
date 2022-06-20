@@ -1,4 +1,3 @@
-import { err } from "/util/result"
 import { Request, Response } from "express"
 
 import {
@@ -9,6 +8,7 @@ import {
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { err } from "../util/result"
 import {
   getOrganization,
   getUser,
