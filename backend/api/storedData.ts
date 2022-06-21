@@ -4,13 +4,15 @@ import { omit } from "lodash"
 import { getUser, requireCourseOwnership } from "../util/server-functions"
 import { ApiContext } from "./"
 
-export function postStoredData(ctx: ApiContext) {
-  return async function (
+export class StoredDataController {
+  constructor(readonly ctx: ApiContext) {}
+
+  post = async (
     req: Request<{ slug: string }, {}, { data: string }>,
     res: Response,
-  ) {
-    const { prisma } = ctx
-    const getUserResult = await getUser(ctx)(req, res)
+  ) => {
+    const { prisma } = this.ctx
+    const getUserResult = await getUser(this.ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -81,11 +83,9 @@ export function postStoredData(ctx: ApiContext) {
         .json({ message: "error creating or updating stored data", error })
     }
   }
-}
 
-export function getStoredData(ctx: ApiContext) {
-  return async function (req: Request<{ slug: string }>, res: Response) {
-    const { prisma } = ctx
+  get = async (req: Request<{ slug: string }>, res: Response) => {
+    const { prisma } = this.ctx
     const { slug } = req.params
     const course = await prisma.course.findFirst({ where: { slug } })
 
@@ -97,7 +97,7 @@ export function getStoredData(ctx: ApiContext) {
 
     const ownershipResult = await requireCourseOwnership({
       course_id: course.id,
-      ctx,
+      ctx: this.ctx,
     })(req, res)
 
     if (ownershipResult.isErr()) {

@@ -5,22 +5,10 @@ import * as winston from "winston"
 import type { PrismaClient } from "@prisma/client"
 
 import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
-import {
-  completionInstructions,
-  completions,
-  completionTiers,
-  recheckCompletion,
-} from "./completions"
-import { progress, progressV2 } from "./progress"
-import { registerCompletions } from "./registerCompletions"
-import { getStoredData, postStoredData } from "./storedData"
-import { tierProgress } from "./tierProgress"
-import { userCourseProgress } from "./userCourseProgress"
-import {
-  userCourseSettingsGet,
-  userCourseSettingsPost,
-} from "./userCourseSettings"
-import { userCourseSettingsCount } from "./userCourseSettingsCount"
+import { CompletionController } from "./completions"
+import { ProgressController } from "./progress"
+import { StoredDataController } from "./storedData"
+import { UserCourseSettingsController } from "./userCourseSettings"
 
 export interface ApiContext {
   prisma: PrismaClient
@@ -29,24 +17,32 @@ export interface ApiContext {
 }
 
 export function apiRouter(ctx: ApiContext) {
+  const completionController = new CompletionController(ctx)
+  const progressController = new ProgressController(ctx)
+  const storedDataController = new StoredDataController(ctx)
+  const userCourseSettingsController = new UserCourseSettingsController(ctx)
+
   return Router()
-    .get("/completions/:course", completions(ctx))
-    .get("/completionTiers/:slug", completionTiers(ctx))
-    .get("/completionInstructions/:id/:language", completionInstructions(ctx))
-    .get("/progress/:id", progress(ctx))
-    .get("/progressv2/:id", progressV2(ctx))
-    .post("/register-completions", registerCompletions(ctx))
-    .get("/tierprogress/:id", tierProgress(ctx))
+    .get("/completions/:slug", completionController.completions)
+    .get("/completionTiers/:slug", completionController.completionTiers)
     .get(
-      "/usercoursesettingscount/:course/:language",
-      userCourseSettingsCount(ctx),
+      "/completionInstructions/:slug/:language",
+      completionController.completionInstructions,
     )
-    .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
-    .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
+    .post("/recheck-completion", completionController.recheckCompletion)
+    .post("/register-completions", completionController.registerCompletions)
+    .get("/progress/:id", progressController.progress)
+    .get("/progressv2/:id", progressController.progressV2)
+    .get("/tierprogress/:id", progressController.tierProgress)
+    .get("/user-course-progress/:slug", progressController.userCourseProgress)
+    .get("/user-course-settings/:slug", userCourseSettingsController.get)
+    .post("/user-course-settings/:slug", userCourseSettingsController.post)
+    .get(
+      "/usercoursesettingscount/:slug/:language",
+      userCourseSettingsController.count,
+    )
     .use("/ab-studies", abStudiesRouter(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
-    .get("/user-course-progress/:slug", userCourseProgress(ctx))
-    .post("/stored-data/:slug", postStoredData(ctx))
-    .get("/stored-data/:slug", getStoredData(ctx))
-    .post("/recheck-completion", recheckCompletion(ctx))
+    .get("/stored-data/:slug", storedDataController.get)
+    .post("/stored-data/:slug", storedDataController.post)
 }
