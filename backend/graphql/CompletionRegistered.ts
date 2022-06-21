@@ -1,11 +1,12 @@
 import { Context } from "/context"
-import { ForbiddenError, UserInputError } from "apollo-server-express"
+import { ForbiddenError } from "apollo-server-express"
 import { chunk } from "lodash"
 import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
+import { getCourseOrAliasBySlug } from "../util/graphql-functions"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -73,23 +74,7 @@ const withCourse = async (
   cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  let courseReference = await ctx.prisma.course.findUnique({
-    where: { slug: course },
-  })
-
-  if (!courseReference) {
-    const courseFromAvoinCourse = await ctx.prisma.courseAlias
-      .findUnique({ where: { course_code: course } })
-      .course()
-    if (!courseFromAvoinCourse) {
-      throw new UserInputError("Invalid course identifier")
-    }
-
-    // TODO: isn't this the same as courseFromAvoinCourse?
-    courseReference = await ctx.prisma.course.findUnique({
-      where: { slug: courseFromAvoinCourse.slug },
-    })
-  }
+  const courseReference = await getCourseOrAliasBySlug(ctx)(course)
 
   return await ctx.prisma.completionRegistered.findMany({
     where: {

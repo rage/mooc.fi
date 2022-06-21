@@ -20,13 +20,23 @@ interface CompletionOptionTypes {
   skip?: number
 }
 
+// probably not used
 async function getCompletionDataFromDB(
-  { course, first, after, last, before, skip }: CompletionOptionTypes,
+  { course: slug, first, after, last, before, skip }: CompletionOptionTypes,
   ctx: Context,
 ) {
+  const course = await ctx.prisma.course.findUnique({
+    where: {
+      slug,
+    },
+  })
+  if (!course) {
+    throw new Error("course not found")
+  }
+
   const completions = await ctx.prisma.course
     .findUnique({
-      where: { slug: course },
+      where: { id: course?.completions_handled_by_id ?? course?.id },
     })
     .completions({
       ...convertPagination({ first, after, last, before, skip }),

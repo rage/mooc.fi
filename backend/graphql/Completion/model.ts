@@ -116,15 +116,9 @@ export const Completion = objectType({
           return false
         }
 
-        const handlerCourse = await ctx.prisma.course
-          .findUnique({
-            where: { id: parent.course_id },
-          })
-          .completions_handled_by()
-
         const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
-            course_id: handlerCourse?.id ?? parent.course_id,
+            course_id: parent.course_id,
             user_id: parent.user_id,
           },
         })

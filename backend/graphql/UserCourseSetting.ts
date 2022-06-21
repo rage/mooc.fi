@@ -86,13 +86,27 @@ export const UserCourseSettingQueries = extendType({
         user_id: idArg(),
         course_id: idArg(),
       },
-      resolve: (_, args, ctx) => {
+      resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
+
+        if (course_id) {
+          const course = await ctx.prisma.course.findUnique({
+            where: {
+              id: course_id,
+            },
+          })
+
+          return ctx.prisma.userCourseSetting.count({
+            where: {
+              user_id,
+              course_id: course?.inherit_settings_from_id ?? course_id,
+            },
+          })
+        }
 
         return ctx.prisma.userCourseSetting.count({
           where: {
             user_id,
-            course_id,
           },
         })
       },

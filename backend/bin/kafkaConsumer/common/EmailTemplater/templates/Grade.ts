@@ -11,7 +11,10 @@ export class Grade extends Template {
     }
     const grade = (
       await this.prisma.completion.findFirst({
-        where: { user: { id: this.user.id }, course: { id: course.id } },
+        where: {
+          user: { id: this.user.id },
+          course: { id: course.completions_handled_by_id ?? course.id },
+        },
         orderBy: { completion_date: "desc" },
       })
     )?.grade

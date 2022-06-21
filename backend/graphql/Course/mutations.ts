@@ -5,6 +5,7 @@ import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
@@ -409,10 +410,8 @@ const createMutation = async <T extends { id?: string | null } | null>({
   try {
     // @ts-ignore: can't be arsed to do the typing, works
     existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
-  } catch (e) {
-    throw new Error(
-      `error creating mutation ${String(field)} for course ${slug}: ${e}`,
-    )
+  } catch (e: any) {
+    throw new DatabaseInputError(`error creating mutation`, { field, slug }, e)
   }
 
   const newOnes = (data || [])

@@ -10,7 +10,6 @@ import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 import { loggerPlugin } from "./middlewares/logger"
-import { sentryPlugin } from "./middlewares/sentry"
 
 if (NEXUS_REFLECTION) {
   require("sharp")
@@ -46,13 +45,15 @@ const createPlugins = () => {
     cachePlugin(),
     moocfiAuthPlugin(),
     fieldAuthorizePlugin(),
-    sentryPlugin(),
   ]
 
   if (isProduction && !NEXUS_REFLECTION && NEW_RELIC_LICENSE_KEY) {
+    const { sentryPlugin } = require("./middlewares/sentry")
     const { newRelicPlugin } = require("./middlewares/newrelic")
+    plugins.push(sentryPlugin())
     plugins.push(newRelicPlugin())
   }
+
   return plugins
 }
 
