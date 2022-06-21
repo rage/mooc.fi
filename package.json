@@ -22,7 +22,7 @@
   },
   "scripts": {
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" --cache",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" --cache",
     "eslint": "eslint '*/**/*.{js,ts,tsx}'",
     "helm-lint": "helm lint ./helm",
     "prepare": "husky install"
