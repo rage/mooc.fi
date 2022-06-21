@@ -1,4 +1,6 @@
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
@@ -10,7 +12,11 @@ import * as winston from "winston"
 import { PrismaClient } from "@prisma/client"
 
 import { apiRouter } from "./api"
-import { DEBUG, isProduction, isTest } from "./config"
+import {
+  DEBUG,
+  isProduction,
+  isTest,
+} from "./config"
 import schema from "./schema"
 
 const helmet = require("helmet")
