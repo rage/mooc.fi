@@ -221,15 +221,24 @@ export const UserCourseSettingQueries = extendType({
             course_id: idArg(),
             search: stringArg(),
           },
-          resolve: async (
-            _,
-            { user_id, user_upstream_id, course_id, search },
-            ctx,
-          ) => {
+          resolve: async (_, args, ctx) => {
+            let { course_id } = args
+            const { user_id, user_upstream_id, search } = args
+
             if (!course_id && !user_id && !user_upstream_id) {
               throw new UserInputError(
                 "Needs at least one of course_id, user_id or user_upstream_id",
               )
+            }
+
+            if (course_id) {
+              const inheritSettingsCourse = await ctx.prisma.course
+                .findUnique({ where: { id: course_id } })
+                .inherit_settings_from()
+
+              if (inheritSettingsCourse) {
+                course_id = inheritSettingsCourse.id
+              }
             }
 
             const { userConditions } = getUserCourseSettingSearch({
