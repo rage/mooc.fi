@@ -32,6 +32,9 @@ export const saveToDatabase = async (
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
+    include: {
+      completions_handled_by: true,
+    },
   })
 
   if (!user || !course) {
@@ -152,7 +155,12 @@ export const saveToDatabase = async (
       },
     })
   }
-  await checkCompletion({ user, course, context })
+  await checkCompletion({
+    user,
+    course,
+    handler: course.completions_handled_by,
+    context,
+  })
 
   return ok("Saved to DB successfully")
 }
