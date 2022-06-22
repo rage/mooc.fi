@@ -11,7 +11,17 @@ import {
   stringArg,
 } from "nexus"
 
+import { Prisma } from "@prisma/client"
+
 import { isAdmin } from "../accessControl"
+
+// progress seems not to be uniform, let's try to normalize it a bit
+const normalizeProgress = <T extends object | Prisma.JsonValue>(
+  data?: T | T[],
+): T[] =>
+  (data ? (Array.isArray(data) ? data : [data]) : []).filter((p) =>
+    p?.hasOwnProperty("progress"),
+  )
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -37,7 +47,9 @@ export const UserCourseProgress = objectType({
           where: { id: parent.id },
           select: { progress: true },
         })
-        return (res?.progress as any) || []
+
+        // TODO/FIXME: do we want to return progresses that might not have "progress" field?
+        return normalizeProgress(res?.progress)
       },
     })
 
@@ -81,7 +93,7 @@ export const UserCourseProgress = objectType({
           throw new Error("no course or user found")
         }
 
-        const courseProgress: any = progress ?? []
+        const courseProgress: any = normalizeProgress(progress)
 
         const exercises = await ctx.prisma.course
           .findUnique({

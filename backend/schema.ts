@@ -39,7 +39,6 @@ const createPlugins = () => {
     }),
     connectionPlugin({
       nexusFieldName: "connection",
-      includeNodesField: true,
     }),
     loggerPlugin(),
     cachePlugin(),
