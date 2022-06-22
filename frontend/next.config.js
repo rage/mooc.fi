@@ -4,7 +4,6 @@ const withOptimizedImages = require("next-optimized-images")
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 })
-// const withCSS = require("@zeit/next-css")
 const withMDX = require("@next/mdx")({
   extension: /\.mdx?$/,
 })

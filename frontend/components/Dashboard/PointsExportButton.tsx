@@ -5,7 +5,7 @@ import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_userCourseProgresses,
 } from "/static/types/generated/ExportUserCourseProgesses"
-import XLSX from "xlsx"
+import { utils, type WorkBook, writeFile } from "xlsx"
 
 import { ApolloClient, gql, useApolloClient } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -31,19 +31,19 @@ function PointsExportButton(props: PointsExportButtonProps) {
         onClick={async () => {
           try {
             setInfotext("Downloading data")
-            const data = await dowloadInChunks(slug, client, setInfotext)
+            const data = await downloadInChunks(slug, client, setInfotext)
             setInfotext("constructing csv")
             let objects = await flatten(data)
             console.log(data)
             console.log(objects)
-            const sheet = XLSX.utils.json_to_sheet(objects)
+            const sheet = utils.json_to_sheet(objects)
             console.log("sheet", sheet)
-            const workbook: XLSX.WorkBook = {
+            const workbook: WorkBook = {
               SheetNames: [],
               Sheets: {},
             }
-            XLSX.utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
-            await XLSX.writeFile(workbook, slug + "-points.csv"),
+            utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
+            await writeFile(workbook, slug + "-points.csv"),
               { bookType: "csv", type: "string" }
             setInfotext("ready")
           } catch (e) {
@@ -97,7 +97,7 @@ async function flatten(data: ExportUserCourseProgesses_userCourseProgresses[]) {
   return newData
 }
 
-async function dowloadInChunks(
+async function downloadInChunks(
   courseSlug: string,
   client: ApolloClient<object>,
   setMessage: any,
