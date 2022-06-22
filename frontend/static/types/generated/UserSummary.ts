@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { RequiredForCompletionType } from "./globalTypes"
+
 // ====================================================
 // GraphQL query operation: UserSummary
 // ====================================================
@@ -31,6 +33,8 @@ export interface UserSummary_user_user_course_summary_course {
   name: string
   slug: string
   has_certificate: boolean | null
+  exercise_completions_needed: number | null
+  points_needed: number | null
   photo: UserSummary_user_user_course_summary_course_photo | null
   exercises:
     | (UserSummary_user_user_course_summary_course_exercises | null)[]
@@ -115,6 +119,23 @@ export interface UserSummary_user_user_course_summary_completion {
   completions_registered: UserSummary_user_user_course_summary_completion_completions_registered[]
 }
 
+export interface UserSummary_user_user_course_summary_required_for_completion_required_actions {
+  __typename: "ExerciseCompletionRequiredAction"
+  id: string
+  exercise_completion_id: string | null
+  value: string
+}
+
+export interface UserSummary_user_user_course_summary_required_for_completion {
+  __typename: "RequiredForCompletion"
+  type: RequiredForCompletionType
+  current_amount: number | null
+  required_amount: number | null
+  required_actions:
+    | (UserSummary_user_user_course_summary_required_for_completion_required_actions | null)[]
+    | null
+}
+
 export interface UserSummary_user_user_course_summary {
   __typename: "UserCourseSummary"
   course: UserSummary_user_user_course_summary_course | null
@@ -126,6 +147,9 @@ export interface UserSummary_user_user_course_summary {
     | (UserSummary_user_user_course_summary_user_course_service_progresses | null)[]
     | null
   completion: UserSummary_user_user_course_summary_completion | null
+  required_for_completion:
+    | (UserSummary_user_user_course_summary_required_for_completion | null)[]
+    | null
 }
 
 export interface UserSummary_user {

@@ -17,12 +17,12 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react-hooks": "^4.4.0",
     "husky": "^7.0.4",
-    "prettier": "^2.6.2",
+    "prettier": "^2.7.0",
     "typescript": "^4.6.3"
   },
   "scripts": {
-    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
+    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" --cache",
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" --cache",
     "eslint": "eslint '*/**/*.{js,ts,tsx}'",
     "helm-lint": "helm lint ./helm",
     "prepare": "husky install"

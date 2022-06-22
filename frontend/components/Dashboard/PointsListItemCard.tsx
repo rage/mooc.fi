@@ -1,19 +1,22 @@
 import { useState } from "react"
-import { Grid } from "@mui/material"
-import PointsItemTable from "./PointsItemTable"
-import styled from "@emotion/styled"
-import { gql } from "@apollo/client"
-import formatPointsData, {
-  formattedGroupPointsDictionary,
-} from "/util/formatPointsData"
-import { CardTitle, CardSubtitle } from "/components/Text/headers"
+
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
+import { CardSubtitle, CardTitle } from "/components/Text/headers"
 import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
 import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
 import { UserPoints_currentUser_progresses_course } from "/static/types/generated/UserPoints"
+import formatPointsData, {
+  formattedGroupPointsDictionary,
+} from "/util/formatPointsData"
+
+import { gql } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Grid } from "@mui/material"
+
+import PointsItemTable from "./PointsItemTable"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {
@@ -104,11 +107,11 @@ function PointsListItemCard(props: Props) {
           {showProgress ? (
             <>
               <PointsProgress
-                total={formattedPointsData.total * 100}
+                percentage={formattedPointsData.total * 100}
                 title="Total progress"
               />
               <PointsProgress
-                total={formattedPointsData.exercises * 100}
+                percentage={formattedPointsData.exercises * 100}
                 title="Exercises completed"
               />
               <hr />

@@ -238,16 +238,28 @@ export const User = objectType({
 
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
-      resolve: async (parent, _, ctx) => {
+      args: {
+        include_hidden_exercises: booleanArg({ default: false }),
+      },
+      resolve: async (parent, { include_hidden_exercises }, ctx) => {
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const exerciseCompletionCourses = await ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
           })
           .exercise_completions({
-            select: {
+            where: {
+              ...(!include_hidden_exercises
+                ? {
+                    exercise: {
+                      deleted: { not: true },
+                    },
+                  }
+                : {}),
+            },
+            include: {
               exercise: {
-                select: {
+                include: {
                   course: {
                     select: {
                       id: true,

@@ -100,6 +100,7 @@ function Profile() {
 
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
 
+  console.log("data", data)
   useBreadcrumbs([
     {
       translation: "profile",
