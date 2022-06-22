@@ -28,6 +28,7 @@ describe("createCompletion", () => {
           slug: "course2",
         },
       })
+
       const user = await ctx.prisma.user.findFirst({
         where: {
           upstream_id: 2,
@@ -35,8 +36,7 @@ describe("createCompletion", () => {
       })
       await createCompletion({
         user: user!,
-        course_id: course!.id,
-        handlerCourse: course!,
+        course: course!,
         context: kafkaContext,
         tier: 1,
       })
@@ -79,8 +79,7 @@ describe("createCompletion", () => {
     it("should update when no existing tier", async () => {
       await createCompletion({
         user: user!,
-        course_id: course!.id,
-        handlerCourse: course!,
+        course: course!,
         context: kafkaContext,
         tier: 3,
       })
@@ -110,8 +109,7 @@ describe("createCompletion", () => {
       })
       await createCompletion({
         user: user!,
-        course_id: course!.id,
-        handlerCourse: course!,
+        course: course!,
         context: kafkaContext,
         tier: 1,
       })
@@ -129,8 +127,7 @@ describe("createCompletion", () => {
     it("should not update when tier is not defined", async () => {
       await createCompletion({
         user: user!,
-        course_id: course!.id,
-        handlerCourse: course!,
+        course: course!,
         context: kafkaContext,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
@@ -144,8 +141,7 @@ describe("createCompletion", () => {
     it("should not update when existing tier is equivalent", async () => {
       await createCompletion({
         user: user!,
-        course_id: course!.id,
-        handlerCourse: course!,
+        course: course!,
         context: kafkaContext,
         tier: 2,
       })
@@ -160,8 +156,7 @@ describe("createCompletion", () => {
     it("should not update when existing tier is larger", async () => {
       await createCompletion({
         user: user!,
-        course_id: course!.id,
-        handlerCourse: course!,
+        course: course!,
         context: kafkaContext,
         tier: 1,
       })
@@ -224,7 +219,7 @@ describe("getUserCourseSettings", () => {
     expect(settings).toEqual(handler)
   })
 
-  it("should return settings if no inheriting found", async () => {
+  it("should return settings if no inheritance found", async () => {
     const created = await ctx.prisma.userCourseSetting.create({
       data: {
         course: { connect: { id: INHERITING_COURSE_ID } },

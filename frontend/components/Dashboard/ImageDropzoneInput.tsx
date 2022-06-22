@@ -1,9 +1,11 @@
-import { useState, useEffect, PropsWithChildren } from "react"
-import { useDropzone, FileRejection } from "react-dropzone"
-import { Typography } from "@mui/material"
-import styled from "@emotion/styled"
+import { PropsWithChildren, useEffect, useState } from "react"
+
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
+import { FileRejection, useDropzone } from "react-dropzone"
+
+import styled from "@emotion/styled"
+import { Typography } from "@mui/material"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
 const isChrome = process.browser
@@ -80,23 +82,24 @@ const ImageDropzoneInput = ({
     isDragActive,
     isDragAccept,
     isDragReject,
-    draggedFiles,
   } = useDropzone({
     onDrop,
-    accept: "image/*",
+    accept: {
+      "image/*": [".jpeg", ".png", ".gif", ".svg"],
+    },
     multiple: false,
     preventDropOnDocument: true,
   })
 
   useEffect(() => {
-    if (isDragActive && isDragReject && draggedFiles.length && !isChrome) {
+    if (isDragActive && isDragReject && !isChrome) {
       setStatus({ message: t("imageNotAcceptableFormat"), error: true })
     } else if (isDragActive) {
       setStatus({ message: t("imageDropHere") })
     } else {
       setStatus({ message: t("imageDropMessage") })
     }
-  }, [isDragActive, isDragReject, draggedFiles])
+  }, [isDragActive, isDragReject])
 
   return (
     <DropzoneContainer

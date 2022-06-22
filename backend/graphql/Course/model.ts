@@ -79,7 +79,7 @@ export const Course = objectType({
         return ctx.prisma.course
           .findUnique({
             where: {
-              id: parent.id,
+              id: parent.completions_handled_by_id ?? parent.id,
             },
           })
           .completions({

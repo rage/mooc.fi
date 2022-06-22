@@ -133,7 +133,7 @@ export const getUserCourseSettings = async ({
   context: KafkaContext
 }): Promise<UserCourseSetting | null> => {
   // - if the course inherits user course settings from some course, get settings from that one
-  // - if not, get if from the course itself or null if none exists
+  // - if not, get from the course itself or null if none exists
   const result = await prisma.course.findUnique({
     where: {
       id: course_id,
@@ -172,6 +172,7 @@ export const getUserCourseSettings = async ({
 interface CheckCompletion {
   user: User
   course: Course
+  handler?: Course | null
   combinedProgress?: CombinedUserCourseProgress
   context: KafkaContext
 }
@@ -179,41 +180,35 @@ interface CheckCompletion {
 export const checkCompletion = async ({
   user,
   course,
+  handler,
   combinedProgress,
   context,
 }: CheckCompletion) => {
-  const { prisma } = context
-
   let combined = combinedProgress
+
+  const handlerCourse = handler ?? course
 
   if (!combined) {
     combined = await getCombinedUserCourseProgress({ user, course, context })
   }
 
-  const requiredExerciseCompletions = await checkRequiredExerciseCompletions({
-    user,
-    course,
-    context,
-  })
+  const hasRequiredExerciseCompletions = await checkRequiredExerciseCompletions(
+    {
+      user,
+      course,
+      context,
+    },
+  )
+
   if (
-    course.automatic_completions &&
+    handlerCourse.automatic_completions &&
     combined.total_n_points >= (course.points_needed ?? 9999999) &&
-    requiredExerciseCompletions
+    hasRequiredExerciseCompletions
   ) {
-    let handlerCourse = course
-
-    const otherHandlerCourse = await prisma.course
-      .findUnique({ where: { id: course.id } })
-      .completions_handled_by()
-
-    if (otherHandlerCourse) {
-      handlerCourse = otherHandlerCourse
-    }
-
     await createCompletion({
       user,
-      course_id: course.id,
-      handlerCourse,
+      course,
+      handler,
       context,
     })
   }
@@ -221,16 +216,16 @@ export const checkCompletion = async ({
 
 interface CreateCompletion {
   user: User
-  course_id: string
-  handlerCourse: Course
+  course: Course
+  handler?: Course | null
   tier?: number
   context: KafkaContext
 }
 
 export const createCompletion = async ({
   user,
-  course_id,
-  handlerCourse,
+  course,
+  handler,
   context,
   tier,
 }: CreateCompletion) => {
@@ -238,9 +233,11 @@ export const createCompletion = async ({
 
   const userCourseSettings = await getUserCourseSettings({
     user_id: user.id,
-    course_id,
+    course_id: course.id,
     context,
   })
+
+  const handlerCourse = handler ?? course
 
   const completions = await prisma.user
     .findUnique({
@@ -283,7 +280,7 @@ export const createCompletion = async ({
 
     if (!userCourseSettings) {
       logger.warn(
-        `No user course settings found for user ${user.id} on course ${course_id} (handler ${handlerCourse.id}), created completion ${newCompletion.id} anyway; completion_language will be null`,
+        `No user course settings found for user ${user.id} on course ${course.id} (handler ${handlerCourse.id}), created completion ${newCompletion.id} anyway; completion_language will be null`,
       )
     } else if (language && !completion_language) {
       logger.warn(
@@ -294,19 +291,15 @@ export const createCompletion = async ({
     // TODO: this only sends the completion email for the first tier completed
     await pushMessageToClient(
       user.upstream_id,
-      course_id,
+      course.id,
       MessageType.COURSE_CONFIRMED,
     )
 
-    const template = await prisma.course
-      .findUnique({ where: { id: course_id } })
-      .completion_email()
-
-    if (template) {
+    if (course.completion_email_id) {
       await prisma.emailDelivery.create({
         data: {
           user_id: user.id,
-          email_template_id: template.id,
+          email_template_id: course.completion_email_id,
           sent: false,
           error: false,
         },
@@ -328,7 +321,7 @@ export const createCompletion = async ({
         completions[0]!.id,
       )
       if (updated.length > 0) {
-        logger?.info("Existing completion found, updated tier")
+        logger.info("Existing completion found, updated tier")
       }
     } catch (error: any) {
       logger.error(

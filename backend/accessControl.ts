@@ -19,7 +19,7 @@ export const isVisitor = (_: any, _args: any, ctx: Context, _info: any) =>
 export const isCourseOwner =
   (course_id: string) =>
   async (_: any, _args: any, ctx: Context, _info: any) => {
-    if (!isUser(_, _args, ctx, _info) || !ctx.user?.id) {
+    if (!isUser(_, _args, ctx, _info) || !ctx.user?.id || !course_id) {
       return false
     }
 

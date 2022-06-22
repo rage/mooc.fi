@@ -26,19 +26,24 @@ const getDataByLanguage = async (langInfo: LanguageInfo) => {
       language: language,
       course: { slug: "elements-of-ai" },
     },
+    distinct: ["user_id"],
   })
   const completionsByLang = await prisma.completion.findMany({
     where: {
       course: { slug: "elements-of-ai" },
       completion_language,
     },
+    distinct: ["user_id"],
   })
   const englishInLang = await prisma.userCourseSetting.findMany({
     where: {
       country,
+      course: { slug: "elements-of-ai" },
       language: "en",
     },
+    distinct: ["user_id"],
   })
+
   const now = new Date()
   return `\`\`\`Stats ${now.getDate()}.${
     now.getMonth() + 1
@@ -79,13 +84,13 @@ const getGlobalStats = async (): Promise<string> => {
     .from("course")
     .where({ slug: "elements-of-ai" })
   const totalUsers = (
-    await Knex.count() // FIXME: should this be distinct?
+    await Knex.countDistinct("user_id")
       .from("user_course_setting")
       .whereNotNull("language")
       .andWhere({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (
-    await Knex.count() // FIXME: should this be distinct?
+    await Knex.countDistinct("user_id")
       .from("completion")
       .whereNotNull("completion_language")
       .andWhere({ course_id: course[0].id })
@@ -104,37 +109,34 @@ const getGlobalStatsBAI = async (): Promise<string> => {
     .from("course")
     .where({ slug: "building-ai" })
 
-  // FIXME: should this be distinct?
   const totalUsers = (
-    await Knex.count()
+    await Knex.countDistinct("user_id")
       .from("user_course_setting")
       .where({ course_id: course[0].id })
   )[0].count
 
-  // FIXME: should this be distinct?
   const totalCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id })
+    await Knex.countDistinct("user_id")
+      .from("completion")
+      .where({ course_id: course[0].id })
   )[0].count
 
-  // FIXME: should this be distinct?
   const beginnerCompletions = (
-    await Knex.count()
+    await Knex.countDistinct("user_id")
       .from("completion")
       .where({ course_id: course[0].id })
       .andWhere({ tier: 1 })
   )[0].count
 
-  // FIXME: should this be distinct?
   const intermediateCompletions = (
-    await Knex.count()
+    await Knex.countDistinct("user_id")
       .from("completion")
       .where({ course_id: course[0].id })
       .andWhere({ tier: 2 })
   )[0].count
 
-  // FIXME: should this be distinct?
   const advancedCompletions = (
-    await Knex.count()
+    await Knex.countDistinct("user_id")
       .from("completion")
       .where({ course_id: course[0].id })
       .andWhere({ tier: 3 })

@@ -10,10 +10,14 @@ type ErrorBoundaryError = {
   error: Error | null | undefined
 }
 
-class ErrorBoundary extends Component {
+class ErrorBoundary extends Component<
+  PropsWithChildren<{}>,
+  ErrorBoundaryState
+> {
   state: ErrorBoundaryState = {
     hasError: undefined,
   }
+
   constructor(props: PropsWithChildren<{}>) {
     super(props)
     this.state = { hasError: false }

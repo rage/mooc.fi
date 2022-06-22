@@ -1,9 +1,0 @@
-{
-  "baseUrl": "http://localhost:3000",
-  "env": {
-    "CYPRESS": "true",
-    "codeCoverage": {
-      "url": "/api/__coverage__"
-    }
-  }
-}

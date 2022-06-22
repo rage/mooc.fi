@@ -1,17 +1,24 @@
-import { yupResolver } from "@hookform/resolvers/yup"
-import { Typography } from "@mui/material"
-import { omit } from "lodash"
 import {
   createContext,
   PropsWithChildren,
   useCallback,
   useContext,
 } from "react"
-import styled from "@emotion/styled"
-import { useAnchorContext } from "/contexts/AnchorContext"
-import * as Yup from "yup"
-import { FormValues } from "/components/Dashboard/Editor2/types"
+
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormValues } from "/components/Dashboard/Editor2/types"
+import { useAnchorContext } from "/contexts/AnchorContext"
+import { omit } from "lodash"
+import {
+  FieldValues,
+  ResolverOptions,
+  UnpackNestedValue,
+} from "react-hook-form"
+import * as Yup from "yup"
+
+import styled from "@emotion/styled"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { Typography } from "@mui/material"
 
 export const FormSubtitle = styled(Typography)<any>`
   padding: 20px 0px 20px 0px;
@@ -91,15 +98,17 @@ export const useTabContext = () => {
   return useContext(TabContext)
 }
 
-export function customValidationResolver(schema: Yup.AnyObjectSchema) {
+export function customValidationResolver<
+  TFieldValues extends FieldValues,
+  TContext = undefined,
+>(schema: Yup.AnyObjectSchema) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useCallback(
-    async (values, context, validateAllFieldCriteria = false) =>
-      await yupResolver(schema)(
-        values,
-        { ...context, values },
-        validateAllFieldCriteria,
-      ),
+    async (
+      values: UnpackNestedValue<TFieldValues>,
+      context: TContext,
+      options: ResolverOptions<TFieldValues>,
+    ) => await yupResolver(schema)(values, { ...context, values }, options),
     [schema],
   )
 }

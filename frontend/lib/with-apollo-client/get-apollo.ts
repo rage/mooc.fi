@@ -16,13 +16,6 @@ import { onError } from "@apollo/client/link/error"
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
-const cypress = process.env.CYPRESS === "true"
-
-/* const cypress =
-  process.env.CYPRESS === "true" ||
-  (typeof window !== "undefined" &&
-    window.Cypress &&
-    window.Cypress.env("CYPRESS") === "true") */
 
 function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
@@ -44,11 +37,7 @@ function create(initialState: any, originalAccessToken?: string) {
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
-    uri: cypress
-      ? "http://localhost:4001"
-      : production
-      ? "https://www.mooc.fi/api/"
-      : "http://localhost:4000",
+    uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
   })

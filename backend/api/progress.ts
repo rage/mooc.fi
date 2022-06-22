@@ -1,6 +1,6 @@
-import { Request } from "express"
+import { Request, Response } from "express"
 
-import { Completion } from "@prisma/client"
+import { Completion, Course } from "@prisma/client"
 
 import { getUser } from "../util/server-functions"
 import { ApiContext } from "./"
@@ -16,16 +16,18 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
-export function progress(ctx: ApiContext) {
-  return async (req: Request<{ id: string }>, res: any) => {
-    const { knex } = ctx
+export class ProgressController {
+  constructor(readonly ctx: ApiContext) {}
+
+  progress = async (req: Request<{ id: string }>, res: Response) => {
+    const { knex } = this.ctx
     const { id } = req.params
 
     if (!id) {
       return res.status(400).json({ message: "must provide id" })
     }
 
-    const getUserResult = await getUser(ctx)(req, res)
+    const getUserResult = await getUser(this.ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -64,21 +66,22 @@ export function progress(ctx: ApiContext) {
       data: resObject,
     })
   }
-}
 
-export function progressV2(ctx: ApiContext) {
-  return async (req: Request<{ id: string }>, res: any) => {
-    const { knex } = ctx
-    const { id }: { id: string } = req.params
+  progressV2 = async (
+    req: Request<{ id: string }, {}, {}, { deleted?: string }>,
+    res: Response,
+  ) => {
+    const { knex } = this.ctx
+    const { id } = req.params
     const { deleted = "" } = req.query
 
-    const includeDeleted = (deleted as string).toLowerCase().trim() === "true"
+    const includeDeleted = deleted.toLowerCase().trim() === "true"
 
     if (!id) {
       return res.status(400).json({ message: "must provide id" })
     }
 
-    const getUserResult = await getUser(ctx)(req, res)
+    const getUserResult = await getUser(this.ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -107,18 +110,18 @@ export function progressV2(ctx: ApiContext) {
     }
 
     const exercise_completions = await exerciseCompletionsPromise
-    const { completions_handled_by_id = id } =
-      (
-        await knex
-          .select("completions_handled_by_id")
-          .from("course")
-          .where("id", id)
-      )[0] ?? {}
+    const course = (
+      await knex
+        .select<any, Course[]>("*")
+        .from("course")
+        .where("id", id)
+        .limit(1)
+    )?.[0]
 
     const completions = await knex
       .select<any, Completion[]>("*")
       .from("completion")
-      .where("course_id", completions_handled_by_id)
+      .where("course_id", course?.completions_handled_by_id ?? course?.id)
       .andWhere("user_id", user.id)
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(
@@ -139,6 +142,77 @@ export function progressV2(ctx: ApiContext) {
         exercise_completions: exercise_completions_map,
         completion: completions[0] ?? {},
       },
+    })
+  }
+
+  tierProgress = async (req: Request<{ id: string }>, res: Response) => {
+    const { id } = req.params
+    const { knex } = this.ctx
+
+    if (!id) {
+      return res.status(400).json({ message: "must provide course id" })
+    }
+
+    const getUserResult = await getUser(this.ctx)(req, res)
+
+    if (getUserResult.isErr()) {
+      return getUserResult.error
+    }
+
+    const { user } = getUserResult.value
+
+    const data = await knex
+      .select<any, any>("course_id", "extra")
+      .from("user_course_progress")
+      .where("user_course_progress.course_id", id)
+      .andWhere("user_course_progress.user_id", user.id)
+
+    res.json({
+      data: {
+        course_id: id,
+        ...data[0]?.extra,
+      },
+    })
+  }
+
+  userCourseProgress = async (
+    req: Request<{ slug: string }>,
+    res: Response,
+  ) => {
+    const { slug } = req.params
+    const { prisma } = this.ctx
+
+    const getUserResult = await getUser(this.ctx)(req, res)
+
+    if (getUserResult.isErr()) {
+      return getUserResult.error
+    }
+
+    const { user } = getUserResult.value
+
+    const course = await prisma.course.findUnique({
+      where: { slug },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+
+    const userCourseProgresses = await prisma.user
+      .findUnique({
+        where: { id: user.id },
+      })
+      .user_course_progresses({
+        where: {
+          course_id: course.id,
+        },
+        orderBy: {
+          created_at: "asc",
+        },
+      })
+
+    res.json({
+      data: userCourseProgresses?.[0],
     })
   }
 }

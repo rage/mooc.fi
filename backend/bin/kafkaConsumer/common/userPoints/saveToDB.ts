@@ -32,15 +32,13 @@ export const saveToDatabase = async (
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
+    include: {
+      completions_handled_by: true,
+    },
   })
 
   if (!user || !course) {
-    return err(
-      new DatabaseInputError(
-        `Invalid user or course: user ${message.user_id}, course ${message.course_id}`,
-        message,
-      ),
-    )
+    return err(new DatabaseInputError(`Invalid user or course`, message))
   }
 
   logger.info("Getting the exercise")
@@ -56,15 +54,10 @@ export const saveToDatabase = async (
     },
   })
   if (!exercise) {
-    return err(
-      new DatabaseInputError(
-        `Given exercise does not exist: id ${message.exercise_id}`,
-        message,
-      ),
-    )
+    return err(new DatabaseInputError(`Given exercise does not exist`, message))
   }
 
-  logger.info("Getting the completion")
+  logger.info("Getting the exercise completion")
   const exerciseCompleted = (
     await prisma.user
       .findUnique({
@@ -92,7 +85,7 @@ export const saveToDatabase = async (
   const required_actions = message.completed ? [] : message.required_actions
 
   if (!exerciseCompleted) {
-    logger.info("No previous completion, creating a new one")
+    logger.info("No previous exercise completion, creating a new one")
     const data = {
       exercise: {
         connect: { id: exercise.id },
@@ -124,7 +117,7 @@ export const saveToDatabase = async (
       }
     }
   } else {
-    logger.info("Updating previous completion")
+    logger.info("Updating previous exercise completion")
     const oldTimestamp = DateTime.fromISO(
       exerciseCompleted?.timestamp?.toISOString() ?? "",
     )
@@ -162,7 +155,12 @@ export const saveToDatabase = async (
       },
     })
   }
-  await checkCompletion({ user, course, context })
+  await checkCompletion({
+    user,
+    course,
+    handler: course.completions_handled_by,
+    context,
+  })
 
   return ok("Saved to DB successfully")
 }
