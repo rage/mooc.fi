@@ -17,7 +17,6 @@ const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
 
-const cypress = process.env.CYPRESS === "true"
 const createMockBackend = require("./tests/mockBackend")
 
 const main = async () => {
@@ -50,14 +49,7 @@ const main = async () => {
     return handle(req, res)
   }
 
-  if (cypress) {
-    const { redirectHandlerWithCookies } = await createMockBackend({
-      redirectHandler,
-    })
-    server.get("*", redirectHandlerWithCookies)
-  } else {
-    server.get("*", redirectHandler)
-  }
+  server.get("*", redirectHandler)
 
   await server.listen(port)
   console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console

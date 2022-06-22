@@ -9,15 +9,12 @@ import Document, {
 } from "next/document"
 
 import createEmotionServer from "@emotion/server/create-instance"
-import { ServerStyleSheets } from "@mui/styles"
 
 import createEmotionCache from "../src/createEmotionCache"
 import theme from "../src/theme"
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
-    const sheets = new ServerStyleSheets()
-
     const originalRenderPage = ctx.renderPage
 
     const cache = createEmotionCache()
@@ -27,7 +24,7 @@ class MyDocument extends Document {
       originalRenderPage({
         enhanceApp: (App: any) =>
           function EnhanceApp(props) {
-            return sheets.collect(<App emotionCache={cache} {...props} />)
+            return <App emotionCache={cache} {...props} />
           },
       })
 
@@ -43,13 +40,7 @@ class MyDocument extends Document {
 
     return {
       ...initialProps,
-
-      // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
-      styles: [
-        ...emotionStyleTags,
-        ...React.Children.toArray(initialProps.styles),
-        sheets.getStyleElement(),
-      ],
+      emotionStyleTags,
     }
   }
 
@@ -64,6 +55,7 @@ class MyDocument extends Document {
             type="image/x-icon"
             href="/static/favicon.ico"
           />
+          {(this.props as any).emotionStyleTags}
         </Head>
         <body>
           <Main />

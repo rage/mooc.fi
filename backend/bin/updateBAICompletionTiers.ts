@@ -50,7 +50,6 @@ const updateBAICompletionTiers = async () => {
         mutex: null as any,
         topic_name: "",
       },
-      isHandler: true,
     })
   }
 
