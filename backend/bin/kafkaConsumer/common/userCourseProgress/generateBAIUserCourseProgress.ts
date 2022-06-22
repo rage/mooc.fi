@@ -119,9 +119,15 @@ export const checkBAICompletion = async ({
 
   logger.info("Creating completion")
 
+  const highestTierCourse = await prisma.course.findUnique({
+    where: {
+      id: BAItiers[highestTier],
+    },
+  })
+
   await createCompletion({
     user,
-    course,
+    course: highestTierCourse ?? course,
     handler,
     context,
     tier: highestTier,
