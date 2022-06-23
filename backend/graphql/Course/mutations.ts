@@ -5,6 +5,7 @@ import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
@@ -40,8 +41,8 @@ export const CourseMutations = extendType({
           inherit_settings_from,
           completions_handled_by,
           user_course_settings_visibilities,
-          completion_email,
-          course_stats_email,
+          completion_email_id,
+          course_stats_email_id,
         } = course
 
         let photo = null
@@ -62,7 +63,12 @@ export const CourseMutations = extendType({
 
         const newCourse = await ctx.prisma.course.create({
           data: {
-            ...omit(course, ["base64", "new_photo"]),
+            ...omit(course, [
+              "base64",
+              "new_photo",
+              "completion_email_id",
+              "course_stats_email_id",
+            ]),
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translations: {
@@ -90,11 +96,11 @@ export const CourseMutations = extendType({
               create: user_course_settings_visibilities?.filter(isNotNull),
             },
             // don't think these will be passed by parameter, but let's be sure
-            completion_email: !!completion_email
-              ? { connect: { id: completion_email } }
+            completion_email: !!completion_email_id
+              ? { connect: { id: completion_email_id } }
               : undefined,
-            course_stats_email: !!course_stats_email
-              ? { connect: { id: course_stats_email } }
+            course_stats_email: !!course_stats_email_id
+              ? { connect: { id: course_stats_email_id } }
               : undefined,
           },
         })
@@ -134,13 +140,13 @@ export const CourseMutations = extendType({
           course_variants,
           course_aliases,
           study_modules,
-          completion_email,
+          completion_email_id,
           status,
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
           user_course_settings_visibilities,
-          course_stats_email,
+          course_stats_email_id,
         } = course
         let { end_date } = course
 
@@ -299,6 +305,8 @@ export const CourseMutations = extendType({
               "new_slug",
               "new_photo",
               "delete_photo",
+              "completion_email_id",
+              "course_stats_email_id",
             ]),
             slug: new_slug ? new_slug : slug,
             end_date,
@@ -309,11 +317,11 @@ export const CourseMutations = extendType({
             open_university_registration_links: registrationLinkMutation,
             course_variants: courseVariantMutation,
             course_aliases: courseAliasMutation,
-            completion_email: completion_email
-              ? { connect: { id: completion_email } }
+            completion_email: completion_email_id
+              ? { connect: { id: completion_email_id } }
               : undefined,
-            course_stats_email: course_stats_email
-              ? { connect: { id: course_stats_email } }
+            course_stats_email: course_stats_email_id
+              ? { connect: { id: course_stats_email_id } }
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
@@ -402,10 +410,8 @@ const createMutation = async <T extends { id?: string | null } | null>({
   try {
     // @ts-ignore: can't be arsed to do the typing, works
     existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
-  } catch (e) {
-    throw new Error(
-      `error creating mutation ${String(field)} for course ${slug}: ${e}`,
-    )
+  } catch (e: any) {
+    throw new DatabaseInputError(`error creating mutation`, { field, slug }, e)
   }
 
   const newOnes = (data || [])

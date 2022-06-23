@@ -34,10 +34,10 @@ export interface CourseCreateArg {
   automatic_completions?: boolean | null
   automatic_completions_eligible_for_ects?: boolean | null
   base64?: boolean | null
-  completion_email?: string | null
+  completion_email_id?: string | null
   completions_handled_by?: string | null
   course_aliases?: (CourseAliasCreateInput | null)[] | null
-  course_stats_email?: string | null
+  course_stats_email_id?: string | null
   course_translations?: (CourseTranslationCreateInput | null)[] | null
   course_variants?: (CourseVariantCreateInput | null)[] | null
   ects?: string | null
@@ -95,10 +95,10 @@ export interface CourseUpsertArg {
   automatic_completions?: boolean | null
   automatic_completions_eligible_for_ects?: boolean | null
   base64?: boolean | null
-  completion_email?: string | null
+  completion_email_id?: string | null
   completions_handled_by?: string | null
   course_aliases?: (CourseAliasUpsertInput | null)[] | null
-  course_stats_email?: string | null
+  course_stats_email_id?: string | null
   course_translations?: (CourseTranslationUpsertInput | null)[] | null
   course_variants?: (CourseVariantUpsertInput | null)[] | null
   delete_photo?: boolean | null

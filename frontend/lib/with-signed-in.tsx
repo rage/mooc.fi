@@ -1,4 +1,4 @@
-import { Component as ReactComponent } from "react"
+import { Component as ReactComponent, PropsWithChildren } from "react"
 
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isSignedIn } from "/lib/authentication"
@@ -9,7 +9,9 @@ let prevContext: NextContext | null = null
 
 // TODO: might need to wrap in function to give redirect parameters (= shallow?)
 export default function withSignedIn(Component: any) {
-  return class WithSignedIn extends ReactComponent<{ signedIn: boolean }> {
+  return class WithSignedIn extends ReactComponent<
+    PropsWithChildren<{ signedIn: boolean }>
+  > {
     static displayName = `withSignedIn(${
       Component.name || Component.displayName || "AnonymousComponent"
     })`
@@ -42,7 +44,7 @@ export default function withSignedIn(Component: any) {
       }
 
       // Logging out is communicated with a context change
-      if (!this.context.loggedIn) {
+      if (!(this.context as any).loggedIn) {
         if (prevContext) {
           redirect({
             context: prevContext,

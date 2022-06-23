@@ -7,6 +7,8 @@ export interface Alert {
   component?: JSX.Element
   severity?: "error" | "warning" | "info" | "success"
   ignorePages?: string[]
+  onlyPages?: string[]
+  timeout?: number
 }
 
 export interface AlertState {

@@ -2,9 +2,11 @@ import { PropsWithChildren } from "react"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
+import { formatDateTime } from "/components/DataFormatFunctions"
 import { CardTitle } from "/components/Text/headers"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { DateTime } from "luxon"
 import Link from "next/link"
 
 import styled from "@emotion/styled"
@@ -155,8 +157,6 @@ const CourseInfo = ({
     {children}
   </CourseInfoLine>
 )
-const formatDate = (date?: string | null) =>
-  date ? new Date(date).toLocaleDateString() : "-"
 
 interface CourseCardProps {
   course?: AllEditorCourses_courses
@@ -222,8 +222,11 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
           {course ? (
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
-                {formatDate(course?.start_date)} to{" "}
-                {formatDate(course?.end_date)}
+                {formatDateTime(course?.start_date, DateTime.DATE_SHORT)} to{" "}
+                {formatDateTime(
+                  course?.end_date ?? undefined,
+                  DateTime.DATE_SHORT,
+                )}
               </CourseInfo>
 
               <CourseInfo

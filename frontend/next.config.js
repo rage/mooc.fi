@@ -1,10 +1,11 @@
 const withPlugins = require("next-compose-plugins")
 const withFonts = require("next-fonts")
 const withOptimizedImages = require("next-optimized-images")
+const Redirects = require("./Redirects")
+
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 })
-// const withCSS = require("@zeit/next-css")
 const withMDX = require("@next/mdx")({
   extension: /\.mdx?$/,
 })
@@ -23,6 +24,14 @@ const nextConfiguration = {
   i18n: {
     locales: ["en", "fi"],
     defaultLocale: "fi",
+  },
+  reactStrictMode: true,
+  async redirects() {
+    return Redirects.redirects_list.map(({ from, to }) => ({
+      source: from.split("?")?.[0],
+      destination: to,
+      permanent: true,
+    }))
   },
 }
 

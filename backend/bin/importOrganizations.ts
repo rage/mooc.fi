@@ -36,7 +36,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     creator: user !== null ? { connect: { id: user.id } } : undefined,
     logo_file_name: org.logo_file_name,
     logo_content_type: org.logo_content_type,
-    logo_file_size: Number(org.logo_file_size),
+    logo_file_size: Number(org.logo_file_size) || 0,
     logo_updated_at: org.logo_updated_at,
     phone: org.phone,
     contact_information: org.contact_information,
@@ -101,7 +101,7 @@ const getUserFromTmc = async (user_id: Number) => {
   try {
     details = await tmc.getUserDetailsById(user_id)
   } catch (e) {
-    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    logger.error(new TMCError(`couldn't find user`, { user_id }, e))
     throw e
   }
 

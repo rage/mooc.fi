@@ -1,9 +1,13 @@
 import axios from "axios"
+
 import { getAccessToken } from "./authentication"
 
 const SERVICE_URL = "https://certificates.mooc.fi"
 
-export const checkCertificate = async (courseSlug: string) => {
+export const checkCertificate = async (
+  courseSlug: string,
+  signal?: AbortSignal,
+) => {
   const accessToken = getAccessToken(undefined)
 
   const res = await axios.get(
@@ -13,6 +17,7 @@ export const checkCertificate = async (courseSlug: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
+      signal,
     },
   )
 

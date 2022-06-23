@@ -1,40 +1,30 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
-import {
-  useEffect,
-  useReducer,
-} from "react"
+import { useCallback, useEffect, useReducer } from "react"
 
 import AlertContext, { Alert } from "/contexts/AlertContext"
-import {
-  Breadcrumb,
-  BreadcrumbContext,
-} from "/contexts/BreadcrumbContext"
+import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import {
-  initGA,
-  logPageView,
-} from "/lib/gtag"
+import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { fontCss } from "/src/fonts"
 import theme from "/src/theme"
+import {
+  AlertActionType,
+  BreadcrumbActionType,
+  rootReducer,
+  UserActionType,
+} from "/state"
+import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 import { ConfirmProvider } from "material-ui-confirm"
 import { NextPageContext } from "next"
-import App, {
-  AppContext,
-  AppInitialProps,
-  type AppProps,
-} from "next/app"
+import App, { AppContext, AppInitialProps, type AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import {
-  CacheProvider,
-  EmotionCache,
-  Global,
-} from "@emotion/react"
+import { CacheProvider, EmotionCache, Global } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -45,67 +35,19 @@ import Layout from "./_layout"
 fontAwesomeConfig.autoAddCss = false
 
 const clientSideEmotionCache = createEmotionCache()
-
-interface AppState {
-  loggedIn: boolean
-  logInOrOut: () => void
-  alerts: Alert[]
-  breadcrumbs: Breadcrumb[]
-  admin: boolean
-  validated: boolean
-  currentUser: any
-  updateUser: (user: any) => void
-  nextAlertId: number
-}
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
   currentUser: any
   signedIn: boolean
   admin: boolean
 }
-
-const reducer = (state: AppState, action: any) => {
-  switch (action.type) {
-    case "addAlert":
-      const nextAlertId = state.nextAlertId + 1
-      return {
-        ...state,
-        alerts: [...state.alerts, { ...action.payload, id: nextAlertId }],
-        nextAlertId,
-      }
-    case "removeAlert":
-      return {
-        ...state,
-        alerts: state.alerts.filter((alert) => alert.id !== action.payload),
-      }
-    case "setBreadcrumbs":
-      return {
-        ...state,
-        breadcrumbs: action.payload,
-      }
-    case "updateUser":
-      return {
-        ...state,
-        currentUser: action.payload.user,
-        admin: action.payload.admin || false,
-      }
-    case "logInOrOut":
-      return {
-        ...state,
-        loggedIn: !state.loggedIn,
-      }
-    default:
-      return state
-  }
-}
-
 export function MyApp({
   Component,
   pageProps,
   emotionCache = clientSideEmotionCache,
   signedIn,
   admin,
-  currentUser
+  currentUser,
 }: MyAppProps) {
   console.log("pageProps", pageProps)
   console.log("signedIn, admin, currentUser", signedIn, admin, currentUser)
@@ -113,40 +55,77 @@ export function MyApp({
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
-  const logInOrOut = () => dispatch({ type: "logInOrOut" })
+  const logInOrOut = useCallback(
+    () => dispatch({ type: UserActionType.LogInOrOut }),
+    [],
+  )
 
-  const updateUser = (user: any) =>
-    dispatch({ type: "updateUser", payload: { user } })
+  const updateUser = useCallback(
+    (payload: { user: UserOverView_currentUser; admin?: boolean }) =>
+      dispatch({ type: UserActionType.UpdateUser, payload }),
+    [],
+  )
 
-  const addAlert = (alert: Alert) =>
-    dispatch({ type: "addAlert", payload: alert })
+  const setBreadcrumbs = useCallback(
+    (breadcrumbs: Breadcrumb[]) =>
+      dispatch({
+        type: BreadcrumbActionType.SetBreadcrumbs,
+        payload: breadcrumbs,
+      }),
+    [],
+  )
 
-  const removeAlert = (alert: Alert) =>
-    dispatch({ type: "removeAlert", payload: alert })
+  const addAlert = useCallback(
+    (alert: Alert) =>
+      dispatch({ type: AlertActionType.AddAlert, payload: alert }),
+    [],
+  )
+  const removeAlert = useCallback(
+    (alert: Alert) =>
+      dispatch({ type: AlertActionType.RemoveAlert, payload: alert }),
+    [],
+  )
 
-  const setBreadcrumbs = (breadcrumbs: Breadcrumb[]) =>
-    dispatch({ type: "setBreadcrumbs", payload: breadcrumbs })
-
-  const [state, dispatch] = useReducer(reducer, {
-    loggedIn: signedIn,
-    logInOrOut,
-    alerts: [],
-    breadcrumbs: [],
-    admin,
-    validated: pageProps?.validated,
-    currentUser,
-    updateUser,
-    nextAlertId: 0,
+  const [state, dispatch] = useReducer(rootReducer, {
+    user: {
+      loggedIn: signedIn,
+      logInOrOut,
+      admin,
+      validated: pageProps?.validated,
+      currentUser,
+      updateUser,
+    },
+    alerts: {
+      data: [],
+      nextId: 0,
+    },
+    breadcrumbs: {
+      data: [],
+    },
   })
 
   useEffect(() => {
-    if (currentUser !== state.currentUser) {
+    const newestAlert = state.alerts.data.slice(-1)[0]
+
+    let timeout: NodeJS.Timeout
+
+    if (newestAlert?.timeout) {
+      timeout = setTimeout(() => {
+        removeAlert(newestAlert)
+      }, newestAlert.timeout)
+    }
+
+    return () => timeout && clearTimeout(timeout)
+  }, [state.alerts.data])
+
+  useEffect(() => {
+    if (currentUser !== state.user.currentUser) {
       dispatch({
-        type: "updateUser",
+        type: UserActionType.UpdateUser,
         payload: { user: currentUser, admin },
       })
     }
-  }, [currentUser])
+  }, [state.user.currentUser])
 
   useEffect(() => {
     initGA()
@@ -180,17 +159,17 @@ export function MyApp({
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <LoginStateContext.Provider value={state}>
+          <LoginStateContext.Provider value={state.user}>
             <ConfirmProvider>
               <BreadcrumbContext.Provider
                 value={{
-                  breadcrumbs: state.breadcrumbs,
+                  breadcrumbs: state.breadcrumbs.data,
                   setBreadcrumbs: setBreadcrumbs,
                 }}
               >
                 <AlertContext.Provider
                   value={{
-                    alerts: state.alerts,
+                    alerts: state.alerts.data,
                     addAlert: addAlert,
                     removeAlert: removeAlert,
                   }}
@@ -209,60 +188,27 @@ export function MyApp({
   )
 }
 
-// @ts-ignore: initialProps
-// const originalGetInitialProps = MyApp.getInitialProps
-// 
- const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
-   return 'Component' in ctx
- }
- MyApp.getInitialProps = async (appContext: AppContext | NextPageContext) => {
-   /*const { ctx, Component } = props
- 
-   let originalProps: any = {}
- 
-   if (originalGetInitialProps) {
-     originalProps = (await originalGetInitialProps(props)) || {}
-   }
- 
-   if (Component.getInitialProps) {
-     originalProps = {
-       ...originalProps,
-       pageProps: {
-         ...originalProps?.pageProps,
-         ...((await Component.getInitialProps(ctx)) || {}),
-       },
-     }
-   }
- 
-   const signedIn = isSignedIn(ctx)
-   const admin = isAdmin(ctx)
- 
-   return {
-     ...originalProps,
-     pageProps: {
-       ...originalProps.pageProps,
-       signedIn,
-       admin,
-     },
-   }*/
- 
-   const ctx = isAppContext(appContext) ? appContext.ctx : appContext
- 
-   const appProps = isAppContext(appContext) ? await App.getInitialProps(appContext) : {} as AppInitialProps
- 
-   const componentInitialProps = isAppContext(appContext) && appContext.Component.getInitialProps ? await appContext?.Component?.getInitialProps(ctx) : {}
- 
-   console.log("componentInitialProps", componentInitialProps)
-   /*const signedIn = isSignedIn(ctx)
-   const admin = isAdmin(ctx)*/
- 
-   appProps.pageProps = {
-     ...appProps.pageProps,
-     ...componentInitialProps,
- /*    signedIn,
-     admin*/
-   }
-   return { ...appProps }
- }
+const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
+  return "Component" in ctx
+}
+MyApp.getInitialProps = async (appContext: AppContext | NextPageContext) => {
+  const ctx = isAppContext(appContext) ? appContext.ctx : appContext
+
+  const appProps = isAppContext(appContext)
+    ? await App.getInitialProps(appContext)
+    : ({} as AppInitialProps)
+
+  const componentInitialProps =
+    isAppContext(appContext) && appContext.Component.getInitialProps
+      ? await appContext?.Component?.getInitialProps(ctx)
+      : {}
+
+  appProps.pageProps = {
+    ...appProps.pageProps,
+    ...componentInitialProps,
+  }
+
+  return { ...appProps }
+}
 
 export default withApolloClient(MyApp)

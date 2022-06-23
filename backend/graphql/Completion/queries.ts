@@ -1,4 +1,4 @@
-import { ForbiddenError, UserInputError } from "apollo-server-express"
+import { ForbiddenError } from "apollo-server-express"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
@@ -7,6 +7,7 @@ import { Prisma } from "@prisma/client"
 // import { convertPagination } from "../../util/db-functions"
 import { isAdmin, isOrganization, or } from "../../accessControl"
 import { buildUserSearch } from "../../util/db-functions"
+import { getCourseOrAliasBySlug } from "../../util/graphql-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -24,15 +25,17 @@ export const CompletionQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
         const { first, last, completion_language } = args
-        let { course } = args
+        let { course: slug } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           ctx.disableRelations = true
         }
 
-        let completions = await ctx.prisma.course
+        const course = await getCourseOrAliasBySlug(ctx)(slug)
+
+        const completions = await ctx.prisma.course
           .findUnique({
             where: {
-              slug: course,
+              id: course.completions_handled_by_id ?? course.id,
             },
           })
           .completions({
@@ -40,25 +43,6 @@ export const CompletionQueries = extendType({
               completion_language,
             },
           })
-
-        if (!completions) {
-          completions = await ctx.prisma.courseAlias
-            .findUnique({
-              where: {
-                course_code: course,
-              },
-            })
-            .course()
-            .completions({
-              where: {
-                completion_language,
-              },
-            })
-
-          if (!completions) {
-            throw new UserInputError("Invalid course identifier")
-          }
-        }
 
         return completions
       },
@@ -79,29 +63,16 @@ export const CompletionQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx, __) => {
         const { completion_language, first, last, before, after, search } = args
-        let { course } = args
+        let { course: slug } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const courseWithSlug = await ctx.prisma.course.findUnique({
-          where: { slug: course },
-        })
-
-        if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.prisma.courseAlias
-            .findUnique({ where: { course_code: course } })
-            .course()
-          if (!courseFromAvoinCourse) {
-            throw new UserInputError("Invalid course identifier")
-          }
-          course = courseFromAvoinCourse.slug
-        }
+        const course = await getCourseOrAliasBySlug(ctx)(slug)
 
         const baseArgs: Prisma.CompletionFindManyArgs = {
           where: {
-            course: { slug: course },
             completion_language,
             ...(search
               ? {
@@ -115,7 +86,7 @@ export const CompletionQueries = extendType({
           (args) =>
             ctx.prisma.course
               .findUnique({
-                where: { slug: course },
+                where: { id: course!.completions_handled_by_id ?? course!.id },
               })
               .completions({
                 ...args,

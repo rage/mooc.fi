@@ -11,8 +11,6 @@ import {
   pointsNeeded,
   requiredByTier,
 } from "../../../../config/courseConfig"
-import prisma from "../../../../prisma"
-import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
 import { ExerciseCompletionPart, TierProgress } from "./interfaces"
 import {
@@ -24,54 +22,39 @@ const checkBAIProjectCompletion = async (
   user: User,
   { knex }: KafkaContext,
 ) => {
-  const completions = await knex("exercise_completion")
+  const exerciseCompletions = await knex("exercise_completion")
     .select("exercise_completion.completed")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
     .whereIn("exercise.custom_id", Object.keys(BAIbadge))
     .andWhere("exercise_completion.user_id", user.id)
     .andWhere("exercise_completion.completed", true)
 
-  return completions.length > 0
+  return exerciseCompletions.length > 0
 }
 
 interface CheckBAICompletion {
   user: User
   course: Course
-  isHandler?: boolean
   context: KafkaContext
 }
 
 export const checkBAICompletion = async ({
   user,
   course,
-  isHandler = false,
   context,
 }: CheckBAICompletion) => {
-  const { logger } = context
-  const handlerCourse = isHandler
-    ? course
-    : await prisma.course
-        .findUnique({ where: { id: course.id } })
-        .completions_handled_by()
+  const { logger, prisma } = context
 
-  if (!handlerCourse) {
-    logger?.error(
-      new DatabaseInputError(
-        `No handler course found for ${course.id}`,
-        course,
-      ),
-    )
-    return
-  }
+  const handler =
+    (await prisma.course
+      .findUnique({
+        where: {
+          id: course.id,
+        },
+      })
+      .completions_handled_by()) ?? course
 
-  // this is not needed if we hard code the course ids, as the function it's
-  // passed to only needs the ids
-  /*const tierCourses = (await prisma.course
-    .findOne({ where: { id: handlerCourse.id } })
-    .handles_completions_for())
-    .map(c => c.id)
-  */
-  logger?.info("Getting exercise completions")
+  logger.info("Getting exercise completions")
   const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses({
     user,
     courseIds: Object.values(BAItiers), // tierCourses,
@@ -81,10 +64,10 @@ export const checkBAICompletion = async ({
     [{ course_id, exercise_id, n_points }...] for all the tiers
   */
 
-  logger?.info("Getting project completion")
+  logger.info("Getting project completion")
   const projectCompletion = await checkBAIProjectCompletion(user, context)
 
-  logger?.info("Getting BAI course progress")
+  logger.info("Getting BAI course progress")
   const { progress: newProgress, highestTier } = getBAIProgress(
     projectCompletion,
     exerciseCompletionsForCourses,
@@ -92,7 +75,7 @@ export const checkBAICompletion = async ({
 
   const existingProgresses = await prisma.course
     .findUnique({
-      where: { id: handlerCourse.id },
+      where: { id: course.id },
     })
     .user_course_progresses({
       where: {
@@ -102,18 +85,18 @@ export const checkBAICompletion = async ({
     })
 
   if (existingProgresses.length < 1) {
-    logger?.info("No existing progress found, creating new...")
+    logger.info("No existing progress found, creating new...")
     await prisma.userCourseProgress.create({
       data: {
         course: {
-          connect: { id: handlerCourse.id },
+          connect: { id: course.id },
         },
         user: { connect: { id: user.id } },
         ...newProgress,
       },
     })
   } else {
-    logger?.info("Updating existing progress")
+    logger.info("Updating existing progress")
     await prisma.userCourseProgress.update({
       where: {
         id: existingProgresses[0].id,
@@ -134,13 +117,18 @@ export const checkBAICompletion = async ({
     return
   }
 
-  const highestTierCourseId = BAItiers[highestTier]
+  logger.info("Creating completion")
 
-  logger?.info("Creating completion")
+  const highestTierCourse = await prisma.course.findUnique({
+    where: {
+      id: BAItiers[highestTier],
+    },
+  })
+
   await createCompletion({
     user,
-    course_id: highestTierCourseId,
-    handlerCourse,
+    course: highestTierCourse ?? course,
+    handler,
     context,
     tier: highestTier,
   })

@@ -36,7 +36,7 @@ const getTranslator =
         const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
         if (!translation) {
-          console.warn(`WARNING: no translation for ${lng}:${key}`)
+          console.warn(`WARNING: no translation for ${lng}:${String(key)}`)
           return key
         }
 
@@ -50,12 +50,12 @@ const getTranslator =
         // cached value is supposed to depend on possible given variables
         args.reduce((acc, curr) => {
           if (typeof curr === "function") {
-            return `${acc}_${curr.name}`
+            return `${String(acc)}_${curr.name}`
           }
           if (typeof curr === "object") {
-            return `${acc}_${JSON.stringify(curr)}`
+            return `${String(acc)}_${JSON.stringify(curr)}`
           }
-          return `${acc}_${curr}`
+          return `${String(acc)}_${String(curr)}`
         }, ""),
     )
 
@@ -137,7 +137,7 @@ const substitute = <T extends Translation>({
 
   ;(replaceGroups || []).forEach((g: string) => {
     const key = g.slice(2, g.length - 2)
-    const variable = (variables || {})[key]
+    const variable = variables?.[key]
 
     if (variable === null || variable === undefined) {
       console.warn(

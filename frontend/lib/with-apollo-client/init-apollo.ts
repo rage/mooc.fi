@@ -1,5 +1,6 @@
 import { createUploadLink } from "apollo-upload-client"
 import fetch from "isomorphic-unfetch"
+import { isEqual, merge } from "lodash"
 import nookies from "nookies"
 
 import {
@@ -11,24 +12,17 @@ import {
 } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
-
-let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
+import { relayStylePagination } from "@apollo/client/utilities"
 
 const production = process.env.NODE_ENV === "production"
-const cypress = process.env.CYPRESS === "true"
+const isClient = typeof window !== "undefined"
 
-/* const cypress =
-  process.env.CYPRESS === "true" ||
-  (typeof window !== "undefined" &&
-    window.Cypress &&
-    window.Cypress.env("CYPRESS") === "true") */
-
-function create(initialState: any, originalAccessToken?: string) {
-  console.log("initialState...", initialState)
+// @ts-ignore: looking on how cache/accesstoken/state should be used
+function createApolloClient(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]
-    if (!accessToken && !process.browser) {
+    if (!accessToken && !isClient) {
       accessToken = originalAccessToken
     }
 
@@ -44,11 +38,7 @@ function create(initialState: any, originalAccessToken?: string) {
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
-    uri: cypress
-      ? "http://localhost:4001"
-      : production
-      ? "https://www.mooc.fi/api/"
-      : "http://localhost:4000",
+    uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
   })
@@ -77,15 +67,23 @@ function create(initialState: any, originalAccessToken?: string) {
           return defaultDataIdFromObject(object)
       }
     },
+    typePolicies: {
+      Query: {
+        fields: {
+          // fetchMore: merge incoming to existing edges
+          userCourseSettings: relayStylePagination(),
+        },
+      },
+    },
   })
 
   return new ApolloClient<NormalizedCacheObject>({
-    link: process.browser
+    link: isClient
       ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
       : authLink.concat(uploadLink),
-    cache: cache.restore(initialState || {}),
-    ssrMode: !process.browser, // isBrowser,
-    ssrForceFetchDelay: 100,
+    cache, // : cache.restore(initialState || {}),
+    ssrMode: !isClient, // isBrowser,
+    // ssrForceFetchDelay: 100,
     defaultOptions: {
       watchQuery: {
         fetchPolicy: "cache-first", //"no-cache",
@@ -100,27 +98,41 @@ function create(initialState: any, originalAccessToken?: string) {
 }
 
 let previousAccessToken: string | undefined = undefined
+let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
-export default function getApollo(initialState: any, accessToken?: string) {
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
-  if (!process.browser) {
-    return create(initialState, accessToken)
+export default function initApollo(initialState: any, accessToken?: string) {
+  if (!isClient) {
+    return createApolloClient(initialState, accessToken)
   }
 
   // Reuse client on the client-side
   // Also force new client if access token has changed because we don't want to risk accidentally
   // serving cached data from the previous user.
-  if (!apolloClient || accessToken !== previousAccessToken) {
-    apolloClient = create(initialState, accessToken)
-  }
+  let _apolloClient =
+    accessToken === previousAccessToken && apolloClient
+      ? apolloClient
+      : createApolloClient(initialState, accessToken)
 
   previousAccessToken = accessToken
 
-  return apolloClient
-}
+  if (initialState) {
+    const existingCache = _apolloClient.extract()
+    const data = merge(existingCache, initialState, {
+      arrayMerge: (destination: any, source: any) => [
+        ...source,
+        ...destination.filter((d: any) =>
+          source.every((s: any) => !isEqual(d, s)),
+        ),
+      ],
+    })
 
-export function initNewApollo(accessToken?: string) {
-  apolloClient = create(undefined, accessToken)
-  return apolloClient
+    _apolloClient.cache.restore(data)
+  }
+
+  // Make sure to create a new client for every server-side request so that data
+  // isn't shared between connections (which would be bad)
+
+  if (!apolloClient) apolloClient = _apolloClient
+
+  return _apolloClient
 }

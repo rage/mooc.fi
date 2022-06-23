@@ -1,6 +1,8 @@
 import { ChangeEvent, PropsWithChildren } from "react"
+
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+
 import { Tab, Tabs } from "@mui/material"
 
 interface ProfileTabsProps {
@@ -27,6 +29,7 @@ function ProfileTabs({
           label={t("tabCompletions")}
           id="user-profile-tab-1"
           aria-controls="user-profile-tab-1"
+          hidden={selected !== 1}
         />
         <Tab
           label={t("tabSettings")}

@@ -1,21 +1,20 @@
-import { Component as ReactComponent } from "react"
+import { Component as ReactComponent, PropsWithChildren } from "react"
 
 import AdminError from "/components/Dashboard/AdminError"
 import LoginStateContext from "/contexts/LoginStateContext"
-import {
-  isAdmin,
-  isSignedIn,
-} from "/lib/authentication"
+import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
 
 let prevContext: NextContext | null = null
 
 export default function withAdmin(Component: any) {
-  return class WithAdmin extends ReactComponent<{
-    admin: boolean
-    signedIn: boolean
-  }> {
+  return class WithAdmin extends ReactComponent<
+    PropsWithChildren<{
+      admin: boolean
+      signedIn: boolean
+    }>
+  > {
     static displayName = `withAdmin(${
       Component.displayName || Component.name || "AnonymousComponent"
     })`
@@ -50,7 +49,7 @@ export default function withAdmin(Component: any) {
       }
 
       // Logging out is communicated with a context change
-      if (!this.context.loggedIn) {
+      if (!(this.context as any).loggedIn) {
         if (prevContext) {
           redirect({
             context: prevContext,

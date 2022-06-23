@@ -1,11 +1,13 @@
 import { PropsWithChildren } from "react"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
-import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
+
 import ProfileSettings from "/components/Profile/ProfileSettings"
+import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import notEmpty from "/util/notEmpty"
+import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
+import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
+
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 
 interface TabPanelProps {
   index: any
@@ -39,15 +41,19 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
   return (
     <>
       <TabPanel index={0} value={tab}>
-        <ProfilePointsDisplay />
+        {tab !== 0 ? <div /> : <ProfilePointsDisplay />}
       </TabPanel>
       <TabPanel index={1} value={tab}>
-        <ProfileCompletionsDisplay
-          completions={completions?.filter(notEmpty) ?? []}
-        />
+        {tab !== 1 ? (
+          <div />
+        ) : (
+          <ProfileCompletionsDisplay
+            completions={completions?.filter(notEmpty) ?? []}
+          />
+        )}
       </TabPanel>
       <TabPanel index={2} value={tab}>
-        <ProfileSettings data={data} />
+        {tab !== 2 ? <div /> : <ProfileSettings data={data} />}
       </TabPanel>
     </>
   )

@@ -31,7 +31,9 @@ redisClient?.on("ready", () => {
   _logger.info("Redis connected")
   connected = true
 })
-redisClient?.connect()
+;(async () => {
+  await redisClient?.connect()
+})()
 
 const isPromise = <T>(value: any): value is Promise<T> => {
   return value && typeof value.then === "function"
@@ -130,8 +132,9 @@ export const subscriber =
 export const invalidate = async (prefix: string, key: string) => {
   redisClient?.del(`${prefix}:${key}`)
 }
-
-publisher?.connect()
-subscriber?.connect()
+;(async () => {
+  await publisher?.connect()
+  await subscriber?.connect()
+})()
 
 export default redisClient

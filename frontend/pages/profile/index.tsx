@@ -132,7 +132,7 @@ function Profile() {
         {(research_consent === null ||
           typeof research_consent === "undefined") && <ConsentNotification />}
         <ProfileTabs selected={tab} onChange={handleTabChange}>
-          <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
+          <StudentDataDisplay tab={tab} data={data?.currentUser ?? undefined} />
         </ProfileTabs>
       </Container>
     </>

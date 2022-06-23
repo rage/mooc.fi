@@ -143,32 +143,41 @@ function RegisterCompletionPage() {
   }
 
   useEffect(() => {
-    if (locale) {
-      axios
-        .get<{}, any>(
-          `${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`,
-        )
-        .then((res) => res.data)
-        .then((json) => {
-          setInstructions(json)
-        })
-        .catch((error) => {
-          setInstructions(error.response.data)
-        })
+    const abort = new AbortController()
 
-      axios({
-        method: "GET",
-        url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-        .then((res) => res.data)
-        .then((json: any) => {
-          setTiers(json.tierData)
-        })
+    const getInstructions = async () => {
+      try {
+        const { data } = await axios.get(
+          `${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`,
+          { signal: abort.signal },
+        )
+        setInstructions(data)
+      } catch (error: any) {
+        // setInstructions(error.response.data)
+      }
+
+      try {
+        const { data } = await axios.get(
+          `${BASE_URL}/api/completionTiers/${courseSlug}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            signal: abort.signal,
+          },
+        )
+        setTiers(data)
+      } catch (error: any) {
+        // setTiers(error.response.data)
+      }
     }
+
+    if (locale) {
+      getInstructions()
+    }
+
+    return () => abort.abort()
   }, [locale])
 
   useBreadcrumbs([

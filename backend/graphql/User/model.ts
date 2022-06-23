@@ -147,24 +147,13 @@ export const User = objectType({
                 user_id: parent.id,
               },
             },
-            completions_handled_by: {
-              select: {
-                user_course_progresses: {
-                  where: {
-                    user_id: parent.id,
-                  },
-                },
-              },
-            },
           },
         })
 
-        const progresses =
-          data?.completions_handled_by?.user_course_progresses ??
-          data?.user_course_progresses
-
         return (
-          progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
+          data?.user_course_progresses?.some(
+            (p) => (p?.extra as any)?.projectCompletion,
+          ) ?? false
         )
       },
     })

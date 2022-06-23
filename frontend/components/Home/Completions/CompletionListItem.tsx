@@ -112,24 +112,23 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
                 <strong>{`${t("completedDate")}${formatDateTime(
                   completion.completion_date,
                 )}`}</strong>
-                {completion.completion_language ? (
-                  <CardSubtitle>
-                    {`${t("completionLanguage")} ${
-                      mapLangToLanguage[
-                        completion?.completion_language ?? ""
-                      ] || completion.completion_language
-                    }`}
-                  </CardSubtitle>
-                ) : null}
-                {completion.tier !== null && completion.tier !== undefined ? (
-                  <CardSubtitle>
-                    {`${t("completionTier")} ${t(
-                      // @ts-ignore: tier
-                      `completionTier-${completion.tier}`,
-                    )}`}
-                  </CardSubtitle>
-                ) : null}
               </CardSubtitle>
+              {completion.completion_language ? (
+                <CardSubtitle>
+                  {`${t("completionLanguage")} ${
+                    mapLangToLanguage[completion?.completion_language ?? ""] ||
+                    completion.completion_language
+                  }`}
+                </CardSubtitle>
+              ) : null}
+              {completion.tier !== null && completion.tier !== undefined ? (
+                <CardSubtitle>
+                  {`${t("completionTier")} ${t(
+                    // @ts-ignore: tier
+                    `completionTier-${completion.tier}`,
+                  )}`}
+                </CardSubtitle>
+              ) : null}
             </Column>
           </Row>
           <Row>

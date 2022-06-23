@@ -47,14 +47,7 @@ const fetcUserFieldValues = async () => {
     if (p.user_id == null) continue
     if (i % 1000 == 0) logger.info(`${i}/${data.length}`)
     if (!p || p == null) {
-      logger.warning(
-        "not p:",
-        p,
-        "i is",
-        i,
-        "while data.length is",
-        data.length,
-      )
+      logger.warn("not p:", p, "i is", i, "while data.length is", data.length)
       continue
     }
     const existingUsers = await prisma.user.findMany({
@@ -109,7 +102,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   try {
     details = await tmc.getUserDetailsById(user_id)
   } catch (e: any) {
-    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    logger.error(new TMCError(`couldn't find user`, { user_id }, e))
     throw e
   }
 
@@ -132,10 +125,8 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   } catch (e: any) {
     logger.error(
       new DatabaseInputError(
-        `Failed to upsert user with upstream id ${
-          details.id
-        }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
-        details,
+        `Failed to upsert user`,
+        { details, prismaDetails },
         e,
       ),
     )

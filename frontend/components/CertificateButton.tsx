@@ -11,6 +11,7 @@ import { ProfileUserOverView_currentUser_completions_course } from "/static/type
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
+import { useRouter } from "next/router"
 
 import { gql, useMutation } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -132,19 +133,27 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
         status: "ERROR",
         error: action.payload,
       }
+    default:
+      return state
   }
-
-  return state
 }
 
 const CertificateButton = ({ course }: CertificateProps) => {
+  const { pathname } = useRouter()
   const t = useTranslator(CompletionsTranslations)
-  const { currentUser, updateUser } = useContext(LoginStateContext)
-  const { addAlert } = useContext(AlertContext)
 
+  const { currentUser, updateUser, admin } = useContext(LoginStateContext)
+  const { addAlert } = useContext(AlertContext)
   const [state, dispatch] = useReducer(reducer, initialState)
-  const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
-  const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+
+  useEffect(() => {
+    if (currentUser) {
+      setFirstName(currentUser.first_name ?? "")
+      setLastName(currentUser.last_name ?? "")
+    }
+  }, [currentUser, setFirstName, setLastName])
 
   const [updateUserName] = useMutation(updateUserNameMutation, {
     refetchQueries: [
@@ -158,6 +167,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
 
   useEffect(() => {
     dispatch({ type: "CHECK_CERTIFICATE" })
+
     checkCertificate(course.slug)
       .then((res: any) => {
         dispatch({
@@ -167,14 +177,17 @@ const CertificateButton = ({ course }: CertificateProps) => {
       })
       .catch((e: any) => {
         dispatch({ type: "ERROR", payload: e })
-        console.error("error?", e)
         addAlert({
           title: t("nameFormErrorTitle"),
           message: t("nameFormErrorCheckCertificate"),
           severity: "error",
+          onlyPages: [pathname],
+          timeout: 5000,
         })
         dispatch({ type: "RESET" })
       })
+
+    return () => {}
   }, [])
 
   // TODO: when admin is looking at a user, it's checking against the admin's name -- fix
@@ -201,10 +214,13 @@ const CertificateButton = ({ course }: CertificateProps) => {
           },
         })
         updateUser({
-          ...(currentUser || { email: "", id: "" }),
-          first_name: firstName,
-          last_name: lastName,
-        } as UserOverView_currentUser)
+          user: {
+            ...(currentUser || { email: "", id: "" }),
+            first_name: firstName,
+            last_name: lastName,
+          } as UserOverView_currentUser,
+          admin,
+        })
         dispatch({ type: "UPDATED_NAME", payload: res })
       }
 
@@ -220,6 +236,8 @@ const CertificateButton = ({ course }: CertificateProps) => {
         title: t("nameFormErrorTitle"),
         message: t("nameFormErrorSubmit"),
         severity: "error",
+        onlyPages: [pathname],
+        timeout: 5000,
       })
       dispatch({ type: "RESET" })
     }

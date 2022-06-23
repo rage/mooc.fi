@@ -1,14 +1,18 @@
-import styled from "@emotion/styled"
-import Grid from "@mui/material/Grid"
-import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
-import DoneIcon from "@mui/icons-material/Done"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import {
+  formatDateTime,
+  mapLangToLanguage,
+} from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
-import { useTranslator } from "/util/useTranslator"
+import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+import DoneIcon from "@mui/icons-material/Done"
+import Button from "@mui/material/Button"
+import Grid from "@mui/material/Grid"
+import Typography from "@mui/material/Typography"
 
 const Background = styled(ClickableDiv)`
   display: flex;
@@ -38,12 +42,6 @@ const RegistrationDetails = styled.div`
 
 interface CourseCardProps {
   completion: ProfileUserOverView_currentUser_completions
-}
-
-function formatDateTime(date: string) {
-  const dateToFormat = new Date(date)
-  const formattedDate = dateToFormat.toUTCString()
-  return formattedDate
 }
 
 function CompletedCourseCard(props: CourseCardProps) {
