@@ -1,5 +1,6 @@
-import { pick } from "lodash"
 import { createHash } from "crypto"
+
+import { pick } from "lodash"
 
 export default (user: any) =>
   createHash("sha512")

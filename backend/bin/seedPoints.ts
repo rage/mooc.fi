@@ -1,6 +1,5 @@
-import * as faker from "faker"
-
 import { Prisma } from "@prisma/client"
+import * as faker from "faker"
 
 import prisma from "../prisma"
 

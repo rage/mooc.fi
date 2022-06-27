@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react"
+
 import { BreadcrumbsTranslations } from "/translations/breadcrumbs"
 
 export interface Breadcrumb {
@@ -13,8 +14,8 @@ interface BreadcrumbContext {
   setBreadcrumbs: (crumbs: Breadcrumb[]) => void
 }
 
-export const BreadcrumbContext = createContext({
-  breadcrumbs: [] as Breadcrumb[],
+export const BreadcrumbContext = createContext<BreadcrumbContext>({
+  breadcrumbs: [],
   setBreadcrumbs: (_: Breadcrumb[]) => {},
 })
 

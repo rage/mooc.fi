@@ -1,3 +1,5 @@
+import HelpIcon from "@mui/icons-material/Help"
+import { Checkbox, FormControlLabel, Tooltip } from "@mui/material"
 import {
   FieldValues,
   Path,
@@ -5,12 +7,11 @@ import {
   UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
-import { FormControlLabel, Checkbox, Tooltip } from "@mui/material"
+
 import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import HelpIcon from "@mui/icons-material/Help"
 
 export function ControlledCheckbox<T>(props: ControlledFieldProps) {
   const { name, label, tip } = props

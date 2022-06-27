@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react"
 
+import styled from "@emotion/styled"
+
 import {
   CardTitle,
   H2NoBackground,
@@ -7,8 +9,6 @@ import {
 } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { mime } from "/util/imageUtils"
-
-import styled from "@emotion/styled"
 
 export const CenteredContent = styled.div`
   width: 80%;

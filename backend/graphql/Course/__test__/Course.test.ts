@@ -1,9 +1,9 @@
 import { createReadStream } from "fs"
-import { gql } from "graphql-request"
-import { omit, orderBy } from "lodash"
-import { mocked } from "jest-mock"
 
 import { Course } from "@prisma/client"
+import { gql } from "graphql-request"
+import { mocked } from "jest-mock"
+import { omit, orderBy } from "lodash"
 
 import KafkaProducer from "../../../services/kafkaProducer"
 import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"

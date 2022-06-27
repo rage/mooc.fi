@@ -1,5 +1,7 @@
-import { Container, Typography } from "@mui/material"
 import React from "react"
+
+import { Container, Typography } from "@mui/material"
+
 import withSignedIn from "/lib/with-signed-in"
 
 function ConnectionFailure() {

@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material"
+
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 

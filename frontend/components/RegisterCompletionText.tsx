@@ -1,8 +1,8 @@
-import RegisterCompletionTranslations from "/translations/register-completion"
-import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import { Button, Paper, Tooltip, Typography } from "@mui/material"
+
+import RegisterCompletionTranslations from "/translations/register-completion"
+import { useTranslator } from "/util/useTranslator"
 
 const LinkTooltip = styled(Tooltip)`
   background-color: white;

@@ -1,18 +1,19 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useContext } from "react"
+
+import styled from "@emotion/styled"
 import {
   FormControl,
-  InputLabel,
-  Input,
   FormHelperText,
+  Input,
+  InputLabel,
   Link,
 } from "@mui/material"
 
-import { signIn, isSignedIn } from "/lib/authentication"
-import LoginStateContext from "/contexts/LoginStateContext"
-import CommonTranslations from "/translations/common"
-import { useContext } from "react"
-import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { isSignedIn, signIn } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled.form`
@@ -93,7 +94,7 @@ function SignIn() {
           try {
             await signIn({ email, password, shallow: false })
             try {
-              await logInOrOut()
+              logInOrOut()
             } catch (e) {
               console.error("Login in or out failed")
             }

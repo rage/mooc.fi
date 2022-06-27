@@ -1,18 +1,20 @@
-import { StudyModuleFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
-import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
-import EditorContainer from "../EditorContainer"
+import { useEffect, useState } from "react"
+
+import styled from "@emotion/styled"
+import { Typography } from "@mui/material"
 import { useFormContext } from "react-hook-form"
+
+import EditorContainer from "../EditorContainer"
+import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
 import { FormSubtitle } from "/components/Dashboard/Editor2/Common"
 import {
-  ControlledTextField,
   ControlledHiddenField,
+  ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import styled from "@emotion/styled"
-import { useEffect, useState } from "react"
-import { Typography } from "@mui/material"
-import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
+import { StudyModuleFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
+import StudyModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
+import { useTranslator } from "/util/useTranslator"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;

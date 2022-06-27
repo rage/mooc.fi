@@ -1,9 +1,10 @@
+import Link from "next/link"
+
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { CompletionListItem } from "/components/Home/Completions"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-import Link from "next/link"
 
 interface CompletionsProps {
   completions: ProfileUserOverView_currentUser_completions[]

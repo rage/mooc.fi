@@ -1,6 +1,5 @@
-import { Request, Response } from "express"
-
 import { Completion, Course } from "@prisma/client"
+import { Request, Response } from "express"
 
 import { getUser } from "../util/server-functions"
 import { ApiContext } from "./"

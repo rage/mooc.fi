@@ -1,22 +1,24 @@
+import { useEffect, useState } from "react"
+
+import styled from "@emotion/styled"
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material"
 import { useFormContext } from "react-hook-form"
+
+import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
 } from "/static/types/generated/CourseEditorCourses"
-import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-} from "@mui/material"
-import styled from "@emotion/styled"
-import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
-import { useEffect, useState } from "react"
+import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled.div`
   display: flex;

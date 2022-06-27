@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 
+import { gql, useLazyQuery } from "@apollo/client"
+import { useRouter } from "next/router"
+
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
@@ -8,9 +11,6 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useRouter } from "next/router"
-
-import { gql, useLazyQuery } from "@apollo/client"
 
 const UserSearch = () => {
   const router = useRouter()

@@ -1,8 +1,3 @@
-import { createUploadLink } from "apollo-upload-client"
-import fetch from "isomorphic-unfetch"
-import { isEqual, merge } from "lodash"
-import nookies from "nookies"
-
 import {
   ApolloClient,
   ApolloLink,
@@ -13,6 +8,10 @@ import {
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
 import { relayStylePagination } from "@apollo/client/utilities"
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import { isEqual, merge } from "lodash"
+import nookies from "nookies"
 
 const production = process.env.NODE_ENV === "production"
 const isClient = typeof window !== "undefined"
@@ -102,7 +101,9 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 export default function initApollo(initialState: any, accessToken?: string) {
   if (!isClient) {
-    return createApolloClient(initialState, accessToken)
+    // Make sure to create a new client for every server-side request so that data
+    // isn't shared between connections (which would be bad)
+    return createApolloClient(undefined, accessToken)
   }
 
   // Reuse client on the client-side
@@ -128,9 +129,6 @@ export default function initApollo(initialState: any, accessToken?: string) {
 
     _apolloClient.cache.restore(data)
   }
-
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
 
   if (!apolloClient) apolloClient = _apolloClient
 

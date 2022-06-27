@@ -1,10 +1,9 @@
+import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import { NextPageContext as NextContext } from "next"
 import Router from "next/router"
 import nookies from "nookies"
 import TmcClient from "tmc-client-js"
-
-import { ApolloClient } from "@apollo/client"
 
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
@@ -58,7 +57,7 @@ export const signIn = async ({
         } else {
           window.history.back()
         }
-      }, 200)
+      }, 100)
     }
   } catch (e) {
     // Mostly to catch invalid JSON in the cookie
@@ -70,6 +69,7 @@ export const signIn = async ({
 }
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
+  console.log("signing out")
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"

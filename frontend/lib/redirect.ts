@@ -3,7 +3,7 @@ import Router from "next/router"
 import nookies from "nookies"
 
 export interface RedirectType {
-  context: NextContext
+  context?: NextContext
   target: string
   savePage?: boolean
   shallow?: boolean
@@ -15,7 +15,11 @@ export default function redirect({
   savePage = true,
   shallow = true,
 }: RedirectType) {
-  if (savePage && context?.pathname /* context?.req?.originalUrl */) {
+  if (context?.res?.headersSent) {
+    return
+  }
+
+  if (savePage && context?.pathname) {
     nookies.set(
       context,
       "redirect-back",
@@ -27,7 +31,7 @@ export default function redirect({
     )
   }
 
-  if (context?.res?.writeHead && context?.res?.end) {
+  if (context?.res && context.asPath !== target) {
     // server
     // 303: "See other"
     context.res.writeHead(307, { Location: target })

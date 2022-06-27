@@ -1,10 +1,9 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
-import Link from "next/link"
-import { useRouter } from "next/router"
-
 import styled from "@emotion/styled"
 import LaunchIcon from "@mui/icons-material/Launch"
 import { Button, Paper } from "@mui/material"
+import Link from "next/link"
+import { useRouter } from "next/router"
 
 import VerifiedUser from "./VerifiedUser"
 

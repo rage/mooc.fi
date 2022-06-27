@@ -1,4 +1,5 @@
 import { plugin } from "nexus"
+
 const newrelic = require("newrelic")
 
 export const newRelicPlugin = () =>

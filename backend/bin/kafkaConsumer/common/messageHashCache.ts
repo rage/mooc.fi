@@ -1,6 +1,5 @@
 // For preventing handling same messages multiple times
 // Stores hashes of latest CACHE_SIZE messages in an array
-
 import { createHash } from "crypto"
 
 const CACHE_SIZE = 1000

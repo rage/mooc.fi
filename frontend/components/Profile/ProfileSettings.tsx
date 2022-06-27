@@ -1,13 +1,13 @@
 import { ChangeEvent, useState } from "react"
 
+import { gql, useMutation } from "@apollo/client"
+
 import CustomSnackbar from "/components/CustomSnackbar"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { UserOverViewQuery } from "/pages/profile"
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-
-import { gql, useMutation } from "@apollo/client"
 
 const updateResearchConsentMutation = gql`
   mutation updateUpdateAccountResearchConsent($value: Boolean!) {

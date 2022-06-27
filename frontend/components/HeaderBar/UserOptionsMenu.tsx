@@ -1,27 +1,25 @@
-import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
-import { signOut } from "/lib/authentication"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+import { useContext } from "react"
+
+import { useApolloClient } from "@apollo/client"
 import Link from "next/link"
 import nookies from "nookies"
 
-import { useApolloClient } from "@apollo/client"
-
 import ProfileButton from "./ProfileButton"
+import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { signOut } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
-interface Props {
-  isSignedIn: boolean
-  logInOrOut: any
-}
-const UserOptionsMenu = (props: Props) => {
+const UserOptionsMenu = () => {
   const client = useApolloClient()
-  const { isSignedIn, logInOrOut } = props
   const t = useTranslator(CommonTranslations)
+  const { currentUser, logInOrOut, loggedIn } = useContext(LoginStateContext)
 
-  if (isSignedIn) {
+  if (loggedIn) {
     return (
       <>
-        <ProfileButton />
+        <ProfileButton currentUser={currentUser} />
         <HeaderMenuButton
           color="inherit"
           variant="text"

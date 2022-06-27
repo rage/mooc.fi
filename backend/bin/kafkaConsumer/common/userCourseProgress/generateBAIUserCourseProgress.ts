@@ -1,6 +1,5 @@
-import { range } from "lodash"
-
 import { Course, User } from "@prisma/client"
+import { range } from "lodash"
 
 import {
   BAIbadge,

@@ -1,8 +1,7 @@
+import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, nullable, stringArg } from "nexus"
-
-import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 

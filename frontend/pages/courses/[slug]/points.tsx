@@ -1,3 +1,6 @@
+import { gql, useQuery } from "@apollo/client"
+import { NextSeo } from "next-seo"
+
 import Container from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
@@ -12,9 +15,6 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { NextSeo } from "next-seo"
-
-import { gql, useQuery } from "@apollo/client"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {

@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react"
+
+import styled from "@emotion/styled"
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  MenuItem,
+} from "@mui/material"
+import { Field, useFormikContext } from "formik"
+
+import { StyledTextField } from "/components/Dashboard/Editor/common"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
 } from "/static/types/generated/CourseEditorCourses"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  MenuItem,
-  DialogActions,
-  Button,
-} from "@mui/material"
-import { Field, useFormikContext } from "formik"
-import { StyledTextField } from "/components/Dashboard/Editor/common"
-import { addDomain } from "/util/imageUtils"
 import CoursesTranslations from "/translations/courses"
-import styled from "@emotion/styled"
+import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled.div`

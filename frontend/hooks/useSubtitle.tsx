@@ -1,6 +1,7 @@
+import { useRouter } from "next/router"
+
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
 
 const useSubtitle = (subtitle?: string) => {
   const t = useTranslator(PagesTranslations)

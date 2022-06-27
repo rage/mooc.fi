@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client"
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
 import cors from "cors"
@@ -6,8 +7,6 @@ import { graphqlUploadExpress } from "graphql-upload"
 import { Knex } from "knex"
 import morgan from "morgan"
 import * as winston from "winston"
-
-import { PrismaClient } from "@prisma/client"
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"

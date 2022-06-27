@@ -11,10 +11,13 @@ export interface AppState {
     updateUser: (user: any) => void
   }
   alerts: {
-    data: Alert[]
+    alerts: Array<Alert>
     nextId: number
+    addAlert: (alert: Alert) => void
+    removeAlert: (alert: Alert) => void
   }
   breadcrumbs: {
-    data: Breadcrumb[]
+    breadcrumbs: Array<Breadcrumb>
+    setBreadcrumbs: (breadcrumbs: Array<Breadcrumb>) => void
   }
 }

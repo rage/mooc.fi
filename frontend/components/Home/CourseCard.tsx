@@ -1,12 +1,13 @@
 import styled from "@emotion/styled"
-import { Grid, Chip, Skeleton } from "@mui/material"
+import { Chip, Grid, Skeleton } from "@mui/material"
 import ReactGA from "react-ga"
+
 import CourseImage from "/components/CourseImage"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
-import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 

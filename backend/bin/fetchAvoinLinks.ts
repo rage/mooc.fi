@@ -1,8 +1,7 @@
+import { OpenUniversityRegistrationLink } from "@prisma/client"
 import axios from "axios"
 import { maxBy } from "lodash"
 import { DateTime } from "luxon"
-
-import { OpenUniversityRegistrationLink } from "@prisma/client"
 
 import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
 import prisma from "../prisma"

@@ -1,13 +1,12 @@
-import { Request, Response } from "express"
-import { chunk } from "lodash"
-import * as yup from "yup"
-
 import {
   Completion,
   Course,
   CourseTranslation,
   OpenUniversityRegistrationLink,
 } from "@prisma/client"
+import { Request, Response } from "express"
+import { chunk } from "lodash"
+import * as yup from "yup"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { err } from "../util/result"

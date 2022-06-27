@@ -1,13 +1,13 @@
+import { Server } from "http"
+
+import { PrismaClient, User } from "@prisma/client"
 import type { ApolloServer } from "apollo-server-express"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
-import { Server } from "http"
 import { knex, Knex } from "knex"
 import { nanoid } from "nanoid"
 import nock from "nock"
 import winston from "winston"
-
-import { PrismaClient, User } from "@prisma/client"
 
 import { DATABASE_URL, DB_USER, DEBUG, TMC_HOST } from "../config"
 import binPrisma from "../prisma"

@@ -1,71 +1,65 @@
-import { Component as ReactComponent, PropsWithChildren } from "react"
+import { PropsWithChildren, useContext } from "react"
+
+import { NextPageContext as NextContext } from "next"
+import { useRouter } from "next/router"
 
 import AdminError from "/components/Dashboard/AdminError"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
+import prependLocale from "/util/prependLocale"
 
-let prevContext: NextContext | null = null
+interface WithAdminProps {
+  admin: boolean
+  signedIn: boolean
+}
 
 export default function withAdmin(Component: any) {
-  return class WithAdmin extends ReactComponent<
-    PropsWithChildren<{
-      admin: boolean
-      signedIn: boolean
-    }>
-  > {
-    static displayName = `withAdmin(${
-      Component.displayName || Component.name || "AnonymousComponent"
-    })`
-    static contextType = LoginStateContext
-
-    static async getInitialProps(context: NextContext) {
-      const admin = isAdmin(context)
-      const signedIn = isSignedIn(context)
-
-      prevContext = context
-
-      if (!signedIn) {
-        redirect({
-          context,
-          target: "/sign-in",
-        })
-
-        return { signedIn: false }
-      }
-
-      return {
-        ...(await Component.getInitialProps?.(context)),
-        admin,
-        signedIn,
-      }
+  function WithAdmin(props: PropsWithChildren<WithAdminProps>) {
+    const { loggedIn, admin } = useContext(LoginStateContext)
+    const { locale } = useRouter()
+    // Needs to be before context check so that we don't redirect twice
+    if (!props.signedIn) {
+      return <div>Redirecting...</div>
     }
 
-    render() {
-      // Needs to be before context check so that we don't redirect twice
-      if (!this.props.signedIn) {
-        return <div>Redirecting...</div>
-      }
+    // Logging out is communicated with a context change
+    if (!loggedIn) {
+      redirect({
+        target: prependLocale("/sign-in", locale),
+      })
+      // We don't return here because when logging out it is better to keep the old content for a moment
+      // than flashing a message while the redirect happens
+      // return <div>You've logged out.</div>
+    }
 
-      // Logging out is communicated with a context change
-      if (!(this.context as any).loggedIn) {
-        if (prevContext) {
-          redirect({
-            context: prevContext,
-            target: "/sign-in",
-          })
-        }
-        // We don't return here because when logging out it is better to keep the old content for a moment
-        // than flashing a message while the redirect happens
-        // return <div>You've logged out.</div>
-      }
+    if (!admin) {
+      return <AdminError />
+    }
 
-      if (!this.props.admin) {
-        return <AdminError />
-      }
+    return <Component {...props}>{props.children}</Component>
+  }
 
-      return <Component {...this.props}>{this.props.children}</Component>
+  WithAdmin.displayName = `withAdmin(${
+    Component.displayName || Component.name || "AnonymousComponent"
+  })`
+  WithAdmin.getInitialProps = async (context: NextContext) => {
+    const admin = isAdmin(context)
+    const signedIn = isSignedIn(context)
+
+    if (!signedIn) {
+      redirect({
+        context,
+        target: prependLocale("/sign-in", context.locale),
+      })
+    }
+
+    return {
+      ...(await Component.getInitialProps?.(context)),
+      admin,
+      signedIn,
     }
   }
+
+  return WithAdmin
 }

@@ -1,11 +1,5 @@
 import { useContext } from "react"
 
-import { useActiveTab } from "/components/HeaderBar/Header"
-import LoginStateContext from "/contexts/LoginStateContext"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
-import Link from "next/link"
-
 import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
@@ -16,6 +10,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
+import Link from "next/link"
+
+import { useActiveTab } from "/components/HeaderBar/Header"
+import LoginStateContext from "/contexts/LoginStateContext"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
   active: any
@@ -58,10 +58,14 @@ const ButtonLabel = styled(Typography)<any>`
 `
 
 const UserMenu = () => {
-  const { admin } = useContext(LoginStateContext)
+  const { admin, loggedIn } = useContext(LoginStateContext)
   const t = useTranslator(CommonTranslations)
 
   const active = useActiveTab()
+
+  if (!loggedIn) {
+    return null
+  }
 
   return (
     <nav role="navigation">

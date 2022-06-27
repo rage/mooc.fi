@@ -1,5 +1,12 @@
 import { useContext, useEffect, useState } from "react"
 
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Paper, SvgIcon, Typography } from "@mui/material"
+import axios from "axios"
+import { NextSeo } from "next-seo"
+import { useRouter } from "next/router"
+
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
@@ -18,13 +25,6 @@ import { RegisterCompletionUserOverView as UserOverViewData } from "/static/type
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import axios from "axios"
-import { NextSeo } from "next-seo"
-import { useRouter } from "next/router"
-
-import { gql, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@mui/material"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"

@@ -1,11 +1,11 @@
-import { useContext } from "react"
+import styled from "@emotion/styled"
+import Link from "next/link"
 
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useActiveTab } from "/components/HeaderBar/Header"
-import LoginStateContext from "/contexts/LoginStateContext"
-import Link from "next/link"
-
-import styled from "@emotion/styled"
+import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
   active: any
@@ -21,13 +21,17 @@ const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
   border-bottom: ${(props) => (props.active ? "1px solid #3C8C7A" : "")};
 `
 
-const ProfileButton = () => {
-  const { currentUser } = useContext(LoginStateContext)
+interface ProfileButtonProps {
+  currentUser?: UserOverView_currentUser
+}
+
+const ProfileButton = ({ currentUser }: ProfileButtonProps) => {
+  const t = useTranslator(CommonTranslations)
   const active = useActiveTab()
 
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
-    : "Oma profiili"
+    : t("profile")
 
   return (
     <Link href={`/profile`} passHref prefetch={false}>

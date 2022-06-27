@@ -1,4 +1,4 @@
-import { objectType, inputObjectType } from "nexus"
+import { inputObjectType, objectType } from "nexus"
 
 export const UserCourseSettingsVisibility = objectType({
   name: "UserCourseSettingsVisibility",

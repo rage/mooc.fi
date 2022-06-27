@@ -1,3 +1,9 @@
+import styled from "@emotion/styled"
+import DoneIcon from "@mui/icons-material/Done"
+import Button from "@mui/material/Button"
+import Grid from "@mui/material/Grid"
+import Typography from "@mui/material/Typography"
+
 import {
   formatDateTime,
   mapLangToLanguage,
@@ -7,12 +13,6 @@ import { ProfileUserOverView_currentUser_completions } from "/static/types/gener
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-
-import styled from "@emotion/styled"
-import DoneIcon from "@mui/icons-material/Done"
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
-import Typography from "@mui/material/Typography"
 
 const Background = styled(ClickableDiv)`
   display: flex;

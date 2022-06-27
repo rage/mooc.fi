@@ -1,17 +1,18 @@
+import { omit } from "lodash"
+import { DateTime } from "luxon"
+
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import { omit } from "lodash"
 import {
-  CourseDetails_course_photo,
   CourseDetails_course,
+  CourseDetails_course_photo,
 } from "/static/types/generated/CourseDetails"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import {
-  CourseStatus,
   CourseCreateArg,
+  CourseStatus,
   CourseUpsertArg,
 } from "/static/types/generated/globalTypes"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import { DateTime } from "luxon"
 
 const isProduction = process.env.NODE_ENV === "production"
 

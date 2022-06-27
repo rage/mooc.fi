@@ -1,13 +1,8 @@
 import React from "react"
 
-import CollapseButton from "/components/Buttons/CollapseButton"
-import { CardTitle } from "/components/Text/headers"
-import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
-import notEmpty from "/util/notEmpty"
-import { sortBy } from "lodash"
-
 import styled from "@emotion/styled"
 import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
+import { sortBy } from "lodash"
 
 import {
   ActionType,
@@ -17,6 +12,10 @@ import {
 import Completion from "./Completion"
 import ExerciseList from "./ExerciseList"
 import ProgressEntry from "./ProgressEntry"
+import CollapseButton from "/components/Buttons/CollapseButton"
+import { CardTitle } from "/components/Text/headers"
+import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
+import notEmpty from "/util/notEmpty"
 
 interface CourseEntryProps {
   data?: UserSummary_user_user_course_summary

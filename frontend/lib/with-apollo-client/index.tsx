@@ -1,17 +1,15 @@
-import { getAccessToken, isAdmin, isSignedIn } from "/lib/authentication"
-import { NextPageContext } from "next"
-import { AppContext } from "next/app"
-
 import {
   ApolloClient,
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client"
+import { NextPageContext } from "next"
+import { AppContext } from "next/app"
 
 import fetchUserDetails from "./fetch-user-details"
 import initApollo from "./init-apollo"
+import { getAccessToken, isAdmin, isSignedIn } from "/lib/authentication"
 
-const util = require("util")
 interface Props {
   apollo: ApolloClient<NormalizedCacheObject>
   // Server side rendered state. Prevents queries from running again in the frontend.

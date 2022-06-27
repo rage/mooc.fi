@@ -1,5 +1,5 @@
-import { RegularContainer } from "/components/Container"
 import ConfirmEmail from "/components/ConfirmEmail"
+import { RegularContainer } from "/components/Container"
 import withSignedIn from "/lib/with-signed-in"
 
 const ConfirmEmailPage = () => {

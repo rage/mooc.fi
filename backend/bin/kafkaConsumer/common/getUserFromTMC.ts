@@ -1,5 +1,6 @@
-import TmcClient from "../../../services/tmc"
 import { PrismaClient } from "@prisma/client"
+
+import TmcClient from "../../../services/tmc"
 
 const getUserFromTMCAndCreate = async (
   prisma: PrismaClient,

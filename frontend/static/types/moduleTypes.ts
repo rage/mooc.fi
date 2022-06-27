@@ -1,5 +1,5 @@
-import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { AllModules_study_modules } from "/static/types/generated/AllModules"
 
 /*
   DO NOT DELETE - this is not an auto-generated file!

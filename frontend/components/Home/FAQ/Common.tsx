@@ -1,5 +1,5 @@
-import { Typography, Skeleton } from "@mui/material"
 import styled from "@emotion/styled"
+import { Skeleton, Typography } from "@mui/material"
 import { range } from "lodash"
 import dynamic from "next/dynamic"
 

@@ -1,9 +1,10 @@
+import * as path from "path"
+import { join } from "path"
+
 import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
-import * as path from "path"
-import { join } from "path"
 
 import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
 import * as types from "./graphql"

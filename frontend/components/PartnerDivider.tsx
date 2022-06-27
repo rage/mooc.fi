@@ -1,8 +1,8 @@
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const PartnerDividerText = styled((props: any) => (
   <Typography variant="h4" {...props} />

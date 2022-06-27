@@ -1,15 +1,5 @@
 import { useState } from "react"
 
-import CustomSnackbar from "/components/CustomSnackbar"
-import Spinner from "/components/Spinner"
-import { UpdateCourseMutation } from "/graphql/mutations/courses"
-import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
-import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
-import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import { updateCourse } from "/static/types/generated/updateCourse"
-import { omit } from "lodash"
-import Router from "next/router"
-
 import {
   gql,
   OperationVariables,
@@ -27,6 +17,16 @@ import {
   NativeSelect,
   TextField,
 } from "@mui/material"
+import { omit } from "lodash"
+import Router from "next/router"
+
+import CustomSnackbar from "/components/CustomSnackbar"
+import Spinner from "/components/Spinner"
+import { UpdateCourseMutation } from "/graphql/mutations/courses"
+import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
+import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
+import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import { updateCourse } from "/static/types/generated/updateCourse"
 
 export const AllCoursesDetails = gql`
   query AllCoursesDetails {

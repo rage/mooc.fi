@@ -1,18 +1,17 @@
 import { ReactElement, useContext } from "react"
 
-import LoginStateContext from "/contexts/LoginStateContext"
-import { useRouter } from "next/router"
-
 import styled from "@emotion/styled"
 import { AppBar, Toolbar } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import Slide from "@mui/material/Slide"
 import useScrollTrigger from "@mui/material/useScrollTrigger"
+import { useRouter } from "next/router"
 
 import LanguageSwitch from "./LanguageSwitch"
 import LoggedInUserMenu from "./LoggedInUserMenu"
 import MoocLogo from "./MoocLogo"
 import UserOptionsMenu from "./UserOptionsMenu"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 interface Props {
   window?: () => Window
@@ -53,7 +52,7 @@ export function useActiveTab() {
 }
 
 function Header() {
-  const { loggedIn, logInOrOut } = useContext(LoginStateContext)
+  const { loggedIn } = useContext(LoginStateContext)
 
   return (
     <>
@@ -67,8 +66,7 @@ function Header() {
                 {loggedIn && <LoggedInUserMenu />}
               </HiddenMenuContainer>
             </MenuContainer>
-            <UserOptionsMenu isSignedIn={loggedIn} logInOrOut={logInOrOut} />
-
+            <UserOptionsMenu />
             <LanguageSwitch />
           </StyledToolbar>
         </AppBar>

@@ -1,13 +1,13 @@
 import { PropsWithChildren } from "react"
 
-import ProfileSettings from "/components/Profile/ProfileSettings"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
-import notEmpty from "/util/notEmpty"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 
-import Box from "@mui/material/Box"
-import Typography from "@mui/material/Typography"
+import ProfileSettings from "/components/Profile/ProfileSettings"
+import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
+import notEmpty from "/util/notEmpty"
 
 interface TabPanelProps {
   index: any

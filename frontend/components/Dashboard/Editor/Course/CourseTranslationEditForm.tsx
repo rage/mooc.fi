@@ -1,13 +1,12 @@
+import styled from "@emotion/styled"
 import { Grid, Typography } from "@mui/material"
 import { FieldArray, useFormikContext } from "formik"
-import { CourseTranslationFormValues, CourseFormValues } from "./types"
 
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import CoursesTranslations from "/translations/courses"
-
-import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
-import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
 
 const AddTranslationNotice = styled(EntryContainer)`

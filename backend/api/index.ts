@@ -1,8 +1,7 @@
+import type { PrismaClient } from "@prisma/client"
 import { Router } from "express"
 import { Knex } from "knex"
 import * as winston from "winston"
-
-import type { PrismaClient } from "@prisma/client"
 
 import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
 import { CompletionController } from "./completions"

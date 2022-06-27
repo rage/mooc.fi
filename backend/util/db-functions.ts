@@ -1,6 +1,5 @@
-import { Knex } from "knex"
-
 import { Prisma } from "@prisma/client"
+import { Knex } from "knex"
 
 import { CIRCLECI } from "../config"
 import { isNullOrUndefined } from "./isNullOrUndefined"

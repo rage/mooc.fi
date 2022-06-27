@@ -1,4 +1,5 @@
 import { plugin } from "nexus"
+
 import { Context } from "../context"
 
 export const loggerPlugin = () =>

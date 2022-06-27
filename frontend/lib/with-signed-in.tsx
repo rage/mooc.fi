@@ -1,62 +1,60 @@
-import { Component as ReactComponent, PropsWithChildren } from "react"
+import { PropsWithChildren, useContext } from "react"
+
+import { NextPageContext as NextContext } from "next"
+import { useRouter } from "next/router"
 
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
+import prependLocale from "/util/prependLocale"
 
-let prevContext: NextContext | null = null
+interface WithSignedInProps {
+  signedIn: boolean
+}
 
-// TODO: might need to wrap in function to give redirect parameters (= shallow?)
 export default function withSignedIn(Component: any) {
-  return class WithSignedIn extends ReactComponent<
-    PropsWithChildren<{ signedIn: boolean }>
-  > {
-    static displayName = `withSignedIn(${
-      Component.name || Component.displayName || "AnonymousComponent"
-    })`
-    static contextType = LoginStateContext
+  function WithSignedIn(props: PropsWithChildren<WithSignedInProps>) {
+    const { loggedIn } = useContext(LoginStateContext)
+    const { locale } = useRouter()
+    const { signedIn } = props
 
-    static async getInitialProps(context: NextContext) {
-      const signedIn = isSignedIn(context)
-
-      prevContext = context
-
-      if (!signedIn) {
-        redirect({
-          context,
-          target: "/sign-in",
-        })
-
-        return {}
-      }
-
-      return {
-        ...(await Component.getInitialProps?.(context)),
-        signedIn,
-      }
+    if (!signedIn) {
+      return <div>Redirecting...</div>
     }
 
-    render() {
-      // Needs to be before context check so that we don't redirect twice
-      if (!this.props.signedIn) {
-        return <div>Redirecting...</div>
-      }
+    if (!loggedIn) {
+      redirect({
+        // ...(prevContext ? { context: prevContext } : {}),
+        // context: prevContext, // ?? (this.context as NextContext),
+        target: prependLocale("/sign-in", locale),
+      })
+      // We don't return here because when logging out it is better to keep the old content for a moment
+      // than flashing a message while the redirect happens
+      // return <div>You've logged out.</div>
+    }
+    return <Component {...props}>{props.children}</Component>
+  }
 
-      // Logging out is communicated with a context change
-      if (!(this.context as any).loggedIn) {
-        if (prevContext) {
-          redirect({
-            context: prevContext,
-            target: "/sign-in",
-          })
-        }
-        // We don't return here because when logging out it is better to keep the old content for a moment
-        // than flashing a message while the redirect happens
-        // return <div>You've logged out.</div>
-      }
+  WithSignedIn.displayName = `withSignedIn(${
+    Component.name || Component.displayName || "AnonymousComponent"
+  })`
+  WithSignedIn.getInitialProps = async (context: NextContext) => {
+    const signedIn = isSignedIn(context)
 
-      return <Component {...this.props}>{this.props.children}</Component>
+    if (!signedIn) {
+      redirect({
+        context,
+        target: prependLocale("/sign-in", context.locale),
+      })
+
+      return await Component.getInitialProps?.(context)
+    }
+
+    return {
+      ...(await Component.getInitialProps?.(context)),
+      signedIn,
     }
   }
+
+  return WithSignedIn
 }

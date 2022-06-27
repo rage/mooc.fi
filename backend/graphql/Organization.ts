@@ -1,5 +1,8 @@
-import { UserInputError } from "apollo-server-express"
 import { randomBytes } from "crypto"
+import { promisify } from "util"
+
+import { Prisma } from "@prisma/client"
+import { UserInputError } from "apollo-server-express"
 import {
   arg,
   booleanArg,
@@ -10,9 +13,6 @@ import {
   objectType,
   stringArg,
 } from "nexus"
-import { promisify } from "util"
-
-import { Prisma } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"

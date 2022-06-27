@@ -1,9 +1,12 @@
+import { Reducer } from "react"
+
+import { omit } from "lodash"
+
 import { Alert } from "/contexts/AlertContext"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import { AppState } from "/src/types"
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 import combineReducers from "/util/combineReducers"
-import { omit } from "lodash"
 
 const isNewAlert = (alert: Alert, alerts: Alert[]) => {
   const existingAlerts = alerts.map((a) =>
@@ -25,10 +28,13 @@ export const enum UserActionType {
   "LogInOrOut" = "logInOrOut",
 }
 
-const alertReducer = (state: AppState["alerts"], action: AlertAction) => {
+const alertReducer: Reducer<AppState["alerts"], AlertAction> = (
+  state,
+  action,
+) => {
   switch (action.type) {
-    case "addAlert":
-      if (!isNewAlert(action.payload, state.data)) {
+    case AlertActionType.AddAlert:
+      if (!isNewAlert(action.payload, state.alerts)) {
         return state
       }
 
@@ -37,43 +43,43 @@ const alertReducer = (state: AppState["alerts"], action: AlertAction) => {
 
       return {
         ...state,
-        data: [...state.data, newAlert],
+        alerts: [...state.alerts, newAlert],
         nextId,
       }
-    case "removeAlert":
+    case AlertActionType.RemoveAlert:
       return {
         ...state,
-        data: state.data.filter((alert) => alert.id !== action.payload.id),
+        alerts: state.alerts.filter((alert) => alert.id !== action.payload.id),
       }
     default:
       return state
   }
 }
 
-const breadcrumbReducer = (
-  state: AppState["breadcrumbs"],
-  action: BreadcrumbAction,
+const breadcrumbReducer: Reducer<AppState["breadcrumbs"], BreadcrumbAction> = (
+  state,
+  action,
 ) => {
   switch (action.type) {
-    case "setBreadcrumbs":
+    case BreadcrumbActionType.SetBreadcrumbs:
       return {
         ...state,
-        data: action.payload,
+        breadcrumbs: action.payload,
       }
     default:
       return state
   }
 }
 
-const userReducer = (state: AppState["user"], action: UserAction) => {
+const userReducer: Reducer<AppState["user"], UserAction> = (state, action) => {
   switch (action.type) {
-    case "updateUser":
+    case UserActionType.UpdateUser:
       return {
         ...state,
         currentUser: action.payload.user,
         admin: action.payload.admin || false,
       }
-    case "logInOrOut":
+    case UserActionType.LogInOrOut:
       return {
         ...state,
         loggedIn: !state.loggedIn,
