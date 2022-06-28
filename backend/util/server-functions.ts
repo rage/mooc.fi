@@ -144,8 +144,8 @@ export function getUser({ knex, logger }: ApiContext) {
 
 export function getOrganization({ knex }: ApiContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<Organization, any>> {
     const rawToken = req.get("Authorization")
 
