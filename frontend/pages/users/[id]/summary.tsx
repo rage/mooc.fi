@@ -1,5 +1,8 @@
 import React, { useEffect, useReducer, useState } from "react"
 
+import { gql, useQuery } from "@apollo/client"
+import { Paper } from "@mui/material"
+
 import Container from "/components/Container"
 import CollapseContext, {
   ActionType,
@@ -17,9 +20,6 @@ import withAdmin from "/lib/with-admin"
 import { UserSummary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
-
-import { gql, useQuery } from "@apollo/client"
-import { Paper } from "@mui/material"
 
 const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {

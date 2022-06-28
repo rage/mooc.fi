@@ -1,10 +1,11 @@
+// import { convertPagination } from "../../util/db-functions"
+
 import { ForbiddenError } from "apollo-server-express"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
-// import { convertPagination } from "../../util/db-functions"
 import { isAdmin, isOrganization, or } from "../../accessControl"
 import { buildUserSearch } from "../../util/db-functions"
 import { getCourseOrAliasBySlug } from "../../util/graphql-functions"

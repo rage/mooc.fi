@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
 import FilterMenu from "/components/FilterMenu"
@@ -18,10 +23,6 @@ import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
-
-import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 
 const Background = styled.section`
   background-color: #61baad;

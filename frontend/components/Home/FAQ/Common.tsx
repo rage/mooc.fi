@@ -1,7 +1,8 @@
-import { Typography, Skeleton } from "@mui/material"
-import styled from "@emotion/styled"
 import { range } from "lodash"
 import dynamic from "next/dynamic"
+
+import styled from "@emotion/styled"
+import { Skeleton, Typography } from "@mui/material"
 
 export const Background = styled.section`
   padding-top: 2em;

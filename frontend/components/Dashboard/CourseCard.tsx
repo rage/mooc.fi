@@ -1,14 +1,9 @@
 import { PropsWithChildren } from "react"
 
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import CourseImage from "/components/CourseImage"
-import { CardTitle } from "/components/Text/headers"
-import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import Link from "next/link"
 
 import styled from "@emotion/styled"
-import { Add as AddIcon, AddCircle as AddCircleIcon } from "@mui/icons-material"
+import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import {
@@ -20,6 +15,11 @@ import {
 } from "@mui/material"
 
 import CourseStatusBadge from "./CourseStatusBadge"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import CourseImage from "/components/CourseImage"
+import { CardTitle } from "/components/Text/headers"
+import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 
 const CardBase = styled.div<{ ishidden?: number }>`
   position: relative;

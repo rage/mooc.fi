@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
-import { Grid, Button } from "@mui/material"
-import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
+
 import styled from "@emotion/styled"
-import HomeTranslations from "/translations/home"
+import { Button, Grid } from "@mui/material"
+
+import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
+import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
 interface CourseListProps {

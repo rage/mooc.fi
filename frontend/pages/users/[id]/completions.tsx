@@ -1,13 +1,14 @@
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
-import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
+
 import Container from "/components/Container"
 import { Completions } from "/components/Home/Completions"
-import { useQueryParameter } from "/util/useQueryParameter"
-import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import withAdmin from "/lib/with-admin"
+import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withAdmin from "/lib/with-admin"
+import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const CompletionsIdUserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {

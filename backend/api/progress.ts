@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 
-import { Completion, Course } from "@prisma/client"
+import { Completion, Course, UserCourseProgress } from "@prisma/client"
 
 import { getUser } from "../util/server-functions"
 import { ApiContext } from "./"
@@ -162,7 +162,10 @@ export class ProgressController {
     const { user } = getUserResult.value
 
     const data = await knex
-      .select<any, any>("course_id", "extra")
+      .select<any, Pick<UserCourseProgress, "course_id" | "extra">[]>(
+        "course_id",
+        "extra",
+      )
       .from("user_course_progress")
       .where("user_course_progress.course_id", id)
       .andWhere("user_course_progress.user_id", user.id)
@@ -170,7 +173,7 @@ export class ProgressController {
     res.json({
       data: {
         course_id: id,
-        ...data[0]?.extra,
+        ...(data[0]?.extra as object),
       },
     })
   }

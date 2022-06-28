@@ -1,9 +1,11 @@
 import * as Yup from "yup"
+
+import { ApolloClient, DocumentNode } from "@apollo/client"
+
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { ApolloClient, DocumentNode } from "@apollo/client"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,

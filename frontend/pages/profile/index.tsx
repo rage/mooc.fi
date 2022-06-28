@@ -1,5 +1,9 @@
 import React, { ChangeEvent, useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
+import { gql, useQuery } from "@apollo/client"
+
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import ConsentNotification from "/components/Profile/ConsentNotification"
@@ -12,9 +16,6 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useRouter } from "next/router"
-
-import { gql, useQuery } from "@apollo/client"
 
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 

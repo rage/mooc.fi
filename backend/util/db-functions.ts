@@ -6,7 +6,8 @@ import { CIRCLECI } from "../config"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
 
-const flatten = (arr: any[]) => arr.reduce((acc, val) => acc.concat(val), [])
+const flatten = <T>(arr: T[]) =>
+  arr.reduce<T[]>((acc, val) => acc.concat(val), [])
 const titleCase = (s?: string) =>
   s && s.length > 0
     ? s.toLowerCase()[0].toUpperCase() + s.toLowerCase().slice(1)

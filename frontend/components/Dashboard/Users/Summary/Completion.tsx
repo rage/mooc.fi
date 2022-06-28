@@ -1,3 +1,5 @@
+import React from "react"
+
 import {
   Collapse,
   Paper,
@@ -7,15 +9,15 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material"
-import React from "react"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import { CompletionListItem } from "/components/Home/Completions"
-import { formatDateTime } from "/components/DataFormatFunctions"
+
 import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
 } from "./CollapseContext"
+import CollapseButton from "/components/Buttons/CollapseButton"
+import { formatDateTime } from "/components/DataFormatFunctions"
+import { CompletionListItem } from "/components/Home/Completions"
 import {
   UserSummary_user_user_course_summary_completion,
   UserSummary_user_user_course_summary_course,

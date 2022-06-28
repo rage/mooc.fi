@@ -1,5 +1,5 @@
-import * as yup from "yup"
 import { Message as KafkaMessage } from "node-rdkafka"
+import * as yup from "yup"
 
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 

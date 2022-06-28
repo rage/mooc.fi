@@ -1,4 +1,5 @@
 import { List } from "@mui/material"
+
 import CompletionCard from "./CompletionCard"
 import CompletionPaginator from "./CompletionPaginator"
 import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"

@@ -1,5 +1,7 @@
 import { useContext } from "react"
 
+import Router from "next/router"
+
 import { RegularContainer } from "/components/Container"
 import CreateAccountForm from "/components/CreateAccountForm"
 import AlertContext from "/contexts/AlertContext"
@@ -8,7 +10,6 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedOut from "/lib/with-signed-out"
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
-import Router from "next/router"
 
 const SignUpPage = () => {
   const t = useTranslator(SignUpTranslations)

@@ -125,5 +125,5 @@ export const saveToDatabase = async (
     MessageType.PROGRESS_UPDATED,
   )
 
-  return ok("Saved to DB succesfully")
+  return ok("Saved to DB successfully")
 }

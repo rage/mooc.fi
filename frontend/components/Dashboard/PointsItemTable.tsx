@@ -1,5 +1,5 @@
-import { formattedGroupPointsDictionary } from "/util/formatPointsData"
 import PointsListItemTableChart from "/components/Dashboard/PointsListItemTableChart"
+import { formattedGroupPointsDictionary } from "/util/formatPointsData"
 
 interface TableProps {
   studentPoints: formattedGroupPointsDictionary["groups"]

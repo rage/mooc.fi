@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useState } from "react"
 
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+
+import { EditorContext } from "../EditorContext"
+import CourseEditForm from "./CourseEditForm"
+import { fromCourseForm, toCourseForm } from "./serialization"
+import { CourseFormValues } from "./types"
 import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
@@ -24,14 +32,6 @@ import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
-
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
-
-import { EditorContext } from "../EditorContext"
-import CourseEditForm from "./CourseEditForm"
-import { fromCourseForm, toCourseForm } from "./serialization"
-import { CourseFormValues } from "./types"
 
 interface CourseEditorProps {
   course?: CourseDetails_course

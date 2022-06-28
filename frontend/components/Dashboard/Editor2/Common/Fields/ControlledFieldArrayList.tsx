@@ -1,8 +1,3 @@
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
-import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
-import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
 import {
   FieldArrayWithId,
@@ -16,6 +11,12 @@ import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { FormGroup, Typography } from "@mui/material"
+
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
+import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
 
 export const ArrayList = styled.ul`
   list-style: none;

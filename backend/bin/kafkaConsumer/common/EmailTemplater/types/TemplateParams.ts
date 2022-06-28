@@ -1,4 +1,4 @@
-import { PrismaClient, EmailTemplate, User } from "@prisma/client"
+import { EmailTemplate, PrismaClient, User } from "@prisma/client"
 
 export type TemplateParams = {
   emailTemplate: EmailTemplate

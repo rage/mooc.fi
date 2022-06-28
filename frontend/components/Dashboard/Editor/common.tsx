@@ -1,7 +1,6 @@
 import { PropsWithChildren, useContext } from "react"
 
-import AnchorContext from "/contexts/AnchorContext"
-import { Field, useFormikContext } from "formik"
+import { Field, FieldProps, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
 
 import styled from "@emotion/styled"
@@ -15,6 +14,8 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material"
+
+import AnchorContext from "/contexts/AnchorContext"
 
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
@@ -44,7 +45,7 @@ export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
   }
 
   &:focus {
-    bordercolor: "#3f51b5";
+    border-color: "#3f51b5";
   }
 
   @media (hover: none) {
@@ -95,7 +96,7 @@ export const CheckboxField = ({
       type="checkbox"
       name={id}
       checked={checked}
-      component={(props: any) => (
+      component={(props: CheckboxWithLabelProps) => (
         <CheckboxWithLabel
           onChange={(e) => setFieldValue(id, e.target.checked)}
           {...props}
@@ -118,28 +119,31 @@ export const CheckboxWithLabel = ({
 
 interface EnumeratingAnchorProps {
   id: string
-  tab: number
+  tab?: number
 }
 
-export const EnumeratingAnchor: React.FC<any> = ({
+export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({
   id,
-  tab,
-}: EnumeratingAnchorProps) => {
+  tab = 0,
+}) => {
   const { addAnchor } = useContext(AnchorContext)
   addAnchor(id, tab)
 
   return <AdjustingAnchorLink id={id} />
 }
 
-export const StyledFieldWithAnchor: React.FC<any> = ({
+interface StyledFieldWithAnchorProps extends Partial<FieldProps> {
+  name: string
+  tab?: number
+  error?: any
+  [key: string]: any
+}
+
+export const StyledFieldWithAnchor: React.FC<StyledFieldWithAnchorProps> = ({
   name,
   tab = 0,
   error,
   ...props
-}: {
-  name: string
-  tab: number
-  error?: any
 }) => {
   return (
     <>

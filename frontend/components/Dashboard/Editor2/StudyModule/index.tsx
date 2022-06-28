@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useState } from "react"
 
+import Router from "next/router"
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+
+import { EditorContext } from "../EditorContext"
+import studyModuleEditSchema from "./form-validation"
+import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
+import StudyModuleEditForm from "./StudyModuleEditForm"
+import { StudyModuleFormValues } from "./types"
 import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
@@ -19,16 +29,6 @@ import { StudyModuleDetails_study_module } from "/static/types/generated/StudyMo
 import ModulesTranslations from "/translations/study-modules"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
-import Router from "next/router"
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
-
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
-
-import { EditorContext } from "../EditorContext"
-import studyModuleEditSchema from "./form-validation"
-import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
-import StudyModuleEditForm from "./StudyModuleEditForm"
-import { StudyModuleFormValues } from "./types"
 
 const StudyModuleEdit = ({
   module,

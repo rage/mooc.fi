@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import Typography from "@mui/material/Typography"
+
 import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
 import Spinner from "/components/Spinner"
@@ -14,10 +19,6 @@ import MDX_Windows from "/static/md_pages/vscode_installation_Windows_fi.mdx"
 import InstallationTranslations from "/translations/installation"
 import getUserOS, { userOsType } from "/util/getUserOS"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
-
-import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
 
 const Background = styled.section`
   padding-top: 2em;

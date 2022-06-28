@@ -1,5 +1,3 @@
-import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
@@ -10,6 +8,9 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(FontAwesomeIcon)`
   color: white;

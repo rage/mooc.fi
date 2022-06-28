@@ -70,8 +70,8 @@ export function requireAdmin(ctx: ApiContext) {
 
 export function getUser({ knex, logger }: ApiContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<GetUserReturn, any>> {
     const rawToken = req.get("Authorization")
 
@@ -146,8 +146,8 @@ export function getUser({ knex, logger }: ApiContext) {
 
 export function getOrganization({ knex }: ApiContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<Organization, any>> {
     const rawToken = req.get("Authorization")
 

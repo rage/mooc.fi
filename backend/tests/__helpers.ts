@@ -1,7 +1,8 @@
+import { Server } from "http"
+
 import type { ApolloServer } from "apollo-server-express"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
-import { Server } from "http"
 import { knex, Knex } from "knex"
 import { nanoid } from "nanoid"
 import nock from "nock"

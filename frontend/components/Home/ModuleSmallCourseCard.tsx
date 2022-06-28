@@ -1,3 +1,8 @@
+import ReactGA from "react-ga"
+
+import styled from "@emotion/styled"
+import { Grid, Skeleton, Typography } from "@mui/material"
+
 import {
   ModuleCardText,
   ModuleCardTitle,
@@ -7,10 +12,6 @@ import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
-import ReactGA from "react-ga"
-
-import styled from "@emotion/styled"
-import { Grid, Skeleton, Typography } from "@mui/material"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;

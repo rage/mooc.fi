@@ -1,9 +1,10 @@
+import { promisify } from "util"
+
 import compression from "compression"
 // import * as winston from "winston"
 import express from "express"
 import morgan from "morgan"
 import * as Kafka from "node-rdkafka"
-import { promisify } from "util"
 
 import {
   KAFKA_BRIDGE_SECRET,

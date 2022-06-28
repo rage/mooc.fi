@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client"
+
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import prisma from "../prisma"
@@ -24,8 +26,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
-  // FIXME: type
-  const details: any = {
+  const details: Omit<Prisma.OrganizationCreateInput, "secret_key"> = {
     slug: org.slug,
     verified_at: org.verified_at,
     verified: org.verified || false,
@@ -89,13 +90,16 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   }
 }
 
-// FIXME: type
-const detailsWithSecret = async (details: any) => {
-  details.secret_key = await generateSecret()
-  return details
+const detailsWithSecret = async (
+  details: Omit<Prisma.OrganizationCreateInput, "secret_key">,
+): Promise<Prisma.OrganizationCreateInput> => {
+  return {
+    ...details,
+    secret_key: await generateSecret(),
+  }
 }
 
-const getUserFromTmc = async (user_id: Number) => {
+const getUserFromTmc = async (user_id: number) => {
   let details: UserInfo | undefined
 
   try {
@@ -113,6 +117,7 @@ const getUserFromTmc = async (user_id: Number) => {
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
+
   return await prisma.user.upsert({
     where: { upstream_id: details.id },
     create: prismaDetails,

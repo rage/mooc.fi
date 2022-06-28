@@ -1,7 +1,9 @@
+import React from "react"
+
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { Alert } from "@mui/material"
-import React from "react"
+
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"

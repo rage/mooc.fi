@@ -1,5 +1,5 @@
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 export const getPromotedCourses = (
   modules: AllModules_study_modules_with_courses[],

@@ -1,5 +1,9 @@
 import { useState } from "react"
 
+import { gql, useApolloClient, useQuery } from "@apollo/client"
+import { CircularProgress, Grid } from "@mui/material"
+import Button from "@mui/material/Button"
+
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -8,10 +12,6 @@ import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCours
 import CommonTranslations from "/translations/common"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-
-import { gql, useApolloClient, useQuery } from "@apollo/client"
-import { CircularProgress, Grid } from "@mui/material"
-import Button from "@mui/material/Button"
 
 const UserPage = () => {
   const id = useQueryParameter("id")

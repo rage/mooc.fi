@@ -1,10 +1,10 @@
+import styled from "@emotion/styled"
+import { Typography, TypographyProps } from "@mui/material"
+
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import styled from "@emotion/styled"
-import { Typography } from "@mui/material"
-
-const PartnerDividerText = styled((props: any) => (
+const PartnerDividerText = styled((props: Partial<TypographyProps>) => (
   <Typography variant="h4" {...props} />
 ))`
   display: block;

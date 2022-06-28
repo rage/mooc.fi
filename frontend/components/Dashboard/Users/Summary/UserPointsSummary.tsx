@@ -1,18 +1,22 @@
-import CourseEntry from "./CourseEntry"
+import { useState } from "react"
+
 import { sortBy } from "lodash"
-import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
+
+import BuildIcon from "@mui/icons-material/Build"
+import { Button, Dialog, Paper } from "@mui/material"
+
+import CourseEntry from "./CourseEntry"
+import CollapseButton from "/components/Buttons/CollapseButton"
 import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
-import { Paper, Button, Dialog } from "@mui/material"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import { useTranslator } from "/util/useTranslator"
-import CommonTranslations from "/translations/common"
-import BuildIcon from "@mui/icons-material/Build"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
-import { useState } from "react"
+import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+
 interface UserPointsSummaryProps {
   data?: UserSummary_user_user_course_summary[]
   search?: string

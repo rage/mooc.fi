@@ -1,8 +1,7 @@
+import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
 import LUT from "/static/md_pages/lut_module.mdx"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
-
-import Module from "./ModuleDisplay/ModuleDisplay"
 
 const moduleColors: Array<{
   backgroundColor: string

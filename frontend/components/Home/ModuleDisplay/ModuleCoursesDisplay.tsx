@@ -1,3 +1,5 @@
+import styled from "@emotion/styled"
+
 import ModuleCoursesListing, {
   ThreeOrLessCoursesListing,
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"
@@ -6,8 +8,6 @@ import { AllCourses_courses as CourseData } from "/static/types/generated/AllCou
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
-
-import styled from "@emotion/styled"
 
 const CoursesListContainer = styled.div`
   margin: 2rem 2em 2em 2rem;

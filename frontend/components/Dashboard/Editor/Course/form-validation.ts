@@ -1,6 +1,3 @@
-import { FormValues } from "/components/Dashboard/Editor/types"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { DateTime } from "luxon"
 import * as Yup from "yup"
 
@@ -13,6 +10,9 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
+import { FormValues } from "/components/Dashboard/Editor/types"
+import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,

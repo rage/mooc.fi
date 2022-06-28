@@ -1,8 +1,10 @@
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { FieldArray } from "formik"
+
 import styled from "@emotion/styled"
 import { Button, ButtonGroup } from "@mui/material"
+
 import { initialTranslation } from "./form-validation"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

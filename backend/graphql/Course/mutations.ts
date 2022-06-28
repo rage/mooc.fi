@@ -432,5 +432,8 @@ const createMutation = async <T extends { id?: string | null } | null>({
   }
 }
 
-const hasId = (data: any): data is any & { id: string | null } => !!data?.id
-const hasNotId = (data: any) => !hasId(data)
+const hasId = <T extends { id?: string | null } | null>(
+  data: T,
+): data is any & { id: string | null } => Boolean(data?.id)
+const hasNotId = <T extends { id?: string | null } | null>(data: T) =>
+  !hasId(data)

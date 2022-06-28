@@ -26,7 +26,7 @@ const logCommit =
     }
   }
 
-interface CreateKafkaConsumer {
+interface CreateKafkaConsumerArgs {
   logger: winston.Logger
   prisma?: PrismaClient
 }
@@ -34,7 +34,7 @@ interface CreateKafkaConsumer {
 export const createKafkaConsumer = ({
   logger,
   prisma,
-}: CreateKafkaConsumer) => {
+}: CreateKafkaConsumerArgs) => {
   let consumerGroup = KAFKA_CONSUMER_GROUP ?? "kafka"
   if (KAFKA_TOP_OF_THE_QUEUE) {
     consumerGroup = v4()

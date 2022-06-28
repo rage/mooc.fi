@@ -1,7 +1,7 @@
+import { FieldController } from "./FieldController"
+import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
-import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
-import { FieldController } from "./FieldController"
 
 export interface ControlledImageInputProps extends ControlledFieldProps {
   onImageLoad: (_: string | ArrayBuffer | null) => void
