@@ -1,26 +1,28 @@
+import { useCallback } from "react"
+
+import styled from "@emotion/styled"
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  List,
+  ListItem,
+} from "@mui/material"
+import {
+  Path,
+  PathValue,
+  UnpackNestedValue,
+  useFormContext,
+} from "react-hook-form"
+
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import styled from "@emotion/styled"
-import {
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  List,
-  ListItem,
-} from "@mui/material"
-import { useCallback } from "react"
-import {
-  useFormContext,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-} from "react-hook-form"
 
 const ModuleList = styled(List)`
   padding: 0px;

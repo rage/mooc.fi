@@ -1,3 +1,7 @@
+import styled from "@emotion/styled"
+import { Chip, Grid, Skeleton } from "@mui/material"
+import ReactGA from "react-ga"
+
 import CourseImage from "/components/CourseImage"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
@@ -6,9 +10,6 @@ import { CardText } from "/components/Text/paragraphs"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
-import { Grid, Chip, Skeleton } from "@mui/material"
-import ReactGA from "react-ga"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;

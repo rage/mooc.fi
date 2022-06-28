@@ -1,3 +1,6 @@
+import { Message as KafkaMessage } from "node-rdkafka"
+import * as yup from "yup"
+
 import { Result } from "../../../util/result"
 import {
   DatabaseInputError,
@@ -6,8 +9,6 @@ import {
 } from "../../lib/errors"
 import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
-import { Message as KafkaMessage } from "node-rdkafka"
-import * as yup from "yup"
 
 // Each partition has their own commit counter
 let commitCounterMap = new Map<number, number>()

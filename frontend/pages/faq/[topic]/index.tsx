@@ -1,3 +1,5 @@
+import { NextSeo } from "next-seo"
+
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useFAQPage } from "/hooks/useFAQPage"
@@ -5,7 +7,6 @@ import useSubtitle from "/hooks/useSubtitle"
 import FAQTranslations from "/translations/faq"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { NextSeo } from "next-seo"
 
 export default function FAQTopic() {
   const t = useTranslator(FAQTranslations)

@@ -1,3 +1,9 @@
+import type { PrismaClient } from "@prisma/client"
+import * as Kafka from "node-rdkafka"
+import { ConsumerGlobalConfig } from "node-rdkafka"
+import { v4 } from "uuid"
+import winston from "winston"
+
 import {
   KAFKA_CONSUMER_GROUP,
   KAFKA_DEBUG_CONTEXTS,
@@ -7,11 +13,6 @@ import {
 import { attachPrismaEvents } from "../../../util/prismaLogger"
 import { KafkaError } from "../../lib/errors"
 import checkConnectionInInterval from "./connectedChecker"
-import type { PrismaClient } from "@prisma/client"
-import * as Kafka from "node-rdkafka"
-import { ConsumerGlobalConfig } from "node-rdkafka"
-import { v4 } from "uuid"
-import winston from "winston"
 
 const logCommit =
   (logger: winston.Logger) => (err: any, topicPartitions: any) => {

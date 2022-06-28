@@ -1,6 +1,7 @@
-import { UserCourseSettingsVisibilityFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { Autocomplete, Chip, TextField } from "@mui/material"
-import { useFormContext, Controller } from "react-hook-form"
+import { Controller, useFormContext } from "react-hook-form"
+
+import { UserCourseSettingsVisibilityFormValues } from "/components/Dashboard/Editor2/Course/types"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,

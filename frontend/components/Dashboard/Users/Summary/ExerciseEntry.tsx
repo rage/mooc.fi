@@ -1,3 +1,7 @@
+import React from "react"
+
+import { Chip, Collapse, TableCell, TableRow } from "@mui/material"
+
 import { useCollapseContext } from "./CollapseContext"
 import {
   UserSummary_user_user_course_summary_course_exercises,
@@ -7,8 +11,6 @@ import {
 import ProfileTranslations from "/translations/profile"
 // import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
-import { Chip, Collapse, TableCell, TableRow } from "@mui/material"
-import React from "react"
 
 interface ExerciseEntryProps {
   exercise: UserSummary_user_user_course_summary_course_exercises & {

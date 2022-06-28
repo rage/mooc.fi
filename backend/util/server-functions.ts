@@ -1,10 +1,11 @@
+import { CourseOwnership, Organization, User } from "@prisma/client"
+import { Request, Response } from "express"
+
 import { ApiContext } from "../api"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { err, ok, Result } from "../util/result"
-import { CourseOwnership, Organization, User } from "@prisma/client"
-import { Request, Response } from "express"
 
 interface GetUserReturn {
   user: User

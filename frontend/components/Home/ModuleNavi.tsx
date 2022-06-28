@@ -1,10 +1,11 @@
+import styled from "@emotion/styled"
+
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
 import { H2Background } from "/components/Text/headers"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
 
 const NaviArea = styled.section`
   margin-bottom: 5em;

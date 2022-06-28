@@ -1,3 +1,5 @@
+import { range } from "lodash"
+
 import {
   BAIexercises,
   BAITierNames,
@@ -7,7 +9,6 @@ import {
   requiredByTier,
 } from "../../../../../config/courseConfig"
 import { ExerciseCompletionPart, TierProgress } from "../interfaces"
-import { range } from "lodash"
 
 interface TierProgressGroup {
   group: string

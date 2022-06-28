@@ -1,12 +1,14 @@
+import { useState } from "react"
+
+import { ApolloClient, gql, useApolloClient } from "@apollo/client"
+import styled from "@emotion/styled"
+import { utils, type WorkBook, writeFile } from "xlsx"
+
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_userCourseProgresses,
 } from "/static/types/generated/ExportUserCourseProgesses"
-import { ApolloClient, gql, useApolloClient } from "@apollo/client"
-import styled from "@emotion/styled"
-import { useState } from "react"
-import { utils, type WorkBook, writeFile } from "xlsx"
 
 const PointsExportButtonContainer = styled.div`
   margin-bottom: 1rem;

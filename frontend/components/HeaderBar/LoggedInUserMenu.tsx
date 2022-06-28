@@ -1,7 +1,5 @@
-import { useActiveTab } from "/components/HeaderBar/Header"
-import LoginStateContext from "/contexts/LoginStateContext"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+import { useContext } from "react"
+
 import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
@@ -13,7 +11,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import Link from "next/link"
-import { useContext } from "react"
+
+import { useActiveTab } from "/components/HeaderBar/Header"
+import LoginStateContext from "/contexts/LoginStateContext"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
   active: any

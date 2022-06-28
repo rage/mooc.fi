@@ -1,8 +1,9 @@
+import { Completion, User } from "@prisma/client"
+
 import prisma from "../prisma"
 import knex from "../services/knex"
 import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/BAI/completion"
 import sentryLogger from "./lib/logger"
-import { Completion, User } from "@prisma/client"
 
 const logger = sentryLogger({ service: "update-bai-completion-tiers" })
 

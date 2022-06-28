@@ -1,13 +1,15 @@
+import React from "react"
+
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
+import { Alert } from "@mui/material"
+
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 import Spinner from "/components/Spinner"
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { Alert } from "@mui/material"
-import React from "react"
 
 export const ConnectionTestQuery = gql`
   query ConnectionTest {

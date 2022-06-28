@@ -1,3 +1,8 @@
+import React, { useMemo } from "react"
+
+import { useQuery } from "@apollo/client"
+import { useRouter } from "next/router"
+
 import CourseHighlights from "./CourseHighlights"
 import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
@@ -12,9 +17,6 @@ import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
-import { useQuery } from "@apollo/client"
-import { useRouter } from "next/router"
-import React, { useMemo } from "react"
 
 // const highlightsBanner = "/static/images/backgroundPattern.svg"
 

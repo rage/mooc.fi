@@ -1,10 +1,3 @@
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import CommonTranslations from "/translations/common"
-import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/util/useTranslator"
 import { MenuItem, TextField } from "@mui/material"
 import {
   Path,
@@ -12,6 +5,14 @@ import {
   UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
+
+import {
+  ControlledFieldProps,
+  FieldController,
+} from "/components/Dashboard/Editor2/Common/Fields"
+import CommonTranslations from "/translations/common"
+import flattenKeys from "/util/flattenKeys"
+import { useTranslator } from "/util/useTranslator"
 
 interface ControlledSelectProps<T> extends ControlledFieldProps {
   items: T[]

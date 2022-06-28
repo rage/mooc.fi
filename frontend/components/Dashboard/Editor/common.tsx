@@ -1,4 +1,5 @@
-import AnchorContext from "/contexts/AnchorContext"
+import { PropsWithChildren, useContext } from "react"
+
 import styled from "@emotion/styled"
 import {
   Checkbox,
@@ -12,7 +13,8 @@ import {
 } from "@mui/material"
 import { Field, FieldProps, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
-import { PropsWithChildren, useContext } from "react"
+
+import AnchorContext from "/contexts/AnchorContext"
 
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;

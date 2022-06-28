@@ -1,10 +1,11 @@
+import { ApolloClient, DocumentNode } from "@apollo/client"
+import * as Yup from "yup"
+
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
-import { ApolloClient, DocumentNode } from "@apollo/client"
-import * as Yup from "yup"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   _id: undefined,

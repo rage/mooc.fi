@@ -1,3 +1,13 @@
+import { useEffect } from "react"
+
+import { gql, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+import { useRouter } from "next/router"
+
 import { WideContainer } from "/components/Container"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
@@ -11,14 +21,6 @@ import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { gql, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import Paper from "@mui/material/Paper"
-import Typography from "@mui/material/Typography"
-import { NextSeo } from "next-seo"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useEffect } from "react"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {

@@ -1,5 +1,6 @@
-import ErrorMessage from "./ErrorMessage"
 import { Component, PropsWithChildren } from "react"
+
+import ErrorMessage from "./ErrorMessage"
 
 type ErrorBoundaryState = {
   hasError: boolean | null | undefined

@@ -1,6 +1,7 @@
+import { Typography } from "@mui/material"
+
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-import { Typography } from "@mui/material"
 
 function AdminError() {
   const t = useTranslator(CommonTranslations)

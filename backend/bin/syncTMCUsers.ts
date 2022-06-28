@@ -1,13 +1,14 @@
 // import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
+import axios from "axios"
+import { groupBy, orderBy } from "lodash"
+import * as winston from "winston"
+
 import { isTest, TMC_HOST } from "../config"
 import { getAccessToken } from "../services/tmc"
 import { notEmpty } from "../util/notEmpty"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
-import { PrismaClient } from "@prisma/client"
-import axios from "axios"
-import { groupBy, orderBy } from "lodash"
-import * as winston from "winston"
 
 const URL = `${TMC_HOST || ""}/api/v8/users/recently_changed_user_details`
 

@@ -1,11 +1,3 @@
-import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { err } from "../util/result"
-import {
-  getOrganization,
-  getUser,
-  requireAdmin,
-} from "../util/server-functions"
-import { ApiContext } from "./"
 import {
   Completion,
   Course,
@@ -15,6 +7,15 @@ import {
 import { Request, Response } from "express"
 import { chunk } from "lodash"
 import * as yup from "yup"
+
+import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { err } from "../util/result"
+import {
+  getOrganization,
+  getUser,
+  requireAdmin,
+} from "../util/server-functions"
+import { ApiContext } from "./"
 
 const JSONStream = require("JSONStream")
 

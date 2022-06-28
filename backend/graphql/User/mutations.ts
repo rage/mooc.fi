@@ -1,8 +1,9 @@
+import { AuthenticationError } from "apollo-server-express"
+import { arg, booleanArg, extendType, nonNull, stringArg } from "nexus"
+
 import { Context } from "../../context"
 import { invalidate } from "../../services/redis"
 import hashUser from "../../util/hashUser"
-import { AuthenticationError } from "apollo-server-express"
-import { arg, booleanArg, extendType, nonNull, stringArg } from "nexus"
 
 export const UserMutations = extendType({
   type: "Mutation",

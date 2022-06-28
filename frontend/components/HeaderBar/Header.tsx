@@ -1,15 +1,17 @@
-import LanguageSwitch from "./LanguageSwitch"
-import LoggedInUserMenu from "./LoggedInUserMenu"
-import MoocLogo from "./MoocLogo"
-import UserOptionsMenu from "./UserOptionsMenu"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { ReactElement, useContext } from "react"
+
 import styled from "@emotion/styled"
 import { AppBar, Toolbar } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import Slide from "@mui/material/Slide"
 import useScrollTrigger from "@mui/material/useScrollTrigger"
 import { useRouter } from "next/router"
-import { ReactElement, useContext } from "react"
+
+import LanguageSwitch from "./LanguageSwitch"
+import LoggedInUserMenu from "./LoggedInUserMenu"
+import MoocLogo from "./MoocLogo"
+import UserOptionsMenu from "./UserOptionsMenu"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 interface Props {
   window?: () => Window

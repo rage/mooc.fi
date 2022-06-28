@@ -1,7 +1,3 @@
-import { H1NoBackground } from "/components/Text/headers"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import TeachersTranslations from "/translations/teachers"
-import { useTranslator } from "/util/useTranslator"
 import styled from "@emotion/styled"
 import {
   faBook,
@@ -16,6 +12,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import { useRouter } from "next/router"
+
+import { H1NoBackground } from "/components/Text/headers"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import TeachersTranslations from "/translations/teachers"
+import { useTranslator } from "/util/useTranslator"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;

@@ -1,6 +1,7 @@
+import { useRef } from "react"
+
 import { Anchor } from "../contexts/AnchorContext"
 import flattenKeys from "/util/flattenKeys"
-import { useRef } from "react"
 
 export function useEnumeratingAnchors(): [
   Record<string, Anchor>,

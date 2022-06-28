@@ -1,3 +1,5 @@
+import { Course, User } from "@prisma/client"
+
 import { BAIbadge, BAItiers } from "../../../../../config/courseConfig"
 import { KafkaContext } from "../../kafkaContext"
 import {
@@ -5,7 +7,6 @@ import {
   getExerciseCompletionsForCourses,
 } from "../userFunctions"
 import { getBAIProgress } from "./progress"
-import { Course, User } from "@prisma/client"
 
 const checkBAIProjectCompletion = async (
   user: User,

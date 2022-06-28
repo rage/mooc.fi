@@ -1,7 +1,9 @@
-import { WideContainer } from "/components/Container"
+import { PropsWithChildren } from "react"
+
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
-import { PropsWithChildren } from "react"
+
+import { WideContainer } from "/components/Container"
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;

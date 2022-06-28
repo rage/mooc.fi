@@ -1,5 +1,6 @@
-import { UserInfo } from "../../domain/UserInfo"
 import { Prisma } from "@prisma/client"
+
+import { UserInfo } from "../../domain/UserInfo"
 
 export const normalUser = {
   upstream_id: 1,

@@ -1,3 +1,6 @@
+import axios, { Method } from "axios"
+import { omit, orderBy } from "lodash"
+
 import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
 import {
   adminUserDetails,
@@ -5,8 +8,6 @@ import {
   thirdUserDetails,
 } from "../../tests/data"
 import { seed } from "../../tests/data/seed"
-import axios, { Method } from "axios"
-import { omit, orderBy } from "lodash"
 
 const ctx = getTestContext()
 

@@ -1,3 +1,8 @@
+import { useCallback, useEffect, useState } from "react"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
+
 import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"
 import { fromCourseForm, toCourseForm } from "./serialization"
@@ -26,9 +31,6 @@ import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
-import { useCallback, useEffect, useState } from "react"
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 interface CourseEditorProps {
   course?: CourseDetails_course

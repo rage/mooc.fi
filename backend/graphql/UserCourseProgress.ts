@@ -1,4 +1,3 @@
-import { isAdmin } from "../accessControl"
 import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import {
@@ -12,6 +11,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { isAdmin } from "../accessControl"
 
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(

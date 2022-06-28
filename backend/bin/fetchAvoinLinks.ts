@@ -1,11 +1,12 @@
-import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
-import prisma from "../prisma"
-import { AvoinError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 import { OpenUniversityRegistrationLink } from "@prisma/client"
 import axios from "axios"
 import { maxBy } from "lodash"
 import { DateTime } from "luxon"
+
+import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
+import prisma from "../prisma"
+import { AvoinError } from "./lib/errors"
+import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 

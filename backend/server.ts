@@ -1,6 +1,3 @@
-import { apiRouter } from "./api"
-import { DEBUG, isProduction, isTest } from "./config"
-import schema from "./schema"
 import { PrismaClient } from "@prisma/client"
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
@@ -10,6 +7,10 @@ import { graphqlUploadExpress } from "graphql-upload"
 import { Knex } from "knex"
 import morgan from "morgan"
 import * as winston from "winston"
+
+import { apiRouter } from "./api"
+import { DEBUG, isProduction, isTest } from "./config"
+import schema from "./schema"
 
 const helmet = require("helmet")
 const bodyParser = require("body-parser")

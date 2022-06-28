@@ -1,3 +1,11 @@
+import { promisify } from "util"
+
+import compression from "compression"
+// import * as winston from "winston"
+import express from "express"
+import morgan from "morgan"
+import * as Kafka from "node-rdkafka"
+
 import {
   KAFKA_BRIDGE_SECRET,
   KAFKA_BRIDGE_SERVER_HOST,
@@ -6,12 +14,6 @@ import {
 } from "../config"
 import { KafkaError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
-import compression from "compression"
-// import * as winston from "winston"
-import express from "express"
-import morgan from "morgan"
-import * as Kafka from "node-rdkafka"
-import { promisify } from "util"
 
 const logger = sentryLogger({ service: "kafka-bridge" })
 

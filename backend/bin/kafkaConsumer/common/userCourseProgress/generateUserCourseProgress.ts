@@ -1,9 +1,10 @@
+import { Course, User, UserCourseProgress } from "@prisma/client"
+
 import { BAItiers } from "../../../../config/courseConfig"
 import { KafkaContext } from "../kafkaContext"
 import { checkBAICompletion } from "./BAI/completion"
 import { checkAndSendThresholdEmail } from "./checkAndSendThresholdEmail"
 import { checkCompletion, getCombinedUserCourseProgress } from "./userFunctions"
-import { Course, User, UserCourseProgress } from "@prisma/client"
 
 interface Props {
   user: User

@@ -1,3 +1,5 @@
+import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
+
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
 import { Mutex } from "../../lib/await-semaphore"
@@ -9,7 +11,6 @@ import { Message } from "../common/userPoints/interfaces"
 import { saveToDatabase } from "../common/userPoints/saveToDB"
 import { MessageYupSchema } from "../common/userPoints/validate"
 import config from "../kafkaConfig"
-import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
 
 const TOPIC_NAME = [config.user_points_realtime_consumer.topic_name]
 

@@ -1,7 +1,9 @@
+import { createHash } from "crypto"
+
+import { plugin } from "nexus"
+
 import { Context } from "../context"
 import { redisify } from "../services/redis"
-import { createHash } from "crypto"
-import { plugin } from "nexus"
 
 export const cachePlugin = () =>
   plugin({

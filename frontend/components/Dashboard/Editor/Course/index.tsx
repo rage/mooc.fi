@@ -1,3 +1,9 @@
+import { useCallback } from "react"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import { FormikHelpers } from "formik"
+import Router from "next/router"
+
 import CourseEditForm from "./CourseEditForm"
 import courseEditSchema from "./form-validation"
 import { fromCourseForm, toCourseForm } from "./serialization"
@@ -19,10 +25,6 @@ import { CourseEditorCourses_courses } from "/static/types/generated/CourseEdito
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
-import { FormikHelpers } from "formik"
-import Router from "next/router"
-import { useCallback } from "react"
 
 const CourseEdit = ({
   course,

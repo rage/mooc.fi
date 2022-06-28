@@ -1,7 +1,8 @@
-import { getUser } from "../util/server-functions"
-import { ApiContext } from "./"
 import { Completion, Course, UserCourseProgress } from "@prisma/client"
 import { Request, Response } from "express"
+
+import { getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 interface ExerciseCompletionResult {
   user_id: string

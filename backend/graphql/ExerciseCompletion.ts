@@ -1,5 +1,6 @@
+import { arg, extendType, idArg, intArg, nonNull, objectType } from "nexus"
+
 import { isAdmin } from "../accessControl"
-import { objectType, extendType, idArg, arg, intArg, nonNull } from "nexus"
 
 export const ExerciseCompletion = objectType({
   name: "ExerciseCompletion",

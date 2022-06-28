@@ -1,9 +1,11 @@
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+import { PropsWithChildren, useEffect, useState } from "react"
+
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
-import { PropsWithChildren, useEffect, useState } from "react"
 import { FileRejection, useDropzone } from "react-dropzone"
+
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
 const isChrome = process.browser

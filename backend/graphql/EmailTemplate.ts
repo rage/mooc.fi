@@ -1,4 +1,3 @@
-import { isAdmin } from "../accessControl"
 import { UserInputError } from "apollo-server-express"
 import {
   extendType,
@@ -8,6 +7,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { isAdmin } from "../accessControl"
 
 export const EmailTemplate = objectType({
   name: "EmailTemplate",

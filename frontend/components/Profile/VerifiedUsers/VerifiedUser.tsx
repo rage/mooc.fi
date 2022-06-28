@@ -1,8 +1,10 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
-import { CardTitle } from "/components/Text/headers"
+import React from "react"
+
 import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
-import React from "react"
+
+import { CardTitle } from "/components/Text/headers"
 
 // FIXME/DELETE: we don't have the verified user thing implemented for now so these types aren't generated
 interface VerifiedUserProps {

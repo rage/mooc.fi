@@ -1,5 +1,6 @@
-import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { createContext } from "react"
+
+import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 
 export interface SearchVariables {
   search: string

@@ -1,4 +1,4 @@
-import { Container, Grid, CircularProgress } from "@mui/material"
+import { CircularProgress, Container, Grid } from "@mui/material"
 
 const Spinner = () => (
   <Container style={{ display: "flex", height: "600px" }}>

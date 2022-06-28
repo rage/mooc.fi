@@ -1,7 +1,7 @@
 import {
-  ControlledTextField,
   ControlledFieldArrayList,
   ControlledHiddenField,
+  ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { initialAlias } from "/components/Dashboard/Editor2/Course/form-validation"
 import { CourseAliasFormValues } from "/components/Dashboard/Editor2/Course/types"

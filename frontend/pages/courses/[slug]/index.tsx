@@ -1,3 +1,12 @@
+import { useState } from "react"
+
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Button, Card, Paper, Typography } from "@mui/material"
+import { useConfirm } from "material-ui-confirm"
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import {
@@ -17,13 +26,6 @@ import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourse
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, Card, Paper, Typography } from "@mui/material"
-import { useConfirm } from "material-ui-confirm"
-import { NextSeo } from "next-seo"
-import Link from "next/link"
-import { useState } from "react"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;

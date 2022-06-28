@@ -1,8 +1,10 @@
+import { createServer } from "http"
+
+import * as WebSocketServer from "websocket"
+
 import { UserInfo } from "./domain/UserInfo"
 import redisClient from "./services/redis"
 import { getCurrentUserDetails } from "./services/tmc"
-import { createServer } from "http"
-import * as WebSocketServer from "websocket"
 
 const webSocketsServerPort = 9000
 

@@ -1,3 +1,6 @@
+import { PrismaClient } from "@prisma/client"
+import { DateTime } from "luxon"
+
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
@@ -5,8 +8,6 @@ import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
-import { PrismaClient } from "@prisma/client"
-import { DateTime } from "luxon"
 
 const FETCH_USER_FIELD_VALUES_CONFIG_NAME = CONFIG_NAME ?? "userFieldValues"
 

@@ -1,6 +1,5 @@
-import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
+import { useState } from "react"
+
 import styled from "@emotion/styled"
 import { Clear, Search } from "@mui/icons-material"
 import {
@@ -16,7 +15,10 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material"
-import { useState } from "react"
+
+import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const Container = styled.div`
   background-color: white;

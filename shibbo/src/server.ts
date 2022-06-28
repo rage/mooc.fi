@@ -1,8 +1,9 @@
-import { HY_ORGANIZATION_SECRET, HY_ORGANIZATION_ID, PORT } from "./config"
 import cors from "cors"
 import express, { Request, Response } from "express"
 import { gql, GraphQLClient } from "graphql-request"
 import shibbolethCharsetMiddleware from "unfuck-utf8-headers-middleware"
+
+import { HY_ORGANIZATION_ID, HY_ORGANIZATION_SECRET, PORT } from "./config"
 
 const isProduction = process.env.NODE_ENV === "production"
 

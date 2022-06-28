@@ -1,3 +1,5 @@
+import React from "react"
+
 import {
   ControlledFieldArrayList,
   ControlledHiddenField,
@@ -5,15 +7,14 @@ import {
   ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import {
-  languages,
   initialTranslation,
+  languages,
 } from "/components/Dashboard/Editor2/StudyModule/form-validation"
 import { StudyModuleTranslationFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import StudyModuleTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
-import React from "react"
 
 export default function StudyModuleTranslationsForm() {
   const t = useTranslator(StudyModuleTranslations)

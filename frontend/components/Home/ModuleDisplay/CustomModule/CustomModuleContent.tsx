@@ -1,11 +1,13 @@
+import { PropsWithChildren } from "react"
+
+import styled from "@emotion/styled"
+import { MDXProvider } from "@mdx-js/react"
+import { Paper } from "@mui/material"
+
 import {
   ModuleCardText,
   ModuleCardTitle,
 } from "/components/Home/ModuleDisplay/Common"
-import styled from "@emotion/styled"
-import { MDXProvider } from "@mdx-js/react"
-import { Paper } from "@mui/material"
-import { PropsWithChildren } from "react"
 
 const Background = styled(Paper)`
   background-color: white;

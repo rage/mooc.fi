@@ -1,9 +1,8 @@
-import { isAdmin, Role } from "../accessControl"
-import { Context } from "../context"
-import { filterNull } from "../util/db-functions"
+import { randomBytes } from "crypto"
+import { promisify } from "util"
+
 import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
-import { randomBytes } from "crypto"
 import {
   arg,
   booleanArg,
@@ -14,7 +13,10 @@ import {
   objectType,
   stringArg,
 } from "nexus"
-import { promisify } from "util"
+
+import { isAdmin, Role } from "../accessControl"
+import { Context } from "../context"
+import { filterNull } from "../util/db-functions"
 
 export const Organization = objectType({
   name: "Organization",

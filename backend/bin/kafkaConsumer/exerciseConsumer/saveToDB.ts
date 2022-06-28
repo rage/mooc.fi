@@ -1,8 +1,9 @@
+import { DateTime } from "luxon"
+
 import { err, ok, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "../common/kafkaContext"
 import { ExerciseData, Message } from "./interfaces"
-import { DateTime } from "luxon"
 
 export const saveToDatabase = async (
   context: KafkaContext,

@@ -1,4 +1,4 @@
-import { GraphQLUpload, FileUpload } from "graphql-upload"
+import { FileUpload, GraphQLUpload } from "graphql-upload"
 import { scalarType } from "nexus"
 
 export type UploadRoot = Promise<FileUpload>

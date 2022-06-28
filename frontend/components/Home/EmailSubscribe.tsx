@@ -1,5 +1,5 @@
-import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
+import { createRef, useState } from "react"
+
 import styled from "@emotion/styled"
 import Send from "@mui/icons-material/Send"
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
@@ -9,7 +9,9 @@ import CardContent from "@mui/material/CardContent"
 import FormControl from "@mui/material/FormControl"
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
-import { useState, createRef } from "react"
+
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
 
 const MailingList = styled.div`
   height: 20rem;

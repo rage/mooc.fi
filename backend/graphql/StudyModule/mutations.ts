@@ -1,8 +1,9 @@
-import { isAdmin } from "../../accessControl"
 import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, nullable, stringArg } from "nexus"
+
+import { isAdmin } from "../../accessControl"
 
 export const StudyModuleMutations = extendType({
   type: "Mutation",

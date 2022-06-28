@@ -1,3 +1,5 @@
+import nock from "nock"
+
 import {
   fakeGetAccessToken,
   fakeUserDetailReply,
@@ -11,7 +13,6 @@ import {
   syncTMCUsers,
   updateEmails,
 } from "../syncTMCUsers"
-import nock from "nock"
 
 const ctx = getTestContext()
 

@@ -1,3 +1,9 @@
+import { useContext, useState } from "react"
+
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
+import { CircularProgress } from "@mui/material"
+
 import CompletionsListWithData from "./CompletionsListWithData"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
@@ -5,10 +11,6 @@ import { AllCompletions as AllCompletionsData } from "/static/types/generated/Al
 import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
-import { CircularProgress } from "@mui/material"
-import { useContext, useState } from "react"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(

@@ -1,14 +1,15 @@
+import { omit } from "lodash"
+
 import { initialValues } from "./form-validation"
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import {
   StudyModuleCreateArg,
   StudyModuleUpsertArg,
 } from "/static/types/generated/globalTypes"
-import { omit } from "lodash"
+import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 
 export const toStudyModuleForm = ({
   module,

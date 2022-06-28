@@ -1,11 +1,12 @@
+import styled from "@emotion/styled"
+import { Grid } from "@mui/material"
+
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import OutboundLink from "/components/OutboundLink"
 import { ShadowedDiv } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
-import { Grid } from "@mui/material"
 
 const NaviItemBase = styled(ShadowedDiv)`
   width: 100%;

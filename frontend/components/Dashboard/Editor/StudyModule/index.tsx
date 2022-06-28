@@ -1,6 +1,12 @@
-import StudyModuleEditForm from "./StudyModuleEditForm"
+import { useCallback } from "react"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import { FormikHelpers } from "formik"
+import Router from "next/router"
+
 import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
+import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import {
   AddStudyModuleMutation,
@@ -16,10 +22,6 @@ import { StudyModuleQuery } from "/pages/study-modules/[slug]/edit"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
-import { FormikHelpers } from "formik"
-import Router from "next/router"
-import { useCallback } from "react"
 
 const StudyModuleEdit = ({
   module,

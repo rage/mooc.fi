@@ -1,11 +1,12 @@
+import { AuthenticationError } from "apollo-server-express"
+import { plugin } from "nexus"
+
 import { Role } from "../accessControl"
 import { Context } from "../context"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 import { UserInfo } from "/domain/UserInfo"
-import { AuthenticationError } from "apollo-server-express"
-import { plugin } from "nexus"
 
 export const moocfiAuthPlugin = () =>
   plugin({

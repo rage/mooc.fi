@@ -1,24 +1,30 @@
+import { useMemo, useState } from "react"
+
+import styled from "@emotion/styled"
+import { FormControl, FormGroup, FormLabel, Tab, Tabs } from "@mui/material"
+import { useFormContext } from "react-hook-form"
+
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
 import CourseLanguageSelector from "./CourseLanguageSelector"
 import CourseTranslationForm from "./CourseTranslationForm"
 import {
-  FormSubtitle,
   FormFieldGroup,
+  FormSubtitle,
   TabSection,
 } from "/components/Dashboard/Editor2/Common"
 import {
-  ControlledTextField,
-  ControlledSelect,
   ControlledCheckbox,
-  ControlledModuleList,
   ControlledHiddenField,
+  ControlledModuleList,
   ControlledRadioGroup,
+  ControlledSelect,
+  ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
 import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
-import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
 import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
+import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
 import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
 import DisableAutoComplete from "/components/DisableAutoComplete"
@@ -30,10 +36,6 @@ import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
-import { Tabs, Tab, FormControl, FormLabel, FormGroup } from "@mui/material"
-import { useMemo, useState } from "react"
-import { useFormContext } from "react-hook-form"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}

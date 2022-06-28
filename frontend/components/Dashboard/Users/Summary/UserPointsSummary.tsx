@@ -1,3 +1,9 @@
+import { useState } from "react"
+
+import BuildIcon from "@mui/icons-material/Build"
+import { Button, Dialog, Paper } from "@mui/material"
+import { sortBy } from "lodash"
+
 import CourseEntry from "./CourseEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import {
@@ -9,10 +15,6 @@ import RawView from "/components/Dashboard/Users/Summary/RawView"
 import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-import BuildIcon from "@mui/icons-material/Build"
-import { Paper, Button, Dialog } from "@mui/material"
-import { sortBy } from "lodash"
-import { useState } from "react"
 
 interface UserPointsSummaryProps {
   data?: UserSummary_user_user_course_summary[]

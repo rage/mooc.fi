@@ -1,6 +1,7 @@
+import { ValidationError } from "yup"
+
 import { ExerciseData } from "../interfaces"
 import { ExerciseDataYupSchema } from "../validate"
-import { ValidationError } from "yup"
 
 describe("exercise data validation", () => {
   it("ok on correct part string format", async () => {

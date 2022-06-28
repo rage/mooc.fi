@@ -1,3 +1,6 @@
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
+
 import Container from "/components/Container"
 import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
@@ -6,8 +9,6 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { gql } from "@apollo/client"
-import { useQuery } from "@apollo/client"
 
 export const CompletionsIdUserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {

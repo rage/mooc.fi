@@ -1,3 +1,5 @@
+import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
+
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
 import { Mutex } from "../../lib/await-semaphore"
@@ -13,7 +15,6 @@ import {
   MessageYupSchema,
 } from "../common/userCourseProgress/validate"
 import config from "../kafkaConfig"
-import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]

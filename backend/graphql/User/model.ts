@@ -1,4 +1,3 @@
-import { notEmpty } from "../../util/notEmpty"
 import { uniqBy } from "lodash"
 import {
   booleanArg,
@@ -8,6 +7,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
   name: "User",

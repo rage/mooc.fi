@@ -1,14 +1,5 @@
-import AlertContext from "/contexts/AlertContext"
-import LoginStateContext from "/contexts/LoginStateContext"
-import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/queries/currentUser"
-import { updateAccount } from "/lib/account"
-import { checkCertificate, createCertificate } from "/lib/certificates"
-import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
-import { UserOverViewQuery } from "/pages/profile"
-import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
-import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
-import CompletionsTranslations from "/translations/completions"
-import { useTranslator } from "/util/useTranslator"
+import { useContext, useEffect, useReducer, useState } from "react"
+
 import { gql, useMutation } from "@apollo/client"
 import styled from "@emotion/styled"
 import {
@@ -21,7 +12,18 @@ import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
-import { useContext, useEffect, useReducer, useState } from "react"
+
+import AlertContext from "/contexts/AlertContext"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/queries/currentUser"
+import { updateAccount } from "/lib/account"
+import { checkCertificate, createCertificate } from "/lib/certificates"
+import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
+import { UserOverViewQuery } from "/pages/profile"
+import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
+import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import CompletionsTranslations from "/translations/completions"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledButton = styled(Button)`
   margin: auto;

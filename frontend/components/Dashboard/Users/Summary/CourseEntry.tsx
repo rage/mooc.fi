@@ -1,3 +1,9 @@
+import React from "react"
+
+import styled from "@emotion/styled"
+import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
+import { sortBy } from "lodash"
+
 import {
   ActionType,
   CollapsablePart,
@@ -10,10 +16,6 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import { CardTitle } from "/components/Text/headers"
 import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
-import styled from "@emotion/styled"
-import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
-import { sortBy } from "lodash"
-import React from "react"
 
 interface CourseEntryProps {
   data?: UserSummary_user_user_course_summary

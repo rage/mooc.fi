@@ -1,3 +1,20 @@
+import { useState } from "react"
+
+import { useApolloClient, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import {
+  Button,
+  Card,
+  CardContent,
+  Collapse,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material"
+import { NextSeo } from "next-seo"
+import Router from "next/router"
+import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
+
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
@@ -14,21 +31,6 @@ import withAdmin from "/lib/with-admin"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useApolloClient, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import {
-  Button,
-  Card,
-  CardContent,
-  Collapse,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material"
-import { NextSeo } from "next-seo"
-import Router from "next/router"
-import { useState } from "react"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
 interface TemplateType {
   name: string

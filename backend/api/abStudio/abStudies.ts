@@ -1,6 +1,7 @@
+import { Request, Response, Router } from "express"
+
 import { ApiContext } from "../"
 import { requireAdmin } from "../../util/server-functions"
-import { Request, Response, Router } from "express"
 
 export function abStudiesRouter(ctx: ApiContext) {
   async function abStudiesGet(req: Request<{ id?: string }>, res: Response) {

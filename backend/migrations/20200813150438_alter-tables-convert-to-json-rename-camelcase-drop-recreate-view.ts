@@ -1,5 +1,6 @@
-import { isProduction } from "../config"
 import { Knex } from "knex"
+
+import { isProduction } from "../config"
 
 export async function up(knex: Knex): Promise<void> {
   if (isProduction) {

@@ -1,3 +1,5 @@
+import type { PrismaClient } from "@prisma/client"
+
 import {
   abEnrollments,
   abStudies,
@@ -19,7 +21,6 @@ import {
   userCourseSettings,
   users,
 } from "./"
-import type { PrismaClient } from "@prisma/client"
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 

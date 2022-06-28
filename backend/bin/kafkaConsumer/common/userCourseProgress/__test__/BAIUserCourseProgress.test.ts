@@ -1,8 +1,8 @@
 import {
   getProgress,
-  hasRuleConditions,
   getTierInfo,
   getTierProgress,
+  hasRuleConditions,
   TierInfo,
   TierProgressMap,
 } from "../BAI/progress"

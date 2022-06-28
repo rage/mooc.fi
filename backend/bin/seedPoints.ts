@@ -1,6 +1,7 @@
-import prisma from "../prisma"
 import { Prisma } from "@prisma/client"
 import * as faker from "faker"
+
+import prisma from "../prisma"
 
 //Generate integer id which is not already taken
 function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {

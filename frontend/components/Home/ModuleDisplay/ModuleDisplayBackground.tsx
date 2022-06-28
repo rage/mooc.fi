@@ -1,5 +1,6 @@
-import { BackgroundImage } from "/components/Images/GraphicBackground"
 import styled from "@emotion/styled"
+
+import { BackgroundImage } from "/components/Images/GraphicBackground"
 
 interface RootProps {
   backgroundColor: string

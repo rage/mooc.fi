@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client"
+
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import prisma from "../prisma"
@@ -5,7 +7,6 @@ import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
-import { Prisma } from "@prisma/client"
 
 const tmc = new TmcClient()
 

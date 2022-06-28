@@ -1,12 +1,13 @@
+import { ExerciseCompletion } from "@prisma/client"
+import { UserInputError } from "apollo-server-express"
+import { DateTime } from "luxon"
+
 import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userCourseProgress/userFunctions"
 import { Message } from "./interfaces"
-import { ExerciseCompletion } from "@prisma/client"
-import { UserInputError } from "apollo-server-express"
-import { DateTime } from "luxon"
 
 export const saveToDatabase = async (
   context: KafkaContext,

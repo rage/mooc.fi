@@ -1,4 +1,11 @@
 import {
+  Course,
+  User,
+  UserCourseServiceProgress,
+  UserCourseSetting,
+} from "@prisma/client"
+
+import {
   completionLanguageMap,
   LanguageAbbreviation,
 } from "../../../../config/languageConfig"
@@ -11,12 +18,6 @@ import {
   ServiceProgressPartType,
   ServiceProgressType,
 } from "./interfaces"
-import {
-  Course,
-  User,
-  UserCourseServiceProgress,
-  UserCourseSetting,
-} from "@prisma/client"
 
 export const getCombinedUserCourseProgress = async ({
   user,

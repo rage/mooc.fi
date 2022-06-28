@@ -1,3 +1,5 @@
+import { useQuery } from "@apollo/client"
+
 import { WideContainer } from "/components/Container"
 import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
@@ -9,7 +11,6 @@ import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEdi
 import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
-import { useQuery } from "@apollo/client"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)

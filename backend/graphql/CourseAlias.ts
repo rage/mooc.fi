@@ -1,4 +1,3 @@
-import { isAdmin } from "../accessControl"
 import {
   extendType,
   idArg,
@@ -7,6 +6,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { isAdmin } from "../accessControl"
 
 export const CourseAlias = objectType({
   name: "CourseAlias",

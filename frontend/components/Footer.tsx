@@ -1,5 +1,3 @@
-import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 import styled from "@emotion/styled"
 import {
   faFacebook,
@@ -9,6 +7,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 import { useRouter } from "next/router"
+
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(FontAwesomeIcon)`
   color: white;

@@ -1,9 +1,10 @@
+import { EmailTemplate, PrismaClient, User } from "@prisma/client"
+import { render } from "micromustache"
+
 import * as Templates from "./templates"
 import ITemplateConstructor from "./types/ITemplateConstructor"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
 import Template from "./types/Template"
-import { EmailTemplate, PrismaClient, User } from "@prisma/client"
-import { render } from "micromustache"
 
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {

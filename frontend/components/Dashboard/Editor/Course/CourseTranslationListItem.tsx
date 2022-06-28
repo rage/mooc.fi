@@ -1,14 +1,15 @@
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import {
-  StyledTextField,
-  StyledFieldWithAnchor,
-} from "/components/Dashboard/Editor/common"
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
-import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 import styled from "@emotion/styled"
 import Typography from "@mui/material/Typography"
 import { getIn, useFormikContext } from "formik"
+
+import {
+  StyledFieldWithAnchor,
+  StyledTextField,
+} from "/components/Dashboard/Editor/common"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { mapLangToLanguage } from "/components/DataFormatFunctions"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionContainer = styled.div`
   padding-top: 1rem;

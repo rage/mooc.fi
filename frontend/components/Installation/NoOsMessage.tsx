@@ -1,6 +1,7 @@
-import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import styled from "@emotion/styled"
 import Card from "@mui/material/Card"
+
+import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 
 const RedBackground = styled(Card)`
   background-color: #822900;

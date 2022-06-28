@@ -1,43 +1,45 @@
-import { languages, initialTranslation } from "./form-validation"
+import { useCallback, useEffect, useState } from "react"
+
+import styled from "@emotion/styled"
+import HelpIcon from "@mui/icons-material/Help"
+import {
+  Grid,
+  InputAdornment,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material"
+import {
+  FieldArray,
+  Form,
+  Formik,
+  FormikHelpers,
+  getIn,
+  useFormikContext,
+  yupToFormErrors,
+} from "formik"
+import { useConfirm } from "material-ui-confirm"
+import * as Yup from "yup"
+
+import { initialTranslation, languages } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
-  StyledField,
-  StyledTextField,
   OutlinedFormControl,
-  OutlinedInputLabel,
   OutlinedFormGroup,
+  OutlinedInputLabel,
+  StyledField,
   StyledFieldWithAnchor,
+  StyledTextField,
 } from "/components/Dashboard/Editor/common"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import ModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
-import HelpIcon from "@mui/icons-material/Help"
-import {
-  Grid,
-  MenuItem,
-  Typography,
-  InputAdornment,
-  Tooltip,
-} from "@mui/material"
-import {
-  Formik,
-  Form,
-  FormikHelpers,
-  yupToFormErrors,
-  FieldArray,
-  getIn,
-  useFormikContext,
-} from "formik"
-import { useConfirm } from "material-ui-confirm"
-import { useCallback, useEffect, useState } from "react"
-import * as Yup from "yup"
 
 const FormContainer = styled.div`
   background-color: white;

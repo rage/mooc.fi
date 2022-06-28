@@ -1,5 +1,6 @@
-import { userOsType } from "/util/getUserOS"
 import { createContext } from "react"
+
+import { userOsType } from "/util/getUserOS"
 
 interface UserOS {
   OS: userOsType

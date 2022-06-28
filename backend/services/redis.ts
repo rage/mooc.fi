@@ -1,6 +1,7 @@
-import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
 import * as redis from "redis"
 import * as winston from "winston"
+
+import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
 
 const redisClient =
   !NEXUS_REFLECTION && !isTest

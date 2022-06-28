@@ -1,7 +1,8 @@
-import { filterNull } from "../../util/db-functions"
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 import { omit } from "lodash"
 import { arg, objectType, stringArg } from "nexus"
+
+import { filterNull } from "../../util/db-functions"
 
 export const StudyModule = objectType({
   name: "StudyModule",

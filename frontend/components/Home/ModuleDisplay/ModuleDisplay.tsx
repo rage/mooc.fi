@@ -1,10 +1,12 @@
+import { useMemo } from "react"
+
+import { orderBy } from "lodash"
+
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
 import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
-import { orderBy } from "lodash"
-import { useMemo } from "react"
 
 interface ModuleProps {
   module?: AllModules_study_modules_with_courses

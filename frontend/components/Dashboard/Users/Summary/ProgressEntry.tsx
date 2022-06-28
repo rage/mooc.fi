@@ -1,3 +1,15 @@
+import React from "react"
+
+import {
+  Collapse,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material"
+
 import {
   ActionType,
   CollapsablePart,
@@ -11,16 +23,6 @@ import { UserCourseServiceProgressFragment } from "/static/types/generated/UserC
 import { UserSummary_user_user_course_summary_course } from "/static/types/generated/UserSummary"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-import {
-  Collapse,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from "@mui/material"
-import React from "react"
 
 interface ProgressEntryProps {
   userCourseProgress?: UserCourseProgressFragment | null

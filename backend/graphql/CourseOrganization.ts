@@ -1,5 +1,6 @@
-import { isAdmin, isVisitor, or } from "../accessControl"
 import { booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
+
+import { isAdmin, isVisitor, or } from "../accessControl"
 
 export const CourseOrganization = objectType({
   name: "CourseOrganization",

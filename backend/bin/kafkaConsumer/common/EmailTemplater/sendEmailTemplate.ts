@@ -1,7 +1,8 @@
+import { EmailTemplate, User } from "@prisma/client"
+
 import prisma from "../../../../prisma"
 import { sendMail } from "../../../../util/sendMail"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
-import { EmailTemplate, User } from "@prisma/client"
 
 export async function sendEmailTemplateToUser(
   user: User,

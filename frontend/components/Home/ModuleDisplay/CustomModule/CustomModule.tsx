@@ -1,7 +1,9 @@
+import { PropsWithChildren } from "react"
+
+import styled from "@emotion/styled"
+
 import { CenteredContent } from "/components/Home/ModuleDisplay/Common"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
-import styled from "@emotion/styled"
-import { PropsWithChildren } from "react"
 
 interface CustomModuleProps {
   hueRotateAngle: number

@@ -1,3 +1,12 @@
+import { useEffect } from "react"
+
+import styled from "@emotion/styled"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+import { SingletonRouter, withRouter } from "next/router"
+
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
@@ -13,13 +22,6 @@ import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
-import Paper from "@mui/material/Paper"
-import Typography from "@mui/material/Typography"
-import { NextSeo } from "next-seo"
-import Link from "next/link"
-import { SingletonRouter, withRouter } from "next/router"
-import { useEffect } from "react"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;

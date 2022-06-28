@@ -1,4 +1,3 @@
-import notEmpty from "/util/notEmpty"
 import {
   ApolloClient,
   ApolloLink,
@@ -11,6 +10,8 @@ import { onError } from "@apollo/client/link/error"
 import { createUploadLink } from "apollo-upload-client"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
+
+import notEmpty from "/util/notEmpty"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 

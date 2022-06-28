@@ -1,16 +1,18 @@
-import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
+import { Fragment } from "react"
+
 import styled from "@emotion/styled"
 import CloseIcon from "@mui/icons-material/Close"
 import DoneIcon from "@mui/icons-material/Done"
 import {
-  ListItem,
-  ListItemText,
   Divider,
-  Typography,
-  ListItemIcon,
   Icon,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
 } from "@mui/material"
-import { Fragment } from "react"
+
+import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
 
 //map language code stored to database to human readable language
 const MapLangToLanguage: Record<string, string> = {

@@ -1,7 +1,8 @@
+import { User } from "@prisma/client"
+
 import { TMCError } from "../../lib/errors"
 import getUserFromTMCAndCreate from "./getUserFromTMC"
 import { KafkaContext } from "./kafkaContext"
-import { User } from "@prisma/client"
 
 export async function getUserWithRaceCondition(
   context: KafkaContext,

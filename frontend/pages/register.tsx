@@ -1,3 +1,23 @@
+import { useContext, useEffect, useState } from "react"
+
+import { gql } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import CancelIcon from "@mui/icons-material/Cancel"
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material"
+import { range } from "lodash"
+
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
@@ -15,24 +35,6 @@ import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
-import { gql } from "@apollo/client"
-import { useQuery, useMutation } from "@apollo/client"
-import styled from "@emotion/styled"
-import CancelIcon from "@mui/icons-material/Cancel"
-import {
-  Button,
-  Card,
-  Container,
-  IconButton,
-  InputAdornment,
-  Grid,
-  Typography,
-  TextField,
-  CardContent,
-  Skeleton,
-} from "@mui/material"
-import { range } from "lodash"
-import { useState, useEffect, useContext } from "react"
 
 export const OrganizationsQuery = gql`
   query Organizations {

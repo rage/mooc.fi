@@ -1,8 +1,9 @@
+import { Prisma } from "@prisma/client"
+import { Knex } from "knex"
+
 import { CIRCLECI } from "../config"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
-import { Prisma } from "@prisma/client"
-import { Knex } from "knex"
 
 const flatten = <T>(arr: T[]) =>
   arr.reduce<T[]>((acc, val) => acc.concat(val), [])

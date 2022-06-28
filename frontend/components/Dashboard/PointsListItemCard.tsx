@@ -1,3 +1,9 @@
+import { useState } from "react"
+
+import { gql } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Grid } from "@mui/material"
+
 import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
@@ -10,10 +16,6 @@ import { UserPoints_currentUser_progresses_course } from "/static/types/generate
 import formatPointsData, {
   formattedGroupPointsDictionary,
 } from "/util/formatPointsData"
-import { gql } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Grid } from "@mui/material"
-import { useState } from "react"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {

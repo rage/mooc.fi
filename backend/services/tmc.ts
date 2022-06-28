@@ -1,3 +1,6 @@
+import axios from "axios"
+import * as winston from "winston"
+
 import {
   RATELIMIT_PROTECTION_SAFE_API_KEY,
   TMC_CLIENT_ID,
@@ -7,8 +10,6 @@ import {
   TMC_USERNAME,
 } from "../config"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
-import axios from "axios"
-import * as winston from "winston"
 
 export interface UserFieldValue {
   id: number

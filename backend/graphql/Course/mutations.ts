@@ -1,3 +1,8 @@
+import { Course, Prisma } from "@prisma/client"
+import { UserInputError } from "apollo-server-express"
+import { omit } from "lodash"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
+
 import { isAdmin } from "../../accessControl"
 import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
@@ -5,10 +10,6 @@ import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
 import { deleteImage, uploadImage } from "../Image"
-import { Course, Prisma } from "@prisma/client"
-import { UserInputError } from "apollo-server-express"
-import { omit } from "lodash"
-import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 const isNotNull = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined

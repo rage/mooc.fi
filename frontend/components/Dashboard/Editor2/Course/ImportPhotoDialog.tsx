@@ -1,3 +1,16 @@
+import { useEffect, useState } from "react"
+
+import styled from "@emotion/styled"
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material"
+import { useFormContext } from "react-hook-form"
+
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import {
   CourseEditorCourses_courses,
@@ -6,17 +19,6 @@ import {
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
-import styled from "@emotion/styled"
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-} from "@mui/material"
-import { useEffect, useState } from "react"
-import { useFormContext } from "react-hook-form"
 
 const ImageContainer = styled.div`
   display: flex;

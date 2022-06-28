@@ -1,10 +1,11 @@
+import styled from "@emotion/styled"
+import Grid from "@mui/material/Grid"
+
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
-import styled from "@emotion/styled"
-import Grid from "@mui/material/Grid"
 
 interface RootProps {
   backgroundColor: string

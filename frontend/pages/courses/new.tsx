@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+
 import { WideContainer } from "/components/Container"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -12,7 +14,6 @@ import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { useEffect, useState } from "react"
 
 function stripId<T>(data: T): T {
   if (data === null || data === undefined) return data

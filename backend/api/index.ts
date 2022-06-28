@@ -1,12 +1,13 @@
+import type { PrismaClient } from "@prisma/client"
+import { Router } from "express"
+import { Knex } from "knex"
+import * as winston from "winston"
+
 import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
 import { CompletionController } from "./completions"
 import { ProgressController } from "./progress"
 import { StoredDataController } from "./storedData"
 import { UserCourseSettingsController } from "./userCourseSettings"
-import type { PrismaClient } from "@prisma/client"
-import { Router } from "express"
-import { Knex } from "knex"
-import * as winston from "winston"
 
 export interface ApiContext {
   prisma: PrismaClient

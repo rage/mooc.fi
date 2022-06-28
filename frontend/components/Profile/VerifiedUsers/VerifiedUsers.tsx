@@ -1,10 +1,11 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
-import VerifiedUser from "./VerifiedUser"
 import styled from "@emotion/styled"
 import LaunchIcon from "@mui/icons-material/Launch"
 import { Button, Paper } from "@mui/material"
 import Link from "next/link"
 import { useRouter } from "next/router"
+
+import VerifiedUser from "./VerifiedUser"
 
 // import axios from "axios"
 // import { getAccessToken } from "/lib/authentication"

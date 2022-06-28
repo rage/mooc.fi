@@ -1,13 +1,15 @@
+import { Component } from "react"
+
+import styled from "@emotion/styled"
+import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import Link from "next/link"
+import { NextRouter, withRouter } from "next/router"
+
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
 import getTranslator from "/translations"
 import SignUpTranslations from "/translations/sign-up"
-import styled from "@emotion/styled"
-import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
-import Link from "next/link"
-import { NextRouter, withRouter } from "next/router"
-import { Component } from "react"
 
 const StyledPaper = styled(Paper)`
   display: flex;

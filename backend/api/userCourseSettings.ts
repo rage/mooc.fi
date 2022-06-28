@@ -1,9 +1,10 @@
-import { redisify } from "../services/redis"
-import { getUser } from "../util/server-functions"
-import { ApiContext } from "./"
 import { Course, UserCourseSettingsVisibility } from "@prisma/client"
 import { Request, Response } from "express"
 import { intersection, omit } from "lodash"
+
+import { redisify } from "../services/redis"
+import { getUser } from "../util/server-functions"
+import { ApiContext } from "./"
 
 type UserCourseSettingsCountResult =
   | {

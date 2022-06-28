@@ -1,8 +1,9 @@
+import { EmailDelivery } from "@prisma/client"
+
 import prisma from "../prisma"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
 import { EmailTemplaterError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
-import { EmailDelivery } from "@prisma/client"
 
 const BATCH_SIZE = 100
 
