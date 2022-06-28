@@ -344,8 +344,8 @@ export class CompletionController {
       })
     }
     if (
-      existingCompletion.updated_at?.getTime() !==
-      updatedCompletion.updated_at?.getTime()
+      existingCompletion?.updated_at?.getTime() !==
+      updatedCompletion?.updated_at?.getTime()
     ) {
       return res
         .status(200)
