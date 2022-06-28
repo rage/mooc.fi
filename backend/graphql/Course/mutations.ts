@@ -1,7 +1,8 @@
-import { Course, Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
+
+import { Course, Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { DatabaseInputError } from "../../bin/lib/errors"

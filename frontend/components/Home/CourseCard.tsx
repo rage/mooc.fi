@@ -1,6 +1,7 @@
+import ReactGA from "react-ga"
+
 import styled from "@emotion/styled"
 import { Chip, Grid, Skeleton } from "@mui/material"
-import ReactGA from "react-ga"
 
 import CourseImage from "/components/CourseImage"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"

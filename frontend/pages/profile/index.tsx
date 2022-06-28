@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from "react"
 
-import { gql, useQuery } from "@apollo/client"
 import { useRouter } from "next/router"
+
+import { gql, useQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"

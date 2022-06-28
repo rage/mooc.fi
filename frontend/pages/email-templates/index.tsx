@@ -1,8 +1,9 @@
+import Link from "next/link"
+
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
-import Link from "next/link"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"

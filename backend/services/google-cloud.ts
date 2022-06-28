@@ -1,6 +1,7 @@
-import { Storage } from "@google-cloud/storage"
 import * as mime from "mime-types"
 import * as shortid from "shortid"
+
+import { Storage } from "@google-cloud/storage"
 
 import {
   GOOGLE_CLOUD_STORAGE_BUCKET,

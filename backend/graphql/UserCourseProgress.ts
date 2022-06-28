@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import {
   arg,
@@ -11,6 +10,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
 

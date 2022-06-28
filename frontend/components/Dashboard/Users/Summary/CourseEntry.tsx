@@ -1,8 +1,9 @@
 import React from "react"
 
+import { sortBy } from "lodash"
+
 import styled from "@emotion/styled"
 import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
-import { sortBy } from "lodash"
 
 import {
   ActionType,

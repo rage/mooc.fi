@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
 import styled from "@emotion/styled"
 import Typography from "@mui/material/Typography"
-import { useRouter } from "next/router"
 
 import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"

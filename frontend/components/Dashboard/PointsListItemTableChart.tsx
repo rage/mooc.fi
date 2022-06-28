@@ -1,6 +1,7 @@
+import { CardSubtitle } from "components/Text/headers"
+
 import styled from "@emotion/styled"
 import LinearProgress from "@mui/material/LinearProgress"
-import { CardSubtitle } from "components/Text/headers"
 
 import { formattedGroupPoints } from "/util/formatPointsData"
 

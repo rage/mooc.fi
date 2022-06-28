@@ -1,4 +1,3 @@
-import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { pick } from "lodash"
 import {
@@ -9,6 +8,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
 import { isAdmin } from "../accessControl"
 import { buildUserSearch } from "../util/db-functions"

@@ -1,3 +1,7 @@
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
+
 import {
   ApolloClient,
   ApolloLink,
@@ -7,9 +11,6 @@ import {
 } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from "apollo-upload-client"
-import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
 
 import notEmpty from "/util/notEmpty"
 

@@ -1,7 +1,8 @@
+import Link from "next/link"
+
 import styled from "@emotion/styled"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
-import Link from "next/link"
 
 const MoocLogoText = styled(Typography)<any>`
   font-family: "Open Sans Condensed Light", sans-serif;

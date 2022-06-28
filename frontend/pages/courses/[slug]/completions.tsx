@@ -1,10 +1,11 @@
 import { ChangeEvent, useState } from "react"
 
+import { NextSeo } from "next-seo"
+import { useRouter } from "next/router"
+
 import { gql, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
-import { NextSeo } from "next-seo"
-import { useRouter } from "next/router"
 
 import { WideContainer } from "/components/Container"
 import CompletionsList from "/components/Dashboard/CompletionsList"

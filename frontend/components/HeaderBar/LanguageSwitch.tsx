@@ -1,7 +1,8 @@
-import styled from "@emotion/styled"
-import Language from "@mui/icons-material/Language"
 import Link from "next/link"
 import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import Language from "@mui/icons-material/Language"
 
 const SwitchLink = styled.a`
   font-size: 14px;

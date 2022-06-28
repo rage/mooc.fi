@@ -1,6 +1,7 @@
+import Link from "next/link"
+
 import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
-import Link from "next/link"
 
 import ModuleImage from "/components/Home/ModuleImage"
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"

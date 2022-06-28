@@ -6,7 +6,10 @@ module.exports = {
   importOrder: [
     "^react(-dom)?$",
     "^node:",
+    "",
     "<THIRD_PARTY_MODULES>",
+    "",
+    "^[@]",
     "",
     "^[./]",
   ],

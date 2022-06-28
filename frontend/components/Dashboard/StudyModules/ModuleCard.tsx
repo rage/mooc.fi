@@ -1,9 +1,10 @@
+import Link from "next/link"
+
 import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import EditIcon from "@mui/icons-material/Edit"
 import { Grid, Skeleton, Typography } from "@mui/material"
-import Link from "next/link"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"

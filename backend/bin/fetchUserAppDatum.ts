@@ -1,5 +1,6 @@
-import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { DateTime } from "luxon"
+
+import { PrismaClient, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"

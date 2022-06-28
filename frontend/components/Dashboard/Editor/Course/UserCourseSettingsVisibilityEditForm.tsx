@@ -1,3 +1,5 @@
+import { useFormikContext } from "formik"
+
 import {
   Autocomplete,
   Chip,
@@ -5,7 +7,6 @@ import {
   FormGroup,
   TextField,
 } from "@mui/material"
-import { useFormikContext } from "formik"
 
 import {
   CourseFormValues,

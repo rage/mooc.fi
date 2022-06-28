@@ -1,11 +1,12 @@
 import { useState } from "react"
 
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, Card, Paper, Typography } from "@mui/material"
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
+
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Button, Card, Paper, Typography } from "@mui/material"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"

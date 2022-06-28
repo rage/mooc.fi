@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 
+import { useFormContext } from "react-hook-form"
+
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
-import { useFormContext } from "react-hook-form"
 
 import EditorContainer from "../EditorContainer"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"

@@ -1,7 +1,8 @@
 import { createHash } from "crypto"
 
-import { User } from "@prisma/client"
 import { pick } from "lodash"
+
+import { User } from "@prisma/client"
 
 export default (user: User) =>
   createHash("sha512")

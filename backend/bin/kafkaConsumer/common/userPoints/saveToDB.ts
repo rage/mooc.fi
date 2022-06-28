@@ -1,6 +1,7 @@
-import { ExerciseCompletion } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import { DateTime } from "luxon"
+
+import { ExerciseCompletion } from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"

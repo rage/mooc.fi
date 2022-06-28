@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 
-import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import {
   arg,
@@ -13,6 +12,8 @@ import {
   objectType,
   stringArg,
 } from "nexus"
+
+import { Prisma } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"

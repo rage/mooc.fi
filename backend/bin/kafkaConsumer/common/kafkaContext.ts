@@ -1,7 +1,8 @@
-import { PrismaClient } from "@prisma/client"
 import { Knex } from "knex"
 import { KafkaConsumer } from "node-rdkafka"
 import { Logger } from "winston"
+
+import { PrismaClient } from "@prisma/client"
 
 import { Mutex } from "../../lib/await-semaphore"
 

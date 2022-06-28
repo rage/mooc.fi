@@ -1,8 +1,9 @@
 import { useCallback } from "react"
 
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
 import { FormikHelpers } from "formik"
 import Router from "next/router"
+
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
 
 import CourseEditForm from "./CourseEditForm"
 import courseEditSchema from "./form-validation"

@@ -1,11 +1,12 @@
+import { NextPageContext } from "next"
+import { AppContext } from "next/app"
+import { renderToString } from "react-dom/server"
+
 import {
   ApolloClient,
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client"
-import { NextPageContext } from "next"
-import { AppContext } from "next/app"
-import { renderToString } from "react-dom/server"
 
 import fetchUserDetails from "./fetch-user-details"
 import getApollo, { initNewApollo } from "./get-apollo"

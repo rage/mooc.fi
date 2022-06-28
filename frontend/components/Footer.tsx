@@ -1,3 +1,6 @@
+import Link from "next/link"
+import { useRouter } from "next/router"
+
 import styled from "@emotion/styled"
 import {
   faFacebook,
@@ -5,8 +8,6 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Link from "next/link"
-import { useRouter } from "next/router"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"

@@ -1,5 +1,6 @@
-import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
 import { DateTime } from "luxon"
+
+import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"

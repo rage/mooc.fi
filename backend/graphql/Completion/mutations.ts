@@ -1,4 +1,3 @@
-import { Completion } from "@prisma/client"
 import { AuthenticationError } from "apollo-server-express"
 import { chunk, difference, groupBy } from "lodash"
 import {
@@ -12,6 +11,8 @@ import {
   stringArg,
 } from "nexus"
 import { v4 as uuidv4 } from "uuid"
+
+import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"

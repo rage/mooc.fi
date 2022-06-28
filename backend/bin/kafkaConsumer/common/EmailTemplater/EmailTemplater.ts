@@ -1,5 +1,6 @@
-import { EmailTemplate, PrismaClient, User } from "@prisma/client"
 import { render } from "micromustache"
+
+import { EmailTemplate, PrismaClient, User } from "@prisma/client"
 
 import * as Templates from "./templates"
 import ITemplateConstructor from "./types/ITemplateConstructor"

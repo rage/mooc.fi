@@ -1,5 +1,6 @@
-import { Autocomplete, Chip, TextField } from "@mui/material"
 import { Controller, useFormContext } from "react-hook-form"
+
+import { Autocomplete, Chip, TextField } from "@mui/material"
 
 import { UserCourseSettingsVisibilityFormValues } from "/components/Dashboard/Editor2/Course/types"
 

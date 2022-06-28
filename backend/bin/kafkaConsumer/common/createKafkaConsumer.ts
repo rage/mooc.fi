@@ -1,8 +1,9 @@
-import type { PrismaClient } from "@prisma/client"
 import * as Kafka from "node-rdkafka"
 import { ConsumerGlobalConfig } from "node-rdkafka"
 import { v4 } from "uuid"
 import winston from "winston"
+
+import type { PrismaClient } from "@prisma/client"
 
 import {
   KAFKA_CONSUMER_GROUP,

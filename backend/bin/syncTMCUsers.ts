@@ -1,8 +1,10 @@
 // import { PrismaClient } from "@prisma/client"
-import { PrismaClient } from "@prisma/client"
+
 import axios from "axios"
 import { groupBy, orderBy } from "lodash"
 import * as winston from "winston"
+
+import { PrismaClient } from "@prisma/client"
 
 import { isTest, TMC_HOST } from "../config"
 import { getAccessToken } from "../services/tmc"

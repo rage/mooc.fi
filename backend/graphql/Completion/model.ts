@@ -1,6 +1,7 @@
-import { UserCourseProgress } from "@prisma/client"
 import { ForbiddenError } from "apollo-server-express"
 import { objectType } from "nexus"
+
+import { UserCourseProgress } from "@prisma/client"
 
 export const Completion = objectType({
   name: "Completion",

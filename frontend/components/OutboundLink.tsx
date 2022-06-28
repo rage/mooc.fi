@@ -1,12 +1,13 @@
 import { PropsWithChildren } from "react"
 
+import ReactGA from "react-ga"
+
 import styled from "@emotion/styled"
 import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons"
 import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
 } from "@fortawesome/react-fontawesome"
-import ReactGA from "react-ga"
 
 interface OutboundLinkProps {
   eventLabel: string

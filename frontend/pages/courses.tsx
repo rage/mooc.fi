@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { useRouter } from "next/router"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"

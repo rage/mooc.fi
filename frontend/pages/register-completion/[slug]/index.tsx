@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@mui/material"
 import axios from "axios"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
+
+import { gql, useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Paper, SvgIcon, Typography } from "@mui/material"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"

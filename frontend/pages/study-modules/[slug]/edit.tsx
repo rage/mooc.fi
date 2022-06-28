@@ -1,12 +1,13 @@
 import { useEffect } from "react"
 
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+import { useRouter } from "next/router"
+
 import { gql, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
-import { NextSeo } from "next-seo"
-import Link from "next/link"
-import { useRouter } from "next/router"
 
 import { WideContainer } from "/components/Container"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"

@@ -1,9 +1,10 @@
-import styled from "@emotion/styled"
-import DoneIcon from "@mui/icons-material/Done"
-import { Avatar, Button, Paper } from "@mui/material"
 import CertificateButton from "components/CertificateButton"
 import { CardSubtitle, CardTitle } from "components/Text/headers"
 import Link from "next/link"
+
+import styled from "@emotion/styled"
+import DoneIcon from "@mui/icons-material/Done"
+import { Avatar, Button, Paper } from "@mui/material"
 
 import {
   formatDateTime,

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 
+import Router from "next/router"
+
 import { gql, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { CircularProgress, Paper } from "@mui/material"
-import Router from "next/router"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"

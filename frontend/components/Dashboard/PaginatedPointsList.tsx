@@ -1,9 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react"
 
+import { range } from "lodash"
+
 import { gql, useLazyQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
-import { range } from "lodash"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"

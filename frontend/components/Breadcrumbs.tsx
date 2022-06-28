@@ -1,7 +1,8 @@
-import styled from "@emotion/styled"
-import { Skeleton } from "@mui/material"
 import { memoize } from "lodash"
 import Link from "next/link"
+
+import styled from "@emotion/styled"
+import { Skeleton } from "@mui/material"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"

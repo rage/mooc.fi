@@ -1,6 +1,7 @@
+import ReactGA from "react-ga"
+
 import styled from "@emotion/styled"
 import { Grid, Skeleton, Typography } from "@mui/material"
-import ReactGA from "react-ga"
 
 import {
   ModuleCardText,

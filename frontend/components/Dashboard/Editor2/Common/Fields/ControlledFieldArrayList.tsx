@@ -1,7 +1,3 @@
-import styled from "@emotion/styled"
-import AddIcon from "@mui/icons-material/Add"
-import RemoveIcon from "@mui/icons-material/Remove"
-import { FormGroup, Typography } from "@mui/material"
 import { useConfirm } from "material-ui-confirm"
 import {
   FieldArrayWithId,
@@ -10,6 +6,11 @@ import {
   useFieldArray,
   useFormContext,
 } from "react-hook-form"
+
+import styled from "@emotion/styled"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
+import { FormGroup, Typography } from "@mui/material"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"

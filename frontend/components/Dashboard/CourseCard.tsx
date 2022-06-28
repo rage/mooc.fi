@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react"
 
+import Link from "next/link"
+
 import styled from "@emotion/styled"
 import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
@@ -11,7 +13,6 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material"
-import Link from "next/link"
 
 import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"

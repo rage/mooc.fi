@@ -1,8 +1,9 @@
 import { useState } from "react"
 
+import { sortBy } from "lodash"
+
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper } from "@mui/material"
-import { sortBy } from "lodash"
 
 import CourseEntry from "./CourseEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"

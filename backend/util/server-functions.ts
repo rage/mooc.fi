@@ -1,5 +1,6 @@
-import { CourseOwnership, Organization, User } from "@prisma/client"
 import { Request, Response } from "express"
+
+import { CourseOwnership, Organization, User } from "@prisma/client"
 
 import { ApiContext } from "../api"
 import { UserInfo } from "../domain/UserInfo"

@@ -1,6 +1,7 @@
-import { Exercise } from "@prisma/client"
 import * as faker from "faker"
 import { sample } from "lodash"
+
+import { Exercise } from "@prisma/client"
 
 import prisma from "../prisma"
 

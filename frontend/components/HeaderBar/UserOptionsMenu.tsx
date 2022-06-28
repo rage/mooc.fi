@@ -1,6 +1,7 @@
-import { useApolloClient } from "@apollo/client"
 import Link from "next/link"
 import nookies from "nookies"
+
+import { useApolloClient } from "@apollo/client"
 
 import ProfileButton from "./ProfileButton"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"

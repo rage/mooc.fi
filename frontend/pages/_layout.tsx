@@ -1,7 +1,8 @@
 import { ReactNode } from "react"
 
-import styled from "@emotion/styled"
 import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"

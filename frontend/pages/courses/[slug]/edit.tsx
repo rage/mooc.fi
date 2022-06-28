@@ -1,11 +1,12 @@
 import { useEffect } from "react"
 
-import styled from "@emotion/styled"
-import Paper from "@mui/material/Paper"
-import Typography from "@mui/material/Typography"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { SingletonRouter, withRouter } from "next/router"
+
+import styled from "@emotion/styled"
+import Paper from "@mui/material/Paper"
+import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"

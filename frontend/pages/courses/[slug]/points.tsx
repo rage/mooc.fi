@@ -1,5 +1,6 @@
-import { gql, useQuery } from "@apollo/client"
 import { NextSeo } from "next-seo"
+
+import { gql, useQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"

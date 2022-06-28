@@ -1,10 +1,11 @@
 import React from "react"
 
+import Link from "next/link"
+import { useRouter } from "next/router"
+
 import styled from "@emotion/styled"
 import Warning from "@mui/icons-material/Warning"
 import { Typography } from "@mui/material"
-import Link from "next/link"
-import { useRouter } from "next/router"
 
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"

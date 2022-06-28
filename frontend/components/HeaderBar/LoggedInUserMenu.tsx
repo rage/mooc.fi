@@ -1,5 +1,7 @@
 import { useContext } from "react"
 
+import Link from "next/link"
+
 import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
@@ -10,7 +12,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
-import Link from "next/link"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
 import LoginStateContext from "/contexts/LoginStateContext"

@@ -1,5 +1,6 @@
-import { useQuery } from "@apollo/client"
 import Link from "next/link"
+
+import { useQuery } from "@apollo/client"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import ErrorMessage from "/components/ErrorMessage"

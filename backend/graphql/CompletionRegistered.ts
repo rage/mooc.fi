@@ -1,7 +1,8 @@
-import { Prisma } from "@prisma/client"
 import { ForbiddenError } from "apollo-server-express"
 import { chunk } from "lodash"
 import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
+
+import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
 import { getCourseOrAliasBySlug } from "../util/graphql-functions"

@@ -1,5 +1,9 @@
 import { useState } from "react"
 
+import { NextSeo } from "next-seo"
+import Router from "next/router"
+import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
+
 import { useApolloClient, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import {
@@ -11,9 +15,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { NextSeo } from "next-seo"
-import Router from "next/router"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
