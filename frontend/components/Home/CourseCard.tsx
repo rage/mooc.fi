@@ -1,14 +1,14 @@
+import CourseImage from "/components/CourseImage"
+import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
+import { CardTitle } from "/components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
 import styled from "@emotion/styled"
 import { Grid, Chip, Skeleton } from "@mui/material"
 import ReactGA from "react-ga"
-import CourseImage from "/components/CourseImage"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
-import { CardTitle } from "/components/Text/headers"
-import { CardText } from "/components/Text/paragraphs"
-import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
-import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
-import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;

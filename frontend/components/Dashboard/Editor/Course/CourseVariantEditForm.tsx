@@ -1,20 +1,19 @@
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { FieldArray, getIn, useFormikContext } from "formik"
-import { Grid, FormControl, FormGroup, Typography } from "@mui/material"
 import { initialVariant } from "./form-validation"
-import AddIcon from "@mui/icons-material/Add"
-import RemoveIcon from "@mui/icons-material/Remove"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import {
   StyledTextField,
   StyledFieldWithAnchor,
   inputLabelProps,
 } from "/components/Dashboard/Editor/common"
-
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import styled from "@emotion/styled"
 import CoursesTranslations from "/translations/courses"
-import { useConfirm } from "material-ui-confirm"
 import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
+import { Grid, FormControl, FormGroup, Typography } from "@mui/material"
+import { FieldArray, getIn, useFormikContext } from "formik"
+import { useConfirm } from "material-ui-confirm"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;

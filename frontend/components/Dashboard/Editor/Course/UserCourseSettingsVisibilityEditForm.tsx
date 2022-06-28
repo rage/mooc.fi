@@ -2,7 +2,6 @@ import {
   CourseFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "/components/Dashboard/Editor/Course/types"
-import { useFormikContext } from "formik"
 import {
   Autocomplete,
   Chip,
@@ -10,6 +9,7 @@ import {
   TextField,
   FormGroup,
 } from "@mui/material"
+import { useFormikContext } from "formik"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,

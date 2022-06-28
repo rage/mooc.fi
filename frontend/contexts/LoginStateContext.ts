@@ -1,5 +1,5 @@
-import { createContext } from "react"
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import { createContext } from "react"
 
 export interface LoginState {
   loggedIn: boolean

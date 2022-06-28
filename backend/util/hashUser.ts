@@ -1,7 +1,8 @@
-import { pick } from "lodash"
+import { User } from "@prisma/client"
 import { createHash } from "crypto"
+import { pick } from "lodash"
 
-export default (user: any) =>
+export default (user: User) =>
   createHash("sha512")
     .update(
       Object.values(

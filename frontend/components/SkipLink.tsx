@@ -1,6 +1,5 @@
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
 

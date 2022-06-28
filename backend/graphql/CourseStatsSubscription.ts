@@ -1,6 +1,5 @@
-import { extendType, idArg, nonNull, objectType } from "nexus"
-
 import { isAdmin, isUser, or, Role } from "../accessControl"
+import { extendType, idArg, nonNull, objectType } from "nexus"
 
 export const CourseStatsSubscription = objectType({
   name: "CourseStatsSubscription",

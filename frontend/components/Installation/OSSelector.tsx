@@ -1,4 +1,5 @@
 import OSSelectorButton from "./OSSelectorButton"
+import userOsContext from "/contexts/UserOSContext"
 import styled from "@emotion/styled"
 import {
   faWindows as Windows,
@@ -6,9 +7,8 @@ import {
   faApple as MAC,
 } from "@fortawesome/free-brands-svg-icons"
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
-
-import userOsContext from "/contexts/UserOSContext"
 import { useContext } from "react"
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;

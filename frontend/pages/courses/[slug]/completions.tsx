@@ -1,5 +1,3 @@
-import { ChangeEvent, useState } from "react"
-
 import { WideContainer } from "/components/Container"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -15,12 +13,12 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { NextSeo } from "next-seo"
-import { useRouter } from "next/router"
-
 import { gql, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
+import { NextSeo } from "next-seo"
+import { useRouter } from "next/router"
+import { ChangeEvent, useState } from "react"
 
 // import useDebounce from "/util/useDebounce"
 

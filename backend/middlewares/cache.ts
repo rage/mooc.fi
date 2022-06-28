@@ -1,13 +1,12 @@
-import { createHash } from "crypto"
-import { plugin } from "nexus"
-
 import { Context } from "../context"
 import { redisify } from "../services/redis"
+import { createHash } from "crypto"
+import { plugin } from "nexus"
 
 export const cachePlugin = () =>
   plugin({
     name: "CachePlugin",
-    onCreateFieldResolver(_config: any) {
+    onCreateFieldResolver(_: any) {
       return async (
         root: any,
         args: Record<string, any>,

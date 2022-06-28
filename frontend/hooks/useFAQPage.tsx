@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react"
-
 import { FAQComponent } from "/components/Home/FAQ/Common"
 import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 
 export function useFAQPage(topic: string) {
   const { locale } = useRouter()

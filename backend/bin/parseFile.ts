@@ -1,7 +1,6 @@
-import { uniqBy } from "lodash"
-
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
+import { uniqBy } from "lodash"
 
 const tmc = new TmcClient()
 

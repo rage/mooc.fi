@@ -1,5 +1,6 @@
-import React, { useMemo } from "react"
-
+import CourseHighlights from "./CourseHighlights"
+import ModuleList from "./ModuleList"
+import ModuleNavi from "./ModuleNavi"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
@@ -11,13 +12,9 @@ import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
-
 import { useQuery } from "@apollo/client"
-
-import CourseHighlights from "./CourseHighlights"
-import ModuleList from "./ModuleList"
-import ModuleNavi from "./ModuleNavi"
+import { useRouter } from "next/router"
+import React, { useMemo } from "react"
 
 // const highlightsBanner = "/static/images/backgroundPattern.svg"
 

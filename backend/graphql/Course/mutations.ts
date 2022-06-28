@@ -1,9 +1,3 @@
-import { UserInputError } from "apollo-server-express"
-import { omit } from "lodash"
-import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
-
-import { Course, Prisma } from "@prisma/client"
-
 import { isAdmin } from "../../accessControl"
 import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
@@ -11,6 +5,10 @@ import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
 import { deleteImage, uploadImage } from "../Image"
+import { Course, Prisma } from "@prisma/client"
+import { UserInputError } from "apollo-server-express"
+import { omit } from "lodash"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 const isNotNull = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined
@@ -432,5 +430,8 @@ const createMutation = async <T extends { id?: string | null } | null>({
   }
 }
 
-const hasId = (data: any): data is any & { id: string | null } => !!data?.id
-const hasNotId = (data: any) => !hasId(data)
+const hasId = <T extends { id?: string | null } | null>(
+  data: T,
+): data is any & { id: string | null } => Boolean(data?.id)
+const hasNotId = <T extends { id?: string | null } | null>(data: T) =>
+  !hasId(data)

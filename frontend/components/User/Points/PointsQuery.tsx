@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
+import { gql } from "@apollo/client"
 
 export const UserPointsQuery = gql`
   query UserPoints {

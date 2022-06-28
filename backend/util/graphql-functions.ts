@@ -1,6 +1,5 @@
-import { UserInputError } from "apollo-server-express"
-
 import { Context } from "../context"
+import { UserInputError } from "apollo-server-express"
 
 export const getCourseOrAliasBySlug =
   (ctx: Context) => async (slug: string) => {

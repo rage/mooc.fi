@@ -1,10 +1,10 @@
-import { useContext } from "react"
-import ButtonBase from "@mui/material/ButtonBase"
-import Typography from "@mui/material/Typography"
+import UserOSContext from "/contexts/UserOSContext"
+import { userOsType } from "/util/getUserOS"
 import styled from "@emotion/styled"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { userOsType } from "/util/getUserOS"
-import UserOSContext from "/contexts/UserOSContext"
+import ButtonBase from "@mui/material/ButtonBase"
+import Typography from "@mui/material/Typography"
+import { useContext } from "react"
 
 interface ButtonProps {
   selected: boolean

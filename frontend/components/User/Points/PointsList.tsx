@@ -1,10 +1,10 @@
+import NoPointsErrorMessage from "./NoPointsErrorMessage"
+import PointsListGrid from "./PointsListGrid"
 import { UserPointsQuery } from "./PointsQuery"
-import { useQuery } from "@apollo/client"
-import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
-import PointsListGrid from "./PointsListGrid"
-import NoPointsErrorMessage from "./NoPointsErrorMessage"
+import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
+import { useQuery } from "@apollo/client"
 
 interface StudentHasPointsProps {
   pointsData: UserPointsData

@@ -1,14 +1,6 @@
-import {
-  ChangeEvent,
-  MouseEvent as ReactMouseEvent,
-  useCallback,
-  useContext,
-} from "react"
-
 import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import FirstPageIcon from "@mui/icons-material/FirstPage"
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft"
@@ -16,6 +8,12 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 import LastPageIcon from "@mui/icons-material/LastPage"
 import { IconButton, TablePagination } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
+import {
+  ChangeEvent,
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useContext,
+} from "react"
 
 const StyledFooter = styled.footer`
   flex-shrink: 0;

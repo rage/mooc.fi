@@ -1,11 +1,3 @@
-import { FormValues } from "/components/Dashboard/Editor/types"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { DateTime } from "luxon"
-import * as Yup from "yup"
-
-import { ApolloClient, DocumentNode } from "@apollo/client"
-
 import {
   CourseAliasFormValues,
   CourseFormValues,
@@ -13,6 +5,12 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
+import { FormValues } from "/components/Dashboard/Editor/types"
+import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
+import { CourseStatus } from "/static/types/generated/globalTypes"
+import { ApolloClient, DocumentNode } from "@apollo/client"
+import { DateTime } from "luxon"
+import * as Yup from "yup"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,

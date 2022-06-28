@@ -1,5 +1,4 @@
-import { useState } from "react"
-
+import ImportPhotoDialog from "./ImportPhotoDialog"
 import {
   FormFieldGroup,
   FormSubtitle,
@@ -14,12 +13,10 @@ import { CourseEditorCourses_courses } from "/static/types/generated/CourseEdito
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
-import { useFormContext } from "react-hook-form"
-
 import { Button } from "@mui/material"
-
-import ImportPhotoDialog from "./ImportPhotoDialog"
+import { useRouter } from "next/router"
+import { useState } from "react"
+import { useFormContext } from "react-hook-form"
 
 interface CourseImageFormProps {
   courses?: CourseEditorCourses_courses[]

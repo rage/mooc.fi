@@ -1,11 +1,10 @@
-import * as winston from "winston"
-
 import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
 import prisma from "./prisma"
 import server from "./server"
 import knex from "./services/knex"
 import { attachPrismaEvents } from "./util/prismaLogger"
 import { wsListen } from "./wsServer"
+import * as winston from "winston"
 
 require("sharp") // image library sharp seems to crash without this require
 

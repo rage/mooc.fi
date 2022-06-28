@@ -1,17 +1,17 @@
 import { initialValues } from "./form-validation"
-import { getIn } from "formik"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import { omit } from "lodash"
 import {
   CourseDetails_course_photo,
   CourseDetails_course,
 } from "/static/types/generated/CourseDetails"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import {
   CourseStatus,
   CourseCreateArg,
   CourseUpsertArg,
 } from "/static/types/generated/globalTypes"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { getIn } from "formik"
+import { omit } from "lodash"
 import { DateTime } from "luxon"
 
 const isProduction = process.env.NODE_ENV === "production"

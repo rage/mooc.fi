@@ -1,3 +1,4 @@
+import { isAdmin } from "../accessControl"
 import {
   objectType,
   inputObjectType,
@@ -6,7 +7,6 @@ import {
   stringArg,
   nonNull,
 } from "nexus"
-import { isAdmin } from "../accessControl"
 
 export const StudyModuleTranslation = objectType({
   name: "StudyModuleTranslation",

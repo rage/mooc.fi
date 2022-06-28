@@ -1,6 +1,6 @@
-import styled from "@emotion/styled"
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
 
 const InfoBox = styled.div`
   margin-bottom: 2rem;

@@ -1,5 +1,3 @@
-import { LibrdKafkaError } from "node-rdkafka"
-
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
 import { Mutex } from "../../lib/await-semaphore"
@@ -11,6 +9,7 @@ import config from "../kafkaConfig"
 import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
 import { MessageYupSchema } from "./validate"
+import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
@@ -34,7 +33,11 @@ const context = {
 consumer.on("ready", () => {
   logger.info("Ready to consume")
   consumer.subscribe(TOPIC_NAME)
-  const consumerImpl = async (error: LibrdKafkaError, messages: any) => {
+
+  const consumerImpl = async (
+    error: LibrdKafkaError,
+    messages: KafkaMessage[],
+  ) => {
     if (error) {
       logger.error(new KafkaError("Error while consuming", error))
       process.exit(-1)

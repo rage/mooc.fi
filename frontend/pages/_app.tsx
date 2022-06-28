@@ -1,7 +1,6 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
-
-import { useEffect, useReducer } from "react"
-
+import createEmotionCache from "../src/createEmotionCache"
+import Layout from "./_layout"
 import AlertContext, { Alert } from "/contexts/AlertContext"
 import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
 import LoginStateContext from "/contexts/LoginStateContext"
@@ -12,18 +11,15 @@ import { fontCss } from "/src/fonts"
 import theme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
-import { ConfirmProvider } from "material-ui-confirm"
-import type { AppContext, AppProps } from "next/app"
-import Head from "next/head"
-import { useRouter } from "next/router"
-
 import { CacheProvider, EmotionCache, Global } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
-
-import createEmotionCache from "../src/createEmotionCache"
-import Layout from "./_layout"
+import { ConfirmProvider } from "material-ui-confirm"
+import type { AppContext, AppProps } from "next/app"
+import Head from "next/head"
+import { useRouter } from "next/router"
+import { useEffect, useReducer } from "react"
 
 fontAwesomeConfig.autoAddCss = false
 

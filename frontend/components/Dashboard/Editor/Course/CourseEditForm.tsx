@@ -1,5 +1,13 @@
-import { memo, useCallback, useMemo, useState } from "react"
-
+import CourseAliasEditForm from "./CourseAliasEditForm"
+import CourseImageInput from "./CourseImageInput"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTranslationEditForm from "./CourseTranslationEditForm"
+import CourseVariantEditForm from "./CourseVariantEditForm"
+import DatePickerField from "./DatePickers"
+import { statuses as statusesT } from "./form-validation"
+import { CourseFormValues } from "./types"
+import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
   CheckboxField,
   EnumeratingAnchor,
@@ -9,22 +17,11 @@ import {
   StyledTextField,
   TabSection,
 } from "/components/Dashboard/Editor/common"
-import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import {
-  Form,
-  Formik,
-  FormikHelpers,
-  useFormikContext,
-  yupToFormErrors,
-} from "formik"
-import * as Yup from "yup"
-
 import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import LocalizationProvider from "@mui/lab/LocalizationProvider"
@@ -42,15 +39,15 @@ import {
   Tab,
   Tabs,
 } from "@mui/material"
-
-import CourseAliasEditForm from "./CourseAliasEditForm"
-import CourseImageInput from "./CourseImageInput"
-import CourseLanguageSelector from "./CourseLanguageSelector"
-import CourseTranslationEditForm from "./CourseTranslationEditForm"
-import CourseVariantEditForm from "./CourseVariantEditForm"
-import DatePickerField from "./DatePickers"
-import { statuses as statusesT } from "./form-validation"
-import { CourseFormValues } from "./types"
+import {
+  Form,
+  Formik,
+  FormikHelpers,
+  useFormikContext,
+  yupToFormErrors,
+} from "formik"
+import { memo, useCallback, useMemo, useState } from "react"
+import * as Yup from "yup"
 
 interface CoverProps {
   covered: boolean

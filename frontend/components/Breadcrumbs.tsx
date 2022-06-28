@@ -2,11 +2,10 @@ import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
 import { useTranslator } from "/util/useTranslator"
-import { memoize } from "lodash"
-import Link from "next/link"
-
 import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
+import { memoize } from "lodash"
+import Link from "next/link"
 
 const BreadcrumbList = styled.ul`
   list-style: none;

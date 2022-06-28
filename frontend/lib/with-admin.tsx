@@ -1,10 +1,9 @@
-import { Component as ReactComponent, PropsWithChildren } from "react"
-
 import AdminError from "/components/Dashboard/AdminError"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
+import { Component as ReactComponent, PropsWithChildren } from "react"
 
 let prevContext: NextContext | null = null
 

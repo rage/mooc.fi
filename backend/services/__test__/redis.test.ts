@@ -1,7 +1,6 @@
+import { redisify } from "../redis"
 import { RedisClientType, RedisModules } from "redis"
 import * as winston from "winston"
-
-import { redisify } from "../redis"
 
 const getMock = jest.fn()
 const setMock = jest.fn()

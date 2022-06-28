@@ -1,16 +1,14 @@
+import fetchUserDetails from "./fetch-user-details"
+import getApollo, { initNewApollo } from "./get-apollo"
 import { getAccessToken } from "/lib/authentication"
-import { NextPageContext } from "next"
-import { AppContext } from "next/app"
-import { renderToString } from "react-dom/server"
-
 import {
   ApolloClient,
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client"
-
-import fetchUserDetails from "./fetch-user-details"
-import getApollo, { initNewApollo } from "./get-apollo"
+import { NextPageContext } from "next"
+import { AppContext } from "next/app"
+import { renderToString } from "react-dom/server"
 
 interface Props {
   apollo: ApolloClient<NormalizedCacheObject>

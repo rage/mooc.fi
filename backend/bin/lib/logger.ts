@@ -1,7 +1,6 @@
+import { isProduction } from "../../config"
 import winston, { format } from "winston"
 import WinstonSentry from "winston-sentry-log"
-
-import { isProduction } from "../../config"
 
 // import { Sentry } from "../../services/sentry"
 

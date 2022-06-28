@@ -1,7 +1,3 @@
-import { DateTime } from "luxon"
-
-import { PrismaClient, UserCourseSetting } from "@prisma/client"
-
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
@@ -10,6 +6,8 @@ import { convertUpdate } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
+import { PrismaClient, UserCourseSetting } from "@prisma/client"
+import { DateTime } from "luxon"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 

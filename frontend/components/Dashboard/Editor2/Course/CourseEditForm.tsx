@@ -1,7 +1,12 @@
-import { useFormContext } from "react-hook-form"
-import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { Tabs, Tab, FormControl, FormLabel, FormGroup } from "@mui/material"
+import CourseImageForm from "./CourseImageForm"
+import CourseInfoForm from "./CourseInfoForm"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTranslationForm from "./CourseTranslationForm"
+import {
+  FormSubtitle,
+  FormFieldGroup,
+  TabSection,
+} from "/components/Dashboard/Editor2/Common"
 import {
   ControlledTextField,
   ControlledSelect,
@@ -10,31 +15,25 @@ import {
   ControlledHiddenField,
   ControlledRadioGroup,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import CourseTranslationForm from "./CourseTranslationForm"
-import DisableAutoComplete from "/components/DisableAutoComplete"
-import { useMemo, useState } from "react"
+import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
+import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
+import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
+import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
-import CourseLanguageSelector from "./CourseLanguageSelector"
-import styled from "@emotion/styled"
-import { useTranslator } from "/util/useTranslator"
-import CoursesTranslations from "/translations/courses"
+import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+import DisableAutoComplete from "/components/DisableAutoComplete"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import CommonTranslations from "/translations/common"
-import {
-  FormSubtitle,
-  FormFieldGroup,
-  TabSection,
-} from "/components/Dashboard/Editor2/Common"
+import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-
-import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
-import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
-import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
-import CourseInfoForm from "./CourseInfoForm"
-import CourseImageForm from "./CourseImageForm"
+import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import { Tabs, Tab, FormControl, FormLabel, FormGroup } from "@mui/material"
+import { useMemo, useState } from "react"
+import { useFormContext } from "react-hook-form"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}

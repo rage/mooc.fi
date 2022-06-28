@@ -1,10 +1,10 @@
-import { plugin } from "nexus"
 import { Context } from "../context"
+import { plugin } from "nexus"
 
 export const loggerPlugin = () =>
   plugin({
     name: "LoggerPlugin",
-    onCreateFieldResolver(_config) {
+    onCreateFieldResolver(_) {
       return async (
         root: any,
         args: any,

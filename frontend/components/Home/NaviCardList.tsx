@@ -1,13 +1,11 @@
+import NaviCard from "./NaviCard"
 import Container from "/components/Container"
 import UkraineInfo from "/components/Home/UkraineInfo"
 import WideNaviCard from "/components/Home/WideNaviCard"
 import PartnerDivider from "/components/PartnerDivider"
 import NaviTranslations from "/translations/navi"
 import { useTranslator } from "/util/useTranslator"
-
 import { Grid } from "@mui/material"
-
-import NaviCard from "./NaviCard"
 
 type NaviItem = {
   title: string

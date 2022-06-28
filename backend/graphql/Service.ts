@@ -1,5 +1,5 @@
-import { objectType, extendType, idArg, stringArg, nonNull } from "nexus"
 import { isAdmin } from "../accessControl"
+import { objectType, extendType, idArg, stringArg, nonNull } from "nexus"
 
 export const Service = objectType({
   name: "Service",

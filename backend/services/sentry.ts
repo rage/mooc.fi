@@ -1,10 +1,8 @@
-import * as path from "path"
-
-import { RewriteFrames } from "@sentry/integrations"
-import * as Sentry from "@sentry/node"
-
 import { GIT_COMMIT, SENTRY_DSN } from "../config"
 import rootdir from "../root"
+import { RewriteFrames } from "@sentry/integrations"
+import * as Sentry from "@sentry/node"
+import * as path from "path"
 
 Sentry.init({
   dsn: SENTRY_DSN,

@@ -1,8 +1,3 @@
-import * as mime from "mime-types"
-import * as shortid from "shortid"
-
-import { Storage } from "@google-cloud/storage"
-
 import {
   GOOGLE_CLOUD_STORAGE_BUCKET,
   GOOGLE_CLOUD_STORAGE_KEYFILE,
@@ -10,6 +5,9 @@ import {
   isProduction,
   NEXUS_REFLECTION,
 } from "../config"
+import { Storage } from "@google-cloud/storage"
+import * as mime from "mime-types"
+import * as shortid from "shortid"
 
 if (!GOOGLE_CLOUD_STORAGE_BUCKET && isProduction && !NEXUS_REFLECTION) {
   console.error("no bucket name defined in GOOGLE_CLOUD_STORAGE_BUCKET")

@@ -1,10 +1,11 @@
-import { PropsWithChildren } from "react"
-
-import ReactGA from "react-ga"
-
 import styled from "@emotion/styled"
 import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from "@fortawesome/react-fontawesome"
+import { PropsWithChildren } from "react"
+import ReactGA from "react-ga"
 
 interface OutboundLinkProps {
   eventLabel: string
@@ -12,8 +13,8 @@ interface OutboundLinkProps {
   label?: string
 }
 
-const ExternalLinkIcon = styled((props: any) => (
-  <FontAwesomeIcon icon={faUpRightFromSquare} size="xs" {...props} />
+const ExternalLinkIcon = styled((props: Partial<FontAwesomeIconProps>) => (
+  <FontAwesomeIcon {...props} icon={faUpRightFromSquare} size="xs" />
 ))`
   padding-left: 0.25rem;
 `

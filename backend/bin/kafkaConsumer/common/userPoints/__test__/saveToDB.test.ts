@@ -1,5 +1,3 @@
-import { UserInputError } from "apollo-server-express"
-
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
@@ -11,6 +9,7 @@ import { DatabaseInputError } from "../../../../lib/errors"
 import { KafkaContext } from "../../kafkaContext"
 import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"
+import { UserInputError } from "apollo-server-express"
 
 const ctx = getTestContext()
 const tmc = fakeTMCSpecific({

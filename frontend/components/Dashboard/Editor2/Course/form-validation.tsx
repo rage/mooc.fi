@@ -1,10 +1,3 @@
-import { testUnique } from "/components/Dashboard/Editor2/Common"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { DateTime } from "luxon"
-import * as Yup from "yup"
-
-import { ApolloClient, DocumentNode } from "@apollo/client"
-
 import {
   CourseAliasFormValues,
   CourseFormValues,
@@ -12,6 +5,11 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
+import { testUnique } from "/components/Dashboard/Editor2/Common"
+import { CourseStatus } from "/static/types/generated/globalTypes"
+import { ApolloClient, DocumentNode } from "@apollo/client"
+import { DateTime } from "luxon"
+import * as Yup from "yup"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,

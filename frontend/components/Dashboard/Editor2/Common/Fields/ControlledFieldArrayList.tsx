@@ -3,6 +3,10 @@ import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
 import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
+import { FormGroup, Typography } from "@mui/material"
 import { useConfirm } from "material-ui-confirm"
 import {
   FieldArrayWithId,
@@ -11,11 +15,6 @@ import {
   useFieldArray,
   useFormContext,
 } from "react-hook-form"
-
-import styled from "@emotion/styled"
-import AddIcon from "@mui/icons-material/Add"
-import RemoveIcon from "@mui/icons-material/Remove"
-import { FormGroup, Typography } from "@mui/material"
 
 export const ArrayList = styled.ul`
   list-style: none;

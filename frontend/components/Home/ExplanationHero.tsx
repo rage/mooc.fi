@@ -1,6 +1,5 @@
-import styled from "@emotion/styled"
-
 import Explanation from "./Explanation"
+import styled from "@emotion/styled"
 
 const ExplanationRoot = styled.section`
   display: flex;

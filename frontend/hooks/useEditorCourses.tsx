@@ -1,12 +1,12 @@
-import { useQuery } from "@apollo/client"
 import {
   CourseEditorStudyModuleQuery,
   CourseEditorCoursesQuery,
 } from "/graphql/queries/courses"
-import { CourseDetails } from "/static/types/generated/CourseDetails"
-import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
-import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
 import { CourseQuery } from "/graphql/queries/courses"
+import { CourseDetails } from "/static/types/generated/CourseDetails"
+import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
+import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
+import { useQuery } from "@apollo/client"
 
 interface UseEditorCoursesProps {
   slug?: string

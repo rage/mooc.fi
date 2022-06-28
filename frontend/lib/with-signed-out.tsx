@@ -1,8 +1,7 @@
-import { Component as ReactComponent, PropsWithChildren } from "react"
-
 import { isSignedIn } from "/lib/authentication"
 import redirectTo from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
+import { Component as ReactComponent, PropsWithChildren } from "react"
 
 // TODO: add more redirect parameters?
 export default function withSignedOut(redirect = "/") {

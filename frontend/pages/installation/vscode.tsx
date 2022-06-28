@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-
 import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
 import Spinner from "/components/Spinner"
@@ -7,17 +5,17 @@ import UserOSContext from "/contexts/UserOSContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import MDX_Linux_en from "/static/md_pages/vscode_installation_Linux_en.mdx"
 import MDX_Linux from "/static/md_pages/vscode_installation_Linux_fi.mdx"
-import MDX_MAC_en from "/static/md_pages/vscode_installation_macOS_en.mdx"
-import MDX_MAC from "/static/md_pages/vscode_installation_macOS_fi.mdx"
 import MDX_Windows_en from "/static/md_pages/vscode_installation_Windows_en.mdx"
 import MDX_Windows from "/static/md_pages/vscode_installation_Windows_fi.mdx"
+import MDX_MAC_en from "/static/md_pages/vscode_installation_macOS_en.mdx"
+import MDX_MAC from "/static/md_pages/vscode_installation_macOS_fi.mdx"
 import InstallationTranslations from "/translations/installation"
 import getUserOS, { userOsType } from "/util/getUserOS"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
-
 import styled from "@emotion/styled"
 import Typography from "@mui/material/Typography"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 
 const Background = styled.section`
   padding-top: 2em;

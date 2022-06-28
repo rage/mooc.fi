@@ -1,14 +1,14 @@
+import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
 import {
   ErrorMessageBackground as StyledCard,
   ErrorMessageContentArea as StyledCardContent,
 } from "/components/Surfaces/ErrorMessageBackground"
-import Report from "@mui/icons-material/Report"
-import Typography from "@mui/material/Typography"
-import styled from "@emotion/styled"
-import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
-import Refresh from "@mui/icons-material/Refresh"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import Refresh from "@mui/icons-material/Refresh"
+import Report from "@mui/icons-material/Report"
+import Typography from "@mui/material/Typography"
 
 const StyledIcon = styled(Report)`
   height: 35%;

@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { StyledTextField } from "/components/Dashboard/Editor/common"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
 } from "/static/types/generated/CourseEditorCourses"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import CoursesTranslations from "/translations/courses"
+import { addDomain } from "/util/imageUtils"
+import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
 import {
   Dialog,
   DialogTitle,
@@ -14,11 +18,7 @@ import {
   Button,
 } from "@mui/material"
 import { Field, useFormikContext } from "formik"
-import { StyledTextField } from "/components/Dashboard/Editor/common"
-import { addDomain } from "/util/imageUtils"
-import CoursesTranslations from "/translations/courses"
-import styled from "@emotion/styled"
-import { useTranslator } from "/util/useTranslator"
+import { useEffect, useState } from "react"
 
 const ImageContainer = styled.div`
   display: flex;

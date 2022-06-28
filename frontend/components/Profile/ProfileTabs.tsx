@@ -1,7 +1,7 @@
-import { ChangeEvent, PropsWithChildren } from "react"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 import { Tab, Tabs } from "@mui/material"
+import { ChangeEvent, PropsWithChildren } from "react"
 
 interface ProfileTabsProps {
   selected: number

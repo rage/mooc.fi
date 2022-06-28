@@ -1,13 +1,11 @@
-import { ForbiddenError } from "apollo-server-express"
-import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
-
-import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
-import { Prisma } from "@prisma/client"
-
 // import { convertPagination } from "../../util/db-functions"
 import { isAdmin, isOrganization, or } from "../../accessControl"
 import { buildUserSearch } from "../../util/db-functions"
 import { getCourseOrAliasBySlug } from "../../util/graphql-functions"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
+import { ForbiddenError } from "apollo-server-express"
+import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 export const CompletionQueries = extendType({
   type: "Query",

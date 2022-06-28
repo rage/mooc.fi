@@ -1,3 +1,7 @@
+import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { filterNull } from "../../util/db-functions"
+import { notEmpty } from "../../util/notEmpty"
+import { Course, CourseTranslation, Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import {
@@ -10,12 +14,6 @@ import {
   nullable,
   stringArg,
 } from "nexus"
-
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
-
-import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull } from "../../util/db-functions"
-import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
   type: "Query",

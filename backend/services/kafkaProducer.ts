@@ -1,7 +1,6 @@
+import { KAFKA_HOST } from "../config"
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
-
-import { KAFKA_HOST } from "../config"
 
 const logger = winston.createLogger({
   level: "info",

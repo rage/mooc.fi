@@ -1,5 +1,31 @@
-import { useCallback, useEffect, useState } from "react"
+import { languages, initialTranslation } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+import {
+  StyledField,
+  StyledTextField,
+  OutlinedFormControl,
+  OutlinedInputLabel,
+  OutlinedFormGroup,
+  StyledFieldWithAnchor,
+} from "/components/Dashboard/Editor/common"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import ModulesTranslations from "/translations/study-modules"
+import useDebounce from "/util/useDebounce"
+import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import HelpIcon from "@mui/icons-material/Help"
+import {
+  Grid,
+  MenuItem,
+  Typography,
+  InputAdornment,
+  Tooltip,
+} from "@mui/material"
 import {
   Formik,
   Form,
@@ -9,35 +35,9 @@ import {
   getIn,
   useFormikContext,
 } from "formik"
-import {
-  Grid,
-  MenuItem,
-  Typography,
-  InputAdornment,
-  Tooltip,
-} from "@mui/material"
-import * as Yup from "yup"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { languages, initialTranslation } from "./form-validation"
-import styled from "@emotion/styled"
-import useDebounce from "/util/useDebounce"
-import HelpIcon from "@mui/icons-material/Help"
-import {
-  StyledField,
-  StyledTextField,
-  OutlinedFormControl,
-  OutlinedInputLabel,
-  OutlinedFormGroup,
-  StyledFieldWithAnchor,
-} from "/components/Dashboard/Editor/common"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
-import { EntryContainer } from "/components/Surfaces/EntryContainer"
-import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
-import ModulesTranslations from "/translations/study-modules"
 import { useConfirm } from "material-ui-confirm"
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
-import { useTranslator } from "/util/useTranslator"
+import { useCallback, useEffect, useState } from "react"
+import * as Yup from "yup"
 
 const FormContainer = styled.div`
   background-color: white;

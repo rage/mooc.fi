@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react"
 import { BreadcrumbsTranslations } from "/translations/breadcrumbs"
+import { createContext, useContext } from "react"
 
 export interface Breadcrumb {
   translation?: keyof BreadcrumbsTranslations

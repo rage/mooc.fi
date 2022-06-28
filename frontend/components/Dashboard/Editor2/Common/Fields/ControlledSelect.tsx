@@ -5,14 +5,13 @@ import {
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
+import { MenuItem, TextField } from "@mui/material"
 import {
   Path,
   PathValue,
   UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
-
-import { MenuItem, TextField } from "@mui/material"
 
 interface ControlledSelectProps<T> extends ControlledFieldProps {
   items: T[]

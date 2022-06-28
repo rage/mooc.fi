@@ -1,5 +1,3 @@
-import { knex } from "knex"
-
 import {
   DB_HOST,
   DB_NAME,
@@ -8,6 +6,7 @@ import {
   DB_USER,
   isProduction,
 } from "../config"
+import { knex } from "knex"
 
 const connection = {
   host: DB_HOST,

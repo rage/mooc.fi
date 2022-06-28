@@ -1,12 +1,10 @@
-import { Request, Response } from "express"
-
-import { CourseOwnership, Organization, User } from "@prisma/client"
-
 import { ApiContext } from "../api"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { err, ok, Result } from "../util/result"
+import { CourseOwnership, Organization, User } from "@prisma/client"
+import { Request, Response } from "express"
 
 interface GetUserReturn {
   user: User
@@ -70,8 +68,8 @@ export function requireAdmin(ctx: ApiContext) {
 
 export function getUser({ knex, logger }: ApiContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<GetUserReturn, any>> {
     const rawToken = req.get("Authorization")
 

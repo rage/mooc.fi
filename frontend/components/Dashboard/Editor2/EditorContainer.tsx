@@ -1,12 +1,8 @@
-import { PropsWithChildren, useState } from "react"
-
+import { useEditorContext } from "./EditorContext"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormStatus, FormValues } from "/components/Dashboard/Editor2/types"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-import { useConfirm } from "material-ui-confirm"
-import { Path, useFormContext } from "react-hook-form"
-
 import styled from "@emotion/styled"
 import {
   Checkbox,
@@ -16,8 +12,9 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material"
-
-import { useEditorContext } from "./EditorContext"
+import { useConfirm } from "material-ui-confirm"
+import { PropsWithChildren, useState } from "react"
+import { Path, useFormContext } from "react-hook-form"
 
 const isProduction = process.env.NODE_ENV === "production"
 

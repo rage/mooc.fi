@@ -1,5 +1,3 @@
-import { FC, useCallback, useContext } from "react"
-
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import {
@@ -8,9 +6,6 @@ import {
 } from "/static/types/generated/UserDetailsContains"
 import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
-import range from "lodash/range"
-import Link from "next/link"
-
 import styled from "@emotion/styled"
 import {
   Button,
@@ -27,6 +22,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import range from "lodash/range"
+import Link from "next/link"
+import { FC, useCallback, useContext } from "react"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;

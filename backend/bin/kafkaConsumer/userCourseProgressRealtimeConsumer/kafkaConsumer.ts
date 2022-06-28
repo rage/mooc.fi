@@ -1,5 +1,3 @@
-import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
-
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
 import { Mutex } from "../../lib/await-semaphore"
@@ -15,6 +13,7 @@ import {
   MessageYupSchema,
 } from "../common/userCourseProgress/validate"
 import config from "../kafkaConfig"
+import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
@@ -38,6 +37,7 @@ const context = {
 consumer.on("ready", () => {
   logger.info("Ready to consume")
   consumer.subscribe(TOPIC_NAME)
+
   const consumerImpl = async (
     error: LibrdKafkaError,
     messages: KafkaMessage[],
@@ -70,5 +70,6 @@ consumer.on("ready", () => {
       }, 10)
     }
   }
+
   consumer.consume(1, consumerImpl)
 })

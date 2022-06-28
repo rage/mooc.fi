@@ -1,8 +1,7 @@
-import { Request, Response } from "express-serve-static-core"
-import { omit } from "lodash"
-
 import { getUser, requireCourseOwnership } from "../util/server-functions"
 import { ApiContext } from "./"
+import { Request, Response } from "express-serve-static-core"
+import { omit } from "lodash"
 
 export class StoredDataController {
   constructor(readonly ctx: ApiContext) {}

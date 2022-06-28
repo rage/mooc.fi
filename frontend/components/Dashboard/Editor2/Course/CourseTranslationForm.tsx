@@ -1,15 +1,15 @@
-import { useFormContext } from "react-hook-form"
-import { Typography } from "@mui/material"
 import {
   ControlledTextField,
   ControlledHiddenField,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import { useTranslator } from "/util/useTranslator"
-import CoursesTranslations from "/translations/courses"
-import styled from "@emotion/styled"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import { Typography } from "@mui/material"
+import { useFormContext } from "react-hook-form"
 
 const LanguageVersionTitle = styled(Typography)<any>`
   margin-bottom: 1.5rem;

@@ -1,10 +1,10 @@
 import Container from "/components/Container"
-import PointsList from "/components/User/Points/PointsList"
 import { H1NoBackground } from "/components/Text/headers"
+import PointsList from "/components/User/Points/PointsList"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 function Points() {
   const t = useTranslator(CoursesTranslations)

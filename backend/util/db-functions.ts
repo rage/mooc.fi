@@ -1,12 +1,11 @@
-import { Knex } from "knex"
-
-import { Prisma } from "@prisma/client"
-
 import { CIRCLECI } from "../config"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
+import { Prisma } from "@prisma/client"
+import { Knex } from "knex"
 
-const flatten = (arr: any[]) => arr.reduce((acc, val) => acc.concat(val), [])
+const flatten = <T>(arr: T[]) =>
+  arr.reduce<T[]>((acc, val) => acc.concat(val), [])
 const titleCase = (s?: string) =>
   s && s.length > 0
     ? s.toLowerCase()[0].toUpperCase() + s.toLowerCase().slice(1)

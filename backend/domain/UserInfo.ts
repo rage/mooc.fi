@@ -28,10 +28,10 @@ export interface OrganizationInfo {
   created_at: string
   updated_at: string
   hidden: boolean
-  creator_id: Number
+  creator_id: number
   logo_file_name: string | null
   logo_content_type: string | null
-  logo_file_size: Number | null
+  logo_file_size: number | null
   logo_updated_at: string
   phone: string
   contact_information: string | null

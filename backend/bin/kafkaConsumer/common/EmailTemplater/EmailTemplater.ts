@@ -1,11 +1,9 @@
-import { render } from "micromustache"
-
-import { EmailTemplate, PrismaClient, User } from "@prisma/client"
-
 import * as Templates from "./templates"
 import ITemplateConstructor from "./types/ITemplateConstructor"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
 import Template from "./types/Template"
+import { EmailTemplate, PrismaClient, User } from "@prisma/client"
+import { render } from "micromustache"
 
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {
@@ -37,13 +35,13 @@ export class EmailTemplater {
 
   private prepare() {
     Object.getOwnPropertyNames(this.keyWordToTemplate).forEach((p) => {
-      this.keyWordToTemplate[p] = <Template>(
-        new (<ITemplateConstructor>this.keyWordToTemplate[p])({
-          emailTemplate: this.emailTemplate,
-          user: this.user,
-          prisma: this.prisma,
-        })
-      )
+      this.keyWordToTemplate[p] = new (this.keyWordToTemplate[
+        p
+      ] as ITemplateConstructor)({
+        emailTemplate: this.emailTemplate,
+        user: this.user,
+        prisma: this.prisma,
+      }) as Template
     })
   }
 
@@ -51,14 +49,17 @@ export class EmailTemplater {
     await this.asyncForEach(
       Object.getOwnPropertyNames(this.keyWordToTemplate),
       async (p: string) => {
-        this.keyWordToTemplate[p] = <string>(
-          await (<Template>this.keyWordToTemplate[p]).resolve()
-        )
+        this.keyWordToTemplate[p] = (await (
+          this.keyWordToTemplate[p] as Template
+        ).resolve()) as string
       },
     )
   }
 
-  async asyncForEach(array: any[], callback: Function) {
+  async asyncForEach(
+    array: (keyof KeyWordToTemplateType)[],
+    callback: Function,
+  ) {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array)
     }

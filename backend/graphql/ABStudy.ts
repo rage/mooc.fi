@@ -1,6 +1,6 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
 import { isAdmin } from "../accessControl"
 import { Context } from "../context"
+import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
 
 export const ABStudy = objectType({
   name: "AbStudy",

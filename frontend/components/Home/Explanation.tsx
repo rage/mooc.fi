@@ -1,9 +1,9 @@
+import { H1NoBackground } from "/components/Text/headers"
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
-import styled from "@emotion/styled"
-import HomeTranslations from "/translations/home"
-import { H1NoBackground } from "/components/Text/headers"
-import { useTranslator } from "/util/useTranslator"
 
 const ExplanationRoot = styled.div`
   max-width: 80%;

@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react"
-
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
 import FilterMenu from "/components/FilterMenu"
@@ -12,16 +10,16 @@ import {
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
-
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
+import { useRouter } from "next/router"
+import React, { useEffect, useState } from "react"
 
 const Background = styled.section`
   background-color: #61baad;

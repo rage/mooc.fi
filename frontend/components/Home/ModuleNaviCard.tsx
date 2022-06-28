@@ -4,10 +4,9 @@ import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
-import Link from "next/link"
-
 import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
+import Link from "next/link"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;

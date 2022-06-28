@@ -1,6 +1,3 @@
-import { Message as KafkaMessage } from "node-rdkafka"
-import * as yup from "yup"
-
 import { Result } from "../../../util/result"
 import {
   DatabaseInputError,
@@ -9,13 +6,15 @@ import {
 } from "../../lib/errors"
 import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
+import { Message as KafkaMessage } from "node-rdkafka"
+import * as yup from "yup"
 
 // Each partition has their own commit counter
 let commitCounterMap = new Map<number, number>()
 
 const commitInterval = config.commit_interval
 
-interface HandleMessageConfig<Message extends { timestamp: string }> {
+interface HandleMessageArgs<Message extends { timestamp: string }> {
   context: KafkaContext
   kafkaMessage: KafkaMessage
   MessageYupSchema: yup.ObjectSchema<any>
@@ -30,23 +29,27 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   context,
   MessageYupSchema,
   saveToDatabase,
-}: HandleMessageConfig<Message>) => {
+}: HandleMessageArgs<Message>) => {
   const { mutex, logger } = context
   //Going to mutex
   const release = await mutex.acquire()
+
   logger.info("Handling a message.", {
     topic: kafkaMessage.topic,
     offset: kafkaMessage.offset,
     partition: kafkaMessage.partition,
     key: kafkaMessage.key,
   })
+
   let message: Message
+
   try {
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (error: any) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
     await commit(context, kafkaMessage)
     release()
+
     return
   }
 
@@ -56,6 +59,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     logger.error(new ValidationError("JSON validation failed", message, error))
     await commit(context, kafkaMessage)
     release()
+
     return
   }
 

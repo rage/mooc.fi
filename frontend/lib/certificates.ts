@@ -1,5 +1,5 @@
-import axios from "axios"
 import { getAccessToken } from "./authentication"
+import axios from "axios"
 
 const SERVICE_URL = "https://certificates.mooc.fi"
 

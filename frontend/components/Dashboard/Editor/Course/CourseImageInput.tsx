@@ -1,20 +1,17 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react"
-
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import { FormFieldGroup } from "./CourseEditForm"
+import { CourseFormValues } from "./types"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+import { Button, FormControl } from "@mui/material"
 import { Field, FieldInputProps, useFormikContext } from "formik"
 import { useRouter } from "next/router"
-
-import { Button, FormControl } from "@mui/material"
-
-import { FormFieldGroup } from "./CourseEditForm"
-import { CourseFormValues } from "./types"
+import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react"
 
 interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
@@ -71,7 +68,9 @@ const CourseImageInput = (props: ImageInputProps) => {
             <ImageDropzoneInput
               {...props}
               onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
-              onImageAccepted={(value) => setFieldValue("new_photo", value)}
+              onImageAccepted={(value: any) =>
+                setFieldValue("new_photo", value)
+              }
             >
               <ImagePreview
                 file={addDomain(values.thumbnail)}

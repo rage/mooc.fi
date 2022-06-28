@@ -1,4 +1,3 @@
-import React from "react"
 import {
   FormSubtitle,
   FormFieldGroup,
@@ -9,6 +8,7 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
+import React from "react"
 
 export default function CourseInfoForm() {
   const t = useTranslator(CoursesTranslations)

@@ -1,11 +1,10 @@
-import { useCallback } from "react"
-import {
-  useFormContext,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-} from "react-hook-form"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
+import {
+  ControlledFieldProps,
+  FieldController,
+} from "/components/Dashboard/Editor2/Common/Fields"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import styled from "@emotion/styled"
 import {
   FormControl,
   FormLabel,
@@ -15,12 +14,13 @@ import {
   List,
   ListItem,
 } from "@mui/material"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import styled from "@emotion/styled"
+import { useCallback } from "react"
 import {
-  ControlledFieldProps,
-  FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
+  useFormContext,
+  Path,
+  PathValue,
+  UnpackNestedValue,
+} from "react-hook-form"
 
 const ModuleList = styled(List)`
   padding: 0px;

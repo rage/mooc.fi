@@ -1,15 +1,13 @@
-import { Component } from "react"
-
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
 import getTranslator from "/translations"
 import SignUpTranslations from "/translations/sign-up"
-import Link from "next/link"
-import { NextRouter, withRouter } from "next/router"
-
 import styled from "@emotion/styled"
 import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import Link from "next/link"
+import { NextRouter, withRouter } from "next/router"
+import { Component } from "react"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -84,7 +82,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
     setTimeout(clearFields, 1000)
   }
 
-  onClick = async (e: any) => {
+  onClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
 
     const t = getSignUpTranslator(this.props.router.locale ?? "fi")
@@ -141,7 +139,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
     }
   }
 
-  handleInput = (e: any) => {
+  handleInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const name = e.target.name
     const value = e.target.value
     this.setState({ [name]: value }, () => {

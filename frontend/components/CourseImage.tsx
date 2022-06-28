@@ -1,10 +1,8 @@
-import { memo } from "react"
-
 import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
 import { addDomain } from "/util/imageUtils"
-
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { memo } from "react"
 
 const ComponentStyle = `
   width: 100%;

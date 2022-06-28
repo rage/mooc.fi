@@ -1,5 +1,4 @@
 import { BackgroundImage } from "/components/Images/GraphicBackground"
-
 import styled from "@emotion/styled"
 
 interface RootProps {

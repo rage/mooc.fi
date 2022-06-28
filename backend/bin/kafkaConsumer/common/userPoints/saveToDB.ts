@@ -1,20 +1,12 @@
-import { UserInputError } from "apollo-server-express"
-import { Knex } from "knex"
-import { DateTime } from "luxon"
-
-import { ExerciseCompletion } from "@prisma/client"
-
 import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userCourseProgress/userFunctions"
 import { Message } from "./interfaces"
-
-// @ts-ignore: not used
-const isUserInDB = async (user_id: number, knex: Knex) => {
-  return await knex("user").where("upstream_id", "=", user_id)
-}
+import { ExerciseCompletion } from "@prisma/client"
+import { UserInputError } from "apollo-server-express"
+import { DateTime } from "luxon"
 
 export const saveToDatabase = async (
   context: KafkaContext,
@@ -26,7 +18,7 @@ export const saveToDatabase = async (
   logger.info("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  logger.info(`Checking if user ${message.user_id} exists.`)
+  logger.info(`Checking if user ${message.user_id} exists`)
 
   const user = await getUserWithRaceCondition(context, message.user_id)
 

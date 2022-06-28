@@ -1,6 +1,6 @@
+import { SlackPosterError } from "./errors"
 import axios from "axios"
 import * as winston from "winston"
-import { SlackPosterError } from "./errors"
 
 export default class SlackPoster {
   // @ts-ignore: not used for now

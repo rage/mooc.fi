@@ -1,4 +1,7 @@
+import { isAdmin, Role } from "../accessControl"
+import { filterNull } from "../util/db-functions"
 import { Context } from "/context"
+import { Prisma } from "@prisma/client"
 import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
@@ -10,11 +13,6 @@ import {
   objectType,
   stringArg,
 } from "nexus"
-
-import { Prisma } from "@prisma/client"
-
-import { isAdmin, Role } from "../accessControl"
-import { filterNull } from "../util/db-functions"
 
 export const Exercise = objectType({
   name: "Exercise",

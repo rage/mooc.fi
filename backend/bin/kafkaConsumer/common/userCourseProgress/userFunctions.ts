@@ -1,11 +1,4 @@
 import {
-  Course,
-  User,
-  UserCourseServiceProgress,
-  UserCourseSetting,
-} from "@prisma/client"
-
-import {
   completionLanguageMap,
   LanguageAbbreviation,
 } from "../../../../config/languageConfig"
@@ -18,6 +11,12 @@ import {
   ServiceProgressPartType,
   ServiceProgressType,
 } from "./interfaces"
+import {
+  Course,
+  User,
+  UserCourseServiceProgress,
+  UserCourseSetting,
+} from "@prisma/client"
 
 export const getCombinedUserCourseProgress = async ({
   user,
@@ -169,7 +168,7 @@ export const getUserCourseSettings = async ({
   )
 }
 
-interface CheckCompletion {
+interface CheckCompletionArgs {
   user: User
   course: Course
   handler?: Course | null
@@ -183,7 +182,7 @@ export const checkCompletion = async ({
   handler,
   combinedProgress,
   context,
-}: CheckCompletion) => {
+}: CheckCompletionArgs) => {
   let combined = combinedProgress
 
   const handlerCourse = handler ?? course
@@ -214,7 +213,7 @@ export const checkCompletion = async ({
   }
 }
 
-interface CreateCompletion {
+interface CreateCompletionArgs {
   user: User
   course: Course
   handler?: Course | null
@@ -228,7 +227,7 @@ export const createCompletion = async ({
   handler,
   context,
   tier,
-}: CreateCompletion) => {
+}: CreateCompletionArgs) => {
   const { logger, prisma } = context
 
   const userCourseSettings = await getUserCourseSettings({

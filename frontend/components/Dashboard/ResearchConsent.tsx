@@ -1,8 +1,8 @@
-import { ChangeEvent } from "react"
 import CommonTranslations from "/translations/common"
-import { Link, RadioGroup, FormControlLabel, Radio } from "@mui/material"
-import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
+import styled from "@emotion/styled"
+import { Link, RadioGroup, FormControlLabel, Radio } from "@mui/material"
+import { ChangeEvent } from "react"
 
 const Row = styled.div`
   margin-bottom: 1.5rem;

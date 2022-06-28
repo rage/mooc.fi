@@ -1,8 +1,6 @@
-import * as winston from "winston"
-
-import type { Prisma, PrismaClient } from "@prisma/client"
-
 import { PRISMA_LOG_LEVELS } from "../config"
+import type { Prisma, PrismaClient } from "@prisma/client"
+import * as winston from "winston"
 
 const logLevel: Prisma.LogLevel[] | undefined = PRISMA_LOG_LEVELS?.split(
   ",",

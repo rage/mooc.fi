@@ -1,6 +1,5 @@
-import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
-
 import { isAdmin } from "../../accessControl"
+import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 export const Course = objectType({
   name: "Course",

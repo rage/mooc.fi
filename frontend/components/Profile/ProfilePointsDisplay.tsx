@@ -7,9 +7,8 @@ import { UserPointsQuery } from "/components/User/Points/PointsQuery"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-import Link from "next/link"
-
 import { useQuery } from "@apollo/client"
+import Link from "next/link"
 
 const ProfilePointsDisplay = () => {
   const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)

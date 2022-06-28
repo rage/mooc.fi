@@ -8,12 +8,11 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { AllEmailTemplates } from "/static/types/generated/AllEmailTemplates"
 import notEmpty from "/util/notEmpty"
-import Link from "next/link"
-
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
+import Link from "next/link"
 
 const Background = styled.section`
   background-color: #61baad;

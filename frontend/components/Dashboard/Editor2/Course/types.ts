@@ -1,5 +1,5 @@
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { CourseDetails_course_photo } from "/static/types/generated/CourseDetails"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import { DateTime } from "luxon"
 
 interface FormValues {
