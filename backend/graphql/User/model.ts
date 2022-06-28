@@ -222,6 +222,7 @@ export const User = objectType({
         includeDeleted: nullable(booleanArg()),
       },
       resolve: async (parent, { includeDeleted = false }, ctx) => {
+        // TODO: only get the newest per exercise?
         return ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
@@ -239,6 +240,7 @@ export const User = objectType({
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
       resolve: async (parent, _, ctx) => {
+        // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const exerciseCompletionCourses = await ctx.prisma.user
           .findUnique({

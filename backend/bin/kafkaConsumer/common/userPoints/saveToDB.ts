@@ -52,33 +52,44 @@ export const saveToDatabase = async (
   }
 
   logger.info("Getting the exercise completion")
-  const exerciseCompleted = (
-    await prisma.user
-      .findUnique({
-        where: {
-          upstream_id: Number(message.user_id),
+  const exerciseCompletions = await prisma.user
+    .findUnique({
+      where: {
+        upstream_id: Number(message.user_id),
+      },
+    })
+    .exercise_completions({
+      where: {
+        exercise: {
+          id: exercise.id,
         },
-      })
-      .exercise_completions({
-        where: {
-          exercise: {
-            custom_id: message.exercise_id?.toString(),
-          },
-        },
-        orderBy: { timestamp: "desc" },
-        include: {
-          exercise_completion_required_actions: true,
-        },
-        take: 1,
-      })
-  )?.[0]
+      },
+      orderBy: { timestamp: "desc", updated_at: "desc" },
+      include: {
+        exercise_completion_required_actions: true,
+      },
+    })
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion
 
   const required_actions = message.completed ? [] : message.required_actions
 
-  if (!exerciseCompleted) {
+  // TODO:
+  // when updating the exercise completion:
+  // - we should check if there are any required actions attached to
+  //   exercise completions other than the newest and attach them to the new one
+  // - prune the extra exercise completions (would this then remove the actions as well?)
+  // - if it's completed, we should remove all required actions
+
+  /*const uniqueRequiredActionValuesAcrossAllCompletions = uniq(
+    exerciseCompletions
+      .filter((ec) => !ec.completed)
+      .flatMap((ec) => ec.exercise_completion_required_actions?.map((a) => a.value))
+      .filter(notEmpty)
+  )*/
+
+  if (exerciseCompletions.length === 0) {
     logger.info("No previous exercise completion, creating a new one")
     const data = {
       exercise: {
@@ -111,13 +122,18 @@ export const saveToDatabase = async (
       }
     }
   } else {
+    const exerciseCompleted = exerciseCompletions[0]
+
     logger.info("Updating previous exercise completion")
     const oldTimestamp = DateTime.fromISO(
       exerciseCompleted?.timestamp?.toISOString() ?? "",
     )
+
+    // TODO: should we remove the actions if the timestamp is older?
     if (timestamp <= oldTimestamp) {
       return ok("Timestamp older than in DB, aborting")
     }
+
     const existingActions =
       exerciseCompleted.exercise_completion_required_actions
     const existingActionValues = existingActions?.map((ea) => ea.value) ?? []

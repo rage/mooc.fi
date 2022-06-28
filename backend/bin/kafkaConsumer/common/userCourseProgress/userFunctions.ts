@@ -28,19 +28,10 @@ export const getCombinedUserCourseProgress = async ({
   course: Course
   context: KafkaContext
 }): Promise<CombinedUserCourseProgress> => {
-  /* Get UserCourseServiceProgresses */
-  const baseQuery = user?.id
-    ? prisma.user.findUnique({ where: { id: user.id } })
-    : course?.id
-    ? prisma.course.findUnique({ where: { id: course.id } })
-    : null
-  if (!baseQuery) {
-    throw new Error("has to have at least one of user and course")
-  }
-  const userCourseServiceProgresses =
-    await baseQuery.user_course_service_progresses({
+  const userCourseServiceProgresses = await prisma.user
+    .findUnique({ where: { id: user.id } })
+    .user_course_service_progresses({
       where: {
-        user_id: user?.id,
         course_id: course?.id,
       },
     })
@@ -76,13 +67,13 @@ export const checkRequiredExerciseCompletions = async ({
   context: KafkaContext
 }): Promise<boolean> => {
   if (course.exercise_completions_needed) {
-    // TODO/FIXME: skip deleted exercises?
     const exercise_completions = await knex("exercise_completion")
       .countDistinct("exercise_completion.exercise_id")
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
       .where("exercise.course_id", course.id)
       .andWhere("exercise_completion.user_id", user.id)
       .andWhere("exercise_completion.completed", true)
+      .andWhereNot("exercise.deleted", true)
       .andWhereNot("exercise.max_points", 0)
 
     return exercise_completions[0].count >= course.exercise_completions_needed
@@ -99,6 +90,34 @@ export const getExerciseCompletionsForCourses = async ({
   courseIds: string[]
   context: KafkaContext
 }) => {
+  // picks only one exercise completion per exercise/user:
+  // the one with the latest timestamp and latest updated_at
+  const exercise_completions = await knex<any, ExerciseCompletionPart[]>.raw(
+    `
+      SELECT e.course_id, e.custom_id, e.max_points, ec.exercise_id, ec.n_points
+      FROM exercise_completion ec
+      JOIN exercise e ON ec.exercise_id = e.id
+      WHERE ec.id IN (
+        SELECT id from (
+          SELECT ec2.id, row_number() OVER (
+            PARTITION BY exercise_id
+            ORDER BY ec2.timestamp desc, ec2.updated_at desc
+          ) rn
+          FROM exercise_completion ec2
+          JOIN exercise e2 ON ec2.exercise_id = e2.id
+          WHERE e2.course_id IN (${courseIds.map((_) => "?").join(",")})
+          AND ec2.user_id = (?)
+          AND ec2.completed = true
+          AND e2.max_points <> 0
+          AND e2.deleted <> true
+        ) s
+        WHERE rn = 1
+      );
+    `,
+    [...courseIds, user.id],
+  )
+
+  /*
   // TODO/FIXME: skip deleted exercises?
   const exercise_completions: ExerciseCompletionPart[] = await knex<
     any,
@@ -115,8 +134,7 @@ export const getExerciseCompletionsForCourses = async ({
     .whereIn("exercise.course_id", courseIds)
     .andWhere("exercise_completion.user_id", user.id)
     .andWhere("exercise_completion.completed", true)
-    .andWhereNot("exercise.max_points", 0)
-
+    .andWhereNot("exercise.max_points", 0)*/
   /*
     [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */

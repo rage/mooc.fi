@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { chunk } from "lodash"
+import { chunk, omit } from "lodash"
 import * as yup from "yup"
 
 import {
@@ -7,6 +7,7 @@ import {
   Course,
   CourseTranslation,
   OpenUniversityRegistrationLink,
+  User,
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
@@ -207,6 +208,27 @@ export class CompletionController {
     }
   }
 
+  private getCompletion = async (
+    course: Course,
+    user: User,
+  ): Promise<Completion | null> => {
+    return (
+      await this.ctx.prisma.user
+        .findUnique({
+          where: {
+            id: user.id,
+          },
+        })
+        .completions({
+          where: {
+            course_id: course.completions_handled_by_id ?? course.id,
+          },
+          orderBy: { created_at: "asc" },
+          take: 1,
+        })
+    )?.[0]
+  }
+
   recheckCompletion = async (
     req: Request<
       {},
@@ -262,54 +284,40 @@ export class CompletionController {
       return res.status(405).json({ message: "course not found" })
     }
 
-    const user = await prisma.user.findUnique({
+    const userWithProgresses = await prisma.user.findUnique({
       where: {
         id: user_id,
         upstream_id: user_upstream_id,
       },
+      include: {
+        user_course_progresses: {
+          where: {
+            course_id: course.id,
+          },
+          orderBy: { created_at: "asc" },
+        },
+      },
     })
 
-    if (!user) {
+    if (!userWithProgresses) {
       return res.status(405).json({ message: "user not found" })
     }
 
-    const progresses = await prisma.user
-      .findUnique({
-        where: {
-          id: user.id,
-        },
-      })
-      .user_course_progresses({
-        where: {
-          course_id: course.id,
-        },
-        orderBy: { created_at: "asc" },
-      })
+    const { user_course_progresses } = userWithProgresses
 
-    if (progresses.length < 1) {
+    if (user_course_progresses.length < 1) {
       return res.status(401).json({ message: "No progresses found" })
     }
 
-    const existingCompletion = (
-      await prisma.user
-        .findUnique({
-          where: {
-            id: user.id,
-          },
-        })
-        .completions({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        })
-    )?.[0]
+    const existingCompletion = await this.getCompletion(
+      course,
+      userWithProgresses,
+    )
 
     await generateUserCourseProgress({
-      user,
+      user: omit(userWithProgresses, "user_course_progresses"),
       course,
-      userCourseProgress: progresses[0],
+      userCourseProgress: user_course_progresses[0],
       context: {
         // not very optimal, but
         logger,
@@ -321,21 +329,10 @@ export class CompletionController {
       },
     })
 
-    const updatedCompletion = (
-      await prisma.user
-        .findUnique({
-          where: {
-            id: user.id,
-          },
-        })
-        .completions({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        })
-    )?.[0]
+    const updatedCompletion = await this.getCompletion(
+      course,
+      userWithProgresses,
+    )
 
     if (!existingCompletion && updatedCompletion) {
       return res.status(200).json({
