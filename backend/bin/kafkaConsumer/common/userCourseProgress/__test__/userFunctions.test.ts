@@ -262,7 +262,7 @@ describe("getUserCourseSettings", () => {
   })
 })
 
-describe.only("getExerciseCompletionsForCourses", () => {
+describe("getExerciseCompletionsForCourses", () => {
   let exercises: Exercise[]
   let exerciseCompletions: ExerciseCompletion[]
 

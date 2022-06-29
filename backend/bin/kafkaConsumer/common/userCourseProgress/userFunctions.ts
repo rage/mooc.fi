@@ -92,39 +92,29 @@ export const getExerciseCompletionsForCourses = async ({
 }) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions = await knex<any, ExerciseCompletionPart[]>(
-    "exercise_completion as ec",
-  )
-    .select([
-      "e.course_id",
-      "e.custom_id",
-      "e.max_points",
-      "ec.exercise_id",
-      "ec.n_points",
-    ])
-    .join("exercise as e", { "ec.exercise_id": "e.id" })
-    .whereIn(
-      "ec.id",
-      knex
-        .select("id")
-        .from(
-          knex("exercise_completion as ec2")
-            .select([
-              "ec2.id",
-              knex.raw(
-                `row_number() OVER (PARTITION BY exercise_id ORDER BY ec2.timestamp DESC, ec2.updated_at DESC) rn`,
-              ),
-            ])
-            .join("exercise as e2", { "ec2.exercise_id": "e2.id" })
-            .whereIn("e2.course_id", courseIds)
-            .andWhere("ec2.user_id", user.id)
-            .andWhere("ec2.completed", true)
-            .andWhereNot("e2.max_points", 0)
-            .andWhereNot("e2.deleted", true)
-            .as("s"),
-        )
-        .where("rn", 1),
+  const exercise_completions = await knex<any, ExerciseCompletionPart[]>
+    .select(["course_id", "custom_id", "max_points", "exercise_id", "n_points"])
+    .from(
+      knex("exercise_completion as ec")
+        .select([
+          "e.course_id",
+          "e.custom_id",
+          "e.max_points",
+          "ec.exercise_id",
+          "ec.n_points",
+          knex.raw(
+            `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
+          ),
+        ])
+        .join("exercise as e", { "ec.exercise_id": "e.id" })
+        .whereIn("e.course_id", courseIds)
+        .andWhere("ec.user_id", user.id)
+        .andWhere("ec.completed", true)
+        .andWhereNot("e.max_points", 0)
+        .andWhereNot("e.deleted", true)
+        .as("s"),
     )
+    .where("rn", 1)
 
   /*const exercise_completions = await knex<any, ExerciseCompletionPart[]>.raw(
     `
