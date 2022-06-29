@@ -92,7 +92,41 @@ export const getExerciseCompletionsForCourses = async ({
 }) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions = await knex<any, ExerciseCompletionPart[]>.raw(
+  const exercise_completions = await knex<any, ExerciseCompletionPart[]>(
+    "exercise_completion as ec",
+  )
+    .select([
+      "e.course_id",
+      "e.custom_id",
+      "e.max_points",
+      "ec.exercise_id",
+      "ec.n_points",
+    ])
+    .join("exercise as e", { "ec.exercise_id": "e.id" })
+    .whereIn(
+      "ec.id",
+      knex
+        .select("id")
+        .from(
+          knex("exercise_completion as ec2")
+            .select([
+              "ec2.id",
+              knex.raw(
+                `row_number() OVER (PARTITION BY exercise_id ORDER BY ec2.timestamp DESC, ec2.updated_at DESC) rn`,
+              ),
+            ])
+            .join("exercise as e2", { "ec2.exercise_id": "e2.id" })
+            .whereIn("e2.course_id", courseIds)
+            .andWhere("ec2.user_id", user.id)
+            .andWhere("ec2.completed", true)
+            .andWhereNot("e2.max_points", 0)
+            .andWhereNot("e2.deleted", true)
+            .as("s"),
+        )
+        .where("rn", 1),
+    )
+
+  /*const exercise_completions = await knex<any, ExerciseCompletionPart[]>.raw(
     `
       SELECT e.course_id, e.custom_id, e.max_points, ec.exercise_id, ec.n_points
       FROM exercise_completion ec
@@ -115,7 +149,7 @@ export const getExerciseCompletionsForCourses = async ({
       );
     `,
     [...courseIds, user.id],
-  )
+  )*/
 
   /*
   // TODO/FIXME: skip deleted exercises?
@@ -138,7 +172,7 @@ export const getExerciseCompletionsForCourses = async ({
   /*
     [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */
-  return exercise_completions
+  return exercise_completions // ?.rows ?? []
 }
 
 export const getUserCourseSettings = async ({

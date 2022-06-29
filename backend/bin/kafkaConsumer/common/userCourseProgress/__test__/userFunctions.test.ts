@@ -1,9 +1,20 @@
-import { Completion, Course, User } from "@prisma/client"
+import {
+  Completion,
+  Course,
+  Exercise,
+  ExerciseCompletion,
+  Prisma,
+  User,
+} from "@prisma/client"
 
 import { getTestContext } from "../../../../../tests/__helpers"
 import { seed } from "../../../../../tests/data/seed"
 import { KafkaContext } from "../../kafkaContext"
-import { createCompletion, getUserCourseSettings } from "../userFunctions"
+import {
+  createCompletion,
+  getExerciseCompletionsForCourses,
+  getUserCourseSettings,
+} from "../userFunctions"
 
 const ctx = getTestContext()
 
@@ -248,5 +259,230 @@ describe("getUserCourseSettings", () => {
     })
 
     expect(settings).toBeNull()
+  })
+})
+
+describe.only("getExerciseCompletionsForCourses", () => {
+  let exercises: Exercise[]
+  let exerciseCompletions: ExerciseCompletion[]
+
+  const USER_ID_1 = "20000000-0000-0000-0000-000000000103",
+    USER_ID_2 = "20000000-0000-0000-0000-000000000104"
+
+  const kafkaContext = {} as KafkaContext
+
+  beforeEach(async () => {
+    await seed(ctx.prisma)
+
+    exercises = []
+    exerciseCompletions = []
+
+    const testExercises: Prisma.ExerciseCreateInput[] = [
+      {
+        id: "18180000-0000-0000-0000-000000000001",
+        name: "test_exercise_1_no_points",
+        course: { connect: { id: "00000000-0000-0000-0000-000000000667" } },
+        custom_id: "test_exercise_1_no_points",
+        max_points: 0,
+      },
+      {
+        id: "18180000-0000-0000-0000-000000000002",
+        name: "test_exercise_2",
+        course: { connect: { id: "00000000-0000-0000-0000-000000000667" } },
+        custom_id: "test_exercise_2",
+        max_points: 2,
+      },
+      {
+        id: "18180000-0000-0000-0000-000000000003",
+        name: "test_exercise_3_deleted",
+        course: { connect: { id: "00000000-0000-0000-0000-000000000667" } },
+        custom_id: "test_exercise_3_deleted",
+        max_points: 1,
+        deleted: true,
+      },
+      {
+        id: "18180000-0000-0000-0000-000000000004",
+        name: "test_exercise_4",
+        course: { connect: { id: "00000000-0000-0000-0000-000000000667" } },
+        custom_id: "test_exercise_4",
+        max_points: 1,
+      },
+      {
+        id: "18180000-0000-0000-0000-000000000005",
+        name: "test_exercise_5_other_course",
+        course: { connect: { id: "00000000-0000-0000-0000-000000000668" } },
+        custom_id: "test_exercise_5_other_course",
+        max_points: 1,
+      },
+      {
+        id: "18180000-0000-0000-0000-000000000006",
+        name: "test_exercise_6",
+        course: { connect: { id: "00000000-0000-0000-0000-000000000667" } },
+        custom_id: "test_exercise_6",
+        max_points: 2,
+      },
+    ]
+
+    for (const exercise of testExercises) {
+      exercises.push(
+        await ctx.prisma.exercise.create({
+          data: exercise,
+        }),
+      )
+    }
+    const exerciseMap = exercises.reduce<Record<string, Exercise>>(
+      (acc, curr) => ({ ...acc, [curr.name!]: curr }),
+      {},
+    )
+    const testExerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
+      {
+        // should not appear, no points
+        id: "18190000-0000-0000-0000-000000000001",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: {
+          connect: { id: exerciseMap["test_exercise_1_no_points"].id },
+        },
+        completed: true,
+        timestamp: new Date("2020-01-01T00:00:00.000Z"),
+        n_points: 0,
+      },
+      {
+        // should not appear, newer timestamp exists
+        id: "18190000-0000-0000-0000-000000000002",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: { connect: { id: exerciseMap["test_exercise_2"].id } },
+        completed: true,
+        timestamp: new Date("2020-01-01T00:00:00.000Z"),
+        n_points: 1,
+      },
+      {
+        // should not appear, is the newest timestamp but newer updated_at exists
+        id: "18190000-0000-0000-0000-000000000003",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: { connect: { id: exerciseMap["test_exercise_2"].id } },
+        completed: true,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        updated_at: new Date("2020-01-03T00:00:00.000Z"),
+        n_points: 2,
+      },
+      {
+        // should appear
+        id: "18190000-0000-0000-0000-000000000004",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: { connect: { id: exerciseMap["test_exercise_2"].id } },
+        completed: true,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        updated_at: new Date("2020-01-04T00:00:00.000Z"),
+        n_points: 2,
+      },
+      {
+        // should not appear, exercise deleted
+        id: "18190000-0000-0000-0000-000000000005",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: {
+          connect: { id: exerciseMap["test_exercise_3_deleted"].id },
+        },
+        completed: true,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        n_points: 1,
+      },
+      {
+        // should not appear, not completed
+        id: "18190000-0000-0000-0000-000000000006",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: { connect: { id: exerciseMap["test_exercise_4"].id } },
+        completed: false,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        n_points: 0,
+      },
+      {
+        // should only appear when queried with correct user
+        id: "18190000-0000-0000-0000-000000000007",
+        user: { connect: { id: USER_ID_2 } },
+        exercise: { connect: { id: exerciseMap["test_exercise_4"].id } },
+        completed: true,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        n_points: 1,
+      },
+      {
+        // should only appear when other course included as parameter
+        id: "18190000-0000-0000-0000-000000000008",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: {
+          connect: { id: exerciseMap["test_exercise_5_other_course"].id },
+        },
+        completed: true,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        n_points: 1,
+      },
+      {
+        // should appear
+        id: "18190000-0000-0000-0000-000000000009",
+        user: { connect: { id: USER_ID_1 } },
+        exercise: { connect: { id: exerciseMap["test_exercise_6"].id } },
+        completed: true,
+        timestamp: new Date("2020-01-02T00:00:00.000Z"),
+        n_points: 1,
+      },
+    ]
+    for (const exerciseCompletion of testExerciseCompletions) {
+      exerciseCompletions.push(
+        await ctx.prisma.exerciseCompletion.create({
+          data: exerciseCompletion,
+        }),
+      )
+    }
+    Object.assign(kafkaContext, {
+      prisma: ctx.prisma,
+      knex: ctx.knex,
+      logger: ctx.logger,
+      consumer: null as any,
+      mutex: null as any,
+    })
+  })
+
+  it("returns correctly only one course specified", async () => {
+    const result = await getExerciseCompletionsForCourses({
+      user: {
+        id: USER_ID_1,
+      } as User,
+      courseIds: ["00000000-0000-0000-0000-000000000667"],
+      context: kafkaContext,
+    })
+
+    expect(result).toHaveLength(2)
+    expect(result).toMatchSnapshot()
+  })
+
+  it("returns correctly with multiple courses specified", async () => {
+    const result = await getExerciseCompletionsForCourses({
+      user: {
+        id: USER_ID_1,
+      } as User,
+      courseIds: [
+        "00000000-0000-0000-0000-000000000667",
+        "00000000-0000-0000-0000-000000000668",
+      ],
+      context: kafkaContext,
+    })
+
+    expect(result).toHaveLength(3)
+    expect(result).toMatchSnapshot()
+  })
+
+  it("returns correctly with other user", async () => {
+    const result = await getExerciseCompletionsForCourses({
+      user: {
+        id: USER_ID_2,
+      } as User,
+      courseIds: [
+        "00000000-0000-0000-0000-000000000667",
+        "00000000-0000-0000-0000-000000000668",
+      ],
+      context: kafkaContext,
+    })
+
+    expect(result).toHaveLength(1)
+    expect(result).toMatchSnapshot()
   })
 })
