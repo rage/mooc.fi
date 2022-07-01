@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getExerciseCompletionsForCourses returns correctly only one course specified 1`] = `
+exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly only one course specified 1`] = `
 Array [
   Object {
     "course_id": "00000000-0000-0000-0000-000000000667",
@@ -19,7 +19,7 @@ Array [
 ]
 `;
 
-exports[`getExerciseCompletionsForCourses returns correctly with multiple courses specified 1`] = `
+exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly with multiple courses specified 1`] = `
 Array [
   Object {
     "course_id": "00000000-0000-0000-0000-000000000667",
@@ -45,7 +45,7 @@ Array [
 ]
 `;
 
-exports[`getExerciseCompletionsForCourses returns correctly with other user 1`] = `
+exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly with other user 1`] = `
 Array [
   Object {
     "course_id": "00000000-0000-0000-0000-000000000667",

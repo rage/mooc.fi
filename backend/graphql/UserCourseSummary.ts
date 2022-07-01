@@ -94,6 +94,7 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
+        // TODO: should this return only one per timestamp, or do we handle pruning duplicates when creating/updating?
         return ctx.prisma.user
           .findUnique({
             where: { id: user_id },

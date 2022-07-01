@@ -35,6 +35,8 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
+    // TODO: don't know if this is used, but this will overwrite the exercise if there are multiple
+    // exercise completions and the ordering is random for now!
     const exercise_completions = await knex
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
@@ -124,6 +126,8 @@ export class ProgressController {
       .where("course_id", course?.completions_handled_by_id ?? course?.id)
       .andWhere("user_id", user.id)
 
+    // TODO: this is most certainly used - this will overwrite the exercise if there are multiple
+    // exercise completions and the ordering is random for now!
     const exercise_completions_map = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
         ...acc,

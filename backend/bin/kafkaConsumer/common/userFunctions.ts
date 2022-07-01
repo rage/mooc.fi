@@ -1,5 +1,7 @@
 import {
   Course,
+  ExerciseCompletion,
+  ExerciseCompletionRequiredAction,
   User,
   UserCourseServiceProgress,
   UserCourseSetting,
@@ -8,16 +10,16 @@ import {
 import {
   completionLanguageMap,
   LanguageAbbreviation,
-} from "../../../../config/languageConfig"
-import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-import { MessageType, pushMessageToClient } from "../../../../wsServer"
-import { DatabaseInputError } from "../../../lib/errors"
-import { KafkaContext } from "../kafkaContext"
+} from "../../../config/languageConfig"
+import { isNullOrUndefined } from "../../../util/isNullOrUndefined"
+import { MessageType, pushMessageToClient } from "../../../wsServer"
+import { DatabaseInputError } from "../../lib/errors"
+import { KafkaContext } from "./kafkaContext"
 import {
   ExerciseCompletionPart,
   ServiceProgressPartType,
   ServiceProgressType,
-} from "./interfaces"
+} from "./userCourseProgress/interfaces"
 
 export const getCombinedUserCourseProgress = async ({
   user,
@@ -92,7 +94,7 @@ export const getExerciseCompletionsForCourses = async ({
 }) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions = await knex<any, ExerciseCompletionPart[]>
+  const exercise_completions: Array<ExerciseCompletionPart> = await knex
     .select(["course_id", "custom_id", "max_points", "exercise_id", "n_points"])
     .from(
       knex("exercise_completion as ec")
@@ -163,6 +165,64 @@ export const getExerciseCompletionsForCourses = async ({
     [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */
   return exercise_completions // ?.rows ?? []
+}
+
+export const pruneDuplicateExerciseCompletions = async ({
+  user_id,
+  course_id,
+  context: { knex },
+}: {
+  user_id: string
+  course_id: string
+  context: KafkaContext
+}) => {
+  // we probably can just delete all even if they have required actions
+  const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
+    "exercise_completion",
+  )
+    .whereIn(
+      "id",
+      knex
+        .select("id")
+        .from(
+          knex("exercise_completion as ec")
+            .select([
+              "ec.id",
+              knex.raw(
+                `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
+              ),
+            ])
+            //.countDistinct("ecra.value as action_count")
+            .join("exercise as e", { "ec.exercise_id": "e.id" })
+            /*.leftJoin("exercise_completion_required_actions as ecra", {
+              "ecra.exercise_completion_id": "ec.id",
+            })*/
+            .where("ec.user_id", user_id)
+            .andWhere("e.course_id", course_id)
+            .groupBy("ec.id")
+            .as("s"),
+        )
+        .where("rn", ">", "1"),
+      //.andWhere("action_count", "=", 0),
+    )
+    .delete()
+    .returning("id")
+
+  return deleted
+}
+
+export const pruneOrphanedExerciseCompletionRequiredActions = async ({
+  context: { knex },
+}: {
+  context: KafkaContext
+}) => {
+  const deleted: Array<Pick<ExerciseCompletionRequiredAction, "id">> =
+    await knex("exercise_completion_required_actions")
+      .whereNull("exercise_completion_id")
+      .delete()
+      .returning("id")
+
+  return deleted
 }
 
 export const getUserCourseSettings = async ({

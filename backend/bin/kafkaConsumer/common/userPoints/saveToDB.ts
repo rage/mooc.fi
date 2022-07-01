@@ -1,4 +1,6 @@
 import { UserInputError } from "apollo-server-express"
+import e from "express"
+import { uniqBy } from "lodash"
 import { DateTime } from "luxon"
 
 import { ExerciseCompletion } from "@prisma/client"
@@ -7,7 +9,7 @@ import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
-import { checkCompletion } from "../userCourseProgress/userFunctions"
+import { checkCompletion } from "../userFunctions"
 import { Message } from "./interfaces"
 
 export const saveToDatabase = async (
@@ -64,7 +66,7 @@ export const saveToDatabase = async (
           id: exercise.id,
         },
       },
-      orderBy: { timestamp: "desc", updated_at: "desc" },
+      orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
       include: {
         exercise_completion_required_actions: true,
       },
@@ -74,20 +76,6 @@ export const saveToDatabase = async (
   let savedExerciseCompletion: ExerciseCompletion
 
   const required_actions = message.completed ? [] : message.required_actions
-
-  // TODO:
-  // when updating the exercise completion:
-  // - we should check if there are any required actions attached to
-  //   exercise completions other than the newest and attach them to the new one
-  // - prune the extra exercise completions (would this then remove the actions as well?)
-  // - if it's completed, we should remove all required actions
-
-  /*const uniqueRequiredActionValuesAcrossAllCompletions = uniq(
-    exerciseCompletions
-      .filter((ec) => !ec.completed)
-      .flatMap((ec) => ec.exercise_completion_required_actions?.map((a) => a.value))
-      .filter(notEmpty)
-  )*/
 
   if (exerciseCompletions.length === 0) {
     logger.info("No previous exercise completion, creating a new one")
@@ -123,6 +111,8 @@ export const saveToDatabase = async (
     }
   } else {
     const exerciseCompleted = exerciseCompletions[0]
+    let existingActionsOnNewestExerciseCompletion =
+      exerciseCompleted.exercise_completion_required_actions
 
     logger.info("Updating previous exercise completion")
     const oldTimestamp = DateTime.fromISO(
@@ -134,13 +124,12 @@ export const saveToDatabase = async (
       return ok("Timestamp older than in DB, aborting")
     }
 
-    const existingActions =
-      exerciseCompleted.exercise_completion_required_actions
-    const existingActionValues = existingActions?.map((ea) => ea.value) ?? []
+    const existingActionValues =
+      existingActionsOnNewestExerciseCompletion?.map((ea) => ea.value) ?? []
     const createActions = required_actions
       .filter((ra) => !existingActionValues.includes(ra))
       .map((value) => ({ value }))
-    const deletedActions = existingActions.filter(
+    const deletedActions = existingActionsOnNewestExerciseCompletion.filter(
       (ea) => !required_actions.includes(ea.value),
     )
 
