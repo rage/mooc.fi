@@ -39,6 +39,7 @@ export const UserCourseSummary = objectType({
             where: {
               user_id,
             },
+            // TODO: completed: true?
             orderBy: { created_at: "asc" },
             take: 1,
           })

@@ -188,7 +188,7 @@ describe("createCompletion", () => {
 describe("getUserCourseSettings", () => {
   const HANDLER_COURSE_ID = "00000000-0000-0000-0000-000000000666"
   const INHERITING_COURSE_ID = "00000000-0000-0000-0000-000000000668"
-  const USER_ID = "20000000-0000-0000-0000-000000000103"
+  const USER_ID = "20000000-0000-0000-0000-000000000104"
   const kafkaContext = {} as KafkaContext
 
   beforeEach(async () => {

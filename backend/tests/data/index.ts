@@ -316,12 +316,35 @@ export const completions: Prisma.CompletionCreateInput[] = [
     completion_date: "1900-01-01T10:00:00.00+02:00",
   },
   {
+    // duplicate to above but later created_at, should be ignored then
     id: "30000000-0000-0000-0000-000000000105",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000105" } },
+    email: "e@mail.com",
+    user_upstream_id: 4,
+    eligible_for_ects: true,
+    created_at: "1900-01-02T10:00:00.00+02:00",
+    updated_at: "1900-01-02T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    id: "30000000-0000-0000-0000-000000000106",
     course: { connect: { id: "00000000000000000000000000000002" } },
     user: { connect: { id: "20000000000000000000000000000106" } },
     email: "e@mail.com",
     user_upstream_id: 5,
     eligible_for_ects: true,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    // completion handled by handler
+    id: "30000000-0000-0000-0000-000000000107",
+    course: { connect: { id: "00000000000000000000000000000666" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    email: "e@mail.com",
+    user_upstream_id: 1,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
     completion_date: "1900-01-01T10:00:00.00+02:00",
@@ -341,6 +364,22 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
       hasWings: true,
       isCat: false,
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    // duplicate of above, but with later created_at so should be ignored
+    id: "40000000-0000-0000-0000-000000000998",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      hasWings: true,
+      isCat: false,
+    },
+    created_at: "1900-01-02T10:00:00.00+02:00",
   },
   {
     id: "40000000-0000-0000-0000-000000000999",
@@ -380,6 +419,20 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
     other: {
       research: false,
       country: "fi",
+    },
+  },
+  {
+    // "inherits" should return this
+    id: "40000000-0000-0000-0000-000000000105",
+    course: { connect: { id: "00000000-0000-0000-0000-000000000666" } },
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      hasWings: true,
+      isCat: false,
     },
   },
 ]
@@ -617,7 +670,7 @@ export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
 export const completionsRegistered: Prisma.CompletionRegisteredCreateInput[] = [
   {
     id: "66000000-0000-0000-0000-000000000102",
-    completion: { connect: { id: "30000000-0000-0000-0000-000000000105" } },
+    completion: { connect: { id: "30000000-0000-0000-0000-000000000106" } },
     course: { connect: { id: "00000000000000000000000000000002" } },
     user: { connect: { id: "20000000000000000000000000000106" } },
     real_student_number: "4",

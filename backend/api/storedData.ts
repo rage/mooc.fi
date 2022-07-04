@@ -116,6 +116,7 @@ export class StoredDataController {
                 where: {
                   course_id: course.completions_handled_by_id ?? course.id,
                 },
+                orderBy: { created_at: "asc" },
               },
             },
           },

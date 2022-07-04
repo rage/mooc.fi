@@ -1,12 +1,6 @@
+import { UserInputError } from "apollo-server-express"
 import { uniqBy } from "lodash"
-import {
-  booleanArg,
-  idArg,
-  nonNull,
-  nullable,
-  objectType,
-  stringArg,
-} from "nexus"
+import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
 import { notEmpty } from "../../util/notEmpty"
 
@@ -77,6 +71,8 @@ export const User = objectType({
                     }
                   : undefined,
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
       },
     })
@@ -162,11 +158,18 @@ export const User = objectType({
     t.nonNull.field("progress", {
       type: "Progress",
       args: {
-        course_id: nonNull(idArg()),
+        course_id: idArg(),
+        slug: stringArg(),
       },
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, { course_id, slug }, ctx) => {
+        if ((!course_id && !slug) || (course_id && slug)) {
+          throw new UserInputError("provide exactly one of course_id or slug")
+        }
         const course = await ctx.prisma.course.findUnique({
-          where: { id: args.course_id },
+          where: {
+            id: course_id ?? undefined,
+            slug: slug ?? undefined,
+          },
         })
         return {
           course,
@@ -178,19 +181,21 @@ export const User = objectType({
     t.list.nonNull.field("progresses", {
       type: "Progress",
       resolve: async (parent, _, ctx) => {
-        const progresses = await ctx.prisma.user
+        const progressCourses = await ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
           })
-          .user_course_progresses()
+          .user_course_progresses({
+            distinct: ["course_id"],
+            select: {
+              course: true,
+            },
+          })
 
-        const courses = await ctx.prisma.course.findMany({
-          where: {
-            id: { in: progresses.map((p) => p.course_id).filter(notEmpty) },
-          },
-        })
-
-        return courses.map((course) => ({ course, user: parent }))
+        return progressCourses
+          .map((pr) => pr.course)
+          .filter(notEmpty)
+          .map((course) => ({ course, user: parent }))
       },
     })
 
@@ -237,6 +242,7 @@ export const User = objectType({
           })
           .user_course_progresses({
             where: { course_id },
+            distinct: ["course_id"],
             orderBy: { created_at: "asc" },
             take: 1,
           })
@@ -251,7 +257,6 @@ export const User = objectType({
         includeDeleted: nullable(booleanArg()),
       },
       resolve: async (parent, { includeDeleted = false }, ctx) => {
-        // TODO: only get the newest per exercise?
         return ctx.prisma.user
           .findUnique({
             where: { id: parent.id },

@@ -47,7 +47,7 @@ export const CompletionRegisteredQueries = extendType({
           throw new ForbiddenError("Cannot query more than 50 items")
         }
         if (course) {
-          return await withCourse(
+          return withCourse(
             course,
             skip ?? undefined,
             take ?? undefined,
@@ -55,7 +55,7 @@ export const CompletionRegisteredQueries = extendType({
             ctx,
           )
         } else {
-          return await all(
+          return all(
             skip ?? undefined,
             take ?? undefined,
             cursor ? { id: cursor.id ?? undefined } : undefined,
@@ -76,14 +76,17 @@ const withCourse = async (
 ) => {
   const courseReference = await getCourseOrAliasBySlug(ctx)(course)
 
-  return await ctx.prisma.completionRegistered.findMany({
-    where: {
-      course_id: courseReference!.id,
-    },
-    skip,
-    take,
-    cursor,
-  })
+  return ctx.prisma.course
+    .findUnique({
+      where: {
+        id: courseReference!.id,
+      },
+    })
+    .completions_registered({
+      skip,
+      take,
+      cursor,
+    })
 }
 
 const all = async (
@@ -92,7 +95,7 @@ const all = async (
   cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  return await ctx.prisma.completionRegistered.findMany({
+  return ctx.prisma.completionRegistered.findMany({
     skip,
     take,
     cursor,

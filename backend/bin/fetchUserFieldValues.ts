@@ -50,12 +50,12 @@ const fetcUserFieldValues = async () => {
       logger.warn("not p:", p, "i is", i, "while data.length is", data.length)
       continue
     }
-    const existingUsers = await prisma.user.findMany({
+    const user = await prisma.user.findUnique({
       where: {
         upstream_id: p.user_id,
       },
     })
-    if (existingUsers.length < 1) {
+    if (!user) {
       try {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {

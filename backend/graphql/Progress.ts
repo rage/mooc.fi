@@ -45,7 +45,7 @@ export const Progress = objectType({
           })
           .user_course_service_progresses({
             where: { user_id },
-            distinct: ["course_id", "service_id"],
+            distinct: ["course_id", "service_id", "user_id"],
             orderBy: { created_at: "asc" },
           })
 

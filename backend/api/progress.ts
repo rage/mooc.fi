@@ -156,6 +156,7 @@ export class ProgressController {
       .from("completion")
       .where("course_id", course?.completions_handled_by_id ?? course?.id)
       .andWhere("user_id", user.id)
+      .orderBy("created_at", "asc")
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -202,6 +203,7 @@ export class ProgressController {
       .from("user_course_progress")
       .where("user_course_progress.course_id", id)
       .andWhere("user_course_progress.user_id", user.id)
+      .orderBy("created_at", "asc")
 
     res.json({
       data: {

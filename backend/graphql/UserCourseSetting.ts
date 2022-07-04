@@ -102,6 +102,7 @@ export const UserCourseSettingQueries = extendType({
               user_id,
               course_id: course?.inherit_settings_from_id ?? course_id,
             },
+            distinct: ["user_id", "course_id"],
           })
         }
 
@@ -109,6 +110,7 @@ export const UserCourseSettingQueries = extendType({
           where: {
             user_id,
           },
+          distinct: ["user_id", "course_id"],
         })
       },
     })
@@ -177,6 +179,7 @@ export const UserCourseSettingQueries = extendType({
                       AND: userConditions,
                     },
                   },
+                  distinct: ["user_id", "course_id"],
                   ...connectionArgs,
                 })
             }
@@ -194,6 +197,7 @@ export const UserCourseSettingQueries = extendType({
                 where: {
                   course_id,
                 },
+                distinct: ["user_id", "course_id"],
                 ...connectionArgs,
               })
           },
@@ -206,6 +210,7 @@ export const UserCourseSettingQueries = extendType({
                   AND: userConditions,
                 },
               },
+              distinct: ["user_id", "course_id"],
             })
 
             return count
@@ -254,6 +259,7 @@ export const UserCourseSettingQueries = extendType({
                   AND: userConditions,
                 },
               },
+              distinct: ["user_id", "course_id"],
             })
           },
         })

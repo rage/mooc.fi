@@ -54,6 +54,7 @@ export const saveToDatabase = async (
     })
   }
 
+  // TODO: here we could ensure the right service progress to searching for only the ones connected to the main course progress
   const userCourseServiceProgresses = await knex<
     any,
     UserCourseServiceProgress[]

@@ -109,6 +109,7 @@ export const UserCourseProgress = objectType({
               },
             },
             select: {
+              id: true,
               exercise_completions: {
                 where: {
                   completed: true,
@@ -202,6 +203,8 @@ export const UserCourseProgressQueries = extendType({
             where: {
               user_id,
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
       },
     })

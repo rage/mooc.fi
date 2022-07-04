@@ -12,6 +12,7 @@ const linkopingStatsEmailer = async () => {
     throw new Error("No recipients set for completion emails")
   }
 
+  // TODO: one completion per user?
   const result = await prisma.$queryRaw<
     Array<{ email: string; completion_date: string; tier: number }>
   >`

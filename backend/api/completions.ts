@@ -82,17 +82,28 @@ export class CompletionController {
 
     const sql = knex
       .select<any, Completion[]>("completion.*")
+      .distinctOn("completion.user_id", "completion.course_id")
       .from("completion")
       .fullOuterJoin(
         "completion_registered",
         "completion.id",
         "completion_registered.completion_id",
       )
-      .where({
-        "completion.course_id": course?.completions_handled_by_id ?? course?.id,
-        eligible_for_ects: true,
-        ...(!registered && { "completion_registered.id": null }),
-      })
+      .where(
+        "completion.course_id",
+        course.completions_handled_by_id ?? course.id,
+      )
+      .andWhere("eligible_for_ects", true)
+
+    if (!registered) {
+      sql.whereNull("completion_registered.id")
+    }
+
+    sql.orderBy([
+      "completion.user_id",
+      "completion.course_id",
+      { column: "completion.created_at", order: "asc" },
+    ])
 
     res.set("Content-Type", "application/json")
 
@@ -157,6 +168,7 @@ export class CompletionController {
         .from("completion")
         .where("course_id", course.completions_handled_by_id ?? course.id)
         .andWhere("user_id", user.id)
+        .orderBy("created_at", "asc")
     )?.[0]
 
     if (!completion) {

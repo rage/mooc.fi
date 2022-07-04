@@ -89,6 +89,8 @@ export const Course = objectType({
                 upstream_id: user_upstream_id ?? undefined,
               },
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { updated_at: "desc" },
           })
       },
     })

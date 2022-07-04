@@ -34,7 +34,7 @@ export const getCombinedUserCourseProgress = async ({
     .findUnique({ where: { id: user.id } })
     .user_course_service_progresses({
       where: {
-        course_id: course?.id,
+        course_id: course.id,
       },
       distinct: ["course_id", "service_id"],
       orderBy: { created_at: "asc" },
@@ -410,6 +410,7 @@ export const createCompletion = async ({
       })
     }
   } else if (!isNullOrUndefined(tier)) {
+    // TODO: prune extra completions here?
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {
