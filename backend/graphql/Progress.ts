@@ -28,6 +28,7 @@ export const Progress = objectType({
         return progresses?.[0] ?? null
       },
     })
+
     t.list.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async (parent, _, ctx) => {
@@ -44,6 +45,8 @@ export const Progress = objectType({
           })
           .user_course_service_progresses({
             where: { user_id },
+            distinct: ["course_id", "service_id"],
+            orderBy: { created_at: "asc" },
           })
 
         return progresses ?? []

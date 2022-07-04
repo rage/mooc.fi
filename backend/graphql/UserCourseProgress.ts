@@ -95,7 +95,6 @@ export const UserCourseProgress = objectType({
 
         const courseProgress: any = normalizeProgress(progress)
 
-        // TODO: this will count exercise completions multiple times if there are multiple exercise completions per exercise!
         // TODO: this should probably also only count completed exercises!
         const exercises = await ctx.prisma.course
           .findUnique({
@@ -110,17 +109,19 @@ export const UserCourseProgress = objectType({
               },
             },
             select: {
-              id: true,
               exercise_completions: {
                 where: {
+                  completed: true,
                   user_id,
                 },
+                take: 1,
               },
             },
           })
 
         const completedExerciseCount = exercises.reduce(
-          (acc, curr) => acc + (curr.exercise_completions?.length || 0),
+          (acc, curr) =>
+            curr.exercise_completions?.length > 0 ? acc + 1 : acc,
           0,
         )
         const totalProgress =

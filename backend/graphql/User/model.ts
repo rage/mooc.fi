@@ -146,6 +146,7 @@ export const User = objectType({
               where: {
                 user_id: parent.id,
               },
+              orderBy: { created_at: "asc" },
             },
           },
         })
@@ -193,6 +194,34 @@ export const User = objectType({
       },
     })
 
+    t.list.nonNull.field("user_course_progresses", {
+      type: "UserCourseProgress",
+      resolve: async (parent, _, ctx) => {
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .user_course_progresses({
+            distinct: "course_id",
+            orderBy: { created_at: "asc" },
+          })
+      },
+    })
+
+    t.list.nonNull.field("user_course_service_progresses", {
+      type: "UserCourseServiceProgress",
+      resolve: async (parent, _, ctx) => {
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .user_course_service_progresses({
+            distinct: ["course_id", "service_id"],
+            orderBy: { created_at: "asc" },
+          })
+      },
+    })
+
     // TODO/FIXME: is this used anywhere? if is, find better name
     t.nullable.field("user_course_progressess", {
       type: "UserCourseProgress",
@@ -233,6 +262,8 @@ export const User = objectType({
                 ? { exercise: { deleted: { not: true } } }
                 : {}),
             },
+            distinct: "exercise_id",
+            orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
           })
       },
     })

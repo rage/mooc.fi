@@ -36,6 +36,8 @@ export const getCombinedUserCourseProgress = async ({
       where: {
         course_id: course?.id,
       },
+      distinct: ["course_id", "service_id"],
+      orderBy: { created_at: "asc" },
     })
 
   /*

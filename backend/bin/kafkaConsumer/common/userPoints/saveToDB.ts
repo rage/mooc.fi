@@ -1,6 +1,4 @@
 import { UserInputError } from "apollo-server-express"
-import e from "express"
-import { uniqBy } from "lodash"
 import { DateTime } from "luxon"
 
 import { ExerciseCompletion } from "@prisma/client"

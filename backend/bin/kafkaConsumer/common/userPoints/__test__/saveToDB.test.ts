@@ -162,7 +162,7 @@ describe("userPoints/saveToDatabase", () => {
     })
   })
 
-  describe.only("update existing completion", () => {
+  describe("update existing completion", () => {
     it("aborts on older timestamp than existing", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,

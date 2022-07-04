@@ -35,8 +35,6 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    // TODO: don't know if this is used, but this will overwrite the exercise if there are multiple
-    // exercise completions and the ordering is random for now!
     const exercise_completions = await knex
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
@@ -46,12 +44,29 @@ export class ProgressController {
         "section",
         "max_points",
         "completed",
-        "custom_id as quizzes_id",
+        "quizzes_id",
       )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
+      .from(
+        knex("exercise_completion as ec")
+          .select([
+            "user_id",
+            "exercise_id",
+            "n_points",
+            "part",
+            "section",
+            "max_points",
+            "completed",
+            "custom_id as quizzes_id",
+            knex.raw(
+              `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
+            ),
+          ])
+          .join("exercise as e", { "ec.exercise_id": "e.id" })
+          .where("e.course_id", id)
+          .andWhere("ec.user_id", user.id)
+          .as("s"),
+      )
+      .where("rn", 1)
 
     const resObject = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -91,8 +106,8 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const exerciseCompletionsPromise = knex
-      .select<any, ExerciseCompletionResult[]>(
+    const innerQuery = knex("exercise_completion as ec")
+      .select([
         "user_id",
         "exercise_id",
         "n_points",
@@ -101,17 +116,33 @@ export class ProgressController {
         "max_points",
         "completed",
         "custom_id as quizzes_id",
-      )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
+        knex.raw(
+          `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
+        ),
+      ])
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", id)
+      .andWhere("ec.user_id", user.id)
+      .as("s")
 
     if (!includeDeleted) {
-      exerciseCompletionsPromise.andWhereNot("exercise.deleted", true)
+      innerQuery.andWhereNot("e.deleted", true)
     }
 
-    const exercise_completions = await exerciseCompletionsPromise
+    const exercise_completions = await knex
+      .select<any, ExerciseCompletionResult[]>(
+        "user_id",
+        "exercise_id",
+        "n_points",
+        "part",
+        "section",
+        "max_points",
+        "completed",
+        "quizzes_id",
+      )
+      .from(innerQuery)
+      .where("rn", 1)
+
     const course = (
       await knex
         .select<any, Course[]>("*")
@@ -126,8 +157,6 @@ export class ProgressController {
       .where("course_id", course?.completions_handled_by_id ?? course?.id)
       .andWhere("user_id", user.id)
 
-    // TODO: this is most certainly used - this will overwrite the exercise if there are multiple
-    // exercise completions and the ordering is random for now!
     const exercise_completions_map = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
         ...acc,

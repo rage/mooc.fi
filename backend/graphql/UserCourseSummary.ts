@@ -82,6 +82,7 @@ export const UserCourseSummary = objectType({
               user_id,
             },
             orderBy: { created_at: "asc" },
+            distinct: ["course_id", "service_id"],
           })
 
         return progresses ?? []
@@ -94,7 +95,7 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-        // TODO: should this return only one per timestamp, or do we handle pruning duplicates when creating/updating?
+
         return ctx.prisma.user
           .findUnique({
             where: { id: user_id },
@@ -103,7 +104,8 @@ export const UserCourseSummary = objectType({
             where: {
               exercise: { course_id },
             },
-            orderBy: { created_at: "asc" },
+            orderBy: [{ timestamp: "desc" }, { created_at: "desc" }],
+            distinct: "exercise_id",
           })
       },
     })
