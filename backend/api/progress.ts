@@ -116,7 +116,7 @@ export class ProgressController {
         "section",
         "max_points",
         "completed",
-        "custom id as quizzes_id",
+        "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
       .join("exercise as e", { "ec.exercise_id": "e.id" })
