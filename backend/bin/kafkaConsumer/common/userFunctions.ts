@@ -96,73 +96,22 @@ export const getExerciseCompletionsForCourses = async ({
 }) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions: Array<ExerciseCompletionPart> = await knex
-    .select(["course_id", "custom_id", "max_points", "exercise_id", "n_points"])
-    .from(
-      knex("exercise_completion as ec")
-        .select([
-          "e.course_id",
-          "e.custom_id",
-          "e.max_points",
-          "ec.exercise_id",
-          "ec.n_points",
-          knex.raw(
-            `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
-          ),
-        ])
-        .join("exercise as e", { "ec.exercise_id": "e.id" })
-        .whereIn("e.course_id", courseIds)
-        .andWhere("ec.user_id", user.id)
-        .andWhere("ec.completed", true)
-        .andWhereNot("e.max_points", 0)
-        .andWhereNot("e.deleted", true)
-        .as("s"),
-    )
-    .where("rn", 1)
-
-  /*const exercise_completions = await knex<any, ExerciseCompletionPart[]>.raw(
-    `
-      SELECT e.course_id, e.custom_id, e.max_points, ec.exercise_id, ec.n_points
-      FROM exercise_completion ec
-      JOIN exercise e ON ec.exercise_id = e.id
-      WHERE ec.id IN (
-        SELECT id from (
-          SELECT ec2.id, row_number() OVER (
-            PARTITION BY exercise_id
-            ORDER BY ec2.timestamp desc, ec2.updated_at desc
-          ) rn
-          FROM exercise_completion ec2
-          JOIN exercise e2 ON ec2.exercise_id = e2.id
-          WHERE e2.course_id IN (${courseIds.map((_) => "?").join(",")})
-          AND ec2.user_id = (?)
-          AND ec2.completed = true
-          AND e2.max_points <> 0
-          AND e2.deleted <> true
-        ) s
-        WHERE rn = 1
-      );
-    `,
-    [...courseIds, user.id],
-  )*/
-
-  /*
-  // TODO/FIXME: skip deleted exercises?
-  const exercise_completions: ExerciseCompletionPart[] = await knex<
-    any,
-    ExerciseCompletionPart[]
-  >("exercise_completion")
-    .select(
-      "exercise.course_id",
-      "exercise.custom_id",
-      "exercise.max_points",
-      "exercise_completion.exercise_id",
-      "exercise_completion.n_points",
-    )
-    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-    .whereIn("exercise.course_id", courseIds)
-    .andWhere("exercise_completion.user_id", user.id)
-    .andWhere("exercise_completion.completed", true)
-    .andWhereNot("exercise.max_points", 0)*/
+  const exercise_completions: ExerciseCompletionPart[] = await knex(
+    "exercise_completion as ec",
+  )
+    .select("course_id", "custom_id", "max_points", "exercise_id", "n_points")
+    .distinctOn("ec.exercise_id")
+    .join("exercise as e", { "ec.exercise_id": "e.id" })
+    .whereIn("e.course_id", courseIds)
+    .andWhere("ec.user_id", user.id)
+    .andWhere("ec.completed", true)
+    .andWhereNot("e.max_points", 0)
+    .andWhereNot("e.deleted", true)
+    .orderBy([
+      "ec.exercise_id",
+      { column: "ec.timestamp", order: "desc" },
+      { column: "ec.updated_at", order: "desc" },
+    ])
   /*
     [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */
@@ -178,6 +127,7 @@ export const pruneDuplicateExerciseCompletions = async ({
   course_id: string
   context: KafkaContext
 }) => {
+  // TODO/FIXME: this could also use distinctOn
   // we probably can just delete all even if they have required actions
   const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
     "exercise_completion",

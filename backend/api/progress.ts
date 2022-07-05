@@ -35,7 +35,7 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const exercise_completions = await knex
+    const exercise_completions = await knex("exercise_completion as ec")
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
         "exercise_id",
@@ -44,29 +44,17 @@ export class ProgressController {
         "section",
         "max_points",
         "completed",
-        "quizzes_id",
+        "custom_id as quizzes_id",
       )
-      .from(
-        knex("exercise_completion as ec")
-          .select([
-            "user_id",
-            "exercise_id",
-            "n_points",
-            "part",
-            "section",
-            "max_points",
-            "completed",
-            "custom_id as quizzes_id",
-            knex.raw(
-              `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
-            ),
-          ])
-          .join("exercise as e", { "ec.exercise_id": "e.id" })
-          .where("e.course_id", id)
-          .andWhere("ec.user_id", user.id)
-          .as("s"),
-      )
-      .where("rn", 1)
+      .distinctOn("ec.exercise_id")
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", id)
+      .andWhere("ec.user_id", user.id)
+      .orderBy([
+        "ec.exercise_id",
+        { column: "ec.timestamp", order: "desc" },
+        { column: "ec.updated_at", order: "desc" },
+      ])
 
     const resObject = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -106,43 +94,6 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const innerQuery = knex("exercise_completion as ec")
-      .select([
-        "user_id",
-        "exercise_id",
-        "n_points",
-        "part",
-        "section",
-        "max_points",
-        "completed",
-        "custom_id as quizzes_id",
-        knex.raw(
-          `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
-        ),
-      ])
-      .join("exercise as e", { "ec.exercise_id": "e.id" })
-      .where("e.course_id", id)
-      .andWhere("ec.user_id", user.id)
-      .as("s")
-
-    if (!includeDeleted) {
-      innerQuery.andWhereNot("e.deleted", true)
-    }
-
-    const exercise_completions = await knex
-      .select<any, ExerciseCompletionResult[]>(
-        "user_id",
-        "exercise_id",
-        "n_points",
-        "part",
-        "section",
-        "max_points",
-        "completed",
-        "quizzes_id",
-      )
-      .from(innerQuery)
-      .where("rn", 1)
-
     const course = (
       await knex
         .select<any, Course[]>("*")
@@ -151,10 +102,41 @@ export class ProgressController {
         .limit(1)
     )?.[0]
 
-    const completions = await knex
+    if (!course) {
+      return res.status(404).json({ message: "course not found" })
+    }
+
+    // TODO: this could also return the required actions
+    const exerciseCompletionQuery = knex("exercise_completion as ec")
+      .select<any, ExerciseCompletionResult[]>(
+        "user_id",
+        "exercise_id",
+        "n_points",
+        "part",
+        "section",
+        "max_points",
+        "completed",
+        "custom id as quizzes_id",
+      )
+      .distinctOn("ec.exercise_id")
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", id)
+      .andWhere("ec.user_id", user.id)
+      .orderBy([
+        "ec.exercise_id",
+        { column: "ec.timestamp", order: "desc" },
+        { column: "ec.updated_at", order: "desc" },
+      ])
+
+    if (!includeDeleted) {
+      exerciseCompletionQuery.andWhereNot("e.deleted", true)
+    }
+
+    const exercise_completions = await exerciseCompletionQuery
+
+    const completions = await knex("completion as c")
       .select<any, Completion[]>("*")
-      .from("completion")
-      .where("course_id", course?.completions_handled_by_id ?? course?.id)
+      .where("course_id", course.completions_handled_by_id ?? course.id)
       .andWhere("user_id", user.id)
       .orderBy("created_at", "asc")
 
