@@ -5,7 +5,7 @@ orbs:
   jq: circleci/jq@2.2.0
   node: circleci/node@5.0.0
 executors:
-  backend_test: 
+  backend_test:
     docker:
       - image: cimg/node:14.18.3
       - image: cimg/postgres:11.13
@@ -15,7 +15,7 @@ executors:
           POSTGRES_PASSWORD: ""
   backend_build:
     docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest 
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
 
 jobs:
   code_style:
@@ -52,7 +52,7 @@ jobs:
   prepare_backend_test:
     executor: backend_test
     working_directory: ~/project/backend
-    steps: 
+    steps:
       - checkout:
           path: ~/project
       - jq/install
@@ -68,8 +68,8 @@ jobs:
             npm run generate
       - persist_to_workspace:
           root: ~/project
-          paths: 
-           - .
+          paths:
+            - .
 
   test_backend:
     executor: backend_test
@@ -85,7 +85,7 @@ jobs:
       JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
     parallelism: 8
     working_directory: ~/project/backend
-    steps: 
+    steps:
       - attach_workspace:
           at: ~/project
       - run:
@@ -98,7 +98,7 @@ jobs:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: "Create extensions"
-          command: | 
+          command: |
             psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
       - run:
           name: "Run tests"
@@ -126,7 +126,8 @@ jobs:
       #- run:
       #    name: "Upload coverage"
       #    command: bash <(curl -s https://codecov.io/bash)
-
+    # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
+    resource_class: large
   # could combine the artifacts in this step if needed, now the codecov/junit stuff combines automatically
   # upload_backend_coverage:
   #   executor: backend_test
@@ -145,7 +146,6 @@ jobs:
   #         name: "Upload coverage"
   #         command: |
   #           echo "Not implemented yet"
-  
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
   build_backend:
@@ -226,13 +226,12 @@ jobs:
   #     - run:
   #         name: "Push image if on master"
   #         command: "bin/push-docker-auth-image.sh"  
-    
   deploy_to_production:
     docker:
       - image: google/cloud-sdk
     steps:
       - checkout
-      - setup_remote_docker      
+      - setup_remote_docker
       - helm/install-helm-client:
           version: v3.4.2
       - run:
