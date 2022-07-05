@@ -117,6 +117,7 @@ export class StoredDataController {
                   course_id: course.completions_handled_by_id ?? course.id,
                 },
                 orderBy: { created_at: "asc" },
+                take: 1,
               },
             },
           },

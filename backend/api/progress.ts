@@ -16,6 +16,10 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
+const isId = (idOrSlug: string) =>
+  idOrSlug.match(/^[\d-]+$/) &&
+  (idOrSlug.length === 32 || idOrSlug.length === 36)
+
 export class ProgressController {
   constructor(readonly ctx: ApiContext) {}
 
@@ -73,17 +77,17 @@ export class ProgressController {
   }
 
   progressV2 = async (
-    req: Request<{ id: string }, {}, {}, { deleted?: string }>,
+    req: Request<{ idOrSlug: string }, {}, {}, { deleted?: string }>,
     res: Response,
   ) => {
     const { knex } = this.ctx
-    const { id } = req.params
+    const { idOrSlug } = req.params
     const { deleted = "" } = req.query
 
     const includeDeleted = deleted.toLowerCase().trim() === "true"
 
-    if (!id) {
-      return res.status(400).json({ message: "must provide id" })
+    if (!idOrSlug) {
+      return res.status(400).json({ message: "must provide id or slug" })
     }
 
     const getUserResult = await getUser(this.ctx)(req, res)
@@ -98,7 +102,7 @@ export class ProgressController {
       await knex
         .select<any, Course[]>("*")
         .from("course")
-        .where("id", id)
+        .where(isId(idOrSlug) ? "id" : "slug", idOrSlug)
         .limit(1)
     )?.[0]
 
@@ -120,7 +124,7 @@ export class ProgressController {
       )
       .distinctOn("ec.exercise_id")
       .join("exercise as e", { "ec.exercise_id": "e.id" })
-      .where("e.course_id", id)
+      .where("e.course_id", course.id)
       .andWhere("ec.user_id", user.id)
       .orderBy([
         "ec.exercise_id",
@@ -153,7 +157,7 @@ export class ProgressController {
 
     res.json({
       data: {
-        course_id: id,
+        course_id: course.id,
         user_id: user.id,
         exercise_completions: exercise_completions_map,
         completion: completions[0] ?? {},

@@ -899,6 +899,68 @@ describe("API", () => {
   })
 
   describe("/progressv2", () => {
-    // TODO: implement tests
+    const tmc = fakeTMCCurrent({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
+    })
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const getProgressv2 = (id: string, deleted?: boolean) =>
+      get(`/api/progressv2/${id}${deleted ? "?deleted=true" : ""}`, {})
+
+    it("errors on no auth", async () => {
+      return getProgressv2("course1")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on no course found", async () => {
+      return getProgressv2("foo")({
+        headers: { Authorization: "Bearer normal" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(404)
+          expect(response.data.message).toContain("course not found")
+        })
+    })
+
+    test.each([
+      {
+        paramType: "id",
+        param: "00000000000000000000000000000001",
+        deleted: false,
+      },
+      { paramType: "slug", param: "course2", deleted: false },
+      {
+        paramType: "id",
+        param: "00000000000000000000000000000001",
+        deleted: true,
+      },
+      { paramType: "slug", param: "course2", deleted: true },
+    ])(
+      "returns correct data on course $paramType, include deleted $deleted",
+      async ({ param, deleted }) => {
+        const res = await getProgressv2(
+          param,
+          deleted,
+        )({
+          headers: { Authorization: "Bearer normal" },
+        })
+
+        expect(res.data).toMatchSnapshot()
+      },
+    )
+
+    // TODO/FIXME: maybe should also test if it returns handler completion,
+    // but similar functions are already tested
   })
 })

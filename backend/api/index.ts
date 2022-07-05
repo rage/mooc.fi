@@ -32,7 +32,7 @@ export function apiRouter(ctx: ApiContext) {
     .post("/recheck-completion", completionController.recheckCompletion)
     .post("/register-completions", completionController.registerCompletions)
     .get("/progress/:id", progressController.progress)
-    .get("/progressv2/:id", progressController.progressV2)
+    .get("/progressv2/:idOrSlug", progressController.progressV2)
     .get("/tierprogress/:id", progressController.tierProgress)
     .get("/user-course-progress/:slug", progressController.userCourseProgress)
     .get("/user-course-settings/:slug", userCourseSettingsController.get)
