@@ -102,6 +102,7 @@ describe("createCompletion", () => {
           user_id: user!.id,
           course_id: course!.id,
         },
+        orderBy: { created_at: "asc" },
       })
       expect(updatedCompletion).not.toBeNull()
       expect(updatedCompletion!.tier).toEqual(3)
@@ -120,6 +121,7 @@ describe("createCompletion", () => {
           user_id: user!.id,
           course_id: course!.id,
         },
+        orderBy: { created_at: "asc" },
       })
       await createCompletion({
         user: user!,
@@ -132,12 +134,15 @@ describe("createCompletion", () => {
           user_id: user!.id,
           course_id: course!.id,
         },
+        orderBy: { created_at: "asc" },
       })
+
       expect(updatedCompletion!.tier).toEqual(1)
       expect(
         updatedCompletion!.updated_at! > existingCompletion!.updated_at!,
       ).toEqual(true)
     })
+
     it("should not update when tier is not defined", async () => {
       await createCompletion({
         user: user!,
@@ -149,9 +154,11 @@ describe("createCompletion", () => {
           user_id: user!.id,
           course_id: course!.id,
         },
+        orderBy: { created_at: "asc" },
       })
       expect(existingCompletion).toEqual(updatedCompletion)
     })
+
     it("should not update when existing tier is equivalent", async () => {
       await createCompletion({
         user: user!,
@@ -164,9 +171,11 @@ describe("createCompletion", () => {
           user_id: user!.id,
           course_id: course!.id,
         },
+        orderBy: { created_at: "asc" },
       })
       expect(existingCompletion).toEqual(updatedCompletion)
     })
+
     it("should not update when existing tier is larger", async () => {
       await createCompletion({
         user: user!,
@@ -179,6 +188,7 @@ describe("createCompletion", () => {
           user_id: user!.id,
           course_id: course!.id,
         },
+        orderBy: { created_at: "asc" },
       })
       expect(existingCompletion).toEqual(updatedCompletion)
     })

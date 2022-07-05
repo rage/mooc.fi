@@ -1,5 +1,5 @@
 import { UserInputError } from "apollo-server-express"
-import { objectType } from "nexus"
+import { booleanArg, objectType } from "nexus"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
@@ -92,7 +92,14 @@ export const UserCourseSummary = objectType({
 
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      resolve: async ({ user_id, course_id }, _, ctx) => {
+      args: {
+        includeDeleted: booleanArg(),
+      },
+      resolve: async (
+        { user_id, course_id },
+        { includeDeleted = false },
+        ctx,
+      ) => {
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
@@ -103,9 +110,12 @@ export const UserCourseSummary = objectType({
           })
           .exercise_completions({
             where: {
-              exercise: { course_id },
+              exercise: {
+                course_id,
+                ...(!includeDeleted ? { deleted: { not: true } } : {}),
+              },
             },
-            orderBy: [{ timestamp: "desc" }, { created_at: "desc" }],
+            orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
             distinct: "exercise_id",
           })
       },
