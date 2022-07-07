@@ -127,7 +127,40 @@ export const pruneDuplicateExerciseCompletions = async ({
   course_id: string
   context: KafkaContext
 }) => {
-  // TODO/FIXME: this could also use distinctOn
+  // variation: only prune those with the latest timestamp but older updated_at
+  /*const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
+    "exercise_completion",
+  )
+    .whereIn(
+      "id",
+      knex("exercise_completion as ec")
+        .select("ec.id")
+        .join(
+          knex("exercise_completion as ec2")
+            .select(["ec2.id", "user_id", "exercise_id", "ec2.timestamp"])
+            .distinctOn("user_id", "exercise_id")
+            .join("exercise as e", { "e.id": "ec2.exercise_id" })
+            .where("ec2.user_id", user_id)
+            .andWhere("e.course_id", course_id)
+            .orderBy([
+              "user_id",
+              "exercise_id",
+              { column: "ec2.timestamp", order: "desc" },
+              { column: "ec2.updated_at", order: "desc" },
+            ])
+            .as("s"),
+          function () {
+            this.on("s.user_id", "ec.user_id")
+            this.on("s.exercise_id", "ec.exercise_id")
+            this.on("s.timestamp", "ec.timestamp")
+          },
+        )
+        .where("ec.user_id", user_id)
+        .andWhereNot("ec.id", knex.ref("s.id")),
+    )
+    .delete()
+    .returning("id")*/
+
   // we probably can just delete all even if they have required actions
   const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
     "exercise_completion",
@@ -141,14 +174,14 @@ export const pruneDuplicateExerciseCompletions = async ({
             .select([
               "ec.id",
               knex.raw(
-                `row_number() OVER (PARTITION BY exercise_id ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
+                `row_number() OVER (PARTITION BY exercise_id, ec.timestamp ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
               ),
             ])
             //.countDistinct("ecra.value as action_count")
             .join("exercise as e", { "ec.exercise_id": "e.id" })
-            /*.leftJoin("exercise_completion_required_actions as ecra", {
-              "ecra.exercise_completion_id": "ec.id",
-            })*/
+            //.leftJoin("exercise_completion_required_actions as ecra", {
+            //"ecra.exercise_completion_id": "ec.id",
+            //})
             .where("ec.user_id", user_id)
             .andWhere("e.course_id", course_id)
             .groupBy("ec.id")

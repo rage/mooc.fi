@@ -347,7 +347,8 @@ const testExerciseCompletions = mapIds<Prisma.ExerciseCompletionCreateInput>(
       n_points: 0,
     },
     {
-      // should not appear, newer timestamp exists; should be deleted
+      // should not appear, newer timestamp exists;
+      // should be deleted, has an equal timestamp but is older
       user: { connect: { id: USER_ID_1 } },
       exercise: {
         // exercise_2
@@ -355,12 +356,11 @@ const testExerciseCompletions = mapIds<Prisma.ExerciseCompletionCreateInput>(
       },
       completed: true,
       timestamp: new Date("2020-01-01T00:00:00.000Z"),
+      updated_at: new Date("2020-01-01T00:00:00.000Z"),
       n_points: 1,
     },
     {
       // should not appear, newer timestamp exists
-      // - if we're not deleting those with actions, then should not be deleted because there are actions
-      // - otherwise, should be deleted
       user: { connect: { id: USER_ID_1 } },
       exercise: {
         // exercise_2
@@ -368,6 +368,7 @@ const testExerciseCompletions = mapIds<Prisma.ExerciseCompletionCreateInput>(
       },
       completed: true,
       timestamp: new Date("2020-01-01T00:00:00.000Z"),
+      updated_at: new Date("2020-01-02T00:00:00.000Z"),
       n_points: 1,
       exercise_completion_required_actions: {
         createMany: {
@@ -395,7 +396,7 @@ const testExerciseCompletions = mapIds<Prisma.ExerciseCompletionCreateInput>(
       n_points: 2,
     },
     {
-      // should appear
+      // should appear, is the newest
       user: { connect: { id: USER_ID_1 } },
       exercise: {
         // exercise_2
@@ -404,7 +405,7 @@ const testExerciseCompletions = mapIds<Prisma.ExerciseCompletionCreateInput>(
       completed: true,
       timestamp: new Date("2020-01-02T00:00:00.000Z"),
       updated_at: new Date("2020-01-04T00:00:00.000Z"),
-      n_points: 2,
+      n_points: 3,
     },
     {
       // should not appear, exercise deleted
@@ -581,7 +582,12 @@ describe("exercise completion utilities", () => {
         .map(({ id }) => id)
         .sort()
 
-      expect(result.length).toBe(3) // 2 if those with actions not deleted
+      const expectedPruned = [
+        testExerciseCompletions[1].id,
+        testExerciseCompletions[3].id,
+      ]
+
+      expect(result).toEqual(expect.arrayContaining(expectedPruned))
 
       const after = await ctx.prisma.user
         .findUnique({

@@ -559,6 +559,16 @@ export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
     timestamp: "2000-02-01T10:00:00.00+02:00",
     updated_at: "2000-02-01T10:00:00.00+02:00",
     completed: true,
+    exercise_completion_required_actions: {
+      create: [
+        {
+          value: "action 1",
+        },
+        {
+          value: "action 2",
+        },
+      ],
+    },
     n_points: 4,
   },
   {

@@ -151,7 +151,40 @@ export const saveToDatabase = async (
         },
       },
     })
+
+    const exerciseCompletionsWithSameTimestamp = exerciseCompletions
+      .filter((ec) => ec.id !== exerciseCompleted.id)
+      .filter(
+        (ec) =>
+          ec.timestamp!.toISOString() ===
+          exerciseCompleted.timestamp!.toISOString(),
+      )
+      .filter((ec) => ec.updated_at! <= exerciseCompleted.updated_at!)
+
+    if (exerciseCompletionsWithSameTimestamp.length > 0) {
+      logger.info(
+        "Pruning duplicate exercise completions with same timestamp as the newest one",
+      )
+      const prunedActions =
+        await prisma.exerciseCompletionRequiredAction.deleteMany({
+          where: {
+            exercise_completion_id: {
+              in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id),
+            },
+          },
+        })
+
+      const pruned = await prisma.exerciseCompletion.deleteMany({
+        where: {
+          id: { in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id) },
+        },
+      })
+      logger.info(
+        `Pruned ${pruned.count} exercise completions and ${prunedActions.count} related required actions`,
+      )
+    }
   }
+
   await checkCompletion({
     user,
     course,
