@@ -152,6 +152,7 @@ export const saveToDatabase = async (
       },
     })
 
+    // TODO/FIXME: we could prune all the duplicate actions for this user/exercise combination?
     const exerciseCompletionsWithSameTimestamp = exerciseCompletions
       .filter((ec) => ec.id !== exerciseCompleted.id)
       .filter(
