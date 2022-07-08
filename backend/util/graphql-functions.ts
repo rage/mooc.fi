@@ -1,5 +1,7 @@
 import { UserInputError } from "apollo-server-express"
 
+import { Prisma } from "@prisma/client"
+
 import { Context } from "../context"
 
 export const getCourseOrAliasBySlug =
@@ -25,14 +27,9 @@ export const getCourseOrAliasBySlug =
     return course
   }
 
-interface CourseUniqueIdentifier {
-  id?: string
-  slug?: string
-}
-
 export const getCourseOrCompletionHandlerCourse =
   (ctx: Context) =>
-  async ({ id, slug }: CourseUniqueIdentifier) => {
+  async ({ id, slug }: Prisma.CourseWhereUniqueInput) => {
     if (!id && !slug) {
       throw new UserInputError("must provide id and/or slug")
     }

@@ -102,6 +102,14 @@ export class RemoveDuplicateCompletionsError extends CustomError {
   }
 }
 
+export class RemoveDuplicateExerciseCompletionsError extends CustomError {
+  name = "RemoveDuplicateExerciseCompletionsError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}
+
 export class CourseStatsEmailerError extends CustomError {
   name = "CourseStatsEmailerError"
 

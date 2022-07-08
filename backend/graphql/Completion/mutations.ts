@@ -179,6 +179,7 @@ export const CompletionMutations = extendType({
             where: {
               n_points: { gt: 0 },
             },
+            distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
           })
 
@@ -198,6 +199,8 @@ export const CompletionMutations = extendType({
             where: {
               user_id: { in: userIds },
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
 
         // filter users without completions
@@ -273,7 +276,7 @@ export const CompletionMutations = extendType({
           }
         }
 
-        const existing = await ctx.prisma.completion.findFirst({
+        const existing = await ctx.prisma.completion.findUnique({
           where: {
             id,
           },

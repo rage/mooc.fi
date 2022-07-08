@@ -38,6 +38,19 @@ export const ExerciseCompletionQueries = extendType({
     t.crud.exerciseCompletions({
       ordering: true,
       authorize: isAdmin,
+      resolve: async (root, args, ctx, info, originalResolve) => {
+        return originalResolve(
+          root,
+          {
+            ...args,
+            // @ts-ignore: not typed correctly, works
+            distinct: ["exercise_id", "user_id"],
+            orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+          },
+          ctx,
+          info,
+        )
+      },
     })
 
     /*t.list.field("exerciseCompletions", {

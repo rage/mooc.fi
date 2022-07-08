@@ -7,7 +7,7 @@ import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
-import { checkCompletion } from "../userCourseProgress/userFunctions"
+import { checkCompletion } from "../userFunctions"
 import { Message } from "./interfaces"
 
 export const saveToDatabase = async (
@@ -52,33 +52,30 @@ export const saveToDatabase = async (
   }
 
   logger.info("Getting the exercise completion")
-  const exerciseCompleted = (
-    await prisma.user
-      .findUnique({
-        where: {
-          upstream_id: Number(message.user_id),
+  const exerciseCompletions = await prisma.user
+    .findUnique({
+      where: {
+        upstream_id: Number(message.user_id),
+      },
+    })
+    .exercise_completions({
+      where: {
+        exercise: {
+          id: exercise.id,
         },
-      })
-      .exercise_completions({
-        where: {
-          exercise: {
-            custom_id: message.exercise_id?.toString(),
-          },
-        },
-        orderBy: { timestamp: "desc" },
-        include: {
-          exercise_completion_required_actions: true,
-        },
-        take: 1,
-      })
-  )?.[0]
+      },
+      orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+      include: {
+        exercise_completion_required_actions: true,
+      },
+    })
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion
 
   const required_actions = message.completed ? [] : message.required_actions
 
-  if (!exerciseCompleted) {
+  if (exerciseCompletions.length === 0) {
     logger.info("No previous exercise completion, creating a new one")
     const data = {
       exercise: {
@@ -111,20 +108,26 @@ export const saveToDatabase = async (
       }
     }
   } else {
+    const exerciseCompleted = exerciseCompletions[0]
+    let existingActionsOnNewestExerciseCompletion =
+      exerciseCompleted.exercise_completion_required_actions
+
     logger.info("Updating previous exercise completion")
     const oldTimestamp = DateTime.fromISO(
       exerciseCompleted?.timestamp?.toISOString() ?? "",
     )
+
+    // TODO: should we remove the actions if the timestamp is older?
     if (timestamp <= oldTimestamp) {
       return ok("Timestamp older than in DB, aborting")
     }
-    const existingActions =
-      exerciseCompleted.exercise_completion_required_actions
-    const existingActionValues = existingActions?.map((ea) => ea.value) ?? []
+
+    const existingActionValues =
+      existingActionsOnNewestExerciseCompletion?.map((ea) => ea.value) ?? []
     const createActions = required_actions
       .filter((ra) => !existingActionValues.includes(ra))
       .map((value) => ({ value }))
-    const deletedActions = existingActions.filter(
+    const deletedActions = existingActionsOnNewestExerciseCompletion.filter(
       (ea) => !required_actions.includes(ea.value),
     )
 
@@ -148,7 +151,41 @@ export const saveToDatabase = async (
         },
       },
     })
+
+    // TODO/FIXME: we could prune all the duplicate actions for this user/exercise combination?
+    const exerciseCompletionsWithSameTimestamp = exerciseCompletions
+      .filter((ec) => ec.id !== exerciseCompleted.id)
+      .filter(
+        (ec) =>
+          ec.timestamp!.toISOString() ===
+          exerciseCompleted.timestamp!.toISOString(),
+      )
+      .filter((ec) => ec.updated_at! <= exerciseCompleted.updated_at!)
+
+    if (exerciseCompletionsWithSameTimestamp.length > 0) {
+      logger.info(
+        "Pruning duplicate exercise completions with same timestamp as the newest one",
+      )
+      const prunedActions =
+        await prisma.exerciseCompletionRequiredAction.deleteMany({
+          where: {
+            exercise_completion_id: {
+              in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id),
+            },
+          },
+        })
+
+      const pruned = await prisma.exerciseCompletion.deleteMany({
+        where: {
+          id: { in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id) },
+        },
+      })
+      logger.info(
+        `Pruned ${pruned.count} exercise completions and ${prunedActions.count} related required actions`,
+      )
+    }
   }
+
   await checkCompletion({
     user,
     course,

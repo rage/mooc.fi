@@ -92,6 +92,19 @@ export const UserCourseServiceProgressQueries = extendType({
       },
       pagination: true,
       authorize: isAdmin,
+      resolve: async (root, args, ctx, info, originalResolve) => {
+        return originalResolve(
+          root,
+          {
+            ...args,
+            // @ts-ignore: not typed correctly probably, will work though
+            distinct: ["user_id", "course_id", "service_id"],
+            orderBy: { created_at: "asc" },
+          },
+          ctx,
+          info,
+        )
+      },
     })
     /*t.list.field("UserCourseServiceProgresses", {
       type: "user_course_service_progress",
@@ -157,7 +170,9 @@ export const UserCourseServiceProgressMutations = extendType({
           })) ?? {}
 
         if (!course_id || !user_id) {
-          throw new Error("course or user not found")
+          throw new Error(
+            "user course progress not found or not connected to course or user",
+          )
         }
 
         return ctx.prisma.userCourseServiceProgress.create({

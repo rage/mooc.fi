@@ -92,7 +92,7 @@ jobs:
           name: "Install psql client"
           command: |
             sudo apt-get update
-            sudo apt-get install postgresql-client 
+            sudo apt-get install postgresql-client
       - run:
           name: "Wait for database"
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -225,7 +225,7 @@ jobs:
   #         # command: "cd ~/project/auth && bash <(curl -s https://codecov.io/bash)"
   #     - run:
   #         name: "Push image if on master"
-  #         command: "bin/push-docker-auth-image.sh"  
+  #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
     docker:
       - image: google/cloud-sdk
@@ -252,7 +252,7 @@ workflows:
           requires:
             - prepare_backend_test
       #- upload_backend_coverage:
-      #    requires: 
+      #    requires:
       #      - test_backend
       - build_backend
       - push_backend:

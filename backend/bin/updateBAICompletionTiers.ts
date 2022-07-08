@@ -25,8 +25,10 @@ const updateBAICompletionTiers = async () => {
     "completion",
   )
     .select("user_id")
+    .distinctOn("user_id", "course_id")
     .where("course_id", PARENT_COURSE_ID)
     .andWhere("tier", "is", null)
+    .orderBy(["user_id", "course_id", { column: "created_at", order: "asc" }])
 
   logger.info("Getting users")
   const usersWithoutTiers = await knex<any, User[]>("user")

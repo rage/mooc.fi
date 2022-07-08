@@ -43,6 +43,8 @@ export const CompletionQueries = extendType({
             where: {
               completion_language,
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
 
         return completions
@@ -81,6 +83,8 @@ export const CompletionQueries = extendType({
                 }
               : {}),
           },
+          distinct: ["user_id", "course_id"],
+          orderBy: { created_at: "asc" },
         }
 
         return findManyCursorConnection(

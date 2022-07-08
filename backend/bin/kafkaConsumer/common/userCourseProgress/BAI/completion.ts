@@ -5,7 +5,7 @@ import { KafkaContext } from "../../kafkaContext"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,
-} from "../userFunctions"
+} from "../../userFunctions"
 import { getBAIProgress } from "./progress"
 
 const checkBAIProjectCompletion = async (

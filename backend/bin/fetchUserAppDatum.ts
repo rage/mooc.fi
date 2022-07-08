@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 
-import { PrismaClient, UserCourseSetting } from "@prisma/client"
+import { Course, PrismaClient, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
@@ -13,7 +13,7 @@ import sentryLogger from "./lib/logger"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 
-let course
+let course: Course | null
 let old: UserCourseSetting
 
 const logger = sentryLogger({ service: "fetch-user-app-datum" })
@@ -55,11 +55,11 @@ const fetchUserAppDatum = async () => {
     index++
     if (index % 1000 == 0) logger.info(`${index}/${data.length}`)
 
-    const existingUsers = await prisma.user.findMany({
+    const user = await prisma.user.findUnique({
       where: { upstream_id: e.user_id },
     })
 
-    if (existingUsers.length < 1) {
+    if (!user) {
       try {
         await getUserFromTmcAndSaveToDB(e.user_id, tmc)
       } catch (error) {
@@ -74,11 +74,11 @@ const fetchUserAppDatum = async () => {
       }
     }
 
-    const existingCourses = await prisma.course.findMany({
+    course = await prisma.course.findUnique({
       where: { slug: e.namespace },
     })
-    if (existingCourses.length < 1) {
-      await prisma.course.create({
+    if (!course) {
+      course = await prisma.course.create({
         data: {
           slug: e.namespace,
           name: e.namespace,
@@ -89,8 +89,6 @@ const fetchUserAppDatum = async () => {
         },
       })
     }
-
-    course = await prisma.course.findUnique({ where: { slug: e.namespace } })
 
     if (!course) {
       process.exit(1)

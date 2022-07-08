@@ -16,6 +16,10 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
+const isId = (idOrSlug: string) =>
+  idOrSlug.match(/^[\d-]+$/) &&
+  (idOrSlug.length === 32 || idOrSlug.length === 36)
+
 export class ProgressController {
   constructor(readonly ctx: ApiContext) {}
 
@@ -35,7 +39,7 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const exercise_completions = await knex
+    const exercise_completions = await knex("exercise_completion as ec")
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
         "exercise_id",
@@ -46,10 +50,15 @@ export class ProgressController {
         "completed",
         "custom_id as quizzes_id",
       )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
+      .distinctOn("ec.exercise_id")
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", id)
+      .andWhere("ec.user_id", user.id)
+      .orderBy([
+        "ec.exercise_id",
+        { column: "ec.timestamp", order: "desc" },
+        { column: "ec.updated_at", order: "desc" },
+      ])
 
     const resObject = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -68,17 +77,17 @@ export class ProgressController {
   }
 
   progressV2 = async (
-    req: Request<{ id: string }, {}, {}, { deleted?: string }>,
+    req: Request<{ idOrSlug: string }, {}, {}, { deleted?: string }>,
     res: Response,
   ) => {
     const { knex } = this.ctx
-    const { id } = req.params
+    const { idOrSlug } = req.params
     const { deleted = "" } = req.query
 
     const includeDeleted = deleted.toLowerCase().trim() === "true"
 
-    if (!id) {
-      return res.status(400).json({ message: "must provide id" })
+    if (!idOrSlug) {
+      return res.status(400).json({ message: "must provide id or slug" })
     }
 
     const getUserResult = await getUser(this.ctx)(req, res)
@@ -89,7 +98,20 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const exerciseCompletionsPromise = knex
+    const course = (
+      await knex
+        .select<any, Course[]>("*")
+        .from("course")
+        .where(isId(idOrSlug) ? "id" : "slug", idOrSlug)
+        .limit(1)
+    )?.[0]
+
+    if (!course) {
+      return res.status(404).json({ message: "course not found" })
+    }
+
+    // TODO: this could also return the required actions
+    const exerciseCompletionQuery = knex("exercise_completion as ec")
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
         "exercise_id",
@@ -100,29 +122,27 @@ export class ProgressController {
         "completed",
         "custom_id as quizzes_id",
       )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
+      .distinctOn("ec.exercise_id")
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", course.id)
+      .andWhere("ec.user_id", user.id)
+      .orderBy([
+        "ec.exercise_id",
+        { column: "ec.timestamp", order: "desc" },
+        { column: "ec.updated_at", order: "desc" },
+      ])
 
     if (!includeDeleted) {
-      exerciseCompletionsPromise.andWhereNot("exercise.deleted", true)
+      exerciseCompletionQuery.andWhereNot("e.deleted", true)
     }
 
-    const exercise_completions = await exerciseCompletionsPromise
-    const course = (
-      await knex
-        .select<any, Course[]>("*")
-        .from("course")
-        .where("id", id)
-        .limit(1)
-    )?.[0]
+    const exercise_completions = await exerciseCompletionQuery
 
-    const completions = await knex
+    const completions = await knex("completion as c")
       .select<any, Completion[]>("*")
-      .from("completion")
-      .where("course_id", course?.completions_handled_by_id ?? course?.id)
+      .where("course_id", course.completions_handled_by_id ?? course.id)
       .andWhere("user_id", user.id)
+      .orderBy("created_at", "asc")
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -137,7 +157,7 @@ export class ProgressController {
 
     res.json({
       data: {
-        course_id: id,
+        course_id: course.id,
         user_id: user.id,
         exercise_completions: exercise_completions_map,
         completion: completions[0] ?? {},
@@ -169,6 +189,7 @@ export class ProgressController {
       .from("user_course_progress")
       .where("user_course_progress.course_id", id)
       .andWhere("user_course_progress.user_id", user.id)
+      .orderBy("created_at", "asc")
 
     res.json({
       data: {

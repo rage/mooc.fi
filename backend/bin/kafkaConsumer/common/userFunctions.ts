@@ -1,5 +1,7 @@
 import {
   Course,
+  ExerciseCompletion,
+  ExerciseCompletionRequiredAction,
   User,
   UserCourseServiceProgress,
   UserCourseSetting,
@@ -8,16 +10,16 @@ import {
 import {
   completionLanguageMap,
   LanguageAbbreviation,
-} from "../../../../config/languageConfig"
-import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-import { MessageType, pushMessageToClient } from "../../../../wsServer"
-import { DatabaseInputError } from "../../../lib/errors"
-import { KafkaContext } from "../kafkaContext"
+} from "../../../config/languageConfig"
+import { isNullOrUndefined } from "../../../util/isNullOrUndefined"
+import { MessageType, pushMessageToClient } from "../../../wsServer"
+import { DatabaseInputError } from "../../lib/errors"
+import { KafkaContext } from "./kafkaContext"
 import {
   ExerciseCompletionPart,
   ServiceProgressPartType,
   ServiceProgressType,
-} from "./interfaces"
+} from "./userCourseProgress/interfaces"
 
 export const getCombinedUserCourseProgress = async ({
   user,
@@ -28,21 +30,14 @@ export const getCombinedUserCourseProgress = async ({
   course: Course
   context: KafkaContext
 }): Promise<CombinedUserCourseProgress> => {
-  /* Get UserCourseServiceProgresses */
-  const baseQuery = user?.id
-    ? prisma.user.findUnique({ where: { id: user.id } })
-    : course?.id
-    ? prisma.course.findUnique({ where: { id: course.id } })
-    : null
-  if (!baseQuery) {
-    throw new Error("has to have at least one of user and course")
-  }
-  const userCourseServiceProgresses =
-    await baseQuery.user_course_service_progresses({
+  const userCourseServiceProgresses = await prisma.user
+    .findUnique({ where: { id: user.id } })
+    .user_course_service_progresses({
       where: {
-        user_id: user?.id,
-        course_id: course?.id,
+        course_id: course.id,
       },
+      distinct: ["course_id", "service_id"],
+      orderBy: { created_at: "asc" },
     })
 
   /*
@@ -76,13 +71,13 @@ export const checkRequiredExerciseCompletions = async ({
   context: KafkaContext
 }): Promise<boolean> => {
   if (course.exercise_completions_needed) {
-    // TODO/FIXME: skip deleted exercises?
     const exercise_completions = await knex("exercise_completion")
       .countDistinct("exercise_completion.exercise_id")
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
       .where("exercise.course_id", course.id)
       .andWhere("exercise_completion.user_id", user.id)
       .andWhere("exercise_completion.completed", true)
+      .andWhereNot("exercise.deleted", true)
       .andWhereNot("exercise.max_points", 0)
 
     return exercise_completions[0].count >= course.exercise_completions_needed
@@ -99,28 +94,120 @@ export const getExerciseCompletionsForCourses = async ({
   courseIds: string[]
   context: KafkaContext
 }) => {
-  // TODO/FIXME: skip deleted exercises?
-  const exercise_completions: ExerciseCompletionPart[] = await knex<
-    any,
-    ExerciseCompletionPart[]
-  >("exercise_completion")
-    .select(
-      "exercise.course_id",
-      "exercise.custom_id",
-      "exercise.max_points",
-      "exercise_completion.exercise_id",
-      "exercise_completion.n_points",
-    )
-    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-    .whereIn("exercise.course_id", courseIds)
-    .andWhere("exercise_completion.user_id", user.id)
-    .andWhere("exercise_completion.completed", true)
-    .andWhereNot("exercise.max_points", 0)
-
+  // picks only one exercise completion per exercise/user:
+  // the one with the latest timestamp and latest updated_at
+  const exercise_completions: ExerciseCompletionPart[] = await knex(
+    "exercise_completion as ec",
+  )
+    .select("course_id", "custom_id", "max_points", "exercise_id", "n_points")
+    .distinctOn("ec.exercise_id")
+    .join("exercise as e", { "ec.exercise_id": "e.id" })
+    .whereIn("e.course_id", courseIds)
+    .andWhere("ec.user_id", user.id)
+    .andWhere("ec.completed", true)
+    .andWhereNot("e.max_points", 0)
+    .andWhereNot("e.deleted", true)
+    .orderBy([
+      "ec.exercise_id",
+      { column: "ec.timestamp", order: "desc" },
+      { column: "ec.updated_at", order: "desc" },
+    ])
   /*
     [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */
-  return exercise_completions
+  return exercise_completions // ?.rows ?? []
+}
+
+export const pruneDuplicateExerciseCompletions = async ({
+  user_id,
+  course_id,
+  context: { knex },
+}: {
+  user_id: string
+  course_id: string
+  context: KafkaContext
+}) => {
+  // variation: only prune those with the latest timestamp but older updated_at
+  /*const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
+    "exercise_completion",
+  )
+    .whereIn(
+      "id",
+      knex("exercise_completion as ec")
+        .select("ec.id")
+        .join(
+          knex("exercise_completion as ec2")
+            .select(["ec2.id", "user_id", "exercise_id", "ec2.timestamp"])
+            .distinctOn("user_id", "exercise_id")
+            .join("exercise as e", { "e.id": "ec2.exercise_id" })
+            .where("ec2.user_id", user_id)
+            .andWhere("e.course_id", course_id)
+            .orderBy([
+              "user_id",
+              "exercise_id",
+              { column: "ec2.timestamp", order: "desc" },
+              { column: "ec2.updated_at", order: "desc" },
+            ])
+            .as("s"),
+          function () {
+            this.on("s.user_id", "ec.user_id")
+            this.on("s.exercise_id", "ec.exercise_id")
+            this.on("s.timestamp", "ec.timestamp")
+          },
+        )
+        .where("ec.user_id", user_id)
+        .andWhereNot("ec.id", knex.ref("s.id")),
+    )
+    .delete()
+    .returning("id")*/
+
+  // we probably can just delete all even if they have required actions
+  const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
+    "exercise_completion",
+  )
+    .whereIn(
+      "id",
+      knex
+        .select("id")
+        .from(
+          knex("exercise_completion as ec")
+            .select([
+              "ec.id",
+              knex.raw(
+                `row_number() OVER (PARTITION BY exercise_id, ec.timestamp ORDER BY ec.timestamp DESC, ec.updated_at DESC) rn`,
+              ),
+            ])
+            //.countDistinct("ecra.value as action_count")
+            .join("exercise as e", { "ec.exercise_id": "e.id" })
+            //.leftJoin("exercise_completion_required_actions as ecra", {
+            //"ecra.exercise_completion_id": "ec.id",
+            //})
+            .where("ec.user_id", user_id)
+            .andWhere("e.course_id", course_id)
+            .groupBy("ec.id")
+            .as("s"),
+        )
+        .where("rn", ">", "1"),
+      //.andWhere("action_count", "=", 0),
+    )
+    .delete()
+    .returning("id")
+
+  return deleted
+}
+
+export const pruneOrphanedExerciseCompletionRequiredActions = async ({
+  context: { knex },
+}: {
+  context: KafkaContext
+}) => {
+  const deleted: Array<Pick<ExerciseCompletionRequiredAction, "id">> =
+    await knex("exercise_completion_required_actions")
+      .whereNull("exercise_completion_id")
+      .delete()
+      .returning("id")
+
+  return deleted
 }
 
 export const getUserCourseSettings = async ({
@@ -306,6 +393,7 @@ export const createCompletion = async ({
       })
     }
   } else if (!isNullOrUndefined(tier)) {
+    // TODO: prune extra completions here?
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {

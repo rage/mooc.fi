@@ -267,7 +267,7 @@ export class UserCourseSettingsController {
 
         let { count } = (
           await knex("user_course_setting")
-            .countDistinct("id as count")
+            .countDistinct("user_id as count")
             .where({ course_id, language })
         )?.[0]
 
