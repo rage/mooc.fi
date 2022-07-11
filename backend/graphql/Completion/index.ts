@@ -1,4 +1,4 @@
-// generated Fri Mar 19 2021 15:20:33 GMT+0200 (GMT+02:00)
+// generated Mon Jul 11 2022 17:59:37 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./input"
 export * from "./model"

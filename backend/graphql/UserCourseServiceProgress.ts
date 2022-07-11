@@ -97,6 +97,7 @@ export const UserCourseServiceProgressQueries = extendType({
           root,
           {
             ...args,
+            // TODO: does this work?
             // @ts-ignore: not typed correctly probably, will work though
             distinct: ["user_id", "course_id", "service_id"],
             orderBy: { created_at: "asc" },
