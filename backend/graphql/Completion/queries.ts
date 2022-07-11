@@ -1,6 +1,7 @@
 // import { convertPagination } from "../../util/db-functions"
 
 import { ForbiddenError } from "apollo-server-express"
+import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
@@ -93,11 +94,44 @@ export const CompletionQueries = extendType({
               .findUnique({
                 where: { id: course!.completions_handled_by_id ?? course!.id },
               })
-              .completions({
-                ...args,
+              .completions(merge(baseArgs, args)),
+          async () => {
+            // TODO/FIXME: kludge as there is no distinct in prisma "count" or other aggregates
+            //  ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
+            /*const countQuery = ctx
+              .knex<number>("completion as co")
+              .countDistinct("user_id", "course_id")
+
+            if (completion_language && completion_language.length > 0) {
+              countQuery.where("co.completion_language", completion_language)
+            }
+
+            if (search) {
+              countQuery
+                .join("user as u", { "co.user_id": "u.id" })
+                .whereILike("first_name", search)
+                .orWhereILike("last_name", search)
+                .orWhereILike("username", search)
+                .orWhereILike("u.email", search)
+                .orWhereLike("u.student_number", search)
+                .orWhereLike("real_student_number", search)
+
+              if (Number(search)) {
+                countQuery.orWhere("u.upstream_id", Number(search))
+              }
+            }
+
+            return Number.parseInt(
+              (await countQuery)[0].count?.toString() ?? "0",
+            )*/
+
+            return (
+              await ctx.prisma.completion.findMany({
                 ...baseArgs,
-              }),
-          () => ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
+                select: { id: true },
+              })
+            ).length
+          },
           { first, last, before, after },
           {
             getCursor: (node) => ({ id: node.id }),

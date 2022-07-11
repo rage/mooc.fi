@@ -97,21 +97,71 @@ export const UserCourseSettingQueries = extendType({
             },
           })
 
-          return ctx.prisma.userCourseSetting.count({
+          // TODO/FIXME: aggregate functions don't have distinct
+          /*return ctx.prisma.userCourseSetting.count({
             where: {
               user_id,
               course_id: course?.inherit_settings_from_id ?? course_id,
             },
             distinct: ["user_id", "course_id"],
-          })
+          })*/
+
+          // alternate version using count instead of selecting id
+          /*let countQueryString = `
+            SELECT count(DISTINCT CONCAT(user_id, course_id))
+            FROM user_course_setting
+            WHERE `
+          if (user_id) {
+            countQueryString += `user_id = '${user_id}' AND `
+          }
+
+          countQueryString += `course_id = '${
+            course?.inherit_settings_from_id ?? course_id
+          }'`
+
+          return (await ctx.prisma.$queryRaw(countQueryString))?.[0].count ?? 0*/
+
+          return (
+            await ctx.prisma.userCourseSetting.findMany({
+              where: {
+                user_id,
+                course_id: course?.inherit_settings_from_id ?? course_id,
+              },
+              distinct: ["user_id", "course_id"],
+              select: {
+                id: true,
+              },
+            })
+          ).length
         }
 
-        return ctx.prisma.userCourseSetting.count({
+        /*return ctx.prisma.userCourseSetting.count({
           where: {
             user_id,
           },
           distinct: ["user_id", "course_id"],
-        })
+        })*/
+
+        /*let countQueryString = `
+          SELECT count(DISTINCT CONCAT(user_id, course_id))
+          FROM user_course_setting`
+
+        if (user_id) {
+          countQueryString += `\nWHERE user_id = '${user_id}'`
+        }
+
+        return (await ctx.prisma.$queryRaw(countQueryString))?.[0].count ?? 0*/
+        return (
+          await ctx.prisma.userCourseSetting.findMany({
+            where: {
+              user_id,
+            },
+            distinct: ["user_id", "course_id"],
+            select: {
+              id: true,
+            },
+          })
+        ).length
       },
     })
 
@@ -123,6 +173,9 @@ export const UserCourseSettingQueries = extendType({
         course_id: idArg(),
         search: stringArg(),
         skip: intArg(),
+        first: intArg(),
+        last: intArg(),
+        before: stringArg(),
         after: stringArg(),
       },
       authorize: isAdmin,
@@ -202,8 +255,50 @@ export const UserCourseSettingQueries = extendType({
               })
           },
           async () => {
+            // TODO/FIXME: kludge because prisma "count" doesn't have distinct
             // this might or might not get run
-            const count = await ctx.prisma.userCourseSetting.count({
+            /*const countQuery = ctx
+              .knex<number>("user_course_setting as ucs")
+              .countDistinct("user_id", "course_id")
+
+            if (course_id && course_id.length > 0) {
+              countQuery.where("ucs.course_id", course_id)
+            }
+
+            let userJoined = false
+
+            if (search) {
+              userJoined = true
+              countQuery
+                .join("user as u", { "ucs.user_id": "u.id" })
+                .whereILike("first_name", search)
+                .orWhereILike("last_name", search)
+                .orWhereILike("username", search)
+                .orWhereILike("u.email", search)
+                .orWhereLike("u.student_number", search)
+                .orWhereLike("real_student_number", search)
+
+              if (Number(search)) {
+                countQuery.orWhere("u.upstream_id", Number(search))
+              }
+            }
+
+            if (user_id) {
+              countQuery.orWhere("ucs.user_id", user_id)
+            }
+            if (user_upstream_id) {
+              if (!userJoined) {
+                countQuery.join("user as u", { "co.user_id": "u.id" })
+                userJoined = true
+              }
+              countQuery.orWhere("u.upstream_id", user_upstream_id)
+            }
+
+            return Number.parseInt(
+              (await countQuery)[0].count?.toString() ?? "0",
+            )*/
+
+            /*const count = await ctx.prisma.userCourseSetting.count({
               where: {
                 course_id: course_id ?? undefined,
                 user: {
@@ -211,7 +306,19 @@ export const UserCourseSettingQueries = extendType({
                 },
               },
               distinct: ["user_id", "course_id"],
-            })
+            })*/
+            const count = (
+              await ctx.prisma.userCourseSetting.findMany({
+                where: {
+                  course_id: course_id ?? undefined,
+                  user: {
+                    AND: userConditions,
+                  },
+                },
+                distinct: ["user_id", "course_id"],
+                select: { id: true },
+              })
+            ).length
 
             return count
           },
@@ -219,50 +326,7 @@ export const UserCourseSettingQueries = extendType({
         )
       },
       extendConnection(t) {
-        t.int("totalCount", {
-          args: {
-            user_id: idArg(),
-            user_upstream_id: intArg(),
-            course_id: idArg(),
-            search: stringArg(),
-          },
-          resolve: async (_, args, ctx) => {
-            let { course_id } = args
-            const { user_id, user_upstream_id, search } = args
-
-            if (!course_id && !user_id && !user_upstream_id) {
-              throw new UserInputError(
-                "Needs at least one of course_id, user_id or user_upstream_id",
-              )
-            }
-
-            if (course_id) {
-              const inheritSettingsCourse = await ctx.prisma.course
-                .findUnique({ where: { id: course_id } })
-                .inherit_settings_from()
-
-              if (inheritSettingsCourse) {
-                course_id = inheritSettingsCourse.id
-              }
-            }
-
-            const { userConditions } = getUserCourseSettingSearch({
-              user_id,
-              user_upstream_id,
-              search,
-            })
-
-            return await ctx.prisma.userCourseSetting.count({
-              where: {
-                course_id: course_id ?? undefined,
-                user: {
-                  AND: userConditions,
-                },
-              },
-              distinct: ["user_id", "course_id"],
-            })
-          },
-        })
+        t.int("totalCount")
       },
     })
   },

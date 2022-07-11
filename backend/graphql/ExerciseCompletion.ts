@@ -43,6 +43,7 @@ export const ExerciseCompletionQueries = extendType({
           root,
           {
             ...args,
+            // TODO: _does_ this really work?
             // @ts-ignore: not typed correctly, works
             distinct: ["exercise_id", "user_id"],
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
