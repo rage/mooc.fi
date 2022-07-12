@@ -16,8 +16,8 @@
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "plugins": [{ "name": "nexus/typescript-language-service" }],
+    "plugins": [{ "name": "nexus/typescript-language-service" }]
     // "typeRoots": ["node_modules/@types", "types"]
   },
-  "include": [".", "./bin/**/*", "types.d.ts"],
+  "include": [".", "./bin/**/*", "types.d.ts"]
 }
