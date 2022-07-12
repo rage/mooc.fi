@@ -3,6 +3,8 @@ import { objectType } from "nexus"
 
 import { UserCourseProgress } from "@prisma/client"
 
+import { BAIParentCourse, BAITierCourses } from "../../config/courseConfig"
+
 export const Completion = objectType({
   name: "Completion",
   definition(t) {
@@ -116,11 +118,21 @@ export const Completion = objectType({
           return false
         }
 
+        if (
+          !BAITierCourses.includes(parent.course_id) &&
+          parent.course_id !== BAIParentCourse
+        ) {
+          // we're not a BAI course, no use looking
+          return false
+        }
+
         const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
-            course_id: parent.course_id,
+            course_id: { in: [BAIParentCourse, ...BAITierCourses] },
             user_id: parent.user_id,
           },
+          distinct: ["user_id", "course_id"],
+          orderBy: { created_at: "asc" },
         })
 
         return (

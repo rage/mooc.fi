@@ -132,6 +132,15 @@ export const User = objectType({
           throw new Error("need course_id or course_slug")
         }
 
+        // TODO/FIXME: Semantically it's right now, as we're quering a specific course,
+        // be it tier or handler, and if the user does not have a project_completion
+        // iin _that_ specific course progress, then we return false.
+        // However, this is not usually what we want to query here, so we might want to
+        // look for the siblings/children as well. This only applies to BAI courses anyway
+        // for now, but we can't go hard coding the course ids here as it would render the
+        // parameters obsolete.
+        // Add a third parameter `query_siblings` that defaults to true to the query?
+
         const data = await ctx.prisma.course.findUnique({
           where: {
             id: course_id ?? undefined,

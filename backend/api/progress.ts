@@ -17,8 +17,8 @@ interface ExerciseCompletionResult {
 }
 
 const isId = (idOrSlug: string) =>
-  idOrSlug.match(/^[\d-]+$/) &&
-  (idOrSlug.length === 32 || idOrSlug.length === 36)
+  Boolean(idOrSlug.match(/^[0-9a-fA-F]{32}$/)) ||
+  Boolean(idOrSlug.match(/^[0-9a-fA-F-]{36}$/))
 
 export class ProgressController {
   constructor(readonly ctx: ApiContext) {}

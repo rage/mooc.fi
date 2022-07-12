@@ -3,9 +3,8 @@ import {
   getTierInfo,
   getTierProgress,
   hasRuleConditions,
-  TierInfo,
-  TierProgressMap,
 } from "../BAI/progress"
+import { TierInfo, TierProgressMap } from "../interfaces"
 import { ExerciseCompletionPart } from "../interfaces"
 
 const env = require(__dirname + "/../../../../../config/env.json")
