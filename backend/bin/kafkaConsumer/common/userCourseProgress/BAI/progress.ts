@@ -8,58 +8,57 @@ import {
   pointsNeeded,
   requiredByTier,
 } from "../../../../../config/courseConfig"
-import { ExerciseCompletionPart, TierProgress } from "../interfaces"
-
-interface TierProgressGroup {
-  group: string
-  tier: number
-  max_points: number
-  n_points: number
-  progress: number
-}
-
-export type TierProgressMap = Record<number, TierProgress>
-
-interface Progress {
-  total_n_points: number
-  total_max_points: number
-}
+import {
+  ExerciseCompletionPart,
+  TierInfo,
+  TierProgressGroup,
+  TierProgressMap,
+  TotalProgress,
+} from "../interfaces"
 
 export const getTierProgress = (
   exerciseCompletionsForCourses: ExerciseCompletionPart[],
 ) => {
-  const tierProgressMap = exerciseCompletionsForCourses.reduce((acc, curr) => {
-    const { exercise, tier } = BAIexercises[curr.custom_id ?? ""] ?? {}
-
-    if (!exercise) return acc
-
-    const max_points = curr.max_points || 0
-    const n_points = Math.max(acc[exercise]?.n_points || 0, curr.n_points || 0)
-
-    return {
-      ...acc,
-      [exercise]: {
-        tier: Math.max(acc[exercise]?.tier || 0, tier),
-        max_points,
-        n_points,
-        progress: n_points / (max_points || 1),
-        custom_id: curr.custom_id,
-      },
-    }
-  }, {} as TierProgressMap)
   /*
     [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and
       what's the highest amount of points received, not necessarily from maximum tier
     ...
   */
-  const tierProgress: TierProgressGroup[] = Object.entries(tierProgressMap).map(
+  const tierProgressMap = exerciseCompletionsForCourses.reduce<TierProgressMap>(
+    (acc, curr) => {
+      const { exercise, tier } = BAIexercises[curr.custom_id ?? ""] ?? {}
+
+      if (!exercise) return acc
+
+      const max_points = curr.max_points || 0
+      const n_points = Math.max(
+        acc[exercise]?.n_points || 0,
+        curr.n_points || 0,
+      )
+
+      return {
+        ...acc,
+        [String(exercise)]: {
+          tier: Math.max(acc[exercise]?.tier || 0, tier ?? 0),
+          max_points,
+          n_points,
+          progress: n_points / (max_points || 1),
+          custom_id: curr.custom_id,
+        },
+      }
+    },
+    {},
+  )
+
+  // one entry per exercise with the highest tier and the highest amount of points
+  const tierProgress = Object.entries(tierProgressMap).map<TierProgressGroup>(
     ([key, value]) => ({
       group: key,
       ...value,
     }),
   )
 
-  const progress: Progress = Object.values(tierProgressMap).reduce(
+  const progress = Object.values(tierProgressMap).reduce<TotalProgress>(
     (acc, curr) => ({
       total_n_points: acc.total_n_points + curr.n_points,
       total_max_points: acc.total_max_points + curr.max_points,
@@ -102,49 +101,43 @@ export const hasRuleConditions = ({
 interface GetTierInfo {
   tierProgressMap: TierProgressMap
   hasBasicRule: boolean
-  required_by_tier: Record<number, number>
+  required_by_tier: Record<string, number>
 }
-
-export type TierInfo = Record<
-  string,
-  {
-    hasTier: boolean
-    missingFromTier: number
-    exerciseCompletions: number
-  }
->
 
 export const getTierInfo = ({
   tierProgressMap,
   hasBasicRule,
   required_by_tier,
 }: GetTierInfo) => {
-  const tierCompletions = range(1, 4).reduce(
+  const tierCompletions = range(1, 4).reduce<Record<string, number>>(
     (acc, tier) => ({
       ...acc,
-      [tier]: Object.values(tierProgressMap).filter((t) => t.tier >= tier)
-        .length,
+      [String(tier)]: Object.values(tierProgressMap).filter(
+        (t) => t.tier >= tier,
+      ).length,
     }),
-    {} as Record<number, number>,
+    {},
   )
   /*
     [tier #]: # of exercises completed from _at least_ this tier,
       so tier 3 is counted in both 1 and 2, and so on
   */
 
-  const hasTier: Record<number, boolean> = {
-    1: hasBasicRule,
-    2: hasBasicRule && tierCompletions[2] >= required_by_tier[2],
-    3: hasBasicRule && tierCompletions[3] >= required_by_tier[3],
+  const hasTier: Record<string, boolean> = {
+    "1": hasBasicRule,
+    "2": hasBasicRule && tierCompletions["2"] >= required_by_tier["2"],
+    "3": hasBasicRule && tierCompletions["3"] >= required_by_tier["3"],
   }
 
-  const missingFromTier = range(1, 4).reduce(
-    (acc, tier) => ({
-      ...acc,
-      [tier]: Math.max(0, required_by_tier[tier] - tierCompletions[tier]),
-    }),
-    {} as Record<number, number>,
-  )
+  const missingFromTier = range(1, 4)
+    .map(String)
+    .reduce<Record<string, number>>(
+      (acc, tier) => ({
+        ...acc,
+        [tier]: Math.max(0, required_by_tier[tier] - tierCompletions[tier]),
+      }),
+      {},
+    )
   /*
     [tier #]: how many exercises missing to get to this tier
   */
@@ -154,19 +147,17 @@ export const getTierInfo = ({
     0,
   )
 
-  const tierInfo: TierInfo = Object.keys(BAItiers)
-    .map(Number)
-    .reduce(
-      (acc, tier) => ({
-        ...acc,
-        [BAITierNames[tier]]: {
-          hasTier: hasTier[tier],
-          missingFromTier: missingFromTier[tier],
-          exerciseCompletions: tierCompletions[tier],
-        },
-      }),
-      {},
-    )
+  const tierInfo = Object.keys(BAItiers).reduce<TierInfo>(
+    (acc, tier) => ({
+      ...acc,
+      [BAITierNames[tier]]: {
+        hasTier: hasTier[tier],
+        missingFromTier: missingFromTier[tier],
+        exerciseCompletions: tierCompletions[tier],
+      },
+    }),
+    {},
+  )
 
   return {
     tierInfo,
@@ -204,7 +195,7 @@ export const getProgress = ({
       },
     ],
     extra: {
-      tiers: tierInfo as any,
+      tiers: tierInfo,
       exercises: tierProgressMap as any,
       projectCompletion,
       highestTier,

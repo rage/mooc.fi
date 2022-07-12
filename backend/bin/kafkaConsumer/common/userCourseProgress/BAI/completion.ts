@@ -56,6 +56,7 @@ export const checkBAICompletion = async ({
     exerciseCompletionsForCourses,
   )
 
+  // TODO: update project completion to all tier progresses?
   const existingProgresses = await prisma.course
     .findUnique({
       where: { id: course.id },
