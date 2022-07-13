@@ -88,6 +88,7 @@ export const OrganizationQueries = extendType({
       },
     })
 
+    // type generation only
     t.crud.organizations({
       ordering: true,
       pagination: true,

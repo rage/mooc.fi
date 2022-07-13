@@ -1,4 +1,11 @@
-import { extendType, idArg, nonNull, objectType, stringArg } from "nexus"
+import {
+  extendType,
+  idArg,
+  nonNull,
+  nullable,
+  objectType,
+  stringArg,
+} from "nexus"
 
 import { isAdmin } from "../accessControl"
 
@@ -12,7 +19,25 @@ export const Service = objectType({
     t.model.url()
     t.model.exercises()
     t.model.user_course_service_progresses()
-    t.model.courses()
+
+    t.list.field("courses", {
+      type: "Course",
+      resolve: async (parent, _, ctx) => {
+        const exerciseCourses = await ctx.prisma.service
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .exercises({
+            select: {
+              course: true,
+            },
+            distinct: ["course_id"],
+          })
+
+        return exerciseCourses.flatMap((ec) => ec.course)
+      },
+    })
+    // t.model.courses()
   },
 })
 
@@ -29,19 +54,29 @@ export const ServiceQueries = extendType({
         await ctx.prisma.service.findUnique({ where: { id: service_id } }),
     })
 
-    t.crud.services({
-      pagination: false,
-      authorize: isAdmin,
-    })
-
-    /*t.list.field("services", {
-      type: "service",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-
-        return ctx.prisma.service.findMany()
+    t.nonNull.list.nonNull.field("services", {
+      type: "Service",
+      args: {
+        course_id: nullable(idArg()),
+        course_slug: nullable(stringArg()),
+        name: nullable(stringArg()),
       },
-    })*/
+      authorize: isAdmin,
+      resolve: async (_, { course_id, course_slug, name }, ctx) =>
+        ctx.prisma.service.findMany({
+          where: {
+            ...((course_id || course_slug) && {
+              courses: {
+                some: {
+                  id: course_id ?? undefined,
+                  slug: course_slug ?? undefined,
+                },
+              },
+            }),
+            ...(name && { name: { contains: name, mode: "insensitive" } }),
+          },
+        }),
+    })
   },
 })
 

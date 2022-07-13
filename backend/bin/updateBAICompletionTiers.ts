@@ -1,5 +1,6 @@
 import { Completion, User } from "@prisma/client"
 
+import { BAIParentCourse } from "../config/courseConfig"
 import prisma from "../prisma"
 import knex from "../services/knex"
 import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/BAI/completion"
@@ -7,11 +8,9 @@ import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "update-bai-completion-tiers" })
 
-const PARENT_COURSE_ID = "49cbadd8-be32-454f-9b7d-e84d52100b74"
-
 const updateBAICompletionTiers = async () => {
   const course = await prisma.course.findUnique({
-    where: { id: PARENT_COURSE_ID },
+    where: { id: BAIParentCourse },
   })
 
   if (!course) {
@@ -26,7 +25,7 @@ const updateBAICompletionTiers = async () => {
   )
     .select("user_id")
     .distinctOn("user_id", "course_id")
-    .where("course_id", PARENT_COURSE_ID)
+    .where("course_id", BAIParentCourse)
     .andWhere("tier", "is", null)
     .orderBy(["user_id", "course_id", { column: "created_at", order: "asc" }])
 

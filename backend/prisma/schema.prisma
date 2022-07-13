@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["aggregateApi"]
+  previewFeatures = []
 }
 
 datasource db {
@@ -123,8 +123,8 @@ model Course {
   user_course_service_progresses                     UserCourseServiceProgress[]
   user_course_settings                               UserCourseSetting[]
   user_course_settings_visibilities                  UserCourseSettingsVisibility[]
-  services                                           Service[]                           @relation("course_to_service", references: [id])
-  study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
+  services                                           Service[]                           @relation("course_to_service")
+  study_modules                                      StudyModule[]                       @relation("study_module_to_course")
   upcoming_active_link                               Boolean?
   tier                                               Int?
   stored_data                                        StoredData[]                        
@@ -359,7 +359,7 @@ model Service {
   url                            String
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                       @relation("course_to_service", references: [id])
+  courses                        Course[]                       @relation("course_to_service")
 
   @@map("service")
 }
@@ -386,7 +386,7 @@ model StudyModule {
   slug                      String                     @unique
   updated_at                DateTime?                  @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                   @relation("study_module_to_course", references: [id])
+  courses                   Course[]                   @relation("study_module_to_course")
 
   @@map("study_module")
 }

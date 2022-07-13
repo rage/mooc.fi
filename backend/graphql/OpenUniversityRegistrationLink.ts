@@ -3,6 +3,7 @@ import {
   idArg,
   inputObjectType,
   nonNull,
+  nullable,
   objectType,
   stringArg,
 } from "nexus"
@@ -70,21 +71,28 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.openUniversityRegistrationLink.findUnique({
+        ctx.prisma.openUniversityRegistrationLink.findUnique({
           where: { id },
         }),
     })
 
-    t.crud.openUniversityRegistrationLinks({
-      authorize: isAdmin,
-    })
-    /*t.list.field("openUniversityRegistrationLinks", {
-      type: "open_university_registration_link",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.open_university_registration_link.findMany()
+    t.nonNull.list.nonNull.field("openUniversityRegistrationLinks", {
+      type: "OpenUniversityRegistrationLink",
+      args: {
+        course_id: nullable(idArg()),
+        course_code: nullable(stringArg()),
+        language: nullable(stringArg()),
       },
-    })*/
+      authorize: isAdmin,
+      resolve: async (_, { course_id, course_code, language }, ctx) =>
+        ctx.prisma.openUniversityRegistrationLink.findMany({
+          where: {
+            course_id,
+            course_code: course_code ?? undefined,
+            language: language ?? undefined,
+          },
+        }),
+    })
   },
 })
 

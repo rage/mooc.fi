@@ -47,17 +47,13 @@ export const StudyModuleTranslationUpsertInput = inputObjectType({
 export const StudyModuleTranslationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.crud.studyModuleTranslations({
-      pagination: false,
+    t.nonNull.list.nonNull.field("studyModuleTranslations", {
+      type: "StudyModuleTranslation",
       authorize: isAdmin,
-    })
-    /*t.list.field("StudyModuleTranslations", {
-      type: "study_module_translation",
       resolve: (_, __, ctx) => {
-        // checkAccess(ctx, { allowOrganizations: false })
-        return ctx.prisma.study_module_translation.findMany()
+        return ctx.prisma.studyModuleTranslation.findMany()
       },
-    })*/
+    })
   },
 })
 

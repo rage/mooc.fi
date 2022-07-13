@@ -1,8 +1,10 @@
 import {
+  booleanArg,
   extendType,
   idArg,
   inputObjectType,
   nonNull,
+  nullable,
   objectType,
   stringArg,
 } from "nexus"
@@ -41,16 +43,36 @@ export const CourseAliasUpsertInput = inputObjectType({
 export const CourseAliasQueries = extendType({
   type: "Query",
   definition(t) {
-    t.crud.courseAliases({
-      authorize: isAdmin,
-    })
-    /*t.list.field("CourseAliases", {
-      type: "course_alias",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.course_alias.findMany()
+    t.nonNull.list.nonNull.field("courseAliases", {
+      type: "CourseAlias",
+      args: {
+        course_id: nullable(idArg()),
+        course_code: nullable(stringArg()),
+        slug: nullable(stringArg()),
+        exact: booleanArg({ default: true }),
       },
-    })*/
+      authorize: isAdmin,
+      resolve: async (_, { course_id, slug, course_code, exact }, ctx) =>
+        ctx.prisma.courseAlias.findMany({
+          where: {
+            course_id,
+            ...(slug && {
+              course: {
+                ...(exact
+                  ? { slug }
+                  : { slug: { contains: slug, mode: "insensitive" } }),
+              },
+            }),
+            ...(course_code && {
+              ...(exact
+                ? { course_code }
+                : {
+                    course_code: { contains: course_code, mode: "insensitive" },
+                  }),
+            }),
+          },
+        }),
+    })
   },
 })
 

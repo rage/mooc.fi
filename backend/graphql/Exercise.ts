@@ -84,17 +84,22 @@ export const ExerciseQueries = extendType({
         }),
     })
 
-    t.crud.exercises({
-      authorize: isAdmin,
-    })
-
-    /*t.list.field("exercises", {
-      type: "exercise",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.exercise.findMany()
+    t.nonNull.list.nonNull.field("exercises", {
+      type: "Exercise",
+      args: {
+        course_id: nullable(idArg()),
+        service_id: nullable(idArg()),
       },
-    })*/
+      authorize: isAdmin,
+      resolve: async (_, { course_id, service_id }, ctx) => {
+        return ctx.prisma.exercise.findMany({
+          where: {
+            course_id,
+            service_id,
+          },
+        })
+      },
+    })
   },
 })
 

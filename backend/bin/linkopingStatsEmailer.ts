@@ -1,4 +1,5 @@
 import { LINKOPING_COMPLETION_RECIPIENTS } from "../config"
+import { BAIParentCourse } from "../config/courseConfig"
 import prisma from "../prisma"
 import { sendMail } from "../util/sendMail"
 import sentryLogger from "./lib/logger"
@@ -23,7 +24,7 @@ const linkopingStatsEmailer = async () => {
     WHERE u.email LIKE '%liu.se'
       AND ucs.other ->> 'ects_consent_sweden' = 'true'
       AND ucs.other ->> 'bai_completion' = 'true'
-      AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'
+      AND c.course_id = '${BAIParentCourse}'
       AND ucs.country = 'Sweden'
     ORDER BY c.completion_date;
   `

@@ -1,6 +1,7 @@
 import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
+import { notEmpty } from "../../util/notEmpty"
 
 export const Course = objectType({
   name: "Course",
@@ -49,7 +50,7 @@ export const Course = objectType({
     // t.model.user_course_service_progresses()
     // t.model.user_course_settings()
     t.model.user_course_settings_visibilities()
-    t.model.services()
+    // t.model.services()
     t.model.study_modules()
     t.model.automatic_completions_eligible_for_ects()
     t.model.upcoming_active_link()
@@ -110,6 +111,22 @@ export const Course = objectType({
           .exercises({
             ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
           })
+      },
+    })
+
+    t.list.field("services", {
+      type: "Service",
+      resolve: async (parent, _, ctx) => {
+        const exerciseServices = await ctx.prisma.course
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .exercises({
+            select: { service: true },
+            distinct: ["service_id"],
+          })
+
+        return exerciseServices.flatMap((es) => es.service).filter(notEmpty)
       },
     })
   },

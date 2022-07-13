@@ -35,6 +35,7 @@ export const ExerciseCompletionQueries = extendType({
         }),
     })
 
+    // probably only used for type generation
     t.crud.exerciseCompletions({
       ordering: true,
       authorize: isAdmin,
