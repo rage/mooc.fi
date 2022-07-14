@@ -57,9 +57,13 @@ export const checkBAICompletion = async ({
   )
 
   // TODO: update project completion to all tier progresses?
+  // TODO/FIXME: BAI should check progress from the _handler_ here,
+  // even though the handler is in this case the completion handler course.
+  // Add a separate progress_handled_by, even though that would only apply here
+  // as the tiers have their own progress?
   const existingProgresses = await prisma.course
     .findUnique({
-      where: { id: course.id },
+      where: { id: handler?.id ?? course.id },
     })
     .user_course_progresses({
       where: {
@@ -73,7 +77,7 @@ export const checkBAICompletion = async ({
     await prisma.userCourseProgress.create({
       data: {
         course: {
-          connect: { id: course.id },
+          connect: { id: handler?.id ?? course.id },
         },
         user: { connect: { id: user.id } },
         ...newProgress,
