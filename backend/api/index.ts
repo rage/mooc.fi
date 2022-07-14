@@ -34,6 +34,10 @@ export function apiRouter(ctx: ApiContext) {
     .get("/progress/:id", progressController.progress)
     .get("/progressv2/:idOrSlug", progressController.progressV2)
     .get("/tierprogress/:id", progressController.tierProgress)
+    .get(
+      "/recheck-bai-progresses",
+      progressController.recheckBAIUserCourseProgresses,
+    )
     .get("/user-course-progress/:slug", progressController.userCourseProgress)
     .get("/user-course-settings/:slug", userCourseSettingsController.get)
     .post("/user-course-settings/:slug", userCourseSettingsController.post)

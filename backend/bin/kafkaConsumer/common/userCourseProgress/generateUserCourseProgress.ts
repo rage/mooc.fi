@@ -55,7 +55,7 @@ export const generateUserCourseProgress = async ({
     context,
   })
 
-  await context.prisma.userCourseProgress.update({
+  return await context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
       progress: combined.progress as any, // errors unless typed as any
