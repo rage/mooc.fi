@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { chunk, groupBy, omit } from "lodash"
 
-import { Completion, Course, UserCourseProgress } from "@prisma/client"
+import { Completion, Course, User, UserCourseProgress } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { BAIParentCourse, BAItiers } from "../config/courseConfig"
@@ -301,18 +301,69 @@ export class ProgressController {
         orderBy: {
           created_at: "asc",
         },
+        include: {
+          user: true,
+        },
       })
 
-    const beforeParentProgressIds = beforeParentProgresses?.map((epp) => epp.id)
-    const beforeProgressUserIds = beforeParentProgresses
-      .map((epp) => epp.user_id)
-      .filter(notEmpty)
-    const beforeCompletionIds = beforeCompletions?.map((c) => c.id)
-    const beforeCompletionUserIds = beforeCompletions
-      .map((c) => c.user_id)
-      .filter(notEmpty)
+    const getUsers = (arr: Array<object & { user: User | null }>) =>
+      arr?.map((e) => e.user).filter(notEmpty) ?? []
+    const getIds = (arr?: Array<object & { id: string }>) =>
+      arr?.map((e) => e.id).filter(notEmpty) ?? []
+    const getUserIdsAndUpstreamIds = (users: Array<User>) => ({
+      user_ids: getIds(users),
+      user_upstream_ids: users.map((u) => u.upstream_id),
+    })
 
-    const beforeCompletionMap = groupBy(beforeParentProgresses, "id")
+    const createDiff = (
+      before: Array<
+        object & {
+          id: string
+          user_id?: string | null
+          user: User | null
+          updated_at: Date | null
+        }
+      >,
+      after: Array<
+        object & {
+          id: string
+          user_id?: string | null
+          user: User | null
+          updated_at: Date | null
+        }
+      >,
+    ) => {
+      const beforeIds = getIds(before)
+      const beforeUserIds = before.map((e) => e.user_id).filter(notEmpty)
+      const beforeMap = groupBy(before, "id")
+
+      const afterIds = getIds(after)
+      const afterUsers = after.flatMap((e) => e.user).filter(notEmpty)
+
+      const createdIds = afterIds.filter((id) => !beforeIds.includes(id))
+      const createdUsers = afterUsers.filter(
+        (u) => !beforeUserIds.includes(u.id),
+      )
+      const updated = after.filter((entry) => {
+        const beforeEntry = beforeMap[entry.id]?.[0]
+
+        return beforeEntry && entry.updated_at! > beforeEntry.updated_at!
+      })
+      const updatedUsers = getUsers(updated)
+
+      return {
+        created: {
+          count: after.length - before.length,
+          ids: createdIds,
+          ...getUserIdsAndUpstreamIds(createdUsers),
+        },
+        updated: {
+          count: updated.length,
+          ids: getIds(updated),
+          ...getUserIdsAndUpstreamIds(updatedUsers),
+        },
+      }
+    }
 
     const orphanProgresses: Record<string, Array<string>> = {
       [beginnerBAICourse.slug]: [],
@@ -424,59 +475,14 @@ export class ProgressController {
         },
       })
 
-    const afterParentProgressIds = afterParentProgresses?.map((upp) => upp.id)
-    const afterCompletionIds = afterCompletions?.map((c) => c.id)
-    const afterProgressUsers = afterParentProgresses
-      ?.flatMap((upp) => upp.user)
-      .filter(notEmpty)
-    const afterCompletionUsers = afterCompletions
-      ?.flatMap((c) => c.user)
-      .filter(notEmpty)
-
-    const createdProgressIds = afterParentProgressIds.filter(
-      (id) => !beforeParentProgressIds.includes(id),
-    )
-    const createdProgressUsers = afterProgressUsers.filter(
-      (user) => !beforeProgressUserIds.includes(user.id),
-    )
-    const createdCompletionIds = afterCompletionIds.filter(
-      (id) => !beforeCompletionIds.includes(id),
-    )
-    const createdCompletionUsers = afterCompletionUsers.filter(
-      (user) => !beforeCompletionUserIds.includes(user.id),
-    )
-    const updatedCompletions = afterCompletions.filter((completion) => {
-      const before = beforeCompletionMap[completion.id]?.[0]
-
-      return before && completion.updated_at! > before.updated_at!
-    })
-    const updatedCompletionIds = updatedCompletions.map((c) => c.id)
-    const updatedCompletionUsers = updatedCompletions
-      .map((c) => c.user)
-      .filter(notEmpty)
-
     const result = {
-      createdProgressesCount:
-        afterParentProgresses.length - beforeParentProgresses.length,
-      createdCompletionsCount:
-        afterCompletions.length - beforeCompletions.length,
-      updatedCompletionsCount: updatedCompletions.length,
-      createdProgressIds,
-      createdProgressUserIds: createdProgressUsers.map((u) => u.id),
-      createdProgressUserUpstreamIds: createdProgressUsers.map(
-        (u) => u.upstream_id,
-      ),
-      createdCompletionIds,
-      createdCompletionUserIds: createdCompletionUsers.map((u) => u.id),
-      createdCompletionUserUpstreamIds: createdCompletionUsers.map(
-        (u) => u.upstream_id,
-      ),
-      updatedCompletionIds,
-      updatedCompletionUserIds: updatedCompletionUsers.map((u) => u.id),
-      updatedCompletionUserUpstreamIds: updatedCompletionUsers.map(
-        (u) => u.upstream_id,
-      ),
-      orphanProgresses,
+      progresses: {
+        ...createDiff(beforeParentProgresses, afterParentProgresses),
+        orphaned: orphanProgresses,
+      },
+      completions: {
+        ...createDiff(beforeCompletions, afterCompletions),
+      },
     }
 
     logger.info(`Done! Result: ${JSON.stringify(result, null, 2)}`)
