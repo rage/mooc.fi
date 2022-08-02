@@ -73,9 +73,9 @@ export function getUser({ knex, logger }: ApiContext) {
     req: Request,
     res: Response,
   ): Promise<Result<GetUserReturn, any>> {
-    const rawToken = req.get("Authorization")
+    const rawToken = req.get("Authorization") ?? req.headers.authorization
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+    if (!rawToken?.startsWith("Bearer")) {
       return err(res.status(401).json({ message: "not logged in" }))
     }
 
@@ -149,9 +149,9 @@ export function getOrganization({ knex }: ApiContext) {
     req: Request,
     res: Response,
   ): Promise<Result<Organization, any>> {
-    const rawToken = req.get("Authorization")
+    const rawToken = req.get("Authorization") ?? req.headers.authorization
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Basic")) {
+    if (!rawToken?.startsWith("Basic")) {
       return err(res.status(401).json({ message: "Access denied." }))
     }
 
