@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client"
 
 export const UserCourseProgressFragment = gql`
-  fragment UserCourseProgressFragment on UserCourseProgress {
+  fragment UserCourseProgress on UserCourseProgress {
     id
     course_id
     max_points
@@ -16,18 +16,18 @@ export const UserCourseProgressFragment = gql`
 `
 
 export const ProgressUserCourseProgressFragment = gql`
-  fragment ProgressUserCourseProgressFragment on Progress {
+  fragment ProgressUserCourseProgress on Progress {
     user_course_progress {
-      ...UserCourseProgressFragment
+      ...UserCourseProgress
     }
   }
   ${UserCourseProgressFragment}
 `
 
 export const UserCourseSummaryUserCourseProgressFragment = gql`
-  fragment UserCourseSummaryUserCourseProgressFragment on UserCourseSummary {
+  fragment UserCourseSummaryUserCourseProgress on UserCourseSummary {
     user_course_progress {
-      ...UserCourseProgressFragment
+      ...UserCourseProgress
     }
   }
   ${UserCourseProgressFragment}

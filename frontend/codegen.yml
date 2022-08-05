@@ -1,0 +1,39 @@
+schema:
+  - schema.graphql
+
+documents:
+  - "{graphql,pages,components,lib}/**/*.{ts,tsx}"
+config:
+  preResolveTypes: true
+  namingConvention: keep
+  avoidOptionals:
+    field: true
+  nonOptionalTypeName: true
+  skipTypeNameForRoot: true
+generates:
+  .//types/gql/:
+    preset: gql-tag-operations-preset
+    presetConfig:
+      augmentedModuleName: "@apollo/client"
+    afterOneFileWrite:
+      - prettier --write
+  ./static/types/generated/globalTypes.ts:
+    plugins:
+      - typescript
+      - fragment-matcher
+    afterOneFileWrite:
+      - prettier --write
+  ./static/types/generated/index.ts:
+    pluckConfig:
+      modules:
+        - name: "@apollo/client"
+          identifier: gql
+    plugins:
+      - typescript
+      - typescript-operations
+    afterOneFileWrite:
+      - prettier --write
+  # ./static/type/generated/nodes.ts:
+  #   plugins:
+  #     - typescript
+  #     - document-nodes

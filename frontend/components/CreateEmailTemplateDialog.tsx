@@ -25,9 +25,12 @@ import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { UpdateCourseMutation } from "/graphql/mutations/courses"
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
-import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
-import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import { updateCourse } from "/static/types/generated/updateCourse"
+import {
+  AddEmailTemplateMutation as AddEmailTemplate,
+  AllCoursesDetailsQuery,
+  CourseDetailsFromSlugQueryQuery,
+} from "/static/types/generated"
+import { updateCourseMutation as updateCourse } from "/static/types/generated"
 
 export const AllCoursesDetails = gql`
   query AllCoursesDetails {
@@ -49,8 +52,8 @@ export const AllCoursesDetails = gql`
   }
 `
 
-interface CreateEmailTemplateDialogParams {
-  course?: CourseDetailsData
+interface CreateEmailTemplateDialogParams
+  extends CourseDetailsFromSlugQueryQuery {
   buttonText: string
   type?: string
 }
@@ -64,12 +67,11 @@ const CreateEmailTemplateDialog = ({
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState(type)
   const [selectedCourse, setSelectedCourse] = useState<
-    CourseDetailsData | undefined
-  >(undefined)
+    keyof NonNullable<AllCoursesDetailsQuery["courses"]> | null
+  >(null)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
-  const { loading, error, data } = useQuery<{ courses: CourseDetailsData[] }>(
-    AllCoursesDetails,
-  )
+  const { loading, error, data } =
+    useQuery<AllCoursesDetailsQuery>(AllCoursesDetails)
   const client = useApolloClient()
 
   if (loading) {
@@ -90,8 +92,8 @@ const CreateEmailTemplateDialog = ({
 
   const courseOptions =
     templateType === "completion"
-      ? data.courses
-          .filter((c) => c?.completion_email === null)
+      ? data!.courses
+          ?.filter((c) => c?.completion_email === null)
           .map((c, i) => {
             return (
               <option key={i} value={i}>
@@ -99,7 +101,7 @@ const CreateEmailTemplateDialog = ({
               </option>
             )
           })
-      : data.courses.map((c, i) => {
+      : data!.courses?.map((c, i) => {
           return (
             <option key={i} value={i}>
               {c?.name}
@@ -203,7 +205,7 @@ const CreateEmailTemplateDialog = ({
               <NativeSelect
                 onChange={(e) => {
                   e.preventDefault()
-                  setSelectedCourse(data.courses[Number(e.target.value)])
+                  setSelectedCourse(data!.courses?.[Number(e.target.value)])
                 }}
                 id="selectCourse"
                 defaultValue="Select course"

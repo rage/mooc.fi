@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client"
 
+import { CoursePhotoFragment } from "/graphql/fragments/course"
+
 export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
     courses(orderBy: { order: asc }, language: $language) {
@@ -8,11 +10,7 @@ export const AllCoursesQuery = gql`
       name
       order
       study_module_order
-      photo {
-        id
-        compressed
-        uncompressed
-      }
+      ...CoursePhoto
       promote
       status
       start_point
@@ -36,6 +34,7 @@ export const AllCoursesQuery = gql`
       }
     }
   }
+  ${CoursePhotoFragment}
 `
 
 export const AllEditorCoursesQuery = gql`
@@ -68,11 +67,7 @@ export const AllEditorCoursesQuery = gql`
       support_email
       teacher_in_charge_email
       teacher_in_charge_name
-      photo {
-        id
-        compressed
-        uncompressed
-      }
+      ...CoursePhoto
       course_translations {
         id
         language
@@ -98,6 +93,7 @@ export const AllEditorCoursesQuery = gql`
       administrator
     }
   }
+  ${CoursePhotoFragment}
 `
 
 export const CheckSlugQuery = gql`

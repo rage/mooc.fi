@@ -14,7 +14,8 @@
     "generate-graphql-types": "rm -rf ./static/types/generated/ && mkdir -p ./static/types/generated/  && apollo client:codegen  --outputFlat --tagName=gql --target=typescript ./static/types/generated/",
     "generate-page-stubs": "node util/createStubs.js",
     "typecheck": "tsc --noEmit",
-    "start:inspect": "NODE_ENV=production PORT=3021 NODE_OPTIONS=--inspect node server.js"
+    "start:inspect": "NODE_ENV=production PORT=3021 NODE_OPTIONS=--inspect node server.js",
+    "graphql-codegen": "graphql-codegen --config codegen.yml"
   },
   "keywords": [],
   "author": "",
@@ -93,6 +94,15 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.11.3",
+    "@graphql-codegen/fragment-matcher": "^3.3.0",
+    "@graphql-codegen/gql-tag-operations-preset": "^1.5.3",
+    "@graphql-codegen/near-operation-file-preset": "^2.4.0",
+    "@graphql-codegen/typescript": "2.7.2",
+    "@graphql-codegen/typescript-compatibility": "^2.1.5",
+    "@graphql-codegen/typescript-document-nodes": "^2.3.2",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-react-apollo": "3.3.2",
     "@types/luxon": "^2.3.2",
     "@types/mdx-js__react": "^1.5.5",
     "@types/papaparse": "^5.3.2",

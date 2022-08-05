@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography"
 
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"

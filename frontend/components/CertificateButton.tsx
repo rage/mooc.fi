@@ -15,13 +15,14 @@ import DialogTitle from "@mui/material/DialogTitle"
 
 import AlertContext from "/contexts/AlertContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/queries/currentUser"
+import { UserOverViewQuery } from "/graphql/queries/user"
 import { updateAccount } from "/lib/account"
 import { checkCertificate, createCertificate } from "/lib/certificates"
 import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
-import { UserOverViewQuery } from "/pages/profile"
-import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
-import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import {
+  CompletionCourseFragment,
+  CurrentUserUserOverViewQuery,
+} from "/static/types/generated"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
 
@@ -48,7 +49,7 @@ const updateUserNameMutation = gql`
 `
 
 interface CertificateProps {
-  course: ProfileUserOverView_currentUser_completions_course
+  course: NonNullable<CompletionCourseFragment["course"]>
 }
 
 type Status =
@@ -132,9 +133,9 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
         status: "ERROR",
         error: action.payload,
       }
+    default:
+      return state
   }
-
-  return state
 }
 
 const CertificateButton = ({ course }: CertificateProps) => {
@@ -147,11 +148,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
   const [updateUserName] = useMutation(updateUserNameMutation, {
-    refetchQueries: [
-      { query: UserDetailQuery },
-      { query: UserOverViewQuery },
-      { query: CompletionsUserOverViewQuery },
-    ],
+    refetchQueries: [{ query: UserDetailQuery }, { query: UserOverViewQuery }],
   })
 
   const [open, setOpen] = useState(false)
@@ -204,7 +201,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
           ...(currentUser || { email: "", id: "" }),
           first_name: firstName,
           last_name: lastName,
-        } as UserOverView_currentUser)
+        } as CurrentUserUserOverViewQuery["currentUser"])
         dispatch({ type: "UPDATED_NAME", payload: res })
       }
 

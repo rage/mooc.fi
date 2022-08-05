@@ -37,21 +37,6 @@ import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
-export const OrganizationsQuery = gql`
-  query Organizations {
-    organizations {
-      id
-      slug
-      hidden
-      organization_translations {
-        language
-        name
-        information
-      }
-    }
-  }
-`
-
 export const UserOrganizationsQuery = gql`
   query UserOrganizations($user_id: ID) {
     userOrganizations(user_id: $user_id) {

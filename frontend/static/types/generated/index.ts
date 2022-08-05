@@ -2147,14 +2147,439 @@ export type VerifiedUserWhereUniqueInput = {
   id?: InputMaybe<Scalars['String']>;
 };
 
+export type updateUserNameMutationVariables = Exact<{
+  first_name?: InputMaybe<Scalars['String']>;
+  last_name?: InputMaybe<Scalars['String']>;
+}>;
 
-      export interface PossibleTypesResultData {
-        possibleTypes: {
-          [key: string]: string[]
-        }
-      }
-      const result: PossibleTypesResultData = {
-  "possibleTypes": {}
-};
-      export default result;
-    
+
+export type updateUserNameMutation = { updateUserName: { __typename?: 'User', id: string, first_name: string | null, last_name: string | null } | null };
+
+export type AllCoursesDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllCoursesDetailsQuery = { courses: Array<{ __typename?: 'Course', id: string, slug: string, name: string, teacher_in_charge_name: string, teacher_in_charge_email: string, start_date: string, completion_email: { __typename?: 'EmailTemplate', name: string | null, id: string } | null, course_stats_email: { __typename?: 'EmailTemplate', id: string } | null } | null> | null };
+
+export type AllCompletionsQueryVariables = Exact<{
+  course: Scalars['String'];
+  cursor?: InputMaybe<Scalars['String']>;
+  completionLanguage?: InputMaybe<Scalars['String']>;
+  search?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AllCompletionsQuery = { completionsPaginated: { __typename?: 'QueryCompletionsPaginated_type_Connection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null, endCursor: string | null }, edges: Array<{ __typename?: 'CompletionEdge', node: { __typename?: 'Completion', id: string, email: string, completion_language: string | null, created_at: any | null, user: { __typename?: 'User', id: string, first_name: string | null, last_name: string | null, student_number: string | null } | null, course: { __typename?: 'Course', id: string, name: string } | null, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, organization: { __typename?: 'Organization', id: string, slug: string } | null }> } | null } | null> | null } | null };
+
+export type AllCompletionsPreviousQueryVariables = Exact<{
+  course: Scalars['String'];
+  cursor?: InputMaybe<Scalars['String']>;
+  completionLanguage?: InputMaybe<Scalars['String']>;
+  search?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AllCompletionsPreviousQuery = { completionsPaginated: { __typename?: 'QueryCompletionsPaginated_type_Connection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null, endCursor: string | null }, edges: Array<{ __typename?: 'CompletionEdge', node: { __typename?: 'Completion', id: string, email: string, completion_language: string | null, created_at: any | null, user: { __typename?: 'User', id: string, first_name: string | null, last_name: string | null, student_number: string | null } | null, course: { __typename?: 'Course', id: string, name: string } | null, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, organization: { __typename?: 'Organization', id: string, slug: string } | null }> } | null } | null> | null } | null };
+
+export type UserCourseSettingsQueryVariables = Exact<{
+  course_id: Scalars['ID'];
+  skip?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
+  search?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UserCourseSettingsQuery = { userCourseSettings: { __typename?: 'QueryUserCourseSettings_Connection', totalCount: number | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string | null }, edges: Array<{ __typename?: 'UserCourseSettingEdge', node: { __typename?: 'UserCourseSetting', id: string, user: { __typename?: 'User', id: string, first_name: string | null, last_name: string | null, email: string, student_number: string | null, real_student_number: string | null, progress: { __typename?: 'Progress', course: { __typename?: 'Course', name: string, id: string } | null, user_course_progress: { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null } | null, user_course_service_progresses: Array<{ __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null } | null> | null } } | null } | null } | null> | null } | null };
+
+export type ExportUserCourseProgessesQueryVariables = Exact<{
+  course_slug: Scalars['String'];
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type ExportUserCourseProgessesQuery = { userCourseProgresses: Array<{ __typename?: 'UserCourseProgress', id: string, progress: Array<any | null> | null, user: { __typename?: 'User', id: string, email: string, student_number: string | null, real_student_number: string | null, upstream_id: number, first_name: string | null, last_name: string | null } | null, user_course_settings: { __typename?: 'UserCourseSetting', course_variant: string | null, country: string | null, language: string | null } | null } | null> | null };
+
+export type updateUpdateAccountResearchConsentMutationVariables = Exact<{
+  value: Scalars['Boolean'];
+}>;
+
+
+export type updateUpdateAccountResearchConsentMutation = { updateResearchConsent: { __typename?: 'User', id: string } | null };
+
+export type UserPointsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserPointsQuery = { currentUser: { __typename?: 'User', id: string, first_name: string | null, last_name: string | null, email: string, student_number: string | null, progresses: Array<{ __typename?: 'Progress', course: { __typename?: 'Course', name: string, id: string } | null, user_course_progress: { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null } | null, user_course_service_progresses: Array<{ __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null } | null> | null }> | null } | null };
+
+export type CompletionCourseFragment = { __typename?: 'Completion', course: { __typename?: 'Course', id: string, slug: string, name: string, has_certificate: boolean | null, photo: { __typename?: 'Image', id: string, uncompressed: string } | null } | null };
+
+export type UserCompletionsFragment = { __typename?: 'User', completions: Array<{ __typename?: 'Completion', id: string, completion_language: string | null, student_number: string | null, created_at: any | null, tier: number | null, eligible_for_ects: boolean | null, completion_date: any | null, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, created_at: any | null, organization: { __typename?: 'Organization', slug: string } | null }>, course: { __typename?: 'Course', id: string, slug: string, name: string, has_certificate: boolean | null, photo: { __typename?: 'Image', id: string, uncompressed: string } | null } | null }> | null };
+
+export type CompletionsRegisteredFragment = { __typename?: 'Completion', completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, created_at: any | null, organization: { __typename?: 'Organization', slug: string } | null }> };
+
+export type CoursePhotoFragment = { __typename?: 'Course', photo: { __typename?: 'Image', id: string, compressed: string | null, uncompressed: string } | null };
+
+export type UserPointsFragmentFragment = { __typename?: 'User', id: string, first_name: string | null, last_name: string | null, email: string, student_number: string | null, progresses: Array<{ __typename?: 'Progress', course: { __typename?: 'Course', name: string, id: string } | null, user_course_progress: { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null } | null, user_course_service_progresses: Array<{ __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null } | null> | null }> | null };
+
+export type UserCourseProgressFragment = { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null };
+
+export type ProgressUserCourseProgressFragment = { __typename?: 'Progress', user_course_progress: { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null } | null };
+
+export type UserCourseSummaryUserCourseProgressFragment = { __typename?: 'UserCourseSummary', user_course_progress: { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null } | null };
+
+export type UserCourseServiceProgressFragment = { __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null };
+
+export type ProgressUserCourseServiceProgressFragment = { __typename?: 'Progress', user_course_service_progresses: Array<{ __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null } | null> | null };
+
+export type UserCourseSummaryUserCourseServiceProgressFragment = { __typename?: 'UserCourseSummary', user_course_service_progresses: Array<{ __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null } | null> | null };
+
+export type UserOrganizationDataFragment = { __typename?: 'UserOrganization', id: string, organization: { __typename?: 'Organization', id: string, slug: string, hidden: boolean | null, organization_translations: Array<{ __typename?: 'OrganizationTranslation', language: string, name: string, information: string | null }> } | null };
+
+export type CreateRegistrationAttemptDateMutationVariables = Exact<{
+  id: Scalars['ID'];
+  completion_registration_attempt_date: Scalars['DateTime'];
+}>;
+
+
+export type CreateRegistrationAttemptDateMutation = { createRegistrationAttemptDate: { __typename?: 'Completion', id: string, completion_registration_attempt_date: any | null } | null };
+
+export type addCourseMutationVariables = Exact<{
+  course: CourseCreateArg;
+}>;
+
+
+export type addCourseMutation = { addCourse: { __typename?: 'Course', id: string, slug: string, ects: string | null, name: string, order: number | null, study_module_order: number | null, photo: { __typename?: 'Image', id: string, name: string | null, original: string, original_mimetype: string, compressed: string | null, compressed_mimetype: string | null, uncompressed: string, uncompressed_mimetype: string } | null, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, language: string, name: string, description: string, link: string | null }>, open_university_registration_links: Array<{ __typename?: 'OpenUniversityRegistrationLink', id: string, course_code: string, language: string, link: string | null }>, study_modules: Array<{ __typename?: 'StudyModule', id: string }>, course_variants: Array<{ __typename?: 'CourseVariant', id: string, slug: string, description: string | null }>, course_aliases: Array<{ __typename?: 'CourseAlias', id: string, course_code: string }>, user_course_settings_visibilities: Array<{ __typename?: 'UserCourseSettingsVisibility', id: string, language: string }> } | null };
+
+export type updateCourseMutationVariables = Exact<{
+  course: CourseUpsertArg;
+}>;
+
+
+export type updateCourseMutation = { updateCourse: { __typename?: 'Course', id: string, slug: string, ects: string | null, name: string, order: number | null, study_module_order: number | null, photo: { __typename?: 'Image', id: string, name: string | null, original: string, original_mimetype: string, compressed: string | null, compressed_mimetype: string | null, uncompressed: string, uncompressed_mimetype: string } | null, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, language: string, name: string, description: string, link: string | null }>, open_university_registration_links: Array<{ __typename?: 'OpenUniversityRegistrationLink', id: string, course_code: string, language: string, link: string | null }>, study_modules: Array<{ __typename?: 'StudyModule', id: string }>, course_variants: Array<{ __typename?: 'CourseVariant', id: string, slug: string, description: string | null }>, course_aliases: Array<{ __typename?: 'CourseAlias', id: string, course_code: string }>, completion_email: { __typename?: 'EmailTemplate', id: string, name: string | null, title: string | null, txt_body: string | null, html_body: string | null } | null, user_course_settings_visibilities: Array<{ __typename?: 'UserCourseSettingsVisibility', id: string, language: string }>, course_stats_email: { __typename?: 'EmailTemplate', id: string, name: string | null, title: string | null, txt_body: string | null, html_body: string | null } | null } | null };
+
+export type deleteCourseMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type deleteCourseMutation = { deleteCourse: { __typename?: 'Course', id: string, slug: string } | null };
+
+export type UpdateEmailTemplateMutationVariables = Exact<{
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  html_body?: InputMaybe<Scalars['String']>;
+  txt_body?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+  template_type?: InputMaybe<Scalars['String']>;
+  triggered_automatically_by_course_id?: InputMaybe<Scalars['String']>;
+  exercise_completions_threshold?: InputMaybe<Scalars['Int']>;
+  points_threshold?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UpdateEmailTemplateMutation = { updateEmailTemplate: { __typename?: 'EmailTemplate', id: string, name: string | null, html_body: string | null, txt_body: string | null, title: string | null, template_type: string | null, triggered_automatically_by_course_id: string | null, exercise_completions_threshold: number | null, points_threshold: number | null } | null };
+
+export type AddEmailTemplateMutationVariables = Exact<{
+  name: Scalars['String'];
+  html_body?: InputMaybe<Scalars['String']>;
+  txt_body?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+  template_type?: InputMaybe<Scalars['String']>;
+  triggered_automatically_by_course_id?: InputMaybe<Scalars['String']>;
+  exercise_completions_threshold?: InputMaybe<Scalars['Int']>;
+  points_threshold?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type AddEmailTemplateMutation = { addEmailTemplate: { __typename?: 'EmailTemplate', id: string, name: string | null, html_body: string | null, txt_body: string | null, title: string | null, template_type: string | null, triggered_automatically_by_course_id: string | null, exercise_completions_threshold: number | null, points_threshold: number | null } | null };
+
+export type DeleteEmailTemplateMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteEmailTemplateMutation = { deleteEmailTemplate: { __typename?: 'EmailTemplate', id: string, name: string | null, html_body: string | null, txt_body: string | null, title: string | null } | null };
+
+export type addStudyModuleMutationVariables = Exact<{
+  study_module: StudyModuleCreateArg;
+}>;
+
+
+export type addStudyModuleMutation = { addStudyModule: { __typename?: 'StudyModule', id: string, slug: string, name: string, image: string | null, order: number | null, study_module_translations: Array<{ __typename?: 'StudyModuleTranslation', id: string, language: string, name: string, description: string }> } | null };
+
+export type updateStudyModuleMutationVariables = Exact<{
+  study_module: StudyModuleUpsertArg;
+}>;
+
+
+export type updateStudyModuleMutation = { updateStudyModule: { __typename?: 'StudyModule', id: string, slug: string, name: string, image: string | null, order: number | null, study_module_translations: Array<{ __typename?: 'StudyModuleTranslation', id: string, language: string, name: string, description: string }> } | null };
+
+export type deleteStudyModuleMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type deleteStudyModuleMutation = { deleteStudyModule: { __typename?: 'StudyModule', id: string, slug: string } | null };
+
+export type AllCoursesQueryVariables = Exact<{
+  language?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AllCoursesQuery = { courses: Array<{ __typename?: 'Course', id: string, slug: string, name: string, order: number | null, study_module_order: number | null, promote: boolean | null, status: CourseStatus | null, start_point: boolean | null, study_module_start_point: boolean | null, hidden: boolean | null, description: string | null, link: string | null, upcoming_active_link: boolean | null, study_modules: Array<{ __typename?: 'StudyModule', id: string, slug: string }>, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, language: string, name: string }>, user_course_settings_visibilities: Array<{ __typename?: 'UserCourseSettingsVisibility', id: string, language: string }>, photo: { __typename?: 'Image', id: string, compressed: string | null, uncompressed: string } | null } | null> | null };
+
+export type AllEditorCoursesQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']>;
+  hidden?: InputMaybe<Scalars['Boolean']>;
+  handledBy?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Array<CourseStatus> | CourseStatus>;
+}>;
+
+
+export type AllEditorCoursesQuery = { courses: Array<{ __typename?: 'Course', id: string, name: string, slug: string, order: number | null, status: CourseStatus | null, hidden: boolean | null, tier: number | null, instructions: string | null, start_date: string, end_date: string | null, support_email: string | null, teacher_in_charge_email: string, teacher_in_charge_name: string, upcoming_active_link: boolean | null, completions_handled_by: { __typename?: 'Course', id: string } | null, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, language: string, name: string }>, course_variants: Array<{ __typename?: 'CourseVariant', id: string, slug: string, description: string | null }>, course_aliases: Array<{ __typename?: 'CourseAlias', id: string, course_code: string }>, user_course_settings_visibilities: Array<{ __typename?: 'UserCourseSettingsVisibility', id: string, language: string }>, photo: { __typename?: 'Image', id: string, compressed: string | null, uncompressed: string } | null } | null> | null, currentUser: { __typename?: 'User', id: string, administrator: boolean } | null };
+
+export type CheckSlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type CheckSlugQuery = { course: { __typename?: 'Course', id: string, slug: string, name: string, description: string | null, instructions: string | null } | null };
+
+export type CourseEditorStudyModulesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CourseEditorStudyModulesQuery = { study_modules: Array<{ __typename?: 'StudyModule', id: string, name: string, slug: string } | null> | null };
+
+export type CourseEditorCoursesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CourseEditorCoursesQuery = { courses: Array<{ __typename?: 'Course', id: string, slug: string, name: string, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, name: string, language: string }>, photo: { __typename?: 'Image', id: string, name: string | null, original: string, original_mimetype: string, compressed: string | null, compressed_mimetype: string | null, uncompressed: string, uncompressed_mimetype: string } | null } | null> | null };
+
+export type HandlerCoursesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HandlerCoursesQuery = { handlerCourses: Array<{ __typename?: 'Course', id: string, slug: string, name: string } | null> | null };
+
+export type CourseDetailsQueryVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CourseDetailsQuery = { course: { __typename?: 'Course', id: string, name: string, slug: string, ects: string | null, order: number | null, study_module_order: number | null, teacher_in_charge_name: string, teacher_in_charge_email: string, support_email: string | null, start_date: string, end_date: string | null, tier: number | null, promote: boolean | null, start_point: boolean | null, hidden: boolean | null, study_module_start_point: boolean | null, status: CourseStatus | null, has_certificate: boolean | null, upcoming_active_link: boolean | null, automatic_completions: boolean | null, automatic_completions_eligible_for_ects: boolean | null, exercise_completions_needed: number | null, points_needed: number | null, photo: { __typename?: 'Image', id: string, compressed: string | null, compressed_mimetype: string | null, uncompressed: string, uncompressed_mimetype: string } | null, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, name: string, language: string, description: string, instructions: string | null, link: string | null }>, open_university_registration_links: Array<{ __typename?: 'OpenUniversityRegistrationLink', id: string, course_code: string, language: string, link: string | null }>, study_modules: Array<{ __typename?: 'StudyModule', id: string }>, course_variants: Array<{ __typename?: 'CourseVariant', id: string, slug: string, description: string | null }>, course_aliases: Array<{ __typename?: 'CourseAlias', id: string, course_code: string }>, inherit_settings_from: { __typename?: 'Course', id: string } | null, completions_handled_by: { __typename?: 'Course', id: string } | null, user_course_settings_visibilities: Array<{ __typename?: 'UserCourseSettingsVisibility', id: string, language: string }> } | null };
+
+export type AllEmailTemplatesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllEmailTemplatesQuery = { email_templates: Array<{ __typename?: 'EmailTemplate', id: string, name: string | null, txt_body: string | null, html_body: string | null, title: string | null, template_type: string | null, triggered_automatically_by_course_id: string | null, exercise_completions_threshold: number | null, points_threshold: number | null } | null> | null };
+
+export type EmailTemplateQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type EmailTemplateQuery = { email_template: { __typename?: 'EmailTemplate', id: string, created_at: any | null, updated_at: any | null, name: string | null, txt_body: string | null, html_body: string | null, title: string | null, template_type: string | null, triggered_automatically_by_course_id: string | null, exercise_completions_threshold: number | null, points_threshold: number | null } | null };
+
+export type OrganizationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OrganizationsQuery = { organizations: Array<{ __typename?: 'Organization', id: string, slug: string, hidden: boolean | null, organization_translations: Array<{ __typename?: 'OrganizationTranslation', language: string, name: string, information: string | null }> } | null> | null };
+
+export type CurrentUserOrganizationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentUserOrganizationsQuery = { currentUser: { __typename?: 'User', user_organizations: Array<{ __typename?: 'UserOrganization', id: string, organization: { __typename?: 'Organization', id: string, slug: string, hidden: boolean | null, organization_translations: Array<{ __typename?: 'OrganizationTranslation', language: string, name: string, information: string | null }> } | null }> } | null };
+
+export type OrganizationByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OrganizationByIdQuery = { organization: { __typename?: 'Organization', hidden: boolean | null, organization_translations: Array<{ __typename?: 'OrganizationTranslation', name: string }> } | null };
+
+export type AllModulesQueryVariables = Exact<{
+  language?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AllModulesQuery = { study_modules: Array<{ __typename?: 'StudyModule', id: string, slug: string, name: string, description: string | null, image: string | null, order: number | null } | null> | null };
+
+export type AllEditorModulesWithTranslationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllEditorModulesWithTranslationsQuery = { study_modules: Array<{ __typename?: 'StudyModule', id: string, slug: string, name: string, image: string | null, order: number | null, study_module_translations: Array<{ __typename?: 'StudyModuleTranslation', id: string, language: string, name: string, description: string }> } | null> | null };
+
+export type checkModuleSlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type checkModuleSlugQuery = { study_module_exists: boolean | null };
+
+export type UserSummaryQueryVariables = Exact<{
+  upstream_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserSummaryQuery = { user: { __typename?: 'User', id: string, username: string, user_course_summary: Array<{ __typename?: 'UserCourseSummary', course: { __typename?: 'Course', id: string, name: string, slug: string, has_certificate: boolean | null, photo: { __typename?: 'Image', id: string, uncompressed: string } | null, exercises: Array<{ __typename?: 'Exercise', id: string, name: string | null, custom_id: string, course_id: string | null, part: number | null, section: number | null, max_points: number | null, deleted: boolean | null } | null> | null } | null, exercise_completions: Array<{ __typename?: 'ExerciseCompletion', id: string, exercise_id: string | null, created_at: any | null, updated_at: any | null, attempted: boolean | null, completed: boolean | null, timestamp: any, n_points: number | null, exercise_completion_required_actions: Array<{ __typename?: 'ExerciseCompletionRequiredAction', id: string, value: string }> } | null> | null, completion: { __typename?: 'Completion', id: string, course_id: string | null, created_at: any | null, updated_at: any | null, tier: number | null, grade: string | null, project_completion: boolean | null, completion_language: string | null, completion_date: any | null, registered: boolean | null, eligible_for_ects: boolean | null, student_number: string | null, email: string, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, created_at: any | null, organization: { __typename?: 'Organization', slug: string } | null }> } | null, user_course_progress: { __typename?: 'UserCourseProgress', id: string, course_id: string | null, max_points: number | null, n_points: number | null, progress: Array<any | null> | null, extra: any | null, exercise_progress: { __typename?: 'ExerciseProgress', total: number | null, exercises: number | null } | null } | null, user_course_service_progresses: Array<{ __typename?: 'UserCourseServiceProgress', progress: Array<any | null> | null, service: { __typename?: 'Service', name: string, id: string } | null } | null> | null } | null> | null } | null };
+
+export type CurrentUserUserOverViewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentUserUserOverViewQuery = { currentUser: { __typename?: 'User', id: string, upstream_id: number, first_name: string | null, last_name: string | null, email: string, research_consent: boolean | null, completions: Array<{ __typename?: 'Completion', id: string, completion_language: string | null, student_number: string | null, created_at: any | null, tier: number | null, eligible_for_ects: boolean | null, completion_date: any | null, registered: boolean | null, course: { __typename?: 'Course', id: string, slug: string, name: string, has_certificate: boolean | null, photo: { __typename?: 'Image', id: string, uncompressed: string } | null } | null, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, created_at: any | null, organization: { __typename?: 'Organization', slug: string } | null }> }> | null } | null };
+
+export type UserOverViewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserOverViewQuery = { currentUser: { __typename?: 'User', id: string, first_name: string | null, last_name: string | null, email: string } | null };
+
+export type ConnectedUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ConnectedUserQuery = { currentUser: { __typename?: 'User', id: string, upstream_id: number, verified_users: Array<{ __typename?: 'VerifiedUser', id: string, created_at: any | null, updated_at: any | null, display_name: string | null, organization: { __typename?: 'Organization', id: string, organization_translations: Array<{ __typename?: 'OrganizationTranslation', language: string, name: string }> } | null }> } | null };
+
+export type ConnectionTestQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ConnectionTestQuery = { currentUser: { __typename?: 'User', id: string, upstream_id: number, first_name: string | null, last_name: string | null, student_number: string | null, email: string, verified_users: Array<{ __typename?: 'VerifiedUser', id: string, created_at: any | null, personal_unique_code: string, display_name: string | null, organization: { __typename?: 'Organization', slug: string, organization_translations: Array<{ __typename?: 'OrganizationTranslation', language: string, name: string }> } | null }> } | null };
+
+export type CompletionCourseDetailsQueryVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CompletionCourseDetailsQuery = { course: { __typename?: 'Course', id: string, name: string } | null };
+
+export type CourseDetailsFromSlugQueryQueryVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CourseDetailsFromSlugQueryQuery = { course: { __typename?: 'Course', id: string, slug: string, name: string, teacher_in_charge_name: string, teacher_in_charge_email: string, start_date: string, completion_email: { __typename?: 'EmailTemplate', name: string | null, id: string } | null, course_stats_email: { __typename?: 'EmailTemplate', id: string, name: string | null } | null } | null };
+
+export type UserCourseStatsSubscriptionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserCourseStatsSubscriptionsQuery = { currentUser: { __typename?: 'User', id: string, course_stats_subscriptions: Array<{ __typename?: 'CourseStatsSubscription', id: string, email_template: { __typename?: 'EmailTemplate', id: string } | null }> } | null };
+
+export type UserCourseStatsSubscribeMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type UserCourseStatsSubscribeMutation = { createCourseStatsSubscription: { __typename?: 'CourseStatsSubscription', id: string } | null };
+
+export type UserCourseStatsUnsubscribeMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type UserCourseStatsUnsubscribeMutation = { deleteCourseStatsSubscription: { __typename?: 'CourseStatsSubscription', id: string } | null };
+
+export type RecheckCompletionMutationMutationVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type RecheckCompletionMutationMutation = { recheckCompletions: string | null };
+
+export type AddManualCompletionMutationVariables = Exact<{
+  course_id: Scalars['String'];
+  completions?: InputMaybe<Array<ManualCompletionArg> | ManualCompletionArg>;
+}>;
+
+
+export type AddManualCompletionMutation = { addManualCompletion: Array<{ __typename?: 'Completion', id: string, created_at: any | null, updated_at: any | null, completion_language: string | null, grade: string | null, user: { __typename?: 'User', upstream_id: number, username: string, email: string } | null } | null> | null };
+
+export type CourseIdBySluqQueryVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CourseIdBySluqQuery = { course: { __typename?: 'Course', id: string } | null };
+
+export type CourseDetailsFromSlugQueryVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CourseDetailsFromSlugQuery = { course: { __typename?: 'Course', id: string, name: string } | null };
+
+export type RegisterCompletionUserOverViewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RegisterCompletionUserOverViewQuery = { currentUser: { __typename?: 'User', id: string, upstream_id: number, first_name: string | null, last_name: string | null, completions: Array<{ __typename?: 'Completion', id: string, email: string, completion_language: string | null, completion_link: string | null, student_number: string | null, created_at: any | null, eligible_for_ects: boolean | null, course: { __typename?: 'Course', id: string, slug: string, name: string, ects: string | null } | null, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, completion_id: string | null, organization: { __typename?: 'Organization', slug: string } | null }> }> | null } | null };
+
+export type UserOrganizationsQueryVariables = Exact<{
+  user_id?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type UserOrganizationsQuery = { userOrganizations: Array<{ __typename?: 'UserOrganization', id: string, organization: { __typename?: 'Organization', id: string } | null } | null> | null };
+
+export type addUserOrganizationMutationVariables = Exact<{
+  user_id: Scalars['ID'];
+  organization_id: Scalars['ID'];
+}>;
+
+
+export type addUserOrganizationMutation = { addUserOrganization: { __typename?: 'UserOrganization', id: string } | null };
+
+export type updateUserOrganizationMutationVariables = Exact<{
+  id: Scalars['ID'];
+  role?: InputMaybe<OrganizationRole>;
+}>;
+
+
+export type updateUserOrganizationMutation = { updateUserOrganization: { __typename?: 'UserOrganization', id: string } | null };
+
+export type deleteUserOrganizationMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type deleteUserOrganizationMutation = { deleteUserOrganization: { __typename?: 'UserOrganization', id: string } | null };
+
+export type consentQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type consentQueryQuery = { currentUser: { __typename?: 'User', id: string, research_consent: boolean | null } | null };
+
+export type updateCreateAccountResearchConsentMutationVariables = Exact<{
+  value: Scalars['Boolean'];
+}>;
+
+
+export type updateCreateAccountResearchConsentMutation = { updateResearchConsent: { __typename?: 'User', id: string } | null };
+
+export type StudyModuleDetailsQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type StudyModuleDetailsQuery = { study_module: { __typename?: 'StudyModule', id: string, slug: string, name: string, image: string | null, order: number | null, courses: Array<{ __typename?: 'Course', id: string, name: string, slug: string } | null> | null, study_module_translations: Array<{ __typename?: 'StudyModuleTranslation', id: string, name: string, language: string, description: string }> } | null };
+
+export type UserCourseSettingsForUserPageQueryVariables = Exact<{
+  upstream_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserCourseSettingsForUserPageQuery = { userCourseSettings: { __typename?: 'QueryUserCourseSettings_Connection', edges: Array<{ __typename?: 'UserCourseSettingEdge', node: { __typename?: 'UserCourseSetting', id: string, language: string | null, country: string | null, research: boolean | null, marketing: boolean | null, course_variant: string | null, other: any | null, course: { __typename?: 'Course', name: string } | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor: string | null, hasNextPage: boolean } } | null };
+
+export type ShowUserUserOverViewQueryVariables = Exact<{
+  upstream_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type ShowUserUserOverViewQuery = { user: { __typename?: 'User', id: string, upstream_id: number, first_name: string | null, last_name: string | null, email: string, completions: Array<{ __typename?: 'Completion', id: string, completion_language: string | null, student_number: string | null, created_at: any | null, tier: number | null, eligible_for_ects: boolean | null, completion_date: any | null, completions_registered: Array<{ __typename?: 'CompletionRegistered', id: string, created_at: any | null, organization: { __typename?: 'Organization', slug: string } | null }>, course: { __typename?: 'Course', id: string, slug: string, name: string, has_certificate: boolean | null, photo: { __typename?: 'Image', id: string, uncompressed: string } | null } | null }> | null } | null };
+
+export type UserDetailsContainsQueryVariables = Exact<{
+  search: Scalars['String'];
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserDetailsContainsQuery = { userDetailsContains: { __typename?: 'QueryUserDetailsContains_Connection', count: number | null, pageInfo: { __typename?: 'PageInfo', startCursor: string | null, endCursor: string | null, hasNextPage: boolean, hasPreviousPage: boolean }, edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, email: string, student_number: string | null, real_student_number: string | null, upstream_id: number, first_name: string | null, last_name: string | null } | null } | null> | null } | null };

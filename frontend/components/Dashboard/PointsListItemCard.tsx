@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import { gql } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
 
@@ -8,34 +7,12 @@ import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
-import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
 import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
 import { UserPoints_currentUser_progresses_course } from "/static/types/generated/UserPoints"
 import formatPointsData, {
   formattedGroupPointsDictionary,
 } from "/util/formatPointsData"
-
-const UserFragment = gql`
-  fragment UserPointsFragment on User {
-    id
-    first_name
-    last_name
-    email
-    student_number
-    progresses {
-      course {
-        name
-        id
-      }
-      ...ProgressUserCourseProgressFragment
-      ...ProgressUserCourseServiceProgressFragment
-    }
-  }
-  ${ProgressUserCourseProgressFragment}
-  ${ProgressUserCourseServiceProgressFragment}
-`
 
 const Root = styled(Grid)`
   background-color: white;
@@ -134,10 +111,6 @@ function PointsListItemCard(props: Props) {
       )}
     </Root>
   )
-}
-
-PointsListItemCard.fragments = {
-  user: UserFragment,
 }
 
 export default PointsListItemCard

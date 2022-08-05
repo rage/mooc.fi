@@ -10,7 +10,7 @@ import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
 import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
-import { UserCourseSettings as StudentProgressData } from "/static/types/generated/UserCourseSettings"
+import { UserCourseSettingsQuery as StudentProgressData } from "/static/types/generated"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 
@@ -47,8 +47,8 @@ export const StudentProgresses = gql`
                 name
                 id
               }
-              ...ProgressUserCourseProgressFragment
-              ...ProgressUserCourseServiceProgressFragment
+              ...ProgressUserCourseProgress
+              ...ProgressUserCourseServiceProgress
             }
           }
         }
