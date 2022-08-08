@@ -16,7 +16,7 @@ import {
   TextField,
 } from "@mui/material"
 
-import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
+import { CourseCoreFieldsFragment } from "/static/types/generated"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
@@ -66,7 +66,7 @@ interface FilterFields {
 interface FilterProps {
   searchVariables: SearchVariables
   setSearchVariables: React.Dispatch<SearchVariables>
-  handlerCourses?: HandlerCourses_handlerCourses[]
+  handlerCourses?: CourseCoreFieldsFragment[]
   status?: string[]
   setStatus?: React.Dispatch<React.SetStateAction<string[]>>
   loading: boolean

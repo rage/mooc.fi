@@ -7,13 +7,13 @@ import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { studentHasPoints } from "/components/User/Points/PointsList"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
-import { UserPointsQuery } from "/components/User/Points/PointsQuery"
+import { UserProgressesQuery } from "/graphql/queries/user"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
 const ProfilePointsDisplay = () => {
-  const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)
+  const { data, error, loading } = useQuery<UserPointsData>(UserProgressesQuery)
   const t = useTranslator(ProfileTranslations)
 
   if (loading) {

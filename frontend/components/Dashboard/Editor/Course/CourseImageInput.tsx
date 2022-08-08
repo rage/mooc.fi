@@ -11,13 +11,13 @@ import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import { EditorCourseOtherCoursesFieldsFragment } from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
 
 interface ImageInputProps {
-  courses: CourseEditorCourses_courses[] | undefined
+  courses: EditorCourseOtherCoursesFieldsFragment[] | undefined
 }
 
 const CourseImageInput = (props: ImageInputProps) => {
@@ -31,8 +31,7 @@ const CourseImageInput = (props: ImageInputProps) => {
   const coursesWithPhotos =
     courses
       ?.filter(
-        (course: CourseEditorCourses_courses) =>
-          course.slug !== values.slug && !!course?.photo?.compressed,
+        (course) => course.slug !== values.slug && !!course?.photo?.compressed,
       )
       .map((course) => {
         const translation = (course.course_translations?.filter(

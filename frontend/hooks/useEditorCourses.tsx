@@ -1,13 +1,15 @@
 import { useQuery } from "@apollo/client"
 
 import {
-  CourseEditorCoursesQuery,
-  CourseEditorStudyModuleQuery,
-} from "/graphql/queries/courses"
-import { CourseQuery } from "/graphql/queries/courses"
-import { CourseDetails } from "/static/types/generated/CourseDetails"
-import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
+  CourseEditorDetailsQuery,
+  CourseEditorOtherCoursesQuery,
+} from "/graphql/queries/course"
+import { EditorStudyModulesQuery } from "/graphql/queries/studyModule"
+import {
+  CourseEditorDetailsQueryResult,
+  CourseEditorOtherCoursesQueryResult,
+  EditorStudyModulesQueryResult,
+} from "/static/types/generated"
 
 interface UseEditorCoursesProps {
   slug?: string
@@ -18,20 +20,22 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useQuery<CourseDetails>(CourseQuery, {
+  } = useQuery<CourseEditorDetailsQueryResult>(CourseEditorDetailsQuery, {
     variables: { slug },
   })
   const {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = useQuery<CourseEditorStudyModules>(CourseEditorStudyModuleQuery)
+  } = useQuery<EditorStudyModulesQueryResult>(EditorStudyModulesQuery)
 
   const {
     data: coursesData,
     loading: coursesLoading,
     error: coursesError,
-  } = useQuery<CourseEditorCourses>(CourseEditorCoursesQuery)
+  } = useQuery<CourseEditorOtherCoursesQueryResult>(
+    CourseEditorOtherCoursesQuery,
+  )
 
   return {
     loading: courseLoading || studyModulesLoading || coursesLoading,

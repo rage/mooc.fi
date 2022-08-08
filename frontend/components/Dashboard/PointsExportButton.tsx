@@ -6,10 +6,7 @@ import { ApolloClient, gql, useApolloClient } from "@apollo/client"
 import styled from "@emotion/styled"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import {
-  ExportUserCourseProgesses,
-  ExportUserCourseProgesses_userCourseProgresses,
-} from "/static/types/generated/ExportUserCourseProgesses"
+import { ExportUserCourseProgressesQuery } from "/graphql/queries/userCourseProgress"
 
 const PointsExportButtonContainer = styled.div`
   margin-bottom: 1rem;
@@ -109,7 +106,7 @@ async function downloadInChunks(
 
   while (1 === 1) {
     const { data } = await client.query<ExportUserCourseProgesses>({
-      query: GET_DATA,
+      query: ExportUserCourseProgressesQuery,
       variables: {
         course_slug: courseSlug,
         skip,
@@ -134,30 +131,3 @@ async function downloadInChunks(
 }
 
 export default PointsExportButton
-
-const GET_DATA = gql`
-  query ExportUserCourseProgesses(
-    $course_slug: String!
-    $skip: Int
-    $take: Int
-  ) {
-    userCourseProgresses(course_slug: $course_slug, skip: $skip, take: $take) {
-      id
-      user {
-        id
-        email
-        student_number
-        real_student_number
-        upstream_id
-        first_name
-        last_name
-      }
-      progress
-      user_course_settings {
-        course_variant
-        country
-        language
-      }
-    }
-  }
-`

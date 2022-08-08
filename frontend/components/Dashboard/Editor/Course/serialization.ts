@@ -5,10 +5,9 @@ import { DateTime } from "luxon"
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import {
-  CourseDetails_course,
-  CourseDetails_course_photo,
-} from "/static/types/generated/CourseDetails"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+  EditorCourseDetailedFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 import {
   CourseCreateArg,
   CourseStatus,
@@ -21,8 +20,8 @@ export const toCourseForm = ({
   course,
   modules,
 }: {
-  course?: CourseDetails_course
-  modules?: CourseEditorStudyModules_study_modules[]
+  course?: EditorCourseDetailedFieldsFragment
+  modules?: StudyModuleDetailedFieldsFragment[]
 }): CourseFormValues => {
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
@@ -67,7 +66,7 @@ export const toCourseForm = ({
           })) ?? [],
         course_aliases: course?.course_aliases ?? [],
         new_slug: course.slug,
-        thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
+        thumbnail: course?.photo?.compressed,
         ects: course.ects ?? undefined,
         import_photo: "",
         inherit_settings_from: course.inherit_settings_from?.id,

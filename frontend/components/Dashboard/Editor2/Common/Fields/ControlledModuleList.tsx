@@ -23,7 +23,7 @@ import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
 
 const ModuleList = styled(List)`
   padding: 0px;
@@ -35,7 +35,7 @@ const ModuleListItem = styled(ListItem)<any>`
 `
 
 interface ControlledModuleListProps extends ControlledFieldProps {
-  modules?: CourseEditorStudyModules_study_modules[]
+  modules?: StudyModuleDetailedFieldsFragment[]
 }
 
 export function ControlledModuleList<T>(props: ControlledModuleListProps) {

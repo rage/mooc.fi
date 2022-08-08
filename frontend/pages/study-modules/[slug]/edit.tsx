@@ -4,7 +4,7 @@ import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
@@ -15,6 +15,7 @@ import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
+import { EditorStudyModuleDetailsQuery } from "/graphql/queries/studyModule"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
@@ -22,29 +23,6 @@ import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-
-export const StudyModuleQuery = gql`
-  query StudyModuleDetails($slug: String!) {
-    study_module(slug: $slug) {
-      id
-      slug
-      name
-      image
-      order
-      courses {
-        id
-        name
-        slug
-      }
-      study_module_translations {
-        id
-        name
-        language
-        description
-      }
-    }
-  }
-`
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -58,7 +36,7 @@ const EditStudyModule = () => {
   const beta = useQueryParameter("beta", false)
 
   const { data, loading, error } = useQuery<StudyModuleDetails>(
-    StudyModuleQuery,
+    EditorStudyModuleDetailsQuery,
     {
       variables: { slug },
     },

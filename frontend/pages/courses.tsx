@@ -11,9 +11,9 @@ import FilterMenu from "/components/FilterMenu"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import {
-  AllEditorCoursesQuery,
+  EditorCoursesQuery,
   HandlerCoursesQuery,
-} from "/graphql/queries/courses"
+} from "/graphql/queries/course"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
@@ -72,7 +72,7 @@ function useCourseSearch() {
     loading: editorLoading,
     error: editorError,
     data: editorData,
-  } = useQuery<AllEditorCourses>(AllEditorCoursesQuery, {
+  } = useQuery<AllEditorCourses>(EditorCoursesQuery, {
     variables: searchVariables || initialSearchVariables,
   })
   const {

@@ -8,8 +8,8 @@ import CourseHighlights from "./CourseHighlights"
 import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import { AllCoursesQuery } from "/graphql/queries/courses"
-import { AllModulesQuery } from "/graphql/queries/study-modules"
+import { CoursesQuery } from "/graphql/queries/course"
+import { StudyModulesQuery } from "/graphql/queries/studyModule"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { CourseStatus } from "/static/types/generated/globalTypes"
@@ -30,12 +30,12 @@ const CourseAndModuleList = () => {
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
-  } = useQuery<AllCoursesData>(AllCoursesQuery, { variables: { language } })
+  } = useQuery<AllCoursesData>(CoursesQuery, { variables: { language } })
   const {
     loading: modulesLoading,
     error: modulesError,
     data: modulesData,
-  } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
+  } = useQuery<AllModulesData>(StudyModulesQuery, { variables: { language } })
 
   const courses = coursesData?.courses
   let study_modules = modulesData?.study_modules?.filter(notEmpty)

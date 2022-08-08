@@ -6,7 +6,7 @@ import { NextSeo } from "next-seo"
 import { withRouter } from "next/router"
 import * as Papa from "papaparse"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import DatePicker from "@mui/lab/DatePicker"
@@ -16,6 +16,8 @@ import Alert from "@mui/material/Alert"
 import AlertTitle from "@mui/material/AlertTitle"
 import Typography from "@mui/material/Typography"
 
+import { AddManualCompletionMutation } from "/graphql/mutations/completion"
+import { CourseFromSlugQuery } from "/graphql/queries/course"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
@@ -23,34 +25,6 @@ import { useQueryParameter } from "/util/useQueryParameter"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
-`
-
-const AddManualCompletionQuery = gql`
-  mutation AddManualCompletion(
-    $course_id: String!
-    $completions: [ManualCompletionArg!]
-  ) {
-    addManualCompletion(course_id: $course_id, completions: $completions) {
-      id
-      created_at
-      updated_at
-      completion_language
-      grade
-      user {
-        upstream_id
-        username
-        email
-      }
-    }
-  }
-`
-
-export const CourseIdBySluq = gql`
-  query CourseIdBySluq($slug: String) {
-    course(slug: $slug) {
-      id
-    }
-  }
 `
 
 const ManualCompletions = () => {
@@ -65,7 +39,7 @@ const ManualCompletions = () => {
   >("info")
   const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
   const [addCompletions, { loading: mutationLoading, error: mutationError }] =
-    useMutation(AddManualCompletionQuery, {
+    useMutation(AddManualCompletionMutation, {
       onCompleted: () => {
         setInput("")
         setMessage("Completions added")
@@ -78,7 +52,7 @@ const ManualCompletions = () => {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useQuery(CourseIdBySluq, {
+  } = useQuery(CourseFromSlugQuery, {
     variables: { slug },
   })
 

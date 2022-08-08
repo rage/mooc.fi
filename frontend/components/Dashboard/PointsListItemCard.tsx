@@ -7,12 +7,12 @@ import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
-import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
-import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
-import { UserPoints_currentUser_progresses_course } from "/static/types/generated/UserPoints"
-import formatPointsData, {
-  formattedGroupPointsDictionary,
-} from "/util/formatPointsData"
+import {
+  CourseCoreFieldsFragment,
+  UserCourseProgressCoreFieldsFragment,
+  UserCourseServiceProgressCoreFieldsFragment,
+} from "/static/types/generated"
+import formatPointsData from "/util/formatPointsData"
 
 const Root = styled(Grid)`
   background-color: white;
@@ -20,9 +20,27 @@ const Root = styled(Grid)`
   padding: 1rem;
 `
 
+interface PersonalDetails {
+  firstName: string
+  lastName: string
+  email: string
+  sid: string
+}
+interface PointsListItemCardProps {
+  course?: CourseCoreFieldsFragment | null
+  userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
+  userCourseServiceProgresses?:
+    | UserCourseServiceProgressCoreFieldsFragment[]
+    | null
+  cutterValue?: number
+  showPersonalDetails?: boolean
+  personalDetails?: PersonalDetails
+  showProgress?: boolean
+}
 interface PersonalDetailsDisplayProps {
   personalDetails: PersonalDetails
 }
+
 const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
   const { personalDetails } = props
   return (
@@ -35,24 +53,7 @@ const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
     </>
   )
 }
-interface PersonalDetails {
-  firstName: string
-  lastName: string
-  email: string
-  sid: string
-}
-
-interface Props {
-  course?: UserPoints_currentUser_progresses_course | null
-  userCourseProgress?: UserCourseProgressFragment | null
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
-  cutterValue?: number
-  showPersonalDetails?: boolean
-  personalDetails?: PersonalDetails
-  showProgress?: boolean
-}
-
-function PointsListItemCard(props: Props) {
+function PointsListItemCard(props: PointsListItemCardProps) {
   const {
     course,
     userCourseProgress,
@@ -64,7 +65,7 @@ function PointsListItemCard(props: Props) {
   } = props
   const [showDetails, setShowDetails] = useState(false)
 
-  const formattedPointsData: formattedGroupPointsDictionary = formatPointsData({
+  const formattedPointsData = formatPointsData({
     userCourseProgress,
     userCourseServiceProgresses,
   })

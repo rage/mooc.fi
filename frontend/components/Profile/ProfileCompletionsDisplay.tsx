@@ -2,12 +2,12 @@ import Link from "next/link"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { CompletionListItem } from "/components/Home/Completions"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import { CompletionDetailedFieldsWithCourseFragment } from "/static/types/generated"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
 interface CompletionsProps {
-  completions: ProfileUserOverView_currentUser_completions[]
+  completions: CompletionDetailedFieldsWithCourseFragment[]
 }
 
 const ProfileCompletionsDisplay = (props: CompletionsProps) => {

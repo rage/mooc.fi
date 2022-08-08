@@ -120,7 +120,7 @@ const EmailTemplateView = () => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
   const { data, loading, error } = useQuery<EmailTemplate>(EmailTemplateQuery, {
-    variables: { id: id },
+    variables: { id },
   })
 
   useBreadcrumbs([

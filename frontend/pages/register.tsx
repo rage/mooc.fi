@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react"
 
 import { range } from "lodash"
 
-import { gql } from "@apollo/client"
 import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import CancelIcon from "@mui/icons-material/Cancel"
@@ -22,6 +21,12 @@ import {
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
+import {
+  AddUserOrganizationMutation,
+  DeleteUserOrganizationMutation,
+} from "/graphql/mutations/userOrganization"
+import { OrganizationsQuery } from "/graphql/queries/organization"
+import { UserOrganizationsQuery } from "/graphql/queries/userOrganization"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import {
@@ -36,41 +41,6 @@ import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
-
-export const UserOrganizationsQuery = gql`
-  query UserOrganizations($user_id: ID) {
-    userOrganizations(user_id: $user_id) {
-      id
-      organization {
-        id
-      }
-    }
-  }
-`
-
-export const AddUserOrganizationMutation = gql`
-  mutation addUserOrganization($user_id: ID!, $organization_id: ID!) {
-    addUserOrganization(user_id: $user_id, organization_id: $organization_id) {
-      id
-    }
-  }
-`
-
-export const UpdateUserOrganizationMutation = gql`
-  mutation updateUserOrganization($id: ID!, $role: OrganizationRole) {
-    updateUserOrganization(id: $id, role: $role) {
-      id
-    }
-  }
-`
-
-export const DeleteUserOrganizationMutation = gql`
-  mutation deleteUserOrganization($id: ID!) {
-    deleteUserOrganization(id: $id) {
-      id
-    }
-  }
-`
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;

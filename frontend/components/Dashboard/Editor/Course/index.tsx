@@ -13,41 +13,42 @@ import {
   AddCourseMutation,
   DeleteCourseMutation,
   UpdateCourseMutation,
-} from "/graphql/mutations/courses"
+} from "/graphql/mutations/course"
 import {
-  AllCoursesQuery,
-  AllEditorCoursesQuery,
-  CheckSlugQuery,
-  CourseEditorCoursesQuery,
-  CourseQuery,
-} from "/graphql/queries/courses"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+  CourseEditorOtherCoursesQuery,
+  CourseFromSlugQuery,
+  CoursesQuery,
+  EditorCoursesQuery,
+  EmailTemplateEditorCoursesQuery,
+} from "/graphql/queries/course"
+import {
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const CourseEdit = ({
-  course,
-  modules,
-  courses,
-}: {
-  course?: CourseDetails_course
-  modules?: CourseEditorStudyModules_study_modules[]
-  courses?: CourseEditorCourses_courses[]
-}) => {
+interface CourseEditProps {
+  course?: EditorCourseDetailedFieldsFragment
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[]
+}
+
+const CourseEdit = ({ course, modules, courses }: CourseEditPrpos) => {
   const t = useTranslator(CoursesTranslations)
 
   const [addCourse] = useMutation(AddCourseMutation)
   const [updateCourse] = useMutation(UpdateCourseMutation)
   const [deleteCourse] = useMutation(DeleteCourseMutation, {
     refetchQueries: [
-      { query: AllCoursesQuery },
-      { query: AllEditorCoursesQuery },
-      { query: CourseEditorCoursesQuery },
+      { query: CoursesQuery },
+      { query: EditorCoursesQuery },
+      { query: CourseEditorOtherCoursesQuery },
+      { query: EmailTemplateEditorCoursesQuery },
     ],
   })
-  const checkSlug = CheckSlugQuery
+  const checkSlug = CourseFromSlugQuery
 
   const client = useApolloClient()
 
@@ -71,11 +72,12 @@ const CourseEdit = ({
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
       const refetchQueries = [
-        { query: AllCoursesQuery },
-        { query: AllEditorCoursesQuery },
-        { query: CourseEditorCoursesQuery },
+        { query: CoursesQuery },
+        { query: EditorCoursesQuery },
+        { query: CourseEditorOtherCoursesQuery },
+        { query: EmailTemplateEditorCoursesQuery },
         !newCourse
-          ? { query: CourseQuery, variables: { slug: values.new_slug } }
+          ? { query: CourseFromSlugQuery, variables: { slug: values.new_slug } }
           : undefined,
       ].filter((v) => !!v) as PureQueryOptions[]
 

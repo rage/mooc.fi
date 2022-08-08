@@ -11,7 +11,7 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { FormValues } from "/components/Dashboard/Editor/types"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
+import { OpenUniversityRegistrationLinkCoreFieldsFragment } from "/static/types/generated"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 
 export const initialTranslation: CourseTranslationFormValues = {
@@ -23,7 +23,7 @@ export const initialTranslation: CourseTranslationFormValues = {
   open_university_course_link: {
     course_code: "",
     link: "",
-  } as CourseDetails_course_open_university_registration_links,
+  } as OpenUniversityRegistrationLinkCoreFieldsFragment,
 }
 
 export const initialVariant: CourseVariantFormValues = {

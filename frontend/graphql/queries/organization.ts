@@ -1,9 +1,5 @@
 import { gql } from "@apollo/client"
 
-import {
-  UserOrganizationDataFragment, // UserOrganizationJoinConfirmationDataFragment,
-} from "/graphql/fragments/userOrganization"
-
 export const OrganizationsQuery = gql`
   query Organizations {
     organizations {
@@ -19,20 +15,6 @@ export const OrganizationsQuery = gql`
       }
     }
   }
-`
-
-export const CurrentUserOrganizationsQuery = gql`
-  query CurrentUserOrganizations {
-    currentUser {
-      user_organizations {
-        ...UserOrganizationData
-        # user_organization_join_confirmations {
-        #   ...UserOrganizationJoinConfirmationData
-        # }
-      }
-    }
-  }
-  ${UserOrganizationDataFragment}
 `
 // ${UserOrganizationJoinConfirmationDataFragment}
 

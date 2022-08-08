@@ -1,21 +1,14 @@
 import { ChangeEvent, useState } from "react"
 
-import { gql, useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 
 import CustomSnackbar from "/components/CustomSnackbar"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
-import { UserOverViewQuery } from "/pages/profile"
+import { UpdateResearchConsentMutation } from "/graphql/mutations/user"
+import { CurrentUserOverviewQuery } from "/graphql/queries/user"
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-
-const updateResearchConsentMutation = gql`
-  mutation updateUpdateAccountResearchConsent($value: Boolean!) {
-    updateResearchConsent(value: $value) {
-      id
-    }
-  }
-`
 
 interface ProfileSettingsProps {
   data?: ProfileUserOverView_currentUser
@@ -43,9 +36,9 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
       : "0",
   )
   const [updateResearchConsent, { loading }] = useMutation(
-    updateResearchConsentMutation,
+    UpdateResearchConsentMutation,
     {
-      refetchQueries: [{ query: UserOverViewQuery }],
+      refetchQueries: [{ query: CurrentUserOverviewQuery }],
     },
   )
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)

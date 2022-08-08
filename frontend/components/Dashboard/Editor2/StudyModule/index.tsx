@@ -17,15 +17,15 @@ import {
   AddStudyModuleMutation,
   DeleteStudyModuleMutation,
   UpdateStudyModuleMutation,
-} from "/graphql/mutations/study-modules"
+} from "/graphql/mutations/studyModule"
 import {
-  AllEditorModulesQuery,
-  AllModulesQuery,
-  CheckModuleSlugQuery,
-} from "/graphql/queries/study-modules"
+  EditorStudyModuleDetailsQuery,
+  EditorStudyModulesQuery,
+  StudyModuleExistsQuery,
+  StudyModulesQuery,
+} from "/graphql/queries/studyModule"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import { StudyModuleQuery } from "/pages/study-modules/[slug]/edit"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
+import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
 import ModulesTranslations from "/translations/study-modules"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
@@ -33,14 +33,14 @@ import { useTranslator } from "/util/useTranslator"
 const StudyModuleEdit = ({
   module,
 }: {
-  module?: StudyModuleDetails_study_module
+  module?: StudyModuleDetailedFieldsFragment
 }) => {
   const t = useTranslator(ModulesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const client = useApolloClient()
   const { anchors } = useAnchorContext()
 
-  const checkSlug = CheckModuleSlugQuery
+  const checkSlug = StudyModuleExistsQuery
 
   const defaultValues = toStudyModuleForm({ module })
   const validationSchema = studyModuleEditSchema({
@@ -64,8 +64,8 @@ const StudyModuleEdit = ({
   const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)
   const [deleteStudyModule] = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [
-      { query: AllModulesQuery },
-      { query: AllEditorModulesQuery },
+      { query: StudyModulesQuery },
+      { query: EditorStudyModulesQuery },
     ],
   })
 
@@ -75,10 +75,13 @@ const StudyModuleEdit = ({
 
       const mutationVariables = fromStudyModuleForm({ values })
       const refetchQueries = [
-        { query: AllModulesQuery },
-        { query: AllEditorModulesQuery },
+        { query: StudyModulesQuery },
+        { query: EditorStudyModulesQuery },
         !newStudyModule
-          ? { query: StudyModuleQuery, variables: { slug: values.new_slug } }
+          ? {
+              query: EditorStudyModuleDetailsQuery,
+              variables: { slug: values.new_slug },
+            }
           : undefined,
       ].filter((v) => !!v) as PureQueryOptions[]
 

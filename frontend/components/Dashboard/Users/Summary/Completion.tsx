@@ -19,15 +19,15 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import { CompletionListItem } from "/components/Home/Completions"
 import {
-  UserSummary_user_user_course_summary_completion,
-  UserSummary_user_user_course_summary_course,
-} from "/static/types/generated/UserSummary"
+  CompletionDetailedFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
+} from "/static/types/generated"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
 interface CompletionProps {
-  completion?: UserSummary_user_user_course_summary_completion
-  course: UserSummary_user_user_course_summary_course
+  completion?: CompletionDetailedFieldsFragment
+  course: UserCourseSummaryCourseFieldsFragment
 }
 
 export default function Completion({ completion, course }: CompletionProps) {

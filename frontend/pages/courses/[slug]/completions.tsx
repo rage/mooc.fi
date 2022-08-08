@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
 
@@ -15,6 +15,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
+import { CourseFromSlugQuery } from "/graphql/queries/course"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
@@ -28,15 +29,6 @@ import { useTranslator } from "/util/useTranslator"
 const ContentArea = styled.div`
   max-width: 39em;
   margin: auto;
-`
-
-export const CourseDetailsFromSlugQuery = gql`
-  query CompletionCourseDetails($slug: String) {
-    course(slug: $slug) {
-      id
-      name
-    }
-  }
 `
 
 const Completions = () => {
@@ -59,7 +51,7 @@ const Completions = () => {
   }
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseDetailsFromSlugQuery,
+    CourseFromSlugQuery,
     {
       variables: { slug },
     },

@@ -29,9 +29,11 @@ import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Cour
 import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
 import DisableAutoComplete from "/components/DisableAutoComplete"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import {
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -43,9 +45,9 @@ const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
 `
 
 interface CourseEditFormProps {
-  course?: CourseDetails_course
-  courses?: CourseEditorCourses_courses[]
-  studyModules?: CourseEditorStudyModules_study_modules[]
+  course?: EditorCourseDetailedFieldsFragment
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
 export default function CourseEditForm({
@@ -73,11 +75,8 @@ export default function CourseEditForm({
   const sortedCourses = useMemo(
     () =>
       courses
-        ?.filter((c: CourseEditorCourses_courses) => c.id !== course?.id)
-        .sort(
-          (a: CourseEditorCourses_courses, b: CourseEditorCourses_courses) =>
-            a?.name < b?.name ? -1 : 1,
-        ),
+        ?.filter((c) => c.id !== course?.id)
+        .sort((a, b) => (a?.name < b?.name ? -1 : 1)),
     [courses],
   )
 

@@ -3,12 +3,12 @@ import { Typography } from "@mui/material"
 
 import { RegularContainer as Container } from "/components/Container"
 import { CompletionListItem } from "/components/Home/Completions"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import { CompletionDetailedFieldsWithCourseFragment } from "/static/types/generated"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
 export interface CompletionsProps {
-  completions: ProfileUserOverView_currentUser_completions[]
+  completions: CompletionDetailedFieldsWithCourseFragment[]
 }
 
 const Title = styled(Typography)<any>`

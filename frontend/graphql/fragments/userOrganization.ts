@@ -1,23 +1,21 @@
 import { gql } from "@apollo/client"
 
-export const UserOrganizationDataFragment = gql`
-  fragment UserOrganizationData on UserOrganization {
+import { OrganizationCoreFieldsFragment } from "/graphql/fragments/organization"
+
+export const UserOrganizationCoreFieldsFragment = gql`
+  fragment UserOrganizationCoreFields on UserOrganization {
     id
+    user_id
+    organization_id
     # confirmed
     # consented
     organization {
-      id
-      slug
-      hidden
-      # required_confirmation
-      # required_organization_email
-      organization_translations {
-        language
-        name
-        information
-      }
+      ...OrganizationCoreFields
     }
+    created_at
+    updated_at
   }
+  ${OrganizationCoreFieldsFragment}
 `
 
 /*export const UserOrganizationJoinConfirmationDataFragment = gql`

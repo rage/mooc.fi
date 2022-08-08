@@ -4,7 +4,7 @@ import { WideContainer } from "/components/Container"
 import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
-import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
+import { EditorStudyModulesQuery } from "/graphql/queries/studyModule"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
@@ -23,7 +23,7 @@ function StudyModules() {
   ])
 
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
-    AllEditorModulesQuery,
+    EditorStudyModulesQuery,
   )
 
   if (error) {

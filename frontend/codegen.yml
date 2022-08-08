@@ -28,6 +28,8 @@ generates:
       modules:
         - name: "@apollo/client"
           identifier: gql
+    config:
+      operationResultSuffix: Result
     plugins:
       - typescript
       - typescript-operations

@@ -3,7 +3,7 @@ import { memo } from "react"
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
 
-import { CoursePhotoFragment } from "/static/types/generated"
+import { ImageCoreFieldsFragment } from "/static/types/generated"
 import { addDomain } from "/util/imageUtils"
 
 const ComponentStyle = `
@@ -22,7 +22,8 @@ const PlaceholderComponent = styled.div`
   justify-content: center;
   align-items: center;
 `
-interface CourseImageProps extends CoursePhotoFragment {
+interface CourseImageProps {
+  photo?: ImageCoreFieldsFragment | null
   [k: string]: any
 }
 

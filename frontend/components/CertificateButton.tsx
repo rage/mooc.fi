@@ -15,14 +15,15 @@ import DialogTitle from "@mui/material/DialogTitle"
 
 import AlertContext from "/contexts/AlertContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { UserOverViewQuery } from "/graphql/queries/user"
+import { UpdateUserNameMutation } from "/graphql/mutations/user"
+import {
+  CurrentUserDetailedQuery,
+  CurrentUserOverviewQuery,
+  CurrentUserQuery,
+} from "/graphql/queries/user"
 import { updateAccount } from "/lib/account"
 import { checkCertificate, createCertificate } from "/lib/certificates"
-import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
-import {
-  CompletionCourseFragment,
-  CurrentUserUserOverViewQuery,
-} from "/static/types/generated"
+import { CourseCoreFieldsFragment } from "/static/types/generated"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
 
@@ -38,18 +39,8 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
-const updateUserNameMutation = gql`
-  mutation updateUserName($first_name: String, $last_name: String) {
-    updateUserName(first_name: $first_name, last_name: $last_name) {
-      id
-      first_name
-      last_name
-    }
-  }
-`
-
 interface CertificateProps {
-  course: NonNullable<CompletionCourseFragment["course"]>
+  course: CourseCoreFieldsFragment
 }
 
 type Status =
@@ -147,8 +138,12 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
-  const [updateUserName] = useMutation(updateUserNameMutation, {
-    refetchQueries: [{ query: UserDetailQuery }, { query: UserOverViewQuery }],
+  const [updateUserName] = useMutation(UpdateUserNameMutation, {
+    refetchQueries: [
+      { query: CurrentUserQuery },
+      { query: CurrentUserDetailedQuery },
+      { query: CurrentUserOverviewQuery },
+    ],
   })
 
   const [open, setOpen] = useState(false)
@@ -201,7 +196,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
           ...(currentUser || { email: "", id: "" }),
           first_name: firstName,
           last_name: lastName,
-        } as CurrentUserUserOverViewQuery["currentUser"])
+        })
         dispatch({ type: "UPDATED_NAME", payload: res })
       }
 

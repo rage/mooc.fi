@@ -3,12 +3,7 @@ import { useState } from "react"
 import { omit } from "lodash"
 import Router from "next/router"
 
-import {
-  gql,
-  OperationVariables,
-  useApolloClient,
-  useQuery,
-} from "@apollo/client"
+import { OperationVariables, useApolloClient, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -23,37 +18,18 @@ import {
 
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
-import { UpdateCourseMutation } from "/graphql/mutations/courses"
-import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
+import { UpdateCourseMutation } from "/graphql/mutations/course"
+import { AddEmailTemplateMutation } from "/graphql/mutations/emailTemplate"
+import { EmailTemplateEditorCoursesQuery } from "/graphql/queries/course"
 import {
-  AddEmailTemplateMutation as AddEmailTemplate,
-  AllCoursesDetailsQuery,
-  CourseDetailsFromSlugQueryQuery,
+  AddEmailTemplateMutationResult,
+  CourseCoreFieldsFragment,
+  EmailTemplateEditorCoursesQueryResult,
+  UpdateCourseMutationResult,
 } from "/static/types/generated"
-import { updateCourseMutation as updateCourse } from "/static/types/generated"
 
-export const AllCoursesDetails = gql`
-  query AllCoursesDetails {
-    courses {
-      id
-      slug
-      name
-      teacher_in_charge_name
-      teacher_in_charge_email
-      start_date
-      completion_email {
-        name
-        id
-      }
-      course_stats_email {
-        id
-      }
-    }
-  }
-`
-
-interface CreateEmailTemplateDialogParams
-  extends CourseDetailsFromSlugQueryQuery {
+interface CreateEmailTemplateDialogParams {
+  course: CourseCoreFieldsFragment
   buttonText: string
   type?: string
 }
@@ -66,12 +42,13 @@ const CreateEmailTemplateDialog = ({
   const [openDialog, setOpenDialog] = useState(false)
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState(type)
-  const [selectedCourse, setSelectedCourse] = useState<
-    keyof NonNullable<AllCoursesDetailsQuery["courses"]> | null
-  >(null)
+  const [selectedCourse, setSelectedCourse] =
+    useState<CourseCoreFieldsFragment | null>(null)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { loading, error, data } =
-    useQuery<AllCoursesDetailsQuery>(AllCoursesDetails)
+    useQuery<EmailTemplateEditorCoursesQueryResult>(
+      EmailTemplateEditorCoursesQuery,
+    )
   const client = useApolloClient()
 
   if (loading) {
@@ -111,7 +88,7 @@ const CreateEmailTemplateDialog = ({
 
   const handleCreate = async () => {
     try {
-      const { data } = await client.mutate<AddEmailTemplate>({
+      const { data } = await client.mutate<AddEmailTemplateMutationResult>({
         mutation: AddEmailTemplateMutation,
         variables: {
           name: nameInput,
@@ -133,7 +110,7 @@ const CreateEmailTemplateDialog = ({
           connectVariables.course_stats_email_id = data?.addEmailTemplate?.id
         }
 
-        await client.mutate<updateCourse>({
+        await client.mutate<UpdateCourseMutationResult>({
           mutation: UpdateCourseMutation,
           variables: {
             course: {
@@ -205,7 +182,9 @@ const CreateEmailTemplateDialog = ({
               <NativeSelect
                 onChange={(e) => {
                   e.preventDefault()
-                  setSelectedCourse(data!.courses?.[Number(e.target.value)])
+                  setSelectedCourse(
+                    data!.courses?.[Number(e.target.value)] ?? null,
+                  )
                 }}
                 id="selectCourse"
                 defaultValue="Select course"

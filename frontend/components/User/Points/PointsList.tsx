@@ -2,9 +2,9 @@ import { useQuery } from "@apollo/client"
 
 import NoPointsErrorMessage from "./NoPointsErrorMessage"
 import PointsListGrid from "./PointsListGrid"
-import { UserPointsQuery } from "./PointsQuery"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
+import { CurrentUserProgressesQuery } from "/graphql/queries/user"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 
 interface StudentHasPointsProps {
@@ -24,7 +24,9 @@ interface Props {
 }
 
 function PointsList(props: Props) {
-  const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)
+  const { data, error, loading } = useQuery<UserPointsData>(
+    CurrentUserProgressesQuery,
+  )
   const { showOnlyTen } = props
   if (error) {
     return <ErrorMessage />

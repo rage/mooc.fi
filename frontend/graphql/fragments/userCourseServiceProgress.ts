@@ -1,28 +1,17 @@
 import { gql } from "@apollo/client"
 
-export const UserCourseServiceProgressFragment = gql`
-  fragment UserCourseServiceProgress on UserCourseServiceProgress {
+export const UserCourseServiceProgressCoreFieldsFragment = gql`
+  fragment UserCourseServiceProgressCoreFields on UserCourseServiceProgress {
+    id
+    course_id
+    service_id
+    user_id
     progress
     service {
       name
       id
     }
+    created_at
+    updated_at
   }
-`
-export const ProgressUserCourseServiceProgressFragment = gql`
-  fragment ProgressUserCourseServiceProgress on Progress {
-    user_course_service_progresses {
-      ...UserCourseServiceProgress
-    }
-  }
-  ${UserCourseServiceProgressFragment}
-`
-
-export const UserCourseSummaryUserCourseServiceProgressFragment = gql`
-  fragment UserCourseSummaryUserCourseServiceProgress on UserCourseSummary {
-    user_course_service_progresses {
-      ...UserCourseServiceProgress
-    }
-  }
-  ${UserCourseServiceProgressFragment}
 `

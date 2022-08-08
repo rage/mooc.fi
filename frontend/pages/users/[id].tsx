@@ -6,6 +6,7 @@ import Button from "@mui/material/Button"
 
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { UserProfileUserCourseSettingsQuery } from "/graphql/queries/userCourseSetting"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
@@ -21,7 +22,7 @@ const UserPage = () => {
   const [more, setMore]: any[] = useState([])
 
   const { loading, error, data } = useQuery<UserCourseSettingsForUserPage>(
-    GET_DATA,
+    UserProfileUserCourseSettingsQuery,
     { variables: { upstream_id: Number(id) } },
   )
 
@@ -68,7 +69,7 @@ const UserPage = () => {
           variant="contained"
           onClick={async () => {
             const { data } = await client.query({
-              query: GET_DATA,
+              query: UserProfileUserCourseSettingsQuery,
               variables: { upstream_id: Number(id) },
             })
             let newData = more
@@ -85,28 +86,3 @@ const UserPage = () => {
 }
 
 export default withAdmin(UserPage)
-
-const GET_DATA = gql`
-  query UserCourseSettingsForUserPage($upstream_id: Int) {
-    userCourseSettings(user_upstream_id: $upstream_id, first: 50) {
-      edges {
-        node {
-          id
-          course {
-            name
-          }
-          language
-          country
-          research
-          marketing
-          course_variant
-          other
-        }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`

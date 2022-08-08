@@ -2,64 +2,16 @@ import { ChangeEvent, useEffect, useState } from "react"
 
 import { range } from "lodash"
 
-import { gql, useLazyQuery } from "@apollo/client"
+import { useLazyQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
-import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
-import { UserCourseSettingsQuery as StudentProgressData } from "/static/types/generated"
+import { StudentProgressesQuery } from "/graphql/queries/userCourseSetting"
+import { StudentProgressesQueryResult } from "/static/types/generated"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
-
-export const StudentProgresses = gql`
-  query UserCourseSettings(
-    $course_id: ID!
-    $skip: Int
-    $after: String
-    $search: String
-  ) {
-    userCourseSettings(
-      course_id: $course_id
-      first: 15
-      after: $after
-      skip: $skip
-      search: $search
-    ) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      edges {
-        node {
-          id
-          user {
-            id
-            first_name
-            last_name
-            email
-            student_number
-            real_student_number
-            progress(course_id: $course_id) {
-              course {
-                name
-                id
-              }
-              ...ProgressUserCourseProgress
-              ...ProgressUserCourseServiceProgress
-            }
-          }
-        }
-      }
-      totalCount
-    }
-  }
-  ${ProgressUserCourseProgressFragment}
-  ${ProgressUserCourseServiceProgressFragment}
-`
-//       count(course_id: $course_id, search: $search)
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;
@@ -81,7 +33,7 @@ function PaginatedPointsList(props: Props) {
 
   // use lazy query to prevent running query on each render
   const [getData, { data, loading, error, fetchMore }] =
-    useLazyQuery<StudentProgressData>(StudentProgresses, {
+    useLazyQuery<StudentProgressesQueryResult>(StudentProgressesQuery, {
       // fetchPolicy: "cache-first",
       ssr: false,
       // notifyOnNetworkStatusChange :true
@@ -106,7 +58,9 @@ function PaginatedPointsList(props: Props) {
     label: value,
   }))
 
-  const edges = (data?.userCourseSettings?.edges ?? []).filter(notEmpty)
+  const users = (data?.userCourseSettings?.edges ?? [])
+    .filter(notEmpty)
+    .map((e) => e.node)
 
   return (
     <ErrorBoundary>
@@ -158,7 +112,7 @@ function PaginatedPointsList(props: Props) {
           <div style={{ marginBottom: "1rem" }}>
             {data?.userCourseSettings?.totalCount || 0} results
           </div>
-          <PointsList pointsForUser={edges} cutterValue={cutterValue} />
+          <PointsList users={users} cutterValue={cutterValue} />
           <Button
             onClick={() => {
               fetchMore({

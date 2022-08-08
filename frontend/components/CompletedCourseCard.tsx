@@ -37,7 +37,7 @@ const RegistrationDetails = styled.div`
 `
 
 interface CourseCardProps {
-  completion: ProfileUserOverView_currentUser_completions
+  completion: CurrentUser
 }
 
 function formatDateTime(date: string) {

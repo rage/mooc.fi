@@ -1,5 +1,10 @@
 import { gql } from "@apollo/client"
 
+import {
+  EmailTemplateCoreFieldsFragment,
+  EmailTemplateFieldsFragment,
+} from "/graphql/fragments/emailTemplate"
+
 export const UpdateEmailTemplateMutation = gql`
   mutation UpdateEmailTemplate(
     $id: ID!
@@ -23,17 +28,10 @@ export const UpdateEmailTemplateMutation = gql`
       exercise_completions_threshold: $exercise_completions_threshold
       points_threshold: $points_threshold
     ) {
-      id
-      name
-      html_body
-      txt_body
-      title
-      template_type
-      triggered_automatically_by_course_id
-      exercise_completions_threshold
-      points_threshold
+      ...EmailTemplateFields
     }
   }
+  ${EmailTemplateFieldsFragment}
 `
 
 export const AddEmailTemplateMutation = gql`
@@ -57,27 +55,17 @@ export const AddEmailTemplateMutation = gql`
       exercise_completions_threshold: $exercise_completions_threshold
       points_threshold: $points_threshold
     ) {
-      id
-      name
-      html_body
-      txt_body
-      title
-      template_type
-      triggered_automatically_by_course_id
-      exercise_completions_threshold
-      points_threshold
+      ...EmailTemplateFields
     }
   }
+  ${EmailTemplateFieldsFragment}
 `
 
 export const DeleteEmailTemplateMutation = gql`
   mutation DeleteEmailTemplate($id: ID!) {
     deleteEmailTemplate(id: $id) {
-      id
-      name
-      html_body
-      txt_body
-      title
+      ...EmailTemplateCoreFields
     }
   }
+  ${EmailTemplateCoreFieldsFragment}
 `

@@ -5,30 +5,17 @@ import Container from "/components/Container"
 import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
+import { UserOverviewQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-export const CompletionsIdUserOverViewQuery = gql`
-  query ShowUserUserOverView($upstream_id: Int) {
-    user(upstream_id: $upstream_id) {
-      id
-      upstream_id
-      first_name
-      last_name
-      email
-      ...UserCompletions
-    }
-  }
-  ${Completions.fragments.completions}
-`
-
 function CompletionsPage() {
   const id = useQueryParameter("id")
 
   const { loading, error, data } = useQuery<UserOverViewData>(
-    CompletionsIdUserOverViewQuery,
+    UserOverviewQuery,
     { variables: { upstream_id: Number(id) } },
   )
 

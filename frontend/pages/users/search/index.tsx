@@ -8,6 +8,7 @@ import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
+import { UserDetailsContainsQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
@@ -29,7 +30,7 @@ const UserSearch = () => {
   const [rowsPerPage, setRowsPerPage] = useState(rowsParam)
 
   const [loadData, { data, loading }] = useLazyQuery<UserDetailsContains>(
-    GET_DATA,
+    UserDetailsContainsQuery,
     {
       ssr: false,
     },
@@ -96,44 +97,5 @@ const UserSearch = () => {
     </>
   )
 }
-
-const GET_DATA = gql`
-  query UserDetailsContains(
-    $search: String!
-    $first: Int
-    $last: Int
-    $before: String
-    $after: String
-    $skip: Int
-  ) {
-    userDetailsContains(
-      search: $search
-      first: $first
-      last: $last
-      before: $before
-      after: $after
-      skip: $skip
-    ) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          email
-          student_number
-          real_student_number
-          upstream_id
-          first_name
-          last_name
-        }
-      }
-      count(search: $search)
-    }
-  }
-`
 
 export default withAdmin(UserSearch)

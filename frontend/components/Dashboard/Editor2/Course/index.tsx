@@ -16,30 +16,31 @@ import {
   AddCourseMutation,
   DeleteCourseMutation,
   UpdateCourseMutation,
-} from "/graphql/mutations/courses"
+} from "/graphql/mutations/course"
 import {
-  AllCoursesQuery,
-  AllEditorCoursesQuery,
-  CheckSlugQuery,
-  CourseEditorCoursesQuery,
-  CourseQuery,
-} from "/graphql/queries/courses"
+  CourseEditorOtherCoursesQuery,
+  CourseFromSlugQuery,
+  CoursesQuery,
+  EditorCoursesQuery,
+} from "/graphql/queries/course"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import {
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
 
-interface CourseEditorProps {
-  course?: CourseDetails_course
-  courses?: CourseEditorCourses_courses[]
-  studyModules?: CourseEditorStudyModules_study_modules[]
+interface CourseEditProps {
+  course?: EditorCourseDetailedFieldsFragment
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
-function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
+function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   const t = useTranslator(CoursesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const [tab, setTab] = useState(0)
@@ -52,7 +53,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   })
   const validationSchema = courseEditSchema({
     client,
-    checkSlug: CheckSlugQuery,
+    checkSlug: CourseFromSlugQuery,
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
     t,
   })
@@ -73,9 +74,9 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   const [updateCourse] = useMutation(UpdateCourseMutation)
   const [deleteCourse] = useMutation(DeleteCourseMutation, {
     refetchQueries: [
-      { query: AllCoursesQuery },
-      { query: AllEditorCoursesQuery },
-      { query: CourseEditorCoursesQuery },
+      { query: CoursesQuery },
+      { query: EditorCoursesQuery },
+      { query: CourseEditorOtherCoursesQuery },
     ],
   })
 
@@ -88,11 +89,11 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
     const refetchQueries = [
-      { query: AllCoursesQuery },
-      { query: AllEditorCoursesQuery },
-      { query: CourseEditorCoursesQuery },
+      { query: CoursesQuery },
+      { query: EditorCoursesQuery },
+      { query: CourseEditorOtherCoursesQuery },
       !newCourse
-        ? { query: CourseQuery, variables: { slug: values.new_slug } }
+        ? { query: CourseFromSlugQuery, variables: { slug: values.new_slug } }
         : undefined,
     ].filter(notEmpty) as PureQueryOptions[]
 

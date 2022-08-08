@@ -1,9 +1,44 @@
 import { gql } from "@apollo/client"
 
-import { CompletionCourseFragment } from "/graphql/fragments/completion"
-import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
-import { UserCourseSummaryUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { UserCourseSummaryUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
+import {
+  UserCoreFieldsFragment,
+  UserDetailedFieldsFragment,
+  UserOverviewFieldsFragment,
+  UserProgressesFieldsFragment,
+} from "/graphql/fragments/user"
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/fragments/userCourseSummary"
+
+export const CurrentUserQuery = gql`
+  query CurrentUser {
+    currentUser {
+      ...UserCoreFields
+    }
+  }
+  ${UserCoreFieldsFragment}
+`
+
+export const CurrentUserDetailedQuery = gql`
+  query CurrentUserDetailed {
+    currentUser {
+      ...UserDetailedFields
+    }
+  }
+  ${UserDetailedFieldsFragment}
+`
+
+export const CurrentUserStatsSubscriptionsQuery = gql`
+  query CurrentUserStatsSubscriptions {
+    currentUser {
+      id
+      course_stats_subscriptions {
+        id
+        email_template {
+          id
+        }
+      }
+    }
+  }
+`
 
 export const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {
@@ -11,89 +46,113 @@ export const UserSummaryQuery = gql`
       id
       username
       user_course_summary {
-        course {
-          id
-          name
-          slug
-          has_certificate
-          photo {
-            id
-            uncompressed
-          }
-          exercises {
-            id
-            name
-            custom_id
-            course_id
-            part
-            section
-            max_points
-            deleted
-          }
-        }
-        exercise_completions {
-          id
-          exercise_id
-          created_at
-          updated_at
-          attempted
-          completed
-          timestamp
-          n_points
-          exercise_completion_required_actions {
-            id
-            value
-          }
-        }
-        ...UserCourseSummaryUserCourseProgress
-        ...UserCourseSummaryUserCourseServiceProgress
-        completion {
-          id
-          course_id
-          created_at
-          updated_at
-          tier
-          grade
-          project_completion
-          completion_language
-          completion_date
-          registered
-          eligible_for_ects
-          student_number
-          email
-          ...CompletionsRegistered
-        }
+        ...UserCourseSummaryCoreFields
       }
     }
   }
-  ${CompletionsRegisteredFragment}
-  ${UserCourseSummaryUserCourseProgressFragment}
-  ${UserCourseSummaryUserCourseServiceProgressFragment}
+  ${UserCourseSummaryCoreFieldsFragment}
 `
 
-export const UserOverViewQuery = gql`
-  query CurrentUserUserOverView {
+export const CurrentUserOverviewQuery = gql`
+  query CurrentUserUserOverview {
     currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      email
-      completions {
-        id
-        completion_language
-        student_number
-        created_at
-        tier
-        eligible_for_ects
-        completion_date
-        registered
-        ...CompletionCourse
-        ...CompletionsRegistered
-      }
-      research_consent
+      ...UserOverviewFields
     }
   }
-  ${CompletionCourseFragment}
-  ${CompletionsRegisteredFragment}
+  ${UserOverviewFieldsFragment}
+`
+
+export const UserOverviewQuery = gql`
+  query UserOverview($upstream_id: Int) {
+    user(upstream_id: $upstream_id) {
+      ...UserOverviewFields
+    }
+  }
+  ${UserOverviewFieldsFragment}
+`
+export const CurrentUserProgressesQuery = gql`
+  query UserProgresses {
+    currentUser {
+      ...UserProgressesFields
+    }
+  }
+  ${UserProgressesFieldsFragment}
+`
+
+export const UserDetailsContainsQuery = gql`
+  query UserDetailsContains(
+    $search: String!
+    $first: Int
+    $last: Int
+    $before: String
+    $after: String
+    $skip: Int
+  ) {
+    userDetailsContains(
+      search: $search
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      skip: $skip
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          ...UserCoreFields
+        }
+      }
+      count(search: $search)
+    }
+  }
+  ${UserCoreFieldsFragment}
+`
+
+export const ConnectedUserQuery = gql`
+  query ConnectedUser {
+    currentUser {
+      ...UserCoreFields
+      verified_users {
+        id
+        created_at
+        updated_at
+        display_name
+        organization {
+          id
+          organization_translations {
+            language
+            name
+          }
+        }
+      }
+    }
+  }
+  ${UserCoreFieldsFragment}
+`
+
+export const ConnectionTestQuery = gql`
+  query ConnectionTest {
+    currentUser {
+      ...UserCoreFields
+      verified_users {
+        id
+        organization {
+          slug
+          organization_translations {
+            language
+            name
+          }
+        }
+        created_at
+        personal_unique_code
+        display_name
+      }
+    }
+  }
+  ${UserCoreFieldsFragment}
 `

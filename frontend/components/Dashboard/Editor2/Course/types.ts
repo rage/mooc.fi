@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 
-import { CourseDetails_course_photo } from "/static/types/generated/CourseDetails"
+import { ImageCoreFieldsFragment } from "/static/types/generated"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 
 interface FormValues {
@@ -16,7 +16,7 @@ export interface CourseFormValues extends FormValues {
   start_date: string | DateTime
   end_date?: string | DateTime
   ects?: string
-  photo?: string | CourseDetails_course_photo | null
+  photo?: string | ImageCoreFieldsFragment | null
   start_point: boolean
   promote: boolean
   hidden: boolean

@@ -4,7 +4,7 @@ import axios from "axios"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Paper, SvgIcon, Typography } from "@mui/material"
 
@@ -15,7 +15,8 @@ import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { CreateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
-import { CheckSlugQuery } from "/graphql/queries/courses"
+import { CourseFromSlugQuery } from "/graphql/queries/course"
+import { CurrentUserOverviewQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import { getAccessToken } from "/lib/authentication"
@@ -61,39 +62,6 @@ const StyledText = styled(Typography)<any>`
   margin-left: 1em;
 `
 
-export const UserOverViewQuery = gql`
-  query RegisterCompletionUserOverView {
-    currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      completions {
-        id
-        email
-        completion_language
-        completion_link
-        student_number
-        created_at
-        course {
-          id
-          slug
-          name
-          ects
-        }
-        completions_registered {
-          id
-          completion_id
-          organization {
-            slug
-          }
-        }
-        eligible_for_ects
-      }
-    }
-  }
-`
-
 function RegisterCompletionPage() {
   const accessToken = getAccessToken(undefined)
   const { currentUser } = useContext(LoginStateContext)
@@ -107,7 +75,7 @@ function RegisterCompletionPage() {
     loading: courseLoading,
     error: courseError,
     data: courseData,
-  } = useQuery<CheckSlug>(CheckSlugQuery, {
+  } = useQuery<CheckSlug>(CourseFromSlugQuery, {
     variables: {
       slug: courseSlug,
     },
@@ -116,7 +84,7 @@ function RegisterCompletionPage() {
     loading: userLoading,
     error: userError,
     data: userData,
-  } = useQuery<UserOverViewData>(UserOverViewQuery)
+  } = useQuery<UserOverViewData>(CurrentUserOverviewQuery)
   const [createRegistrationAttemptDate] =
     useMutation<CreateRegistrationAttemptDate>(
       CreateRegistrationAttemptDateMutation,

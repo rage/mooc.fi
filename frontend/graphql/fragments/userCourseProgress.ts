@@ -1,9 +1,10 @@
 import { gql } from "@apollo/client"
 
-export const UserCourseProgressFragment = gql`
-  fragment UserCourseProgress on UserCourseProgress {
+export const UserCourseProgressCoreFieldsFragment = gql`
+  fragment UserCourseProgressCoreFields on UserCourseProgress {
     id
     course_id
+    user_id
     max_points
     n_points
     progress
@@ -12,23 +13,7 @@ export const UserCourseProgressFragment = gql`
       total
       exercises
     }
+    created_at
+    updated_at
   }
-`
-
-export const ProgressUserCourseProgressFragment = gql`
-  fragment ProgressUserCourseProgress on Progress {
-    user_course_progress {
-      ...UserCourseProgress
-    }
-  }
-  ${UserCourseProgressFragment}
-`
-
-export const UserCourseSummaryUserCourseProgressFragment = gql`
-  fragment UserCourseSummaryUserCourseProgress on UserCourseSummary {
-    user_course_progress {
-      ...UserCourseProgress
-    }
-  }
-  ${UserCourseProgressFragment}
 `
