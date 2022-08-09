@@ -9,9 +9,9 @@ import { formatDateTime } from "/components/DataFormatFunctions"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
-import { ConnectedUserQuery } from "/graphql/queries/user"
 import withSignedIn from "/lib/with-signed-in"
-import { ConnectedUser } from "/static/types/generated/ConnectedUser"
+
+import { ConnectedUserDocument } from "/static/types/generated"
 
 const ConnectionEntryCard = styled(Card)`
   margin-bottom: 0.5rem;
@@ -19,7 +19,7 @@ const ConnectionEntryCard = styled(Card)`
 `
 
 function ConnectionSuccess() {
-  const { data, error, loading } = useQuery<ConnectedUser>(ConnectedUserQuery)
+  const { data, error, loading } = useQuery(ConnectedUserDocument)
 
   if (error) {
     return <ErrorMessage />

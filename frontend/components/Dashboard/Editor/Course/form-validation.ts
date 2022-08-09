@@ -1,7 +1,7 @@
 import { DateTime } from "luxon"
 import * as Yup from "yup"
 
-import { ApolloClient, DocumentNode } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import {
   CourseAliasFormValues,
@@ -11,8 +11,12 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { FormValues } from "/components/Dashboard/Editor/types"
-import { OpenUniversityRegistrationLinkCoreFieldsFragment } from "/static/types/generated"
-import { CourseStatus } from "/static/types/generated/globalTypes"
+
+import {
+  CourseFromSlugDocument,
+  CourseStatus,
+  OpenUniversityRegistrationLinkCoreFieldsFragment,
+} from "/static/types/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -147,12 +151,10 @@ const testUnique = <T extends FormValues>(
 
 const courseEditSchema = ({
   client,
-  checkSlug,
   initialSlug,
   t,
 }: {
   client: ApolloClient<object>
-  checkSlug: DocumentNode
   initialSlug: string | null
   t: (key: any) => string
 }) =>
@@ -165,7 +167,7 @@ const courseEditSchema = ({
       .test(
         "unique",
         t("validationSlugInUse"),
-        validateSlug({ client, checkSlug, initialSlug }),
+        validateSlug({ client, initialSlug }),
       ),
     status: Yup.mixed()
       .oneOf(statuses(t).map((s) => s.value))
@@ -267,11 +269,9 @@ const courseEditSchema = ({
   })
 
 const validateSlug = ({
-  checkSlug,
   client,
   initialSlug,
 }: {
-  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
@@ -289,7 +289,7 @@ const validateSlug = ({
 
     try {
       const { data } = await client.query({
-        query: checkSlug,
+        query: CourseFromSlugDocument,
         variables: { slug: value },
       })
 

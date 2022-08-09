@@ -9,6 +9,10 @@ import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
 import Spinner from "/components/Spinner"
 import UserOSContext from "/contexts/UserOSContext"
+import InstallationTranslations from "/translations/installation"
+import getUserOS, { userOsType } from "/util/getUserOS"
+import { useTranslator } from "/util/useTranslator"
+
 import MDX_Any from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
 import MDX_Any_en from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
 import MDX_Linux from "/static/md_pages/tmc-cli_installation_Linux_en.mdx"
@@ -17,9 +21,6 @@ import MDX_MAC from "/static/md_pages/tmc-cli_installation_macOS_en.mdx"
 import MDX_MAC_en from "/static/md_pages/tmc-cli_installation_macOS_en.mdx"
 import MDX_Windows from "/static/md_pages/tmc-cli_installation_Windows_en.mdx"
 import MDX_Windows_en from "/static/md_pages/tmc-cli_installation_Windows_en.mdx"
-import InstallationTranslations from "/translations/installation"
-import getUserOS, { userOsType } from "/util/getUserOS"
-import { useTranslator } from "/util/useTranslator"
 
 const Background = styled.section`
   padding-top: 2em;

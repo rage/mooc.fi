@@ -10,11 +10,14 @@ import {
   formatDateTime,
   mapLangToLanguage,
 } from "/components/DataFormatFunctions"
-import { UserCourseSummaryCourseFieldsFragment } from "/static/types/generated"
 import ProfileTranslations from "/translations/profile"
-import { CompletionDetailedFieldsFragment } from "/types/gql/graphql"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CompletionDetailedFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
+} from "/static/types/generated"
 
 const StyledButton = styled(Button)`
   //height: 50%;

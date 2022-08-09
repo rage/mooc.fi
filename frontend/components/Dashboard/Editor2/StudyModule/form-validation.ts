@@ -1,12 +1,14 @@
 import * as Yup from "yup"
 
-import { ApolloClient, DocumentNode } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
+
+import { StudyModuleExistsDocument } from "/static/types/generated"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   _id: undefined,
@@ -55,12 +57,10 @@ function validateImage(this: Yup.TestContext, _value?: any): boolean {
 
 const studyModuleEditSchema = ({
   client,
-  checkSlug,
   initialSlug,
   t,
 }: {
   client: ApolloClient<object>
-  checkSlug: DocumentNode
   initialSlug: string | null
   t: (key: any) => string
 }) =>
@@ -72,7 +72,7 @@ const studyModuleEditSchema = ({
       .test(
         "unique",
         t("validationSlugInUse"),
-        validateSlug({ client, checkSlug, initialSlug }),
+        validateSlug({ client, initialSlug }),
       ),
     image: Yup.string().test("exists", t("moduleImageError"), validateImage),
     name: Yup.string().required(t("validationRequired")),
@@ -103,11 +103,9 @@ const studyModuleEditSchema = ({
   })
 
 const validateSlug = ({
-  checkSlug,
   client,
   initialSlug,
 }: {
-  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
@@ -125,7 +123,7 @@ const validateSlug = ({
 
     try {
       const { data } = await client.query({
-        query: checkSlug,
+        query: StudyModuleExistsDocument,
         variables: { slug: value },
       })
 

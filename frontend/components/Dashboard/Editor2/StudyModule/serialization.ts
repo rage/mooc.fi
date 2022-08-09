@@ -5,11 +5,12 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
+
 import {
   StudyModuleCreateArg,
+  StudyModuleDetailedFieldsFragment,
   StudyModuleUpsertArg,
-} from "/static/types/generated/globalTypes"
+} from "/static/types/generated"
 
 export const toStudyModuleForm = ({
   module,

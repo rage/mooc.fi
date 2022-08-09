@@ -10,19 +10,18 @@ import CourseGrid from "/components/Dashboard/CourseGrid"
 import FilterMenu from "/components/FilterMenu"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
-import {
-  EditorCoursesQuery,
-  HandlerCoursesQuery,
-} from "/graphql/queries/course"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseStatus,
+  EditorCoursesDocument,
+  HandlerCoursesDocument,
+} from "/static/types/generated"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -32,7 +31,7 @@ interface SearchVariables {
   search?: string
   hidden?: boolean | null
   handledBy?: string | null
-  status?: string[] | null
+  status?: CourseStatus[] | null
 }
 
 const notEmptyOrEmptyString = (value: any) =>
@@ -58,13 +57,15 @@ function useCourseSearch() {
       (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
       true,
     handledBy: useQueryParameter("handledBy", false) || null,
-    status: statusParam.length ? statusParam : ["Active", "Upcoming"],
+    status: (statusParam.length
+      ? statusParam
+      : [CourseStatus.Active, CourseStatus.Upcoming]) as CourseStatus[],
   }
 
   const [searchVariables, setSearchVariables] = useState<SearchVariables>(
     initialSearchVariables,
   )
-  const [status, setStatus] = useState<string[]>(
+  const [status, setStatus] = useState<CourseStatus[]>(
     initialSearchVariables.status ?? [],
   )
 
@@ -72,14 +73,14 @@ function useCourseSearch() {
     loading: editorLoading,
     error: editorError,
     data: editorData,
-  } = useQuery<AllEditorCourses>(EditorCoursesQuery, {
+  } = useQuery(EditorCoursesDocument, {
     variables: searchVariables || initialSearchVariables,
   })
   const {
     loading: handlersLoading,
     error: handlersError,
     data: handlersData,
-  } = useQuery<HandlerCourses>(HandlerCoursesQuery)
+  } = useQuery(HandlerCoursesDocument)
 
   useEffect(() => {
     const params = [

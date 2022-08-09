@@ -16,14 +16,16 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { EditorCourseOtherCoursesFieldsFragment } from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
 
+import { EditorCourseOtherCoursesFieldsFragment } from "/static/types/generated"
+
 interface CourseImageFormProps {
   courses?: EditorCourseOtherCoursesFieldsFragment[]
 }
+
 export default function CourseImageForm({ courses }: CourseImageFormProps) {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)

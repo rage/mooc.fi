@@ -7,8 +7,9 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
 import ProfileSettings from "/components/Profile/ProfileSettings"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import notEmpty from "/util/notEmpty"
+
+import { UserOverviewFieldsFragment } from "/static/types/generated"
 
 interface TabPanelProps {
   index: any
@@ -33,7 +34,7 @@ const TabPanel = ({
 
 interface StudentDataDisplayProps {
   tab: number
-  data?: ProfileUserOverView_currentUser
+  data?: UserOverviewFieldsFragment
 }
 
 const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {

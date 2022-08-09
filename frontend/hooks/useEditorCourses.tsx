@@ -1,14 +1,9 @@
 import { useQuery } from "@apollo/client"
 
 import {
-  CourseEditorDetailsQuery,
-  CourseEditorOtherCoursesQuery,
-} from "/graphql/queries/course"
-import { EditorStudyModulesQuery } from "/graphql/queries/studyModule"
-import {
-  CourseEditorDetailsQueryResult,
-  CourseEditorOtherCoursesQueryResult,
-  EditorStudyModulesQueryResult,
+  CourseEditorDetailsDocument,
+  CourseEditorOtherCoursesDocument,
+  EditorStudyModulesDocument,
 } from "/static/types/generated"
 
 interface UseEditorCoursesProps {
@@ -20,22 +15,20 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useQuery<CourseEditorDetailsQueryResult>(CourseEditorDetailsQuery, {
+  } = useQuery(CourseEditorDetailsDocument, {
     variables: { slug },
   })
   const {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = useQuery<EditorStudyModulesQueryResult>(EditorStudyModulesQuery)
+  } = useQuery(EditorStudyModulesDocument)
 
   const {
     data: coursesData,
     loading: coursesLoading,
     error: coursesError,
-  } = useQuery<CourseEditorOtherCoursesQueryResult>(
-    CourseEditorOtherCoursesQuery,
-  )
+  } = useQuery(CourseEditorOtherCoursesDocument)
 
   return {
     loading: courseLoading || studyModulesLoading || coursesLoading,

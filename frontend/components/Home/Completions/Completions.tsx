@@ -3,9 +3,10 @@ import { Typography } from "@mui/material"
 
 import { RegularContainer as Container } from "/components/Container"
 import { CompletionListItem } from "/components/Home/Completions"
-import { CompletionDetailedFieldsWithCourseFragment } from "/static/types/generated"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+
+import { CompletionDetailedFieldsWithCourseFragment } from "/static/types/generated"
 
 export interface CompletionsProps {
   completions: CompletionDetailedFieldsWithCourseFragment[]

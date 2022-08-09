@@ -7,12 +7,13 @@ import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
+import formatPointsData from "/util/formatPointsData"
+
 import {
   CourseCoreFieldsFragment,
   UserCourseProgressCoreFieldsFragment,
   UserCourseServiceProgressCoreFieldsFragment,
 } from "/static/types/generated"
-import formatPointsData from "/util/formatPointsData"
 
 const Root = styled(Grid)`
   background-color: white;
@@ -37,6 +38,7 @@ interface PointsListItemCardProps {
   personalDetails?: PersonalDetails
   showProgress?: boolean
 }
+
 interface PersonalDetailsDisplayProps {
   personalDetails: PersonalDetails
 }
@@ -65,6 +67,7 @@ function PointsListItemCard(props: PointsListItemCardProps) {
   } = props
   const [showDetails, setShowDetails] = useState(false)
 
+  // TODO: do this in the backend
   const formattedPointsData = formatPointsData({
     userCourseProgress,
     userCourseServiceProgresses,

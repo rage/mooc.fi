@@ -1,7 +1,6 @@
 import { DateTime } from "luxon"
 
-import { ImageCoreFieldsFragment } from "/static/types/generated"
-import { CourseStatus } from "/static/types/generated/globalTypes"
+import { CourseStatus, ImageCoreFieldsFragment } from "/static/types/generated"
 
 interface FormValues {
   id?: string | null

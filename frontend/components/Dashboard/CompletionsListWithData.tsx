@@ -2,6 +2,7 @@ import { List } from "@mui/material"
 
 import CompletionCard from "./CompletionCard"
 import CompletionPaginator from "./CompletionPaginator"
+
 import { CompletionsQueryNodeFieldsFragment } from "/static/types/generated"
 
 interface CompletionsListWithDataProps {

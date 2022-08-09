@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client"
 
+import { CourseFieldsFragment } from "/graphql/fragments/course"
+
 export const StudyModuleCoreFieldsFragment = gql`
   fragment StudyModuleCoreFields on StudyModule {
     id
@@ -41,4 +43,15 @@ export const StudyModuleDetailedFieldsFragment = gql`
   }
   ${StudyModuleFieldsFragment}
   ${StudyModuleTranslationFieldsFragment}
+`
+
+export const StudyModuleFieldsWithCoursesFragment = gql`
+  fragment StudyModuleFieldsWithCourses on StudyModule {
+    ...StudyModuleFields
+    courses {
+      ...CourseFields
+    }
+  }
+  ${StudyModuleFieldsFragment}
+  ${CourseFieldsFragment}
 `

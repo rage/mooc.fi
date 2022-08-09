@@ -3,8 +3,6 @@ import { gql } from "@apollo/client"
 import {
   CourseCoreFieldsFragment,
   CourseFieldsFragment,
-  CourseTranslationCoreFieldsFragment,
-  CourseWithPhotoCoreFieldsFragment,
   EditorCourseDetailedFieldsFragment,
   EditorCourseFieldsFragment,
   EditorCourseOtherCoursesFieldsFragment,

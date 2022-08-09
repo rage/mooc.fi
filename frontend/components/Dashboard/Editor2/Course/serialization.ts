@@ -3,15 +3,14 @@ import { DateTime } from "luxon"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import {
-  EditorCourseDetailedFieldsFragment,
-  StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
+
 import {
   CourseCreateArg,
   CourseStatus,
   CourseUpsertArg,
-} from "/static/types/generated/globalTypes"
+  EditorCourseDetailedFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -106,13 +105,15 @@ export const toCourseForm = ({
     : initialValues
 }
 
+interface FromCourseFormProps {
+  values: CourseFormValues
+  initialValues: CourseFormValues
+}
+
 export const fromCourseForm = ({
   values,
   initialValues,
-}: {
-  values: CourseFormValues
-  initialValues: CourseFormValues
-}): CourseCreateArg | CourseUpsertArg => {
+}: FromCourseFormProps): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
   console.log(values)

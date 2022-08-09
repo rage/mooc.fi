@@ -1,11 +1,12 @@
 import { DateTime } from "luxon"
 
 import { FormValues } from "../types"
+
 import {
+  CourseStatus,
   ImageCoreFieldsFragment,
   OpenUniversityRegistrationLinkCoreFieldsFragment,
 } from "/static/types/generated"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 
 export interface CourseFormValues extends FormValues {
   id?: string | null

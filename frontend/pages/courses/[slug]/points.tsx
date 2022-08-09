@@ -9,26 +9,23 @@ import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { CourseFromSlugQuery } from "/graphql/queries/course"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import { CourseFromSlugDocument } from "/static/types/generated"
 
 const Points = () => {
   const t = useTranslator(CoursesTranslations)
 
   const slug = useQueryParameter("slug")
 
-  const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseFromSlugQuery,
-    {
-      variables: { slug: slug },
-    },
-  )
+  const { data, loading, error } = useQuery(CourseFromSlugDocument, {
+    variables: { slug },
+  })
 
   useBreadcrumbs([
     {

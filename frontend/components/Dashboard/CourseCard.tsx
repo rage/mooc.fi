@@ -18,8 +18,11 @@ import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { CourseEditorFieldsFragment } from "/types/gql/graphql"
+
+import {
+  CourseStatus,
+  EditorCourseFieldsFragment,
+} from "/static/types/generated"
 
 const CardBase = styled.div<{ ishidden?: number }>`
   position: relative;
@@ -159,7 +162,7 @@ const formatDate = (date?: string | null) =>
   date ? new Date(date).toLocaleDateString() : "-"
 
 interface CourseCardProps {
-  course?: CourseEditorFieldsFragment
+  course?: EditorCourseFieldsFragment
   loading?: boolean
   onClickStatus?: (value: CourseStatus | null) => (_: any) => void
 }

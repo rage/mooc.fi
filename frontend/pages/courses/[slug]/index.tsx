@@ -15,25 +15,22 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { RecheckCompletionsMutation } from "/graphql/mutations/completion"
-import {
-  UserCourseStatsSubscribeMutation,
-  UserCourseStatsUnsubscribeMutation,
-} from "/graphql/mutations/user"
-import {
-  PaginatedCompletionsPreviousPageQuery,
-  PaginatedCompletionsQuery,
-} from "/graphql/queries/completion"
-import { CourseDashboardQuery } from "/graphql/queries/course"
-import { CurrentUserStatsSubscriptionsQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourseStatsSubscriptions"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseDashboardDocument,
+  CurrentUserStatsSubscriptionsDocument,
+  PaginatedCompletionsDocument,
+  PaginatedCompletionsPreviousPageDocument,
+  RecheckCompletionsDocument,
+  UserCourseStatsSubscribeDocument,
+  UserCourseStatsUnsubscribeDocument,
+} from "/static/types/generated"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -54,19 +51,16 @@ const Course = () => {
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
   const [subscribing, setSubscribing] = useState(false)
-  const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseDashboardQuery,
-    {
-      variables: { slug },
-    },
-  )
+  const { data, loading, error } = useQuery(CourseDashboardDocument, {
+    variables: { slug },
+  })
   const client = useApolloClient()
 
   const {
     data: userData,
     loading: userLoading,
     error: userError,
-  } = useQuery<UserCourseStatsSubscriptions>(CurrentUserStatsSubscriptionsQuery)
+  } = useQuery(CurrentUserStatsSubscriptionsDocument)
 
   useBreadcrumbs([
     {
@@ -80,14 +74,14 @@ const Course = () => {
   ])
   const title = useSubtitle(data?.course?.name)
 
-  const [recheckCompletions] = useMutation(RecheckCompletionsMutation, {
+  const [recheckCompletions] = useMutation(RecheckCompletionsDocument, {
     variables: {
       slug,
     },
     refetchQueries: [
-      { query: PaginatedCompletionsQuery, variables: { course: slug } },
+      { query: PaginatedCompletionsDocument, variables: { course: slug } },
       {
-        query: PaginatedCompletionsPreviousPageQuery,
+        query: PaginatedCompletionsPreviousPageDocument,
         variables: { course: slug },
       }, // TODO: add more?
     ],
@@ -136,14 +130,14 @@ const Course = () => {
     try {
       await client.mutate({
         mutation: !isSubscribed
-          ? UserCourseStatsSubscribeMutation
-          : UserCourseStatsUnsubscribeMutation,
+          ? UserCourseStatsSubscribeDocument
+          : UserCourseStatsUnsubscribeDocument,
         variables: {
           id: !isSubscribed
-            ? data?.course?.course_stats_email?.id
-            : subscription!.id,
+            ? data?.course?.course_stats_email?.id!
+            : subscription!.id!,
         },
-        refetchQueries: [{ query: CurrentUserStatsSubscriptionsQuery }],
+        refetchQueries: [{ query: CurrentUserStatsSubscriptionsDocument }],
       })
     } catch {
       //

@@ -54,7 +54,7 @@ export const UserSummaryQuery = gql`
 `
 
 export const CurrentUserOverviewQuery = gql`
-  query CurrentUserUserOverview {
+  query CurrentUserOverview {
     currentUser {
       ...UserOverviewFields
     }
@@ -71,7 +71,7 @@ export const UserOverviewQuery = gql`
   ${UserOverviewFieldsFragment}
 `
 export const CurrentUserProgressesQuery = gql`
-  query UserProgresses {
+  query CurrentUserProgresses {
     currentUser {
       ...UserProgressesFields
     }

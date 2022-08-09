@@ -8,15 +8,16 @@ import { CircularProgress, Paper } from "@mui/material"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
-import { UpdateResearchConsentMutation } from "/graphql/mutations/user"
-import {
-  CurrentUserDetailedQuery,
-  CurrentUserOverviewQuery,
-} from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import SignupTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CurrentUserDetailedDocument,
+  CurrentUserOverviewDocument,
+  UpdateResearchConsentDocument,
+} from "/static/types/generated"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -47,7 +48,7 @@ function useResearchConsent() {
     },
   ])
 
-  const { data, loading } = useQuery(CurrentUserDetailedQuery)
+  const { data, loading } = useQuery(CurrentUserDetailedDocument)
 
   const [research, setResearch] = useState("")
   const [formError, setFormError] = useState("")
@@ -59,7 +60,7 @@ function useResearchConsent() {
     }
   }, [data])
 
-  const [updateConsent] = useMutation(UpdateResearchConsentMutation)
+  const [updateConsent] = useMutation(UpdateResearchConsentDocument)
 
   const handleInput = (e: any) => setResearch(e.target.value)
 
@@ -70,8 +71,8 @@ function useResearchConsent() {
       await updateConsent({
         variables: { value: research === "1" },
         refetchQueries: [
-          { query: CurrentUserDetailedQuery },
-          { query: CurrentUserOverviewQuery },
+          { query: CurrentUserDetailedDocument },
+          { query: CurrentUserOverviewDocument },
         ],
       })
       Router.push("/")

@@ -13,12 +13,13 @@ import {
   useCollapseContext,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
-import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
+import { UserCourseSummaryCoreFieldsFragment } from "/static/types/generated"
+
 interface UserPointsSummaryProps {
-  data?: UserSummary_user_user_course_summary[]
+  data?: UserCourseSummaryCoreFieldsFragment[]
   search?: string
 }
 

@@ -8,10 +8,10 @@ import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
-import { StudentProgressesQuery } from "/graphql/queries/userCourseSetting"
-import { StudentProgressesQueryResult } from "/static/types/generated"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
+
+import { StudentProgressesDocument } from "/static/types/generated"
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;
@@ -32,12 +32,14 @@ function PaginatedPointsList(props: Props) {
   const [search, setSearch] = useDebounce(searchString, 1000)
 
   // use lazy query to prevent running query on each render
-  const [getData, { data, loading, error, fetchMore }] =
-    useLazyQuery<StudentProgressesQueryResult>(StudentProgressesQuery, {
+  const [getData, { data, loading, error, fetchMore }] = useLazyQuery(
+    StudentProgressesDocument,
+    {
       // fetchPolicy: "cache-first",
       ssr: false,
       // notifyOnNetworkStatusChange :true
-    })
+    },
+  )
 
   useEffect(() => {
     getData({
@@ -59,8 +61,8 @@ function PaginatedPointsList(props: Props) {
   }))
 
   const users = (data?.userCourseSettings?.edges ?? [])
+    .map((e) => e?.node)
     .filter(notEmpty)
-    .map((e) => e.node)
 
   return (
     <ErrorBoundary>
@@ -112,7 +114,7 @@ function PaginatedPointsList(props: Props) {
           <div style={{ marginBottom: "1rem" }}>
             {data?.userCourseSettings?.totalCount || 0} results
           </div>
-          <PointsList users={users} cutterValue={cutterValue} />
+          <PointsList data={users} cutterValue={cutterValue} />
           <Button
             onClick={() => {
               fetchMore({

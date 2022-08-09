@@ -5,15 +5,14 @@ import { useQuery } from "@apollo/client"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
-import { studentHasPoints } from "/components/User/Points/PointsList"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
-import { UserProgressesQuery } from "/graphql/queries/user"
-import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
+import { CurrentUserProgressesDocument } from "/static/types/generated"
+
 const ProfilePointsDisplay = () => {
-  const { data, error, loading } = useQuery<UserPointsData>(UserProgressesQuery)
+  const { data, error, loading } = useQuery(CurrentUserProgressesDocument)
   const t = useTranslator(ProfileTranslations)
 
   if (loading) {
@@ -24,9 +23,7 @@ const ProfilePointsDisplay = () => {
     return <ErrorMessage />
   }
 
-  const hasPoints = studentHasPoints({ pointsData: data })
-
-  if (!hasPoints) {
+  if (!data?.currentUser?.progresses) {
     return <></>
   }
 

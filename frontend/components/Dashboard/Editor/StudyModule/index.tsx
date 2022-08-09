@@ -9,20 +9,19 @@ import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import {
-  AddStudyModuleMutation,
-  DeleteStudyModuleMutation,
-  UpdateStudyModuleMutation,
-} from "/graphql/mutations/studyModule"
-import {
-  EditorStudyModuleDetailsQuery,
-  EditorStudyModulesQuery,
-  StudyModuleExistsQuery,
-  StudyModulesQuery,
-} from "/graphql/queries/studyModule"
-import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  AddStudyModuleDocument,
+  DeleteStudyModuleDocument,
+  EditorStudyModuleDetailsDocument,
+  EditorStudyModulesDocument,
+  StudyModuleDetailedFieldsFragment,
+  StudyModuleExistsDocument,
+  StudyModulesDocument,
+  UpdateStudyModuleDocument,
+} from "/static/types/generated"
 
 const StudyModuleEdit = ({
   module,
@@ -31,15 +30,14 @@ const StudyModuleEdit = ({
 }) => {
   const t = useTranslator(ModulesTranslations)
 
-  const [addStudyModule] = useMutation(AddStudyModuleMutation)
-  const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)
-  const [deleteStudyModule] = useMutation(DeleteStudyModuleMutation, {
+  const [addStudyModule] = useMutation(AddStudyModuleDocument)
+  const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)
+  const [deleteStudyModule] = useMutation(DeleteStudyModuleDocument, {
     refetchQueries: [
-      { query: StudyModulesQuery },
-      { query: EditorStudyModulesQuery },
+      { query: StudyModulesDocument },
+      { query: EditorStudyModulesDocument },
     ],
   })
-  const checkSlug = StudyModuleExistsQuery
 
   const client = useApolloClient()
 
@@ -47,7 +45,6 @@ const StudyModuleEdit = ({
 
   const validationSchema = studyModuleEditSchema({
     client,
-    checkSlug,
     initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
     t,
   })
@@ -61,15 +58,17 @@ const StudyModuleEdit = ({
 
       const mutationVariables = fromStudyModuleForm({ values })
       const refetchQueries = [
-        { query: StudyModulesQuery },
-        { query: EditorStudyModulesQuery },
-        !newStudyModule
-          ? {
-              query: EditorStudyModuleDetailsQuery,
-              variables: { slug: values.new_slug },
-            }
-          : undefined,
-      ].filter((v) => !!v) as PureQueryOptions[]
+        { query: StudyModulesDocument },
+        { query: EditorStudyModulesDocument },
+        ...(!newStudyModule
+          ? [StudyModuleExistsDocument, EditorStudyModuleDetailsDocument].map(
+              (query) => ({
+                query,
+                variables: { slug: values.new_slug },
+              }),
+            )
+          : []),
+      ] as PureQueryOptions[]
 
       const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
 

@@ -11,14 +11,11 @@ import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Spinner from "/components/Spinner"
-import {
-  CurrentUserOverviewQuery,
-  UserOverviewQuery,
-} from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
-import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import { CurrentUserOverviewDocument } from "/static/types/generated"
 
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
@@ -68,9 +65,7 @@ function Profile() {
     }
   }, [_tab])
 
-  const { data, error, loading } = useQuery<UserOverViewData>(
-    CurrentUserOverviewQuery,
-  )
+  const { data, error, loading } = useQuery(CurrentUserOverviewDocument)
 
   useBreadcrumbs([
     {

@@ -1,12 +1,13 @@
 import { CenteredContent } from "/components/Home/ModuleDisplay/Common"
 import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
 import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
-import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
+
+import { CourseFieldsFragment } from "/static/types/generated"
 
 interface ModuleDisplayProps {
   name: string
   description: string | JSX.Element
-  orderedCourses?: CourseData[]
+  orderedCourses?: CourseFieldsFragment[]
 }
 const ModuleDisplayContent = (props: ModuleDisplayProps) => {
   const { name, description, orderedCourses = [] } = props

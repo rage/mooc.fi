@@ -2,17 +2,17 @@ import { useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import { gql, useLazyQuery } from "@apollo/client"
+import { useLazyQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
-import { UserDetailsContainsQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import { UserDetailsContainsDocument } from "/static/types/generated"
 
 const UserSearch = () => {
   const router = useRouter()
@@ -29,8 +29,8 @@ const UserSearch = () => {
   const [page, setPage] = useState(pageParam)
   const [rowsPerPage, setRowsPerPage] = useState(rowsParam)
 
-  const [loadData, { data, loading }] = useLazyQuery<UserDetailsContains>(
-    UserDetailsContainsQuery,
+  const [loadData, { data, loading }] = useLazyQuery(
+    UserDetailsContainsDocument,
     {
       ssr: false,
     },
@@ -81,7 +81,7 @@ const UserSearch = () => {
       <Container>
         <UserSearchContext.Provider
           value={{
-            data: data || ({} as UserDetailsContains),
+            data,
             loading,
             page,
             rowsPerPage,

@@ -3,9 +3,10 @@ import styled from "@emotion/styled"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
 import { H2Background } from "/components/Text/headers"
-import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
+
+import { StudyModuleFieldsFragment } from "/static/types/generated"
 
 const NaviArea = styled.section`
   margin-bottom: 5em;
@@ -48,13 +49,12 @@ const Grid = styled.div`
   }
 `
 
-const ModuleNavi = ({
-  modules,
-  loading,
-}: {
-  modules?: AllModules_study_modules[]
+interface ModuleNaviProps {
+  modules?: StudyModuleFieldsFragment[]
   loading: boolean
-}) => {
+}
+
+const ModuleNavi = ({ modules, loading }: ModuleNaviProps) => {
   const t = useTranslator(HomeTranslations)
 
   return (

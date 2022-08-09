@@ -3,10 +3,11 @@ import { range } from "lodash"
 import { Grid } from "@mui/material"
 
 import ModuleCard from "./ModuleCard"
-import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
+
+import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
 
 interface ModuleGridProps {
-  modules?: AllEditorModulesWithTranslations_study_modules[]
+  modules?: StudyModuleDetailedFieldsFragment[]
   loading: boolean
 }
 

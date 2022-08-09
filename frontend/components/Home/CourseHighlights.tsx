@@ -5,7 +5,8 @@ import CourseCard from "./CourseCard"
 import Container from "/components/Container"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
+
+import { CourseFieldsFragment } from "/static/types/generated"
 
 interface RootProps {
   backgroundColor: string
@@ -22,7 +23,7 @@ const Root = styled.div<RootProps>`
 `
 
 interface CourseHighlightsProps {
-  courses?: AllCourses_courses[]
+  courses?: CourseFieldsFragment[]
   loading: boolean
   title: string
   headerImage: any

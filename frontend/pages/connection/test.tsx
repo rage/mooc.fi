@@ -7,12 +7,13 @@ import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 import Spinner from "/components/Spinner"
-import { ConnectionTestQuery } from "/graphql/queries/user"
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
 
+import { ConnectionTestDocument } from "/static/types/generated"
+
 function ConnectionTest() {
-  const { data, error, loading } = useQuery(ConnectionTestQuery)
+  const { data, error, loading } = useQuery(ConnectionTestDocument)
   const connectionSuccess = useQueryParameter("success", false)
   const connectionError = useQueryParameter("error", false)
 

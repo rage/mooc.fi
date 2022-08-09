@@ -11,10 +11,11 @@ import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
-import { EditorCourseOtherCoursesFieldsFragment } from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+
+import { EditorCourseOtherCoursesFieldsFragment } from "/static/types/generated"
 
 interface ImageInputProps {
   courses: EditorCourseOtherCoursesFieldsFragment[] | undefined

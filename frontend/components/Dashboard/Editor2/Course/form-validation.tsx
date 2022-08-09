@@ -1,7 +1,7 @@
 import { DateTime } from "luxon"
 import * as Yup from "yup"
 
-import { ApolloClient, DocumentNode } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import {
   CourseAliasFormValues,
@@ -11,7 +11,8 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
-import { CourseStatus } from "/static/types/generated/globalTypes"
+
+import { CourseFromSlugDocument, CourseStatus } from "/static/types/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,
@@ -85,12 +86,10 @@ export const study_modules: { value: any; label: any }[] = []
 
 const courseEditSchema = ({
   client,
-  checkSlug,
   initialSlug,
   t,
 }: {
   client: ApolloClient<object>
-  checkSlug: DocumentNode
   initialSlug: string | null
   t: (key: any) => string
 }) => {
@@ -103,7 +102,7 @@ const courseEditSchema = ({
       .test(
         "unique",
         t("validationSlugInUse"),
-        validateSlug({ client, checkSlug, initialSlug }),
+        validateSlug({ client, initialSlug }),
       ),
     status: Yup.mixed()
       .oneOf(Object.keys(CourseStatus))
@@ -209,11 +208,9 @@ const courseEditSchema = ({
 }
 
 const validateSlug = ({
-  checkSlug,
   client,
   initialSlug,
 }: {
-  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
@@ -231,7 +228,7 @@ const validateSlug = ({
 
     try {
       const { data } = await client.query({
-        query: checkSlug,
+        query: CourseFromSlugDocument,
         variables: { slug: value },
       })
 

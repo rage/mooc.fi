@@ -3,8 +3,11 @@ import { range } from "lodash"
 import styled from "@emotion/styled"
 
 import CourseCard from "./CourseCard"
-import { EditorCourseFieldsFragment } from "/static/types/generated"
-import { CourseStatus } from "/static/types/generated/globalTypes"
+
+import {
+  CourseStatus,
+  EditorCourseFieldsFragment,
+} from "/static/types/generated"
 
 interface CourseGridProps {
   courses?: EditorCourseFieldsFragment[]

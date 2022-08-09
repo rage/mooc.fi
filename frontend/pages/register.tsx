@@ -21,26 +21,20 @@ import {
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
-import {
-  AddUserOrganizationMutation,
-  DeleteUserOrganizationMutation,
-} from "/graphql/mutations/userOrganization"
-import { OrganizationsQuery } from "/graphql/queries/organization"
-import { UserOrganizationsQuery } from "/graphql/queries/userOrganization"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
-import {
-  Organizations,
-  Organizations_organizations,
-} from "/static/types/generated/Organizations"
-import {
-  UserOrganizations,
-  UserOrganizations_userOrganizations,
-} from "/static/types/generated/UserOrganizations"
 import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  AddUserOrganizationDocument,
+  DeleteUserOrganizationDocument,
+  Organization,
+  OrganizationsDocument,
+  UserOrganizationsDocument,
+} from "/static/types/generated"
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;
@@ -122,38 +116,38 @@ function useRegisterOrganization(searchFilter: string) {
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
-    Record<string, Organizations_organizations>
+    Record<string, Organization>
   >({})
   const [filteredOrganizations, setFilteredOrganizations] = useState<
-    Record<string, Organizations_organizations>
+    Record<string, Organization>
   >({})
 
   const {
     data: organizationsData,
     error: organizationsError,
     loading: organizationsLoading,
-  } = useQuery<Organizations>(OrganizationsQuery)
+  } = useQuery(OrganizationsDocument)
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
     // loading: userOrganizationsLoading,
-  } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
+  } = useQuery(UserOrganizationsDocument, {
     variables: { user_id: currentUser!.id },
   })
-  const [addUserOrganization] = useMutation(AddUserOrganizationMutation, {
+  const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
+        query: UserOrganizationsDocument,
         variables: { user_id: currentUser!.id },
       },
     ],
   })
 
   // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
-  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
+  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
+        query: UserOrganizationsDocument,
         variables: { user_id: currentUser!.id },
       },
     ],
@@ -236,10 +230,7 @@ function useRegisterOrganization(searchFilter: string) {
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.userOrganizations
         ?.filter(notEmpty)
-        .find(
-          (uo: UserOrganizations_userOrganizations) =>
-            uo?.organization?.id === id,
-        )
+        .find((uo) => uo?.organization?.id === id)
 
       if (existing) {
         await deleteUserOrganization({
@@ -323,11 +314,7 @@ const Register = () => {
           {loading || !Object.keys(organizations).length ? (
             range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
           ) : Object.keys(filteredOrganizations).length ? (
-            (
-              Object.entries(filteredOrganizations) as Array<
-                [string, Organizations_organizations]
-              >
-            ).map(([id, organization]) => (
+            Object.entries(filteredOrganizations).map(([id, organization]) => (
               <OrganizationCard
                 key={`card-${id}`}
                 name={organization!.organization_translations![0].name}

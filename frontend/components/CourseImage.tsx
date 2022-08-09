@@ -3,8 +3,9 @@ import { memo } from "react"
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
 
-import { ImageCoreFieldsFragment } from "/static/types/generated"
 import { addDomain } from "/util/imageUtils"
+
+import { ImageCoreFieldsFragment } from "/static/types/generated"
 
 const ComponentStyle = `
   width: 100%;

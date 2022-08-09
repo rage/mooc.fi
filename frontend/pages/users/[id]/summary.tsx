@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { Paper } from "@mui/material"
 
 import Container from "/components/Container"
@@ -12,23 +12,23 @@ import CollapseContext, {
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
-import { UserSummaryQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserSummaryQuery as UserSummary } from "/static/types/generated"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import { CourseStatus, UserSummaryDocument } from "/static/types/generated"
 
 interface SearchVariables {
   search?: string
   hidden?: boolean | null
   handledBy?: string | null
-  status?: string[] | null
+  status?: CourseStatus[] | null
 }
 
 function UserSummaryView() {
   const id = useQueryParameter("id")
-  const { loading, error, data } = useQuery<UserSummary>(UserSummaryQuery, {
+  const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: { upstream_id: Number(id) },
   })
 

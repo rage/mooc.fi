@@ -1,6 +1,6 @@
 import { createContext } from "react"
 
-import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
+import { UserDetailsContainsQuery } from "/static/types/generated"
 
 export interface SearchVariables {
   search: string
@@ -13,7 +13,7 @@ export interface SearchVariables {
 }
 
 interface UserSearchContext {
-  data: UserDetailsContains
+  data?: UserDetailsContainsQuery
   loading: boolean
   page: number
   rowsPerPage: number
@@ -24,7 +24,7 @@ interface UserSearchContext {
 }
 
 export default createContext<UserSearchContext>({
-  data: {} as UserDetailsContains,
+  data: {} as UserDetailsContainsQuery,
   loading: false,
   page: 0,
   rowsPerPage: 10,

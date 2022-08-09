@@ -5,11 +5,15 @@ import { orderBy } from "lodash"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
 import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import notEmpty from "/util/notEmpty"
+
+import {
+  CourseStatus,
+  StudyModuleFieldsWithCoursesFragment,
+} from "/static/types/generated"
 
 interface ModuleProps {
-  module?: AllModules_study_modules_with_courses
+  module?: StudyModuleFieldsWithCoursesFragment
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
@@ -17,10 +21,11 @@ interface ModuleProps {
 
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
+
   const orderedCourses = useMemo(
     () =>
       orderBy(
-        module?.courses || [],
+        (module?.courses || []).filter(notEmpty),
         [
           (course) => course.study_module_order,
           (course) => course.study_module_start_point === true,
@@ -31,6 +36,10 @@ function Module(props: ModuleProps) {
       ),
     [module?.courses],
   )
+
+  if (!module) {
+    return null
+  }
 
   return (
     <section

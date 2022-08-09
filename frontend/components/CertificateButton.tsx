@@ -1,6 +1,6 @@
 import { useContext, useEffect, useReducer, useState } from "react"
 
-import { gql, useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 import styled from "@emotion/styled"
 import {
   CircularProgress,
@@ -15,17 +15,19 @@ import DialogTitle from "@mui/material/DialogTitle"
 
 import AlertContext from "/contexts/AlertContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { UpdateUserNameMutation } from "/graphql/mutations/user"
-import {
-  CurrentUserDetailedQuery,
-  CurrentUserOverviewQuery,
-  CurrentUserQuery,
-} from "/graphql/queries/user"
 import { updateAccount } from "/lib/account"
 import { checkCertificate, createCertificate } from "/lib/certificates"
-import { CourseCoreFieldsFragment } from "/static/types/generated"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseCoreFieldsFragment,
+  CurrentUserDetailedDocument,
+  CurrentUserDocument,
+  CurrentUserOverviewDocument,
+  UpdateUserNameDocument,
+  UserOverviewFieldsFragment,
+} from "/static/types/generated"
 
 const StyledButton = styled(Button)`
   margin: auto;
@@ -138,11 +140,11 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
-  const [updateUserName] = useMutation(UpdateUserNameMutation, {
+  const [updateUserName] = useMutation(UpdateUserNameDocument, {
     refetchQueries: [
-      { query: CurrentUserQuery },
-      { query: CurrentUserDetailedQuery },
-      { query: CurrentUserOverviewQuery },
+      { query: CurrentUserDocument },
+      { query: CurrentUserDetailedDocument },
+      { query: CurrentUserOverviewDocument },
     ],
   })
 
@@ -196,7 +198,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
           ...(currentUser || { email: "", id: "" }),
           first_name: firstName,
           last_name: lastName,
-        })
+        } as UserOverviewFieldsFragment)
         dispatch({ type: "UPDATED_NAME", payload: res })
       }
 

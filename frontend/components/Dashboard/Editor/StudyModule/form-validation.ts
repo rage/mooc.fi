@@ -1,11 +1,13 @@
 import * as Yup from "yup"
 
-import { ApolloClient, DocumentNode } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
+
+import { StudyModuleExistsDocument } from "/static/types/generated"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,
@@ -40,12 +42,10 @@ export const languages = (t: Function) => [
 
 const studyModuleEditSchema = ({
   client,
-  checkSlug,
   initialSlug,
   t,
 }: {
   client: ApolloClient<object>
-  checkSlug: DocumentNode
   initialSlug: string | null
   t: (key: any) => string
 }) =>
@@ -57,7 +57,7 @@ const studyModuleEditSchema = ({
       .test(
         "unique",
         t("validationSlugInUse"),
-        validateSlug({ client, checkSlug, initialSlug }),
+        validateSlug({ client, initialSlug }),
       ),
     name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
@@ -112,11 +112,9 @@ const studyModuleEditSchema = ({
   })
 
 const validateSlug = ({
-  checkSlug,
   client,
   initialSlug,
 }: {
-  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
@@ -134,7 +132,7 @@ const validateSlug = ({
 
     try {
       const { data } = await client.query({
-        query: checkSlug,
+        query: StudyModuleExistsDocument,
         variables: { slug: value },
       })
 

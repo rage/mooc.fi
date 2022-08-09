@@ -15,13 +15,14 @@ import {
 
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import {
-  CourseWithPhotoCoreFieldsFragment,
-  ImageCoreFieldsFragment,
-} from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  EditorCourseOtherCoursesFieldsFragment,
+  ImageCoreFieldsFragment,
+} from "/static/types/generated"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -43,7 +44,7 @@ const ImagePlaceholder = styled.div`
 interface ImportPhotoDialogProps {
   open: boolean
   onClose: () => void
-  courses: CourseWithPhotoCoreFieldsFragment[]
+  courses: EditorCourseOtherCoursesFieldsFragment[]
 }
 
 const ImportPhotoDialog = ({

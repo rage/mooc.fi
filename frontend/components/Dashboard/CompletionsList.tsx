@@ -6,16 +6,13 @@ import { CircularProgress } from "@mui/material"
 import CompletionsListWithData from "./CompletionsListWithData"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
-import {
-  PaginatedCompletionsPreviousPageQuery,
-  PaginatedCompletionsQuery,
-} from "/graphql/queries/completion"
-import {
-  PaginatedCompletionsPreviousPageQueryResult,
-  PaginatedCompletionsQueryResult,
-} from "/static/types/generated"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import {
+  PaginatedCompletionsDocument,
+  PaginatedCompletionsPreviousPageDocument,
+} from "/static/types/generated"
 
 interface CompletionsListProps {
   search?: string
@@ -40,19 +37,12 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
   })
 
   const query = queryDetails.back
-    ? PaginatedCompletionsPreviousPageQuery
-    : PaginatedCompletionsQuery
+    ? PaginatedCompletionsPreviousPageDocument
+    : PaginatedCompletionsDocument
 
   const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
 
-  interface Variables {
-    cursor?: string | null
-    course: string | string[]
-    completionLanguage?: string
-    search?: string
-  }
-
-  const variables: Variables = {
+  const variables = {
     cursor,
     course,
     completionLanguage:
@@ -60,10 +50,7 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
     search: search !== "" ? search : undefined,
   }
 
-  const { data, loading, error } = useQuery<
-    | PaginatedCompletionsQueryResult
-    | PaginatedCompletionsPreviousPageQueryResult
-  >(query, {
+  const { data, loading, error } = useQuery(query, {
     variables,
     fetchPolicy: "network-only",
   })

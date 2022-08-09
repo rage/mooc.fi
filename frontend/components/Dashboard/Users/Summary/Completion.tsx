@@ -18,12 +18,13 @@ import {
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import { CompletionListItem } from "/components/Home/Completions"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
 import {
   CompletionDetailedFieldsFragment,
   UserCourseSummaryCourseFieldsFragment,
 } from "/static/types/generated"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 interface CompletionProps {
   completion?: CompletionDetailedFieldsFragment

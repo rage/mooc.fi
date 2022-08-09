@@ -12,27 +12,25 @@ import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
-import {
-  AddCourseMutation,
-  DeleteCourseMutation,
-  UpdateCourseMutation,
-} from "/graphql/mutations/course"
-import {
-  CourseEditorOtherCoursesQuery,
-  CourseFromSlugQuery,
-  CoursesQuery,
-  EditorCoursesQuery,
-} from "/graphql/queries/course"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import {
-  EditorCourseDetailedFieldsFragment,
-  EditorCourseOtherCoursesFieldsFragment,
-  StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  AddCourseDocument,
+  CourseEditorOtherCoursesDocument,
+  CourseFromSlugDocument,
+  CoursesDocument,
+  CourseUpsertArg,
+  DeleteCourseDocument,
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  EditorCoursesDocument,
+  StudyModuleDetailedFieldsFragment,
+  UpdateCourseDocument,
+} from "/static/types/generated"
 
 interface CourseEditProps {
   course?: EditorCourseDetailedFieldsFragment
@@ -53,7 +51,6 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   })
   const validationSchema = courseEditSchema({
     client,
-    checkSlug: CourseFromSlugQuery,
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
     t,
   })
@@ -70,13 +67,13 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     trigger()
   }, [])
 
-  const [addCourse] = useMutation(AddCourseMutation)
-  const [updateCourse] = useMutation(UpdateCourseMutation)
-  const [deleteCourse] = useMutation(DeleteCourseMutation, {
+  const [addCourse] = useMutation(AddCourseDocument)
+  const [updateCourse] = useMutation(UpdateCourseDocument)
+  const [deleteCourse] = useMutation(DeleteCourseDocument, {
     refetchQueries: [
-      { query: CoursesQuery },
-      { query: EditorCoursesQuery },
-      { query: CourseEditorOtherCoursesQuery },
+      { query: CoursesDocument },
+      { query: EditorCoursesDocument },
+      { query: CourseEditorOtherCoursesDocument },
     ],
   })
 
@@ -89,25 +86,33 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
     const refetchQueries = [
-      { query: CoursesQuery },
-      { query: EditorCoursesQuery },
-      { query: CourseEditorOtherCoursesQuery },
+      { query: CoursesDocument },
+      { query: EditorCoursesDocument },
+      { query: CourseEditorOtherCoursesDocument },
       !newCourse
-        ? { query: CourseFromSlugQuery, variables: { slug: values.new_slug } }
+        ? {
+            query: CourseFromSlugDocument,
+            variables: { slug: values.new_slug },
+          }
         : undefined,
     ].filter(notEmpty) as PureQueryOptions[]
-
-    const courseMutation = newCourse ? addCourse : updateCourse
 
     console.log("would mutate", mutationVariables)
     try {
       setStatus({ message: t("statusSaving") })
 
       console.log("trying to save")
-      await courseMutation({
-        variables: { course: mutationVariables },
-        refetchQueries: () => refetchQueries,
-      })
+      if (newCourse) {
+        await addCourse({
+          variables: { course: mutationVariables },
+          refetchQueries: () => refetchQueries,
+        })
+      } else {
+        await updateCourse({
+          variables: { course: mutationVariables as CourseUpsertArg },
+          refetchQueries: () => refetchQueries,
+        })
+      }
       setStatus({ message: null })
     } catch (err: any) {
       setStatus({ message: err.message, error: true })

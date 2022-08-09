@@ -16,16 +16,25 @@ import Alert from "@mui/material/Alert"
 import AlertTitle from "@mui/material/AlertTitle"
 import Typography from "@mui/material/Typography"
 
-import { AddManualCompletionMutation } from "/graphql/mutations/completion"
-import { CourseFromSlugQuery } from "/graphql/queries/course"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
 
+import {
+  AddManualCompletionDocument,
+  CourseFromSlugDocument,
+} from "/static/types/generated"
+
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
+
+interface CompletionData {
+  user_id: string
+  grade?: string
+  completion_date?: string
+}
 
 const ManualCompletions = () => {
   const confirm = useConfirm()
@@ -39,7 +48,7 @@ const ManualCompletions = () => {
   >("info")
   const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
   const [addCompletions, { loading: mutationLoading, error: mutationError }] =
-    useMutation(AddManualCompletionMutation, {
+    useMutation(AddManualCompletionDocument, {
       onCompleted: () => {
         setInput("")
         setMessage("Completions added")
@@ -52,7 +61,7 @@ const ManualCompletions = () => {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useQuery(CourseFromSlugQuery, {
+  } = useQuery(CourseFromSlugDocument, {
     variables: { slug },
   })
 
@@ -76,7 +85,7 @@ const ManualCompletions = () => {
     setSubmitting(true)
     setMessage(null)
     setMessageSeverity("info")
-    const parsed = Papa.parse(input, { header: true })
+    const parsed = Papa.parse<CompletionData>(input, { header: true })
     if (parsed.errors.length > 0) {
       setMessage(JSON.stringify(parsed.errors, undefined, 2))
       setMessageSeverity("error")
@@ -85,11 +94,7 @@ const ManualCompletions = () => {
       return
     }
 
-    const data: {
-      user_id: string
-      grade?: string
-      completion_date?: string
-    }[] = parsed.data.map((d: any) => ({
+    const data: CompletionData[] = parsed.data.map((d) => ({
       ...d,
       completion_date:
         d.completion_date === "" || !d.completion_date
@@ -143,7 +148,7 @@ const ManualCompletions = () => {
         if (key.trim() === "") return acc
 
         return { ...acc, [key]: value }
-      }, {}),
+      }, {} as CompletionData),
     )
 
     const okDates = !checkedDates.some((c) => Boolean(c.error))
@@ -173,7 +178,7 @@ const ManualCompletions = () => {
         .then(() =>
           addCompletions({
             variables: {
-              course_id: courseData.course.id,
+              course_id: courseData!.course!.id,
               completions: filteredData,
             },
           }),
@@ -183,7 +188,7 @@ const ManualCompletions = () => {
     } else {
       addCompletions({
         variables: {
-          course_id: courseData.course.id,
+          course_id: courseData!.course!.id,
           completions: filteredData,
         },
       })

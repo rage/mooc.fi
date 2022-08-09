@@ -4,13 +4,13 @@ import { WideContainer } from "/components/Container"
 import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
-import { EditorStudyModulesQuery } from "/graphql/queries/studyModule"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
 import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
+
+import { EditorStudyModulesDocument } from "/static/types/generated"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)
@@ -22,9 +22,7 @@ function StudyModules() {
     },
   ])
 
-  const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
-    EditorStudyModulesQuery,
-  )
+  const { loading, error, data } = useQuery(EditorStudyModulesDocument)
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />

@@ -5,17 +5,20 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
+
 import {
   StudyModuleCreateArg,
+  StudyModuleDetailedFieldsFragment,
   StudyModuleUpsertArg,
-} from "/static/types/generated/globalTypes"
+} from "/static/types/generated"
+
+interface ToStudyModuleFormProps {
+  module?: StudyModuleDetailedFieldsFragment
+}
 
 export const toStudyModuleForm = ({
   module,
-}: {
-  module?: StudyModuleDetailedFieldsFragment
-}): StudyModuleFormValues =>
+}: ToStudyModuleFormProps): StudyModuleFormValues =>
   module
     ? {
         ...module,

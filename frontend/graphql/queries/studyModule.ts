@@ -23,7 +23,6 @@ export const EditorStudyModulesQuery = gql`
     }
   }
   ${StudyModuleDetailedFieldsFragment}
-  ${StudyModuleTranslationFieldsFragment}
 `
 
 export const EditorStudyModuleDetailsQuery = gql`

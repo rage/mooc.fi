@@ -1,12 +1,12 @@
-import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client"
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client"
 
-import { CurrentUserQuery } from "/graphql/queries/user"
+import { CurrentUserDocument } from "/static/types/generated"
 
 export default async function fetchUserDetails(
   apollo: ApolloClient<NormalizedCacheObject>,
 ) {
   const { data } = await apollo.query({
-    query: CurrentUserQuery,
+    query: CurrentUserDocument,
     fetchPolicy: "cache-first",
   })
   return data.currentUser

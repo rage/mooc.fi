@@ -1,18 +1,18 @@
 import { useState } from "react"
 
-import { gql, useApolloClient, useQuery } from "@apollo/client"
+import { useApolloClient, useQuery } from "@apollo/client"
 import { CircularProgress, Grid } from "@mui/material"
 import Button from "@mui/material/Button"
 
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import { UserProfileUserCourseSettingsQuery } from "/graphql/queries/userCourseSetting"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
 import CommonTranslations from "/translations/common"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import { UserProfileUserCourseSettingsDocument } from "/static/types/generated"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
@@ -21,8 +21,8 @@ const UserPage = () => {
 
   const [more, setMore]: any[] = useState([])
 
-  const { loading, error, data } = useQuery<UserCourseSettingsForUserPage>(
-    UserProfileUserCourseSettingsQuery,
+  const { loading, error, data } = useQuery(
+    UserProfileUserCourseSettingsDocument,
     { variables: { upstream_id: Number(id) } },
   )
 
@@ -69,11 +69,11 @@ const UserPage = () => {
           variant="contained"
           onClick={async () => {
             const { data } = await client.query({
-              query: UserProfileUserCourseSettingsQuery,
+              query: UserProfileUserCourseSettingsDocument,
               variables: { upstream_id: Number(id) },
             })
             let newData = more
-            newData.push(...data.userCourseSettings.edges)
+            newData.push(...(data?.userCourseSettings?.edges ?? []))
             setMore(newData)
           }}
           disabled={false}

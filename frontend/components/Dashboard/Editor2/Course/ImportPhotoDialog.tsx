@@ -13,13 +13,14 @@ import {
 } from "@mui/material"
 
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
+import CoursesTranslations from "/translations/courses"
+import { addDomain } from "/util/imageUtils"
+import { useTranslator } from "/util/useTranslator"
+
 import {
   EditorCourseOtherCoursesFieldsFragment,
   ImageCoreFieldsFragment,
 } from "/static/types/generated"
-import CoursesTranslations from "/translations/courses"
-import { addDomain } from "/util/imageUtils"
-import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -85,9 +86,9 @@ export default function ImportPhotoDialog({
   const photo = watch("import_photo")
 
   const handleSelection = () => {
-    const photo = (
-      courses?.find((course) => course.id === getValues("import_photo")) ?? {}
-    ).photo
+    const photo = courses?.find(
+      (course) => course.id === getValues("import_photo"),
+    )?.photo
 
     if (!photo) {
       return

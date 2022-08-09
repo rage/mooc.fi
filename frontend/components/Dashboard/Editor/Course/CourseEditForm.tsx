@@ -46,14 +46,14 @@ import {
 } from "/components/Dashboard/Editor/common"
 import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import {
-  EditorCourseFieldsFragment,
-  EditorCourseOtherCoursesFieldsFragment,
-  StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 
 interface CoverProps {
   covered: boolean
@@ -514,7 +514,7 @@ const renderForm =
 interface CourseEditFormProps {
   course: CourseFormValues
   studyModules?: StudyModuleDetailedFieldsFragment[]
-  courses?: EditorCourseFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
   validationSchema: Yup.ObjectSchema<any>
   onSubmit: (
     values: CourseFormValues,

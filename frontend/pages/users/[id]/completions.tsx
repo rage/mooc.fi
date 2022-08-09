@@ -1,23 +1,21 @@
-import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
-import { UserOverviewQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import { UserOverviewDocument } from "/static/types/generated"
 
 function CompletionsPage() {
   const id = useQueryParameter("id")
 
-  const { loading, error, data } = useQuery<UserOverViewData>(
-    UserOverviewQuery,
-    { variables: { upstream_id: Number(id) } },
-  )
+  const { loading, error, data } = useQuery(UserOverviewDocument, {
+    variables: { upstream_id: Number(id) },
+  })
 
   useBreadcrumbs([
     {

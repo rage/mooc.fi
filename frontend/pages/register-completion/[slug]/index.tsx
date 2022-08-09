@@ -14,19 +14,19 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { CreateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
-import { CourseFromSlugQuery } from "/graphql/queries/course"
-import { CurrentUserOverviewQuery } from "/graphql/queries/user"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import { getAccessToken } from "/lib/authentication"
 import withSignedIn from "/lib/with-signed-in"
-import { CheckSlug } from "/static/types/generated/CheckSlug"
-import { CreateRegistrationAttemptDate } from "/static/types/generated/CreateRegistrationAttemptDate"
-import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseFromSlugDocument,
+  CreateRegistrationAttemptDateDocument,
+  CurrentUserOverviewDocument,
+} from "/static/types/generated"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -75,7 +75,7 @@ function RegisterCompletionPage() {
     loading: courseLoading,
     error: courseError,
     data: courseData,
-  } = useQuery<CheckSlug>(CourseFromSlugQuery, {
+  } = useQuery(CourseFromSlugDocument, {
     variables: {
       slug: courseSlug,
     },
@@ -84,11 +84,10 @@ function RegisterCompletionPage() {
     loading: userLoading,
     error: userError,
     data: userData,
-  } = useQuery<UserOverViewData>(CurrentUserOverviewQuery)
-  const [createRegistrationAttemptDate] =
-    useMutation<CreateRegistrationAttemptDate>(
-      CreateRegistrationAttemptDateMutation,
-    )
+  } = useQuery(CurrentUserOverviewDocument)
+  const [createRegistrationAttemptDate] = useMutation(
+    CreateRegistrationAttemptDateDocument,
+  )
   const { locale } = useRouter()
 
   const course_exists = Boolean(courseData?.course?.id)

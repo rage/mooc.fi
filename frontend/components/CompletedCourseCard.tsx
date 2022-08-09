@@ -10,6 +10,11 @@ import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
+import {
+  CompletionDetailedFieldsFragment,
+  CourseWithPhotoCoreFieldsFragment,
+} from "/static/types/generated"
+
 const Background = styled(ClickableDiv)`
   display: flex;
   flex-direction: column;
@@ -37,7 +42,9 @@ const RegistrationDetails = styled.div`
 `
 
 interface CourseCardProps {
-  completion: CurrentUser
+  completion: CompletionDetailedFieldsFragment & {
+    course: CourseWithPhotoCoreFieldsFragment
+  }
 }
 
 function formatDateTime(date: string) {

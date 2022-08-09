@@ -3,18 +3,18 @@ import React from "react"
 import { Chip, Collapse, TableCell, TableRow } from "@mui/material"
 
 import { useCollapseContext } from "./CollapseContext"
-import {
-  UserSummary_user_user_course_summary_course_exercises,
-  UserSummary_user_user_course_summary_exercise_completions,
-  UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
-} from "/static/types/generated/UserSummary"
 import ProfileTranslations from "/translations/profile"
 // import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 
+import {
+  ExerciseCompletionCoreFieldsFragment,
+  ExerciseCoreFieldsFragment,
+} from "/static/types/generated"
+
 interface ExerciseEntryProps {
-  exercise: UserSummary_user_user_course_summary_course_exercises & {
-    exercise_completions: UserSummary_user_user_course_summary_exercise_completions[]
+  exercise: ExerciseCoreFieldsFragment & {
+    exercise_completions: ExerciseCompletionCoreFieldsFragment[]
   }
 }
 
@@ -47,9 +47,7 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
         </TableCell>
         <TableCell>
           {exerciseCompletion?.exercise_completion_required_actions.map(
-            (
-              action: UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
-            ) => (
+            (action) => (
               // @ts-ignore: translator key
               <Chip key={action.id} label={t(action.value) ?? action.value} />
             ),

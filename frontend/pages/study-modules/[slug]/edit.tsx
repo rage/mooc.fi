@@ -15,14 +15,14 @@ import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
-import { EditorStudyModuleDetailsQuery } from "/graphql/queries/studyModule"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import { EditorStudyModuleDetailsDocument } from "/static/types/generated"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -35,12 +35,9 @@ const EditStudyModule = () => {
   const slug = useQueryParameter("slug")
   const beta = useQueryParameter("beta", false)
 
-  const { data, loading, error } = useQuery<StudyModuleDetails>(
-    EditorStudyModuleDetailsQuery,
-    {
-      variables: { slug },
-    },
-  )
+  const { data, loading, error } = useQuery(EditorStudyModuleDetailsDocument, {
+    variables: { slug },
+  })
 
   useBreadcrumbs([
     {

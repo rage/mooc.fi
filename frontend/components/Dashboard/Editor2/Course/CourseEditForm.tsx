@@ -29,16 +29,17 @@ import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Cour
 import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
 import DisableAutoComplete from "/components/DisableAutoComplete"
-import {
-  EditorCourseDetailedFieldsFragment,
-  EditorCourseOtherCoursesFieldsFragment,
-  StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseStatus,
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/static/types/generated"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}

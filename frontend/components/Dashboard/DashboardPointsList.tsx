@@ -1,8 +1,9 @@
 import { Grid } from "@mui/material"
 
 import PointsListItemCard from "./PointsListItemCard"
-import { StudentProgressesQueryNodeFieldsFragment } from "/static/types/generated"
 import notEmpty from "/util/notEmpty"
+
+import { StudentProgressesQueryNodeFieldsFragment } from "/static/types/generated"
 
 interface PointsListProps {
   data: StudentProgressesQueryNodeFieldsFragment[]

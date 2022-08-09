@@ -2,11 +2,15 @@ import { useState } from "react"
 
 import { utils, type WorkBook, writeFile } from "xlsx"
 
-import { ApolloClient, gql, useApolloClient } from "@apollo/client"
+import { ApolloClient, useApolloClient } from "@apollo/client"
 import styled from "@emotion/styled"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { ExportUserCourseProgressesQuery } from "/graphql/queries/userCourseProgress"
+
+import {
+  ExportUserCourseProgressesDocument,
+  ExportUserCourseProgressesQuery,
+} from "/static/types/generated"
 
 const PointsExportButtonContainer = styled.div`
   margin-bottom: 1rem;
@@ -56,8 +60,14 @@ function PointsExportButton(props: PointsExportButtonProps) {
   )
 }
 
-async function flatten(data: ExportUserCourseProgesses_userCourseProgresses[]) {
+async function flatten(
+  data: ExportUserCourseProgressesQuery["userCourseProgresses"],
+) {
   console.log("data in flatten", data)
+
+  if (!data) {
+    return []
+  }
 
   const newData = data.map((datum) => {
     const {
@@ -99,14 +109,14 @@ async function downloadInChunks(
   courseSlug: string,
   client: ApolloClient<object>,
   setMessage: any,
-): Promise<ExportUserCourseProgesses_userCourseProgresses[]> {
-  const res = []
+): Promise<ExportUserCourseProgressesQuery["userCourseProgresses"]> {
+  const res: ExportUserCourseProgressesQuery["userCourseProgresses"] = []
   // let after: string | undefined = undefined
   let skip = 0
 
   while (1 === 1) {
-    const { data } = await client.query<ExportUserCourseProgesses>({
-      query: ExportUserCourseProgressesQuery,
+    const { data } = await client.query({
+      query: ExportUserCourseProgressesDocument,
       variables: {
         course_slug: courseSlug,
         skip,
@@ -115,7 +125,7 @@ async function downloadInChunks(
         first: 100*/
       },
     })
-    let downloaded: any = data?.userCourseProgresses ?? []
+    let downloaded = data?.userCourseProgresses ?? []
     if (downloaded.length === 0) {
       break
     }
@@ -127,7 +137,7 @@ async function downloadInChunks(
     const nDownLoaded = res.push(...downloaded)
     setMessage(`Downloaded progress for ${nDownLoaded} users...`)
   }
-  return res as unknown as ExportUserCourseProgesses_userCourseProgresses[]
+  return res
 }
 
 export default PointsExportButton
