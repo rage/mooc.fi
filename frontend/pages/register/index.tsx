@@ -6,7 +6,7 @@ import LoginStateContext from "/contexts/LoginStateContext"
 import {
   addUserOrganizationMutation,
   deleteUserOrganizationMutation,
-} from "/graphql/mutations/userOrganization"
+} from "/graphql/mutations/organizations"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import {
@@ -14,9 +14,9 @@ import {
   Organizations_organizations,
 } from "/static/types/generated/Organizations"
 import {
-  UserOrganizations,
-  UserOrganizations_userOrganizations,
-} from "/static/types/generated/UserOrganizations"
+  CurrentUserOrganizations,
+  CurrentUserOrganizations_currentUser_user_organizations,
+} from "/static/types/generated/CurrentUserOrganizations"
 import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
@@ -40,7 +40,7 @@ import {
 } from "@mui/material"
 import {
   OrganizationsQuery,
-  UserOrganizationsQuery,
+  CurrentUserOrganizationsQuery,
 } from "/graphql/queries/organizations"
 
 const Header = styled(Typography)<any>`
@@ -138,12 +138,12 @@ function useRegisterOrganization(searchFilter: string) {
     data: userOrganizationsData,
     error: userOrganizationsError,
     // loading: userOrganizationsLoading,
-  } = useQuery<UserOrganizations>(UserOrganizationsQuery)
+  } = useQuery<CurrentUserOrganizations>(CurrentUserOrganizationsQuery)
 
   const [addUserOrganization] = useMutation(addUserOrganizationMutation, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
+        query: CurrentUserOrganizationsQuery,
         variables: { user_id: currentUser!.id },
       },
     ],
@@ -153,7 +153,7 @@ function useRegisterOrganization(searchFilter: string) {
   const [deleteUserOrganization] = useMutation(deleteUserOrganizationMutation, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
+        query: CurrentUserOrganizationsQuery,
         variables: { user_id: currentUser!.id },
       },
     ],
@@ -170,7 +170,7 @@ function useRegisterOrganization(searchFilter: string) {
     }
 
     const mIds =
-      userOrganizationsData.userOrganizations
+      userOrganizationsData.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.id)
         .filter(notEmpty) ?? []
 
@@ -236,10 +236,10 @@ function useRegisterOrganization(searchFilter: string) {
   const toggleMembership = (id: string) => async () => {
     // TODO: error handling if mutations don't succeed
     if (memberships.includes(id)) {
-      const existing = userOrganizationsData?.userOrganizations
+      const existing = userOrganizationsData?.currentUser?.user_organizations
         ?.filter(notEmpty)
         .find(
-          (uo: UserOrganizations_userOrganizations) =>
+          (uo: CurrentUserOrganizations_currentUser_user_organizations) =>
             uo?.organization?.id === id,
         )
 

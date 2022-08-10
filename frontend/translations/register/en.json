@@ -18,5 +18,8 @@
   "joiningEmailHint3": ")",
   "registrationReceived": "Registration received! Verification email was sent to address",
   "incorrectFormat": "Incorrect email address! Please use your organizational email address.",
-  "hoverHint": "Please consent first to sharing your course completion information"
+  "hoverHint": "Please consent first to sharing your course completion information",
+  "leaveTitle": "Leave organization",
+  "leaveInformation": "If you leave the organisation, your course completion records will not be sent from Mooc.fi to the organisation anymore.",
+  "leaveButton": "Leave"
 }

@@ -4,8 +4,7 @@ import LoginStateContext from "/contexts/LoginStateContext"
 import {
   addUserOrganizationMutation,
   deleteUserOrganizationMutation,
-} from "/graphql/mutations/organization"
-import { CurrentUserOrganizationsQuery } from "/graphql/queries/organizations"
+} from "/graphql/mutations/organizations"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import { Organizations_organizations } from "/static/types/generated/Organizations"
@@ -25,6 +24,9 @@ import FormControl from "@mui/material/FormControl"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
+import { CurrentUserOrganizationsQuery } from "/graphql/queries/organizations"
+import { CurrentUserOrganizations } from "/static/types/generated/CurrentUserOrganizations"
+import { updateUserDetails } from "/lib/account"
 
 const Container = styled.div`
   display: grid;
@@ -150,8 +152,16 @@ const RegisterToOrganization = () => {
       setEmail(potentialEmail)
       setOrganizationalIdentifier(orgId)
       setConfirmationStatus("sent")
+      verifyJoiningOrganization()
       // TODO: tallenna että user on consentannut ja että hän on reggannut, niin tiedetään milloin expiree
     }
+  }
+
+  const verifyJoiningOrganization = async () => {
+    const fieldName = "joined_organizations"
+    const fieldValue = [...memberships, id]
+    await updateUserDetails(fieldName, fieldValue)
+    setMemberships(fieldValue)
   }
 
   const handleCheckboxChange = () => {
@@ -189,12 +199,11 @@ const RegisterToOrganization = () => {
 
   return member ? (
     <Container>
-      <h1>Eroa organisaatiosta {mockOrganization.name}?</h1>
+      <h1>
+        {t("leaveTitle")} {mockOrganization.name}?
+      </h1>
 
-      <TextBox>
-        Jos eroat organisaatiosta, kurssisuoritustietojasi ei enää välitetä
-        Mooc.fi:sta organisaatioon.
-      </TextBox>
+      <TextBox>{t("leaveInformation")}</TextBox>
 
       <Button
         color="secondary"
@@ -203,7 +212,7 @@ const RegisterToOrganization = () => {
           await leaveOrganization()
         }}
       >
-        Eroa
+        {t("leaveButton")}
       </Button>
     </Container>
   ) : (

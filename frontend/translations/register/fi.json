@@ -18,5 +18,8 @@
   "joiningEmailHint3": " -päätteinen)",
   "registrationReceived": "Rekisteröinti vastaanotettu! Vahvistussähköposti lähetetty osoitteeseen",
   "incorrectFormat": "Virheellinen sähköposti! Käytäthän organisaation sähköpostiasi.",
-  "hoverHint": "Anna ensin suostumuksesi kurssisuoritustietojen jakamiseen"
+  "hoverHint": "Anna ensin suostumuksesi kurssisuoritustietojen jakamiseen",
+  "leaveTitle": "Eroa organisaatiosta",
+  "leaveInformation": "Jos eroat organisaatiosta, kurssisuoritustietojasi ei enää välitetä Mooc.fi:sta organisaatioon.",
+  "leaveButton": "Eroa"
 }
