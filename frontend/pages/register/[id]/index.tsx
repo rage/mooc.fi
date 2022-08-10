@@ -181,6 +181,8 @@ const RegisterToOrganization = () => {
       },
     })
     setMemberships(memberships.filter((i) => i !== id))
+    const fieldName = "joined_organizations"
+    await updateUserDetails(fieldName, memberships)
   }
 
   /* const { loading, error, data } = useQuery(
