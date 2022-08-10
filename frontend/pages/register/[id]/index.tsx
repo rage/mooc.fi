@@ -162,6 +162,12 @@ const RegisterToOrganization = () => {
     const fieldValue = [...memberships, id]
     await updateUserDetails(fieldName, fieldValue)
     setMemberships(fieldValue)
+    await addUserOrganization({
+      variables: {
+        organization_id: id,
+        email: email,
+      },
+    })
   }
 
   const handleCheckboxChange = () => {
