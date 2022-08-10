@@ -24,7 +24,7 @@ import {
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
 
-import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
+import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
 const ModuleList = styled(List)`
   padding: 0px;

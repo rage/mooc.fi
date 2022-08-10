@@ -17,7 +17,7 @@ import withAdmin from "/lib/with-admin"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { CourseStatus, UserSummaryDocument } from "/static/types/generated"
+import { CourseStatus, UserSummaryDocument } from "/graphql/generated"
 
 interface SearchVariables {
   search?: string

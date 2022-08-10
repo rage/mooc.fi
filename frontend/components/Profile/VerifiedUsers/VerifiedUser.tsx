@@ -1,4 +1,4 @@
-// import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
+// import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
 import React from "react"
 
 import styled from "@emotion/styled"

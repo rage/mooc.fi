@@ -1,0 +1,102 @@
+fragment CourseCoreFields on Course {
+  id
+  slug
+  name
+  ects
+  created_at
+  updated_at
+}
+
+fragment CourseWithPhotoCoreFields on Course {
+  ...CourseCoreFields
+  photo {
+    ...ImageCoreFields
+  }
+}
+
+fragment CourseTranslationCoreFields on CourseTranslation {
+  id
+  course_id
+  language
+  name
+  description
+  link
+  created_at
+  updated_at
+}
+
+fragment CourseFields on Course {
+  ...CourseWithPhotoCoreFields
+  description
+  link
+  order
+  study_module_order
+  promote
+  status
+  start_point
+  study_module_start_point
+  hidden
+  upcoming_active_link
+  tier
+  support_email
+  teacher_in_charge_email
+  teacher_in_charge_name
+  start_date
+  end_date
+  course_translations {
+    ...CourseTranslationCoreFields
+  }
+  study_modules {
+    ...StudyModuleCoreFields
+  }
+}
+
+fragment EditorCourseFields on Course {
+  ...CourseFields
+  instructions
+  has_certificate
+  upcoming_active_link
+  completions_handled_by {
+    ...CourseCoreFields
+  }
+  course_variants {
+    id
+    slug
+    description
+  }
+  course_aliases {
+    id
+    course_code
+  }
+  user_course_settings_visibilities {
+    id
+    language
+  }
+}
+
+fragment EditorCourseDetailedFields on Course {
+  ...EditorCourseFields
+  course_translations {
+    ...CourseTranslationCoreFields
+    description
+    instructions
+    link
+  }
+  open_university_registration_links {
+    ...OpenUniversityRegistrationLinkCoreFields
+  }
+  inherit_settings_from {
+    id
+  }
+  automatic_completions
+  automatic_completions_eligible_for_ects
+  exercise_completions_needed
+  points_needed
+}
+
+fragment EditorCourseOtherCoursesFields on Course {
+  ...CourseWithPhotoCoreFields
+  course_translations {
+    ...CourseTranslationCoreFields
+  }
+}

@@ -29,7 +29,7 @@ import {
   DeleteEmailTemplateDocument,
   EmailTemplateDocument,
   UpdateEmailTemplateDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface TemplateType {
   name: string

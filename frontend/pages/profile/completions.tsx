@@ -7,7 +7,7 @@ import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 
-import { CurrentUserOverviewDocument } from "/static/types/generated"
+import { CurrentUserOverviewDocument } from "/graphql/generated"
 
 function CompletionsPage() {
   const { loading, error, data } = useQuery(CurrentUserOverviewDocument)

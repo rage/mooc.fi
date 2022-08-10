@@ -11,7 +11,7 @@ import { CardText } from "/components/Text/paragraphs"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment } from "/static/types/generated"
+import { CourseFieldsFragment } from "/graphql/generated"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;

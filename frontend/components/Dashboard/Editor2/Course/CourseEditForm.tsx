@@ -39,7 +39,7 @@ import {
   EditorCourseDetailedFieldsFragment,
   EditorCourseOtherCoursesFieldsFragment,
   StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}

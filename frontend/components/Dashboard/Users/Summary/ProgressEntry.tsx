@@ -25,7 +25,7 @@ import {
   UserCourseProgressCoreFieldsFragment,
   UserCourseServiceProgressCoreFieldsFragment,
   UserCourseSummaryCourseFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface ProgressEntryProps {
   userCourseProgress?: UserCourseProgressCoreFieldsFragment | null

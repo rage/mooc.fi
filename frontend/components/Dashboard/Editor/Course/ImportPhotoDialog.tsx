@@ -22,7 +22,7 @@ import { useTranslator } from "/util/useTranslator"
 import {
   EditorCourseOtherCoursesFieldsFragment,
   ImageCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const ImageContainer = styled.div`
   display: flex;

@@ -12,7 +12,7 @@ import {
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
 
-import { CourseFromSlugDocument, CourseStatus } from "/static/types/generated"
+import { CourseFromSlugDocument, CourseStatus } from "/graphql/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,

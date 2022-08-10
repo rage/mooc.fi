@@ -1,0 +1,6 @@
+fragment OpenUniversityRegistrationLinkCoreFields on OpenUniversityRegistrationLink {
+  id
+  course_code
+  language
+  link
+}

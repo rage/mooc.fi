@@ -7,7 +7,7 @@ import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment, CourseStatus } from "/static/types/generated"
+import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 
 interface CourseListProps {
   courses: CourseFieldsFragment[]

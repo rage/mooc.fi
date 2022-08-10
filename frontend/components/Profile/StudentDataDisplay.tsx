@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography"
 import ProfileSettings from "/components/Profile/ProfileSettings"
 import notEmpty from "/util/notEmpty"
 
-import { UserOverviewFieldsFragment } from "/static/types/generated"
+import { UserOverviewFieldsFragment } from "/graphql/generated"
 
 interface TabPanelProps {
   index: any

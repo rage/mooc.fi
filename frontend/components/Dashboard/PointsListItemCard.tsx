@@ -13,7 +13,7 @@ import {
   CourseCoreFieldsFragment,
   UserCourseProgressCoreFieldsFragment,
   UserCourseServiceProgressCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const Root = styled(Grid)`
   background-color: white;

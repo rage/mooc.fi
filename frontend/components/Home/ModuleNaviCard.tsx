@@ -9,7 +9,7 @@ import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 
-import { StudyModuleFieldsFragment } from "/static/types/generated"
+import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;

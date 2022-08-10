@@ -17,7 +17,7 @@ import {
   CurrentUserDetailedDocument,
   CurrentUserOverviewDocument,
   UpdateResearchConsentDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const StyledPaper = styled(Paper)`
   display: flex;

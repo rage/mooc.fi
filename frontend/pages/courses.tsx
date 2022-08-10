@@ -21,7 +21,7 @@ import {
   CourseStatus,
   EditorCoursesDocument,
   HandlerCoursesDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -34,7 +34,7 @@ interface SearchVariables {
   status?: CourseStatus[] | null
 }
 
-const notEmptyOrEmptyString = (value: any) =>
+const notEmptyOrEmptyString = (value: any): value is string | true | number =>
   notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
@@ -47,9 +47,9 @@ function useCourseSearch() {
     },
   ])
 
-  const statusParam = decodeURIComponent(useQueryParameter("status", false))
+  const statusParam = (decodeURIComponent(useQueryParameter("status", false))
     ?.split(",")
-    .filter(notEmptyOrEmptyString)
+    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
 
   const initialSearchVariables: SearchVariables = {
     search: useQueryParameter("search", false) || "",
@@ -57,9 +57,9 @@ function useCourseSearch() {
       (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
       true,
     handledBy: useQueryParameter("handledBy", false) || null,
-    status: (statusParam.length
+    status: statusParam.length
       ? statusParam
-      : [CourseStatus.Active, CourseStatus.Upcoming]) as CourseStatus[],
+      : [CourseStatus.Active, CourseStatus.Upcoming],
   }
 
   const [searchVariables, setSearchVariables] = useState<SearchVariables>(
@@ -83,22 +83,35 @@ function useCourseSearch() {
   } = useQuery(HandlerCoursesDocument)
 
   useEffect(() => {
-    const params = [
-      ...(["search", "handledBy"] as Array<keyof typeof searchVariables>).map(
-        (field) =>
-          notEmptyOrEmptyString(searchVariables[field])
-            ? `${field}=${encodeURIComponent(
-                searchVariables[field]?.toString() ?? "",
-              )}`
-            : "",
-      ),
-      !searchVariables.hidden ? `hidden=false` : "",
+    const params = []
+
+    if (notEmptyOrEmptyString(searchVariables.search)) {
+      params.push(
+        `search=${encodeURIComponent(searchVariables.search.toString() ?? "")}`,
+      )
+    }
+    if (notEmptyOrEmptyString(searchVariables.handledBy)) {
+      params.push(
+        `handledBy=${encodeURIComponent(
+          searchVariables.handledBy.toString() ?? "",
+        )}`,
+      )
+    }
+    if (!searchVariables.hidden) {
+      params.push("hidden=false")
+    }
+
+    // Active and Upcoming is the default status so if it's set, don't add it
+    if (
       searchVariables.status?.length &&
-      JSON.stringify(searchVariables.status.sort()) !==
-        JSON.stringify(["Active", "Upcoming"])
-        ? `status=${searchVariables.status.join(",")}`
-        : "",
-    ].filter(Boolean)
+      !(
+        searchVariables.status.length === 2 &&
+        searchVariables.status.includes(CourseStatus.Active) &&
+        searchVariables.status.includes(CourseStatus.Upcoming)
+      )
+    ) {
+      params.push(`status=${searchVariables.status.join(",")}`)
+    }
 
     const query = params.length ? `?${params.join("&")}` : ""
     const href = `/courses/${query}`

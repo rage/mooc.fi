@@ -10,7 +10,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import {
   ExportUserCourseProgressesDocument,
   ExportUserCourseProgressesQuery,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const PointsExportButtonContainer = styled.div`
   margin-bottom: 1rem;

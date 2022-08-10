@@ -24,7 +24,7 @@ import { useTranslator } from "/util/useTranslator"
 import {
   CompletionDetailedFieldsFragment,
   UserCourseSummaryCourseFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface CompletionProps {
   completion?: CompletionDetailedFieldsFragment

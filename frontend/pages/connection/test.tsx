@@ -10,7 +10,7 @@ import Spinner from "/components/Spinner"
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { ConnectionTestDocument } from "/static/types/generated"
+import { ConnectionTestDocument } from "/graphql/generated"
 
 function ConnectionTest() {
   const { data, error, loading } = useQuery(ConnectionTestDocument)

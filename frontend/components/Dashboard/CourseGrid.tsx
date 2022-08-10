@@ -4,10 +4,7 @@ import styled from "@emotion/styled"
 
 import CourseCard from "./CourseCard"
 
-import {
-  CourseStatus,
-  EditorCourseFieldsFragment,
-} from "/static/types/generated"
+import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
 interface CourseGridProps {
   courses?: EditorCourseFieldsFragment[]

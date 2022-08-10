@@ -12,7 +12,7 @@ import CommonTranslations from "/translations/common"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import { UserProfileUserCourseSettingsDocument } from "/static/types/generated"
+import { UserProfileUserCourseSettingsDocument } from "/graphql/generated"
 
 const UserPage = () => {
   const id = useQueryParameter("id")

@@ -11,7 +11,7 @@ import ErrorBoundary from "/components/ErrorBoundary"
 import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 
-import { StudentProgressesDocument } from "/static/types/generated"
+import { StudentProgressesDocument } from "/graphql/generated"
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;

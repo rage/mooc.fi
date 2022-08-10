@@ -16,7 +16,7 @@ import RawView from "/components/Dashboard/Users/Summary/RawView"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/static/types/generated"
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface UserPointsSummaryProps {
   data?: UserCourseSummaryCoreFieldsFragment[]

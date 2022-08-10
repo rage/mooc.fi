@@ -9,7 +9,7 @@ import PointsListGrid from "/components/User/Points/PointsListGrid"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-import { CurrentUserProgressesDocument } from "/static/types/generated"
+import { CurrentUserProgressesDocument } from "/graphql/generated"
 
 const ProfilePointsDisplay = () => {
   const { data, error, loading } = useQuery(CurrentUserProgressesDocument)

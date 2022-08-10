@@ -2,7 +2,7 @@ import { CenteredContent } from "/components/Home/ModuleDisplay/Common"
 import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
 import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
 
-import { CourseFieldsFragment } from "/static/types/generated"
+import { CourseFieldsFragment } from "/graphql/generated"
 
 interface ModuleDisplayProps {
   name: string

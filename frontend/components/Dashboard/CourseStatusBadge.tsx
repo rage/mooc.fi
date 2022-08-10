@@ -5,7 +5,7 @@ import Error from "@mui/icons-material/Error"
 import Schedule from "@mui/icons-material/Schedule"
 import { Chip, ChipProps } from "@mui/material"
 
-import { CourseStatus } from "/static/types/generated"
+import { CourseStatus } from "/graphql/generated"
 
 const StatusBadge = styled(Chip)<{ status?: CourseStatus | null }>`
   background-color: ${({ status }) =>

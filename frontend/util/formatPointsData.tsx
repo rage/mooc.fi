@@ -3,7 +3,7 @@ import { flatten, groupBy, mapValues } from "lodash"
 import {
   UserCourseProgressCoreFieldsFragment,
   UserCourseServiceProgressCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 export type FormattedGroupPointsDictionary = {
   total: number

@@ -11,7 +11,7 @@ import {
   CourseUpsertArg,
   EditorCourseDetailedFieldsFragment,
   StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const isProduction = process.env.NODE_ENV === "production"
 

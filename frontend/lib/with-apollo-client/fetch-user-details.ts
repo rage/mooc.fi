@@ -1,6 +1,6 @@
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client"
 
-import { CurrentUserDocument } from "/static/types/generated"
+import { CurrentUserDocument } from "/graphql/generated"
 
 export default async function fetchUserDetails(
   apollo: ApolloClient<NormalizedCacheObject>,

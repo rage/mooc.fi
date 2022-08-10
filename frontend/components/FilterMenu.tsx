@@ -19,7 +19,7 @@ import {
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseCoreFieldsFragment, CourseStatus } from "/static/types/generated"
+import { CourseCoreFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const Container = styled.div`
   background-color: white;

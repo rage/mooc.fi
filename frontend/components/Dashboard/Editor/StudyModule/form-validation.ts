@@ -7,7 +7,7 @@ import {
   StudyModuleTranslationFormValues,
 } from "./types"
 
-import { StudyModuleExistsDocument } from "/static/types/generated"
+import { StudyModuleExistsDocument } from "/graphql/generated"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,

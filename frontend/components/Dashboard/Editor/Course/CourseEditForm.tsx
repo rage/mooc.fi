@@ -53,7 +53,7 @@ import { useTranslator } from "/util/useTranslator"
 import {
   EditorCourseOtherCoursesFieldsFragment,
   StudyModuleDetailedFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface CoverProps {
   covered: boolean

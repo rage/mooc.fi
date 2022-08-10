@@ -4,7 +4,7 @@ import { Grid } from "@mui/material"
 
 import ModuleCard from "./ModuleCard"
 
-import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
+import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
 interface ModuleGridProps {
   modules?: StudyModuleDetailedFieldsFragment[]

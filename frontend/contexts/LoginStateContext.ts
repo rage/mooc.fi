@@ -1,6 +1,6 @@
 import { createContext } from "react"
 
-import { UserOverviewFieldsFragment } from "/static/types/generated"
+import { UserOverviewFieldsFragment } from "/graphql/generated"
 
 export interface LoginState {
   loggedIn: boolean

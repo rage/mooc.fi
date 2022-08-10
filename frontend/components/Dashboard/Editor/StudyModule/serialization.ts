@@ -10,7 +10,7 @@ import {
   StudyModuleCreateArg,
   StudyModuleDetailedFieldsFragment,
   StudyModuleUpsertArg,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface ToStudyModuleFormProps {
   module?: StudyModuleDetailedFieldsFragment

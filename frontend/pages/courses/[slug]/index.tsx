@@ -30,7 +30,7 @@ import {
   RecheckCompletionsDocument,
   UserCourseStatsSubscribeDocument,
   UserCourseStatsUnsubscribeDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;

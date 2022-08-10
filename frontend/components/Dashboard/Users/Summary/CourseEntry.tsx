@@ -17,7 +17,7 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import { CardTitle } from "/components/Text/headers"
 import notEmpty from "/util/notEmpty"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/static/types/generated"
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface CourseEntryProps {
   data?: UserCourseSummaryCoreFieldsFragment

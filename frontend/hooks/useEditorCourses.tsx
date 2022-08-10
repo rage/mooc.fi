@@ -4,7 +4,7 @@ import {
   CourseEditorDetailsDocument,
   CourseEditorOtherCoursesDocument,
   EditorStudyModulesDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface UseEditorCoursesProps {
   slug?: string

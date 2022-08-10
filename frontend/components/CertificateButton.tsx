@@ -27,7 +27,7 @@ import {
   CurrentUserOverviewDocument,
   UpdateUserNameDocument,
   UserOverviewFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const StyledButton = styled(Button)`
   margin: auto;

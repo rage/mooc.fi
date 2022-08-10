@@ -15,7 +15,7 @@ import { useTranslator } from "/util/useTranslator"
 import {
   ExerciseCompletionCoreFieldsFragment,
   ExerciseCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface ExerciseListProps {
   exercises: (ExerciseCoreFieldsFragment & {

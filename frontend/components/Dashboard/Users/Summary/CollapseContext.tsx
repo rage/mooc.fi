@@ -2,7 +2,7 @@ import { createContext, Dispatch, useContext } from "react"
 
 import { produce } from "immer"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/static/types/generated"
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 export type ExerciseState = Record<string, boolean>
 export type CourseState = {

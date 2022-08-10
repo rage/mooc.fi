@@ -14,7 +14,7 @@ import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseEditorDetailsQuery } from "/static/types/generated"
+import { CourseEditorDetailsQuery } from "/graphql/generated"
 
 function stripId<T>(data: T): T {
   if (data === null || data === undefined) return data

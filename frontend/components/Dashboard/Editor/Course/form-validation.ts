@@ -16,7 +16,7 @@ import {
   CourseFromSlugDocument,
   CourseStatus,
   OpenUniversityRegistrationLinkCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,

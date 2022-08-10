@@ -1,0 +1,69 @@
+fragment CompletionCoreFields on Completion {
+  id
+  course_id
+  user_id
+  email
+  student_number
+  completion_language
+  completion_link
+  completion_date
+  tier
+  grade
+  eligible_for_ects
+  project_completion
+  registered
+  created_at
+  updated_at
+}
+
+fragment CompletionCourseFields on Course {
+  ...CourseWithPhotoCoreFields
+  has_certificate
+}
+
+fragment CompletionDetailedFields on Completion {
+  ...CompletionCoreFields
+  completions_registered {
+    ...CompletionRegisteredCoreFields
+  }
+}
+
+fragment CompletionDetailedFieldsWithCourse on Completion {
+  ...CompletionDetailedFields
+  course {
+    ...CompletionCourseFields
+  }
+}
+
+fragment CompletionsQueryNodeFields on Completion {
+  ...CompletionCoreFields
+  user {
+    ...UserCoreFields
+  }
+  course {
+    ...CourseCoreFields
+    id
+    name
+  }
+  completions_registered {
+    id
+    organization {
+      id
+      slug
+    }
+  }
+}
+
+fragment CompletionsQueryConnectionFields on QueryCompletionsPaginated_type_Connection {
+  pageInfo {
+    hasNextPage
+    hasPreviousPage
+    startCursor
+    endCursor
+  }
+  edges {
+    node {
+      ...CompletionsQueryNodeFields
+    }
+  }
+}

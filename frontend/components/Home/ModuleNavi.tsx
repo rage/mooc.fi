@@ -6,7 +6,7 @@ import { H2Background } from "/components/Text/headers"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-import { StudyModuleFieldsFragment } from "/static/types/generated"
+import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 const NaviArea = styled.section`
   margin-bottom: 5em;

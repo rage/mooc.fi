@@ -10,7 +10,7 @@ import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
-import { EditorStudyModulesDocument } from "/static/types/generated"
+import { EditorStudyModulesDocument } from "/graphql/generated"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)

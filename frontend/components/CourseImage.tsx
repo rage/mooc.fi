@@ -5,7 +5,7 @@ import { Typography } from "@mui/material"
 
 import { addDomain } from "/util/imageUtils"
 
-import { ImageCoreFieldsFragment } from "/static/types/generated"
+import { ImageCoreFieldsFragment } from "/graphql/generated"
 
 const ComponentStyle = `
   width: 100%;

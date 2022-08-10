@@ -26,7 +26,7 @@ import {
   CourseFromSlugDocument,
   CreateRegistrationAttemptDateDocument,
   CurrentUserOverviewDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"

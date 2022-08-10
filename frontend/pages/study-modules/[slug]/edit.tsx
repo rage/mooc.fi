@@ -22,7 +22,7 @@ import StudyModulesTranslations from "/translations/study-modules"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import { EditorStudyModuleDetailsDocument } from "/static/types/generated"
+import { EditorStudyModuleDetailsDocument } from "/graphql/generated"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;

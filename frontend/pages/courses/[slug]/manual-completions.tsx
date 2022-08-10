@@ -24,7 +24,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import {
   AddManualCompletionDocument,
   CourseFromSlugDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;

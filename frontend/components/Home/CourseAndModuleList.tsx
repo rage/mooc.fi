@@ -17,7 +17,7 @@ import {
   CoursesDocument,
   CourseStatus,
   StudyModulesDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 // const highlightsBanner = "/static/images/backgroundPattern.svg"
 

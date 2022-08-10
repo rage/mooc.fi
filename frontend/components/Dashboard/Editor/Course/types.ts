@@ -6,7 +6,7 @@ import {
   CourseStatus,
   ImageCoreFieldsFragment,
   OpenUniversityRegistrationLinkCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 export interface CourseFormValues extends FormValues {
   id?: string | null

@@ -25,7 +25,7 @@ import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
 
-import { UserCoreFieldsFragment } from "/static/types/generated"
+import { UserCoreFieldsFragment } from "/graphql/generated"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;

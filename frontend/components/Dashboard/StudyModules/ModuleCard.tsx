@@ -10,7 +10,7 @@ import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddin
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { mime } from "/util/imageUtils"
 
-import { StudyModuleDetailedFieldsFragment } from "/static/types/generated"
+import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
 const Base = styled(ClickableDiv)`
   width: 100%;

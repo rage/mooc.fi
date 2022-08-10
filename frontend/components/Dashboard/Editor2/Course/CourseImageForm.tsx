@@ -20,7 +20,7 @@ import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
 
-import { EditorCourseOtherCoursesFieldsFragment } from "/static/types/generated"
+import { EditorCourseOtherCoursesFieldsFragment } from "/graphql/generated"
 
 interface CourseImageFormProps {
   courses?: EditorCourseOtherCoursesFieldsFragment[]

@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import notEmpty from "/util/notEmpty"
 
-import { CurrentUserProgressesQuery } from "/static/types/generated"
+import { CurrentUserProgressesQuery } from "/graphql/generated"
 
 interface GridProps {
   data: CurrentUserProgressesQuery

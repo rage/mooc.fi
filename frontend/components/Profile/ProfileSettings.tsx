@@ -11,7 +11,7 @@ import {
   CurrentUserOverviewDocument,
   UpdateResearchConsentDocument,
   UserOverviewFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface ProfileSettingsProps {
   data?: UserOverviewFieldsFragment

@@ -14,7 +14,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import notEmpty from "/util/notEmpty"
 
-import { EmailTemplatesDocument } from "/static/types/generated"
+import { EmailTemplatesDocument } from "/graphql/generated"
 
 const Background = styled.section`
   background-color: #61baad;

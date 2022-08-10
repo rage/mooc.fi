@@ -1,0 +1,23 @@
+mutation AddCourse($course: CourseCreateArg!) {
+  addCourse(course: $course) {
+    ...EditorCourseDetailedFields
+  }
+}
+
+mutation UpdateCourse($course: CourseUpsertArg!) {
+  updateCourse(course: $course) {
+    ...EditorCourseDetailedFields
+    completion_email {
+      ...EmailTemplateCoreFields
+    }
+    course_stats_email {
+      ...EmailTemplateCoreFields
+    }
+  }
+}
+
+mutation DeleteCourse($id: ID!) {
+  deleteCourse(id: $id) {
+    ...CourseCoreFields
+  }
+}

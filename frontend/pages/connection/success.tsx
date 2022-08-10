@@ -11,7 +11,7 @@ import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
 import withSignedIn from "/lib/with-signed-in"
 
-import { ConnectedUserDocument } from "/static/types/generated"
+import { ConnectedUserDocument } from "/graphql/generated"
 
 const ConnectionEntryCard = styled(Card)`
   margin-bottom: 0.5rem;

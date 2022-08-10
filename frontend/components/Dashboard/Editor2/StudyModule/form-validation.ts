@@ -8,7 +8,7 @@ import {
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
 
-import { StudyModuleExistsDocument } from "/static/types/generated"
+import { StudyModuleExistsDocument } from "/graphql/generated"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   _id: undefined,

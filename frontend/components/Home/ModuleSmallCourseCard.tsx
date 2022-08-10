@@ -11,7 +11,7 @@ import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment, CourseStatus } from "/static/types/generated"
+import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;

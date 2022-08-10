@@ -1,8 +1,8 @@
 import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
-
 import LUT from "/static/md_pages/lut_module.mdx"
-import { StudyModuleFieldsWithCoursesFragment } from "/static/types/generated"
+
+import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 
 const moduleColors: Array<{
   backgroundColor: string

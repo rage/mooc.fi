@@ -12,7 +12,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import {
   PaginatedCompletionsDocument,
   PaginatedCompletionsPreviousPageDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface CompletionsListProps {
   search?: string

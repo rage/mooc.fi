@@ -13,7 +13,7 @@ import { useTranslator } from "/util/useTranslator"
 import {
   CompletionDetailedFieldsFragment,
   CourseWithPhotoCoreFieldsFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const Background = styled(ClickableDiv)`
   display: flex;

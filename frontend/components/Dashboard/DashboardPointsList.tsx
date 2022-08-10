@@ -3,7 +3,7 @@ import { Grid } from "@mui/material"
 import PointsListItemCard from "./PointsListItemCard"
 import notEmpty from "/util/notEmpty"
 
-import { StudentProgressesQueryNodeFieldsFragment } from "/static/types/generated"
+import { StudentProgressesQueryNodeFieldsFragment } from "/graphql/generated"
 
 interface PointsListProps {
   data: StudentProgressesQueryNodeFieldsFragment[]

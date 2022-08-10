@@ -10,7 +10,7 @@ import notEmpty from "/util/notEmpty"
 import {
   CourseStatus,
   StudyModuleFieldsWithCoursesFragment,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface ModuleProps {
   module?: StudyModuleFieldsWithCoursesFragment

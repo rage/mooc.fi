@@ -19,10 +19,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
 
-import {
-  CourseStatus,
-  EditorCourseFieldsFragment,
-} from "/static/types/generated"
+import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
 const CardBase = styled.div<{ ishidden?: number }>`
   position: relative;

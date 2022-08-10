@@ -27,7 +27,7 @@ import {
   StudyModuleExistsDocument,
   StudyModulesDocument,
   UpdateStudyModuleDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const StudyModuleEdit = ({
   module,

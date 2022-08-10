@@ -8,7 +8,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { UserOverviewDocument } from "/static/types/generated"
+import { UserOverviewDocument } from "/graphql/generated"
 
 function CompletionsPage() {
   const id = useQueryParameter("id")

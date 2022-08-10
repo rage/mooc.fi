@@ -22,7 +22,7 @@ import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseFromSlugDocument } from "/static/types/generated"
+import { CourseFromSlugDocument } from "/graphql/generated"
 
 // import useDebounce from "/util/useDebounce"
 

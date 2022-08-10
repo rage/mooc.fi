@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material"
 
-import { CompletionsQueryNodeFieldsFragment } from "/static/types/generated"
+import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 
 //map language code stored to database to human readable language
 const MapLangToLanguage: Record<string, string> = {

@@ -1,6 +1,6 @@
 import { createContext } from "react"
 
-import { UserDetailsContainsQuery } from "/static/types/generated"
+import { UserDetailsContainsQuery } from "/graphql/generated"
 
 export interface SearchVariables {
   search: string

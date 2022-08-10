@@ -1,7 +1,7 @@
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 import { mime } from "/util/imageUtils"
 
-import { StudyModuleFieldsFragment } from "/static/types/generated"
+import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 interface ModuleImageProps {
   module: StudyModuleFieldsFragment

@@ -5,7 +5,7 @@ import PointsListGrid from "./PointsListGrid"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 
-import { CurrentUserProgressesDocument } from "/static/types/generated"
+import { CurrentUserProgressesDocument } from "/graphql/generated"
 
 interface PointsListProps {
   showOnlyTen?: boolean

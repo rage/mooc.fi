@@ -5,7 +5,7 @@ import { CompletionListItem } from "/components/Home/Completions"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-import { CompletionDetailedFieldsWithCourseFragment } from "/static/types/generated"
+import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
 
 interface CompletionsProps {
   completions: CompletionDetailedFieldsWithCourseFragment[]

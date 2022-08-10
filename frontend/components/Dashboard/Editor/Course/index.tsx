@@ -25,7 +25,7 @@ import {
   EmailTemplateEditorCoursesDocument,
   StudyModuleDetailedFieldsFragment,
   UpdateCourseDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface CourseEditProps {
   course?: EditorCourseDetailedFieldsFragment

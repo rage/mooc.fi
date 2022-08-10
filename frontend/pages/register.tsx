@@ -34,7 +34,7 @@ import {
   Organization,
   OrganizationsDocument,
   UserOrganizationsDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;

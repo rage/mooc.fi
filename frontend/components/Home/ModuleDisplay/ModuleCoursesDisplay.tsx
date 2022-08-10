@@ -7,7 +7,7 @@ import { H2Background } from "/components/Text/headers"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment, CourseStatus } from "/static/types/generated"
+import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const CoursesListContainer = styled.div`
   margin: 2rem 2em 2em 2rem;

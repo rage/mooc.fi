@@ -15,7 +15,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { CurrentUserOverviewDocument } from "/static/types/generated"
+import { CurrentUserOverviewDocument } from "/graphql/generated"
 
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 

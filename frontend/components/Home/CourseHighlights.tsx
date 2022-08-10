@@ -6,7 +6,7 @@ import Container from "/components/Container"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
 
-import { CourseFieldsFragment } from "/static/types/generated"
+import { CourseFieldsFragment } from "/graphql/generated"
 
 interface RootProps {
   backgroundColor: string

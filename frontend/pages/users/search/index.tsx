@@ -12,7 +12,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { UserDetailsContainsDocument } from "/static/types/generated"
+import { UserDetailsContainsDocument } from "/graphql/generated"
 
 const UserSearch = () => {
   const router = useRouter()

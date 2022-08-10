@@ -25,7 +25,7 @@ import {
   CourseUpsertArg,
   EmailTemplateEditorCoursesDocument,
   UpdateCourseDocument,
-} from "/static/types/generated"
+} from "/graphql/generated"
 
 interface CreateEmailTemplateDialogParams {
   course?: CourseCoreFieldsFragment
