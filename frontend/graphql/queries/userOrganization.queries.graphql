@@ -17,3 +17,9 @@ query UserOrganizations($user_id: ID) {
     }
   }
 }
+
+query UserOrganizationJoinConfirmation($id: ID!) {
+  userOrganizationJoinConfirmation(id: $id) {
+    ...UserOrganizationJoinConfirmationFields
+  }
+}

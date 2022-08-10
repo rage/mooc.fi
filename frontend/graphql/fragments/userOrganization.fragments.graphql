@@ -30,3 +30,10 @@ fragment UserOrganizationJoinConfirmationFields on UserOrganizationJoinConfirmat
     updated_at
   }
 }
+
+fragment UserOrganizationWithUserOrganizationJoinConfirmationFields on UserOrganization {
+  ...UserOrganizationCoreFields
+  user_organization_join_confirmations {
+    ...UserOrganizationJoinConfirmationFields
+  }
+}

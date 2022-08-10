@@ -164,7 +164,7 @@ function useRegisterOrganization(searchFilter: string) {
     }
 
     const mIds =
-      userOrganizationsData.currentUser?.user_organizations
+      userOrganizationsData.userOrganizations
         ?.map((uo) => uo?.organization?.id)
         .filter(notEmpty) ?? []
 
@@ -230,7 +230,7 @@ function useRegisterOrganization(searchFilter: string) {
   const toggleMembership = (id: string) => async () => {
     // TODO: error handling if mutations don't succeed
     if (memberships.includes(id)) {
-      const existing = userOrganizationsData?.currentUser?.user_organizations
+      const existing = userOrganizationsData?.userOrganizations
         ?.filter(notEmpty)
         .find((uo) => uo?.organization?.id === id)
 

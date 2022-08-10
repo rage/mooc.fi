@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 
-import { gql, useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"

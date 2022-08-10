@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-15T16:09:09+03:00
+// Generated on 2022-08-15T16:49:41+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2150,6 +2150,7 @@ export type CompletionCoreFieldsFragment = {
 
 export type CompletionCourseFieldsFragment = {
   __typename?: "Course"
+  has_certificate: boolean | null
   id: string
   slug: string
   name: string
@@ -2222,6 +2223,7 @@ export type CompletionDetailedFieldsWithCourseFragment = {
   updated_at: any | null
   course: {
     __typename?: "Course"
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -2785,6 +2787,7 @@ export type OrganizationCoreFieldsFragment = {
   __typename?: "Organization"
   id: string
   slug: string
+  email: string | null
   hidden: boolean | null
   created_at: any | null
   updated_at: any | null
@@ -3422,6 +3425,7 @@ export type UserOrganizationCoreFieldsFragment = {
     __typename?: "Organization"
     id: string
     slug: string
+    email: string | null
     hidden: boolean | null
     created_at: any | null
     updated_at: any | null
@@ -3459,6 +3463,58 @@ export type UserOrganizationJoinConfirmationFieldsFragment = {
     updated_at: any | null
   } | null
 }
+
+export type UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment =
+  {
+    __typename?: "UserOrganization"
+    id: string
+    user_id: string | null
+    organization_id: string | null
+    confirmed: boolean | null
+    consented: boolean | null
+    created_at: any | null
+    updated_at: any | null
+    user_organization_join_confirmations: Array<{
+      __typename?: "UserOrganizationJoinConfirmation"
+      id: string
+      email: string
+      confirmed: boolean | null
+      confirmed_at: any | null
+      created_at: any | null
+      updated_at: any | null
+      expired: boolean | null
+      expires_at: any | null
+      redirect: string | null
+      language: string | null
+      email_delivery: {
+        __typename?: "EmailDelivery"
+        id: string
+        email: string | null
+        sent: boolean
+        error: boolean
+        updated_at: any | null
+      } | null
+    }>
+    organization: {
+      __typename?: "Organization"
+      id: string
+      slug: string
+      email: string | null
+      hidden: boolean | null
+      created_at: any | null
+      updated_at: any | null
+      required_confirmation: boolean | null
+      required_organization_email: string | null
+      organization_translations: Array<{
+        __typename?: "OrganizationTranslation"
+        id: string
+        organization_id: string | null
+        language: string
+        name: string
+        information: string | null
+      }>
+    } | null
+  }
 
 export type CreateRegistrationAttemptDateMutationVariables = Exact<{
   id: Scalars["ID"]
@@ -4039,6 +4095,7 @@ export type AddUserOrganizationMutation = {
       __typename?: "Organization"
       id: string
       slug: string
+      email: string | null
       hidden: boolean | null
       created_at: any | null
       updated_at: any | null
@@ -4764,6 +4821,7 @@ export type OrganizationsQuery = {
     __typename?: "Organization"
     id: string
     slug: string
+    email: string | null
     hidden: boolean | null
     created_at: any | null
     updated_at: any | null
@@ -4788,11 +4846,48 @@ export type OrganizationByIdQuery = {
   __typename?: "Query"
   organization: {
     __typename?: "Organization"
+    id: string
     slug: string
+    email: string | null
     hidden: boolean | null
+    created_at: any | null
+    updated_at: any | null
+    required_confirmation: boolean | null
+    required_organization_email: string | null
     organization_translations: Array<{
       __typename?: "OrganizationTranslation"
+      id: string
+      organization_id: string | null
+      language: string
       name: string
+      information: string | null
+    }>
+  } | null
+}
+
+export type OrganizationBySlugQueryVariables = Exact<{
+  slug: Scalars["String"]
+}>
+
+export type OrganizationBySlugQuery = {
+  __typename?: "Query"
+  organization: {
+    __typename?: "Organization"
+    id: string
+    slug: string
+    email: string | null
+    hidden: boolean | null
+    created_at: any | null
+    updated_at: any | null
+    required_confirmation: boolean | null
+    required_organization_email: string | null
+    organization_translations: Array<{
+      __typename?: "OrganizationTranslation"
+      id: string
+      organization_id: string | null
+      language: string
+      name: string
+      information: string | null
     }>
   } | null
 }
@@ -5603,6 +5698,7 @@ export type CurrentUserUserOrganizationsQuery = {
         __typename?: "Organization"
         id: string
         slug: string
+        email: string | null
         hidden: boolean | null
         created_at: any | null
         updated_at: any | null
@@ -5632,6 +5728,35 @@ export type UserOrganizationsQuery = {
     id: string
     organization: { __typename?: "Organization"; id: string } | null
   } | null> | null
+}
+
+export type UserOrganizationJoinConfirmationQueryVariables = Exact<{
+  id: Scalars["ID"]
+}>
+
+export type UserOrganizationJoinConfirmationQuery = {
+  __typename?: "Query"
+  userOrganizationJoinConfirmation: {
+    __typename?: "UserOrganizationJoinConfirmation"
+    id: string
+    email: string
+    confirmed: boolean | null
+    confirmed_at: any | null
+    created_at: any | null
+    updated_at: any | null
+    expired: boolean | null
+    expires_at: any | null
+    redirect: string | null
+    language: string | null
+    email_delivery: {
+      __typename?: "EmailDelivery"
+      id: string
+      email: string | null
+      sent: boolean
+      error: boolean
+      updated_at: any | null
+    } | null
+  } | null
 }
 
 export interface PossibleTypesResultData {
@@ -5865,6 +5990,7 @@ export const CompletionCourseFieldsFragmentDoc = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
           },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
         ],
       },
     },
@@ -7210,6 +7336,7 @@ export const OrganizationCoreFieldsFragmentDoc = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "email" } },
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
@@ -7326,6 +7453,54 @@ export const UserOrganizationJoinConfirmationFieldsFragmentDoc = {
   UserOrganizationJoinConfirmationFieldsFragment,
   unknown
 >
+export const UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragmentDoc =
+  {
+    kind: "Document",
+    definitions: [
+      {
+        kind: "FragmentDefinition",
+        name: {
+          kind: "Name",
+          value: "UserOrganizationWithUserOrganizationJoinConfirmationFields",
+        },
+        typeCondition: {
+          kind: "NamedType",
+          name: { kind: "Name", value: "UserOrganization" },
+        },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            {
+              kind: "FragmentSpread",
+              name: { kind: "Name", value: "UserOrganizationCoreFields" },
+            },
+            {
+              kind: "Field",
+              name: {
+                kind: "Name",
+                value: "user_organization_join_confirmations",
+              },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    kind: "FragmentSpread",
+                    name: {
+                      kind: "Name",
+                      value: "UserOrganizationJoinConfirmationFields",
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ],
+  } as unknown as DocumentNode<
+    UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment,
+    unknown
+  >
 export const CreateRegistrationAttemptDateDocument = {
   kind: "Document",
   definitions: [
@@ -9973,17 +10148,9 @@ export const OrganizationByIdDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "slug" } },
-                { kind: "Field", name: { kind: "Name", value: "hidden" } },
                 {
-                  kind: "Field",
-                  name: { kind: "Name", value: "organization_translations" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "OrganizationCoreFields" },
                 },
               ],
             },
@@ -9991,10 +10158,66 @@ export const OrganizationByIdDocument = {
         ],
       },
     },
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   OrganizationByIdQuery,
   OrganizationByIdQueryVariables
+>
+export const OrganizationBySlugDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "OrganizationBySlug" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "slug" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organization" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "slug" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "slug" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "OrganizationCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  OrganizationBySlugQuery,
+  OrganizationBySlugQueryVariables
 >
 export const StudyModulesDocument = {
   kind: "Document",
@@ -11408,4 +11631,59 @@ export const UserOrganizationsDocument = {
 } as unknown as DocumentNode<
   UserOrganizationsQuery,
   UserOrganizationsQueryVariables
+>
+export const UserOrganizationJoinConfirmationDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "UserOrganizationJoinConfirmation" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "userOrganizationJoinConfirmation" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserOrganizationJoinConfirmationFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  UserOrganizationJoinConfirmationQuery,
+  UserOrganizationJoinConfirmationQueryVariables
 >

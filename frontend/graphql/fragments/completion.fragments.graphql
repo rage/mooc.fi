@@ -18,6 +18,7 @@ fragment CompletionCoreFields on Completion {
 
 fragment CompletionCourseFields on Course {
   ...CourseWithPhotoCoreFields
+  has_certificate
 }
 
 fragment CompletionDetailedFields on Completion {

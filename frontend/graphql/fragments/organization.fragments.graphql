@@ -1,6 +1,7 @@
 fragment OrganizationCoreFields on Organization {
   id
   slug
+  email
   hidden
   created_at
   updated_at

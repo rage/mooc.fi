@@ -6,10 +6,12 @@ query Organizations {
 
 query OrganizationById($id: ID!) {
   organization(id: $id) {
-    slug
-    hidden
-    organization_translations {
-      name
-    }
+    ...OrganizationCoreFields
+  }
+}
+
+query OrganizationBySlug($slug: String!) {
+  organization(slug: $slug) {
+    ...OrganizationCoreFields
   }
 }

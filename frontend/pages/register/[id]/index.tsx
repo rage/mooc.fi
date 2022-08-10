@@ -82,10 +82,11 @@ const RegisterToOrganization = () => {
     currentUser?.student_number,
   )
   const [memberships, setMemberships] = useState<Array<string>>([])
-  const [organizations, setOrganizations] = useState<Record<string, any>>({}) // what's this?
+  const [organizations] = useState<Record<string, any>>({}) // what's this?
   const formRef = createRef<HTMLFormElement>()
-  const { data: userOrganizationsData, error: userOrganizationsError } =
-    useQuery(CurrentUserUserOrganizationsDocument)
+  const { data: userOrganizationsData } = useQuery(
+    CurrentUserUserOrganizationsDocument,
+  )
 
   const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
