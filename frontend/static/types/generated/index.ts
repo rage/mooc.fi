@@ -5474,8 +5474,6 @@ export const CompletionDetailedFieldsFragmentDoc = {
         ],
       },
     },
-    ...CompletionCoreFieldsFragmentDoc.definitions,
-    ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CompletionDetailedFieldsFragment, unknown>
 export const CourseCoreFieldsFragmentDoc = {
@@ -5569,8 +5567,6 @@ export const CourseWithPhotoCoreFieldsFragmentDoc = {
         ],
       },
     },
-    ...CourseCoreFieldsFragmentDoc.definitions,
-    ...ImageCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CourseWithPhotoCoreFieldsFragment, unknown>
 export const CompletionCourseFieldsFragmentDoc = {
@@ -5594,7 +5590,6 @@ export const CompletionCourseFieldsFragmentDoc = {
         ],
       },
     },
-    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CompletionCourseFieldsFragment, unknown>
 export const CompletionDetailedFieldsWithCourseFragmentDoc = {
@@ -5630,8 +5625,6 @@ export const CompletionDetailedFieldsWithCourseFragmentDoc = {
         ],
       },
     },
-    ...CompletionDetailedFieldsFragmentDoc.definitions,
-    ...CompletionCourseFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CompletionDetailedFieldsWithCourseFragment,
@@ -5737,9 +5730,6 @@ export const CompletionsQueryNodeFieldsFragmentDoc = {
         ],
       },
     },
-    ...CompletionCoreFieldsFragmentDoc.definitions,
-    ...UserCoreFieldsFragmentDoc.definitions,
-    ...CourseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CompletionsQueryNodeFieldsFragment, unknown>
 export const CompletionsQueryConnectionFieldsFragmentDoc = {
@@ -5802,7 +5792,6 @@ export const CompletionsQueryConnectionFieldsFragmentDoc = {
         ],
       },
     },
-    ...CompletionsQueryNodeFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CompletionsQueryConnectionFieldsFragment, unknown>
 export const CourseTranslationCoreFieldsFragmentDoc = {
@@ -5928,26 +5917,9 @@ export const CourseFieldsFragmentDoc = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "photo" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "ImageCoreFields" },
-                },
-              ],
-            },
-          },
         ],
       },
     },
-    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
-    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
-    ...StudyModuleCoreFieldsFragmentDoc.definitions,
-    ...ImageCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CourseFieldsFragment, unknown>
 export const EditorCourseFieldsFragmentDoc = {
@@ -6023,8 +5995,6 @@ export const EditorCourseFieldsFragmentDoc = {
         ],
       },
     },
-    ...CourseFieldsFragmentDoc.definitions,
-    ...CourseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EditorCourseFieldsFragment, unknown>
 export const OpenUniversityRegistrationLinkCoreFieldsFragmentDoc = {
@@ -6133,9 +6103,6 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
         ],
       },
     },
-    ...EditorCourseFieldsFragmentDoc.definitions,
-    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
-    ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EditorCourseDetailedFieldsFragment, unknown>
 export const EditorCourseOtherCoursesFieldsFragmentDoc = {
@@ -6171,8 +6138,6 @@ export const EditorCourseOtherCoursesFieldsFragmentDoc = {
         ],
       },
     },
-    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
-    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EditorCourseOtherCoursesFieldsFragment, unknown>
 export const EmailTemplateCoreFieldsFragmentDoc = {
@@ -6233,7 +6198,6 @@ export const EmailTemplateFieldsFragmentDoc = {
         ],
       },
     },
-    ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EmailTemplateFieldsFragment, unknown>
 export const StudyModuleFieldsFragmentDoc = {
@@ -6259,7 +6223,6 @@ export const StudyModuleFieldsFragmentDoc = {
         ],
       },
     },
-    ...StudyModuleCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<StudyModuleFieldsFragment, unknown>
 export const StudyModuleTranslationFieldsFragmentDoc = {
@@ -6320,8 +6283,6 @@ export const StudyModuleDetailedFieldsFragmentDoc = {
         ],
       },
     },
-    ...StudyModuleFieldsFragmentDoc.definitions,
-    ...StudyModuleTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<StudyModuleDetailedFieldsFragment, unknown>
 export const StudyModuleFieldsWithCoursesFragmentDoc = {
@@ -6357,8 +6318,6 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
         ],
       },
     },
-    ...StudyModuleFieldsFragmentDoc.definitions,
-    ...CourseFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<StudyModuleFieldsWithCoursesFragment, unknown>
 export const UserCourseProgressCoreFieldsFragmentDoc = {
@@ -6496,9 +6455,6 @@ export const ProgressCoreFieldsFragmentDoc = {
         ],
       },
     },
-    ...CourseCoreFieldsFragmentDoc.definitions,
-    ...UserCourseProgressCoreFieldsFragmentDoc.definitions,
-    ...UserCourseServiceProgressCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<ProgressCoreFieldsFragment, unknown>
 export const UserProgressesFieldsFragmentDoc = {
@@ -6534,8 +6490,6 @@ export const UserProgressesFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserCoreFieldsFragmentDoc.definitions,
-    ...ProgressCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserProgressesFieldsFragment, unknown>
 export const UserDetailedFieldsFragmentDoc = {
@@ -6560,7 +6514,6 @@ export const UserDetailedFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserDetailedFieldsFragment, unknown>
 export const UserOverviewFieldsFragmentDoc = {
@@ -6616,9 +6569,6 @@ export const UserOverviewFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserDetailedFieldsFragmentDoc.definitions,
-    ...CompletionDetailedFieldsFragmentDoc.definitions,
-    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserOverviewFieldsFragment, unknown>
 export const UserCourseSettingCoreFieldsFragmentDoc = {
@@ -6700,9 +6650,6 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserCourseSettingCoreFieldsFragmentDoc.definitions,
-    ...UserCoreFieldsFragmentDoc.definitions,
-    ...ProgressCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<StudentProgressesQueryNodeFieldsFragment, unknown>
 export const UserCourseSettingDetailedFieldsFragmentDoc = {
@@ -6731,7 +6678,6 @@ export const UserCourseSettingDetailedFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserCourseSettingCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserCourseSettingDetailedFieldsFragment, unknown>
 export const UserProfileUserCourseSettingsQueryNodeFieldsFragmentDoc = {
@@ -6770,8 +6716,6 @@ export const UserProfileUserCourseSettingsQueryNodeFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserCourseSettingDetailedFieldsFragmentDoc.definitions,
-    ...CourseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UserProfileUserCourseSettingsQueryNodeFieldsFragment,
@@ -6837,8 +6781,6 @@ export const UserCourseSummaryCourseFieldsFragmentDoc = {
         ],
       },
     },
-    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
-    ...ExerciseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserCourseSummaryCourseFieldsFragment, unknown>
 export const ExerciseCompletionCoreFieldsFragmentDoc = {
@@ -6973,11 +6915,6 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
         ],
       },
     },
-    ...UserCourseSummaryCourseFieldsFragmentDoc.definitions,
-    ...ExerciseCompletionCoreFieldsFragmentDoc.definitions,
-    ...UserCourseProgressCoreFieldsFragmentDoc.definitions,
-    ...UserCourseServiceProgressCoreFieldsFragmentDoc.definitions,
-    ...CompletionDetailedFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserCourseSummaryCoreFieldsFragment, unknown>
 export const OrganizationCoreFieldsFragmentDoc = {
@@ -7054,7 +6991,6 @@ export const UserOrganizationCoreFieldsFragmentDoc = {
         ],
       },
     },
-    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserOrganizationCoreFieldsFragment, unknown>
 export const CreateRegistrationAttemptDateDocument = {
@@ -7332,6 +7268,14 @@ export const AddCourseDocument = {
       },
     },
     ...EditorCourseDetailedFieldsFragmentDoc.definitions,
+    ...EditorCourseFieldsFragmentDoc.definitions,
+    ...CourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<AddCourseMutation, AddCourseMutationVariables>
 export const UpdateCourseDocument = {
@@ -7419,6 +7363,14 @@ export const UpdateCourseDocument = {
       },
     },
     ...EditorCourseDetailedFieldsFragmentDoc.definitions,
+    ...EditorCourseFieldsFragmentDoc.definitions,
+    ...CourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
     ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
@@ -7661,6 +7613,7 @@ export const UpdateEmailTemplateDocument = {
       },
     },
     ...EmailTemplateFieldsFragmentDoc.definitions,
+    ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UpdateEmailTemplateMutation,
@@ -7840,6 +7793,7 @@ export const AddEmailTemplateDocument = {
       },
     },
     ...EmailTemplateFieldsFragmentDoc.definitions,
+    ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   AddEmailTemplateMutation,
@@ -7950,6 +7904,9 @@ export const AddStudyModuleDocument = {
       },
     },
     ...StudyModuleDetailedFieldsFragmentDoc.definitions,
+    ...StudyModuleFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   AddStudyModuleMutation,
@@ -8008,6 +7965,9 @@ export const UpdateStudyModuleDocument = {
       },
     },
     ...StudyModuleDetailedFieldsFragmentDoc.definitions,
+    ...StudyModuleFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UpdateStudyModuleMutation,
@@ -8574,6 +8534,10 @@ export const PaginatedCompletionsDocument = {
       },
     },
     ...CompletionsQueryConnectionFieldsFragmentDoc.definitions,
+    ...CompletionsQueryNodeFieldsFragmentDoc.definitions,
+    ...CompletionCoreFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   PaginatedCompletionsQuery,
@@ -8688,6 +8652,10 @@ export const PaginatedCompletionsPreviousPageDocument = {
       },
     },
     ...CompletionsQueryConnectionFieldsFragmentDoc.definitions,
+    ...CompletionsQueryNodeFieldsFragmentDoc.definitions,
+    ...CompletionCoreFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   PaginatedCompletionsPreviousPageQuery,
@@ -8771,6 +8739,11 @@ export const CoursesDocument = {
       },
     },
     ...CourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CoursesQuery, CoursesQueryVariables>
 export const EditorCoursesDocument = {
@@ -8905,6 +8878,12 @@ export const EditorCoursesDocument = {
       },
     },
     ...EditorCourseFieldsFragmentDoc.definitions,
+    ...CourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EditorCoursesQuery, EditorCoursesQueryVariables>
 export const CourseFromSlugDocument = {
@@ -8994,6 +8973,10 @@ export const CourseEditorOtherCoursesDocument = {
       },
     },
     ...EditorCourseOtherCoursesFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CourseEditorOtherCoursesQuery,
@@ -9072,6 +9055,14 @@ export const CourseEditorDetailsDocument = {
       },
     },
     ...EditorCourseDetailedFieldsFragmentDoc.definitions,
+    ...EditorCourseFieldsFragmentDoc.definitions,
+    ...CourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CourseEditorDetailsQuery,
@@ -9275,6 +9266,7 @@ export const EmailTemplatesDocument = {
       },
     },
     ...EmailTemplateFieldsFragmentDoc.definitions,
+    ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EmailTemplatesQuery, EmailTemplatesQueryVariables>
 export const EmailTemplateDocument = {
@@ -9324,6 +9316,7 @@ export const EmailTemplateDocument = {
       },
     },
     ...EmailTemplateFieldsFragmentDoc.definitions,
+    ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EmailTemplateQuery, EmailTemplateQueryVariables>
 export const OrganizationsDocument = {
@@ -9490,6 +9483,7 @@ export const StudyModulesDocument = {
       },
     },
     ...StudyModuleFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<StudyModulesQuery, StudyModulesQueryVariables>
 export const EditorStudyModulesDocument = {
@@ -9535,6 +9529,9 @@ export const EditorStudyModulesDocument = {
       },
     },
     ...StudyModuleDetailedFieldsFragmentDoc.definitions,
+    ...StudyModuleFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...StudyModuleTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   EditorStudyModulesQuery,
@@ -9619,6 +9616,7 @@ export const EditorStudyModuleDetailsDocument = {
       },
     },
     ...StudyModuleFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...StudyModuleTranslationFieldsFragmentDoc.definitions,
   ],
@@ -9727,6 +9725,7 @@ export const CurrentUserDetailedDocument = {
       },
     },
     ...UserDetailedFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserDetailedQuery,
@@ -9844,6 +9843,17 @@ export const UserSummaryDocument = {
       },
     },
     ...UserCourseSummaryCoreFieldsFragmentDoc.definitions,
+    ...UserCourseSummaryCourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...ExerciseCoreFieldsFragmentDoc.definitions,
+    ...ExerciseCompletionCoreFieldsFragmentDoc.definitions,
+    ...UserCourseProgressCoreFieldsFragmentDoc.definitions,
+    ...UserCourseServiceProgressCoreFieldsFragmentDoc.definitions,
+    ...CompletionDetailedFieldsFragmentDoc.definitions,
+    ...CompletionCoreFieldsFragmentDoc.definitions,
+    ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserSummaryQuery, UserSummaryQueryVariables>
 export const CurrentUserOverviewDocument = {
@@ -9873,6 +9883,14 @@ export const CurrentUserOverviewDocument = {
       },
     },
     ...UserOverviewFieldsFragmentDoc.definitions,
+    ...UserDetailedFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
+    ...CompletionDetailedFieldsFragmentDoc.definitions,
+    ...CompletionCoreFieldsFragmentDoc.definitions,
+    ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserOverviewQuery,
@@ -9925,6 +9943,14 @@ export const UserOverviewDocument = {
       },
     },
     ...UserOverviewFieldsFragmentDoc.definitions,
+    ...UserDetailedFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
+    ...CompletionDetailedFieldsFragmentDoc.definitions,
+    ...CompletionCoreFieldsFragmentDoc.definitions,
+    ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserOverviewQuery, UserOverviewQueryVariables>
 export const CurrentUserProgressesDocument = {
@@ -9954,6 +9980,11 @@ export const CurrentUserProgressesDocument = {
       },
     },
     ...UserProgressesFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
+    ...ProgressCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...UserCourseProgressCoreFieldsFragmentDoc.definitions,
+    ...UserCourseServiceProgressCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserProgressesQuery,
@@ -10571,6 +10602,12 @@ export const StudentProgressesDocument = {
       },
     },
     ...StudentProgressesQueryNodeFieldsFragmentDoc.definitions,
+    ...UserCourseSettingCoreFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
+    ...ProgressCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...UserCourseProgressCoreFieldsFragmentDoc.definitions,
+    ...UserCourseServiceProgressCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   StudentProgressesQuery,
@@ -10667,6 +10704,9 @@ export const UserProfileUserCourseSettingsDocument = {
       },
     },
     ...UserProfileUserCourseSettingsQueryNodeFieldsFragmentDoc.definitions,
+    ...UserCourseSettingDetailedFieldsFragmentDoc.definitions,
+    ...UserCourseSettingCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UserProfileUserCourseSettingsQuery,
@@ -10711,6 +10751,7 @@ export const CurrentUserOrganizationsDocument = {
       },
     },
     ...UserOrganizationCoreFieldsFragmentDoc.definitions,
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserOrganizationsQuery,

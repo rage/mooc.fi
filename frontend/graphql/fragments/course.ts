@@ -64,9 +64,6 @@ export const CourseFieldsFragment = gql`
     study_modules {
       ...StudyModuleCoreFields
     }
-    photo {
-      ...ImageCoreFields
-    }
   }
   ${CourseWithPhotoCoreFieldsFragment}
   ${CourseTranslationCoreFieldsFragment}

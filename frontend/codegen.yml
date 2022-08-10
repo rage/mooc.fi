@@ -27,6 +27,8 @@ generates:
       modules:
         - name: "@apollo/client"
           identifier: gql
+    config:
+      dedupeFragments: true
     plugins:
       - typescript
       - typescript-operations
