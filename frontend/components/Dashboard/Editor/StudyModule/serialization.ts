@@ -12,13 +12,13 @@ import {
   StudyModuleUpsertArg,
 } from "/graphql/generated"
 
-interface ToStudyModuleFormProps {
+interface ToStudyModuleFormArgs {
   module?: StudyModuleDetailedFieldsFragment
 }
 
 export const toStudyModuleForm = ({
   module,
-}: ToStudyModuleFormProps): StudyModuleFormValues =>
+}: ToStudyModuleFormArgs): StudyModuleFormValues =>
   module
     ? {
         ...module,
@@ -29,11 +29,13 @@ export const toStudyModuleForm = ({
       }
     : initialValues
 
+interface FromStudyModuleFormArgs {
+  values: StudyModuleFormValues
+}
+
 export const fromStudyModuleForm = ({
   values,
-}: {
-  values: StudyModuleFormValues
-}): StudyModuleCreateArg | StudyModuleUpsertArg => {
+}: FromStudyModuleFormArgs): StudyModuleCreateArg | StudyModuleUpsertArg => {
   const study_module_translations = values?.study_module_translations?.map(
     (c: StudyModuleTranslationFormValues) => ({
       ...omit(c, "__typename"),

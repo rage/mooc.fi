@@ -1,6 +1,15 @@
 import { ForbiddenError } from "apollo-server-express"
 import { chunk } from "lodash"
-import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
+import {
+  arg,
+  extendType,
+  intArg,
+  list,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus"
+import { type NexusGenInputs } from "nexus-typegen"
 
 import { Prisma } from "@prisma/client"
 
@@ -109,11 +118,11 @@ export const CompletionRegisteredMutations = extendType({
     t.field("registerCompletion", {
       type: "String",
       args: {
-        completions: list(arg({ type: "CompletionArg" })),
+        completions: nonNull(list(nonNull(arg({ type: "CompletionArg" })))),
       },
       authorize: isOrganization,
       resolve: async (_, args, ctx: Context) => {
-        let queue = chunk(args.completions, 500)
+        const queue = chunk(args.completions, 500)
 
         for (let i = 0; i < queue.length; i++) {
           const promises = buildPromises(queue[i], ctx)
@@ -125,7 +134,10 @@ export const CompletionRegisteredMutations = extendType({
   },
 })
 
-const buildPromises = (array: any[], ctx: Context) => {
+const buildPromises = (
+  array: Array<NexusGenInputs["CompletionArg"]>,
+  ctx: Context,
+) => {
   return array.map(async (entry) => {
     const { user_id, course_id } =
       (await ctx.prisma.completion.findUnique({

@@ -36,11 +36,11 @@ const ListItemArea = styled.div`
   margin: 1rem auto 1rem auto;
 `
 
-function CompletionCard({
-  completer,
-}: {
+interface CompletionCardProps {
   completer: CompletionsQueryNodeFieldsFragment
-}) {
+}
+
+function CompletionCard({ completer }: CompletionCardProps) {
   const completionLanguage =
     MapLangToLanguage[completer?.completion_language ?? ""] ??
     "No language available"

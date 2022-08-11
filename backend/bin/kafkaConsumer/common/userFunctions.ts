@@ -21,15 +21,20 @@ import {
   ServiceProgressType,
 } from "./userCourseProgress/interfaces"
 
+interface WithKafkaContext {
+  context: KafkaContext
+}
+
+interface GetCombinedUserCourseProgressArgs extends WithKafkaContext {
+  user: User
+  course: Course
+}
+
 export const getCombinedUserCourseProgress = async ({
   user,
   course,
   context: { prisma },
-}: {
-  user: User
-  course: Course
-  context: KafkaContext
-}): Promise<CombinedUserCourseProgress> => {
+}: GetCombinedUserCourseProgressArgs): Promise<CombinedUserCourseProgress> => {
   const userCourseServiceProgresses = await prisma.user
     .findUnique({ where: { id: user.id } })
     .user_course_service_progresses({
@@ -61,15 +66,16 @@ export const getCombinedUserCourseProgress = async ({
   return combined
 }
 
+interface CheckRequiredExerciseCompletionsArgs extends WithKafkaContext {
+  user: User
+  course: Course
+}
+
 export const checkRequiredExerciseCompletions = async ({
   user,
   course,
   context: { knex },
-}: {
-  user: User
-  course: Course
-  context: KafkaContext
-}): Promise<boolean> => {
+}: CheckRequiredExerciseCompletionsArgs): Promise<boolean> => {
   if (course.exercise_completions_needed) {
     const exercise_completions = await knex("exercise_completion")
       .countDistinct("exercise_completion.exercise_id")
@@ -85,15 +91,16 @@ export const checkRequiredExerciseCompletions = async ({
   return true
 }
 
+interface GetExerciseCompletionsForCoursesArgs extends WithKafkaContext {
+  user: User
+  courseIds: string[]
+}
+
 export const getExerciseCompletionsForCourses = async ({
   user,
   courseIds,
   context: { knex },
-}: {
-  user: User
-  courseIds: string[]
-  context: KafkaContext
-}) => {
+}: GetExerciseCompletionsForCoursesArgs) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
   const exercise_completions: ExerciseCompletionPart[] = await knex(
@@ -118,15 +125,16 @@ export const getExerciseCompletionsForCourses = async ({
   return exercise_completions // ?.rows ?? []
 }
 
+interface PruneDuplicateExerciseCompletionsArgs extends WithKafkaContext {
+  user_id: string
+  course_id: string
+}
+
 export const pruneDuplicateExerciseCompletions = async ({
   user_id,
   course_id,
   context: { knex },
-}: {
-  user_id: string
-  course_id: string
-  context: KafkaContext
-}) => {
+}: PruneDuplicateExerciseCompletionsArgs) => {
   // variation: only prune those with the latest timestamp but older updated_at
   /*const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
     "exercise_completion",
@@ -198,9 +206,7 @@ export const pruneDuplicateExerciseCompletions = async ({
 
 export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   context: { knex },
-}: {
-  context: KafkaContext
-}) => {
+}: WithKafkaContext) => {
   const deleted: Array<Pick<ExerciseCompletionRequiredAction, "id">> =
     await knex("exercise_completion_required_actions")
       .whereNull("exercise_completion_id")
@@ -210,15 +216,16 @@ export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   return deleted
 }
 
+interface GetUserCourseSettingsArgs extends WithKafkaContext {
+  user_id: string
+  course_id: string
+}
+
 export const getUserCourseSettings = async ({
   user_id,
   course_id,
   context: { prisma },
-}: {
-  user_id: string
-  course_id: string
-  context: KafkaContext
-}): Promise<UserCourseSetting | null> => {
+}: GetUserCourseSettingsArgs): Promise<UserCourseSetting | null> => {
   // - if the course inherits user course settings from some course, get settings from that one
   // - if not, get from the course itself or null if none exists
   const result = await prisma.course.findUnique({
@@ -256,12 +263,11 @@ export const getUserCourseSettings = async ({
   )
 }
 
-interface CheckCompletionArgs {
+interface CheckCompletionArgs extends WithKafkaContext {
   user: User
   course: Course
   handler?: Course | null
   combinedProgress?: CombinedUserCourseProgress
-  context: KafkaContext
 }
 
 export const checkCompletion = async ({
@@ -301,12 +307,11 @@ export const checkCompletion = async ({
   }
 }
 
-interface CreateCompletionArgs {
+interface CreateCompletionArgs extends WithKafkaContext {
   user: User
   course: Course
   handler?: Course | null
   tier?: number
-  context: KafkaContext
 }
 
 export const createCompletion = async ({

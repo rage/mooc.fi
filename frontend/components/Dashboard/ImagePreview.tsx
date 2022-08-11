@@ -35,17 +35,19 @@ const CloseButton = styled(ButtonBase)`
   }
 `
 
+interface ImagePreviewProps {
+  file: string | undefined
+  onClose: Function | null
+  height?: number
+  [key: string]: any
+}
+
 const ImagePreview = ({
   file,
   onClose = null,
   height = 250,
   ...rest
-}: {
-  file: string | undefined
-  onClose: Function | null
-  height?: number
-  [key: string]: any
-}) => {
+}: ImagePreviewProps) => {
   if (!file) {
     return null
   }

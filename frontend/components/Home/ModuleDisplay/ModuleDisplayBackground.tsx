@@ -23,11 +23,13 @@ const Background = styled.div<RootProps>`
 `
 interface DisplayBackgroundProps {
   backgroundColor: string
-  children: any
   hueRotateAngle: number
   brightness: number
 }
-const ModuleDisplayBackground = (props: DisplayBackgroundProps) => {
+
+const ModuleDisplayBackground = (
+  props: React.PropsWithChildren<DisplayBackgroundProps>,
+) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
 
   // webp for svg?

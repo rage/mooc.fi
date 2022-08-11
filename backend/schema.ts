@@ -69,7 +69,11 @@ export default makeSchema({
         module: require.resolve(".prisma/client/index.d.ts"),
         alias: "prisma",
       },
+      { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
     ],
+    mapping: {
+      Upload: "upload.Upload['promise']",
+    },
   },
   plugins: createPlugins(),
   outputs: {

@@ -23,11 +23,11 @@ import {
   UpdateStudyModuleDocument,
 } from "/graphql/generated"
 
-const StudyModuleEdit = ({
-  module,
-}: {
+interface StudyModuleEditProps {
   module?: StudyModuleDetailedFieldsFragment
-}) => {
+}
+
+const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const t = useTranslator(ModulesTranslations)
 
   const [addStudyModule] = useMutation(AddStudyModuleDocument)

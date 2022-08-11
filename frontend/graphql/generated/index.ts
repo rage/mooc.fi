@@ -970,7 +970,7 @@ export type MutationrecheckCompletionsArgs = {
 }
 
 export type MutationregisterCompletionArgs = {
-  completions?: InputMaybe<Array<InputMaybe<CompletionArg>>>
+  completions: Array<CompletionArg>
 }
 
 export type MutationupdateAbEnrollmentArgs = {

@@ -77,7 +77,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     ],
   })
 
-  const onSubmit = useCallback(async (values: CourseFormValues, _?: any) => {
+  const onSubmit = useCallback(async (values: CourseFormValues) => {
     const newCourse = !values.id
     const mutationVariables = fromCourseForm({
       values,
@@ -120,7 +120,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   }, [])
 
   const onError: SubmitErrorHandler<CourseFormValues> = useCallback(
-    (errors: Record<string, any>, _?: any) => {
+    (errors: Record<string, any>) => {
       const { anchor, anchorLink } = getFirstErrorAnchor(anchors, errors)
 
       setTab(anchor?.tab ?? 0)

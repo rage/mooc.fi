@@ -11,7 +11,7 @@ import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import DatePicker from "@mui/lab/DatePicker"
 import LocalizationProvider from "@mui/lab/LocalizationProvider"
-import { Button, Container, TextField } from "@mui/material"
+import { Button, Container, TextField, TextFieldProps } from "@mui/material"
 import Alert from "@mui/material/Alert"
 import AlertTitle from "@mui/material/AlertTitle"
 import Typography from "@mui/material/Typography"
@@ -233,7 +233,7 @@ const ManualCompletions = () => {
             inputFormat="yyyy-MM-dd"
             onChange={setCompletionDate}
             value={completionDate}
-            renderInput={(props: any) => (
+            renderInput={(props: TextFieldProps) => (
               <TextField {...props} variant="outlined" />
             )}
           />

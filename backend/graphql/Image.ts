@@ -1,10 +1,13 @@
+import { ReadStream } from "fs"
+
+import { FileUpload } from "graphql-upload"
 import { arg, booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin } from "../accessControl"
 import { Context } from "../context"
 import {
-  deleteImage as deleteStorageImage,
-  uploadImage as uploadStorageImage,
+  deleteStorageImage,
+  uploadStorageImage,
 } from "../services/google-cloud"
 
 const sharp = require("sharp")
@@ -58,35 +61,29 @@ export const ImageMutations = extendType({
   },
 })
 
-const readFS = (stream: NodeJS.ReadStream): Promise<Buffer> => {
-  let chunkList: any[] | Uint8Array[] = []
+const readFS = (stream: ReadStream): Promise<Buffer> => {
+  const chunkList: Uint8Array[] = []
 
   return new Promise((resolve, reject) =>
     stream
-      .on("data", (data) => chunkList.push(data))
+      .on("data", (data: Buffer) => chunkList.push(data))
       .on("error", (err) => reject(err))
       .on("end", () => resolve(Buffer.concat(chunkList))),
   )
+}
+
+interface UploadImageArgs {
+  ctx: Context
+  file: Promise<FileUpload>
+  base64: boolean
 }
 
 export const uploadImage = async ({
   ctx,
   file,
   base64 = false,
-}: {
-  ctx: Context
-  file: any
-  base64: boolean
-}) => {
-  const {
-    createReadStream,
-    mimetype,
-    filename,
-  }: {
-    createReadStream: Function
-    mimetype: string
-    filename: string
-  } = await file
+}: UploadImageArgs) => {
+  const { createReadStream, mimetype, filename } = await file
 
   const image: Buffer = await readFS(createReadStream())
   const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)?.[1]
@@ -145,13 +142,15 @@ export const uploadImage = async ({
   return newImage
 }
 
+interface DeleteImageArgs {
+  ctx: Context
+  id: string
+}
+
 export const deleteImage = async ({
   ctx,
   id,
-}: {
-  ctx: Context
-  id: string
-}): Promise<boolean> => {
+}: DeleteImageArgs): Promise<boolean> => {
   const image = await ctx.prisma.image.findUnique({ where: { id } })
 
   if (!image) {

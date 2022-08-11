@@ -10,6 +10,7 @@ import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
+import { notEmpty } from "../../util/notEmpty"
 import { deleteImage, uploadImage } from "../Image"
 
 const isNotNull = <T>(value: T | null | undefined): value is T =>
@@ -374,18 +375,16 @@ export const CourseMutations = extendType({
   },
 })
 
-const getIds = (arr: any[]) => (arr || []).map((t) => t.id)
-const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
+type WithIdOrNull = (object & { id?: string | null }) | null
+const getIds = (arr: WithIdOrNull[]) => (arr || []).map((t) => t?.id)
+
+function filterNotIncluded(arr1: WithIdOrNull[], arr2: WithIdOrNull[]) {
   const ids1 = getIds(arr1)
   const ids2 = getIds(arr2)
 
-  const filtered = ids1.filter((id) => !ids2.includes(id))
+  const filtered = ids1.filter((id) => !ids2.includes(id)).filter(notEmpty)
 
-  if (mapToId) {
-    return filtered.map((id) => ({ id }))
-  }
-
-  return filtered
+  return filtered.map((id) => ({ id }))
 }
 
 interface ICreateMutation<T> {
@@ -395,7 +394,7 @@ interface ICreateMutation<T> {
   field: keyof Prisma.Prisma__CourseClient<Course>
 }
 
-const createMutation = async <T extends { id?: string | null } | null>({
+const createMutation = async <T extends WithIdOrNull>({
   ctx,
   slug,
   data,
@@ -420,7 +419,7 @@ const createMutation = async <T extends { id?: string | null } | null>({
   const updated = (data || [])
     .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
-      where: { id: t.id } as { id: string },
+      where: { id: t.id },
       data: t, //{ ...t, id: undefined },
     }))
   const removed = filterNotIncluded(existing!, data)
@@ -432,8 +431,6 @@ const createMutation = async <T extends { id?: string | null } | null>({
   }
 }
 
-const hasId = <T extends { id?: string | null } | null>(
-  data: T,
-): data is any & { id: string | null } => Boolean(data?.id)
-const hasNotId = <T extends { id?: string | null } | null>(data: T) =>
-  !hasId(data)
+const hasId = <T extends WithIdOrNull>(data: T): data is T & { id: string } =>
+  Boolean(data?.id)
+const hasNotId = <T extends WithIdOrNull>(data: T) => !hasId(data)

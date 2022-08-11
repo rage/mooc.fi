@@ -13,13 +13,15 @@ interface GetUserReturn {
   details: UserInfo
 }
 
+interface RequireCourseOwnershipArgs {
+  course_id: string
+  ctx: ApiContext
+}
+
 export function requireCourseOwnership({
   course_id,
   ctx,
-}: {
-  course_id: string
-  ctx: ApiContext
-}) {
+}: RequireCourseOwnershipArgs) {
   return async function (
     req: Request,
     res: Response,

@@ -11,6 +11,8 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
+import { Translator } from "/translations"
+import { type CoursesTranslations } from "/translations/courses"
 
 import { CourseFromSlugDocument, CourseStatus } from "/graphql/generated"
 
@@ -84,15 +86,13 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
 
 export const study_modules: { value: any; label: any }[] = []
 
-const courseEditSchema = ({
-  client,
-  initialSlug,
-  t,
-}: {
+interface CourseEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: (key: any) => string
-}) => {
+  t: Translator<CoursesTranslations>
+}
+
+const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
   return Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
@@ -207,13 +207,12 @@ const courseEditSchema = ({
   })
 }
 
-const validateSlug = ({
-  client,
-  initialSlug,
-}: {
+interface ValidateSlugArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-}) =>
+}
+
+const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
   async function (
     this: Yup.TestContext,
     value?: string | null,

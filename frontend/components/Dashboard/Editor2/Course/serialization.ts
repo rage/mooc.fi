@@ -14,13 +14,15 @@ import {
 
 const isProduction = process.env.NODE_ENV === "production"
 
+interface ToCourseFormArgs {
+  course?: EditorCourseDetailedFieldsFragment
+  modules?: StudyModuleDetailedFieldsFragment[]
+}
+
 export const toCourseForm = ({
   course,
   modules,
-}: {
-  course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
-}): CourseFormValues => {
+}: ToCourseFormArgs): CourseFormValues => {
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
 
@@ -105,7 +107,7 @@ export const toCourseForm = ({
     : initialValues
 }
 
-interface FromCourseFormProps {
+interface FromCourseFormArgs {
   values: CourseFormValues
   initialValues: CourseFormValues
 }
@@ -113,7 +115,7 @@ interface FromCourseFormProps {
 export const fromCourseForm = ({
   values,
   initialValues,
-}: FromCourseFormProps): CourseCreateArg | CourseUpsertArg => {
+}: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
   console.log(values)

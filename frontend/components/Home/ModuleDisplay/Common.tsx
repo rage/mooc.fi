@@ -60,7 +60,12 @@ const ModuleImageBase = styled.img`
   width: 100%;
 `
 
-export const ModuleImage = ({ src, alt }: { src: string; alt?: string }) => (
+interface ModuleImageProps {
+  src: string
+  alt?: string
+}
+
+export const ModuleImage = ({ src, alt }: ModuleImageProps) => (
   <picture>
     <source
       srcSet={require(`../../../static/images/${src}?webp`)}

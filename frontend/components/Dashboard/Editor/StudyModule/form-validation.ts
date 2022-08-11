@@ -6,6 +6,8 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
+import { Translator } from "/translations"
+import { type StudyModulesTranslations } from "/translations/study-modules"
 
 import { StudyModuleExistsDocument } from "/graphql/generated"
 
@@ -25,7 +27,7 @@ export const initialValues: StudyModuleFormValues = {
   study_module_translations: [initialTranslation],
 }
 
-export const languages = (t: Function) => [
+export const languages = (t: Translator<StudyModulesTranslations>) => [
   {
     value: "fi_FI",
     label: t("moduleFinnish"),
@@ -40,15 +42,17 @@ export const languages = (t: Function) => [
   },
 ]
 
+interface StudyModuleEditSchemaArgs {
+  client: ApolloClient<object>
+  initialSlug: string | null
+  t: Translator<StudyModulesTranslations>
+}
+
 const studyModuleEditSchema = ({
   client,
   initialSlug,
   t,
-}: {
-  client: ApolloClient<object>
-  initialSlug: string | null
-  t: (key: any) => string
-}) =>
+}: StudyModuleEditSchemaArgs) =>
   Yup.object().shape({
     new_slug: Yup.string()
       .required(t("validationRequired"))
@@ -111,13 +115,12 @@ const studyModuleEditSchema = ({
       .integer(t("validationInteger")),
   })
 
-const validateSlug = ({
-  client,
-  initialSlug,
-}: {
+interface ValidateSlugArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-}) =>
+}
+
+const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
   async function (
     this: Yup.TestContext,
     value?: string | null,

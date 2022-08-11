@@ -93,7 +93,7 @@ export const UserCourseProgress = objectType({
           throw new Error("no course or user found")
         }
 
-        const courseProgress: any = normalizeProgress(progress)
+        const courseProgress = normalizeProgress(progress)
 
         // TODO: this should probably also only count completed exercises!
         const exercises = await ctx.prisma.course

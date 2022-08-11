@@ -19,7 +19,8 @@ const UserPage = () => {
   const client = useApolloClient()
   const t = useTranslator(CommonTranslations)
 
-  const [more, setMore]: any[] = useState([])
+  // TODO: typing, this "more" isn't actually used anywhere?
+  const [more, setMore] = useState<any[]>([])
 
   const { loading, error, data } = useQuery(
     UserProfileUserCourseSettingsDocument,

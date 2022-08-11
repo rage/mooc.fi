@@ -2,13 +2,13 @@
 
 ## Frontend types
 
-If you make changes to the GraphQL schema, resolvers etc. in the backend and/or the queries/mutations in the frontend, you probably need to regenerate the Typescript types for the frontend.
+If you make changes to the GraphQL schema, resolvers etc. in the backend and/or the operations/definitions in the frontend, you probably need to regenerate the Typescript types for the frontend.
 
 ### In brief:
 
-Ensure you have a fresh GraphQL schema in the backend by running `npm run generate` in the backend folder.
+Ensure you have a fresh GraphQL schema by running `npm run generate` in the backend folder.
 
-Then run `npm run graphql-codegen` in the frontend folder.
+Then run `npm run graphql-codegen` in the frontend folder. You can also run `npm run graphql-codegen --watch` to watch for changes and regenerate the frontend types automatically.
 
 ## Detailed example from backend to frontend:
 

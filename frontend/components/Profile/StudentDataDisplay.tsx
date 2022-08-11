@@ -12,8 +12,8 @@ import notEmpty from "/util/notEmpty"
 import { UserOverviewFieldsFragment } from "/graphql/generated"
 
 interface TabPanelProps {
-  index: any
-  value: any
+  index: number
+  value: number
 }
 
 const TabPanel = ({

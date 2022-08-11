@@ -3,7 +3,7 @@ export interface Message {
   user_id: number
   course_id: string
   service_id: string
-  progress: [PointsByGroup]
+  progress: PointsByGroup[]
   message_format_version: Number
 }
 

@@ -1,6 +1,8 @@
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
+import { Message } from "./interfaces"
+
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 
 const PointsByGroupYupSchema = yup.object().shape({
@@ -32,14 +34,14 @@ export const MessageYupSchema = yup.object().shape({
     .required(),
 })
 
-const handleNullProgressImpl = (value: any) => ({
+const handleNullProgressImpl = (value: Message) => ({
   ...value,
-  progress: value?.progress?.map((progress: any) => ({
-    ...progress,
+  progress: value?.progress?.map((pointsByGroup) => ({
+    ...pointsByGroup,
     progress:
-      progress.progress === null || isNaN(progress.progress)
+      pointsByGroup.progress === null || isNaN(pointsByGroup.progress)
         ? 0
-        : progress.progress,
+        : pointsByGroup.progress,
   })),
 })
 

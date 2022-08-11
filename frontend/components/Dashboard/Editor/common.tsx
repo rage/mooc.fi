@@ -78,15 +78,13 @@ export const AdjustingAnchorLink = styled.a<{ id: string }>`
   visibility: hidden;
 `
 
-export const CheckboxField = ({
-  id,
-  label,
-  checked,
-}: {
+interface CheckboxFieldProps {
   id: string
   label: string
   checked: boolean
-}) => {
+}
+
+export const CheckboxField = ({ id, label, checked }: CheckboxFieldProps) => {
   const { setFieldValue } = useFormikContext<any>()
 
   return (

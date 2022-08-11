@@ -81,7 +81,7 @@ async function flatten(
     const { course_variant, country, language } =
       datum?.user_course_settings ?? {}
 
-    const newDatum: any = {
+    const newDatum = {
       user_id: upstream_id,
       first_name: first_name?.replace(/\s+/g, " ").trim() ?? "",
       last_name: last_name?.replace(/\s+/g, " ").trim() ?? "",
@@ -108,7 +108,7 @@ async function flatten(
 async function downloadInChunks(
   courseSlug: string,
   client: ApolloClient<object>,
-  setMessage: any,
+  setMessage: React.Dispatch<React.SetStateAction<string>>,
 ): Promise<ExportUserCourseProgressesQuery["userCourseProgresses"]> {
   const res: ExportUserCourseProgressesQuery["userCourseProgresses"] = []
   // let after: string | undefined = undefined

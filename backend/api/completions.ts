@@ -152,6 +152,7 @@ export class CompletionController {
     const { user } = getUserResult.value
     const { slug } = req.params
 
+    // TODO: typing
     let tierData: any = []
 
     const course = (

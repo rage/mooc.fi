@@ -13,7 +13,8 @@
     "generate-page-stubs": "node util/createStubs.js",
     "typecheck": "tsc --noEmit",
     "start:inspect": "NODE_ENV=production PORT=3021 NODE_OPTIONS=--inspect node server.js",
-    "graphql-codegen": "graphql-codegen --config codegen.yml"
+    "graphql-codegen": "graphql-codegen --config codegen.yml",
+    "graphql-codegen:watch": "graphql-codegen --config codegen.yml --watch"
   },
   "keywords": [],
   "author": "",

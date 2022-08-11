@@ -16,7 +16,8 @@ import { KafkaError } from "../../lib/errors"
 import checkConnectionInInterval from "./connectedChecker"
 
 const logCommit =
-  (logger: winston.Logger) => (err: any, topicPartitions: any) => {
+  (logger: winston.Logger) =>
+  (err: any, topicPartitions: Kafka.TopicPartition[]) => {
     if (err) {
       logger.error(new KafkaError("Error in commit", err))
     } else {
