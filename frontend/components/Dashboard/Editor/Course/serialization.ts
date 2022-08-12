@@ -30,8 +30,6 @@ export const toCourseForm = ({
   return course
     ? {
         ...omit(course, ["__typename"]),
-        teacher_in_charge_name: course.teacher_in_charge_name ?? "",
-        teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
         start_date: course.start_date
           ? DateTime.fromISO(course.start_date)
@@ -205,8 +203,6 @@ export const fromCourseForm = ({
     inherit_settings_from: values.inherit_settings_from,
     completions_handled_by: values.completions_handled_by,
     user_course_settings_visibilities,
-    teacher_in_charge_email: values.teacher_in_charge_email ?? "",
-    teacher_in_charge_name: values.teacher_in_charge_name ?? "",
     status, //values.status as CourseStatus
     upcoming_active_link: values.upcoming_active_link ?? false,
     automatic_completions: values.automatic_completions ?? false,

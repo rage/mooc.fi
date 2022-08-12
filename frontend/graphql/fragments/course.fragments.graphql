@@ -43,6 +43,7 @@ fragment CourseFields on Course {
   teacher_in_charge_name
   start_date
   end_date
+  has_certificate
   course_translations {
     ...CourseTranslationCoreFields
   }
@@ -54,7 +55,6 @@ fragment CourseFields on Course {
 fragment EditorCourseFields on Course {
   ...CourseFields
   instructions
-  has_certificate
   upcoming_active_link
   completions_handled_by {
     ...CourseCoreFields

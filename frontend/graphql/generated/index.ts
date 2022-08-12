@@ -1,3 +1,8 @@
+/**
+ * This is an automatically generated file.
+ * Run `npm run graphql-codegen` to regenerate.
+ **/
+
 import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core"
 
 export type Maybe<T> = T | null
@@ -11,6 +16,8 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
+// Generated on 2022-08-12T14:26:07+03:00
+
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -4056,11 +4063,6 @@ export type CoursesQuery = {
     ects: string | null
     created_at: any | null
     updated_at: any | null
-    user_course_settings_visibilities: Array<{
-      __typename?: "UserCourseSettingsVisibility"
-      id: string
-      language: string
-    }>
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
@@ -8707,23 +8709,6 @@ export const CoursesDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseFields" },
-                },
-                {
-                  kind: "Field",
-                  name: {
-                    kind: "Name",
-                    value: "user_course_settings_visibilities",
-                  },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "language" },
-                      },
-                    ],
-                  },
                 },
               ],
             },

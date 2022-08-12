@@ -1,10 +1,6 @@
 query Courses($language: String) {
   courses(orderBy: { order: asc }, language: $language) {
     ...CourseFields
-    user_course_settings_visibilities {
-      id
-      language
-    }
   }
 }
 
@@ -23,6 +19,7 @@ query EditorCourses(
   ) {
     ...EditorCourseFields
   }
+  # is currentUser from this query ever used?
   currentUser {
     id
     administrator

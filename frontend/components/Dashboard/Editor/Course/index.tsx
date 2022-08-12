@@ -66,7 +66,6 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
 
       const mutationVariables = fromCourseForm({ values, initialValues })
 
-      // const mutationVariables = fromCourseForm({ values, initialValues })
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
       const refetchQueries = [

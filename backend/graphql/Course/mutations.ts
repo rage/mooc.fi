@@ -16,6 +16,9 @@ import { deleteImage, uploadImage } from "../Image"
 const isNotNull = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined
 
+const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
+  value ?? undefined
+
 export const CourseMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -78,7 +81,7 @@ export const CourseMutations = extendType({
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
-                    id: s?.id ?? undefined,
+                    id: nullToUndefined(s?.id),
                   })),
                 }
               : undefined,
@@ -106,7 +109,7 @@ export const CourseMutations = extendType({
           },
         })
 
-        const kafkaProducer = await new KafkaProducer()
+        const kafkaProducer = new KafkaProducer()
         const producerMessage: ProducerMessage = {
           message: JSON.stringify(newCourse),
           partition: null,
@@ -247,14 +250,15 @@ export const CourseMutations = extendType({
           .findUnique({ where: { slug } })
           .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-        const removedModuleIds = (existingStudyModules || [])
-          .filter((module) => !getIds(study_modules ?? []).includes(module.id))
-          .map((module) => ({ id: module.id } as { id: string }))
+        const removedModuleIds =
+          existingStudyModules
+            ?.filter((module) => !getIds(study_modules).includes(module.id))
+            .map((module) => ({ id: module.id })) ?? []
         const connectModules =
           study_modules?.map((s) => ({
             ...s,
-            id: s?.id ?? undefined,
-            slug: s?.slug ?? undefined,
+            id: nullToUndefined(s?.id),
+            slug: nullToUndefined(s?.slug),
           })) ?? []
 
         const studyModuleMutation:
@@ -295,7 +299,7 @@ export const CourseMutations = extendType({
 
         const updatedCourse = await ctx.prisma.course.update({
           where: {
-            id: id ?? undefined,
+            id: nullToUndefined(id),
             slug,
           },
           data: convertUpdate({
@@ -309,7 +313,7 @@ export const CourseMutations = extendType({
               "completion_email_id",
               "course_stats_email_id",
             ]),
-            slug: new_slug ? new_slug : slug,
+            slug: new_slug ?? slug,
             end_date,
             // FIXME: disconnect removed photos?
             photo: !!photo ? { connect: { id: photo } } : undefined,
@@ -375,8 +379,8 @@ export const CourseMutations = extendType({
   },
 })
 
-type WithIdOrNull = (object & { id?: string | null }) | null
-const getIds = (arr: WithIdOrNull[]) => (arr || []).map((t) => t?.id)
+type WithIdOrNull = { id?: string | null; [key: string]: any } | null
+const getIds = (arr?: WithIdOrNull[] | null) => arr?.map((t) => t?.id) ?? []
 
 function filterNotIncluded(arr1: WithIdOrNull[], arr2: WithIdOrNull[]) {
   const ids1 = getIds(arr1)

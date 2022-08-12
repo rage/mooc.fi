@@ -8,7 +8,7 @@ If you make changes to the GraphQL schema, resolvers etc. in the backend and/or 
 
 Ensure you have a fresh GraphQL schema by running `npm run generate` in the backend folder.
 
-Then run `npm run graphql-codegen` in the frontend folder. You can also run `npm run graphql-codegen --watch` to watch for changes and regenerate the frontend types automatically.
+Then run `npm run graphql-codegen` in the frontend folder. You can also run `npm run graphql-codegen:watch` to watch for changes and regenerate the frontend types automatically.
 
 ## Detailed example from backend to frontend:
 
@@ -49,7 +49,7 @@ query StaffMemberDetails($id: ID!) {
 }
 ```
 
-Note that even if you could leave the query unnamed, it would then be assigned a random name that's not very helpful in the context.
+Note that even if you could leave the query unnamed, it would then be assigned a random type name which would be less helpful.
 
 Run `npm run graphql-codegen` in the frontend folder. This will generate a bucketload of useful typings and other code.
 
@@ -72,7 +72,7 @@ function SayHello(id: string) {
     <div>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
-      {data && <p>Hello, {data.staffMember?.user.name ?? "stranger"}</p>}
+      {data(<p>Hello, {data.staffMember?.user.name ?? "stranger"}</p>}
     </div>
   )
 }
