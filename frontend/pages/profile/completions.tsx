@@ -4,13 +4,13 @@ import Container from "/components/Container"
 import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
-import { UserOverViewQuery } from "/graphql/queries/currentUser"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
-import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
+
+import { CurrentUserOverviewDocument } from "/graphql/generated"
 
 function CompletionsPage() {
-  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const { loading, error, data } = useQuery(CurrentUserOverviewDocument)
 
   useBreadcrumbs([
     {

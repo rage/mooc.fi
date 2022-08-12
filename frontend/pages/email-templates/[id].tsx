@@ -2,7 +2,6 @@ import { useState } from "react"
 
 import { NextSeo } from "next-seo"
 import Router from "next/router"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
 import { useApolloClient, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -21,17 +20,16 @@ import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { CardTitle, SubtitleNoBackground } from "/components/Text/headers"
-import {
-  DeleteEmailTemplateMutation,
-  UpdateEmailTemplateMutation,
-} from "/graphql/mutations/email-templates"
-import { EmailTemplateQuery } from "/graphql/queries/email-templates"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { EmailTemplate } from "/static/types/generated/EmailTemplate"
-import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import {
+  DeleteEmailTemplateDocument,
+  EmailTemplateDocument,
+  UpdateEmailTemplateDocument,
+} from "/graphql/generated"
 
 interface TemplateType {
   name: string
@@ -97,10 +95,10 @@ const EmailTemplateView = () => {
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
   const [exerciseThreshold, setExerciseThreshold] = useState<
-    Number | null | undefined
+    number | null | undefined
   >()
   const [pointsThreshold, setPointsThreshold] = useState<
-    Number | null | undefined
+    number | null | undefined
   >()
   const [templateType, setTemplateType] = useState<string | null | undefined>()
   const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
@@ -119,8 +117,8 @@ const EmailTemplateView = () => {
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
-  const { data, loading, error } = useQuery<EmailTemplate>(EmailTemplateQuery, {
-    variables: { id: id },
+  const { data, loading, error } = useQuery(EmailTemplateDocument, {
+    variables: { id },
   })
 
   useBreadcrumbs([
@@ -321,8 +319,8 @@ const EmailTemplateView = () => {
                 onClick={async () => {
                   if (emailTemplate == null) return
                   try {
-                    const { data } = await client.mutate<UpdateEmailTemplate>({
-                      mutation: UpdateEmailTemplateMutation,
+                    const { data } = await client.mutate({
+                      mutation: UpdateEmailTemplateDocument,
                       variables: {
                         id: emailTemplate.id,
                         name: name,
@@ -358,8 +356,8 @@ const EmailTemplateView = () => {
                 onClick={async () => {
                   if (emailTemplate == null) return
                   try {
-                    const { data } = await client.mutate<DeleteEmailTemplate>({
-                      mutation: DeleteEmailTemplateMutation,
+                    const { data } = await client.mutate({
+                      mutation: DeleteEmailTemplateDocument,
                       variables: { id: emailTemplate.id },
                     })
                     console.log(data)

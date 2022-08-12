@@ -1,0 +1,34 @@
+fragment UserCourseSettingCoreFields on UserCourseSetting {
+  id
+  user_id
+  course_id
+  created_at
+  updated_at
+}
+
+fragment UserCourseSettingDetailedFields on UserCourseSetting {
+  ...UserCourseSettingCoreFields
+  language
+  country
+  research
+  marketing
+  course_variant
+  other
+}
+
+fragment StudentProgressesQueryNodeFields on UserCourseSetting {
+  ...UserCourseSettingCoreFields
+  user {
+    ...UserCoreFields
+    progress(course_id: $course_id) {
+      ...ProgressCoreFields
+    }
+  }
+}
+
+fragment UserProfileUserCourseSettingsQueryNodeFields on UserCourseSetting {
+  ...UserCourseSettingDetailedFields
+  course {
+    ...CourseCoreFields
+  }
+}

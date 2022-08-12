@@ -2,10 +2,11 @@ import { List } from "@mui/material"
 
 import CompletionCard from "./CompletionCard"
 import CompletionPaginator from "./CompletionPaginator"
-import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
+
+import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 
 interface CompletionsListWithDataProps {
-  completions: AllCompletions_completionsPaginated_edges_node[]
+  completions: CompletionsQueryNodeFieldsFragment[]
   onLoadMore: () => void
   onGoBack: () => void
   hasPrevious: boolean

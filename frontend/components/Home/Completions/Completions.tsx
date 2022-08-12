@@ -1,46 +1,15 @@
-import { gql } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
 
 import { RegularContainer as Container } from "/components/Container"
 import { CompletionListItem } from "/components/Home/Completions"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-const completionsFragment = gql`
-  fragment UserCompletions on User {
-    completions {
-      id
-      completion_language
-      student_number
-      created_at
-      tier
-      eligible_for_ects
-      completion_date
-      course {
-        id
-        slug
-        name
-        photo {
-          id
-          uncompressed
-        }
-        has_certificate
-      }
-      completions_registered {
-        id
-        created_at
-        organization {
-          slug
-        }
-      }
-    }
-  }
-`
+import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
 
 export interface CompletionsProps {
-  completions: ProfileUserOverView_currentUser_completions[]
+  completions: CompletionDetailedFieldsWithCourseFragment[]
 }
 
 const Title = styled(Typography)<any>`
@@ -79,8 +48,4 @@ export const Completions = ({ completions = [] }: CompletionsProps) => {
       </Container>
     </section>
   )
-}
-
-Completions.fragments = {
-  completions: completionsFragment,
 }

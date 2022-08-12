@@ -9,45 +9,43 @@ import CourseEditForm from "./CourseEditForm"
 import courseEditSchema from "./form-validation"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import {
-  AddCourseMutation,
-  DeleteCourseMutation,
-  UpdateCourseMutation,
-} from "/graphql/mutations/courses"
-import {
-  AllCoursesQuery,
-  AllEditorCoursesQuery,
-  CheckSlugQuery,
-  CourseEditorCoursesQuery,
-  CourseQuery,
-} from "/graphql/queries/courses"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const CourseEdit = ({
-  course,
-  modules,
-  courses,
-}: {
-  course?: CourseDetails_course
-  modules?: CourseEditorStudyModules_study_modules[]
-  courses?: CourseEditorCourses_courses[]
-}) => {
+import {
+  AddCourseDocument,
+  CourseEditorOtherCoursesDocument,
+  CourseFromSlugDocument,
+  CoursesDocument,
+  CourseUpsertArg,
+  DeleteCourseDocument,
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  EditorCoursesDocument,
+  EmailTemplateEditorCoursesDocument,
+  StudyModuleDetailedFieldsFragment,
+  UpdateCourseDocument,
+} from "/graphql/generated"
+
+interface CourseEditProps {
+  course?: EditorCourseDetailedFieldsFragment
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  modules?: StudyModuleDetailedFieldsFragment[]
+}
+
+const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
   const t = useTranslator(CoursesTranslations)
 
-  const [addCourse] = useMutation(AddCourseMutation)
-  const [updateCourse] = useMutation(UpdateCourseMutation)
-  const [deleteCourse] = useMutation(DeleteCourseMutation, {
+  const [addCourse] = useMutation(AddCourseDocument)
+  const [updateCourse] = useMutation(UpdateCourseDocument)
+  const [deleteCourse] = useMutation(DeleteCourseDocument, {
     refetchQueries: [
-      { query: AllCoursesQuery },
-      { query: AllEditorCoursesQuery },
-      { query: CourseEditorCoursesQuery },
+      { query: CoursesDocument },
+      { query: EditorCoursesDocument },
+      { query: CourseEditorOtherCoursesDocument },
+      { query: EmailTemplateEditorCoursesDocument },
     ],
   })
-  const checkSlug = CheckSlugQuery
 
   const client = useApolloClient()
 
@@ -55,7 +53,6 @@ const CourseEdit = ({
 
   const validationSchema = courseEditSchema({
     client,
-    checkSlug,
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
     t,
   })
@@ -68,27 +65,41 @@ const CourseEdit = ({
       const newCourse = !values.id
 
       const mutationVariables = fromCourseForm({ values, initialValues })
+
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
       const refetchQueries = [
-        { query: AllCoursesQuery },
-        { query: AllEditorCoursesQuery },
-        { query: CourseEditorCoursesQuery },
+        { query: CoursesDocument },
+        { query: EditorCoursesDocument },
+        { query: CourseEditorOtherCoursesDocument },
+        { query: EmailTemplateEditorCoursesDocument },
         !newCourse
-          ? { query: CourseQuery, variables: { slug: values.new_slug } }
+          ? {
+              query: CourseFromSlugDocument,
+              variables: { slug: values.new_slug },
+            }
           : undefined,
       ].filter((v) => !!v) as PureQueryOptions[]
-
-      const courseMutation = newCourse ? addCourse : updateCourse
 
       try {
         setStatus({ message: t("statusSaving") })
 
         // TODO/FIXME: return value?
-        await courseMutation({
-          variables: { course: mutationVariables },
-          refetchQueries: () => refetchQueries,
-        })
+        if (newCourse) {
+          await addCourse({
+            variables: {
+              course: mutationVariables,
+            },
+            refetchQueries: () => refetchQueries,
+          })
+        } else {
+          await updateCourse({
+            variables: {
+              course: mutationVariables as CourseUpsertArg,
+            },
+            refetchQueries: () => refetchQueries,
+          })
+        }
 
         setStatus({ message: null })
         Router.push(`/courses`, undefined, { shallow: true })

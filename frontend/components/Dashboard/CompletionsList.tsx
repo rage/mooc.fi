@@ -1,130 +1,35 @@
 import { useContext, useState } from "react"
 
-import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { CircularProgress } from "@mui/material"
 
 import CompletionsListWithData from "./CompletionsListWithData"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
-import { AllCompletions as AllCompletionsData } from "/static/types/generated/AllCompletions"
-import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-export const AllCompletionsQuery = gql`
-  query AllCompletions(
-    $course: String!
-    $cursor: String
-    $completionLanguage: String
-    $search: String
-  ) {
-    completionsPaginated(
-      course: $course
-      completion_language: $completionLanguage
-      search: $search
-      first: 50
-      after: $cursor
-    ) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      edges {
-        node {
-          id
-          email
-          completion_language
-          created_at
-          user {
-            id
-            first_name
-            last_name
-            student_number
-          }
-          course {
-            id
-            name
-          }
-          completions_registered {
-            id
-            organization {
-              id
-              slug
-            }
-          }
-        }
-      }
-    }
-  }
-`
-export const PreviousPageCompletionsQuery = gql`
-  query AllCompletionsPrevious(
-    $course: String!
-    $cursor: String
-    $completionLanguage: String
-    $search: String
-  ) {
-    completionsPaginated(
-      course: $course
-      completion_language: $completionLanguage
-      search: $search
-      last: 50
-      before: $cursor
-    ) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      edges {
-        node {
-          id
-          email
-          completion_language
-          created_at
-          user {
-            id
-            first_name
-            last_name
-            student_number
-          }
-          course {
-            id
-            name
-          }
-          completions_registered {
-            id
-            organization {
-              id
-              slug
-            }
-          }
-        }
-      }
-    }
-  }
-`
+import {
+  PaginatedCompletionsDocument,
+  PaginatedCompletionsPreviousPageDocument,
+} from "/graphql/generated"
 
 interface CompletionsListProps {
   search?: string
+}
+
+interface QueryDetails {
+  start?: string | null
+  end?: string | null
+  back: boolean
+  page: number
 }
 
 const CompletionsList = ({ search }: CompletionsListProps) => {
   const completionLanguage = useContext(CourseLanguageContext)
   const course = useQueryParameter("slug")
 
-  interface queryDetailsInterface {
-    start?: string | null
-    end?: string | null
-    back: boolean
-    page: number
-  }
-
-  const [queryDetails, setQueryDetails] = useState<queryDetailsInterface>({
+  const [queryDetails, setQueryDetails] = useState<QueryDetails>({
     start: null,
     end: null,
     back: false,
@@ -132,19 +37,12 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
   })
 
   const query = queryDetails.back
-    ? PreviousPageCompletionsQuery
-    : AllCompletionsQuery
+    ? PaginatedCompletionsPreviousPageDocument
+    : PaginatedCompletionsDocument
 
   const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
 
-  interface Variables {
-    cursor?: string | null
-    course: string | string[]
-    completionLanguage?: string
-    search?: string
-  }
-
-  const variables: Variables = {
+  const variables = {
     cursor,
     course,
     completionLanguage:
@@ -152,9 +50,7 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
     search: search !== "" ? search : undefined,
   }
 
-  const { data, loading, error } = useQuery<
-    AllCompletionsData | AllCompletionsPreviousData
-  >(query, {
+  const { data, loading, error } = useQuery(query, {
     variables,
     fetchPolicy: "network-only",
   })

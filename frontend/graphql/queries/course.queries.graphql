@@ -1,0 +1,82 @@
+query Courses($language: String) {
+  courses(orderBy: { order: asc }, language: $language) {
+    ...CourseFields
+  }
+}
+
+query EditorCourses(
+  $search: String
+  $hidden: Boolean
+  $handledBy: String
+  $status: [CourseStatus!]
+) {
+  courses(
+    orderBy: { name: asc }
+    search: $search
+    hidden: $hidden
+    handledBy: $handledBy
+    status: $status
+  ) {
+    ...EditorCourseFields
+  }
+  # is currentUser from this query ever used?
+  currentUser {
+    id
+    administrator
+  }
+}
+
+query CourseFromSlug($slug: String!) {
+  course(slug: $slug) {
+    ...CourseCoreFields
+    description
+    instructions
+  }
+}
+
+query CourseEditorOtherCourses {
+  courses {
+    ...EditorCourseOtherCoursesFields
+  }
+}
+query HandlerCourses {
+  handlerCourses {
+    ...CourseCoreFields
+  }
+}
+
+query CourseEditorDetails($slug: String) {
+  course(slug: $slug) {
+    ...EditorCourseDetailedFields
+  }
+}
+
+query EmailTemplateEditorCourses {
+  courses {
+    ...CourseCoreFields
+    teacher_in_charge_name
+    teacher_in_charge_email
+    start_date
+    completion_email {
+      ...EmailTemplateCoreFields
+    }
+    course_stats_email {
+      ...EmailTemplateCoreFields
+    }
+  }
+}
+
+query CourseDashboard($slug: String!) {
+  course(slug: $slug) {
+    ...CourseCoreFields
+    teacher_in_charge_name
+    teacher_in_charge_email
+    start_date
+    completion_email {
+      ...EmailTemplateCoreFields
+    }
+    course_stats_email {
+      ...EmailTemplateCoreFields
+    }
+  }
+}

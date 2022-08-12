@@ -17,9 +17,10 @@ const StyledBottomNavigation = styled(AppBar)<AppBarProps & BoxProps>`
 `
 
 const MobileBottomNavigation = () => {
-  const { loggedIn } = useContext(LoginStateContext)
+  const { loggedIn, admin } = useContext(LoginStateContext)
 
-  return loggedIn ? (
+  // there's currently nothing to show for non-admin users here, so don't show an empty toolbar
+  return loggedIn && admin ? (
     <StyledBottomNavigation
       color="inherit"
       component="nav"

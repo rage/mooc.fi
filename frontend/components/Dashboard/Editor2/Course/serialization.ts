@@ -3,26 +3,26 @@ import { DateTime } from "luxon"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import {
-  CourseDetails_course,
-  CourseDetails_course_photo,
-} from "/static/types/generated/CourseDetails"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+
 import {
   CourseCreateArg,
   CourseStatus,
   CourseUpsertArg,
-} from "/static/types/generated/globalTypes"
+  EditorCourseDetailedFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/graphql/generated"
 
 const isProduction = process.env.NODE_ENV === "production"
+
+interface ToCourseFormArgs {
+  course?: EditorCourseDetailedFieldsFragment
+  modules?: StudyModuleDetailedFieldsFragment[]
+}
 
 export const toCourseForm = ({
   course,
   modules,
-}: {
-  course?: CourseDetails_course
-  modules?: CourseEditorStudyModules_study_modules[]
-}): CourseFormValues => {
+}: ToCourseFormArgs): CourseFormValues => {
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
 
@@ -81,7 +81,7 @@ export const toCourseForm = ({
             _id: c.id ?? undefined,
           })) ?? [],
         new_slug: course.slug,
-        thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
+        thumbnail: course?.photo?.compressed,
         ects: course.ects ?? undefined,
         import_photo: "",
         inherit_settings_from: course.inherit_settings_from?.id,
@@ -107,13 +107,15 @@ export const toCourseForm = ({
     : initialValues
 }
 
+interface FromCourseFormArgs {
+  values: CourseFormValues
+  initialValues: CourseFormValues
+}
+
 export const fromCourseForm = ({
   values,
   initialValues,
-}: {
-  values: CourseFormValues
-  initialValues: CourseFormValues
-}): CourseCreateArg | CourseUpsertArg => {
+}: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
   console.log(values)

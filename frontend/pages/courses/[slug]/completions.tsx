@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
 
@@ -18,25 +18,17 @@ import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
+
+import { CourseFromSlugDocument } from "/graphql/generated"
 
 // import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
   max-width: 39em;
   margin: auto;
-`
-
-export const CourseDetailsFromSlugQuery = gql`
-  query CompletionCourseDetails($slug: String) {
-    course(slug: $slug) {
-      id
-      name
-    }
-  }
 `
 
 const Completions = () => {
@@ -58,12 +50,9 @@ const Completions = () => {
     router.replace(router.pathname, href, { shallow: true })
   }
 
-  const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseDetailsFromSlugQuery,
-    {
-      variables: { slug },
-    },
-  )
+  const { data, loading, error } = useQuery(CourseFromSlugDocument, {
+    variables: { slug },
+  })
 
   useBreadcrumbs([
     {

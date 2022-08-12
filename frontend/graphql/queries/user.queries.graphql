@@ -1,0 +1,120 @@
+query CurrentUser {
+  currentUser {
+    ...UserCoreFields
+  }
+}
+
+query CurrentUserDetailed {
+  currentUser {
+    ...UserDetailedFields
+  }
+}
+
+query CurrentUserStatsSubscriptions {
+  currentUser {
+    id
+    course_stats_subscriptions {
+      id
+      email_template {
+        id
+      }
+    }
+  }
+}
+
+query UserSummary($upstream_id: Int) {
+  user(upstream_id: $upstream_id) {
+    id
+    username
+    user_course_summary {
+      ...UserCourseSummaryCoreFields
+    }
+  }
+}
+
+query CurrentUserOverview {
+  currentUser {
+    ...UserOverviewFields
+  }
+}
+
+query UserOverview($upstream_id: Int) {
+  user(upstream_id: $upstream_id) {
+    ...UserOverviewFields
+  }
+}
+
+query CurrentUserProgresses {
+  currentUser {
+    ...UserProgressesFields
+  }
+}
+
+query UserDetailsContains(
+  $search: String!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $skip: Int
+) {
+  userDetailsContains(
+    search: $search
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    skip: $skip
+  ) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
+        ...UserCoreFields
+      }
+    }
+    count(search: $search)
+  }
+}
+
+query ConnectedUser {
+  currentUser {
+    ...UserCoreFields
+    verified_users {
+      id
+      created_at
+      updated_at
+      display_name
+      organization {
+        id
+        organization_translations {
+          language
+          name
+        }
+      }
+    }
+  }
+}
+
+query ConnectionTest {
+  currentUser {
+    ...UserCoreFields
+    verified_users {
+      id
+      organization {
+        slug
+        organization_translations {
+          language
+          name
+        }
+      }
+      created_at
+      personal_unique_code
+      display_name
+    }
+  }
+}

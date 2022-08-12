@@ -3,8 +3,9 @@ import { memo } from "react"
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
 
-import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
 import { addDomain } from "/util/imageUtils"
+
+import { ImageCoreFieldsFragment } from "/graphql/generated"
 
 const ComponentStyle = `
   width: 100%;
@@ -23,7 +24,7 @@ const PlaceholderComponent = styled.div`
   align-items: center;
 `
 interface CourseImageProps {
-  photo?: AllCourses_courses_photo | null
+  photo?: ImageCoreFieldsFragment | null
   [k: string]: any
 }
 

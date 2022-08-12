@@ -1,0 +1,11 @@
+fragment ProgressCoreFields on Progress {
+  course {
+    ...CourseCoreFields
+  }
+  user_course_progress {
+    ...UserCourseProgressCoreFields
+  }
+  user_course_service_progresses {
+    ...UserCourseServiceProgressCoreFields
+  }
+}

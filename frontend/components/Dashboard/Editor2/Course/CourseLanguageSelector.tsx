@@ -50,8 +50,9 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
 `
 interface LanguageSelectorProps {
   selectedLanguage: string
-  setSelectedLanguage: any
+  setSelectedLanguage: React.Dispatch<React.SetStateAction<string>>
 }
+
 function CourseLanguageSelector(props: LanguageSelectorProps) {
   const { selectedLanguage, setSelectedLanguage } = props
 

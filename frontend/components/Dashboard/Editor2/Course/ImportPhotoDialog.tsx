@@ -13,13 +13,14 @@ import {
 } from "@mui/material"
 
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
-import {
-  CourseEditorCourses_courses,
-  CourseEditorCourses_courses_photo,
-} from "/static/types/generated/CourseEditorCourses"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  EditorCourseOtherCoursesFieldsFragment,
+  ImageCoreFieldsFragment,
+} from "/graphql/generated"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -39,7 +40,7 @@ const ImagePlaceholder = styled.div`
 `
 
 interface ImportPhotoDialogProps {
-  courses?: CourseEditorCourses_courses[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
   open: boolean
   onClose: () => void
 }
@@ -50,15 +51,11 @@ export default function ImportPhotoDialog({
   courses = [],
 }: ImportPhotoDialogProps) {
   const { setValue, getValues, watch } = useFormContext()
-  const [selected, setSelected] = useState<CourseEditorCourses_courses | null>(
-    null,
-  )
+  const [selected, setSelected] =
+    useState<EditorCourseOtherCoursesFieldsFragment | null>(null)
   const t = useTranslator(CoursesTranslations)
 
-  const fetchBase64 = (
-    photo: CourseEditorCourses_courses_photo,
-    filename: string,
-  ) => {
+  const fetchBase64 = (photo: ImageCoreFieldsFragment, filename: string) => {
     fetch(filename, {
       mode: "no-cors",
       cache: "no-cache",
@@ -73,10 +70,7 @@ export default function ImportPhotoDialog({
       })
   }
 
-  const fetchURL = (
-    photo: CourseEditorCourses_courses_photo,
-    filename: string,
-  ) => {
+  const fetchURL = (photo: ImageCoreFieldsFragment, filename: string) => {
     const req = new XMLHttpRequest()
     req.open("GET", filename, true)
     req.responseType = "blob"
@@ -92,9 +86,9 @@ export default function ImportPhotoDialog({
   const photo = watch("import_photo")
 
   const handleSelection = () => {
-    const photo = (
-      courses?.find((course) => course.id === getValues("import_photo")) ?? {}
-    ).photo
+    const photo = courses?.find(
+      (course) => course.id === getValues("import_photo"),
+    )?.photo
 
     if (!photo) {
       return

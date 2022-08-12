@@ -1,6 +1,6 @@
 import React from "react"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
 
@@ -10,29 +10,8 @@ import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
 import withSignedIn from "/lib/with-signed-in"
-import { ConnectedUser } from "/static/types/generated/ConnectedUser"
 
-export const ConnectedUserQuery = gql`
-  query ConnectedUser {
-    currentUser {
-      id
-      upstream_id
-      verified_users {
-        id
-        created_at
-        updated_at
-        display_name
-        organization {
-          id
-          organization_translations {
-            language
-            name
-          }
-        }
-      }
-    }
-  }
-`
+import { ConnectedUserDocument } from "/graphql/generated"
 
 const ConnectionEntryCard = styled(Card)`
   margin-bottom: 0.5rem;
@@ -40,7 +19,7 @@ const ConnectionEntryCard = styled(Card)`
 `
 
 function ConnectionSuccess() {
-  const { data, error, loading } = useQuery<ConnectedUser>(ConnectedUserQuery)
+  const { data, error, loading } = useQuery(ConnectedUserDocument)
 
   if (error) {
     return <ErrorMessage />

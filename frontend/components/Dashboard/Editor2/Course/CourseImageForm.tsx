@@ -16,14 +16,16 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
 
+import { EditorCourseOtherCoursesFieldsFragment } from "/graphql/generated"
+
 interface CourseImageFormProps {
-  courses?: CourseEditorCourses_courses[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
 }
+
 export default function CourseImageForm({ courses }: CourseImageFormProps) {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
@@ -54,10 +56,7 @@ export default function CourseImageForm({ courses }: CourseImageFormProps) {
 
   const coursesWithPhotos =
     courses
-      ?.filter(
-        (course: CourseEditorCourses_courses) =>
-          course.slug !== slug && !!course?.photo?.compressed,
-      )
+      ?.filter((course) => course.slug !== slug && !!course?.photo?.compressed)
       .map((course) => {
         const translation = (course.course_translations?.filter(
           (t) => t.language === locale,

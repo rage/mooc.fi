@@ -5,5 +5,6 @@ export type UploadRoot = Promise<FileUpload>
 
 export const Upload = scalarType({
   ...GraphQLUpload!,
+  name: "Upload",
   rootTyping: "UploadRoot",
 })

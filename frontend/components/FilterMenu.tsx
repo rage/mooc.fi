@@ -16,9 +16,10 @@ import {
   TextField,
 } from "@mui/material"
 
-import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
+
+import { CourseCoreFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const Container = styled.div`
   background-color: white;
@@ -55,7 +56,7 @@ interface SearchVariables {
   search?: string
   hidden?: boolean | null
   handledBy?: string | null
-  status?: string[] | null
+  status?: CourseStatus[] | null
 }
 
 interface FilterFields {
@@ -66,9 +67,9 @@ interface FilterFields {
 interface FilterProps {
   searchVariables: SearchVariables
   setSearchVariables: React.Dispatch<SearchVariables>
-  handlerCourses?: HandlerCourses_handlerCourses[]
+  handlerCourses?: CourseCoreFieldsFragment[]
   status?: string[]
-  setStatus?: React.Dispatch<React.SetStateAction<string[]>>
+  setStatus?: React.Dispatch<React.SetStateAction<CourseStatus[]>>
   loading: boolean
   fields?: FilterFields
 }
@@ -116,9 +117,11 @@ export default function FilterMenu({
 
   const handleStatusChange =
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newStatus = e.target.checked
-        ? [...(searchVariables?.status || []), value]
-        : searchVariables?.status?.filter((v) => v !== value) || []
+      const newStatus = (
+        e.target.checked
+          ? [...(searchVariables?.status || []), value]
+          : searchVariables?.status?.filter((v) => v !== value) || []
+      ) as CourseStatus[]
 
       setStatus(newStatus)
       setSearchVariables({
@@ -257,12 +260,12 @@ export default function FilterMenu({
           onClick={() => {
             setHidden(true)
             setHandledBy("")
-            setStatus(["Active", "Upcoming"])
+            setStatus([CourseStatus.Active, CourseStatus.Upcoming])
             setSearchVariables({
               search: "",
               hidden: true,
               handledBy: null,
-              status: ["Active", "Upcoming"],
+              status: [CourseStatus.Active, CourseStatus.Upcoming],
             })
           }}
           style={{ marginLeft: "0.5rem" }}

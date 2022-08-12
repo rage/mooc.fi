@@ -22,12 +22,10 @@ import {
 
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
-import {
-  UserDetailsContains_userDetailsContains_edges,
-  UserDetailsContains_userDetailsContains_edges_node,
-} from "/static/types/generated/UserDetailsContains"
 import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
+
+import { UserCoreFieldsFragment } from "/graphql/generated"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;
@@ -90,22 +88,22 @@ const RenderCards: FC<any> = () => {
       {data?.userDetailsContains?.edges?.map((row) => (
         <DataCard
           key={row?.node?.upstream_id || Math.random() * 9999999}
-          row={row ?? undefined}
+          row={row?.node ?? undefined}
         />
       ))}
     </>
   )
 }
 
-const DataCard = ({
-  row,
-}: {
-  row?: UserDetailsContains_userDetailsContains_edges
-}) => {
+interface DataCardProps {
+  row?: UserCoreFieldsFragment
+}
+
+const DataCard = ({ row }: DataCardProps) => {
   const t = useTranslator(UsersTranslations)
 
   const { email, upstream_id, first_name, last_name, student_number } =
-    row?.node ?? ({} as UserDetailsContains_userDetailsContains_edges_node)
+    row || {}
 
   const fields = [
     {

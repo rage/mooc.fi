@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material"
 
-import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
+import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 
 //map language code stored to database to human readable language
 const MapLangToLanguage: Record<string, string> = {
@@ -36,11 +36,11 @@ const ListItemArea = styled.div`
   margin: 1rem auto 1rem auto;
 `
 
-function CompletionCard({
-  completer,
-}: {
-  completer: AllCompletions_completionsPaginated_edges_node
-}) {
+interface CompletionCardProps {
+  completer: CompletionsQueryNodeFieldsFragment
+}
+
+function CompletionCard({ completer }: CompletionCardProps) {
   const completionLanguage =
     MapLangToLanguage[completer?.completion_language ?? ""] ??
     "No language available"

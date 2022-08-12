@@ -6,10 +6,14 @@ import Typography from "@mui/material/Typography"
 
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CompletionDetailedFieldsFragment,
+  CourseWithPhotoCoreFieldsFragment,
+} from "/graphql/generated"
 
 const Background = styled(ClickableDiv)`
   display: flex;
@@ -38,7 +42,9 @@ const RegistrationDetails = styled.div`
 `
 
 interface CourseCardProps {
-  completion: ProfileUserOverView_currentUser_completions
+  completion: CompletionDetailedFieldsFragment & {
+    course: CourseWithPhotoCoreFieldsFragment
+  }
 }
 
 function formatDateTime(date: string) {

@@ -10,18 +10,14 @@ import {
   formatDateTime,
   mapLangToLanguage,
 } from "/components/DataFormatFunctions"
-import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
-import {
-  ProfileUserOverView_currentUser_completions,
-  ProfileUserOverView_currentUser_completions_course,
-} from "/static/types/generated/ProfileUserOverView"
-import {
-  UserSummary_user_user_course_summary_completion,
-  UserSummary_user_user_course_summary_course,
-} from "/static/types/generated/UserSummary"
 import ProfileTranslations from "/translations/profile"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CompletionDetailedFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
+} from "/graphql/generated"
 
 const StyledButton = styled(Button)`
   //height: 50%;
@@ -32,11 +28,15 @@ const StyledA = styled.a`
   margin: auto;
 `
 
-interface CourseAvatarProps {
-  course:
-    | UserSummary_user_user_course_summary_course
-    | ProfileUserOverView_currentUser_completions_course
+interface CompletionListItemProps {
+  completion: CompletionDetailedFieldsFragment
+  course: Omit<UserCourseSummaryCourseFieldsFragment, "exercises">
 }
+
+interface CourseAvatarProps {
+  course: CompletionListItemProps["course"]
+}
+
 const CourseAvatar = ({ course }: CourseAvatarProps) => {
   return (
     <Avatar
@@ -85,16 +85,10 @@ const ButtonColumn = styled(Column)`
     justify-content: flex-end;
   }
 `
-interface ListItemProps {
-  completion:
-    | UserSummary_user_user_course_summary_completion
-    | ProfileUserOverView_currentUser_completions
-  course:
-    | UserSummary_user_user_course_summary_course
-    | ProfileUserOverView_currentUser_completions_course
-}
-
-export const CompletionListItem = ({ completion, course }: ListItemProps) => {
+export const CompletionListItem = ({
+  completion,
+  course,
+}: CompletionListItemProps) => {
   const isRegistered = (completion?.completions_registered ?? []).length > 0
   const t = useTranslator(ProfileTranslations)
 
@@ -146,9 +140,7 @@ export const CompletionListItem = ({ completion, course }: ListItemProps) => {
 
         <RegistrationColumn>
           {isRegistered && completion.completions_registered
-            ? (
-                completion.completions_registered as CompletionsRegisteredFragment_completions_registered[]
-              )?.map((r) => {
+            ? completion.completions_registered?.map((r) => {
                 return (
                   <Row key={`registration-${r.id}`}>
                     <Column>

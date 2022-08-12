@@ -285,13 +285,7 @@ const RenderForm = () => {
   )
 }
 
-const StudyModuleEditForm = ({
-  module,
-  validationSchema,
-  onSubmit,
-  onCancel,
-  onDelete,
-}: {
+interface StudyModuleEditFormProps {
   module: StudyModuleFormValues
   validationSchema: Yup.ObjectSchema<any>
   onSubmit: (
@@ -300,7 +294,15 @@ const StudyModuleEditForm = ({
   ) => void
   onCancel: () => void
   onDelete: (values: StudyModuleFormValues) => void
-}) => {
+}
+
+const StudyModuleEditForm = ({
+  module,
+  validationSchema,
+  onSubmit,
+  onCancel,
+  onDelete,
+}: StudyModuleEditFormProps) => {
   const validate = useCallback(async (values: StudyModuleFormValues) => {
     try {
       await validationSchema.validate(values, {

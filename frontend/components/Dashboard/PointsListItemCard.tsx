@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import { gql } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
 
@@ -8,34 +7,13 @@ import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
-import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
-import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
-import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
-import { UserPoints_currentUser_progresses_course } from "/static/types/generated/UserPoints"
-import formatPointsData, {
-  formattedGroupPointsDictionary,
-} from "/util/formatPointsData"
+import formatPointsData from "/util/formatPointsData"
 
-const UserFragment = gql`
-  fragment UserPointsFragment on User {
-    id
-    first_name
-    last_name
-    email
-    student_number
-    progresses {
-      course {
-        name
-        id
-      }
-      ...ProgressUserCourseProgressFragment
-      ...ProgressUserCourseServiceProgressFragment
-    }
-  }
-  ${ProgressUserCourseProgressFragment}
-  ${ProgressUserCourseServiceProgressFragment}
-`
+import {
+  CourseCoreFieldsFragment,
+  UserCourseProgressCoreFieldsFragment,
+  UserCourseServiceProgressCoreFieldsFragment,
+} from "/graphql/generated"
 
 const Root = styled(Grid)`
   background-color: white;
@@ -43,9 +21,28 @@ const Root = styled(Grid)`
   padding: 1rem;
 `
 
+interface PersonalDetails {
+  firstName: string
+  lastName: string
+  email: string
+  sid: string
+}
+interface PointsListItemCardProps {
+  course?: CourseCoreFieldsFragment | null
+  userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
+  userCourseServiceProgresses?:
+    | UserCourseServiceProgressCoreFieldsFragment[]
+    | null
+  cutterValue?: number
+  showPersonalDetails?: boolean
+  personalDetails?: PersonalDetails
+  showProgress?: boolean
+}
+
 interface PersonalDetailsDisplayProps {
   personalDetails: PersonalDetails
 }
+
 const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
   const { personalDetails } = props
   return (
@@ -58,24 +55,7 @@ const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
     </>
   )
 }
-interface PersonalDetails {
-  firstName: string
-  lastName: string
-  email: string
-  sid: string
-}
-
-interface Props {
-  course?: UserPoints_currentUser_progresses_course | null
-  userCourseProgress?: UserCourseProgressFragment | null
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
-  cutterValue?: number
-  showPersonalDetails?: boolean
-  personalDetails?: PersonalDetails
-  showProgress?: boolean
-}
-
-function PointsListItemCard(props: Props) {
+function PointsListItemCard(props: PointsListItemCardProps) {
   const {
     course,
     userCourseProgress,
@@ -87,7 +67,8 @@ function PointsListItemCard(props: Props) {
   } = props
   const [showDetails, setShowDetails] = useState(false)
 
-  const formattedPointsData: formattedGroupPointsDictionary = formatPointsData({
+  // TODO: do this in the backend
+  const formattedPointsData = formatPointsData({
     userCourseProgress,
     userCourseServiceProgresses,
   })
@@ -134,10 +115,6 @@ function PointsListItemCard(props: Props) {
       )}
     </Root>
   )
-}
-
-PointsListItemCard.fragments = {
-  user: UserFragment,
 }
 
 export default PointsListItemCard

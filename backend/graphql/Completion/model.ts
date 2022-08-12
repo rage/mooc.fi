@@ -14,6 +14,7 @@ export const Completion = objectType({
     t.model.completion_language()
     t.model.email()
     t.model.student_number()
+    t.model.user_id()
     t.model.user_upstream_id()
     t.model.completions_registered()
     t.model.course_id()

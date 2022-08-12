@@ -15,13 +15,14 @@ import {
 
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import {
-  CourseEditorCourses_courses,
-  CourseEditorCourses_courses_photo,
-} from "/static/types/generated/CourseEditorCourses"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  EditorCourseOtherCoursesFieldsFragment,
+  ImageCoreFieldsFragment,
+} from "/graphql/generated"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -43,7 +44,7 @@ const ImagePlaceholder = styled.div`
 interface ImportPhotoDialogProps {
   open: boolean
   onClose: () => void
-  courses: CourseEditorCourses_courses[]
+  courses: EditorCourseOtherCoursesFieldsFragment[]
 }
 
 const ImportPhotoDialog = ({
@@ -67,10 +68,7 @@ const ImportPhotoDialog = ({
     )
   }, [values.import_photo])
 
-  const fetchBase64 = (
-    photo: CourseEditorCourses_courses_photo,
-    filename: string,
-  ) => {
+  const fetchBase64 = (photo: ImageCoreFieldsFragment, filename: string) => {
     fetch(filename, {
       mode: "no-cors",
       cache: "no-cache",
@@ -85,10 +83,7 @@ const ImportPhotoDialog = ({
       })
   }
 
-  const fetchURL = (
-    photo: CourseEditorCourses_courses_photo,
-    filename: string,
-  ) => {
+  const fetchURL = (photo: ImageCoreFieldsFragment, filename: string) => {
     const req = new XMLHttpRequest()
     req.open("GET", filename, true)
     req.responseType = "blob"
@@ -134,7 +129,7 @@ const ImportPhotoDialog = ({
           autoComplete="off"
           component={StyledTextField}
         >
-          {courses?.map((course: CourseEditorCourses_courses) => (
+          {courses?.map((course) => (
             <MenuItem key={course.slug} value={course.id ?? ""}>
               {course.name}
             </MenuItem>

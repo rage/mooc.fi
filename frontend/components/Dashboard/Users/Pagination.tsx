@@ -153,7 +153,7 @@ const Pagination: React.FC<any> = () => {
   } = useContext(UserSearchContext)
 
   const handleChangeRowsPerPage = useCallback(
-    async ({ eventValue }: { eventValue: string }) => {
+    async (eventValue: string) => {
       const newRowsPerPage = parseInt(eventValue, 10)
 
       setSearchVariables({
@@ -186,7 +186,7 @@ const Pagination: React.FC<any> = () => {
       onPageChange={() => null}
       onRowsPerPageChange={(
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      ) => handleChangeRowsPerPage({ eventValue: event.target.value })}
+      ) => handleChangeRowsPerPage(event.target.value)}
       ActionsComponent={() => <TablePaginationActions />}
     />
   )

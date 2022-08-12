@@ -1,6 +1,6 @@
 import { useContext, useEffect, useReducer, useState } from "react"
 
-import { gql, useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 import styled from "@emotion/styled"
 import {
   CircularProgress,
@@ -15,15 +15,19 @@ import DialogTitle from "@mui/material/DialogTitle"
 
 import AlertContext from "/contexts/AlertContext"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/queries/currentUser"
 import { updateAccount } from "/lib/account"
 import { checkCertificate, createCertificate } from "/lib/certificates"
-import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
-import { UserOverViewQuery } from "/pages/profile"
-import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
-import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseCoreFieldsFragment,
+  CurrentUserDetailedDocument,
+  CurrentUserDocument,
+  CurrentUserOverviewDocument,
+  UpdateUserNameDocument,
+  UserOverviewFieldsFragment,
+} from "/graphql/generated"
 
 const StyledButton = styled(Button)`
   margin: auto;
@@ -37,18 +41,8 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
-const updateUserNameMutation = gql`
-  mutation updateUserName($first_name: String, $last_name: String) {
-    updateUserName(first_name: $first_name, last_name: $last_name) {
-      id
-      first_name
-      last_name
-    }
-  }
-`
-
 interface CertificateProps {
-  course: ProfileUserOverView_currentUser_completions_course
+  course: CourseCoreFieldsFragment
 }
 
 type Status =
@@ -132,9 +126,9 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
         status: "ERROR",
         error: action.payload,
       }
+    default:
+      return state
   }
-
-  return state
 }
 
 const CertificateButton = ({ course }: CertificateProps) => {
@@ -146,11 +140,11 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
-  const [updateUserName] = useMutation(updateUserNameMutation, {
+  const [updateUserName] = useMutation(UpdateUserNameDocument, {
     refetchQueries: [
-      { query: UserDetailQuery },
-      { query: UserOverViewQuery },
-      { query: CompletionsUserOverViewQuery },
+      { query: CurrentUserDocument },
+      { query: CurrentUserDetailedDocument },
+      { query: CurrentUserOverviewDocument },
     ],
   })
 
@@ -204,7 +198,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
           ...(currentUser || { email: "", id: "" }),
           first_name: firstName,
           last_name: lastName,
-        } as UserOverView_currentUser)
+        } as UserOverviewFieldsFragment)
         dispatch({ type: "UPDATED_NAME", payload: res })
       }
 

@@ -18,16 +18,21 @@ import {
 import CollapseButton from "/components/Buttons/CollapseButton"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import PointsProgress from "/components/Dashboard/PointsProgress"
-import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
-import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
-import { UserSummary_user_user_course_summary_course } from "/static/types/generated/UserSummary"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
+import {
+  UserCourseProgressCoreFieldsFragment,
+  UserCourseServiceProgressCoreFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
+} from "/graphql/generated"
+
 interface ProgressEntryProps {
-  userCourseProgress?: UserCourseProgressFragment | null
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
-  course: UserSummary_user_user_course_summary_course
+  userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
+  userCourseServiceProgresses?:
+    | UserCourseServiceProgressCoreFieldsFragment[]
+    | null
+  course: UserCourseSummaryCourseFieldsFragment
 }
 
 export default function ProgressEntry({

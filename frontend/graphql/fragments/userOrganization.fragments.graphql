@@ -1,0 +1,32 @@
+fragment UserOrganizationCoreFields on UserOrganization {
+  id
+  user_id
+  organization_id
+  # confirmed
+  # consented
+  organization {
+    ...OrganizationCoreFields
+  }
+  created_at
+  updated_at
+}
+
+#  fragment UserOrganizationJoinConfirmationData on UserOrganizationJoinConfirmation {
+#    id
+#    email
+#    confirmed
+#    confirmed_at
+#    created_at
+#    updated_at
+#    expired
+#    expires_at
+#    redirect
+#    language
+#    email_delivery {
+#      id
+#      email
+#      sent
+#      error
+#      updated_at
+#    }
+#  }

@@ -5,17 +5,20 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
+
 import {
   StudyModuleCreateArg,
+  StudyModuleDetailedFieldsFragment,
   StudyModuleUpsertArg,
-} from "/static/types/generated/globalTypes"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
+} from "/graphql/generated"
+
+interface ToStudyModuleFormArgs {
+  module?: StudyModuleDetailedFieldsFragment
+}
 
 export const toStudyModuleForm = ({
   module,
-}: {
-  module?: StudyModuleDetails_study_module
-}): StudyModuleFormValues =>
+}: ToStudyModuleFormArgs): StudyModuleFormValues =>
   module
     ? {
         ...module,
@@ -26,11 +29,13 @@ export const toStudyModuleForm = ({
       }
     : initialValues
 
+interface FromStudyModuleFormArgs {
+  values: StudyModuleFormValues
+}
+
 export const fromStudyModuleForm = ({
   values,
-}: {
-  values: StudyModuleFormValues
-}): StudyModuleCreateArg | StudyModuleUpsertArg => {
+}: FromStudyModuleFormArgs): StudyModuleCreateArg | StudyModuleUpsertArg => {
   const study_module_translations = values?.study_module_translations?.map(
     (c: StudyModuleTranslationFormValues) => ({
       ...omit(c, "__typename"),

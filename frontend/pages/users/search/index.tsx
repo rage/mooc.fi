@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import { gql, useLazyQuery } from "@apollo/client"
+import { useLazyQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
@@ -10,8 +10,9 @@ import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useQueryParameter } from "/util/useQueryParameter"
+
+import { UserDetailsContainsDocument } from "/graphql/generated"
 
 const UserSearch = () => {
   const router = useRouter()
@@ -28,8 +29,8 @@ const UserSearch = () => {
   const [page, setPage] = useState(pageParam)
   const [rowsPerPage, setRowsPerPage] = useState(rowsParam)
 
-  const [loadData, { data, loading }] = useLazyQuery<UserDetailsContains>(
-    GET_DATA,
+  const [loadData, { data, loading }] = useLazyQuery(
+    UserDetailsContainsDocument,
     {
       ssr: false,
     },
@@ -80,7 +81,7 @@ const UserSearch = () => {
       <Container>
         <UserSearchContext.Provider
           value={{
-            data: data || ({} as UserDetailsContains),
+            data,
             loading,
             page,
             rowsPerPage,
@@ -96,44 +97,5 @@ const UserSearch = () => {
     </>
   )
 }
-
-const GET_DATA = gql`
-  query UserDetailsContains(
-    $search: String!
-    $first: Int
-    $last: Int
-    $before: String
-    $after: String
-    $skip: Int
-  ) {
-    userDetailsContains(
-      search: $search
-      first: $first
-      last: $last
-      before: $before
-      after: $after
-      skip: $skip
-    ) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          email
-          student_number
-          real_student_number
-          upstream_id
-          first_name
-          last_name
-        }
-      }
-      count(search: $search)
-    }
-  }
-`
 
 export default withAdmin(UserSearch)

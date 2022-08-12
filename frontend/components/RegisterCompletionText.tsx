@@ -62,7 +62,7 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   )
 }
 
-type RegProps = {
+interface RegisterCompletionTextProps {
   email: String
   link: string
   tiers: any
@@ -73,8 +73,9 @@ function RegisterCompletionText({
   link,
   tiers,
   onRegistrationClick,
-}: RegProps) {
+}: RegisterCompletionTextProps) {
   const t = useTranslator(RegisterCompletionTranslations)
+
   return (
     <RegisterCompletionContainer>
       <Typography variant="body1" paragraph>

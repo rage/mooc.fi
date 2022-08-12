@@ -8,9 +8,10 @@ import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
+
+import { CourseFieldsFragment } from "/graphql/generated"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;
@@ -67,7 +68,7 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
 interface CourseCardProps {
-  course?: AllCourses_courses
+  course?: CourseFieldsFragment
 }
 
 export default function CourseCard({ course }: CourseCardProps) {

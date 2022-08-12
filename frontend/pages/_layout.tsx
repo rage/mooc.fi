@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { PropsWithChildren } from "react"
 
 import { useRouter } from "next/router"
 
@@ -18,7 +18,7 @@ const FooterDownPusherWrapper = styled.div`
   justify-content: space-between;
 `
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)

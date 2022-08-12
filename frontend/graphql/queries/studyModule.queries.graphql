@@ -1,0 +1,27 @@
+query StudyModules($language: String) {
+  study_modules(orderBy: { id: asc }, language: $language) {
+    ...StudyModuleFields
+  }
+}
+
+query EditorStudyModules {
+  study_modules(orderBy: { id: asc }) {
+    ...StudyModuleDetailedFields
+  }
+}
+
+query EditorStudyModuleDetails($slug: String!) {
+  study_module(slug: $slug) {
+    ...StudyModuleFields
+    courses {
+      ...CourseCoreFields
+    }
+    study_module_translations {
+      ...StudyModuleTranslationFields
+    }
+  }
+}
+
+query StudyModuleExists($slug: String!) {
+  study_module_exists(slug: $slug)
+}

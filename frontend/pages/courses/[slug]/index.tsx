@@ -4,16 +4,12 @@ import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
 
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
+import { useApolloClient, useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Card, Paper, Typography } from "@mui/material"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import {
-  AllCompletionsQuery,
-  PreviousPageCompletionsQuery,
-} from "/components/Dashboard/CompletionsList"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
@@ -22,71 +18,22 @@ import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import { UserCourseStatsSubscriptions } from "/static/types/generated/UserCourseStatsSubscriptions"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
+import {
+  CourseDashboardDocument,
+  CurrentUserStatsSubscriptionsDocument,
+  PaginatedCompletionsDocument,
+  PaginatedCompletionsPreviousPageDocument,
+  RecheckCompletionsDocument,
+  UserCourseStatsSubscribeDocument,
+  UserCourseStatsUnsubscribeDocument,
+} from "/graphql/generated"
+
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
-`
-
-export const CourseDetailsFromSlugQuery = gql`
-  query CourseDetailsFromSlugQuery($slug: String) {
-    course(slug: $slug) {
-      id
-      slug
-      name
-      teacher_in_charge_name
-      teacher_in_charge_email
-      start_date
-      completion_email {
-        name
-        id
-      }
-      course_stats_email {
-        id
-        name
-      }
-    }
-  }
-`
-
-const UserCourseStatsSubscriptionsQuery = gql`
-  query UserCourseStatsSubscriptions {
-    currentUser {
-      id
-      course_stats_subscriptions {
-        id
-        email_template {
-          id
-        }
-      }
-    }
-  }
-`
-
-const UserCourseStatsSubscribeMutation = gql`
-  mutation UserCourseStatsSubscribe($id: ID!) {
-    createCourseStatsSubscription(id: $id) {
-      id
-    }
-  }
-`
-
-const UserCourseStatsUnsubscribeMutation = gql`
-  mutation UserCourseStatsUnsubscribe($id: ID!) {
-    deleteCourseStatsSubscription(id: $id) {
-      id
-    }
-  }
-`
-
-const recheckCompletionsMutation = gql`
-  mutation RecheckCompletionMutation($slug: String) {
-    recheckCompletions(slug: $slug)
-  }
 `
 
 const Row = styled(Paper)`
@@ -104,19 +51,16 @@ const Course = () => {
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
   const [subscribing, setSubscribing] = useState(false)
-  const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseDetailsFromSlugQuery,
-    {
-      variables: { slug },
-    },
-  )
+  const { data, loading, error } = useQuery(CourseDashboardDocument, {
+    variables: { slug },
+  })
   const client = useApolloClient()
 
   const {
     data: userData,
     loading: userLoading,
     error: userError,
-  } = useQuery<UserCourseStatsSubscriptions>(UserCourseStatsSubscriptionsQuery)
+  } = useQuery(CurrentUserStatsSubscriptionsDocument)
 
   useBreadcrumbs([
     {
@@ -130,13 +74,16 @@ const Course = () => {
   ])
   const title = useSubtitle(data?.course?.name)
 
-  const [recheckCompletions] = useMutation(recheckCompletionsMutation, {
+  const [recheckCompletions] = useMutation(RecheckCompletionsDocument, {
     variables: {
       slug,
     },
     refetchQueries: [
-      { query: AllCompletionsQuery, variables: { course: slug } },
-      { query: PreviousPageCompletionsQuery, variables: { course: slug } }, // TODO: add more?
+      { query: PaginatedCompletionsDocument, variables: { course: slug } },
+      {
+        query: PaginatedCompletionsPreviousPageDocument,
+        variables: { course: slug },
+      }, // TODO: add more?
     ],
   })
 
@@ -183,14 +130,14 @@ const Course = () => {
     try {
       await client.mutate({
         mutation: !isSubscribed
-          ? UserCourseStatsSubscribeMutation
-          : UserCourseStatsUnsubscribeMutation,
+          ? UserCourseStatsSubscribeDocument
+          : UserCourseStatsUnsubscribeDocument,
         variables: {
           id: !isSubscribed
-            ? data?.course?.course_stats_email?.id
-            : subscription!.id,
+            ? data?.course?.course_stats_email?.id!
+            : subscription!.id!,
         },
-        refetchQueries: [{ query: UserCourseStatsSubscriptionsQuery }],
+        refetchQueries: [{ query: CurrentUserStatsSubscriptionsDocument }],
       })
     } catch {
       //

@@ -1,0 +1,11 @@
+query EmailTemplates {
+  email_templates {
+    ...EmailTemplateFields
+  }
+}
+
+query EmailTemplate($id: ID!) {
+  email_template(id: $id) {
+    ...EmailTemplateFields
+  }
+}

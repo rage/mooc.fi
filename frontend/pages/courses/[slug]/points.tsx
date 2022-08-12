@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -12,31 +12,20 @@ import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-export const CourseDetailsFromSlugQuery = gql`
-  query CourseDetailsFromSlug($slug: String) {
-    course(slug: $slug) {
-      id
-      name
-    }
-  }
-`
+import { CourseFromSlugDocument } from "/graphql/generated"
 
 const Points = () => {
   const t = useTranslator(CoursesTranslations)
 
   const slug = useQueryParameter("slug")
 
-  const { data, loading, error } = useQuery<CourseDetailsData>(
-    CourseDetailsFromSlugQuery,
-    {
-      variables: { slug: slug },
-    },
-  )
+  const { data, loading, error } = useQuery(CourseFromSlugDocument, {
+    variables: { slug },
+  })
 
   useBreadcrumbs([
     {
