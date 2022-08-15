@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import { Course, User } from "@prisma/client"
 
 import { KafkaContext } from "../kafkaContext"
-import { CombinedUserCourseProgress } from "./userFunctions"
+import { CombinedUserCourseProgress } from "../userFunctions"
 
 interface Props {
   user: User

@@ -1,15 +1,16 @@
 import { useQuery } from "@apollo/client"
+
 import { WideContainer } from "/components/Container"
-import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
 import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
-import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+
+import { EditorStudyModulesDocument } from "/graphql/generated"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)
@@ -21,9 +22,7 @@ function StudyModules() {
     },
   ])
 
-  const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
-    AllEditorModulesQuery,
-  )
+  const { loading, error, data } = useQuery(EditorStudyModulesDocument)
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />

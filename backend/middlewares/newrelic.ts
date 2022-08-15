@@ -1,10 +1,11 @@
 import { plugin } from "nexus"
+
 const newrelic = require("newrelic")
 
 export const newRelicPlugin = () =>
   plugin({
     name: "NewRelicPlugin",
-    onCreateFieldResolver(config: any) {
+    onCreateFieldResolver(config) {
       return async (root, args, ctx, info, next) => {
         try {
           if (!root) {

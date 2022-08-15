@@ -1,0 +1,43 @@
+mutation AddUserOrganization(
+  $organization_id: ID!
+  $email: String
+  $redirect: String
+  $language: String
+) {
+  addUserOrganization(
+    organization_id: $organization_id
+    email: $email
+    redirect: $redirect
+    language: $language
+  ) {
+    ...UserOrganizationCoreFields
+    user_organization_join_confirmations {
+      ...UserOrganizationJoinConfirmationFields
+    }
+  }
+}
+
+mutation UpdateUserOrganization($id: ID!, $consented: Boolean!) {
+  updateUserOrganization(id: $id, consented: $consented) {
+    id
+    consented
+  }
+}
+
+mutation DeleteUserOrganization($id: ID!) {
+  deleteUserOrganization(id: $id) {
+    id
+  }
+}
+
+mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
+  confirmUserOrganizationJoin(id: $id, code: $code) {
+    ...UserOrganizationJoinConfirmationFields
+  }
+}
+
+mutation RefreshUserOrganizationJoinConfirmation($id: ID!) {
+  refreshUserOrganizationJoinConfirmation(id: $id) {
+    ...UserOrganizationJoinConfirmationFields
+  }
+}

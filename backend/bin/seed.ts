@@ -1,4 +1,5 @@
 import { CourseStatus, CourseTranslation } from "@prisma/client"
+
 import prisma from "../prisma"
 
 const Modules = [

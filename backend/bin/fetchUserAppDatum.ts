@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 
-import { PrismaClient, UserCourseSetting } from "@prisma/client"
+import { Course, PrismaClient, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
@@ -13,7 +13,7 @@ import sentryLogger from "./lib/logger"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 
-let course
+let course: Course | null
 let old: UserCourseSetting
 
 const logger = sentryLogger({ service: "fetch-user-app-datum" })
@@ -55,11 +55,11 @@ const fetchUserAppDatum = async () => {
     index++
     if (index % 1000 == 0) logger.info(`${index}/${data.length}`)
 
-    const existingUsers = await prisma.user.findMany({
+    const user = await prisma.user.findUnique({
       where: { upstream_id: e.user_id },
     })
 
-    if (existingUsers.length < 1) {
+    if (!user) {
       try {
         await getUserFromTmcAndSaveToDB(e.user_id, tmc)
       } catch (error) {
@@ -74,11 +74,11 @@ const fetchUserAppDatum = async () => {
       }
     }
 
-    const existingCourses = await prisma.course.findMany({
+    course = await prisma.course.findUnique({
       where: { slug: e.namespace },
     })
-    if (existingCourses.length < 1) {
-      await prisma.course.create({
+    if (!course) {
+      course = await prisma.course.create({
         data: {
           slug: e.namespace,
           name: e.namespace,
@@ -89,8 +89,6 @@ const fetchUserAppDatum = async () => {
         },
       })
     }
-
-    course = await prisma.course.findUnique({ where: { slug: e.namespace } })
 
     if (!course) {
       process.exit(1)
@@ -105,7 +103,7 @@ const fetchUserAppDatum = async () => {
         })
         .user_course_settings({
           where: {
-            course_id: course.id,
+            course_id: course.inherit_settings_from_id ?? course.id,
           },
           orderBy: {
             created_at: "asc",
@@ -119,7 +117,9 @@ const fetchUserAppDatum = async () => {
           user: {
             connect: { upstream_id: e.user_id },
           },
-          course: { connect: { id: course.id } },
+          course: {
+            connect: { id: course.inherit_settings_from_id ?? course.id },
+          },
         },
       })
     } else {
@@ -237,7 +237,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   try {
     details = await tmc.getUserDetailsById(user_id)
   } catch (e) {
-    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    logger.error(new TMCError(`couldn't find user`, { user_id }, e))
     throw e
   }
 
@@ -260,10 +260,8 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   } catch (e: any) {
     logger.error(
       new DatabaseInputError(
-        `Failed to upsert user with upstream id ${
-          details.id
-        }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
-        details,
+        `Failed to upsert user`,
+        { details, prismaDetails },
         e,
       ),
     )

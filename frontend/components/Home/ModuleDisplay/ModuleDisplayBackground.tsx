@@ -1,6 +1,6 @@
-import { BackgroundImage } from "/components/Images/GraphicBackground"
-
 import styled from "@emotion/styled"
+
+import { BackgroundImage } from "/components/Images/GraphicBackground"
 
 interface RootProps {
   backgroundColor: string
@@ -23,11 +23,13 @@ const Background = styled.div<RootProps>`
 `
 interface DisplayBackgroundProps {
   backgroundColor: string
-  children: any
   hueRotateAngle: number
   brightness: number
 }
-const ModuleDisplayBackground = (props: DisplayBackgroundProps) => {
+
+const ModuleDisplayBackground = (
+  props: React.PropsWithChildren<DisplayBackgroundProps>,
+) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
 
   // webp for svg?

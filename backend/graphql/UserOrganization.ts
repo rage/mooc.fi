@@ -74,7 +74,7 @@ export const UserOrganizationQueries = extendType({
   },
 })
 
-const checkUserCredentials = async (ctx: Context, id: any) => {
+const assertUserCredentials = async (ctx: Context, id: string) => {
   const { user, role } = ctx
 
   let existingUser
@@ -230,7 +230,7 @@ export const UserOrganizationMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id, consented }, ctx: Context) => {
-        await checkUserCredentials(ctx, id)
+        await assertUserCredentials(ctx, id)
 
         return ctx.prisma.userOrganization.update({
           data: {
@@ -253,8 +253,7 @@ export const UserOrganizationMutations = extendType({
       authorize: or(isUser, isAdmin),
       resolve: async (_, args, ctx: Context) => {
         const { id } = args
-
-        await checkUserCredentials(ctx, id)
+        await assertUserCredentials(ctx, id)
 
         return ctx.prisma.userOrganization.delete({
           where: { id },

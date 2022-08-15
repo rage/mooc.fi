@@ -1,7 +1,7 @@
-import { FormControlLabel, FormControl, RadioGroup, Radio } from "@mui/material"
+import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material"
 
 interface LanguageSelectorProps {
-  handleLanguageChange: any
+  handleLanguageChange: React.ChangeEventHandler<HTMLInputElement>
   languageValue: string
 }
 

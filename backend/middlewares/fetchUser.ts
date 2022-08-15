@@ -1,4 +1,3 @@
-import { UserInfo } from "/domain/UserInfo"
 import { AuthenticationError } from "apollo-server-express"
 import { plugin } from "nexus"
 
@@ -7,11 +6,12 @@ import { Context } from "../context"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { convertUpdate } from "../util/db-functions"
+import { UserInfo } from "/domain/UserInfo"
 
 export const moocfiAuthPlugin = () =>
   plugin({
     name: "moocfiAuthPlugin",
-    onCreateFieldResolver(_config: any) {
+    onCreateFieldResolver(_: any) {
       return async (
         root: any,
         args: Record<string, any>,
@@ -28,9 +28,9 @@ export const moocfiAuthPlugin = () =>
         if (!rawToken) {
           ctx.role = Role.VISITOR
         } else if (rawToken.startsWith("Basic")) {
-          await getOrganization(ctx, rawToken)
+          await setContextOrganization(ctx, rawToken)
         } else {
-          await getUser(ctx, rawToken)
+          await setContextUser(ctx, rawToken)
         }
 
         return await next(root, args, ctx, info)
@@ -38,10 +38,13 @@ export const moocfiAuthPlugin = () =>
     },
   })
 
-const getOrganization = async (ctx: Context, rawToken: string | null) => {
+const setContextOrganization = async (
+  ctx: Context,
+  rawToken: string | null,
+) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
-  const org = await ctx.prisma.organization.findFirst({
+  const org = await ctx.prisma.organization.findUnique({
     where: { secret_key: secret },
   })
   if (!org) {
@@ -52,7 +55,7 @@ const getOrganization = async (ctx: Context, rawToken: string | null) => {
   ctx.role = Role.ORGANIZATION
 }
 
-const getUser = async (ctx: Context, rawToken: string) => {
+const setContextUser = async (ctx: Context, rawToken: string) => {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null

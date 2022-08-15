@@ -1,15 +1,9 @@
 import { useState } from "react"
 
-import CustomSnackbar from "/components/CustomSnackbar"
-import Spinner from "/components/Spinner"
-import { UpdateCourseMutation } from "/graphql/mutations/courses"
-import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
-import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import { EmailTemplateType } from "/types/emailTemplates"
 import { omit } from "lodash"
 import Router from "next/router"
 
-import { gql, OperationVariables, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -22,42 +16,21 @@ import {
   TextField,
 } from "@mui/material"
 
-export const AllCoursesDetails = gql`
-  query AllCoursesDetails {
-    courses {
-      id
-      slug
-      name
-      teacher_in_charge_name
-      teacher_in_charge_email
-      start_date
-      completion_email {
-        name
-        id
-      }
-      course_stats_email {
-        id
-      }
-    }
-  }
-`
+import CustomSnackbar from "/components/CustomSnackbar"
+import Spinner from "/components/Spinner"
+import { EmailTemplateType } from "/types/emailTemplates"
 
-export const UpdateOrganizationEmailTemplateMutation = gql`
-  mutation updateOrganizationEmailTemplate($id: ID!, $email_template_id: ID!) {
-    updateOrganizationEmailTemplate(
-      id: $id
-      email_template_id: $email_template_id
-    ) {
-      id
-      join_organization_email_template {
-        id
-      }
-    }
-  }
-`
+import {
+  AddEmailTemplateDocument,
+  CourseCoreFieldsFragment,
+  CourseUpsertArg,
+  EmailTemplateEditorCoursesDocument,
+  UpdateCourseDocument,
+  UpdateOrganizationEmailTemplateDocument,
+} from "/graphql/generated"
 
-interface CreateEmailTemplateDialogParams {
-  course?: CourseDetailsData
+interface CreateEmailTemplateDialogProps {
+  course?: CourseCoreFieldsFragment
   organization?: any
   buttonText: string
   type?: EmailTemplateType
@@ -68,22 +41,20 @@ const CreateEmailTemplateDialog = ({
   organization,
   buttonText,
   type = "completion",
-}: CreateEmailTemplateDialogParams) => {
+}: CreateEmailTemplateDialogProps) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState(type)
   const [selectedCourse, setSelectedCourse] = useState<
-    CourseDetailsData | undefined
-  >(undefined)
+    CourseCoreFieldsFragment | undefined
+  >()
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
+  const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
 
-  const { loading, error, data } = useQuery<{ courses: CourseDetailsData[] }>(
-    AllCoursesDetails,
-  )
-  const [addEmailTemplate, {}] = useMutation(AddEmailTemplateMutation)
-  const [updateCourseMutation, {}] = useMutation(UpdateCourseMutation)
+  const [addEmailTemplateMutation, {}] = useMutation(AddEmailTemplateDocument)
+  const [updateCourseMutation, {}] = useMutation(UpdateCourseDocument)
   const [updateOrganizationEmailTemplateMutation, {}] = useMutation(
-    UpdateOrganizationEmailTemplateMutation,
+    UpdateOrganizationEmailTemplateDocument,
   )
 
   if (loading) {
@@ -104,8 +75,8 @@ const CreateEmailTemplateDialog = ({
 
   const courseOptions =
     templateType === "completion"
-      ? data.courses
-          .filter((c) => c?.completion_email === null)
+      ? data!.courses
+          ?.filter((c) => c?.completion_email === null)
           .map((c, i) => {
             return (
               <option key={i} value={i}>
@@ -113,7 +84,7 @@ const CreateEmailTemplateDialog = ({
               </option>
             )
           })
-      : data.courses.map((c, i) => {
+      : data!.courses?.map((c, i) => {
           return (
             <option key={i} value={i}>
               {c?.name}
@@ -123,10 +94,10 @@ const CreateEmailTemplateDialog = ({
 
   const handleCreate = async () => {
     try {
-      const { data: addEmailTemplateData } = await addEmailTemplate({
+      const { data: addEmailTemplateData } = await addEmailTemplateMutation({
         variables: {
           name: nameInput,
-          type: templateType,
+          template_type: templateType,
           triggered_automatically_by_course_id:
             templateType === "threshold" ? selectedCourse?.id : null,
         },
@@ -137,7 +108,7 @@ const CreateEmailTemplateDialog = ({
       const updateableCourse = course ?? selectedCourse
 
       if (updateableCourse && templateType !== "join-organization") {
-        const connectVariables = {} as OperationVariables
+        const connectVariables = {} as CourseUpsertArg
 
         if (templateType === "completion") {
           connectVariables.completion_email_id =
@@ -169,7 +140,7 @@ const CreateEmailTemplateDialog = ({
         await updateOrganizationEmailTemplateMutation({
           variables: {
             id: organization.id,
-            email_template_id: addEmailTemplateData?.addEmailTemplate?.id,
+            email_template_id: addEmailTemplateData?.addEmailTemplate!.id!,
           },
         })
       }
@@ -234,7 +205,9 @@ const CreateEmailTemplateDialog = ({
                   <NativeSelect
                     onChange={(e) => {
                       e.preventDefault()
-                      setSelectedCourse(data.courses[Number(e.target.value)])
+                      setSelectedCourse(
+                        data!.courses?.[Number(e.target.value)] ?? undefined,
+                      )
                     }}
                     id="selectCourse"
                     defaultValue="Select course"

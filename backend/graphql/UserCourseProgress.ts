@@ -11,7 +11,17 @@ import {
   stringArg,
 } from "nexus"
 
+import { Prisma } from "@prisma/client"
+
 import { isAdmin } from "../accessControl"
+
+// progress seems not to be uniform, let's try to normalize it a bit
+const normalizeProgress = <T extends object | Prisma.JsonValue>(
+  data?: T | T[],
+): T[] =>
+  (data ? (Array.isArray(data) ? data : [data]) : []).filter((p) =>
+    p?.hasOwnProperty("progress"),
+  )
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -37,7 +47,9 @@ export const UserCourseProgress = objectType({
           where: { id: parent.id },
           select: { progress: true },
         })
-        return (res?.progress as any) || []
+
+        // TODO/FIXME: do we want to return progresses that might not have "progress" field?
+        return normalizeProgress(res?.progress)
       },
     })
 
@@ -46,13 +58,25 @@ export const UserCourseProgress = objectType({
     t.nullable.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
+        if (!parent.course_id) {
+          throw new Error("progress not connected to course")
+        }
+
+        const course = await ctx.prisma.course.findUnique({
+          where: { id: parent.course_id },
+        })
+
+        if (!course) {
+          throw new Error("course not found")
+        }
+
         const settings = await ctx.prisma.userCourseProgress
           .findUnique({
             where: { id: parent.id },
           })
           .user()
           .user_course_settings({
-            where: { course_id: parent.course_id },
+            where: { course_id: course.inherit_settings_from_id ?? course.id },
             orderBy: {
               created_at: "asc",
             },
@@ -69,8 +93,9 @@ export const UserCourseProgress = objectType({
           throw new Error("no course or user found")
         }
 
-        const courseProgress: any = progress ?? []
+        const courseProgress = normalizeProgress(progress)
 
+        // TODO: this should probably also only count completed exercises!
         const exercises = await ctx.prisma.course
           .findUnique({
             where: {
@@ -87,14 +112,17 @@ export const UserCourseProgress = objectType({
               id: true,
               exercise_completions: {
                 where: {
+                  completed: true,
                   user_id,
                 },
+                take: 1,
               },
             },
           })
 
         const completedExerciseCount = exercises.reduce(
-          (acc, curr) => acc + (curr.exercise_completions?.length || 0),
+          (acc, curr) =>
+            curr.exercise_completions?.length > 0 ? acc + 1 : acc,
           0,
         )
         const totalProgress =
@@ -141,15 +169,6 @@ export const UserCourseProgressQueries = extendType({
     })
 
     // FIXME: (?) broken until the nexus json thing is fixed or smth
-
-    /*t.crud.userCourseProgresses({
-      filtering: {
-        user: true,
-        course_courseTouser_course_progress: true,
-      },
-      pagination: true,
-    })*/
-
     t.list.field("userCourseProgresses", {
       type: "UserCourseProgress",
       args: {
@@ -184,6 +203,8 @@ export const UserCourseProgressQueries = extendType({
             where: {
               user_id,
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
       },
     })

@@ -1,19 +1,20 @@
+import Link from "next/link"
+
+import { useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import Typography from "@mui/material/Typography"
+
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import AdminError from "/components/Dashboard/AdminError"
 import Spinner from "/components/Spinner"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { H1Background } from "/components/Text/headers"
-import { AllEmailTemplatesQuery } from "/graphql/queries/email-templates"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { AllEmailTemplates } from "/static/types/generated/AllEmailTemplates"
 import notEmpty from "/util/notEmpty"
-import Link from "next/link"
 
-import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import { EmailTemplatesDocument } from "/graphql/generated"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -38,9 +39,7 @@ const TemplateContent = styled((props: any) => (
 `
 
 const EmailTemplates = (admin: Boolean) => {
-  const { loading, error, data } = useQuery<AllEmailTemplates>(
-    AllEmailTemplatesQuery,
-  )
+  const { loading, error, data } = useQuery(EmailTemplatesDocument)
 
   if (error) {
     ;<div>

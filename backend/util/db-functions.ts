@@ -100,9 +100,13 @@ export const convertUpdate = <T extends object>(input: {
       ...acc,
       [key]: Array.isArray(value)
         ? value.map(convertUpdate)
-        : typeof value === "object" && value != null
+        : typeof value === "object" && value !== null
         ? convertUpdate(value)
-        : ["number", "boolean"].includes(typeof value)
+        : typeof value === "number"
+        ? Number.isNaN(value)
+          ? undefined
+          : { set: value }
+        : typeof value === "boolean"
         ? { set: value }
         : value,
     }),

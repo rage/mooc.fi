@@ -1,3 +1,14 @@
+namespace TMCClient {
+  interface AuthenticateArgs {
+    username: string
+    password: string
+  }
+
+  interface AuthenticatedUser {
+    username: string
+    accessToken: string
+  }
+}
 declare module "tmc-client-js" {
   class TMCClient {
     constructor(clientId: string, clientSecret: string, oAuthSite?: string)
@@ -5,14 +16,11 @@ declare module "tmc-client-js" {
     authenticate({
       username,
       password,
-    }: {
-      username: string
-      password: string
-    }): Promise<any>
+    }: TMCClient.AuthenticateArgs): Promise<TMCClient.AuthenticatedUser>
 
-    unauthenticate(): any
+    unauthenticate(): TMCClient
 
-    getUser(): any
+    getUser(): TMCClient.AuthenticatedUser
   }
 
   export = TMCClient

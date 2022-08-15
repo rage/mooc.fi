@@ -1,8 +1,12 @@
-import { Request } from "express"
+import { Request, Response } from "express"
+import { chunk, groupBy, omit } from "lodash"
 
-import { Completion } from "@prisma/client"
+import { Completion, Course, User, UserCourseProgress } from "@prisma/client"
 
-import { getUser } from "../util/server-functions"
+import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { BAIParentCourse, BAItiers } from "../config/courseConfig"
+import { notEmpty } from "../util/notEmpty"
+import { getUser, requireAdmin } from "../util/server-functions"
 import { ApiContext } from "./"
 
 interface ExerciseCompletionResult {
@@ -16,16 +20,22 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
-export function progress(ctx: ApiContext) {
-  return async (req: Request<{ id: string }>, res: any) => {
-    const { knex } = ctx
+const isId = (idOrSlug: string) =>
+  Boolean(idOrSlug.match(/^[0-9a-fA-F]{32}$/)) ||
+  Boolean(idOrSlug.match(/^[0-9a-fA-F-]{36}$/))
+
+export class ProgressController {
+  constructor(readonly ctx: ApiContext) {}
+
+  progress = async (req: Request<{ id: string }>, res: Response) => {
+    const { knex } = this.ctx
     const { id } = req.params
 
     if (!id) {
       return res.status(400).json({ message: "must provide id" })
     }
 
-    const getUserResult = await getUser(ctx)(req, res)
+    const getUserResult = await getUser(this.ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -33,7 +43,7 @@ export function progress(ctx: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const exercise_completions = await knex
+    const exercise_completions = await knex("exercise_completion as ec")
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
         "exercise_id",
@@ -44,10 +54,15 @@ export function progress(ctx: ApiContext) {
         "completed",
         "custom_id as quizzes_id",
       )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
+      .distinctOn("ec.exercise_id")
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", id)
+      .andWhere("ec.user_id", user.id)
+      .orderBy([
+        "ec.exercise_id",
+        { column: "ec.timestamp", order: "desc" },
+        { column: "ec.updated_at", order: "desc" },
+      ])
 
     const resObject = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -64,21 +79,22 @@ export function progress(ctx: ApiContext) {
       data: resObject,
     })
   }
-}
 
-export function progressV2(ctx: ApiContext) {
-  return async (req: Request<{ id: string }>, res: any) => {
-    const { knex } = ctx
-    const { id }: { id: string } = req.params
+  progressV2 = async (
+    req: Request<{ idOrSlug: string }, {}, {}, { deleted?: string }>,
+    res: Response,
+  ) => {
+    const { knex } = this.ctx
+    const { idOrSlug } = req.params
     const { deleted = "" } = req.query
 
-    const includeDeleted = (deleted as string).toLowerCase().trim() === "true"
+    const includeDeleted = deleted.toLowerCase().trim() === "true"
 
-    if (!id) {
-      return res.status(400).json({ message: "must provide id" })
+    if (!idOrSlug) {
+      return res.status(400).json({ message: "must provide id or slug" })
     }
 
-    const getUserResult = await getUser(ctx)(req, res)
+    const getUserResult = await getUser(this.ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -86,7 +102,20 @@ export function progressV2(ctx: ApiContext) {
 
     const { user } = getUserResult.value
 
-    const exerciseCompletionsPromise = knex
+    const course = (
+      await knex
+        .select<any, Course[]>("*")
+        .from("course")
+        .where(isId(idOrSlug) ? "id" : "slug", idOrSlug)
+        .limit(1)
+    )?.[0]
+
+    if (!course) {
+      return res.status(404).json({ message: "course not found" })
+    }
+
+    // TODO: this could also return the required actions
+    const exerciseCompletionQuery = knex("exercise_completion as ec")
       .select<any, ExerciseCompletionResult[]>(
         "user_id",
         "exercise_id",
@@ -97,29 +126,27 @@ export function progressV2(ctx: ApiContext) {
         "completed",
         "custom_id as quizzes_id",
       )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
+      .distinctOn("ec.exercise_id")
+      .join("exercise as e", { "ec.exercise_id": "e.id" })
+      .where("e.course_id", course.id)
+      .andWhere("ec.user_id", user.id)
+      .orderBy([
+        "ec.exercise_id",
+        { column: "ec.timestamp", order: "desc" },
+        { column: "ec.updated_at", order: "desc" },
+      ])
 
     if (!includeDeleted) {
-      exerciseCompletionsPromise.andWhereNot("exercise.deleted", true)
+      exerciseCompletionQuery.andWhereNot("e.deleted", true)
     }
 
-    const exercise_completions = await exerciseCompletionsPromise
-    const { completions_handled_by_id = id } =
-      (
-        await knex
-          .select("completions_handled_by_id")
-          .from("course")
-          .where("id", id)
-      )[0] ?? {}
+    const exercise_completions = await exerciseCompletionQuery
 
-    const completions = await knex
+    const completions = await knex("completion as c")
       .select<any, Completion[]>("*")
-      .from("completion")
-      .where("course_id", completions_handled_by_id)
+      .where("course_id", course.completions_handled_by_id ?? course.id)
       .andWhere("user_id", user.id)
+      .orderBy("created_at", "asc")
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -134,11 +161,335 @@ export function progressV2(ctx: ApiContext) {
 
     res.json({
       data: {
-        course_id: id,
+        course_id: course.id,
         user_id: user.id,
         exercise_completions: exercise_completions_map,
         completion: completions[0] ?? {},
       },
+    })
+  }
+
+  tierProgress = async (req: Request<{ id: string }>, res: Response) => {
+    const { id } = req.params
+    const { knex } = this.ctx
+
+    if (!id) {
+      return res.status(400).json({ message: "must provide course id" })
+    }
+
+    const getUserResult = await getUser(this.ctx)(req, res)
+
+    if (getUserResult.isErr()) {
+      return getUserResult.error
+    }
+
+    const { user } = getUserResult.value
+
+    const data = await knex
+      .select<any, Pick<UserCourseProgress, "course_id" | "extra">[]>(
+        "course_id",
+        "extra",
+      )
+      .from("user_course_progress")
+      .where("user_course_progress.course_id", id)
+      .andWhere("user_course_progress.user_id", user.id)
+      .orderBy("created_at", "asc")
+
+    res.json({
+      data: {
+        course_id: id,
+        ...(data[0]?.extra as object),
+      },
+    })
+  }
+
+  userCourseProgress = async (
+    req: Request<{ slug: string }>,
+    res: Response,
+  ) => {
+    const { slug } = req.params
+    const { prisma } = this.ctx
+
+    const getUserResult = await getUser(this.ctx)(req, res)
+
+    if (getUserResult.isErr()) {
+      return getUserResult.error
+    }
+
+    const { user } = getUserResult.value
+
+    const course = await prisma.course.findUnique({
+      where: { slug },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+
+    const userCourseProgresses = await prisma.user
+      .findUnique({
+        where: { id: user.id },
+      })
+      .user_course_progresses({
+        where: {
+          course_id: course.id,
+        },
+        orderBy: {
+          created_at: "asc",
+        },
+      })
+
+    res.json({
+      data: userCourseProgresses?.[0],
+    })
+  }
+
+  recheckBAIUserCourseProgresses = async (req: Request, res: Response) => {
+    const adminRes = await requireAdmin(this.ctx)(req, res)
+
+    if (adminRes !== true) {
+      return adminRes
+    }
+
+    const { prisma, logger } = this.ctx
+
+    const beginnerBAICourse = await prisma.course.findUnique({
+      where: {
+        id: BAItiers["1"],
+      },
+    })
+    const intermediateBAICourse = await prisma.course.findUnique({
+      where: {
+        id: BAItiers["2"],
+      },
+    })
+    const advancedBAICourse = await prisma.course.findUnique({
+      where: {
+        id: BAItiers["3"],
+      },
+    })
+
+    if (!beginnerBAICourse || !intermediateBAICourse || !advancedBAICourse) {
+      return res.status(500).json({ message: "BAI courses not found!" })
+    }
+
+    logger.info("Querying existing progresses and completions")
+    const beforeParentProgresses = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .user_course_progresses({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
+
+    const beforeCompletions = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .completions({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
+
+    const getUsers = (arr: Array<object & { user: User | null }>) =>
+      arr?.map((e) => e.user).filter(notEmpty) ?? []
+    const getIds = (arr?: Array<object & { id: string }>) =>
+      arr?.map((e) => e.id).filter(notEmpty) ?? []
+    const getUserIdsAndUpstreamIds = (users: Array<User>) => ({
+      user_ids: getIds(users),
+      user_upstream_ids: users.map((u) => u.upstream_id),
+    })
+
+    const createDiff = (
+      before: Array<
+        object & {
+          id: string
+          user_id?: string | null
+          user: User | null
+          updated_at: Date | null
+        }
+      >,
+      after: Array<
+        object & {
+          id: string
+          user_id?: string | null
+          user: User | null
+          updated_at: Date | null
+        }
+      >,
+    ) => {
+      const beforeIds = getIds(before)
+      const beforeUserIds = before.map((e) => e.user_id).filter(notEmpty)
+      const beforeMap = groupBy(before, "id")
+
+      const afterIds = getIds(after)
+      const afterUsers = after.flatMap((e) => e.user).filter(notEmpty)
+
+      const createdIds = afterIds.filter((id) => !beforeIds.includes(id))
+      const createdUsers = afterUsers.filter(
+        (u) => !beforeUserIds.includes(u.id),
+      )
+      const updated = after.filter((entry) => {
+        const beforeEntry = beforeMap[entry.id]?.[0]
+
+        return beforeEntry && entry.updated_at! > beforeEntry.updated_at!
+      })
+      const updatedUsers = getUsers(updated)
+
+      return {
+        created: {
+          count: after.length - before.length,
+          ids: createdIds,
+          ...getUserIdsAndUpstreamIds(createdUsers),
+        },
+        updated: {
+          count: updated.length,
+          ids: getIds(updated),
+          ...getUserIdsAndUpstreamIds(updatedUsers),
+        },
+      }
+    }
+
+    const orphanProgresses: Record<string, Array<string>> = {
+      [beginnerBAICourse.slug]: [],
+      [intermediateBAICourse.slug]: [],
+      [advancedBAICourse.slug]: [],
+    }
+
+    for (const course of [
+      beginnerBAICourse,
+      intermediateBAICourse,
+      advancedBAICourse,
+    ]) {
+      logger.info(`Handling ${course.slug}`)
+      const userCourseProgresses = await prisma.course
+        .findUnique({
+          where: {
+            id: course.id,
+          },
+        })
+        .user_course_progresses({
+          distinct: ["user_id"],
+          orderBy: { created_at: "asc" },
+          include: {
+            user: true,
+          },
+        })
+
+      if (userCourseProgresses.length) {
+        logger.info(
+          `Got ${userCourseProgresses?.length} user progresses, regenerating...`,
+        )
+      } else {
+        logger.warn(`No progresses found? Continuing...`)
+        continue
+      }
+
+      const chunks = chunk(userCourseProgresses, 100)
+
+      const buildPromises = (chunk: typeof userCourseProgresses) => {
+        return chunk.map(async (userCourseProgress) => {
+          const { user } = userCourseProgress
+
+          if (!user) {
+            orphanProgresses[course.slug].push(userCourseProgress.id)
+            return Promise.resolve()
+          }
+
+          const updated = await generateUserCourseProgress({
+            user,
+            course,
+            userCourseProgress: omit(userCourseProgress, "user"),
+            context: {
+              ...this.ctx,
+              mutex: {} as any,
+              consumer: {} as any,
+              topic_name: "",
+            },
+          })
+
+          if (updated.n_points !== userCourseProgress.n_points) {
+            logger.info(
+              `Updated points: ${user.upstream_id} ${course.slug} ${userCourseProgress.n_points} -> ${updated.n_points}`,
+            )
+          }
+        })
+      }
+
+      let total = 0
+
+      for (const chunk of chunks) {
+        await Promise.all(buildPromises(chunk))
+        total += chunk.length
+        logger.info(
+          `Processed ${total}/${userCourseProgresses.length} user progresses`,
+        )
+      }
+    }
+
+    logger.info("Querying updated progresses and completions")
+    const afterParentProgresses = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .user_course_progresses({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
+
+    const afterCompletions = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .completions({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
+
+    const result = {
+      progresses: {
+        ...createDiff(beforeParentProgresses, afterParentProgresses),
+        orphaned: orphanProgresses,
+      },
+      completions: {
+        ...createDiff(beforeCompletions, afterCompletions),
+      },
+    }
+
+    logger.info(`Done! Result: ${JSON.stringify(result, null, 2)}`)
+
+    return res.status(200).json({
+      message: "ok",
+      ...result,
     })
   }
 }

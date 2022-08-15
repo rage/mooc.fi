@@ -25,12 +25,7 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    return err(
-      new DatabaseInputError(
-        `Invalid user or course: user ${message.user_id}, course ${message.course_id}`,
-        message,
-      ),
-    )
+    return err(new DatabaseInputError(`Invalid user or course`, message))
   }
 
   const userCourseProgresses = await knex<any, UserCourseProgress[]>(
@@ -59,6 +54,7 @@ export const saveToDatabase = async (
     })
   }
 
+  // TODO: here we could ensure the right service progress to searching for only the ones connected to the main course progress
   const userCourseServiceProgresses = await knex<
     any,
     UserCourseServiceProgress[]
@@ -130,5 +126,5 @@ export const saveToDatabase = async (
     MessageType.PROGRESS_UPDATED,
   )
 
-  return ok("Saved to DB succesfully")
+  return ok("Saved to DB successfully")
 }

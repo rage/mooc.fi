@@ -1,5 +1,5 @@
 import axios, { Method } from "axios"
-import { omit, orderBy } from "lodash"
+import { omit } from "lodash"
 
 import {
   fakeTMCCurrent,
@@ -221,6 +221,24 @@ describe("API", () => {
           expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
         })
       })
+
+      it("returns inherited settings correctly", async () => {
+        return getSettings("inherits")({
+          headers: { Authorization: "Bearer admin" },
+        }).then(async (res) => {
+          const settings = await ctx.prisma.userCourseSetting.findFirst({
+            where: {
+              id: "40000000-0000-0000-0000-000000000105",
+            },
+          })
+          const expected = {
+            ...omit(settings, "other"),
+            ...((settings!.other as object) ?? {}),
+          }
+
+          expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
+        })
+      })
     })
 
     describe("POST", () => {
@@ -352,134 +370,177 @@ describe("API", () => {
           sound: "meow",
         })
       })
-    })
 
-    describe("/api/completions", () => {
-      const tmc = fakeTMCCurrent({
-        "Bearer normal": [200, normalUserDetails],
-        "Bearer admin": [200, adminUserDetails],
-      })
-
-      beforeAll(() => tmc.setup())
-      afterAll(() => tmc.teardown())
-
-      beforeEach(async () => {
-        await seed(ctx.prisma)
-      })
-
-      const getCompletions = (slug: string, registered: boolean = false) =>
-        get(
-          `/api/completions/${slug}${
-            registered ? `?registered=${registered}` : ""
-          }`,
-          {},
-        )
-
-      it("errors on no auth", async () => {
-        return getCompletions("course1")({})
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(401)
-          })
-      })
-
-      it("errors on non-existent organization", async () => {
-        return getCompletions("course1")({
-          headers: { Authorization: "Basic bogus" },
+      it("updates correctly when settings inherited", async () => {
+        const existingSetting = await ctx.prisma.userCourseSetting.findFirst({
+          where: {
+            id: "40000000-0000-0000-0000-000000000105",
+          },
         })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(401)
-          })
-      })
-
-      it("errors on non-basic authorization", async () => {
-        return getCompletions("course1")({
+        const res = await postSettings("inherits")({
+          data: {
+            id: "bogus",
+            language: "fi",
+            country: "en",
+            marketing: true,
+            isCat: true,
+            sound: "meow",
+          },
           headers: { Authorization: "Bearer admin" },
         })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(401)
-          })
-      })
+        expect(res.data.message).toContain("settings updated")
+        expect(res.status).toBe(200)
 
-      it("errors on non-existent course", async () => {
-        return getCompletions("bogus")({
-          headers: { Authorization: "Basic kissa" },
-        })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.status).toBe(404)
-            expect(response.data.message).toContain("Course not found")
-          })
-      })
-
-      it("returns correctly on course, skipping registered completions", async () => {
-        const res = await getCompletions("course1")({
-          headers: { Authorization: "Basic kissa" },
+        const updatedSetting = await ctx.prisma.userCourseSetting.findFirst({
+          where: {
+            id: "40000000-0000-0000-0000-000000000105",
+          },
         })
 
-        const completions = orderBy(res.data, "id")
-
-        expect(completions.map((c) => c.id)).toEqual([
-          "12400000-0000-0000-0000-000000000001",
-          "30000000-0000-0000-0000-000000000102",
-          "30000000-0000-0000-0000-000000000104",
-        ])
-      })
-
-      it("returns correctly on course alias, skipping registered completions", async () => {
-        const res = await getCompletions("alias")({
-          headers: { Authorization: "Basic kissa" },
-        })
-
-        const completions = orderBy(res.data, "id")
-
-        expect(completions.map((c) => c.id)).toEqual([
-          "12400000-0000-0000-0000-000000000001",
-          "30000000-0000-0000-0000-000000000102",
-          "30000000-0000-0000-0000-000000000104",
-        ])
-      })
-
-      it("returns correctly on course when registered query parameter is set", async () => {
-        const res = await getCompletions(
-          "course1",
+        expect(updatedSetting!.updated_at! > existingSetting!.updated_at!).toBe(
           true,
-        )({
-          headers: { Authorization: "Basic kissa" },
+        )
+        expect(updatedSetting!.language).toBe("fi")
+        expect(updatedSetting!.country).toBe("en")
+        expect(updatedSetting!.marketing).toBe(true)
+        expect(updatedSetting!.other).toEqual({
+          hasWings: true,
+          isCat: true,
+          sound: "meow",
         })
-
-        const completions = orderBy(res.data, "id")
-
-        expect(completions.map((c) => c.id)).toEqual([
-          "12400000-0000-0000-0000-000000000001",
-          "30000000-0000-0000-0000-000000000102",
-          "30000000-0000-0000-0000-000000000104",
-          "30000000-0000-0000-0000-000000000105",
-        ])
       })
+    })
+  })
 
-      const completionInstructions = get(
-        "/api/completionInstructions/course1/en",
+  describe("/completions", () => {
+    const tmc = fakeTMCCurrent({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer admin": [200, adminUserDetails],
+    })
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const getCompletions = (slug: string, registered: boolean = false) =>
+      get(
+        `/api/completions/${slug}${
+          registered ? `?registered=${registered}` : ""
+        }`,
         {},
       )
 
-      it("returns course instructions", async () => {
-        const res = await completionInstructions({})
-
-        expect(res.status).toBe(200)
-      })
-
-      const completionTiers = get("/api/completionTiers/course1", {})
-
-      it("returns course with multiple tiered registration links", async () => {
-        const res = await completionTiers({
-          headers: { Authorization: "Bearer normal" },
+    it("errors on no auth", async () => {
+      return getCompletions("course1")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
         })
+    })
 
-        expect(res.status).toBe(200)
+    it("errors on non-existent organization", async () => {
+      return getCompletions("course1")({
+        headers: { Authorization: "Basic bogus" },
       })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on non-basic authorization", async () => {
+      return getCompletions("course1")({
+        headers: { Authorization: "Bearer admin" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on non-existent course", async () => {
+      return getCompletions("bogus")({
+        headers: { Authorization: "Basic kissa" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(404)
+          expect(response.data.message).toContain("Course not found")
+        })
+    })
+
+    it("returns correctly on course, skipping registered and duplicate completions", async () => {
+      const res = await getCompletions("course1")({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      expect((res.data as any[]).map((c) => c.id).sort()).toEqual([
+        "12400000-0000-0000-0000-000000000001",
+        "30000000-0000-0000-0000-000000000102",
+        "30000000-0000-0000-0000-000000000104",
+      ])
+    })
+
+    it("returns correctly on course alias, skipping registered and duplicate completions", async () => {
+      const res = await getCompletions("alias")({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      expect((res.data as any[]).map((c) => c.id).sort()).toEqual([
+        "12400000-0000-0000-0000-000000000001",
+        "30000000-0000-0000-0000-000000000102",
+        "30000000-0000-0000-0000-000000000104",
+      ])
+    })
+
+    it("returns correctly on course when registered query parameter is set, skipping duplicate completions", async () => {
+      const res = await getCompletions(
+        "course1",
+        true,
+      )({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      expect((res.data as any[]).map((c) => c.id).sort()).toEqual([
+        "12400000-0000-0000-0000-000000000001",
+        "30000000-0000-0000-0000-000000000102",
+        "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000106",
+      ])
+    })
+
+    it("returns correctly on course with a completion handler", async () => {
+      const res = await getCompletions("handled")({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      expect((res.data as any[]).map((c) => c.id).sort()).toEqual([
+        "30000000-0000-0000-0000-000000000107",
+      ])
+    })
+
+    const completionInstructions = get(
+      "/api/completionInstructions/course1/en",
+      {},
+    )
+
+    it("returns course instructions", async () => {
+      const res = await completionInstructions({})
+
+      expect(res.status).toBe(200)
+    })
+
+    const completionTiers = get("/api/completionTiers/course1", {})
+
+    it("returns course with multiple tiered registration links", async () => {
+      const res = await completionTiers({
+        headers: { Authorization: "Bearer normal" },
+      })
+
+      expect(res.status).toBe(200)
     })
   })
 
@@ -843,5 +904,71 @@ describe("API", () => {
         expect(orderedSnapshot(res.data)).toMatchSnapshot()
       })
     })
+  })
+
+  describe("/progressv2", () => {
+    const tmc = fakeTMCCurrent({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
+    })
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const getProgressv2 = (id: string, deleted?: boolean) =>
+      get(`/api/progressv2/${id}${deleted ? "?deleted=true" : ""}`, {})
+
+    it("errors on no auth", async () => {
+      return getProgressv2("course1")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on no course found", async () => {
+      return getProgressv2("foo")({
+        headers: { Authorization: "Bearer normal" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(404)
+          expect(response.data.message).toContain("course not found")
+        })
+    })
+
+    test.each([
+      {
+        paramType: "id",
+        param: "00000000000000000000000000000001",
+        deleted: false,
+      },
+      { paramType: "slug", param: "course2", deleted: false },
+      {
+        paramType: "id",
+        param: "00000000000000000000000000000001",
+        deleted: true,
+      },
+      { paramType: "slug", param: "course2", deleted: true },
+    ])(
+      "returns correct data on course $paramType, include deleted $deleted",
+      async ({ param, deleted }) => {
+        const res = await getProgressv2(
+          param,
+          deleted,
+        )({
+          headers: { Authorization: "Bearer normal" },
+        })
+
+        expect(res.data).toMatchSnapshot()
+      },
+    )
+
+    // TODO/FIXME: maybe should also test if it returns handler completion,
+    // but similar functions are already tested
   })
 })

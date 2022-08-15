@@ -3,14 +3,6 @@ import * as winston from "winston"
 
 import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
 
-const redisClient =
-  !NEXUS_REFLECTION && !isTest
-    ? redis.createClient({
-        url: REDIS_URL,
-        password: REDIS_PASSWORD,
-      })
-    : undefined
-
 const _logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -21,17 +13,51 @@ const _logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-// @ts-ignore: not used for now
-let connected = false
+let redisClient: ReturnType<typeof redis.createClient> | undefined
 
-redisClient?.on("error", (err: any) => {
-  _logger.error("Redis error: " + err)
-})
-redisClient?.on("ready", () => {
-  _logger.info("Redis connected")
-  connected = true
-})
-redisClient?.connect()
+export const redisReconnectStrategy =
+  (redisName: string = "Redis", logger: winston.Logger = _logger) =>
+  (retriesOrError: number | Error) => {
+    if (retriesOrError instanceof Error) {
+      logger.error(`${redisName} reconnection failed`, retriesOrError)
+      process.exit(-1)
+    }
+    const retries = retriesOrError
+    const nextDelay = Math.min(2 ** retries * 20, 30000)
+    logger.info(
+      `${redisName} connection attempt: ${retries}, next attempt in: ${nextDelay}ms`,
+    )
+    return nextDelay
+  }
+
+const getRedisClient = (): typeof redisClient => {
+  if (redisClient) {
+    return redisClient
+  }
+  if (NEXUS_REFLECTION || isTest) {
+    return
+  }
+
+  const client = redis.createClient({
+    url: REDIS_URL,
+    password: REDIS_PASSWORD,
+    socket: {
+      reconnectStrategy: redisReconnectStrategy(),
+    },
+  })
+
+  client.on("error", (err: any) => {
+    _logger.error(`Redis error`, err)
+  })
+  client.on("ready", () => {
+    _logger.info(`Redis connected`)
+  })
+  client?.connect()
+
+  redisClient = client
+
+  return client
+}
 
 const isPromise = <T>(value: any): value is Promise<T> => {
   return value && typeof value.then === "function"
@@ -111,27 +137,8 @@ export async function redisify<T>(
   }
 }
 
-export const publisher =
-  !NEXUS_REFLECTION && !isTest
-    ? redis.createClient({
-        url: REDIS_URL,
-        password: REDIS_PASSWORD,
-      })
-    : null
-
-export const subscriber =
-  !NEXUS_REFLECTION && !isTest
-    ? redis.createClient({
-        url: REDIS_URL,
-        password: REDIS_PASSWORD,
-      })
-    : null
-
 export const invalidate = async (prefix: string, key: string) => {
   redisClient?.del(`${prefix}:${key}`)
 }
 
-publisher?.connect()
-subscriber?.connect()
-
-export default redisClient
+export default getRedisClient()

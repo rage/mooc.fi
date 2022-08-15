@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react"
+
 import { WideContainer } from "/components/Container"
-import CourseEdit from "/components/Dashboard/Editor/Course"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
+import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { H1NoBackground } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { H1NoBackground } from "/components/Text/headers"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useEditorCourses } from "/hooks/useEditorCourses"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { useTranslator } from "/util/useTranslator"
-import { useEditorCourses } from "/hooks/useEditorCourses"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+
+import { CourseEditorDetailsQuery } from "/graphql/generated"
 
 function stripId<T>(data: T): T {
   if (data === null || data === undefined) return data
@@ -33,7 +35,7 @@ const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
 
   const [clonedCourse, setClonedCourse] = useState<
-    CourseDetails_course | undefined
+    CourseEditorDetailsQuery["course"] | undefined
   >(undefined)
   const clone = useQueryParameter("clone", false)
   const beta = useQueryParameter("beta", false)
@@ -83,7 +85,7 @@ const NewCourse = () => {
           />
         ) : (
           <CourseEdit
-            {...(clone ? { course: clonedCourse } : {})}
+            {...(clone ? { course: clonedCourse ?? undefined } : {})}
             modules={studyModulesData?.study_modules?.filter(notEmpty)}
             courses={coursesData?.courses?.filter(notEmpty)}
           />

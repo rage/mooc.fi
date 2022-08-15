@@ -8,7 +8,7 @@ import { Sentry } from "../services/sentry"
 export const sentryPlugin = () =>
   plugin({
     name: "SentryPlugin",
-    onCreateFieldResolver(config: any) {
+    onCreateFieldResolver(config) {
       return async (
         root: any,
         args: Record<string, any>,

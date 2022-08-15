@@ -1,4 +1,4 @@
-import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
+import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
 
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
@@ -38,6 +38,7 @@ const context = {
 consumer.on("ready", () => {
   logger.info("Ready to consume")
   consumer.subscribe(TOPIC_NAME)
+
   const consumerImpl = async (
     error: LibrdKafkaError,
     messages: KafkaMessage[],
@@ -70,5 +71,6 @@ consumer.on("ready", () => {
       }, 10)
     }
   }
+
   consumer.consume(1, consumerImpl)
 })

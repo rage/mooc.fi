@@ -11,7 +11,9 @@ class CustomError extends Error {
 export class TMCError extends CustomError {
   name = "TMCError"
 
-  constructor(message: string, readonly error?: any) {
+  constructor(message: string, error?: any)
+  constructor(message: string, data?: object, error?: any)
+  constructor(message: string, readonly data?: object, readonly error?: any) {
     super(message)
   }
 }
@@ -77,7 +79,9 @@ export class SlackPosterError extends CustomError {
 export class EmailTemplaterError extends CustomError {
   name = "EmailTemplaterError"
 
-  constructor(message: string, readonly error?: Error) {
+  constructor(message: string, error?: Error)
+  constructor(message: string, data?: object, error?: Error)
+  constructor(message: string, readonly data?: object, readonly error?: Error) {
     super(message)
   }
 }
@@ -92,6 +96,14 @@ export class AvoinError extends CustomError {
 
 export class RemoveDuplicateCompletionsError extends CustomError {
   name = "RemoveDuplicateCompletionsError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}
+
+export class RemoveDuplicateExerciseCompletionsError extends CustomError {
+  name = "RemoveDuplicateExerciseCompletionsError"
 
   constructor(message: string, readonly error?: Error) {
     super(message)

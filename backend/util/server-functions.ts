@@ -13,13 +13,15 @@ interface GetUserReturn {
   details: UserInfo
 }
 
+interface RequireCourseOwnershipArgs {
+  course_id: string
+  ctx: ApiContext
+}
+
 export function requireCourseOwnership({
   course_id,
   ctx,
-}: {
-  course_id: string
-  ctx: ApiContext
-}) {
+}: RequireCourseOwnershipArgs) {
   return async function (
     req: Request,
     res: Response,
@@ -70,12 +72,12 @@ export function requireAdmin(ctx: ApiContext) {
 
 export function getUser({ knex, logger }: ApiContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<GetUserReturn, any>> {
-    const rawToken = req.get("Authorization")
+    const rawToken = req.headers.authorization
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+    if (!rawToken?.startsWith("Bearer")) {
       return err(res.status(401).json({ message: "not logged in" }))
     }
 
@@ -146,12 +148,12 @@ export function getUser({ knex, logger }: ApiContext) {
 
 export function getOrganization({ knex }: ApiContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<Organization, any>> {
-    const rawToken = req.get("Authorization")
+    const rawToken = req.headers.authorization
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Basic")) {
+    if (!rawToken?.startsWith("Basic")) {
       return err(res.status(401).json({ message: "Access denied." }))
     }
 

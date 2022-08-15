@@ -1,8 +1,8 @@
+import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
 import LUT from "/static/md_pages/lut_module.mdx"
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
-import Module from "./ModuleDisplay/ModuleDisplay"
+import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 
 const moduleColors: Array<{
   backgroundColor: string
@@ -34,7 +34,7 @@ const moduleColors: Array<{
 type ModuleComponent =
   | {
       type: "module"
-      module: AllModules_study_modules_with_courses
+      module: StudyModuleFieldsWithCoursesFragment
     }
   | {
       type: "custom-module"
@@ -56,13 +56,11 @@ const customModuleComponents: Array<ModuleComponent> = [
   },
 ]
 
-const ModuleList = ({
-  modules,
-  loading,
-}: {
-  modules: AllModules_study_modules_with_courses[]
+interface ModuleListProps {
+  modules: StudyModuleFieldsWithCoursesFragment[]
   loading: boolean
-}) => {
+}
+const ModuleList = ({ modules, loading }: ModuleListProps) => {
   if (loading) {
     return <Module key="skeletonmodule" {...moduleColors[0]} />
   }

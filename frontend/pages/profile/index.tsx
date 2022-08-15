@@ -1,5 +1,9 @@
 import React, { ChangeEvent, useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import ConsentNotification from "/components/Profile/ConsentNotification"
@@ -7,50 +11,13 @@ import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Spinner from "/components/Spinner"
-import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
-import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useRouter } from "next/router"
 
-import { gql, useQuery } from "@apollo/client"
+import { CurrentUserOverviewDocument } from "/graphql/generated"
 
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
-
-export const UserOverViewQuery = gql`
-  query ProfileUserOverView {
-    currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      student_number
-      email
-      completions {
-        id
-        completion_language
-        student_number
-        created_at
-        tier
-        eligible_for_ects
-        completion_date
-        course {
-          id
-          slug
-          name
-          photo {
-            uncompressed
-          }
-          has_certificate
-        }
-        ...CompletionsRegisteredFragment
-      }
-      research_consent
-    }
-  }
-  ${CompletionsRegisteredFragment}
-`
 
 // TODO: not visible in here, so don't query it?
 /*
@@ -98,7 +65,7 @@ function Profile() {
     }
   }, [_tab])
 
-  const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const { data, error, loading } = useQuery(CurrentUserOverviewDocument)
 
   useBreadcrumbs([
     {

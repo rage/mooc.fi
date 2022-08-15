@@ -1,26 +1,22 @@
+import { createUploadLink } from "apollo-upload-client"
+import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
+
 import {
   ApolloClient,
   ApolloLink,
+  defaultDataIdFromObject,
   InMemoryCache,
   NormalizedCacheObject,
-  defaultDataIdFromObject,
 } from "@apollo/client"
-import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
-import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
+import { onError } from "@apollo/client/link/error"
+
+import notEmpty from "/util/notEmpty"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
-const cypress = process.env.CYPRESS === "true"
-
-/* const cypress =
-  process.env.CYPRESS === "true" ||
-  (typeof window !== "undefined" &&
-    window.Cypress &&
-    window.Cypress.env("CYPRESS") === "true") */
 
 function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
@@ -42,11 +38,7 @@ function create(initialState: any, originalAccessToken?: string) {
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
-    uri: cypress
-      ? "http://localhost:4001"
-      : production
-      ? "https://www.mooc.fi/api/"
-      : "http://localhost:4000",
+    uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
   })
@@ -74,6 +66,33 @@ function create(initialState: any, originalAccessToken?: string) {
         default:
           return defaultDataIdFromObject(object)
       }
+    },
+    typePolicies: {
+      Query: {
+        fields: {
+          userCourseSettings: {
+            // for "fetch more" type querying of user points
+            keyArgs: false,
+            merge: (existing, incoming) => {
+              const existingEdges = (existing?.edges ?? []).filter(notEmpty)
+              const incomingEdges = (incoming?.edges ?? []).filter(notEmpty)
+              const pageInfo = incoming?.pageInfo ?? {
+                hasNextPage: false,
+                endCursor: null,
+                __typename: "PageInfo",
+              }
+
+              const edges = [...existingEdges, ...incomingEdges]
+
+              return {
+                pageInfo,
+                edges,
+                totalCount: incoming?.totalCount ?? null,
+              }
+            },
+          },
+        },
+      },
     },
   })
 

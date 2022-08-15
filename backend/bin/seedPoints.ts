@@ -5,21 +5,20 @@ import { Prisma } from "@prisma/client"
 import prisma from "../prisma"
 
 //Generate integer id which is not already taken
-function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {
+function generateUniqueUpstreamId(existingIds: number[]) {
   //take the largest possible integer
-  const LargestPossibleUpstreamId = 2147483647
-  let UniqueIntId = 0
+  const MAX_INTEGER = 2147483647
+  let uniqueIntId = 0
   //Go down from the largest possible integer
   //until value not already in use is found
-  let i: number
-  for (i = LargestPossibleUpstreamId; i > 0; i--) {
-    if (ExistingIds.indexOf(i) === -1) {
-      UniqueIntId = i
-      return UniqueIntId
+  for (let i = MAX_INTEGER; i > 0; i--) {
+    if (existingIds.indexOf(i) === -1) {
+      uniqueIntId = i
+      return uniqueIntId
     }
   }
 
-  return UniqueIntId
+  return uniqueIntId
 }
 
 function generateRandomString() {
@@ -30,10 +29,12 @@ function generateRandomString() {
 }
 
 const addUsers = async () => {
-  //get existing users from database
-  const UsersInDatabase = await prisma.user.findMany()
-  //create a list of upstream ids already in use
-  let UpstreamIdsInUse = UsersInDatabase.map((user) => user.upstream_id)
+  //get existing upstream_ids
+  const upstreamIdsInUse = (
+    await prisma.user.findMany({
+      select: { upstream_id: true },
+    })
+  ).map((user) => user.upstream_id)
   //Generate random data for 100 users
   //and add them to the database
   let i = 0
@@ -42,7 +43,7 @@ const addUsers = async () => {
     const last_name = faker.name.lastName()
 
     const newUser = {
-      upstream_id: generateUniqueUpstreamId({ ExistingIds: UpstreamIdsInUse }),
+      upstream_id: generateUniqueUpstreamId(upstreamIdsInUse),
       first_name,
       last_name,
       username: faker.internet.userName(first_name, last_name),
@@ -52,7 +53,7 @@ const addUsers = async () => {
       real_student_number: generateRandomString(),
     }
     //add new upstreamId to ids already in use
-    UpstreamIdsInUse = UpstreamIdsInUse.concat(newUser.upstream_id)
+    upstreamIdsInUse.push(newUser.upstream_id)
 
     await prisma.user.create({ data: newUser })
     i += 1
@@ -71,10 +72,11 @@ const addServices = async () => {
   }
 }
 
-const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
-  const UsersInDb = await prisma.user.findMany({ take: 100 })
+const addUserCourseProgressess = async (courseId: string) => {
+  const usersInDb = await prisma.user.findMany({ take: 100 })
+
   return await Promise.all(
-    UsersInDb.map(async (user) => {
+    usersInDb.map(async (user) => {
       const progress = [
         {
           group: "week1",
@@ -129,7 +131,7 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   )
 }
 
-const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
+const addUserCourseSettingses = async (courseId: string) => {
   const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
@@ -160,11 +162,14 @@ const seedPointsData = async () => {
   const course = await prisma.course.findUnique({
     where: { slug: "elements-of-ai" },
   })
-  console.log("course", course)
+
   await addUsers()
   await addServices()
-  course && (await addUserCourseProgressess({ courseId: course.id }))
-  course && (await addUserCourseSettingses({ courseId: course.id }))
+
+  if (course) {
+    await addUserCourseProgressess(course.id)
+    await addUserCourseSettingses(course.id)
+  }
 }
 
 seedPointsData().finally(() => process.exit(0))

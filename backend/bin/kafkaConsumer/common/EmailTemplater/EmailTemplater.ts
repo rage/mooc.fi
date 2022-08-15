@@ -48,14 +48,14 @@ export class EmailTemplater {
 
   private prepare() {
     Object.getOwnPropertyNames(this.keyWordToTemplate).forEach((p) => {
-      this.keyWordToTemplate[p] = <Template>(
-        new (<ITemplateConstructor>this.keyWordToTemplate[p])({
-          emailTemplate: this.emailTemplate,
-          user: this.user,
-          organization: this.organization,
-          context: this.context,
-        })
-      )
+      this.keyWordToTemplate[p] = new (this.keyWordToTemplate[
+        p
+      ] as ITemplateConstructor)({
+        emailTemplate: this.emailTemplate,
+        user: this.user,
+        organization: this.organization,
+        context: this.context,
+      }) as Template
     })
   }
 
@@ -63,14 +63,17 @@ export class EmailTemplater {
     await this.asyncForEach(
       Object.getOwnPropertyNames(this.keyWordToTemplate),
       async (p: string) => {
-        this.keyWordToTemplate[p] = <string>(
-          await (<Template>this.keyWordToTemplate[p]).resolve()
-        )
+        this.keyWordToTemplate[p] = (await (
+          this.keyWordToTemplate[p] as Template
+        ).resolve()) as string
       },
     )
   }
 
-  async asyncForEach(array: any[], callback: Function) {
+  async asyncForEach(
+    array: (keyof KeyWordToTemplateType)[],
+    callback: Function,
+  ) {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array)
     }

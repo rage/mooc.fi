@@ -1,62 +1,17 @@
 import { ChangeEvent, useEffect, useState } from "react"
 
-import ErrorBoundary from "/components/ErrorBoundary"
-import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
-import {
-  UserCourseSettings as StudentProgressData,
-  UserCourseSettings_userCourseSettings_pageInfo,
-} from "/static/types/generated/UserCourseSettings"
-import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
 import { range } from "lodash"
 
-import { gql, useLazyQuery } from "@apollo/client"
+import { useLazyQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
 
 import PointsList from "./DashboardPointsList"
+import ErrorBoundary from "/components/ErrorBoundary"
+import notEmpty from "/util/notEmpty"
+import useDebounce from "/util/useDebounce"
 
-export const StudentProgresses = gql`
-  query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {
-    userCourseSettings(
-      course_id: $course_id
-      first: 15
-      skip: $skip
-      search: $search
-    ) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      edges {
-        node {
-          id
-          user {
-            id
-            first_name
-            last_name
-            email
-            student_number
-            real_student_number
-            progress(course_id: $course_id) {
-              course {
-                name
-                id
-              }
-              ...ProgressUserCourseProgressFragment
-              ...ProgressUserCourseServiceProgressFragment
-            }
-          }
-        }
-      }
-      totalCount
-    }
-  }
-  ${ProgressUserCourseProgressFragment}
-  ${ProgressUserCourseServiceProgressFragment}
-`
-//       count(course_id: $course_id, search: $search)
+import { StudentProgressesDocument } from "/graphql/generated"
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;
@@ -77,16 +32,19 @@ function PaginatedPointsList(props: Props) {
   const [search, setSearch] = useDebounce(searchString, 1000)
 
   // use lazy query to prevent running query on each render
-  const [getData, { data, loading, error, fetchMore }] =
-    useLazyQuery<StudentProgressData>(StudentProgresses, {
-      fetchPolicy: "cache-first",
-    })
+  const [getData, { data, loading, error, fetchMore }] = useLazyQuery(
+    StudentProgressesDocument,
+    {
+      // fetchPolicy: "cache-first",
+      ssr: false,
+      // notifyOnNetworkStatusChange :true
+    },
+  )
 
   useEffect(() => {
     getData({
       variables: {
         course_id: courseId,
-        after: null,
         search,
       },
     })
@@ -102,7 +60,9 @@ function PaginatedPointsList(props: Props) {
     label: value,
   }))
 
-  const edges = (data?.userCourseSettings?.edges ?? []).filter(notEmpty)
+  const users = (data?.userCourseSettings?.edges ?? [])
+    .map((e) => e?.node)
+    .filter(notEmpty)
 
   return (
     <ErrorBoundary>
@@ -154,51 +114,17 @@ function PaginatedPointsList(props: Props) {
           <div style={{ marginBottom: "1rem" }}>
             {data?.userCourseSettings?.totalCount || 0} results
           </div>
-          <PointsList pointsForUser={edges} cutterValue={cutterValue} />
+          <PointsList data={users} cutterValue={cutterValue} />
           <Button
-            onClick={() =>
-              fetchMore?.({
-                query: StudentProgresses,
+            onClick={() => {
+              fetchMore({
                 variables: {
                   course_id: courseId,
-                  skip: data?.userCourseSettings?.edges?.length ?? 0,
+                  after: data?.userCourseSettings?.pageInfo?.endCursor,
                   search: search !== "" ? search : undefined,
                 },
-
-                updateQuery: (
-                  previousResult,
-                  {
-                    fetchMoreResult,
-                  }: { fetchMoreResult?: StudentProgressData },
-                ) => {
-                  const previousData = (
-                    previousResult?.userCourseSettings?.edges ?? []
-                  ).filter(notEmpty)
-                  const newData = (
-                    fetchMoreResult?.userCourseSettings?.edges ?? []
-                  ).filter(notEmpty)
-                  const newPageInfo: UserCourseSettings_userCourseSettings_pageInfo =
-                    fetchMoreResult?.userCourseSettings?.pageInfo ?? {
-                      hasNextPage: false,
-                      endCursor: null,
-                      __typename: "PageInfo",
-                    }
-
-                  return {
-                    userCourseSettings: {
-                      pageInfo: {
-                        ...newPageInfo,
-                        __typename: "PageInfo",
-                      },
-                      edges: [...previousData, ...newData],
-                      __typename: "QueryUserCourseSettings_type_Connection",
-                      totalCount:
-                        fetchMoreResult!.userCourseSettings?.totalCount ?? null,
-                    },
-                  }
-                },
               })
-            }
+            }}
             disabled={!data?.userCourseSettings?.pageInfo.hasNextPage}
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}

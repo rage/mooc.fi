@@ -1,5 +1,8 @@
 import React, { useEffect, useReducer, useState } from "react"
 
+import { useQuery } from "@apollo/client"
+import { Paper } from "@mui/material"
+
 import Container from "/components/Container"
 import CollapseContext, {
   ActionType,
@@ -9,94 +12,23 @@ import CollapseContext, {
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
-import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
-import { UserCourseSummaryUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { UserCourseSummaryUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserSummary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { gql, useQuery } from "@apollo/client"
-import { Paper } from "@mui/material"
-
-const UserSummaryQuery = gql`
-  query UserSummary($upstream_id: Int) {
-    user(upstream_id: $upstream_id) {
-      id
-      username
-      user_course_summary {
-        course {
-          id
-          name
-          slug
-          has_certificate
-          photo {
-            id
-            uncompressed
-          }
-          exercises {
-            id
-            name
-            custom_id
-            course_id
-            part
-            section
-            max_points
-            deleted
-          }
-        }
-        exercise_completions {
-          id
-          exercise_id
-          created_at
-          updated_at
-          attempted
-          completed
-          timestamp
-          n_points
-          exercise_completion_required_actions {
-            id
-            value
-          }
-        }
-        ...UserCourseSummaryUserCourseProgressFragment
-        ...UserCourseSummaryUserCourseServiceProgressFragment
-        completion {
-          id
-          course_id
-          created_at
-          updated_at
-          tier
-          grade
-          project_completion
-          completion_language
-          completion_date
-          registered
-          eligible_for_ects
-          student_number
-          email
-          ...CompletionsRegisteredFragment
-        }
-      }
-    }
-  }
-  ${CompletionsRegisteredFragment}
-  ${UserCourseSummaryUserCourseProgressFragment}
-  ${UserCourseSummaryUserCourseServiceProgressFragment}
-`
+import { CourseStatus, UserSummaryDocument } from "/graphql/generated"
 
 interface SearchVariables {
   search?: string
   hidden?: boolean | null
   handledBy?: string | null
-  status?: string[] | null
+  status?: CourseStatus[] | null
 }
 
 function UserSummaryView() {
   const id = useQueryParameter("id")
-  const { loading, error, data } = useQuery<UserSummary>(UserSummaryQuery, {
+  const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: { upstream_id: Number(id) },
   })
 

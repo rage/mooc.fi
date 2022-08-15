@@ -38,19 +38,21 @@ const storage =
 
 const bucket = storage.bucket(GOOGLE_CLOUD_STORAGE_BUCKET ?? "") // this shouldn't ever happen in production
 
-export const uploadImage = async ({
-  imageBuffer,
-  mimeType,
-  name = "",
-  directory = "",
-  base64 = false,
-}: {
+interface UploadStorageImageArgs {
   imageBuffer: Buffer
   mimeType: string
   name?: string
   directory?: string
   base64?: boolean
-}): Promise<string> => {
+}
+
+export const uploadStorageImage = async ({
+  imageBuffer,
+  mimeType,
+  name = "",
+  directory = "",
+  base64 = false,
+}: UploadStorageImageArgs): Promise<string> => {
   const filename = `${directory ? directory + "/" : ""}${shortid.generate()}${
     name && name !== "" ? "-" + name : ""
   }.${mime.extension(mimeType)}`
@@ -83,7 +85,9 @@ export const uploadImage = async ({
   })
 }
 
-export const deleteImage = async (filename: string): Promise<boolean> => {
+export const deleteStorageImage = async (
+  filename: string,
+): Promise<boolean> => {
   if (!filename || filename === "") {
     return Promise.resolve(false)
   }

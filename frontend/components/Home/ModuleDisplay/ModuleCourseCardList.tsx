@@ -1,14 +1,16 @@
 import { useState } from "react"
-import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
-import { Grid, Button } from "@mui/material"
-import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
+
 import styled from "@emotion/styled"
+import { Button, Grid } from "@mui/material"
+
+import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import HomeTranslations from "/translations/home"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { useTranslator } from "/util/useTranslator"
 
+import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+
 interface CourseListProps {
-  courses: CourseData[]
+  courses: CourseFieldsFragment[]
 }
 
 export const ThreeOrLessCoursesListing = (props: CourseListProps) => {

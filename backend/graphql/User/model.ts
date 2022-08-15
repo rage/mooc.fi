@@ -1,12 +1,6 @@
+import { UserInputError } from "apollo-server-express"
 import { uniqBy } from "lodash"
-import {
-  booleanArg,
-  idArg,
-  nonNull,
-  nullable,
-  objectType,
-  stringArg,
-} from "nexus"
+import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
 import { notEmpty } from "../../util/notEmpty"
 
@@ -78,6 +72,8 @@ export const User = objectType({
                     }
                   : undefined,
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
       },
     })
@@ -137,6 +133,15 @@ export const User = objectType({
           throw new Error("need course_id or course_slug")
         }
 
+        // TODO/FIXME: Semantically it's right now, as we're quering a specific course,
+        // be it tier or handler, and if the user does not have a project_completion
+        // iin _that_ specific course progress, then we return false.
+        // However, this is not usually what we want to query here, so we might want to
+        // look for the siblings/children as well. This only applies to BAI courses anyway
+        // for now, but we can't go hard coding the course ids here as it would render the
+        // parameters obsolete.
+        // Add a third parameter `query_siblings` that defaults to true to the query?
+
         const data = await ctx.prisma.course.findUnique({
           where: {
             id: course_id ?? undefined,
@@ -147,25 +152,15 @@ export const User = objectType({
               where: {
                 user_id: parent.id,
               },
-            },
-            completions_handled_by: {
-              select: {
-                user_course_progresses: {
-                  where: {
-                    user_id: parent.id,
-                  },
-                },
-              },
+              orderBy: { created_at: "asc" },
             },
           },
         })
 
-        const progresses =
-          data?.completions_handled_by?.user_course_progresses ??
-          data?.user_course_progresses
-
         return (
-          progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
+          data?.user_course_progresses?.some(
+            (p) => (p?.extra as any)?.projectCompletion,
+          ) ?? false
         )
       },
     })
@@ -173,11 +168,18 @@ export const User = objectType({
     t.nonNull.field("progress", {
       type: "Progress",
       args: {
-        course_id: nonNull(idArg()),
+        course_id: idArg(),
+        slug: stringArg(),
       },
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, { course_id, slug }, ctx) => {
+        if ((!course_id && !slug) || (course_id && slug)) {
+          throw new UserInputError("provide exactly one of course_id or slug")
+        }
         const course = await ctx.prisma.course.findUnique({
-          where: { id: args.course_id },
+          where: {
+            id: course_id ?? undefined,
+            slug: slug ?? undefined,
+          },
         })
         return {
           course,
@@ -189,19 +191,49 @@ export const User = objectType({
     t.list.nonNull.field("progresses", {
       type: "Progress",
       resolve: async (parent, _, ctx) => {
-        const progresses = await ctx.prisma.user
+        const progressCourses = await ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
           })
-          .user_course_progresses()
+          .user_course_progresses({
+            distinct: ["course_id"],
+            select: {
+              course: true,
+            },
+          })
 
-        const courses = await ctx.prisma.course.findMany({
-          where: {
-            id: { in: progresses.map((p) => p.course_id).filter(notEmpty) },
-          },
-        })
+        return progressCourses
+          .map((pr) => pr.course)
+          .filter(notEmpty)
+          .map((course) => ({ course, user: parent }))
+      },
+    })
 
-        return courses.map((course) => ({ course, user: parent }))
+    t.list.nonNull.field("user_course_progresses", {
+      type: "UserCourseProgress",
+      resolve: async (parent, _, ctx) => {
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .user_course_progresses({
+            distinct: "course_id",
+            orderBy: { created_at: "asc" },
+          })
+      },
+    })
+
+    t.list.nonNull.field("user_course_service_progresses", {
+      type: "UserCourseServiceProgress",
+      resolve: async (parent, _, ctx) => {
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .user_course_service_progresses({
+            distinct: ["course_id", "service_id"],
+            orderBy: { created_at: "asc" },
+          })
       },
     })
 
@@ -220,6 +252,7 @@ export const User = objectType({
           })
           .user_course_progresses({
             where: { course_id },
+            distinct: ["course_id"],
             orderBy: { created_at: "asc" },
             take: 1,
           })
@@ -244,6 +277,8 @@ export const User = objectType({
                 ? { exercise: { deleted: { not: true } } }
                 : {}),
             },
+            distinct: "exercise_id",
+            orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
           })
       },
     })
@@ -251,6 +286,7 @@ export const User = objectType({
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
       resolve: async (parent, _, ctx) => {
+        // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const exerciseCompletionCourses = await ctx.prisma.user
           .findUnique({

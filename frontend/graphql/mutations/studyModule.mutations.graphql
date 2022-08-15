@@ -1,0 +1,17 @@
+mutation AddStudyModule($study_module: StudyModuleCreateArg!) {
+  addStudyModule(study_module: $study_module) {
+    ...StudyModuleDetailedFields
+  }
+}
+
+mutation UpdateStudyModule($study_module: StudyModuleUpsertArg!) {
+  updateStudyModule(study_module: $study_module) {
+    ...StudyModuleDetailedFields
+  }
+}
+
+mutation DeleteStudyModule($id: ID!) {
+  deleteStudyModule(id: $id) {
+    ...StudyModuleCoreFields
+  }
+}

@@ -1,10 +1,13 @@
 import { useContext } from "react"
+
+import styled from "@emotion/styled"
+import { IconProp } from "@fortawesome/fontawesome-svg-core"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ButtonBase from "@mui/material/ButtonBase"
 import Typography from "@mui/material/Typography"
-import styled from "@emotion/styled"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { userOsType } from "/util/getUserOS"
+
 import UserOSContext from "/contexts/UserOSContext"
+import { userOsType } from "/util/getUserOS"
 
 interface ButtonProps {
   selected: boolean
@@ -27,12 +30,13 @@ const StyledIcon = styled(FontAwesomeIcon)`
 const StyledTypography = styled(Typography)<any>`
   margin-bottom: 0.3rem;
 `
-interface Props {
+interface OSSelectorButtonProps {
   OSName: userOsType
-  Icon: any
+  Icon: IconProp
   active: boolean
 }
-const OSSelectorButton = (props: Props) => {
+
+const OSSelectorButton = (props: OSSelectorButtonProps) => {
   const { OSName, Icon, active } = props
   const { changeOS } = useContext(UserOSContext)
   return (

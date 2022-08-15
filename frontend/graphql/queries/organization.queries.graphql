@@ -1,0 +1,15 @@
+query Organizations {
+  organizations {
+    ...OrganizationCoreFields
+  }
+}
+
+query OrganizationById($id: ID!) {
+  organization(id: $id) {
+    slug
+    hidden
+    organization_translations {
+      name
+    }
+  }
+}

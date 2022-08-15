@@ -1,26 +1,5 @@
 import { useContext, useEffect, useState } from "react"
 
-import { WideContainer } from "/components/Container"
-import ErrorMessage from "/components/ErrorMessage"
-import LoginStateContext from "/contexts/LoginStateContext"
-import {
-  addUserOrganizationMutation,
-  deleteUserOrganizationMutation,
-} from "/graphql/mutations/organizations"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import withSignedIn from "/lib/with-signed-in"
-import {
-  Organizations,
-  Organizations_organizations,
-} from "/static/types/generated/Organizations"
-import {
-  CurrentUserOrganizations,
-  CurrentUserOrganizations_currentUser_user_organizations,
-} from "/static/types/generated/CurrentUserOrganizations"
-import RegistrationTranslations from "/translations/register"
-import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
-import { useTranslator } from "/util/useTranslator"
 import { range } from "lodash"
 
 import { useMutation, useQuery } from "@apollo/client"
@@ -38,10 +17,24 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+
+import { WideContainer } from "/components/Container"
+import ErrorMessage from "/components/ErrorMessage"
+import LoginStateContext from "/contexts/LoginStateContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
+import RegistrationTranslations from "/translations/register"
+import notEmpty from "/util/notEmpty"
+import useDebounce from "/util/useDebounce"
+import { useTranslator } from "/util/useTranslator"
+
 import {
-  OrganizationsQuery,
-  CurrentUserOrganizationsQuery,
-} from "/graphql/queries/organizations"
+  AddUserOrganizationDocument,
+  DeleteUserOrganizationDocument,
+  Organization,
+  OrganizationsDocument,
+  UserOrganizationsDocument,
+} from "/graphql/generated"
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;
@@ -123,37 +116,38 @@ function useRegisterOrganization(searchFilter: string) {
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
-    Record<string, Organizations_organizations>
+    Record<string, Organization>
   >({})
   const [filteredOrganizations, setFilteredOrganizations] = useState<
-    Record<string, Organizations_organizations>
+    Record<string, Organization>
   >({})
 
   const {
     data: organizationsData,
     error: organizationsError,
     loading: organizationsLoading,
-  } = useQuery<Organizations>(OrganizationsQuery)
+  } = useQuery(OrganizationsDocument)
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
     // loading: userOrganizationsLoading,
-  } = useQuery<CurrentUserOrganizations>(CurrentUserOrganizationsQuery)
-
-  const [addUserOrganization] = useMutation(addUserOrganizationMutation, {
+  } = useQuery(UserOrganizationsDocument, {
+    variables: { user_id: currentUser!.id },
+  })
+  const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: CurrentUserOrganizationsQuery,
+        query: UserOrganizationsDocument,
         variables: { user_id: currentUser!.id },
       },
     ],
   })
 
   // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
-  const [deleteUserOrganization] = useMutation(deleteUserOrganizationMutation, {
+  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: CurrentUserOrganizationsQuery,
+        query: UserOrganizationsDocument,
         variables: { user_id: currentUser!.id },
       },
     ],
@@ -238,10 +232,7 @@ function useRegisterOrganization(searchFilter: string) {
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.currentUser?.user_organizations
         ?.filter(notEmpty)
-        .find(
-          (uo: CurrentUserOrganizations_currentUser_user_organizations) =>
-            uo?.organization?.id === id,
-        )
+        .find((uo) => uo?.organization?.id === id)
 
       if (existing) {
         await deleteUserOrganization({
@@ -324,11 +315,7 @@ const Register = () => {
           {loading || !Object.keys(organizations).length ? (
             range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
           ) : Object.keys(filteredOrganizations).length ? (
-            (
-              Object.entries(filteredOrganizations) as Array<
-                [string, Organizations_organizations]
-              >
-            ).map(([id, organization]) => (
+            Object.entries(filteredOrganizations).map(([id, organization]) => (
               <OrganizationCard
                 key={`card-${id}`}
                 name={organization!.organization_translations![0].name}

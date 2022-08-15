@@ -1,11 +1,21 @@
-import { Context } from "/context"
-import { ForbiddenError, UserInputError } from "apollo-server-express"
+import { ForbiddenError } from "apollo-server-express"
 import { chunk } from "lodash"
-import { arg, extendType, intArg, list, objectType, stringArg } from "nexus"
+import {
+  arg,
+  extendType,
+  intArg,
+  list,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus"
+import { type NexusGenInputs } from "nexus-typegen"
 
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
+import { getCourseOrAliasBySlug } from "../util/graphql-functions"
+import { Context } from "/context"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -46,7 +56,7 @@ export const CompletionRegisteredQueries = extendType({
           throw new ForbiddenError("Cannot query more than 50 items")
         }
         if (course) {
-          return await withCourse(
+          return withCourse(
             course,
             skip ?? undefined,
             take ?? undefined,
@@ -54,7 +64,7 @@ export const CompletionRegisteredQueries = extendType({
             ctx,
           )
         } else {
-          return await all(
+          return all(
             skip ?? undefined,
             take ?? undefined,
             cursor ? { id: cursor.id ?? undefined } : undefined,
@@ -73,32 +83,19 @@ const withCourse = async (
   cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  let courseReference = await ctx.prisma.course.findUnique({
-    where: { slug: course },
-  })
+  const courseReference = await getCourseOrAliasBySlug(ctx)(course)
 
-  if (!courseReference) {
-    const courseFromAvoinCourse = await ctx.prisma.courseAlias
-      .findUnique({ where: { course_code: course } })
-      .course()
-    if (!courseFromAvoinCourse) {
-      throw new UserInputError("Invalid course identifier")
-    }
-
-    // TODO: isn't this the same as courseFromAvoinCourse?
-    courseReference = await ctx.prisma.course.findUnique({
-      where: { slug: courseFromAvoinCourse.slug },
+  return ctx.prisma.course
+    .findUnique({
+      where: {
+        id: courseReference!.id,
+      },
     })
-  }
-
-  return await ctx.prisma.completionRegistered.findMany({
-    where: {
-      course_id: courseReference!.id,
-    },
-    skip,
-    take,
-    cursor,
-  })
+    .completions_registered({
+      skip,
+      take,
+      cursor,
+    })
 }
 
 const all = async (
@@ -107,7 +104,7 @@ const all = async (
   cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  return await ctx.prisma.completionRegistered.findMany({
+  return ctx.prisma.completionRegistered.findMany({
     skip,
     take,
     cursor,
@@ -121,11 +118,11 @@ export const CompletionRegisteredMutations = extendType({
     t.field("registerCompletion", {
       type: "String",
       args: {
-        completions: list(arg({ type: "CompletionArg" })),
+        completions: nonNull(list(nonNull(arg({ type: "CompletionArg" })))),
       },
       authorize: isOrganization,
       resolve: async (_, args, ctx: Context) => {
-        let queue = chunk(args.completions, 500)
+        const queue = chunk(args.completions, 500)
 
         for (let i = 0; i < queue.length; i++) {
           const promises = buildPromises(queue[i], ctx)
@@ -137,7 +134,10 @@ export const CompletionRegisteredMutations = extendType({
   },
 })
 
-const buildPromises = (array: any[], ctx: Context) => {
+const buildPromises = (
+  array: Array<NexusGenInputs["CompletionArg"]>,
+  ctx: Context,
+) => {
   return array.map(async (entry) => {
     const { user_id, course_id } =
       (await ctx.prisma.completion.findUnique({

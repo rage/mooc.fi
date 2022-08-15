@@ -1,5 +1,5 @@
 import { UserInputError } from "apollo-server-express"
-import { objectType } from "nexus"
+import { booleanArg, objectType } from "nexus"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
@@ -39,6 +39,7 @@ export const UserCourseSummary = objectType({
             where: {
               user_id,
             },
+            // TODO: completed: true?
             orderBy: { created_at: "asc" },
             take: 1,
           })
@@ -82,6 +83,7 @@ export const UserCourseSummary = objectType({
               user_id,
             },
             orderBy: { created_at: "asc" },
+            distinct: ["course_id", "service_id"],
           })
 
         return progresses ?? []
@@ -90,19 +92,31 @@ export const UserCourseSummary = objectType({
 
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      resolve: async ({ user_id, course_id }, _, ctx) => {
+      args: {
+        includeDeleted: booleanArg(),
+      },
+      resolve: async (
+        { user_id, course_id },
+        { includeDeleted = false },
+        ctx,
+      ) => {
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
+
         return ctx.prisma.user
           .findUnique({
             where: { id: user_id },
           })
           .exercise_completions({
             where: {
-              exercise: { course_id },
+              exercise: {
+                course_id,
+                ...(!includeDeleted ? { deleted: { not: true } } : {}),
+              },
             },
-            orderBy: { created_at: "asc" },
+            orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+            distinct: "exercise_id",
           })
       },
     })

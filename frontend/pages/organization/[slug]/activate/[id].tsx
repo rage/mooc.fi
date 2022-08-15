@@ -1,32 +1,14 @@
 import { useEffect, useRef } from "react"
 
-import { confirmUserOrganizationJoinMutation } from "/graphql/mutations/userOrganization"
+import { gql, useMutation } from "@apollo/client"
+
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { gql, useMutation } from "@apollo/client"
-
-const userOrganizationJoinConfirmationQuery = gql`
-  query UserOrganizationJoinConfirmation($id: ID!) {
-    userOrganizationJoinConfirmation(id: $id) {
-      id
-      expired
-      expires_at
-      confirmed
-      confirmed_at
-      user_organization {
-        id
-        user_id
-        organization_id
-        confirmed
-      }
-      email_delivery {
-        id
-        sent
-      }
-    }
-  }
-`
+import {
+  ConfirmUserOrganizationJoinDocument,
+  UserOrganizationJoinConfirmationDocument,
+} from "/graphql/generated"
 
 const OrganizationMembershipActivationPage = () => {
   const joinConfirmationId = useQueryParameter("id")
@@ -36,7 +18,7 @@ const OrganizationMembershipActivationPage = () => {
   const loaded = useRef(false)
 
   const [confirmUserOrganizationJoin, { data, loading, error }] = useMutation(
-    confirmUserOrganizationJoinMutation,
+    ConfirmUserOrganizationJoinDocument,
     {
       variables: {
         id: joinConfirmationId,
@@ -44,7 +26,7 @@ const OrganizationMembershipActivationPage = () => {
       },
       refetchQueries: [
         {
-          query: userOrganizationJoinConfirmationQuery,
+          query: UserOrganizationJoinConfirmationDocument,
           variables: { id: joinConfirmationId },
         },
       ],

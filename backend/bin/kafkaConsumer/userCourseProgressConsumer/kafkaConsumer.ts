@@ -1,4 +1,4 @@
-import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
+import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
 
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"

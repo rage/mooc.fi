@@ -1,7 +1,8 @@
-import { gql } from "@apollo/client"
+import React from "react"
+
 import { useQuery } from "@apollo/client"
 import { Alert } from "@mui/material"
-import React from "react"
+
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
@@ -9,34 +10,10 @@ import Spinner from "/components/Spinner"
 import withSignedIn from "/lib/with-signed-in"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-export const ConnectionTestQuery = gql`
-  query ConnectionTest {
-    currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      student_number
-      email
-      verified_users {
-        id
-        organization {
-          slug
-          organization_translations {
-            language
-            name
-          }
-        }
-        created_at
-        personal_unique_code
-        display_name
-      }
-    }
-  }
-`
+import { ConnectionTestDocument } from "/graphql/generated"
 
 function ConnectionTest() {
-  const { data, error, loading } = useQuery(ConnectionTestQuery)
+  const { data, error, loading } = useQuery(ConnectionTestDocument)
   const connectionSuccess = useQueryParameter("success", false)
   const connectionError = useQueryParameter("error", false)
 

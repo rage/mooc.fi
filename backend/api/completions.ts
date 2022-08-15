@@ -1,13 +1,17 @@
 import { Request, Response } from "express"
+import { chunk, omit } from "lodash"
+import * as yup from "yup"
 
 import {
   Completion,
   Course,
   CourseTranslation,
   OpenUniversityRegistrationLink,
+  User,
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { err } from "../util/result"
 import {
   getOrganization,
   getUser,
@@ -17,10 +21,26 @@ import { ApiContext } from "./"
 
 const JSONStream = require("JSONStream")
 
-export function completions(ctx: ApiContext) {
-  return async function (req: any, res: any) {
-    const { knex } = ctx
-    const organizationResult = await getOrganization(ctx)(req, res)
+const languageMap: Record<string, string> = {
+  en: "en_US",
+  sv: "sv_SE",
+  fi: "fi_FI",
+}
+
+interface RegisterCompletionInput {
+  completion_id: string
+  student_number: string
+  eligible_for_ects?: boolean
+  tier?: number
+  registration_date?: string
+}
+export class CompletionController {
+  constructor(readonly ctx: ApiContext) {}
+
+  completions = async (req: Request<{ slug: string }>, res: Response) => {
+    const { slug } = req.params
+    const { knex } = this.ctx
+    const organizationResult = await getOrganization(this.ctx)(req, res)
 
     if (organizationResult.isErr()) {
       return organizationResult.error
@@ -30,76 +50,80 @@ export function completions(ctx: ApiContext) {
 
     const { registered } = req.query
 
-    let course_id: string
-
-    const course = (
+    let course = (
       await knex
-        .select("id")
+        .select<any, Course[]>("*")
         .from("course")
-        .where({ slug: req.params.course })
+        .where({ slug })
         .limit(1)
-    )[0]
+    )?.[0]
+
     if (!course) {
       const course_alias = (
         await knex
           .select("course_id")
           .from("course_alias")
-          .where({ course_code: req.params.course })
+          .where({ course_code: slug })
       )[0]
       if (!course_alias) {
         return res.status(404).json({ message: "Course not found" })
       }
-      course_id = course_alias.course_id
-    } else {
-      course_id = course.id
+      course = (
+        await knex
+          .select<any, Course[]>("*")
+          .from("course")
+          .where({ id: course_alias.course_id })
+          .limit(1)
+      )?.[0]
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" })
+      }
     }
+
     const sql = knex
       .select<any, Completion[]>("completion.*")
+      .distinctOn("completion.user_id", "completion.course_id")
       .from("completion")
       .fullOuterJoin(
         "completion_registered",
         "completion.id",
         "completion_registered.completion_id",
       )
-      .where({
-        "completion.course_id": course_id,
-        eligible_for_ects: true,
-        ...(!registered && { "completion_registered.id": null }),
-      })
+      .where(
+        "completion.course_id",
+        course.completions_handled_by_id ?? course.id,
+      )
+      .andWhere("eligible_for_ects", true)
+
+    if (!registered) {
+      sql.whereNull("completion_registered.id")
+    }
+
+    sql.orderBy([
+      "completion.user_id",
+      "completion.course_id",
+      { column: "completion.created_at", order: "asc" },
+    ])
 
     res.set("Content-Type", "application/json")
 
-    // TODO/FIXME: typings broke on Knex update
-    const stream = (sql.stream() as any).pipe(JSONStream.stringify()).pipe(res)
+    const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
     req.on("close", stream.end.bind(stream))
   }
-}
 
-export function completionInstructions({ knex }: ApiContext) {
-  return async function (req: any, res: any) {
-    const id = req.params.id
-    let language = req.params.language
+  completionInstructions = async (
+    req: Request<{ slug: string; language: string }>,
+    res: Response,
+  ) => {
+    const { knex } = this.ctx
+    const { slug, language } = req.params
 
     const course = (
-      await knex.select<any, Course[]>("id").from("course").where("slug", id)
+      await knex.select<any, Course[]>("id").from("course").where("slug", slug)
     )[0]
 
     if (!course) {
       return res.status(404).json("")
-    }
-
-    switch (language) {
-      case "en":
-        language = "en_US"
-        break
-      case "fi":
-        language = "fi_FI"
-        break
-      case "sv":
-        language = "sv_SE"
-        break
-      default:
-        language = "fi_FI"
     }
 
     const instructions = (
@@ -107,7 +131,7 @@ export function completionInstructions({ knex }: ApiContext) {
         .select<any, CourseTranslation[]>("instructions")
         .from("course_translation")
         .where("course_id", course.id)
-        .where("language", language)
+        .where("language", languageMap[language] ?? "fi_FI")
     )[0]?.instructions
 
     if (instructions) {
@@ -116,33 +140,41 @@ export function completionInstructions({ knex }: ApiContext) {
       return res.status(404).json("")
     }
   }
-}
 
-export function completionTiers(ctx: ApiContext) {
-  return async function (req: any, res: any) {
-    const { knex } = ctx
-    const getUserResult = await getUser(ctx)(req, res)
+  completionTiers = async (req: Request<{ slug: string }>, res: Response) => {
+    const { knex } = this.ctx
+    const getUserResult = await getUser(this.ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
     }
 
     const { user } = getUserResult.value
+    const { slug } = req.params
 
-    const id = req.params.id
+    // TODO: typing
     let tierData: any = []
 
     const course = (
-      await knex.select<any, Course[]>("id").from("course").where("slug", id)
-    )[0]
+      await knex.select<any, Course[]>("*").from("course").where("slug", slug)
+    )?.[0]
+
+    if (!course) {
+      return err(res.status(404).json({ message: "course not found" }))
+    }
 
     const completion = (
       await knex
         .select<any, Completion[]>("tier")
         .from("completion")
-        .where("course_id", course.id)
+        .where("course_id", course.completions_handled_by_id ?? course.id)
         .andWhere("user_id", user.id)
+        .orderBy("created_at", "asc")
     )?.[0]
+
+    if (!completion) {
+      return err(res.status(404).json({ message: "completion not found" }))
+    }
 
     // TODO/FIXME: note - this now happily ignores completion_language and just gets the first one
     // - as it's now only used in BAI, shouldn't be a problem?
@@ -188,10 +220,29 @@ export function completionTiers(ctx: ApiContext) {
       return res.status(200).json({ tierData })
     }
   }
-}
 
-export function recheckCompletion(ctx: ApiContext) {
-  return async function (
+  private getCompletion = async (
+    course: Course,
+    user: User,
+  ): Promise<Completion | null> => {
+    return (
+      await this.ctx.prisma.user
+        .findUnique({
+          where: {
+            id: user.id,
+          },
+        })
+        .completions({
+          where: {
+            course_id: course.completions_handled_by_id ?? course.id,
+          },
+          orderBy: { created_at: "asc" },
+          take: 1,
+        })
+    )?.[0]
+  }
+
+  recheckCompletion = async (
     req: Request<
       {},
       {},
@@ -203,9 +254,9 @@ export function recheckCompletion(ctx: ApiContext) {
       }
     >,
     res: Response,
-  ) {
-    const { prisma, logger, knex } = ctx
-    const adminRes = await requireAdmin(ctx)(req, res)
+  ) => {
+    const { prisma, logger, knex } = this.ctx
+    const adminRes = await requireAdmin(this.ctx)(req, res)
 
     if (adminRes !== true) {
       return adminRes
@@ -238,7 +289,7 @@ export function recheckCompletion(ctx: ApiContext) {
     const course = await prisma.course.findUnique({
       where: {
         id: course_id,
-        slug: slug,
+        slug,
       },
     })
 
@@ -246,54 +297,40 @@ export function recheckCompletion(ctx: ApiContext) {
       return res.status(405).json({ message: "course not found" })
     }
 
-    const user = await prisma.user.findUnique({
+    const userWithProgresses = await prisma.user.findUnique({
       where: {
         id: user_id,
         upstream_id: user_upstream_id,
       },
+      include: {
+        user_course_progresses: {
+          where: {
+            course_id: course.id,
+          },
+          orderBy: { created_at: "asc" },
+        },
+      },
     })
 
-    if (!user) {
+    if (!userWithProgresses) {
       return res.status(405).json({ message: "user not found" })
     }
 
-    const progresses = await prisma.user
-      .findUnique({
-        where: {
-          id: user.id,
-        },
-      })
-      .user_course_progresses({
-        where: {
-          course_id: course.id,
-        },
-        orderBy: { created_at: "asc" },
-      })
+    const { user_course_progresses } = userWithProgresses
 
-    if (progresses.length < 1) {
+    if (user_course_progresses.length < 1) {
       return res.status(401).json({ message: "No progresses found" })
     }
 
-    const existingCompletion = (
-      await prisma.user
-        .findUnique({
-          where: {
-            id: user.id,
-          },
-        })
-        .completions({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        })
-    )?.[0]
+    const existingCompletion = await this.getCompletion(
+      course,
+      userWithProgresses,
+    )
 
     await generateUserCourseProgress({
-      user,
+      user: omit(userWithProgresses, "user_course_progresses"),
       course,
-      userCourseProgress: progresses[0],
+      userCourseProgress: user_course_progresses[0],
       context: {
         // not very optimal, but
         logger,
@@ -305,26 +342,16 @@ export function recheckCompletion(ctx: ApiContext) {
       },
     })
 
-    const updatedCompletion = (
-      await prisma.user
-        .findUnique({
-          where: {
-            id: user.id,
-          },
-        })
-        .completions({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        })
-    )?.[0]
+    const updatedCompletion = await this.getCompletion(
+      course,
+      userWithProgresses,
+    )
 
     if (!existingCompletion && updatedCompletion) {
-      return res
-        .status(200)
-        .json({ message: "Completion created", completion: updatedCompletion })
+      return res.status(200).json({
+        message: "Completion created",
+        completion: updatedCompletion,
+      })
     }
     if (
       existingCompletion?.updated_at?.getTime() !==
@@ -337,5 +364,87 @@ export function recheckCompletion(ctx: ApiContext) {
     return res
       .status(200)
       .json({ message: "No change", completion: existingCompletion })
+  }
+
+  registerCompletions = async (
+    req: Request<
+      {},
+      {},
+      {
+        completions: RegisterCompletionInput[]
+      }
+    >,
+    res: Response,
+  ) => {
+    const { prisma } = this.ctx
+    const organizationResult = await getOrganization(this.ctx)(req, res)
+
+    if (organizationResult.isErr()) {
+      return organizationResult.error
+    }
+
+    const org = organizationResult.value
+
+    const { completions } = req.body ?? {}
+
+    if (!completions) {
+      return res
+        .status(400)
+        .json({ message: "must provide completions in post message body" })
+    }
+
+    const registerCompletionSchema = yup.array().of(
+      yup
+        .object()
+        .shape({
+          completion_id: yup.string().min(32).max(36).required(),
+          student_number: yup.string().required(),
+        })
+        .required(),
+    )
+
+    try {
+      await registerCompletionSchema.validate(completions)
+    } catch (error) {
+      return res.status(403).json({ message: "malformed data", error })
+    }
+
+    const buildPromises = (data: RegisterCompletionInput[]) => {
+      return data.map(async (entry) => {
+        const { course_id, user_id } =
+          (await prisma.completion.findUnique({
+            where: { id: entry.completion_id },
+            select: { course_id: true, user_id: true },
+          })) ?? {}
+
+        if (!course_id || !user_id) {
+          // TODO/FIXME: we now fail silently if course/user not found
+          return Promise.resolve()
+        }
+
+        return prisma.completionRegistered.create({
+          data: {
+            completion: {
+              connect: { id: entry.completion_id },
+            },
+            organization: {
+              connect: { id: org?.id },
+            },
+            course: { connect: { id: course_id } },
+            real_student_number: entry.student_number,
+            registration_date: entry.registration_date ?? null,
+            user: { connect: { id: user_id } },
+          },
+        })
+      })
+    }
+
+    const queue = chunk(completions, 500)
+    for (const completionChunk of queue) {
+      const promises = buildPromises(completionChunk)
+      await Promise.all(promises)
+    }
+
+    return res.status(200).json({ message: "success" })
   }
 }

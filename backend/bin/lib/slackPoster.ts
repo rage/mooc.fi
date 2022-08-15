@@ -1,5 +1,6 @@
 import axios from "axios"
 import * as winston from "winston"
+
 import { SlackPosterError } from "./errors"
 
 export default class SlackPoster {

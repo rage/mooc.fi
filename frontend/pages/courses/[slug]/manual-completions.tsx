@@ -1,56 +1,40 @@
 import { useState } from "react"
 
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
-import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
 import { withRouter } from "next/router"
 import * as Papa from "papaparse"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import DatePicker from "@mui/lab/DatePicker"
 import LocalizationProvider from "@mui/lab/LocalizationProvider"
-import { Button, Container, TextField } from "@mui/material"
+import { Button, Container, TextField, TextFieldProps } from "@mui/material"
 import Alert from "@mui/material/Alert"
 import AlertTitle from "@mui/material/AlertTitle"
 import Typography from "@mui/material/Typography"
+
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useSubtitle from "/hooks/useSubtitle"
+import withAdmin from "/lib/with-admin"
+import { useQueryParameter } from "/util/useQueryParameter"
+
+import {
+  AddManualCompletionDocument,
+  CourseFromSlugDocument,
+} from "/graphql/generated"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
-const AddManualCompletionQuery = gql`
-  mutation AddManualCompletion(
-    $course_id: String!
-    $completions: [ManualCompletionArg!]
-  ) {
-    addManualCompletion(course_id: $course_id, completions: $completions) {
-      id
-      created_at
-      updated_at
-      completion_language
-      grade
-      user {
-        upstream_id
-        username
-        email
-      }
-    }
-  }
-`
-
-export const CourseIdBySluq = gql`
-  query CourseIdBySluq($slug: String) {
-    course(slug: $slug) {
-      id
-    }
-  }
-`
+interface CompletionData {
+  user_id: string
+  grade?: string
+  completion_date?: string
+}
 
 const ManualCompletions = () => {
   const confirm = useConfirm()
@@ -64,7 +48,7 @@ const ManualCompletions = () => {
   >("info")
   const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
   const [addCompletions, { loading: mutationLoading, error: mutationError }] =
-    useMutation(AddManualCompletionQuery, {
+    useMutation(AddManualCompletionDocument, {
       onCompleted: () => {
         setInput("")
         setMessage("Completions added")
@@ -77,7 +61,7 @@ const ManualCompletions = () => {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useQuery(CourseIdBySluq, {
+  } = useQuery(CourseFromSlugDocument, {
     variables: { slug },
   })
 
@@ -101,7 +85,7 @@ const ManualCompletions = () => {
     setSubmitting(true)
     setMessage(null)
     setMessageSeverity("info")
-    const parsed = Papa.parse(input, { header: true })
+    const parsed = Papa.parse<CompletionData>(input, { header: true })
     if (parsed.errors.length > 0) {
       setMessage(JSON.stringify(parsed.errors, undefined, 2))
       setMessageSeverity("error")
@@ -110,11 +94,7 @@ const ManualCompletions = () => {
       return
     }
 
-    const data: {
-      user_id: string
-      grade?: string
-      completion_date?: string
-    }[] = parsed.data.map((d: any) => ({
+    const data: CompletionData[] = parsed.data.map((d) => ({
       ...d,
       completion_date:
         d.completion_date === "" || !d.completion_date
@@ -168,7 +148,7 @@ const ManualCompletions = () => {
         if (key.trim() === "") return acc
 
         return { ...acc, [key]: value }
-      }, {}),
+      }, {} as CompletionData),
     )
 
     const okDates = !checkedDates.some((c) => Boolean(c.error))
@@ -198,7 +178,7 @@ const ManualCompletions = () => {
         .then(() =>
           addCompletions({
             variables: {
-              course_id: courseData.course.id,
+              course_id: courseData!.course!.id,
               completions: filteredData,
             },
           }),
@@ -208,7 +188,7 @@ const ManualCompletions = () => {
     } else {
       addCompletions({
         variables: {
-          course_id: courseData.course.id,
+          course_id: courseData!.course!.id,
           completions: filteredData,
         },
       })
@@ -253,7 +233,7 @@ const ManualCompletions = () => {
             inputFormat="yyyy-MM-dd"
             onChange={setCompletionDate}
             value={completionDate}
-            renderInput={(props: any) => (
+            renderInput={(props: TextFieldProps) => (
               <TextField {...props} variant="outlined" />
             )}
           />

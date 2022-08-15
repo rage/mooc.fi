@@ -1,19 +1,5 @@
 import { createRef, useContext, useEffect, useState } from "react"
 
-import LoginStateContext from "/contexts/LoginStateContext"
-import {
-  addUserOrganizationMutation,
-  deleteUserOrganizationMutation,
-} from "/graphql/mutations/organizations"
-import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import withSignedIn from "/lib/with-signed-in"
-import { Organizations_organizations } from "/static/types/generated/Organizations"
-import HomeTranslations from "/translations/home"
-import RegistrationTranslations from "/translations/register"
-import notEmpty from "/util/notEmpty"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
-
 import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import Send from "@mui/icons-material/Send"
@@ -24,9 +10,22 @@ import FormControl from "@mui/material/FormControl"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
-import { CurrentUserOrganizationsQuery } from "/graphql/queries/organizations"
-import { CurrentUserOrganizations } from "/static/types/generated/CurrentUserOrganizations"
+
+import LoginStateContext from "/contexts/LoginStateContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { updateUserDetails } from "/lib/account"
+import withSignedIn from "/lib/with-signed-in"
+import HomeTranslations from "/translations/home"
+import RegistrationTranslations from "/translations/register"
+import notEmpty from "/util/notEmpty"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+
+import {
+  AddUserOrganizationDocument,
+  CurrentUserUserOrganizationsDocument,
+  DeleteUserOrganizationDocument,
+} from "/graphql/generated"
 
 const Container = styled.div`
   display: grid;
@@ -83,26 +82,24 @@ const RegisterToOrganization = () => {
     currentUser?.student_number,
   )
   const [memberships, setMemberships] = useState<Array<string>>([])
-  const [organizations, setOrganizations] = useState<
-    Record<string, Organizations_organizations>
-  >({})
+  const [organizations, setOrganizations] = useState<Record<string, any>>({}) // what's this?
   const formRef = createRef<HTMLFormElement>()
   const { data: userOrganizationsData, error: userOrganizationsError } =
-    useQuery<CurrentUserOrganizations>(CurrentUserOrganizationsQuery)
+    useQuery(CurrentUserUserOrganizationsDocument)
 
-  const [addUserOrganization] = useMutation(addUserOrganizationMutation, {
+  const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: CurrentUserOrganizationsQuery,
+        query: CurrentUserUserOrganizationsDocument,
       },
     ],
   })
 
   // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
-  const [deleteUserOrganization] = useMutation(deleteUserOrganizationMutation, {
+  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: CurrentUserOrganizationsQuery,
+        query: CurrentUserUserOrganizationsDocument,
       },
     ],
   })

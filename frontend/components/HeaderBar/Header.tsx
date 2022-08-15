@@ -1,6 +1,5 @@
 import { ReactElement, useContext } from "react"
 
-import LoginStateContext from "/contexts/LoginStateContext"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
@@ -13,6 +12,7 @@ import LanguageSwitch from "./LanguageSwitch"
 import LoggedInUserMenu from "./LoggedInUserMenu"
 import MoocLogo from "./MoocLogo"
 import UserOptionsMenu from "./UserOptionsMenu"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 interface Props {
   window?: () => Window

@@ -360,9 +360,21 @@ export const completions: Prisma.CompletionCreateInput[] = [
     user: { connect: { id: "20000000000000000000000000000102" } },
     email: "e@mail.com",
     user_upstream_id: 1,
-    created_at: "1900-01-01T10:00:00.00+02:00",
-    updated_at: "1900-01-01T10:00:00.00+02:00",
-    completion_date: "1900-01-01T10:00:00.00+02:00",
+    created_at: "2000-01-01T10:00:00.00+02:00",
+    updated_at: "2000-01-01T10:00:00.00+02:00",
+    completion_date: "2000-01-01T10:00:00.00+02:00",
+    completion_registration_attempt_date: "2022-01-01T10:00:00.00+02:00",
+  },
+  {
+    // duplicate to above but newer, should not be returned
+    id: "66600000-0000-0000-0000-000000000103",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    email: "e@mail.com",
+    user_upstream_id: 1,
+    created_at: "2000-02-01T10:00:00.00+02:00",
+    updated_at: "2000-02-01T10:00:00.00+02:00",
+    completion_date: "2000-01-01T10:00:00.00+02:00",
     completion_registration_attempt_date: "2022-01-01T10:00:00.00+02:00",
   },
   {
@@ -386,12 +398,35 @@ export const completions: Prisma.CompletionCreateInput[] = [
     completion_date: "1900-01-01T10:00:00.00+02:00",
   },
   {
+    // duplicate to above but later created_at, should be ignored then
     id: "30000000-0000-0000-0000-000000000105",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000105" } },
+    email: "e@mail.com",
+    user_upstream_id: 4,
+    eligible_for_ects: true,
+    created_at: "1900-01-02T10:00:00.00+02:00",
+    updated_at: "1900-01-02T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    id: "30000000-0000-0000-0000-000000000106",
     course: { connect: { id: "00000000000000000000000000000002" } },
     user: { connect: { id: "20000000000000000000000000000106" } },
     email: "e@mail.com",
     user_upstream_id: 5,
     eligible_for_ects: true,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    completion_date: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    // completion handled by handler
+    id: "30000000-0000-0000-0000-000000000107",
+    course: { connect: { id: "00000000000000000000000000000666" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    email: "e@mail.com",
+    user_upstream_id: 1,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
     completion_date: "1900-01-01T10:00:00.00+02:00",
@@ -411,6 +446,22 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
       hasWings: true,
       isCat: false,
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    // duplicate of above, but with later created_at so should be ignored
+    id: "40000000-0000-0000-0000-000000000998",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      hasWings: true,
+      isCat: false,
+    },
+    created_at: "1900-01-02T10:00:00.00+02:00",
   },
   {
     id: "40000000-0000-0000-0000-000000000999",
@@ -450,6 +501,20 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
     other: {
       research: false,
       country: "fi",
+    },
+  },
+  {
+    // "inherits" should return this
+    id: "40000000-0000-0000-0000-000000000105",
+    course: { connect: { id: "00000000-0000-0000-0000-000000000666" } },
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      hasWings: true,
+      isCat: false,
     },
   },
 ]
@@ -535,6 +600,15 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     timestamp: new Date("2021-01-01 10:00:00.00"),
     deleted: true,
   },
+  {
+    id: "50000000-0000-0000-0000-000000000005",
+    name: "deleted exercise 5",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    service: { connect: { id: "40000000-0000-0000-0000-000000000102" } },
+    custom_id: "customid5",
+    timestamp: new Date("2021-01-01 10:00:00.00"),
+    deleted: true,
+  },
 ]
 
 export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
@@ -542,9 +616,40 @@ export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
     id: "60000000-0000-0000-0000-000000000001",
     exercise: { connect: { id: "50000000-0000-0000-0000-000000000001" } },
     user: { connect: { id: "20000000000000000000000000000102" } },
-    timestamp: "1900-01-01T10:00:00.00+02:00",
+    timestamp: "2000-02-01T10:00:00.00+02:00",
+    updated_at: "2000-02-02T10:00:00.00+02:00",
     completed: true,
     n_points: 6,
+  },
+  {
+    // newest timestamp but older updated_at, should be ignored
+    id: "90000000-0000-0000-0000-000000000001",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "2000-02-01T10:00:00.00+02:00",
+    updated_at: "2000-02-01T10:00:00.00+02:00",
+    completed: true,
+    exercise_completion_required_actions: {
+      create: [
+        {
+          value: "action 1",
+        },
+        {
+          value: "action 2",
+        },
+      ],
+    },
+    n_points: 4,
+  },
+  {
+    // older timestamp, should be ignored
+    id: "90000000-0000-0000-0000-000000000002",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "2000-01-01T10:00:00.00+02:00",
+    updated_at: "2000-01-01T10:00:00.00+02:00",
+    completed: true,
+    n_points: 2,
   },
   {
     id: "60000000-0000-0000-0000-000000000002",
@@ -570,6 +675,7 @@ export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
     n_points: 4,
   },
   {
+    // deleted, should not show up unless specified
     id: "60000000-0000-0000-0000-000000000004",
     exercise: { connect: { id: "50000000-0000-0000-0000-000000000004" } },
     user: { connect: { id: "20000000000000000000000000000102" } },
@@ -585,6 +691,17 @@ export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
     n_points: 1,
   },
   {
+    // deleted, should not show up unless specified
+    id: "90000000-0000-0000-0000-000000000004",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000005" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "2000-01-01T10:00:00.00+02:00",
+    completed: false,
+    attempted: true,
+    n_points: 1,
+  },
+  {
+    id: "60000000-0000-0000-0000-000000000005",
     user: { connect: { id: "20000000000000000000000000000104" } },
     exercise: {
       connect: { id: "50000000-0000-0000-0000-000000000003" },
@@ -687,7 +804,7 @@ export const emailTemplateThresholds: Prisma.EmailTemplateCreateInput[] = [
 export const completionsRegistered: Prisma.CompletionRegisteredCreateInput[] = [
   {
     id: "66000000-0000-0000-0000-000000000102",
-    completion: { connect: { id: "30000000-0000-0000-0000-000000000105" } },
+    completion: { connect: { id: "30000000-0000-0000-0000-000000000106" } },
     course: { connect: { id: "00000000000000000000000000000002" } },
     user: { connect: { id: "20000000000000000000000000000106" } },
     real_student_number: "4",

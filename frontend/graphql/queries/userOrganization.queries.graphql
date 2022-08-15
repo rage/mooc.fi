@@ -1,0 +1,19 @@
+query CurrentUserUserOrganizations {
+  currentUser {
+    user_organizations {
+      ...UserOrganizationCoreFields
+      user_organization_join_confirmations {
+        ...UserOrganizationJoinConfirmationFields
+      }
+    }
+  }
+}
+
+query UserOrganizations($user_id: ID) {
+  userOrganizations(user_id: $user_id) {
+    id
+    organization {
+      id
+    }
+  }
+}

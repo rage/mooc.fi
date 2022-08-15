@@ -1,30 +1,32 @@
 import { useContext, useEffect, useState } from "react"
 
+import axios from "axios"
+import { NextSeo } from "next-seo"
+import { useRouter } from "next/router"
+
+import { useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { Paper, SvgIcon, Typography } from "@mui/material"
+
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import LoginStateContext from "/contexts/LoginStateContext"
-import { CreateRegistrationAttemptDateMutation } from "/graphql/mutations/completion"
-import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import { getAccessToken } from "/lib/authentication"
 import withSignedIn from "/lib/with-signed-in"
-import { CheckSlug } from "/static/types/generated/CheckSlug"
-import { CreateRegistrationAttemptDate } from "/static/types/generated/CreateRegistrationAttemptDate"
-import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import axios from "axios"
-import { NextSeo } from "next-seo"
-import { useRouter } from "next/router"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Paper, SvgIcon, Typography } from "@mui/material"
+import {
+  CourseFromSlugDocument,
+  CreateRegistrationAttemptDateDocument,
+  CurrentUserOverviewDocument,
+} from "/graphql/generated"
 
 const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -60,39 +62,6 @@ const StyledText = styled(Typography)<any>`
   margin-left: 1em;
 `
 
-export const UserOverViewQuery = gql`
-  query RegisterCompletionUserOverView {
-    currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      completions {
-        id
-        email
-        completion_language
-        completion_link
-        student_number
-        created_at
-        course {
-          id
-          slug
-          name
-          ects
-        }
-        completions_registered {
-          id
-          completion_id
-          organization {
-            slug
-          }
-        }
-        eligible_for_ects
-      }
-    }
-  }
-`
-
 function RegisterCompletionPage() {
   const accessToken = getAccessToken(undefined)
   const { currentUser } = useContext(LoginStateContext)
@@ -106,7 +75,7 @@ function RegisterCompletionPage() {
     loading: courseLoading,
     error: courseError,
     data: courseData,
-  } = useQuery<CheckSlug>(CheckSlugQuery, {
+  } = useQuery(CourseFromSlugDocument, {
     variables: {
       slug: courseSlug,
     },
@@ -115,11 +84,10 @@ function RegisterCompletionPage() {
     loading: userLoading,
     error: userError,
     data: userData,
-  } = useQuery<UserOverViewData>(UserOverViewQuery)
-  const [createRegistrationAttemptDate] =
-    useMutation<CreateRegistrationAttemptDate>(
-      CreateRegistrationAttemptDateMutation,
-    )
+  } = useQuery(CurrentUserOverviewDocument)
+  const [createRegistrationAttemptDate] = useMutation(
+    CreateRegistrationAttemptDateDocument,
+  )
   const { locale } = useRouter()
 
   const course_exists = Boolean(courseData?.course?.id)

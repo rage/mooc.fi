@@ -1,13 +1,15 @@
+import Link from "next/link"
+
+import styled from "@emotion/styled"
+import { Skeleton } from "@mui/material"
+
 import ModuleImage from "/components/Home/ModuleImage"
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { AllModules_study_modules } from "/static/types/generated/AllModules"
-import Link from "next/link"
 
-import styled from "@emotion/styled"
-import { Skeleton } from "@mui/material"
+import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;
@@ -42,7 +44,11 @@ const GridItem = styled.div`
   }
 `
 
-const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
+interface ModuleNaviCardProps {
+  module?: StudyModuleFieldsFragment
+}
+
+const ModuleNaviCard = ({ module }: ModuleNaviCardProps) => (
   <GridItem>
     <Link href={`#${module ? module.slug : ""}`}>
       <Base component="div">

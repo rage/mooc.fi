@@ -2,7 +2,7 @@ import { Completion, User } from "@prisma/client"
 
 import prisma from "../prisma"
 import knex from "../services/knex"
-import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/generateBAIUserCourseProgress"
+import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/BAI/completion"
 import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "update-bai-completion-tiers" })
@@ -25,8 +25,10 @@ const updateBAICompletionTiers = async () => {
     "completion",
   )
     .select("user_id")
+    .distinctOn("user_id", "course_id")
     .where("course_id", PARENT_COURSE_ID)
     .andWhere("tier", "is", null)
+    .orderBy(["user_id", "course_id", { column: "created_at", order: "asc" }])
 
   logger.info("Getting users")
   const usersWithoutTiers = await knex<any, User[]>("user")
@@ -39,6 +41,7 @@ const updateBAICompletionTiers = async () => {
   logger.info(`Updating ${usersWithoutTiers.length} users...`)
 
   for (const user of usersWithoutTiers) {
+    // assuming no handler as we're querying the handler course specifically
     await checkBAICompletion({
       user,
       course,
@@ -50,7 +53,6 @@ const updateBAICompletionTiers = async () => {
         mutex: null as any,
         topic_name: "",
       },
-      isHandler: true,
     })
   }
 

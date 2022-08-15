@@ -1,36 +1,35 @@
-import { initialValues } from "./form-validation"
 import { getIn } from "formik"
-import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { omit } from "lodash"
-import {
-  CourseDetails_course_photo,
-  CourseDetails_course,
-} from "/static/types/generated/CourseDetails"
-import {
-  CourseStatus,
-  CourseCreateArg,
-  CourseUpsertArg,
-} from "/static/types/generated/globalTypes"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { DateTime } from "luxon"
 
+import { initialValues } from "./form-validation"
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
+
+import {
+  CourseCreateArg,
+  CourseStatus,
+  CourseUpsertArg,
+  EditorCourseDetailedFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/graphql/generated"
+
 const isProduction = process.env.NODE_ENV === "production"
+
+interface ToCourseFormArgs {
+  course?: EditorCourseDetailedFieldsFragment
+  modules?: StudyModuleDetailedFieldsFragment[]
+}
 
 export const toCourseForm = ({
   course,
   modules,
-}: {
-  course?: CourseDetails_course
-  modules?: CourseEditorStudyModules_study_modules[]
-}): CourseFormValues => {
+}: ToCourseFormArgs): CourseFormValues => {
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
 
   return course
     ? {
         ...omit(course, ["__typename"]),
-        teacher_in_charge_name: course.teacher_in_charge_name ?? "",
-        teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
         start_date: course.start_date
           ? DateTime.fromISO(course.start_date)
@@ -66,7 +65,7 @@ export const toCourseForm = ({
           })) ?? [],
         course_aliases: course?.course_aliases ?? [],
         new_slug: course.slug,
-        thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
+        thumbnail: course?.photo?.compressed,
         ects: course.ects ?? undefined,
         import_photo: "",
         inherit_settings_from: course.inherit_settings_from?.id,
@@ -86,13 +85,15 @@ export const toCourseForm = ({
     : initialValues
 }
 
+interface FromCourseFormArgs {
+  values: CourseFormValues
+  initialValues: CourseFormValues
+}
+
 export const fromCourseForm = ({
   values,
   initialValues,
-}: {
-  values: CourseFormValues
-  initialValues: CourseFormValues
-}): CourseCreateArg | CourseUpsertArg => {
+}: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
   const course_translations =
@@ -202,8 +203,6 @@ export const fromCourseForm = ({
     inherit_settings_from: values.inherit_settings_from,
     completions_handled_by: values.completions_handled_by,
     user_course_settings_visibilities,
-    teacher_in_charge_email: values.teacher_in_charge_email ?? "",
-    teacher_in_charge_name: values.teacher_in_charge_name ?? "",
     status, //values.status as CourseStatus
     upcoming_active_link: values.upcoming_active_link ?? false,
     automatic_completions: values.automatic_completions ?? false,

@@ -1,16 +1,17 @@
+import ReactGA from "react-ga"
+
+import styled from "@emotion/styled"
+import { Grid, Skeleton, Typography } from "@mui/material"
+
 import {
   ModuleCardText,
   ModuleCardTitle,
 } from "/components/Home/ModuleDisplay/Common"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
-import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
-import { Grid, Skeleton, Typography } from "@mui/material"
+import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -95,7 +96,7 @@ const Header = styled.div<HeaderProps>`
 `
 
 interface ModuleSmallCourseCardProps {
-  course?: AllCourses_courses
+  course?: CourseFieldsFragment
   showHeader?: boolean
 }
 
@@ -122,10 +123,10 @@ function ModuleSmallCourseCard({
                 course!.status === CourseStatus.Upcoming) && (
                 <Header
                   startPoint={course!.study_module_start_point}
-                  upcoming={course!.status === "Upcoming"}
+                  upcoming={course!.status === CourseStatus.Upcoming}
                 >
                   <Typography variant="body1">
-                    {course!.status === "Upcoming"
+                    {course!.status === CourseStatus.Upcoming
                       ? t("upcomingShort")
                       : t("moduleCourseStartPoint")}
                   </Typography>

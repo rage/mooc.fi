@@ -1,4 +1,3 @@
-import { Context } from "/context"
 import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
@@ -11,10 +10,9 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, Role } from "../accessControl"
-import { filterNull } from "../util/db-functions"
+import { notEmpty } from "../util/notEmpty"
+import { Context } from "/context"
 
 export const Exercise = objectType({
   name: "Exercise",
@@ -59,9 +57,12 @@ export const Exercise = objectType({
             where: {
               user_id,
             },
-            orderBy:
-              (filterNull(orderBy) as Prisma.ExerciseCompletionOrderByInput) ??
-              undefined,
+            distinct: ["user_id", "exercise_id"],
+            orderBy: [
+              { timestamp: "desc" },
+              { updated_at: "desc" },
+              orderBy,
+            ].filter(notEmpty),
           })
       },
     })

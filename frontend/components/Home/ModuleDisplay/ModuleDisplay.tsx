@@ -1,13 +1,19 @@
 import { useMemo } from "react"
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+
 import { orderBy } from "lodash"
-import { CourseStatus } from "/static/types/generated/globalTypes"
+
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
-import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
 import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
+import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
+import notEmpty from "/util/notEmpty"
+
+import {
+  CourseStatus,
+  StudyModuleFieldsWithCoursesFragment,
+} from "/graphql/generated"
 
 interface ModuleProps {
-  module?: AllModules_study_modules_with_courses
+  module?: StudyModuleFieldsWithCoursesFragment
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
@@ -15,10 +21,11 @@ interface ModuleProps {
 
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
+
   const orderedCourses = useMemo(
     () =>
       orderBy(
-        module?.courses || [],
+        (module?.courses || []).filter(notEmpty),
         [
           (course) => course.study_module_order,
           (course) => course.study_module_start_point === true,
@@ -29,6 +36,10 @@ function Module(props: ModuleProps) {
       ),
     [module?.courses],
   )
+
+  if (!module) {
+    return null
+  }
 
   return (
     <section

@@ -5,14 +5,19 @@ import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { convertUpdate } from "../../util/db-functions"
+import { notEmpty } from "../../util/notEmpty"
 import { deleteImage, uploadImage } from "../Image"
 
 const isNotNull = <T>(value: T | null | undefined): value is T =>
   value !== null && value !== undefined
+
+const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
+  value ?? undefined
 
 export const CourseMutations = extendType({
   type: "Mutation",
@@ -76,7 +81,7 @@ export const CourseMutations = extendType({
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
-                    id: s?.id ?? undefined,
+                    id: nullToUndefined(s?.id),
                   })),
                 }
               : undefined,
@@ -104,7 +109,7 @@ export const CourseMutations = extendType({
           },
         })
 
-        const kafkaProducer = await new KafkaProducer()
+        const kafkaProducer = new KafkaProducer()
         const producerMessage: ProducerMessage = {
           message: JSON.stringify(newCourse),
           partition: null,
@@ -245,14 +250,15 @@ export const CourseMutations = extendType({
           .findUnique({ where: { slug } })
           .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-        const removedModuleIds = (existingStudyModules || [])
-          .filter((module) => !getIds(study_modules ?? []).includes(module.id))
-          .map((module) => ({ id: module.id } as { id: string }))
+        const removedModuleIds =
+          existingStudyModules
+            ?.filter((module) => !getIds(study_modules).includes(module.id))
+            .map((module) => ({ id: module.id })) ?? []
         const connectModules =
           study_modules?.map((s) => ({
             ...s,
-            id: s?.id ?? undefined,
-            slug: s?.slug ?? undefined,
+            id: nullToUndefined(s?.id),
+            slug: nullToUndefined(s?.slug),
           })) ?? []
 
         const studyModuleMutation:
@@ -293,7 +299,7 @@ export const CourseMutations = extendType({
 
         const updatedCourse = await ctx.prisma.course.update({
           where: {
-            id: id ?? undefined,
+            id: nullToUndefined(id),
             slug,
           },
           data: convertUpdate({
@@ -307,7 +313,7 @@ export const CourseMutations = extendType({
               "completion_email_id",
               "course_stats_email_id",
             ]),
-            slug: new_slug ? new_slug : slug,
+            slug: new_slug ?? slug,
             end_date,
             // FIXME: disconnect removed photos?
             photo: !!photo ? { connect: { id: photo } } : undefined,
@@ -373,18 +379,16 @@ export const CourseMutations = extendType({
   },
 })
 
-const getIds = (arr: any[]) => (arr || []).map((t) => t.id)
-const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
+type WithIdOrNull = { id?: string | null; [key: string]: any } | null
+const getIds = (arr?: WithIdOrNull[] | null) => arr?.map((t) => t?.id) ?? []
+
+function filterNotIncluded(arr1: WithIdOrNull[], arr2: WithIdOrNull[]) {
   const ids1 = getIds(arr1)
   const ids2 = getIds(arr2)
 
-  const filtered = ids1.filter((id) => !ids2.includes(id))
+  const filtered = ids1.filter((id) => !ids2.includes(id)).filter(notEmpty)
 
-  if (mapToId) {
-    return filtered.map((id) => ({ id }))
-  }
-
-  return filtered
+  return filtered.map((id) => ({ id }))
 }
 
 interface ICreateMutation<T> {
@@ -394,7 +398,7 @@ interface ICreateMutation<T> {
   field: keyof Prisma.Prisma__CourseClient<Course>
 }
 
-const createMutation = async <T extends { id?: string | null } | null>({
+const createMutation = async <T extends WithIdOrNull>({
   ctx,
   slug,
   data,
@@ -409,10 +413,8 @@ const createMutation = async <T extends { id?: string | null } | null>({
   try {
     // @ts-ignore: can't be arsed to do the typing, works
     existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
-  } catch (e) {
-    throw new Error(
-      `error creating mutation ${String(field)} for course ${slug}: ${e}`,
-    )
+  } catch (e: any) {
+    throw new DatabaseInputError(`error creating mutation`, { field, slug }, e)
   }
 
   const newOnes = (data || [])
@@ -421,7 +423,7 @@ const createMutation = async <T extends { id?: string | null } | null>({
   const updated = (data || [])
     .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
-      where: { id: t.id } as { id: string },
+      where: { id: t.id },
       data: t, //{ ...t, id: undefined },
     }))
   const removed = filterNotIncluded(existing!, data)
@@ -433,5 +435,6 @@ const createMutation = async <T extends { id?: string | null } | null>({
   }
 }
 
-const hasId = (data: any): data is any & { id: string | null } => !!data?.id
-const hasNotId = (data: any) => !hasId(data)
+const hasId = <T extends WithIdOrNull>(data: T): data is T & { id: string } =>
+  Boolean(data?.id)
+const hasNotId = <T extends WithIdOrNull>(data: T) => !hasId(data)

@@ -1,0 +1,25 @@
+fragment UserCourseSummaryCourseFields on Course {
+  ...CourseWithPhotoCoreFields
+  has_certificate
+  exercises {
+    ...ExerciseCoreFields
+  }
+}
+
+fragment UserCourseSummaryCoreFields on UserCourseSummary {
+  course {
+    ...UserCourseSummaryCourseFields
+  }
+  exercise_completions {
+    ...ExerciseCompletionCoreFields
+  }
+  user_course_progress {
+    ...UserCourseProgressCoreFields
+  }
+  user_course_service_progresses {
+    ...UserCourseServiceProgressCoreFields
+  }
+  completion {
+    ...CompletionDetailedFields
+  }
+}

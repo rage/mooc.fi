@@ -1,9 +1,3 @@
-import {
-  BackgroundImage,
-  FullCoverTextBackground,
-} from "/components/Images/CardBackgroundFullCover"
-import { CardText } from "/components/Text/paragraphs"
-import { mime } from "/util/imageUtils"
 import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 import Link from "next/link"
@@ -11,6 +5,13 @@ import Link from "next/link"
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
 import Grid from "@mui/material/Grid"
+
+import {
+  BackgroundImage,
+  FullCoverTextBackground,
+} from "/components/Images/CardBackgroundFullCover"
+import { CardText } from "/components/Text/paragraphs"
+import { mime } from "/util/imageUtils"
 
 const NaviItemBase = styled(ClickableDiv)`
   width: 100%;

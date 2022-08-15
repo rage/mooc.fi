@@ -1,16 +1,5 @@
 import React, { useMemo } from "react"
 
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import { AllCoursesQuery } from "/graphql/queries/courses"
-import { AllModulesQuery } from "/graphql/queries/study-modules"
-import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
-import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
-import HomeTranslations from "/translations/home"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -18,6 +7,17 @@ import { useQuery } from "@apollo/client"
 import CourseHighlights from "./CourseHighlights"
 import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import HomeTranslations from "/translations/home"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
+
+import {
+  CoursesDocument,
+  CourseStatus,
+  StudyModulesDocument,
+} from "/graphql/generated"
 
 // const highlightsBanner = "/static/images/backgroundPattern.svg"
 
@@ -26,22 +26,23 @@ const CourseAndModuleList = () => {
   const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
 
+  // TODO: do this in one query; get module courses already in backend
   const {
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
-  } = useQuery<AllCoursesData>(AllCoursesQuery, { variables: { language } })
+  } = useQuery(CoursesDocument, { variables: { language } })
   const {
     loading: modulesLoading,
     error: modulesError,
     data: modulesData,
-  } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
+  } = useQuery(StudyModulesDocument, { variables: { language } })
 
   const courses = coursesData?.courses
   let study_modules = modulesData?.study_modules?.filter(notEmpty)
 
   const modulesWithCourses = useMemo(
-    (): AllModules_study_modules_with_courses[] =>
+    () =>
       (study_modules || [])
         .filter(notEmpty)
         .map((module) => {

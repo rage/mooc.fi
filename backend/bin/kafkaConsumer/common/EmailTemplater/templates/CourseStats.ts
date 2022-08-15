@@ -52,7 +52,7 @@ export class CompletedCourseCount extends Template {
           SELECT 
             COUNT(DISTINCT user_id) 
           FROM completion 
-          WHERE course_id = ${course.id};
+          WHERE course_id = ${course.completions_handled_by_id ?? course.id};
         `
         )?.[0]?.count
 
@@ -142,7 +142,9 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
                 u.id NOT IN (
                   SELECT DISTINCT(user_id)
                     FROM completion c
-                    WHERE c.course_id = ${course.id}
+                    WHERE c.course_id = ${
+                      course.completions_handled_by_id ?? course.id
+                    }
                     AND user_id IS NOT NULL
                 );
           `

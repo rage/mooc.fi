@@ -2,9 +2,12 @@ import { Course, User, UserCourseProgress } from "@prisma/client"
 
 import { BAItiers } from "../../../../config/courseConfig"
 import { KafkaContext } from "../kafkaContext"
+import {
+  checkCompletion,
+  getCombinedUserCourseProgress,
+} from "../userFunctions"
+import { checkBAICompletion } from "./BAI/completion"
 import { checkAndSendThresholdEmail } from "./checkAndSendThresholdEmail"
-import { checkBAICompletion } from "./generateBAIUserCourseProgress"
-import { checkCompletion, getCombinedUserCourseProgress } from "./userFunctions"
 
 interface Props {
   user: User
@@ -25,10 +28,24 @@ export const generateUserCourseProgress = async ({
     context,
   })
 
+  const handler = await context.prisma.course
+    .findUnique({
+      where: {
+        id: course.id,
+      },
+    })
+    .completions_handled_by()
+
   if (Object.values(BAItiers).includes(course.id)) {
-    await checkBAICompletion({ user, course, context })
+    await checkBAICompletion({ user, course, handler, context })
   } else {
-    await checkCompletion({ user, course, combinedProgress: combined, context })
+    await checkCompletion({
+      user,
+      course,
+      handler,
+      combinedProgress: combined,
+      context,
+    })
   }
 
   await checkAndSendThresholdEmail({
@@ -38,7 +55,7 @@ export const generateUserCourseProgress = async ({
     context,
   })
 
-  await context.prisma.userCourseProgress.update({
+  return await context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
       progress: combined.progress as any, // errors unless typed as any

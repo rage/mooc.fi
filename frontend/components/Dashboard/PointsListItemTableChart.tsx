@@ -1,8 +1,9 @@
-import { formattedGroupPoints } from "/util/formatPointsData"
 import { CardSubtitle } from "components/Text/headers"
 
 import styled from "@emotion/styled"
 import LinearProgress from "@mui/material/LinearProgress"
+
+import { FormattedGroupPoints } from "/util/formatPointsData"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -28,7 +29,7 @@ const ColoredProgressBar = styled(({ ...props }) => (
 
 interface Props {
   title: string
-  points: formattedGroupPoints
+  points: FormattedGroupPoints
   cuttervalue: Number
   showDetailed: Boolean
 }

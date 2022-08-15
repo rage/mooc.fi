@@ -1,12 +1,12 @@
-import { CourseAliasFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { useTranslator } from "/util/useTranslator"
-import CoursesTranslations from "/translations/courses"
 import {
-  ControlledTextField,
   ControlledFieldArrayList,
   ControlledHiddenField,
+  ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { initialAlias } from "/components/Dashboard/Editor2/Course/form-validation"
+import { CourseAliasFormValues } from "/components/Dashboard/Editor2/Course/types"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
 
 export default function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)

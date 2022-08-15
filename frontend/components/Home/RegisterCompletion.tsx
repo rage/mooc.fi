@@ -1,6 +1,7 @@
+import { PropsWithChildren } from "react"
+
 import Container from "/components/Container"
 import { H1NoBackground } from "/components/Text/headers"
-import { PropsWithChildren } from "react"
 
 interface RegisterCompletionProps {
   title: string
