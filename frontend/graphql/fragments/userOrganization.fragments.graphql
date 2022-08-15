@@ -1,4 +1,4 @@
-fragment UserOrganizationCoreFields on UserOrganization {
+fragment UserOrganizationFields on UserOrganization {
   id
   user_id
   organization_id
@@ -16,23 +16,24 @@ fragment UserOrganizationJoinConfirmationFields on UserOrganizationJoinConfirmat
   email
   confirmed
   confirmed_at
-  created_at
-  updated_at
   expired
   expires_at
   redirect
   language
+  created_at
+  updated_at
   email_delivery {
     id
     email
     sent
     error
+    created_at
     updated_at
   }
 }
 
 fragment UserOrganizationWithUserOrganizationJoinConfirmationFields on UserOrganization {
-  ...UserOrganizationCoreFields
+  ...UserOrganizationFields
   user_organization_join_confirmations {
     ...UserOrganizationJoinConfirmationFields
   }

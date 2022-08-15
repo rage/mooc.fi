@@ -62,7 +62,7 @@ export const Organization = objectType({
   },
 })
 
-const organizationPermission = (
+const organizationQueryHiddenPermission = (
   _: any,
   args: any,
   ctx: Context,
@@ -85,7 +85,7 @@ export const OrganizationQueries = extendType({
         slug: stringArg(),
         hidden: booleanArg(),
       },
-      authorize: organizationPermission,
+      authorize: organizationQueryHiddenPermission,
       resolve: async (_, { id, slug, hidden }, ctx) => {
         if ((!id && !slug) || (id && slug)) {
           throw new UserInputError("must provide either id or slug")
@@ -95,7 +95,7 @@ export const OrganizationQueries = extendType({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
-            hidden,
+            ...(!hidden && { hidden: { not: true } }),
           },
         })
       },
@@ -105,7 +105,7 @@ export const OrganizationQueries = extendType({
     t.crud.organizations({
       ordering: true,
       pagination: true,
-      authorize: organizationPermission,
+      authorize: organizationQueryHiddenPermission,
     })
 
     t.list.field("organizations", {
@@ -117,7 +117,7 @@ export const OrganizationQueries = extendType({
         orderBy: arg({ type: "OrganizationOrderByInput" }),
         hidden: booleanArg(),
       },
-      authorize: organizationPermission,
+      authorize: organizationQueryHiddenPermission,
       resolve: async (_, args, ctx) => {
         const { take, skip, cursor, orderBy, hidden } = args
 
@@ -133,7 +133,7 @@ export const OrganizationQueries = extendType({
             (filterNull(orderBy) as Prisma.OrganizationOrderByInput) ??
             undefined,
           where: {
-            hidden,
+            ...(!hidden && { hidden: { not: true } }),
           },
         })
 

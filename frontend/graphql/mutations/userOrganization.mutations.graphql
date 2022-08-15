@@ -10,10 +10,7 @@ mutation AddUserOrganization(
     redirect: $redirect
     language: $language
   ) {
-    ...UserOrganizationCoreFields
-    user_organization_join_confirmations {
-      ...UserOrganizationJoinConfirmationFields
-    }
+    ...UserOrganizationWithUserOrganizationJoinConfirmationFields
   }
 }
 

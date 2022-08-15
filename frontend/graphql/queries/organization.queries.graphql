@@ -4,14 +4,8 @@ query Organizations {
   }
 }
 
-query OrganizationById($id: ID!) {
-  organization(id: $id) {
-    ...OrganizationCoreFields
-  }
-}
-
-query OrganizationBySlug($slug: String!) {
-  organization(slug: $slug) {
+query Organization($id: ID, $slug: String) {
+  organization(id: $id, slug: $slug) {
     ...OrganizationCoreFields
   }
 }

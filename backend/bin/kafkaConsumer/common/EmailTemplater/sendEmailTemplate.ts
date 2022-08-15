@@ -4,7 +4,7 @@ import { sendMail } from "../../../../util/sendMail"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
 import { TemplateContext } from "./types/TemplateContext"
 
-interface SendEmailTemplateToUserOptions {
+interface SendEmailTemplateToUserArgs {
   user: User
   organization?: Organization
   template: EmailTemplate
@@ -18,33 +18,35 @@ export async function sendEmailTemplateToUser({
   template,
   email,
   context = {} as TemplateContext,
-}: SendEmailTemplateToUserOptions) {
-  const text = await applyTemplate({ template, user, organization }, context)
-
-  await sendMail(
-    {
-      to: email ?? user.email,
-      subject: template.title ?? undefined,
-      text,
-      html: template.html_body ?? undefined,
-    },
-    { logger: context.logger },
+}: SendEmailTemplateToUserArgs) {
+  const text = await applyTemplate(
+    { template, user, email, organization },
+    context,
   )
+
+  await sendMail({
+    to: email ?? user.email,
+    subject: template.title ?? undefined,
+    text,
+    html: template.html_body ?? undefined,
+  })
 }
 
-interface ApplyTemplateParams {
+interface ApplyTemplateArgs {
   user: User
+  email?: string
   organization?: Organization
   template: EmailTemplate
 }
 
 const applyTemplate = async (
-  { template, user, organization }: ApplyTemplateParams,
+  { template, user, email, organization }: ApplyTemplateArgs,
   context: TemplateContext,
 ) => {
   const templater = new EmailTemplater({
     emailTemplate: template,
     user,
+    email,
     organization,
     context,
   })

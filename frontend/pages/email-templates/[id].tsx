@@ -3,7 +3,7 @@ import { useState } from "react"
 import { NextSeo } from "next-seo"
 import Router from "next/router"
 
-import { useApolloClient, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import {
   Button,
@@ -33,6 +33,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import {
   DeleteEmailTemplateDocument,
   EmailTemplateDocument,
+  EmailTemplateQuery,
   UpdateEmailTemplateDocument,
 } from "/graphql/generated"
 
@@ -43,26 +44,19 @@ const TemplateList = styled.div`
 `
 
 const EmailTemplateView = () => {
-  // TODO: Get rid of any
-  const [emailTemplate, setEmailTemplate] = useState<any>()
-  const [name, setName] = useState<any>()
-  const [txtBody, setTxtBody] = useState<any>()
-  const [htmlBody, setHtmlBody] = useState<any>()
-  const [title, setTitle] = useState<any>()
-  const [exerciseThreshold, setExerciseThreshold] = useState<
-    number | null | undefined
-  >()
-  const [pointsThreshold, setPointsThreshold] = useState<
-    number | null | undefined
-  >()
-  const [templateType, setTemplateType] = useState<
-    EmailTemplateType | null | undefined
-  >()
-  const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
+  const [emailTemplate, setEmailTemplate] =
+    useState<EmailTemplateQuery["email_template"]>()
+  const [name, setName] = useState<string>()
+  const [txtBody, setTxtBody] = useState<string>()
+  const [htmlBody, setHtmlBody] = useState<string>()
+  const [title, setTitle] = useState<string>()
+  const [exerciseThreshold, setExerciseThreshold] = useState<number | null>()
+  const [pointsThreshold, setPointsThreshold] = useState<number | null>()
+  const [templateType, setTemplateType] = useState<EmailTemplateType | null>()
+  const [triggeredByCourseId, setTriggeredByCourseId] = useState<string>()
   const [didInit, setDidInit] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
-  const client = useApolloClient()
 
   interface SnackbarData {
     type: "error" | "success" | "warning" | "error"
@@ -78,6 +72,8 @@ const EmailTemplateView = () => {
   const { data, loading, error } = useQuery(EmailTemplateDocument, {
     variables: { id },
   })
+  const [updateEmailTemplateMutation] = useMutation(UpdateEmailTemplateDocument)
+  const [deleteEmailTemplateMutation] = useMutation(DeleteEmailTemplateDocument)
 
   useBreadcrumbs([
     {
@@ -101,15 +97,15 @@ const EmailTemplateView = () => {
 
   console.log("data", data)
   if (data && !didInit) {
-    setName(data.email_template?.name)
-    setTxtBody(data.email_template?.txt_body)
-    setHtmlBody(data.email_template?.html_body)
-    setTitle(data.email_template?.title)
+    setName(data.email_template?.name ?? undefined)
+    setTxtBody(data.email_template?.txt_body ?? undefined)
+    setHtmlBody(data.email_template?.html_body ?? undefined)
+    setTitle(data.email_template?.title ?? undefined)
     setTemplateType(data.email_template?.template_type as EmailTemplateType)
     setExerciseThreshold(data.email_template?.exercise_completions_threshold)
     setPointsThreshold(data.email_template?.points_threshold)
     setTriggeredByCourseId(
-      data.email_template?.triggered_automatically_by_course_id,
+      data.email_template?.triggered_automatically_by_course_id ?? undefined,
     )
     setDidInit(true)
     setEmailTemplate(data.email_template)
@@ -276,8 +272,7 @@ const EmailTemplateView = () => {
                 onClick={async () => {
                   if (emailTemplate == null) return
                   try {
-                    const { data } = await client.mutate({
-                      mutation: UpdateEmailTemplateDocument,
+                    const { data } = await updateEmailTemplateMutation({
                       variables: {
                         id: emailTemplate.id,
                         name: name,
@@ -313,8 +308,7 @@ const EmailTemplateView = () => {
                 onClick={async () => {
                   if (emailTemplate == null) return
                   try {
-                    const { data } = await client.mutate({
-                      mutation: DeleteEmailTemplateDocument,
+                    const { data } = await deleteEmailTemplateMutation({
                       variables: { id: emailTemplate.id },
                     })
                     console.log(data)

@@ -7,6 +7,7 @@ import { TemplateParams } from "./TemplateParams"
 export default abstract class Template implements ITemplate {
   emailTemplate: EmailTemplate
   user: User
+  email?: string
   organization?: Organization
   context: TemplateContext
 
@@ -15,6 +16,8 @@ export default abstract class Template implements ITemplate {
     this.user = params.user
     this.organization = params.organization
     this.context = params.context
+    this.email = params.email
   }
+
   abstract resolve(): Promise<string>
 }

@@ -1,10 +1,7 @@
 query CurrentUserUserOrganizations {
   currentUser {
     user_organizations {
-      ...UserOrganizationCoreFields
-      user_organization_join_confirmations {
-        ...UserOrganizationJoinConfirmationFields
-      }
+      ...UserOrganizationWithUserOrganizationJoinConfirmationFields
     }
   }
 }
@@ -21,5 +18,8 @@ query UserOrganizations($user_id: ID) {
 query UserOrganizationJoinConfirmation($id: ID!) {
   userOrganizationJoinConfirmation(id: $id) {
     ...UserOrganizationJoinConfirmationFields
+    user_organization {
+      ...UserOrganizationFields
+    }
   }
 }

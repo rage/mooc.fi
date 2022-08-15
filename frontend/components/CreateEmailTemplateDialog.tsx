@@ -19,6 +19,7 @@ import {
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { EmailTemplateType } from "/types/emailTemplates"
+import notEmpty from "/util/notEmpty"
 
 import {
   AddEmailTemplateDocument,
@@ -31,8 +32,8 @@ import {
 
 interface CreateEmailTemplateDialogProps {
   course?: CourseCoreFieldsFragment
-  organization?: any
   buttonText: string
+  organization?: any // TODO: type, actually query this somewhere
   type?: EmailTemplateType
 }
 
@@ -76,17 +77,18 @@ const CreateEmailTemplateDialog = ({
   const courseOptions =
     templateType === "completion"
       ? data!.courses
-          ?.filter((c) => c?.completion_email === null)
-          .map((c, i) => {
+          ?.filter(notEmpty)
+          .filter((c) => c?.completion_email === null)
+          .map((c) => {
             return (
-              <option key={i} value={i}>
+              <option key={c.id} value={c.id}>
                 {c?.name}
               </option>
             )
           })
-      : data!.courses?.map((c, i) => {
+      : data!.courses?.filter(notEmpty).map((c) => {
           return (
-            <option key={i} value={i}>
+            <option key={c.id} value={c.id}>
               {c?.name}
             </option>
           )
@@ -140,13 +142,13 @@ const CreateEmailTemplateDialog = ({
         await updateOrganizationEmailTemplateMutation({
           variables: {
             id: organization.id,
-            email_template_id: addEmailTemplateData?.addEmailTemplate!.id!,
+            email_template_id: addEmailTemplateData!.addEmailTemplate!.id,
           },
         })
       }
 
       const url =
-        "/email-templates/" + addEmailTemplateData?.addEmailTemplate?.id
+        "/email-templates/" + addEmailTemplateData!.addEmailTemplate!.id
       Router.push(url)
     } catch {
       setIsErrorSnackbarOpen(true)
@@ -206,7 +208,9 @@ const CreateEmailTemplateDialog = ({
                     onChange={(e) => {
                       e.preventDefault()
                       setSelectedCourse(
-                        data!.courses?.[Number(e.target.value)] ?? undefined,
+                        data.courses
+                          ?.filter(notEmpty)
+                          .find((c) => c.id === e.target.value)!,
                       )
                     }}
                     id="selectCourse"

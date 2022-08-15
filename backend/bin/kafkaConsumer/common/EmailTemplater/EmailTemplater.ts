@@ -28,12 +28,20 @@ export class EmailTemplater {
   }
   emailTemplate: EmailTemplate
   user: User
+  email?: string
   organization?: Organization
   context: TemplateContext
 
-  constructor({ emailTemplate, user, organization, context }: TemplateParams) {
+  constructor({
+    emailTemplate,
+    user,
+    organization,
+    email,
+    context,
+  }: TemplateParams) {
     this.emailTemplate = emailTemplate
     this.user = user
+    this.email = email
     this.organization = organization
     this.context = context
 
@@ -54,6 +62,7 @@ export class EmailTemplater {
         emailTemplate: this.emailTemplate,
         user: this.user,
         organization: this.organization,
+        email: this.email,
         context: this.context,
       }) as Template
     })

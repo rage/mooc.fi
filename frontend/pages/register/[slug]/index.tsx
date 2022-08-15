@@ -11,6 +11,7 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
 
+import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { updateUserDetails } from "/lib/account"
@@ -25,6 +26,8 @@ import {
   AddUserOrganizationDocument,
   CurrentUserUserOrganizationsDocument,
   DeleteUserOrganizationDocument,
+  OrganizationDocument,
+  UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment,
 } from "/graphql/generated"
 
 const Container = styled.div`
@@ -65,15 +68,16 @@ const StyledForm = styled.form`
   grid-template-columns: 80% 20%;
 `
 
+// @ts-ignore: not used for now
 const mockOrganization = {
   name: "Helsingin yliopisto",
   hidden: false,
-  supportEmail: "test@university.xyz",
+  email: "test@university.xyz",
 }
 
 const RegisterToOrganization = () => {
-  const { currentUser } = useContext(LoginStateContext)
-  const id = useQueryParameter("id")
+  const { currentUser, admin } = useContext(LoginStateContext)
+  const slug = useQueryParameter("slug")
   const t = useTranslator(HomeTranslations, RegistrationTranslations)
   const [confirmationStatus, setConfirmationStatus] = useState("notSent") // notSent, sent, expired or incorrectFormat
   const [email, setEmail] = useState("")
@@ -82,11 +86,27 @@ const RegisterToOrganization = () => {
     currentUser?.student_number,
   )
   const [memberships, setMemberships] = useState<Array<string>>([])
+  // @ts-ignore: not used
   const [organizations] = useState<Record<string, any>>({}) // what's this?
   const formRef = createRef<HTMLFormElement>()
-  const { data: userOrganizationsData } = useQuery(
-    CurrentUserUserOrganizationsDocument,
-  )
+  const [
+    currentUserOrganizationMembership,
+    setCurrentUserOrganizationMembership,
+  ] = useState<
+    | UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment
+    | undefined
+  >()
+
+  const {
+    data: organizationData,
+    loading: organizationLoading,
+    error: organizationError,
+  } = useQuery(OrganizationDocument, { variables: { slug } })
+  const {
+    data: userOrganizationsData,
+    loading: userOrganizationsLoading,
+    error: userOrganizationsError,
+  } = useQuery(CurrentUserUserOrganizationsDocument)
 
   const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
@@ -108,7 +128,7 @@ const RegisterToOrganization = () => {
   useBreadcrumbs([
     {
       translation: "register",
-      href: "/register/" + id,
+      href: "/register/" + slug,
     },
   ])
 
@@ -120,20 +140,22 @@ const RegisterToOrganization = () => {
   }, [])
 
   useEffect(() => {
-    if (
-      !userOrganizationsData ||
-      (userOrganizationsData && Object.keys(organizations).length)
-    ) {
+    if (!userOrganizationsData || !organizationData) {
       return
     }
 
     const mIds =
-      userOrganizationsData?.currentUser?.user_organizations
+      userOrganizationsData.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.id)
         .filter(notEmpty) ?? []
+    const currentMembership =
+      userOrganizationsData.currentUser?.user_organizations.find(
+        (uo) => uo?.organization?.id === organizationData.organization?.id,
+      )
 
     setMemberships(mIds)
-  }, [userOrganizationsData])
+    setCurrentUserOrganizationMembership(currentMembership)
+  }, [organizationData, userOrganizationsData])
 
   const handleSubmit = () => {
     const potentialEmail = (
@@ -157,12 +179,13 @@ const RegisterToOrganization = () => {
 
   const verifyJoiningOrganization = async () => {
     const fieldName = "joined_organizations"
-    const fieldValue = [...memberships, id]
+    const fieldValue = [...memberships, organizationData!.organization!.id]
     await updateUserDetails(fieldName, fieldValue)
+
     setMemberships(fieldValue)
     await addUserOrganization({
       variables: {
-        organization_id: id,
+        organization_id: organizationData!.organization!.id,
         email: email,
       },
     })
@@ -173,12 +196,20 @@ const RegisterToOrganization = () => {
   }
 
   const leaveOrganization = async () => {
+    if (!currentUserOrganizationMembership?.id) {
+      return
+    }
+
     await deleteUserOrganization({
       variables: {
-        id: id,
+        id: currentUserOrganizationMembership.id,
       },
     })
-    setMemberships(memberships.filter((i) => i !== id))
+    setMemberships(
+      memberships.filter(
+        (i) => i !== currentUserOrganizationMembership.organization!.id,
+      ),
+    )
     const fieldName = "joined_organizations"
     await updateUserDetails(fieldName, memberships)
   }
@@ -188,32 +219,39 @@ const RegisterToOrganization = () => {
     { variables: { id: Number(id) } },
   ) */
 
-  /* if (error) {
+  if (organizationLoading || userOrganizationsLoading) {
+    return <Container>loading...</Container>
+  }
+
+  if (organizationError || userOrganizationsError) {
     return (
       <Container>
         <ErrorMessage />
       </Container>
     )
-  } else if (loading) {
-    return (
-      <Container>
-        loading...
-      </Container>
-    ) */
+  }
 
-  const member = memberships.includes(id)
+  if (
+    !organizationData?.organization?.id ||
+    (!admin && organizationData.organization.hidden)
+  ) {
+    return <Container>no such organization exists</Container>
+  }
 
-  return member ? (
+  const isMember = Boolean(currentUserOrganizationMembership?.id)
+
+  return isMember ? (
     <Container>
       <h1>
-        {t("leaveTitle")} {mockOrganization.name}?
+        {t("leaveTitle")}{" "}
+        {organizationData.organization.organization_translations?.[0]?.name}?
       </h1>
 
       <TextBox>{t("leaveInformation")}</TextBox>
 
       <Button
         color="secondary"
-        disabled={member}
+        disabled={isMember}
         onClick={async () => {
           await leaveOrganization()
         }}
@@ -224,18 +262,19 @@ const RegisterToOrganization = () => {
   ) : (
     <Container>
       <h1>
-        {t("title2")} {mockOrganization.name}
+        {t("title2")}{" "}
+        {organizationData.organization.organization_translations?.[0]?.name}
       </h1>
 
       <TextBox>
         {t("joiningInformation1")}
-        {mockOrganization.supportEmail == null ? (
+        {organizationData.organization.email == null ? (
           "."
         ) : (
           <>
             :{" "}
-            <Link href={"mailto:" + mockOrganization.supportEmail}>
-              {mockOrganization.supportEmail}
+            <Link href={"mailto:" + organizationData.organization.email}>
+              {organizationData.organization.email}
             </Link>
           </>
         )}
@@ -248,14 +287,17 @@ const RegisterToOrganization = () => {
       </TextBox>
 
       <TextBox>
-        {t("joiningInformation5")} {mockOrganization.name}{" "}
+        {t("joiningInformation5")}{" "}
+        {organizationData.organization.organization_translations?.[0]?.name}{" "}
         {t("joiningInformation6")}
       </TextBox>
 
       {confirmationStatus != "sent" && (
         <div>
           <FormControlLabel
-            label={`${t("joiningCheckbox")} ${mockOrganization.name}`}
+            label={`${t("joiningCheckbox")} ${
+              organizationData.organization.organization_translations?.[0]?.name
+            }`}
             control={
               <Checkbox
                 id="consent-checkbox"
@@ -279,9 +321,9 @@ const RegisterToOrganization = () => {
           </Tooltip>
           <TextBox>
             {t("joiningEmailHint1")}{" "}
-            {mockOrganization.supportEmail != null
+            {organizationData.organization.email != null
               ? `${t("joiningEmailHint2")}@${
-                  mockOrganization.supportEmail.split("@")[1]
+                  organizationData.organization.email.split("@")[1]
                 }${t("joiningEmailHint3")}`
               : ""}
           </TextBox>
