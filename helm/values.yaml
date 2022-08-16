@@ -27,6 +27,10 @@ email:
   # controls whether the background email service should be running
   enabled: true
 
+expireUserOrganizationJoinConfirmations:
+  # controls whether the background service to expire user organization join confirmations should be running
+  enabled: true
+
 image:
   repository: eu.gcr.io/moocfi
   pullPolicy: IfNotPresent
@@ -48,10 +52,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -72,13 +78,14 @@ ingress:
   hosts:
     - host: www.mooc.fi
   tls:
-   - secretName: moocfi-tls
-     hosts:
-      - points.mooc.fi
-      - mooc.fi
-      - www.mooc.fi
+    - secretName: moocfi-tls
+      hosts:
+        - points.mooc.fi
+        - mooc.fi
+        - www.mooc.fi
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

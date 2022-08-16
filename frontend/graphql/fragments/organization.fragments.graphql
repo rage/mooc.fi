@@ -3,6 +3,7 @@ fragment OrganizationCoreFields on Organization {
   slug
   email
   hidden
+  disabled
   created_at
   updated_at
   required_confirmation

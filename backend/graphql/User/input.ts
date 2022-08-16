@@ -9,7 +9,6 @@ export const UserCreateArg = inputObjectType({
     t.nonNull.string("username")
     t.nonNull.string("email")
     t.nonNull.boolean("research_consent")
-    t.nullable.string("organizational_email")
   },
 })
 
@@ -21,7 +20,6 @@ export const UserUpdateArg = inputObjectType({
     t.string("last_name")
     t.string("email")
     t.boolean("research_consent")
-    t.string("organizational_email")
     t.string("real_student_number")
   },
 })

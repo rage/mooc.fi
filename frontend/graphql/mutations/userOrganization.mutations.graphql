@@ -1,12 +1,12 @@
 mutation AddUserOrganization(
   $organization_id: ID!
-  $email: String
+  $organizational_email: String
   $redirect: String
   $language: String
 ) {
   addUserOrganization(
     organization_id: $organization_id
-    email: $email
+    organizational_email: $organizational_email
     redirect: $redirect
     language: $language
   ) {

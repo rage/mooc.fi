@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-15T17:09:29+03:00
+// Generated on 2022-08-16T13:58:45+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -576,6 +576,8 @@ export type EmailDelivery = {
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_id: Maybe<Scalars["String"]>
+  user_organization_join_confirmation: Maybe<UserOrganizationJoinConfirmation>
+  user_organization_join_confirmation_id: Maybe<Scalars["String"]>
 }
 
 export type EmailDeliveryWhereUniqueInput = {
@@ -926,9 +928,9 @@ export type MutationaddUserCourseServiceProgressArgs = {
 }
 
 export type MutationaddUserOrganizationArgs = {
-  email?: InputMaybe<Scalars["String"]>
   language?: InputMaybe<Scalars["String"]>
   organization_id: Scalars["ID"]
+  organizational_email?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
   user_id?: InputMaybe<Scalars["ID"]>
 }
@@ -1797,7 +1799,6 @@ export type User = {
   first_name: Maybe<Scalars["String"]>
   id: Scalars["String"]
   last_name: Maybe<Scalars["String"]>
-  organizational_email: Maybe<Scalars["String"]>
   organizations: Array<Organization>
   progress: Progress
   progresses: Maybe<Array<Progress>>
@@ -2027,7 +2028,6 @@ export type UserCreateArg = {
   email: Scalars["String"]
   first_name: Scalars["String"]
   last_name: Scalars["String"]
-  organizational_email?: InputMaybe<Scalars["String"]>
   research_consent: Scalars["Boolean"]
   upstream_id: Scalars["Int"]
   username: Scalars["String"]
@@ -2050,6 +2050,7 @@ export type UserOrganization = {
   id: Scalars["String"]
   organization: Maybe<Organization>
   organization_id: Maybe<Scalars["String"]>
+  organizational_email: Maybe<Scalars["String"]>
   role: Maybe<OrganizationRole>
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
@@ -2082,6 +2083,7 @@ export type UserOrganizationJoinConfirmation = {
 }
 
 export type UserOrganizationJoinConfirmationWhereUniqueInput = {
+  email_delivery_id?: InputMaybe<Scalars["String"]>
   id?: InputMaybe<Scalars["String"]>
 }
 
@@ -2094,7 +2096,6 @@ export type UserUpdateArg = {
   first_name?: InputMaybe<Scalars["String"]>
   id?: InputMaybe<Scalars["ID"]>
   last_name?: InputMaybe<Scalars["String"]>
-  organizational_email?: InputMaybe<Scalars["String"]>
   real_student_number?: InputMaybe<Scalars["String"]>
   research_consent?: InputMaybe<Scalars["Boolean"]>
 }
@@ -2703,6 +2704,20 @@ export type EditorCourseOtherCoursesFieldsFragment = {
   } | null
 }
 
+export type EmailDeliveryFieldsFragment = {
+  __typename?: "EmailDelivery"
+  id: string
+  email: string | null
+  sent: boolean
+  error: boolean
+  error_message: string | null
+  email_template_id: string | null
+  user_id: string | null
+  user_organization_join_confirmation_id: string | null
+  created_at: any | null
+  updated_at: any | null
+}
+
 export type EmailTemplateCoreFieldsFragment = {
   __typename?: "EmailTemplate"
   id: string
@@ -2789,6 +2804,7 @@ export type OrganizationCoreFieldsFragment = {
   slug: string
   email: string | null
   hidden: boolean | null
+  disabled: boolean | null
   created_at: any | null
   updated_at: any | null
   required_confirmation: boolean | null
@@ -3419,6 +3435,7 @@ export type UserOrganizationFieldsFragment = {
   organization_id: string | null
   confirmed: boolean | null
   consented: boolean | null
+  organizational_email: string | null
   created_at: any | null
   updated_at: any | null
   organization: {
@@ -3427,6 +3444,7 @@ export type UserOrganizationFieldsFragment = {
     slug: string
     email: string | null
     hidden: boolean | null
+    disabled: boolean | null
     created_at: any | null
     updated_at: any | null
     required_confirmation: boolean | null
@@ -3460,6 +3478,10 @@ export type UserOrganizationJoinConfirmationFieldsFragment = {
     email: string | null
     sent: boolean
     error: boolean
+    error_message: string | null
+    email_template_id: string | null
+    user_id: string | null
+    user_organization_join_confirmation_id: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3473,6 +3495,7 @@ export type UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment =
     organization_id: string | null
     confirmed: boolean | null
     consented: boolean | null
+    organizational_email: string | null
     created_at: any | null
     updated_at: any | null
     user_organization_join_confirmations: Array<{
@@ -3493,6 +3516,10 @@ export type UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment =
         email: string | null
         sent: boolean
         error: boolean
+        error_message: string | null
+        email_template_id: string | null
+        user_id: string | null
+        user_organization_join_confirmation_id: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -3503,6 +3530,7 @@ export type UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment =
       slug: string
       email: string | null
       hidden: boolean | null
+      disabled: boolean | null
       created_at: any | null
       updated_at: any | null
       required_confirmation: boolean | null
@@ -4056,7 +4084,7 @@ export type UserCourseStatsUnsubscribeMutation = {
 
 export type AddUserOrganizationMutationVariables = Exact<{
   organization_id: Scalars["ID"]
-  email?: InputMaybe<Scalars["String"]>
+  organizational_email?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
   language?: InputMaybe<Scalars["String"]>
 }>
@@ -4070,6 +4098,7 @@ export type AddUserOrganizationMutation = {
     organization_id: string | null
     confirmed: boolean | null
     consented: boolean | null
+    organizational_email: string | null
     created_at: any | null
     updated_at: any | null
     user_organization_join_confirmations: Array<{
@@ -4090,6 +4119,10 @@ export type AddUserOrganizationMutation = {
         email: string | null
         sent: boolean
         error: boolean
+        error_message: string | null
+        email_template_id: string | null
+        user_id: string | null
+        user_organization_join_confirmation_id: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -4100,6 +4133,7 @@ export type AddUserOrganizationMutation = {
       slug: string
       email: string | null
       hidden: boolean | null
+      disabled: boolean | null
       created_at: any | null
       updated_at: any | null
       required_confirmation: boolean | null
@@ -4164,6 +4198,10 @@ export type ConfirmUserOrganizationJoinMutation = {
       email: string | null
       sent: boolean
       error: boolean
+      error_message: string | null
+      email_template_id: string | null
+      user_id: string | null
+      user_organization_join_confirmation_id: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4194,6 +4232,10 @@ export type RefreshUserOrganizationJoinConfirmationMutation = {
       email: string | null
       sent: boolean
       error: boolean
+      error_message: string | null
+      email_template_id: string | null
+      user_id: string | null
+      user_organization_join_confirmation_id: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4828,6 +4870,7 @@ export type OrganizationsQuery = {
     slug: string
     email: string | null
     hidden: boolean | null
+    disabled: boolean | null
     created_at: any | null
     updated_at: any | null
     required_confirmation: boolean | null
@@ -4856,6 +4899,7 @@ export type OrganizationQuery = {
     slug: string
     email: string | null
     hidden: boolean | null
+    disabled: boolean | null
     created_at: any | null
     updated_at: any | null
     required_confirmation: boolean | null
@@ -5650,6 +5694,7 @@ export type CurrentUserUserOrganizationsQuery = {
       organization_id: string | null
       confirmed: boolean | null
       consented: boolean | null
+      organizational_email: string | null
       created_at: any | null
       updated_at: any | null
       user_organization_join_confirmations: Array<{
@@ -5670,6 +5715,10 @@ export type CurrentUserUserOrganizationsQuery = {
           email: string | null
           sent: boolean
           error: boolean
+          error_message: string | null
+          email_template_id: string | null
+          user_id: string | null
+          user_organization_join_confirmation_id: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -5680,6 +5729,7 @@ export type CurrentUserUserOrganizationsQuery = {
         slug: string
         email: string | null
         hidden: boolean | null
+        disabled: boolean | null
         created_at: any | null
         updated_at: any | null
         required_confirmation: boolean | null
@@ -5735,6 +5785,7 @@ export type UserOrganizationJoinConfirmationQuery = {
       organization_id: string | null
       confirmed: boolean | null
       consented: boolean | null
+      organizational_email: string | null
       created_at: any | null
       updated_at: any | null
       organization: {
@@ -5743,6 +5794,7 @@ export type UserOrganizationJoinConfirmationQuery = {
         slug: string
         email: string | null
         hidden: boolean | null
+        disabled: boolean | null
         created_at: any | null
         updated_at: any | null
         required_confirmation: boolean | null
@@ -5763,6 +5815,10 @@ export type UserOrganizationJoinConfirmationQuery = {
       email: string | null
       sent: boolean
       error: boolean
+      error_message: string | null
+      email_template_id: string | null
+      user_id: string | null
+      user_organization_join_confirmation_id: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -7348,6 +7404,7 @@ export const OrganizationCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "email" } },
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "disabled" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
           {
@@ -7400,6 +7457,10 @@ export const UserOrganizationFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "consented" } },
           {
             kind: "Field",
+            name: { kind: "Name", value: "organizational_email" },
+          },
+          {
+            kind: "Field",
             name: { kind: "Name", value: "organization" },
             selectionSet: {
               kind: "SelectionSet",
@@ -7418,6 +7479,40 @@ export const UserOrganizationFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserOrganizationFieldsFragment, unknown>
+export const EmailDeliveryFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EmailDeliveryFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "EmailDelivery" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "email" } },
+          { kind: "Field", name: { kind: "Name", value: "sent" } },
+          { kind: "Field", name: { kind: "Name", value: "error" } },
+          { kind: "Field", name: { kind: "Name", value: "error_message" } },
+          { kind: "Field", name: { kind: "Name", value: "email_template_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "user_organization_join_confirmation_id",
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<EmailDeliveryFieldsFragment, unknown>
 export const UserOrganizationJoinConfirmationFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -7447,12 +7542,10 @@ export const UserOrganizationJoinConfirmationFieldsFragmentDoc = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "email" } },
-                { kind: "Field", name: { kind: "Name", value: "sent" } },
-                { kind: "Field", name: { kind: "Name", value: "error" } },
-                { kind: "Field", name: { kind: "Name", value: "created_at" } },
-                { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailDeliveryFields" },
+                },
               ],
             },
           },
@@ -8865,7 +8958,7 @@ export const AddUserOrganizationDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "email" },
+            name: { kind: "Name", value: "organizational_email" },
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
@@ -8903,10 +8996,10 @@ export const AddUserOrganizationDocument = {
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "email" },
+                name: { kind: "Name", value: "organizational_email" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "email" },
+                  name: { kind: "Name", value: "organizational_email" },
                 },
               },
               {
@@ -8947,6 +9040,7 @@ export const AddUserOrganizationDocument = {
     ...UserOrganizationFieldsFragmentDoc.definitions,
     ...OrganizationCoreFieldsFragmentDoc.definitions,
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...EmailDeliveryFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   AddUserOrganizationMutation,
@@ -9140,6 +9234,7 @@ export const ConfirmUserOrganizationJoinDocument = {
       },
     },
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...EmailDeliveryFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   ConfirmUserOrganizationJoinMutation,
@@ -9198,6 +9293,7 @@ export const RefreshUserOrganizationJoinConfirmationDocument = {
       },
     },
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...EmailDeliveryFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   RefreshUserOrganizationJoinConfirmationMutation,
@@ -11501,6 +11597,7 @@ export const CurrentUserUserOrganizationsDocument = {
     ...UserOrganizationFieldsFragmentDoc.definitions,
     ...OrganizationCoreFieldsFragmentDoc.definitions,
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...EmailDeliveryFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   CurrentUserUserOrganizationsQuery,
@@ -11627,6 +11724,7 @@ export const UserOrganizationJoinConfirmationDocument = {
       },
     },
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...EmailDeliveryFieldsFragmentDoc.definitions,
     ...UserOrganizationFieldsFragmentDoc.definitions,
     ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],

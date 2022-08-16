@@ -44,10 +44,10 @@ const changes: Array<Change> = [
     id: 3,
     change_type: "email_changed",
     old_value: "asdf@mail.com",
-    new_value: "g@mail.com",
+    new_value: "third@organization.fi",
     created_at: "2018-11-08T20:13:58.443+02:00",
     updated_at: "2020-11-09T20:13:58.443+02:00",
-    username: "third_user",
+    username: "third_user_with_organization",
     email: null,
   },
   {
@@ -133,7 +133,7 @@ describe("syncTMCUsers", () => {
       })
       const thirdUser = await ctx.prisma.user.findFirst({
         where: {
-          username: "third_user",
+          username: "third_user_with_organization",
         },
       })
 

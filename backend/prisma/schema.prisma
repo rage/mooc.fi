@@ -122,8 +122,8 @@ model Course {
   user_course_service_progresses                    UserCourseServiceProgress[]
   user_course_settings                              UserCourseSetting[]
   user_course_settings_visibilities                 UserCourseSettingsVisibility[]
-  services                                          Service[]                        @relation("course_to_service", references: [id])
-  study_modules                                     StudyModule[]                    @relation("study_module_to_course", references: [id])
+  services                                          Service[]                        @relation("course_to_service")
+  study_modules                                     StudyModule[]                    @relation("study_module_to_course")
   upcoming_active_link                              Boolean?
   tier                                              Int?
   stored_data                                       StoredData[]
@@ -187,21 +187,21 @@ model CourseVariant {
 }
 
 model EmailDelivery {
-  created_at                          DateTime?                         @default(now())
-  email_template_id                   String?
-  error                               Boolean                           @default(false)
-  error_message                       String?
-  id                                  String                            @id @default(uuid())
-  sent                                Boolean                           @default(false)
-  updated_at                          DateTime?                         @updatedAt
+  id                                     String                            @id @default(uuid())
   /// use either this email to send to or if not specified, the one in the user profile
-  email                               String?
-  user_id                             String?
-  email_template                      EmailTemplate?                    @relation(fields: [email_template_id], references: [id])
-  user                                User?                             @relation(fields: [user_id], references: [id])
-  user_organization_join_confirmation UserOrganizationJoinConfirmation?
-  organization_id                     String?
-  organization                        Organization?                     @relation(fields: [organization_id], references: [id])
+  email                                  String?
+  sent                                   Boolean                           @default(false)
+  error                                  Boolean                           @default(false)
+  error_message                          String?
+  created_at                             DateTime?                         @default(now())
+  updated_at                             DateTime?                         @updatedAt
+  email_template_id                      String?
+  organization_id                        String?
+  user_id                                String?
+  email_template                         EmailTemplate?                    @relation(fields: [email_template_id], references: [id])
+  user                                   User?                             @relation(fields: [user_id], references: [id])
+  user_organization_join_confirmation    UserOrganizationJoinConfirmation?
+  organization                           Organization?                     @relation(fields: [organization_id], references: [id])
 
   @@map("email_delivery")
 }
@@ -371,7 +371,7 @@ model Service {
   url                            String
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                    @relation("course_to_service", references: [id])
+  courses                        Course[]                    @relation("course_to_service")
 
   @@map("service")
 }
@@ -398,7 +398,7 @@ model StudyModule {
   slug                      String                   @unique
   updated_at                DateTime?                @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                 @relation("study_module_to_course", references: [id])
+  courses                   Course[]                 @relation("study_module_to_course")
 
   @@map("study_module")
 }
@@ -429,7 +429,6 @@ model User {
   updated_at                     DateTime?                   @updatedAt
   upstream_id                    Int                         @unique
   username                       String                      @unique
-  organizational_email           String?
   completions                    Completion[]
   completions_registered         CompletionRegistered[]
   email_deliveries               EmailDelivery[]
@@ -523,17 +522,18 @@ model UserCourseSettingsVisibility {
 }
 
 model UserOrganization {
-  created_at                           DateTime?                          @default(now())
   id                                   String                             @id @default(uuid())
   role                                 OrganizationRole?                  @default(Student)
+  created_at                           DateTime?                          @default(now())
   updated_at                           DateTime?                          @updatedAt
+  organizational_email                 String?
+  confirmed                            Boolean?                           @default(false)
+  confirmed_at                         DateTime?
+  consented                            Boolean?                           @default(false)
   user_id                              String?
   organization_id                      String?
   user                                 User?                              @relation(fields: [user_id], references: [id])
   organization                         Organization?                      @relation(fields: [organization_id], references: [id])
-  confirmed                            Boolean?                           @default(false)
-  confirmed_at                         DateTime?
-  consented                            Boolean?                           @default(false)
   user_organization_join_confirmations UserOrganizationJoinConfirmation[]
 
   @@map("user_organization")
@@ -580,20 +580,20 @@ model CourseStatsSubscription {
 }
 
 model UserOrganizationJoinConfirmation {
-  created_at               DateTime?        @default(now())
-  updated_at               DateTime?        @updatedAt
-  id                       String           @id @default(uuid())
-  email                    String
-  language                 String?          @default("fi")
-  redirect                 String?
-  expires_at               DateTime?
-  expired                  Boolean?         @default(false)
-  confirmed                Boolean?         @default(false)
-  confirmed_at             DateTime?
-  user_organization_id     String
-  user_organization        UserOrganization @relation(fields: [user_organization_id], references: [id])
-  email_delivery_id        String?
-  email_delivery           EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
+  created_at           DateTime?        @default(now())
+  updated_at           DateTime?        @updatedAt
+  id                   String           @id @default(uuid())
+  email                String
+  language             String?          @default("fi")
+  redirect             String?
+  expires_at           DateTime?
+  expired              Boolean?         @default(false)
+  confirmed            Boolean?         @default(false)
+  confirmed_at         DateTime?
+  user_organization_id String
+  user_organization    UserOrganization @relation(fields: [user_organization_id], references: [id])
+  email_delivery_id    String?          @unique
+  email_delivery       EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
 
   @@map("user_organization_join_confirmation")
 }

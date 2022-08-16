@@ -18,7 +18,6 @@ export const User = objectType({
     t.model.updated_at()
     t.model.upstream_id()
     t.model.username()
-    t.model.organizational_email()
     // t.model.completions()
     // t.model.completions_registered()
     t.model.email_deliveries()

@@ -27,7 +27,11 @@ export const buildUserSearch = (
         email: { contains: search, mode: "insensitive" },
       },
       {
-        organizational_email: { contains: search, mode: "insensitive" },
+        user_organizations: {
+          some: {
+            organizational_email: { contains: search, mode: "insensitive" },
+          },
+        },
       },
       {
         student_number: { contains: search },
@@ -36,7 +40,7 @@ export const buildUserSearch = (
         real_student_number: { contains: search },
       },
       {
-        upstream_id: Number(search) || undefined,
+        upstream_id: Number(search) ?? undefined,
       },
     ],
   }

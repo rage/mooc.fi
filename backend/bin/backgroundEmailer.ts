@@ -40,7 +40,9 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
 
   const email = emailDelivery.email ?? user.email
 
-  logger.info(`Delivering email "${email_template.name}" to ${email}`)
+  logger.info(
+    `Delivering email "${email_template.name}" to ${email} (user upstream_id ${user.upstream_id})`,
+  )
 
   try {
     await sendEmailTemplateToUser({
@@ -60,13 +62,6 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       },
     })
   } catch (e: any) {
-    logger.error(
-      new EmailTemplaterError(
-        "Sending failed",
-        { user_id: user.id, email_template },
-        e,
-      ),
-    )
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: {
@@ -74,6 +69,13 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
         error_message: e.message,
       },
     })
+    logger.error(
+      new EmailTemplaterError(
+        "Sending failed",
+        { user_id: user.id, email_template },
+        e,
+      ),
+    )
   }
 }
 

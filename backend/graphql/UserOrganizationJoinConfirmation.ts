@@ -91,6 +91,12 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           )
         }
 
+        const { user_organization } = userOrganizationJoinConfirmation
+
+        if (!user_organization || !user_organization?.organization) {
+          throw new Error("invalid user/organization relation")
+        }
+
         const now = new Date()
 
         // confirmation expired or will expire now
@@ -114,14 +120,8 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           throw new Error("confirmation link has expired")
         }
 
-        const { user_organization } = userOrganizationJoinConfirmation
-
-        if (!user_organization || !user_organization?.organization) {
-          throw new Error("invalid user/organization relation")
-        }
-
         const activationCode = calculateActivationCode({
-          user: ctx.user!,
+          user: ctx.user,
           organization: user_organization.organization,
           userOrganizationJoinConfirmation,
         })
@@ -167,6 +167,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
               },
             },
             include: {
+              email_delivery: true,
               user_organization: {
                 include: {
                   organization: {
@@ -213,7 +214,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
               error: false,
             },
             data: {
-              error: true,
+              error: { set: true },
               error_message: `New activation link requested at ${new Date(
                 now,
               )}`,
@@ -228,7 +229,8 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           )
         }
 
-        // TODO: or expire old and create new?
+        // TODO: or expire old confirmation and create new?
+        // - will disconnect the existing email delivery
         return ctx.prisma.userOrganizationJoinConfirmation.update({
           where: { id },
           data: {

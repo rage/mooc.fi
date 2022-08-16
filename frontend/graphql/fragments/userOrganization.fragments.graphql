@@ -4,6 +4,7 @@ fragment UserOrganizationFields on UserOrganization {
   organization_id
   confirmed
   consented
+  organizational_email
   organization {
     ...OrganizationCoreFields
   }
@@ -23,12 +24,7 @@ fragment UserOrganizationJoinConfirmationFields on UserOrganizationJoinConfirmat
   created_at
   updated_at
   email_delivery {
-    id
-    email
-    sent
-    error
-    created_at
-    updated_at
+    ...EmailDeliveryFields
   }
 }
 

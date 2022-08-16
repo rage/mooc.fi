@@ -186,7 +186,7 @@ const RegisterToOrganization = () => {
     await addUserOrganization({
       variables: {
         organization_id: organizationData!.organization!.id,
-        email: email,
+        organizational_email: email, // TODO: this is given only if we don't want to use the email stored in the account
       },
     })
   }

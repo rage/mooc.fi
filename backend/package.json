@@ -36,6 +36,7 @@
     "update-course-statuses": "node ./dist/bin/updateCourseStatuses.js",
     "remove-duplicate-completions": "node ./dist/bin/removeDuplicateCompletions.js",
     "remove-duplicate-exercise-completions": "node ./dist/bin/removeDuplicateExerciseCompletions.js",
+    "expire-user-organization-join-confirmations": "node ./dist/bin/expireUserOrganizationJoinConfirmations.js",
     "download-env": "node ./bin/downloadEnv.js",
     "dev": "npm run download-env && ts-node-dev --transpile-only ./app.ts",
     "dev:typecheck": "tsc --noEmit --watch",

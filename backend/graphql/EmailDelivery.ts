@@ -16,5 +16,6 @@ export const EmailDelivery = objectType({
     t.model.email()
     t.model.organization_id()
     t.model.organization()
+    t.model.user_organization_join_confirmation()
   },
 })

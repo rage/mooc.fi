@@ -1,0 +1,13 @@
+fragment EmailDeliveryFields on EmailDelivery {
+  id
+  email
+  sent
+  error
+  error_message
+  email_template_id
+  user_id
+  organization_id
+  user_organization_join_confirmation_id
+  created_at
+  updated_at
+}

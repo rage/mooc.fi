@@ -27,6 +27,7 @@ export const UserOrganization = objectType({
     t.model.confirmed()
     t.model.confirmed_at()
     t.model.consented()
+    t.model.organizational_email()
     t.model.user_organization_join_confirmations()
   },
 })
@@ -104,14 +105,14 @@ export const UserOrganizationMutations = extendType({
       args: {
         user_id: idArg(),
         organization_id: nonNull(idArg()),
-        email: stringArg(),
+        organizational_email: stringArg(),
         redirect: stringArg(),
         language: stringArg(),
       },
       authorize: or(isUser, isAdmin),
       resolve: async (
         _,
-        { user_id, organization_id, email, redirect, language },
+        { user_id, organization_id, organizational_email, redirect, language },
         ctx,
       ) => {
         let user: User | null
@@ -154,7 +155,21 @@ export const UserOrganizationMutations = extendType({
           throw new Error("this user/organization relation already exists")
         }
 
-        const confirmed = !organization.required_confirmation
+        const {
+          required_confirmation,
+          required_organization_email,
+          join_organization_email_template_id,
+        } = organization
+
+        const organizationOrUserEmail = organizational_email ?? user.email
+
+        if (required_organization_email) {
+          if (!organizationOrUserEmail.match(required_organization_email)) {
+            throw new Error(
+              "given email does not fulfill organization email requirements",
+            )
+          }
+        }
 
         const userOrganization = await ctx.prisma.userOrganization.create({
           data: {
@@ -163,60 +178,51 @@ export const UserOrganizationMutations = extendType({
               connect: { id: organization_id },
             },
             role: OrganizationRole.Student,
-            confirmed,
-            ...(confirmed ? { confirmed_at: new Date() } : {}),
+            organizational_email: organizational_email ?? undefined,
+            ...(!required_confirmation && {
+              confirmed: true,
+              confirmed_at: new Date(),
+            }),
             // we assume that the consent is given in the frontend
             consented: true,
           },
         })
 
-        if (!confirmed) {
-          const emailToSendTo = email ?? user.email
-          if (!emailToSendTo) {
-            throw new Error(
-              "no email specified and no email found in user profile",
-            )
-          }
-
-          const {
-            required_organization_email,
-            join_organization_email_template_id,
-          } = organization
-
-          if (required_organization_email) {
-            if (!emailToSendTo.match(required_organization_email)) {
-              throw new Error("user email does not match organization email")
-            }
-          }
-
-          if (!join_organization_email_template_id) {
-            throw new Error(
-              "no email template associated with this organization",
-            )
-          }
-
-          // TODO: wonder if we can ever run into a race condition where the email delivery
-          // exists before the join confirmation and the template doesn't find it?
-          await ctx.prisma.userOrganizationJoinConfirmation.create({
-            data: {
-              email: emailToSendTo,
-              user_organization: { connect: { id: userOrganization.id } },
-              email_delivery: {
-                create: {
-                  user_id: user.id,
-                  email: emailToSendTo,
-                  email_template_id: join_organization_email_template_id,
-                  organization_id,
-                  sent: false,
-                  error: false,
-                },
-              },
-              redirect,
-              language,
-              expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
-            },
-          })
+        if (!required_confirmation) {
+          return userOrganization
         }
+
+        if (!organizationOrUserEmail) {
+          throw new Error(
+            "no email specified and no email found in user profile",
+          )
+        }
+
+        if (!join_organization_email_template_id) {
+          throw new Error("no email template associated with this organization")
+        }
+
+        // TODO: wonder if we can ever run into a race condition where the email delivery
+        // exists before the join confirmation and the template doesn't find it?
+        await ctx.prisma.userOrganizationJoinConfirmation.create({
+          data: {
+            email: organizationOrUserEmail,
+            user_organization: { connect: { id: userOrganization.id } },
+            email_delivery: {
+              create: {
+                user_id: user.id,
+                email: organizationOrUserEmail,
+                email_template_id: join_organization_email_template_id,
+                organization_id,
+                sent: false,
+                error: false,
+              },
+            },
+            redirect,
+            language,
+            expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
+          },
+        })
 
         return userOrganization
       },

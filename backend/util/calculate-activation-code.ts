@@ -16,7 +16,7 @@ export const calculateActivationCode = ({
   user,
   organization,
   userOrganizationJoinConfirmation,
-}: CalculateActivationCodeOptions) => {
+}: CalculateActivationCodeOptions): string => {
   const activationCode = crypto
     .createHash("sha256")
     .update(
