@@ -16,11 +16,16 @@ fragment CourseWithPhotoCoreFields on Course {
 
 fragment CourseTranslationCoreFields on CourseTranslation {
   id
-  course_id
   language
   name
+}
+
+fragment CourseTranslationDetailedFields on CourseTranslation {
+  ...CourseTranslationCoreFields
+  course_id
   description
   link
+  instructions
   created_at
   updated_at
 }
@@ -77,10 +82,7 @@ fragment EditorCourseFields on Course {
 fragment EditorCourseDetailedFields on Course {
   ...EditorCourseFields
   course_translations {
-    ...CourseTranslationCoreFields
-    description
-    instructions
-    link
+    ...CourseTranslationDetailedFields
   }
   open_university_registration_links {
     ...OpenUniversityRegistrationLinkCoreFields

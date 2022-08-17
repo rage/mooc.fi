@@ -67,13 +67,13 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
   const onSubmit = useCallback(
     async (values: StudyModuleFormValues): Promise<void> => {
-      const newStudyModule = !values.id
+      const isNewStudyModule = !values.id
 
       const mutationVariables = fromStudyModuleForm({ values })
       const refetchQueries = [
         { query: StudyModulesDocument },
         { query: EditorStudyModulesDocument },
-        ...(!newStudyModule
+        ...(!isNewStudyModule
           ? [StudyModuleExistsDocument, EditorStudyModuleDetailsDocument].map(
               (query) => ({
                 query,
@@ -83,7 +83,9 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
           : []),
       ] as PureQueryOptions[]
 
-      const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
+      const moduleMutation = isNewStudyModule
+        ? addStudyModule
+        : updateStudyModule
 
       try {
         setStatus({ message: "Saving..." })
