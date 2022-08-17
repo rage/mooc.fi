@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-12T14:26:07+03:00
+// Generated on 2022-08-17T16:32:35+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1187,12 +1187,15 @@ export type OrganizationOrderByInput = {
   email?: InputMaybe<SortOrder>
   hidden?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
+  join_organization_email_template_id?: InputMaybe<SortOrder>
   logo_content_type?: InputMaybe<SortOrder>
   logo_file_name?: InputMaybe<SortOrder>
   logo_file_size?: InputMaybe<SortOrder>
   logo_updated_at?: InputMaybe<SortOrder>
   phone?: InputMaybe<SortOrder>
   pinned?: InputMaybe<SortOrder>
+  required_confirmation?: InputMaybe<SortOrder>
+  required_organization_email?: InputMaybe<SortOrder>
   secret_key?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
   tmc_created_at?: InputMaybe<SortOrder>
@@ -2325,13 +2328,21 @@ export type CourseWithPhotoCoreFieldsFragment = {
 export type CourseTranslationCoreFieldsFragment = {
   __typename?: "CourseTranslation"
   id: string
-  course_id: string | null
   language: string
   name: string
+}
+
+export type CourseTranslationDetailedFieldsFragment = {
+  __typename?: "CourseTranslation"
+  course_id: string | null
   description: string
   link: string | null
+  instructions: string | null
   created_at: any | null
   updated_at: any | null
+  id: string
+  language: string
+  name: string
 }
 
 export type CourseFieldsFragment = {
@@ -2352,6 +2363,7 @@ export type CourseFieldsFragment = {
   teacher_in_charge_name: string
   start_date: string
   end_date: string | null
+  has_certificate: boolean | null
   id: string
   slug: string
   name: string
@@ -2361,21 +2373,14 @@ export type CourseFieldsFragment = {
   course_translations: Array<{
     __typename?: "CourseTranslation"
     id: string
-    course_id: string | null
     language: string
     name: string
-    description: string
-    link: string | null
-    created_at: any | null
-    updated_at: any | null
   }>
   study_modules: Array<{
     __typename?: "StudyModule"
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
   }>
   photo: {
     __typename?: "Image"
@@ -2395,7 +2400,6 @@ export type CourseFieldsFragment = {
 export type EditorCourseFieldsFragment = {
   __typename?: "Course"
   instructions: string | null
-  has_certificate: boolean | null
   upcoming_active_link: boolean | null
   description: string | null
   link: string | null
@@ -2412,6 +2416,7 @@ export type EditorCourseFieldsFragment = {
   teacher_in_charge_name: string
   start_date: string
   end_date: string | null
+  has_certificate: boolean | null
   id: string
   slug: string
   name: string
@@ -2446,21 +2451,14 @@ export type EditorCourseFieldsFragment = {
   course_translations: Array<{
     __typename?: "CourseTranslation"
     id: string
-    course_id: string | null
     language: string
     name: string
-    description: string
-    link: string | null
-    created_at: any | null
-    updated_at: any | null
   }>
   study_modules: Array<{
     __typename?: "StudyModule"
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
   }>
   photo: {
     __typename?: "Image"
@@ -2484,7 +2482,6 @@ export type EditorCourseDetailedFieldsFragment = {
   exercise_completions_needed: number | null
   points_needed: number | null
   instructions: string | null
-  has_certificate: boolean | null
   upcoming_active_link: boolean | null
   description: string | null
   link: string | null
@@ -2501,6 +2498,7 @@ export type EditorCourseDetailedFieldsFragment = {
   teacher_in_charge_name: string
   start_date: string
   end_date: string | null
+  has_certificate: boolean | null
   id: string
   slug: string
   name: string
@@ -2509,15 +2507,15 @@ export type EditorCourseDetailedFieldsFragment = {
   updated_at: any | null
   course_translations: Array<{
     __typename?: "CourseTranslation"
-    description: string
-    instructions: string | null
-    link: string | null
-    id: string
     course_id: string | null
-    language: string
-    name: string
+    description: string
+    link: string | null
+    instructions: string | null
     created_at: any | null
     updated_at: any | null
+    id: string
+    language: string
+    name: string
   }>
   open_university_registration_links: Array<{
     __typename?: "OpenUniversityRegistrationLink"
@@ -2557,8 +2555,6 @@ export type EditorCourseDetailedFieldsFragment = {
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
   }>
   photo: {
     __typename?: "Image"
@@ -2586,13 +2582,8 @@ export type EditorCourseOtherCoursesFieldsFragment = {
   course_translations: Array<{
     __typename?: "CourseTranslation"
     id: string
-    course_id: string | null
     language: string
     name: string
-    description: string
-    link: string | null
-    created_at: any | null
-    updated_at: any | null
   }>
   photo: {
     __typename?: "Image"
@@ -2752,8 +2743,6 @@ export type StudyModuleCoreFieldsFragment = {
   id: string
   slug: string
   name: string
-  created_at: any | null
-  updated_at: any | null
 }
 
 export type StudyModuleFieldsFragment = {
@@ -2761,17 +2750,16 @@ export type StudyModuleFieldsFragment = {
   description: string | null
   image: string | null
   order: number | null
+  created_at: any | null
+  updated_at: any | null
   id: string
   slug: string
   name: string
-  created_at: any | null
-  updated_at: any | null
 }
 
 export type StudyModuleTranslationFieldsFragment = {
   __typename?: "StudyModuleTranslation"
   id: string
-  study_module_id: string | null
   language: string
   name: string
   description: string
@@ -2784,15 +2772,14 @@ export type StudyModuleDetailedFieldsFragment = {
   description: string | null
   image: string | null
   order: number | null
+  created_at: any | null
+  updated_at: any | null
   id: string
   slug: string
   name: string
-  created_at: any | null
-  updated_at: any | null
   study_module_translations: Array<{
     __typename?: "StudyModuleTranslation"
     id: string
-    study_module_id: string | null
     language: string
     name: string
     description: string
@@ -2806,11 +2793,11 @@ export type StudyModuleFieldsWithCoursesFragment = {
   description: string | null
   image: string | null
   order: number | null
+  created_at: any | null
+  updated_at: any | null
   id: string
   slug: string
   name: string
-  created_at: any | null
-  updated_at: any | null
   courses: Array<{
     __typename?: "Course"
     description: string | null
@@ -2829,6 +2816,7 @@ export type StudyModuleFieldsWithCoursesFragment = {
     teacher_in_charge_name: string
     start_date: string
     end_date: string | null
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -2838,21 +2826,14 @@ export type StudyModuleFieldsWithCoursesFragment = {
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
-      course_id: string | null
       language: string
       name: string
-      description: string
-      link: string | null
-      created_at: any | null
-      updated_at: any | null
     }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
       slug: string
       name: string
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -3415,7 +3396,6 @@ export type AddCourseMutation = {
     exercise_completions_needed: number | null
     points_needed: number | null
     instructions: string | null
-    has_certificate: boolean | null
     upcoming_active_link: boolean | null
     description: string | null
     link: string | null
@@ -3432,6 +3412,7 @@ export type AddCourseMutation = {
     teacher_in_charge_name: string
     start_date: string
     end_date: string | null
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -3440,15 +3421,15 @@ export type AddCourseMutation = {
     updated_at: any | null
     course_translations: Array<{
       __typename?: "CourseTranslation"
-      description: string
-      instructions: string | null
-      link: string | null
-      id: string
       course_id: string | null
-      language: string
-      name: string
+      description: string
+      link: string | null
+      instructions: string | null
       created_at: any | null
       updated_at: any | null
+      id: string
+      language: string
+      name: string
     }>
     open_university_registration_links: Array<{
       __typename?: "OpenUniversityRegistrationLink"
@@ -3488,8 +3469,6 @@ export type AddCourseMutation = {
       id: string
       slug: string
       name: string
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -3520,7 +3499,6 @@ export type UpdateCourseMutation = {
     exercise_completions_needed: number | null
     points_needed: number | null
     instructions: string | null
-    has_certificate: boolean | null
     upcoming_active_link: boolean | null
     description: string | null
     link: string | null
@@ -3537,6 +3515,7 @@ export type UpdateCourseMutation = {
     teacher_in_charge_name: string
     start_date: string
     end_date: string | null
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -3567,15 +3546,15 @@ export type UpdateCourseMutation = {
     } | null
     course_translations: Array<{
       __typename?: "CourseTranslation"
-      description: string
-      instructions: string | null
-      link: string | null
-      id: string
       course_id: string | null
-      language: string
-      name: string
+      description: string
+      link: string | null
+      instructions: string | null
       created_at: any | null
       updated_at: any | null
+      id: string
+      language: string
+      name: string
     }>
     open_university_registration_links: Array<{
       __typename?: "OpenUniversityRegistrationLink"
@@ -3615,8 +3594,6 @@ export type UpdateCourseMutation = {
       id: string
       slug: string
       name: string
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -3740,15 +3717,14 @@ export type AddStudyModuleMutation = {
     description: string | null
     image: string | null
     order: number | null
+    created_at: any | null
+    updated_at: any | null
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
     study_module_translations: Array<{
       __typename?: "StudyModuleTranslation"
       id: string
-      study_module_id: string | null
       language: string
       name: string
       description: string
@@ -3769,15 +3745,14 @@ export type UpdateStudyModuleMutation = {
     description: string | null
     image: string | null
     order: number | null
+    created_at: any | null
+    updated_at: any | null
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
     study_module_translations: Array<{
       __typename?: "StudyModuleTranslation"
       id: string
-      study_module_id: string | null
       language: string
       name: string
       description: string
@@ -3798,8 +3773,6 @@ export type DeleteStudyModuleMutation = {
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
   } | null
 }
 
@@ -4057,6 +4030,7 @@ export type CoursesQuery = {
     teacher_in_charge_name: string
     start_date: string
     end_date: string | null
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -4066,21 +4040,14 @@ export type CoursesQuery = {
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
-      course_id: string | null
       language: string
       name: string
-      description: string
-      link: string | null
-      created_at: any | null
-      updated_at: any | null
     }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
       slug: string
       name: string
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -4110,7 +4077,6 @@ export type EditorCoursesQuery = {
   courses: Array<{
     __typename?: "Course"
     instructions: string | null
-    has_certificate: boolean | null
     upcoming_active_link: boolean | null
     description: string | null
     link: string | null
@@ -4127,6 +4093,7 @@ export type EditorCoursesQuery = {
     teacher_in_charge_name: string
     start_date: string
     end_date: string | null
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -4161,21 +4128,14 @@ export type EditorCoursesQuery = {
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
-      course_id: string | null
       language: string
       name: string
-      description: string
-      link: string | null
-      created_at: any | null
-      updated_at: any | null
     }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
       slug: string
       name: string
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -4234,13 +4194,8 @@ export type CourseEditorOtherCoursesQuery = {
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
-      course_id: string | null
       language: string
       name: string
-      description: string
-      link: string | null
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -4286,7 +4241,6 @@ export type CourseEditorDetailsQuery = {
     exercise_completions_needed: number | null
     points_needed: number | null
     instructions: string | null
-    has_certificate: boolean | null
     upcoming_active_link: boolean | null
     description: string | null
     link: string | null
@@ -4303,6 +4257,7 @@ export type CourseEditorDetailsQuery = {
     teacher_in_charge_name: string
     start_date: string
     end_date: string | null
+    has_certificate: boolean | null
     id: string
     slug: string
     name: string
@@ -4311,15 +4266,15 @@ export type CourseEditorDetailsQuery = {
     updated_at: any | null
     course_translations: Array<{
       __typename?: "CourseTranslation"
-      description: string
-      instructions: string | null
-      link: string | null
-      id: string
       course_id: string | null
-      language: string
-      name: string
+      description: string
+      link: string | null
+      instructions: string | null
       created_at: any | null
       updated_at: any | null
+      id: string
+      language: string
+      name: string
     }>
     open_university_registration_links: Array<{
       __typename?: "OpenUniversityRegistrationLink"
@@ -4359,8 +4314,6 @@ export type CourseEditorDetailsQuery = {
       id: string
       slug: string
       name: string
-      created_at: any | null
-      updated_at: any | null
     }>
     photo: {
       __typename?: "Image"
@@ -4549,11 +4502,11 @@ export type StudyModulesQuery = {
     description: string | null
     image: string | null
     order: number | null
+    created_at: any | null
+    updated_at: any | null
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
   } | null> | null
 }
 
@@ -4566,15 +4519,14 @@ export type EditorStudyModulesQuery = {
     description: string | null
     image: string | null
     order: number | null
+    created_at: any | null
+    updated_at: any | null
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
     study_module_translations: Array<{
       __typename?: "StudyModuleTranslation"
       id: string
-      study_module_id: string | null
       language: string
       name: string
       description: string
@@ -4595,11 +4547,11 @@ export type EditorStudyModuleDetailsQuery = {
     description: string | null
     image: string | null
     order: number | null
+    created_at: any | null
+    updated_at: any | null
     id: string
     slug: string
     name: string
-    created_at: any | null
-    updated_at: any | null
     courses: Array<{
       __typename?: "Course"
       id: string
@@ -4612,7 +4564,6 @@ export type EditorStudyModuleDetailsQuery = {
     study_module_translations: Array<{
       __typename?: "StudyModuleTranslation"
       id: string
-      study_module_id: string | null
       language: string
       name: string
       description: string
@@ -5803,13 +5754,8 @@ export const CourseTranslationCoreFieldsFragmentDoc = {
         kind: "SelectionSet",
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "created_at" } },
-          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
       },
     },
@@ -5831,8 +5777,6 @@ export const StudyModuleCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "created_at" } },
-          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
       },
     },
@@ -5886,6 +5830,7 @@ export const CourseFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "start_date" } },
           { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -5935,7 +5880,6 @@ export const EditorCourseFieldsFragmentDoc = {
             name: { kind: "Name", value: "CourseFields" },
           },
           { kind: "Field", name: { kind: "Name", value: "instructions" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "upcoming_active_link" },
@@ -5992,6 +5936,34 @@ export const EditorCourseFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<EditorCourseFieldsFragment, unknown>
+export const CourseTranslationDetailedFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationDetailedFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseTranslationCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "course_id" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "instructions" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CourseTranslationDetailedFieldsFragment, unknown>
 export const OpenUniversityRegistrationLinkCoreFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -6042,14 +6014,11 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "CourseTranslationCoreFields" },
+                  name: {
+                    kind: "Name",
+                    value: "CourseTranslationDetailedFields",
+                  },
                 },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "instructions" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "link" } },
               ],
             },
           },
@@ -6215,6 +6184,8 @@ export const StudyModuleFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "image" } },
           { kind: "Field", name: { kind: "Name", value: "order" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
       },
     },
@@ -6234,7 +6205,6 @@ export const StudyModuleTranslationFieldsFragmentDoc = {
         kind: "SelectionSet",
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "study_module_id" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
@@ -7270,6 +7240,7 @@ export const AddCourseDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationDetailedFieldsFragmentDoc.definitions,
     ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<AddCourseMutation, AddCourseMutationVariables>
@@ -7365,6 +7336,7 @@ export const UpdateCourseDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationDetailedFieldsFragmentDoc.definitions,
     ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
     ...EmailTemplateCoreFieldsFragmentDoc.definitions,
   ],
@@ -9040,6 +9012,7 @@ export const CourseEditorDetailsDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationDetailedFieldsFragmentDoc.definitions,
     ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
