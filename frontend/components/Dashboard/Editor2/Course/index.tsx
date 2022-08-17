@@ -78,7 +78,8 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   })
 
   const onSubmit = useCallback(async (values: CourseFormValues) => {
-    const newCourse = !values.id
+    const isNewCourse = !values.id
+
     const mutationVariables = fromCourseForm({
       values,
       initialValues: defaultValues,
@@ -89,7 +90,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
       { query: CoursesDocument },
       { query: EditorCoursesDocument },
       { query: CourseEditorOtherCoursesDocument },
-      !newCourse
+      !isNewCourse
         ? {
             query: CourseFromSlugDocument,
             variables: { slug: values.new_slug },
@@ -102,7 +103,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
       setStatus({ message: t("statusSaving") })
 
       console.log("trying to save")
-      if (newCourse) {
+      if (isNewCourse) {
         await addCourse({
           variables: { course: mutationVariables },
           refetchQueries: () => refetchQueries,

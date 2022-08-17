@@ -23,88 +23,119 @@ export const toCourseForm = ({
   course,
   modules,
 }: ToCourseFormArgs): CourseFormValues => {
+  if (!course) {
+    return initialValues
+  }
+
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
 
-  return course
-    ? {
-        ...omit(course, ["__typename"]),
-        teacher_in_charge_name: course.teacher_in_charge_name ?? "",
-        teacher_in_charge_email: course.teacher_in_charge_email ?? "",
-        support_email: course.support_email ?? "",
-        start_date: course.start_date
-          ? DateTime.fromISO(course.start_date)
-          : "",
-        end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
-        start_point: course.start_point ?? false,
-        promote: course.promote ?? false,
-        hidden: course.hidden ?? false,
-        study_module_start_point: course.study_module_start_point ?? false,
-        order: course.order ?? undefined,
-        study_module_order: course.study_module_order ?? undefined,
-        status: course.status ?? CourseStatus.Upcoming,
-        course_translations: (course.course_translations || []).map((c) => {
-          const open_university_course_link =
-            course?.open_university_registration_links?.find(
-              (l) => l.language === c.language,
-            )
+  return {
+    ...omit(course, [
+      "__typename",
+      "description",
+      "link",
+      "instructions",
+      "created_at",
+      "updated_at",
+    ]),
+    slug: course?.slug ?? "",
+    name: course.name ?? "",
+    teacher_in_charge_name: course.teacher_in_charge_name ?? "",
+    teacher_in_charge_email: course.teacher_in_charge_email ?? "",
+    support_email: course.support_email ?? "",
+    start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
+    end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
+    start_point: course.start_point ?? false,
+    promote: course.promote ?? false,
+    hidden: course.hidden ?? false,
+    study_module_start_point: course.study_module_start_point ?? false,
+    order: course.order ?? undefined,
+    study_module_order: course.study_module_order ?? undefined,
+    status: course.status ?? CourseStatus.Upcoming,
+    course_translations: (course.course_translations || []).map(
+      (course_translation) => {
+        const open_university_course_link =
+          course?.open_university_registration_links?.find(
+            (link) => link.language === course_translation.language,
+          )
 
-          return {
-            ...omit(c, ["__typename", "id"]),
-            _id: c.id ?? undefined,
-            link: c.link ?? "",
-            open_university_course_link: {
-              _id: open_university_course_link?.id ?? undefined,
-              language: open_university_course_link?.language ?? undefined,
-              link: open_university_course_link?.link ?? "",
-              course_code: open_university_course_link?.course_code ?? "",
-            },
-            instructions: c.instructions ?? undefined,
-          }
-        }),
-        study_modules: modules?.reduce(
-          (acc, module) => ({
-            ...acc,
-            [module.id]: courseStudyModules.includes(module.id),
-          }),
-          {},
-        ),
-        course_variants:
-          course?.course_variants?.map((c) => ({
-            ...omit(c, ["__typename", "id"]),
-            _id: c.id ?? undefined,
-            description: c.description || undefined,
-          })) ?? [],
-        course_aliases:
-          course?.course_aliases?.map((c) => ({
-            ...omit(c, ["__typename", "id"]),
-            _id: c.id ?? undefined,
-          })) ?? [],
-        new_slug: course.slug,
-        thumbnail: course?.photo?.compressed,
-        ects: course.ects ?? undefined,
-        import_photo: "",
-        inherit_settings_from: course.inherit_settings_from?.id,
-        completions_handled_by: course.completions_handled_by?.id,
-        has_certificate: course?.has_certificate ?? false,
-        user_course_settings_visibilities:
-          course?.user_course_settings_visibilities?.map((c) => ({
-            ...omit(c, ["__typename", "id"]),
-            _id: c.id ?? undefined,
-          })) ?? [],
-        upcoming_active_link: course?.upcoming_active_link ?? false,
-        tier: course?.tier ?? undefined,
-        automatic_completions: course?.automatic_completions ?? false,
-        automatic_completions_eligible_for_ects:
-          course?.automatic_completions_eligible_for_ects ?? false,
-        exercise_completions_needed:
-          course?.exercise_completions_needed ?? undefined,
-        points_needed: course?.points_needed ?? undefined,
-        // TODO: fix
-        new_photo: null, // course?.photo ?? null,
-        photo: course?.photo ?? "",
-      }
-    : initialValues
+        return {
+          ...omit(course_translation, [
+            "__typename",
+            "id",
+            "course_id",
+            "created_at",
+            "updated_at",
+          ]),
+          _id: course_translation.id ?? undefined,
+          link: course_translation.link ?? "",
+          open_university_course_link: {
+            _id: open_university_course_link?.id ?? undefined,
+            language: open_university_course_link?.language ?? undefined,
+            link: open_university_course_link?.link ?? "",
+            course_code: open_university_course_link?.course_code ?? "",
+          },
+          instructions: course_translation.instructions ?? undefined,
+        }
+      },
+    ),
+    study_modules: modules?.reduce(
+      (acc, module) => ({
+        ...acc,
+        [module.id]: courseStudyModules.includes(module.id),
+      }),
+      {},
+    ),
+    course_variants:
+      course?.course_variants?.map((course_variant) => ({
+        ...omit(course_variant, [
+          "__typename",
+          "id",
+          "created_at",
+          "updated_at",
+        ]),
+        _id: course_variant.id ?? undefined,
+        slug: course_variant.slug ?? undefined,
+        description: course_variant.description ?? undefined,
+      })) ?? [],
+    course_aliases:
+      course?.course_aliases?.map((course_alias) => ({
+        ...omit(course_alias, ["__typename", "id", "created_at", "updated_at"]),
+        _id: course_alias.id ?? undefined,
+        course_code: course_alias.course_code ?? undefined,
+      })) ?? [],
+    new_slug: course.slug,
+    thumbnail: course?.photo?.compressed,
+    ects: course.ects ?? undefined,
+    import_photo: "",
+    inherit_settings_from: course.inherit_settings_from?.id,
+    completions_handled_by: course.completions_handled_by?.id,
+    has_certificate: course?.has_certificate ?? false,
+    user_course_settings_visibilities:
+      course?.user_course_settings_visibilities?.map((visibility) => ({
+        ...omit(visibility, ["__typename", "id", "created_at", "updated_at"]),
+        _id: visibility.id ?? undefined,
+        language: visibility.language ?? undefined,
+      })) ?? [],
+    upcoming_active_link: course?.upcoming_active_link ?? false,
+    tier: course?.tier ?? undefined,
+    automatic_completions: course?.automatic_completions ?? false,
+    automatic_completions_eligible_for_ects:
+      course?.automatic_completions_eligible_for_ects ?? false,
+    exercise_completions_needed:
+      course?.exercise_completions_needed ?? undefined,
+    points_needed: course?.points_needed ?? undefined,
+    // TODO: fix
+    new_photo: null, // course?.photo ?? null,
+    photo: course?.photo ?? "",
+    open_university_registration_links:
+      course?.open_university_registration_links?.map((link) => ({
+        ...omit(link, ["__typename", "id", "created_at", "updated_at"]),
+        _id: link.id ?? undefined,
+        course_code: link.course_code ?? undefined,
+      })) ?? [],
+  }
 }
 
 interface FromCourseFormArgs {
@@ -120,65 +151,79 @@ export const fromCourseForm = ({
 
   console.log(values)
   const course_translations =
-    values?.course_translations?.map((c: CourseTranslationFormValues) => ({
-      ...omit(c, ["open_university_course_link", "_id"]),
-      link: c.link || "",
-      description: c.description || "",
-      id: !c._id || c._id === "" ? undefined : c._id,
-    })) ?? []
+    values?.course_translations?.map(
+      (course_translation: CourseTranslationFormValues) => ({
+        ...omit(course_translation, ["open_university_course_link", "_id"]),
+        link: course_translation.link || "",
+        description: course_translation.description || "",
+        id:
+          !course_translation._id || course_translation._id === ""
+            ? undefined
+            : course_translation._id,
+      }),
+    ) ?? []
 
-  const course_variants = (values?.course_variants ?? []).map((v) => ({
-    ...omit(v, ["__typename", "_id"]),
-    id: !v._id || v._id === "" ? undefined : v._id,
-  }))
+  const course_variants = (values?.course_variants ?? []).map(
+    (course_variant) => ({
+      ...omit(course_variant, ["__typename", "_id"]),
+      id:
+        !course_variant._id || course_variant._id === ""
+          ? undefined
+          : course_variant._id,
+    }),
+  )
 
-  const course_aliases = (values?.course_aliases ?? []).map((a) => ({
-    ...omit(a, ["__typename", "_id"]),
-    id: !a._id || a._id === "" ? undefined : a._id,
-    course_code: a.course_code ?? undefined,
+  const course_aliases = (values?.course_aliases ?? []).map((course_alias) => ({
+    ...omit(course_alias, ["__typename", "_id"]),
+    id: course_alias._id ?? undefined,
+    course_code: course_alias.course_code ?? undefined,
   }))
 
   const user_course_settings_visibilities = (
     values?.user_course_settings_visibilities ?? []
-  ).map((v) => ({
-    ...omit(v, ["__typename", "_id"]),
-    id: !v._id || v._id === "" ? undefined : v._id,
+  ).map((visibility) => ({
+    ...omit(visibility, ["__typename", "_id"]),
+    id: !visibility._id || visibility._id === "" ? undefined : visibility._id,
   }))
 
   const open_university_registration_links = values?.course_translations
-    ?.map((c: CourseTranslationFormValues) => {
+    ?.map((course_translation: CourseTranslationFormValues) => {
       if (
-        !c.open_university_course_link ||
-        (c.open_university_course_link?.course_code === "" &&
-          c.open_university_course_link?.link === "")
+        !course_translation.open_university_course_link ||
+        (course_translation.open_university_course_link?.course_code === "" &&
+          course_translation.open_university_course_link?.link === "")
       ) {
         return
       }
 
       const prevLink = initialValues?.open_university_registration_links?.find(
-        (l) => l.language === c.language,
+        (link) => link.language === course_translation.language,
       )
 
       if (!prevLink) {
         return {
-          language: c.language ?? "",
+          language: course_translation.language ?? "",
           id: undefined,
-          link: c.open_university_course_link.link?.trim(),
-          course_code: c.open_university_course_link.course_code?.trim() ?? "",
+          link: course_translation.open_university_course_link.link?.trim(),
+          course_code:
+            course_translation.open_university_course_link.course_code?.trim() ??
+            "",
         }
       }
 
       return {
         ...omit(prevLink, ["__typename", "_id"]),
-        id: !c._id || c._id === "" ? undefined : c._id,
-        link: c.open_university_course_link.link?.trim(),
-        course_code: c.open_university_course_link.course_code.trim() ?? "",
+        id: !prevLink._id || prevLink._id === "" ? undefined : prevLink._id,
+        link: course_translation.open_university_course_link.link?.trim(),
+        course_code:
+          course_translation.open_university_course_link.course_code.trim() ??
+          "",
       }
     })
     .filter((v) => !!v)
 
   const study_modules = Object.keys(values.study_modules || {})
-    .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
+    .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 
   const formValues = newCourse
