@@ -18,6 +18,7 @@ export interface UserField {
 }
 
 export interface OrganizationInfo {
+  id: number
   name: string
   information: string | null
   slug: string
@@ -31,14 +32,14 @@ export interface OrganizationInfo {
   creator_id: number
   logo_file_name: string | null
   logo_content_type: string | null
-  logo_file_size: number | null
+  logo_file_size: string | null
   logo_updated_at: string
   phone: string
   contact_information: string | null
   email: string | null
   website: string | null
   pinned: boolean
-  whilelisted_ips: [string] | []
+  whilelisted_ips: string[] | null
 }
 
 // Converts JSON strings to/from your types
