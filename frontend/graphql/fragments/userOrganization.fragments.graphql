@@ -5,6 +5,7 @@ fragment UserOrganizationFields on UserOrganization {
   confirmed
   consented
   organizational_email
+  organizational_identifier
   organization {
     ...OrganizationCoreFields
   }

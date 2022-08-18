@@ -14,8 +14,18 @@ mutation AddUserOrganization(
   }
 }
 
-mutation UpdateUserOrganization($id: ID!, $consented: Boolean!) {
-  updateUserOrganization(id: $id, consented: $consented) {
+mutation UpdateUserOrganization(
+  $id: ID!
+  $consented: Boolean!
+  $organizational_email: String
+  $organizational_identifier: String
+) {
+  updateUserOrganization(
+    id: $id
+    consented: $consented
+    organizational_email: $organizational_email
+    organizational_identifier: $organizational_identifier
+  ) {
     id
     consented
   }

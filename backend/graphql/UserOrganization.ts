@@ -12,6 +12,8 @@ import { OrganizationRole, User } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../accessControl"
 import { Context } from "../context"
+import { isNullOrUndefined } from "../util/isNullOrUndefined"
+import { err, ok, Result } from "../util/result"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",
@@ -28,6 +30,7 @@ export const UserOrganization = objectType({
     t.model.confirmed_at()
     t.model.consented()
     t.model.organizational_email()
+    t.model.organizational_identifier()
     t.model.user_organization_join_confirmations()
   },
 })
@@ -97,6 +100,29 @@ const assertUserCredentials = async (ctx: Context, id: string) => {
   }
 }
 
+const checkEmailValidity = (
+  email?: string | null,
+  requiredPattern?: string | null,
+): Result<boolean, Error> => {
+  if (!email) {
+    return err(
+      new Error("no email specified and no email found in user profile"),
+    )
+  }
+
+  if (requiredPattern) {
+    if (!email.match(requiredPattern)) {
+      return err(
+        new Error(
+          "given email does not fulfill organization email requirements",
+        ),
+      )
+    }
+  }
+
+  return ok(true)
+}
+
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -106,13 +132,21 @@ export const UserOrganizationMutations = extendType({
         user_id: idArg(),
         organization_id: nonNull(idArg()),
         organizational_email: stringArg(),
+        organizational_identifier: stringArg(),
         redirect: stringArg(),
         language: stringArg(),
       },
       authorize: or(isUser, isAdmin),
       resolve: async (
         _,
-        { user_id, organization_id, organizational_email, redirect, language },
+        {
+          user_id,
+          organization_id,
+          organizational_email,
+          organizational_identifier,
+          redirect,
+          language,
+        },
         ctx,
       ) => {
         let user: User | null
@@ -142,12 +176,12 @@ export const UserOrganizationMutations = extendType({
         }
 
         const exists = await ctx.prisma.userOrganization.findFirst({
-          select: {
-            id: true,
-          },
           where: {
             user_id: user.id,
             organization_id,
+          },
+          select: {
+            id: true,
           },
         })
 
@@ -161,16 +195,7 @@ export const UserOrganizationMutations = extendType({
           join_organization_email_template_id,
         } = organization
 
-        const organizationOrUserEmail = organizational_email ?? user.email
-
-        if (required_organization_email) {
-          if (!organizationOrUserEmail.match(required_organization_email)) {
-            throw new Error(
-              "given email does not fulfill organization email requirements",
-            )
-          }
-        }
-
+        const now = Date.now()
         const userOrganization = await ctx.prisma.userOrganization.create({
           data: {
             user: { connect: { id: user.id } },
@@ -179,9 +204,10 @@ export const UserOrganizationMutations = extendType({
             },
             role: OrganizationRole.Student,
             organizational_email: organizational_email ?? undefined,
+            organizational_identifier: organizational_identifier ?? undefined,
             ...(!required_confirmation && {
               confirmed: true,
-              confirmed_at: new Date(),
+              confirmed_at: new Date(now),
             }),
             // we assume that the consent is given in the frontend
             consented: true,
@@ -192,10 +218,15 @@ export const UserOrganizationMutations = extendType({
           return userOrganization
         }
 
-        if (!organizationOrUserEmail) {
-          throw new Error(
-            "no email specified and no email found in user profile",
-          )
+        const organizationOrUserEmail = organizational_email ?? user.email
+
+        const isValid = checkEmailValidity(
+          organizationOrUserEmail,
+          required_organization_email,
+        )
+
+        if (isValid.isErr()) {
+          throw isValid.error
         }
 
         if (!join_organization_email_template_id) {
@@ -220,7 +251,7 @@ export const UserOrganizationMutations = extendType({
             },
             redirect,
             language,
-            expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
+            expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
           },
         })
 
@@ -228,21 +259,154 @@ export const UserOrganizationMutations = extendType({
       },
     })
 
+    // TODO: now this might do a bit more than it should and may be split to other mutations:
+    // - if we specify an organizational email:
+    //    - we check the mail validity if a pattern is required for organization and throw if invalid
+    //    - we check if the organization membership is already confirmed
+    //      - if it isn't we flag the unsent confirmation mails as errors,
+    //        refresh the join confirmation and create a new email delivery to the new address
+    //    - update the data in the user/organization relation
     t.field("updateUserOrganization", {
       type: "UserOrganization",
       args: {
         id: nonNull(idArg()),
-        consented: nonNull(booleanArg()),
+        consented: booleanArg(),
+        organizational_email: stringArg(),
+        organizational_identifier: stringArg(),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { id, consented }, ctx: Context) => {
+      resolve: async (
+        _,
+        { id, consented, organizational_email, organizational_identifier },
+        ctx: Context,
+      ) => {
         await assertUserCredentials(ctx, id)
+
+        const userOrganization = await ctx.prisma.userOrganization.findUnique({
+          where: { id },
+          include: {
+            user: true,
+            organization: {
+              select: {
+                id: true,
+                required_organization_email: true,
+                required_confirmation: true,
+                join_organization_email_template_id: true,
+              },
+            },
+          },
+        })
+
+        const { organization, user } = userOrganization ?? {}
+
+        if (!userOrganization || !user || !organization) {
+          throw new Error("invalid user/organization relation")
+        }
+
+        if (
+          isNullOrUndefined(consented) &&
+          isNullOrUndefined(organizational_email) &&
+          isNullOrUndefined(organizational_identifier)
+        ) {
+          throw new Error("no fields to update")
+        }
+
+        const { required_confirmation, required_organization_email } =
+          organization ?? {}
+
+        if (organizational_email) {
+          if (organizational_email !== userOrganization.organizational_email) {
+            if (required_confirmation) {
+              const isEmailValid = checkEmailValidity(
+                organizational_email,
+                required_organization_email,
+              )
+              if (isEmailValid.isErr()) {
+                throw isEmailValid.error
+              }
+            }
+          }
+
+          if (!userOrganization.confirmed && required_confirmation) {
+            const now = Date.now()
+
+            if (!organization.join_organization_email_template_id) {
+              throw new Error(
+                "no email template associated with this organization",
+              )
+            }
+
+            const { count: undeliveredCount } =
+              await ctx.prisma.emailDelivery.updateMany({
+                where: {
+                  user_id: user.id,
+                  email_template_id:
+                    organization.join_organization_email_template_id,
+                  organization_id: organization.id,
+                  sent: false,
+                  error: false,
+                },
+                data: {
+                  error: { set: true },
+                  error_message: `Organizational email changed at ${new Date(
+                    now,
+                  )}`,
+                },
+              })
+
+            if (undeliveredCount > 0) {
+              ctx.logger.info(
+                `Found ${undeliveredCount} undelivered mail${
+                  undeliveredCount > 1 ? "s" : ""
+                } still in the send queue; updated`,
+              )
+            }
+
+            // TODO: or expire old confirmation and create new?
+            // - will disconnect the existing email delivery
+            await ctx.prisma.userOrganizationJoinConfirmation.update({
+              where: { id },
+              data: {
+                email: organizational_email,
+                user_organization: { connect: { id: userOrganization.id } },
+                email_delivery: {
+                  create: {
+                    user_id: userOrganization.user_id,
+                    email: organizational_email,
+                    email_template_id:
+                      organization.join_organization_email_template_id,
+                    organization_id: userOrganization.organization_id,
+                    sent: false,
+                    error: false,
+                  },
+                },
+                expired: { set: false },
+                expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
+              },
+            })
+          }
+        }
+        /*if (!userOrganization.confirmed) {
+          if (consented === false || 
+            ((consented === null || typeof consented === "undefined") && !userOrganization.consented)
+          ) {
+            throw new Error(
+              "user must consent to join organization",
+            )
+          }
+        }*/
 
         return ctx.prisma.userOrganization.update({
           data: {
             ...(consented !== null && typeof consented !== "undefined"
               ? { consented: { set: consented } }
               : {}),
+            ...(organizational_email !== null &&
+              organizational_email !== "" && { organizational_email }),
+            ...(organizational_identifier !== null &&
+              organizational_identifier !== "" && {
+                organizational_identifier,
+              }),
           },
           where: {
             id,

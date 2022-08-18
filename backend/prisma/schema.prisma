@@ -527,6 +527,7 @@ model UserOrganization {
   created_at                           DateTime?                          @default(now())
   updated_at                           DateTime?                          @updatedAt
   organizational_email                 String?
+  organizational_identifier            String?
   confirmed                            Boolean?                           @default(false)
   confirmed_at                         DateTime?
   consented                            Boolean?                           @default(false)

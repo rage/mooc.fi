@@ -168,13 +168,6 @@ describe("UserOrganization", () => {
               "10000000-0000-0000-0000-000000000103",
             )
           })
-
-          it.todo(
-            "adding user to organization and correct required organizational email provided",
-          )
-          it.todo(
-            "adding user to organization and user email matches required organizational email",
-          )
         })
 
         describe("with confirmation required", () => {

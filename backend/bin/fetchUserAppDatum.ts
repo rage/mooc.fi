@@ -94,6 +94,8 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
+    // TODO: prune duplicates here
+    // TODO: refactor not to use a global variable!
     const existingUserCourseSetting = (
       await prisma.user
         .findUnique({

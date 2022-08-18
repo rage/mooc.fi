@@ -170,6 +170,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
               email_delivery: true,
               user_organization: {
                 include: {
+                  user: true,
                   organization: {
                     select: {
                       id: true,
@@ -192,9 +193,12 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
         }
 
         const { email, user_organization } = userOrganizationJoinConfirmation
-        const { user_id, organization_id, organization } = user_organization
+        const { user, organization } = user_organization
 
-        if (!organization?.join_organization_email_template_id) {
+        if (!user_organization || !organization || !user) {
+          throw new Error("invalid user/organization relation")
+        }
+        if (!organization.join_organization_email_template_id) {
           throw new Error("join organization email template is not set")
         }
 
@@ -205,11 +209,11 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
         const { count: expiredDeliveryCount } =
           await ctx.prisma.emailDelivery.updateMany({
             where: {
-              user_id,
+              user_id: user.id,
               email,
               email_template_id:
                 organization.join_organization_email_template_id,
-              organization_id,
+              organization_id: organization.id,
               sent: false,
               error: false,
             },
@@ -238,16 +242,16 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
             user_organization: { connect: { id: user_organization.id } },
             email_delivery: {
               create: {
-                user_id,
+                user_id: user.id,
                 email,
                 email_template_id:
-                  organization?.join_organization_email_template_id,
-                organization_id,
+                  organization.join_organization_email_template_id,
+                organization_id: organization.id,
                 sent: false,
                 error: false,
               },
             },
-            expired: false,
+            expired: { set: false },
             expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
           },
         })

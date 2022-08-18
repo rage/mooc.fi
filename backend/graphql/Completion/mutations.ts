@@ -98,6 +98,8 @@ export const CompletionMutations = extendType({
 
         const newCompletions: Completion[] = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
+
+          // TODO: add completion_language to manual completion parameter or get it from ucs?
           return {
             id: uuidv4(),
             created_at: new Date(),
