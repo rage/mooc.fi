@@ -75,9 +75,14 @@ export const Completion = objectType({
     t.nullable.field("completion_link", {
       type: "String",
       resolve: async (parent, _, ctx) => {
-        if (!parent.course_id) {
+        if (
+          !parent.course_id ||
+          !parent.completion_language ||
+          parent.completion_language === "unknown"
+        ) {
           return null
         }
+
         const link = (
           await ctx.prisma.course
             .findUnique({
@@ -85,12 +90,7 @@ export const Completion = objectType({
             })
             .open_university_registration_links({
               where: {
-                ...(parent.completion_language &&
-                parent.completion_language !== "unknown"
-                  ? {
-                      language: parent.completion_language,
-                    }
-                  : {}),
+                language: parent.completion_language,
               },
             })
         )?.[0]

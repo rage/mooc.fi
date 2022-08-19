@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server-express"
 import { extendType, idArg, nonNull, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../accessControl"
@@ -22,26 +23,27 @@ export const ServiceQueries = extendType({
     t.nullable.field("service", {
       type: "Service",
       args: {
-        service_id: nonNull(idArg()),
+        id: idArg(),
+        service_id: idArg(), // old parameter for compatibility
       },
       authorize: isAdmin,
-      resolve: async (_, { service_id }, ctx) =>
-        await ctx.prisma.service.findUnique({ where: { id: service_id } }),
+      resolve: async (_, { id, service_id }, ctx) => {
+        if (service_id && id) {
+          throw new UserInputError(
+            "service_id parameter will be deprecated, use id in the future; don't use both",
+          )
+        }
+
+        return ctx.prisma.service.findUnique({
+          where: { id: service_id ?? id },
+        })
+      },
     })
 
     t.crud.services({
       pagination: false,
       authorize: isAdmin,
     })
-
-    /*t.list.field("services", {
-      type: "service",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-
-        return ctx.prisma.service.findMany()
-      },
-    })*/
   },
 })
 
@@ -78,11 +80,15 @@ export const ServiceMutations = extendType({
       resolve: (_, args, ctx) => {
         const { url, name, id } = args
 
+        if (!url && !name) {
+          throw new UserInputError("No fields to update")
+        }
+
         return ctx.prisma.service.update({
           where: { id },
           data: {
-            url: url ?? "",
-            name: name ?? "",
+            ...(url && { url }),
+            ...(name && { name }),
           },
         })
       },

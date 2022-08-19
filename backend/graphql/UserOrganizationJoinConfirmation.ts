@@ -1,7 +1,13 @@
+import { ForbiddenError } from "apollo-server-core"
+import { omit } from "lodash"
 import { extendType, idArg, nonNull, objectType, stringArg } from "nexus"
 
-import { isAdmin, isUser, or } from "../accessControl"
-import { calculateActivationCode } from "../util/calculate-activation-code"
+import { isAdmin, isUser, or, Role } from "../accessControl"
+import {
+  calculateActivationCode,
+  cancelEmailDeliveries,
+  checkEmailValidity,
+} from "../util/userOrganizationUtilities"
 
 export const UserOrganizationJoinConfirmation = objectType({
   name: "UserOrganizationJoinConfirmation",
@@ -9,7 +15,6 @@ export const UserOrganizationJoinConfirmation = objectType({
     t.model.id()
     t.model.created_at()
     t.model.updated_at()
-    t.model.email()
     t.model.redirect()
     t.model.language()
     t.model.expired()
@@ -53,13 +58,18 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
       type: "UserOrganizationJoinConfirmation",
       args: {
         id: nonNull(idArg()),
+        user_id: idArg(),
         code: nonNull(stringArg()),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { id, code }, ctx) => {
+      resolve: async (_, { id, user_id, code }, ctx) => {
         if (!ctx.user?.id) {
           // just to be sure, should never happen
           throw new Error("not logged in")
+        }
+
+        if (user_id && user_id !== ctx.user?.id && ctx.role !== Role.ADMIN) {
+          throw new ForbiddenError("invalid credentials to do that")
         }
 
         const userOrganizationJoinConfirmation =
@@ -67,7 +77,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
             where: {
               id,
               user_organization: {
-                user: { id: ctx.user.id },
+                user: { id: user_id ?? ctx.user.id },
               },
             },
             include: {
@@ -85,10 +95,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
         }
 
         if (userOrganizationJoinConfirmation.confirmed) {
-          // TODO: do I just return the existing membership or throw this?
-          throw new Error(
-            "this user organization membership has already been confirmed",
-          )
+          return omit(userOrganizationJoinConfirmation, "user_organization")
         }
 
         const { user_organization } = userOrganizationJoinConfirmation
@@ -150,9 +157,13 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
       type: "UserOrganizationJoinConfirmation",
       args: {
         id: nonNull(idArg()),
+        organizational_email: stringArg({
+          description:
+            "If provided, organizational email is updated and new confirmation link is sent",
+        }),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { id }, ctx) => {
+      resolve: async (_, { id, organizational_email }, ctx) => {
         if (!ctx.user?.id) {
           // just to be sure, should never happen
           throw new Error("not logged in")
@@ -162,9 +173,11 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           await ctx.prisma.userOrganizationJoinConfirmation.findFirst({
             where: {
               id,
-              user_organization: {
-                user: { id: ctx.user.id },
-              },
+              ...(ctx.role !== Role.ADMIN && {
+                user_organization: {
+                  user_id: ctx.user.id,
+                },
+              }),
             },
             include: {
               email_delivery: true,
@@ -174,6 +187,8 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
                   organization: {
                     select: {
                       id: true,
+                      required_confirmation: true,
+                      required_organization_email: true,
                       join_organization_email_template_id: true,
                     },
                   },
@@ -186,13 +201,22 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           throw new Error("invalid confirmation id")
         }
 
+        if (
+          ctx.role !== Role.ADMIN &&
+          userOrganizationJoinConfirmation.user_organization.user_id !==
+            ctx.user.id
+        ) {
+          throw new ForbiddenError("invalid credentials to do that")
+        }
+
+        // TODO: will we send new confirmation on email change?
         if (userOrganizationJoinConfirmation.confirmed) {
           throw new Error(
             "this user organization membership has already been confirmed",
           )
         }
 
-        const { email, user_organization } = userOrganizationJoinConfirmation
+        const { user_organization } = userOrganizationJoinConfirmation
         const { user, organization } = user_organization
 
         if (!user_organization || !organization || !user) {
@@ -206,31 +230,66 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
 
         // find email deliveries for this user/organization that are still in the queue
         // and update them so that we don't accidentally send expired activation links
-        const { count: expiredDeliveryCount } =
-          await ctx.prisma.emailDelivery.updateMany({
+        await cancelEmailDeliveries({
+          ctx,
+          userOrganization: user_organization,
+          organization,
+          email: userOrganizationJoinConfirmation.email,
+          errorMessage: `New activation link requested at ${new Date(now)}`,
+        })
+
+        if (
+          organizational_email &&
+          organizational_email !== user_organization.organizational_email
+        ) {
+          // a new organizational email is provided, cancel all possible pending email deliveries to old address,
+          // expire old confirmation and create a new one
+
+          const isEmailValid = checkEmailValidity(
+            organizational_email,
+            organization.required_organization_email,
+          )
+
+          if (isEmailValid.isErr()) {
+            throw isEmailValid.error
+          }
+
+          // TODO: should we update the organizational email only when it is confirmed?
+          await ctx.prisma.userOrganization.update({
             where: {
-              user_id: user.id,
-              email,
-              email_template_id:
-                organization.join_organization_email_template_id,
-              organization_id: organization.id,
-              sent: false,
-              error: false,
+              id: user_organization.id,
             },
             data: {
-              error: { set: true },
-              error_message: `New activation link requested at ${new Date(
-                now,
-              )}`,
+              organizational_email,
             },
           })
 
-        if (expiredDeliveryCount) {
-          ctx.logger.info(
-            `Found ${expiredDeliveryCount} expired email deliver${
-              expiredDeliveryCount > 1 ? "ies" : "y"
-            } still in the send queue; updated`,
-          )
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: { id },
+            data: {
+              expired: { set: true },
+            },
+          })
+
+          return ctx.prisma.userOrganizationJoinConfirmation.create({
+            data: {
+              user_organization: { connect: { id: user_organization.id } },
+              email: organizational_email,
+              email_delivery: {
+                create: {
+                  user_id: user.id,
+                  email: organizational_email,
+                  email_template_id:
+                    organization.join_organization_email_template_id,
+                  organization_id: organization.id,
+                  sent: false,
+                  error: false,
+                },
+              },
+              expired: false,
+              expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
+            },
+          })
         }
 
         // TODO: or expire old confirmation and create new?
@@ -238,12 +297,11 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
         return ctx.prisma.userOrganizationJoinConfirmation.update({
           where: { id },
           data: {
-            email,
             user_organization: { connect: { id: user_organization.id } },
             email_delivery: {
               create: {
                 user_id: user.id,
-                email,
+                email: user_organization.organizational_email ?? user.email,
                 email_template_id:
                   organization.join_organization_email_template_id,
                 organization_id: organization.id,

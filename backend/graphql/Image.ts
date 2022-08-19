@@ -127,7 +127,7 @@ export const uploadImage = async ({
     originalMimetype = "image/jpeg"
   }
 
-  const newImage = await ctx.prisma.image.create({
+  return ctx.prisma.image.create({
     data: {
       name: filename,
       original,
@@ -138,8 +138,6 @@ export const uploadImage = async ({
       compressed_mimetype: "image/webp",
     },
   })
-
-  return newImage
 }
 
 interface DeleteImageArgs {

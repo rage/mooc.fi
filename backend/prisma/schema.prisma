@@ -585,6 +585,7 @@ model UserOrganizationJoinConfirmation {
   updated_at           DateTime?        @updatedAt
   id                   String           @id @default(uuid())
   email                String
+  /// UI language (and potential email template language if ever implemented)
   language             String?          @default("fi")
   redirect             String?
   expires_at           DateTime?

@@ -47,7 +47,7 @@ export const StudyModuleQueries = extendType({
         })
 
         if (!study_module) {
-          throw new Error("study module not found")
+          return null
         }
 
         if (language) {
@@ -137,9 +137,9 @@ export const StudyModuleQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {
         return Boolean(
-          await ctx.prisma.studyModule.findFirst({
-            select: { id: true },
+          await ctx.prisma.studyModule.findUnique({
             where: { slug },
+            select: { id: true },
           }),
         )
       },

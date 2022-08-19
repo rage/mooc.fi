@@ -71,7 +71,7 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.openUniversityRegistrationLink.findUnique({
+        ctx.prisma.openUniversityRegistrationLink.findUnique({
           where: { id },
         }),
     })
@@ -105,18 +105,16 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
         const { course_code, course, language, link } = args
 
         // FIXME: empty course_code and/or language?
-        const openUniversityRegistrationLink =
-          await ctx.prisma.openUniversityRegistrationLink.create({
-            data: {
-              course: {
-                connect: { id: course },
-              },
-              course_code: course_code ?? "",
-              language: language ?? "",
-              link: link,
+        return ctx.prisma.openUniversityRegistrationLink.create({
+          data: {
+            course: {
+              connect: { id: course },
             },
-          })
-        return openUniversityRegistrationLink
+            course_code: course_code ?? "",
+            language: language ?? "",
+            link,
+          },
+        })
       },
     })
 

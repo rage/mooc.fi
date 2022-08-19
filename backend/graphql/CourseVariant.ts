@@ -52,7 +52,7 @@ export const CourseVariantQueries = extendType({
         id: nonNull(idArg()),
       },
       resolve: (_, { id }, ctx) =>
-        ctx.prisma.courseVariant.findUnique({ where: { id: id ?? undefined } }),
+        ctx.prisma.courseVariant.findUnique({ where: { id } }),
     })
 
     t.list.field("courseVariants", {
@@ -60,10 +60,15 @@ export const CourseVariantQueries = extendType({
       args: {
         course_id: idArg(),
       },
-      resolve: (_, { course_id }, ctx) =>
-        ctx.prisma.course
-          .findUnique({ where: { id: course_id ?? undefined } })
-          .course_variants(),
+      resolve: (_, { course_id }, ctx) => {
+        if (course_id) {
+          return ctx.prisma.course
+            .findUnique({ where: { id: course_id } })
+            .course_variants()
+        }
+
+        return ctx.prisma.courseVariant.findMany()
+      },
     })
   },
 })
@@ -106,7 +111,7 @@ export const CourseVariantMutations = extendType({
         return ctx.prisma.courseVariant.update({
           where: { id },
           data: {
-            slug: { set: slug ?? undefined },
+            ...(slug && { slug }),
             description,
           },
         })

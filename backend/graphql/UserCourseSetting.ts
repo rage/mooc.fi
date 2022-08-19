@@ -10,10 +10,10 @@ import {
 } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
 import { buildUserSearch } from "../util/db-functions"
-import { notEmpty } from "../util/notEmpty"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
@@ -37,7 +37,7 @@ export const UserCourseSetting = objectType({
 export const UserCourseSettingQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("userCourseSetting", {
+    t.nullable.field("userCourseSetting", {
       type: "UserCourseSetting",
       args: {
         user_id: nonNull(idArg()),
@@ -70,14 +70,11 @@ export const UserCourseSettingQueries = extendType({
           },
         })
 
-        const result =
+        return (
           settingsData?.inherit_settings_from?.user_course_settings?.[0] ??
-          settingsData?.user_course_settings?.[0]
-
-        if (!result) {
-          throw new UserInputError("Not found")
-        }
-        return result
+          settingsData?.user_course_settings?.[0] ??
+          null
+        )
       },
     })
 
@@ -211,7 +208,7 @@ export const UserCourseSettingQueries = extendType({
           )
         }
 
-        const { userSearch, userConditions } = getUserCourseSettingSearch({
+        const { userConditions } = getUserCourseSettingSearch({
           user_id,
           user_upstream_id,
           search,
@@ -241,9 +238,7 @@ export const UserCourseSettingQueries = extendType({
               .findFirst({
                 // could be findUnique if userSearch not specified
                 where: {
-                  id: user_id ?? undefined,
-                  upstream_id: user_upstream_id ?? undefined,
-                  ...(userSearch ? { user: userSearch } : {}),
+                  AND: userConditions,
                 },
               })
               .user_course_settings({
@@ -338,22 +333,29 @@ interface GetUserCourseSettingSearchArgs {
   user_upstream_id?: number | null
 }
 
+interface UserCourseSettingSearch {
+  userSearch: Prisma.UserWhereInput | null
+  userConditions: Array<Prisma.UserWhereInput>
+}
 const getUserCourseSettingSearch = ({
   search,
   user_id,
   user_upstream_id,
-}: GetUserCourseSettingSearchArgs) => {
-  const userSearch = search && search !== "" ? buildUserSearch(search) : null
+}: GetUserCourseSettingSearchArgs): UserCourseSettingSearch => {
+  const userConditions: Array<Prisma.UserWhereInput> = []
 
-  const userConditions = [
-    user_id || user_upstream_id
-      ? {
-          id: user_id ?? undefined,
-          upstream_id: user_upstream_id ?? undefined,
-        }
-      : undefined,
-    userSearch,
-  ].filter(notEmpty)
+  let userSearch = null
+  if (search && search !== "") {
+    userSearch = buildUserSearch(search)
+    userConditions.push(userSearch)
+  }
+
+  if (user_id || user_upstream_id) {
+    userConditions.push({
+      id: user_id ?? undefined,
+      upstream_id: user_upstream_id ?? undefined,
+    })
+  }
 
   return { userSearch, userConditions }
 }

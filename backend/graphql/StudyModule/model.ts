@@ -51,13 +51,13 @@ export const StudyModule = objectType({
               : {}),
           })
 
-        const values = courses.map((course) => ({
+        const coursesWithDescriptionAndLink = courses.map((course) => ({
           ...omit(course, "course_translations"),
           description: course?.course_translations?.[0]?.description ?? "",
           link: course?.course_translations?.[0]?.link ?? "",
         }))
 
-        return values
+        return coursesWithDescriptionAndLink
       },
     })
   },

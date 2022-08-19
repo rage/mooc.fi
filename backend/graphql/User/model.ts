@@ -183,7 +183,7 @@ export const User = objectType({
         return {
           course,
           user: parent,
-        } as any
+        }
       },
     })
 
@@ -272,9 +272,7 @@ export const User = objectType({
           })
           .exercise_completions({
             where: {
-              ...(!includeDeleted
-                ? { exercise: { deleted: { not: true } } }
-                : {}),
+              ...(!includeDeleted && { exercise: { deleted: { not: true } } }),
             },
             distinct: "exercise_id",
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],

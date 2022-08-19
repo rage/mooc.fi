@@ -117,11 +117,10 @@ export const ExerciseMutations = extendType({
         const { custom_id, name, part, section, max_points, course, service } =
           args
 
-        ctx.prisma
         return ctx.prisma.exercise.create({
           data: {
-            course: course ? { connect: { id: course } } : undefined,
-            service: service ? { connect: { id: service } } : undefined,
+            ...(course && { course: { connect: { id: course } } }),
+            ...(service && { service: { connect: { id: service } } }),
             custom_id: custom_id ?? "",
             name,
             max_points,

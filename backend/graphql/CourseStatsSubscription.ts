@@ -26,7 +26,8 @@ export const CourseStatsSubscriptionMutations = extendType({
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id }, ctx) => {
         const { user } = ctx
-        return await ctx.prisma.courseStatsSubscription.create({
+
+        return ctx.prisma.courseStatsSubscription.create({
           data: {
             user: { connect: { id: user?.id } },
             email_template: { connect: { id } },

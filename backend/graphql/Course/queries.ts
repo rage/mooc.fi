@@ -44,6 +44,7 @@ export const CourseQueries = extendType({
         }
 
         if (ctx.role !== Role.ADMIN) {
+          // TODO: limit access field by field in model with authorize
           courseQuery.select = {
             id: true,
             slug: true,
@@ -56,7 +57,7 @@ export const CourseQueries = extendType({
         )
 
         if (!course) {
-          throw new Error("course not found")
+          return null
         }
 
         let description = ""
@@ -224,7 +225,7 @@ export const CourseQueries = extendType({
         const { slug } = args
 
         return Boolean(
-          await ctx.prisma.course.findFirst({
+          await ctx.prisma.course.findUnique({
             where: { slug },
             select: { id: true },
           }),

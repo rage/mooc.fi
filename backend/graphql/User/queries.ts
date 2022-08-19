@@ -19,7 +19,7 @@ export const UserQueries = extendType({
       },
     })*/
 
-    t.field("user", {
+    t.nullable.field("user", {
       type: "User",
       args: {
         id: idArg(),
@@ -43,7 +43,7 @@ export const UserQueries = extendType({
             upstream_id: upstream_id ?? undefined,
           },
         })
-        if (!user) throw new UserInputError("User not found")
+
         return user
       },
     })

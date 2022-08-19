@@ -30,7 +30,7 @@ export const ExerciseCompletionQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.exerciseCompletion.findUnique({
+        ctx.prisma.exerciseCompletion.findUnique({
           where: { id },
         }),
     })
@@ -89,8 +89,8 @@ export const ExerciseCompletionMutations = extendType({
         return ctx.prisma.exerciseCompletion.create({
           data: {
             n_points,
-            exercise: exercise ? { connect: { id: exercise } } : undefined,
-            user: user ? { connect: { id: user } } : undefined,
+            ...(exercise && { exercise: { connect: { id: exercise } } }),
+            ...(user && { user: { connect: { id: user } } }),
             timestamp,
             original_submission_date,
           },

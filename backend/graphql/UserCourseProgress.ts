@@ -67,7 +67,7 @@ export const UserCourseProgress = objectType({
         })
 
         if (!course) {
-          throw new Error("course not found")
+          throw new Error("course not found") // should not actually happen
         }
 
         const settings = await ctx.prisma.userCourseProgress
@@ -145,7 +145,7 @@ export const UserCourseProgress = objectType({
 export const UserCourseProgressQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("userCourseProgress", {
+    t.nullable.field("userCourseProgress", {
       type: "UserCourseProgress",
       args: {
         user_id: nonNull(idArg()),
@@ -154,17 +154,14 @@ export const UserCourseProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
-        const result = await ctx.prisma.userCourseProgress.findFirst({
+
+        return ctx.prisma.userCourseProgress.findFirst({
           where: {
             user_id,
             course_id,
           },
           orderBy: { created_at: "asc" },
         })
-
-        if (!result) throw new UserInputError("Not found")
-
-        return result
       },
     })
 
