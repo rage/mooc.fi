@@ -88,7 +88,7 @@ const assertUserIdOnlyForAdmin = (ctx: Context, id?: User["id"] | null) => {
 
   const { user, role } = ctx
 
-  if (user && user.id !== id && role !== Role.ADMIN) {
+  if (!user || (user && user.id !== id && role !== Role.ADMIN)) {
     throw new ForbiddenError("invalid credentials to do that")
   }
 }
@@ -280,7 +280,7 @@ export const UserOrganizationMutations = extendType({
           return omit(userOrganization, ["organization", "user"])
         }
 
-        const now = Date.now()
+        const currentDate = new Date()
 
         // no confirmation required, update and return
         if (!required_confirmation) {
@@ -301,13 +301,13 @@ export const UserOrganizationMutations = extendType({
           userOrganization,
           organization,
           email: organizational_email ?? user.email,
-          errorMessage: `Organizational mail changed at ${new Date(now)}`,
+          errorMessage: `Organizational mail changed at ${currentDate}`,
         })
 
         const previousConfirmation =
-          user_organization_join_confirmations?.filter(
+          user_organization_join_confirmations?.find(
             (conf) => conf.email === organizational_email,
-          )?.[0] ?? user_organization_join_confirmations?.[0]
+          ) ?? user_organization_join_confirmations?.[0]
 
         await ctx.prisma.userOrganizationJoinConfirmation.updateMany({
           where: {

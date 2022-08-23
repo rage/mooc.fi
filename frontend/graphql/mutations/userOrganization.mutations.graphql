@@ -1,12 +1,16 @@
 mutation AddUserOrganization(
+  $user_id: ID
   $organization_id: ID!
   $organizational_email: String
+  $organizational_identifier: String
   $redirect: String
   $language: String
 ) {
   addUserOrganization(
+    user_id: $user_id
     organization_id: $organization_id
     organizational_email: $organizational_email
+    organizational_identifier: $organizational_identifier
     redirect: $redirect
     language: $language
   ) {
@@ -14,20 +18,26 @@ mutation AddUserOrganization(
   }
 }
 
-mutation UpdateUserOrganization(
-  $id: ID!
-  $consented: Boolean!
-  $organizational_email: String
-  $organizational_identifier: String
-) {
-  updateUserOrganization(
-    id: $id
-    consented: $consented
-    organizational_email: $organizational_email
-    organizational_identifier: $organizational_identifier
-  ) {
+mutation UpdateUserOrganizationConsent($id: ID!, $consented: Boolean!) {
+  updateUserOrganizationConsent(id: $id, consented: $consented) {
     id
     consented
+  }
+}
+
+mutation UpdateUserOrganizationOrganizationalMail(
+  $id: ID!
+  $organizational_email: String!
+  $redirect: String
+  $language: String
+) {
+  updateUserOrganizationOrganizationalMail(
+    id: $id
+    organizational_email: $organizational_email
+    redirect: $redirect
+    language: $language
+  ) {
+    ...UserOrganizationWithUserOrganizationJoinConfirmationFields
   }
 }
 
@@ -43,8 +53,18 @@ mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
   }
 }
 
-mutation RefreshUserOrganizationJoinConfirmation($id: ID!) {
-  refreshUserOrganizationJoinConfirmation(id: $id) {
+mutation RefreshUserOrganizationJoinConfirmation(
+  $id: ID!
+  $organizational_email: String
+  $redirect: String
+  $language: String
+) {
+  refreshUserOrganizationJoinConfirmation(
+    id: $id
+    organizational_email: $organizational_email
+    redirect: $redirect
+    language: $language
+  ) {
     ...UserOrganizationJoinConfirmationFields
   }
 }

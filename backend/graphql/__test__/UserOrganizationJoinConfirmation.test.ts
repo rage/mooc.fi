@@ -36,34 +36,13 @@ describe("UserOrganizationJoinConfirmation", () => {
             code: "foo",
           },
           {
-            Authorization: "Bearer admin",
-          },
-        )
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.errors?.[0]?.message).toContain(
-            "invalid confirmation id",
-          )
-        })
-    })
-
-    it("errors if user_id provided with normal user and user_id is not the same as own", async () => {
-      return ctx.client
-        .request(
-          confirmUserOrganizationJoinMutation,
-          {
-            id: "61300000-0000-0000-0000-000000000001",
-            user_id: "20000000-0000-0000-0000-000000000102",
-            code: "foo",
-          },
-          {
             Authorization: "Bearer third",
           },
         )
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.errors?.[0]?.message).toContain(
-            "invalid credentials to do that",
+            "invalid confirmation id",
           )
         })
     })
@@ -183,7 +162,7 @@ describe("UserOrganizationJoinConfirmation", () => {
         })
     })
 
-    it("confirms membership if all checks pass", async () => {
+    const confirmMembershipSuccessTest = async (authorization: string) => {
       const userOrganizationJoinConfirmation =
         await ctx.prisma.userOrganizationJoinConfirmation.update({
           where: {
@@ -218,7 +197,7 @@ describe("UserOrganizationJoinConfirmation", () => {
           code: activationCode,
         },
         {
-          Authorization: "Bearer normal",
+          Authorization: authorization,
         },
       )
 
@@ -236,6 +215,14 @@ describe("UserOrganizationJoinConfirmation", () => {
           before.toLocaleDateString(),
       ).toBe(true)
       expect(updatedConfirmation?.user_organization?.confirmed).toEqual(true)
+    }
+
+    it("confirms membership if all checks pass", async () => {
+      await confirmMembershipSuccessTest("Bearer normal")
+    })
+
+    it("confirms membership with admin credentials", async () => {
+      await confirmMembershipSuccessTest("Bearer admin")
     })
   })
 
@@ -279,13 +266,14 @@ describe("UserOrganizationJoinConfirmation", () => {
     })
 
     // TODO
+    // - refresh success on admin
     /*it("will update the confirmation if all checks pass, updating possible unsent email deliveries")*/
   })
 })
 
 const confirmUserOrganizationJoinMutation = gql`
-  mutation ConfirmUserOrganizationJoin($id: ID!, $user_id: ID, $code: String!) {
-    confirmUserOrganizationJoin(id: $id, user_id: $user_id, code: $code) {
+  mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
+    confirmUserOrganizationJoin(id: $id, code: $code) {
       id
       email
       language

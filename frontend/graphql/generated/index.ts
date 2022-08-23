@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-17T16:43:16+03:00
+// Generated on 2022-08-23T16:10:52+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -789,7 +789,8 @@ export type Mutation = {
   updateStudyModuletranslation: Maybe<StudyModuleTranslation>
   updateUser: Maybe<User>
   updateUserName: Maybe<User>
-  updateUserOrganization: Maybe<UserOrganization>
+  updateUserOrganizationConsent: Maybe<UserOrganization>
+  updateUserOrganizationOrganizationalMail: Maybe<UserOrganization>
 }
 
 export type MutationaddAbEnrollmentArgs = {
@@ -930,6 +931,7 @@ export type MutationaddUserOrganizationArgs = {
   language?: InputMaybe<Scalars["String"]>
   organization_id: Scalars["ID"]
   organizational_email?: InputMaybe<Scalars["String"]>
+  organizational_identifier?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
   user_id?: InputMaybe<Scalars["ID"]>
 }
@@ -1001,6 +1003,9 @@ export type MutationrecheckCompletionsArgs = {
 
 export type MutationrefreshUserOrganizationJoinConfirmationArgs = {
   id: Scalars["ID"]
+  language?: InputMaybe<Scalars["String"]>
+  organizational_email?: InputMaybe<Scalars["String"]>
+  redirect?: InputMaybe<Scalars["String"]>
 }
 
 export type MutationregisterCompletionArgs = {
@@ -1091,9 +1096,16 @@ export type MutationupdateUserNameArgs = {
   last_name?: InputMaybe<Scalars["String"]>
 }
 
-export type MutationupdateUserOrganizationArgs = {
-  consented: Scalars["Boolean"]
+export type MutationupdateUserOrganizationConsentArgs = {
+  consented?: InputMaybe<Scalars["Boolean"]>
   id: Scalars["ID"]
+}
+
+export type MutationupdateUserOrganizationOrganizationalMailArgs = {
+  id: Scalars["ID"]
+  language?: InputMaybe<Scalars["String"]>
+  organizational_email: Scalars["String"]
+  redirect?: InputMaybe<Scalars["String"]>
 }
 
 export type NestedStringNullableFilter = {
@@ -1485,7 +1497,8 @@ export type QueryregisteredCompletionsArgs = {
 }
 
 export type QueryserviceArgs = {
-  service_id: Scalars["ID"]
+  id?: InputMaybe<Scalars["ID"]>
+  service_id?: InputMaybe<Scalars["ID"]>
 }
 
 export type Querystudy_moduleArgs = {
@@ -1882,6 +1895,10 @@ export type Useruser_course_settingsArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type Useruser_course_summaryArgs = {
+  includeDeleted?: InputMaybe<Scalars["Boolean"]>
+}
+
 export type Useruser_organizationsArgs = {
   cursor?: InputMaybe<UserOrganizationWhereUniqueInput>
   skip?: InputMaybe<Scalars["Int"]>
@@ -2011,12 +2028,12 @@ export type UserCourseSummary = {
   completion: Maybe<Completion>
   completions_handled_by_id: Maybe<Scalars["ID"]>
   course: Maybe<Course>
-  course_id: Maybe<Scalars["ID"]>
+  course_id: Scalars["ID"]
   exercise_completions: Maybe<Array<Maybe<ExerciseCompletion>>>
   inherit_settings_from_id: Maybe<Scalars["ID"]>
   user_course_progress: Maybe<UserCourseProgress>
   user_course_service_progresses: Maybe<Array<Maybe<UserCourseServiceProgress>>>
-  user_id: Maybe<Scalars["ID"]>
+  user_id: Scalars["ID"]
 }
 
 export type UserCourseSummaryexercise_completionsArgs = {
@@ -2050,6 +2067,7 @@ export type UserOrganization = {
   organization: Maybe<Organization>
   organization_id: Maybe<Scalars["String"]>
   organizational_email: Maybe<Scalars["String"]>
+  organizational_identifier: Maybe<Scalars["String"]>
   role: Maybe<OrganizationRole>
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
@@ -3409,8 +3427,10 @@ export type UserOrganizationFieldsFragment = {
   user_id: string | null
   organization_id: string | null
   confirmed: boolean | null
+  confirmed_at: any | null
   consented: boolean | null
   organizational_email: string | null
+  organizational_identifier: string | null
   created_at: any | null
   updated_at: any | null
   organization: {
@@ -3469,8 +3489,10 @@ export type UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment =
     user_id: string | null
     organization_id: string | null
     confirmed: boolean | null
+    confirmed_at: any | null
     consented: boolean | null
     organizational_email: string | null
+    organizational_identifier: string | null
     created_at: any | null
     updated_at: any | null
     user_organization_join_confirmations: Array<{
@@ -4050,8 +4072,10 @@ export type UserCourseStatsUnsubscribeMutation = {
 }
 
 export type AddUserOrganizationMutationVariables = Exact<{
+  user_id?: InputMaybe<Scalars["ID"]>
   organization_id: Scalars["ID"]
   organizational_email?: InputMaybe<Scalars["String"]>
+  organizational_identifier?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
   language?: InputMaybe<Scalars["String"]>
 }>
@@ -4064,8 +4088,10 @@ export type AddUserOrganizationMutation = {
     user_id: string | null
     organization_id: string | null
     confirmed: boolean | null
+    confirmed_at: any | null
     consented: boolean | null
     organizational_email: string | null
+    organizational_identifier: string | null
     created_at: any | null
     updated_at: any | null
     user_organization_join_confirmations: Array<{
@@ -4117,17 +4143,87 @@ export type AddUserOrganizationMutation = {
   } | null
 }
 
-export type UpdateUserOrganizationMutationVariables = Exact<{
+export type UpdateUserOrganizationConsentMutationVariables = Exact<{
   id: Scalars["ID"]
   consented: Scalars["Boolean"]
 }>
 
-export type UpdateUserOrganizationMutation = {
+export type UpdateUserOrganizationConsentMutation = {
   __typename?: "Mutation"
-  updateUserOrganization: {
+  updateUserOrganizationConsent: {
     __typename?: "UserOrganization"
     id: string
     consented: boolean | null
+  } | null
+}
+
+export type UpdateUserOrganizationOrganizationalMailMutationVariables = Exact<{
+  id: Scalars["ID"]
+  organizational_email: Scalars["String"]
+  redirect?: InputMaybe<Scalars["String"]>
+  language?: InputMaybe<Scalars["String"]>
+}>
+
+export type UpdateUserOrganizationOrganizationalMailMutation = {
+  __typename?: "Mutation"
+  updateUserOrganizationOrganizationalMail: {
+    __typename?: "UserOrganization"
+    id: string
+    user_id: string | null
+    organization_id: string | null
+    confirmed: boolean | null
+    confirmed_at: any | null
+    consented: boolean | null
+    organizational_email: string | null
+    organizational_identifier: string | null
+    created_at: any | null
+    updated_at: any | null
+    user_organization_join_confirmations: Array<{
+      __typename?: "UserOrganizationJoinConfirmation"
+      id: string
+      email: string
+      confirmed: boolean | null
+      confirmed_at: any | null
+      expired: boolean | null
+      expires_at: any | null
+      redirect: string | null
+      language: string | null
+      created_at: any | null
+      updated_at: any | null
+      email_delivery: {
+        __typename?: "EmailDelivery"
+        id: string
+        email: string | null
+        sent: boolean
+        error: boolean
+        error_message: string | null
+        email_template_id: string | null
+        user_id: string | null
+        organization_id: string | null
+        created_at: any | null
+        updated_at: any | null
+      } | null
+    }>
+    organization: {
+      __typename?: "Organization"
+      id: string
+      slug: string
+      email: string | null
+      hidden: boolean | null
+      disabled: boolean | null
+      created_at: any | null
+      updated_at: any | null
+      required_confirmation: boolean | null
+      required_organization_email: string | null
+      organization_translations: Array<{
+        __typename?: "OrganizationTranslation"
+        id: string
+        organization_id: string | null
+        language: string
+        name: string
+        information: string | null
+      }>
+    } | null
   } | null
 }
 
@@ -4177,6 +4273,9 @@ export type ConfirmUserOrganizationJoinMutation = {
 
 export type RefreshUserOrganizationJoinConfirmationMutationVariables = Exact<{
   id: Scalars["ID"]
+  organizational_email?: InputMaybe<Scalars["String"]>
+  redirect?: InputMaybe<Scalars["String"]>
+  language?: InputMaybe<Scalars["String"]>
 }>
 
 export type RefreshUserOrganizationJoinConfirmationMutation = {
@@ -5637,8 +5736,10 @@ export type CurrentUserUserOrganizationsQuery = {
       user_id: string | null
       organization_id: string | null
       confirmed: boolean | null
+      confirmed_at: any | null
       consented: boolean | null
       organizational_email: string | null
+      organizational_identifier: string | null
       created_at: any | null
       updated_at: any | null
       user_organization_join_confirmations: Array<{
@@ -5693,6 +5794,7 @@ export type CurrentUserUserOrganizationsQuery = {
 
 export type UserOrganizationsQueryVariables = Exact<{
   user_id?: InputMaybe<Scalars["ID"]>
+  organization_id?: InputMaybe<Scalars["ID"]>
 }>
 
 export type UserOrganizationsQuery = {
@@ -5700,7 +5802,35 @@ export type UserOrganizationsQuery = {
   userOrganizations: Array<{
     __typename?: "UserOrganization"
     id: string
-    organization: { __typename?: "Organization"; id: string } | null
+    user_id: string | null
+    organization_id: string | null
+    confirmed: boolean | null
+    confirmed_at: any | null
+    consented: boolean | null
+    organizational_email: string | null
+    organizational_identifier: string | null
+    created_at: any | null
+    updated_at: any | null
+    organization: {
+      __typename?: "Organization"
+      id: string
+      slug: string
+      email: string | null
+      hidden: boolean | null
+      disabled: boolean | null
+      created_at: any | null
+      updated_at: any | null
+      required_confirmation: boolean | null
+      required_organization_email: string | null
+      organization_translations: Array<{
+        __typename?: "OrganizationTranslation"
+        id: string
+        organization_id: string | null
+        language: string
+        name: string
+        information: string | null
+      }>
+    } | null
   } | null> | null
 }
 
@@ -5728,8 +5858,10 @@ export type UserOrganizationJoinConfirmationQuery = {
       user_id: string | null
       organization_id: string | null
       confirmed: boolean | null
+      confirmed_at: any | null
       consented: boolean | null
       organizational_email: string | null
+      organizational_identifier: string | null
       created_at: any | null
       updated_at: any | null
       organization: {
@@ -7417,10 +7549,15 @@ export const UserOrganizationFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "organization_id" } },
           { kind: "Field", name: { kind: "Name", value: "confirmed" } },
+          { kind: "Field", name: { kind: "Name", value: "confirmed_at" } },
           { kind: "Field", name: { kind: "Name", value: "consented" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "organizational_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organizational_identifier" },
           },
           {
             kind: "Field",
@@ -8906,6 +9043,14 @@ export const AddUserOrganizationDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
+            name: { kind: "Name", value: "user_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
             name: { kind: "Name", value: "organization_id" },
           },
           type: {
@@ -8918,6 +9063,14 @@ export const AddUserOrganizationDocument = {
           variable: {
             kind: "Variable",
             name: { kind: "Name", value: "organizational_email" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "organizational_identifier" },
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
@@ -8947,10 +9100,214 @@ export const AddUserOrganizationDocument = {
             arguments: [
               {
                 kind: "Argument",
+                name: { kind: "Name", value: "user_id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "user_id" },
+                },
+              },
+              {
+                kind: "Argument",
                 name: { kind: "Name", value: "organization_id" },
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "organization_id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "organizational_email" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "organizational_email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "organizational_identifier" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "organizational_identifier" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "redirect" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "redirect" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value:
+                      "UserOrganizationWithUserOrganizationJoinConfirmationFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...UserOrganizationFieldsFragmentDoc.definitions,
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
+    ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...EmailDeliveryFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  AddUserOrganizationMutation,
+  AddUserOrganizationMutationVariables
+>
+export const UpdateUserOrganizationConsentDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateUserOrganizationConsent" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "consented" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "Boolean" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateUserOrganizationConsent" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "consented" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "consented" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "consented" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateUserOrganizationConsentMutation,
+  UpdateUserOrganizationConsentMutationVariables
+>
+export const UpdateUserOrganizationOrganizationalMailDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateUserOrganizationOrganizationalMail" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "organizational_email" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "redirect" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "updateUserOrganizationOrganizationalMail",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
                 },
               },
               {
@@ -9002,79 +9359,8 @@ export const AddUserOrganizationDocument = {
     ...EmailDeliveryFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
-  AddUserOrganizationMutation,
-  AddUserOrganizationMutationVariables
->
-export const UpdateUserOrganizationDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "UpdateUserOrganization" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "consented" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "Boolean" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "updateUserOrganization" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "id" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "consented" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "consented" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "consented" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  UpdateUserOrganizationMutation,
-  UpdateUserOrganizationMutationVariables
+  UpdateUserOrganizationOrganizationalMailMutation,
+  UpdateUserOrganizationOrganizationalMailMutationVariables
 >
 export const DeleteUserOrganizationDocument = {
   kind: "Document",
@@ -9215,6 +9501,30 @@ export const RefreshUserOrganizationJoinConfirmationDocument = {
             type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "organizational_email" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "redirect" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -9232,6 +9542,30 @@ export const RefreshUserOrganizationJoinConfirmationDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "organizational_email" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "organizational_email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "redirect" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "redirect" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
                 },
               },
             ],
@@ -11579,6 +11913,14 @@ export const UserOrganizationsDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "organization_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -11595,20 +11937,21 @@ export const UserOrganizationsDocument = {
                   name: { kind: "Name", value: "user_id" },
                 },
               },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "organization_id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "organization_id" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
                 {
-                  kind: "Field",
-                  name: { kind: "Name", value: "organization" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                    ],
-                  },
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserOrganizationFields" },
                 },
               ],
             },
@@ -11616,6 +11959,8 @@ export const UserOrganizationsDocument = {
         ],
       },
     },
+    ...UserOrganizationFieldsFragmentDoc.definitions,
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   UserOrganizationsQuery,

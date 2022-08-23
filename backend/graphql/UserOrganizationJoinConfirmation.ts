@@ -73,27 +73,24 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
       type: "UserOrganizationJoinConfirmation",
       args: {
         id: nonNull(idArg()),
-        user_id: idArg(),
         code: nonNull(stringArg()),
       },
       authorize: or(isUser, isAdmin),
-      resolve: async (_, { id, user_id, code }, ctx) => {
+      resolve: async (_, { id, code }, ctx) => {
         if (!ctx.user?.id) {
           // just to be sure, should never happen
           throw new AuthenticationError("not logged in")
-        }
-
-        if (user_id && user_id !== ctx.user?.id && ctx.role !== Role.ADMIN) {
-          throw new ForbiddenError("invalid credentials to do that")
         }
 
         const userOrganizationJoinConfirmation =
           await ctx.prisma.userOrganizationJoinConfirmation.findFirst({
             where: {
               id,
-              user_organization: {
-                user: { id: user_id ?? ctx.user.id },
-              },
+              ...(ctx.role !== Role.ADMIN && {
+                user_organization: {
+                  user: { id: ctx.user.id },
+                },
+              }),
             },
             include: {
               user_organization: {
@@ -127,12 +124,12 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           })
         }
 
-        const now = new Date()
+        const currentDate = new Date()
 
         // confirmation expired or will expire now
         const confirmationWillExpire =
           userOrganizationJoinConfirmation.expires_at &&
-          userOrganizationJoinConfirmation.expires_at < now
+          userOrganizationJoinConfirmation.expires_at < currentDate
 
         if (
           userOrganizationJoinConfirmation.expired ||
@@ -147,6 +144,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
             })
           }
 
+          // TODO: should we just return the expired confirmation?
           throw new ForbiddenError("confirmation link has expired")
         }
 
@@ -163,11 +161,11 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           where: { id },
           data: {
             confirmed: { set: true },
-            confirmed_at: now,
+            confirmed_at: currentDate,
             user_organization: {
               update: {
                 confirmed: { set: true },
-                confirmed_at: now,
+                confirmed_at: currentDate,
               },
             },
           },
@@ -211,6 +209,8 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
               email_delivery: true,
               user_organization: {
                 include: {
+                  // even if we could get the current user from the context,
+                  // we'll query the user here in case we are confirming another user with admin credentials
                   user: true,
                   organization: true,
                 },
@@ -259,7 +259,7 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           )
         }
 
-        const now = Date.now()
+        const currentDate = new Date()
 
         // find email deliveries for this user/organization that are still in the queue
         // and update them so that we don't accidentally send expired activation links
@@ -268,78 +268,78 @@ export const UserOrganizationJoinConfirmationMutations = extendType({
           userOrganization: user_organization,
           organization,
           email: userOrganizationJoinConfirmation.email,
-          errorMessage: `New activation link requested at ${new Date(now)}`,
+          errorMessage: `New activation link requested at ${currentDate}`,
         })
 
-        if (!emailChanged) {
-          // TODO: or expire old confirmation and create new?
-          // - will disconnect the existing email delivery
-          return ctx.prisma.userOrganizationJoinConfirmation.update({
-            where: { id },
+        if (emailChanged) {
+          // a new organizational email is provided, expire old confirmation and create a new one
+          const isEmailValid = checkEmailValidity(
+            organizational_email,
+            organization.required_organization_email,
+          )
+
+          if (isEmailValid.isErr()) {
+            throw isEmailValid.error
+          }
+
+          const createUserOrganizationJoinConfirmationResult =
+            await createUserOrganizationJoinConfirmation({
+              ctx,
+              user,
+              organization,
+              email: organizational_email,
+              userOrganization: user_organization,
+              redirect: redirect ?? userOrganizationJoinConfirmation?.redirect,
+              language: language ?? userOrganizationJoinConfirmation?.language,
+            })
+
+          if (createUserOrganizationJoinConfirmationResult.isErr()) {
+            throw createUserOrganizationJoinConfirmationResult.error
+          }
+
+          // TODO: should we update the organizational email only when it is confirmed?
+          await ctx.prisma.userOrganization.update({
+            where: {
+              id: user_organization.id,
+            },
             data: {
-              user_organization: { connect: { id: user_organization.id } },
-              email_delivery: {
-                create: {
-                  user_id: user.id,
-                  email: user_organization.organizational_email ?? user.email,
-                  email_template_id:
-                    organization.join_organization_email_template_id,
-                  organization_id: organization.id,
-                  sent: false,
-                  error: false,
-                },
-              },
-              redirect: redirect ?? userOrganizationJoinConfirmation.redirect,
-              language: language ?? userOrganizationJoinConfirmation.language,
-              expired: { set: false },
-              expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
+              organizational_email,
             },
           })
-        }
 
-        // a new organizational email is provided, expire old confirmation and create a new one
-        const isEmailValid = checkEmailValidity(
-          organizational_email,
-          organization.required_organization_email,
-        )
-
-        if (isEmailValid.isErr()) {
-          throw isEmailValid.error
-        }
-
-        const createUserOrganizationJoinConfirmationResult =
-          await createUserOrganizationJoinConfirmation({
-            ctx,
-            user,
-            organization,
-            email: organizational_email,
-            userOrganization: user_organization,
-            redirect: redirect ?? userOrganizationJoinConfirmation?.redirect,
-            language: language ?? userOrganizationJoinConfirmation?.language,
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: { id },
+            data: {
+              expired: { set: true },
+            },
           })
 
-        if (createUserOrganizationJoinConfirmationResult.isErr()) {
-          throw createUserOrganizationJoinConfirmationResult.error
+          return createUserOrganizationJoinConfirmationResult.value
         }
 
-        // TODO: should we update the organizational email only when it is confirmed?
-        await ctx.prisma.userOrganization.update({
-          where: {
-            id: user_organization.id,
-          },
-          data: {
-            organizational_email,
-          },
-        })
-
-        await ctx.prisma.userOrganizationJoinConfirmation.update({
+        // TODO: or expire old confirmation and create new?
+        // - will disconnect the existing email delivery
+        return ctx.prisma.userOrganizationJoinConfirmation.update({
           where: { id },
           data: {
-            expired: { set: true },
+            user_organization: { connect: { id: user_organization.id } },
+            email_delivery: {
+              create: {
+                user_id: user.id,
+                email: user_organization.organizational_email ?? user.email,
+                email_template_id:
+                  organization.join_organization_email_template_id,
+                organization_id: organization.id,
+                sent: false,
+                error: false,
+              },
+            },
+            redirect: redirect ?? userOrganizationJoinConfirmation.redirect,
+            language: language ?? userOrganizationJoinConfirmation.language,
+            expired: { set: false },
+            expires_at: new Date(currentDate.getTime() + 4 * 60 * 60 * 1000), // 4 hours for now
           },
         })
-
-        return createUserOrganizationJoinConfirmationResult.value
       },
     })
   },

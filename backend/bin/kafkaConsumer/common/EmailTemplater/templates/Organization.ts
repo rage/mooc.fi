@@ -74,8 +74,8 @@ export class OrganizationActivationLink extends OrganizationTemplate {
     )
 
     const { language, redirect } = userOrganizationJoinConfirmation
-    const baseUrl = `${FRONTEND_URL}/${
-      language && language !== "fi" ? `${language}/` : ""
+    const baseUrl = `${FRONTEND_URL}${
+      language && language !== "fi" ? `/${language}` : ""
     }`
 
     // TODO: change url to whatever it will be

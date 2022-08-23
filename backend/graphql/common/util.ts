@@ -199,7 +199,7 @@ export const joinUserOrganization = async ({
 
   const { required_confirmation } = organization
 
-  const now = Date.now()
+  const currentDate = new Date()
 
   const userOrganization = await ctx.prisma.userOrganization.create({
     data: {
@@ -212,7 +212,7 @@ export const joinUserOrganization = async ({
       organizational_identifier: organizational_identifier ?? undefined,
       ...(!required_confirmation && {
         confirmed: true,
-        confirmed_at: new Date(now),
+        confirmed_at: currentDate,
       }),
       // we assume that the consent is given in the frontend
       consented: true,
@@ -247,8 +247,7 @@ export const cancelEmailDeliveries = async ({
     },
     data: {
       error: { set: true },
-      error_message:
-        errorMessage ?? `Email delivery canceled at ${new Date(Date.now())}`,
+      error_message: errorMessage ?? `Email delivery canceled at ${new Date()}`,
     },
   })
 
@@ -297,7 +296,7 @@ export const createUserOrganizationJoinConfirmation = async ({
     )
   }
 
-  const now = Date.now()
+  const currentDate = new Date()
 
   try {
     const userOrganizationJoinConfirmation =
@@ -317,7 +316,7 @@ export const createUserOrganizationJoinConfirmation = async ({
           },
           redirect,
           language,
-          expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
+          expires_at: new Date(currentDate.getTime() + 4 * 60 * 60 * 1000), // 4 hours for now
         },
       })
 

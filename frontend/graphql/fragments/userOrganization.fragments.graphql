@@ -3,6 +3,7 @@ fragment UserOrganizationFields on UserOrganization {
   user_id
   organization_id
   confirmed
+  confirmed_at
   consented
   organizational_email
   organizational_identifier
