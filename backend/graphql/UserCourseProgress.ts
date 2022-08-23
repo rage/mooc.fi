@@ -95,7 +95,6 @@ export const UserCourseProgress = objectType({
 
         const courseProgress = normalizeProgress(progress)
 
-        // TODO: this should probably also only count completed exercises!
         const exercises = await ctx.prisma.course
           .findUnique({
             where: {
@@ -107,6 +106,7 @@ export const UserCourseProgress = objectType({
               NOT: {
                 deleted: true,
               },
+              max_points: { gt: 0 },
             },
             select: {
               id: true,
@@ -116,6 +116,7 @@ export const UserCourseProgress = objectType({
                   user_id,
                 },
                 take: 1,
+                orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
               },
             },
           })
