@@ -11,7 +11,7 @@ import {
   completionLanguageMap,
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
-import { isNullOrUndefined } from "../../../util/isNullOrUndefined"
+import { isNullOrUndefined } from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
 import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "./kafkaContext"

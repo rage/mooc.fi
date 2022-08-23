@@ -1,4 +1,4 @@
-import { AuthenticationError } from "apollo-server-express"
+import { AuthenticationError, UserInputError } from "apollo-server-express"
 import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
@@ -16,7 +16,8 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { notEmpty } from "../../util/notEmpty"
+import { notEmpty } from "../../util"
+import { ConflictError } from "../common"
 
 export const CompletionMutations = extendType({
   type: "Mutation",
@@ -73,7 +74,9 @@ export const CompletionMutations = extendType({
         })
 
         if (!course) {
-          throw new Error("Course not found")
+          throw new UserInputError("course not found", {
+            argumentName: "course_id",
+          })
         }
         const completions = (args.completions ?? []).filter(notEmpty)
 
@@ -91,7 +94,7 @@ export const CompletionMutations = extendType({
             completions.map((o) => o.user_id),
           )
         if (foundUsers.length !== completions.length) {
-          throw new Error("All users were not found")
+          throw new ConflictError("All users were not found")
         }
 
         const databaseUsersByUpstreamId = groupBy(foundUsers, "upstream_id")
@@ -158,7 +161,9 @@ export const CompletionMutations = extendType({
       authorize: isAdmin,
       resolve: async (_, { course_id, slug }, ctx) => {
         if ((!course_id && !slug) || (course_id && slug)) {
-          throw new Error("must provide course_id or slug!")
+          throw new UserInputError("must provide course_id or slug!", {
+            argumentName: ["course_id", "slug"],
+          })
         }
 
         const course = await ctx.prisma.course.findUnique({
@@ -167,8 +172,11 @@ export const CompletionMutations = extendType({
             slug: slug ?? undefined,
           },
         })
+
         if (!course) {
-          throw new Error("course not found")
+          throw new UserInputError("course not found", {
+            argumentName: ["course_id", "slug"],
+          })
         }
         // find users on course with points
         const progresses = await ctx.prisma.course

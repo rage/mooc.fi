@@ -1,5 +1,7 @@
-import { Context } from "/context"
-import { convertPagination } from "/util/db-functions"
+import { UserInputError } from "apollo-server-express"
+
+import { Context } from "../context"
+import { convertPagination } from "../graphql/common"
 
 export default async function fetchCompletions(args: any, ctx: Context) {
   const { course } = args
@@ -31,7 +33,7 @@ async function getCompletionDataFromDB(
     },
   })
   if (!course) {
-    throw new Error("course not found")
+    throw new UserInputError("course not found", { argumentName: "slug" })
   }
 
   const completions = await ctx.prisma.course

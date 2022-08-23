@@ -1,10 +1,11 @@
-import { AuthenticationError } from "apollo-server-express"
+import { AuthenticationError, ForbiddenError } from "apollo-server-express"
 import { arg, booleanArg, extendType, nonNull, stringArg } from "nexus"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { Context } from "../../context"
 import { invalidate } from "../../services/redis"
-import hashUser from "../../util/hashUser"
+import { hashUser } from "../../util"
+import { ConflictError } from "../common"
 
 export const UserMutations = extendType({
   type: "Mutation",
@@ -22,6 +23,7 @@ export const UserMutations = extendType({
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
         }
+
         const access_token = authorization?.split(" ")[1]
 
         await invalidate("userdetails", `Bearer ${access_token}`)
@@ -80,7 +82,7 @@ export const UserMutations = extendType({
         })
 
         if (exists) {
-          throw new Error("user with that upstream id already exists")
+          throw new ConflictError("user with that upstream id already exists")
         }
 
         return ctx.prisma.user.create({
@@ -111,7 +113,7 @@ export const UserMutations = extendType({
         }
 
         if (ctx.role !== Role.ADMIN && id && currentUser.id !== id) {
-          throw new Error("cannot update other users")
+          throw new ForbiddenError("invalid credentials to do that")
         }
 
         // TODO: sync changes with TMC here?

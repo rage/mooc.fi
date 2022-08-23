@@ -2,7 +2,7 @@ import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { extendType, idArg, intArg, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
-import { buildUserSearch, convertPagination } from "../../util/db-functions"
+import { buildUserSearch, convertPagination } from "../common"
 
 export const UserQueries = extendType({
   type: "Query",
@@ -33,6 +33,7 @@ export const UserQueries = extendType({
         if (!id && !search && !upstream_id) {
           throw new UserInputError(
             "must provide id, search string or upstream_id",
+            { argumentName: ["id", "search", "upstream_id"] },
           )
         }
 

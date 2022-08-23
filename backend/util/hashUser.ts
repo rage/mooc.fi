@@ -4,7 +4,7 @@ import { pick } from "lodash"
 
 import { User } from "@prisma/client"
 
-export default (user: User) =>
+export const hashUser = (user: User) =>
   createHash("sha512")
     .update(
       Object.values(

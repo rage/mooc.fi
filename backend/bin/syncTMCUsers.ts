@@ -8,7 +8,7 @@ import { PrismaClient } from "@prisma/client"
 
 import { isTest, TMC_HOST } from "../config"
 import { getAccessToken } from "../services/tmc"
-import { notEmpty } from "../util/notEmpty"
+import { notEmpty } from "../util"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 

@@ -34,8 +34,12 @@ export const ServiceQueries = extendType({
           )
         }
 
+        if (!id && !service_id) {
+          throw new UserInputError("no id provided", { argumentName: "id" })
+        }
+
         return ctx.prisma.service.findUnique({
-          where: { id: service_id ?? id },
+          where: { id: (service_id ?? id)! },
         })
       },
     })
@@ -81,7 +85,7 @@ export const ServiceMutations = extendType({
         const { url, name, id } = args
 
         if (!url && !name) {
-          throw new UserInputError("No fields to update")
+          throw new UserInputError("no fields to update")
         }
 
         return ctx.prisma.service.update({

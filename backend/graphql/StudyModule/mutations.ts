@@ -54,7 +54,9 @@ export const StudyModuleMutations = extendType({
         const { id, slug, new_slug, study_module_translations } = study_module
 
         if (!slug) {
-          throw new UserInputError("must provide slug")
+          throw new UserInputError("must provide slug", {
+            argumentName: "slug",
+          })
         }
 
         const existingTranslations = await ctx.prisma.studyModule
@@ -117,7 +119,9 @@ export const StudyModuleMutations = extendType({
         const { id, slug } = args
 
         if (!id && !slug) {
-          throw "must have at least id or slug"
+          throw new UserInputError("must have at least id or slug", {
+            argumentName: ["id", "slug"],
+          })
         }
 
         const deletedModule = await ctx.prisma.studyModule.delete({

@@ -63,7 +63,7 @@ export default async (serverContext: ServerContext) => {
     ],
     introspection: true,
     logger,
-    debug: DEBUG,
+    debug: isProduction ? DEBUG : true,
   })
   await apollo.start()
 

@@ -4,7 +4,7 @@ import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
+import { convertUpdate } from "../util"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 

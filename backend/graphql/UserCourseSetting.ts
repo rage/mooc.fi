@@ -13,7 +13,7 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
-import { buildUserSearch } from "../util/db-functions"
+import { buildUserSearch } from "./common"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",

@@ -1,7 +1,7 @@
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
-import { Result } from "../../../util/result"
+import { Result } from "../../../util"
 import {
   DatabaseInputError,
   KafkaMessageError,

@@ -11,7 +11,6 @@ import {
 } from "nexus"
 
 import { isAdmin, Role } from "../accessControl"
-import { notEmpty } from "../util/notEmpty"
 import { Context } from "/context"
 
 export const Exercise = objectType({
@@ -51,6 +50,7 @@ export const Exercise = objectType({
         if (!user_id) {
           throw new AuthenticationError("not logged in")
         }
+
         return ctx.prisma.exercise
           .findUnique({ where: { id: parent.id } })
           .exercise_completions({
@@ -58,11 +58,11 @@ export const Exercise = objectType({
               user_id,
             },
             distinct: ["user_id", "exercise_id"],
-            orderBy: [
-              { timestamp: "desc" },
-              { updated_at: "desc" },
-              orderBy,
-            ].filter(notEmpty),
+            orderBy: {
+              timestamp: "desc",
+              updated_at: "desc",
+              ...orderBy,
+            },
           })
       },
     })

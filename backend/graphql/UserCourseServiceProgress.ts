@@ -171,7 +171,7 @@ export const UserCourseServiceProgressMutations = extendType({
           })) ?? {}
 
         if (!course_id || !user_id) {
-          throw new Error(
+          throw new UserInputError(
             "user course progress not found or not connected to course or user",
           )
         }

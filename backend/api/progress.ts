@@ -5,9 +5,9 @@ import { Completion, Course, User, UserCourseProgress } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { BAIParentCourse, BAItiers } from "../config/courseConfig"
-import { notEmpty } from "../util/notEmpty"
-import { getUser, requireAdmin } from "../util/server-functions"
+import { notEmpty } from "../util"
 import { ApiContext } from "./"
+import { getUser, requireAdmin } from "./utils"
 
 interface ExerciseCompletionResult {
   user_id: string

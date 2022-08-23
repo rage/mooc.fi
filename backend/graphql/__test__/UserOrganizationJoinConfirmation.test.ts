@@ -1,14 +1,19 @@
 import { gql } from "graphql-request"
 
 import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../tests/data"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  thirdUserDetails,
+} from "../../tests/data"
 import { seed } from "../../tests/data/seed"
-import { calculateActivationCode } from "../../util/calculate-activation-code"
+import { calculateActivationCode } from "../../util"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
   "Bearer normal": [200, normalUserDetails],
   "Bearer admin": [200, adminUserDetails],
+  "Bearer third": [200, thirdUserDetails],
 })
 
 describe("UserOrganizationJoinConfirmation", () => {
@@ -38,6 +43,27 @@ describe("UserOrganizationJoinConfirmation", () => {
         .catch(({ response }) => {
           expect(response.errors?.[0]?.message).toContain(
             "invalid confirmation id",
+          )
+        })
+    })
+
+    it("errors if user_id provided with normal user and user_id is not the same as own", async () => {
+      return ctx.client
+        .request(
+          confirmUserOrganizationJoinMutation,
+          {
+            id: "61300000-0000-0000-0000-000000000001",
+            user_id: "20000000-0000-0000-0000-000000000102",
+            code: "foo",
+          },
+          {
+            Authorization: "Bearer third",
+          },
+        )
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.errors?.[0]?.message).toContain(
+            "invalid credentials to do that",
           )
         })
     })
@@ -178,10 +204,8 @@ describe("UserOrganizationJoinConfirmation", () => {
           },
         })
 
-      const activationCode = calculateActivationCode({
-        user: userOrganizationJoinConfirmation?.user_organization?.user!,
-        organization:
-          userOrganizationJoinConfirmation?.user_organization?.organization!,
+      const activationCode = await calculateActivationCode({
+        prisma: ctx.prisma,
         userOrganizationJoinConfirmation,
       })
 
@@ -216,7 +240,7 @@ describe("UserOrganizationJoinConfirmation", () => {
   })
 
   describe("refreshUserOrganizationJoinConfirmation", () => {
-    it("errors if user is not associated with given confirmation id", async () => {
+    it("errors if user is not associated with given confirmation id with normal user", async () => {
       return ctx.client
         .request(
           refreshUserOrganizationJoinConfirmationMutation,
@@ -224,7 +248,7 @@ describe("UserOrganizationJoinConfirmation", () => {
             id: "61300000-0000-0000-0000-000000000001",
           },
           {
-            Authorization: "Bearer admin",
+            Authorization: "Bearer third",
           },
         )
         .then(() => fail())
@@ -260,8 +284,8 @@ describe("UserOrganizationJoinConfirmation", () => {
 })
 
 const confirmUserOrganizationJoinMutation = gql`
-  mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
-    confirmUserOrganizationJoin(id: $id, code: $code) {
+  mutation ConfirmUserOrganizationJoin($id: ID!, $user_id: ID, $code: String!) {
+    confirmUserOrganizationJoin(id: $id, user_id: $user_id, code: $code) {
       id
       email
       language
@@ -281,6 +305,8 @@ const confirmUserOrganizationJoinMutation = gql`
       user_organization_id
       user_organization {
         id
+        organizational_email
+        organizational_identifier
         organization {
           id
           slug
@@ -299,8 +325,18 @@ const confirmUserOrganizationJoinMutation = gql`
 `
 
 const refreshUserOrganizationJoinConfirmationMutation = gql`
-  mutation RefreshUserOrganizationJoinConfirmation($id: ID!) {
-    refreshUserOrganizationJoinConfirmation(id: $id) {
+  mutation RefreshUserOrganizationJoinConfirmation(
+    $id: ID!
+    $organizational_email: String
+    $redirect: String
+    $language: String
+  ) {
+    refreshUserOrganizationJoinConfirmation(
+      id: $id
+      organizational_email: $organizational_email
+      redirect: $redirect
+      language: $language
+    ) {
       id
       email
       language

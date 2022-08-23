@@ -11,7 +11,7 @@ import {
   KAFKA_HOST,
   KAFKA_TOP_OF_THE_QUEUE,
 } from "../../../config"
-import { attachPrismaEvents } from "../../../util/prismaLogger"
+import { attachPrismaEvents } from "../../../util"
 import { KafkaError } from "../../lib/errors"
 import checkConnectionInInterval from "./connectedChecker"
 

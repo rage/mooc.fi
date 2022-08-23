@@ -5,7 +5,7 @@ import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull } from "../../util/db-functions"
+import { filterNull } from "../../util"
 
 export const StudyModuleQueries = extendType({
   type: "Query",
@@ -23,7 +23,9 @@ export const StudyModuleQueries = extendType({
         const { id, slug, language, translationFallback } = args
 
         if (!id && !slug) {
-          throw new UserInputError("must provide id or slug")
+          throw new UserInputError("must provide id or slug", {
+            argumentName: ["id", "slug"],
+          })
         }
 
         const study_module:

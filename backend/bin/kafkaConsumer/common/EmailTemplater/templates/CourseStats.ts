@@ -1,11 +1,20 @@
 import { redisify } from "../../../../../services/redis"
 import Template from "../types/Template"
 
-export class StartedCourseCount extends Template {
-  async resolve() {
+// TODO: why not have the course in the actual template as well?
+abstract class CourseStatsTemplate extends Template {
+  async getCourse() {
     const course = await this.context.prisma.course.findFirst({
       where: { course_stats_email: { id: this.emailTemplate.id } },
     })
+
+    return course
+  }
+}
+
+export class StartedCourseCount extends CourseStatsTemplate {
+  async resolve() {
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
@@ -35,11 +44,9 @@ export class StartedCourseCount extends Template {
   }
 }
 
-export class CompletedCourseCount extends Template {
+export class CompletedCourseCount extends CourseStatsTemplate {
   async resolve() {
-    const course = await this.context.prisma.course.findFirst({
-      where: { course_stats_email: { id: this.emailTemplate.id } },
-    })
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
@@ -69,11 +76,9 @@ export class CompletedCourseCount extends Template {
   }
 }
 
-export class AtLeastOneExerciseCount extends Template {
+export class AtLeastOneExerciseCount extends CourseStatsTemplate {
   async resolve() {
-    const course = await this.context.prisma.course.findFirst({
-      where: { course_stats_email: { id: this.emailTemplate.id } },
-    })
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
@@ -104,11 +109,9 @@ export class AtLeastOneExerciseCount extends Template {
   }
 }
 
-export class AtLeastOneExerciseButNotCompletedEmails extends Template {
+export class AtLeastOneExerciseButNotCompletedEmails extends CourseStatsTemplate {
   async resolve() {
-    const course = await this.context.prisma.course.findFirst({
-      where: { course_stats_email: { id: this.emailTemplate.id } },
-    })
+    const course = await this.getCourse()
 
     if (!course) {
       return ""

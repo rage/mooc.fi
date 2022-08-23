@@ -1,4 +1,8 @@
-import { ForbiddenError } from "apollo-server-express"
+import {
+  AuthenticationError,
+  ForbiddenError,
+  UserInputError,
+} from "apollo-server-express"
 import { omit } from "lodash"
 import {
   booleanArg,
@@ -9,19 +13,16 @@ import {
   stringArg,
 } from "nexus"
 
-import {
-  OrganizationRole,
-  User,
-  UserOrganization as UserOrganizationType,
-} from "@prisma/client"
+import { User, UserOrganization as UserOrganizationType } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../accessControl"
 import { Context } from "../context"
 import {
+  cancelEmailDeliveries,
   checkEmailValidity,
   createUserOrganizationJoinConfirmation,
   joinUserOrganization,
-} from "../util/userOrganizationUtilities"
+} from "./common"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",
@@ -57,18 +58,12 @@ export const UserOrganizationQueries = extendType({
         // TODO/FIXME: admin could query all user organizations?
         const { user_id: user_id_param, organization_id } = args
 
-        if (
-          user_id_param &&
-          user_id_param !== ctx.user?.id &&
-          ctx.role !== Role.ADMIN
-        ) {
-          throw new ForbiddenError("invalid credentials to do that")
-        }
+        assertUserIdOnlyForAdmin(ctx, user_id_param)
 
         const user_id = user_id_param ?? ctx.user?.id
 
         if (!user_id) {
-          throw new Error("no user id")
+          throw new AuthenticationError("not logged in or no user id")
         }
 
         return ctx.prisma.user
@@ -107,7 +102,9 @@ const assertUserOrganizationCredentials = async (
   })
 
   if (!userOrganization?.user_id) {
-    throw new Error("no such user/organization relation or no user in relation")
+    throw new UserInputError(
+      "no such user/organization relation or no user in relation",
+    )
   }
 
   assertUserIdOnlyForAdmin(ctx, userOrganization.user_id)
@@ -152,7 +149,7 @@ export const UserOrganizationMutations = extendType({
         }
 
         if (!user) {
-          throw new Error("no such user")
+          throw new UserInputError("no such user", { argumentName: "user_id" })
         }
 
         const organization = await ctx.prisma.organization.findUnique({
@@ -160,7 +157,9 @@ export const UserOrganizationMutations = extendType({
         })
 
         if (!organization) {
-          throw new Error("no such organization")
+          throw new UserInputError("no such organization", {
+            argumentName: "organization_id",
+          })
         }
 
         const joinUserOrganizationResult = await joinUserOrganization({
@@ -178,6 +177,15 @@ export const UserOrganizationMutations = extendType({
         const userOrganization = joinUserOrganizationResult.value
 
         if (organization.required_confirmation) {
+          const isEmailValid = checkEmailValidity(
+            organizational_email ?? user.email,
+            organization.required_organization_email,
+          )
+
+          if (isEmailValid.isErr()) {
+            throw isEmailValid.error
+          }
+
           const createUserOrganizationJoinConfirmationResult =
             await createUserOrganizationJoinConfirmation({
               ctx,
@@ -192,8 +200,6 @@ export const UserOrganizationMutations = extendType({
           if (createUserOrganizationJoinConfirmationResult.isErr()) {
             throw createUserOrganizationJoinConfirmationResult.error
           }
-
-          return createUserOrganizationJoinConfirmationResult.value
         }
 
         return userOrganization
@@ -226,120 +232,120 @@ export const UserOrganizationMutations = extendType({
       },
     })
 
-    /*
-    // TODO: mutation for updating organizational email
-    //    - we check the mail validity if a pattern is required for organization and throw if invalid
-    //    - we check if the organization membership is already confirmed
-    //      - if it isn't we flag the unsent confirmation mails as errors,
-    //        refresh the join confirmation and create a new email delivery to the new address
-    //    - update the data in the user/organization relation
+    t.field("updateUserOrganizationOrganizationalMail", {
+      type: "UserOrganization",
+      args: {
+        id: nonNull(idArg()),
+        organizational_email: nonNull(stringArg()),
+        redirect: stringArg(),
+        language: stringArg(),
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (
+        _,
+        { id, organizational_email, redirect, language },
+        ctx: Context,
+      ) => {
+        await assertUserOrganizationCredentials(ctx, id)
 
-    const userOrganization = await ctx.prisma.userOrganization.findUnique({
-          where: { id },
+        const userOrganization = await ctx.prisma.userOrganization.findUnique({
+          where: {
+            id,
+          },
           include: {
+            organization: true,
             user: true,
-            organization: {
-              select: {
-                id: true,
-                required_organization_email: true,
-                required_confirmation: true,
-                join_organization_email_template_id: true,
+            user_organization_join_confirmations: {
+              orderBy: {
+                created_at: "desc",
               },
             },
           },
         })
 
-        const { organization, user } = userOrganization ?? {}
+        const { organization, user, user_organization_join_confirmations } =
+          userOrganization ?? {}
 
         if (!userOrganization || !user || !organization) {
-          throw new Error("invalid user/organization relation")
+          throw new UserInputError(
+            "no user organization found or invalid user/organization relation",
+            { argumentName: "id" },
+          )
         }
 
-        if (
-          isNullOrUndefined(consented) &&
-          isNullOrUndefined(organizational_email) &&
-          isNullOrUndefined(organizational_identifier)
-        ) {
-          throw new Error("no fields to update")
+        const { required_confirmation } = organization
+
+        // no changes, return original
+        if (organizational_email === userOrganization.organizational_email) {
+          return omit(userOrganization, ["organization", "user"])
         }
 
-        const { required_confirmation, required_organization_email } =
-          organization ?? {}
+        const now = Date.now()
 
-        if (organizational_email) {
-          if (organizational_email !== userOrganization.organizational_email) {
-            if (required_confirmation) {
-              const isEmailValid = checkEmailValidity(
-                organizational_email,
-                required_organization_email,
-              )
-              if (isEmailValid.isErr()) {
-                throw isEmailValid.error
-              }
-            }
-          }
-
-          if (!userOrganization.confirmed && required_confirmation) {
-            const now = Date.now()
-
-            if (!organization.join_organization_email_template_id) {
-              throw new Error(
-                "no email template associated with this organization",
-              )
-            }
-
-            const { count: undeliveredCount } =
-              await ctx.prisma.emailDelivery.updateMany({
-                where: {
-                  user_id: user.id,
-                  email_template_id:
-                    organization.join_organization_email_template_id,
-                  organization_id: organization.id,
-                  sent: false,
-                  error: false,
-                },
-                data: {
-                  error: { set: true },
-                  error_message: `Organizational email changed at ${new Date(
-                    now,
-                  )}`,
-                },
-              })
-
-            if (undeliveredCount > 0) {
-              ctx.logger.info(
-                `Found ${undeliveredCount} undelivered mail${
-                  undeliveredCount > 1 ? "s" : ""
-                } still in the send queue; updated`,
-              )
-            }
-
-            // TODO: or expire old confirmation and create new?
-            // - will disconnect the existing email delivery
-            await ctx.prisma.userOrganizationJoinConfirmation.update({
-              where: { id },
-              data: {
-                email: organizational_email,
-                user_organization: { connect: { id: userOrganization.id } },
-                email_delivery: {
-                  create: {
-                    user_id: userOrganization.user_id,
-                    email: organizational_email,
-                    email_template_id:
-                      organization.join_organization_email_template_id,
-                    organization_id: userOrganization.organization_id,
-                    sent: false,
-                    error: false,
-                  },
-                },
-                expired: { set: false },
-                expires_at: new Date(now + 4 * 60 * 60 * 1000), // 4 hours for now
-              },
-            })
-          }
+        // no confirmation required, update and return
+        if (!required_confirmation) {
+          return ctx.prisma.userOrganization.update({
+            data: {
+              organizational_email,
+            },
+            where: {
+              id,
+            },
+          })
         }
 
-    */
+        // confirmation required
+        // TODO: if we ever get to upgrade prisma, wrap this in an interactive transaction
+        await cancelEmailDeliveries({
+          ctx,
+          userOrganization,
+          organization,
+          email: organizational_email ?? user.email,
+          errorMessage: `Organizational mail changed at ${new Date(now)}`,
+        })
+
+        const previousConfirmation =
+          user_organization_join_confirmations?.filter(
+            (conf) => conf.email === organizational_email,
+          )?.[0] ?? user_organization_join_confirmations?.[0]
+
+        await ctx.prisma.userOrganizationJoinConfirmation.updateMany({
+          where: {
+            user_organization_id: userOrganization.id,
+            confirmed: { not: true },
+          },
+          data: {
+            expired: { set: true },
+          },
+        })
+
+        const createUserOrganizationJoinConfirmationResult =
+          await createUserOrganizationJoinConfirmation({
+            ctx,
+            user,
+            organization,
+            userOrganization,
+            email: organizational_email,
+            language: language ?? previousConfirmation?.language,
+            redirect: redirect ?? previousConfirmation?.redirect,
+          })
+
+        if (createUserOrganizationJoinConfirmationResult.isErr()) {
+          throw createUserOrganizationJoinConfirmationResult.error
+        }
+
+        return ctx.prisma.userOrganization.update({
+          where: {
+            id,
+          },
+          data: {
+            organizational_email,
+            confirmed: { set: false },
+            confirmed_at: { set: null },
+          },
+        })
+      },
+    })
 
     t.field("deleteUserOrganization", {
       type: "UserOrganization",

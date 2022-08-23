@@ -1,4 +1,4 @@
-import { AuthenticationError, ForbiddenError } from "apollo-server-express"
+import { AuthenticationError, UserInputError } from "apollo-server-express"
 import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
 
 import { Context } from "../context"
@@ -58,11 +58,14 @@ export const VerifiedUserMutations = extendType({
         })
 
         if (!organization || !organization?.secret_key) {
-          throw new ForbiddenError("no organization or organization secret")
+          throw new UserInputError(
+            "no organization found or no organization secret set",
+            { argumentName: "organization_id" },
+          )
         }
 
         if (organization.secret_key !== organization_secret) {
-          throw new ForbiddenError("wrong organization secret key")
+          throw new AuthenticationError("invalid organization secret key")
         }
 
         return ctx.prisma.verifiedUser.create({

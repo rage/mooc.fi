@@ -17,7 +17,7 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"
-import { filterNull } from "../util/db-functions"
+import { filterNull } from "../util"
 
 export const Organization = objectType({
   name: "Organization",

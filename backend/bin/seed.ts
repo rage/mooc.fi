@@ -1,4 +1,4 @@
-import { CourseStatus, CourseTranslation } from "@prisma/client"
+import { CourseStatus } from "@prisma/client"
 
 import prisma from "../prisma"
 
@@ -408,18 +408,13 @@ const seed = async () => {
         teacher_in_charge_email: "",
         start_date: "",
         status: course.status as CourseStatus,
-        course_translations: course.course_translations
-          ? {
-              create:
-                (course?.course_translations as CourseTranslation[])?.map(
-                  (t) => ({
-                    ...t,
-                    id: undefined,
-                    link: t.link || "",
-                  }),
-                ) ?? undefined,
-            }
-          : undefined,
+        course_translations: course.course_translations && {
+          create: course.course_translations.map((t) => ({
+            ...t,
+            id: undefined,
+            link: t.link || "",
+          })),
+        },
         study_modules: undefined,
       }
 

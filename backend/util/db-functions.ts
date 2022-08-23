@@ -3,96 +3,6 @@ import { Knex } from "knex"
 import { Prisma } from "@prisma/client"
 
 import { CIRCLECI } from "../config"
-import { isNullOrUndefined } from "./isNullOrUndefined"
-import { notEmpty } from "./notEmpty"
-
-export const buildUserSearch = (
-  search?: string | null,
-): Prisma.UserWhereInput => {
-  if (isNullOrUndefined(search)) {
-    return {}
-  }
-  return {
-    OR: [
-      {
-        first_name: { contains: search, mode: "insensitive" },
-      },
-      {
-        last_name: { contains: search, mode: "insensitive" },
-      },
-      {
-        username: { contains: search, mode: "insensitive" },
-      },
-      {
-        email: { contains: search, mode: "insensitive" },
-      },
-      {
-        user_organizations: {
-          some: {
-            organizational_email: { contains: search, mode: "insensitive" },
-          },
-        },
-      },
-      {
-        student_number: { contains: search },
-      },
-      {
-        real_student_number: { contains: search },
-      },
-      {
-        upstream_id: Number(search) ?? undefined,
-      },
-    ],
-  }
-}
-
-interface ConvertPaginationInput {
-  first?: number | null
-  last?: number | null
-  before?: string | null
-  after?: string | null
-  skip?: number | null
-}
-
-interface ConvertPaginationOptions {
-  field?: string
-}
-
-interface ConvertPaginationOutput {
-  skip?: number
-  cursor?: { [key: string]: string }
-  take?: number
-}
-
-export const convertPagination = (
-  { first, last, before, after, skip }: ConvertPaginationInput,
-  options?: ConvertPaginationOptions,
-): ConvertPaginationOutput => {
-  const skipValue = skip || 0
-  const { field = "id" } = options || {}
-
-  if (!first && !last) {
-    throw new Error("first or last must be defined")
-  }
-
-  return {
-    skip: notEmpty(before) ? skipValue + 1 : skipValue,
-    take: notEmpty(last) ? -(last ?? 0) : notEmpty(first) ? first : 0,
-    cursor: notEmpty(before)
-      ? { [field]: before }
-      : notEmpty(after)
-      ? { [field]: after }
-      : undefined,
-  }
-}
-
-export const filterNull = <T>(o: T): T | undefined =>
-  o
-    ? Object.entries(o).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
-        {} as T,
-      )
-    : undefined
 
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
@@ -116,6 +26,14 @@ export const convertUpdate = <T extends object>(input: {
     }),
     {},
   )
+
+export const filterNull = <T>(o: T): T | undefined =>
+  o
+    ? Object.entries(o).reduce(
+        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
+        {} as T,
+      )
+    : undefined
 
 export const createUUIDExtension = async (knex: Knex) => {
   if (CIRCLECI) {
@@ -141,4 +59,39 @@ export const createUUIDExtension = async (knex: Knex) => {
   } catch {
     // we can probably ignore this
   }
+}
+
+// https://github.com/prisma/prisma/issues/5042#issuecomment-1191275514
+type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never
+type Entity = A<keyof typeof Prisma>
+type Keys<T extends Entity> = Extract<
+  keyof typeof Prisma[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>],
+  string
+>
+
+export function excludeFields<T extends Entity, K extends Keys<T>>(
+  type: T,
+  omit: K[],
+) {
+  type Key = Exclude<Keys<T>, K>
+  type TMap = Record<Key, true>
+  const result: TMap = {} as TMap
+  for (const key in Prisma[`${type}ScalarFieldEnum`]) {
+    if (!omit.includes(key as K)) {
+      result[key as Key] = true
+    }
+  }
+  return result
+}
+
+export function includeFields<T extends Entity, K extends Keys<T>>(
+  _type: T,
+  inc: K[],
+) {
+  type TMap = Record<K, true>
+  const result: TMap = {} as TMap
+  for (const key of inc) {
+    result[key as K] = true
+  }
+  return result
 }

@@ -11,13 +11,9 @@ import {
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { err } from "../util/result"
-import {
-  getOrganization,
-  getUser,
-  requireAdmin,
-} from "../util/server-functions"
+import { err } from "../util"
 import { ApiContext } from "./"
+import { getOrganization, getUser, requireAdmin } from "./utils"
 
 const JSONStream = require("JSONStream")
 

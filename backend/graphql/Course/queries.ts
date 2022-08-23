@@ -14,8 +14,7 @@ import {
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull } from "../../util/db-functions"
-import { notEmpty } from "../../util/notEmpty"
+import { filterNull, notEmpty } from "../../util"
 
 export const CourseQueries = extendType({
   type: "Query",
@@ -33,7 +32,9 @@ export const CourseQueries = extendType({
         const { slug, id, language, translationFallback } = args
 
         if (!slug && !id) {
-          throw new UserInputError("must provide id or slug")
+          throw new UserInputError("must provide id or slug", {
+            argumentName: ["id", "slug"],
+          })
         }
 
         const courseQuery: Prisma.CourseFindUniqueArgs = {

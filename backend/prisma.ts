@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 
-import { logDefinition } from "./util/prismaLogger"
+import { logDefinition } from "./util"
 
 let _prisma: PrismaClient
 

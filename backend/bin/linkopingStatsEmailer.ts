@@ -1,6 +1,6 @@
 import { LINKOPING_COMPLETION_RECIPIENTS } from "../config"
 import prisma from "../prisma"
-import { sendMail } from "../util/sendMail"
+import { sendMail } from "../util"
 import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "linkoping-stats-emailer" })

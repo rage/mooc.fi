@@ -4,8 +4,8 @@ import { intersection, omit } from "lodash"
 import { Course, UserCourseSettingsVisibility } from "@prisma/client"
 
 import { redisify } from "../services/redis"
-import { getUser } from "../util/server-functions"
 import { ApiContext } from "./"
+import { getUser } from "./utils"
 
 type UserCourseSettingsCountResult =
   | {

@@ -1,3 +1,4 @@
+import { AuthenticationError } from "apollo-server-express"
 import { extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin, isUser, or, Role } from "../accessControl"
@@ -54,7 +55,9 @@ export const CourseStatsSubscriptionMutations = extendType({
             })
 
           if (!ownsSubscription) {
-            throw new Error("You do not own this subscription")
+            throw new AuthenticationError(
+              "this course stats subscription requires ownership",
+            )
           }
         }
 

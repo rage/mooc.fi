@@ -3,7 +3,7 @@ import { arg, objectType, stringArg } from "nexus"
 
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
-import { filterNull } from "../../util/db-functions"
+import { filterNull } from "../../util"
 
 export const StudyModule = objectType({
   name: "StudyModule",

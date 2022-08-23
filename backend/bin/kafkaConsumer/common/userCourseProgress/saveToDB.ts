@@ -2,7 +2,7 @@ import { DateTime } from "luxon"
 
 import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
 
-import { err, ok, Result } from "../../../../util/result"
+import { err, ok, Result } from "../../../../util"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"

@@ -14,6 +14,7 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { OrphanedEntityError } from "./common"
 
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
@@ -59,7 +60,13 @@ export const UserCourseProgress = objectType({
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
         if (!parent.course_id) {
-          throw new Error("progress not connected to course")
+          throw new OrphanedEntityError(
+            "user course progress not connected to course",
+            {
+              parent: "Course",
+              entity: "UserCourseProgress",
+            },
+          )
         }
 
         const course = await ctx.prisma.course.findUnique({
@@ -67,7 +74,7 @@ export const UserCourseProgress = objectType({
         })
 
         if (!course) {
-          throw new Error("course not found") // should not actually happen
+          return null
         }
 
         const settings = await ctx.prisma.userCourseProgress
@@ -89,8 +96,23 @@ export const UserCourseProgress = objectType({
     t.field("exercise_progress", {
       type: "ExerciseProgress",
       resolve: async ({ course_id, user_id, progress }, _, ctx) => {
-        if (!course_id || !user_id) {
-          throw new Error("no course or user found")
+        if (!course_id) {
+          throw new OrphanedEntityError(
+            "user course progress not connected to course",
+            {
+              parent: "Course",
+              entity: "UserCourseProgress",
+            },
+          )
+        }
+        if (!user_id) {
+          throw new OrphanedEntityError(
+            "user course progress not connected to user",
+            {
+              parent: "User",
+              entity: "UserCourseProgress",
+            },
+          )
         }
 
         const courseProgress = normalizeProgress(progress)

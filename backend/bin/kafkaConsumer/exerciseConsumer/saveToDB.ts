@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 
-import { err, ok, Result } from "../../../util/result"
+import { err, ok, Result } from "../../../util"
 import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "../common/kafkaContext"
 import { ExerciseData, Message } from "./interfaces"

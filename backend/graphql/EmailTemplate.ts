@@ -84,7 +84,9 @@ export const EmailTemplateMutations = extendType({
           points_threshold,
         } = args
 
-        if (name == "") throw new UserInputError("Name is empty!")
+        if (name === "") {
+          throw new UserInputError("name is empty", { argumentName: "name" })
+        }
 
         return ctx.prisma.emailTemplate.create({
           data: {

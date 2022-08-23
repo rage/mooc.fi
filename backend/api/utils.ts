@@ -6,7 +6,7 @@ import { ApiContext } from "../api"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { err, ok, Result } from "../util/result"
+import { err, ok, Result } from "../util"
 
 interface GetUserReturn {
   user: User

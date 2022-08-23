@@ -5,12 +5,11 @@ import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
-import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
-import { convertUpdate } from "../../util/db-functions"
-import { notEmpty } from "../../util/notEmpty"
+import { convertUpdate, notEmpty } from "../../util"
+import { ConflictError } from "../common"
 import { deleteImage, uploadImage } from "../Image"
 
 const isNotNull = <T>(value: T | null | undefined): value is T =>
@@ -62,7 +61,9 @@ export const CourseMutations = extendType({
         }
 
         if (study_modules?.some((s) => !s?.id && !s?.slug)) {
-          throw new UserInputError("study modules must have id or slug")
+          throw new UserInputError("study modules must have id or slug", {
+            argumentName: { course: { study_modules: ["id", "slug"] } },
+          })
         }
 
         const newCourse = await ctx.prisma.course.create({
@@ -155,7 +156,9 @@ export const CourseMutations = extendType({
         let { end_date } = course
 
         if (!slug) {
-          throw new Error("slug required for update course")
+          throw new UserInputError("slug required for update course", {
+            argumentName: { course: "slug" },
+          })
         }
 
         let photo = course.photo
@@ -413,8 +416,12 @@ const createMutation = async <T extends WithIdOrNull>({
   try {
     // @ts-ignore: can't be arsed to do the typing, works
     existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
-  } catch (e: any) {
-    throw new DatabaseInputError(`error creating mutation`, { field, slug }, e)
+  } catch (error: any) {
+    throw new ConflictError("error creating mutation", {
+      field,
+      slug,
+      error,
+    })
   }
 
   const newOnes = (data || [])

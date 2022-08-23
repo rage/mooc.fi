@@ -8,8 +8,7 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
-import { buildUserSearch } from "../../util/db-functions"
-import { getCourseOrAliasBySlug } from "../../util/graphql-functions"
+import { buildUserSearch, getCourseOrAliasBySlug } from "../common"
 
 export const CompletionQueries = extendType({
   type: "Query",

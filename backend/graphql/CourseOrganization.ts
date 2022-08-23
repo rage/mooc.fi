@@ -1,6 +1,7 @@
 import { booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin, isVisitor, or } from "../accessControl"
+import { ConflictError } from "./common"
 
 export const CourseOrganization = objectType({
   name: "CourseOrganization",
@@ -55,13 +56,15 @@ export const CourseOrganizationMutations = extendType({
 
         const exists = await ctx.prisma.courseOrganization.findMany({
           where: {
-            course_id: course_id,
-            organization_id: organization_id,
+            course_id,
+            organization_id,
           },
         })
 
         if (exists.length > 0) {
-          throw new Error("this course/organization relation already exists")
+          throw new ConflictError(
+            "this course/organization relation already exists",
+          )
         }
 
         return ctx.prisma.courseOrganization.create({

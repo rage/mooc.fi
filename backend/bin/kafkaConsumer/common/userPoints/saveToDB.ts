@@ -1,9 +1,8 @@
-import { UserInputError } from "apollo-server-express"
 import { DateTime } from "luxon"
 
 import { ExerciseCompletion } from "@prisma/client"
 
-import { err, ok, Result } from "../../../../util/result"
+import { err, ok, Result } from "../../../../util"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
@@ -38,7 +37,7 @@ export const saveToDatabase = async (
   logger.info("Getting the exercise")
   if (!message.exercise_id) {
     return err(
-      new UserInputError("Message doesn't contain an exercise id", message),
+      new DatabaseInputError("Message doesn't contain an exercise id", message),
     )
   }
 

@@ -277,6 +277,7 @@ const addUserOrganizationMutation = gql`
     $user_id: ID
     $organization_id: ID!
     $organizational_email: String
+    $organizational_identifier: String
     $redirect: String
     $language: String
   ) {
@@ -284,6 +285,7 @@ const addUserOrganizationMutation = gql`
       user_id: $user_id
       organization_id: $organization_id
       organizational_email: $organizational_email
+      organizational_identifier: $organizational_identifier
       redirect: $redirect
       language: $language
     ) {
@@ -294,6 +296,8 @@ const addUserOrganizationMutation = gql`
       }
       role
       user_id
+      organizational_email
+      organizational_identifier
       confirmed
       confirmed_at
       user_organization_join_confirmations {

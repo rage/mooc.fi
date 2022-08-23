@@ -2,7 +2,7 @@ import { UserInputError } from "apollo-server-express"
 import { uniqBy } from "lodash"
 import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
-import { notEmpty } from "../../util/notEmpty"
+import { notEmpty } from "../../util"
 
 export const User = objectType({
   name: "User",
@@ -129,7 +129,9 @@ export const User = objectType({
       },
       resolve: async (parent, { course_id, course_slug }, ctx) => {
         if (!course_id && !course_slug) {
-          throw new Error("need course_id or course_slug")
+          throw new UserInputError("need course_id or course_slug", {
+            argumentName: ["course_id", "course_slug"],
+          })
         }
 
         // TODO/FIXME: Semantically it's right now, as we're quering a specific course,
@@ -174,6 +176,7 @@ export const User = objectType({
         if ((!course_id && !slug) || (course_id && slug)) {
           throw new UserInputError("provide exactly one of course_id or slug")
         }
+
         const course = await ctx.prisma.course.findUnique({
           where: {
             id: course_id ?? undefined,
@@ -282,7 +285,10 @@ export const User = objectType({
 
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
-      resolve: async (parent, _, ctx) => {
+      args: {
+        includeDeleted: nullable(booleanArg()),
+      },
+      resolve: async (parent, { includeDeleted = false }, ctx) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const exerciseCompletionCourses = await ctx.prisma.user
@@ -290,6 +296,9 @@ export const User = objectType({
             where: { id: parent.id },
           })
           .exercise_completions({
+            ...(!includeDeleted && {
+              where: { exercise: { deleted: { not: true } } },
+            }),
             select: {
               exercise: {
                 select: {
@@ -315,7 +324,7 @@ export const User = objectType({
             completions_handled_by_id:
               ec?.exercise?.course?.completions_handled_by_id,
           }))
-          .filter(({ course_id }) => Boolean(course_id))
+          .filter(isCourseIdDefined)
 
         // find unique course combinations (possible language versions separately)
         const summary = uniqBy(
@@ -333,3 +342,7 @@ export const User = objectType({
     })
   },
 })
+
+const isCourseIdDefined = <T extends { course_id: string }>(
+  value: Partial<T>,
+): value is T => Boolean(value?.course_id)

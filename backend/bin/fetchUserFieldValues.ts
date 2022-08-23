@@ -6,7 +6,7 @@ import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
+import { convertUpdate } from "../util"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 

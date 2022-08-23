@@ -14,7 +14,7 @@ import { type NexusGenInputs } from "nexus-typegen"
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
-import { getCourseOrAliasBySlug } from "../util/graphql-functions"
+import { getCourseOrAliasBySlug } from "./common"
 import { Context } from "/context"
 
 export const CompletionRegistered = objectType({

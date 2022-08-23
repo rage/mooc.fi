@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server-express"
 import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
@@ -73,7 +74,9 @@ export const Course = objectType({
         const { user_id, user_upstream_id } = args
 
         if (!user_id && !user_upstream_id) {
-          throw new Error("needs user_id or user_upstream_id")
+          throw new UserInputError("needs user_id or user_upstream_id", {
+            argumentName: ["user_id", "user_upstream_id"],
+          })
         }
 
         return ctx.prisma.course

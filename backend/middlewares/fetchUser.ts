@@ -5,7 +5,7 @@ import { Role } from "../accessControl"
 import { Context } from "../context"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
+import { convertUpdate } from "../util"
 import { UserInfo } from "/domain/UserInfo"
 
 export const moocfiAuthPlugin = () =>
