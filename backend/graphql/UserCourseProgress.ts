@@ -95,37 +95,29 @@ export const UserCourseProgress = objectType({
 
         const courseProgress = normalizeProgress(progress)
 
-        const exercises = await ctx.prisma.course
-          .findUnique({
-            where: {
-              id: course_id,
-            },
-          })
-          .exercises({
-            where: {
-              NOT: {
-                deleted: true,
-              },
-              max_points: { gt: 0 },
-            },
-            select: {
-              id: true,
-              exercise_completions: {
-                where: {
-                  completed: true,
-                  user_id,
-                },
-                take: 1,
-                orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
-              },
-            },
-          })
+        const exercises = await ctx.prisma.$queryRaw<
+          Array<{ exercise_id: string; exercise_completion_id: string | null }>
+        >(Prisma.sql`
+          select e.id as exercise_id, ecs.id as exercise_completion_id
+            from exercise e
+            full outer join (
+              select
+                ec.id, ec.exercise_id,
+                row_number() over (partition by ec.exercise_id order by ec.timestamp desc, ec.updated_at desc) as row
+              from exercise_completion ec
+              join exercise e on ec.exercise_id = e.id
+              where ec.user_id = ${user_id}
+              and e.course_id = ${course_id}
+              and ec.completed = true
+            ) ecs on ecs.exercise_id = e.id and row = 1
+          where e.course_id = ${course_id}
+          and e.deleted <> true
+          and e.max_points > 0
+        `)
 
-        const completedExerciseCount = exercises.reduce(
-          (acc, curr) =>
-            curr.exercise_completions?.length > 0 ? acc + 1 : acc,
-          0,
-        )
+        const completedExerciseCount = exercises.filter(
+          (e) => e.exercise_completion_id,
+        ).length
         const totalProgress =
           (courseProgress?.reduce(
             (acc: number, curr: any) => acc + curr.progress,

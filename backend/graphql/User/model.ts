@@ -1,6 +1,7 @@
 import { UserInputError } from "apollo-server-express"
-import { uniqBy } from "lodash"
 import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
+
+import { Prisma } from "@prisma/client"
 
 import { notEmpty } from "../../util/notEmpty"
 
@@ -287,50 +288,27 @@ export const User = objectType({
       resolve: async (parent, _, ctx) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
-        const exerciseCompletionCourses = await ctx.prisma.user
-          .findUnique({
-            where: { id: parent.id },
-          })
-          .exercise_completions({
-            select: {
-              exercise: {
-                select: {
-                  course: {
-                    select: {
-                      id: true,
-                      inherit_settings_from_id: true,
-                      completions_handled_by_id: true,
-                    },
-                  },
-                },
-              },
-            },
-          })
+        const startedCourses = await ctx.prisma.$queryRaw<
+          Array<{
+            course_id: string
+            inherit_settings_from_id: string | null
+            completions_handled_by_id: string | null
+          }>
+        >(Prisma.sql`
+          select c.id as course_id, inherit_settings_from_id, completions_handled_by_id
+          from course c
+          where c.id in (
+              select distinct(e.course_id)
+                  from exercise_completion ec
+                  join exercise e on ec.exercise_id = e.id
+              where ec.user_id = ${parent.id}
+          );
+        `)
 
-        // get entries for user/course_id combination
-        const summaryEntries = exerciseCompletionCourses
-          .flatMap((ec) => ({
-            user_id: parent.id,
-            course_id: ec?.exercise?.course?.id,
-            inherit_settings_from_id:
-              ec?.exercise?.course?.inherit_settings_from_id,
-            completions_handled_by_id:
-              ec?.exercise?.course?.completions_handled_by_id,
-          }))
-          .filter(({ course_id }) => Boolean(course_id))
-
-        // find unique course combinations (possible language versions separately)
-        const summary = uniqBy(
-          summaryEntries,
-          ({
-            course_id,
-            inherit_settings_from_id,
-            completions_handled_by_id,
-          }) =>
-            `${course_id}-${inherit_settings_from_id}-${completions_handled_by_id}`,
-        )
-
-        return summary
+        return startedCourses.map((course) => ({
+          ...course,
+          user_id: parent.id,
+        }))
       },
     })
   },
