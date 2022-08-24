@@ -10,7 +10,7 @@ fragment UserCourseSummaryCoreFields on UserCourseSummary {
   course {
     ...UserCourseSummaryCourseFields
   }
-  exercise_completions {
+  exercise_completions(includeDeleted: $includeDeleted) {
     ...ExerciseCompletionCoreFields
   }
   user_course_progress {

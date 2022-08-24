@@ -111,7 +111,7 @@ export const Course = objectType({
             where: { id: parent.id },
           })
           .exercises({
-            ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
+            ...(!includeDeleted && { where: { deleted: { not: true } } }),
           })
       },
     })

@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-23T16:10:52+03:00
+// Generated on 2022-08-24T14:09:12+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -5110,6 +5110,7 @@ export type CurrentUserStatsSubscriptionsQuery = {
 
 export type UserSummaryQueryVariables = Exact<{
   upstream_id?: InputMaybe<Scalars["Int"]>
+  includeDeleted?: InputMaybe<Scalars["Boolean"]>
 }>
 
 export type UserSummaryQuery = {
@@ -7425,6 +7426,16 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           {
             kind: "Field",
             name: { kind: "Name", value: "exercise_completions" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeDeleted" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "includeDeleted" },
+                },
+              },
+            ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
@@ -10934,6 +10945,14 @@ export const UserSummaryDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeDeleted" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -10959,6 +10978,16 @@ export const UserSummaryDocument = {
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "user_course_summary" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "includeDeleted" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "includeDeleted" },
+                      },
+                    },
+                  ],
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [

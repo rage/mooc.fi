@@ -203,11 +203,7 @@ const RegisterToOrganization = () => {
         id: currentUserOrganizationMembership.id,
       },
     })
-    setMemberships(
-      memberships.filter(
-        (i) => i !== slug,
-      ),
-    )
+    setMemberships(memberships.filter((i) => i !== slug))
     const fieldName = "joined_organizations"
     await updateUserDetails(fieldName, memberships)
   }

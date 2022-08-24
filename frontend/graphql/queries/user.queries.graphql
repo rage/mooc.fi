@@ -22,11 +22,11 @@ query CurrentUserStatsSubscriptions {
   }
 }
 
-query UserSummary($upstream_id: Int) {
+query UserSummary($upstream_id: Int, $includeDeleted: Boolean) {
   user(upstream_id: $upstream_id) {
     id
     username
-    user_course_summary {
+    user_course_summary(includeDeleted: $includeDeleted) {
       ...UserCourseSummaryCoreFields
     }
   }
