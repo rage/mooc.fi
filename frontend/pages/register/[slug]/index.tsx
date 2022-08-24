@@ -86,8 +86,6 @@ const RegisterToOrganization = () => {
     currentUser?.student_number,
   )
   const [memberships, setMemberships] = useState<Array<string>>([])
-  // @ts-ignore: not used
-  const [organizations] = useState<Record<string, any>>({}) // what's this?
   const formRef = createRef<HTMLFormElement>()
   const [
     currentUserOrganizationMembership,
@@ -144,16 +142,16 @@ const RegisterToOrganization = () => {
       return
     }
 
-    const mIds =
+    const mSlugs =
       userOrganizationsData.currentUser?.user_organizations
-        ?.map((uo) => uo?.organization?.id)
+        ?.map((uo) => uo?.organization?.slug)
         .filter(notEmpty) ?? []
     const currentMembership =
       userOrganizationsData.currentUser?.user_organizations.find(
-        (uo) => uo?.organization?.id === organizationData.organization?.id,
+        (uo) => uo?.organization?.slug === slug,
       )
 
-    setMemberships(mIds)
+    setMemberships(mSlugs)
     setCurrentUserOrganizationMembership(currentMembership)
   }, [organizationData, userOrganizationsData])
 
@@ -179,7 +177,7 @@ const RegisterToOrganization = () => {
 
   const verifyJoiningOrganization = async () => {
     const fieldName = "joined_organizations"
-    const fieldValue = [...memberships, organizationData!.organization!.id]
+    const fieldValue = [...memberships, slug]
     await updateUserDetails(fieldName, fieldValue)
 
     setMemberships(fieldValue)
@@ -207,7 +205,7 @@ const RegisterToOrganization = () => {
     })
     setMemberships(
       memberships.filter(
-        (i) => i !== currentUserOrganizationMembership.organization!.id,
+        (i) => i !== slug,
       ),
     )
     const fieldName = "joined_organizations"
@@ -220,7 +218,7 @@ const RegisterToOrganization = () => {
   ) */
 
   if (organizationLoading || userOrganizationsLoading) {
-    return <Container>loading...</Container>
+    return <Container>{t("loading")}...</Container>
   }
 
   if (organizationError || userOrganizationsError) {
@@ -235,7 +233,7 @@ const RegisterToOrganization = () => {
     !organizationData?.organization?.id ||
     (!admin && organizationData.organization.hidden)
   ) {
-    return <Container>no such organization exists</Container>
+    return <Container>{t("organizationDoesntExist")}</Container>
   }
 
   const isMember = Boolean(currentUserOrganizationMembership?.id)
