@@ -21,7 +21,5 @@
   "hoverHint": "Please consent first to sharing your course completion information",
   "leaveTitle": "Leave organization",
   "leaveInformation": "If you leave the organisation, your course completion records will not be sent from Mooc.fi to the organisation anymore.",
-  "leaveButton": "Leave",
-  "organizationDoesntExist": "no such organization exists",
-  "loading": "loading"
+  "leaveButton": "Leave"
 }
