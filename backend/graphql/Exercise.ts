@@ -11,6 +11,7 @@ import {
 } from "nexus"
 
 import { isAdmin, Role } from "../accessControl"
+import { filterNullFields } from "../util"
 import { Context } from "/context"
 
 export const Exercise = objectType({
@@ -61,7 +62,7 @@ export const Exercise = objectType({
             orderBy: {
               timestamp: "desc",
               updated_at: "desc",
-              ...orderBy,
+              ...filterNullFields(orderBy),
             },
           })
       },

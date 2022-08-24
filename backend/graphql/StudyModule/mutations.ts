@@ -96,7 +96,7 @@ export const StudyModuleMutations = extendType({
           data: {
             ...omit(study_module, ["new_slug"]),
             slug: new_slug ? new_slug : slug,
-            // FIXME/TODO: implement something like notEmpty for id field to fix typing
+            // FIXME/TODO: implement something like isDefined for id field to fix typing
             // @ts-ignore: TS doesn't get that in where: { id } the id has been already filtered
             study_module_translations: Object.keys(translationMutation).length
               ? translationMutation

@@ -1,9 +1,9 @@
 import { omit } from "lodash"
 import { arg, objectType, stringArg } from "nexus"
 
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import { Course, CourseTranslation } from "@prisma/client"
 
-import { filterNull } from "../../util"
+import { filterNullFields } from "../../util"
 
 export const StudyModule = objectType({
   name: "StudyModule",
@@ -36,19 +36,16 @@ export const StudyModule = objectType({
             where: { id: parent.id },
           })
           .courses({
-            orderBy:
-              (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
-            ...(language
-              ? {
-                  include: {
-                    course_translations: {
-                      where: {
-                        language: { equals: language },
-                      },
-                    },
+            orderBy: filterNullFields(orderBy),
+            ...(language && {
+              include: {
+                course_translations: {
+                  where: {
+                    language: { equals: language },
                   },
-                }
-              : {}),
+                },
+              },
+            }),
           })
 
         const coursesWithDescriptionAndLink = courses.map((course) => ({

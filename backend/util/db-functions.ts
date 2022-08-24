@@ -3,6 +3,7 @@ import { Knex } from "knex"
 import { Prisma } from "@prisma/client"
 
 import { CIRCLECI } from "../config"
+import { isEmptyNullOrUndefined, isNull, isNullOrUndefined } from "../util"
 
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
@@ -14,8 +15,12 @@ export const convertUpdate = <T extends object>(input: {
       ...acc,
       [key]: Array.isArray(value)
         ? value.map(convertUpdate)
-        : typeof value === "object" && value !== null
-        ? convertUpdate(value)
+        : typeof value === "object" &&
+          value !== null &&
+          !(value instanceof Date)
+        ? typeof value === "object" && convertUpdate(value)
+        : value instanceof Date
+        ? value.toISOString()
         : typeof value === "number"
         ? Number.isNaN(value)
           ? undefined
@@ -27,13 +32,56 @@ export const convertUpdate = <T extends object>(input: {
     {},
   )
 
-export const filterNull = <T>(o: T): T | undefined =>
-  o
-    ? Object.entries(o).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
-        {} as T,
-      )
-    : undefined
+type NonNullable<T> = T extends null ? Exclude<T, null> : T
+
+type NonNullFields<
+  T extends Record<PropertyKey, any>,
+  U = T | null | undefined,
+> = U extends undefined // null or undefined returns undefined
+  ? undefined
+  : U extends null
+  ? undefined
+  : [keyof T] extends [never] // empty object returns undefined
+  ? undefined
+  : Partial<T> extends T // all fields are optional, can be undefined as well
+  ?
+      | {
+          [K in keyof T]: NonNullable<T[K]>
+        }
+      | undefined
+  : {
+      [K in keyof T]: NonNullable<T[K]>
+    }
+
+function isFilteredNullOrUndefined<T extends Record<string, any>>(
+  obj: T | null | undefined,
+): obj is null | undefined {
+  return isNullOrUndefined(obj)
+}
+
+type Optional<T> = T | undefined | null
+
+export function filterNullFields<T extends Record<string, any>>(
+  obj: Optional<T>,
+): NonNullFields<T> {
+  if (isFilteredNullOrUndefined(obj)) {
+    return undefined
+  }
+
+  const ret = { ...obj }
+
+  for (const key in obj) {
+    if (isNull(obj[key])) {
+      delete ret[key]
+    }
+  }
+
+  if (Object.keys(ret).length === 0) {
+    return undefined
+  }
+
+  return ret as NonNullFields<T>
+}
 
 export const createUUIDExtension = async (knex: Knex) => {
   if (CIRCLECI) {
@@ -94,4 +142,8 @@ export function includeFields<T extends Entity, K extends Keys<T>>(
     result[key as K] = true
   }
   return result
+}
+
+export function emptyOrNullToUndefined(value: any) {
+  return isEmptyNullOrUndefined(value) ? undefined : value
 }

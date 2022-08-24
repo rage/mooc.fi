@@ -1,6 +1,7 @@
 import { EmailDelivery } from "@prisma/client"
 
 import prisma from "../prisma"
+import { emptyOrNullToUndefined } from "../util"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
 import { EmailTemplaterError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
@@ -49,7 +50,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       user,
       template: email_template,
       email,
-      organization: organization ?? undefined,
+      organization: emptyOrNullToUndefined(organization),
       context: { prisma, logger },
     })
     logger.info("Marking email as delivered")

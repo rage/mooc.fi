@@ -1,6 +1,6 @@
 import { EmailTemplate, Organization, User } from "@prisma/client"
 
-import { sendMail } from "../../../../util"
+import { emptyOrNullToUndefined, sendMail } from "../../../../util"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
 import { TemplateContext } from "./types/TemplateContext"
 
@@ -26,9 +26,9 @@ export async function sendEmailTemplateToUser({
 
   await sendMail({
     to: email ?? user.email,
-    subject: template.title ?? undefined,
+    subject: emptyOrNullToUndefined(template.title),
     text,
-    html: template.html_body ?? undefined,
+    html: emptyOrNullToUndefined(template.html_body),
   })
 }
 

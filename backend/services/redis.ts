@@ -2,6 +2,7 @@ import * as redis from "redis"
 import * as winston from "winston"
 
 import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
+import { isAsync, isPromise } from "../util"
 
 const _logger = winston.createLogger({
   level: "info",
@@ -57,17 +58,6 @@ const getRedisClient = (): typeof redisClient => {
   redisClient = client
 
   return client
-}
-
-const isPromise = <T>(value: any): value is Promise<T> => {
-  return value && typeof value.then === "function"
-}
-const isAsync = <T>(
-  fn: (...props: any[]) => Promise<T> | T,
-): fn is (...props: any[]) => Promise<T> => {
-  return (
-    fn && typeof fn === "function" && fn.constructor.name === "AsyncFunction"
-  )
 }
 
 export async function redisify<T>(

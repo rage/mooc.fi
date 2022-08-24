@@ -14,7 +14,7 @@ import {
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull, notEmpty } from "../../util"
+import { filterNullFields, isDefined } from "../../util"
 
 export const CourseQueries = extendType({
   type: "Query",
@@ -166,8 +166,7 @@ export const CourseQueries = extendType({
         const courses: (Course & {
           course_translations?: CourseTranslation[]
         })[] = await ctx.prisma.course.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+          orderBy: filterNullFields(orderBy),
           where: {
             AND: searchQuery,
           },
@@ -195,7 +194,7 @@ export const CourseQueries = extendType({
               link: course?.course_translations?.[0]?.link ?? "",
             }
           })
-          .filter(notEmpty)
+          .filter(isDefined)
 
         // TODO: (?) provide proper typing
         return filtered as (Course & { description: string; link: string })[]

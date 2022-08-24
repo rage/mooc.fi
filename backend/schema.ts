@@ -1,8 +1,6 @@
 import * as path from "path"
 import { join } from "path"
 
-import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
-import { GraphQLScalarType } from "graphql/type"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
 
@@ -21,22 +19,7 @@ const createPlugins = () => {
     nexusPrisma({
       experimentalCRUD: true,
       paginationStrategy: "prisma",
-      outputs: {
-        typegen: path.join(
-          __dirname,
-          "./node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts",
-        ),
-      },
       shouldGenerateArtifacts: true,
-      scalars: {
-        DateTime: DateTimeResolver,
-        Json: new GraphQLScalarType({
-          ...JSONObjectResolver,
-          name: "Json",
-          description:
-            "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
-        }),
-      },
     }),
     connectionPlugin({
       nexusFieldName: "connection",
@@ -64,16 +47,26 @@ export default makeSchema({
     export: "Context",
   },
   sourceTypes: {
+    headers: [`// generated at ${new Date()}\n`],
     modules: [
       {
-        module: require.resolve(".prisma/client/index.d.ts"),
-        alias: "prisma",
+        module: ".prisma/client/index.d.ts",
+        alias: "PrismaClient",
       },
-      { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
+      {
+        module: "@types/graphql-upload/index.d.ts",
+        alias: "GraphQLUpload",
+        onlyTypes: [],
+      },
     ],
     mapping: {
-      Upload: "upload.Upload['promise']",
+      Upload: "GraphQLUpload.Upload['promise']",
+      Json: "PrismaClient.Prisma.JsonValue",
+      DateTime: "Date", // Date | string in the resolver?
+      SortOrder: "PrismaClient.Prisma.SortOrder",
+      QueryMode: "PrismaClient.Prisma.QueryMode",
     },
+    debug: !isProduction,
   },
   plugins: createPlugins(),
   outputs: {

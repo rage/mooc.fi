@@ -9,7 +9,14 @@ import {
 } from "@prisma/client"
 
 import { Context } from "../../context"
-import { err, isNullOrUndefined, notEmpty, ok, Result } from "../../util"
+import {
+  emptyOrNullToUndefined,
+  err,
+  isDefined,
+  isNullOrUndefined,
+  ok,
+  Result,
+} from "../../util"
 import { ConfigurationError, ConflictError } from "./errors"
 
 export const buildUserSearch = (
@@ -82,11 +89,11 @@ export const convertPagination = (
   }
 
   return {
-    skip: notEmpty(before) ? skipValue + 1 : skipValue,
-    take: notEmpty(last) ? -(last ?? 0) : notEmpty(first) ? first : 0,
-    cursor: notEmpty(before)
+    skip: isDefined(before) ? skipValue + 1 : skipValue,
+    take: isDefined(last) ? -(last ?? 0) : isDefined(first) ? first : 0,
+    cursor: isDefined(before)
       ? { [field]: before }
-      : notEmpty(after)
+      : isDefined(after)
       ? { [field]: after }
       : undefined,
   }
@@ -208,8 +215,10 @@ export const joinUserOrganization = async ({
         connect: { id: organization.id },
       },
       role: OrganizationRole.Student,
-      organizational_email: organizational_email ?? undefined,
-      organizational_identifier: organizational_identifier ?? undefined,
+      organizational_email: emptyOrNullToUndefined(organizational_email),
+      organizational_identifier: emptyOrNullToUndefined(
+        organizational_identifier,
+      ),
       ...(!required_confirmation && {
         confirmed: true,
         confirmed_at: currentDate,

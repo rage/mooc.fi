@@ -5,7 +5,7 @@ import { Completion, Course, User, UserCourseProgress } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { BAIParentCourse, BAItiers } from "../config/courseConfig"
-import { notEmpty } from "../util"
+import { isDefined } from "../util"
 import { ApiContext } from "./"
 import { getUser, requireAdmin } from "./utils"
 
@@ -307,9 +307,9 @@ export class ProgressController {
       })
 
     const getUsers = (arr: Array<object & { user: User | null }>) =>
-      arr?.map((e) => e.user).filter(notEmpty) ?? []
+      arr?.map((e) => e.user).filter(isDefined) ?? []
     const getIds = (arr?: Array<object & { id: string }>) =>
-      arr?.map((e) => e.id).filter(notEmpty) ?? []
+      arr?.map((e) => e.id).filter(isDefined) ?? []
     const getUserIdsAndUpstreamIds = (users: Array<User>) => ({
       user_ids: getIds(users),
       user_upstream_ids: users.map((u) => u.upstream_id),
@@ -334,11 +334,11 @@ export class ProgressController {
       >,
     ) => {
       const beforeIds = getIds(before)
-      const beforeUserIds = before.map((e) => e.user_id).filter(notEmpty)
+      const beforeUserIds = before.map((e) => e.user_id).filter(isDefined)
       const beforeMap = groupBy(before, "id")
 
       const afterIds = getIds(after)
-      const afterUsers = after.flatMap((e) => e.user).filter(notEmpty)
+      const afterUsers = after.flatMap((e) => e.user).filter(isDefined)
 
       const createdIds = afterIds.filter((id) => !beforeIds.includes(id))
       const createdUsers = afterUsers.filter(

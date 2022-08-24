@@ -8,7 +8,7 @@ import { PrismaClient } from "@prisma/client"
 
 import { isTest, TMC_HOST } from "../config"
 import { getAccessToken } from "../services/tmc"
-import { notEmpty } from "../util"
+import { isDefined } from "../util"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
@@ -77,7 +77,7 @@ export const deleteUsers = async (
   const deletedUsers = changes
     .filter((user) => user.change_type === "deleted" && user.new_value === "t")
     .map((user) => user.username)
-    .filter(notEmpty)
+    .filter(isDefined)
 
   logger.info(`found ${deletedUsers.length} deleted users in TMC`)
 

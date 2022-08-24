@@ -8,12 +8,9 @@ import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
-import { convertUpdate, notEmpty } from "../../util"
+import { convertUpdate, isDefined } from "../../util"
 import { ConflictError } from "../common"
 import { deleteImage, uploadImage } from "../Image"
-
-const isNotNull = <T>(value: T | null | undefined): value is T =>
-  value !== null && value !== undefined
 
 const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
   value ?? undefined
@@ -74,10 +71,12 @@ export const CourseMutations = extendType({
               "completion_email_id",
               "course_stats_email_id",
             ]),
+            start_date: course.start_date.toISOString(),
+            end_date: course.end_date?.toISOString() ?? undefined,
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translations: {
-              create: course_translations?.filter(isNotNull),
+              create: course_translations?.filter(isDefined),
             },
             study_modules: !!study_modules
               ? {
@@ -87,10 +86,10 @@ export const CourseMutations = extendType({
                 }
               : undefined,
             open_university_registration_links: {
-              create: open_university_registration_links?.filter(isNotNull),
+              create: open_university_registration_links?.filter(isDefined),
             },
-            course_variants: { create: course_variants?.filter(isNotNull) },
-            course_aliases: { create: course_aliases?.filter(isNotNull) },
+            course_variants: { create: course_variants?.filter(isDefined) },
+            course_aliases: { create: course_aliases?.filter(isDefined) },
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : undefined,
@@ -98,7 +97,7 @@ export const CourseMutations = extendType({
               ? { connect: { id: completions_handled_by } }
               : undefined,
             user_course_settings_visibilities: {
-              create: user_course_settings_visibilities?.filter(isNotNull),
+              create: user_course_settings_visibilities?.filter(isDefined),
             },
             // don't think these will be passed by parameter, but let's be sure
             completion_email: !!completion_email_id
@@ -179,12 +178,13 @@ export const CourseMutations = extendType({
         const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
         })
+
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
-          end_date === ""
+          !end_date
         ) {
-          end_date = new Date().toLocaleDateString()
+          end_date = new Date()
         }
 
         if (photo && delete_photo) {
@@ -389,7 +389,7 @@ function filterNotIncluded(arr1: WithIdOrNull[], arr2: WithIdOrNull[]) {
   const ids1 = getIds(arr1)
   const ids2 = getIds(arr2)
 
-  const filtered = ids1.filter((id) => !ids2.includes(id)).filter(notEmpty)
+  const filtered = ids1.filter((id) => !ids2.includes(id)).filter(isDefined)
 
   return filtered.map((id) => ({ id }))
 }

@@ -13,11 +13,9 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"
-import { filterNull } from "../util"
+import { filterNullFields } from "../util"
 
 export const Organization = objectType({
   name: "Organization",
@@ -114,7 +112,9 @@ export const OrganizationQueries = extendType({
         take: intArg(),
         skip: intArg(),
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
-        orderBy: arg({ type: "OrganizationOrderByInput" }),
+        orderBy: arg({
+          type: "OrganizationOrderByInput",
+        }),
         hidden: booleanArg(),
       },
       authorize: organizationQueryHiddenPermission,
@@ -129,9 +129,7 @@ export const OrganizationQueries = extendType({
                 id: cursor.id ?? undefined,
               }
             : undefined,
-          orderBy:
-            (filterNull(orderBy) as Prisma.OrganizationOrderByInput) ??
-            undefined,
+          orderBy: filterNullFields(orderBy),
           where: {
             ...(!hidden && { hidden: { not: true } }),
           },

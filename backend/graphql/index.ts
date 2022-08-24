@@ -1,4 +1,4 @@
-// generated Thu Aug 11 2022 17:12:07 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Wed Aug 24 2022 23:27:40 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
@@ -11,6 +11,7 @@ export * from "./CourseOwnership"
 export * from "./CourseStatsSubscription"
 export * from "./CourseTranslation"
 export * from "./CourseVariant"
+export * from "./DateTime"
 export * from "./EmailDelivery"
 export * from "./EmailTemplate"
 export * from "./Exercise"
@@ -18,6 +19,7 @@ export * from "./ExerciseCompletion"
 export * from "./ExerciseCompletionRequiredAction"
 export * from "./ExerciseProgress"
 export * from "./Image"
+export * from "./Json"
 export * from "./OpenUniversityRegistrationLink"
 export * from "./Organization"
 export * from "./OrganizationTranslation"

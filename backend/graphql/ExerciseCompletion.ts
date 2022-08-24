@@ -73,7 +73,7 @@ export const ExerciseCompletionMutations = extendType({
         n_points: intArg(),
         exercise: idArg(),
         user: idArg(),
-        timestamp: arg({ type: "DateTime" }),
+        timestamp: nonNull(arg({ type: "DateTime" })),
         original_submission_date: arg({ type: "DateTime" }),
       },
       authorize: isAdmin,

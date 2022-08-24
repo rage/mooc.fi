@@ -9,7 +9,7 @@ export const UserCourseServiceProgress = objectType({
     t.model.id()
     t.model.created_at()
     t.model.updated_at()
-    // t.model.progress()
+    t.model.progress()
     t.model.service_id()
     t.model.service()
     t.model.timestamp()
@@ -20,7 +20,7 @@ export const UserCourseServiceProgress = objectType({
     t.model.course_id()
     t.model.course()
 
-    t.list.field("progress", {
+    /*t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseServiceProgress.findUnique({
@@ -30,7 +30,7 @@ export const UserCourseServiceProgress = objectType({
 
         return (res?.progress as any) ?? [] // errors without any typing - JSON value thing
       },
-    })
+    })*/
   },
 })
 

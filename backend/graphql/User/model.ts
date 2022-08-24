@@ -1,9 +1,9 @@
 import { UserInputError } from "apollo-server-express"
 import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
-import { Prisma } from "@prisma/client"
+import { Course, Prisma } from "@prisma/client"
 
-import { notEmpty } from "../../util"
+import { isDefined } from "../../util"
 
 export const User = objectType({
   name: "User",
@@ -207,7 +207,7 @@ export const User = objectType({
 
         return progressCourses
           .map((pr) => pr.course)
-          .filter(notEmpty)
+          .filter(isDefined)
           .map((course) => ({ course, user: parent }))
       },
     })
@@ -292,14 +292,16 @@ export const User = objectType({
       resolve: async (parent, { includeDeleted = false }, ctx) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
-        const startedCourses = await ctx.prisma.$queryRaw<
-          Array<{
+        /*{
             course_id: string
             inherit_settings_from_id: string | null
             completions_handled_by_id: string | null
-          }>
+          }> */
+        //id as course_id, inherit_settings_from_id, completions_handled_by_id
+        const startedCourses = await ctx.prisma.$queryRaw<
+          Array<Course>
         >(Prisma.sql`
-          select c.id as course_id, inherit_settings_from_id, completions_handled_by_id
+          select c.* 
           from course c
           where c.id in (
               select distinct(e.course_id)
@@ -315,8 +317,10 @@ export const User = objectType({
         `)
 
         return startedCourses.map((course) => ({
-          ...course,
-          user_id: parent.id,
+          course,
+          user: parent,
+          /*...course,
+          user_id: parent.id,*/
         }))
       },
     })

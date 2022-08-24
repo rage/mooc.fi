@@ -6,7 +6,7 @@ import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate, notEmpty } from "../util"
+import { convertUpdate, isDefined } from "../util"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
@@ -42,7 +42,7 @@ const fetchUserAppDatum = async () => {
         DateTime.fromISO(a.updated_at).toMillis() -
         DateTime.fromISO(b.updated_at).toMillis(),
     )
-    .filter(notEmpty)
+    .filter(isDefined)
     .filter((e) => e.user_id !== null)
 
   //  logger.info(data)

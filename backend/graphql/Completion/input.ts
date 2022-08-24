@@ -15,7 +15,7 @@ export const ManualCompletionArg = inputObjectType({
   definition(t) {
     t.nonNull.string("user_id")
     t.nullable.string("grade")
-    t.nullable.field("completion_date", { type: "DateTime" })
+    t.nullable.datetime("completion_date")
     t.nullable.int("tier")
   },
 })

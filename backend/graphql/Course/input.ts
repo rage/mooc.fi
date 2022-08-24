@@ -7,7 +7,7 @@ export const CourseCreateArg = inputObjectType({
     t.nonNull.string("slug")
     t.string("ects")
     t.nullable.id("photo")
-    t.nullable.field("new_photo", { type: "Upload" })
+    t.nullable.upload("new_photo")
     t.boolean("base64")
     t.boolean("start_point")
     t.boolean("promote")
@@ -17,8 +17,8 @@ export const CourseCreateArg = inputObjectType({
     t.nonNull.string("teacher_in_charge_name")
     t.nonNull.string("teacher_in_charge_email")
     t.string("support_email")
-    t.nonNull.string("start_date")
-    t.string("end_date")
+    t.nonNull.datetime("start_date")
+    t.datetime("end_date")
     t.list.field("study_modules", {
       type: "StudyModuleWhereUniqueInput",
     })
@@ -63,7 +63,7 @@ export const CourseUpsertArg = inputObjectType({
     t.nullable.string("new_slug")
     t.string("ects")
     t.nullable.id("photo")
-    t.nullable.field("new_photo", { type: "Upload" })
+    t.nullable.upload("new_photo")
     t.nullable.boolean("delete_photo")
     t.boolean("base64")
     t.boolean("start_point")
@@ -74,8 +74,8 @@ export const CourseUpsertArg = inputObjectType({
     t.nonNull.string("teacher_in_charge_name")
     t.nonNull.string("teacher_in_charge_email")
     t.string("support_email")
-    t.nonNull.string("start_date")
-    t.string("end_date")
+    t.nonNull.datetime("start_date")
+    t.datetime("end_date")
     t.list.field("study_modules", {
       type: "StudyModuleWhereUniqueInput",
     })

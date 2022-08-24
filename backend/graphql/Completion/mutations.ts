@@ -16,7 +16,7 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { notEmpty } from "../../util"
+import { isDefined } from "../../util"
 import { ConflictError } from "../common"
 
 export const CompletionMutations = extendType({
@@ -78,7 +78,7 @@ export const CompletionMutations = extendType({
             argumentName: "course_id",
           })
         }
-        const completions = (args.completions ?? []).filter(notEmpty)
+        const completions = (args.completions ?? []).filter(isDefined)
 
         const foundUsers = await ctx.knex
           .select([
@@ -115,7 +115,7 @@ export const CompletionMutations = extendType({
             course_id: course.completions_handled_by_id ?? course_id,
             user_id: databaseUser.id,
             grade: o.grade ?? null,
-            completion_date: o.completion_date,
+            completion_date: o.completion_date ?? null,
             certificate_id: null,
             eligible_for_ects: true,
             tier: o.tier ?? null,
@@ -195,7 +195,7 @@ export const CompletionMutations = extendType({
 
         const progressByUser = groupBy(progresses, "user_id")
         const userIds = Object.keys(progressByUser)
-          .filter(notEmpty)
+          .filter(isDefined)
           .filter((key) => key !== "null")
 
         // find users with completions
@@ -217,7 +217,7 @@ export const CompletionMutations = extendType({
         const userIdsWithoutCompletions = difference(
           userIds,
           completions.map((c) => c.user_id),
-        ).filter(notEmpty)
+        ).filter(isDefined)
 
         const users = await ctx.prisma.user.findMany({
           where: {

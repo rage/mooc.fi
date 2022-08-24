@@ -34,14 +34,16 @@ export const UserCourseProgress = objectType({
     t.model.max_points()
     t.model.n_points()
     // TODO/FIXME: this was borked on some previous version because of JSON, might work now
-    // t.model.progress()
+    t.model.progress({
+      resolve: (parent) => normalizeProgress(parent.progress),
+    })
     t.model.updated_at()
     t.model.user_id()
     t.model.user()
     t.model.user_course_service_progresses()
     t.model.extra()
 
-    t.list.field("progress", {
+    /*t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseProgress.findUnique({
@@ -52,7 +54,7 @@ export const UserCourseProgress = objectType({
         // TODO/FIXME: do we want to return progresses that might not have "progress" field?
         return normalizeProgress(res?.progress)
       },
-    })
+    })*/
 
     // t.prismaFields(["*"])
 

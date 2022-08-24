@@ -2,10 +2,10 @@ import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
+import { StudyModule, StudyModuleTranslation } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull } from "../../util"
+import { filterNullFields } from "../../util"
 
 export const StudyModuleQueries = extendType({
   type: "Query",
@@ -28,24 +28,18 @@ export const StudyModuleQueries = extendType({
           })
         }
 
-        const study_module:
-          | (StudyModule & {
-              study_module_translations?: StudyModuleTranslation[]
-            })
-          | null = await ctx.prisma.studyModule.findUnique({
+        const study_module = await ctx.prisma.studyModule.findUnique({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
           },
-          ...(ctx.role !== Role.ADMIN
-            ? {
-                select: {
-                  id: true,
-                  slug: true,
-                  name: true,
-                },
-              }
-            : {}),
+          ...(ctx.role !== Role.ADMIN && {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+            },
+          }),
         })
 
         if (!study_module) {
@@ -96,23 +90,21 @@ export const StudyModuleQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const modules: (StudyModule & {
-          study_module_translations?: StudyModuleTranslation[]
-        })[] = await ctx.prisma.studyModule.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.StudyModuleOrderByInput) ??
-            undefined,
-          ...(language
-            ? {
-                include: {
-                  study_module_translations: {
-                    where: {
-                      language: { equals: language },
-                    },
-                  },
+        const modules: Array<
+          StudyModule & {
+            study_module_translations?: StudyModuleTranslation[]
+          }
+        > = await ctx.prisma.studyModule.findMany({
+          orderBy: filterNullFields(orderBy),
+          ...(language && {
+            include: {
+              study_module_translations: {
+                where: {
+                  language: { equals: language },
                 },
-              }
-            : {}),
+              },
+            },
+          }),
         })
 
         const filtered = modules.map((study_module) => ({
