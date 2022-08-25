@@ -22,11 +22,11 @@ query CurrentUserStatsSubscriptions {
   }
 }
 
-query UserSummary($upstream_id: Int, $includeDeleted: Boolean) {
+query UserSummary($upstream_id: Int!, $includeDeletedExercises: Boolean) {
   user(upstream_id: $upstream_id) {
     id
     username
-    user_course_summary(includeDeleted: $includeDeleted) {
+    user_course_summary(includeDeletedExercises: $includeDeletedExercises) {
       ...UserCourseSummaryCoreFields
     }
   }
@@ -38,7 +38,7 @@ query CurrentUserOverview {
   }
 }
 
-query UserOverview($upstream_id: Int) {
+query UserOverview($upstream_id: Int!) {
   user(upstream_id: $upstream_id) {
     ...UserOverviewFields
   }

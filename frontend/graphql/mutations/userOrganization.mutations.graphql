@@ -1,6 +1,7 @@
 mutation AddUserOrganization(
   $user_id: ID
-  $organization_id: ID!
+  $organization_id: ID
+  $organization_slug: String
   $organizational_email: String
   $organizational_identifier: String
   $redirect: String
@@ -9,6 +10,7 @@ mutation AddUserOrganization(
   addUserOrganization(
     user_id: $user_id
     organization_id: $organization_id
+    organization_slug: $organization_slug
     organizational_email: $organizational_email
     organizational_identifier: $organizational_identifier
     redirect: $redirect

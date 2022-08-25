@@ -1,7 +1,7 @@
 fragment UserCourseSummaryCourseFields on Course {
   ...CourseWithPhotoCoreFields
   has_certificate
-  exercises {
+  exercises(includeDeleted: $includeDeletedExercises) {
     ...ExerciseCoreFields
   }
 }
@@ -10,7 +10,7 @@ fragment UserCourseSummaryCoreFields on UserCourseSummary {
   course {
     ...UserCourseSummaryCourseFields
   }
-  exercise_completions(includeDeleted: $includeDeleted) {
+  exercise_completions(includeDeletedExercises: $includeDeletedExercises) {
     ...ExerciseCompletionCoreFields
   }
   user_course_progress {

@@ -1,5 +1,6 @@
 import { EmailDelivery } from "@prisma/client"
 
+import { isProduction } from "../config"
 import prisma from "../prisma"
 import { emptyOrNullToUndefined } from "../util"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
@@ -22,12 +23,6 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
     })) ?? {}
 
   if (!email_template || !user) {
-    logger.error(
-      new EmailTemplaterError(
-        "No email template or user found while sending email",
-        { email_template, user_id: user?.id },
-      ),
-    )
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: {
@@ -35,6 +30,13 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
         error_message: "No email template or user found while sending email",
       },
     })
+
+    logger.error(
+      new EmailTemplaterError(
+        "No email template or user found while sending email",
+        { email_template, user_id: user?.id },
+      ),
+    )
 
     return
   }
@@ -51,7 +53,7 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       template: email_template,
       email,
       organization: emptyOrNullToUndefined(organization),
-      context: { prisma, logger },
+      context: { prisma, logger, test: !isProduction },
     })
     logger.info("Marking email as delivered")
 

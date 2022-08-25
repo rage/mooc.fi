@@ -7,4 +7,5 @@ export type TemplateContext = {
   prisma: PrismaClient
   logger?: winston.Logger
   knex?: Knex
+  test?: boolean
 }

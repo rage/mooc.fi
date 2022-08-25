@@ -19,11 +19,6 @@ query EditorCourses(
   ) {
     ...EditorCourseFields
   }
-  # is currentUser from this query ever used?
-  currentUser {
-    id
-    administrator
-  }
 }
 
 query CourseFromSlug($slug: String!) {
@@ -51,6 +46,7 @@ query CourseEditorDetails($slug: String) {
   }
 }
 
+# TODO: the following two are currently identical
 query EmailTemplateEditorCourses {
   courses {
     ...CourseCoreFields

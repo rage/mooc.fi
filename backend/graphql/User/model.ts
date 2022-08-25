@@ -267,16 +267,18 @@ export const User = objectType({
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        includeDeleted: nullable(booleanArg()),
+        includeDeletedExercises: nullable(booleanArg()),
       },
-      resolve: async (parent, { includeDeleted = false }, ctx) => {
+      resolve: async (parent, { includeDeletedExercises = false }, ctx) => {
         return ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
           })
           .exercise_completions({
             where: {
-              ...(!includeDeleted && { exercise: { deleted: { not: true } } }),
+              ...(!includeDeletedExercises && {
+                exercise: { deleted: { not: true } },
+              }),
             },
             distinct: "exercise_id",
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
@@ -287,17 +289,11 @@ export const User = objectType({
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
       args: {
-        includeDeleted: nullable(booleanArg()),
+        includeDeletedExercises: booleanArg(),
       },
-      resolve: async (parent, { includeDeleted = false }, ctx) => {
+      resolve: async (parent, { includeDeletedExercises = false }, ctx) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
-        /*{
-            course_id: string
-            inherit_settings_from_id: string | null
-            completions_handled_by_id: string | null
-          }> */
-        //id as course_id, inherit_settings_from_id, completions_handled_by_id
         const startedCourses = await ctx.prisma.$queryRaw<
           Array<Course>
         >(Prisma.sql`
@@ -309,7 +305,7 @@ export const User = objectType({
                   join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${parent.id}
               ${
-                !includeDeleted
+                !includeDeletedExercises
                   ? Prisma.sql`and e.deleted <> true`
                   : Prisma.empty
               }
@@ -319,8 +315,7 @@ export const User = objectType({
         return startedCourses.map((course) => ({
           course,
           user: parent,
-          /*...course,
-          user_id: parent.id,*/
+          includeDeletedExercises,
         }))
       },
     })

@@ -1,6 +1,6 @@
 import { ApolloError, UserInputError } from "apollo-server-express"
 
-import { Prisma } from "@prisma/client"
+import { EmailDelivery, Prisma } from "@prisma/client"
 import {
   Organization,
   OrganizationRole,
@@ -158,8 +158,11 @@ export const checkEmailValidity = (
     )
   }
 
+  console.log(email, requiredPattern)
   if (requiredPattern) {
-    if (!email.match(requiredPattern)) {
+    const emailRegex = new RegExp(requiredPattern)
+    console.log("emailRegex", emailRegex)
+    if (!emailRegex.test(email)) {
       return err(
         new UserInputError(
           "given email does not fulfill organization email requirements",
@@ -235,6 +238,7 @@ interface CancelEmailDeliveriesOptions {
   ctx: Context
   userOrganization: UserOrganization
   organization: Organization
+  ignoreEmailDeliveries?: Array<EmailDelivery["id"]>
   email?: string
   errorMessage?: string
 }
@@ -244,9 +248,13 @@ export const cancelEmailDeliveries = async ({
   organization,
   email,
   errorMessage,
+  ignoreEmailDeliveries,
 }: CancelEmailDeliveriesOptions) => {
   const { count } = await ctx.prisma.emailDelivery.updateMany({
     where: {
+      ...(ignoreEmailDeliveries?.length && {
+        id: { not: { in: ignoreEmailDeliveries } },
+      }),
       user_id: userOrganization.user_id,
       email,
       email_template_id: organization.join_organization_email_template_id,
@@ -289,13 +297,6 @@ export const createUserOrganizationJoinConfirmation = async ({
   language,
 }: CreateUserOrganizationJoinConfirmationOptions) => {
   const { join_organization_email_template_id } = organization
-
-  /*const isValid = checkEmailValidity(email, required_organization_email)
-
-  if (isValid.isErr()) {
-    return isValid
-  }
-  */
 
   if (!join_organization_email_template_id) {
     return err(
