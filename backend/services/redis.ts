@@ -60,6 +60,19 @@ const getRedisClient = (): typeof redisClient => {
   return client
 }
 
+/**
+ *
+ * @param fn Function (can be async) or a promise to be cached
+ * @param options
+ * @param options.prefix Prefix to be used in the redis cache key
+ * @param options.expireTime Time in **seconds** to expire the cache
+ * @param options.key Key to be used in the redis cache key
+ * @param [options.params] Parameters to be passed to the function (ignored if a promise is given)
+ * @param ctx
+ * @param [ctx.client = redisClient] Redis client to be used
+ * @param [ctx.logger = _logger] Winston logger to be used
+ * @returns
+ */
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
   options: {
@@ -72,7 +85,7 @@ export async function redisify<T>(
     client?: typeof redisClient
     logger?: winston.Logger
   } = {},
-) {
+): Promise<T | undefined> {
   const { prefix, expireTime, key, params } = options
   const { logger = _logger, client = redisClient } = ctx
 
@@ -92,6 +105,7 @@ export async function redisify<T>(
   }
 
   const prefixedKey = `${prefix}:${key}`
+
   let value: T | undefined
   let resolveSuccess = false
 

@@ -1,3 +1,5 @@
+import { Organization, User } from "@prisma/client"
+
 import { Context } from "./context"
 
 export enum Role {
@@ -6,20 +8,48 @@ export enum Role {
   ORGANIZATION, //for automated scripts, not for accounts
   VISITOR,
 }
-
 // TODO: caching?
-export const isAdmin = (_: any, _args: any, ctx: Context, _info: any) =>
-  ctx.role === Role.ADMIN
-export const isUser = (_: any, _args: any, ctx: Context, _info: any) =>
-  ctx.role === Role.USER
-export const isOrganization = (_: any, _args: any, ctx: Context, _info: any) =>
-  ctx.role === Role.ORGANIZATION
-export const isVisitor = (_: any, _args: any, ctx: Context, _info: any) =>
+
+type AuthorizeFunction = (
+  root: any,
+  args: any,
+  ctx: Context,
+  info: any,
+) => boolean | Promise<boolean>
+
+export const isAdmin: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: User; organization: undefined } => {
+  return Boolean(ctx.user) && ctx.role === Role.ADMIN
+}
+export const isUser: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: User; organization: undefined } =>
+  Boolean(ctx.user) && ctx.role === Role.USER
+export const isOrganization: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: undefined; organization: Organization } =>
+  Boolean(ctx.organization) && ctx.role === Role.ORGANIZATION
+export const isVisitor: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: undefined; organization: undefined } =>
   ctx.role === Role.VISITOR
 export const isCourseOwner =
-  (course_id: string) =>
-  async (_: any, _args: any, ctx: Context, _info: any) => {
-    if (!isUser(_, _args, ctx, _info) || !ctx.user?.id || !course_id) {
+  (course_id: string): AuthorizeFunction =>
+  async (root, args, ctx, info) => {
+    if (!isUser(root, args, ctx, info) || !ctx.user?.id || !course_id) {
       return false
     }
 
@@ -35,42 +65,17 @@ export const isCourseOwner =
     return Boolean(ownership)
   }
 
-type AuthorizeFunction = (
-  root: any,
-  args: any,
-  ctx: Context,
-  info: any,
-) => boolean
-
 export const or =
-  (...predicates: AuthorizeFunction[]) =>
-  (root: any, args: any, ctx: Context, info: any) =>
-    predicates.some((p) => p(root, args, ctx, info))
+  (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
+  (...params) =>
+    predicates.some((p) => p(...params))
 
 export const and =
-  (...predicates: AuthorizeFunction[]) =>
-  (root: any, args: any, ctx: Context, info: any) =>
-    predicates.every((p) => p(root, args, ctx, info))
+  (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
+  (...params) =>
+    predicates.every((p) => p(...params))
 
 export const not =
-  (fn: AuthorizeFunction) => (root: any, args: any, ctx: Context, info: any) =>
-    !fn(root, args, ctx, info)
-
-/*const checkAccess = (
-  ctx: Context,
-  {
-    allowOrganizations = false,
-    disallowAdmin = false,
-    allowVisitors = false,
-    allowUsers = false,
-  } = {},
-) => {
-  // console.log(`role: ${Role[ctx.role]}, orgs ${allowOrganizations} no-admins ${disallowAdmin}, visitor ${allowVisitors}, users ${allowUsers}`)
-  if (allowOrganizations && ctx.role == Role.ORGANIZATION) return true
-  if (ctx.role == Role.ADMIN && !disallowAdmin) return true
-  if (ctx.role == Role.USER && allowUsers) return true
-  if (ctx.role == Role.VISITOR && allowVisitors) return true
-  throw new ForbiddenError("Access Denied")
-}
-
-export default checkAccess*/
+  (fn: AuthorizeFunction): AuthorizeFunction =>
+  (...params) =>
+    !fn(...params)

@@ -58,7 +58,7 @@ const setContextOrganization = async (
 const setContextUser = async (ctx: Context, rawToken: string) => {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
-  let details: UserInfo | null = null
+  let details: UserInfo | undefined
 
   try {
     details = await redisify<UserInfo>(
@@ -77,7 +77,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
   }
 
   ctx.tmcClient = client
-  ctx.userDetails = details ?? undefined
+  ctx.userDetails = details
 
   if (!details) {
     return
@@ -98,6 +98,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
     create: prismaDetails,
     update: convertUpdate(prismaDetails),
   })
+
   if (ctx.user.administrator) {
     ctx.role = Role.ADMIN
   } else {

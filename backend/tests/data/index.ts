@@ -329,18 +329,6 @@ export const users: Prisma.UserCreateInput[] = [
   },
 ]
 
-export const userOrganizations: Prisma.UserOrganizationCreateInput[] = [
-  {
-    id: "96900000000000000000000000000101",
-    user: { connect: { id: "20000000000000000000000000000102" } },
-    organization: { connect: { id: "10000000000000000000000000000103" } },
-    created_at: "1900-01-01T10:00:00.00+02:00",
-    updated_at: "1900-01-01T10:00:00.00+02:00",
-    confirmed: true,
-    consented: true,
-  },
-]
-
 export const completions: Prisma.CompletionCreateInput[] = [
   {
     id: "30000000-0000-0000-0000-000000000102",
@@ -904,6 +892,18 @@ export const courseOwnerships: Prisma.CourseOwnershipCreateInput[] = [
     course: { connect: { id: "00000000000000000000000000000001" } },
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+]
+
+export const userOrganizations: Prisma.UserOrganizationCreateInput[] = [
+  {
+    id: "96900000000000000000000000000101",
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    organization: { connect: { id: "10000000000000000000000000000103" } },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    confirmed: true,
+    consented: true,
   },
 ]
 

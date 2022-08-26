@@ -3,8 +3,7 @@ import { IncomingMessage } from "http"
 import { Knex } from "knex"
 import type { Logger } from "winston"
 
-import { Organization, User } from "@prisma/client"
-import { PrismaClient } from "@prisma/client"
+import { Organization, PrismaClient, User } from "@prisma/client"
 
 import { Role } from "./accessControl"
 import { UserInfo } from "./domain/UserInfo"
@@ -15,9 +14,9 @@ export type Context = {
   user?: User
   organization?: Organization
   disableRelations: boolean
-  role?: Role | undefined
-  userDetails?: UserInfo | undefined
-  tmcClient: TmcClient | undefined
+  role?: Role
+  userDetails?: UserInfo
+  tmcClient?: TmcClient
   req: IncomingMessage
   logger: Logger
   knex: Knex

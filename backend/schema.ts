@@ -4,7 +4,12 @@ import { join } from "path"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
 
-import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
+import {
+  DEBUG,
+  isProduction,
+  NEW_RELIC_LICENSE_KEY,
+  NEXUS_REFLECTION,
+} from "./config"
 import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
@@ -66,7 +71,7 @@ export default makeSchema({
       SortOrder: "PrismaClient.Prisma.SortOrder",
       QueryMode: "PrismaClient.Prisma.QueryMode",
     },
-    debug: !isProduction,
+    debug: DEBUG,
   },
   plugins: createPlugins(),
   outputs: {

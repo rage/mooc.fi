@@ -41,18 +41,8 @@ export const UserOrganizationJoinConfirmationQueries = extendType({
               },
             }),
           },
-          orderBy: {
-            created_at: "desc",
-          },
         })
       },
     })
   },
 })
-
-/*export const UserOrganizationJoinConfirmationMutations = extendType({
-  type: "Mutation",
-  definition(t) {
-
-  },
-})*/
