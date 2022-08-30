@@ -394,7 +394,7 @@ describe("Course", () => {
     const getNewCourse = () => ({
       name: "new1",
       slug: "new1",
-      start_date: "01/01/1900",
+      start_date: new Date("01/01/1900").toISOString(),
       teacher_in_charge_email: "e@mail.com",
       teacher_in_charge_name: "teacher",
       study_modules: [{ id: "00000000000000000000000000000101" }],
@@ -427,8 +427,8 @@ describe("Course", () => {
       name: "updated course1",
       slug: "course1",
       new_slug: "updated_course1",
-      start_date: "02/01/1900",
-      end_date: "12/30/2100",
+      start_date: new Date("02/01/1900").toISOString(),
+      end_date: new Date("12/30/2100").toISOString(),
       teacher_in_charge_email: "updated-e@mail.com",
       teacher_in_charge_name: "updated teacher",
       course_translations: [
@@ -605,7 +605,7 @@ describe("Course", () => {
           topic: "new-course",
         })
 
-        expect(createdCourse).not.toEqual(null)
+        expect(createdCourse).not.toBeNull()
         expect(createdCourse!.id).toEqual(res.addCourse.id)
         expect(createdCourse).toMatchSnapshot({
           created_at: expect.any(Date),

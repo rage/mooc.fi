@@ -55,14 +55,18 @@ abstract class OrganizationTemplate extends Template {
   async getActivationCode(
     userOrganizationJoinConfirmation?: UserOrganizationJoinConfirmation,
   ) {
-    const activationCode = await calculateActivationCode({
+    const activationCodeResult = await calculateActivationCode({
       prisma: this.context.prisma,
       userOrganizationJoinConfirmation:
         userOrganizationJoinConfirmation ??
         (await this.getUserOrganizationJoinConfirmation()),
     })
 
-    return activationCode
+    if (activationCodeResult.isErr()) {
+      throw activationCodeResult.error
+    }
+
+    return activationCodeResult.value
   }
 }
 export class OrganizationActivationLink extends OrganizationTemplate {

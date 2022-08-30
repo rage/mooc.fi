@@ -40,7 +40,7 @@ export class StartedCourseCount extends CourseStatsTemplate {
       },
     )
 
-    return startedCourse
+    return startedCourse ?? ""
   }
 }
 
@@ -72,7 +72,7 @@ export class CompletedCourseCount extends CourseStatsTemplate {
       },
     )
 
-    return completedCourse
+    return completedCourse ?? ""
   }
 }
 
@@ -105,7 +105,7 @@ export class AtLeastOneExerciseCount extends CourseStatsTemplate {
       },
     )
 
-    return atLeastOneExercise
+    return atLeastOneExercise ?? ""
   }
 }
 
@@ -161,6 +161,6 @@ export class AtLeastOneExerciseButNotCompletedEmails extends CourseStatsTemplate
       },
     )
 
-    return atLeastOneExerciseButNotCompletedEmails
+    return atLeastOneExerciseButNotCompletedEmails ?? ""
   }
 }

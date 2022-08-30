@@ -1,6 +1,7 @@
 import { PrismaClient, UserOrganizationJoinConfirmation } from "@prisma/client"
 
 import { OrphanedEntityError } from "../graphql/common"
+import { err, ok, Result } from "../util"
 
 const crypto = require("crypto")
 
@@ -12,7 +13,7 @@ interface CalculateActivationCodeOptions {
 export const calculateActivationCode = async ({
   prisma,
   userOrganizationJoinConfirmation,
-}: CalculateActivationCodeOptions): Promise<string> => {
+}: CalculateActivationCodeOptions): Promise<Result<string, Error>> => {
   const userOrganization = await prisma.userOrganization.findUnique({
     where: {
       id: userOrganizationJoinConfirmation.user_organization_id,
@@ -28,10 +29,12 @@ export const calculateActivationCode = async ({
     !userOrganization.user ||
     !userOrganization.organization
   ) {
-    throw new OrphanedEntityError("invalid user/organization relation", {
-      parent: "UserOrganizationJoinConfirmation",
-      entity: "UserOrganization",
-    })
+    return err(
+      new OrphanedEntityError("invalid user/organization relation", {
+        parent: "UserOrganizationJoinConfirmation",
+        entity: "UserOrganization",
+      }),
+    )
   }
 
   const { user, organization } = userOrganization
@@ -58,5 +61,5 @@ export const calculateActivationCode = async ({
     .toString()
     .padStart(5, "0")
 
-  return activationCode
+  return ok(activationCode)
 }

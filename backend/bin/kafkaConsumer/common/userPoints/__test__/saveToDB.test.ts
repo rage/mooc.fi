@@ -1,5 +1,3 @@
-import { UserInputError } from "apollo-server-express"
-
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
@@ -89,7 +87,7 @@ describe("userPoints/saveToDatabase", () => {
       if (!ret.isErr()) {
         fail()
       }
-      expect(ret.error).toBeInstanceOf(UserInputError)
+      expect(ret.error).toBeInstanceOf(DatabaseInputError)
       expect(ret.error.message).toContain("Message doesn't contain")
     })
 

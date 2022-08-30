@@ -81,7 +81,7 @@ export function getUser({ knex, logger }: ApiContext) {
       return err(res.status(401).json({ message: "not logged in" }))
     }
 
-    let details: UserInfo | null = null
+    let details: UserInfo | undefined
     try {
       const client = new TmcClient(rawToken)
       details = await redisify<UserInfo>(

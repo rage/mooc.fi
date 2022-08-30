@@ -292,7 +292,7 @@ export class UserCourseSettingsController {
       },
     )
 
-    if (resObject.error) {
+    if (resObject && "error" in resObject && resObject.error) {
       return res.status(403).json({
         message: "Course not found or user count not set to visible",
       })

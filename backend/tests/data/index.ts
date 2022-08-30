@@ -919,6 +919,7 @@ export const userOrganizationJoinConfirmations: Prisma.UserOrganizationJoinConfi
         user: { connect: { id: "20000000000000000000000000000102" } },
         organization: { connect: { id: "10000000000000000000000000000103" } },
     */
+      language: "fi",
       email_delivery: {
         create: {
           id: "61400000-0000-0000-0000-000000000001",

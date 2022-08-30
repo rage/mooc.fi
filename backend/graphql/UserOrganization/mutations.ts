@@ -202,12 +202,16 @@ export const UserOrganizationMutations = extendType({
           throw new ForbiddenError("confirmation link has expired")
         }
 
-        const activationCode = await calculateActivationCode({
+        const activationCodeResult = await calculateActivationCode({
           prisma: ctx.prisma,
           userOrganizationJoinConfirmation,
         })
 
-        if (activationCode !== code) {
+        if (activationCodeResult.isErr()) {
+          throw activationCodeResult.error
+        }
+
+        if (activationCodeResult.value !== code) {
           throw new ForbiddenError("invalid activation code")
         }
 
@@ -256,7 +260,7 @@ export const UserOrganizationMutations = extendType({
           throw new AuthenticationError("not logged in")
         }
 
-        const userOrganization = await ctx.prisma.userOrganization.findUnique({
+        const userOrganization = await ctx.prisma.userOrganization.findFirst({
           where: {
             id,
             ...(ctx.role !== Role.ADMIN && { user_id: ctx.user.id }),
