@@ -38,7 +38,7 @@ jobs:
 
   build_frontend:
     docker:
-      - image: google/cloud-sdk
+      - image: google/cloud-sdk:latest
     steps:
       - checkout
       - setup_remote_docker
@@ -228,7 +228,7 @@ jobs:
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
     docker:
-      - image: google/cloud-sdk
+      - image: google/cloud-sdk:latest
     steps:
       - checkout
       - setup_remote_docker

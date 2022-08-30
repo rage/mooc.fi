@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  # first day of month at 12:00pm
-  schedule: "0 12 1 * *"
+  # 16th day of month at 12:00pm
+  schedule: "0 12 16 * *"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
@@ -25,8 +25,8 @@ spec:
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
               command: ["sh", "-c", "npm run linkoping-stats-emailer"]
               envFrom:
-              - secretRef:
-                  name: backend-secret
+                - secretRef:
+                    name: backend-secret
               env:
                 - name: REDIS_PASSWORD
                   valueFrom:
