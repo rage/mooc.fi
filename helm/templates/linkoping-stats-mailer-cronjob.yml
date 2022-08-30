@@ -2,7 +2,8 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: linkoping-stats-emailer
-  labels: { { - include "helm.labels" . | nindent 4 } }
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   # 16th day of month at 12:00pm
   schedule: "0 12 16 * *"
@@ -12,7 +13,8 @@ spec:
   successfulJobsHistoryLimit: 3
   jobTemplate:
     metadata:
-      labels: { { - include "helm.selectorLabels" . | nindent 8 } }
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       activeDeadlineSeconds: 7200
       template:
