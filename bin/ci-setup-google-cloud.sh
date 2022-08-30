@@ -8,6 +8,8 @@ gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 echo "Configuring kubectl"
 gcloud --quiet container clusters get-credentials moocfi-cluster
 
+gcloud components install gke-gcloud-auth-plugin
+
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if [[ "$BRANCH" == "staging" ]]; then
