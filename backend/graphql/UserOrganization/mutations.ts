@@ -101,10 +101,18 @@ export const UserOrganizationMutations = extendType({
               id: organization_id,
               slug: organization_slug,
             }),
-            disabled: { not: true },
+            OR: [
+              {
+                disabled: false,
+              },
+              {
+                disabled: null,
+              },
+            ],
           },
         })
 
+        console.log("org", organization)
         if (!organization) {
           throw new UserInputError("no such organization", {
             argumentName: ["organization_id", "organization_slug"],

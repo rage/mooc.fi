@@ -155,12 +155,16 @@ const RegisterToOrganization = () => {
 
     const fetchConfirmationSentInformation = async () => {
       const currentMembership =
-      userOrganizationsData?.currentUser?.user_organizations.find(
-        (uo) => uo?.organization?.slug === slug,
-      )
+        userOrganizationsData?.currentUser?.user_organizations.find(
+          (uo) => uo?.organization?.slug === slug,
+        )
       const isMember = Boolean(currentMembership?.confirmed)
       const isSentButNotJoined = Boolean(currentMembership?.id)
-      const isExpired = Boolean(new Date().getTime() > new Date(currentMembership?.created_at).getTime() + (3 * 1000 * 60 * 60* 24))
+      const isExpired = Boolean(
+        new Date().getTime() >
+          new Date(currentMembership?.created_at).getTime() +
+            3 * 1000 * 60 * 60 * 24,
+      )
       if (isMember) {
         setConfirmationStatus("confirmed")
       } else if (isSentButNotJoined && isExpired) {
@@ -251,7 +255,7 @@ const RegisterToOrganization = () => {
     return <Container>{t("organizationDoesntExist")}</Container>
   }
 
-  return confirmationStatus === 'confirmed' ? (
+  return confirmationStatus === "confirmed" ? (
     <Container>
       <h1>
         {t("leaveTitle")}{" "}
@@ -262,7 +266,7 @@ const RegisterToOrganization = () => {
 
       <Button
         color="secondary"
-        disabled={confirmationStatus === 'confirmed'}
+        disabled={confirmationStatus === "confirmed"}
         onClick={async () => {
           await leaveOrganization()
         }}
@@ -387,7 +391,8 @@ const RegisterToOrganization = () => {
 
       {confirmationStatus == "expired" && (
         <div>
-          {t("confirmationEmailExpired1")} {email} {t("confirmationEmailExpired2")}
+          {t("confirmationEmailExpired1")} {email}{" "}
+          {t("confirmationEmailExpired2")}
         </div>
       )}
 

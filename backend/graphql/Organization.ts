@@ -103,7 +103,16 @@ export const OrganizationQueries = extendType({
               slug,
             }),
             ...(!hidden && { hidden: { not: true } }),
-            ...(!disabled && { disabled: { not: true } }),
+            ...(!disabled && {
+              OR: [
+                {
+                  disabled: false,
+                },
+                {
+                  disabled: null,
+                },
+              ],
+            }),
           },
         })
       },
@@ -147,7 +156,16 @@ export const OrganizationQueries = extendType({
           orderBy: filterNullFields(orderBy),
           where: {
             ...(!hidden && { hidden: { not: true } }),
-            ...(!disabled && { disabled: { not: true } }),
+            ...(!disabled && {
+              OR: [
+                {
+                  disabled: false,
+                },
+                {
+                  disabled: null,
+                },
+              ],
+            }),
           },
         })
       },
