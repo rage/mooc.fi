@@ -8,12 +8,15 @@ import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
-import { convertUpdate, isDefined } from "../../util"
+import {
+  convertUpdate,
+  emptyOrNullToUndefined,
+  filterNullFields,
+  isDefined,
+  isNotNull,
+} from "../../util"
 import { ConflictError } from "../common"
 import { deleteImage, uploadImage } from "../Image"
-
-const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
-  value ?? undefined
 
 export const CourseMutations = extendType({
   type: "Mutation",
@@ -68,6 +71,9 @@ export const CourseMutations = extendType({
             ...omit(course, [
               "base64",
               "new_photo",
+              "study_modules",
+              "inherit_settings_from",
+              "completions_handled_by",
               "completion_email_id",
               "course_stats_email_id",
             ]),
@@ -78,34 +84,36 @@ export const CourseMutations = extendType({
             course_translations: {
               create: course_translations?.filter(isDefined),
             },
-            study_modules: !!study_modules
-              ? {
-                  connect: study_modules.map((s) => ({
-                    id: nullToUndefined(s?.id),
-                  })),
-                }
-              : undefined,
+            ...(!!study_modules && {
+              study_modules: {
+                connect: study_modules.map((s) => ({
+                  id: emptyOrNullToUndefined(s?.id),
+                })),
+              },
+            }),
             open_university_registration_links: {
               create: open_university_registration_links?.filter(isDefined),
             },
             course_variants: { create: course_variants?.filter(isDefined) },
             course_aliases: { create: course_aliases?.filter(isDefined) },
-            inherit_settings_from: !!inherit_settings_from
-              ? { connect: { id: inherit_settings_from } }
-              : undefined,
-            completions_handled_by: !!completions_handled_by
-              ? { connect: { id: completions_handled_by } }
-              : undefined,
+            ...(!!inherit_settings_from && {
+              inherit_settings_from: { connect: { id: inherit_settings_from } },
+            }),
+            ...(!!completions_handled_by && {
+              completions_handled_by: {
+                connect: { id: completions_handled_by },
+              },
+            }),
             user_course_settings_visibilities: {
               create: user_course_settings_visibilities?.filter(isDefined),
             },
             // don't think these will be passed by parameter, but let's be sure
-            completion_email: !!completion_email_id
-              ? { connect: { id: completion_email_id } }
-              : undefined,
-            course_stats_email: !!course_stats_email_id
-              ? { connect: { id: course_stats_email_id } }
-              : undefined,
+            ...(!!completion_email_id && {
+              completion_email: { connect: { id: completion_email_id } },
+            }),
+            ...(!!course_stats_email_id && {
+              course_stats_email: { connect: { id: course_stats_email_id } },
+            }),
           },
         })
 
@@ -258,11 +266,15 @@ export const CourseMutations = extendType({
             ?.filter((module) => !getIds(study_modules).includes(module.id))
             .map((module) => ({ id: module.id })) ?? []
         const connectModules =
-          study_modules?.map((s) => ({
-            ...s,
-            id: nullToUndefined(s?.id),
-            slug: nullToUndefined(s?.slug),
-          })) ?? []
+          study_modules
+            ?.filter(isNotNull)
+            .map(({ id, slug }) =>
+              filterNullFields({
+                id,
+                slug,
+              }),
+            )
+            .filter(isDefined) ?? []
 
         const studyModuleMutation:
           | Prisma.StudyModuleUpdateManyWithoutCoursesInput
@@ -302,8 +314,10 @@ export const CourseMutations = extendType({
 
         const updatedCourse = await ctx.prisma.course.update({
           where: {
-            id: nullToUndefined(id),
-            slug,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
           data: convertUpdate({
             ...omit(course, [
@@ -325,16 +339,16 @@ export const CourseMutations = extendType({
             open_university_registration_links: registrationLinkMutation,
             course_variants: courseVariantMutation,
             course_aliases: courseAliasMutation,
-            completion_email: completion_email_id
-              ? { connect: { id: completion_email_id } }
-              : undefined,
-            course_stats_email: course_stats_email_id
-              ? { connect: { id: course_stats_email_id } }
-              : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             user_course_settings_visibilities:
               userCourseSettingsVisibilityMutation,
+            ...(completion_email_id && {
+              completion_email: { connect: { id: completion_email_id } },
+            }),
+            ...(course_stats_email_id && {
+              course_stats_email: { connect: { id: course_stats_email_id } },
+            }),
           }),
         })
 
@@ -359,8 +373,10 @@ export const CourseMutations = extendType({
         const photo = await ctx.prisma.course
           .findUnique({
             where: {
-              id: id ?? undefined,
-              slug: slug ?? undefined,
+              ...filterNullFields({
+                id,
+                slug,
+              }),
             },
           })
           .photo()
@@ -371,8 +387,10 @@ export const CourseMutations = extendType({
 
         const deletedCourse = await ctx.prisma.course.delete({
           where: {
-            id: id ?? undefined,
-            slug: slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
         })
 

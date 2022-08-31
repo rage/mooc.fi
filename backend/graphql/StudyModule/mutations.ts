@@ -5,6 +5,7 @@ import { arg, extendType, idArg, nonNull, nullable, stringArg } from "nexus"
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { filterNullFields } from "../../util"
 
 export const StudyModuleMutations = extendType({
   type: "Mutation",
@@ -24,17 +25,17 @@ export const StudyModuleMutations = extendType({
 
         return ctx.prisma.studyModule.create({
           data: {
-            ...study_module,
+            ...omit(study_module, "study_module_translations"),
             name: study_module.name ?? "",
-            study_module_translations: !!study_module_translations
-              ? {
-                  create: study_module_translations.map((s) => ({
-                    ...s,
-                    name: s?.name ?? "",
-                    id: s?.id ?? undefined,
-                  })) as Prisma.StudyModuleTranslationCreateWithoutStudy_moduleInput[],
-                }
-              : undefined,
+            ...(!!study_module_translations && {
+              study_module_translations: {
+                create: study_module_translations.map((s) => ({
+                  ...s,
+                  name: s?.name ?? "",
+                  id: s?.id ?? undefined,
+                })) as Prisma.StudyModuleTranslationCreateWithoutStudy_moduleInput[],
+              },
+            }),
           },
         })
       },
@@ -64,10 +65,10 @@ export const StudyModuleMutations = extendType({
           .study_module_translations()
         const newTranslations = (study_module_translations || [])
           .filter((t) => !t?.id)
-          .map((t) => ({ ...t, id: undefined }))
+          .map((t) => omit(t, "id"))
         const updatedTranslations = (study_module_translations || [])
           .filter((t) => !!t?.id)
-          .map((t) => ({ where: { id: t?.id }, data: { ...t, id: undefined } }))
+          .map((t) => ({ where: { id: t?.id }, data: omit(t, "id") }))
         const existingTranslationIds = (existingTranslations || []).map(
           (t) => t.id,
         )
@@ -126,8 +127,10 @@ export const StudyModuleMutations = extendType({
 
         const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
-            id: id ?? undefined,
-            slug: slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
         })
 

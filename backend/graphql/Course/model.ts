@@ -2,6 +2,7 @@ import { UserInputError } from "apollo-server-express"
 import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
+import { filterNullFields } from "../../util"
 
 export const Course = objectType({
   name: "Course",
@@ -70,10 +71,12 @@ export const Course = objectType({
         user_upstream_id: nullable(intArg()),
       },
       authorize: isAdmin,
-      resolve: async (parent, args, ctx) => {
-        const { user_id, user_upstream_id } = args
-
-        if (!user_id && !user_upstream_id) {
+      resolve: async (
+        parent,
+        { user_id: id, user_upstream_id: upstream_id },
+        ctx,
+      ) => {
+        if (!id && !upstream_id) {
           throw new UserInputError("needs user_id or user_upstream_id", {
             argumentName: ["user_id", "user_upstream_id"],
           })
@@ -88,8 +91,10 @@ export const Course = objectType({
           .completions({
             where: {
               user: {
-                id: user_id ?? undefined,
-                upstream_id: user_upstream_id ?? undefined,
+                ...filterNullFields({
+                  id,
+                  upstream_id,
+                }),
               },
             },
             distinct: ["user_id", "course_id"],

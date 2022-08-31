@@ -2,6 +2,7 @@ import { AuthenticationError } from "apollo-server-core"
 import { extendType, idArg, stringArg } from "nexus"
 
 import { isAdmin, isUser, or } from "../../accessControl"
+import { filterNullFields } from "../../util"
 import { assertUserIdOnlyForAdmin } from "./helpers"
 
 export const UserOrganizationQueries = extendType({
@@ -38,10 +39,12 @@ export const UserOrganizationQueries = extendType({
           .user_organizations({
             where: {
               user_id,
-              organization_id: organization_id ?? undefined,
-              ...(organization_slug && {
-                organization: { slug: organization_slug },
-              }),
+              organization: {
+                ...filterNullFields({
+                  id: organization_id,
+                  slug: organization_slug,
+                }),
+              },
             },
           })
       },

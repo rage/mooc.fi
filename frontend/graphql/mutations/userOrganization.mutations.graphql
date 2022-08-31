@@ -51,22 +51,25 @@ mutation DeleteUserOrganization($id: ID!) {
 
 mutation ConfirmUserOrganizationJoin($id: ID!, $code: String!) {
   confirmUserOrganizationJoin(id: $id, code: $code) {
-    ...UserOrganizationJoinConfirmationFields
+    ...UserOrganizationWithUserOrganizationJoinConfirmationFields
   }
 }
 
-mutation RefreshUserOrganizationJoinConfirmation(
+mutation RequestNewUserOrganizationJoinConfirmation(
   $id: ID!
   $organizational_email: String
   $redirect: String
   $language: String
 ) {
-  refreshUserOrganizationJoinConfirmation(
+  requestNewUserOrganizationJoinConfirmation(
     id: $id
     organizational_email: $organizational_email
     redirect: $redirect
     language: $language
   ) {
     ...UserOrganizationJoinConfirmationFields
+    user_organization {
+      ...UserOrganizationFields
+    }
   }
 }

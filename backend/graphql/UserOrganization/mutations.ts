@@ -10,7 +10,7 @@ import { User } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { Context } from "../../context"
-import { calculateActivationCode } from "../../util"
+import { calculateActivationCode, filterNullFields } from "../../util"
 import {
   ConfigurationError,
   ConflictError,
@@ -32,13 +32,29 @@ export const UserOrganizationMutations = extendType({
     t.field("addUserOrganization", {
       type: "UserOrganization",
       args: {
-        user_id: idArg(),
-        organization_id: idArg(),
-        organization_slug: stringArg(),
-        organizational_email: stringArg(),
-        organizational_identifier: stringArg(),
-        redirect: stringArg(),
-        language: stringArg(),
+        user_id: idArg({
+          description:
+            "Admin only. Specify user to add other than the current user.",
+        }),
+        organization_id: idArg({
+          description:
+            "Organization database id. Specify at least one of `organization_id` and `organization_slug`.",
+        }),
+        organization_slug: stringArg({
+          description:
+            "Organization slug. Specify at least one of `organization_id` and `organization_slug`.",
+        }),
+        organizational_email: stringArg({
+          description:
+            "Optional organizational email to use. If organization requires a specific email pattern, will be check against it.",
+        }),
+        organizational_identifier: stringArg({
+          description: "Optional organizational identifier.",
+        }),
+        redirect: stringArg({
+          description: "Optional redirect URL to store in confirmation.",
+        }),
+        language: stringArg({ description: "Optional language information." }),
       },
       authorize: or(isUser, isAdmin),
       resolve: async (
@@ -79,10 +95,13 @@ export const UserOrganizationMutations = extendType({
           )
         }
 
-        const organization = await ctx.prisma.organization.findUnique({
+        const organization = await ctx.prisma.organization.findFirst({
           where: {
-            id: organization_id ?? undefined,
-            slug: organization_slug ?? undefined,
+            ...filterNullFields({
+              id: organization_id,
+              slug: organization_slug,
+            }),
+            disabled: { not: true },
           },
         })
 

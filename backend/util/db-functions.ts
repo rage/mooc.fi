@@ -144,6 +144,8 @@ export function includeFields<T extends Entity, K extends Keys<T>>(
   return result
 }
 
-export function emptyOrNullToUndefined(value: any) {
+export function emptyOrNullToUndefined<T>(
+  value: T | null | undefined,
+): T | undefined {
   return isEmptyNullOrUndefined(value) ? undefined : value
 }

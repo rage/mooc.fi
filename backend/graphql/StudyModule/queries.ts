@@ -30,8 +30,10 @@ export const StudyModuleQueries = extendType({
 
         const study_module = await ctx.prisma.studyModule.findUnique({
           where: {
-            id: id ?? undefined,
-            slug: slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
           ...(ctx.role !== Role.ADMIN && {
             select: {

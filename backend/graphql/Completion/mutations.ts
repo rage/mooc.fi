@@ -16,7 +16,7 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { isDefined } from "../../util"
+import { filterNullFields, isDefined } from "../../util"
 import { ConflictError } from "../common"
 
 export const CompletionMutations = extendType({
@@ -159,17 +159,22 @@ export const CompletionMutations = extendType({
         slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, { course_id, slug }, ctx) => {
-        if ((!course_id && !slug) || (course_id && slug)) {
-          throw new UserInputError("must provide course_id or slug!", {
-            argumentName: ["course_id", "slug"],
-          })
+      resolve: async (_, { course_id: id, slug }, ctx) => {
+        if ((!id && !slug) || (id && slug)) {
+          throw new UserInputError(
+            "must provide exactly one of course_id or slug!",
+            {
+              argumentName: ["course_id", "slug"],
+            },
+          )
         }
 
         const course = await ctx.prisma.course.findUnique({
           where: {
-            id: course_id ?? undefined,
-            slug: slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
         })
 
@@ -178,6 +183,7 @@ export const CompletionMutations = extendType({
             argumentName: ["course_id", "slug"],
           })
         }
+
         // find users on course with points
         const progresses = await ctx.prisma.course
           .findUnique({

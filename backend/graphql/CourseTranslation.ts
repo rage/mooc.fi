@@ -8,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { filterNullFields } from "../util"
 
 export const CourseTranslation = objectType({
   name: "CourseTranslation",
@@ -78,7 +79,7 @@ export const CourseTranslationMutations = extendType({
         description: stringArg(),
         instructions: stringArg(),
         link: stringArg(),
-        course: idArg(),
+        course: idArg({ description: "course id" }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -86,12 +87,12 @@ export const CourseTranslationMutations = extendType({
 
         const newCourseTranslation = await ctx.prisma.courseTranslation.create({
           data: {
-            language: language,
+            language,
             name: name ?? "",
             description: description ?? "",
             instructions: instructions ?? "",
             link,
-            course: course ? { connect: { id: course } } : undefined,
+            ...(course && { course: { connect: { id: course } } }),
           },
         })
         return newCourseTranslation
@@ -107,7 +108,7 @@ export const CourseTranslationMutations = extendType({
         description: stringArg(),
         instructions: stringArg(),
         link: stringArg(),
-        course: idArg(),
+        course: idArg({ description: "course id" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -117,12 +118,14 @@ export const CourseTranslationMutations = extendType({
         return ctx.prisma.courseTranslation.update({
           where: { id },
           data: {
-            language: language,
-            name: name ?? undefined,
-            description: description ?? undefined,
-            instructions: instructions ?? undefined,
-            link: link,
-            course: course ? { connect: { id: course } } : undefined,
+            language,
+            link,
+            ...(course && { course: { connect: { id: course } } }),
+            ...filterNullFields({
+              name,
+              description,
+              instructions,
+            }),
           },
         })
       },

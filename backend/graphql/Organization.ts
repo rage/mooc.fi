@@ -53,20 +53,26 @@ export const Organization = objectType({
     t.model.verified_users({
       authorize: isAdmin,
     })
-    t.model.required_confirmation()
-    t.model.required_organization_email()
+    t.model.required_confirmation({
+      description:
+        "Whether this organization requires email confirmation to join.",
+    })
+    t.model.required_organization_email({
+      description:
+        "Optional regex pattern to use when joining organization or changing organizational email.",
+    })
     t.model.join_organization_email_template_id()
     t.model.join_organization_email_template()
   },
 })
 
-const organizationQueryHiddenPermission = (
+const organizationQueryHiddenOrDisabledPermission = (
   _: any,
   args: any,
   ctx: Context,
   _info: any,
 ) => {
-  if (args.hidden) return ctx.role === Role.ADMIN
+  if (args.hidden || args.disabled) return ctx.role === Role.ADMIN
 
   return true // TODO: should this check if organization?
 }
@@ -77,23 +83,27 @@ export const OrganizationQueries = extendType({
     t.nullable.field("organization", {
       type: "Organization",
       description:
-        "Get organization by id or slug. Admins can also query hidden courses. Fields that can be queried is more limited on normal users.",
+        "Get organization by id or slug. Admins can also query hidden/disabled courses. Fields that can be queried is more limited on normal users.",
       args: {
         id: idArg(),
         slug: stringArg(),
         hidden: booleanArg(),
+        disabled: booleanArg(),
       },
-      authorize: organizationQueryHiddenPermission,
-      resolve: async (_, { id, slug, hidden }, ctx) => {
+      authorize: organizationQueryHiddenOrDisabledPermission,
+      resolve: async (_, { id, slug, hidden, disabled }, ctx) => {
         if ((!id && !slug) || (id && slug)) {
           throw new UserInputError("must provide either id or slug")
         }
 
         return ctx.prisma.organization.findFirst({
           where: {
-            id: id ?? undefined,
-            slug: slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
             ...(!hidden && { hidden: { not: true } }),
+            ...(!disabled && { disabled: { not: true } }),
           },
         })
       },
@@ -103,7 +113,7 @@ export const OrganizationQueries = extendType({
     t.crud.organizations({
       ordering: true,
       pagination: true,
-      authorize: organizationQueryHiddenPermission,
+      authorize: organizationQueryHiddenOrDisabledPermission,
     })
 
     t.list.field("organizations", {
@@ -116,22 +126,28 @@ export const OrganizationQueries = extendType({
           type: "OrganizationOrderByInput",
         }),
         hidden: booleanArg(),
+        disabled: booleanArg(),
       },
-      authorize: organizationQueryHiddenPermission,
-      resolve: async (_, args, ctx) => {
-        const { take, skip, cursor, orderBy, hidden } = args
-
+      authorize: organizationQueryHiddenOrDisabledPermission,
+      resolve: async (
+        _,
+        { take, skip, cursor, orderBy, hidden, disabled },
+        ctx,
+      ) => {
         return ctx.prisma.organization.findMany({
-          take: take ?? undefined,
-          skip: skip ?? undefined,
-          cursor: cursor
-            ? {
-                id: cursor.id ?? undefined,
-              }
-            : undefined,
+          ...filterNullFields({
+            take,
+            skip,
+          }),
+          ...(cursor?.id && {
+            cursor: {
+              id: cursor.id,
+            },
+          }),
           orderBy: filterNullFields(orderBy),
           where: {
             ...(!hidden && { hidden: { not: true } }),
+            ...(!disabled && { disabled: { not: true } }),
           },
         })
       },
@@ -152,13 +168,13 @@ export const OrganizationMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { name, slug } = args
 
-        let secret: string
+        let secret_key: string
         let result
 
         do {
-          secret = await generateSecret()
+          secret_key = await generateSecret()
           result = await ctx.prisma.organization.findMany({
-            where: { secret_key: secret },
+            where: { secret_key },
           })
         } while (result.length)
 
@@ -167,7 +183,7 @@ export const OrganizationMutations = extendType({
         return ctx.prisma.organization.create({
           data: {
             slug,
-            secret_key: secret,
+            secret_key,
             organization_translations: {
               create: {
                 name: name ?? "",
@@ -182,14 +198,24 @@ export const OrganizationMutations = extendType({
     t.field("updateOrganizationEmailTemplate", {
       type: "Organization",
       args: {
-        id: nonNull(idArg()),
+        id: idArg(),
+        slug: stringArg(),
         email_template_id: nonNull(idArg()),
       },
       authorize: isAdmin,
-      resolve: async (_, { id, email_template_id }, ctx) => {
+      resolve: async (_, { id, slug, email_template_id }, ctx) => {
+        if (!id && !slug) {
+          throw new UserInputError("must provide either id or slug", {
+            argumentNames: ["id", "slug"],
+          })
+        }
+
         return ctx.prisma.organization.update({
           where: {
-            id,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
           data: {
             join_organization_email_template_id: email_template_id,

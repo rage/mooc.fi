@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-25T14:43:30+03:00
+// Generated on 2022-08-31T12:47:22+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -759,7 +759,7 @@ export type Mutation = {
   addUserCourseServiceProgress: Maybe<UserCourseServiceProgress>
   addUserOrganization: Maybe<UserOrganization>
   addVerifiedUser: Maybe<VerifiedUser>
-  confirmUserOrganizationJoin: Maybe<UserOrganizationJoinConfirmation>
+  confirmUserOrganizationJoin: Maybe<UserOrganization>
   createCourseStatsSubscription: Maybe<CourseStatsSubscription>
   createRegistrationAttemptDate: Maybe<Completion>
   deleteCourse: Maybe<Course>
@@ -773,8 +773,8 @@ export type Mutation = {
   deleteStudyModuleTranslation: Maybe<StudyModuleTranslation>
   deleteUserOrganization: Maybe<UserOrganization>
   recheckCompletions: Maybe<Scalars["String"]>
-  refreshUserOrganizationJoinConfirmation: Maybe<UserOrganizationJoinConfirmation>
   registerCompletion: Maybe<Scalars["String"]>
+  requestNewUserOrganizationJoinConfirmation: Maybe<UserOrganizationJoinConfirmation>
   updateAbEnrollment: Maybe<AbEnrollment>
   updateAbStudy: Maybe<AbStudy>
   updateCourse: Maybe<Course>
@@ -929,7 +929,8 @@ export type MutationaddUserCourseServiceProgressArgs = {
 
 export type MutationaddUserOrganizationArgs = {
   language?: InputMaybe<Scalars["String"]>
-  organization_id: Scalars["ID"]
+  organization_id?: InputMaybe<Scalars["ID"]>
+  organization_slug?: InputMaybe<Scalars["String"]>
   organizational_email?: InputMaybe<Scalars["String"]>
   organizational_identifier?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
@@ -1001,15 +1002,15 @@ export type MutationrecheckCompletionsArgs = {
   slug?: InputMaybe<Scalars["String"]>
 }
 
-export type MutationrefreshUserOrganizationJoinConfirmationArgs = {
+export type MutationregisterCompletionArgs = {
+  completions: Array<CompletionArg>
+}
+
+export type MutationrequestNewUserOrganizationJoinConfirmationArgs = {
   id: Scalars["ID"]
   language?: InputMaybe<Scalars["String"]>
   organizational_email?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
-}
-
-export type MutationregisterCompletionArgs = {
-  completions: Array<CompletionArg>
 }
 
 export type MutationupdateAbEnrollmentArgs = {
@@ -1062,7 +1063,8 @@ export type MutationupdateOpenUniversityRegistrationLinkArgs = {
 
 export type MutationupdateOrganizationEmailTemplateArgs = {
   email_template_id: Scalars["ID"]
-  id: Scalars["ID"]
+  id?: InputMaybe<Scalars["ID"]>
+  slug?: InputMaybe<Scalars["String"]>
 }
 
 export type MutationupdateResearchConsentArgs = {
@@ -1182,7 +1184,9 @@ export type Organization = {
   organization_translations: Array<OrganizationTranslation>
   phone: Maybe<Scalars["String"]>
   pinned: Maybe<Scalars["Boolean"]>
+  /** Whether this organization requires email confirmation to join. */
   required_confirmation: Maybe<Scalars["Boolean"]>
+  /** Optional regex pattern to use when joining organization or changing organizational email. */
   required_organization_email: Maybe<Scalars["String"]>
   slug: Scalars["String"]
   tmc_created_at: Maybe<Scalars["DateTime"]>
@@ -1338,7 +1342,7 @@ export type Query = {
   handlerCourses: Maybe<Array<Maybe<Course>>>
   openUniversityRegistrationLink: Maybe<OpenUniversityRegistrationLink>
   openUniversityRegistrationLinks: Array<OpenUniversityRegistrationLink>
-  /** Get organization by id or slug. Admins can also query hidden courses. Fields that can be queried is more limited on normal users. */
+  /** Get organization by id or slug. Admins can also query hidden/disabled courses. Fields that can be queried is more limited on normal users. */
   organization: Maybe<Organization>
   organizations: Maybe<Array<Maybe<Organization>>>
   registeredCompletions: Maybe<Array<Maybe<CompletionRegistered>>>
@@ -1476,6 +1480,7 @@ export type QueryopenUniversityRegistrationLinksArgs = {
 }
 
 export type QueryorganizationArgs = {
+  disaled?: InputMaybe<Scalars["Boolean"]>
   hidden?: InputMaybe<Scalars["Boolean"]>
   id?: InputMaybe<Scalars["ID"]>
   slug?: InputMaybe<Scalars["String"]>
@@ -1483,6 +1488,7 @@ export type QueryorganizationArgs = {
 
 export type QueryorganizationsArgs = {
   cursor?: InputMaybe<OrganizationWhereUniqueInput>
+  disabled?: InputMaybe<Scalars["Boolean"]>
   hidden?: InputMaybe<Scalars["Boolean"]>
   orderBy?: InputMaybe<OrganizationOrderByInput>
   skip?: InputMaybe<Scalars["Int"]>
@@ -1587,6 +1593,7 @@ export type QueryuserOrganizationJoinConfirmationArgs = {
 
 export type QueryuserOrganizationsArgs = {
   organization_id?: InputMaybe<Scalars["ID"]>
+  organization_slug?: InputMaybe<Scalars["String"]>
   user_id?: InputMaybe<Scalars["ID"]>
 }
 
@@ -3929,7 +3936,8 @@ export type DeleteEmailTemplateMutation = {
 }
 
 export type UpdateOrganizationEmailTemplateMutationVariables = Exact<{
-  id: Scalars["ID"]
+  id?: InputMaybe<Scalars["ID"]>
+  slug?: InputMaybe<Scalars["String"]>
   email_template_id: Scalars["ID"]
 }>
 
@@ -3938,6 +3946,7 @@ export type UpdateOrganizationEmailTemplateMutation = {
   updateOrganizationEmailTemplate: {
     __typename?: "Organization"
     id: string
+    slug: string
     join_organization_email_template: {
       __typename?: "EmailTemplate"
       id: string
@@ -4072,7 +4081,8 @@ export type UserCourseStatsUnsubscribeMutation = {
 
 export type AddUserOrganizationMutationVariables = Exact<{
   user_id?: InputMaybe<Scalars["ID"]>
-  organization_id: Scalars["ID"]
+  organization_id?: InputMaybe<Scalars["ID"]>
+  organization_slug?: InputMaybe<Scalars["String"]>
   organizational_email?: InputMaybe<Scalars["String"]>
   organizational_identifier?: InputMaybe<Scalars["String"]>
   redirect?: InputMaybe<Scalars["String"]>
@@ -4243,43 +4253,77 @@ export type ConfirmUserOrganizationJoinMutationVariables = Exact<{
 export type ConfirmUserOrganizationJoinMutation = {
   __typename?: "Mutation"
   confirmUserOrganizationJoin: {
-    __typename?: "UserOrganizationJoinConfirmation"
+    __typename?: "UserOrganization"
     id: string
-    email: string
+    user_id: string | null
+    organization_id: string | null
     confirmed: boolean | null
     confirmed_at: any | null
-    expired: boolean | null
-    expires_at: any | null
-    redirect: string | null
-    language: string | null
+    consented: boolean | null
+    organizational_email: string | null
+    organizational_identifier: string | null
     created_at: any | null
     updated_at: any | null
-    email_delivery: {
-      __typename?: "EmailDelivery"
+    user_organization_join_confirmations: Array<{
+      __typename?: "UserOrganizationJoinConfirmation"
       id: string
-      email: string | null
-      sent: boolean
-      error: boolean
-      error_message: string | null
-      email_template_id: string | null
-      user_id: string | null
-      organization_id: string | null
+      email: string
+      confirmed: boolean | null
+      confirmed_at: any | null
+      expired: boolean | null
+      expires_at: any | null
+      redirect: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
+      email_delivery: {
+        __typename?: "EmailDelivery"
+        id: string
+        email: string | null
+        sent: boolean
+        error: boolean
+        error_message: string | null
+        email_template_id: string | null
+        user_id: string | null
+        organization_id: string | null
+        created_at: any | null
+        updated_at: any | null
+      } | null
+    }>
+    organization: {
+      __typename?: "Organization"
+      id: string
+      slug: string
+      email: string | null
+      hidden: boolean | null
+      disabled: boolean | null
+      created_at: any | null
+      updated_at: any | null
+      required_confirmation: boolean | null
+      required_organization_email: string | null
+      organization_translations: Array<{
+        __typename?: "OrganizationTranslation"
+        id: string
+        organization_id: string | null
+        language: string
+        name: string
+        information: string | null
+      }>
     } | null
   } | null
 }
 
-export type RefreshUserOrganizationJoinConfirmationMutationVariables = Exact<{
-  id: Scalars["ID"]
-  organizational_email?: InputMaybe<Scalars["String"]>
-  redirect?: InputMaybe<Scalars["String"]>
-  language?: InputMaybe<Scalars["String"]>
-}>
+export type RequestNewUserOrganizationJoinConfirmationMutationVariables =
+  Exact<{
+    id: Scalars["ID"]
+    organizational_email?: InputMaybe<Scalars["String"]>
+    redirect?: InputMaybe<Scalars["String"]>
+    language?: InputMaybe<Scalars["String"]>
+  }>
 
-export type RefreshUserOrganizationJoinConfirmationMutation = {
+export type RequestNewUserOrganizationJoinConfirmationMutation = {
   __typename?: "Mutation"
-  refreshUserOrganizationJoinConfirmation: {
+  requestNewUserOrganizationJoinConfirmation: {
     __typename?: "UserOrganizationJoinConfirmation"
     id: string
     email: string
@@ -4291,6 +4335,39 @@ export type RefreshUserOrganizationJoinConfirmationMutation = {
     language: string | null
     created_at: any | null
     updated_at: any | null
+    user_organization: {
+      __typename?: "UserOrganization"
+      id: string
+      user_id: string | null
+      organization_id: string | null
+      confirmed: boolean | null
+      confirmed_at: any | null
+      consented: boolean | null
+      organizational_email: string | null
+      organizational_identifier: string | null
+      created_at: any | null
+      updated_at: any | null
+      organization: {
+        __typename?: "Organization"
+        id: string
+        slug: string
+        email: string | null
+        hidden: boolean | null
+        disabled: boolean | null
+        created_at: any | null
+        updated_at: any | null
+        required_confirmation: boolean | null
+        required_organization_email: string | null
+        organization_translations: Array<{
+          __typename?: "OrganizationTranslation"
+          id: string
+          organization_id: string | null
+          language: string
+          name: string
+          information: string | null
+        }>
+      } | null
+    }
     email_delivery: {
       __typename?: "EmailDelivery"
       id: string
@@ -5790,6 +5867,7 @@ export type CurrentUserUserOrganizationsQuery = {
 export type UserOrganizationsQueryVariables = Exact<{
   user_id?: InputMaybe<Scalars["ID"]>
   organization_id?: InputMaybe<Scalars["ID"]>
+  organization_slug?: InputMaybe<Scalars["String"]>
 }>
 
 export type UserOrganizationsQuery = {
@@ -8585,10 +8663,12 @@ export const UpdateOrganizationEmailTemplateDocument = {
         {
           kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "slug" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
         {
           kind: "VariableDefinition",
@@ -8619,6 +8699,14 @@ export const UpdateOrganizationEmailTemplateDocument = {
               },
               {
                 kind: "Argument",
+                name: { kind: "Name", value: "slug" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "slug" },
+                },
+              },
+              {
+                kind: "Argument",
                 name: { kind: "Name", value: "email_template_id" },
                 value: {
                   kind: "Variable",
@@ -8630,6 +8718,7 @@ export const UpdateOrganizationEmailTemplateDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
                 {
                   kind: "Field",
                   name: {
@@ -9068,10 +9157,15 @@ export const AddUserOrganizationDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "organization_id" },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "organization_slug" },
           },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
         {
           kind: "VariableDefinition",
@@ -9127,6 +9221,14 @@ export const AddUserOrganizationDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "organization_id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "organization_slug" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "organization_slug" },
                 },
               },
               {
@@ -9484,7 +9586,8 @@ export const ConfirmUserOrganizationJoinDocument = {
                   kind: "FragmentSpread",
                   name: {
                     kind: "Name",
-                    value: "UserOrganizationJoinConfirmationFields",
+                    value:
+                      "UserOrganizationWithUserOrganizationJoinConfirmationFields",
                   },
                 },
               ],
@@ -9493,6 +9596,9 @@ export const ConfirmUserOrganizationJoinDocument = {
         ],
       },
     },
+    ...UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
+    ...UserOrganizationFieldsFragmentDoc.definitions,
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
     ...EmailDeliveryFieldsFragmentDoc.definitions,
   ],
@@ -9500,13 +9606,16 @@ export const ConfirmUserOrganizationJoinDocument = {
   ConfirmUserOrganizationJoinMutation,
   ConfirmUserOrganizationJoinMutationVariables
 >
-export const RefreshUserOrganizationJoinConfirmationDocument = {
+export const RequestNewUserOrganizationJoinConfirmationDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "RefreshUserOrganizationJoinConfirmation" },
+      name: {
+        kind: "Name",
+        value: "RequestNewUserOrganizationJoinConfirmation",
+      },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -9548,7 +9657,7 @@ export const RefreshUserOrganizationJoinConfirmationDocument = {
             kind: "Field",
             name: {
               kind: "Name",
-              value: "refreshUserOrganizationJoinConfirmation",
+              value: "requestNewUserOrganizationJoinConfirmation",
             },
             arguments: [
               {
@@ -9594,6 +9703,19 @@ export const RefreshUserOrganizationJoinConfirmationDocument = {
                     value: "UserOrganizationJoinConfirmationFields",
                   },
                 },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "user_organization" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "UserOrganizationFields" },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -9602,10 +9724,12 @@ export const RefreshUserOrganizationJoinConfirmationDocument = {
     },
     ...UserOrganizationJoinConfirmationFieldsFragmentDoc.definitions,
     ...EmailDeliveryFieldsFragmentDoc.definitions,
+    ...UserOrganizationFieldsFragmentDoc.definitions,
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
-  RefreshUserOrganizationJoinConfirmationMutation,
-  RefreshUserOrganizationJoinConfirmationMutationVariables
+  RequestNewUserOrganizationJoinConfirmationMutation,
+  RequestNewUserOrganizationJoinConfirmationMutationVariables
 >
 export const PaginatedCompletionsDocument = {
   kind: "Document",
@@ -11949,6 +12073,14 @@ export const UserOrganizationsDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "organization_slug" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -11971,6 +12103,14 @@ export const UserOrganizationsDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "organization_id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "organization_slug" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "organization_slug" },
                 },
               },
             ],

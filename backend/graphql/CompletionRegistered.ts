@@ -1,4 +1,4 @@
-import { ForbiddenError } from "apollo-server-express"
+import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { chunk } from "lodash"
 import {
   arg,
@@ -11,11 +11,10 @@ import {
 } from "nexus"
 import { type NexusGenInputs } from "nexus-typegen"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, isOrganization, or } from "../accessControl"
+import { Context } from "../context"
+import { filterNullFields } from "../util"
 import { getCourseOrAliasBySlug } from "./common"
-import { Context } from "/context"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -44,7 +43,7 @@ export const CompletionRegisteredQueries = extendType({
     t.list.field("registeredCompletions", {
       type: "CompletionRegistered",
       args: {
-        course: stringArg(),
+        course: stringArg({ description: "course slug or course alias" }),
         skip: intArg(),
         take: intArg(),
         cursor: arg({ type: "CompletionRegisteredWhereUniqueInput" }),
@@ -52,64 +51,42 @@ export const CompletionRegisteredQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
         const { course, skip, take, cursor } = args
+
         if ((take ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 items")
         }
-        if (course) {
-          return withCourse(
-            course,
-            skip ?? undefined,
-            take ?? undefined,
-            cursor ? { id: cursor.id ?? undefined } : undefined,
-            ctx,
-          )
-        } else {
-          return all(
-            skip ?? undefined,
-            take ?? undefined,
-            cursor ? { id: cursor.id ?? undefined } : undefined,
-            ctx,
-          )
+
+        const queryParams = {
+          ...filterNullFields({
+            skip,
+            take,
+          }),
+          ...(cursor?.id && { cursor: { id: cursor.id } }),
         }
+
+        if (course) {
+          const courseReference = await getCourseOrAliasBySlug(ctx)(course)
+
+          if (!courseReference) {
+            throw new UserInputError("course not found", {
+              argumentName: "course",
+            })
+          }
+
+          return ctx.prisma.course
+            .findUnique({
+              where: {
+                id: courseReference.id,
+              },
+            })
+            .completions_registered(queryParams)
+        }
+
+        return ctx.prisma.completionRegistered.findMany(queryParams)
       },
     })
   },
 })
-
-const withCourse = async (
-  course: string,
-  skip: number | undefined,
-  take: number | undefined,
-  cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
-  ctx: Context,
-) => {
-  const courseReference = await getCourseOrAliasBySlug(ctx)(course)
-
-  return ctx.prisma.course
-    .findUnique({
-      where: {
-        id: courseReference!.id,
-      },
-    })
-    .completions_registered({
-      skip,
-      take,
-      cursor,
-    })
-}
-
-const all = async (
-  skip: number | undefined,
-  take: number | undefined,
-  cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
-  ctx: Context,
-) => {
-  return ctx.prisma.completionRegistered.findMany({
-    skip,
-    take,
-    cursor,
-  })
-}
 
 /************************ MUTATIONS *********************/
 export const CompletionRegisteredMutations = extendType({

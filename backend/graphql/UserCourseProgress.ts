@@ -14,6 +14,7 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { filterNullFields } from "../util"
 import { OrphanedEntityError } from "./common"
 
 // progress seems not to be uniform, let's try to normalize it a bit
@@ -195,25 +196,37 @@ export const UserCourseProgressQueries = extendType({
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const { skip, take, cursor, user_id, course_id, course_slug } = args
+        const {
+          skip,
+          take,
+          cursor,
+          user_id,
+          course_id: id,
+          course_slug: slug,
+        } = args
 
-        if (!course_id && !course_slug) {
+        if (!id && !slug) {
           throw new UserInputError(
             "must provide either course_id or course_slug",
+            { argumentNames: ["course_id", "course_slug"] },
           )
         }
 
         return ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id ?? undefined,
-              slug: course_slug ?? undefined,
+              ...filterNullFields({
+                id,
+                slug,
+              }),
             },
           })
           .user_course_progresses({
-            skip: skip ?? undefined,
-            take: take ?? undefined,
-            cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
+            ...filterNullFields({
+              skip,
+              take,
+            }),
+            ...(cursor?.id && { cursor: { id: cursor.id } }),
             where: {
               user_id,
             },

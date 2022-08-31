@@ -3,7 +3,7 @@ import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
-import { isDefined } from "../../util"
+import { filterNullFields, isDefined } from "../../util"
 
 export const User = objectType({
   name: "User",
@@ -41,20 +41,23 @@ export const User = objectType({
         course_slug: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id, course_slug } = args
+        let { course_id: id, course_slug: slug } = args
 
-        if (course_id || course_slug) {
+        if (id || slug) {
           const handlerCourse = await ctx.prisma.course
             .findUnique({
               where: {
-                id: args.course_id ?? undefined,
-                slug: args.course_slug ?? undefined,
+                ...filterNullFields({
+                  id,
+                  slug,
+                }),
               },
             })
             .completions_handled_by()
+
           if (handlerCourse) {
-            course_id = handlerCourse.id
-            course_slug = undefined
+            id = handlerCourse.id
+            slug = undefined
           }
         }
 
@@ -64,13 +67,12 @@ export const User = objectType({
           })
           .completions({
             where: {
-              course:
-                course_id || course_slug
-                  ? {
-                      id: course_id ?? undefined,
-                      slug: course_slug ?? undefined,
-                    }
-                  : undefined,
+              course: {
+                ...filterNullFields({
+                  id,
+                  slug,
+                }),
+              },
             },
             distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
@@ -86,20 +88,23 @@ export const User = objectType({
         organization_id: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id, course_slug, organization_id } = args
+        let { course_id: id, course_slug: slug, organization_id } = args
 
-        if (course_id || course_slug) {
+        if (id || slug) {
           const handlerCourse = await ctx.prisma.course
             .findUnique({
               where: {
-                id: args.course_id ?? undefined,
-                slug: args.course_slug ?? undefined,
+                ...filterNullFields({
+                  id,
+                  slug,
+                }),
               },
             })
             .completions_handled_by()
+
           if (handlerCourse) {
-            course_id = handlerCourse.id
-            course_slug = undefined
+            id = handlerCourse.id
+            slug = undefined
           }
         }
 
@@ -110,13 +115,12 @@ export const User = objectType({
           .completions_registered({
             where: {
               organization_id: organization_id ?? undefined,
-              course:
-                course_id || course_slug
-                  ? {
-                      id: course_id ?? undefined,
-                      slug: course_slug ?? undefined,
-                    }
-                  : undefined,
+              course: {
+                ...filterNullFields({
+                  id,
+                  slug,
+                }),
+              },
             },
           })
       },
@@ -128,8 +132,8 @@ export const User = objectType({
         course_id: nullable(idArg()),
         course_slug: nullable(stringArg()),
       },
-      resolve: async (parent, { course_id, course_slug }, ctx) => {
-        if (!course_id && !course_slug) {
+      resolve: async (parent, { course_id: id, course_slug: slug }, ctx) => {
+        if (!id && !slug) {
           throw new UserInputError("need course_id or course_slug", {
             argumentName: ["course_id", "course_slug"],
           })
@@ -146,8 +150,10 @@ export const User = objectType({
 
         const data = await ctx.prisma.course.findUnique({
           where: {
-            id: course_id ?? undefined,
-            slug: course_slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
           select: {
             user_course_progresses: {
@@ -173,15 +179,17 @@ export const User = objectType({
         course_id: idArg(),
         slug: stringArg(),
       },
-      resolve: async (parent, { course_id, slug }, ctx) => {
-        if ((!course_id && !slug) || (course_id && slug)) {
+      resolve: async (parent, { course_id: id, slug }, ctx) => {
+        if ((!id && !slug) || (id && slug)) {
           throw new UserInputError("provide exactly one of course_id or slug")
         }
 
         const course = await ctx.prisma.course.findUnique({
           where: {
-            id: course_id ?? undefined,
-            slug: slug ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
         })
         return {

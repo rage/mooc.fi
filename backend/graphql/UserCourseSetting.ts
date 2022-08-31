@@ -13,6 +13,7 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { filterNullFields } from "../util"
 import { buildUserSearch } from "./common"
 
 export const UserCourseSetting = objectType({
@@ -339,8 +340,8 @@ interface UserCourseSettingSearch {
 }
 const getUserCourseSettingSearch = ({
   search,
-  user_id,
-  user_upstream_id,
+  user_id: id,
+  user_upstream_id: upstream_id,
 }: GetUserCourseSettingSearchArgs): UserCourseSettingSearch => {
   const userConditions: Array<Prisma.UserWhereInput> = []
 
@@ -350,10 +351,12 @@ const getUserCourseSettingSearch = ({
     userConditions.push(userSearch)
   }
 
-  if (user_id || user_upstream_id) {
+  if (id || upstream_id) {
     userConditions.push({
-      id: user_id ?? undefined,
-      upstream_id: user_upstream_id ?? undefined,
+      ...filterNullFields({
+        id,
+        upstream_id,
+      }),
     })
   }
 

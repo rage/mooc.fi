@@ -11,7 +11,7 @@ import {
   completionLanguageMap,
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
-import { isNullOrUndefined } from "../../../util"
+import { emptyOrNullToUndefined, isNullOrUndefined } from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
 import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "./kafkaContext"
@@ -366,7 +366,7 @@ export const createCompletion = async ({
             ? false
             : handlerCourse.automatic_completions_eligible_for_ects,
         completion_date: new Date(),
-        tier: !isNullOrUndefined(tier) ? tier : undefined,
+        tier: emptyOrNullToUndefined(tier),
       },
     })
 

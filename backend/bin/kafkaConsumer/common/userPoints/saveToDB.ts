@@ -2,7 +2,7 @@ import { DateTime } from "luxon"
 
 import { ExerciseCompletion } from "@prisma/client"
 
-import { err, ok, Result } from "../../../../util"
+import { emptyOrNullToUndefined, err, ok, Result } from "../../../../util"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
@@ -85,7 +85,7 @@ export const saveToDatabase = async (
       },
       n_points: Number(message.n_points),
       completed: message.completed,
-      attempted: message.attempted !== null ? message.attempted : undefined,
+      attempted: emptyOrNullToUndefined(message.attempted),
       exercise_completion_required_actions: {
         create: required_actions.map((value) => ({ value })),
       },
@@ -136,7 +136,7 @@ export const saveToDatabase = async (
         n_points: Number(message.n_points),
         completed: { set: message.completed },
         attempted: {
-          set: message.attempted !== null ? message.attempted : undefined,
+          set: emptyOrNullToUndefined(message.attempted),
         },
         exercise_completion_required_actions: {
           create: createActions,

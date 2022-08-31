@@ -1,6 +1,7 @@
 import { booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin, isVisitor, or } from "../accessControl"
+import { filterNullFields } from "../util"
 import { ConflictError } from "./common"
 
 export const CourseOrganization = objectType({
@@ -31,8 +32,10 @@ export const CourseOrganizationQueries = extendType({
 
         return ctx.prisma.courseOrganization.findMany({
           where: {
-            course_id: course_id ?? undefined,
-            organization_id: organization_id ?? undefined,
+            ...filterNullFields({
+              course_id,
+              organization_id,
+            }),
           },
         })
       },

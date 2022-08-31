@@ -39,8 +39,10 @@ export const CourseQueries = extendType({
 
         const courseQuery: Prisma.CourseFindUniqueArgs = {
           where: {
-            slug: slug ?? undefined,
-            id: id ?? undefined,
+            ...filterNullFields({
+              id,
+              slug,
+            }),
           },
         }
 

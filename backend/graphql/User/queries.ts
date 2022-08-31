@@ -2,6 +2,7 @@ import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { extendType, idArg, intArg, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
+import { filterNullFields } from "../../util"
 import { buildUserSearch, convertPagination } from "../common"
 
 export const UserQueries = extendType({
@@ -40,8 +41,10 @@ export const UserQueries = extendType({
         const user = await ctx.prisma.user.findFirst({
           where: {
             ...buildUserSearch(search),
-            id: id ?? undefined,
-            upstream_id: upstream_id ?? undefined,
+            ...filterNullFields({
+              id,
+              upstream_id,
+            }),
           },
         })
 

@@ -6,8 +6,16 @@ query CurrentUserUserOrganizations {
   }
 }
 
-query UserOrganizations($user_id: ID, $organization_id: ID) {
-  userOrganizations(user_id: $user_id, organization_id: $organization_id) {
+query UserOrganizations(
+  $user_id: ID
+  $organization_id: ID
+  $organization_slug: String
+) {
+  userOrganizations(
+    user_id: $user_id
+    organization_id: $organization_id
+    organization_slug: $organization_slug
+  ) {
     ...UserOrganizationFields
   }
 }

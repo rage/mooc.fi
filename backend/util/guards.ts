@@ -12,6 +12,10 @@ export function isNull<T>(value: T | null): value is null {
   return value === null
 }
 
+export function isNotNull<T>(value: T | null): value is T {
+  return value !== null
+}
+
 export function isEmptyNullOrUndefined<T>(
   value: T | null | undefined,
 ): value is null | undefined {
