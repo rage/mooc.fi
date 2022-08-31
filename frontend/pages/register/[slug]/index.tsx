@@ -79,7 +79,7 @@ const RegisterToOrganization = () => {
   const { currentUser, admin } = useContext(LoginStateContext)
   const slug = useQueryParameter("slug")
   const t = useTranslator(HomeTranslations, RegistrationTranslations)
-  const [confirmationStatus, setConfirmationStatus] = useState("notSent") // notSent, sent, expired or incorrectFormat
+  const [confirmationStatus, setConfirmationStatus] = useState("notSent") // notSent, sent, expired, incorrectFormat or confirmed
   const [email, setEmail] = useState("")
   const [consented, setConsented] = useState(false)
   const [organizationalIdentifier, setOrganizationalIdentifier] = useState(
@@ -131,13 +131,6 @@ const RegisterToOrganization = () => {
   ])
 
   useEffect(() => {
-    const fetchConfirmationSentInformation = async () => {
-      // TODO: fetch whether confirmation has been sent and how long ago
-    }
-    fetchConfirmationSentInformation()
-  }, [])
-
-  useEffect(() => {
     if (!userOrganizationsData || !organizationData) {
       return
     }
@@ -155,6 +148,32 @@ const RegisterToOrganization = () => {
     setCurrentUserOrganizationMembership(currentMembership)
   }, [organizationData, userOrganizationsData])
 
+  useEffect(() => {
+    if (!userOrganizationsData || !organizationData) {
+      return
+    }
+
+    const fetchConfirmationSentInformation = async () => {
+      const currentMembership =
+      userOrganizationsData?.currentUser?.user_organizations.find(
+        (uo) => uo?.organization?.slug === slug,
+      )
+      const isMember = Boolean(currentMembership?.confirmed)
+      const isSentButNotJoined = Boolean(currentMembership?.id)
+      const isExpired = Boolean(new Date().getTime() > new Date(currentMembership?.created_at).getTime() + (3 * 1000 * 60 * 60* 24))
+      if (isMember) {
+        setConfirmationStatus("confirmed")
+      } else if (isSentButNotJoined && isExpired) {
+        setConfirmationStatus("expired")
+      } else if (isSentButNotJoined) {
+        setConfirmationStatus("sent")
+      } else {
+        setConfirmationStatus("notSent")
+      }
+    }
+    fetchConfirmationSentInformation()
+  }, [])
+
   const handleSubmit = () => {
     const potentialEmail = (
       document.getElementById("email") as HTMLInputElement
@@ -170,12 +189,12 @@ const RegisterToOrganization = () => {
       setEmail(potentialEmail)
       setOrganizationalIdentifier(orgId)
       setConfirmationStatus("sent")
-      verifyJoiningOrganization()
+      verifyJoiningOrganization(potentialEmail)
       // TODO: tallenna että user on consentannut ja että hän on reggannut, niin tiedetään milloin expiree
     }
   }
 
-  const verifyJoiningOrganization = async () => {
+  const verifyJoiningOrganization = async (email: string) => {
     const fieldName = "joined_organizations"
     const fieldValue = [...memberships, slug]
     await updateUserDetails(fieldName, fieldValue)
@@ -232,9 +251,7 @@ const RegisterToOrganization = () => {
     return <Container>{t("organizationDoesntExist")}</Container>
   }
 
-  const isMember = Boolean(currentUserOrganizationMembership?.id)
-
-  return isMember ? (
+  return confirmationStatus === 'confirmed' ? (
     <Container>
       <h1>
         {t("leaveTitle")}{" "}
@@ -245,7 +262,7 @@ const RegisterToOrganization = () => {
 
       <Button
         color="secondary"
-        disabled={isMember}
+        disabled={confirmationStatus === 'confirmed'}
         onClick={async () => {
           await leaveOrganization()
         }}
@@ -365,6 +382,12 @@ const RegisterToOrganization = () => {
       {confirmationStatus == "sent" && (
         <div>
           {t("registrationReceived")} {email}.
+        </div>
+      )}
+
+      {confirmationStatus == "expired" && (
+        <div>
+          {t("confirmationEmailExpired1")} {email} {t("confirmationEmailExpired2")}
         </div>
       )}
 

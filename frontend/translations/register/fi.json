@@ -23,5 +23,7 @@
   "leaveInformation": "Jos eroat organisaatiosta, kurssisuoritustietojasi ei enää välitetä Mooc.fi:sta organisaatioon.",
   "leaveButton": "Eroa",
   "organizationDoesntExist": "organisaatiota ei löytynyt",
+  "confirmationEmailExpired1": "Vavhistussähköposti, joka lähetettiin osoitteeseen",
+  "confirmationEmailExpired2": ", on vanhentunut. Voit lähettää uuden vahvistussähköpostin täyttämällä ylläolevan lomakkeen uudelleen.",
   "loading": "ladataan"
 }

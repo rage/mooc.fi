@@ -23,5 +23,7 @@
   "leaveInformation": "If you leave the organisation, your course completion records will not be sent from Mooc.fi to the organisation anymore.",
   "leaveButton": "Leave",
   "organizationDoesntExist": "no such organization exists",
+  "confirmationEmailExpired1": "The confirmation email that was sent to the address",
+  "confirmationEmailExpired2": "has expired. You can send a new confirmation email by filling out the form above again.",
   "loading": "loading"
 }
