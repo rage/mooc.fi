@@ -1,8 +1,10 @@
 import { UserInputError } from "apollo-server-express"
 import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
-import { Prisma } from "@prisma/client"
+import { Course, Prisma } from "@prisma/client"
 
+import { getCourseOrAlias } from "../../util/db-functions"
+import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
@@ -42,19 +44,17 @@ export const User = objectType({
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug } = args
+        let course: Course | null = null
 
+        // TODO: get by alias and then handler
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.prisma.course
-            .findUnique({
-              where: {
-                id: args.course_id ?? undefined,
-                slug: args.course_slug ?? undefined,
-              },
-            })
-            .completions_handled_by()
-          if (handlerCourse) {
-            course_id = handlerCourse.id
-            course_slug = undefined
+          course = await getCourseOrCompletionHandlerCourse(ctx)({
+            id: course_id ?? undefined,
+            slug: course_slug ?? undefined,
+          })
+
+          if (!course) {
+            throw new UserInputError("Course not found")
           }
         }
 
@@ -64,13 +64,11 @@ export const User = objectType({
           })
           .completions({
             where: {
-              course:
-                course_id || course_slug
-                  ? {
-                      id: course_id ?? undefined,
-                      slug: course_slug ?? undefined,
-                    }
-                  : undefined,
+              course: course
+                ? {
+                    id: course.id,
+                  }
+                : undefined,
             },
             distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
@@ -87,19 +85,17 @@ export const User = objectType({
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug, organization_id } = args
+        let course: Course | null = null
 
+        // TODO: get by alias and then handler
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.prisma.course
-            .findUnique({
-              where: {
-                id: args.course_id ?? undefined,
-                slug: args.course_slug ?? undefined,
-              },
-            })
-            .completions_handled_by()
-          if (handlerCourse) {
-            course_id = handlerCourse.id
-            course_slug = undefined
+          course = await getCourseOrCompletionHandlerCourse(ctx)({
+            id: course_id ?? undefined,
+            slug: course_slug ?? undefined,
+          })
+
+          if (!course) {
+            throw new UserInputError("Course not found")
           }
         }
 
@@ -110,13 +106,11 @@ export const User = objectType({
           .completions_registered({
             where: {
               organization_id: organization_id ?? undefined,
-              course:
-                course_id || course_slug
-                  ? {
-                      id: course_id ?? undefined,
-                      slug: course_slug ?? undefined,
-                    }
-                  : undefined,
+              course: course
+                ? {
+                    id: course.id,
+                  }
+                : undefined,
             },
           })
       },
@@ -142,7 +136,7 @@ export const User = objectType({
         // parameters obsolete.
         // Add a third parameter `query_siblings` that defaults to true to the query?
 
-        const data = await ctx.prisma.course.findUnique({
+        const data = await getCourseOrAlias(ctx)({
           where: {
             id: course_id ?? undefined,
             slug: course_slug ?? undefined,
@@ -175,12 +169,13 @@ export const User = objectType({
         if ((!course_id && !slug) || (course_id && slug)) {
           throw new UserInputError("provide exactly one of course_id or slug")
         }
-        const course = await ctx.prisma.course.findUnique({
+        const course = await getCourseOrAlias(ctx)({
           where: {
             id: course_id ?? undefined,
             slug: slug ?? undefined,
           },
         })
+
         return {
           course,
           user: parent,

@@ -1,7 +1,7 @@
 import { Course, User, UserCourseProgress } from "@prisma/client"
 
 import { BAItiers } from "../../../../config/courseConfig"
-import { KafkaContext } from "../kafkaContext"
+import { BaseContext } from "../../../../context"
 import {
   checkCompletion,
   getCombinedUserCourseProgress,
@@ -13,7 +13,7 @@ interface Props {
   user: User
   course: Course
   userCourseProgress: UserCourseProgress
-  context: KafkaContext
+  context: BaseContext
 }
 
 export const generateUserCourseProgress = async ({

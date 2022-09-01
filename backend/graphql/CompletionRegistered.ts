@@ -14,8 +14,8 @@ import { type NexusGenInputs } from "nexus-typegen"
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
-import { getCourseOrAliasBySlug } from "../util/graphql-functions"
-import { Context } from "/context"
+import { Context } from "../context"
+import { getCourseOrAlias } from "../util/db-functions"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -51,13 +51,13 @@ export const CompletionRegisteredQueries = extendType({
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
-        const { course, skip, take, cursor } = args
+        const { course: slug, skip, take, cursor } = args
         if ((take ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 items")
         }
-        if (course) {
+        if (slug) {
           return withCourse(
-            course,
+            slug,
             skip ?? undefined,
             take ?? undefined,
             cursor ? { id: cursor.id ?? undefined } : undefined,
@@ -77,13 +77,17 @@ export const CompletionRegisteredQueries = extendType({
 })
 
 const withCourse = async (
-  course: string,
+  slug: string,
   skip: number | undefined,
   take: number | undefined,
   cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  const courseReference = await getCourseOrAliasBySlug(ctx)(course)
+  const courseReference = await getCourseOrAlias(ctx)({
+    where: {
+      slug,
+    },
+  })
 
   return ctx.prisma.course
     .findUnique({

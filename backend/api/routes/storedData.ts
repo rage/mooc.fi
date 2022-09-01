@@ -1,18 +1,20 @@
 import { Request, Response } from "express-serve-static-core"
 import { omit } from "lodash"
 
-import { getUser, requireCourseOwnership } from "../util/server-functions"
-import { ApiContext } from "./"
+import { requireCourseOwnership } from "../../util/server-functions"
+import { ApiContext, Controller } from "../types"
 
-export class StoredDataController {
-  constructor(readonly ctx: ApiContext) {}
+export class StoredDataController extends Controller {
+  constructor(readonly ctx: ApiContext) {
+    super(ctx)
+  }
 
   post = async (
     req: Request<{ slug: string }, {}, { data: string }>,
     res: Response,
   ) => {
     const { prisma } = this.ctx
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -25,29 +27,22 @@ export class StoredDataController {
     if (!data) {
       return res.status(400).json({ message: "must provide data" })
     }
+    const course = await this.getCourse({ where: { slug } })
+
+    if (!course) {
+      return res
+        .status(401)
+        .json({
+          error: `course with slug or course alias with course code ${slug} doesn't exist`,
+        })
+    }
 
     try {
-      const { id: course_id } =
-        (await prisma.course.findFirst({
-          where: {
-            slug,
-          },
-          select: {
-            id: true,
-          },
-        })) ?? {}
-
-      if (!course_id) {
-        return res
-          .status(401)
-          .json({ error: `course with slug ${slug} doesn't exist` })
-      }
-
       const existingStoredData = await prisma.storedData.findUnique({
         where: {
           user_id_course_id: {
             user_id: user.id,
-            course_id,
+            course_id: course.id,
           },
         },
       })
@@ -68,7 +63,7 @@ export class StoredDataController {
         where: {
           user_id_course_id: {
             user_id: user.id,
-            course_id,
+            course_id: course.id,
           },
         },
         data: {
@@ -87,7 +82,8 @@ export class StoredDataController {
   get = async (req: Request<{ slug: string }>, res: Response) => {
     const { prisma } = this.ctx
     const { slug } = req.params
-    const course = await prisma.course.findFirst({ where: { slug } })
+
+    const course = await this.getCourse({ where: { slug } })
 
     if (!course) {
       return res

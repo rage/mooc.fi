@@ -2,7 +2,7 @@ import { Course, User } from "@prisma/client"
 
 import { getTestContext } from "../../../../../tests/__helpers"
 import { seed } from "../../../../../tests/data/seed"
-import { KafkaContext } from "../../kafkaContext"
+import { KafkaContext } from "../../../common/kafkaContext"
 import { getCombinedUserCourseProgress } from "../../userFunctions"
 import { checkAndSendThresholdEmail } from "../checkAndSendThresholdEmail"
 import { Message } from "../interfaces"
@@ -47,8 +47,6 @@ describe("Email threshold", () => {
       prisma: ctx.prisma,
       knex: ctx.knex,
       logger: ctx.logger,
-      consumer: null as any,
-      mutex: null as any,
     })
     course = await ctx.prisma.course.findFirst({
       where: {

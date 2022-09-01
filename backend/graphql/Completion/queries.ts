@@ -8,8 +8,7 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
-import { buildUserSearch } from "../../util/db-functions"
-import { getCourseOrAliasBySlug } from "../../util/graphql-functions"
+import { buildUserSearch, getCourseOrAlias } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -32,7 +31,15 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        const course = await getCourseOrAliasBySlug(ctx)(slug)
+        const course = await getCourseOrAlias(ctx)({
+          where: {
+            slug,
+          },
+        })
+
+        if (!course) {
+          throw new Error("Course not found")
+        }
 
         const completions = await ctx.prisma.course
           .findUnique({
@@ -73,7 +80,11 @@ export const CompletionQueries = extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const course = await getCourseOrAliasBySlug(ctx)(slug)
+        const course = await getCourseOrAlias(ctx)({ where: { slug } })
+
+        if (!course) {
+          throw new Error("Course not found")
+        }
 
         const baseArgs: Prisma.CompletionFindManyArgs = {
           where: {

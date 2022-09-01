@@ -1,13 +1,13 @@
 import axios, { Method } from "axios"
 import { omit, orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
 import {
   adminUserDetails,
   normalUserDetails,
   thirdUserDetails,
-} from "../../tests/data"
-import { seed } from "../../tests/data/seed"
+} from "../../../tests/data"
+import { seed } from "../../../tests/data/seed"
 
 const ctx = getTestContext()
 
@@ -90,7 +90,7 @@ describe("API", () => {
       })
         .then(() => fail())
         .catch(({ response }) => {
-          expect(response.status).toBe(403)
+          expect(response.status).toBe(400)
         })
     })
 
@@ -271,8 +271,8 @@ describe("API", () => {
         })
           .then(() => fail())
           .catch(({ response }) => {
-            expect(response.data.message).toContain("no course")
-            expect(response.status).toBe(400)
+            expect(response.data.message).toContain("doesn't exist")
+            expect(response.status).toBe(404)
           })
       })
 
@@ -796,7 +796,9 @@ describe("API", () => {
           .then(() => fail())
           .catch(({ response }) => {
             expect(response.status).toBe(401)
-            expect(response.data.error).toContain("course with slug foobarbaz")
+            expect(response.data.error).toContain(
+              "course with slug or course alias with course code foobarbaz",
+            )
           })
       })
 
@@ -911,8 +913,8 @@ describe("API", () => {
       await seed(ctx.prisma)
     })
 
-    const getProgressv2 = (id: string, deleted?: boolean) =>
-      get(`/api/progressv2/${id}${deleted ? "?deleted=true" : ""}`, {})
+    const getProgressv2 = (idOrSlug: string, deleted?: boolean) =>
+      get(`/api/progressv2/${idOrSlug}${deleted ? "?deleted=true" : ""}`, {})
 
     it("errors on no auth", async () => {
       return getProgressv2("course1")({})

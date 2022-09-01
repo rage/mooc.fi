@@ -4,29 +4,6 @@ import { Prisma } from "@prisma/client"
 
 import { Context } from "../context"
 
-export const getCourseOrAliasBySlug =
-  (ctx: Context) => async (slug: string) => {
-    let course = await ctx.prisma.course.findUnique({
-      where: { slug },
-    })
-
-    if (!course) {
-      course = await ctx.prisma.courseAlias
-        .findUnique({
-          where: {
-            course_code: slug,
-          },
-        })
-        .course()
-
-      if (!course) {
-        throw new UserInputError("course or course alias not found")
-      }
-    }
-
-    return course
-  }
-
 export const getCourseOrCompletionHandlerCourse =
   (ctx: Context) =>
   async ({ id, slug }: Prisma.CourseWhereUniqueInput) => {
@@ -34,6 +11,7 @@ export const getCourseOrCompletionHandlerCourse =
       throw new UserInputError("must provide id and/or slug")
     }
 
+    // TODO: use course alias?
     const course = await ctx.prisma.course.findUnique({
       where: {
         id,

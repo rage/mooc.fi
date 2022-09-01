@@ -8,9 +8,9 @@ import {
   User,
 } from "@prisma/client"
 
+import { BaseContext } from "../../../../context"
 import { getTestContext } from "../../../../tests/__helpers"
 import { seed } from "../../../../tests/data/seed"
-import { KafkaContext } from "../kafkaContext"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,
@@ -22,16 +22,14 @@ import {
 const ctx = getTestContext()
 
 describe("createCompletion", () => {
-  const kafkaContext = {} as KafkaContext
+  const context = {} as BaseContext
 
   beforeEach(async () => {
     await seed(ctx.prisma)
-    Object.assign(kafkaContext, {
+    Object.assign(context, {
       prisma: ctx.prisma,
       knex: ctx.knex,
       logger: ctx.logger,
-      consumer: null as any,
-      mutex: null as any,
     })
   })
 
@@ -51,7 +49,7 @@ describe("createCompletion", () => {
       await createCompletion({
         user: user!,
         course: course!,
-        context: kafkaContext,
+        context,
         tier: 1,
       })
       const createdCompletion = await ctx.prisma.completion.findFirst({
@@ -94,7 +92,7 @@ describe("createCompletion", () => {
       await createCompletion({
         user: user!,
         course: course!,
-        context: kafkaContext,
+        context,
         tier: 3,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
@@ -126,7 +124,7 @@ describe("createCompletion", () => {
       await createCompletion({
         user: user!,
         course: course!,
-        context: kafkaContext,
+        context,
         tier: 1,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
@@ -147,7 +145,7 @@ describe("createCompletion", () => {
       await createCompletion({
         user: user!,
         course: course!,
-        context: kafkaContext,
+        context,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
         where: {
@@ -163,7 +161,7 @@ describe("createCompletion", () => {
       await createCompletion({
         user: user!,
         course: course!,
-        context: kafkaContext,
+        context,
         tier: 2,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
@@ -180,7 +178,7 @@ describe("createCompletion", () => {
       await createCompletion({
         user: user!,
         course: course!,
-        context: kafkaContext,
+        context,
         tier: 1,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
@@ -199,16 +197,14 @@ describe("getUserCourseSettings", () => {
   const HANDLER_COURSE_ID = "00000000-0000-0000-0000-000000000666"
   const INHERITING_COURSE_ID = "00000000-0000-0000-0000-000000000668"
   const USER_ID = "20000000-0000-0000-0000-000000000104"
-  const kafkaContext = {} as KafkaContext
+  const context = {} as BaseContext
 
   beforeEach(async () => {
     await seed(ctx.prisma)
-    Object.assign(kafkaContext, {
+    Object.assign(context, {
       prisma: ctx.prisma,
       knex: ctx.knex,
       logger: ctx.logger,
-      consumer: null as any,
-      mutex: null as any,
     })
   })
 
@@ -237,7 +233,7 @@ describe("getUserCourseSettings", () => {
     const settings = await getUserCourseSettings({
       user_id: USER_ID,
       course_id: INHERITING_COURSE_ID,
-      context: kafkaContext,
+      context,
     })
 
     expect(settings).toEqual(handler)
@@ -258,7 +254,7 @@ describe("getUserCourseSettings", () => {
     const settings = await getUserCourseSettings({
       user_id: USER_ID,
       course_id: INHERITING_COURSE_ID,
-      context: kafkaContext,
+      context,
     })
 
     expect(settings).toEqual(created)
@@ -268,7 +264,7 @@ describe("getUserCourseSettings", () => {
     const settings = await getUserCourseSettings({
       user_id: USER_ID,
       course_id: INHERITING_COURSE_ID,
-      context: kafkaContext,
+      context,
     })
 
     expect(settings).toBeNull()
@@ -473,7 +469,7 @@ describe("exercise completion utilities", () => {
       | null
   })[]
 
-  const kafkaContext = {} as KafkaContext
+  const context = {} as BaseContext
 
   beforeEach(async () => {
     await seed(ctx.prisma)
@@ -499,12 +495,10 @@ describe("exercise completion utilities", () => {
         }),
       )
     }
-    Object.assign(kafkaContext, {
+    Object.assign(context, {
       prisma: ctx.prisma,
       knex: ctx.knex,
       logger: ctx.logger,
-      consumer: null as any,
-      mutex: null as any,
     })
   })
 
@@ -515,7 +509,7 @@ describe("exercise completion utilities", () => {
           id: USER_ID_1,
         } as User,
         courseIds: ["00000000-0000-0000-0000-000000000667"],
-        context: kafkaContext,
+        context,
       })
 
       expect(result).toHaveLength(2)
@@ -531,7 +525,7 @@ describe("exercise completion utilities", () => {
           "00000000-0000-0000-0000-000000000667",
           "00000000-0000-0000-0000-000000000668",
         ],
-        context: kafkaContext,
+        context,
       })
 
       expect(result).toHaveLength(3)
@@ -547,7 +541,7 @@ describe("exercise completion utilities", () => {
           "00000000-0000-0000-0000-000000000667",
           "00000000-0000-0000-0000-000000000668",
         ],
-        context: kafkaContext,
+        context,
       })
 
       expect(result).toHaveLength(1)
@@ -576,7 +570,7 @@ describe("exercise completion utilities", () => {
         await pruneDuplicateExerciseCompletions({
           user_id: USER_ID_1,
           course_id: "00000000-0000-0000-0000-000000000667",
-          context: kafkaContext,
+          context,
         })
       )
         .map(({ id }) => id)
@@ -627,7 +621,7 @@ describe("exercise completion utilities", () => {
         },
       })
       const result = await pruneOrphanedExerciseCompletionRequiredActions({
-        context: kafkaContext,
+        context,
       })
       const afterCount =
         await ctx.prisma.exerciseCompletionRequiredAction.count()

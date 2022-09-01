@@ -1,3 +1,4 @@
+import { BaseContext } from "../../../../context"
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
@@ -6,7 +7,6 @@ import {
 import { adminUserDetails, normalUserDetails } from "../../../../tests/data"
 import { seed } from "../../../../tests/data/seed"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
-import { KafkaContext } from "../kafkaContext"
 
 const ctx = getTestContext()
 const tmc = fakeTMCSpecific({
@@ -23,16 +23,14 @@ const tmc = fakeTMCSpecific({
 })
 
 describe("getUserWithRaceCondition", () => {
-  const kafkaContext = {} as KafkaContext
+  const context = {} as BaseContext
 
   beforeEach(async () => {
     await seed(ctx.prisma)
-    Object.assign(kafkaContext, {
+    Object.assign(context, {
       prisma: ctx.prisma,
       knex: ctx.knex,
       logger: ctx.logger,
-      consumer: null as any,
-      mutex: null as any,
     })
     tmc.setup()
     fakeGetAccessToken([200, "admin"])
@@ -41,13 +39,13 @@ describe("getUserWithRaceCondition", () => {
   afterAll(() => tmc.teardown())
 
   it("returns user found in database", async () => {
-    const user = await getUserWithRaceCondition(kafkaContext, 1)
+    const user = await getUserWithRaceCondition(context, 1)
     expect(user).not.toBeNull()
     expect(user!.upstream_id).toBe(1)
   })
 
   it("user not found in database, found in TMC and created", async () => {
-    const user = await getUserWithRaceCondition(kafkaContext, 9998)
+    const user = await getUserWithRaceCondition(context, 9998)
 
     expect(user).not.toBeNull()
     expect(user!.upstream_id).toBe(9998)
@@ -81,13 +79,13 @@ describe("getUserWithRaceCondition", () => {
 
     const user = await getUserWithRaceCondition(
       {
-        ...kafkaContext,
+        ...context,
         knex: knexMocked,
       },
       9999,
     )
     expect(user).not.toBeNull()
-    expect(kafkaContext.logger.error).not.toHaveBeenCalled()
-    expect(kafkaContext.logger.info).toHaveBeenCalled()
+    expect(context.logger.error).not.toHaveBeenCalled()
+    expect(context.logger.info).toHaveBeenCalled()
   })
 })

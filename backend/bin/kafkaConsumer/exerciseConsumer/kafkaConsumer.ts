@@ -7,6 +7,7 @@ import { KafkaError } from "../../lib/errors"
 import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
+import { KafkaContext } from "../common/kafkaContext"
 import config from "../kafkaConfig"
 import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
@@ -22,7 +23,7 @@ const consumer = createKafkaConsumer({ logger, prisma })
 
 consumer.connect()
 
-const context = {
+const context: KafkaContext = {
   prisma,
   logger,
   consumer,
