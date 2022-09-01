@@ -20,7 +20,7 @@ type UserCourseSettingsCountResult =
     }
 
 export class UserCourseSettingsController extends Controller {
-  constructor(readonly ctx: ApiContext) {
+  constructor(override readonly ctx: ApiContext) {
     super(ctx)
   }
 
@@ -231,7 +231,7 @@ export class UserCourseSettingsController extends Controller {
       })
     }
 
-    res.json(resObject)
+    return res.status(200).json(resObject)
   }
 
   private async getCourseAndSettings(user: User, slug: string) {

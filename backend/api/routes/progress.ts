@@ -24,7 +24,7 @@ const isId = (idOrSlug: string) =>
   Boolean(idOrSlug.match(/^[0-9a-fA-F-]{36}$/))
 
 export class ProgressController extends Controller {
-  constructor(readonly ctx: ApiContext) {
+  constructor(override readonly ctx: ApiContext) {
     super(ctx)
   }
 

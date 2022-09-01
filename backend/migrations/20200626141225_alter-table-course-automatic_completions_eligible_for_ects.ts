@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<any> {
             .defaultTo(true)
         })
       }
+      return
     })
 }
 

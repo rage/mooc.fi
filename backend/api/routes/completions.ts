@@ -30,7 +30,7 @@ interface RegisterCompletionInput {
   registration_date?: string
 }
 export class CompletionController extends Controller {
-  constructor(readonly ctx: ApiContext) {
+  constructor(override readonly ctx: ApiContext) {
     super(ctx)
   }
 

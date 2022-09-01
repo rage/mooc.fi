@@ -5,7 +5,7 @@ import { requireCourseOwnership } from "../../util/server-functions"
 import { ApiContext, Controller } from "../types"
 
 export class StoredDataController extends Controller {
-  constructor(readonly ctx: ApiContext) {
+  constructor(override readonly ctx: ApiContext) {
     super(ctx)
   }
 
