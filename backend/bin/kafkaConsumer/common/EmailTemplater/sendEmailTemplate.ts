@@ -1,6 +1,5 @@
 import { EmailTemplate, Organization, User } from "@prisma/client"
 
-// @ts-ignore: debug
 import { emptyOrNullToUndefined, sendMail } from "../../../../util"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
 import { TemplateContext } from "./types/TemplateContext"

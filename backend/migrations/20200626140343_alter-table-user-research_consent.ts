@@ -7,6 +7,8 @@ export async function up(knex: Knex): Promise<any> {
         table.boolean("research_consent")
       })
     }
+
+    return
   })
 }
 

@@ -9,8 +9,13 @@ import { Role } from "./accessControl"
 import { UserInfo } from "./domain/UserInfo"
 import TmcClient from "./services/tmc"
 
-export type Context = {
+export interface BaseContext {
   prisma: PrismaClient
+  logger: Logger
+  knex: Knex
+}
+
+export interface Context extends BaseContext {
   user?: User
   organization?: Organization
   disableRelations: boolean
@@ -18,6 +23,8 @@ export type Context = {
   userDetails?: UserInfo
   tmcClient?: TmcClient
   req: IncomingMessage
-  logger: Logger
-  knex: Knex
+}
+
+export interface ServerContext extends BaseContext {
+  extraContext?: Record<string, any>
 }

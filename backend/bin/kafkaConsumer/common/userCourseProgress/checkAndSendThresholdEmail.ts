@@ -2,14 +2,14 @@ import { v4 as uuidv4 } from "uuid"
 
 import { Course, User } from "@prisma/client"
 
-import { KafkaContext } from "../kafkaContext"
+import { BaseContext } from "../../../../context"
 import { CombinedUserCourseProgress } from "../userFunctions"
 
-interface Props {
+interface CheckAndSendThresholdEmailArgs {
   user: User
   course: Course
   combinedUserCourseProgress: CombinedUserCourseProgress
-  context: KafkaContext
+  context: BaseContext
 }
 
 export const checkAndSendThresholdEmail = async ({
@@ -17,7 +17,7 @@ export const checkAndSendThresholdEmail = async ({
   course,
   combinedUserCourseProgress,
   context,
-}: Props) => {
+}: CheckAndSendThresholdEmailArgs) => {
   const courseEmailThresholdTemplates =
     await context.prisma.emailTemplate.findMany({
       where: {

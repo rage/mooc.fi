@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express"
 
-import { ApiContext } from "../"
-import { requireAdmin } from "../utils"
+import { ApiContext } from "../../types"
+import { requireAdmin } from "../../utils"
 
 export function abStudiesRouter(ctx: ApiContext) {
   async function abStudiesGet(req: Request<{ id?: string }>, res: Response) {
@@ -55,7 +55,7 @@ export function abStudiesRouter(ctx: ApiContext) {
 
       return res.status(200).json(newStudy)
     } catch (e) {
-      return res.status(400).json({ error: e instanceof Error ? e.message : e })
+      return res.status(500).json({ error: e instanceof Error ? e.message : e })
     }
   }
 
@@ -97,7 +97,7 @@ export function abStudiesRouter(ctx: ApiContext) {
 
     if (!enrollments) {
       return res
-        .status(400)
+        .status(404)
         .json({ message: `ab_study with id ${id} not found` })
     }
 
@@ -110,7 +110,7 @@ export function abStudiesRouter(ctx: ApiContext) {
       }
     }, {})
 
-    return res.status(400).json({ study_id: id, users: groupByUser })
+    return res.status(200).json({ study_id: id, users: groupByUser })
   }
 
   return Router()

@@ -1,13 +1,12 @@
 import { Request, Response } from "express"
 import { chunk, groupBy, omit } from "lodash"
 
-import { Completion, Course, User, UserCourseProgress } from "@prisma/client"
+import { Completion, User, UserCourseProgress } from "@prisma/client"
 
-import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { BAIParentCourse, BAItiers } from "../config/courseConfig"
-import { isDefined } from "../util"
-import { ApiContext } from "./"
-import { getUser, requireAdmin } from "./utils"
+import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { BAIParentCourse, BAItiers } from "../../config/courseConfig"
+import { isDefined } from "../../util"
+import { ApiContext, Controller } from "../types"
 
 interface ExerciseCompletionResult {
   user_id: string
@@ -24,24 +23,38 @@ const isId = (idOrSlug: string) =>
   Boolean(idOrSlug.match(/^[0-9a-fA-F]{32}$/)) ||
   Boolean(idOrSlug.match(/^[0-9a-fA-F-]{36}$/))
 
-export class ProgressController {
-  constructor(readonly ctx: ApiContext) {}
+export class ProgressController extends Controller {
+  constructor(override readonly ctx: ApiContext) {
+    super(ctx)
+  }
 
-  progress = async (req: Request<{ id: string }>, res: Response) => {
+  progress = async (req: Request<{ idOrSlug: string }>, res: Response) => {
     const { knex } = this.ctx
-    const { id } = req.params
+    const { idOrSlug } = req.params
 
-    if (!id) {
-      return res.status(400).json({ message: "must provide id" })
+    if (!idOrSlug) {
+      return res.status(400).json({ message: "must provide id or slug" })
     }
 
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
     }
 
     const { user } = getUserResult.value
+
+    let id = isId(idOrSlug) ? idOrSlug : undefined
+
+    if (!id) {
+      const course = await this.getCourseKnex({ slug: idOrSlug })
+
+      if (!course) {
+        return res.status(404).json({ message: "course not found" })
+      }
+
+      id = course.id
+    }
 
     const exercise_completions = await knex("exercise_completion as ec")
       .select<any, ExerciseCompletionResult[]>(
@@ -94,7 +107,7 @@ export class ProgressController {
       return res.status(400).json({ message: "must provide id or slug" })
     }
 
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -102,13 +115,10 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const course = (
-      await knex
-        .select<any, Course[]>("*")
-        .from("course")
-        .where(isId(idOrSlug) ? "id" : "slug", idOrSlug)
-        .limit(1)
-    )?.[0]
+    const id = isId(idOrSlug) ? idOrSlug : undefined
+    const slug = !id ? idOrSlug : undefined
+
+    const course = await this.getCourseKnex({ id, slug })
 
     if (!course) {
       return res.status(404).json({ message: "course not found" })
@@ -169,21 +179,33 @@ export class ProgressController {
     })
   }
 
-  tierProgress = async (req: Request<{ id: string }>, res: Response) => {
-    const { id } = req.params
+  tierProgress = async (req: Request<{ idOrSlug: string }>, res: Response) => {
+    const { idOrSlug } = req.params
     const { knex } = this.ctx
 
-    if (!id) {
-      return res.status(400).json({ message: "must provide course id" })
+    if (!idOrSlug) {
+      return res.status(400).json({ message: "must provide course id or slug" })
     }
 
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
     }
 
     const { user } = getUserResult.value
+
+    let id = isId(idOrSlug) ? idOrSlug : undefined
+
+    if (!id) {
+      const course = await this.getCourseKnex({ slug: idOrSlug })
+
+      if (!course) {
+        return res.status(404).json({ message: "course not found" })
+      }
+
+      id = course.id
+    }
 
     const data = await knex
       .select<any, Pick<UserCourseProgress, "course_id" | "extra">[]>(
@@ -210,7 +232,7 @@ export class ProgressController {
     const { slug } = req.params
     const { prisma } = this.ctx
 
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -218,7 +240,7 @@ export class ProgressController {
 
     const { user } = getUserResult.value
 
-    const course = await prisma.course.findUnique({
+    const course = await this.getCourse({
       where: { slug },
     })
 
@@ -245,7 +267,7 @@ export class ProgressController {
   }
 
   recheckBAIUserCourseProgresses = async (req: Request, res: Response) => {
-    const adminRes = await requireAdmin(this.ctx)(req, res)
+    const adminRes = await this.requireAdmin(req, res)
 
     if (adminRes !== true) {
       return adminRes
@@ -415,12 +437,7 @@ export class ProgressController {
             user,
             course,
             userCourseProgress: omit(userCourseProgress, "user"),
-            context: {
-              ...this.ctx,
-              mutex: {} as any,
-              consumer: {} as any,
-              topic_name: "",
-            },
+            context: this.ctx,
           })
 
           if (updated.n_points !== userCourseProgress.n_points) {

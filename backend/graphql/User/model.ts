@@ -4,6 +4,10 @@ import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { filterNullFields, isDefined } from "../../util"
+import {
+  getCourseOrAlias,
+  getCourseOrCompletionHandlerCourse,
+} from "../../util"
 
 export const User = objectType({
   name: "User",
@@ -41,23 +45,20 @@ export const User = objectType({
         course_slug: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id: id, course_slug: slug } = args
+        let { course_id, course_slug } = args
+        let course: Course | null = null
 
-        if (id || slug) {
-          const handlerCourse = await ctx.prisma.course
-            .findUnique({
-              where: {
-                ...filterNullFields({
-                  id,
-                  slug,
-                }),
-              },
-            })
-            .completions_handled_by()
+        // TODO: get by alias and then handler
+        if (course_id || course_slug) {
+          course = await getCourseOrCompletionHandlerCourse(ctx)({
+            ...filterNullFields({
+              id: course_id,
+              slug: course_slug,
+            }),
+          })
 
-          if (handlerCourse) {
-            id = handlerCourse.id
-            slug = undefined
+          if (!course) {
+            throw new UserInputError("Course not found")
           }
         }
 
@@ -69,8 +70,8 @@ export const User = objectType({
             where: {
               course: {
                 ...filterNullFields({
-                  id,
-                  slug,
+                  id: course_id,
+                  slug: course_slug,
                 }),
               },
             },
@@ -88,23 +89,20 @@ export const User = objectType({
         organization_id: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id: id, course_slug: slug, organization_id } = args
+        let { course_id, course_slug, organization_id } = args
+        let course: Course | null = null
 
-        if (id || slug) {
-          const handlerCourse = await ctx.prisma.course
-            .findUnique({
-              where: {
-                ...filterNullFields({
-                  id,
-                  slug,
-                }),
-              },
-            })
-            .completions_handled_by()
+        // TODO: get by alias and then handler
+        if (course_id || course_slug) {
+          course = await getCourseOrCompletionHandlerCourse(ctx)({
+            ...filterNullFields({
+              id: course_id,
+              slug: course_slug,
+            }),
+          })
 
-          if (handlerCourse) {
-            id = handlerCourse.id
-            slug = undefined
+          if (!course) {
+            throw new UserInputError("Course not found")
           }
         }
 
@@ -117,8 +115,8 @@ export const User = objectType({
               organization_id: organization_id ?? undefined,
               course: {
                 ...filterNullFields({
-                  id,
-                  slug,
+                  id: course_id,
+                  slug: course_slug,
                 }),
               },
             },
@@ -148,7 +146,7 @@ export const User = objectType({
         // parameters obsolete.
         // Add a third parameter `query_siblings` that defaults to true to the query?
 
-        const data = await ctx.prisma.course.findUnique({
+        const data = await getCourseOrAlias(ctx)({
           where: {
             ...filterNullFields({
               id,
@@ -183,8 +181,7 @@ export const User = objectType({
         if ((!id && !slug) || (id && slug)) {
           throw new UserInputError("provide exactly one of course_id or slug")
         }
-
-        const course = await ctx.prisma.course.findUnique({
+        const course = await getCourseOrAlias(ctx)({
           where: {
             ...filterNullFields({
               id,
@@ -192,6 +189,7 @@ export const User = objectType({
             }),
           },
         })
+
         return {
           course,
           user: parent,

@@ -137,6 +137,7 @@ export async function redisify<T>(
         `Could not resolve value for ${prefixedKey}; error: `,
         e2 instanceof Error ? e2.message : e2,
       )
+      return
     }
   }
 }

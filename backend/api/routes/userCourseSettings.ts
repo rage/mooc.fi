@@ -1,11 +1,11 @@
 import { Request, Response } from "express"
 import { intersection, omit } from "lodash"
 
-import { Course, UserCourseSettingsVisibility } from "@prisma/client"
+import { User, UserCourseSettingsVisibility } from "@prisma/client"
 
-import { redisify } from "../services/redis"
-import { ApiContext } from "./"
-import { getUser } from "./utils"
+import { redisify } from "../../services/redis"
+import { err, ok } from "../../util"
+import { ApiContext, Controller } from "../types"
 
 type UserCourseSettingsCountResult =
   | {
@@ -19,18 +19,20 @@ type UserCourseSettingsCountResult =
       error: true
     }
 
-export class UserCourseSettingsController {
-  constructor(readonly ctx: ApiContext) {}
+export class UserCourseSettingsController extends Controller {
+  constructor(override readonly ctx: ApiContext) {
+    super(ctx)
+  }
 
   get = async (req: Request<{ slug: string }>, res: Response) => {
-    const { prisma, logger } = this.ctx
+    const { logger } = this.ctx
     const { slug } = req.params
 
     if (!slug) {
       return res.status(400).json({ message: "must provide slug" })
     }
 
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -38,39 +40,16 @@ export class UserCourseSettingsController {
 
     const { user } = getUserResult.value
 
-    const course = await prisma.course.findUnique({
-      where: {
-        slug,
-      },
-      include: {
-        user_course_settings: {
-          where: {
-            user_id: user.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        },
-        inherit_settings_from: {
-          include: {
-            user_course_settings: {
-              where: {
-                user_id: user.id,
-              },
-              orderBy: { created_at: "asc" },
-              take: 1,
-            },
-          },
-        },
-      },
-    })
+    const courseAndSettingsResult = await this.getCourseAndSettings(user, slug)
 
-    const settings =
-      course?.inherit_settings_from?.user_course_settings?.[0] ??
-      course?.user_course_settings?.[0]
+    if (courseAndSettingsResult.isErr()) {
+      return res.status(404).json({ message: courseAndSettingsResult.error })
+    }
+    const { userCourseSettings } = courseAndSettingsResult.value
 
     const overwrittenKeys = intersection(
-      Object.keys(omit(settings, "other") ?? {}),
-      Object.keys(settings?.other ?? {}),
+      Object.keys(omit(userCourseSettings, "other") ?? {}),
+      Object.keys(userCourseSettings?.other ?? {}),
     )
 
     if (overwrittenKeys.length > 0) {
@@ -82,10 +61,10 @@ export class UserCourseSettingsController {
     }
 
     res.status(200).json(
-      settings
+      userCourseSettings
         ? {
-            ...omit(settings, "other"),
-            ...((settings?.other as object) ?? {}),
+            ...omit(userCourseSettings, "other"),
+            ...((userCourseSettings?.other as object) ?? {}),
           }
         : null,
     )
@@ -100,52 +79,26 @@ export class UserCourseSettingsController {
     }
     const { body } = req
 
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
     }
-
-    const { user } = getUserResult.value
-
-    const course = await prisma.course.findUnique({
-      where: {
-        slug,
-      },
-      include: {
-        user_course_settings: {
-          where: {
-            user_id: user.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        },
-        inherit_settings_from: {
-          include: {
-            user_course_settings: {
-              where: {
-                user_id: user.id,
-              },
-              orderBy: { created_at: "asc" },
-              take: 1,
-            },
-          },
-        },
-      },
-    })
-
-    if (!course) {
-      return res.status(400).json({ message: "no course found" })
-    }
-    const existingSetting =
-      course?.inherit_settings_from?.user_course_settings?.[0] ??
-      course?.user_course_settings?.[0]
 
     if (Object.keys(body).length === 0) {
       return res
         .status(400)
         .json({ message: "must provide at least one value" })
     }
+
+    const { user } = getUserResult.value
+
+    const courseAndSettingsResult = await this.getCourseAndSettings(user, slug)
+
+    if (courseAndSettingsResult.isErr()) {
+      return res.status(404).json({ message: courseAndSettingsResult.error })
+    }
+    const { course, userCourseSettings } = courseAndSettingsResult.value
 
     const permittedFields = [
       "country",
@@ -162,7 +115,10 @@ export class UserCourseSettingsController {
       "created_at",
       "updated_at",
     ]
-    const strippedExistingSetting = omit(existingSetting ?? {}, strippedFields)
+    const strippedExistingSetting = omit(
+      userCourseSettings ?? {},
+      strippedFields,
+    )
 
     const settingValues = Object.entries(body).reduce<Record<string, any>>(
       (acc, [key, value]) => {
@@ -177,7 +133,7 @@ export class UserCourseSettingsController {
       strippedExistingSetting,
     )
 
-    if (!existingSetting?.id) {
+    if (!userCourseSettings?.id) {
       await prisma.userCourseSetting.create({
         data: {
           ...settingValues,
@@ -194,7 +150,7 @@ export class UserCourseSettingsController {
 
     await prisma.userCourseSetting.update({
       where: {
-        id: existingSetting.id,
+        id: userCourseSettings.id,
       },
       data: settingValues,
     })
@@ -219,36 +175,13 @@ export class UserCourseSettingsController {
 
     const resObject = await redisify<UserCourseSettingsCountResult>(
       async () => {
-        let course_id: string
-
-        let course = (
-          await knex
-            .select<any, Course[]>("*")
-            .from("course")
-            .where({
-              slug,
-            })
-            .limit(1)
-        )?.[0]
+        const course = await this.getCourseKnex({ slug })
 
         if (!course) {
-          course = (
-            await knex
-              .select<any, Course[]>("course.*")
-              .from("course_alias")
-              .join("course", { "course.id": "course_alias.course_id" })
-              .where({
-                course_code: slug,
-              })
-              .limit(1)
-          )?.[0]
-
-          if (!course) {
-            return { course: slug, language, error: true }
-          }
+          return { course: slug, language, error: true }
         }
 
-        course_id = course.inherit_settings_from_id ?? course.id
+        const course_id = course.inherit_settings_from_id ?? course.id
 
         const visibility = (
           await knex
@@ -298,6 +231,52 @@ export class UserCourseSettingsController {
       })
     }
 
-    res.json(resObject)
+    return res.status(200).json(resObject)
+  }
+
+  private async getCourseAndSettings(user: User, slug: string) {
+    const course = await this.getCourse({ where: { slug } })
+
+    if (!course) {
+      return err(
+        `course with slug or course alias with course code ${slug} doesn't exist`,
+      )
+    }
+
+    try {
+      const courseWithSettings = await this.ctx.prisma.course.findUnique({
+        where: {
+          id: course.id,
+        },
+        include: {
+          user_course_settings: {
+            where: {
+              user_id: user.id,
+            },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          },
+          inherit_settings_from: {
+            include: {
+              user_course_settings: {
+                where: {
+                  user_id: user.id,
+                },
+                orderBy: { created_at: "asc" },
+                take: 1,
+              },
+            },
+          },
+        },
+      })
+
+      const userCourseSettings =
+        courseWithSettings?.inherit_settings_from?.user_course_settings?.[0] ??
+        courseWithSettings?.user_course_settings?.[0]
+
+      return ok({ course, userCourseSettings })
+    } catch (e) {
+      return err(e instanceof Error ? e.message : e)
+    }
   }
 }

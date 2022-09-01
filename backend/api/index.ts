@@ -1,20 +1,14 @@
 import { Router } from "express"
-import { Knex } from "knex"
-import * as winston from "winston"
 
-import type { PrismaClient } from "@prisma/client"
-
-import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
-import { CompletionController } from "./completions"
-import { ProgressController } from "./progress"
-import { StoredDataController } from "./storedData"
-import { UserCourseSettingsController } from "./userCourseSettings"
-
-export interface ApiContext {
-  prisma: PrismaClient
-  knex: Knex
-  logger: winston.Logger
-}
+import {
+  abEnrollmentRouter,
+  abStudiesRouter,
+  CompletionController,
+  ProgressController,
+  StoredDataController,
+  UserCourseSettingsController,
+} from "./routes"
+import { ApiContext } from "./types"
 
 export function apiRouter(ctx: ApiContext) {
   const completionController = new CompletionController(ctx)

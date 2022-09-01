@@ -11,21 +11,21 @@ import {
   completionLanguageMap,
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
+import { BaseContext } from "../../../context"
 import { emptyOrNullToUndefined, isNullOrUndefined } from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
 import { DatabaseInputError } from "../../lib/errors"
-import { KafkaContext } from "./kafkaContext"
 import {
   ExerciseCompletionPart,
   ServiceProgressPartType,
   ServiceProgressType,
 } from "./userCourseProgress/interfaces"
 
-interface WithKafkaContext {
-  context: KafkaContext
+interface WithBaseContext {
+  context: BaseContext
 }
 
-interface GetCombinedUserCourseProgressArgs extends WithKafkaContext {
+interface GetCombinedUserCourseProgressArgs extends WithBaseContext {
   user: User
   course: Course
 }
@@ -66,7 +66,7 @@ export const getCombinedUserCourseProgress = async ({
   return combined
 }
 
-interface CheckRequiredExerciseCompletionsArgs extends WithKafkaContext {
+interface CheckRequiredExerciseCompletionsArgs extends WithBaseContext {
   user: User
   course: Course
 }
@@ -91,7 +91,7 @@ export const checkRequiredExerciseCompletions = async ({
   return true
 }
 
-interface GetExerciseCompletionsForCoursesArgs extends WithKafkaContext {
+interface GetExerciseCompletionsForCoursesArgs extends WithBaseContext {
   user: User
   courseIds: string[]
 }
@@ -125,7 +125,7 @@ export const getExerciseCompletionsForCourses = async ({
   return exercise_completions // ?.rows ?? []
 }
 
-interface PruneDuplicateExerciseCompletionsArgs extends WithKafkaContext {
+interface PruneDuplicateExerciseCompletionsArgs extends WithBaseContext {
   user_id: string
   course_id: string
 }
@@ -206,7 +206,7 @@ export const pruneDuplicateExerciseCompletions = async ({
 
 export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   context: { knex },
-}: WithKafkaContext) => {
+}: WithBaseContext) => {
   const deleted: Array<Pick<ExerciseCompletionRequiredAction, "id">> =
     await knex("exercise_completion_required_actions")
       .whereNull("exercise_completion_id")
@@ -216,7 +216,7 @@ export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   return deleted
 }
 
-interface GetUserCourseSettingsArgs extends WithKafkaContext {
+interface GetUserCourseSettingsArgs extends WithBaseContext {
   user_id: string
   course_id: string
 }
@@ -263,7 +263,7 @@ export const getUserCourseSettings = async ({
   )
 }
 
-interface CheckCompletionArgs extends WithKafkaContext {
+interface CheckCompletionArgs extends WithBaseContext {
   user: User
   course: Course
   handler?: Course | null
@@ -307,7 +307,7 @@ export const checkCompletion = async ({
   }
 }
 
-interface CreateCompletionArgs extends WithKafkaContext {
+interface CreateCompletionArgs extends WithBaseContext {
   user: User
   course: Course
   handler?: Course | null

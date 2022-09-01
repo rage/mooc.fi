@@ -13,8 +13,7 @@ import { type NexusGenInputs } from "nexus-typegen"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
 import { Context } from "../context"
-import { filterNullFields } from "../util"
-import { getCourseOrAliasBySlug } from "./common"
+import { filterNullFields, getCourseOrAlias } from "../util"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -50,7 +49,7 @@ export const CompletionRegisteredQueries = extendType({
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
-        const { course, skip, take, cursor } = args
+        const { course: slug, skip, take, cursor } = args
 
         if ((take ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 items")
@@ -64,8 +63,10 @@ export const CompletionRegisteredQueries = extendType({
           ...(cursor?.id && { cursor: { id: cursor.id } }),
         }
 
-        if (course) {
-          const courseReference = await getCourseOrAliasBySlug(ctx)(course)
+        if (slug) {
+          const courseReference = await getCourseOrAlias(ctx)({
+            where: { slug },
+          })
 
           if (!courseReference) {
             throw new UserInputError("course not found", {

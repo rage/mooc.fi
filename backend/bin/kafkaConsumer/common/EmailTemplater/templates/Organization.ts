@@ -1,13 +1,13 @@
 import { Organization, UserOrganizationJoinConfirmation } from "@prisma/client"
 
 import { FRONTEND_URL } from "../../../../../config"
-import { calculateActivationCode } from "../../../../../util/"
+import { calculateActivationCode } from "../../../../../util"
 import { EmailTemplaterError } from "../../../../lib/errors"
 import Template from "../types/Template"
 import { TemplateParams } from "../types/TemplateParams"
 
 abstract class OrganizationTemplate extends Template {
-  organization: Organization
+  override organization: Organization
 
   constructor(params: TemplateParams) {
     super(params)

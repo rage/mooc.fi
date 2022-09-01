@@ -1,9 +1,12 @@
+import { UserInputError } from "apollo-server-express"
 import { Knex } from "knex"
+import { omit } from "lodash"
 
-import { Prisma } from "@prisma/client"
+import { Course, Prisma, PrismaClient } from "@prisma/client"
 
 import { CIRCLECI } from "../config"
-import { isEmptyNullOrUndefined, isNull, isNullOrUndefined } from "../util"
+import { BaseContext } from "../context"
+import { isEmptyNullOrUndefined, isNull, isNullOrUndefined } from "./guards"
 
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
@@ -149,3 +152,129 @@ export function emptyOrNullToUndefined<T>(
 ): T | undefined {
   return isEmptyNullOrUndefined(value) ? undefined : value
 }
+interface GetCourseInput {
+  id?: string
+  slug?: string
+}
+
+/**
+ * Get course by id or slug, or course_alias course_code provided by slug.
+ *
+ * If slug is given, we also try to find a `course_alias` with that `course_code`.
+ * Course found with slug is preferred to course found with course_code.
+ */
+export const getCourseOrAliasKnex =
+  ({ knex }: BaseContext) =>
+  async ({ id, slug }: GetCourseInput) => {
+    // TODO: actually accept both id and slug?
+    if ((!id && !slug) || (id && slug)) {
+      throw new Error("provide exactly one of id or slug")
+    }
+
+    if (id) {
+      return knex<any, Course>("course").where({ id }).first()
+    }
+
+    const courses = await knex
+      .select<any, Course[] | undefined>("course.*")
+      .from("course")
+      .leftJoin("course_alias", "course.id", "course_alias.course_id")
+      .where("course.slug", slug)
+      .orWhere("course_alias.course_code", slug)
+
+    // prioritize course slug over course alias
+    const slugCourse = courses?.filter((c) => c.slug === slug)?.[0]
+
+    return slugCourse ?? courses?.[0]
+  }
+
+type InferPrismaClientGlobalReject<C extends PrismaClient> =
+  C extends PrismaClient<any, any, infer GlobalReject> ? GlobalReject : never
+
+type FindUniqueCourseType<ClientType extends PrismaClient> =
+  Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>["findUnique"]
+
+/**
+ * Get course by id or slug, or course_alias course_code provided by slug.
+ *
+ * If slug is given, we also try to find a `course_alias` with that `course_code`.
+ * Course found with slug is preferred to course found with course_code.
+ */
+export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
+  ctx: BaseContext,
+) =>
+  ((args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>) => {
+    const { id, slug } = args?.where ?? {}
+    const { select, include } = args ?? {}
+
+    if (!id && !slug) {
+      throw new UserInputError("You must provide either an id or a slug")
+    }
+
+    if (include && select) {
+      throw new UserInputError("Only provide one of include or select")
+    }
+
+    if (id) {
+      return ctx.prisma.course.findUnique({
+        where: {
+          id,
+          slug: slug ?? undefined,
+        },
+        ...omit(args, "where"),
+      })
+    }
+
+    const course = ctx.prisma.course.findUnique({
+      where: {
+        slug,
+      },
+      ...omit(args, "where"),
+    })
+
+    if (course) {
+      return course
+    }
+
+    const selectOrInclude: {
+      select?: Prisma.CourseSelect | null
+      include?: Prisma.CourseInclude | null
+    } = include ? { include } : { select }
+
+    const alias = ctx.prisma.courseAlias
+      .findUnique({
+        where: {
+          course_code: slug,
+        },
+      })
+      .course({
+        ...selectOrInclude,
+      })
+
+    return alias
+  }) as FindUniqueCourseType<typeof ctx["prisma"]>
+// we're telling TS that this is a course findUnique when in reality
+// it isn't strictly speaking. But it's close enough for our purposes
+// to get the type inference we want.
+
+export const getCourseOrCompletionHandlerCourse =
+  (ctx: BaseContext) =>
+  async ({ id, slug }: Prisma.CourseWhereUniqueInput) => {
+    if (!id && !slug) {
+      throw new UserInputError("must provide id and/or slug", {
+        argumentName: ["id", "slug"],
+      })
+    }
+
+    const course = await ctx.prisma.course.findUnique({
+      where: {
+        id,
+        slug,
+      },
+      include: {
+        completions_handled_by: true,
+      },
+    })
+
+    return course?.completions_handled_by ?? course
+  }

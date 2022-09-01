@@ -86,8 +86,10 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
   }
-  res.json({ msg: "Thanks!" }).send()
+
+  return res.json({ msg: "Thanks!" }).send()
 })
+
 app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   if (!producerReady) {
     return res.status(500).json({ error: "Kafka producer not ready" }).send()
@@ -99,7 +101,7 @@ app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
       .json({ error: "Kafka producer got disconnected" })
       .send()
   }
-  res.json({ status: "ok" })
+  return res.json({ status: "ok" })
 })
 
 app.listen(port, host, () =>

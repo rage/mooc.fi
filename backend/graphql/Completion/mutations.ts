@@ -1,4 +1,4 @@
-import { AuthenticationError, UserInputError } from "apollo-server-express"
+import { UserInputError } from "apollo-server-express"
 import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
@@ -16,7 +16,7 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { filterNullFields, isDefined } from "../../util"
+import { filterNullFields, getCourseOrAlias, isDefined } from "../../util"
 import { ConflictError } from "../common"
 
 export const CompletionMutations = extendType({
@@ -169,7 +169,7 @@ export const CompletionMutations = extendType({
           )
         }
 
-        const course = await ctx.prisma.course.findUnique({
+        const course = await getCourseOrAlias(ctx)({
           where: {
             ...filterNullFields({
               id,
@@ -241,15 +241,7 @@ export const CompletionMutations = extendType({
                 user,
                 course,
                 userCourseProgress: progressByUser[user.id][0],
-                context: {
-                  // not very optimal, but
-                  logger: ctx.logger,
-                  prisma: ctx.prisma,
-                  consumer: undefined as any,
-                  mutex: undefined as any,
-                  knex: ctx.knex,
-                  topic_name: "",
-                },
+                context: ctx,
               }),
             )
             await Promise.all(promises)
@@ -277,26 +269,16 @@ export const CompletionMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id, completion_registration_attempt_date }, ctx) => {
-        if (ctx.role === Role.USER) {
-          const existingCompletion = await ctx.prisma.completion.findFirst({
-            where: {
-              id,
-              user_id: ctx.user?.id,
-            },
-          })
-
-          if (!existingCompletion || !ctx.user?.id) {
-            throw new AuthenticationError(
-              "not authorized to edit this completion",
-            )
-          }
-        }
-
-        const existing = await ctx.prisma.completion.findUnique({
+        const existing = await ctx.prisma.completion.findFirst({
           where: {
             id,
+            ...(ctx.role !== Role.ADMIN && { user_id: ctx.user?.id }),
           },
         })
+
+        if (!existing) {
+          throw new Error("completion not found or not authorized to edit")
+        }
 
         if (existing?.completion_registration_attempt_date) {
           return existing

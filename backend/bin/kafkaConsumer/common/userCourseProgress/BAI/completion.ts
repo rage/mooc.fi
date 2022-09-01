@@ -1,17 +1,14 @@
 import { Course, User } from "@prisma/client"
 
 import { BAIbadge, BAItiers } from "../../../../../config/courseConfig"
-import { KafkaContext } from "../../kafkaContext"
+import { BaseContext } from "../../../../../context"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,
 } from "../../userFunctions"
 import { getBAIProgress } from "./progress"
 
-const checkBAIProjectCompletion = async (
-  user: User,
-  { knex }: KafkaContext,
-) => {
+const checkBAIProjectCompletion = async (user: User, { knex }: BaseContext) => {
   const exerciseCompletions = await knex("exercise_completion")
     .select("exercise_completion.completed")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
@@ -26,7 +23,7 @@ interface CheckBAICompletionArgs {
   user: User
   course: Course
   handler?: Course | null
-  context: KafkaContext
+  context: BaseContext
 }
 
 export const checkBAICompletion = async ({

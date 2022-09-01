@@ -14,7 +14,7 @@ import {
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNullFields, isDefined } from "../../util"
+import { filterNullFields, getCourseOrAlias, isDefined } from "../../util"
 
 export const CourseQueries = extendType({
   type: "Query",
@@ -44,20 +44,17 @@ export const CourseQueries = extendType({
               slug,
             }),
           },
+          // TODO: limit these in the model
+          ...(ctx.role !== Role.ADMIN && {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+            },
+          }),
         }
 
-        if (ctx.role !== Role.ADMIN) {
-          // TODO: limit access field by field in model with authorize
-          courseQuery.select = {
-            id: true,
-            slug: true,
-            name: true,
-          }
-        }
-
-        const course: Course | null = await ctx.prisma.course.findUnique(
-          courseQuery,
-        )
+        const course = await getCourseOrAlias(ctx)(courseQuery)
 
         if (!course) {
           return null
@@ -131,6 +128,16 @@ export const CourseQueries = extendType({
                 course_translations: {
                   some: {
                     name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+              {
+                course_aliases: {
+                  some: {
+                    course_code: {
                       contains: search,
                       mode: "insensitive",
                     },
@@ -227,8 +234,10 @@ export const CourseQueries = extendType({
         const { slug } = args
 
         return Boolean(
-          await ctx.prisma.course.findUnique({
-            where: { slug },
+          await getCourseOrAlias(ctx)({
+            where: {
+              slug,
+            },
             select: { id: true },
           }),
         )

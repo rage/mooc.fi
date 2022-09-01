@@ -10,10 +10,9 @@ import {
   User,
 } from "@prisma/client"
 
-import { generateUserCourseProgress } from "../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { err } from "../util"
-import { ApiContext } from "./"
-import { getOrganization, getUser, requireAdmin } from "./utils"
+import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { err } from "../../util"
+import { ApiContext, Controller } from "../types"
 
 const JSONStream = require("JSONStream")
 
@@ -30,13 +29,15 @@ interface RegisterCompletionInput {
   tier?: number
   registration_date?: string
 }
-export class CompletionController {
-  constructor(readonly ctx: ApiContext) {}
+export class CompletionController extends Controller {
+  constructor(override readonly ctx: ApiContext) {
+    super(ctx)
+  }
 
   completions = async (req: Request<{ slug: string }>, res: Response) => {
     const { slug } = req.params
     const { knex } = this.ctx
-    const organizationResult = await getOrganization(this.ctx)(req, res)
+    const organizationResult = await this.getOrganization(req, res)
 
     if (organizationResult.isErr()) {
       return organizationResult.error
@@ -46,34 +47,10 @@ export class CompletionController {
 
     const { registered } = req.query
 
-    let course = (
-      await knex
-        .select<any, Course[]>("*")
-        .from("course")
-        .where({ slug })
-        .limit(1)
-    )?.[0]
+    const course = await this.getCourseKnex({ slug })
 
     if (!course) {
-      const course_alias = (
-        await knex
-          .select("course_id")
-          .from("course_alias")
-          .where({ course_code: slug })
-      )[0]
-      if (!course_alias) {
-        return res.status(404).json({ message: "Course not found" })
-      }
-      course = (
-        await knex
-          .select<any, Course[]>("*")
-          .from("course")
-          .where({ id: course_alias.course_id })
-          .limit(1)
-      )?.[0]
-      if (!course) {
-        return res.status(404).json({ message: "Course not found" })
-      }
+      return res.status(404).json({ message: "Course not found" })
     }
 
     const sql = knex
@@ -114,10 +91,7 @@ export class CompletionController {
     const { knex } = this.ctx
     const { slug, language } = req.params
 
-    const course = (
-      await knex.select<any, Course[]>("id").from("course").where("slug", slug)
-    )[0]
-
+    const course = await this.getCourseKnex({ slug })
     if (!course) {
       return res.status(404).json("")
     }
@@ -139,7 +113,7 @@ export class CompletionController {
 
   completionTiers = async (req: Request<{ slug: string }>, res: Response) => {
     const { knex } = this.ctx
-    const getUserResult = await getUser(this.ctx)(req, res)
+    const getUserResult = await this.getUser(req, res)
 
     if (getUserResult.isErr()) {
       return getUserResult.error
@@ -151,9 +125,7 @@ export class CompletionController {
     // TODO: typing
     let tierData: any = []
 
-    const course = (
-      await knex.select<any, Course[]>("*").from("course").where("slug", slug)
-    )?.[0]
+    const course = await this.getCourseKnex({ slug })
 
     if (!course) {
       return err(res.status(404).json({ message: "course not found" }))
@@ -251,8 +223,8 @@ export class CompletionController {
     >,
     res: Response,
   ) => {
-    const { prisma, logger, knex } = this.ctx
-    const adminRes = await requireAdmin(this.ctx)(req, res)
+    const { prisma } = this.ctx
+    const adminRes = await this.requireAdmin(req, res)
 
     if (adminRes !== true) {
       return adminRes
@@ -282,15 +254,15 @@ export class CompletionController {
       })
     }
 
-    const course = await prisma.course.findUnique({
+    const course = await this.getCourse({
       where: {
-        id: course_id,
-        slug,
+        id: course_id ?? undefined,
+        slug: slug ?? undefined,
       },
     })
 
     if (!course) {
-      return res.status(405).json({ message: "course not found" })
+      return res.status(404).json({ message: "course not found" })
     }
 
     const userWithProgresses = await prisma.user.findUnique({
@@ -309,13 +281,13 @@ export class CompletionController {
     })
 
     if (!userWithProgresses) {
-      return res.status(405).json({ message: "user not found" })
+      return res.status(404).json({ message: "user not found" })
     }
 
     const { user_course_progresses } = userWithProgresses
 
     if (user_course_progresses.length < 1) {
-      return res.status(401).json({ message: "No progresses found" })
+      return res.status(404).json({ message: "No progresses found" })
     }
 
     const existingCompletion = await this.getCompletion(
@@ -327,15 +299,7 @@ export class CompletionController {
       user: omit(userWithProgresses, "user_course_progresses"),
       course,
       userCourseProgress: user_course_progresses[0],
-      context: {
-        // not very optimal, but
-        logger,
-        prisma,
-        consumer: undefined as any,
-        mutex: undefined as any,
-        knex,
-        topic_name: "",
-      },
+      context: this.ctx,
     })
 
     const updatedCompletion = await this.getCompletion(
@@ -373,7 +337,7 @@ export class CompletionController {
     res: Response,
   ) => {
     const { prisma } = this.ctx
-    const organizationResult = await getOrganization(this.ctx)(req, res)
+    const organizationResult = await this.getOrganization(req, res)
 
     if (organizationResult.isErr()) {
       return organizationResult.error
@@ -402,7 +366,7 @@ export class CompletionController {
     try {
       await registerCompletionSchema.validate(completions)
     } catch (error) {
-      return res.status(403).json({ message: "malformed data", error })
+      return res.status(400).json({ message: "malformed data", error })
     }
 
     const buildPromises = (data: RegisterCompletionInput[]) => {
