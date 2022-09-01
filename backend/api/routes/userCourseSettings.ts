@@ -276,7 +276,6 @@ export class UserCourseSettingsController extends Controller {
 
       return ok({ course, userCourseSettings })
     } catch (e) {
-      console.log("e is", e)
       return err(e instanceof Error ? e.message : e)
     }
   }
