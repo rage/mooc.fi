@@ -60,10 +60,14 @@ export const CourseVariantQueries = extendType({
       args: {
         course_id: idArg(),
       },
-      resolve: (_, { course_id }, ctx) =>
-        ctx.prisma.course
-          .findUnique({ where: { id: course_id ?? undefined } })
-          .course_variants(),
+      resolve: (_, { course_id }, ctx) => {
+        if (course_id) {
+          return ctx.prisma.course
+            .findUnique({ where: { id: course_id ?? undefined } })
+            .course_variants()
+        }
+        return ctx.prisma.courseVariant.findMany({})
+      },
     })
   },
 })

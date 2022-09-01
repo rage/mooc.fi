@@ -12,6 +12,8 @@
     "strict": true,
     "noEmit": true,
     "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,    
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,

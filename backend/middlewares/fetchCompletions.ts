@@ -1,5 +1,5 @@
-import { Context } from "/context"
-import { convertPagination } from "/util/db-functions"
+import { Context } from "../context"
+import { convertPagination, getCourseOrAlias } from "../util/db-functions"
 
 export default async function fetchCompletions(args: any, ctx: Context) {
   const { course } = args
@@ -25,7 +25,7 @@ async function getCompletionDataFromDB(
   { course: slug, first, after, last, before, skip }: CompletionOptionTypes,
   ctx: Context,
 ) {
-  const course = await ctx.prisma.course.findUnique({
+  const course = await getCourseOrAlias(ctx)({
     where: {
       slug,
     },

@@ -49,9 +49,6 @@ const updateBAICompletionTiers = async () => {
         logger,
         prisma,
         knex,
-        consumer: null as any,
-        mutex: null as any,
-        topic_name: "",
       },
     })
   }

@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<any> {
           table.boolean("eligible_for_ects").defaultTo(true)
         })
       }
+      return
     })
 }
 

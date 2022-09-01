@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 
 import { CourseOwnership, Organization, User } from "@prisma/client"
 
-import { ApiContext } from "../api"
+import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
@@ -15,7 +15,7 @@ interface GetUserReturn {
 
 interface RequireCourseOwnershipArgs {
   course_id: string
-  ctx: ApiContext
+  ctx: BaseContext
 }
 
 export function requireCourseOwnership({
@@ -52,7 +52,7 @@ export function requireCourseOwnership({
   }
 }
 
-export function requireAdmin(ctx: ApiContext) {
+export function requireAdmin(ctx: BaseContext) {
   return async function (
     req: Request,
     res: Response,
@@ -70,7 +70,7 @@ export function requireAdmin(ctx: ApiContext) {
   }
 }
 
-export function getUser({ knex, logger }: ApiContext) {
+export function getUser({ knex, logger }: BaseContext) {
   return async function (
     req: Request,
     res: Response,
@@ -146,7 +146,7 @@ export function getUser({ knex, logger }: ApiContext) {
   }
 }
 
-export function getOrganization({ knex }: ApiContext) {
+export function getOrganization({ knex }: BaseContext) {
   return async function (
     req: Request,
     res: Response,

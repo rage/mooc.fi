@@ -14,6 +14,7 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { getCourseOrAlias } from "../util/db-functions"
 
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
@@ -173,8 +174,9 @@ export const UserCourseProgressQueries = extendType({
         cursor: arg({ type: "UserCourseProgressWhereUniqueInput" }),
       },
       authorize: isAdmin,
-      resolve: (_, args, ctx) => {
-        const { skip, take, cursor, user_id, course_id, course_slug } = args
+      resolve: async (_, args, ctx) => {
+        const { skip, take, cursor, user_id } = args
+        let { course_id, course_slug } = args
 
         if (!course_id && !course_slug) {
           throw new UserInputError(
@@ -182,11 +184,23 @@ export const UserCourseProgressQueries = extendType({
           )
         }
 
+        if (course_slug) {
+          const course = await getCourseOrAlias(ctx)({
+            where: {
+              slug: course_slug,
+            },
+          })
+
+          if (course) {
+            course_id = course.id
+            course_slug = undefined
+          }
+        }
+
         return ctx.prisma.course
           .findUnique({
             where: {
               id: course_id ?? undefined,
-              slug: course_slug ?? undefined,
             },
           })
           .user_course_progresses({

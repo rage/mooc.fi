@@ -1,11 +1,11 @@
 import { User } from "@prisma/client"
 
+import { BaseContext } from "../../../context"
 import { TMCError } from "../../lib/errors"
 import getUserFromTMCAndCreate from "./getUserFromTMC"
-import { KafkaContext } from "./kafkaContext"
 
 export async function getUserWithRaceCondition(
-  context: KafkaContext,
+  context: BaseContext,
   user_id: number,
 ): Promise<User | null> {
   let user: User | null
