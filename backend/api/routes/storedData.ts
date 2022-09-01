@@ -30,11 +30,9 @@ export class StoredDataController extends Controller {
     const course = await this.getCourse({ where: { slug } })
 
     if (!course) {
-      return res
-        .status(401)
-        .json({
-          error: `course with slug or course alias with course code ${slug} doesn't exist`,
-        })
+      return res.status(401).json({
+        error: `course with slug or course alias with course code ${slug} doesn't exist`,
+      })
     }
 
     try {
