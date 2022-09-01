@@ -3,8 +3,6 @@ import WinstonSentry from "winston-sentry-log"
 
 import { isProduction } from "../../config"
 
-// import { Sentry } from "../../services/sentry"
-
 interface LoggerOptions {
   service: string
 }
@@ -17,7 +15,6 @@ export default function logger({ service }: LoggerOptions) {
   const transports: winston.transport[] = [new winston.transports.Console()]
 
   if (isProduction) {
-    console.log("prod?")
     transports.push(
       new WinstonSentry({
         tags: {

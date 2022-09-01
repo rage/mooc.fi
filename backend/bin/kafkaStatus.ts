@@ -50,5 +50,5 @@ consumer.on("event.error", (error) => {
 })
 
 consumer.on("event.log", function (log) {
-  console.log(log)
+  logger.info(log)
 })

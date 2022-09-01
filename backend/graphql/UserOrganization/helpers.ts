@@ -58,7 +58,6 @@ export const checkEmailValidity = (
 
   if (requiredPattern) {
     const emailRegex = new RegExp(requiredPattern)
-    console.log("emailRegex", emailRegex)
     if (!emailRegex.test(email)) {
       return err(
         new UserInputError(
