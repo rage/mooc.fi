@@ -9,6 +9,7 @@ import {
 import { err, ok, Result } from "../../../../util/result"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
@@ -20,7 +21,19 @@ export const saveToDatabase = async (
 ): Promise<Result<string, Error>> => {
   const { prisma, knex } = context
 
-  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+  let timestamp
+
+  try {
+    timestamp = parseTimestamp(message.timestamp)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "Invalid date",
+        message,
+        e instanceof Error ? e : new Error(e as string),
+      ),
+    )
+  }
 
   let user: User | undefined | null
 

@@ -16,7 +16,7 @@ import server from "../server"
 
 require("sharp") // ensure correct zlib thingy
 
-function fail(reason = "fail was called in a test") {
+export function fail(reason = "fail was called in a test") {
   throw new Error(reason)
 }
 
