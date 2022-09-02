@@ -5,11 +5,11 @@ import { ExerciseCompletion, User } from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"
 import { Message } from "./interfaces"
-import { parseTimestamp } from "/bin/kafkaConsumer/util"
 
 export const saveToDatabase = async (
   context: KafkaContext,
