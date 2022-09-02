@@ -1,10 +1,10 @@
 import { UserInputError } from "apollo-server-express"
 import { DateTime } from "luxon"
 
-import { ExerciseCompletion } from "@prisma/client"
+import { ExerciseCompletion, User } from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
-import { DatabaseInputError } from "../../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"
@@ -22,7 +22,23 @@ export const saveToDatabase = async (
 
   logger.info(`Checking if user ${message.user_id} exists`)
 
-  const user = await getUserWithRaceCondition(context, message.user_id)
+  let user: User | undefined | null
+
+  try {
+    user = await getUserWithRaceCondition(context, message.user_id)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "User not found",
+        message,
+        e instanceof Error ? e : new TMCError(e as string),
+      ),
+    )
+  }
+
+  if (!user) {
+    return err(new DatabaseInputError(`Invalid user`, message))
+  }
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
@@ -31,8 +47,8 @@ export const saveToDatabase = async (
     },
   })
 
-  if (!user || !course) {
-    return err(new DatabaseInputError(`Invalid user or course`, message))
+  if (!course) {
+    return err(new DatabaseInputError(`Invalid course`, message))
   }
 
   logger.info("Getting the exercise")
