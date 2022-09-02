@@ -4,7 +4,7 @@ import { DateTime } from "luxon"
 import { ExerciseCompletion, User } from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
-import { DatabaseInputError } from "../../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"
@@ -31,7 +31,7 @@ export const saveToDatabase = async (
       new DatabaseInputError(
         "User not found",
         message,
-        e instanceof Error ? e : new Error(e as string),
+        e instanceof Error ? e : new TMCError(e as string),
       ),
     )
   }
