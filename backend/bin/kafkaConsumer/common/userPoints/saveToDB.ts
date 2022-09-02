@@ -9,6 +9,7 @@ import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"
 import { Message } from "./interfaces"
+import { parseTimestamp } from "/bin/kafkaConsumer/util"
 
 export const saveToDatabase = async (
   context: KafkaContext,
@@ -18,7 +19,20 @@ export const saveToDatabase = async (
 
   logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")
-  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+
+  let timestamp
+
+  try {
+    timestamp = parseTimestamp(message.timestamp)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "Invalid date",
+        message,
+        e instanceof Error ? e : new Error(e as string),
+      ),
+    )
+  }
 
   logger.info(`Checking if user ${message.user_id} exists`)
 
@@ -93,6 +107,24 @@ export const saveToDatabase = async (
 
   if (exerciseCompletions.length === 0) {
     logger.info("No previous exercise completion, creating a new one")
+    let originalSubmissionDate: DateTime | null = null
+
+    if (message.original_submission_date) {
+      try {
+        originalSubmissionDate = parseTimestamp(
+          message.original_submission_date,
+        )
+      } catch (e) {
+        return err(
+          new DatabaseInputError(
+            "Invalid original submission date",
+            message,
+            e instanceof Error ? e : new Error(e as string),
+          ),
+        )
+      }
+    }
+
     const data = {
       exercise: {
         connect: { id: exercise.id },
@@ -107,9 +139,7 @@ export const saveToDatabase = async (
         create: required_actions.map((value) => ({ value })),
       },
       timestamp: timestamp.toJSDate(),
-      original_submission_date: message.original_submission_date
-        ? DateTime.fromISO(message.original_submission_date).toJSDate()
-        : null,
+      original_submission_date: originalSubmissionDate?.toJSDate(),
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
     try {
