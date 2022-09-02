@@ -1,10 +1,14 @@
 import { DateTime } from "luxon"
 
-import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
+import {
+  User,
+  UserCourseProgress,
+  UserCourseServiceProgress,
+} from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
-import { DatabaseInputError } from "../../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
@@ -18,14 +22,30 @@ export const saveToDatabase = async (
 
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  const user = await getUserWithRaceCondition(context, message.user_id)
+  let user: User | undefined | null
+
+  try {
+    user = await getUserWithRaceCondition(context, message.user_id)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "User not found",
+        message,
+        e instanceof Error ? e : new TMCError(e as string),
+      ),
+    )
+  }
+
+  if (!user) {
+    return err(new DatabaseInputError(`Invalid user`, message))
+  }
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
   })
 
-  if (!user || !course) {
-    return err(new DatabaseInputError(`Invalid user or course`, message))
+  if (!course) {
+    return err(new DatabaseInputError(`Invalid course`, message))
   }
 
   const userCourseProgresses = await knex<any, UserCourseProgress[]>(
