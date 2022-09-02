@@ -25,7 +25,7 @@ describe("exerciseConsumer/saveToDatabase", () => {
 
   it("errors on non-existing course", async () => {
     const message: Message = {
-      timestamp: "foo",
+      timestamp: "2021-04-01T10:00:00.00+02:00",
       service_id: "foo",
       course_id: "00000000000000000000000000000669",
       data: [{} as ExerciseData],
