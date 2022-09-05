@@ -1,9 +1,9 @@
 import { DateTime } from "luxon"
 
-import { ExerciseCompletion } from "@prisma/client"
+import { ExerciseCompletion, User } from "@prisma/client"
 
-import { emptyOrNullToUndefined, err, ok, Result } from "../../../../util"
-import { DatabaseInputError } from "../../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { err, ok, Result, parseTimestamp, emptyOrNullToUndefined } from "../../../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"
@@ -17,11 +17,40 @@ export const saveToDatabase = async (
 
   logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")
-  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+
+  let timestamp
+
+  try {
+    timestamp = parseTimestamp(message.timestamp)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "Invalid date",
+        message,
+        e instanceof Error ? e : new Error(e as string),
+      ),
+    )
+  }
 
   logger.info(`Checking if user ${message.user_id} exists`)
 
-  const user = await getUserWithRaceCondition(context, message.user_id)
+  let user: User | undefined | null
+
+  try {
+    user = await getUserWithRaceCondition(context, message.user_id)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "User not found",
+        message,
+        e instanceof Error ? e : new TMCError(e as string),
+      ),
+    )
+  }
+
+  if (!user) {
+    return err(new DatabaseInputError(`Invalid user`, message))
+  }
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
@@ -30,8 +59,8 @@ export const saveToDatabase = async (
     },
   })
 
-  if (!user || !course) {
-    return err(new DatabaseInputError(`Invalid user or course`, message))
+  if (!course) {
+    return err(new DatabaseInputError(`Invalid course`, message))
   }
 
   logger.info("Getting the exercise")
@@ -76,6 +105,24 @@ export const saveToDatabase = async (
 
   if (exerciseCompletions.length === 0) {
     logger.info("No previous exercise completion, creating a new one")
+    let originalSubmissionDate: DateTime | null = null
+
+    if (message.original_submission_date) {
+      try {
+        originalSubmissionDate = parseTimestamp(
+          message.original_submission_date,
+        )
+      } catch (e) {
+        return err(
+          new DatabaseInputError(
+            "Invalid original submission date",
+            message,
+            e instanceof Error ? e : new Error(e as string),
+          ),
+        )
+      }
+    }
+
     const data = {
       exercise: {
         connect: { id: exercise.id },
@@ -90,9 +137,7 @@ export const saveToDatabase = async (
         create: required_actions.map((value) => ({ value })),
       },
       timestamp: timestamp.toJSDate(),
-      original_submission_date: message.original_submission_date
-        ? DateTime.fromISO(message.original_submission_date).toJSDate()
-        : null,
+      original_submission_date: originalSubmissionDate?.toJSDate(),
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
     try {
@@ -156,8 +201,8 @@ export const saveToDatabase = async (
       .filter((ec) => ec.id !== exerciseCompleted.id)
       .filter(
         (ec) =>
-          ec.timestamp!.toISOString() ===
-          exerciseCompleted.timestamp!.toISOString(),
+          ec.timestamp.toISOString() ===
+          exerciseCompleted.timestamp.toISOString(),
       )
       .filter((ec) => ec.updated_at! <= exerciseCompleted.updated_at!)
 

@@ -58,13 +58,15 @@ describe("userPoints/saveToDatabase", () => {
 
   describe("errors", () => {
     it("no user found errors", async () => {
-      try {
-        await saveToDatabase(kafkaContext, {
-          ...message,
-          user_id: 9999,
-        })
+      const ret = await saveToDatabase(kafkaContext, {
+        ...message,
+        user_id: 9999,
+      })
+      if (!ret.isErr()) {
         fail()
-      } catch {}
+      }
+      expect(ret.error).toBeInstanceOf(DatabaseInputError)
+      expect(ret.error.message).toContain("User not found")
     })
 
     it("no course found errors", async () => {
@@ -76,7 +78,7 @@ describe("userPoints/saveToDatabase", () => {
         fail()
       }
       expect(ret.error).toBeInstanceOf(DatabaseInputError)
-      expect(ret.error.message).toContain("Invalid user or course")
+      expect(ret.error.message).toContain("Invalid course")
     })
 
     it("no exercise id given errors", async () => {
