@@ -38,7 +38,7 @@ export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
   return `${baseUrl}${query}`
 })()
 
-export const EXTENSION_PATH = CIRCLECI ? "public" : "extensions"
+export const EXTENSION_PATH = "extensions" // CIRCLECI ? "public" : "extensions"
 
 export let SEARCH_PATH: Array<string>
 
