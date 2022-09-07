@@ -131,7 +131,7 @@ export const convertUpdate = <T extends object>(input: {
     {},
   )
 
-export const createUUIDExtension = async (knex: Knex) => {
+export const createExtensions = async (knex: Knex) => {
   if (CIRCLECI) {
     return
   }
@@ -141,17 +141,25 @@ export const createUUIDExtension = async (knex: Knex) => {
     await knex.raw(
       `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
     )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA "extensions";`,
+    )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "btree_gin" SCHEMA "extensions";`,
+    )
   } catch (error) {
     console.warn(
-      "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
+      "Error creating extensions. Ignore if this didn't fall on next hurdle",
       error,
     )
   }
 
   try {
-    // if uuid-ossp already exists, but in another schema
+    // if extensions already exist, but in another schema
     await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
     await knex.raw(`ALTER EXTENSION "uuid-ossp" SET SCHEMA "extensions";`)
+    await knex.raw(`ALTER EXTENSION "pg_trgm" SET SCHEMA "extensions";`)
+    await knex.raw(`ALTER EXTENSION "btree_gin" SET SCHEMA "extensions";`)
   } catch {
     // we can probably ignore this
   }

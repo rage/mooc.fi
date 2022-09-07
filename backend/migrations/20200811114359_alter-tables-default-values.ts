@@ -1,7 +1,7 @@
 import { Knex } from "knex"
 
 import { extensionPath } from "../config"
-import { createUUIDExtension } from "../util/db-functions"
+import { createExtensions } from "../util/db-functions"
 
 export async function up(knex: Knex): Promise<void> {
   // updated_at
@@ -84,7 +84,7 @@ export async function up(knex: Knex): Promise<void> {
     `ALTER TABLE "verified_user" ALTER COLUMN "updated_at" SET DEFAULT CURRENT_TIMESTAMP;`,
   )
 
-  await createUUIDExtension(knex)
+  await createExtensions(knex)
 
   await knex.raw(
     `ALTER TABLE "completion" ALTER COLUMN "id" SET DEFAULT ${extensionPath}uuid_generate_v4();`,
