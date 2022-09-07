@@ -25,9 +25,7 @@ import theme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
-import {
-  CurrentUserQuery,
-} from "/graphql/generated"
+import { CurrentUserQuery } from "/graphql/generated"
 
 fontAwesomeConfig.autoAddCss = false
 
