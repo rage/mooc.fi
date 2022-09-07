@@ -21,6 +21,7 @@ export const UserCourseSummary = objectType({
         })
       },
     })
+
     t.field("completion", {
       type: "Completion",
       resolve: async (
@@ -47,6 +48,7 @@ export const UserCourseSummary = objectType({
         return completions?.[0]
       },
     })
+
     t.field("user_course_progress", {
       type: "UserCourseProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
@@ -68,6 +70,7 @@ export const UserCourseSummary = objectType({
         return progresses?.[0]
       },
     })
+
     t.list.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
