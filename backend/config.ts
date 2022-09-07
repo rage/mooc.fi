@@ -1,3 +1,5 @@
+import { notEmpty } from "./util/notEmpty"
+
 export const isProduction = process.env.NODE_ENV === "production"
 export const isTest = process.env.NODE_ENV === "test"
 
@@ -27,19 +29,27 @@ export const DATABASE_URL =
     ? "postgres://prisma:prisma@localhost:5678/testing"
     : process.env.DATABASE_URL
 export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
-  const url = process.env.DATABASE_URL ?? ""
-  const [baseUrl, queryParamString] = url.split("?") ?? []
-  const queryParams = queryParamString?.split("&") ?? []
-  const newParams = queryParams.filter((param) => !param.startsWith("schema="))
+  const url = new URL(DATABASE_URL ?? "")
+  const baseUrl = (DATABASE_URL ?? "").split("?")[0]
+  const params = url.searchParams
+  params.delete("schema")
+  const query = params.toString().length > 0 ? `?${params.toString()}` : ""
 
-  return `${baseUrl}${newParams.length > 0 ? "?" : ""}${newParams.join("&")}`
+  return `${baseUrl}${query}`
 })()
 
-export const SEARCH_PATH = isProduction
-  ? [process.env.SEARCH_PATH ?? "moocfi$production"]
-  : isTest && process.env.RUNNING_IN_CI
-  ? [process.env.SEARCH_PATH ?? ""]
-  : ["default$default"]
+export const EXTENSION_PATH = CIRCLECI ? "public" : "extensions"
+
+export let SEARCH_PATH: Array<string>
+
+if (isProduction) {
+  SEARCH_PATH = [process.env.SEARCH_PATH ?? "moocfi$production"]
+} else {
+  SEARCH_PATH =
+    isTest && process.env.RUNNING_IN_CI
+      ? [process.env.SEARCH_PATH, EXTENSION_PATH].filter(notEmpty)
+      : ["default$default"]
+}
 
 // sentry, new relic
 export const NEW_RELIC_LICENSE_KEY = process.env.NEW_RELIC_LICENSE_KEY
@@ -98,8 +108,6 @@ export const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD
 
 export const PRISMA_LOG_LEVELS = process.env.PRISMA_LOG_LEVELS
-
-export const extensionPath = CIRCLECI ? "public." : "extensions."
 
 // addresses to send Linköping completions, separated by ;
 export const LINKOPING_COMPLETION_RECIPIENTS =
