@@ -1,6 +1,6 @@
 import { Knex } from "knex"
 
-import { extensionPath } from "../config"
+import { EXTENSION_PATH } from "../config"
 import { createExtensions } from "../util/db-functions"
 
 export async function up(knex: Knex): Promise<void> {
@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "course_stats_subscription" (
-      "id" uuid NOT NULL DEFAULT ${extensionPath}uuid_generate_v4(),
+      "id" uuid NOT NULL DEFAULT ${EXTENSION_PATH}.uuid_generate_v4(),
       "email_template_id" uuid,
       "user_id" uuid,
       "created_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
