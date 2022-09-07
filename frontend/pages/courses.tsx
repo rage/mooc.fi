@@ -83,22 +83,22 @@ function useCourseSearch() {
   } = useQuery(HandlerCoursesDocument)
 
   useEffect(() => {
-    const params = []
+    const searchParams = new URLSearchParams()
 
     if (notEmptyOrEmptyString(searchVariables.search)) {
-      params.push(
-        `search=${encodeURIComponent(searchVariables.search.toString() ?? "")}`,
+      searchParams.set(
+        "search",
+        encodeURIComponent(searchVariables.search.toString() ?? ""),
       )
     }
     if (notEmptyOrEmptyString(searchVariables.handledBy)) {
-      params.push(
-        `handledBy=${encodeURIComponent(
-          searchVariables.handledBy.toString() ?? "",
-        )}`,
+      searchParams.set(
+        "handledBy",
+        encodeURIComponent(searchVariables.handledBy.toString() ?? ""),
       )
     }
     if (!searchVariables.hidden) {
-      params.push("hidden=false")
+      searchParams.set("hidden", "false")
     }
 
     // Active and Upcoming is the default status so if it's set, don't add it
@@ -110,11 +110,14 @@ function useCourseSearch() {
         searchVariables.status.includes(CourseStatus.Upcoming)
       )
     ) {
-      params.push(`status=${searchVariables.status.join(",")}`)
+      searchParams.set("status", searchVariables.status.join(","))
     }
 
-    const query = params.length ? `?${params.join("&")}` : ""
+    const query = searchParams.toString().length
+      ? `?${searchParams.toString()}`
+      : ""
     const href = `/courses/${query}`
+
     if (router?.asPath !== href) {
       router.push(href, undefined, { shallow: true })
     }

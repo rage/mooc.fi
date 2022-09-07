@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
@@ -139,21 +139,24 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     await deleteCourse({ variables: { id } })
   }, [])
 
+  const contextValue = useMemo(
+    () => ({
+      status,
+      tab,
+      initialValues: defaultValues,
+      setStatus,
+      setTab,
+      onSubmit,
+      onError,
+      onCancel,
+      onDelete,
+    }),
+    [status, tab, defaultValues],
+  )
+
   return (
     <FormProvider {...methods}>
-      <EditorContext.Provider
-        value={{
-          status,
-          setStatus,
-          tab,
-          setTab,
-          onSubmit,
-          onError,
-          onCancel,
-          onDelete,
-          initialValues: defaultValues,
-        }}
-      >
+      <EditorContext.Provider value={contextValue}>
         <CourseEditForm
           course={course}
           courses={courses}

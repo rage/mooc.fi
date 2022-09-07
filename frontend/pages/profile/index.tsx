@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -40,6 +40,7 @@ const tabs: Record<string, number> = {
   completions: 1,
   settings: 2,
 }
+
 const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
   (acc, [key, value]) => ({ ...acc, [value]: key }),
   {},
@@ -51,21 +52,27 @@ function Profile() {
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
 
-  const handleTabChange = (_: ChangeEvent<{}>, newValue: number) => {
-    // setTab(newValue)
-    router.replace(
-      router.pathname,
-      `/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`,
-      { shallow: true },
-    )
-  }
+  const handleTabChange = useCallback(
+    (_: ChangeEvent<{}>, newValue: number) => {
+      setTab(newValue)
+      router.replace(
+        router.pathname,
+        `/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`,
+        { shallow: true },
+      )
+    },
+    [],
+  )
+
   useEffect(() => {
     if (tabs[_tab] !== tab) {
       setTab(tabs[_tab] ?? 0)
     }
   }, [_tab])
 
-  const { data, error, loading } = useQuery(CurrentUserOverviewDocument)
+  const { data, error, loading } = useQuery(CurrentUserOverviewDocument, {
+    ssr: false,
+  })
 
   useBreadcrumbs([
     {

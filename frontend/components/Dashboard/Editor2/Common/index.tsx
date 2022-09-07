@@ -3,6 +3,7 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
 } from "react"
 
 import { omit } from "lodash"
@@ -76,6 +77,8 @@ export const TabSection = ({
   ...props
 }: PropsWithChildren<TabSectionProps> &
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) => {
+  const contextValue = useMemo(() => ({ tab }), [tab])
+
   return (
     <section
       style={{
@@ -84,13 +87,7 @@ export const TabSection = ({
       }}
       {...omit(props, "style")}
     >
-      <TabContext.Provider
-        value={{
-          tab,
-        }}
-      >
-        {children}
-      </TabContext.Provider>
+      <TabContext.Provider value={contextValue}>{children}</TabContext.Provider>
     </section>
   )
 }
