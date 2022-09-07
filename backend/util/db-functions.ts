@@ -4,7 +4,7 @@ import { omit } from "lodash"
 
 import { Course, Prisma, PrismaClient } from "@prisma/client"
 
-import { CIRCLECI } from "../config"
+import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
@@ -131,27 +131,39 @@ export const convertUpdate = <T extends object>(input: {
     {},
   )
 
-export const createUUIDExtension = async (knex: Knex) => {
-  if (CIRCLECI) {
+export const createExtensions = async (knex: Knex) => {
+  /*if (CIRCLECI) {
     return
-  }
+  }*/
 
   try {
-    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
     await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
+      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${EXTENSION_PATH}";`,
+    )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA "${EXTENSION_PATH}";`,
+    )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "btree_gin" SCHEMA "${EXTENSION_PATH}";`,
     )
   } catch (error) {
     console.warn(
-      "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
+      "Error creating extensions. Ignore if this didn't fall on next hurdle",
       error,
     )
   }
 
   try {
-    // if uuid-ossp already exists, but in another schema
-    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
-    await knex.raw(`ALTER EXTENSION "uuid-ossp" SET SCHEMA "extensions";`)
+    // if extensions already exist, but in another schema
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
+    await knex.raw(
+      `ALTER EXTENSION "uuid-ossp" SET SCHEMA "${EXTENSION_PATH}";`,
+    )
+    await knex.raw(`ALTER EXTENSION "pg_trgm" SET SCHEMA "${EXTENSION_PATH}";`)
+    await knex.raw(
+      `ALTER EXTENSION "btree_gin" SET SCHEMA "${EXTENSION_PATH}";`,
+    )
   } catch {
     // we can probably ignore this
   }

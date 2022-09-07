@@ -10,7 +10,13 @@ import winston from "winston"
 
 import { PrismaClient, User } from "@prisma/client"
 
-import { DATABASE_URL, DB_USER, DEBUG, TMC_HOST } from "../config"
+import {
+  DATABASE_URL,
+  DB_USER,
+  DEBUG,
+  EXTENSION_PATH,
+  TMC_HOST,
+} from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
 
@@ -142,8 +148,6 @@ function createTestContext(testContext: TestContext) {
 }
 
 function prismaTestContext() {
-  // const knexBinary = join(__dirname, "..", "node_modules", ".bin", "knex")
-
   let schemaName = ""
   let databaseUrl = ""
   let prisma: null | PrismaClient = null
@@ -166,7 +170,9 @@ function prismaTestContext() {
       DEBUG && console.log(`running migrations ${schemaName}`)
       // Run the migrations to ensure our schema has the required structure
       await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
-      await knexClient.raw(`SET SEARCH_PATH TO "${schemaName}";`)
+      await knexClient.raw(
+        `SET SEARCH_PATH TO "${schemaName}","${EXTENSION_PATH}";`,
+      )
       await knexClient.migrate.latest({
         schemaName,
         database: databaseUrl,

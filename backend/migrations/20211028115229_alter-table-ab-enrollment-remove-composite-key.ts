@@ -1,10 +1,10 @@
 import { Knex } from "knex"
 
-import { extensionPath } from "../config"
-import { createUUIDExtension } from "../util/db-functions"
+import { EXTENSION_PATH } from "../config"
+import { createExtensions } from "../util/db-functions"
 
 export async function up(knex: Knex): Promise<void> {
-  await createUUIDExtension(knex)
+  await createExtensions(knex)
 
   await knex.raw(`
     ALTER TABLE ONLY ab_enrollment
@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
   `)
   await knex.raw(`
     ALTER TABLE ab_enrollment
-      ADD COLUMN IF NOT EXISTS id UUID NOT NULL DEFAULT ${extensionPath}uuid_generate_v4();
+      ADD COLUMN IF NOT EXISTS id UUID NOT NULL DEFAULT ${EXTENSION_PATH}.uuid_generate_v4();
   `)
   await knex.raw(`
     ALTER TABLE ONLY ab_enrollment
