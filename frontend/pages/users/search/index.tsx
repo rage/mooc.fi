@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -19,7 +19,6 @@ const UserSearch = () => {
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
-
   const [searchVariables, setSearchVariables] = useState<SearchVariables>({
     search: textParam,
     first: rowsParam,
@@ -54,11 +53,15 @@ const UserSearch = () => {
   useBreadcrumbs(crumbs)
 
   useEffect(() => {
-    const params = [
-      rowsPerPage !== 10 ? `rowsPerPage=${rowsPerPage}` : "",
-      page > 0 ? `page=${page}` : "",
-    ].filter((v) => !!v)
-    const query = params.length ? `?${params.join("&")}` : ""
+    const searchParams = new URLSearchParams()
+    if (rowsPerPage !== 10) {
+      searchParams.append("rowsPerPage", rowsPerPage.toString())
+    }
+    if (page > 0) {
+      searchParams.append("page", page.toString())
+    }
+    const query =
+      searchParams.toString().length > 0 ? `?${searchParams.toString()}` : ""
     const href =
       searchVariables.search !== ""
         ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
@@ -76,21 +79,23 @@ const UserSearch = () => {
     }
   }, [searchVariables, rowsPerPage, page])
 
+  const contextValue = useMemo(
+    () => ({
+      data,
+      loading,
+      page,
+      rowsPerPage,
+      searchVariables,
+      setPage,
+      setSearchVariables,
+      setRowsPerPage,
+    }),
+    [data, loading, page, rowsPerPage, searchVariables],
+  )
   return (
     <>
       <Container>
-        <UserSearchContext.Provider
-          value={{
-            data,
-            loading,
-            page,
-            rowsPerPage,
-            searchVariables,
-            setPage,
-            setSearchVariables,
-            setRowsPerPage,
-          }}
-        >
+        <UserSearchContext.Provider value={contextValue}>
           <SearchForm />
         </UserSearchContext.Provider>
       </Container>

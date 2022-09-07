@@ -50,6 +50,7 @@ interface CourseCardProps {
 function formatDateTime(date: string) {
   const dateToFormat = new Date(date)
   const formattedDate = dateToFormat.toUTCString()
+
   return formattedDate
 }
 

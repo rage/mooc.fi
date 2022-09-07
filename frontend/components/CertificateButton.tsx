@@ -26,7 +26,6 @@ import {
   CurrentUserDocument,
   CurrentUserOverviewDocument,
   UpdateUserNameDocument,
-  UserOverviewFieldsFragment,
 } from "/graphql/generated"
 
 const StyledButton = styled(Button)`
@@ -133,7 +132,7 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
 
 const CertificateButton = ({ course }: CertificateProps) => {
   const t = useTranslator(CompletionsTranslations)
-  const { currentUser, updateUser } = useContext(LoginStateContext)
+  const { currentUser, updateUser, admin } = useContext(LoginStateContext)
   const { addAlert } = useContext(AlertContext)
 
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -195,10 +194,9 @@ const CertificateButton = ({ course }: CertificateProps) => {
           },
         })
         updateUser({
-          ...(currentUser || { email: "", id: "" }),
-          first_name: firstName,
-          last_name: lastName,
-        } as UserOverviewFieldsFragment)
+          user: { ...currentUser!, first_name: firstName, last_name: lastName },
+          admin,
+        })
         dispatch({ type: "UPDATED_NAME", payload: res })
       }
 

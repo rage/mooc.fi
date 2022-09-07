@@ -1,6 +1,6 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
-import { useEffect, useReducer } from "react"
+import { useCallback, useEffect, useMemo, useReducer } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
 import type { AppContext, AppProps } from "next/app"
@@ -25,10 +25,18 @@ import theme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
+import {
+  CurrentUserQuery,
+} from "/graphql/generated"
+
 fontAwesomeConfig.autoAddCss = false
 
 const clientSideEmotionCache = createEmotionCache()
 
+type UpdateUserPayload = {
+  user: CurrentUserQuery["currentUser"]
+  admin?: boolean
+}
 interface AppState {
   loggedIn: boolean
   logInOrOut: () => void
@@ -37,16 +45,34 @@ interface AppState {
   admin: boolean
   validated: boolean
   currentUser: any
-  updateUser: (user: any) => void
+  updateUser: (data: UpdateUserPayload) => void
   nextAlertId: number
 }
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
-}
+type AppReducerAction =
+  | {
+      type: "addAlert"
+      payload: Alert
+    }
+  | {
+      type: "removeAlert"
+      payload: Alert
+    }
+  | {
+      type: "setBreadcrumbs"
+      payload: Array<Breadcrumb>
+    }
+  | {
+      type: "updateUser"
+      payload: UpdateUserPayload
+    }
+  | {
+      type: "logInOrOut"
+    }
 
-const reducer = (state: AppState, action: any) => {
+const reducer = (state: AppState, action: AppReducerAction) => {
   switch (action.type) {
     case "addAlert":
+      console.log("adding alert", action.payload)
       const nextAlertId = state.nextAlertId + 1
       return {
         ...state,
@@ -54,9 +80,10 @@ const reducer = (state: AppState, action: any) => {
         nextAlertId,
       }
     case "removeAlert":
+      console.log("removing alert", action.payload)
       return {
         ...state,
-        alerts: state.alerts.filter((alert) => alert.id !== action.payload),
+        alerts: state.alerts.filter((alert) => alert.id !== action.payload.id),
       }
     case "setBreadcrumbs":
       return {
@@ -79,6 +106,10 @@ const reducer = (state: AppState, action: any) => {
   }
 }
 
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache
+}
+
 export function MyApp({
   Component,
   pageProps,
@@ -87,19 +118,29 @@ export function MyApp({
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
-  const logInOrOut = () => dispatch({ type: "logInOrOut" })
+  const logInOrOut = useCallback(() => dispatch({ type: "logInOrOut" }), [])
 
-  const updateUser = (user: any) =>
-    dispatch({ type: "updateUser", payload: { user } })
+  const updateUser = useCallback(
+    (data: UpdateUserPayload) =>
+      dispatch({ type: "updateUser", payload: data }),
+    [],
+  )
 
-  const addAlert = (alert: Alert) =>
-    dispatch({ type: "addAlert", payload: alert })
+  const addAlert = useCallback(
+    (alert: Alert) => dispatch({ type: "addAlert", payload: alert }),
+    [],
+  )
 
-  const removeAlert = (alert: Alert) =>
-    dispatch({ type: "removeAlert", payload: alert })
+  const removeAlert = useCallback(
+    (alert: Alert) => dispatch({ type: "removeAlert", payload: alert }),
+    [],
+  )
 
-  const setBreadcrumbs = (breadcrumbs: Breadcrumb[]) =>
-    dispatch({ type: "setBreadcrumbs", payload: breadcrumbs })
+  const setBreadcrumbs = useCallback(
+    (breadcrumbs: Breadcrumb[]) =>
+      dispatch({ type: "setBreadcrumbs", payload: breadcrumbs }),
+    [],
+  )
 
   const [state, dispatch] = useReducer(reducer, {
     loggedIn: pageProps?.signedIn,
@@ -142,6 +183,25 @@ export function MyApp({
 
   const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
+  const loginStateContextValue = useMemo(
+    () => ({
+      loggedIn: state.loggedIn,
+      logInOrOut,
+      admin: state.admin,
+      currentUser: state.currentUser,
+      updateUser,
+    }),
+    [state.loggedIn, state.admin, state.currentUser],
+  )
+  const breadcrumbContextValue = useMemo(
+    () => ({ breadcrumbs: state.breadcrumbs, setBreadcrumbs }),
+    [state.breadcrumbs],
+  )
+  const alertContextValue = useMemo(
+    () => ({ alerts: state.alerts, addAlert, removeAlert }),
+    [state.alerts],
+  )
+
   return (
     <>
       <CacheProvider value={emotionCache}>
@@ -154,21 +214,10 @@ export function MyApp({
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <LoginStateContext.Provider value={state}>
+          <LoginStateContext.Provider value={loginStateContextValue}>
             <ConfirmProvider>
-              <BreadcrumbContext.Provider
-                value={{
-                  breadcrumbs: state.breadcrumbs,
-                  setBreadcrumbs: setBreadcrumbs,
-                }}
-              >
-                <AlertContext.Provider
-                  value={{
-                    alerts: state.alerts,
-                    addAlert: addAlert,
-                    removeAlert: removeAlert,
-                  }}
-                >
+              <BreadcrumbContext.Provider value={breadcrumbContextValue}>
+                <AlertContext.Provider value={alertContextValue}>
                   <Layout>
                     <Global styles={fontCss} />
                     <Component {...pageProps} />
