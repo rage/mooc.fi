@@ -1,20 +1,20 @@
-import { useQuery } from "@apollo/client"
+import { ApolloError } from "@apollo/client"
 
 import NoPointsErrorMessage from "./NoPointsErrorMessage"
 import PointsListGrid from "./PointsListGrid"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 
-import { CurrentUserProgressesDocument } from "/graphql/generated"
+import { CurrentUserProgressesQuery } from "/graphql/generated"
 
 interface PointsListProps {
   showOnlyTen?: boolean
+  data?: CurrentUserProgressesQuery
+  loading: boolean
+  error?: ApolloError
 }
 
-function PointsList(props: PointsListProps) {
-  const { data, error, loading } = useQuery(CurrentUserProgressesDocument)
-  const { showOnlyTen } = props
-
+function PointsList({ data, error, loading, showOnlyTen }: PointsListProps) {
   if (error) {
     return <ErrorMessage />
   }

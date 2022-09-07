@@ -4,7 +4,10 @@ import Button from "@mui/material/Button"
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
+import {
+  formatDateTime,
+  mapLangToLanguage,
+} from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
@@ -45,12 +48,6 @@ interface CourseCardProps {
   completion: CompletionDetailedFieldsFragment & {
     course: CourseWithPhotoCoreFieldsFragment
   }
-}
-
-function formatDateTime(date: string) {
-  const dateToFormat = new Date(date)
-  const formattedDate = dateToFormat.toUTCString()
-  return formattedDate
 }
 
 function CompletedCourseCard(props: CourseCardProps) {

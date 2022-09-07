@@ -1,13 +1,16 @@
 import { createContext } from "react"
 
-import { UserOverviewFieldsFragment } from "/graphql/generated"
+import { CurrentUserQuery } from "/graphql/generated"
 
 export interface LoginState {
   loggedIn: boolean
   logInOrOut: () => void
   admin: boolean
-  currentUser?: UserOverviewFieldsFragment
-  updateUser: (user: UserOverviewFieldsFragment) => void
+  currentUser?: CurrentUserQuery["currentUser"]
+  updateUser: (data: {
+    user: CurrentUserQuery["currentUser"]
+    admin?: boolean
+  }) => void
 }
 
 const LoginStateContext = createContext<LoginState>({

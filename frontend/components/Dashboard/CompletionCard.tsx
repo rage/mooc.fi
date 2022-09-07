@@ -12,6 +12,8 @@ import {
   Typography,
 } from "@mui/material"
 
+import { formatDateTime } from "/components/DataFormatFunctions"
+
 import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 
 //map language code stored to database to human readable language
@@ -19,13 +21,6 @@ const MapLangToLanguage: Record<string, string> = {
   en_US: "English",
   fi_FI: "Finnish",
   sv_SE: "Swedish",
-}
-
-//format registration time stored to db to human readable text
-function formatDateTime(date: string) {
-  const dateToFormat = new Date(date)
-  const formattedDate = dateToFormat.toUTCString()
-  return formattedDate
 }
 
 const StyledIcon = styled(Icon)`
