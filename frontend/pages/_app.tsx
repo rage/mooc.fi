@@ -72,7 +72,6 @@ type AppReducerAction =
 const reducer = (state: AppState, action: AppReducerAction) => {
   switch (action.type) {
     case "addAlert":
-      console.log("adding alert", action.payload)
       const nextAlertId = state.nextAlertId + 1
       return {
         ...state,
@@ -80,7 +79,6 @@ const reducer = (state: AppState, action: AppReducerAction) => {
         nextAlertId,
       }
     case "removeAlert":
-      console.log("removing alert", action.payload)
       return {
         ...state,
         alerts: state.alerts.filter((alert) => alert.id !== action.payload.id),
