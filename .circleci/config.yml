@@ -1,9 +1,9 @@
 version: 2.1
 orbs:
-  helm: circleci/helm@1.1.2
-  docker: circleci/docker@1.7.0
-  jq: circleci/jq@2.2.0
-  node: circleci/node@5.0.0
+  helm: cimg/helm@1.1.2
+  docker: cimg/docker@1.7.0
+  jq: cimg/jq@2.2.0
+  node: cimg/node@5.0.0
 executors:
   backend_test:
     docker:
@@ -90,18 +90,18 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-      - run:
-          name: "Install psql client"
-          command: |
-            sudo apt-get update
-            sudo apt-get install postgresql-client
+      # - run:
+      #     name: "Install psql client"
+      #     command: |
+      #       sudo apt-get update
+      #       sudo apt-get install postgresql-client
       - run:
           name: "Wait for database"
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: "Create extensions"
           command: |
-            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"; CREATE EXTENSION IF NOT EXISTS \"pg_trgm\"; CREATE EXTENSION IF NOT EXISTS \"btree_gin\";"
       - run:
           name: "Run tests"
           command: |

@@ -75,5 +75,5 @@ export async function updateAccount(firstName: string, lastName: string) {
     },
   })
 
-  return await newRes.json()
+  return newRes.json()
 }
