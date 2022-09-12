@@ -89,16 +89,15 @@ export async function redisify<T>(
   const { prefix, expireTime, key, params } = options
   const { logger = _logger, client = redisClient } = ctx
 
-  const resolveValue = async () =>
-    isPromise(fn)
-      ? await fn
-      : isAsync(fn)
-      ? params
-        ? await fn(...params)
-        : await fn()
-      : params
-      ? fn(...params)
-      : fn()
+  const resolveValue = async () => {
+    if (isPromise(fn)) {
+      return fn
+    }
+    if (params) {
+      return fn(...params)
+    }
+    return fn()
+  }
 
   if (params && isPromise(fn)) {
     logger.warn(`Prefix ${prefix}: params ignored with a promise`)

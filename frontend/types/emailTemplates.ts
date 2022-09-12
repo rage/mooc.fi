@@ -68,6 +68,12 @@ export const emailTemplateDescriptions: Array<EmailTemplateDescription> = [
     types: ["join-organization"],
   },
   {
+    name: "organization_activation_code_expiry_date",
+    description:
+      "Expiry date for the activation code to confirm joining organization, if organization is set up to require email confirmation",
+    types: ["join-organization"],
+  },
+  {
     name: "organization_name",
     description: "Name of the organization",
     types: ["join-organization"],

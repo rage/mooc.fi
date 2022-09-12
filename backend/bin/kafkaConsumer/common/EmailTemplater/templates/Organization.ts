@@ -107,3 +107,14 @@ export class OrganizationName extends OrganizationTemplate {
     return organizationTranslation?.name ?? ""
   }
 }
+
+export class OrganizationActivationCodeExpiryDate extends OrganizationTemplate {
+  async resolve() {
+    const userOrganizationJoinConfirmation =
+      await this.getUserOrganizationJoinConfirmation()
+
+    return (
+      userOrganizationJoinConfirmation.expires_at?.toLocaleString("en") ?? ""
+    )
+  }
+}
