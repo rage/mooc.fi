@@ -15,7 +15,6 @@ const functions: Array<DateTimeFromStringFunctions> = [
   DateTime.fromSQL,
   DateTime.fromHTTP,
   DateTime.fromRFC2822,
-  
 ]
 
 export const parseTimestamp = (timestamp: string) => {

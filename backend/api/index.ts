@@ -25,9 +25,9 @@ export function apiRouter(ctx: ApiContext) {
     )
     .post("/recheck-completion", completionController.recheckCompletion)
     .post("/register-completions", completionController.registerCompletions)
-    .get("/progress/:id", progressController.progress)
+    .get("/progress/:idOrSlug", progressController.progress)
     .get("/progressv2/:idOrSlug", progressController.progressV2)
-    .get("/tierprogress/:id", progressController.tierProgress)
+    .get("/tierprogress/:idOrSlug", progressController.tierProgress)
     .get(
       "/recheck-bai-progresses",
       progressController.recheckBAIUserCourseProgresses,

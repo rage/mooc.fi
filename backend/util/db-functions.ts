@@ -4,9 +4,9 @@ import { omit } from "lodash"
 
 import { Course, Prisma, PrismaClient } from "@prisma/client"
 
-import { CIRCLECI } from "../config"
+import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
-import { isEmptyNullOrUndefined, isNull, isNullOrUndefined } from "./guards"
+import { isNull, isNullish, isNullishOrEmpty, Nullish } from "./guards"
 
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
@@ -39,10 +39,8 @@ type NonNullable<T> = T extends null ? Exclude<T, null> : T
 
 type NonNullFields<
   T extends Record<PropertyKey, any>,
-  U = T | null | undefined,
-> = U extends undefined // null or undefined returns undefined
-  ? undefined
-  : U extends null
+  U = T | Nullish,
+> = U extends Nullish // null or undefined returns undefined
   ? undefined
   : [keyof T] extends [never] // empty object returns undefined
   ? undefined
@@ -56,18 +54,12 @@ type NonNullFields<
       [K in keyof T]: NonNullable<T[K]>
     }
 
-function isFilteredNullOrUndefined<T extends Record<string, any>>(
-  obj: T | null | undefined,
-): obj is null | undefined {
-  return isNullOrUndefined(obj)
-}
-
 type Optional<T> = T | undefined | null
 
 export function filterNullFields<T extends Record<string, any>>(
   obj: Optional<T>,
 ): NonNullFields<T> {
-  if (isFilteredNullOrUndefined(obj)) {
+  if (isNullish(obj)) {
     return undefined
   }
 
@@ -86,27 +78,35 @@ export function filterNullFields<T extends Record<string, any>>(
   return ret as NonNullFields<T>
 }
 
-export const createUUIDExtension = async (knex: Knex) => {
-  if (CIRCLECI) {
-    return
-  }
-
+export const createExtensions = async (knex: Knex) => {
   try {
-    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
     await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
+      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${EXTENSION_PATH}";`,
+    )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA "${EXTENSION_PATH}";`,
+    )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "btree_gin" SCHEMA "${EXTENSION_PATH}";`,
     )
   } catch (error) {
     console.warn(
-      "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
+      "Error creating extensions. Ignore if this didn't fall on next hurdle",
       error,
     )
   }
 
   try {
-    // if uuid-ossp already exists, but in another schema
-    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
-    await knex.raw(`ALTER EXTENSION "uuid-ossp" SET SCHEMA "extensions";`)
+    // if extensions already exist, but in another schema
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
+    await knex.raw(
+      `ALTER EXTENSION "uuid-ossp" SET SCHEMA "${EXTENSION_PATH}";`,
+    )
+    await knex.raw(`ALTER EXTENSION "pg_trgm" SET SCHEMA "${EXTENSION_PATH}";`)
+    await knex.raw(
+      `ALTER EXTENSION "btree_gin" SET SCHEMA "${EXTENSION_PATH}";`,
+    )
   } catch {
     // we can probably ignore this
   }
@@ -147,10 +147,8 @@ export function includeFields<T extends Entity, K extends Keys<T>>(
   return result
 }
 
-export function emptyOrNullToUndefined<T>(
-  value: T | null | undefined,
-): T | undefined {
-  return isEmptyNullOrUndefined(value) ? undefined : value
+export function emptyOrNullToUndefined<T>(value: T | Nullish): T | undefined {
+  return isNullishOrEmpty(value) ? undefined : value
 }
 interface GetCourseInput {
   id?: string

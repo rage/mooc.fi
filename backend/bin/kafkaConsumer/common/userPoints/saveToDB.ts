@@ -2,8 +2,14 @@ import { DateTime } from "luxon"
 
 import { ExerciseCompletion, User } from "@prisma/client"
 
+import {
+  emptyOrNullToUndefined,
+  err,
+  ok,
+  parseTimestamp,
+  Result,
+} from "../../../../util"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
-import { err, ok, Result, parseTimestamp, emptyOrNullToUndefined } from "../../../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"

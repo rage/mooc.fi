@@ -1,10 +1,9 @@
-export function isDefined<T>(value: T | null | undefined): value is T {
+export type Nullish = null | undefined
+export function isDefined<T>(value: T | Nullish): value is T {
   return value !== null && typeof value !== "undefined"
 }
 
-export function isNullOrUndefined<T>(
-  value: T | null | undefined,
-): value is null | undefined {
+export function isNullish<T>(value: T | Nullish): value is Nullish {
   return !isDefined(value)
 }
 
@@ -16,10 +15,10 @@ export function isNotNull<T>(value: T | null): value is T {
   return value !== null
 }
 
-export function isEmptyNullOrUndefined<T>(
-  value: T | null | undefined,
-): value is null | undefined {
-  return isNullOrUndefined(value) || (typeof value === "string" && value === "")
+export function isNullishOrEmpty<T>(
+  value: T | Nullish | "",
+): value is Nullish | "" {
+  return isNullish(value) || (typeof value === "string" && value === "")
 }
 
 export const isPromise = <T>(value: any): value is Promise<T> => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react"
+import React, { useEffect, useMemo, useReducer, useState } from "react"
 
 import { useQuery } from "@apollo/client"
 import { Paper } from "@mui/material"
@@ -30,6 +30,7 @@ function UserSummaryView() {
   const id = useQueryParameter("id")
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: { upstream_id: Number(id) },
+    ssr: false,
   })
 
   useBreadcrumbs([
@@ -58,6 +59,8 @@ function UserSummaryView() {
     })
   }, [data])
 
+  const contextValue = useMemo(() => ({ state, dispatch }), [state])
+
   if (error) {
     return (
       <Container>
@@ -68,12 +71,7 @@ function UserSummaryView() {
 
   return (
     <Container>
-      <CollapseContext.Provider
-        value={{
-          state,
-          dispatch,
-        }}
-      >
+      <CollapseContext.Provider value={contextValue}>
         <Paper style={{ marginBottom: "0.5rem" }}>
           <FilterMenu
             searchVariables={searchVariables}

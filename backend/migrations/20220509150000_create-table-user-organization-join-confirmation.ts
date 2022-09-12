@@ -1,14 +1,14 @@
 import { Knex } from "knex"
 
-import { extensionPath } from "../config"
-import { createUUIDExtension } from "../util"
+import { EXTENSION_PATH } from "../config"
+import { createExtensions } from "../util"
 
 export async function up(knex: Knex): Promise<void> {
-  await createUUIDExtension(knex)
+  await createExtensions(knex)
 
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "user_organization_join_confirmation" (
-      "id" uuid NOT NULL DEFAULT ${extensionPath}uuid_generate_v4(),
+      "id" uuid NOT NULL DEFAULT ${EXTENSION_PATH}.uuid_generate_v4(),
       "email" TEXT NOT NULL,
       "redirect" TEXT,
       "language" TEXT DEFAULT 'fi',

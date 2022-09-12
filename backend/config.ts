@@ -1,3 +1,5 @@
+import { isDefined } from "./util"
+
 export const isProduction = process.env.NODE_ENV === "production"
 export const isTest = process.env.NODE_ENV === "test"
 
@@ -10,20 +12,18 @@ export const isStaging = () =>
 
 export const DEBUG = Boolean(process.env.DEBUG)
 
-export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
-  const url = process.env.DATABASE_URL ?? ""
-  const [baseUrl, queryParamString] = url.split("?") ?? []
-  const queryParams = queryParamString?.split("&") ?? []
-  const newParams = queryParams.filter((param) => !param.startsWith("schema="))
+export const EXTENSION_PATH = "extensions" // CIRCLECI ? "public" : "extensions"
 
-  return `${baseUrl}${newParams.length > 0 ? `?${newParams.join("&")}` : ""}`
-})()
+export let SEARCH_PATH: Array<string>
 
-export const SEARCH_PATH = isProduction
-  ? [process.env.SEARCH_PATH ?? "moocfi$production"]
-  : isTest && process.env.RUNNING_IN_CI
-  ? [process.env.SEARCH_PATH ?? ""]
-  : ["default$default"]
+if (isProduction) {
+  SEARCH_PATH = [process.env.SEARCH_PATH ?? "moocfi$production"]
+} else {
+  SEARCH_PATH =
+    isTest && process.env.RUNNING_IN_CI
+      ? [process.env.SEARCH_PATH, EXTENSION_PATH].filter(isDefined)
+      : ["default$default"]
+}
 
 export const DB_PORT = Number(process.env.DB_PORT)
 
@@ -88,6 +88,8 @@ export const {
   CIRCLECI,
   // nexus reflection
   NEXUS_REFLECTION,
+  // Linköping University completion addresses, separated by :
+  LINKOPING_COMPLETION_RECIPIENTS,
 } = process.env
 
 export const DATABASE_URL =
@@ -95,11 +97,17 @@ export const DATABASE_URL =
     ? "postgres://prisma:prisma@localhost:5678/testing"
     : process.env.DATABASE_URL
 
+export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
+  const url = new URL(DATABASE_URL ?? "")
+  const baseUrl = (DATABASE_URL ?? "").split("?")[0]
+  const params = url.searchParams
+  params.delete("schema")
+  const query = params.toString().length > 0 ? `?${params.toString()}` : ""
+
+  return `${baseUrl}${query}`
+})()
+
 export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"
 
 export const extensionPath = CIRCLECI ? "public." : "extensions."
-
-// addresses to send Linköping completions, separated by ;
-export const LINKOPING_COMPLETION_RECIPIENTS =
-  process.env.LINKOPING_COMPLETION_RECIPIENTS

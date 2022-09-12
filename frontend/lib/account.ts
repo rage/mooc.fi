@@ -75,7 +75,7 @@ export async function updateAccount(firstName: string, lastName: string) {
     },
   })
 
-  return await newRes.json()
+  return newRes.json()
 }
 
 export async function updateUserDetails(fieldName: string, fieldValue: any) {

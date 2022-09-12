@@ -1,13 +1,13 @@
 import { Knex } from "knex"
 
-import { extensionPath } from "../config"
-import { createUUIDExtension } from "../util"
+import { EXTENSION_PATH } from "../config"
+import { createExtensions } from "../util/db-functions"
 
 export async function up(knex: Knex): Promise<void> {
-  await createUUIDExtension(knex)
+  await createExtensions(knex)
 
   await knex.raw(
-    `ALTER TABLE "ab_study" ALTER COLUMN "id" SET DEFAULT ${extensionPath}uuid_generate_v4();`,
+    `ALTER TABLE "ab_study" ALTER COLUMN "id" SET DEFAULT ${EXTENSION_PATH}.uuid_generate_v4();`,
   )
 }
 

@@ -12,7 +12,7 @@ import {
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
 import { BaseContext } from "../../../context"
-import { emptyOrNullToUndefined, isNullOrUndefined } from "../../../util"
+import { emptyOrNullToUndefined, isNullish } from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
 import { DatabaseInputError } from "../../lib/errors"
 import {
@@ -397,7 +397,7 @@ export const createCompletion = async ({
         },
       })
     }
-  } else if (!isNullOrUndefined(tier)) {
+  } else if (!isNullish(tier)) {
     // TODO: prune extra completions here?
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects

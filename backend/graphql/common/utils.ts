@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client"
 
-import { isDefined, isNullOrUndefined } from "../../util"
+import { isDefined, isNullish } from "../../util"
 
 export const buildUserSearch = (
   search?: string | null,
 ): Prisma.UserWhereInput => {
-  if (isNullOrUndefined(search)) {
+  if (isNullish(search)) {
     return {}
   }
   return {

@@ -6,7 +6,7 @@ import {
   UserCourseServiceProgress,
 } from "@prisma/client"
 
-import { err, ok, Result, parseTimestamp } from "../../../../util"
+import { err, ok, parseTimestamp, Result } from "../../../../util"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"

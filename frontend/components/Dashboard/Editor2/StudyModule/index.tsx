@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
@@ -135,21 +135,24 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     [],
   )
 
+  const contextValue = useMemo(
+    () => ({
+      status,
+      tab: 0,
+      initialValues: defaultValues,
+      setStatus,
+      setTab: () => {},
+      onSubmit,
+      onError,
+      onCancel,
+      onDelete,
+    }),
+    [status, defaultValues],
+  )
+
   return (
     <FormProvider {...methods}>
-      <EditorContext.Provider
-        value={{
-          tab: 0,
-          setTab: () => {},
-          status,
-          setStatus,
-          onSubmit,
-          onError,
-          onCancel,
-          onDelete,
-          initialValues: defaultValues,
-        }}
-      >
+      <EditorContext.Provider value={contextValue}>
         <StudyModuleEditForm />
       </EditorContext.Provider>
     </FormProvider>

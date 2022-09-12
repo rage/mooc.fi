@@ -3,7 +3,7 @@ orbs:
   helm: circleci/helm@1.1.2
   docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
-  node: circleci/node@5.0.0
+  node: circleci/node@5.0.2
 executors:
   backend_test:
     docker:
@@ -20,7 +20,7 @@ executors:
 jobs:
   code_style:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.3
     steps:
       - checkout
       - node/install-packages
@@ -48,6 +48,7 @@ jobs:
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"
+    resource_class: large
 
   prepare_backend_test:
     executor: backend_test
@@ -70,6 +71,7 @@ jobs:
           root: ~/project
           paths:
             - .
+    resource_class: large
 
   test_backend:
     executor: backend_test
@@ -88,18 +90,18 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-      - run:
-          name: "Install psql client"
-          command: |
-            sudo apt-get update
-            sudo apt-get install postgresql-client
+      # - run:
+      #     name: "Install psql client"
+      #     command: |
+      #       sudo apt-get update
+      #       sudo apt-get install postgresql-client
       - run:
           name: "Wait for database"
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: "Create extensions"
           command: |
-            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+            psql -d circle_test -U root -p 5432 -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"; CREATE EXTENSION IF NOT EXISTS \"pg_trgm\"; CREATE EXTENSION IF NOT EXISTS \"btree_gin\";"
       - run:
           name: "Run tests"
           command: |
@@ -172,6 +174,7 @@ jobs:
           paths:
             - build
             - backend/sourcemap
+    resource_class: large
 
   push_backend:
     executor: backend_build
@@ -187,6 +190,7 @@ jobs:
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
+    resource_class: large
 
   # build_auth:
   #   docker:
@@ -240,6 +244,7 @@ jobs:
       - run:
           name: "Deploy"
           command: "bin/ci-update-deployments.sh"
+    resource_class: large
 
 workflows:
   version: 2
