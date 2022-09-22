@@ -40,7 +40,7 @@ const PointsProgress = ({ total, title }: PointsProgressProps) => (
       {title}
     </CardSubtitle>
     <ChartContainer>
-      <CardSubtitle align="right">{total.toFixed(0)}%</CardSubtitle>
+      <CardSubtitle align="right">{Math.floor(total)}%</CardSubtitle>
       <ColoredProgressBar
         variant="determinate"
         value={total}
