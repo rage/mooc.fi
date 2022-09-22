@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: prune-old-stored-data
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  schedule: "0 4 * * *"
+  startingDeadlineSeconds: 3600
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      activeDeadlineSeconds: 7200
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: prune-old-stored-data
+              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              command: ["sh", "-c", "npm run prune-old-stored-data"]
+              envFrom:
+              - secretRef:
+                  name: backend-secret
+              env:
+                - name: REDIS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: redis
+                      key: redis-password
