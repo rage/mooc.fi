@@ -8,6 +8,32 @@ import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
 import { isNull, isNullish, isNullishOrEmpty, Nullish } from "./guards"
 
+const flatten = <T>(arr: T[]) =>
+  arr.reduce<T[]>((acc, val) => acc.concat(val), [])
+const titleCase = (s?: string) =>
+  s && s.length > 0
+    ? s.toLowerCase()[0].toUpperCase() + s.toLowerCase().slice(1)
+    : undefined
+
+export const buildSearch = (fields: string[], search?: string) =>
+  search
+    ? flatten(
+        fields.map((f) => [
+          { [f]: { contains: search } },
+          { [f]: { contains: titleCase(search) } },
+          { [f]: { contains: search.toLowerCase() } },
+        ]),
+      )
+    : undefined
+
+export const filterNull = <T>(o: T): T | undefined =>
+  o
+    ? Object.entries(o).reduce(
+        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
+        {} as T,
+      )
+    : undefined
+
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
 export const convertUpdate = <T extends object>(input: {

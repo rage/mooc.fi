@@ -98,7 +98,7 @@ export const UserCourseProgress = objectType({
 
     t.field("exercise_progress", {
       type: "ExerciseProgress",
-      resolve: async ({ course_id, user_id, progress }, _, ctx) => {
+      resolve: async ({ course_id, user_id, n_points, max_points }, _, ctx) => {
         if (!course_id) {
           throw new OrphanedEntityError(
             "user course progress not connected to course",
@@ -117,8 +117,6 @@ export const UserCourseProgress = objectType({
             },
           )
         }
-
-        const courseProgress = normalizeProgress(progress)
 
         const exercises = await ctx.prisma.$queryRaw<
           Array<{ exercise_id: string; exercise_completion_id: string | null }>
@@ -143,11 +141,7 @@ export const UserCourseProgress = objectType({
         const completedExerciseCount = exercises.filter(
           (e) => e.exercise_completion_id,
         ).length
-        const totalProgress =
-          (courseProgress?.reduce(
-            (acc: number, curr: any) => acc + curr.progress,
-            0,
-          ) ?? 0) / (courseProgress?.length || 1)
+        const totalProgress = (n_points || 0) / (max_points || 1)
         const exerciseProgress =
           completedExerciseCount / (exercises.length || 1)
 
@@ -219,7 +213,6 @@ export const UserCourseProgressQueries = extendType({
 
           if (course) {
             course_id = course.id
-            course_slug = undefined
           }
         }
 
