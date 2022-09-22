@@ -198,6 +198,14 @@ const RegisterToOrganization = () => {
     }
   }
 
+  const handleSubmitWithoutEmail = () => {
+    const orgId = (
+      document.getElementById("organizational-identifier") as HTMLInputElement
+    ).value
+    setOrganizationalIdentifier(orgId)
+    verifyJoiningOrganizationWithoutEmail()
+  }
+
   const verifyJoiningOrganization = async (email: string) => {
     const fieldName = "joined_organizations"
     const fieldValue = [...memberships, slug]
@@ -208,6 +216,19 @@ const RegisterToOrganization = () => {
       variables: {
         organization_id: organizationData!.organization!.id,
         organizational_email: email, // TODO: this is given only if we don't want to use the email stored in the account
+      },
+    })
+  }
+
+  const verifyJoiningOrganizationWithoutEmail = async () => {
+    const fieldName = "joined_organizations"
+    const fieldValue = [...memberships, slug]
+    await updateUserDetails(fieldName, fieldValue)
+
+    setMemberships(fieldValue)
+    await addUserOrganization({
+      variables: {
+        organization_id: organizationData!.organization!.id,
       },
     })
   }
@@ -307,7 +328,7 @@ const RegisterToOrganization = () => {
         {t("joiningInformation6")}
       </TextBox>
 
-      {confirmationStatus != "sent" && (
+      {confirmationStatus != "sent" && organizationData.organization.required_confirmation && (
         <div>
           <FormControlLabel
             label={`${t("joiningCheckbox")} ${
@@ -380,6 +401,46 @@ const RegisterToOrganization = () => {
               <Send />
             </StyledButton>
           </StyledForm>
+        </div>
+      )}
+
+      {confirmationStatus != "sent" && !organizationData.organization.required_confirmation && (
+        <div>
+          <FormControlLabel
+            label={`${t("joiningCheckbox")} ${
+              organizationData.organization.organization_translations?.[0]?.name
+            }`}
+            control={
+              <Checkbox
+                id="consent-checkbox"
+                name="consent-checkbox"
+                checked={consented}
+                onChange={handleCheckboxChange}
+                inputProps={{ "aria-label": "consent checkbox" }}
+              />
+            }
+          />
+          <TextBox>{t("joiningOrgIdHint")}</TextBox>
+          <Tooltip title={!consented ? t("hoverHint") : ""}>
+            <TextField
+              id="organizational-identifier"
+              label="organizational identifier"
+              name="ORGANIZATIONAL-IDENTIFIER"
+              inputProps={{ "aria-label": "organizational-identifier" }}
+              disabled={!consented}
+              defaultValue={organizationalIdentifier}
+            />
+          </Tooltip>
+          <StyledButton
+            variant="contained"
+            disabled={!consented}
+            color="primary"
+            onClick={() => {
+              handleSubmitWithoutEmail()
+            }}
+          >
+            {t("emailButton")}
+          </StyledButton>
         </div>
       )}
 
