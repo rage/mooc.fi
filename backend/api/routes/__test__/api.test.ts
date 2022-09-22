@@ -750,7 +750,7 @@ describe("API", () => {
     })
   })
 
-  describe("/stored-data", () => {
+  describe("/temporary-stored-data", () => {
     const tmc = fakeTMCCurrent({
       "Bearer normal": [200, normalUserDetails],
       "Bearer third": [200, { ...normalUserDetails, id: 3 }],
@@ -764,8 +764,9 @@ describe("API", () => {
     })
 
     const postStoredData = (slug: string) =>
-      post(`/api/stored-data/${slug}`, {})
-    const getStoredData = (slug: string) => get(`/api/stored-data/${slug}`, {})
+      post(`/api/temporary-stored-data/${slug}`, {})
+    const getStoredData = (slug: string) =>
+      get(`/api/temporary-stored-data/${slug}`, {})
 
     describe("post", () => {
       it("errors on no auth", async () => {
