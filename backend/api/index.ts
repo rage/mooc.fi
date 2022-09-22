@@ -41,6 +41,6 @@ export function apiRouter(ctx: ApiContext) {
     )
     .use("/ab-studies", abStudiesRouter(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
-    .get("/stored-data/:slug", storedDataController.get)
-    .post("/stored-data/:slug", storedDataController.post)
+    .get("/temporary-stored-data/:slug", storedDataController.get)
+    .post("/temporary-stored-data/:slug", storedDataController.post)
 }
