@@ -55,6 +55,8 @@ export const generateUserCourseProgress = async ({
     context,
   })
 
+  // TODO: maybe we shouldn't actually update it _again_ if we are BAI
+  // since we did update it just in checkBAICompletion?
   return context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {

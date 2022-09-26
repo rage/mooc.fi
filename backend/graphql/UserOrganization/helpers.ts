@@ -12,7 +12,7 @@ import {
 
 import { Role } from "../../accessControl"
 import { Context } from "../../context"
-import { emptyOrNullToUndefined, err, isDefined, ok, Result } from "../../util"
+import { emptyOrNullToUndefined, ensureDefinedArray, err, isDefined, ok, Result } from "../../util"
 import { ConfigurationError, ConflictError } from "../common"
 
 export function assertUserIdOnlyForAdmin(ctx: Context, id?: User["id"] | null) {
@@ -265,11 +265,7 @@ export const cancelEmailDeliveries = async ({
   errorMessage,
   ignoreEmailDeliveries,
 }: CancelEmailDeliveriesOptions) => {
-  const ignoredDeliveryIds = ignoreEmailDeliveries
-    ? Array.isArray(ignoreEmailDeliveries)
-      ? ignoreEmailDeliveries.filter(isDefined)
-      : [ignoreEmailDeliveries]
-    : []
+  const ignoredDeliveryIds = ensureDefinedArray(ignoreEmailDeliveries)
 
   const { count } = await ctx.prisma.emailDelivery.updateMany({
     where: {

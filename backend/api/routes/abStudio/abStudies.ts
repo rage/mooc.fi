@@ -2,14 +2,15 @@ import { Request, Response, Router } from "express"
 
 import { ApiContext } from "../../types"
 import { requireAdmin } from "../../utils"
+import { isDefined } from "../../../util"
 
 export function abStudiesRouter(ctx: ApiContext) {
   async function abStudiesGet(req: Request<{ id?: string }>, res: Response) {
     const { prisma } = ctx
     const adminRes = await requireAdmin(ctx)(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { id } = req.params
@@ -25,23 +26,26 @@ export function abStudiesRouter(ctx: ApiContext) {
     return res.status(200).json(abStudy)
   }
 
-  async function abStudiesPost(req: Request, res: Response) {
+  async function abStudiesPost(
+    req: Request<{}, {}, { name: string; group_count: number }>,
+    res: Response,
+  ) {
     const { prisma } = ctx
     const adminRes = await requireAdmin(ctx)(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { name, group_count } = req.body
 
-    if (!name || !group_count) {
+    if (!isDefined(name) || !isDefined(group_count)) {
       return res
         .status(400)
         .json({ message: "must provide name and group count" })
     }
 
-    if (parseInt(group_count) < 1) {
+    if (group_count < 1) {
       return res.status(400).json({ error: "group_count must be 1 or more" })
     }
 
@@ -60,14 +64,14 @@ export function abStudiesRouter(ctx: ApiContext) {
   }
 
   async function abStudiesUsersPost(
-    req: Request<{ id: string }>,
+    req: Request<{ id: string }, {}, { users: Array<number> }>,
     res: Response,
   ) {
     const { prisma } = ctx
     const adminRes = await requireAdmin(ctx)(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { users } = req.body

@@ -269,8 +269,8 @@ export class ProgressController extends Controller {
   recheckBAIUserCourseProgresses = async (req: Request, res: Response) => {
     const adminRes = await this.requireAdmin(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { prisma, logger } = this.ctx

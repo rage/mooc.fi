@@ -25,11 +25,11 @@ export function requireCourseOwnership({
   return async function (
     req: Request,
     res: Response,
-  ): Promise<Result<CourseOwnership | GetUserReturn, any>> {
+  ): Promise<Result<CourseOwnership, Response>> {
     const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
-      return getUserResult
+      return err(getUserResult.error)
     }
 
     const { user } = getUserResult.value
@@ -56,17 +56,17 @@ export function requireAdmin(ctx: BaseContext) {
   return async function (
     req: Request,
     res: Response,
-  ): Promise<Response<any> | boolean> {
+  ): Promise<Result<boolean, Response>> {
     const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isOk() && getUserResult.value.details.administrator) {
-      return true
+      return ok(true)
     }
     if (getUserResult.isErr()) {
-      return getUserResult.error
+      return err(getUserResult.error)
     }
 
-    return res.status(401).json({ message: "unauthorized" })
+    return err(res.status(401).json({ message: "unauthorized" }))
   }
 }
 
@@ -74,7 +74,7 @@ export function getUser({ knex, logger }: BaseContext) {
   return async function (
     req: Request,
     res: Response,
-  ): Promise<Result<GetUserReturn, any>> {
+  ): Promise<Result<GetUserReturn, Response>> {
     const rawToken = req.headers.authorization
 
     if (!rawToken?.startsWith("Bearer")) {
@@ -85,7 +85,7 @@ export function getUser({ knex, logger }: BaseContext) {
     try {
       const client = new TmcClient(rawToken)
       details = await redisify<UserInfo>(
-        async () => await client.getCurrentUserDetails(),
+        async () => client.getCurrentUserDetails(),
         {
           prefix: "userdetails",
           expireTime: 3600,
@@ -150,7 +150,7 @@ export function getOrganization({ knex }: BaseContext) {
   return async function (
     req: Request,
     res: Response,
-  ): Promise<Result<Organization, any>> {
+  ): Promise<Result<Organization, Response>> {
     const rawToken = req.headers.authorization
 
     if (!rawToken?.startsWith("Basic")) {

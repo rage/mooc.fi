@@ -1,4 +1,6 @@
+export type Optional<T> = T | undefined | null
 export type Nullish = null | undefined
+
 export function isDefined<T>(value: T | Nullish): value is T {
   return value !== null && typeof value !== "undefined"
 }

@@ -14,14 +14,14 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
-import { filterNullFields, getCourseOrAlias } from "../util"
+import { ensureDefinedArray, filterNullFields, getCourseOrAlias } from "../util"
 import { OrphanedEntityError } from "./common"
 
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
   data?: T | T[],
 ): T[] =>
-  (data ? (Array.isArray(data) ? data : [data]) : []).filter((p) =>
+  ensureDefinedArray(data).filter((p) =>
     p?.hasOwnProperty("progress"),
   )
 

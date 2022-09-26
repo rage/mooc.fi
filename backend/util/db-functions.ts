@@ -6,7 +6,14 @@ import { Course, Prisma, PrismaClient } from "@prisma/client"
 
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
-import { isNull, isNullish, isNullishOrEmpty, Nullish } from "./guards"
+import {
+  isDefined,
+  isNull,
+  isNullish,
+  isNullishOrEmpty,
+  Nullish,
+  Optional,
+} from "./guards"
 
 const flatten = <T>(arr: T[]) =>
   arr.reduce<T[]>((acc, val) => acc.concat(val), [])
@@ -33,6 +40,15 @@ export const filterNull = <T>(o: T): T | undefined =>
         {} as T,
       )
     : undefined
+
+export const ensureDefinedArray = <T>(
+  value: Optional<T | Array<Optional<T>>>,
+): Array<T> => {
+  if (!value) return []
+  if (Array.isArray(value)) return value.filter(isDefined)
+
+  return [value]
+}
 
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
@@ -79,8 +95,6 @@ type NonNullFields<
   : {
       [K in keyof T]: NonNullable<T[K]>
     }
-
-type Optional<T> = T | undefined | null
 
 export function filterNullFields<T extends Record<string, any>>(
   obj: Optional<T>,

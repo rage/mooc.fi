@@ -43,6 +43,9 @@ export const getTierProgress = (
           max_points,
           n_points,
           progress: n_points / (max_points || 1),
+          // TODO/FIXME: is this custom_id ever used anywhere?
+          // Currently it will just overwrite the custom id that was already there - if it's supposed to be
+          // the id of the highest finished exercise, it should be done differently
           custom_id: curr.custom_id,
         },
       }
