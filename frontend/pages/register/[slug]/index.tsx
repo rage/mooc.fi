@@ -27,6 +27,7 @@ import {
   CurrentUserUserOrganizationsDocument,
   DeleteUserOrganizationDocument,
   OrganizationDocument,
+  RequestNewUserOrganizationJoinConfirmationDocument,
   UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment,
 } from "/graphql/generated"
 
@@ -123,6 +124,17 @@ const RegisterToOrganization = () => {
     ],
   })
 
+  const [requestNewUserOrganizationJoinConfirmation] = useMutation(
+    RequestNewUserOrganizationJoinConfirmationDocument,
+    {
+      refetchQueries: [
+        {
+          query: CurrentUserUserOrganizationsDocument,
+        },
+      ],
+    },
+  )
+
   useBreadcrumbs([
     {
       translation: "register",
@@ -193,8 +205,11 @@ const RegisterToOrganization = () => {
       setEmail(potentialEmail)
       setOrganizationalIdentifier(orgId)
       setConfirmationStatus("sent")
-      verifyJoiningOrganization(potentialEmail)
-      // TODO: tallenna että user on consentannut ja että hän on reggannut, niin tiedetään milloin expiree
+      if (memberships.includes(slug)) {
+        resendConfirmationEmail(potentialEmail)
+      } else {
+        verifyJoiningOrganization(potentialEmail)
+      }
     }
   }
 
@@ -229,6 +244,19 @@ const RegisterToOrganization = () => {
     await addUserOrganization({
       variables: {
         organization_id: organizationData!.organization!.id,
+      },
+    })
+  }
+
+  const resendConfirmationEmail = async (email: string) => {
+    const userOrganizationId =
+      userOrganizationsData!.currentUser!.user_organizations!.filter(
+        (uo) => uo.organization_id == organizationData!.organization!.id,
+      )[0].id
+    await requestNewUserOrganizationJoinConfirmation({
+      variables: {
+        id: userOrganizationId,
+        organizational_email: email,
       },
     })
   }
@@ -328,121 +356,125 @@ const RegisterToOrganization = () => {
         {t("joiningInformation6")}
       </TextBox>
 
-      {confirmationStatus != "sent" && organizationData.organization.required_confirmation && (
-        <div>
-          <FormControlLabel
-            label={`${t("joiningCheckbox")} ${
-              organizationData.organization.organization_translations?.[0]?.name
-            }`}
-            control={
-              <Checkbox
-                id="consent-checkbox"
-                name="consent-checkbox"
-                checked={consented}
-                onChange={handleCheckboxChange}
-                inputProps={{ "aria-label": "consent checkbox" }}
-              />
-            }
-          />
-          <TextBox>{t("joiningOrgIdHint")}</TextBox>
-          <Tooltip title={!consented ? t("hoverHint") : ""}>
-            <TextField
-              id="organizational-identifier"
-              label="organizational identifier"
-              name="ORGANIZATIONAL-IDENTIFIER"
-              inputProps={{ "aria-label": "organizational-identifier" }}
-              disabled={!consented}
-              defaultValue={organizationalIdentifier}
+      {confirmationStatus != "sent" &&
+        organizationData.organization.required_confirmation && (
+          <div>
+            <FormControlLabel
+              label={`${t("joiningCheckbox")} ${
+                organizationData.organization.organization_translations?.[0]
+                  ?.name
+              }`}
+              control={
+                <Checkbox
+                  id="consent-checkbox"
+                  name="consent-checkbox"
+                  checked={consented}
+                  onChange={handleCheckboxChange}
+                  inputProps={{ "aria-label": "consent checkbox" }}
+                />
+              }
             />
-          </Tooltip>
-          <TextBox>
-            {t("joiningEmailHint1")}{" "}
-            {organizationData.organization.email != null
-              ? `${t("joiningEmailHint2")}@${
-                  organizationData.organization.email.split("@")[1]
-                }${t("joiningEmailHint3")}`
-              : ""}
-          </TextBox>
-          <StyledForm
-            ref={formRef}
-            //action="https://mooc.us8.list-manage.com/subscribe/post?u=db82662e446284fd41bd8370e&amp;id=46d3d4ede3"
-            action=""
-            //method="post"
-            method=""
-            name="mc-embedded-subscribe-form"
-            target="_blank"
-            noValidate
-          >
-            <FieldWrapper>
-              <StyledFormControl>
-                <Tooltip title={!consented ? t("hoverHint") : ""}>
-                  <TextField
-                    id="email"
-                    label="email"
-                    name="EMAIL"
-                    inputProps={{ "aria-label": "email" }}
-                    disabled={!consented}
-                  />
-                </Tooltip>
-              </StyledFormControl>
-            </FieldWrapper>
+            <TextBox>{t("joiningOrgIdHint")}</TextBox>
+            <Tooltip title={!consented ? t("hoverHint") : ""}>
+              <TextField
+                id="organizational-identifier"
+                label="organizational identifier"
+                name="ORGANIZATIONAL-IDENTIFIER"
+                inputProps={{ "aria-label": "organizational-identifier" }}
+                disabled={!consented}
+                defaultValue={organizationalIdentifier}
+              />
+            </Tooltip>
+            <TextBox>
+              {t("joiningEmailHint1")}{" "}
+              {organizationData.organization.email != null
+                ? `${t("joiningEmailHint2")}@${
+                    organizationData.organization.email.split("@")[1]
+                  }${t("joiningEmailHint3")}`
+                : ""}
+            </TextBox>
+            <StyledForm
+              ref={formRef}
+              //action="https://mooc.us8.list-manage.com/subscribe/post?u=db82662e446284fd41bd8370e&amp;id=46d3d4ede3"
+              action=""
+              //method="post"
+              method=""
+              name="mc-embedded-subscribe-form"
+              target="_blank"
+              noValidate
+            >
+              <FieldWrapper>
+                <StyledFormControl>
+                  <Tooltip title={!consented ? t("hoverHint") : ""}>
+                    <TextField
+                      id="email"
+                      label="email"
+                      name="EMAIL"
+                      inputProps={{ "aria-label": "email" }}
+                      disabled={!consented}
+                    />
+                  </Tooltip>
+                </StyledFormControl>
+              </FieldWrapper>
+              <StyledButton
+                variant="contained"
+                disabled={!consented}
+                color="primary"
+                onClick={() => {
+                  if (formRef?.current) {
+                    //formRef.current.submit()
+                    handleSubmit()
+                  }
+                }}
+              >
+                {t("emailButton")}
+                <Send />
+              </StyledButton>
+            </StyledForm>
+          </div>
+        )}
+
+      {confirmationStatus != "sent" &&
+        !organizationData.organization.required_confirmation && (
+          <div>
+            <FormControlLabel
+              label={`${t("joiningCheckbox")} ${
+                organizationData.organization.organization_translations?.[0]
+                  ?.name
+              }`}
+              control={
+                <Checkbox
+                  id="consent-checkbox"
+                  name="consent-checkbox"
+                  checked={consented}
+                  onChange={handleCheckboxChange}
+                  inputProps={{ "aria-label": "consent checkbox" }}
+                />
+              }
+            />
+            <TextBox>{t("joiningOrgIdHint")}</TextBox>
+            <Tooltip title={!consented ? t("hoverHint") : ""}>
+              <TextField
+                id="organizational-identifier"
+                label="organizational identifier"
+                name="ORGANIZATIONAL-IDENTIFIER"
+                inputProps={{ "aria-label": "organizational-identifier" }}
+                disabled={!consented}
+                defaultValue={organizationalIdentifier}
+              />
+            </Tooltip>
             <StyledButton
               variant="contained"
               disabled={!consented}
               color="primary"
               onClick={() => {
-                if (formRef?.current) {
-                  //formRef.current.submit()
-                  handleSubmit()
-                }
+                handleSubmitWithoutEmail()
               }}
             >
               {t("emailButton")}
-              <Send />
             </StyledButton>
-          </StyledForm>
-        </div>
-      )}
-
-      {confirmationStatus != "sent" && !organizationData.organization.required_confirmation && (
-        <div>
-          <FormControlLabel
-            label={`${t("joiningCheckbox")} ${
-              organizationData.organization.organization_translations?.[0]?.name
-            }`}
-            control={
-              <Checkbox
-                id="consent-checkbox"
-                name="consent-checkbox"
-                checked={consented}
-                onChange={handleCheckboxChange}
-                inputProps={{ "aria-label": "consent checkbox" }}
-              />
-            }
-          />
-          <TextBox>{t("joiningOrgIdHint")}</TextBox>
-          <Tooltip title={!consented ? t("hoverHint") : ""}>
-            <TextField
-              id="organizational-identifier"
-              label="organizational identifier"
-              name="ORGANIZATIONAL-IDENTIFIER"
-              inputProps={{ "aria-label": "organizational-identifier" }}
-              disabled={!consented}
-              defaultValue={organizationalIdentifier}
-            />
-          </Tooltip>
-          <StyledButton
-            variant="contained"
-            disabled={!consented}
-            color="primary"
-            onClick={() => {
-              handleSubmitWithoutEmail()
-            }}
-          >
-            {t("emailButton")}
-          </StyledButton>
-        </div>
-      )}
+          </div>
+        )}
 
       {confirmationStatus == "sent" && (
         <div>
