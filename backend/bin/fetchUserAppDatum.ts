@@ -231,7 +231,7 @@ const saveOther = async (p: any) => {
   })
 }
 
-const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
+const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
   let details: UserInfo | undefined
 
   try {
