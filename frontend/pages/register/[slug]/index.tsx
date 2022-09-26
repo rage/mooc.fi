@@ -27,6 +27,7 @@ import {
   CurrentUserUserOrganizationsDocument,
   DeleteUserOrganizationDocument,
   OrganizationDocument,
+  RequestNewUserOrganizationJoinConfirmationDocument,
   UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment,
 } from "/graphql/generated"
 
@@ -123,6 +124,17 @@ const RegisterToOrganization = () => {
     ],
   })
 
+  const [requestNewUserOrganizationJoinConfirmation] = useMutation(
+    RequestNewUserOrganizationJoinConfirmationDocument,
+    {
+      refetchQueries: [
+        {
+          query: CurrentUserUserOrganizationsDocument,
+        },
+      ],
+    },
+  )
+
   useBreadcrumbs([
     {
       translation: "register",
@@ -193,8 +205,11 @@ const RegisterToOrganization = () => {
       setEmail(potentialEmail)
       setOrganizationalIdentifier(orgId)
       setConfirmationStatus("sent")
-      verifyJoiningOrganization(potentialEmail)
-      // TODO: tallenna että user on consentannut ja että hän on reggannut, niin tiedetään milloin expiree
+      if (memberships.includes(slug)) {
+        resendConfirmationEmail(potentialEmail)
+      } else {
+        verifyJoiningOrganization(potentialEmail)
+      }
     }
   }
 
@@ -229,6 +244,19 @@ const RegisterToOrganization = () => {
     await addUserOrganization({
       variables: {
         organization_id: organizationData!.organization!.id,
+      },
+    })
+  }
+
+  const resendConfirmationEmail = async (email: string) => {
+    const userOrganizationId =
+      userOrganizationsData!.currentUser!.user_organizations!.filter(
+        (uo) => uo.organization_id == organizationData!.organization!.id,
+      )[0].id
+    await requestNewUserOrganizationJoinConfirmation({
+      variables: {
+        id: userOrganizationId,
+        organizational_email: email,
       },
     })
   }
