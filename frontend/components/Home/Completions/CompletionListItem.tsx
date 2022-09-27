@@ -1,4 +1,3 @@
-import CertificateButton from "components/CertificateButton"
 import { CardSubtitle, CardTitle } from "components/Text/headers"
 import Link from "next/link"
 
@@ -6,12 +5,14 @@ import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
 import { Avatar, Button, Paper } from "@mui/material"
 
+import CertificateButton from "/components/CertificateButton"
 import {
   formatDateTime,
   mapLangToLanguage,
 } from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
 import { addDomain } from "/util/imageUtils"
+import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -85,6 +86,7 @@ const ButtonColumn = styled(Column)`
     justify-content: flex-end;
   }
 `
+
 export const CompletionListItem = ({
   completion,
   course,
@@ -107,24 +109,28 @@ export const CompletionListItem = ({
                 <strong>{`${t("completedDate")}${formatDateTime(
                   completion.completion_date,
                 )}`}</strong>
-                {completion.completion_language ? (
-                  <CardSubtitle>
-                    {`${t("completionLanguage")} ${
-                      mapLangToLanguage[
-                        completion?.completion_language ?? ""
-                      ] || completion.completion_language
-                    }`}
-                  </CardSubtitle>
-                ) : null}
-                {completion.tier !== null && completion.tier !== undefined ? (
-                  <CardSubtitle>
-                    {`${t("completionTier")} ${t(
-                      // @ts-ignore: tier
-                      `completionTier-${completion.tier}`,
-                    )}`}
-                  </CardSubtitle>
-                ) : null}
               </CardSubtitle>
+              {completion.completion_language ? (
+                <CardSubtitle>
+                  {`${t("completionLanguage")} ${
+                    mapLangToLanguage[completion?.completion_language ?? ""] ||
+                    completion.completion_language
+                  }`}
+                </CardSubtitle>
+              ) : null}
+              {notEmpty(completion.tier) && (
+                <CardSubtitle>
+                  {`${t("completionTier")} ${t(
+                    // @ts-ignore: tier
+                    `completionTier-${completion.tier}`,
+                  )}`}
+                </CardSubtitle>
+              )}
+              {notEmpty(completion?.grade) && (
+                <CardSubtitle>
+                  {t("grade")} <strong>{completion.grade}</strong>
+                </CardSubtitle>
+              )}
             </Column>
           </Row>
           <Row>
@@ -182,7 +188,7 @@ export const CompletionListItem = ({
             </Link>
           ) : null}
           {hasCertificate && course ? (
-            <CertificateButton course={course} />
+            <CertificateButton course={course} completion={completion} />
           ) : null}
         </ButtonColumn>
       </Row>

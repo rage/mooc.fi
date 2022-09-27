@@ -189,6 +189,67 @@ export class CompletionController extends Controller {
     }
   }
 
+  updateCertificateId = async (
+    req: Request<
+      {
+        slug: string
+      },
+      {},
+      {
+        user_upstream_id: number
+        certificate_id: string
+      }
+    >,
+    res: Response,
+  ) => {
+    const { prisma } = this.ctx
+    const adminRes = await this.requireAdmin(req, res)
+
+    if (adminRes !== true) {
+      return adminRes
+    }
+
+    const { slug } = req.params
+    const { user_upstream_id, certificate_id } = req.body
+
+    const user = await prisma.user.findUnique({
+      where: {
+        upstream_id: user_upstream_id,
+      },
+    })
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" })
+    }
+
+    const course = await this.getCourse({
+      where: {
+        slug,
+      },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "course not found" })
+    }
+
+    const completion = await this.getCompletion(course, user)
+
+    if (!completion) {
+      return res.status(404).json({ message: "completion not found" })
+    }
+
+    const updatedCompletion = await prisma.completion.update({
+      where: {
+        id: completion.id,
+      },
+      data: {
+        certificate_id,
+      },
+    })
+
+    return res.status(200).json(updatedCompletion)
+  }
+
   private getCompletion = async (
     course: Course,
     user: User,

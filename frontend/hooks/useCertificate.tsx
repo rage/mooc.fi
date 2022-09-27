@@ -1,12 +1,13 @@
-import { useContext, useEffect, useMemo, useReducer, useState } from "react"
+import { useContext, useMemo, useReducer, useRef, useState } from "react"
 
 import { useMutation } from "@apollo/client"
 
 import LoginStateContext from "/contexts/LoginStateContext"
 import { updateAccount } from "/lib/account"
-import { checkCertificate, createCertificate } from "/lib/certificates"
+import { createCertificate } from "/lib/certificates"
 
 import {
+  CompletionDetailedFieldsFragment,
   CourseCoreFieldsFragment,
   CurrentUserDetailedDocument,
   CurrentUserDocument,
@@ -25,7 +26,6 @@ type Status =
   | "ERROR"
 type ActionType =
   | "RESET"
-  | "CHECK_CERTIFICATE"
   | "RECEIVE_CERTIFICATE_ID"
   | "GENERATE_CERTIFICATE"
   | "RECEIVE_GENERATED_CERTIFICATE"
@@ -44,26 +44,10 @@ interface CertificateState {
   error?: string
 }
 
-const initialState: CertificateState = {
-  status: "IDLE",
-}
-
 const reducer = (state: CertificateState, action: Action): CertificateState => {
   switch (action.type) {
     case "RESET":
-      return initialState
-    case "CHECK_CERTIFICATE":
-      return {
-        ...state,
-        status: "CHECKING",
-      }
-    case "RECEIVE_CERTIFICATE_ID":
-      return {
-        ...state,
-        status: "IDLE",
-        certificateId: action?.payload,
-        error: undefined,
-      }
+      return action?.payload
     case "GENERATE_CERTIFICATE":
       return {
         ...state,
@@ -103,9 +87,8 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
 
 interface UseCertificateOptions {
   course: CourseCoreFieldsFragment
+  completion: CompletionDetailedFieldsFragment
   user?: User
-  onCertificateCheckSuccess?: (...args: any[]) => any
-  onCertificateCheckError?: (...args: any[]) => any
   onUpdateNameSuccess?: (...args: any[]) => any
   onUpdateNameError?: (...args: any[]) => any
   onReceiveGeneratedCertificateSuccess?: (...args: any[]) => any
@@ -114,16 +97,20 @@ interface UseCertificateOptions {
 
 export const useCertificate = ({
   course,
-  onCertificateCheckSuccess = () => {},
-  onCertificateCheckError = () => {},
+  completion,
   onUpdateNameSuccess = () => {},
   onUpdateNameError = () => {},
   onReceiveGeneratedCertificateSuccess = () => {},
   onReceiveGeneratedCertificateError = () => {},
 }: UseCertificateOptions) => {
+  const initialState = useRef<CertificateState>({
+    status: "IDLE",
+    certificateId:
+      completion?.certificate_availability?.existing_certificate ?? undefined,
+  })
   const { currentUser, updateUser, admin } = useContext(LoginStateContext)
 
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initialState.current)
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
   const [lastName, setLastName] = useState(currentUser?.last_name ?? "")
 
@@ -134,24 +121,6 @@ export const useCertificate = ({
       { query: CurrentUserOverviewDocument },
     ],
   })
-
-  useEffect(() => {
-    dispatch({ type: "CHECK_CERTIFICATE" })
-    checkCertificate(course.slug)
-      .then((res: any) => {
-        dispatch({
-          type: "RECEIVE_CERTIFICATE_ID",
-          payload: res?.existing_certificate,
-        })
-        onCertificateCheckSuccess()
-      })
-      .catch((e: any) => {
-        dispatch({ type: "ERROR", payload: e })
-        console.error("error?", e)
-        onCertificateCheckError()
-        dispatch({ type: "RESET" })
-      })
-  }, [])
 
   const isNameChanged = useMemo(
     () =>
@@ -189,7 +158,7 @@ export const useCertificate = ({
       } catch (e) {
         dispatch({ type: "ERROR", payload: e })
         onUpdateNameError()
-        dispatch({ type: "RESET" })
+        dispatch({ type: "RESET", payload: initialState })
         return
       }
     }
@@ -199,10 +168,14 @@ export const useCertificate = ({
       const res = await createCertificate(course.slug)
       dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
       onReceiveGeneratedCertificateSuccess()
+      initialState.current = {
+        ...initialState.current,
+        certificateId: res?.id ?? undefined,
+      }
     } catch (e) {
       dispatch({ type: "ERROR", payload: e })
       onReceiveGeneratedCertificateError()
-      dispatch({ type: "RESET" })
+      dispatch({ type: "RESET", payload: initialState })
     }
   }
 

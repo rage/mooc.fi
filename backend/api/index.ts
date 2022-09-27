@@ -25,6 +25,10 @@ export function apiRouter(ctx: ApiContext) {
     )
     .post("/recheck-completion", completionController.recheckCompletion)
     .post("/register-completions", completionController.registerCompletions)
+    .post(
+      "/completions/:slug/certificate",
+      completionController.updateCertificateId,
+    )
     .get("/progress/:idOrSlug", progressController.progress)
     .get("/progressv2/:idOrSlug", progressController.progressV2)
     .get("/tierprogress/:idOrSlug", progressController.tierProgress)

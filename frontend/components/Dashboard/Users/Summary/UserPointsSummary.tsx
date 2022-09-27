@@ -84,12 +84,11 @@ export default function UserPointsSummary({
         />
       </Paper>
       {filteredData.length === 0 ? <div>No data</div> : null}
-      {sortBy(filteredData, (stats) => stats?.course?.name).map((entry) => (
-        <CourseEntry
-          key={entry.course?.id ?? Math.random() * 9999}
-          data={entry}
-        />
-      ))}
+      {sortBy(filteredData, (stats) => stats?.course?.name).map(
+        (entry, index) => (
+          <CourseEntry key={entry.course?.id ?? index} data={entry} />
+        ),
+      )}
       <Dialog
         fullWidth
         maxWidth="md"
