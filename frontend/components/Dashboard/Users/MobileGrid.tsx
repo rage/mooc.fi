@@ -85,9 +85,9 @@ const RenderCards: FC<any> = () => {
 
   return (
     <>
-      {data?.userDetailsContains?.edges?.map((row) => (
+      {data?.userDetailsContains?.edges?.map((row, index) => (
         <DataCard
-          key={row?.node?.upstream_id || Math.random() * 9999999}
+          key={row?.node?.upstream_id ?? index}
           row={row?.node ?? undefined}
         />
       ))}

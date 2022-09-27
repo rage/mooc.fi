@@ -1,11 +1,14 @@
 import { useCallback, useContext, useState } from "react"
 
 import styled from "@emotion/styled"
+import WarningIcon from "@mui/icons-material/Warning"
 import {
   CircularProgress,
   DialogActions,
   DialogContentText,
+  Paper,
   TextField,
+  Typography,
 } from "@mui/material"
 import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
@@ -13,11 +16,17 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 
 import AlertContext from "/contexts/AlertContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 import { useCertificate } from "/hooks/useCertificate"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseCoreFieldsFragment } from "/graphql/generated"
+import {
+  CompletionDetailedFieldsFragment,
+  CourseCoreFieldsFragment,
+} from "/graphql/generated"
+
+const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const StyledButton = styled(Button)`
   margin: auto;
@@ -30,25 +39,36 @@ const StyledDialog = styled(Dialog)`
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
-
+const NoCertificateGeneratedNote = styled(Paper)`
+  background-color: #f05361;
+  color: #ffffff;
+  padding: 0.5rem;
+  margin: auto;
+  gap: 0.5rem;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+`
 interface CertificateProps {
   course: CourseCoreFieldsFragment
+  completion: CompletionDetailedFieldsFragment
 }
 
-const CertificateButton = ({ course }: CertificateProps) => {
+const CertificateButton = ({ course, completion }: CertificateProps) => {
   const t = useTranslator(CompletionsTranslations)
+  const { currentUser } = useContext(LoginStateContext)
   const { addAlert } = useContext(AlertContext)
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const onCertificateCheckSuccess = useCallback(() => {
-    addAlert({
-      title: t("nameFormErrorTitle"),
-      message: t("nameFormErrorCheckCertificate"),
-      severity: "error",
-    })
-  }, [])
+  const isOtherUser = currentUser?.id !== completion.user_id
+
   const onReceiveGeneratedCertificateSuccess = useCallback(() => {
     setDialogOpen(false)
+    addAlert({
+      title: t("certificateGeneratedTitle"),
+      message: t("certificateGeneratedMessage"),
+      severity: "success",
+    })
   }, [])
   const onReceiveGeneratedCertificateError = useCallback(() => {
     setDialogOpen(false)
@@ -69,7 +89,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
     isNameEmpty,
   } = useCertificate({
     course,
-    onCertificateCheckSuccess,
+    completion,
     onReceiveGeneratedCertificateSuccess,
     onReceiveGeneratedCertificateError,
   })
@@ -79,7 +99,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
       <StyledButton
         onClick={() =>
           window.open(
-            `https://certificates.mooc.fi/validate/${state.certificateId}`,
+            `${CERTIFICATES_URL}/validate/${state.certificateId}`,
             "_blank",
           )
         }
@@ -89,10 +109,34 @@ const CertificateButton = ({ course }: CertificateProps) => {
     )
   }
 
+  // TODO: when admin is able to generate certificate for user, remove the following
+  if (
+    completion?.certificate_availability?.completed_course &&
+    !completion?.certificate_availability?.existing_certificate &&
+    isOtherUser
+  ) {
+    return (
+      <>
+        <NoCertificateGeneratedNote>
+          <WarningIcon />
+          <Typography variant="h4">
+            {t("eligibleForCertificateButNotGenerated")}
+          </Typography>
+        </NoCertificateGeneratedNote>
+      </>
+    )
+  }
   return (
     <>
-      <StyledButton onClick={() => setDialogOpen(true)}>
-        {t("createCertificate")}
+      <StyledButton
+        disabled={state.status !== "IDLE"}
+        onClick={() => setDialogOpen(true)}
+      >
+        {state.status !== "IDLE" ? (
+          <CircularProgress size={24} color="secondary" />
+        ) : (
+          t("createCertificate")
+        )}
       </StyledButton>
       <StyledDialog
         open={dialogOpen}

@@ -1,13 +1,10 @@
 import axios from "axios"
 
-const BASE_URL = "https://certificates.mooc.fi"
+import { CERTIFICATES_URL } from "../config"
 
-export const checkCertificate = async (
-  courseId: string,
-  accessToken: string,
-) => {
+export const checkCertificate = async (slug: string, accessToken: string) => {
   const res = await axios.get(
-    `${BASE_URL}/certificate-availability/${courseId}`,
+    `${CERTIFICATES_URL}/certificate-availability/${slug}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -19,20 +16,41 @@ export const checkCertificate = async (
   return res?.data
 }
 
-export const createCertificate = async (
-  courseId: string,
+export const checkCertificateForUser = async (
+  slug: string,
+  upstream_id: number,
   accessToken: string,
 ) => {
-  try {
-    const res = await axios.post(`${BASE_URL}/create/${courseId}`, undefined, {
+  const res = await axios.get(
+    `${CERTIFICATES_URL}/admin/certificate-availability/${slug}/${upstream_id}`,
+    {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-    })
+    },
+  )
+
+  return res?.data
+}
+
+export const createCertificate = async (slug: string, accessToken: string) => {
+  try {
+    const res = await axios.post(
+      `${CERTIFICATES_URL}/create/${slug}`,
+      undefined,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
     return res?.data
   } catch (e) {
     console.log(e)
     return null
   }
 }
+
+// TODO: create certificate for user, needs an endpoint in certificates as well
