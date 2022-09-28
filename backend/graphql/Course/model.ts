@@ -82,22 +82,22 @@ export const Course = objectType({
         // we need?
         return mapCompletionsWithCourseInstanceId(
           await ctx.prisma.course
-          .findUnique({
-            where: {
-              id: parent.completions_handled_by_id ?? parent.id,
-            },
-          })
-          .completions({
-            where: {
-              user: {
-                id: user_id ?? undefined,
-                upstream_id: user_upstream_id ?? undefined,
+            .findUnique({
+              where: {
+                id: parent.completions_handled_by_id ?? parent.id,
               },
-            },
-            distinct: ["user_id", "course_id"],
-            orderBy: { updated_at: "desc" },
-          }),
-          parent.id
+            })
+            .completions({
+              where: {
+                user: {
+                  id: user_id ?? undefined,
+                  upstream_id: user_upstream_id ?? undefined,
+                },
+              },
+              distinct: ["user_id", "course_id"],
+              orderBy: { updated_at: "desc" },
+            }),
+          parent.id,
         )
       },
     })

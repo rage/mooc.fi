@@ -3,7 +3,10 @@ import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
-import { getCourseOrAlias, mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
+import {
+  getCourseOrAlias,
+  mapCompletionsWithCourseInstanceId,
+} from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -74,10 +77,7 @@ export const User = objectType({
             orderBy: { created_at: "asc" },
           })
 
-        return mapCompletionsWithCourseInstanceId(
-          completions,
-          course_id,
-        )
+        return mapCompletionsWithCourseInstanceId(completions, course_id)
       },
     })
 

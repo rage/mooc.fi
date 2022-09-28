@@ -1,4 +1,5 @@
 import { Course } from "@prisma/client"
+
 import { AI_SLACK_URL } from "../config"
 import { languageInfo, LanguageInfo } from "../config/languageConfig"
 import prisma from "../prisma"

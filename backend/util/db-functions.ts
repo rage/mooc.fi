@@ -22,47 +22,50 @@ export function mapCompletionsWithCourseInstanceId<
   Payload extends InferCompletionPayloadType<T>,
 >(
   completions: Array<Payload>,
-  course_instance_id: null | undefined,
+  passed_course_instance_id: null | undefined,
 ): typeof completions
 export function mapCompletionsWithCourseInstanceId<
   T,
   Payload extends InferCompletionPayloadType<T>,
 >(
   completions: null | undefined,
-  course_instance_id: Optional<string>,
+  passed_course_instance_id: Optional<string>,
 ): typeof completions
 export function mapCompletionsWithCourseInstanceId<
   T,
   Payload extends InferCompletionPayloadType<T>,
 >(
   completions: Array<Payload>,
-  course_instance_id: string,
-): Array<Payload & { course_instance_id: string }>
+  passed_course_instance_id: string,
+): Array<Payload & { passed_course_instance_id: string }>
 export function mapCompletionsWithCourseInstanceId<
   T,
   Payload extends InferCompletionPayloadType<T>,
 >(
   completions: Optional<Array<Payload>>,
-  course_instance_id: string,
-): typeof completions | Array<Payload & { course_instance_id: string }>
+  passed_course_instance_id: string,
+): typeof completions | Array<Payload & { passed_course_instance_id: string }>
 export function mapCompletionsWithCourseInstanceId<
   T,
   Payload extends InferCompletionPayloadType<T>,
 >(
   completions: Array<Payload>,
-  course_instance_id: Optional<string>,
-): Array<Payload> | Array<Payload & { course_instance_id: string }>
+  passed_course_instance_id: Optional<string>,
+): Array<Payload> | Array<Payload & { passed_course_instance_id: string }>
 export function mapCompletionsWithCourseInstanceId<
   T,
   Payload extends InferCompletionPayloadType<T>,
->(completions: Optional<Array<Payload>>, course_instance_id: Optional<string>) {
-  if (!notEmpty(completions) || !notEmpty(course_instance_id)) {
+>(
+  completions: Optional<Array<Payload>>,
+  passed_course_instance_id: Optional<string>,
+) {
+  if (!notEmpty(completions) || !notEmpty(passed_course_instance_id)) {
     return completions
   }
 
   const res = completions?.map((completion) => ({
     ...completion,
-    course_instance_id,
+    passed_course_instance_id,
   }))
 
   return res

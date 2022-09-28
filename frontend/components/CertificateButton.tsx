@@ -26,7 +26,7 @@ import {
   CourseCoreFieldsFragment,
 } from "/graphql/generated"
 
-const CERTIFICATES_URL = "http://localhost:9200" //"https://certificates.mooc.fi"
+const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const StyledButton = styled(Button)`
   margin: auto;

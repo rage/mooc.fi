@@ -1,13 +1,12 @@
 import { Request, Response } from "express"
 import { chunk, groupBy, omit } from "lodash"
 
-import { Completion, ExerciseCompletion, User, UserCourseProgress } from "@prisma/client"
+import { Completion, User, UserCourseProgress } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { BAIParentCourse, BAItiers } from "../../config/courseConfig"
 import { notEmpty } from "../../util/notEmpty"
 import { ApiContext, Controller } from "../types"
-import { mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
 
 interface ExerciseCompletionResult {
   user_id: string
@@ -66,7 +65,7 @@ export class ProgressController extends Controller {
         "section",
         "max_points",
         "completed",
-        "custom_id as quizzes_id"
+        "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
       .join("exercise as e", { "ec.exercise_id": "e.id" })
@@ -153,16 +152,11 @@ export class ProgressController extends Controller {
 
     const exercise_completions = await exerciseCompletionQuery
 
-    const completions = mapCompletionsWithCourseInstanceId(
-      await knex<Completion>(knex.ref("completion").as("c"))
-      .select(
-        "*",
-      )
+    const completions = await knex<Completion>(knex.ref("completion").as("c"))
+      .select("*")
       .where("course_id", course.completions_handled_by_id ?? course.id)
       .andWhere("user_id", user.id)
-      .orderBy("created_at", "asc"),
-      course.id
-    )
+      .orderBy("created_at", "asc")
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
@@ -234,10 +228,7 @@ export class ProgressController extends Controller {
     }
 
     const data = await knex<UserCourseProgress>("user_course_progress")
-      .select(
-        "course_id",
-        "extra",
-      )
+      .select("course_id", "extra")
       .where("user_course_progress.course_id", id)
       .andWhere("user_course_progress.user_id", user.id)
       .orderBy("created_at", "asc")

@@ -21,9 +21,7 @@ const updateBAICompletionTiers = async () => {
 
   logger.info("Getting completions")
 
-  const userIdsWithoutTiers = await knex<Completion>(
-    "completion",
-  )
+  const userIdsWithoutTiers = await knex<Completion>("completion")
     .select("user_id")
     .distinctOn("user_id", "course_id")
     .where("course_id", PARENT_COURSE_ID)

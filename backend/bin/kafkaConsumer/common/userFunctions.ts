@@ -103,10 +103,14 @@ export const getExerciseCompletionsForCourses = async ({
 }: GetExerciseCompletionsForCoursesArgs) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions = await knex(
-    "exercise_completion as ec",
-  )
-    .select<any, ExerciseCompletionPart[]>("course_id", "custom_id", "max_points", "exercise_id", "n_points")
+  const exercise_completions = await knex("exercise_completion as ec")
+    .select<any, ExerciseCompletionPart[]>(
+      "course_id",
+      "custom_id",
+      "max_points",
+      "exercise_id",
+      "n_points",
+    )
     .distinctOn("ec.exercise_id")
     .join("exercise as e", { "ec.exercise_id": "e.id" })
     .whereIn("e.course_id", courseIds)
@@ -170,9 +174,7 @@ export const pruneDuplicateExerciseCompletions = async ({
     .returning("id")*/
 
   // we probably can just delete all even if they have required actions
-  const deleted = await knex<ExerciseCompletion>(
-    "exercise_completion",
-  )
+  const deleted = await knex<ExerciseCompletion>("exercise_completion")
     .whereIn(
       "id",
       knex
@@ -207,11 +209,12 @@ export const pruneDuplicateExerciseCompletions = async ({
 export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   context: { knex },
 }: WithBaseContext) => {
-  const deleted =
-    await knex<ExerciseCompletionRequiredAction>("exercise_completion_required_actions")
-      .whereNull("exercise_completion_id")
-      .delete()
-      .returning("id")
+  const deleted = await knex<ExerciseCompletionRequiredAction>(
+    "exercise_completion_required_actions",
+  )
+    .whereNull("exercise_completion_id")
+    .delete()
+    .returning("id")
 
   return deleted
 }
@@ -356,6 +359,7 @@ export const createCompletion = async ({
     const newCompletion = await prisma.completion.create({
       data: {
         course: { connect: { id: handlerCourse.id } },
+        course_instance: { connect: { id: course.id } },
         email: user.email,
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,

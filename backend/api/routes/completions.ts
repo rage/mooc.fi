@@ -11,7 +11,6 @@ import {
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
 import { err } from "../../util/result"
 import { ApiContext, Controller } from "../types"
 
@@ -55,9 +54,9 @@ export class CompletionController extends Controller {
     }
 
     const sql = knex("completion")
-      .select<any, Completion & { course_instance_id: string }>([
+      .select<any, Completion & { passed_course_instance_id: string }>([
         "completion.*",
-        knex.raw(`'${course.id}' as course_instance_id`)
+        knex.raw(`'${course.id}' as passed_course_instance_id`),
       ])
       .distinctOn("completion.user_id", "completion.course_id")
       .fullOuterJoin(
@@ -148,7 +147,9 @@ export class CompletionController extends Controller {
     // TODO/FIXME: note - this now happily ignores completion_language and just gets the first one
     // - as it's now only used in BAI, shouldn't be a problem?
     const tiers = (
-      await knex<OpenUniversityRegistrationLink>("open_university_registration_link")
+      await knex<OpenUniversityRegistrationLink>(
+        "open_university_registration_link",
+      )
         .select("tiers")
         .where("course_id", course.id)
     )?.[0].tiers
@@ -253,7 +254,7 @@ export class CompletionController extends Controller {
   }
 
   private getCompletion = async (course: Course, user: User) => {
-    return mapCompletionsWithCourseInstanceId(
+    return (
       await this.ctx.prisma.user
         .findUnique({
           where: {
@@ -266,8 +267,7 @@ export class CompletionController extends Controller {
           },
           orderBy: { created_at: "asc" },
           take: 1,
-        }),
-      course.id,
+        })
     )?.[0]
   }
 

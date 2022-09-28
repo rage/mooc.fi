@@ -104,9 +104,7 @@ export function getUser({ knex, logger }: BaseContext) {
     }
 
     let user = (
-      await knex<User>("user")
-        .select("*")
-        .where("upstream_id", details.id)
+      await knex<User>("user").select("*").where("upstream_id", details.id)
     )?.[0]
 
     if (!user) {
@@ -126,9 +124,7 @@ export function getUser({ knex, logger }: BaseContext) {
       } catch {
         // race condition or something
         user = (
-          await knex<User>("user")
-            .select("*")
-            .where("upstream_id", details.id)
+          await knex<User>("user").select("*").where("upstream_id", details.id)
         )?.[0]
 
         if (!user) {
