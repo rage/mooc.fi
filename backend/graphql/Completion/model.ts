@@ -31,6 +31,20 @@ export const Completion = objectType({
     t.model.tier()
     t.model.completion_registration_attempt_date()
 
+    t.id("course_instance_id")
+    t.field("course_instance", {
+      type: "Course",
+      // @ts-ignore: course_instance_id exists even if TS says it doesn't
+      resolve: async ({ course_instance_id }, _, ctx) => {
+        if (!course_instance_id) {
+          return null
+        }
+
+        return ctx.prisma.course.findUnique({
+          where: { id: course_instance_id },
+        })
+      }
+    })
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
       type: "Course",
@@ -151,13 +165,14 @@ export const Completion = objectType({
 
     t.field("certificate_availability", {
       type: "CertificateAvailability",
-      resolve: async ({ course_id, user_upstream_id }, _, ctx) => {
+      // @ts-ignore: course_instance_id exists even if TS says it doesn't
+      resolve: async ({ course_id, course_instance_id, user_upstream_id }, _, ctx) => {
         if (!course_id) {
           return null
         }
 
         const course = await ctx.prisma.course.findUnique({
-          where: { id: course_id },
+          where: { id: course_instance_id ?? course_id },
         })
 
         if (!course) {

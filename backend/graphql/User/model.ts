@@ -3,7 +3,7 @@ import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
-import { getCourseOrAlias } from "../../util/db-functions"
+import { getCourseOrAlias, mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -58,7 +58,7 @@ export const User = objectType({
           }
         }
 
-        return ctx.prisma.user
+        const completions = await ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
           })
@@ -73,6 +73,11 @@ export const User = objectType({
             distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
           })
+
+        return mapCompletionsWithCourseInstanceId(
+          completions,
+          course_id,
+        )
       },
     })
 

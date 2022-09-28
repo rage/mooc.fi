@@ -11,6 +11,7 @@ import {
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
 import { err } from "../../util/result"
 import { ApiContext, Controller } from "../types"
 
@@ -53,10 +54,12 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "Course not found" })
     }
 
-    const sql = knex
-      .select<any, Completion[]>("completion.*")
+    const sql = knex("completion")
+      .select<any, Completion & { course_instance_id: string }>([
+        "completion.*",
+        knex.raw(`'${course.id}' as course_instance_id`)
+      ])
       .distinctOn("completion.user_id", "completion.course_id")
-      .from("completion")
       .fullOuterJoin(
         "completion_registered",
         "completion.id",
@@ -97,9 +100,8 @@ export class CompletionController extends Controller {
     }
 
     const instructions = (
-      await knex
-        .select<any, CourseTranslation[]>("instructions")
-        .from("course_translation")
+      await knex<CourseTranslation>("course_translation")
+        .select("instructions")
         .where("course_id", course.id)
         .where("language", languageMap[language] ?? "fi_FI")
     )[0]?.instructions
@@ -132,9 +134,8 @@ export class CompletionController extends Controller {
     }
 
     const completion = (
-      await knex
-        .select<any, Completion[]>("tier")
-        .from("completion")
+      await knex<Completion>("completion")
+        .select("tier")
         .where("course_id", course.completions_handled_by_id ?? course.id)
         .andWhere("user_id", user.id)
         .orderBy("created_at", "asc")
@@ -147,9 +148,8 @@ export class CompletionController extends Controller {
     // TODO/FIXME: note - this now happily ignores completion_language and just gets the first one
     // - as it's now only used in BAI, shouldn't be a problem?
     const tiers = (
-      await knex
-        .select<any, OpenUniversityRegistrationLink[]>("tiers")
-        .from("open_university_registration_link")
+      await knex<OpenUniversityRegistrationLink>("open_university_registration_link")
+        .select("tiers")
         .where("course_id", course.id)
     )?.[0].tiers
 
@@ -247,14 +247,13 @@ export class CompletionController extends Controller {
       },
     })
 
-    return res.status(200).json(updatedCompletion)
+    return res
+      .status(200)
+      .json({ ...updatedCompletion, course_instance_id: course.id })
   }
 
-  private getCompletion = async (
-    course: Course,
-    user: User,
-  ): Promise<Completion | null> => {
-    return (
+  private getCompletion = async (course: Course, user: User) => {
+    return mapCompletionsWithCourseInstanceId(
       await this.ctx.prisma.user
         .findUnique({
           where: {
@@ -267,7 +266,8 @@ export class CompletionController extends Controller {
           },
           orderBy: { created_at: "asc" },
           take: 1,
-        })
+        }),
+      course.id,
     )?.[0]
   }
 

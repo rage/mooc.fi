@@ -1,6 +1,7 @@
 import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../../accessControl"
+import { mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
 
 export const Course = objectType({
   name: "Course",
@@ -76,7 +77,11 @@ export const Course = objectType({
           throw new Error("needs user_id or user_upstream_id")
         }
 
-        return ctx.prisma.course
+        // TODO: if we're querying from the parent course, obviously
+        // the course instance id is the same here -- depends on what
+        // we need?
+        return mapCompletionsWithCourseInstanceId(
+          await ctx.prisma.course
           .findUnique({
             where: {
               id: parent.completions_handled_by_id ?? parent.id,
@@ -91,7 +96,9 @@ export const Course = objectType({
             },
             distinct: ["user_id", "course_id"],
             orderBy: { updated_at: "desc" },
-          })
+          }),
+          parent.id
+        )
       },
     })
 

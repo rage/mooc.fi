@@ -104,16 +104,15 @@ export function getUser({ knex, logger }: BaseContext) {
     }
 
     let user = (
-      await knex
-        .select<any, User[]>("id")
-        .from("user")
+      await knex<User>("user")
+        .select("*")
         .where("upstream_id", details.id)
     )?.[0]
 
     if (!user) {
       try {
         user = (
-          await knex("user")
+          await knex<User>("user")
             .insert({
               upstream_id: details.id,
               administrator: details.administrator,
@@ -127,9 +126,8 @@ export function getUser({ knex, logger }: BaseContext) {
       } catch {
         // race condition or something
         user = (
-          await knex
-            .select<any, User[]>("*")
-            .from("user")
+          await knex<User>("user")
+            .select("*")
             .where("upstream_id", details.id)
         )?.[0]
 
@@ -166,9 +164,8 @@ export function getOrganization({ knex }: BaseContext) {
     }
 
     const org = (
-      await knex
-        .select<any, Organization[]>("*")
-        .from("organization")
+      await knex<Organization>("organization")
+        .select("*")
         .where({ secret_key })
         .limit(1)
     )[0]

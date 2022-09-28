@@ -21,7 +21,7 @@ const updateBAICompletionTiers = async () => {
 
   logger.info("Getting completions")
 
-  const userIdsWithoutTiers = await knex<any, Pick<Completion, "user_id">[]>(
+  const userIdsWithoutTiers = await knex<Completion>(
     "completion",
   )
     .select("user_id")
@@ -31,7 +31,7 @@ const updateBAICompletionTiers = async () => {
     .orderBy(["user_id", "course_id", { column: "created_at", order: "asc" }])
 
   logger.info("Getting users")
-  const usersWithoutTiers = await knex<any, User[]>("user")
+  const usersWithoutTiers = await knex<User>("user")
     .select("*")
     .whereIn(
       "id",

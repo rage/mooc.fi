@@ -1,6 +1,8 @@
 import { UserInputError } from "apollo-server-express"
 import { booleanArg, objectType } from "nexus"
 
+import { mapCompletionsWithCourseInstanceId } from "../util/db-functions"
+
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
   definition(t) {
@@ -32,19 +34,21 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-        const completions = await ctx.prisma.course
-          .findUnique({
-            where: { id: completions_handled_by_id ?? course_id },
-          })
-          .completions({
-            where: {
-              user_id,
-            },
-            // TODO: completed: true?
-            orderBy: { created_at: "asc" },
-            take: 1,
-          })
-
+        const completions = mapCompletionsWithCourseInstanceId(
+          await ctx.prisma.course
+            .findUnique({
+              where: { id: completions_handled_by_id ?? course_id },
+            })
+            .completions({
+              where: {
+                user_id,
+              },
+              // TODO: completed: true?
+              orderBy: { created_at: "asc" },
+              take: 1,
+            }),
+          course_id,
+        )
         return completions?.[0]
       },
     })

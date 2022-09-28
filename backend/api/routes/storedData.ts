@@ -1,6 +1,7 @@
 import { Request, Response } from "express-serve-static-core"
 import { omit } from "lodash"
 
+import { mapCompletionsWithCourseInstanceId } from "../../util/db-functions"
 import { requireCourseOwnership } from "../../util/server-functions"
 import { ApiContext, Controller } from "../types"
 
@@ -120,7 +121,10 @@ export class StoredDataController extends Controller {
 
     const mappedStoredData = storedData.map((data) => ({
       user: omit(data.user, "completions"),
-      completions: data.user?.completions,
+      completions: mapCompletionsWithCourseInstanceId(
+        data.user?.completions,
+        course.id,
+      ),
       storedData: omit(data, "user"),
     }))
 

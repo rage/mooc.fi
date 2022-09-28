@@ -9,6 +9,65 @@ import { BaseContext } from "../context"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
 
+type InferCompletionPayloadType<Payload> =
+  Payload extends Prisma.CompletionGetPayload<infer PayloadType>
+    ? Prisma.CompletionGetPayload<PayloadType>
+    : Payload
+
+type Optional<T> = T | null | undefined
+
+// gee, I hope there's enough overloads -_-
+export function mapCompletionsWithCourseInstanceId<
+  T,
+  Payload extends InferCompletionPayloadType<T>,
+>(
+  completions: Array<Payload>,
+  course_instance_id: null | undefined,
+): typeof completions
+export function mapCompletionsWithCourseInstanceId<
+  T,
+  Payload extends InferCompletionPayloadType<T>,
+>(
+  completions: null | undefined,
+  course_instance_id: Optional<string>,
+): typeof completions
+export function mapCompletionsWithCourseInstanceId<
+  T,
+  Payload extends InferCompletionPayloadType<T>,
+>(
+  completions: Array<Payload>,
+  course_instance_id: string,
+): Array<Payload & { course_instance_id: string }>
+export function mapCompletionsWithCourseInstanceId<
+  T,
+  Payload extends InferCompletionPayloadType<T>,
+>(
+  completions: Optional<Array<Payload>>,
+  course_instance_id: string,
+): typeof completions | Array<Payload & { course_instance_id: string }>
+export function mapCompletionsWithCourseInstanceId<
+  T,
+  Payload extends InferCompletionPayloadType<T>,
+>(
+  completions: Array<Payload>,
+  course_instance_id: Optional<string>,
+): Array<Payload> | Array<Payload & { course_instance_id: string }>
+export function mapCompletionsWithCourseInstanceId<
+  T,
+  Payload extends InferCompletionPayloadType<T>,
+>(completions: Optional<Array<Payload>>, course_instance_id: Optional<string>) {
+  if (!notEmpty(completions) || !notEmpty(course_instance_id)) {
+    return completions
+  }
+
+  const res = completions?.map((completion) => ({
+    ...completion,
+    course_instance_id,
+  }))
+
+  return res
+}
+
 const flatten = <T>(arr: T[]) =>
   arr.reduce<T[]>((acc, val) => acc.concat(val), [])
 const titleCase = (s?: string) =>

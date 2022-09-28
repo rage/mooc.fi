@@ -1,3 +1,4 @@
+import { Course } from "@prisma/client"
 import { AI_SLACK_URL } from "../config"
 import { languageInfo, LanguageInfo } from "../config/languageConfig"
 import prisma from "../prisma"
@@ -80,8 +81,8 @@ const getDataByLanguage = async (langInfo: LanguageInfo) => {
 // }
 
 const getGlobalStats = async (): Promise<string> => {
-  const course = await Knex.select("id")
-    .from("course")
+  const course = await Knex<Course>("course")
+    .select("id")
     .where({ slug: "elements-of-ai" })
   const totalUsers = (
     await Knex.countDistinct("user_id")
@@ -105,8 +106,8 @@ const getGlobalStats = async (): Promise<string> => {
 }
 
 const getGlobalStatsBAI = async (): Promise<string> => {
-  const course = await Knex.select("id")
-    .from("course")
+  const course = await Knex<Course>("course")
+    .select("id")
     .where({ slug: "building-ai" })
 
   const totalUsers = (

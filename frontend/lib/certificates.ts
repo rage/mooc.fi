@@ -2,7 +2,7 @@ import axios from "axios"
 
 import { getAccessToken } from "./authentication"
 
-const SERVICE_URL = "https://certificates.mooc.fi"
+const SERVICE_URL = "http://localhost:9200" //"https://certificates.mooc.fi"
 
 export const checkCertificate = async (courseSlug: string) => {
   const accessToken = getAccessToken(undefined)

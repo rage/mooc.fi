@@ -103,10 +103,10 @@ export const getExerciseCompletionsForCourses = async ({
 }: GetExerciseCompletionsForCoursesArgs) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions: ExerciseCompletionPart[] = await knex(
+  const exercise_completions = await knex(
     "exercise_completion as ec",
   )
-    .select("course_id", "custom_id", "max_points", "exercise_id", "n_points")
+    .select<any, ExerciseCompletionPart[]>("course_id", "custom_id", "max_points", "exercise_id", "n_points")
     .distinctOn("ec.exercise_id")
     .join("exercise as e", { "ec.exercise_id": "e.id" })
     .whereIn("e.course_id", courseIds)
@@ -170,7 +170,7 @@ export const pruneDuplicateExerciseCompletions = async ({
     .returning("id")*/
 
   // we probably can just delete all even if they have required actions
-  const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
+  const deleted = await knex<ExerciseCompletion>(
     "exercise_completion",
   )
     .whereIn(
@@ -207,8 +207,8 @@ export const pruneDuplicateExerciseCompletions = async ({
 export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   context: { knex },
 }: WithBaseContext) => {
-  const deleted: Array<Pick<ExerciseCompletionRequiredAction, "id">> =
-    await knex("exercise_completion_required_actions")
+  const deleted =
+    await knex<ExerciseCompletionRequiredAction>("exercise_completion_required_actions")
       .whereNull("exercise_completion_id")
       .delete()
       .returning("id")

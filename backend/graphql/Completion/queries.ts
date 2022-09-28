@@ -8,7 +8,11 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
-import { buildUserSearch, getCourseOrAlias } from "../../util/db-functions"
+import {
+  buildUserSearch,
+  getCourseOrAlias,
+  mapCompletionsWithCourseInstanceId,
+} from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -55,7 +59,7 @@ export const CompletionQueries = extendType({
             orderBy: { created_at: "asc" },
           })
 
-        return completions
+        return mapCompletionsWithCourseInstanceId(completions, course.id)
       },
     })
 
@@ -100,12 +104,17 @@ export const CompletionQueries = extendType({
         }
 
         return findManyCursorConnection(
-          (args) =>
-            ctx.prisma.course
-              .findUnique({
-                where: { id: course!.completions_handled_by_id ?? course!.id },
-              })
-              .completions(merge(baseArgs, args)),
+          async (args) =>
+            mapCompletionsWithCourseInstanceId(
+              await ctx.prisma.course
+                .findUnique({
+                  where: {
+                    id: course!.completions_handled_by_id ?? course!.id,
+                  },
+                })
+                .completions(merge(baseArgs, args)),
+              course.id,
+            ),
           async () => {
             // TODO/FIXME: kludge as there is no distinct in prisma "count" or other aggregates
             //  ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
