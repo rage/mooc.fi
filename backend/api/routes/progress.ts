@@ -152,8 +152,8 @@ export class ProgressController extends Controller {
 
     const exercise_completions = await exerciseCompletionQuery
 
-    const completions = await knex("completion as c")
-      .select<any, Completion[]>("*")
+    const completions = await knex<Completion>(knex.ref("completion").as("c"))
+      .select("*")
       .where("course_id", course.completions_handled_by_id ?? course.id)
       .andWhere("user_id", user.id)
       .orderBy("created_at", "asc")
@@ -227,12 +227,8 @@ export class ProgressController extends Controller {
       id = course.id
     }
 
-    const data = await knex
-      .select<any, Pick<UserCourseProgress, "course_id" | "extra">[]>(
-        "course_id",
-        "extra",
-      )
-      .from("user_course_progress")
+    const data = await knex<UserCourseProgress>("user_course_progress")
+      .select("course_id", "extra")
       .where("user_course_progress.course_id", id)
       .andWhere("user_course_progress.user_id", user.id)
       .orderBy("created_at", "asc")

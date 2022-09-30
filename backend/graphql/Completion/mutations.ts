@@ -29,6 +29,7 @@ export const CompletionMutations = extendType({
         student_number: stringArg(),
         user: nonNull(idArg()),
         course: nonNull(idArg()),
+        course_instance: idArg(),
         completion_language: stringArg(),
         tier: nullable(intArg()),
       },
@@ -40,6 +41,7 @@ export const CompletionMutations = extendType({
           student_number,
           user,
           course,
+          course_instance,
           completion_language,
           tier,
         } = args
@@ -47,6 +49,9 @@ export const CompletionMutations = extendType({
         return ctx.prisma.completion.create({
           data: {
             course: { connect: { id: course } },
+            ...(course_instance && {
+              course_instance: { connect: { id: course_instance } },
+            }),
             user: { connect: { id: user } },
             email: email ?? "",
             student_number,
@@ -98,6 +103,7 @@ export const CompletionMutations = extendType({
 
         const newCompletions: Completion[] = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
+
           return {
             id: uuidv4(),
             created_at: new Date(),
@@ -108,6 +114,7 @@ export const CompletionMutations = extendType({
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
             course_id: course.completions_handled_by_id ?? course_id,
+            course_instance_id: course_id,
             user_id: databaseUser.id,
             grade: o.grade ?? null,
             completion_date: o.completion_date,

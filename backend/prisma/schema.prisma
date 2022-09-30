@@ -48,6 +48,8 @@ model Completion {
   course                                    Course?                 @relation(fields: [course_id], references: [id])
   user                                      User?                   @relation(fields: [user_id], references: [id])
   completions_registered                    CompletionRegistered[]
+  course_instance_id                        String?
+  course_instance                           Course?                 @relation("completion_course_instance_to_course", fields: [course_instance_id], references: [id])
   completion_date                           DateTime?
   tier                                      Int?
   completion_registration_attempt_date      DateTime?
@@ -122,14 +124,15 @@ model Course {
   user_course_service_progresses                     UserCourseServiceProgress[]
   user_course_settings                               UserCourseSetting[]
   user_course_settings_visibilities                  UserCourseSettingsVisibility[]
-  services                                           Service[]                           @relation("course_to_service", references: [id])
-  study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
+  services                                           Service[]                           @relation("course_to_service")
+  study_modules                                      StudyModule[]                       @relation("study_module_to_course")
   upcoming_active_link                               Boolean?
   tier                                               Int?
   stored_data                                        StoredData[]                        
   ownerships                                         CourseOwnership[]
   course_stats_email_id                              String?
   course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
+  instance_completions                               Completion[]                        @relation("completion_course_instance_to_course")
 
   @@map("course")
 }
@@ -358,7 +361,7 @@ model Service {
   url                            String
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                       @relation("course_to_service", references: [id])
+  courses                        Course[]                       @relation("course_to_service")
 
   @@map("service")
 }
@@ -385,7 +388,7 @@ model StudyModule {
   slug                      String                     @unique
   updated_at                DateTime?                  @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                   @relation("study_module_to_course", references: [id])
+  courses                   Course[]                   @relation("study_module_to_course")
 
   @@map("study_module")
 }
