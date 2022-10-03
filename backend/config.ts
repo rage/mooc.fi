@@ -99,13 +99,14 @@ export const DATABASE_URL =
 
 export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
   const url = new URL(DATABASE_URL ?? "")
-  const baseUrl = (DATABASE_URL ?? "").split("?")[0]
-  const params = url.searchParams
-  params.delete("schema")
-  const query = params.toString().length > 0 ? `?${params.toString()}` : ""
+  url.searchParams.delete("schema")
 
-  return `${baseUrl}${query}`
+  return url.href
 })()
+
+// certificates api
+export const CERTIFICATES_URL =
+  process.env.CERTIFICATES_URL || "https://certificates.mooc.fi"
 
 export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"

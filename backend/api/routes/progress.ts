@@ -88,7 +88,7 @@ export class ProgressController extends Controller {
       {},
     )
 
-    res.json({
+    return res.json({
       data: resObject,
     })
   }
@@ -169,7 +169,7 @@ export class ProgressController extends Controller {
       {},
     )
 
-    res.json({
+    return res.json({
       data: {
         course_id: course.id,
         user_id: user.id,
@@ -179,21 +179,41 @@ export class ProgressController extends Controller {
     })
   }
 
-  tierProgress = async (req: Request<{ idOrSlug: string }>, res: Response) => {
-    const { idOrSlug } = req.params
+  tierProgress = async (
+    req: Request<{ idOrSlug: string; user_id?: string }>,
+    res: Response,
+  ) => {
+    const { idOrSlug, user_id } = req.params
     const { knex } = this.ctx
 
     if (!idOrSlug) {
       return res.status(400).json({ message: "must provide course id or slug" })
     }
 
-    const getUserResult = await this.getUser(req, res)
+    let user: User | null = null
 
-    if (getUserResult.isErr()) {
-      return getUserResult.error
+    if (user_id) {
+      const adminRes = await this.requireAdmin(req, res)
+
+      if (adminRes.isErr()) {
+        return adminRes.error
+      }
+      user = (
+        await knex("user")
+          .select<any, User[]>("id")
+          .where("upstream_id", user_id)
+      )?.[0]
+      if (!user) {
+        return res.status(404).json({ message: "user not found" })
+      }
+    } else {
+      const getUserResult = await this.getUser(req, res)
+
+      if (getUserResult.isErr()) {
+        return getUserResult.error
+      }
+      user = getUserResult.value.user
     }
-
-    const { user } = getUserResult.value
 
     let id = isId(idOrSlug) ? idOrSlug : undefined
 
@@ -217,7 +237,7 @@ export class ProgressController extends Controller {
       .andWhere("user_course_progress.user_id", user.id)
       .orderBy("created_at", "asc")
 
-    res.json({
+    return res.json({
       data: {
         course_id: id,
         ...(data[0]?.extra as object),
@@ -261,7 +281,7 @@ export class ProgressController extends Controller {
         },
       })
 
-    res.json({
+    return res.json({
       data: userCourseProgresses?.[0],
     })
   }

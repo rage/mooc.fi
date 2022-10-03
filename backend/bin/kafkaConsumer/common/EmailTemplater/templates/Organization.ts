@@ -1,7 +1,7 @@
-import { Organization, UserOrganizationJoinConfirmation } from "@prisma/client"
+import { Organization } from "@prisma/client"
 
 import { FRONTEND_URL } from "../../../../../config"
-import { calculateActivationCode } from "../../../../../util"
+import { calculateActivationCode, PromiseReturnType } from "../../../../../util"
 import { EmailTemplaterError } from "../../../../lib/errors"
 import Template from "../types/Template"
 import { TemplateParams } from "../types/TemplateParams"
@@ -23,37 +23,41 @@ abstract class OrganizationTemplate extends Template {
   async getUserOrganizationJoinConfirmation() {
     // TODO: if we want to have the possibility for an user to have organization memberships
     // in multiple roles, then this will not do
-    const userOrganization =
-      await this.context.prisma.userOrganization.findFirst({
+    const userOrganizationJoinConfirmation =
+      await this.context.prisma.userOrganizationJoinConfirmation.findFirst({
         where: {
-          user: { id: this.user.id },
-          organization: { id: this.organization.id },
+          user_organization: {
+            user: { id: this.user.id },
+            organization: { id: this.organization.id },
+          },
+          expired: false,
         },
         include: {
-          user_organization_join_confirmations: {
-            where: {
-              expired: false,
+          user_organization: {
+            include: {
+              user: true,
+              organization: true,
             },
-            orderBy: { created_at: "desc" },
           },
         },
+        orderBy: { created_at: "desc" },
       })
 
-    if (!userOrganization) {
-      throw new Error("this user/organization relation does not exist")
-    }
-
-    const { user_organization_join_confirmations } = userOrganization
-
-    if (!user_organization_join_confirmations?.length) {
+    if (!userOrganizationJoinConfirmation) {
       throw new Error("no user organization join confirmation found")
     }
 
-    return user_organization_join_confirmations[0]
+    if (!userOrganizationJoinConfirmation.user_organization) {
+      throw new Error("this user/organization relation does not exist")
+    }
+
+    return userOrganizationJoinConfirmation
   }
 
   async getActivationCode(
-    userOrganizationJoinConfirmation?: UserOrganizationJoinConfirmation,
+    userOrganizationJoinConfirmation?: PromiseReturnType<
+      typeof this.getUserOrganizationJoinConfirmation
+    >,
   ) {
     const activationCodeResult = await calculateActivationCode({
       prisma: this.context.prisma,

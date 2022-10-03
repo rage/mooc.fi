@@ -26,6 +26,9 @@ fragment CompletionDetailedFields on Completion {
   completions_registered {
     ...CompletionRegisteredCoreFields
   }
+  certificate_availability {
+    ...CertificateAvailabilityFields
+  }
 }
 
 fragment CompletionDetailedFieldsWithCourse on Completion {
@@ -66,4 +69,10 @@ fragment CompletionsQueryConnectionFields on QueryCompletionsPaginated_type_Conn
       ...CompletionsQueryNodeFields
     }
   }
+}
+
+fragment CertificateAvailabilityFields on CertificateAvailability {
+  completed_course
+  existing_certificate
+  honors
 }

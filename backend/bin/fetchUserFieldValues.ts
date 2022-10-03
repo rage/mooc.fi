@@ -96,7 +96,7 @@ const fetcUserFieldValues = async () => {
   process.exit(0)
 }
 
-const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
+const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
   let details: UserInfo | undefined
 
   try {

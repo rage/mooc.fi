@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-08-31T12:47:22+03:00
+// Generated on 2022-09-27T12:44:49+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -88,8 +88,16 @@ export type AbStudyUpsertInput = {
   name: Scalars["String"]
 }
 
+export type CertificateAvailability = {
+  __typename?: "CertificateAvailability"
+  completed_course: Maybe<Scalars["Boolean"]>
+  existing_certificate: Maybe<Scalars["String"]>
+  honors: Maybe<Scalars["Boolean"]>
+}
+
 export type Completion = {
   __typename?: "Completion"
+  certificate_availability: Maybe<CertificateAvailability>
   certificate_id: Maybe<Scalars["String"]>
   completion_date: Maybe<Scalars["DateTime"]>
   completion_language: Maybe<Scalars["String"]>
@@ -1243,15 +1251,12 @@ export type OrganizationOrderByInput = {
   email?: InputMaybe<SortOrder>
   hidden?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
-  join_organization_email_template_id?: InputMaybe<SortOrder>
   logo_content_type?: InputMaybe<SortOrder>
   logo_file_name?: InputMaybe<SortOrder>
   logo_file_size?: InputMaybe<SortOrder>
   logo_updated_at?: InputMaybe<SortOrder>
   phone?: InputMaybe<SortOrder>
   pinned?: InputMaybe<SortOrder>
-  required_confirmation?: InputMaybe<SortOrder>
-  required_organization_email?: InputMaybe<SortOrder>
   secret_key?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
   tmc_created_at?: InputMaybe<SortOrder>
@@ -2226,6 +2231,12 @@ export type CompletionDetailedFieldsFragment = {
       slug: string
     } | null
   }>
+  certificate_availability: {
+    __typename?: "CertificateAvailability"
+    completed_course: boolean | null
+    existing_certificate: string | null
+    honors: boolean | null
+  } | null
 }
 
 export type CompletionDetailedFieldsWithCourseFragment = {
@@ -2281,6 +2292,12 @@ export type CompletionDetailedFieldsWithCourseFragment = {
       slug: string
     } | null
   }>
+  certificate_availability: {
+    __typename?: "CertificateAvailability"
+    completed_course: boolean | null
+    existing_certificate: string | null
+    honors: boolean | null
+  } | null
 }
 
 export type CompletionsQueryNodeFieldsFragment = {
@@ -2394,6 +2411,13 @@ export type CompletionsQueryConnectionFieldsFragment = {
       }>
     } | null
   } | null> | null
+}
+
+export type CertificateAvailabilityFieldsFragment = {
+  __typename?: "CertificateAvailability"
+  completed_course: boolean | null
+  existing_certificate: string | null
+  honors: boolean | null
 }
 
 export type CompletionRegisteredCoreFieldsFragment = {
@@ -3134,6 +3158,12 @@ export type UserOverviewFieldsFragment = {
         slug: string
       } | null
     }>
+    certificate_availability: {
+      __typename?: "CertificateAvailability"
+      completed_course: boolean | null
+      existing_certificate: string | null
+      honors: boolean | null
+    } | null
   }> | null
 }
 
@@ -3424,6 +3454,12 @@ export type UserCourseSummaryCoreFieldsFragment = {
         slug: string
       } | null
     }>
+    certificate_availability: {
+      __typename?: "CertificateAvailability"
+      completed_course: boolean | null
+      existing_certificate: string | null
+      honors: boolean | null
+    } | null
   } | null
 }
 
@@ -5302,6 +5338,12 @@ export type UserSummaryQuery = {
             slug: string
           } | null
         }>
+        certificate_availability: {
+          __typename?: "CertificateAvailability"
+          completed_course: boolean | null
+          existing_certificate: string | null
+          honors: boolean | null
+        } | null
       } | null
     } | null> | null
   } | null
@@ -5378,6 +5420,12 @@ export type CurrentUserOverviewQuery = {
           slug: string
         } | null
       }>
+      certificate_availability: {
+        __typename?: "CertificateAvailability"
+        completed_course: boolean | null
+        existing_certificate: string | null
+        honors: boolean | null
+      } | null
     }> | null
   } | null
 }
@@ -5455,6 +5503,12 @@ export type UserOverviewQuery = {
           slug: string
         } | null
       }>
+      certificate_availability: {
+        __typename?: "CertificateAvailability"
+        completed_course: boolean | null
+        existing_certificate: string | null
+        honors: boolean | null
+      } | null
     }> | null
   } | null
 }
@@ -6057,6 +6111,30 @@ export const CompletionRegisteredCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CompletionRegisteredCoreFieldsFragment, unknown>
+export const CertificateAvailabilityFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CertificateAvailabilityFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CertificateAvailability" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "completed_course" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "existing_certificate" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "honors" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CertificateAvailabilityFieldsFragment, unknown>
 export const CompletionDetailedFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -6085,6 +6163,22 @@ export const CompletionDetailedFieldsFragmentDoc = {
                   name: {
                     kind: "Name",
                     value: "CompletionRegisteredCoreFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "certificate_availability" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "CertificateAvailabilityFields",
                   },
                 },
               ],
@@ -11139,6 +11233,7 @@ export const UserSummaryDocument = {
     ...CompletionDetailedFieldsFragmentDoc.definitions,
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
+    ...CertificateAvailabilityFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<UserSummaryQuery, UserSummaryQueryVariables>
 export const CurrentUserOverviewDocument = {
@@ -11173,6 +11268,7 @@ export const CurrentUserOverviewDocument = {
     ...CompletionDetailedFieldsFragmentDoc.definitions,
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
+    ...CertificateAvailabilityFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,
@@ -11236,6 +11332,7 @@ export const UserOverviewDocument = {
     ...CompletionDetailedFieldsFragmentDoc.definitions,
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
+    ...CertificateAvailabilityFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,

@@ -16,6 +16,18 @@ export const UserOrganization = objectType({
     t.model.consented()
     t.model.organizational_email()
     t.model.organizational_identifier()
-    t.model.user_organization_join_confirmations()
+
+    t.nonNull.list.field("user_organization_join_confirmations", {
+      type: "UserOrganizationJoinConfirmation",
+      resolve: async ({ id }, _, ctx) => {
+        return ctx.prisma.userOrganization
+          .findUnique({
+            where: { id },
+          })
+          .user_organization_join_confirmations({
+            orderBy: { created_at: "desc" },
+          })
+      },
+    })
   },
 })

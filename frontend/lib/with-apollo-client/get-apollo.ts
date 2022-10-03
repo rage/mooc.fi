@@ -17,6 +17,7 @@ import notEmpty from "/util/notEmpty"
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
+const isBrowser = typeof window !== "undefined"
 
 function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
@@ -97,11 +98,11 @@ function create(initialState: any, originalAccessToken?: string) {
   })
 
   return new ApolloClient<NormalizedCacheObject>({
-    link: process.browser
+    link: isBrowser
       ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
       : authLink.concat(uploadLink),
     cache: cache.restore(initialState || {}),
-    ssrMode: !process.browser, // isBrowser,
+    ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {
       watchQuery: {

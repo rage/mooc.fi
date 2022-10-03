@@ -25,9 +25,14 @@ export function apiRouter(ctx: ApiContext) {
     )
     .post("/recheck-completion", completionController.recheckCompletion)
     .post("/register-completions", completionController.registerCompletions)
+    .post(
+      "/completions/:slug/certificate",
+      completionController.updateCertificateId,
+    )
     .get("/progress/:idOrSlug", progressController.progress)
     .get("/progressv2/:idOrSlug", progressController.progressV2)
     .get("/tierprogress/:idOrSlug", progressController.tierProgress)
+    .get("/tierProgress/:idOrSlug/:user_id", progressController.tierProgress)
     .get(
       "/recheck-bai-progresses",
       progressController.recheckBAIUserCourseProgresses,
@@ -41,6 +46,6 @@ export function apiRouter(ctx: ApiContext) {
     )
     .use("/ab-studies", abStudiesRouter(ctx))
     .use("/ab-enrollments", abEnrollmentRouter(ctx))
-    .get("/stored-data/:slug", storedDataController.get)
-    .post("/stored-data/:slug", storedDataController.post)
+    .get("/temporary-stored-data/:slug", storedDataController.get)
+    .post("/temporary-stored-data/:slug", storedDataController.post)
 }

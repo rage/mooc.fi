@@ -1,11 +1,11 @@
+import env from "./env.json"
+
 interface ExerciseInfo {
   exercise: number
   tier: number
   title: string
   course_id: string
 }
-
-import env from "./env.json"
 
 export const BAIexercises: Record<string, ExerciseInfo> = {
   [env.EX_ONE_BEGINNER]: {

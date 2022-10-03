@@ -20,10 +20,7 @@ import { OrphanedEntityError } from "./common"
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
   data?: T | T[],
-): T[] =>
-  ensureDefinedArray(data).filter((p) =>
-    p?.hasOwnProperty("progress"),
-  )
+): T[] => ensureDefinedArray(data).filter((p) => p?.hasOwnProperty("progress"))
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",

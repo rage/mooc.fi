@@ -12,7 +12,11 @@ import {
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
 import { BaseContext } from "../../../context"
-import { emptyOrNullToUndefined, ensureDefinedArray, isNullish } from "../../../util"
+import {
+  emptyOrNullToUndefined,
+  ensureDefinedArray,
+  isNullish,
+} from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
 import { DatabaseInputError } from "../../lib/errors"
 import {
@@ -103,10 +107,14 @@ export const getExerciseCompletionsForCourses = async ({
 }: GetExerciseCompletionsForCoursesArgs) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions = await knex(
-    "exercise_completion as ec",
-  )
-    .select<Array<ExerciseCompletionPart>>("course_id", "custom_id", "max_points", "exercise_id", "n_points")
+  const exercise_completions = await knex("exercise_completion as ec")
+    .select<Array<ExerciseCompletionPart>>(
+      "course_id",
+      "custom_id",
+      "max_points",
+      "exercise_id",
+      "n_points",
+    )
     .distinctOn("ec.exercise_id")
     .join("exercise as e", { "ec.exercise_id": "e.id" })
     .whereIn("e.course_id", courseIds)
@@ -170,9 +178,7 @@ export const pruneDuplicateExerciseCompletions = async ({
     .returning("id")*/
 
   // we probably can just delete all even if they have required actions
-  const deleted = await knex(
-    "exercise_completion",
-  )
+  const deleted = await knex("exercise_completion")
     .whereIn(
       "id",
       knex
@@ -207,11 +213,10 @@ export const pruneDuplicateExerciseCompletions = async ({
 export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   context: { knex },
 }: WithBaseContext) => {
-  const deleted =
-    await knex("exercise_completion_required_actions")
-      .whereNull("exercise_completion_id")
-      .delete()
-      .returning<Array<Pick<ExerciseCompletionRequiredAction, "id">>>("id")
+  const deleted = await knex("exercise_completion_required_actions")
+    .whereNull("exercise_completion_id")
+    .delete()
+    .returning<Array<Pick<ExerciseCompletionRequiredAction, "id">>>("id")
 
   return deleted
 }

@@ -110,6 +110,13 @@ export class RemoveDuplicateExerciseCompletionsError extends CustomError {
   }
 }
 
+export class PruneOldStoredDataError extends CustomError {
+  override name = "PruneOldStoredDataError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}
 export class CourseStatsEmailerError extends CustomError {
   override name = "CourseStatsEmailerError"
 

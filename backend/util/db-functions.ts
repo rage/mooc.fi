@@ -316,3 +316,9 @@ export const getCourseOrCompletionHandlerCourse =
 
     return course?.completions_handled_by ?? course
   }
+
+export type PromiseReturnType<T> = T extends (
+  ...args: any[]
+) => Promise<infer R>
+  ? R
+  : never

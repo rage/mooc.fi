@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express"
 
+import { isDefined } from "../../../util"
 import { ApiContext } from "../../types"
 import { requireAdmin } from "../../utils"
-import { isDefined } from "../../../util"
 
 export function abStudiesRouter(ctx: ApiContext) {
   async function abStudiesGet(req: Request<{ id?: string }>, res: Response) {

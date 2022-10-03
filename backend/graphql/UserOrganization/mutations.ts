@@ -176,6 +176,7 @@ export const UserOrganizationMutations = extendType({
               user_organization: {
                 include: {
                   organization: true,
+                  user: true,
                 },
               },
             },
@@ -309,13 +310,6 @@ export const UserOrganizationMutations = extendType({
           throw new UserInputError("invalid user organization id", {
             argumentName: "id",
           })
-        }
-
-        if (
-          ctx.role !== Role.ADMIN &&
-          userOrganization.user_id !== ctx.user.id
-        ) {
-          throw new ForbiddenError("invalid credentials to do that")
         }
 
         const { user, organization, user_organization_join_confirmations } =

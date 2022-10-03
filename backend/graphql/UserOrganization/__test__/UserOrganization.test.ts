@@ -16,7 +16,7 @@ import {
   thirdUserDetails,
 } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
-import { calculateActivationCode } from "../../../util"
+import { calculateActivationCode, PromiseReturnType } from "../../../util"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
@@ -35,6 +35,7 @@ type ErrorCase = {
   message: string
   args?: Record<string, any>
   headers?: HeadersInit
+  options?: Record<string, any>
   before?: Function | AsyncFunction
 }
 
@@ -148,16 +149,46 @@ describe("UserOrganization", () => {
             message:
               "given email does not fulfill organization email requirements",
           },
+          {
+            title: "if organization is missing an email template",
+            args: {
+              organization_id: "10000000000000000000000000000102",
+              organizational_email: "user@organization.fi",
+            },
+            headers: {
+              Authorization: "Bearer admin",
+            },
+            message: "no email template associated with this organization",
+            before: async () =>
+              ctx.prisma.organization.update({
+                where: {
+                  id: "10000000000000000000000000000102",
+                },
+                data: {
+                  join_organization_email_template: { disconnect: true },
+                },
+              }),
+          },
         ]
 
-        it.each(errorCases)("$title", async ({ args, headers, message }) => {
-          try {
-            await ctx.client.request(addUserOrganizationMutation, args, headers)
-            fail()
-          } catch (e: any) {
-            expect(e.response.errors[0].message).toEqual(message)
-          }
-        })
+        it.each(errorCases)(
+          "$title",
+          async ({ args, headers, message, before }) => {
+            try {
+              if (before) {
+                await before()
+              }
+              await ctx.client.request(
+                addUserOrganizationMutation,
+                args,
+                headers,
+              )
+              fail()
+            } catch (e: any) {
+              expect(e.response.errors[0].message).toEqual(message)
+            }
+          },
+        )
       })
 
       describe("succeeds", () => {
@@ -290,7 +321,7 @@ describe("UserOrganization", () => {
               "this user organization membership has already been confirmed",
           },
           {
-            title: "errors if confirmation has expired",
+            title: "if confirmation has expired",
             args: {
               id: CONFIRMATION_ID,
               code: "foo",
@@ -517,7 +548,7 @@ describe("UserOrganization", () => {
             "this user organization membership has already been confirmed",
         },
         {
-          title: "when new organizational_email given but it is not valid",
+          title: "if new organizational_email given but it is not valid",
           args: {
             id: "96900000000000000000000000000101",
             organizational_email: "kissa@foo.foo",
@@ -547,6 +578,27 @@ describe("UserOrganization", () => {
               },
             }),
         },
+        {
+          title: "if organization is missing an email template",
+          args: {
+            id: "96900000000000000000000000000101",
+          },
+          headers: {
+            Authorization: "Bearer normal",
+          },
+          message: "join organization email template is not set",
+          before: async () => {
+            await createUnconfirmedUserOrganization()
+            await ctx.prisma.organization.update({
+              where: {
+                id: "10000000000000000000000000000103",
+              },
+              data: {
+                join_organization_email_template: { disconnect: true },
+              },
+            })
+          },
+        },
       ]
 
       it.each(errorCases)(
@@ -570,32 +622,6 @@ describe("UserOrganization", () => {
     })
 
     describe("succeeds", () => {
-      const createUnconfirmedUserOrganization = async () =>
-        ctx.prisma.userOrganizationJoinConfirmation.update({
-          where: {
-            id: CONFIRMATION_ID,
-          },
-          data: {
-            confirmed: { set: false },
-            confirmed_at: { set: null },
-            user_organization: {
-              update: {
-                confirmed: { set: false },
-                confirmed_at: { set: null },
-                organization: {
-                  update: {
-                    required_confirmation: true,
-                    required_organization_email: "foo.bar$",
-                    join_organization_email_template: {
-                      connect: { id: "48383100000000000000000000000101" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        })
-
       let result: UserOrganizationJoinConfirmation & {
         email_delivery: EmailDelivery & { email_template: EmailTemplate }
         user_organization: UserOrganization & {
@@ -718,7 +744,404 @@ describe("UserOrganization", () => {
       })
     })
   })
+
+  describe("updateUserOrganizationOrganizationalEmail", () => {
+    interface CreateUserOrganizationArgs {
+      withOrganizationalEmail?: boolean
+      confirmed?: boolean
+      hasExistingConfirmation?: boolean
+    }
+
+    const createUserOrganization = async (
+      args?: CreateUserOrganizationArgs,
+    ) => {
+      const {
+        withOrganizationalEmail = true,
+        confirmed = false,
+        hasExistingConfirmation = true,
+      } = args ?? {}
+
+      const organizationalEmail = withOrganizationalEmail
+        ? "third_user@organization.fi"
+        : undefined
+      const originalUserEmail = thirdUserDetails.email
+      const joinConfirmationMail = withOrganizationalEmail
+        ? "third_user@organization.fi"
+        : originalUserEmail
+
+      return ctx.prisma.userOrganization.create({
+        data: {
+          id: "96900000000000000000000000000199",
+          user: { connect: { id: "20000000000000000000000000000104" } },
+          organization: {
+            connect: { id: "10000000000000000000000000000102" },
+          },
+          confirmed,
+          consented: true,
+          organizational_email: organizationalEmail,
+          ...(hasExistingConfirmation && {
+            user_organization_join_confirmations: {
+              create: {
+                id: "96900000000000000000000000001199",
+                email: joinConfirmationMail,
+                expires_at: "2100-01-01T00:00:00.000Z",
+                expired: false,
+                language: "fi",
+                confirmed,
+                email_delivery: {
+                  create: {
+                    id: "96900000000000000000000000002199",
+                    email_template: {
+                      connect: { id: "48383100000000000000000000000101" },
+                    },
+                    user: {
+                      connect: { id: "20000000000000000000000000000104" },
+                    },
+                    organization: {
+                      connect: { id: "10000000000000000000000000000102" },
+                    },
+                    email: joinConfirmationMail,
+                    sent: false,
+                    error: false,
+                  },
+                },
+              },
+            },
+          }),
+        },
+        include: {
+          organization: true,
+          user_organization_join_confirmations: {
+            include: {
+              email_delivery: {
+                include: {
+                  email_template: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    }
+
+    describe("errors", () => {
+      const errorCases = [
+        {
+          title: "if user is not associated with given user organization",
+          args: {
+            id: "96900000000000000000000000000199",
+            organizational_email: "foo@foo.fi",
+          },
+          headers: {
+            Authorization: "Bearer normal",
+          },
+          message: "invalid credentials to do that",
+        },
+        {
+          title: "if user organization is not found",
+          args: {
+            id: "06900000000000000000000000000199",
+            organizational_email: "foo@foo.fi",
+          },
+          headers: {
+            Authorization: "Bearer third",
+          },
+          message: "no such user/organization relation or no user in relation",
+        },
+        {
+          title: "if new organizational email is not valid",
+          args: {
+            id: "96900000000000000000000000000199",
+            organizational_email: "foo@foo.fi",
+          },
+          headers: {
+            Authorization: "Bearer third",
+          },
+          message:
+            "given email does not fulfill organization email requirements",
+        },
+        {
+          title: "if organization is missing an email template",
+          args: {
+            id: "96900000000000000000000000000199",
+            organizational_email: "foo@organization.fi",
+          },
+          headers: {
+            Authorization: "Bearer third",
+          },
+          message: "no email template associated with this organization",
+          before: async () => {
+            await ctx.prisma.organization.update({
+              where: {
+                id: "10000000000000000000000000000102",
+              },
+              data: {
+                join_organization_email_template: { disconnect: true },
+              },
+            })
+          },
+        },
+      ]
+
+      it.each(errorCases)(
+        "$title",
+        async ({ args, headers, message, before }) => {
+          try {
+            await createUserOrganization()
+            if (before) {
+              await before()
+            }
+            await ctx.client.request(
+              updateUserOrganizationOrganizationalMailMutation,
+              args,
+              headers,
+            )
+            fail()
+          } catch (e: any) {
+            expect(e.response.errors[0].message).toEqual(message)
+          }
+        },
+      )
+    })
+
+    describe("succeeds", () => {
+      let result: UserOrganization & {
+        organization: Organization
+        user_organization_join_confirmations: Array<
+          UserOrganizationJoinConfirmation & {
+            email_delivery: EmailDelivery
+          }
+        >
+      }
+
+      const createRequest = async (args: any, headers?: any) => {
+        result = (
+          await ctx.client.request(
+            updateUserOrganizationOrganizationalMailMutation,
+            args,
+            headers,
+          )
+        )?.updateUserOrganizationOrganizationalMail
+      }
+
+      describe("with changed email", () => {
+        beforeEach(async () => {
+          await createUserOrganization()
+          await createRequest(
+            {
+              id: "96900000000000000000000000000199",
+              organizational_email: "foo@organization.fi",
+              language: "en",
+            },
+            {
+              Authorization: "Bearer third",
+            },
+          )
+        })
+
+        it("creating a new user organization join confirmation and email delivery with new mail", async () => {
+          expect(result.user_organization_join_confirmations.length).toBe(2)
+          expect(result.user_organization_join_confirmations[0].id).not.toEqual(
+            "96900000-0000-0000-0000-000000001199",
+          )
+          expect(result.user_organization_join_confirmations[0].email).toEqual(
+            "foo@organization.fi",
+          )
+          expect(
+            result.user_organization_join_confirmations[0].email_delivery,
+          ).toBeDefined()
+          expect(
+            result.user_organization_join_confirmations[0].email_delivery.email,
+          ).toEqual("foo@organization.fi")
+        })
+
+        it("canceling email deliveries for the old confirmation", async () => {
+          expect(
+            result.user_organization_join_confirmations[1].email_delivery.error,
+          ).toBe(true)
+          expect(
+            result.user_organization_join_confirmations[1].email_delivery
+              .error_message,
+          ).toContain("Organizational mail change")
+        })
+
+        it("expiring the previous confirmation", async () => {
+          expect(result.user_organization_join_confirmations[1].expired).toBe(
+            true,
+          )
+        })
+
+        it("updating user organizational email", async () => {
+          expect(result.organizational_email).toEqual("foo@organization.fi")
+        })
+
+        it("changing language if provided", async () => {
+          expect(
+            result.user_organization_join_confirmations[0].language,
+          ).toEqual("en")
+        })
+      })
+
+      describe("with same email", () => {
+        let original: PromiseReturnType<typeof createUserOrganization>
+
+        beforeEach(async () => {
+          original = await createUserOrganization()
+          await createRequest(
+            {
+              id: "96900000000000000000000000000199",
+              organizational_email: "third_user@organization.fi",
+            },
+            {
+              Authorization: "Bearer third",
+            },
+          )
+        })
+
+        it("changing nothing", async () => {
+          const updated = await ctx.prisma.userOrganization.findUnique({
+            where: {
+              id: "96900000000000000000000000000199",
+            },
+            include: {
+              organization: true,
+              user_organization_join_confirmations: {
+                include: {
+                  email_delivery: {
+                    include: {
+                      email_template: true,
+                    },
+                  },
+                },
+              },
+            },
+          })
+
+          expect(updated).toEqual(original)
+        })
+      })
+
+      describe("with no previous confirmation", () => {
+        beforeEach(async () => {
+          await createUserOrganization({ hasExistingConfirmation: false })
+          await createRequest(
+            {
+              id: "96900000000000000000000000000199",
+              organizational_email: "foo@organization.fi",
+            },
+            {
+              Authorization: "Bearer third",
+            },
+          )
+        })
+
+        it("creating a new user organization join confirmation and email delivery with new mail", async () => {
+          expect(result.user_organization_join_confirmations.length).toBe(1)
+          expect(result.user_organization_join_confirmations[0].email).toEqual(
+            "foo@organization.fi",
+          )
+          expect(
+            result.user_organization_join_confirmations[0].email_delivery,
+          ).toBeDefined()
+          expect(
+            result.user_organization_join_confirmations[0].email_delivery.email,
+          ).toEqual("foo@organization.fi")
+        })
+      })
+
+      describe("with no previous organizational email", () => {
+        beforeEach(async () => {
+          await createUserOrganization({ withOrganizationalEmail: false })
+          await createRequest(
+            {
+              id: "96900000000000000000000000000199",
+              organizational_email: "foo@organization.fi",
+            },
+            {
+              Authorization: "Bearer third",
+            },
+          )
+        })
+
+        it("creating a new user organization join confirmation and email delivery with new mail", async () => {
+          expect(result.user_organization_join_confirmations.length).toBe(2)
+          expect(result.user_organization_join_confirmations[0].id).not.toEqual(
+            "96900000-0000-0000-0000-000000001199",
+          )
+          expect(result.user_organization_join_confirmations[0].email).toEqual(
+            "foo@organization.fi",
+          )
+          expect(
+            result.user_organization_join_confirmations[0].email_delivery,
+          ).toBeDefined()
+          expect(
+            result.user_organization_join_confirmations[0].email_delivery.email,
+          ).toEqual("foo@organization.fi")
+        })
+
+        it("updates user organizational email", async () => {
+          expect(result.organizational_email).toEqual("foo@organization.fi")
+        })
+      })
+
+      describe("with organization that does not require confirmation", () => {
+        beforeEach(async () => {
+          await ctx.prisma.organization.update({
+            where: {
+              id: "10000000000000000000000000000102",
+            },
+            data: {
+              required_confirmation: { set: false },
+              required_organization_email: null,
+            },
+          })
+
+          await createUserOrganization({ hasExistingConfirmation: false })
+          await createRequest(
+            {
+              id: "96900000000000000000000000000199",
+              organizational_email: "foo@organization.fi",
+            },
+            {
+              Authorization: "Bearer third",
+            },
+          )
+        })
+
+        it("updating organization email", async () => {
+          expect(result.organizational_email).toEqual("foo@organization.fi")
+          expect(result.user_organization_join_confirmations.length).toBe(0)
+        })
+      })
+    })
+  })
 })
+
+const createUnconfirmedUserOrganization = async () =>
+  ctx.prisma.userOrganizationJoinConfirmation.update({
+    where: {
+      id: CONFIRMATION_ID,
+    },
+    data: {
+      confirmed: { set: false },
+      confirmed_at: { set: null },
+      user_organization: {
+        update: {
+          confirmed: { set: false },
+          confirmed_at: { set: null },
+          organization: {
+            update: {
+              required_confirmation: true,
+              required_organization_email: "foo.bar$",
+              join_organization_email_template: {
+                connect: { id: "48383100000000000000000000000101" },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
 
 const addUserOrganizationMutation = gql`
   mutation AddUserOrganization(
@@ -762,6 +1185,9 @@ const addUserOrganizationMutation = gql`
         email_delivery {
           id
           email
+          error
+          error_message
+          sent
           email_template {
             id
             name
@@ -798,6 +1224,9 @@ const confirmUserOrganizationJoinMutation = gql`
         email_delivery {
           id
           email
+          error
+          error_message
+          sent
           email_template {
             id
             name
@@ -856,6 +1285,55 @@ const requestNewUserOrganizationJoinConfirmationMutation = gql`
         confirmed
         confirmed_at
         consented
+      }
+    }
+  }
+`
+
+const updateUserOrganizationOrganizationalMailMutation = gql`
+  mutation UpdateUserOrganizationOrganizationalMail(
+    $id: ID!
+    $organizational_email: String!
+    $redirect: String
+    $language: String
+  ) {
+    updateUserOrganizationOrganizationalMail(
+      id: $id
+      organizational_email: $organizational_email
+      redirect: $redirect
+      language: $language
+    ) {
+      id
+      organization {
+        id
+        slug
+      }
+      role
+      user_id
+      organizational_email
+      organizational_identifier
+      confirmed
+      confirmed_at
+      user_organization_join_confirmations {
+        id
+        email
+        redirect
+        language
+        confirmed
+        confirmed_at
+        expired
+        expires_at
+        email_delivery {
+          id
+          email
+          error
+          error_message
+          sent
+          email_template {
+            id
+            name
+          }
+        }
       }
     }
   }

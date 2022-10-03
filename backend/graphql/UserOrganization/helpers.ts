@@ -12,7 +12,13 @@ import {
 
 import { Role } from "../../accessControl"
 import { Context } from "../../context"
-import { emptyOrNullToUndefined, ensureDefinedArray, err, isDefined, ok, Result } from "../../util"
+import {
+  emptyOrNullToUndefined,
+  ensureDefinedArray,
+  err,
+  ok,
+  Result,
+} from "../../util"
 import { ConfigurationError, ConflictError } from "../common"
 
 export function assertUserIdOnlyForAdmin(ctx: Context, id?: User["id"] | null) {

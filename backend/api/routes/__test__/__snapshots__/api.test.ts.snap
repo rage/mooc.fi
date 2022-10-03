@@ -239,7 +239,7 @@ Array [
 ]
 `;
 
-exports[`API /stored-data get returns stored data from owned course 1`] = `
+exports[`API /temporary-stored-data get returns stored data from owned course 1`] = `
 Array [
   Object {
     "completions": Array [

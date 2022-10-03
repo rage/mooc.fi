@@ -32,9 +32,10 @@ const FlagBackground = styled(FullCoverTextBackground)`
   padding: 1rem;
   background-color: #ffd700;
   z-index: 2;
-  background-image: linear-gradient(-90deg, transparent, white 40%),
+  background-image: linear-gradient(-90deg, transparent, white 28%),
     linear-gradient(180deg, #0057b7 50%, #ffd700 50%);
   background-repeat: no-repeat;
+  gap: 1rem;
 `
 
 // @ts-ignore: not used for now
@@ -53,7 +54,7 @@ const WaveOverlay = styled.div`
       linear-gradient(
         60deg,
         rgba(0, 0, 0, 0.35) 0%,
-        rgba(255, 255, 255, 0.35) 15%,
+        hsla(0, 0%, 100%, 0.35) 15%,
         rgba(0, 0, 0, 0.25) 30%,
         rgba(255, 255, 255, 0.15) 45%,
         rgba(0, 0, 0, 0.15) 60%,
@@ -68,6 +69,14 @@ const InfoContainer = styled.div`
   flex-direction: column;
   z-index: 1;
   max-width: 70%;
+  padding: 0rem;
+
+  a {
+    font-size: clamp(12px, 1.5vw, 22px);
+  }
+  h3 {
+    font-size: clamp(14px, 2vw, 22px);
+  }
 `
 
 function UkraineInfo() {
@@ -83,6 +92,17 @@ function UkraineInfo() {
             </CardTitle>
             <OutboundLink eventLabel="custom: ukraina" to={t("ukraineLink")}>
               {t("ukraineLinkText")}
+            </OutboundLink>
+          </InfoContainer>
+          <InfoContainer>
+            <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
+              {t("ukraineHyText")}
+            </CardTitle>
+            <OutboundLink
+              eventLabel="custom: ukrainaHy"
+              to={t("ukraineHyLink")}
+            >
+              {t("ukraineHyLinkText")}
             </OutboundLink>
           </InfoContainer>
         </FlagBackground>

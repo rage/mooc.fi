@@ -99,7 +99,7 @@ export default class TmcClient {
     return userInfo
   }
 
-  async getUserDetailsById(id: Number): Promise<UserInfo> {
+  async getUserDetailsById(id: number): Promise<UserInfo> {
     const res = await axios.get(
       `${TMC_HOST}/api/v8/users/${id}?show_user_fields=1&extra_fields=1`,
       {

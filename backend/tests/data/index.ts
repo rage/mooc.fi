@@ -306,6 +306,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "third@organization.fi",
     upstream_id: 3,
     username: "third_user_with_organization",
+    first_name: "first",
+    last_name: "last",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },

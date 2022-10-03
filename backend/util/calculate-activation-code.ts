@@ -1,28 +1,56 @@
-import { PrismaClient, UserOrganizationJoinConfirmation } from "@prisma/client"
+import {
+  Organization,
+  PrismaClient,
+  User,
+  UserOrganization,
+  UserOrganizationJoinConfirmation,
+} from "@prisma/client"
 
 import { OrphanedEntityError } from "../graphql/common"
 import { err, ok, Result } from "../util"
 
 const crypto = require("crypto")
 
-interface CalculateActivationCodeOptions {
+interface CalculateActivationCodeArgs {
   prisma: PrismaClient
-  userOrganizationJoinConfirmation: UserOrganizationJoinConfirmation
+  userOrganizationJoinConfirmation: UserOrganizationJoinConfirmation &
+    (
+      | {
+          user_organization:
+            | (UserOrganization & {
+                user: User | null
+                organization: Organization | null
+              })
+            | null
+        }
+      | {}
+    )
 }
 
 export const calculateActivationCode = async ({
   prisma,
   userOrganizationJoinConfirmation,
-}: CalculateActivationCodeOptions): Promise<Result<string, Error>> => {
-  const userOrganization = await prisma.userOrganization.findUnique({
-    where: {
-      id: userOrganizationJoinConfirmation.user_organization_id,
-    },
-    include: {
-      user: true,
-      organization: true,
-    },
-  })
+}: CalculateActivationCodeArgs): Promise<Result<string, Error>> => {
+  let userOrganization =
+    "user_organization" in userOrganizationJoinConfirmation
+      ? userOrganizationJoinConfirmation?.user_organization
+      : undefined
+
+  if (
+    !userOrganization ||
+    !userOrganization.user ||
+    !userOrganization.organization
+  ) {
+    userOrganization = await prisma.userOrganization.findUnique({
+      where: {
+        id: userOrganizationJoinConfirmation.user_organization_id,
+      },
+      include: {
+        user: true,
+        organization: true,
+      },
+    })
+  }
 
   if (
     !userOrganization ||
