@@ -1,5 +1,3 @@
-import { isDefined } from "./util"
-
 export const isProduction = process.env.NODE_ENV === "production"
 export const isTest = process.env.NODE_ENV === "test"
 
@@ -21,7 +19,9 @@ if (isProduction) {
 } else {
   SEARCH_PATH =
     isTest && process.env.RUNNING_IN_CI
-      ? [process.env.SEARCH_PATH, EXTENSION_PATH].filter(isDefined)
+      ? ([process.env.SEARCH_PATH, EXTENSION_PATH].filter(
+          Boolean,
+        ) as Array<string>)
       : ["default$default"]
 }
 
@@ -110,5 +110,3 @@ export const CERTIFICATES_URL =
 
 export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"
-
-export const extensionPath = CIRCLECI ? "public." : "extensions."
