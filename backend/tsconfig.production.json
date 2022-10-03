@@ -21,6 +21,7 @@
     "inlineSources": true,
     "noEmitHelpers": true,
     "importHelpers": true,
+    "resolveJsonModule": true,
     "sourceRoot": "/"
   },
   "include": [".", "types.d.ts"],
