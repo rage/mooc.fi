@@ -1,16 +1,9 @@
 import { useState } from "react"
 
-import CustomSnackbar from "/components/CustomSnackbar"
-import Spinner from "/components/Spinner"
-import { UpdateCourseMutation } from "/graphql/mutations/courses"
-import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
-import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
-import { CourseDetailsFromSlugQuery_course as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
-import { updateCourse } from "/static/types/generated/updateCourse"
-import omit from "lodash/omit"
+import { omit } from "lodash"
 import Router from "next/router"
 
-import { gql, useApolloClient, useQuery } from "@apollo/client"
+import { useApolloClient, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -23,28 +16,19 @@ import {
   TextField,
 } from "@mui/material"
 
-export const AllCoursesDetails = gql`
-  query AllCoursesDetails {
-    courses {
-      id
-      slug
-      name
-      teacher_in_charge_name
-      teacher_in_charge_email
-      start_date
-      completion_email {
-        name
-        id
-      }
-      course_stats_email {
-        id
-      }
-    }
-  }
-`
+import CustomSnackbar from "/components/CustomSnackbar"
+import Spinner from "/components/Spinner"
+
+import {
+  AddEmailTemplateDocument,
+  CourseCoreFieldsFragment,
+  CourseUpsertArg,
+  EmailTemplateEditorCoursesDocument,
+  UpdateCourseDocument,
+} from "/graphql/generated"
 
 interface CreateEmailTemplateDialogParams {
-  course?: CourseDetailsData
+  course?: CourseCoreFieldsFragment
   buttonText: string
   type?: string
 }
@@ -57,13 +41,10 @@ const CreateEmailTemplateDialog = ({
   const [openDialog, setOpenDialog] = useState(false)
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState(type)
-  const [selectedCourse, setSelectedCourse] = useState<
-    CourseDetailsData | undefined
-  >(undefined)
+  const [selectedCourse, setSelectedCourse] =
+    useState<CourseCoreFieldsFragment | null>(null)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
-  const { loading, error, data } = useQuery<{ courses: CourseDetailsData[] }>(
-    AllCoursesDetails,
-  )
+  const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
   const client = useApolloClient()
 
   if (loading) {
@@ -84,8 +65,8 @@ const CreateEmailTemplateDialog = ({
 
   const courseOptions =
     templateType === "completion"
-      ? data.courses
-          .filter((c) => c?.completion_email === null)
+      ? data!.courses
+          ?.filter((c) => c?.completion_email === null)
           .map((c, i) => {
             return (
               <option key={i} value={i}>
@@ -93,7 +74,7 @@ const CreateEmailTemplateDialog = ({
               </option>
             )
           })
-      : data.courses.map((c, i) => {
+      : data!.courses?.map((c, i) => {
           return (
             <option key={i} value={i}>
               {c?.name}
@@ -103,8 +84,8 @@ const CreateEmailTemplateDialog = ({
 
   const handleCreate = async () => {
     try {
-      const { data } = await client.mutate<AddEmailTemplate>({
-        mutation: AddEmailTemplateMutation,
+      const { data } = await client.mutate({
+        mutation: AddEmailTemplateDocument,
         variables: {
           name: nameInput,
           template_type: templateType,
@@ -112,28 +93,37 @@ const CreateEmailTemplateDialog = ({
             templateType === "threshold" ? selectedCourse?.id : null,
         },
       })
-      if ((course || selectedCourse) && templateType === "completion") {
-        await client.mutate<updateCourse>({
-          mutation: UpdateCourseMutation,
+
+      const updateableCourse = course ?? selectedCourse
+
+      if (updateableCourse) {
+        const connectVariables = {} as CourseUpsertArg
+
+        if (templateType === "completion") {
+          connectVariables.completion_email_id = data?.addEmailTemplate?.id
+        }
+        if (templateType === "course-stats") {
+          connectVariables.course_stats_email_id = data?.addEmailTemplate?.id
+        }
+
+        await client.mutate({
+          mutation: UpdateCourseDocument,
           variables: {
             course: {
-              ...omit(course ?? selectedCourse, "__typename", "id"),
-              completion_email: data?.addEmailTemplate?.id,
+              // - already has slug and can't have both
+              // - let's also strip the queried emails as we don't want to update the other one if the one is updated/created
+              ...omit(updateableCourse, [
+                "__typename",
+                "id",
+                "completion_email",
+                "course_stats_email",
+              ]),
+              ...connectVariables,
             },
           },
         })
       }
-      if ((course || selectedCourse) && templateType === "course-stats") {
-        await client.mutate<updateCourse>({
-          mutation: UpdateCourseMutation,
-          variables: {
-            course: {
-              ...omit(course ?? selectedCourse, "__typename", "id"),
-              course_stats_email: data?.addEmailTemplate?.id,
-            },
-          },
-        })
-      }
+
       const url = "/email-templates/" + data?.addEmailTemplate?.id
       Router.push(url)
     } catch {
@@ -166,8 +156,7 @@ const CreateEmailTemplateDialog = ({
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
           />
-          {/* If we end up from course edit dashboard here, we have course and we know it
-          is a completion type. Could be refactored to own Dialog */}
+          {/* If we have a course, we are coming from the course dashboard */}
           {!course && (
             <>
               <InputLabel htmlFor="select">Template type</InputLabel>
@@ -189,7 +178,9 @@ const CreateEmailTemplateDialog = ({
               <NativeSelect
                 onChange={(e) => {
                   e.preventDefault()
-                  setSelectedCourse(data.courses[Number(e.target.value)])
+                  setSelectedCourse(
+                    data!.courses?.[Number(e.target.value)] ?? null,
+                  )
                 }}
                 id="selectCourse"
                 defaultValue="Select course"

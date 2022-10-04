@@ -1,42 +1,45 @@
 import { useCallback, useEffect, useState } from "react"
-import { StudyModuleFormValues } from "./types"
+
 import {
-  Formik,
-  Form,
-  FormikHelpers,
-  yupToFormErrors,
   FieldArray,
+  Form,
+  Formik,
+  FormikHelpers,
   getIn,
   useFormikContext,
+  yupToFormErrors,
 } from "formik"
-import {
-  Grid,
-  MenuItem,
-  Typography,
-  InputAdornment,
-  Tooltip,
-} from "@mui/material"
+import { useConfirm } from "material-ui-confirm"
 import * as Yup from "yup"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { languages, initialTranslation } from "./form-validation"
+
 import styled from "@emotion/styled"
-import useDebounce from "/util/useDebounce"
 import HelpIcon from "@mui/icons-material/Help"
 import {
-  StyledField,
-  StyledTextField,
-  OutlinedFormControl,
-  OutlinedInputLabel,
-  OutlinedFormGroup,
-  StyledFieldWithAnchor,
-} from "/components/Dashboard/Editor/common"
+  Grid,
+  InputAdornment,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material"
+
+import { initialTranslation, languages } from "./form-validation"
+import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import {
+  OutlinedFormControl,
+  OutlinedFormGroup,
+  OutlinedInputLabel,
+  StyledField,
+  StyledFieldWithAnchor,
+  StyledTextField,
+} from "/components/Dashboard/Editor/common"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import ModulesTranslations from "/translations/study-modules"
-import { useConfirm } from "material-ui-confirm"
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
 const FormContainer = styled.div`
@@ -282,13 +285,7 @@ const RenderForm = () => {
   )
 }
 
-const StudyModuleEditForm = ({
-  module,
-  validationSchema,
-  onSubmit,
-  onCancel,
-  onDelete,
-}: {
+interface StudyModuleEditFormProps {
   module: StudyModuleFormValues
   validationSchema: Yup.ObjectSchema<any>
   onSubmit: (
@@ -297,7 +294,15 @@ const StudyModuleEditForm = ({
   ) => void
   onCancel: () => void
   onDelete: (values: StudyModuleFormValues) => void
-}) => {
+}
+
+const StudyModuleEditForm = ({
+  module,
+  validationSchema,
+  onSubmit,
+  onCancel,
+  onDelete,
+}: StudyModuleEditFormProps) => {
   const validate = useCallback(async (values: StudyModuleFormValues) => {
     try {
       await validationSchema.validate(values, {

@@ -1,15 +1,17 @@
+import ReactGA from "react-ga"
+
+import styled from "@emotion/styled"
+import { Chip, Grid, Skeleton } from "@mui/material"
+
 import CourseImage from "/components/CourseImage"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
-import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
-import { Chip, Grid, Skeleton } from "@mui/material"
+import { CourseFieldsFragment } from "/graphql/generated"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;
@@ -66,7 +68,7 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
 interface CourseCardProps {
-  course?: AllCourses_courses
+  course?: CourseFieldsFragment
 }
 
 export default function CourseCard({ course }: CourseCardProps) {

@@ -1,16 +1,15 @@
 import { useContext } from "react"
 
-import userOsContext from "/contexts/UserOSContext"
-
 import styled from "@emotion/styled"
 import {
-  faApple as MAC,
   faLinux as Linux,
+  faApple as MAC,
   faWindows as Windows,
 } from "@fortawesome/free-brands-svg-icons"
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
 
 import OSSelectorButton from "./OSSelectorButton"
+import userOsContext from "/contexts/UserOSContext"
 
 const Container = styled.div`
   display: flex;

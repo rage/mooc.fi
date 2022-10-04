@@ -1,24 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
-import { useAnchorContext } from "/contexts/AnchorContext"
-import {
-  AddStudyModuleMutation,
-  DeleteStudyModuleMutation,
-  UpdateStudyModuleMutation,
-} from "/graphql/mutations/study-modules"
-import {
-  AllEditorModulesQuery,
-  AllModulesQuery,
-  CheckModuleSlugQuery,
-} from "/graphql/queries/study-modules"
-import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import { StudyModuleQuery } from "/pages/study-modules/[slug]/edit"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
-import ModulesTranslations from "/translations/study-modules"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { useTranslator } from "/util/useTranslator"
 import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
@@ -33,23 +14,38 @@ import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
+import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import { FormStatus } from "/components/Dashboard/Editor2/types"
+import { useAnchorContext } from "/contexts/AnchorContext"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import ModulesTranslations from "/translations/study-modules"
+import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import { useTranslator } from "/util/useTranslator"
 
-const StudyModuleEdit = ({
-  module,
-}: {
-  module?: StudyModuleDetails_study_module
-}) => {
+import {
+  AddStudyModuleDocument,
+  DeleteStudyModuleDocument,
+  EditorStudyModuleDetailsDocument,
+  EditorStudyModulesDocument,
+  StudyModuleDetailedFieldsFragment,
+  StudyModuleExistsDocument,
+  StudyModulesDocument,
+  UpdateStudyModuleDocument,
+} from "/graphql/generated"
+
+interface StudyModuleEditProps {
+  module?: StudyModuleDetailedFieldsFragment
+}
+
+const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const t = useTranslator(ModulesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const client = useApolloClient()
   const { anchors } = useAnchorContext()
 
-  const checkSlug = CheckModuleSlugQuery
-
   const defaultValues = toStudyModuleForm({ module })
   const validationSchema = studyModuleEditSchema({
     client,
-    checkSlug,
     initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
     t,
   })
@@ -64,29 +60,36 @@ const StudyModuleEdit = ({
     trigger()
   }, [])
 
-  const [addStudyModule] = useMutation(AddStudyModuleMutation)
-  const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)
-  const [deleteStudyModule] = useMutation(DeleteStudyModuleMutation, {
+  const [addStudyModule] = useMutation(AddStudyModuleDocument)
+  const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)
+  const [deleteStudyModule] = useMutation(DeleteStudyModuleDocument, {
     refetchQueries: [
-      { query: AllModulesQuery },
-      { query: AllEditorModulesQuery },
+      { query: StudyModulesDocument },
+      { query: EditorStudyModulesDocument },
     ],
   })
 
   const onSubmit = useCallback(
     async (values: StudyModuleFormValues): Promise<void> => {
-      const newStudyModule = !values.id
+      const isNewStudyModule = !values.id
 
       const mutationVariables = fromStudyModuleForm({ values })
       const refetchQueries = [
-        { query: AllModulesQuery },
-        { query: AllEditorModulesQuery },
-        !newStudyModule
-          ? { query: StudyModuleQuery, variables: { slug: values.new_slug } }
-          : undefined,
-      ].filter((v) => !!v) as PureQueryOptions[]
+        { query: StudyModulesDocument },
+        { query: EditorStudyModulesDocument },
+        ...(!isNewStudyModule
+          ? [StudyModuleExistsDocument, EditorStudyModuleDetailsDocument].map(
+              (query) => ({
+                query,
+                variables: { slug: values.new_slug },
+              }),
+            )
+          : []),
+      ] as PureQueryOptions[]
 
-      const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
+      const moduleMutation = isNewStudyModule
+        ? addStudyModule
+        : updateStudyModule
 
       try {
         setStatus({ message: "Saving..." })
@@ -136,21 +139,24 @@ const StudyModuleEdit = ({
     [],
   )
 
+  const contextValue = useMemo(
+    () => ({
+      status,
+      tab: 0,
+      initialValues: defaultValues,
+      setStatus,
+      setTab: () => {},
+      onSubmit,
+      onError,
+      onCancel,
+      onDelete,
+    }),
+    [status, defaultValues],
+  )
+
   return (
     <FormProvider {...methods}>
-      <EditorContext.Provider
-        value={{
-          tab: 0,
-          setTab: () => {},
-          status,
-          setStatus,
-          onSubmit,
-          onError,
-          onCancel,
-          onDelete,
-          initialValues: defaultValues,
-        }}
-      >
+      <EditorContext.Provider value={contextValue}>
         <StudyModuleEditForm />
       </EditorContext.Provider>
     </FormProvider>

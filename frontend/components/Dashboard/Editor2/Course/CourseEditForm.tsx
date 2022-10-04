@@ -1,49 +1,54 @@
-import { useFormContext } from "react-hook-form"
-import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { Tabs, Tab, FormControl, FormLabel, FormGroup } from "@mui/material"
-import {
-  ControlledTextField,
-  ControlledSelect,
-  ControlledCheckbox,
-  ControlledModuleList,
-  ControlledHiddenField,
-  ControlledRadioGroup,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import CourseTranslationForm from "./CourseTranslationForm"
-import DisableAutoComplete from "/components/DisableAutoComplete"
 import { useMemo, useState } from "react"
-import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
-import CourseLanguageSelector from "./CourseLanguageSelector"
+
+import { useFormContext } from "react-hook-form"
+
 import styled from "@emotion/styled"
-import { useTranslator } from "/util/useTranslator"
-import CoursesTranslations from "/translations/courses"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import CommonTranslations from "/translations/common"
+import { FormControl, FormGroup, FormLabel, Tab, Tabs } from "@mui/material"
+
+import CourseImageForm from "./CourseImageForm"
+import CourseInfoForm from "./CourseInfoForm"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTranslationForm from "./CourseTranslationForm"
 import {
-  FormSubtitle,
   FormFieldGroup,
+  FormSubtitle,
   TabSection,
 } from "/components/Dashboard/Editor2/Common"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-
-import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
+import {
+  ControlledCheckbox,
+  ControlledHiddenField,
+  ControlledModuleList,
+  ControlledRadioGroup,
+  ControlledSelect,
+  ControlledTextField,
+} from "/components/Dashboard/Editor2/Common/Fields"
 import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
+import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
+import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
-import CourseInfoForm from "./CourseInfoForm"
-import CourseImageForm from "./CourseImageForm"
+import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
+import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+import DisableAutoComplete from "/components/DisableAutoComplete"
+import CommonTranslations from "/translations/common"
+import CoursesTranslations from "/translations/courses"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+
+import {
+  CourseStatus,
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/graphql/generated"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
 `
 
 interface CourseEditFormProps {
-  course?: CourseDetails_course
-  courses?: CourseEditorCourses_courses[]
-  studyModules?: CourseEditorStudyModules_study_modules[]
+  course?: EditorCourseDetailedFieldsFragment
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
 export default function CourseEditForm({
@@ -71,11 +76,8 @@ export default function CourseEditForm({
   const sortedCourses = useMemo(
     () =>
       courses
-        ?.filter((c: CourseEditorCourses_courses) => c.id !== course?.id)
-        .sort(
-          (a: CourseEditorCourses_courses, b: CourseEditorCourses_courses) =>
-            a?.name < b?.name ? -1 : 1,
-        ),
+        ?.filter((c) => c.id !== course?.id)
+        .sort((a, b) => (a?.name < b?.name ? -1 : 1)),
     [courses],
   )
 

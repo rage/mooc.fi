@@ -1,27 +1,29 @@
 import { useState } from "react"
 
+import { useApolloClient, useQuery } from "@apollo/client"
+import { CircularProgress, Grid } from "@mui/material"
+import Button from "@mui/material/Button"
+
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
 import CommonTranslations from "/translations/common"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import { gql, useApolloClient, useQuery } from "@apollo/client"
-import { CircularProgress, Grid } from "@mui/material"
-import Button from "@mui/material/Button"
+import { UserProfileUserCourseSettingsDocument } from "/graphql/generated"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
   const client = useApolloClient()
   const t = useTranslator(CommonTranslations)
 
-  const [more, setMore]: any[] = useState([])
+  // TODO: typing, this "more" isn't actually used anywhere?
+  const [more, setMore] = useState<any[]>([])
 
-  const { loading, error, data } = useQuery<UserCourseSettingsForUserPage>(
-    GET_DATA,
+  const { loading, error, data } = useQuery(
+    UserProfileUserCourseSettingsDocument,
     { variables: { upstream_id: Number(id) } },
   )
 
@@ -68,11 +70,11 @@ const UserPage = () => {
           variant="contained"
           onClick={async () => {
             const { data } = await client.query({
-              query: GET_DATA,
+              query: UserProfileUserCourseSettingsDocument,
               variables: { upstream_id: Number(id) },
             })
             let newData = more
-            newData.push(...data.userCourseSettings.edges)
+            newData.push(...(data?.userCourseSettings?.edges ?? []))
             setMore(newData)
           }}
           disabled={false}
@@ -85,28 +87,3 @@ const UserPage = () => {
 }
 
 export default withAdmin(UserPage)
-
-const GET_DATA = gql`
-  query UserCourseSettingsForUserPage($upstream_id: Int) {
-    userCourseSettings(user_upstream_id: $upstream_id, first: 50) {
-      edges {
-        node {
-          id
-          course {
-            name
-          }
-          language
-          country
-          research
-          marketing
-          course_variant
-          other
-        }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`

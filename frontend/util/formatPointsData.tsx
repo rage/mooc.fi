@@ -1,16 +1,17 @@
-import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
-import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
-import flatten from "lodash/flatten"
-import groupBy from "lodash/groupBy"
-import mapValues from "lodash/mapValues"
+import { flatten, groupBy, mapValues } from "lodash"
 
-export type formattedGroupPointsDictionary = {
+import {
+  UserCourseProgressCoreFieldsFragment,
+  UserCourseServiceProgressCoreFieldsFragment,
+} from "/graphql/generated"
+
+export type FormattedGroupPointsDictionary = {
   total: number
   exercises: number
-  groups: _.Dictionary<formattedGroupPoints>
+  groups: _.Dictionary<FormattedGroupPoints>
 }
 
-export interface formattedGroupPoints {
+export interface FormattedGroupPoints {
   courseProgress: GroupPoints
   service_progresses: ServiceGroupPoints[]
 }
@@ -26,14 +27,16 @@ interface ServiceGroupPoints extends GroupPoints {
 }
 
 interface FormatPointsDataProps {
-  userCourseProgress?: UserCourseProgressFragment | null
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
+  userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
+  userCourseServiceProgresses?:
+    | UserCourseServiceProgressCoreFieldsFragment[]
+    | null
 }
 
 function formatPointsData({
   userCourseProgress,
   userCourseServiceProgresses,
-}: FormatPointsDataProps): formattedGroupPointsDictionary {
+}: FormatPointsDataProps): FormattedGroupPointsDictionary {
   if (!userCourseProgress) {
     return {
       total: 0,

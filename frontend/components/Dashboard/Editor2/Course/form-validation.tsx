@@ -1,9 +1,7 @@
-import { testUnique } from "/components/Dashboard/Editor2/Common"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { DateTime } from "luxon"
 import * as Yup from "yup"
 
-import { type ApolloClient, DocumentNode } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import {
   CourseAliasFormValues,
@@ -12,6 +10,11 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
+import { testUnique } from "/components/Dashboard/Editor2/Common"
+import { Translator } from "/translations"
+import { type CoursesTranslations } from "/translations/courses"
+
+import { CourseFromSlugDocument, CourseStatus } from "/graphql/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,
@@ -83,17 +86,13 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
 
 export const study_modules: { value: any; label: any }[] = []
 
-const courseEditSchema = ({
-  client,
-  checkSlug,
-  initialSlug,
-  t,
-}: {
+interface CourseEditSchemaArgs {
   client: ApolloClient<object>
-  checkSlug: DocumentNode
   initialSlug: string | null
-  t: (key: any) => string
-}) => {
+  t: Translator<CoursesTranslations>
+}
+
+const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
   return Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
@@ -103,7 +102,7 @@ const courseEditSchema = ({
       .test(
         "unique",
         t("validationSlugInUse"),
-        validateSlug({ client, checkSlug, initialSlug }),
+        validateSlug({ client, initialSlug }),
       ),
     status: Yup.mixed()
       .oneOf(Object.keys(CourseStatus))
@@ -208,15 +207,12 @@ const courseEditSchema = ({
   })
 }
 
-const validateSlug = ({
-  checkSlug,
-  client,
-  initialSlug,
-}: {
-  checkSlug: DocumentNode
+interface ValidateSlugArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-}) =>
+}
+
+const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
   async function (
     this: Yup.TestContext,
     value?: string | null,
@@ -231,7 +227,7 @@ const validateSlug = ({
 
     try {
       const { data } = await client.query({
-        query: checkSlug,
+        query: CourseFromSlugDocument,
         variables: { slug: value },
       })
 

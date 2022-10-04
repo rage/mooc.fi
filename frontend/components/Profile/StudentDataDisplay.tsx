@@ -1,17 +1,19 @@
 import { PropsWithChildren } from "react"
 
-import ProfileSettings from "/components/Profile/ProfileSettings"
-import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
-import notEmpty from "/util/notEmpty"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
+import ProfileSettings from "/components/Profile/ProfileSettings"
+import notEmpty from "/util/notEmpty"
+
+import { UserOverviewFieldsFragment } from "/graphql/generated"
+
 interface TabPanelProps {
-  index: any
-  value: any
+  index: number
+  value: number
 }
 
 const TabPanel = ({
@@ -32,7 +34,7 @@ const TabPanel = ({
 
 interface StudentDataDisplayProps {
   tab: number
-  data?: ProfileUserOverView_currentUser
+  data?: UserOverviewFieldsFragment
 }
 
 const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {

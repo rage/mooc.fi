@@ -1,22 +1,6 @@
 import { memo, useCallback, useMemo, useState } from "react"
 
 import {
-  CheckboxField,
-  EnumeratingAnchor,
-  FormSubtitle,
-  inputLabelProps,
-  StyledFieldWithAnchor,
-  StyledTextField,
-  TabSection,
-} from "/components/Dashboard/Editor/common"
-import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
-import {
   Form,
   Formik,
   FormikHelpers,
@@ -51,6 +35,25 @@ import CourseVariantEditForm from "./CourseVariantEditForm"
 import DatePickerField from "./DatePickers"
 import { statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
+import {
+  CheckboxField,
+  EnumeratingAnchor,
+  FormSubtitle,
+  inputLabelProps,
+  StyledFieldWithAnchor,
+  StyledTextField,
+  TabSection,
+} from "/components/Dashboard/Editor/common"
+import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+import CoursesTranslations from "/translations/courses"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { useTranslator } from "/util/useTranslator"
+
+import {
+  EditorCourseOtherCoursesFieldsFragment,
+  StudyModuleDetailedFieldsFragment,
+} from "/graphql/generated"
 
 interface CoverProps {
   covered: boolean
@@ -87,8 +90,8 @@ export const FormFieldGroup = styled.div`
 
 interface RenderFormProps {
   initialValues?: CourseFormValues
-  courses?: CourseEditorCourses_courses[]
-  studyModules?: CourseEditorStudyModules_study_modules[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
 interface RenderProps {
@@ -116,11 +119,8 @@ const renderForm =
     const sortedCourses = useMemo(
       () =>
         courses
-          ?.filter((c: CourseEditorCourses_courses) => c.id !== values?.id)
-          .sort(
-            (a: CourseEditorCourses_courses, b: CourseEditorCourses_courses) =>
-              a?.name < b?.name ? -1 : 1,
-          ),
+          ?.filter((c) => c.id !== values?.id)
+          .sort((a, b) => (a?.name < b?.name ? -1 : 1)),
       [courses],
     )
 
@@ -283,19 +283,17 @@ const renderForm =
                   <FormGroup>
                     <ModuleList>
                       <EnumeratingAnchor id="study_modules" />
-                      {studyModules?.map(
-                        (module: CourseEditorStudyModules_study_modules) => (
-                          <ModuleListItem key={module.id}>
-                            <CheckboxField
-                              id={`study_modules[${module.id}]`}
-                              label={module.name}
-                              checked={
-                                values?.study_modules?.[module.id] ?? false
-                              }
-                            />
-                          </ModuleListItem>
-                        ),
-                      )}
+                      {studyModules?.map((module) => (
+                        <ModuleListItem key={module.id}>
+                          <CheckboxField
+                            id={`study_modules[${module.id}]`}
+                            label={module.name}
+                            checked={
+                              values?.study_modules?.[module.id] ?? false
+                            }
+                          />
+                        </ModuleListItem>
+                      ))}
                     </ModuleList>
                   </FormGroup>
                 </FormControl>
@@ -433,16 +431,14 @@ const renderForm =
                         <MenuItem key="handledby-empty" value={undefined}>
                           (no choice)
                         </MenuItem>
-                        {sortedCourses?.map(
-                          (course: CourseEditorCourses_courses) => (
-                            <MenuItem
-                              key={`handledby-${course.id}`}
-                              value={course.id}
-                            >
-                              {course.name}
-                            </MenuItem>
-                          ),
-                        )}
+                        {sortedCourses?.map((course) => (
+                          <MenuItem
+                            key={`handledby-${course.id}`}
+                            value={course.id}
+                          >
+                            {course.name}
+                          </MenuItem>
+                        ))}
                       </StyledFieldWithAnchor>
                       <StyledFieldWithAnchor
                         name="tier"
@@ -468,16 +464,14 @@ const renderForm =
                         <MenuItem key="inheritfrom-empty" value={undefined}>
                           (no choice)
                         </MenuItem>
-                        {sortedCourses?.map(
-                          (course: CourseEditorCourses_courses) => (
-                            <MenuItem
-                              key={`inheritfrom-${course.id}`}
-                              value={course.id}
-                            >
-                              {course.name}
-                            </MenuItem>
-                          ),
-                        )}
+                        {sortedCourses?.map((course) => (
+                          <MenuItem
+                            key={`inheritfrom-${course.id}`}
+                            value={course.id}
+                          >
+                            {course.name}
+                          </MenuItem>
+                        ))}
                       </StyledFieldWithAnchor>
                     </FormGroup>
                   </FormControl>
@@ -517,6 +511,19 @@ const renderForm =
     )
   }
 
+interface CourseEditFormProps {
+  course: CourseFormValues
+  studyModules?: StudyModuleDetailedFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  validationSchema: Yup.ObjectSchema<any>
+  onSubmit: (
+    values: CourseFormValues,
+    FormikHelpers: FormikHelpers<CourseFormValues>,
+  ) => void
+  onCancel: () => void
+  onDelete: (values: CourseFormValues) => void
+}
+
 const CourseEditForm = memo(
   ({
     course,
@@ -526,18 +533,7 @@ const CourseEditForm = memo(
     onSubmit,
     onCancel,
     onDelete,
-  }: {
-    course: CourseFormValues
-    studyModules?: CourseEditorStudyModules_study_modules[]
-    courses?: CourseEditorCourses_courses[]
-    validationSchema: Yup.ObjectSchema<any>
-    onSubmit: (
-      values: CourseFormValues,
-      FormikHelpers: FormikHelpers<CourseFormValues>,
-    ) => void
-    onCancel: () => void
-    onDelete: (values: CourseFormValues) => void
-  }) => {
+  }: CourseEditFormProps) => {
     const validate = useCallback(async (values: CourseFormValues) => {
       try {
         await validationSchema.validate(values, {

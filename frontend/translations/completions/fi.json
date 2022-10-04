@@ -9,5 +9,8 @@
     "nameFormCancel":"Peruuta",
     "nameFormErrorTitle": "Virhe",
     "nameFormErrorCheckCertificate": "Virhe sertifikaatin tarkistuksessa. Yritä myöhemmin uudelleen.",
-    "nameFormErrorSubmit": "Virhe tietojen lähetyksessä. Yritä myöhemmin uudelleen."
+    "nameFormErrorSubmit": "Virhe tietojen lähetyksessä. Yritä myöhemmin uudelleen.",
+    "eligibleForCertificateButNotGenerated": "Oikeutettu sertifikaattiin, mutta sitä ei ole generoitu.",
+    "certificateGeneratedTitle": "Sertifikaatti generoitu",
+    "certificateGeneratedMessage": "Sertifikaattisi on nyt generoitu! Paina 'Näytä sertifikaatti' nähdäksesi sen."
 }

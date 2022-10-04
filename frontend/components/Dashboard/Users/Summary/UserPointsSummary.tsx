@@ -1,5 +1,11 @@
 import { useState } from "react"
 
+import { sortBy } from "lodash"
+
+import BuildIcon from "@mui/icons-material/Build"
+import { Button, Dialog, Paper } from "@mui/material"
+
+import CourseEntry from "./CourseEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import {
   ActionType,
@@ -7,18 +13,13 @@ import {
   useCollapseContext,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
-import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-import sortBy from "lodash/sortBy"
 
-import BuildIcon from "@mui/icons-material/Build"
-import { Button, Dialog, Paper } from "@mui/material"
-
-import CourseEntry from "./CourseEntry"
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface UserPointsSummaryProps {
-  data?: UserSummary_user_user_course_summary[]
+  data?: UserCourseSummaryCoreFieldsFragment[]
   search?: string
 }
 
@@ -83,12 +84,11 @@ export default function UserPointsSummary({
         />
       </Paper>
       {filteredData.length === 0 ? <div>No data</div> : null}
-      {sortBy(filteredData, (stats) => stats?.course?.name).map((entry) => (
-        <CourseEntry
-          key={entry.course?.id ?? Math.random() * 9999}
-          data={entry}
-        />
-      ))}
+      {sortBy(filteredData, (stats) => stats?.course?.name).map(
+        (entry, index) => (
+          <CourseEntry key={entry.course?.id ?? index} data={entry} />
+        ),
+      )}
       <Dialog
         fullWidth
         maxWidth="md"

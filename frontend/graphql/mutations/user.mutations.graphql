@@ -1,0 +1,23 @@
+mutation UpdateUserName($first_name: String, $last_name: String) {
+  updateUserName(first_name: $first_name, last_name: $last_name) {
+    ...UserCoreFields
+  }
+}
+
+mutation UpdateResearchConsent($value: Boolean!) {
+  updateResearchConsent(value: $value) {
+    id
+  }
+}
+
+mutation UserCourseStatsSubscribe($id: ID!) {
+  createCourseStatsSubscription(id: $id) {
+    id
+  }
+}
+
+mutation UserCourseStatsUnsubscribe($id: ID!) {
+  deleteCourseStatsSubscription(id: $id) {
+    id
+  }
+}

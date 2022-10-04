@@ -1,6 +1,8 @@
 import { createContext, Dispatch, useContext } from "react"
+
 import { produce } from "immer"
-import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
+
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 export type ExerciseState = Record<string, boolean>
 export type CourseState = {
@@ -197,7 +199,7 @@ export const collapseReducer = (
 }
 
 export const createInitialState = (
-  data?: UserSummary_user_user_course_summary[],
+  data?: UserCourseSummaryCoreFieldsFragment[],
 ) =>
   data?.reduce<CollapseState>(
     (collapseState, courseEntry) => ({

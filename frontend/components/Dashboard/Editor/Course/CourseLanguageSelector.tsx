@@ -1,8 +1,10 @@
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { FieldArray } from "formik"
+
 import styled from "@emotion/styled"
 import { Button, ButtonGroup } from "@mui/material"
+
 import { initialTranslation } from "./form-validation"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
@@ -31,7 +33,7 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
     border: 1px solid #83acda;
     color: black;
   }
-  &: disabled {
+  &:disabled {
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
     background-color: #354b45;
     color: white;
@@ -41,8 +43,9 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
 `
 interface LanguageSelectorProps {
   selectedLanguage: string
-  setSelectedLanguage: any
+  setSelectedLanguage: React.Dispatch<React.SetStateAction<string>>
 }
+
 const CourseLanguageSelector = (props: LanguageSelectorProps) => {
   const { selectedLanguage, setSelectedLanguage } = props
   const t = useTranslator(CoursesTranslations)

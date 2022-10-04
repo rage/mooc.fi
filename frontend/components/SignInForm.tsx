@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 
-import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import { useLoginStateContext } from "/contexts/LoginStateContext"
-import { isSignedIn, signIn } from "/lib/authentication"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import {
   FormControl,
@@ -14,6 +8,12 @@ import {
   InputLabel,
   Link,
 } from "@mui/material"
+
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { isSignedIn, signIn } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled.form`
   padding: 1em;

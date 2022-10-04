@@ -1,3 +1,5 @@
+import styled from "@emotion/styled"
+
 import { SectionContainer } from "/components/NewLayout/Common"
 import {
   CardBody,
@@ -8,8 +10,6 @@ import {
 } from "/components/NewLayout/Common/Card"
 import NaviTranslations from "/translations/navi"
 import { useTranslator } from "/util/useTranslator"
-
-import styled from "@emotion/styled"
 
 type NaviItem = {
   title: string

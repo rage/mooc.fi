@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 

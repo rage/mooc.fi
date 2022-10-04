@@ -1,4 +1,5 @@
 import { ValidationError } from "yup"
+
 import { ExerciseData } from "../interfaces"
 import { ExerciseDataYupSchema } from "../validate"
 

@@ -1,0 +1,37 @@
+fragment StudyModuleCoreFields on StudyModule {
+  id
+  slug
+  name
+}
+
+fragment StudyModuleFields on StudyModule {
+  ...StudyModuleCoreFields
+  description
+  image
+  order
+  created_at
+  updated_at
+}
+
+fragment StudyModuleTranslationFields on StudyModuleTranslation {
+  id
+  language
+  name
+  description
+  created_at
+  updated_at
+}
+
+fragment StudyModuleDetailedFields on StudyModule {
+  ...StudyModuleFields
+  study_module_translations {
+    ...StudyModuleTranslationFields
+  }
+}
+
+fragment StudyModuleFieldsWithCourses on StudyModule {
+  ...StudyModuleFields
+  courses {
+    ...CourseFields
+  }
+}

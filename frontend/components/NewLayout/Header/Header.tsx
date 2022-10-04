@@ -1,11 +1,11 @@
+import styled from "@emotion/styled"
+import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
+
 import MoocLogo from "/components/HeaderBar/MoocLogo"
 import {
   DesktopNavigationMenu,
   MobileNavigationMenu,
 } from "/components/NewLayout/Header/NavigationMenu"
-
-import styled from "@emotion/styled"
-import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
 
 interface HideOnScrollProps {
   window?: () => Window

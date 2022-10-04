@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<any> {
           table.boolean("upcoming_active_link").defaultTo(false)
         })
       }
+      return
     })
 }
 

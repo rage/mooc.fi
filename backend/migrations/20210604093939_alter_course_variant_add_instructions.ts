@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<any> {
           table.text("instructions").nullable()
         })
       }
+      return
     })
 }
 

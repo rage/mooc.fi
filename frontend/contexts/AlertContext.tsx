@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer } from "react"
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from "react"
 
 export interface Alert {
   id?: number
@@ -27,7 +33,17 @@ export function useAlertContext() {
   return useContext(AlertContext)
 }
 
-const reducer = (state: AlertState, action: any) => {
+type AlertAction =
+  | {
+      type: "addAlert"
+      payload: Alert
+    }
+  | {
+      type: "removeAlert"
+      payload: Alert
+    }
+
+const reducer = (state: AlertState, action: AlertAction) => {
   switch (action.type) {
     case "addAlert":
       const nextAlertId = state.nextAlertId + 1
@@ -39,7 +55,7 @@ const reducer = (state: AlertState, action: any) => {
     case "removeAlert":
       return {
         ...state,
-        alerts: state.alerts.filter((alert) => alert.id !== action.payload),
+        alerts: state.alerts.filter((alert) => alert.id !== action.payload.id),
       }
     default:
       return state
@@ -48,14 +64,16 @@ const reducer = (state: AlertState, action: any) => {
 
 export const AlertProvider = React.memo(function AlertProvider({
   children,
-}: {
-  children: JSX.Element
-}) {
-  const addAlert = (alert: Alert) =>
-    dispatch({ type: "addAlert", payload: alert })
+}: React.PropsWithChildren<{}>) {
+  const addAlert = useCallback(
+    (alert: Alert) => dispatch({ type: "addAlert", payload: alert }),
+    [],
+  )
 
-  const removeAlert = (alert: Alert) =>
-    dispatch({ type: "removeAlert", payload: alert })
+  const removeAlert = useCallback(
+    (alert: Alert) => dispatch({ type: "removeAlert", payload: alert }),
+    [],
+  )
 
   const [state, dispatch] = useReducer(reducer, {
     alerts: [] as Array<Alert>,
@@ -64,5 +82,19 @@ export const AlertProvider = React.memo(function AlertProvider({
     nextAlertId: 0,
   })
 
-  return <AlertContext.Provider value={state}>{children}</AlertContext.Provider>
+  const alertContextValue = useMemo(
+    () => ({
+      alerts: state.alerts,
+      addAlert,
+      removeAlert,
+      nextAlertId: state.nextAlertId,
+    }),
+    [state.alerts, state.nextAlertId],
+  )
+
+  return (
+    <AlertContext.Provider value={alertContextValue}>
+      {children}
+    </AlertContext.Provider>
+  )
 })

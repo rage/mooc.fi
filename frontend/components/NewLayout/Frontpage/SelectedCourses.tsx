@@ -1,24 +1,23 @@
+import { useRouter } from "next/router"
+
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Typography } from "@mui/material"
-import { useRouter } from "next/router"
+
 import { formatDateTime } from "/components/DataFormatFunctions"
-import { AllCoursesQuery } from "/graphql/queries/courses"
-import {
-  AllCourses,
-  AllCourses_courses,
-} from "/static/types/generated/AllCourses"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
-import moocLogoUrl from "/static/images/moocfi.svg"
+import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import {
   CardBody,
   CardDescription,
-  CardWrapper,
   CardHeaderImage,
+  CardWrapper,
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
-import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
+import moocLogoUrl from "/static/images/moocfi.svg"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import notEmpty from "/util/notEmpty"
+
+import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
 
 const CardHeader = styled.div`
   position: relative;
@@ -46,7 +45,7 @@ const CourseCard = ({
   description,
   start_date,
   end_date,
-}: AllCourses_courses) => {
+}: CourseFieldsFragment) => {
   const date =
     start_date && end_date
       ? `${formatDateTime(start_date)} - ${formatDateTime(end_date)}`
@@ -86,7 +85,7 @@ export const CoursesGrid = styled.div`
 function SelectedCourses() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery<AllCourses>(AllCoursesQuery, {
+  const { loading, data } = useQuery(CoursesDocument, {
     variables: { language },
   })
 

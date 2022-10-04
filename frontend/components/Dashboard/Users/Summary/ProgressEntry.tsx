@@ -1,3 +1,5 @@
+import React from "react"
+
 import {
   Collapse,
   Paper,
@@ -7,25 +9,30 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material"
-import React from "react"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
-import PointsProgress from "/components/Dashboard/PointsProgress"
+
 import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
 } from "./CollapseContext"
-import { UserSummary_user_user_course_summary_course } from "/static/types/generated/UserSummary"
-import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
-import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
+import CollapseButton from "/components/Buttons/CollapseButton"
+import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
+import PointsProgress from "/components/Dashboard/PointsProgress"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
+import {
+  UserCourseProgressCoreFieldsFragment,
+  UserCourseServiceProgressCoreFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
+} from "/graphql/generated"
+
 interface ProgressEntryProps {
-  userCourseProgress?: UserCourseProgressFragment | null
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
-  course: UserSummary_user_user_course_summary_course
+  userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
+  userCourseServiceProgresses?:
+    | UserCourseServiceProgressCoreFieldsFragment[]
+    | null
+  course: UserCourseSummaryCourseFieldsFragment
 }
 
 export default function ProgressEntry({

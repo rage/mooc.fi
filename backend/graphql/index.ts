@@ -1,7 +1,8 @@
-// generated Fri Mar 19 2021 15:20:33 GMT+0200 (GMT+02:00)
+// generated Tue Sep 27 2022 11:23:58 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
+export * from "./CertificateAvailability"
 export * from "./Completion"
 export * from "./CompletionRegistered"
 export * from "./Course"

@@ -3,7 +3,7 @@ export interface Message {
   user_id: number
   course_id: string
   service_id: string
-  progress: [PointsByGroup]
+  progress: PointsByGroup[]
   message_format_version: Number
 }
 
@@ -21,9 +21,7 @@ export interface ServiceProgressPartType {
   progress: number
 }
 
-export interface ServiceProgressType extends Array<ServiceProgressPartType> {
-  [index: number]: ServiceProgressPartType
-}
+export interface ServiceProgressType extends Array<ServiceProgressPartType> {}
 
 export interface TierProgress {
   tier: number
@@ -33,6 +31,18 @@ export interface TierProgress {
   custom_id?: string
 }
 
+export interface TierProgressGroup extends TierProgress {
+  group: string
+}
+
+export interface TotalProgress {
+  total_n_points: number
+  total_max_points: number
+}
+
+export type TierProgressMap = {
+  [Tier in string]: TierProgress
+}
 export interface ExerciseCompletionPart {
   course_id: string
   exercise_id: string
@@ -40,3 +50,12 @@ export interface ExerciseCompletionPart {
   n_points?: number
   custom_id?: string
 }
+
+export type TierInfo = Record<
+  string,
+  {
+    hasTier: boolean
+    missingFromTier: number
+    exerciseCompletions: number
+  }
+>

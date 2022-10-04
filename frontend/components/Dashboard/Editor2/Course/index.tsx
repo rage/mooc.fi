@@ -1,29 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
-import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
-import { useAnchorContext } from "/contexts/AnchorContext"
-import {
-  AddCourseMutation,
-  DeleteCourseMutation,
-  UpdateCourseMutation,
-} from "/graphql/mutations/courses"
-import {
-  AllCoursesQuery,
-  AllEditorCoursesQuery,
-  CheckSlugQuery,
-  CourseEditorCoursesQuery,
-  CourseQuery,
-} from "/graphql/queries/courses"
-import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { useTranslator } from "/util/useTranslator"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 import {
@@ -36,14 +12,37 @@ import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
+import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
+import { FormStatus } from "/components/Dashboard/Editor2/types"
+import { useAnchorContext } from "/contexts/AnchorContext"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import CoursesTranslations from "/translations/courses"
+import notEmpty from "/util/notEmpty"
+import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import { useTranslator } from "/util/useTranslator"
 
-interface CourseEditorProps {
-  course?: CourseDetails_course
-  courses?: CourseEditorCourses_courses[]
-  studyModules?: CourseEditorStudyModules_study_modules[]
+import {
+  AddCourseDocument,
+  CourseEditorOtherCoursesDocument,
+  CourseFromSlugDocument,
+  CoursesDocument,
+  CourseUpsertArg,
+  DeleteCourseDocument,
+  EditorCourseDetailedFieldsFragment,
+  EditorCourseOtherCoursesFieldsFragment,
+  EditorCoursesDocument,
+  StudyModuleDetailedFieldsFragment,
+  UpdateCourseDocument,
+} from "/graphql/generated"
+
+interface CourseEditProps {
+  course?: EditorCourseDetailedFieldsFragment
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
-function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
+function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   const t = useTranslator(CoursesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const [tab, setTab] = useState(0)
@@ -56,7 +55,6 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   })
   const validationSchema = courseEditSchema({
     client,
-    checkSlug: CheckSlugQuery,
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
     t,
   })
@@ -73,18 +71,19 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
     trigger()
   }, [])
 
-  const [addCourse] = useMutation(AddCourseMutation)
-  const [updateCourse] = useMutation(UpdateCourseMutation)
-  const [deleteCourse] = useMutation(DeleteCourseMutation, {
+  const [addCourse] = useMutation(AddCourseDocument)
+  const [updateCourse] = useMutation(UpdateCourseDocument)
+  const [deleteCourse] = useMutation(DeleteCourseDocument, {
     refetchQueries: [
-      { query: AllCoursesQuery },
-      { query: AllEditorCoursesQuery },
-      { query: CourseEditorCoursesQuery },
+      { query: CoursesDocument },
+      { query: EditorCoursesDocument },
+      { query: CourseEditorOtherCoursesDocument },
     ],
   })
 
-  const onSubmit = useCallback(async (values: CourseFormValues, _?: any) => {
-    const newCourse = !values.id
+  const onSubmit = useCallback(async (values: CourseFormValues) => {
+    const isNewCourse = !values.id
+
     const mutationVariables = fromCourseForm({
       values,
       initialValues: defaultValues,
@@ -92,25 +91,33 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
     const refetchQueries = [
-      { query: AllCoursesQuery },
-      { query: AllEditorCoursesQuery },
-      { query: CourseEditorCoursesQuery },
-      !newCourse
-        ? { query: CourseQuery, variables: { slug: values.new_slug } }
+      { query: CoursesDocument },
+      { query: EditorCoursesDocument },
+      { query: CourseEditorOtherCoursesDocument },
+      !isNewCourse
+        ? {
+            query: CourseFromSlugDocument,
+            variables: { slug: values.new_slug },
+          }
         : undefined,
     ].filter(notEmpty) as PureQueryOptions[]
-
-    const courseMutation = newCourse ? addCourse : updateCourse
 
     console.log("would mutate", mutationVariables)
     try {
       setStatus({ message: t("statusSaving") })
 
       console.log("trying to save")
-      await courseMutation({
-        variables: { course: mutationVariables },
-        refetchQueries: () => refetchQueries,
-      })
+      if (isNewCourse) {
+        await addCourse({
+          variables: { course: mutationVariables },
+          refetchQueries: () => refetchQueries,
+        })
+      } else {
+        await updateCourse({
+          variables: { course: mutationVariables as CourseUpsertArg },
+          refetchQueries: () => refetchQueries,
+        })
+      }
       setStatus({ message: null })
     } catch (err: any) {
       setStatus({ message: err.message, error: true })
@@ -118,7 +125,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   }, [])
 
   const onError: SubmitErrorHandler<CourseFormValues> = useCallback(
-    (errors: Record<string, any>, _?: any) => {
+    (errors: Record<string, any>) => {
       const { anchor, anchorLink } = getFirstErrorAnchor(anchors, errors)
 
       setTab(anchor?.tab ?? 0)
@@ -136,21 +143,24 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
     await deleteCourse({ variables: { id } })
   }, [])
 
+  const contextValue = useMemo(
+    () => ({
+      status,
+      tab,
+      initialValues: defaultValues,
+      setStatus,
+      setTab,
+      onSubmit,
+      onError,
+      onCancel,
+      onDelete,
+    }),
+    [status, tab, defaultValues],
+  )
+
   return (
     <FormProvider {...methods}>
-      <EditorContext.Provider
-        value={{
-          status,
-          setStatus,
-          tab,
-          setTab,
-          onSubmit,
-          onError,
-          onCancel,
-          onDelete,
-          initialValues: defaultValues,
-        }}
-      >
+      <EditorContext.Provider value={contextValue}>
         <CourseEditForm
           course={course}
           courses={courses}

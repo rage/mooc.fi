@@ -1,11 +1,10 @@
 import {
   getProgress,
-  getRules,
   getTierInfo,
   getTierProgress,
-  TierInfo,
-  TierProgressMap,
-} from "../generateBAIUserCourseProgress"
+  hasRuleConditions,
+} from "../BAI/progress"
+import { TierInfo, TierProgressMap } from "../interfaces"
 import { ExerciseCompletionPart } from "../interfaces"
 
 const env = require(__dirname + "/../../../../../config/env.json")
@@ -161,7 +160,7 @@ describe("calculates tier progress correctly", () => {
 describe("gets the rules right", () => {
   test("not enough points", () => {
     const { hasEnoughPoints, hasEnoughExerciseCompletions, hasBasicRule } =
-      getRules({
+      hasRuleConditions({
         totalExerciseCompletions: 10,
         n_points: 6,
         points_needed: 7,
@@ -175,7 +174,7 @@ describe("gets the rules right", () => {
 
   test("not enough exercise completions", () => {
     const { hasEnoughPoints, hasEnoughExerciseCompletions, hasBasicRule } =
-      getRules({
+      hasRuleConditions({
         totalExerciseCompletions: 6,
         n_points: 10,
         points_needed: 10,
@@ -189,7 +188,7 @@ describe("gets the rules right", () => {
 
   test("hunky dory", () => {
     const { hasEnoughPoints, hasEnoughExerciseCompletions, hasBasicRule } =
-      getRules({
+      hasRuleConditions({
         totalExerciseCompletions: 20,
         n_points: 15,
         points_needed: 10,

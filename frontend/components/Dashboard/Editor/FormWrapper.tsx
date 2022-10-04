@@ -1,30 +1,33 @@
 import {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
   Dispatch,
   ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react"
+
+import { FormikErrors, FormikTouched, useFormikContext } from "formik"
+import { useConfirm } from "material-ui-confirm"
+
+import styled from "@emotion/styled"
 import {
-  Container,
-  Paper,
-  Grid,
   CircularProgress,
+  Container,
+  Grid,
   Checkbox as MUICheckbox,
+  Paper,
   Tooltip,
 } from "@mui/material"
-import { FormikErrors, FormikTouched, useFormikContext } from "formik"
+
 import { FormValues } from "./types"
-import styled from "@emotion/styled"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import CommonTranslations from "/translations/common"
 import AnchorContext from "/contexts/AnchorContext"
-import { useConfirm } from "material-ui-confirm"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/util/useTranslator"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import { useTranslator } from "/util/useTranslator"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"

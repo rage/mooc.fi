@@ -25,7 +25,7 @@ describe("exerciseConsumer/saveToDatabase", () => {
 
   it("errors on non-existing course", async () => {
     const message: Message = {
-      timestamp: "foo",
+      timestamp: "2021-04-01T10:00:00.00+02:00",
       service_id: "foo",
       course_id: "00000000000000000000000000000669",
       data: [{} as ExerciseData],
@@ -48,8 +48,8 @@ describe("exerciseConsumer/saveToDatabase", () => {
       course_id: "00000000-0000-0000-0000-000000000001",
       data: [
         {
-          name: "new exercise 5",
-          id: "customid5",
+          name: "new exercise from message",
+          id: "customidnew",
           max_points: 0,
           part: 0,
           section: 0,
@@ -57,7 +57,7 @@ describe("exerciseConsumer/saveToDatabase", () => {
       ],
       message_format_version: 1,
     }
-    const existing = await ctx.prisma.exercise.findMany({
+    const before = await ctx.prisma.exercise.findMany({
       where: {
         course_id: message.course_id,
         service_id: message.service_id,
@@ -69,23 +69,21 @@ describe("exerciseConsumer/saveToDatabase", () => {
       fail()
     }
 
-    const affected = await ctx.prisma.exercise.findMany({
+    const after = await ctx.prisma.exercise.findMany({
       where: {
         course_id: message.course_id,
         service_id: message.service_id,
       },
     })
 
-    const existingIds = existing.map((e) => e.id)
+    const beforeIds = before.map((e) => e.id)
 
-    expect(affected.length).toEqual(3)
+    expect(after.length).toEqual(4)
     expect(
-      affected
-        .filter((e) => existingIds.includes(e.id))
-        .every((e) => e.deleted),
+      after.filter((e) => beforeIds.includes(e.id)).every((e) => e.deleted),
     ).toBe(true)
 
-    const created = affected.filter((e) => !existingIds.includes(e.id))?.[0]
+    const created = after.filter((e) => !beforeIds.includes(e.id))?.[0]
     expect(created).not.toBeUndefined()
 
     expect(created.name).toBe(message.data[0].name)

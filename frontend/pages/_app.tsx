@@ -1,19 +1,7 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 
-import { AlertProvider } from "/contexts/AlertContext"
-import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
-import { LoginStateProvider } from "/contexts/LoginStateContext"
-import { useScrollToHash } from "/hooks/useScrollToHash"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import { initGA, logPageView } from "/lib/gtag"
-import withApolloClient from "/lib/with-apollo-client"
-import { fontCss } from "/src/fonts"
-import newTheme from "/src/newTheme"
-import originalTheme from "/src/theme"
-import PagesTranslations from "/translations/pages"
-import { useTranslator } from "/util/useTranslator"
 import { ConfirmProvider } from "material-ui-confirm"
 import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
@@ -27,6 +15,18 @@ import { ThemeProvider } from "@mui/material/styles"
 import createEmotionCache from "../src/createEmotionCache"
 import OriginalLayout from "./_layout"
 import NewLayout from "./_new/_layout"
+import { AlertProvider } from "/contexts/AlertContext"
+import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
+import { LoginStateProvider } from "/contexts/LoginStateContext"
+import { useScrollToHash } from "/hooks/useScrollToHash"
+import { isAdmin, isSignedIn } from "/lib/authentication"
+import { initGA, logPageView } from "/lib/gtag"
+import withApolloClient from "/lib/with-apollo-client"
+import { fontCss } from "/src/fonts"
+import newTheme from "/src/newTheme"
+import originalTheme from "/src/theme"
+import PagesTranslations from "/translations/pages"
+import { useTranslator } from "/util/useTranslator"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -45,15 +45,6 @@ export function MyApp({
   const t = useTranslator(PagesTranslations)
 
   const isNew = router.pathname?.includes("_new")
-
-  /*useEffect(() => {
-    if (pageProps?.currentUser !== state.currentUser) {
-      dispatch({
-        type: "updateUser",
-        payload: { user: pageProps?.currentUser, admin: pageProps?.admin },
-      })
-    }
-  }, [pageProps?.currentUser])*/
 
   useEffect(() => {
     initGA()
@@ -79,6 +70,14 @@ export function MyApp({
 
   const Layout = isNew ? NewLayout : OriginalLayout
   const theme = isNew ? newTheme : originalTheme
+  const loginStateContextValue = useMemo(
+    () => ({
+      loggedIn: pageProps?.signedIn,
+      admin: pageProps?.admin,
+      currentUser: pageProps?.currentUser,
+    }),
+    [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
+  )
 
   return (
     <>
@@ -92,11 +91,7 @@ export function MyApp({
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <LoginStateProvider
-            loggedIn={pageProps?.signedIn}
-            admin={pageProps?.admin}
-            currentUser={pageProps?.currentUser}
-          >
+          <LoginStateProvider value={loginStateContextValue}>
             <ConfirmProvider>
               <BreadcrumbProvider>
                 <AlertProvider>

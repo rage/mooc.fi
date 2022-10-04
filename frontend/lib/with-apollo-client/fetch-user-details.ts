@@ -1,24 +1,12 @@
-import {
-  type ApolloClient,
-  gql,
-  type NormalizedCacheObject,
-} from "@apollo/client"
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client"
 
-export const UserDetailQuery = gql`
-  query UserOverView {
-    currentUser {
-      id
-      first_name
-      last_name
-      email
-    }
-  }
-`
+import { CurrentUserDocument } from "/graphql/generated"
+
 export default async function fetchUserDetails(
   apollo: ApolloClient<NormalizedCacheObject>,
 ) {
   const { data } = await apollo.query({
-    query: UserDetailQuery,
+    query: CurrentUserDocument,
     fetchPolicy: "cache-first",
   })
   return data.currentUser

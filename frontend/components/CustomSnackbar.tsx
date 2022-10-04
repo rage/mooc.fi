@@ -35,8 +35,10 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
     opacity: 0.9;
     margin-right: 1rem;
   `
-  // actual event type: React.SyntheticEvent<Element, Event>
-  const handleClose = (event: any, reason?: SnackbarCloseReason) => {
+  const handleClose = (
+    event: Event | React.SyntheticEvent<Element, Event>,
+    reason?: SnackbarCloseReason,
+  ) => {
     event?.preventDefault()
     if (reason === "clickaway") {
       return

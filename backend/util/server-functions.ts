@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 
 import { CourseOwnership, Organization, User } from "@prisma/client"
 
-import { ApiContext } from "../api"
+import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
@@ -13,13 +13,15 @@ interface GetUserReturn {
   details: UserInfo
 }
 
+interface RequireCourseOwnershipArgs {
+  course_id: string
+  ctx: BaseContext
+}
+
 export function requireCourseOwnership({
   course_id,
   ctx,
-}: {
-  course_id: string
-  ctx: ApiContext
-}) {
+}: RequireCourseOwnershipArgs) {
   return async function (
     req: Request,
     res: Response,
@@ -50,7 +52,7 @@ export function requireCourseOwnership({
   }
 }
 
-export function requireAdmin(ctx: ApiContext) {
+export function requireAdmin(ctx: BaseContext) {
   return async function (
     req: Request,
     res: Response,
@@ -68,14 +70,14 @@ export function requireAdmin(ctx: ApiContext) {
   }
 }
 
-export function getUser({ knex, logger }: ApiContext) {
+export function getUser({ knex, logger }: BaseContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<GetUserReturn, any>> {
-    const rawToken = req.get("Authorization")
+    const rawToken = req.headers.authorization
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+    if (!rawToken?.startsWith("Bearer")) {
       return err(res.status(401).json({ message: "not logged in" }))
     }
 
@@ -144,14 +146,14 @@ export function getUser({ knex, logger }: ApiContext) {
   }
 }
 
-export function getOrganization({ knex }: ApiContext) {
+export function getOrganization({ knex }: BaseContext) {
   return async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
   ): Promise<Result<Organization, any>> {
-    const rawToken = req.get("Authorization")
+    const rawToken = req.headers.authorization
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Basic")) {
+    if (!rawToken?.startsWith("Basic")) {
       return err(res.status(401).json({ message: "Access denied." }))
     }
 

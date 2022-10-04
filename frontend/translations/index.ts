@@ -1,6 +1,7 @@
-import notEmpty from "/util/notEmpty"
 import memoize from "lodash/memoize"
 import { NextRouter } from "next/router"
+
+import notEmpty from "/util/notEmpty"
 
 const defaultLanguage = "en"
 
@@ -29,14 +30,14 @@ const isStringTranslation = (
 ): translation is BaseTranslation => typeof translation === "string"
 
 const getTranslator =
-  <T extends Translation>(dicts: Record<string, T>) =>
+  <T extends Translation>(dicts: TranslationDictionary<T>) =>
   (lng: string, router?: NextRouter): Translator<T> =>
     memoize(
       (key: keyof T, variables?: Record<string, any>) => {
         const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
         if (!translation) {
-          console.warn(`WARNING: no translation for ${lng}:${key}`)
+          console.warn(`WARNING: no translation for ${lng}:${String(key)}`)
           return key
         }
 
@@ -50,12 +51,12 @@ const getTranslator =
         // cached value is supposed to depend on possible given variables
         args.reduce((acc, curr) => {
           if (typeof curr === "function") {
-            return `${acc}_${curr.name}`
+            return `${String(acc)}_${curr.name}`
           }
           if (typeof curr === "object") {
-            return `${acc}_${JSON.stringify(curr)}`
+            return `${String(acc)}_${JSON.stringify(curr)}`
           }
-          return `${acc}_${curr}`
+          return `${String(acc)}_${String(curr)}`
         }, ""),
     )
 
@@ -69,7 +70,7 @@ const substitute = <T extends Translation>({
   translation,
   variables,
   router,
-}: Substitute<T>): any => {
+}: Substitute<T>): Translation | TranslationEntry => {
   if (isObjectTranslation(translation)) {
     return Object.keys(translation).reduce(
       (obj, key) => ({
@@ -98,7 +99,7 @@ const substitute = <T extends Translation>({
   const replaceGroups = translation.match(/{{(.*?)}}/gm)
   const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)
 
-  let ret: string = translation
+  let ret = translation
 
   if (!replaceGroups && !keyGroups) {
     return ret
@@ -124,7 +125,7 @@ const substitute = <T extends Translation>({
       ret = ret.replace(
         replaceRegExp,
         Array.isArray(queryParam) ? queryParam[0] : queryParam,
-      )
+      ) as T[keyof T] & string
     })
   }
 
@@ -145,7 +146,7 @@ const substitute = <T extends Translation>({
       )
     } else {
       const replaceRegExp = new RegExp(`{{${key}}}`, "g")
-      ret = ret.replace(replaceRegExp, `${variable}`)
+      ret = ret.replace(replaceRegExp, `${variable}`) as T[keyof T] & string
     }
   })
 

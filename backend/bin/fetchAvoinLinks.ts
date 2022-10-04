@@ -20,7 +20,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
   }
   const res = await getInfoWithCourseCode(p.course_code).catch((error) => {
     const e = new AvoinError(
-      `Error getting info with course code ${p.course_code}`,
+      `Error getting info with course code -- invalid course code?`,
       p,
       error,
     )

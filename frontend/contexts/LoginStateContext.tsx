@@ -1,13 +1,24 @@
-import React, { createContext, useContext, useEffect, useReducer } from "react"
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react"
 
-import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import { CurrentUserQuery } from "/graphql/generated"
+
+type UpdateUserPayload = {
+  user: CurrentUserQuery["currentUser"]
+  admin?: boolean
+}
 
 export interface LoginState {
   loggedIn: boolean
   logInOrOut: () => void
   admin: boolean
-  currentUser?: UserOverView_currentUser
-  updateUser: (user: UserOverView_currentUser) => void
+  currentUser?: CurrentUserQuery["currentUser"]
+  updateUser: (user: UpdateUserPayload) => void
 }
 
 export const LoginStateContext = createContext<LoginState>({
@@ -40,16 +51,13 @@ const reducer = (state: LoginState, action: any) => {
   }
 }
 
-type ProviderProps = Omit<LoginState, "logInOrOut" | "updateUser"> & {
-  children: JSX.Element
-}
+type ProviderProps = { value: Omit<LoginState, "logInOrOut" | "updateUser"> }
 
 export const LoginStateProvider = React.memo(function LoginStateProvider({
-  loggedIn,
-  admin,
-  currentUser,
+  value,
   children,
-}: ProviderProps) {
+}: React.PropsWithChildren<ProviderProps>) {
+  const { loggedIn, admin, currentUser } = value
   const logInOrOut = () => dispatch({ type: "logInOrOut" })
 
   const updateUser = (user: any) =>
@@ -72,8 +80,19 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
     }
   }, [currentUser])
 
+  const loginStateContextValue = useMemo(
+    () => ({
+      loggedIn: state.loggedIn,
+      logInOrOut,
+      admin: state.admin,
+      currentUser: state.currentUser,
+      updateUser,
+    }),
+    [state.loggedIn, state.admin, state.currentUser],
+  )
+
   return (
-    <LoginStateContext.Provider value={state}>
+    <LoginStateContext.Provider value={loginStateContextValue}>
       {children}
     </LoginStateContext.Provider>
   )

@@ -1,4 +1,5 @@
-import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
+// import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
+
 import Link from "next/link"
 import { useRouter } from "next/router"
 
@@ -13,8 +14,9 @@ import VerifiedUser from "./VerifiedUser"
 
 const isProduction = process.env.NODE_ENV === "production"
 
+// FIXME/DELETE: we don't have the verified user thing implemented for now so these types aren't generated
 interface VerifiedUsersProps {
-  data?: ProfileUserOverView_currentUser_verified_users[]
+  data?: any[] // ProfileUserOverView_currentUser_verified_users[]
 }
 
 const Container = styled(Paper)`

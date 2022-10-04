@@ -1,8 +1,8 @@
-import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import { Button, Typography } from "@mui/material"
+
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/util/useTranslator"
 
 const HeroContainer = styled.section`
   display: flex;

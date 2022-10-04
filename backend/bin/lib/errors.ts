@@ -9,15 +9,17 @@ class CustomError extends Error {
 }
 
 export class TMCError extends CustomError {
-  name = "TMCError"
+  override name = "TMCError"
 
-  constructor(message: string, readonly error?: any) {
+  constructor(message: string, error?: any)
+  constructor(message: string, data?: object, error?: any)
+  constructor(message: string, readonly data?: object, readonly error?: any) {
     super(message)
   }
 }
 
 export class DatabaseInputError extends CustomError {
-  name = "DatabaseInputError"
+  override name = "DatabaseInputError"
 
   constructor(message: string, data?: object)
   constructor(message: string, data?: object, error?: Error)
@@ -27,7 +29,7 @@ export class DatabaseInputError extends CustomError {
 }
 
 export class KafkaMessageError extends CustomError {
-  name = "KafkaMessageError"
+  override name = "KafkaMessageError"
 
   constructor(message: string, kafkaMessage?: object)
   constructor(message: string, kafkaMessage?: object, error?: Error)
@@ -41,7 +43,7 @@ export class KafkaMessageError extends CustomError {
 }
 
 export class KafkaCommitError extends CustomError {
-  name = "KafkaCommitError"
+  override name = "KafkaCommitError"
 
   constructor(message: string, readonly error?: Error) {
     super(message)
@@ -49,7 +51,7 @@ export class KafkaCommitError extends CustomError {
 }
 
 export class KafkaError extends CustomError {
-  name = "KafkaError"
+  override name = "KafkaError"
 
   constructor(message: string, readonly error: any) {
     super(`${message}; original message: ${error?.message}`)
@@ -57,7 +59,7 @@ export class KafkaError extends CustomError {
 }
 
 export class ValidationError extends CustomError {
-  name = "ValidationError"
+  override name = "ValidationError"
   data_string: string
 
   constructor(message: string, readonly data: object, readonly error?: Error) {
@@ -67,7 +69,7 @@ export class ValidationError extends CustomError {
 }
 
 export class SlackPosterError extends CustomError {
-  name = "SlackPosterError"
+  override name = "SlackPosterError"
 
   constructor(message: string, readonly error: Error) {
     super(message)
@@ -75,15 +77,17 @@ export class SlackPosterError extends CustomError {
 }
 
 export class EmailTemplaterError extends CustomError {
-  name = "EmailTemplaterError"
+  override name = "EmailTemplaterError"
 
-  constructor(message: string, readonly error?: Error) {
+  constructor(message: string, error?: Error)
+  constructor(message: string, data?: object, error?: Error)
+  constructor(message: string, readonly data?: object, readonly error?: Error) {
     super(message)
   }
 }
 
 export class AvoinError extends CustomError {
-  name = "AvoinError"
+  override name = "AvoinError"
 
   constructor(message: string, readonly data: object, readonly error?: Error) {
     super(message)
@@ -91,15 +95,30 @@ export class AvoinError extends CustomError {
 }
 
 export class RemoveDuplicateCompletionsError extends CustomError {
-  name = "RemoveDuplicateCompletionsError"
+  override name = "RemoveDuplicateCompletionsError"
 
   constructor(message: string, readonly error?: Error) {
     super(message)
   }
 }
 
+export class RemoveDuplicateExerciseCompletionsError extends CustomError {
+  override name = "RemoveDuplicateExerciseCompletionsError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}
+
+export class PruneOldStoredDataError extends CustomError {
+  override name = "PruneOldStoredDataError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}
 export class CourseStatsEmailerError extends CustomError {
-  name = "CourseStatsEmailerError"
+  override name = "CourseStatsEmailerError"
 
   constructor(message: string, readonly Erorr?: Error) {
     super(message)

@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<void> {
           table.boolean("attempted").nullable().defaultTo(null)
         })
       }
+      return
     })
 }
 

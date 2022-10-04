@@ -3,6 +3,7 @@ import { DateTime } from "luxon"
 import { err, ok, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "../common/kafkaContext"
+import { parseTimestamp } from "../util"
 import { ExerciseData, Message } from "./interfaces"
 
 export const saveToDatabase = async (
@@ -11,6 +12,19 @@ export const saveToDatabase = async (
 ): Promise<Result<string, Error>> => {
   const { prisma } = context
 
+  let timestamp
+
+  try {
+    timestamp = parseTimestamp(message.timestamp)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "Invalid date",
+        message,
+        e instanceof Error ? e : new Error(e as string),
+      ),
+    )
+  }
   if (!message.course_id) {
     return err(new DatabaseInputError("no course specified", message))
   }
@@ -18,12 +32,7 @@ export const saveToDatabase = async (
     where: { id: message.course_id },
   })
   if (!existingCourse) {
-    return err(
-      new DatabaseInputError(
-        `Given course does not exist: id ${message.course_id}`,
-        message,
-      ),
-    )
+    return err(new DatabaseInputError(`Given course does not exist`, message))
   }
 
   for (const exercise of message.data) {
@@ -31,7 +40,7 @@ export const saveToDatabase = async (
       context,
       exercise,
       course_id: message.course_id,
-      timestamp: DateTime.fromISO(message.timestamp),
+      timestamp,
       service_id: message.service_id,
     })
   }

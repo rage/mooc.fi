@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 
-import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
-import { useLoginStateContext } from "/contexts/LoginStateContext"
-import { signOut } from "/lib/authentication"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
@@ -29,6 +24,12 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material"
+
+import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { signOut } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 function useActiveTab() {
   const { pathname } = useRouter()

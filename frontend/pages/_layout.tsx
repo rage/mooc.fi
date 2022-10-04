@@ -1,4 +1,8 @@
-import { ReactNode } from "react"
+import { PropsWithChildren } from "react"
+
+import { useRouter } from "next/router"
+
+import styled from "@emotion/styled"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
@@ -6,9 +10,6 @@ import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
-import { useRouter } from "next/router"
-
-import styled from "@emotion/styled"
 
 const FooterDownPusherWrapper = styled.div`
   display: flex;
@@ -17,7 +18,7 @@ const FooterDownPusherWrapper = styled.div`
   justify-content: space-between;
 `
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)

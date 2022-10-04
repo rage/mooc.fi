@@ -51,20 +51,6 @@ Object {
             "n_points": 4,
             "timestamp": "1900-01-01T08:00:00.000Z",
           },
-          Object {
-            "attempted": true,
-            "completed": false,
-            "exercise_completion_required_actions": Array [
-              Object {
-                "id": "66666666-0000-0000-0000-000000000004",
-                "value": "existing",
-              },
-            ],
-            "exercise_id": "50000000-0000-0000-0000-000000000004",
-            "id": "60000000-0000-0000-0000-000000000004",
-            "n_points": 1,
-            "timestamp": "2000-01-01T08:00:00.000Z",
-          },
         ],
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
@@ -100,7 +86,7 @@ Object {
             "exercise_id": "50000000-0000-0000-0000-000000000001",
             "id": "60000000-0000-0000-0000-000000000001",
             "n_points": 6,
-            "timestamp": "1900-01-01T08:00:00.000Z",
+            "timestamp": "2000-02-01T08:00:00.000Z",
           },
           Object {
             "attempted": null,

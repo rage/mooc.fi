@@ -1,6 +1,6 @@
-import { Grid, IconButton } from "@mui/material"
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft"
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
+import { Grid, IconButton } from "@mui/material"
 
 interface PaginatorProps {
   getNext: () => void

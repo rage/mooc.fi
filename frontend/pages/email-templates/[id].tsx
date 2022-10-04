@@ -1,36 +1,91 @@
 import { useState } from "react"
 
+import { NextSeo } from "next-seo"
+import Router from "next/router"
+
+import { useApolloClient, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import {
+  Button,
+  Card,
+  CardContent,
+  Collapse,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material"
+
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
-import { SubtitleNoBackground } from "/components/Text/headers"
-import {
-  DeleteEmailTemplateMutation,
-  UpdateEmailTemplateMutation,
-} from "/graphql/mutations/email-templates"
-import { EmailTemplateQuery } from "/graphql/queries/email-templates"
+import { CardTitle, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { EmailTemplate } from "/static/types/generated/EmailTemplate"
-import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { NextSeo } from "next-seo"
-import Router from "next/router"
-import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 
-import { useApolloClient, useQuery } from "@apollo/client"
-import { Button, Collapse, Paper, TextField } from "@mui/material"
+import {
+  DeleteEmailTemplateDocument,
+  EmailTemplateDocument,
+  UpdateEmailTemplateDocument,
+} from "/graphql/generated"
 
-const templateValues = [
-  "grade",
-  "completion_link",
-  "started_course_count",
-  "completed_course_count",
-  "at_least_one_exercise_count",
-  "current_date",
+interface TemplateType {
+  name: string
+  description?: string
+  types?: string[]
+}
+
+const templateNames: Record<string, string> = {
+  "course-stats": "Course stats",
+  completion: "Completion",
+  threshold: "Threshold",
+}
+
+const templateValues: Array<TemplateType> = [
+  {
+    name: "grade",
+    description: "Grade given to student, taken from the completion",
+  },
+  {
+    name: "completion_link",
+    description: "Link to register the completion for the course",
+  },
+  {
+    name: "started_course_count",
+    description:
+      "Number of distinct students that have started this course, ie. have settings attached to them - not necessarily completed any exercises",
+    types: ["course-stats"],
+  },
+  {
+    name: "completed_course_count",
+    description: "Number of distinct students that have completed this course",
+    types: ["course-stats"],
+  },
+  {
+    name: "at_least_one_exercise_count",
+    description:
+      "Number of distinct students that have completed at least one exercise in this course",
+    types: ["course-stats"],
+  },
+  {
+    name: "at_least_one_exercise_but_not_completed_emails",
+    description:
+      "Emails of students that have completed at least one exercise in this course, but not completed the course. Requires ownership of the course to use.",
+    types: ["course-stats"],
+  },
+  {
+    name: "current_date",
+    description: "Current date",
+  },
 ]
+
+const TemplateList = styled.div`
+  * + * {
+    margin-top: 0.5rem;
+  }
+`
 
 const EmailTemplateView = () => {
   // TODO: Get rid of any
@@ -40,10 +95,10 @@ const EmailTemplateView = () => {
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
   const [exerciseThreshold, setExerciseThreshold] = useState<
-    Number | null | undefined
+    number | null | undefined
   >()
   const [pointsThreshold, setPointsThreshold] = useState<
-    Number | null | undefined
+    number | null | undefined
   >()
   const [templateType, setTemplateType] = useState<string | null | undefined>()
   const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
@@ -62,8 +117,8 @@ const EmailTemplateView = () => {
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
-  const { data, loading, error } = useQuery<EmailTemplate>(EmailTemplateQuery, {
-    variables: { id: id },
+  const { data, loading, error } = useQuery(EmailTemplateDocument, {
+    variables: { id },
   })
 
   useBreadcrumbs([
@@ -209,18 +264,52 @@ const EmailTemplateView = () => {
                 onClick={() => setIsHelpOpen((s) => !s)}
               />
               <Collapse in={isHelpOpen}>
-                <p>
-                  You can use template values in the email body by adding them
-                  inside double curly brackets, like <code>{`{{ this }}`}</code>
-                  . Available template values:
-                  <ul>
-                    {templateValues.map((value) => (
-                      <li>
-                        <code>{value}</code>
-                      </li>
-                    ))}
-                  </ul>
-                </p>
+                <div style={{ margin: "0.5rem", padding: "0.5rem" }}>
+                  <Typography variant="subtitle2">
+                    You can use these template values in the email:
+                  </Typography>
+                  <TemplateList>
+                    {templateValues
+                      .filter((value) => {
+                        if (value.types?.length && templateType) {
+                          return value.types.includes(templateType)
+                        }
+                        return true
+                      })
+                      .map((value) => (
+                        <Card key={value.name} style={{ padding: "0.5rem" }}>
+                          <CardTitle>
+                            <code>
+                              {`{{ `}
+                              {value.name}
+                              {` }}`}
+                            </code>
+                          </CardTitle>
+                          {(value.description || value.types?.length) && (
+                            <CardContent>
+                              <Typography variant="body1">
+                                {value.description}
+                              </Typography>
+                              {value.types?.length && (
+                                <p>
+                                  Limited to template type
+                                  {value.types.length > 1 ? "s" : ""}{" "}
+                                  {value.types.map((type, index) => (
+                                    <>
+                                      {index > 0 ? ", " : ""}
+                                      <strong>
+                                        {templateNames[type] ?? type}
+                                      </strong>
+                                    </>
+                                  ))}
+                                </p>
+                              )}
+                            </CardContent>
+                          )}
+                        </Card>
+                      ))}
+                  </TemplateList>
+                </div>
               </Collapse>
               <br></br>
               <br></br>
@@ -230,8 +319,8 @@ const EmailTemplateView = () => {
                 onClick={async () => {
                   if (emailTemplate == null) return
                   try {
-                    const { data } = await client.mutate<UpdateEmailTemplate>({
-                      mutation: UpdateEmailTemplateMutation,
+                    const { data } = await client.mutate({
+                      mutation: UpdateEmailTemplateDocument,
                       variables: {
                         id: emailTemplate.id,
                         name: name,
@@ -267,8 +356,8 @@ const EmailTemplateView = () => {
                 onClick={async () => {
                   if (emailTemplate == null) return
                   try {
-                    const { data } = await client.mutate<DeleteEmailTemplate>({
-                      mutation: DeleteEmailTemplateMutation,
+                    const { data } = await client.mutate({
+                      mutation: DeleteEmailTemplateDocument,
                       variables: { id: emailTemplate.id },
                     })
                     console.log(data)

@@ -52,7 +52,7 @@ export class CompletedCourseCount extends Template {
           SELECT 
             COUNT(DISTINCT user_id) 
           FROM completion 
-          WHERE course_id = ${course.id};
+          WHERE course_id = ${course.completions_handled_by_id ?? course.id};
         `
         )?.[0]?.count
 
@@ -101,5 +101,59 @@ export class AtLeastOneExerciseCount extends Template {
     )
 
     return atLeastOneExercise
+  }
+}
+
+export class AtLeastOneExerciseButNotCompletedEmails extends Template {
+  async resolve() {
+    const course = await this.prisma.course.findFirst({
+      where: { course_stats_email: { id: this.emailTemplate.id } },
+    })
+
+    if (!course) {
+      return ""
+    }
+
+    const courseOwnership = await this.prisma.courseOwnership.findFirst({
+      where: {
+        course_id: course.id,
+        user_id: this.user.id,
+      },
+    })
+
+    if (!courseOwnership) {
+      throw new Error("no permission - user is not the owner of this course")
+    }
+
+    const atLeastOneExerciseButNotCompletedEmails = await redisify<string>(
+      async () => {
+        const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
+            SELECT DISTINCT u.email
+              FROM exercise_completion ec
+              JOIN exercise e ON ec.exercise_id = e.id
+              JOIN "user" u ON ec.user_id = u.id
+              WHERE 
+                e.course_id = ${course.id} 
+              AND
+                u.id NOT IN (
+                  SELECT DISTINCT(user_id)
+                    FROM completion c
+                    WHERE c.course_id = ${
+                      course.completions_handled_by_id ?? course.id
+                    }
+                    AND user_id IS NOT NULL
+                );
+          `
+
+        return result?.map((entry) => entry.email).join("\n")
+      },
+      {
+        prefix: "atleastoneexercisebutnotcompletedemails",
+        expireTime: 60 * 60, // hour,
+        key: `${course.id}`,
+      },
+    )
+
+    return atLeastOneExerciseButNotCompletedEmails
   }
 }

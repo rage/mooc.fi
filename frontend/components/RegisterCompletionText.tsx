@@ -1,8 +1,8 @@
-import RegisterCompletionTranslations from "/translations/register-completion"
-import { useTranslator } from "/util/useTranslator"
-
 import styled from "@emotion/styled"
 import { Button, Paper, Tooltip, Typography } from "@mui/material"
+
+import RegisterCompletionTranslations from "/translations/register-completion"
+import { useTranslator } from "/util/useTranslator"
 
 const LinkTooltip = styled(Tooltip)`
   background-color: white;
@@ -62,7 +62,7 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   )
 }
 
-type RegProps = {
+interface RegisterCompletionTextProps {
   email: String
   link: string
   tiers: any
@@ -73,8 +73,9 @@ function RegisterCompletionText({
   link,
   tiers,
   onRegistrationClick,
-}: RegProps) {
+}: RegisterCompletionTextProps) {
   const t = useTranslator(RegisterCompletionTranslations)
+
   return (
     <RegisterCompletionContainer>
       <Typography variant="body1" paragraph>

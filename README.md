@@ -1,20 +1,16 @@
-## Development environment
+# Development environment
 
-Note: Before starting development, please run the following command on the repo root:
+## Requirements
 
-```bash
-npm ci
-```
+Create `.env` files for backend and frontend. See examples and ask your local boffin for details.
 
-frontend:
+Install `docker-compose`, if not already installed.
 
-```bash
-cd frontend
-npm ci
-npm run dev
-```
+## Development workflow
 
-backend:
+Run `npm ci` in the each of the root, backend and frontend directories to install dependencies.
+
+Create separate shells for the database container, backend and frontend:
 
 ```bash
 cd backend
@@ -22,36 +18,41 @@ docker-compose up
 ```
 
 ```bash
+cd frontend
+npm run dev
+```
+
+```bash
 cd backend
-npm ci
 npm run migrate
 npm run dev
 ```
 
-## Generating GraphQL types for frontend
+If the database doesn't seem to do anything, ie. no messages after the initial ones after running `docker-compose up` and the database queries are not getting through, run `docker-compose down` and try again. You can always run the database container in detached mode (`-d`) but then you won't see the logs live.
 
-If you make changes to the GraphQL schema or the queries in the frontend, you probably need to regenerate the Typescript types. Run `npm run generate-graphql-types` in the frontend folder.
+Run `npm run prettier` in the root directory before committing. The commit runs hooks to check this as well as some linters, type checks etc.
 
-If you're getting errors about mismatching GraphQL versions, then try `npm i --legacy-peer-deps --save-dev apollo` to force it. This is because `apollo-tooling` keeps on packaging some old versions of dependencies instead of using the newer ones available. 
-## Using installed `librdkafka` to speed up backend development
+<details>
+<summary>Using pre-built <code>librdkafka</code> to speed up backend development</summary>
 
-By default, `node-rdkafka` builds `librdkafka` from the source. This can take minutes on a bad day and can slow development down quite considerably. However, there's an option to use the version installed locally.
+By default, `node-rdkafka` builds `librdkafka` from the source. This can take minutes on a bad day and can slow development down quite considerably, especially when you're working with different branches with different dependencies and need to run `npm ci` often. However, there's an option to use the version installed locally.
 
 Do this in some other directory than the project one:
 
-```bash 
-wget https://github.com/edenhill/librdkafka/archive/v1.4.0.tar.gz  -O - | tar -xz
-cd librdkafka-1.4.0
+```bash
+wget https://github.com/edenhill/librdkafka/archive/v1.8.2.tar.gz  -O - | tar -xz
+cd librdkafka-1.8.2
 ./configure --prefix=/usr
 make && make install
 ```
 
-(Ubuntu 20.04 and later seem to require v1.5.0, so change accordingly.)
-
-You may have to do some of that as root. Alternatively, you can install a prebuilt package - see [here](https://github.com/edenhill/librdkafka) for more information. Just be sure to install version >1.4.0.
+You may have to do some of that as root. Alternatively, you can install a prebuilt package - see [here](https://github.com/edenhill/librdkafka) for more information.
 
 Set the env `BUILD_LIBRDKAFKA=0` when doing `npm ci` or similar on the backend to skip the build.
 
-## Documentation
+</details>
 
-[Kafka](backend/docs/kafka.md)
+## More documentation
+
+- [Kafka](docs/kafka.md)
+- [GraphQL](docs/graphql.md)

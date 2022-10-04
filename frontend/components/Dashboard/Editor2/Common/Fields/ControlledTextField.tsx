@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react"
 
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import CommonTranslations from "/translations/common"
-import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/util/useTranslator"
-import get from "lodash/get"
-import omit from "lodash/omit"
-import set from "lodash/set"
+import { omit } from "lodash"
+import { get, set } from "lodash"
 import {
   FieldValues,
   Path,
@@ -22,6 +13,15 @@ import {
 import HelpIcon from "@mui/icons-material/Help"
 import HistoryIcon from "@mui/icons-material/History"
 import { IconButton, TextField, Tooltip } from "@mui/material"
+
+import {
+  ControlledFieldProps,
+  FieldController,
+} from "/components/Dashboard/Editor2/Common/Fields"
+import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+import CommonTranslations from "/translations/common"
+import flattenKeys from "/util/flattenKeys"
+import { useTranslator } from "/util/useTranslator"
 
 export interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string

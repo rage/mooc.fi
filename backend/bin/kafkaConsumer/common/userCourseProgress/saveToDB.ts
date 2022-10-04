@@ -1,10 +1,15 @@
 import { DateTime } from "luxon"
 
-import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
+import {
+  User,
+  UserCourseProgress,
+  UserCourseServiceProgress,
+} from "@prisma/client"
 
 import { err, ok, Result } from "../../../../util/result"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
-import { DatabaseInputError } from "../../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
@@ -16,21 +21,44 @@ export const saveToDatabase = async (
 ): Promise<Result<string, Error>> => {
   const { prisma, knex } = context
 
-  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+  let timestamp
 
-  const user = await getUserWithRaceCondition(context, message.user_id)
+  try {
+    timestamp = parseTimestamp(message.timestamp)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "Invalid date",
+        message,
+        e instanceof Error ? e : new Error(e as string),
+      ),
+    )
+  }
+
+  let user: User | undefined | null
+
+  try {
+    user = await getUserWithRaceCondition(context, message.user_id)
+  } catch (e) {
+    return err(
+      new DatabaseInputError(
+        "User not found",
+        message,
+        e instanceof Error ? e : new TMCError(e as string),
+      ),
+    )
+  }
+
+  if (!user) {
+    return err(new DatabaseInputError(`Invalid user`, message))
+  }
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
   })
 
-  if (!user || !course) {
-    return err(
-      new DatabaseInputError(
-        `Invalid user or course: user ${message.user_id}, course ${message.course_id}`,
-        message,
-      ),
-    )
+  if (!course) {
+    return err(new DatabaseInputError(`Invalid course`, message))
   }
 
   const userCourseProgresses = await knex<any, UserCourseProgress[]>(
@@ -59,6 +87,7 @@ export const saveToDatabase = async (
     })
   }
 
+  // TODO: here we could ensure the right service progress to searching for only the ones connected to the main course progress
   const userCourseServiceProgresses = await knex<
     any,
     UserCourseServiceProgress[]
@@ -130,5 +159,5 @@ export const saveToDatabase = async (
     MessageType.PROGRESS_UPDATED,
   )
 
-  return ok("Saved to DB succesfully")
+  return ok("Saved to DB successfully")
 }

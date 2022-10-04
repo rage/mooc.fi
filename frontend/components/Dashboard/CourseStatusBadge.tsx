@@ -1,10 +1,11 @@
-import { Chip, ChipProps } from "@mui/material"
-import CheckCircle from "@mui/icons-material/CheckCircle"
-import Schedule from "@mui/icons-material/Schedule"
-import AlarmOff from "@mui/icons-material/AlarmOff"
-import Error from "@mui/icons-material/Error"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import styled from "@emotion/styled"
+import AlarmOff from "@mui/icons-material/AlarmOff"
+import CheckCircle from "@mui/icons-material/CheckCircle"
+import Error from "@mui/icons-material/Error"
+import Schedule from "@mui/icons-material/Schedule"
+import { Chip, ChipProps } from "@mui/material"
+
+import { CourseStatus } from "/graphql/generated"
 
 const StatusBadge = styled(Chip)<{ status?: CourseStatus | null }>`
   background-color: ${({ status }) =>

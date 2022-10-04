@@ -1,13 +1,12 @@
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
-import { AllModules_study_modules } from "/static/types/generated/AllModules"
-import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import { mime } from "/util/imageUtils"
 
-const ModuleImage = ({
-  module,
-}: {
-  module?: AllModules_study_modules | AllModules_study_modules_with_courses
-}) => {
+import { StudyModuleFieldsFragment } from "/graphql/generated"
+
+interface ModuleImageProps {
+  module: StudyModuleFieldsFragment
+}
+const ModuleImage = ({ module }: ModuleImageProps) => {
   const imageUrl = module?.image ?? (module ? `${module.slug}.jpg` : "")
 
   try {

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
+
 import {
   CardBody,
   CardDescription,
@@ -8,10 +9,11 @@ import {
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
-import { AllModules_study_modules } from "/static/types/generated/AllModules"
+
+import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 interface ModuleCardProps {
-  module: AllModules_study_modules
+  module: StudyModuleFieldsFragment
   hue?: number
   brightness?: number
 }

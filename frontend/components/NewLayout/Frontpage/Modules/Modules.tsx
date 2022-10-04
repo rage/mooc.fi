@@ -1,15 +1,16 @@
-import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
-import { ModuleCard } from "/components/NewLayout/Frontpage/Modules/ModuleCard"
-import { AllModulesQuery } from "/graphql/queries/study-modules"
-import { AllModules } from "/static/types/generated/AllModules"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
+
+import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
+import { ModuleCard } from "/components/NewLayout/Frontpage/Modules/ModuleCard"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import notEmpty from "/util/notEmpty"
+
+import { StudyModulesDocument } from "/graphql/generated"
 
 const ModulesGrid = styled.div`
   display: grid;
@@ -92,7 +93,7 @@ const Arrow = styled.div`
 function Modules() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery<AllModules>(AllModulesQuery, {
+  const { loading, data } = useQuery(StudyModulesDocument, {
     variables: { language },
   })
 
