@@ -6,7 +6,10 @@ import styled from "@emotion/styled"
 import { Button } from "@mui/material"
 
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
-import { ModuleCard } from "/components/NewLayout/Frontpage/Modules/ModuleCard"
+import {
+  ModuleCard,
+  ModuleCardSkeleton,
+} from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 
@@ -100,8 +103,14 @@ function Modules() {
   return (
     <SectionContainer>
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
-      {loading && <p>Loading...</p>}
       <ModulesGrid>
+        {loading && (
+          <>
+            <ModuleCardSkeleton key="module-skeleton-1" />
+            <ModuleCardSkeleton key="module-skeleton-2" />
+            <ModuleCardSkeleton key="module-skeleton-3" />
+          </>
+        )}
         {data?.study_modules?.filter(notEmpty).map((module, index) => (
           <ModuleCard key={`module-${index}`} module={module} hue={100} />
         ))}

@@ -1,5 +1,8 @@
+import React from "react"
+
 import { memoize } from "lodash"
 import Link from "next/link"
+import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
@@ -83,7 +86,11 @@ const BreadcrumbNonLink = styled.div`
   ${BreadcrumbArrowStyle}
 `
 
-function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
+const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
+  href,
+  label,
+  translation,
+}) => {
   const t = useTranslator(BreadcrumbsTranslations)
 
   const _translation = isTranslationKey<typeof BreadcrumbsTranslations>(
@@ -115,7 +122,16 @@ const createKey = memoize(
 )
 
 export function Breadcrumbs() {
+  const router = useRouter()
   const { breadcrumbs } = useBreadcrumbContext()
+
+  const isHomePage = !!router?.asPath
+    ?.replace(/#(.*)/, "")
+    .match(/^(?:\/_new)?\/?$/)
+
+  if (isHomePage) {
+    return null
+  }
 
   return (
     <BreadcrumbList>

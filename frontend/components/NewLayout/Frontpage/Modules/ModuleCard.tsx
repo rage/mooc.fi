@@ -1,11 +1,12 @@
 import styled from "@emotion/styled"
-import { Button } from "@mui/material"
+import { Button, Skeleton } from "@mui/material"
 
 import {
   CardBody,
   CardDescription,
   CardHeader,
   CardHeaderBackground,
+  CardHeaderBackgroundSkeleton,
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
@@ -24,7 +25,8 @@ const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
 `
 
 const CardActionArea = styled.div`
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
 `
 
 export const ModuleCard = ({
@@ -47,6 +49,29 @@ export const ModuleCard = ({
         <CardActionArea>
           <ModuleButton hue={hue} brightness={brightness}>
             Kokonaisuuden tiedot
+          </ModuleButton>
+        </CardActionArea>
+      </CardBody>
+    </CardWrapper>
+  )
+}
+
+export const ModuleCardSkeleton = () => {
+  return (
+    <CardWrapper>
+      <CardHeader>
+        <Skeleton width="40%" />
+        <CardHeaderBackgroundSkeleton />
+      </CardHeader>
+      <CardBody>
+        <CardDescription>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton width="30%" />
+        </CardDescription>
+        <CardActionArea>
+          <ModuleButton disabled={true} style={{ width: "40%" }}>
+            <Skeleton width="100%" />
           </ModuleButton>
         </CardActionArea>
       </CardBody>

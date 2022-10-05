@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
+import React, {
+  forwardRef,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -156,49 +162,54 @@ interface MobileMenuItemProps {
   [key: string]: any
 }
 
-const MobileMenuItem = ({
-  icon,
-  text,
-  href,
-  onClick = () => void 0,
-  ...props
-}: MobileMenuItemProps) => {
-  const Item = () => (
-    <MenuItem onClick={onClick}>
-      <ListItemIcon>
-        <FontAwesomeIcon icon={icon} />
-      </ListItemIcon>
-      <ListItemText>{text}</ListItemText>
-    </MenuItem>
-  )
+const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
+  ({ icon, text, href, onClick = () => void 0, ...props }, ref) => {
+    const WrapLink: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
+      children,
+    }) => {
+      if (href) {
+        return (
+          <Link href={href} passHref {...props}>
+            <MenuItem onClick={onClick} ref={ref}>
+              {children}
+            </MenuItem>
+          </Link>
+        )
+      }
+      return (
+        <MenuItem onClick={onClick} ref={ref} {...props}>
+          {children}
+        </MenuItem>
+      )
+    }
 
-  if (href) {
     return (
-      <Link href={href} passHref key={`menu-${text}`} {...props}>
-        <Item />
-      </Link>
+      <WrapLink>
+        <ListItemIcon>
+          <FontAwesomeIcon icon={icon} />
+        </ListItemIcon>
+        <ListItemText>{text}</ListItemText>
+      </WrapLink>
     )
-  }
-  return <Item {...props} key={`menu-${text}`} />
-}
+  },
+)
 
-const MobileNavigationMenu = () => {
+const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [anchor, setAnchor] = useState<
-    (EventTarget & HTMLButtonElement) | null
-  >(null)
+  const anchor = useRef<(EventTarget & HTMLButtonElement) | null>(null)
+
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const client = useApolloClient()
 
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     setIsOpen((value) => !value)
-    setAnchor(event.currentTarget)
+    anchor.current = event.currentTarget
   }
 
   const onClose = () => {
     setIsOpen(false)
-    setAnchor(null)
+    anchor.current = null
   }
 
   useEffect(() => {
@@ -214,70 +225,6 @@ const MobileNavigationMenu = () => {
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : t("myProfile")
 
-  const menuItems = useMemo(() => {
-    const items = [
-      <MenuItem key="menu-language-switch">
-        <LanguageSwitch />
-      </MenuItem>,
-      <MobileMenuItem
-        href="/_new/courses"
-        icon={faChalkboardTeacher}
-        text={t("courses")}
-        onClick={onClose}
-      />,
-      <MobileMenuItem
-        href="/_new/study-modules"
-        icon={faList}
-        text={t("modules")}
-        onClick={onClose}
-      />,
-      <Divider key="menu-divider-1" />,
-    ]
-
-    if (admin) {
-      items.push(
-        <MobileMenuItem
-          href="/_new/admin"
-          icon={faDashboard}
-          text="Admin"
-          onClick={onClose}
-        />,
-      )
-      items.push(<Divider key="menu-divider-admin" />)
-    }
-
-    if (loggedIn) {
-      items.push(
-        <MobileMenuItem
-          href="/_new/profile"
-          icon={faUser}
-          text={userDisplayName}
-          onClick={onClose}
-        />,
-      )
-      items.push(
-        <MobileMenuItem
-          icon={faSignOut}
-          text={t("logout")}
-          onClick={() => signOut(client, logInOrOut)}
-        />,
-      )
-    } else {
-      items.push(
-        <Link href="/_new/sign-in" passHref key="menu-login">
-          <MenuItem onClick={onClose}>{t("loginShort")}</MenuItem>
-        </Link>,
-      )
-      items.push(
-        <Link href="/_new/sign-up" prefetch={false} passHref key="menu-signup">
-          <MenuItem onClick={onClose}>{t("signUp")}</MenuItem>
-        </Link>,
-      )
-    }
-
-    return items
-  }, [admin, loggedIn])
-
   // add to menu: profile, sign out / sign in, sign up
   return (
     <MobileMenuContainer>
@@ -288,12 +235,69 @@ const MobileNavigationMenu = () => {
         open={isOpen}
         keepMounted={false}
         onClose={onClose}
-        anchorEl={anchor}
+        anchorEl={anchor.current}
+        ref={ref}
       >
-        {menuItems}
+        <MenuItem key="mobile-menu-language-switch">
+          <LanguageSwitch />
+        </MenuItem>
+        <MobileMenuItem
+          key="mobile-menu-courses"
+          href="/_new/courses"
+          icon={faChalkboardTeacher}
+          text={t("courses")}
+          onClick={onClose}
+        />
+        <MobileMenuItem
+          key="mobile-menu-modules"
+          href="/_new/study-modules"
+          icon={faList}
+          text={t("modules")}
+          onClick={onClose}
+        />
+        <Divider key="menu-divider-1" />
+        {admin && [
+          <MobileMenuItem
+            key="mobile-menu-admin"
+            href="/_new/admin"
+            icon={faDashboard}
+            text="Admin"
+            onClick={onClose}
+          />,
+          <Divider key="menu-divider-admin" />,
+        ]}
+        {loggedIn
+          ? [
+              <MobileMenuItem
+                key="mobile-menu-profile"
+                href="/_new/profile"
+                icon={faUser}
+                text={userDisplayName}
+                onClick={onClose}
+              />,
+              <MobileMenuItem
+                key="mobile-menu-logout"
+                icon={faSignOut}
+                text={t("logout")}
+                onClick={() => signOut(client, logInOrOut)}
+              />,
+            ]
+          : [
+              <Link href="/_new/sign-in" passHref key="menu-login">
+                <MenuItem onClick={onClose}>{t("loginShort")}</MenuItem>
+              </Link>,
+              <Link
+                href="/_new/sign-up"
+                prefetch={false}
+                passHref
+                key="menu-signup"
+              >
+                <MenuItem onClick={onClose}>{t("signUp")}</MenuItem>
+              </Link>,
+            ]}
       </Menu>
     </MobileMenuContainer>
   )
-}
+})
 
 export { DesktopNavigationMenu, MobileNavigationMenu }
