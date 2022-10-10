@@ -283,7 +283,8 @@ export const User = objectType({
           .exercise_completions({
             where: {
               ...(!includeDeletedExercises && {
-                exercise: { deleted: { not: true } },
+                // same here: { deleted: { not: true } } will skip null
+                exercise: { OR: [{ deleted: false }, { deleted: null }] },
               }),
             },
             distinct: "exercise_id",
@@ -312,7 +313,8 @@ export const User = objectType({
               where ec.user_id = ${parent.id}
               ${
                 !includeDeletedExercises
-                  ? Prisma.sql`and e.deleted <> true`
+                  ? // maybe should check if it is not null, but that should not be possible anymore
+                    Prisma.sql`and e.deleted <> true`
                   : Prisma.empty
               }
           );

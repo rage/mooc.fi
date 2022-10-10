@@ -99,7 +99,10 @@ export const UserCourseSummary = objectType({
             where: {
               exercise: {
                 course_id,
-                ...(!includeDeletedExercises && { deleted: { not: true } }),
+                ...(!includeDeletedExercises && {
+                  // same here: { deleted: { not: true } } will skip null
+                  OR: [{ deleted: false }, { deleted: null }],
+                }),
               },
             },
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
