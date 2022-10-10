@@ -268,9 +268,10 @@ export const User = objectType({
           })
           .exercise_completions({
             where: {
-              ...(!includeDeleted
-                ? { exercise: { deleted: { not: true } } }
-                : {}),
+              ...(!includeDeleted && {
+                // same here: { deleted: { not: true } } will skip null
+                exercise: { OR: [{ deleted: false }, { deleted: null }] },
+              }),
             },
             distinct: "exercise_id",
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
