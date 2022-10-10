@@ -9,6 +9,7 @@ import { booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { User } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
 import { calculateActivationCode, filterNullFields } from "../../util"
 import {
@@ -346,7 +347,11 @@ export const UserOrganizationMutations = extendType({
           )
         }
 
-        if (!organization.join_organization_email_template_id) {
+        const join_organization_email_template_id =
+          organization.join_organization_email_template_id ??
+          DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID
+
+        if (!join_organization_email_template_id) {
           throw new ConfigurationError(
             "join organization email template is not set",
           )
@@ -394,7 +399,7 @@ export const UserOrganizationMutations = extendType({
           ctx,
           userId: user.id,
           organizationId: organization.id,
-          emailTemplateId: organization.join_organization_email_template_id,
+          emailTemplateId: join_organization_email_template_id,
           errorMessage: `New activation link requested at ${currentDate.toISOString()}`,
           ignoreEmailDeliveries:
             newUserOrganizationJoinConfirmation.email_delivery_id,
@@ -609,7 +614,9 @@ export const UserOrganizationMutations = extendType({
             ctx,
             userId: user_id,
             organizationId: organization_id,
-            emailTemplateId: organization!.join_organization_email_template_id!,
+            emailTemplateId:
+              organization?.join_organization_email_template_id ??
+              DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID,
             errorMessage: `User organization membership deleted at ${new Date().toISOString()}`,
           })
         }

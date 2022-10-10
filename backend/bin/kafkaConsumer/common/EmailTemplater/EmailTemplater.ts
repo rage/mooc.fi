@@ -33,6 +33,7 @@ export class EmailTemplater {
   email?: string
   organization?: Organization
   context: TemplateContext
+  field: keyof Pick<EmailTemplate, "txt_body" | "title" | "html_body">
 
   constructor({
     emailTemplate,
@@ -40,18 +41,20 @@ export class EmailTemplater {
     organization,
     email,
     context,
+    field = "txt_body",
   }: TemplateParams) {
     this.emailTemplate = emailTemplate
     this.user = user
     this.email = email
     this.organization = organization
     this.context = context
+    this.field = field
 
     this.prepare()
   }
 
   async resolve(): Promise<string> {
-    const template = this.emailTemplate.txt_body ?? ""
+    const template = this.emailTemplate[this.field] ?? ""
     await this.resolveAllTemplates()
     return render(template, this.keyWordToTemplate)
   }

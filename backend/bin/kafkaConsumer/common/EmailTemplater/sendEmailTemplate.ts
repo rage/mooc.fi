@@ -23,21 +23,33 @@ export async function sendEmailTemplateToUser({
     { template, user, email, organization },
     context,
   )
+  const title = template.title
+    ? await applyTemplate(
+        { template, user, email, organization, field: "title" },
+        context,
+      )
+    : undefined
+  const html_body = template.html_body
+    ? await applyTemplate(
+        { template, user, email, organization, field: "html_body" },
+        context,
+      )
+    : undefined
 
   if (context.test) {
     ;(context.logger?.info || console.log)(
-      `To: ${email ?? user.email}\nSubject: ${
-        template.title
-      }\nText: ${text}\nHtml: ${template.html_body}`,
+      `To: ${
+        email ?? user.email
+      }\nSubject: ${title}\nText: ${text}\nHtml: ${html_body}`,
     )
 
     return
   }
   await sendMail({
     to: email ?? user.email,
-    subject: emptyOrNullToUndefined(template.title),
+    subject: emptyOrNullToUndefined(title),
     text,
-    html: emptyOrNullToUndefined(template.html_body),
+    html: emptyOrNullToUndefined(html_body),
   })
 }
 
@@ -46,10 +58,11 @@ interface ApplyTemplateArgs {
   email?: string
   organization?: Organization
   template: EmailTemplate
+  field?: keyof Pick<EmailTemplate, "txt_body" | "title" | "html_body">
 }
 
 const applyTemplate = async (
-  { template, user, email, organization }: ApplyTemplateArgs,
+  { template, user, email, organization, field }: ApplyTemplateArgs,
   context: TemplateContext,
 ) => {
   const templater = new EmailTemplater({
@@ -58,7 +71,8 @@ const applyTemplate = async (
     email,
     organization,
     context,
+    field,
   })
 
-  return await templater.resolve()
+  return templater.resolve()
 }

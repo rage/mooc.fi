@@ -117,6 +117,45 @@ Object {
 }
 `;
 
+exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required using the default email template if one isn't specified 1`] = `
+Object {
+  "confirmed": false,
+  "confirmed_at": null,
+  "id": Any<String>,
+  "organization": Object {
+    "id": "10000000-0000-0000-0000-000000000102",
+    "slug": "test",
+  },
+  "organizational_email": "user@organization.fi",
+  "organizational_identifier": null,
+  "role": "Student",
+  "user_id": "20000000-0000-0000-0000-000000000103",
+  "user_organization_join_confirmations": Array [
+    Object {
+      "confirmed": false,
+      "confirmed_at": null,
+      "email": "user@organization.fi",
+      "email_delivery": Object {
+        "email": "user@organization.fi",
+        "email_template": Object {
+          "id": "99999999-9998-9997-9996-999999999995",
+          "name": "___default_join_organization",
+        },
+        "error": false,
+        "error_message": null,
+        "id": Any<String>,
+        "sent": false,
+      },
+      "expired": false,
+      "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+      "id": Any<String>,
+      "language": "fi",
+      "redirect": "https://foo.bar",
+    },
+  ],
+}
+`;
+
 exports[`UserOrganization mutations addUserOrganization succeeds with no confirmation required adding user to organization 1`] = `
 Object {
   "confirmed": true,

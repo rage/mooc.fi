@@ -1,5 +1,6 @@
 import type { PrismaClient } from "@prisma/client"
 
+import { createDefaultData } from "../../config/defaultData"
 import {
   abEnrollments,
   abStudies,
@@ -40,6 +41,8 @@ export const seed = async (prisma: PrismaClient) => {
 
     return created
   }
+
+  await createDefaultData(prisma)
 
   const seededModules = await create("studyModule", study_modules)
   const seededCourses = await create("course", courses)

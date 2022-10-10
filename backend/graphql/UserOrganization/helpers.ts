@@ -11,6 +11,7 @@ import {
 } from "@prisma/client"
 
 import { Role } from "../../accessControl"
+import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
 import {
   emptyOrNullToUndefined,
@@ -117,62 +118,62 @@ export const joinUserOrganization = async ({
     )
   }
 
-  const { required_confirmation, join_organization_email_template_id } =
-    organization
-
-  if (required_confirmation && !join_organization_email_template_id) {
-    return err(
-      new ConfigurationError(
-        "no email template associated with this organization",
-      ),
-    )
-  }
+  const { required_confirmation } = organization
 
   const currentDate = new Date()
 
   // TODO: wrap all in transaction once prisma is updated, so we don't need to do the deletion manually
-  const userOrganization = await ctx.prisma.userOrganization.create({
-    data: {
-      user: { connect: { id: user.id } },
-      organization: {
-        connect: { id: organization.id },
+  try {
+    const userOrganization = await ctx.prisma.userOrganization.create({
+      data: {
+        user: { connect: { id: user.id } },
+        organization: {
+          connect: { id: organization.id },
+        },
+        role: OrganizationRole.Student,
+        organizational_email: emptyOrNullToUndefined(organizational_email),
+        organizational_identifier: emptyOrNullToUndefined(
+          organizational_identifier,
+        ),
+        ...(!required_confirmation && {
+          confirmed: true,
+          confirmed_at: currentDate,
+        }),
+        // we assume that the consent is given in the frontend
+        consented: true,
       },
-      role: OrganizationRole.Student,
-      organizational_email: emptyOrNullToUndefined(organizational_email),
-      organizational_identifier: emptyOrNullToUndefined(
-        organizational_identifier,
-      ),
-      ...(!required_confirmation && {
-        confirmed: true,
-        confirmed_at: currentDate,
-      }),
-      // we assume that the consent is given in the frontend
-      consented: true,
-    },
-  })
+    })
 
-  if (required_confirmation) {
-    const createUserOrganizationJoinConfirmationResult =
-      await createUserOrganizationJoinConfirmation({
-        ctx,
-        user,
-        organization,
-        userOrganization,
-        email: organizational_email ?? user.email,
-        redirect,
-        language,
-      })
+    if (required_confirmation) {
+      const createUserOrganizationJoinConfirmationResult =
+        await createUserOrganizationJoinConfirmation({
+          ctx,
+          user,
+          organization,
+          userOrganization,
+          email: organizational_email ?? user.email,
+          redirect,
+          language,
+        })
 
-    if (createUserOrganizationJoinConfirmationResult.isErr()) {
-      await ctx.prisma.userOrganization.delete({
-        where: { id: userOrganization.id },
-      })
+      if (createUserOrganizationJoinConfirmationResult.isErr()) {
+        await ctx.prisma.userOrganization.delete({
+          where: { id: userOrganization.id },
+        })
 
-      return createUserOrganizationJoinConfirmationResult
+        return createUserOrganizationJoinConfirmationResult
+      }
     }
-  }
+    return ok(userOrganization)
+  } catch (e) {
+    if (e instanceof Error) return err(e)
 
-  return ok(userOrganization)
+    return err(
+      new ApolloError(
+        (e as string) ?? "Unknown error creating user organization",
+      ),
+    )
+  }
 }
 
 interface CreateUserOrganizationJoinConfirmationOptions {
@@ -198,7 +199,9 @@ export const createUserOrganizationJoinConfirmation = async ({
   redirect,
   language,
 }: CreateUserOrganizationJoinConfirmationOptions) => {
-  const { join_organization_email_template_id } = organization
+  const join_organization_email_template_id =
+    organization.join_organization_email_template_id ??
+    DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID
 
   if (!join_organization_email_template_id) {
     return err(

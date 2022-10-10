@@ -3,10 +3,11 @@ import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
-import { filterNullFields, isDefined } from "../../util"
 import {
+  filterNullFields,
   getCourseOrAlias,
   getCourseOrCompletionHandlerCourse,
+  isDefined,
 } from "../../util"
 
 export const User = objectType({

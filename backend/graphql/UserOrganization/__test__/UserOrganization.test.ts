@@ -9,6 +9,7 @@ import {
   UserOrganizationJoinConfirmation,
 } from "@prisma/client"
 
+import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../../config/defaultData"
 import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
 import {
   adminUserDetails,
@@ -149,26 +150,6 @@ describe("UserOrganization", () => {
             message:
               "given email does not fulfill organization email requirements",
           },
-          {
-            title: "if organization is missing an email template",
-            args: {
-              organization_id: "10000000000000000000000000000102",
-              organizational_email: "user@organization.fi",
-            },
-            headers: {
-              Authorization: "Bearer admin",
-            },
-            message: "no email template associated with this organization",
-            before: async () =>
-              ctx.prisma.organization.update({
-                where: {
-                  id: "10000000000000000000000000000102",
-                },
-                data: {
-                  join_organization_email_template: { disconnect: true },
-                },
-              }),
-          },
         ]
 
         it.each(errorCases)(
@@ -285,6 +266,45 @@ describe("UserOrganization", () => {
                   expires_at: expect.stringMatching(DateRegExp),
                   email_delivery: {
                     id: expect.any(String),
+                  },
+                },
+              ],
+            })
+          })
+
+          it("using the default email template if one isn't specified", async () => {
+            await ctx.prisma.organization.update({
+              where: {
+                id: "10000000000000000000000000000102",
+              },
+              data: {
+                join_organization_email_template: { disconnect: true },
+              },
+            })
+
+            const { addUserOrganization } = await ctx.client.request(
+              addUserOrganizationMutation,
+              {
+                organization_id: "10000000000000000000000000000102",
+                organizational_email: "user@organization.fi",
+                redirect: "https://foo.bar",
+              },
+              {
+                Authorization: "Bearer admin",
+              },
+            )
+
+            expect(addUserOrganization).toMatchSnapshot({
+              id: expect.any(String),
+              user_organization_join_confirmations: [
+                {
+                  id: expect.any(String),
+                  expires_at: expect.stringMatching(DateRegExp),
+                  email_delivery: {
+                    id: expect.any(String),
+                    email_template: {
+                      id: DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID,
+                    },
                   },
                 },
               ],
@@ -578,27 +598,6 @@ describe("UserOrganization", () => {
               },
             }),
         },
-        {
-          title: "if organization is missing an email template",
-          args: {
-            id: "96900000000000000000000000000101",
-          },
-          headers: {
-            Authorization: "Bearer normal",
-          },
-          message: "join organization email template is not set",
-          before: async () => {
-            await createUnconfirmedUserOrganization()
-            await ctx.prisma.organization.update({
-              where: {
-                id: "10000000000000000000000000000103",
-              },
-              data: {
-                join_organization_email_template: { disconnect: true },
-              },
-            })
-          },
-        },
       ]
 
       it.each(errorCases)(
@@ -742,6 +741,35 @@ describe("UserOrganization", () => {
           expect(result.redirect).toEqual("http://foo.foo.bar")
         })
       })
+
+      describe("with no organizational email template specified", () => {
+        beforeEach(async () => {
+          await createUnconfirmedUserOrganization()
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: {
+              id: CONFIRMATION_ID,
+            },
+            data: {
+              user_organization: {
+                update: {
+                  organization: {
+                    update: {
+                      join_organization_email_template: { disconnect: true },
+                    },
+                  },
+                },
+              },
+            },
+          })
+          await createRequest()
+        })
+
+        it("creating an email delivery with the default template", () => {
+          expect(result.email_delivery?.email_template?.id).toEqual(
+            DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID,
+          )
+        })
+      })
     })
   })
 
@@ -825,7 +853,7 @@ describe("UserOrganization", () => {
     }
 
     describe("errors", () => {
-      const errorCases = [
+      const errorCases: Array<ErrorCase> = [
         {
           title: "if user is not associated with given user organization",
           args: {
@@ -859,27 +887,6 @@ describe("UserOrganization", () => {
           },
           message:
             "given email does not fulfill organization email requirements",
-        },
-        {
-          title: "if organization is missing an email template",
-          args: {
-            id: "96900000000000000000000000000199",
-            organizational_email: "foo@organization.fi",
-          },
-          headers: {
-            Authorization: "Bearer third",
-          },
-          message: "no email template associated with this organization",
-          before: async () => {
-            await ctx.prisma.organization.update({
-              where: {
-                id: "10000000000000000000000000000102",
-              },
-              data: {
-                join_organization_email_template: { disconnect: true },
-              },
-            })
-          },
         },
       ]
 
@@ -1113,6 +1120,38 @@ describe("UserOrganization", () => {
           expect(result.user_organization_join_confirmations.length).toBe(0)
         })
       })
+
+      describe("with organization with no specified email template", () => {
+        beforeEach(async () => {
+          await createUserOrganization()
+          await ctx.prisma.organization.update({
+            where: {
+              id: "10000000000000000000000000000102",
+            },
+            data: {
+              join_organization_email_template: { disconnect: true },
+            },
+          })
+          await createRequest(
+            {
+              id: "96900000000000000000000000000199",
+              organizational_email: "foo@organization.fi",
+              language: "en",
+            },
+            {
+              Authorization: "Bearer third",
+            },
+          )
+        })
+
+        it("creating a new email delivery with the default template", () => {
+          expect(result.user_organization_join_confirmations.length).toBe(2)
+          expect(
+            result.user_organization_join_confirmations[0]?.email_delivery
+              ?.email_template_id,
+          ).toEqual(DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID)
+        })
+      })
     })
   })
 })
@@ -1329,6 +1368,7 @@ const updateUserOrganizationOrganizationalMailMutation = gql`
           error
           error_message
           sent
+          email_template_id
           email_template {
             id
             name

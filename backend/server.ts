@@ -7,6 +7,7 @@ import morgan from "morgan"
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
+import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
 import schema from "./schema"
 
@@ -36,6 +37,7 @@ const createExpressAppWithContext = ({
 
 export default async (serverContext: ServerContext) => {
   const { prisma, logger, knex, extraContext = {} } = serverContext
+  await createDefaultData(prisma)
 
   const apollo = new ApolloServer({
     context: (ctx) => ({

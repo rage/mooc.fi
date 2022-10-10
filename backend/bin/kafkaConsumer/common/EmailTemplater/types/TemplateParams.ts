@@ -8,4 +8,5 @@ export type TemplateParams = {
   email?: string
   organization?: Organization
   context: TemplateContext
+  field?: keyof Pick<EmailTemplate, "txt_body" | "title" | "html_body">
 }
