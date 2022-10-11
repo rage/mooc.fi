@@ -29,7 +29,7 @@ const logger = winston.createLogger({
 
 const startApp = async () => {
   const { app } = await server({
-    prisma, //: prismaClient,
+    prisma,
     logger,
     knex,
   })

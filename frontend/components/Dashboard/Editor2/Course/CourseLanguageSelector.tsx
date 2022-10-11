@@ -1,10 +1,12 @@
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import { useFieldArray, useFormContext } from "react-hook-form"
+
 import styled from "@emotion/styled"
 import { Button, ButtonGroup } from "@mui/material"
+
 import { initialTranslation } from "./form-validation"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
-import { useFieldArray, useFormContext } from "react-hook-form"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;
@@ -48,8 +50,9 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
 `
 interface LanguageSelectorProps {
   selectedLanguage: string
-  setSelectedLanguage: any
+  setSelectedLanguage: React.Dispatch<React.SetStateAction<string>>
 }
+
 function CourseLanguageSelector(props: LanguageSelectorProps) {
   const { selectedLanguage, setSelectedLanguage } = props
 

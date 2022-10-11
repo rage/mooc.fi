@@ -1,19 +1,20 @@
-import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
-import { signOut } from "/lib/authentication"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 import Link from "next/link"
 import nookies from "nookies"
 
 import { useApolloClient } from "@apollo/client"
 
 import ProfileButton from "./ProfileButton"
+import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
+import { signOut } from "/lib/authentication"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
-interface Props {
+interface UserOptionsMenuProps {
   isSignedIn: boolean
-  logInOrOut: any
+  logInOrOut: Function
 }
-const UserOptionsMenu = (props: Props) => {
+
+const UserOptionsMenu = (props: UserOptionsMenuProps) => {
   const client = useApolloClient()
   const { isSignedIn, logInOrOut } = props
   const t = useTranslator(CommonTranslations)

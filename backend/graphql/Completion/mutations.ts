@@ -1,4 +1,3 @@
-import { AuthenticationError } from "apollo-server-express"
 import { chunk, difference, groupBy } from "lodash"
 import {
   arg,
@@ -16,6 +15,7 @@ import { Completion } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
@@ -65,21 +65,19 @@ export const CompletionMutations = extendType({
         course_id: nonNull(stringArg()),
       },
       authorize: isAdmin,
-      resolve: async (_, args, { knex }) => {
+      resolve: async (_, args, ctx) => {
         const { course_id } = args
 
-        const course = (
-          await knex
-            .select(["id", "completion_email_id"])
-            .from("course")
-            .where("id", course_id)
-            .limit(1)
-        )[0]
+        const course = await ctx.prisma.course.findUnique({
+          where: { id: course_id },
+        })
+
         if (!course) {
           throw new Error("Course not found")
         }
         const completions = (args.completions ?? []).filter(notEmpty)
-        const foundUsers = await knex
+
+        const foundUsers = await ctx.knex
           .select([
             "id",
             "email",
@@ -109,7 +107,7 @@ export const CompletionMutations = extendType({
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
-            course_id: course_id,
+            course_id: course.completions_handled_by_id ?? course_id,
             user_id: databaseUser.id,
             grade: o.grade ?? null,
             completion_date: o.completion_date,
@@ -133,7 +131,7 @@ export const CompletionMutations = extendType({
           }
         })
 
-        const res = await knex.transaction(async (trx) => {
+        const res = await ctx.knex.transaction(async (trx) => {
           const inserted = await trx
             .batchInsert("completion", newCompletions)
             .returning("*")
@@ -161,12 +159,13 @@ export const CompletionMutations = extendType({
           throw new Error("must provide course_id or slug!")
         }
 
-        const course = await ctx.prisma.course.findUnique({
+        const course = await getCourseOrAlias(ctx)({
           where: {
             id: course_id ?? undefined,
             slug: slug ?? undefined,
           },
         })
+
         if (!course) {
           throw new Error("course not found")
         }
@@ -174,14 +173,14 @@ export const CompletionMutations = extendType({
         const progresses = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id ?? undefined,
-              slug: slug ?? undefined,
+              id: course.id,
             },
           })
           .user_course_progresses({
             where: {
               n_points: { gt: 0 },
             },
+            distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
           })
 
@@ -194,14 +193,15 @@ export const CompletionMutations = extendType({
         const completions = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id ?? undefined,
-              slug: slug ?? undefined,
+              id: course.completions_handled_by_id ?? course.id,
             },
           })
           .completions({
             where: {
               user_id: { in: userIds },
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
           })
 
         // filter users without completions
@@ -226,15 +226,7 @@ export const CompletionMutations = extendType({
                 user,
                 course,
                 userCourseProgress: progressByUser[user.id][0],
-                context: {
-                  // not very optimal, but
-                  logger: ctx.logger,
-                  prisma: ctx.prisma,
-                  consumer: undefined as any,
-                  mutex: undefined as any,
-                  knex: ctx.knex,
-                  topic_name: "",
-                },
+                context: ctx,
               }),
             )
             await Promise.all(promises)
@@ -262,26 +254,16 @@ export const CompletionMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id, completion_registration_attempt_date }, ctx) => {
-        if (ctx.role === Role.USER) {
-          const existingCompletion = await ctx.prisma.completion.findFirst({
-            where: {
-              id,
-              user_id: ctx.user?.id,
-            },
-          })
-
-          if (!existingCompletion || !ctx.user?.id) {
-            throw new AuthenticationError(
-              "not authorized to edit this completion",
-            )
-          }
-        }
-
         const existing = await ctx.prisma.completion.findFirst({
           where: {
             id,
+            ...(ctx.role !== Role.ADMIN && { user_id: ctx.user?.id }),
           },
         })
+
+        if (!existing) {
+          throw new Error("completion not found or not authorized to edit")
+        }
 
         if (existing?.completion_registration_attempt_date) {
           return existing

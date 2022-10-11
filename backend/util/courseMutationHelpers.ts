@@ -1,8 +1,7 @@
-import { Context } from "/context"
-
 import { Course, Prisma } from "@prisma/client"
 
 import { isNotNullOrUndefined } from "./isNullOrUndefined"
+import { Context } from "/context"
 
 export const getIds = (arr: any[], idField: string = "id") =>
   (arr || []).map((t) => t[idField])
@@ -135,6 +134,17 @@ export const createCourseMutations =
 
     return mutations
   }
+
+export const connectOrDisconnect = <T>(
+  receivedArg: string | null | undefined,
+  existing: T | null,
+) => {
+  return receivedArg
+    ? { connect: { id: receivedArg } }
+    : existing
+    ? { disconnect: true }
+    : undefined
+}
 
 const hasId =
   <T extends Record<string, any>, IdKey extends IdKeyType>(id: IdKey) =>

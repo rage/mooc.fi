@@ -1,11 +1,12 @@
 import { useMemo } from "react"
 
+import { useRouter } from "next/router"
+
 import getTranslator, {
   combineDictionaries,
   Translation,
   TranslationDictionary,
 } from "/translations"
-import { useRouter } from "next/router"
 
 export const useTranslator = <
   T extends Translation,

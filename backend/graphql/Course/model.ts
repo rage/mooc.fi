@@ -80,7 +80,7 @@ export const Course = objectType({
         return ctx.prisma.course
           .findUnique({
             where: {
-              id: parent.id,
+              id: parent.completions_handled_by_id ?? parent.id,
             },
           })
           .completions({
@@ -90,6 +90,8 @@ export const Course = objectType({
                 upstream_id: user_upstream_id ?? undefined,
               },
             },
+            distinct: ["user_id", "course_id"],
+            orderBy: { updated_at: "desc" },
           })
       },
     })
@@ -107,7 +109,10 @@ export const Course = objectType({
             where: { id: parent.id },
           })
           .exercises({
-            ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
+            ...(!includeDeleted && {
+              // same here: { deleted: { not: true } } will skip null
+              where: { OR: [{ deleted: false }, { deleted: null }] },
+            }),
           })
       },
     })

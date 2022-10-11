@@ -1,13 +1,14 @@
 import React from "react"
 
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
 import Warning from "@mui/icons-material/Warning"
 import { Typography } from "@mui/material"
+
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 const ConsentNotificationWrapper = styled.div`
   display: flex;

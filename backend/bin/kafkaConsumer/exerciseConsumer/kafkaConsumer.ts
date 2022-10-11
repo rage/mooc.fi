@@ -1,4 +1,4 @@
-import { LibrdKafkaError } from "node-rdkafka"
+import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
 
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
@@ -7,6 +7,7 @@ import { KafkaError } from "../../lib/errors"
 import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
+import { KafkaContext } from "../common/kafkaContext"
 import config from "../kafkaConfig"
 import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
@@ -22,7 +23,7 @@ const consumer = createKafkaConsumer({ logger, prisma })
 
 consumer.connect()
 
-const context = {
+const context: KafkaContext = {
   prisma,
   logger,
   consumer,
@@ -34,7 +35,11 @@ const context = {
 consumer.on("ready", () => {
   logger.info("Ready to consume")
   consumer.subscribe(TOPIC_NAME)
-  const consumerImpl = async (error: LibrdKafkaError, messages: any) => {
+
+  const consumerImpl = async (
+    error: LibrdKafkaError,
+    messages: KafkaMessage[],
+  ) => {
     if (error) {
       logger.error(new KafkaError("Error while consuming", error))
       process.exit(-1)

@@ -1,6 +1,6 @@
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { CourseDetails_course_photo } from "/static/types/generated/CourseDetails"
 import { DateTime } from "luxon"
+
+import { CourseStatus, ImageCoreFieldsFragment } from "/graphql/generated"
 
 interface FormValues {
   id?: string | null
@@ -15,7 +15,7 @@ export interface CourseFormValues extends FormValues {
   start_date: string | DateTime
   end_date?: string | DateTime
   ects?: string
-  photo?: string | CourseDetails_course_photo | null
+  photo?: string | ImageCoreFieldsFragment | null
   start_point: boolean
   promote: boolean
   hidden: boolean
@@ -44,6 +44,7 @@ export interface CourseFormValues extends FormValues {
   automatic_completions_eligible_for_ects?: boolean
   exercise_completions_needed?: number
   points_needed?: number
+  course_tags: CourseTagFormValues[]
 }
 
 export interface CourseTranslationFormValues extends FormValues {
@@ -83,4 +84,24 @@ export interface UserCourseSettingsVisibilityFormValues extends FormValues {
   _id?: string
   language: string
   course?: string
+}
+
+export interface CourseTagFormValues extends FormValues {
+  _id?: string
+  course_id: string
+  tag_id: string
+  tag: TagFormValues
+}
+
+export interface TagFormValues extends FormValues {
+  _id?: string
+  color?: string
+  tag_translations?: TagTranslationFormValues[]
+}
+
+export interface TagTranslationFormValues extends FormValues {
+  _id?: string
+  language: string
+  name: string
+  description?: string
 }

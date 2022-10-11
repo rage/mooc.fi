@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+
+import { useRouter } from "next/router"
+
+import { useLazyQuery } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
@@ -6,18 +10,15 @@ import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useRouter } from "next/router"
 
-import { gql, useLazyQuery } from "@apollo/client"
+import { UserDetailsContainsDocument } from "/graphql/generated"
 
 const UserSearch = () => {
   const router = useRouter()
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
-
   const [searchVariables, setSearchVariables] = useState<SearchVariables>({
     search: textParam,
     first: rowsParam,
@@ -27,8 +28,8 @@ const UserSearch = () => {
   const [page, setPage] = useState(pageParam)
   const [rowsPerPage, setRowsPerPage] = useState(rowsParam)
 
-  const [loadData, { data, loading }] = useLazyQuery<UserDetailsContains>(
-    GET_DATA,
+  const [loadData, { data, loading }] = useLazyQuery(
+    UserDetailsContainsDocument,
     {
       ssr: false,
     },
@@ -52,11 +53,15 @@ const UserSearch = () => {
   useBreadcrumbs(crumbs)
 
   useEffect(() => {
-    const params = [
-      rowsPerPage !== 10 ? `rowsPerPage=${rowsPerPage}` : "",
-      page > 0 ? `page=${page}` : "",
-    ].filter((v) => !!v)
-    const query = params.length ? `?${params.join("&")}` : ""
+    const searchParams = new URLSearchParams()
+    if (rowsPerPage !== 10) {
+      searchParams.append("rowsPerPage", rowsPerPage.toString())
+    }
+    if (page > 0) {
+      searchParams.append("page", page.toString())
+    }
+    const query =
+      searchParams.toString().length > 0 ? `?${searchParams.toString()}` : ""
     const href =
       searchVariables.search !== ""
         ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
@@ -74,65 +79,28 @@ const UserSearch = () => {
     }
   }, [searchVariables, rowsPerPage, page])
 
+  const contextValue = useMemo(
+    () => ({
+      data,
+      loading,
+      page,
+      rowsPerPage,
+      searchVariables,
+      setPage,
+      setSearchVariables,
+      setRowsPerPage,
+    }),
+    [data, loading, page, rowsPerPage, searchVariables],
+  )
   return (
     <>
       <Container>
-        <UserSearchContext.Provider
-          value={{
-            data: data || ({} as UserDetailsContains),
-            loading,
-            page,
-            rowsPerPage,
-            searchVariables,
-            setPage,
-            setSearchVariables,
-            setRowsPerPage,
-          }}
-        >
+        <UserSearchContext.Provider value={contextValue}>
           <SearchForm />
         </UserSearchContext.Provider>
       </Container>
     </>
   )
 }
-
-const GET_DATA = gql`
-  query UserDetailsContains(
-    $search: String!
-    $first: Int
-    $last: Int
-    $before: String
-    $after: String
-    $skip: Int
-  ) {
-    userDetailsContains(
-      search: $search
-      first: $first
-      last: $last
-      before: $before
-      after: $after
-      skip: $skip
-    ) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          email
-          student_number
-          real_student_number
-          upstream_id
-          first_name
-          last_name
-        }
-      }
-      count(search: $search)
-    }
-  }
-`
 
 export default withAdmin(UserSearch)

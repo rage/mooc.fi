@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react"
 
+import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
 import FilterMenu from "/components/FilterMenu"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
-import {
-  AllEditorCoursesQuery,
-  HandlerCoursesQuery,
-} from "/graphql/queries/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
-import { CourseStatus } from "/static/types/generated/globalTypes"
-import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
-import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
+import {
+  CourseStatus,
+  EditorCoursesDocument,
+  HandlerCoursesDocument,
+} from "/graphql/generated"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -31,10 +31,10 @@ interface SearchVariables {
   search?: string
   hidden?: boolean | null
   handledBy?: string | null
-  status?: string[] | null
+  status?: CourseStatus[] | null
 }
 
-const notEmptyOrEmptyString = (value: any) =>
+const notEmptyOrEmptyString = (value: any): value is string | true | number =>
   notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
@@ -47,9 +47,9 @@ function useCourseSearch() {
     },
   ])
 
-  const statusParam = decodeURIComponent(useQueryParameter("status", false))
+  const statusParam = (decodeURIComponent(useQueryParameter("status", false))
     ?.split(",")
-    .filter(notEmptyOrEmptyString)
+    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
 
   const initialSearchVariables: SearchVariables = {
     search: useQueryParameter("search", false) || "",
@@ -57,13 +57,15 @@ function useCourseSearch() {
       (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
       true,
     handledBy: useQueryParameter("handledBy", false) || null,
-    status: statusParam.length ? statusParam : ["Active", "Upcoming"],
+    status: statusParam.length
+      ? statusParam
+      : [CourseStatus.Active, CourseStatus.Upcoming],
   }
 
   const [searchVariables, setSearchVariables] = useState<SearchVariables>(
     initialSearchVariables,
   )
-  const [status, setStatus] = useState<string[]>(
+  const [status, setStatus] = useState<CourseStatus[]>(
     initialSearchVariables.status ?? [],
   )
 
@@ -71,35 +73,51 @@ function useCourseSearch() {
     loading: editorLoading,
     error: editorError,
     data: editorData,
-  } = useQuery<AllEditorCourses>(AllEditorCoursesQuery, {
+  } = useQuery(EditorCoursesDocument, {
     variables: searchVariables || initialSearchVariables,
   })
   const {
     loading: handlersLoading,
     error: handlersError,
     data: handlersData,
-  } = useQuery<HandlerCourses>(HandlerCoursesQuery)
+  } = useQuery(HandlerCoursesDocument)
 
   useEffect(() => {
-    const params = [
-      ...(["search", "handledBy"] as Array<keyof typeof searchVariables>).map(
-        (field) =>
-          notEmptyOrEmptyString(searchVariables[field])
-            ? `${field}=${encodeURIComponent(
-                searchVariables[field]?.toString() ?? "",
-              )}`
-            : "",
-      ),
-      !searchVariables.hidden ? `hidden=false` : "",
-      searchVariables.status?.length &&
-      JSON.stringify(searchVariables.status.sort()) !==
-        JSON.stringify(["Active", "Upcoming"])
-        ? `status=${searchVariables.status.join(",")}`
-        : "",
-    ].filter(Boolean)
+    const searchParams = new URLSearchParams()
 
-    const query = params.length ? `?${params.join("&")}` : ""
+    if (notEmptyOrEmptyString(searchVariables.search)) {
+      searchParams.set(
+        "search",
+        encodeURIComponent(searchVariables.search.toString() ?? ""),
+      )
+    }
+    if (notEmptyOrEmptyString(searchVariables.handledBy)) {
+      searchParams.set(
+        "handledBy",
+        encodeURIComponent(searchVariables.handledBy.toString() ?? ""),
+      )
+    }
+    if (!searchVariables.hidden) {
+      searchParams.set("hidden", "false")
+    }
+
+    // Active and Upcoming is the default status so if it's set, don't add it
+    if (
+      searchVariables.status?.length &&
+      !(
+        searchVariables.status.length === 2 &&
+        searchVariables.status.includes(CourseStatus.Active) &&
+        searchVariables.status.includes(CourseStatus.Upcoming)
+      )
+    ) {
+      searchParams.set("status", searchVariables.status.join(","))
+    }
+
+    const query = searchParams.toString().length
+      ? `?${searchParams.toString()}`
+      : ""
     const href = `/courses/${query}`
+
     if (router?.asPath !== href) {
       router.push(href, undefined, { shallow: true })
     }

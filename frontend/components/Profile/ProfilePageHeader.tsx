@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import Typography from "@mui/material/Typography"
+
 import PersonalInfoBox from "./PersonalInfoBox"
 
 const HeaderBackground = styled.div`

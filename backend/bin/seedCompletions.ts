@@ -1,5 +1,6 @@
-import prisma from "../prisma"
 import { sample } from "lodash"
+
+import prisma from "../prisma"
 
 const addCompletions = async () => {
   const course = await prisma.course.findUnique({

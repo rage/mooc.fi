@@ -1,6 +1,7 @@
 import { MouseEvent as ReactMouseEvent } from "react"
-import { ButtonBase, Tooltip } from "@mui/material"
+
 import styled from "@emotion/styled"
+import { ButtonBase, Tooltip } from "@mui/material"
 
 const CloseButton = styled(ButtonBase)`
   position: relative;
@@ -34,17 +35,19 @@ const CloseButton = styled(ButtonBase)`
   }
 `
 
+interface ImagePreviewProps {
+  file: string | undefined
+  onClose: Function | null
+  height?: number
+  [key: string]: any
+}
+
 const ImagePreview = ({
   file,
   onClose = null,
   height = 250,
   ...rest
-}: {
-  file: string | undefined
-  onClose: Function | null
-  height?: number
-  [key: string]: any
-}) => {
+}: ImagePreviewProps) => {
   if (!file) {
     return null
   }

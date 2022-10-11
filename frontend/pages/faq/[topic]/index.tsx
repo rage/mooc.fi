@@ -1,4 +1,5 @@
 import { NextSeo } from "next-seo"
+
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useFAQPage } from "/hooks/useFAQPage"

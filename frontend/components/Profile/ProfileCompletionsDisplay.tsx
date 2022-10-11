@@ -1,12 +1,16 @@
-import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
-import { CompletionListItem } from "/components/Home/Completions"
-import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 import Link from "next/link"
 
+import { Typography } from "@mui/material"
+
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { CompletionListItem } from "/components/Home/Completions"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
+import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
+
 interface CompletionsProps {
-  completions: ProfileUserOverView_currentUser_completions[]
+  completions: CompletionDetailedFieldsWithCourseFragment[]
 }
 
 const ProfileCompletionsDisplay = (props: CompletionsProps) => {
@@ -18,6 +22,9 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
       {completions.slice(0, 10).map((c) => (
         <CompletionListItem course={c.course!} completion={c} key={c.id} />
       ))}
+      {completions.length === 0 && (
+        <Typography>{t("nocompletionsText")}</Typography>
+      )}
       <Link href={`/profile/completions`} passHref>
         <FormSubmitButton variant="text" fullWidth>
           {t("seeCompletions")}

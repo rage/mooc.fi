@@ -3,6 +3,13 @@ import { objectType } from "nexus"
 
 import { UserCourseProgress } from "@prisma/client"
 
+import { BAIParentCourse, BAITierCourses } from "../../config/courseConfig"
+import {
+  checkCertificate,
+  checkCertificateForUser,
+} from "../../services/certificates"
+import { redisify } from "../../services/redis"
+
 export const Completion = objectType({
   name: "Completion",
   definition(t) {
@@ -12,6 +19,7 @@ export const Completion = objectType({
     t.model.completion_language()
     t.model.email()
     t.model.student_number()
+    t.model.user_id()
     t.model.user_upstream_id()
     t.model.completions_registered()
     t.model.course_id()
@@ -116,17 +124,21 @@ export const Completion = objectType({
           return false
         }
 
-        const handlerCourse = await ctx.prisma.course
-          .findUnique({
-            where: { id: parent.course_id },
-          })
-          .completions_handled_by()
+        if (
+          !BAITierCourses.includes(parent.course_id) &&
+          parent.course_id !== BAIParentCourse
+        ) {
+          // we're not a BAI course, no use looking
+          return false
+        }
 
         const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
-            course_id: handlerCourse?.id ?? parent.course_id,
+            course_id: { in: [BAIParentCourse, ...BAITierCourses] },
             user_id: parent.user_id,
           },
+          distinct: ["user_id", "course_id"],
+          orderBy: { created_at: "asc" },
         })
 
         return (
@@ -134,6 +146,72 @@ export const Completion = objectType({
             (p: UserCourseProgress) => (p?.extra as any)?.projectCompletion,
           ) ?? false
         )
+      },
+    })
+
+    t.field("certificate_availability", {
+      type: "CertificateAvailability",
+      resolve: async ({ course_id, user_upstream_id }, _, ctx) => {
+        if (!course_id) {
+          return null
+        }
+
+        const course = await ctx.prisma.course.findUnique({
+          where: { id: course_id },
+        })
+
+        if (!course) {
+          return null
+        }
+
+        const accessToken =
+          ctx.req?.headers?.authorization?.replace("Bearer ", "") ?? ""
+
+        let certificate_availability
+        if (user_upstream_id !== ctx.user?.upstream_id) {
+          if (!ctx.user?.administrator) {
+            throw new ForbiddenError("Cannot query other users' certificates")
+          }
+
+          if (!user_upstream_id) {
+            return null
+          }
+
+          certificate_availability = await redisify(
+            async () =>
+              checkCertificateForUser(
+                course.slug,
+                user_upstream_id,
+                accessToken,
+              ),
+            {
+              prefix: "certificateavailability",
+              expireTime: 10,
+              key: `${course.slug}-${user_upstream_id}`,
+            },
+            {
+              logger: ctx.logger,
+            },
+          )
+        } else {
+          certificate_availability = await redisify(
+            async () => checkCertificate(course.slug, accessToken),
+            {
+              prefix: "certificateavailability",
+              expireTime: 10,
+              key: `${course.slug}-${ctx.user?.upstream_id}`,
+            },
+            {
+              logger: ctx.logger,
+            },
+          )
+        }
+
+        if (!certificate_availability) {
+          return null
+        }
+
+        return certificate_availability
       },
     })
   },

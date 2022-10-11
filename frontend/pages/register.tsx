@@ -1,88 +1,40 @@
-import { useState, useEffect, useContext } from "react"
-import { gql } from "@apollo/client"
-import { useQuery, useMutation } from "@apollo/client"
+import { useContext, useEffect, useState } from "react"
+
+import { range } from "lodash"
+
+import { useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import CancelIcon from "@mui/icons-material/Cancel"
 import {
   Button,
   Card,
+  CardContent,
   Container,
+  Grid,
   IconButton,
   InputAdornment,
-  Grid,
-  Typography,
-  TextField,
-  CardContent,
   Skeleton,
+  TextField,
+  Typography,
 } from "@mui/material"
-import CancelIcon from "@mui/icons-material/Cancel"
-import ErrorMessage from "/components/ErrorMessage"
-import {
-  Organizations,
-  Organizations_organizations,
-} from "/static/types/generated/Organizations"
-import {
-  UserOrganizations,
-  UserOrganizations_userOrganizations,
-} from "/static/types/generated/UserOrganizations"
-import useDebounce from "/util/useDebounce"
-import styled from "@emotion/styled"
-import RegistrationTranslations from "/translations/register"
+
 import { WideContainer } from "/components/Container"
-import { range } from "lodash"
-import withSignedIn from "/lib/with-signed-in"
+import ErrorMessage from "/components/ErrorMessage"
 import LoginStateContext from "/contexts/LoginStateContext"
-import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withSignedIn from "/lib/with-signed-in"
+import RegistrationTranslations from "/translations/register"
+import notEmpty from "/util/notEmpty"
+import useDebounce from "/util/useDebounce"
+import { useTranslator } from "/util/useTranslator"
 
-export const OrganizationsQuery = gql`
-  query Organizations {
-    organizations {
-      id
-      slug
-      hidden
-      organization_translations {
-        language
-        name
-        information
-      }
-    }
-  }
-`
-
-export const UserOrganizationsQuery = gql`
-  query UserOrganizations($user_id: ID) {
-    userOrganizations(user_id: $user_id) {
-      id
-      organization {
-        id
-      }
-    }
-  }
-`
-
-export const AddUserOrganizationMutation = gql`
-  mutation addUserOrganization($user_id: ID!, $organization_id: ID!) {
-    addUserOrganization(user_id: $user_id, organization_id: $organization_id) {
-      id
-    }
-  }
-`
-
-export const UpdateUserOrganizationMutation = gql`
-  mutation updateUserOrganization($id: ID!, $role: OrganizationRole) {
-    updateUserOrganization(id: $id, role: $role) {
-      id
-    }
-  }
-`
-
-export const DeleteUserOrganizationMutation = gql`
-  mutation deleteUserOrganization($id: ID!) {
-    deleteUserOrganization(id: $id) {
-      id
-    }
-  }
-`
+import {
+  AddUserOrganizationDocument,
+  DeleteUserOrganizationDocument,
+  Organization,
+  OrganizationsDocument,
+  UserOrganizationsDocument,
+} from "/graphql/generated"
 
 const Header = styled(Typography)<any>`
   margin-top: 1em;
@@ -164,38 +116,34 @@ function useRegisterOrganization(searchFilter: string) {
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
-    Record<string, Organizations_organizations>
+    Record<string, Organization>
   >({})
   const [filteredOrganizations, setFilteredOrganizations] = useState<
-    Record<string, Organizations_organizations>
+    Record<string, Organization>
   >({})
 
   const {
     data: organizationsData,
     error: organizationsError,
     loading: organizationsLoading,
-  } = useQuery<Organizations>(OrganizationsQuery)
-  const {
-    data: userOrganizationsData,
-    error: userOrganizationsError,
-    // loading: userOrganizationsLoading,
-  } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
-    variables: { user_id: currentUser!.id },
-  })
-  const [addUserOrganization] = useMutation(AddUserOrganizationMutation, {
+  } = useQuery(OrganizationsDocument)
+  const { data: userOrganizationsData, error: userOrganizationsError } =
+    useQuery(UserOrganizationsDocument, {
+      variables: { user_id: currentUser!.id },
+    })
+  const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
+        query: UserOrganizationsDocument,
         variables: { user_id: currentUser!.id },
       },
     ],
   })
 
-  // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
-  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
+  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationDocument, {
     refetchQueries: [
       {
-        query: UserOrganizationsQuery,
+        query: UserOrganizationsDocument,
         variables: { user_id: currentUser!.id },
       },
     ],
@@ -278,10 +226,7 @@ function useRegisterOrganization(searchFilter: string) {
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.userOrganizations
         ?.filter(notEmpty)
-        .find(
-          (uo: UserOrganizations_userOrganizations) =>
-            uo?.organization?.id === id,
-        )
+        .find((uo) => uo?.organization?.id === id)
 
       if (existing) {
         await deleteUserOrganization({
@@ -312,22 +257,54 @@ function useRegisterOrganization(searchFilter: string) {
   }
 }
 
-const Register = () => {
+const OrganizationItems = () => {
   const t = useTranslator(RegistrationTranslations)
-  const { searchFilter, cancelFilterDebounce, searchBox, setSearchBox } =
-    useSearchBox()
+
+  const { searchFilter } = useSearchBox()
   const {
     error,
-    loading,
-    toggleMembership,
     organizations,
+    loading,
     filteredOrganizations,
     memberships,
+    toggleMembership,
   } = useRegisterOrganization(searchFilter)
 
-  if (error /*organizationsError || userOrganizationsError*/) {
+  if (error) {
     return <ErrorMessage />
   }
+
+  if (loading) {
+    return (
+      <>
+        {range(5).map((i) => (
+          <SkeletonCard key={`skeleton-${i}`} />
+        ))}
+      </>
+    )
+  }
+
+  if (!organizations || Object.keys(organizations).length === 0) {
+    return <div>{t("noResults", { search: searchFilter })}</div>
+  }
+
+  return (
+    <>
+      {Object.entries(filteredOrganizations).map(([id, organization]) => (
+        <OrganizationCard
+          key={`card-${id}`}
+          name={organization!.organization_translations![0].name}
+          isMember={memberships.includes(id)}
+          onToggle={toggleMembership(id)}
+        />
+      ))}
+    </>
+  )
+}
+
+const Register = () => {
+  const t = useTranslator(RegistrationTranslations)
+  const { cancelFilterDebounce, searchBox, setSearchBox } = useSearchBox()
 
   return (
     <WideContainer>
@@ -361,26 +338,7 @@ const Register = () => {
             ),
           }}
         />
-        <>
-          {loading || !Object.keys(organizations).length ? (
-            range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
-          ) : Object.keys(filteredOrganizations).length ? (
-            (
-              Object.entries(filteredOrganizations) as Array<
-                [string, Organizations_organizations]
-              >
-            ).map(([id, organization]) => (
-              <OrganizationCard
-                key={`card-${id}`}
-                name={organization!.organization_translations![0].name}
-                isMember={memberships.includes(id)}
-                onToggle={toggleMembership(id)}
-              />
-            ))
-          ) : (
-            <div>{t("noResults", { search: searchFilter })}</div>
-          )}
-        </>
+        <OrganizationItems />
       </FormContainer>
     </WideContainer>
   )

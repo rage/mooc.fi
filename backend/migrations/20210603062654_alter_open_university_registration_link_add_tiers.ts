@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<any> {
           },
         )
       }
+      return
     })
 }
 

@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react"
 
+import Router from "next/router"
+
+import { useMutation, useQuery } from "@apollo/client"
+import styled from "@emotion/styled"
+import { CircularProgress, Paper } from "@mui/material"
+
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import SignupTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
-import Router from "next/router"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { CircularProgress, Paper } from "@mui/material"
+import {
+  CurrentUserDetailedDocument,
+  CurrentUserOverviewDocument,
+  UpdateResearchConsentDocument,
+} from "/graphql/generated"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -31,22 +38,6 @@ const InfoBox = styled.div`
   margin-bottom: 2rem;
 `
 
-const consentQuery = gql`
-  query consentQuery {
-    currentUser {
-      id
-      research_consent
-    }
-  }
-`
-const updateResearchConsentMutation = gql`
-  mutation updateCreateAccountResearchConsent($value: Boolean!) {
-    updateResearchConsent(value: $value) {
-      id
-    }
-  }
-`
-
 function useResearchConsent() {
   const t = useTranslator(SignupTranslations)
 
@@ -57,7 +48,7 @@ function useResearchConsent() {
     },
   ])
 
-  const { data, loading } = useQuery(consentQuery)
+  const { data, loading } = useQuery(CurrentUserDetailedDocument)
 
   const [research, setResearch] = useState("")
   const [formError, setFormError] = useState("")
@@ -69,7 +60,7 @@ function useResearchConsent() {
     }
   }, [data])
 
-  const [updateConsent] = useMutation(updateResearchConsentMutation)
+  const [updateConsent] = useMutation(UpdateResearchConsentDocument)
 
   const handleInput = (e: any) => setResearch(e.target.value)
 
@@ -77,7 +68,13 @@ function useResearchConsent() {
     try {
       setFormError("")
       setSubmitting(true)
-      await updateConsent({ variables: { value: research === "1" } })
+      await updateConsent({
+        variables: { value: research === "1" },
+        refetchQueries: [
+          { query: CurrentUserDetailedDocument },
+          { query: CurrentUserOverviewDocument },
+        ],
+      })
       Router.push("/")
     } catch (e) {
       setSubmitting(false)

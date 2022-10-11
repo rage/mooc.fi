@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+
 import AnchorContext, { Anchor } from "/contexts/AnchorContext"
 
 const withEnumeratingAnchors =
@@ -14,8 +16,10 @@ const withEnumeratingAnchors =
       }
     }
 
+    const contextValue = useMemo(() => ({ anchors, addAnchor }), [anchors])
+
     return (
-      <AnchorContext.Provider value={{ anchors, addAnchor }}>
+      <AnchorContext.Provider value={contextValue}>
         <Component {...(props as T)}>{props.children}</Component>
       </AnchorContext.Provider>
     )

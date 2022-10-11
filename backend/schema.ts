@@ -1,16 +1,16 @@
+import * as path from "path"
+import { join } from "path"
+
 import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
-import * as path from "path"
-import { join } from "path"
 
 import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
 import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 import { loggerPlugin } from "./middlewares/logger"
-import { sentryPlugin } from "./middlewares/sentry"
 
 if (NEXUS_REFLECTION) {
   require("sharp")
@@ -40,19 +40,20 @@ const createPlugins = () => {
     }),
     connectionPlugin({
       nexusFieldName: "connection",
-      includeNodesField: true,
     }),
     loggerPlugin(),
     cachePlugin(),
     moocfiAuthPlugin(),
     fieldAuthorizePlugin(),
-    sentryPlugin(),
   ]
 
   if (isProduction && !NEXUS_REFLECTION && NEW_RELIC_LICENSE_KEY) {
+    const { sentryPlugin } = require("./middlewares/sentry")
     const { newRelicPlugin } = require("./middlewares/newrelic")
+    plugins.push(sentryPlugin())
     plugins.push(newRelicPlugin())
   }
+
   return plugins
 }
 
@@ -68,7 +69,11 @@ export default makeSchema({
         module: require.resolve(".prisma/client/index.d.ts"),
         alias: "prisma",
       },
+      { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
     ],
+    mapping: {
+      Upload: "upload.Upload['promise']",
+    },
   },
   plugins: createPlugins(),
   outputs: {

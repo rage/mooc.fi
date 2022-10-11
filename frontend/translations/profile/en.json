@@ -36,5 +36,6 @@
     "no": "no",
     "progress": "Progress",
     "totalProgress": "Total progress",
-    "exercisesCompleted": "Exercises completed"
+    "exercisesCompleted": "Exercises completed",
+    "grade": "grade:"
 }

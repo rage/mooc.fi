@@ -14,7 +14,7 @@ import {
 import { Course, CourseTag, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull } from "../../util/db-functions"
+import { filterNull, getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
@@ -41,19 +41,17 @@ export const CourseQueries = extendType({
             slug: slug ?? undefined,
             id: id ?? undefined,
           },
+          // TODO: limit these in the model
+          ...(ctx.role !== Role.ADMIN && {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+            },
+          }),
         }
 
-        if (ctx.role !== Role.ADMIN) {
-          courseQuery.select = {
-            id: true,
-            slug: true,
-            name: true,
-          }
-        }
-
-        const course: Course | null = await ctx.prisma.course.findUnique(
-          courseQuery,
-        )
+        const course = await getCourseOrAlias(ctx)(courseQuery)
 
         if (!course) {
           throw new Error("course not found")
@@ -163,6 +161,16 @@ export const CourseQueries = extendType({
                   },
                 },
               },
+              {
+                course_aliases: {
+                  some: {
+                    course_code: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
             ],
           })
         }
@@ -266,8 +274,10 @@ export const CourseQueries = extendType({
         const { slug } = args
 
         return Boolean(
-          await ctx.prisma.course.findFirst({
-            where: { slug },
+          await getCourseOrAlias(ctx)({
+            where: {
+              slug,
+            },
             select: { id: true },
           }),
         )

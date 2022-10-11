@@ -1,11 +1,4 @@
 import {
-  UserSummary_user_user_course_summary_course_exercises,
-  UserSummary_user_user_course_summary_exercise_completions,
-} from "/static/types/generated/UserSummary"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
-
-import {
   Paper,
   Table,
   TableBody,
@@ -16,10 +9,17 @@ import {
 } from "@mui/material"
 
 import ExerciseEntry from "./ExerciseEntry"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
+
+import {
+  ExerciseCompletionCoreFieldsFragment,
+  ExerciseCoreFieldsFragment,
+} from "/graphql/generated"
 
 interface ExerciseListProps {
-  exercises: (UserSummary_user_user_course_summary_course_exercises & {
-    exercise_completions: UserSummary_user_user_course_summary_exercise_completions[]
+  exercises: (ExerciseCoreFieldsFragment & {
+    exercise_completions: ExerciseCompletionCoreFieldsFragment[]
   })[]
 }
 

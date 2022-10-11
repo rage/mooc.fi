@@ -139,7 +139,7 @@ describe("Completion", () => {
             .catch(({ response }) => {
               expect(response.errors.length).toBe(1)
               expect(response.errors[0].message).toContain(
-                "not authorized to edit this completion",
+                "completion not found or not authorized to edit",
               )
             })
         })

@@ -8,10 +8,20 @@ import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
-import { createCourseMutations, getIds } from "../../util/courseMutationHelpers"
+import {
+  connectOrDisconnect,
+  createCourseMutations,
+  getIds,
+} from "../../util/courseMutationHelpers"
 import { convertUpdate } from "../../util/db-functions"
 import { isNotNullOrUndefined } from "../../util/isNullOrUndefined"
 import { deleteImage, uploadImage } from "../Image"
+
+const isNotNull = <T>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined
+
+const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
+  value ?? undefined
 
 export const CourseMutations = extendType({
   type: "Mutation",
@@ -39,8 +49,8 @@ export const CourseMutations = extendType({
           inherit_settings_from,
           completions_handled_by,
           user_course_settings_visibilities,
-          completion_email,
-          course_stats_email,
+          completion_email_id,
+          course_stats_email_id,
           course_tags,
         } = course
 
@@ -62,7 +72,12 @@ export const CourseMutations = extendType({
 
         const newCourse = await ctx.prisma.course.create({
           data: {
-            ...omit(course, ["base64", "new_photo"]),
+            ...omit(course, [
+              "base64",
+              "new_photo",
+              "completion_email_id",
+              "course_stats_email_id",
+            ]),
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translations: {
@@ -71,7 +86,7 @@ export const CourseMutations = extendType({
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
-                    id: s?.id ?? undefined,
+                    id: nullToUndefined(s?.id),
                   })),
                 }
               : undefined,
@@ -90,17 +105,17 @@ export const CourseMutations = extendType({
               create: user_course_settings_visibilities ?? undefined,
             },
             // don't think these will be passed by parameter, but let's be sure
-            completion_email: !!completion_email
-              ? { connect: { id: completion_email } }
+            completion_email: !!completion_email_id
+              ? { connect: { id: completion_email_id } }
               : undefined,
-            course_stats_email: !!course_stats_email
-              ? { connect: { id: course_stats_email } }
+            course_stats_email: !!course_stats_email_id
+              ? { connect: { id: course_stats_email_id } }
               : undefined,
             course_tags: { create: course_tags ?? undefined },
           },
         })
 
-        const kafkaProducer = await new KafkaProducer()
+        const kafkaProducer = new KafkaProducer()
         const producerMessage: ProducerMessage = {
           message: JSON.stringify(newCourse),
           partition: null,
@@ -131,12 +146,13 @@ export const CourseMutations = extendType({
           new_slug,
           base64,
           study_modules,
-          completion_email,
+          completion_email_id,
           status,
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
-          course_stats_email,
+          user_course_settings_visibilities,
+          course_stats_email_id,
         } = course
         let { end_date } = course
 
@@ -161,7 +177,14 @@ export const CourseMutations = extendType({
 
         const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
+          include: {
+            inherit_settings_from: true,
+            completions_handled_by: true,
+            study_modules: true,
+            user_course_settings_visibilities: true,
+          },
         })
+
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
@@ -187,10 +210,8 @@ export const CourseMutations = extendType({
           { name: "course_tags", id: "tag_id" },
         ])(course)
 
-        const existingVisibilities = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .user_course_settings_visibilities()
-        for (const visibility of existingVisibilities) {
+        for (const visibility of existingCourse?.user_course_settings_visibilities ??
+          []) {
           await invalidate(
             "usercoursesettingscount",
             `${slug}-${visibility.language}`,
@@ -198,18 +219,15 @@ export const CourseMutations = extendType({
         }
 
         // this had different logic so it's not done with the same helper
-        const existingStudyModules = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .study_modules()
-        //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-        const removedModuleIds = (existingStudyModules || [])
-          .filter((module) => !getIds(study_modules ?? []).includes(module.id))
-          .map((module) => ({ id: module.id } as { id: string }))
+        const removedModuleIds =
+          existingCourse?.study_modules
+            ?.filter((module) => !getIds(study_modules).includes(module.id))
+            .map((module) => ({ id: module.id })) ?? []
         const connectModules =
           study_modules?.map((s) => ({
             ...s,
-            id: s?.id ?? undefined,
-            slug: s?.slug ?? undefined,
+            id: nullToUndefined(s?.id),
+            slug: nullToUndefined(s?.slug),
           })) ?? []
 
         const studyModuleMutation:
@@ -223,34 +241,18 @@ export const CourseMutations = extendType({
             }
           : undefined
 
-        const existingInherit = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .inherit_settings_from()
-        const inheritMutation = inherit_settings_from
-          ? {
-              connect: { id: inherit_settings_from },
-            }
-          : existingInherit
-          ? {
-              disconnect: true, // { id: existingInherit.id },
-            }
-          : undefined
-        const existingHandled = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .completions_handled_by()
-        const handledMutation = completions_handled_by
-          ? {
-              connect: { id: completions_handled_by },
-            }
-          : existingHandled
-          ? {
-              disconnect: true, // { id: existingHandled.id },
-            }
-          : undefined
+        const inheritMutation = connectOrDisconnect(
+          inherit_settings_from,
+          existingCourse?.inherit_settings_from,
+        )
+        const handledMutation = connectOrDisconnect(
+          completions_handled_by,
+          existingCourse?.completions_handled_by,
+        )
 
         const updatedCourse = await ctx.prisma.course.update({
           where: {
-            id: id ?? undefined,
+            id: nullToUndefined(id),
             slug,
           },
           data: convertUpdate({
@@ -261,18 +263,20 @@ export const CourseMutations = extendType({
               "new_slug",
               "new_photo",
               "delete_photo",
+              "completion_email_id",
+              "course_stats_email_id",
             ]),
-            slug: new_slug ? new_slug : slug,
+            slug: new_slug ?? slug,
             end_date,
             // FIXME: disconnect removed photos?
             ...updatedFields,
             photo: !!photo ? { connect: { id: photo } } : undefined,
             study_modules: studyModuleMutation,
-            completion_email: completion_email
-              ? { connect: { id: completion_email } }
+            completion_email: completion_email_id
+              ? { connect: { id: completion_email_id } }
               : undefined,
-            course_stats_email: course_stats_email
-              ? { connect: { id: course_stats_email } }
+            course_stats_email: course_stats_email_id
+              ? { connect: { id: course_stats_email_id } }
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,

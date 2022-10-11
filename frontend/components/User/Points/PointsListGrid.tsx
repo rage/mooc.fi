@@ -1,15 +1,15 @@
-import {
-  UserPoints as UserPointsData,
-  UserPoints_currentUser_progresses,
-} from "/static/types/generated/UserPoints"
 import Grid from "@mui/material/Grid"
+
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import notEmpty from "/util/notEmpty"
 
+import { CurrentUserProgressesQuery } from "/graphql/generated"
+
 interface GridProps {
-  data: UserPointsData
+  data: CurrentUserProgressesQuery
   showOnlyTen?: boolean
 }
+
 function PointsListGrid(props: GridProps) {
   const { data, showOnlyTen } = props
 
@@ -19,18 +19,16 @@ function PointsListGrid(props: GridProps) {
 
   return (
     <Grid container spacing={3}>
-      {progressesToShow.map(
-        (progress: UserPoints_currentUser_progresses, index) => (
-          <PointsListItemCard
-            key={`${progress.course?.id}-${index}`}
-            course={progress.course}
-            userCourseProgress={progress.user_course_progress}
-            userCourseServiceProgresses={progress.user_course_service_progresses?.filter(
-              notEmpty,
-            )}
-          />
-        ),
-      )}
+      {progressesToShow.map((progress, index) => (
+        <PointsListItemCard
+          key={`${progress.course?.id}-${index}`}
+          course={progress.course}
+          userCourseProgress={progress.user_course_progress}
+          userCourseServiceProgresses={progress.user_course_service_progresses?.filter(
+            notEmpty,
+          )}
+        />
+      ))}
     </Grid>
   )
 }

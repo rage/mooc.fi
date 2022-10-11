@@ -1,19 +1,14 @@
 import * as winston from "winston"
 
-import type { PrismaClient } from "@prisma/client"
+import type { Prisma, PrismaClient } from "@prisma/client"
 
 import { PRISMA_LOG_LEVELS } from "../config"
 
-type LogLevel = "info" | "query" | "warn" | "error"
-type LogDefinition = {
-  level: LogLevel
-  emit: "stdout" | "event"
-}
-
-const logLevel: LogLevel[] | undefined = PRISMA_LOG_LEVELS?.split(
+const logLevel: Prisma.LogLevel[] | undefined = PRISMA_LOG_LEVELS?.split(
   ",",
-) as LogLevel[]
-export const logDefinition: LogDefinition[] | undefined = logLevel?.map(
+) as Prisma.LogLevel[]
+
+export const logDefinition: Prisma.LogDefinition[] | undefined = logLevel?.map(
   (level) => ({
     emit: "event",
     level,

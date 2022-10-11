@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { LinearProgress } from "@mui/material"
+
 import { CardSubtitle } from "/components/Text/headers"
 
 const ColoredProgressBar = styled(({ ...props }) => (
@@ -24,7 +25,12 @@ const ChartContainer = styled.div`
   margin-bottom: 1rem;
 `
 
-const PointsProgress = ({ total, title }: { total: number; title: string }) => (
+interface PointsProgressProps {
+  total: number
+  title: string
+}
+
+const PointsProgress = ({ total, title }: PointsProgressProps) => (
   <>
     <CardSubtitle
       component="h3"
@@ -34,7 +40,7 @@ const PointsProgress = ({ total, title }: { total: number; title: string }) => (
       {title}
     </CardSubtitle>
     <ChartContainer>
-      <CardSubtitle align="right">{total.toFixed(0)}%</CardSubtitle>
+      <CardSubtitle align="right">{Math.floor(total)}%</CardSubtitle>
       <ColoredProgressBar
         variant="determinate"
         value={total}

@@ -1,12 +1,12 @@
-// TODO/FIXME: don't have these types generated as we're not querying them, fix when applicable
-// import { ProfileUserOverView_currentUser_verified_users } from "/static/types/generated/ProfileUserOverView"
+// import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
 import React from "react"
-
-import { CardTitle } from "/components/Text/headers"
 
 import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
 
+import { CardTitle } from "/components/Text/headers"
+
+// FIXME/DELETE: we don't have the verified user thing implemented for now so these types aren't generated
 interface VerifiedUserProps {
   data: any // ProfileUserOverView_currentUser_verified_users
 }

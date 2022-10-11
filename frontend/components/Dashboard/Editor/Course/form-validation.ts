@@ -1,10 +1,7 @@
-import { FormValues } from "/components/Dashboard/Editor/types"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
-import { CourseStatus } from "/static/types/generated/globalTypes"
 import { DateTime } from "luxon"
 import * as Yup from "yup"
 
-import { ApolloClient, DocumentNode } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import {
   CourseAliasFormValues,
@@ -13,6 +10,15 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
+import { FormValues } from "/components/Dashboard/Editor/types"
+import { Translator } from "/translations"
+import { type CoursesTranslations } from "/translations/courses"
+
+import {
+  CourseFromSlugDocument,
+  CourseStatus,
+  OpenUniversityRegistrationLinkCoreFieldsFragment,
+} from "/graphql/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -23,7 +29,7 @@ export const initialTranslation: CourseTranslationFormValues = {
   open_university_course_link: {
     course_code: "",
     link: "",
-  } as CourseDetails_course_open_university_registration_links,
+  } as OpenUniversityRegistrationLinkCoreFieldsFragment,
 }
 
 export const initialVariant: CourseVariantFormValues = {
@@ -81,7 +87,7 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
   course: undefined,
 }
 
-export const statuses = (t: Function) => [
+export const statuses = (t: Translator<CoursesTranslations>) => [
   {
     value: CourseStatus.Upcoming,
     label: t("courseUpcoming"),
@@ -96,7 +102,7 @@ export const statuses = (t: Function) => [
   },
 ]
 
-export const languages = (t: Function) => [
+export const languages = (t: Translator<CoursesTranslations>) => [
   {
     value: "fi_FI",
     label: t("courseFinnish"),
@@ -145,17 +151,13 @@ const testUnique = <T extends FormValues>(
     return otherValues.indexOf(value) === -1
   }
 
-const courseEditSchema = ({
-  client,
-  checkSlug,
-  initialSlug,
-  t,
-}: {
+interface CourseEditSchemaArgs {
   client: ApolloClient<object>
-  checkSlug: DocumentNode
   initialSlug: string | null
-  t: (key: any) => string
-}) =>
+  t: Translator<CoursesTranslations>
+}
+
+const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) =>
   Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
@@ -165,7 +167,7 @@ const courseEditSchema = ({
       .test(
         "unique",
         t("validationSlugInUse"),
-        validateSlug({ client, checkSlug, initialSlug }),
+        validateSlug({ client, initialSlug }),
       ),
     status: Yup.mixed()
       .oneOf(statuses(t).map((s) => s.value))
@@ -266,15 +268,12 @@ const courseEditSchema = ({
       .min(0),
   })
 
-const validateSlug = ({
-  checkSlug,
-  client,
-  initialSlug,
-}: {
-  checkSlug: DocumentNode
+interface ValidateSlugArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-}) =>
+}
+
+const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
   async function (
     this: Yup.TestContext,
     value?: string | null,
@@ -289,7 +288,7 @@ const validateSlug = ({
 
     try {
       const { data } = await client.query({
-        query: checkSlug,
+        query: CourseFromSlugDocument,
         variables: { slug: value },
       })
 

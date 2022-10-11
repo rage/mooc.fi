@@ -1,8 +1,9 @@
-import { formattedGroupPoints } from "/util/formatPointsData"
 import { CardSubtitle } from "components/Text/headers"
 
 import styled from "@emotion/styled"
 import LinearProgress from "@mui/material/LinearProgress"
+
+import { FormattedGroupPoints } from "/util/formatPointsData"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -28,9 +29,9 @@ const ColoredProgressBar = styled(({ ...props }) => (
 
 interface Props {
   title: string
-  points: formattedGroupPoints
-  cuttervalue: Number
-  showDetailed: Boolean
+  points: FormattedGroupPoints
+  cuttervalue: number
+  showDetailed: boolean
 }
 function PointsListItemTableChart(props: Props) {
   const { title, points, cuttervalue, showDetailed } = props
@@ -62,42 +63,33 @@ function PointsListItemTableChart(props: Props) {
           color={value >= cuttervalue ? "primary" : "secondary"}
         />
       </ChartContainer>
-      {showDetailed ? (
-        services ? (
-          <>
-            {services.map((s) => (
-              <ChartContainer
-                style={{ width: "72%", marginLeft: "18%" }}
-                key={Math.floor(Math.random() * 100000)}
-              >
-                <CardSubtitle
-                  component="h4"
-                  variant="body1"
-                  style={{ marginRight: 5, width: "25%" }}
-                >
-                  {s["service"]}
-                </CardSubtitle>
-                <CardSubtitle
-                  style={{ marginRight: 5, width: "25%" }}
-                  align="right"
-                >
-                  {s["n_points"]} / {s["max_points"]}
-                </CardSubtitle>
-                <ColoredProgressBar
-                  variant="determinate"
-                  value={(s["n_points"] / (s["max_points"] ?? 1)) * 100}
-                  style={{ padding: "0.5rem", flex: 1 }}
-                  color="secondary"
-                />
-              </ChartContainer>
-            ))}
-          </>
-        ) : (
-          <p>No details available</p>
-        )
-      ) : (
-        ""
-      )}
+      {showDetailed &&
+        (services?.map((s) => (
+          <ChartContainer
+            style={{ width: "72%", marginLeft: "18%" }}
+            key={s.service}
+          >
+            <CardSubtitle
+              component="h4"
+              variant="body1"
+              style={{ marginRight: 5, width: "25%" }}
+            >
+              {s["service"]}
+            </CardSubtitle>
+            <CardSubtitle
+              style={{ marginRight: 5, width: "25%" }}
+              align="right"
+            >
+              {s["n_points"]} / {s["max_points"]}
+            </CardSubtitle>
+            <ColoredProgressBar
+              variant="determinate"
+              value={(s["n_points"] / (s["max_points"] ?? 1)) * 100}
+              style={{ padding: "0.5rem", flex: 1 }}
+              color="secondary"
+            />
+          </ChartContainer>
+        )) ?? <p>No details available</p>)}
     </>
   )
 }
