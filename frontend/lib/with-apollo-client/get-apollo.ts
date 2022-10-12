@@ -23,7 +23,7 @@ function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]
-    if (!accessToken && !process.browser) {
+    if (!accessToken && typeof window === "undefined") {
       accessToken = originalAccessToken
     }
 
@@ -41,12 +41,12 @@ function create(initialState: any, originalAccessToken?: string) {
   const uploadLink = createUploadLink({
     uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
-    fetch: fetch,
+    fetch,
   })
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
+      graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
           `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
             locations,
@@ -122,7 +122,7 @@ let previousAccessToken: string | undefined = undefined
 export default function getApollo(initialState: any, accessToken?: string) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
-  if (!process.browser) {
+  if (typeof window === "undefined") {
     return create(initialState, accessToken)
   }
 

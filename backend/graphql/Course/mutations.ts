@@ -179,7 +179,7 @@ export const CourseMutations = extendType({
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
-          end_date === ""
+          end_date !== ""
         ) {
           end_date = new Date().toLocaleDateString()
         }

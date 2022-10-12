@@ -3,9 +3,9 @@ import { AppContext } from "next/app"
 import { renderToString } from "react-dom/server"
 
 import {
-  ApolloClient,
+  type ApolloClient,
   ApolloProvider,
-  NormalizedCacheObject,
+  type NormalizedCacheObject,
 } from "@apollo/client"
 
 import fetchUserDetails from "./fetch-user-details"
@@ -39,7 +39,7 @@ const withApolloClient = (App: any) => {
     )
   }
 
-  withApollo.displayName = "withApollo(App)"
+  withApollo.displayName = `withApollo(${App.displayName ?? "App"})`
   withApollo.getInitialProps = async (ctx: AppContext | NextPageContext) => {
     const inAppContext = isAppContext(ctx)
 

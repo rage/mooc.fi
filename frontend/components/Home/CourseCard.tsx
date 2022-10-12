@@ -78,7 +78,7 @@ export default function CourseCard({ course }: CourseCardProps) {
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <CardLinkWithGA
         eventLabel={`coursesite: ${course?.name ?? ""}`}
-        to={course ? course.link || "" : ""}
+        to={course?.link ?? ""}
         target="_blank"
       >
         <Background
@@ -86,7 +86,6 @@ export default function CourseCard({ course }: CourseCardProps) {
           disabled={
             !course ||
             !course.link ||
-            course.link === "" ||
             (course?.status === "Upcoming" && !course?.upcoming_active_link)
           }
           component="div"

@@ -38,7 +38,7 @@ interface StudentDataDisplayProps {
 }
 
 const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
-  const { completions = [] } = data || {}
+  const { completions = [] } = data ?? {}
 
   return (
     <>

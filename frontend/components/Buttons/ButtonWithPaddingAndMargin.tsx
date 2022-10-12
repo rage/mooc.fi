@@ -8,7 +8,7 @@ export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
       ? "#4e4637"
       : color === "primary"
       ? "#FFFFFF"
-      : color || "#000000"};
+      : color ?? "#000000"};
   font-size: 18px;
   padding: 0.5em;
 `

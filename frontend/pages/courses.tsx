@@ -52,9 +52,9 @@ function useCourseSearch() {
     .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
 
   const initialSearchVariables: SearchVariables = {
-    search: useQueryParameter("search", false) || "",
+    search: useQueryParameter("search", false) ?? "",
     hidden:
-      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
+      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ??
       true,
     handledBy: useQueryParameter("handledBy", false) || null,
     status: statusParam.length

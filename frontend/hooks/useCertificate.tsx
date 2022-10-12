@@ -1,8 +1,8 @@
-import { useContext, useMemo, useReducer, useRef, useState } from "react"
+import { useMemo, useReducer, useRef, useState } from "react"
 
 import { useMutation } from "@apollo/client"
 
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { updateAccount } from "/lib/account"
 import { createCertificate } from "/lib/certificates"
 
@@ -108,7 +108,7 @@ export const useCertificate = ({
     certificateId:
       completion?.certificate_availability?.existing_certificate ?? undefined,
   })
-  const { currentUser, updateUser, admin } = useContext(LoginStateContext)
+  const { currentUser, updateUser, admin } = useLoginStateContext()
 
   const [state, dispatch] = useReducer(reducer, initialState.current)
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")

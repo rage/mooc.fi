@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { range } from "lodash"
 
@@ -20,7 +20,7 @@ import {
 
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
@@ -40,9 +40,9 @@ const Header = styled(Typography)<any>`
   margin-top: 1em;
 `
 
-const FormContainer = styled(Container)`
-  spacing: 4;
-`
+const FormContainer = styled((props: any) => (
+  <Container spacing={4} {...props} />
+))``
 
 interface OrganizationCardProps {
   name: string
@@ -112,7 +112,7 @@ function useSearchBox() {
 }
 
 function useRegisterOrganization(searchFilter: string) {
-  const { currentUser } = useContext(LoginStateContext)
+  const { currentUser } = useLoginStateContext()
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
@@ -202,7 +202,7 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    if (!searchFilter || searchFilter === "") {
+    if (!searchFilter) {
       setFilteredOrganizations(organizations)
 
       return

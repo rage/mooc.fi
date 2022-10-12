@@ -69,7 +69,7 @@ const CourseAndModuleList = () => {
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
       ["Active", "Upcoming", "Ended"].map((status) =>
-        (courses || [])
+        (courses ?? [])
           .filter(notEmpty)
           .filter((c) => !c.hidden && c.status === status),
       ),

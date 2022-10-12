@@ -88,7 +88,7 @@ export default function FilterMenu({
     hidden: showHidden = true,
     status: showStatus = true,
     handler: showHandler = true,
-  } = fields || {}
+  } = fields ?? {}
   const {
     search: initialSearch,
     hidden: initialHidden,
