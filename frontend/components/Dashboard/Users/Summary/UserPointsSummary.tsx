@@ -2,6 +2,7 @@ import { useState } from "react"
 
 import { sortBy } from "lodash"
 
+import styled from "@emotion/styled"
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper } from "@mui/material"
 
@@ -16,11 +17,19 @@ import RawView from "/components/Dashboard/Users/Summary/RawView"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
+import {
+  EditorCoursesQueryVariables,
+  UserCourseSummaryCoreFieldsFragment,
+} from "/graphql/generated"
+
+const DataPlaceholder = styled.div`
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+`
 
 interface UserPointsSummaryProps {
   data?: UserCourseSummaryCoreFieldsFragment[]
-  search?: string
+  search?: EditorCoursesQueryVariables["search"]
 }
 
 export default function UserPointsSummary({
@@ -83,7 +92,9 @@ export default function UserPointsSummary({
           label={coursesClosed ? t("showAll") : t("hideAll")}
         />
       </Paper>
-      {filteredData.length === 0 ? <div>No data</div> : null}
+      {filteredData.length === 0 ? (
+        <DataPlaceholder>{t("noResults")}</DataPlaceholder>
+      ) : null}
       {sortBy(filteredData, (stats) => stats?.course?.name).map(
         (entry, index) => (
           <CourseEntry key={entry.course?.id ?? index} data={entry} />

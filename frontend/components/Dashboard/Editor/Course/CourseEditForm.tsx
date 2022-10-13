@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 
 import {
   Form,
@@ -8,6 +8,7 @@ import {
   yupToFormErrors,
 } from "formik"
 import * as Yup from "yup"
+import { ObjectShape } from "yup/lib/object"
 
 import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
@@ -67,7 +68,7 @@ const ModuleList = styled(List)`
   overflow: auto;
 `
 
-const ModuleListItem = styled(ListItem)<any>`
+const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 
@@ -511,11 +512,11 @@ const renderForm =
     )
   }
 
-interface CourseEditFormProps {
+interface CourseEditFormProps<SchemaType extends ObjectShape> {
   course: CourseFormValues
   studyModules?: StudyModuleDetailedFieldsFragment[]
   courses?: EditorCourseOtherCoursesFieldsFragment[]
-  validationSchema: Yup.ObjectSchema<any>
+  validationSchema: Yup.ObjectSchema<SchemaType>
   onSubmit: (
     values: CourseFormValues,
     FormikHelpers: FormikHelpers<CourseFormValues>,
@@ -524,50 +525,48 @@ interface CourseEditFormProps {
   onDelete: (values: CourseFormValues) => void
 }
 
-const CourseEditForm = memo(
-  ({
-    course,
-    studyModules,
-    courses,
-    validationSchema,
-    onSubmit,
-    onCancel,
-    onDelete,
-  }: CourseEditFormProps) => {
-    const validate = useCallback(async (values: CourseFormValues) => {
-      try {
-        await validationSchema.validate(values, {
-          abortEarly: false,
-          context: { values },
-        })
-      } catch (e) {
-        return yupToFormErrors(e)
-      }
-    }, [])
+function CourseEditForm<SchemaType extends ObjectShape>({
+  course,
+  studyModules,
+  courses,
+  validationSchema,
+  onSubmit,
+  onCancel,
+  onDelete,
+}: CourseEditFormProps<SchemaType>) {
+  const validate = useCallback(async (values: CourseFormValues) => {
+    try {
+      await validationSchema.validate(values, {
+        abortEarly: false,
+        context: { values },
+      })
+    } catch (e) {
+      return yupToFormErrors(e)
+    }
+  }, [])
 
-    const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(0)
 
-    return (
-      <Formik
-        initialValues={course}
-        validate={validate}
-        onSubmit={onSubmit}
-        validateOnChange={false}
-      >
-        <FormWrapper<CourseFormValues>
-          renderForm={renderForm({
-            initialValues: course,
-            courses,
-            studyModules,
-          })}
-          onCancel={onCancel}
-          onDelete={onDelete}
-          tab={tab}
-          setTab={setTab}
-        />
-      </Formik>
-    )
-  },
-)
+  return (
+    <Formik
+      initialValues={course}
+      validate={validate}
+      onSubmit={onSubmit}
+      validateOnChange={false}
+    >
+      <FormWrapper<CourseFormValues>
+        renderForm={renderForm({
+          initialValues: course,
+          courses,
+          studyModules,
+        })}
+        onCancel={onCancel}
+        onDelete={onDelete}
+        tab={tab}
+        setTab={setTab}
+      />
+    </Formik>
+  )
+}
 
-export default CourseEditForm
+export default React.memo(CourseEditForm)

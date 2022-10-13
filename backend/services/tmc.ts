@@ -121,7 +121,7 @@ export default class TmcClient {
   async getUserAppDatum(after: string | null): Promise<any[]> {
     let res
     if (after != null) {
-      after = await encodeURI(after)
+      after = encodeURI(after)
       res = await axios.get(
         `${TMC_HOST}/api/v8/user_app_datum?after=${after}`,
         {
@@ -139,7 +139,7 @@ export default class TmcClient {
   async getUserFieldValues(after: string | null): Promise<UserFieldValue[]> {
     let res
     if (after != null) {
-      after = await encodeURI(after)
+      after = encodeURI(after)
       res = await axios.get(
         `${TMC_HOST}/api/v8/user_field_value?after=${after}`,
         {

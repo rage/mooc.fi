@@ -30,7 +30,7 @@ function HideOnScroll(props: Props) {
   )
 }
 
-const StyledToolbar = styled<any>(Toolbar)`
+const StyledToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
 `

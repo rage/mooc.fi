@@ -12,5 +12,7 @@
   "displayedRowsOf": " of ",
   "nextPage": "Next page",
   "previousPage": "Previous page",
-  "searchByString": "Search by string"
+  "searchByString": "Search by string",
+  "searchInCourses": "Search in courses",
+  "searchUser": "Search for another user..."
 }

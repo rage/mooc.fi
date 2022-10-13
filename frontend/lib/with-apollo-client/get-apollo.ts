@@ -1,4 +1,6 @@
 import { createUploadLink } from "apollo-upload-client"
+import extractFiles from "extract-files/extractFiles.mjs"
+import isExtractableFile from "extract-files/isExtractableFile.mjs"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
 
@@ -9,6 +11,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client"
+import { BatchHttpLink } from "@apollo/client/link/batch-http"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
 
@@ -37,12 +40,19 @@ function create(initialState: any, originalAccessToken?: string) {
     }
   })
 
-  // replaces standard HttpLink
-  const uploadLink = createUploadLink({
+  const httpLinkOptions = {
     uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch,
-  })
+  }
+
+  // use BatchHttpLink if there are no uploaded files, otherwise use
+  // uploadLink that uses simple HttpLink
+  const uploadAndBatchHTTPLink = ApolloLink.split(
+    (operation) => extractFiles(operation, isExtractableFile).files.size > 0,
+    createUploadLink(httpLinkOptions),
+    new BatchHttpLink(httpLinkOptions),
+  )
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
@@ -99,8 +109,8 @@ function create(initialState: any, originalAccessToken?: string) {
 
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser
-      ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
-      : authLink.concat(uploadLink),
+      ? ApolloLink.from([errorLink, authLink.concat(uploadAndBatchHTTPLink)])
+      : authLink.concat(uploadAndBatchHTTPLink),
     cache: cache.restore(initialState || {}),
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,

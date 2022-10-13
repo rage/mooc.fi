@@ -12,5 +12,7 @@
   "displayedRowsOf": "/",
   "nextPage": "Seuraava sivu",
   "previousPage": "Edellinen sivu",
-  "searchByString": "Etsi merkkijonolla"
+  "searchByString": "Etsi merkkijonolla",
+  "searchInCourses": "Etsi kursseista",
+  "searchUser": "Etsi toista käyttäjää..."
 }

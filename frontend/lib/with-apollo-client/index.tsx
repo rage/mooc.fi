@@ -2,18 +2,14 @@ import { NextPageContext } from "next"
 import { AppContext } from "next/app"
 import { renderToString } from "react-dom/server"
 
-import {
-  type ApolloClient,
-  ApolloProvider,
-  type NormalizedCacheObject,
-} from "@apollo/client"
+import { type ApolloClient, ApolloProvider } from "@apollo/client"
 
 import fetchUserDetails from "./fetch-user-details"
 import getApollo, { initNewApollo } from "./get-apollo"
 import { getAccessToken } from "/lib/authentication"
 
 interface Props {
-  apollo: ApolloClient<NormalizedCacheObject>
+  apollo: ApolloClient<object>
   // Server side rendered state. Prevents queries from running again in the frontend.
   apolloState: any
   accessToken?: string

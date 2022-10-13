@@ -32,17 +32,17 @@ const HeroContentContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.6);
 `
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   padding: 2rem;
   max-width: 80vw;
   text-align: center;
 `
-const Paragraph = styled(Typography)<any>`
+const Paragraph = styled(Typography)`
   max-width: 60vw;
   text-align: center;
 `
 
-const CourseButton = styled(Button)<any>`
+const CourseButton = styled(Button)`
   border-radius: 20px;
   background-color: #fff;
   margin-top: 2rem;
