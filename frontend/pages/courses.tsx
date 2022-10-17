@@ -10,6 +10,7 @@ import CourseGrid from "/components/Dashboard/CourseGrid"
 import FilterMenu from "/components/FilterMenu"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
+import { FilterContext } from "/contexts/FilterContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
@@ -34,60 +35,52 @@ const notEmptyOrEmptyString = (value: any): value is string | true | number =>
 function useCourseSearch() {
   const router = useRouter()
 
-  useBreadcrumbs([
-    {
-      translation: "courses",
-      href: "/courses",
-    },
-  ])
-
-  const statusParam = (decodeURIComponent(useQueryParameter("status", false))
-    ?.split(",")
-    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
+  const statusParam = useQueryParameter("status", false) ?? []
+  const status = (
+    Array.isArray(statusParam)
+      ? statusParam.filter(notEmptyOrEmptyString)
+      : [
+          ...decodeURIComponent(statusParam)
+            .split(",")
+            .filter(notEmptyOrEmptyString),
+        ]
+  ) as CourseStatus[] // compatibility with old links
 
   const initialSearchVariables: EditorCoursesQueryVariables = {
-    search: useQueryParameter("search", false) ?? "",
+    search: useQueryParameter("search", false),
     hidden:
-      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ??
-      true,
+      useQueryParameter("hidden", false).toLowerCase() !== "false" ?? true,
     handledBy: useQueryParameter("handledBy", false) || null,
-    status: statusParam.length
-      ? statusParam
+    status: status.length
+      ? status
       : [CourseStatus.Active, CourseStatus.Upcoming],
   }
 
-  const [searchVariables, setSearchVariables] =
-    useState<EditorCoursesQueryVariables>(initialSearchVariables)
-  const [status, setStatus] = useState<CourseStatus[]>(
-    (initialSearchVariables.status ?? []) as CourseStatus[],
-  )
+  const [searchVariables, setSearchVariables] = useState(initialSearchVariables)
 
   const {
-    loading: editorLoading,
-    error: editorError,
-    data: editorData,
+    loading: coursesLoading,
+    error: coursesError,
+    data: coursesData,
   } = useQuery(EditorCoursesDocument, {
     variables: searchVariables || initialSearchVariables,
   })
   const {
-    loading: handlersLoading,
-    error: handlersError,
-    data: handlersData,
+    loading: handlerCoursesLoading,
+    error: handlerCoursesError,
+    data: handlerCoursesData,
   } = useQuery(HandlerCoursesDocument)
 
   useEffect(() => {
     const searchParams = new URLSearchParams()
 
     if (notEmptyOrEmptyString(searchVariables.search)) {
-      searchParams.set(
-        "search",
-        encodeURIComponent(searchVariables.search.toString() ?? ""),
-      )
+      searchParams.set("search", encodeURIComponent(searchVariables.search))
     }
     if (notEmptyOrEmptyString(searchVariables.handledBy)) {
       searchParams.set(
         "handledBy",
-        encodeURIComponent(searchVariables.handledBy.toString() ?? ""),
+        encodeURIComponent(searchVariables.handledBy),
       )
     }
     if (!searchVariables.hidden) {
@@ -103,10 +96,9 @@ function useCourseSearch() {
         searchVariables.status.includes(CourseStatus.Upcoming)
       )
     ) {
-      searchParams.set(
-        "status",
-        (searchVariables.status as CourseStatus[]).join(","),
-      )
+      ;(searchVariables.status as CourseStatus[])
+        .filter(notEmpty)
+        .forEach((s) => searchParams.append("status", s))
     }
 
     const query = searchParams.toString().length
@@ -119,8 +111,7 @@ function useCourseSearch() {
     }
   }, [searchVariables])
 
-  const onClickStatus = (value: CourseStatus | null) => (_: any) => {
-    setStatus(value ? [value] : [])
+  const onStatusClick = (value: CourseStatus | null) => (_: any) => {
     setSearchVariables({
       ...searchVariables,
       status: value ? [value] : [],
@@ -128,13 +119,11 @@ function useCourseSearch() {
   }
 
   return {
-    loading: editorLoading || handlersLoading,
-    error: editorError || handlersError,
-    handlersData,
-    editorData,
-    status,
-    setStatus,
-    onClickStatus,
+    loading: coursesLoading || handlerCoursesLoading,
+    error: coursesError || handlerCoursesError,
+    coursesData,
+    handlerCoursesData,
+    onStatusClick,
     searchVariables,
     setSearchVariables,
   }
@@ -142,17 +131,16 @@ function useCourseSearch() {
 
 function Courses() {
   const t = useTranslator(CoursesTranslations)
-  const {
-    loading,
-    error,
-    handlersData,
-    editorData,
-    status,
-    setStatus,
-    onClickStatus,
-    searchVariables,
-    setSearchVariables,
-  } = useCourseSearch()
+  const courseSearch = useCourseSearch()
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: "/courses",
+    },
+  ])
+
+  const { error } = courseSearch
 
   if (error) {
     return (
@@ -168,19 +156,10 @@ function Courses() {
         <H1Background component="h1" variant="h1" align="center">
           {t("allCourses")}
         </H1Background>
-        <FilterMenu
-          searchVariables={searchVariables}
-          setSearchVariables={setSearchVariables}
-          status={status}
-          setStatus={setStatus}
-          handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
-          loading={loading}
-        />
-        <CourseGrid
-          courses={editorData?.courses?.filter(notEmpty)}
-          onClickStatus={onClickStatus}
-          loading={loading}
-        />
+        <FilterContext.Provider value={courseSearch}>
+          <FilterMenu />
+          <CourseGrid />
+        </FilterContext.Provider>
       </WideContainer>
     </Background>
   )

@@ -108,5 +108,20 @@
   "helpExerciseCompletionsNeeded": "Kuinka monta tehtävää pitää olla suoritettuna läpipääsyyn?",
   "helpPointsNeeded": "Kuinka paljon pisteitä tarvitaan läpipääsyyn?",
   "helpAutomaticCompletions": "Merkitäänkö kurssisuoritus automaattisesti?",
-  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?"
+  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?",
+  "to": "-",
+  "ongoing": "(jatkuva)",
+  "teacherInCharge": "Vastuuopettaja: ",
+  "teacherInChargeEmail": "Vastuuopettajan sähköposti: ",
+  "supportEmail": "Kurssin tukisähköposti: ",
+  "slug": "Slug: ",
+  "dashboard": "Ohjauspaneeli",
+  "toCourseHomePage": "Kurssin {{name}} kotisivulle",
+  "cloneCourse": "Kloonaa kurssi {{name}}",
+  "clone": "Kloonaa...",
+  "editCourseWithName": "Muokkaa kurssia {{name}}",
+  "edit": "Muokkaa...",
+  "createNewCourse": "Luo uusi kurssi",
+  "create": "Luo..."
+
 }

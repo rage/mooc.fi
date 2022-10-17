@@ -20,7 +20,6 @@ import {
 
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
@@ -112,8 +111,6 @@ function useSearchBox() {
 }
 
 function useRegisterOrganization(searchFilter: string) {
-  const { currentUser } = useLoginStateContext()
-
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
     Record<string, OrganizationCoreFieldsFragment>

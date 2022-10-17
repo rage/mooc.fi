@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import styled from "@emotion/styled"
 import { Clear, Search } from "@mui/icons-material"
@@ -10,21 +10,16 @@ import {
   IconButton,
   InputAdornment,
   MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
   TextField,
 } from "@mui/material"
 
+import { useFilterContext } from "/contexts/FilterContext"
 import { useSearch } from "/hooks/useSearch"
 import CommonTranslations from "/translations/common"
+import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
-import {
-  CourseCoreFieldsFragment,
-  CourseStatus,
-  EditorCoursesQueryVariables,
-} from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
 
 const Container = styled.div`
   background-color: white;
@@ -63,26 +58,19 @@ interface FilterFields {
   handler: boolean
 }
 interface FilterProps {
-  searchVariables: EditorCoursesQueryVariables
-  setSearchVariables: React.Dispatch<EditorCoursesQueryVariables>
-  handlerCourses?: CourseCoreFieldsFragment[]
-  status?: string[]
-  setStatus?: React.Dispatch<React.SetStateAction<CourseStatus[]>>
-  loading: boolean
   fields?: FilterFields
   label?: string
 }
 
-export default function FilterMenu({
-  searchVariables,
-  setSearchVariables,
-  loading,
-  handlerCourses = [],
-  status = [],
-  setStatus = () => {},
-  fields,
-  label,
-}: FilterProps) {
+export default function FilterMenu({ fields, label }: FilterProps) {
+  const { searchVariables, setSearchVariables, handlerCoursesData, loading } =
+    useFilterContext()
+
+  const handlerCourses = useMemo(
+    () => handlerCoursesData?.handlerCourses?.filter(notEmpty) ?? [],
+    [handlerCoursesData],
+  )
+
   const t = useTranslator(CommonTranslations)
   const {
     hidden: showHidden = true,
@@ -119,13 +107,12 @@ export default function FilterMenu({
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newStatus = (
         e.target.checked
-          ? [...(searchVariables?.status || []), value]
+          ? [...(searchVariables?.status ?? []), value]
           : (searchVariables?.status as CourseStatus[])?.filter(
               (v) => v !== value,
-            ) || []
+            ) ?? []
       ) as CourseStatus[]
 
-      setStatus(newStatus)
       setSearchVariables({
         ...searchVariables,
         status: newStatus,
@@ -140,7 +127,7 @@ export default function FilterMenu({
     })
   }
 
-  const handleHandledByChange = (e: SelectChangeEvent<string>) => {
+  const handleHandledByChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHandledBy(e.target.value)
     setSearchVariables({
       ...searchVariables,
@@ -181,9 +168,9 @@ export default function FilterMenu({
           style={{ gridColumn: "span 6" }}
         />
       </Row>
-      {showHidden || showHandler || showStatus ? (
+      {(showHidden || showHandler || showStatus) && (
         <Row>
-          {showHidden ? (
+          {showHidden && (
             <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
               <FormControlLabel
                 label={t("showHidden")}
@@ -196,8 +183,8 @@ export default function FilterMenu({
                 }
               />
             </FormControl>
-          ) : null}
-          {showStatus ? (
+          )}
+          {showStatus && (
             <FormControl disabled={loading} style={{ gridArea: "status" }}>
               <div style={{ display: "flex" }}>
                 {["Active", "Upcoming", "Ended"].map((value) => (
@@ -207,7 +194,9 @@ export default function FilterMenu({
                     control={
                       <Checkbox
                         id={value}
-                        checked={status.includes(value)}
+                        checked={searchVariables?.status?.includes(
+                          value as CourseStatus,
+                        )}
                         onChange={handleStatusChange(value)}
                       />
                     }
@@ -215,21 +204,16 @@ export default function FilterMenu({
                 ))}
               </div>
             </FormControl>
-          ) : null}
-          {showHandler ? (
+          )}
+          {showHandler && (
             <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
-              <Select
-                value={loading ? "" : handledBy}
-                variant="outlined"
+              <TextField
+                id="handledBy"
+                select
+                value={handledBy}
                 onChange={handleHandledByChange}
                 label={t("handledBy")}
-                input={
-                  <OutlinedInput
-                    notched={Boolean(handledBy)}
-                    name="handledBy"
-                    id="handledBy"
-                  />
-                }
+                variant="outlined"
               >
                 <MenuItem value="" key="handleempty">
                   &nbsp;
@@ -239,11 +223,11 @@ export default function FilterMenu({
                     {course.name}
                   </MenuItem>
                 ))}
-              </Select>
+              </TextField>
             </FormControl>
-          ) : null}
+          )}
         </Row>
-      ) : null}
+      )}
       <Row style={{ display: "flex", flexDirection: "row-reverse" }}>
         <Button
           disabled={loading}
@@ -262,7 +246,6 @@ export default function FilterMenu({
           onClick={() => {
             setHidden(true)
             setHandledBy("")
-            setStatus([CourseStatus.Active, CourseStatus.Upcoming])
             setSearchVariables({
               search: "",
               hidden: true,

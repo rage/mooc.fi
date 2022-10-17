@@ -15,6 +15,7 @@ import CollapseContext, {
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
+import { FilterContext } from "/contexts/FilterContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
@@ -82,6 +83,10 @@ function UserSummaryView() {
   }
 
   const contextValue = useMemo(() => ({ state, dispatch }), [state])
+  const filterContextValue = useMemo(
+    () => ({ loading, searchVariables, setSearchVariables }),
+    [loading, searchVariables],
+  )
 
   if (error) {
     return (
@@ -111,17 +116,16 @@ function UserSummaryView() {
               onChange={onUserSearchChange}
             />
           </StyledForm>
-          <FilterMenu
-            searchVariables={searchVariables}
-            setSearchVariables={setSearchVariables}
-            loading={loading}
-            label={t("searchInCourses")}
-            fields={{
-              hidden: false,
-              status: false,
-              handler: false,
-            }}
-          />
+          <FilterContext.Provider value={filterContextValue}>
+            <FilterMenu
+              label={t("searchInCourses")}
+              fields={{
+                hidden: false,
+                status: false,
+                handler: false,
+              }}
+            />
+          </FilterContext.Provider>
         </Paper>
         <UserPointsSummary
           data={data?.user?.user_course_summary?.filter(notEmpty)}

@@ -108,5 +108,19 @@
   "helpExerciseCompletionsNeeded": "How many exercise completions are needed to pass the course?",
   "helpPointsNeeded": "How many points are needed to pass the course?",
   "helpAutomaticCompletions": "Does the course have automatic completions?",
-  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?"
+  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?",
+  "to": "to",
+  "ongoing": "(ongoing)",
+  "teacherInCharge": "Teacher in charge: ",
+  "teacherInChargeEmail": "Teacher in charge email: ",
+  "supportEmail": "Course support email: ",
+  "slug": "Slug: ",
+  "dashboard": "Dashboard",
+  "toCourseHomePage": "To the homepage of {{name}}",
+  "cloneCourse": "Clone course {{name}}",
+  "clone": "Clone...",
+  "editCourseWithName": "Edit course {{name}}",
+  "edit": "Edit...",
+  "createNewCourse": "Create new course",
+  "create": "Create..."
 }

@@ -1,4 +1,4 @@
-import { createRef, useContext, useEffect, useState } from "react"
+import { createRef, useEffect, useState } from "react"
 
 import { useMutation, useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -12,7 +12,7 @@ import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
 
 import ErrorMessage from "/components/ErrorMessage"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { updateUserDetails } from "/lib/account"
 import withSignedIn from "/lib/with-signed-in"
@@ -77,7 +77,7 @@ const mockOrganization = {
 }
 
 const RegisterToOrganization = () => {
-  const { currentUser, admin } = useContext(LoginStateContext)
+  const { currentUser, admin } = useLoginStateContext()
   const slug = useQueryParameter("slug")
   const t = useTranslator(HomeTranslations, RegistrationTranslations)
   const [confirmationStatus, setConfirmationStatus] = useState("notSent") // notSent, sent, expired, incorrectFormat or confirmed

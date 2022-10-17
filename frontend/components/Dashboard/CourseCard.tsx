@@ -17,9 +17,14 @@ import {
 import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
+import { formatDate } from "/components/DataFormatFunctions"
 import { CardTitle } from "/components/Text/headers"
+import { useFilterContext } from "/contexts/FilterContext"
+import CommonTranslations from "/translations/common"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
 
-import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
+import { EditorCourseFieldsFragment } from "/graphql/generated"
 
 const CardBase = styled.div<{ ishidden?: number }>`
   position: relative;
@@ -90,6 +95,7 @@ const CourseCardContent = styled.div`
   flex-direction: column;
   padding: 1rem;
   padding-bottom: 0;
+  grid-column: span 2;
 `
 
 const CourseCardActionArea = styled(CardActions)`
@@ -103,6 +109,7 @@ const CourseInfoList = styled.ul`
   margin: 0;
   padding: 0;
 `
+
 const CourseInfoLine = styled.li`
   display: grid;
   @media (max-width: 600px) {
@@ -112,6 +119,20 @@ const CourseInfoLine = styled.li`
     grid-template-columns: 2fr 1fr;
   }
   flex-direction: row;
+`
+
+const NewCourseImageIconContainer = styled.div`
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  display: flex;
+  border: 2px solid #e0e0e0;
+`
+
+const CourseTitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const CourseInfoField = ({
@@ -138,6 +159,9 @@ const CourseInfoValue = styled.div`
   justify-content: flex-end;
 `
 
+const CourseCardBase = styled(CardBase)`
+  grid-column: span 1;
+`
 interface CourseInfoProps {
   field?: string | JSX.Element
   value?: string | JSX.Element
@@ -155,116 +179,135 @@ const CourseInfo = ({
     {children}
   </CourseInfoLine>
 )
-const formatDate = (date?: string | null) =>
-  date ? new Date(date).toLocaleDateString() : "-"
-
 interface CourseCardProps {
   course?: EditorCourseFieldsFragment
   loading?: boolean
-  onClickStatus?: (value: CourseStatus | null) => (_: any) => void
 }
 
-const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
+const SkeletonCourseCard = () => {
+  return (
+    <CourseCardItem>
+      <CourseCardBase>
+        <CourseCardImageContainer>
+          <Skeleton variant="rectangular" height="100%" />
+        </CourseCardImageContainer>
+        <CourseCardContent>
+          <CardTitle variant="h3" component="h2" align="left">
+            <Skeleton variant="text" />
+          </CardTitle>
+          <CourseInfoList>
+            <CourseInfo>
+              <Skeleton width="60%" />
+            </CourseInfo>
+            <CourseInfo>
+              <Skeleton width="50%" />
+            </CourseInfo>
+            <CourseInfo>
+              <Skeleton width="70%" />
+            </CourseInfo>
+          </CourseInfoList>
+        </CourseCardContent>
+        <CourseCardActionArea style={{ gridColumn: "span 3" }}>
+          <Skeleton variant="rectangular" height="2rem" width="12%" />
+          <Skeleton variant="rectangular" height="2rem" width="18%" />
+          <Skeleton variant="rectangular" height="2rem" width="10%" />
+        </CourseCardActionArea>
+      </CourseCardBase>
+    </CourseCardItem>
+  )
+}
+
+const CourseCardImage = ({ course }: CourseCardProps) => {
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
+
+  if (course) {
+    return <CourseImage photo={course.photo} alt={course.name} />
+  }
+
+  return (
+    <Link href={`/courses/new`} passHref>
+      <StyledLink aria-label={t("createNewCourse")}>
+        <NewCourseImageIconContainer>
+          <AddCircleIcon fontSize="large" />
+        </NewCourseImageIconContainer>
+      </StyledLink>
+    </Link>
+  )
+}
+
+const CourseCard = ({ course, loading }: CourseCardProps) => {
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
+  const { onStatusClick } = useFilterContext()
+
+  if (loading) {
+    return <SkeletonCourseCard />
+  }
+
   return (
     <CourseCardItem key={`course-card-${course?.id ?? "new"}`}>
-      <CardBase
-        style={{ gridColumn: "span 1" }}
-        ishidden={course?.hidden ? 1 : undefined}
-      >
+      <CourseCardBase ishidden={course?.hidden ? 1 : undefined}>
         <CourseCardImageContainer>
-          {loading ? (
-            <Skeleton variant="rectangular" height="100%" />
-          ) : course ? (
-            <CourseImage photo={course.photo} alt={course.name} />
-          ) : (
-            <Link href={`/courses/new`} passHref>
-              <StyledLink aria-label={`Create new course`}>
-                <div
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
-                    display: "flex",
-                    border: "2px solid #E0E0E0",
-                  }}
-                >
-                  <AddCircleIcon fontSize="large" />
-                </div>
-              </StyledLink>
-            </Link>
-          )}
+          <CourseCardImage course={course} loading={loading} />
         </CourseCardImageContainer>
-        <CourseCardContent style={{ gridColumn: "span 2" }}>
+        <CourseCardContent>
           <CardTitle variant="h3" component="h2" align="left">
-            {loading ? (
-              <Skeleton variant="text" />
-            ) : course ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+            {course ? (
+              <CourseTitleContainer>
                 {course.name}
                 <CourseStatusBadge
-                  status={course?.status}
-                  clickable={Boolean(onClickStatus)}
-                  onClick={
-                    onClickStatus ? onClickStatus(course?.status) : undefined
-                  }
+                  status={course?.status ? t(course.status) : ""}
+                  clickable={Boolean(onStatusClick)}
+                  onClick={onStatusClick?.(course?.status)}
                 />
-              </div>
+              </CourseTitleContainer>
             ) : (
-              "New Course"
+              t("courseNewCourse")
             )}
           </CardTitle>
-          {course ? (
+          {course && (
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
-                {formatDate(course?.start_date)} to{" "}
-                {formatDate(course?.end_date)}
+                {formatDate(course?.start_date)} {t("to")}{" "}
+                {course?.end_date ? formatDate(course?.end_date) : t("ongoing")}
               </CourseInfo>
 
               <CourseInfo
-                field="Teacher in charge:"
+                field={t("teacherInCharge")}
                 value={course?.teacher_in_charge_name ?? "-"}
               />
               <CourseInfo
-                field="Teacher in charge email:"
+                field={t("teacherInChargeEmail")}
                 value={course?.teacher_in_charge_email ?? "-"}
               />
               <CourseInfo
-                field="Support email:"
+                field={t("supportEmail")}
                 value={course?.support_email ?? "-"}
               />
-              <CourseInfo field="Slug:" value={course?.slug ?? "-"} />
+              <CourseInfo field={t("slug")} value={course?.slug ?? "-"} />
             </CourseInfoList>
-          ) : null}
+          )}
           <CourseCardActionArea>
-            {loading ? (
-              <>
-                <Skeleton variant="rectangular" width="100%" />
-              </>
-            ) : course ? (
+            {course ? (
               <>
                 <Link href={`/courses/${course.slug}`} passHref>
                   <StyledLink
-                    aria-label={`To the homepage of course ${course.name}`}
+                    aria-label={t("toCourseHomePage", { name: course.name })}
                   >
                     <StyledButton variant="text" startIcon={<DashboardIcon />}>
-                      Dashboard
+                      {t("dashboard")}
                     </StyledButton>
                   </StyledLink>
                 </Link>
                 <Link href={`/courses/new?clone=${course.slug}`} passHref>
-                  <StyledLink aria-label={`Clone course ${course.name}`}>
+                  <StyledLink
+                    aria-label={t("cloneCourse", { name: course.name })}
+                  >
                     <StyledButton
                       variant="text"
                       color="secondary"
                       startIcon={<AddIcon />}
                     >
-                      Clone...
+                      {t("clone")}
                     </StyledButton>
                   </StyledLink>
                 </Link>
@@ -273,26 +316,28 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                   passHref
                   prefetch={false}
                 >
-                  <StyledLink aria-label={`Edit course ${course.name}`}>
+                  <StyledLink
+                    aria-label={t("editCourseWithName", { name: course.name })}
+                  >
                     <StyledButton variant="text" startIcon={<EditIcon />}>
-                      Edit
+                      {t("edit")}
                     </StyledButton>
                   </StyledLink>
                 </Link>
               </>
             ) : (
               <Link href={`/courses/new`} passHref>
-                <StyledLink aria-label="Create new course">
+                <StyledLink aria-label={t("createNewCourse")}>
                   <StyledButton variant="text" color="secondary">
                     <AddIcon />
-                    Create
+                    {t("create")}
                   </StyledButton>
                 </StyledLink>
               </Link>
             )}
           </CourseCardActionArea>
         </CourseCardContent>
-      </CardBase>
+      </CourseCardBase>
     </CourseCardItem>
   )
 }
