@@ -20,6 +20,7 @@ import {
 
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
@@ -39,9 +40,9 @@ const Header = styled(Typography)<any>`
   margin-top: 1em;
 `
 
-const FormContainer = styled(Container)`
-  spacing: 4;
-`
+const FormContainer = styled((props: any) => (
+  <Container spacing={4} {...props} />
+))``
 
 interface OrganizationCardProps {
   name: string
@@ -111,6 +112,8 @@ function useSearchBox() {
 }
 
 function useRegisterOrganization(searchFilter: string) {
+  const { currentUser } = useLoginStateContext()
+
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
     Record<string, OrganizationCoreFieldsFragment>
@@ -196,7 +199,7 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    if (!searchFilter || searchFilter === "") {
+    if (!searchFilter) {
       setFilteredOrganizations(organizations)
 
       return

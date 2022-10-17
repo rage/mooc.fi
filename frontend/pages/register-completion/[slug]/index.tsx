@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import axios from "axios"
 import { NextSeo } from "next-seo"
@@ -13,7 +13,7 @@ import ImportantNotice from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import { getAccessToken } from "/lib/authentication"
@@ -64,7 +64,7 @@ const StyledText = styled(Typography)<any>`
 
 function RegisterCompletionPage() {
   const accessToken = getAccessToken(undefined)
-  const { currentUser } = useContext(LoginStateContext)
+  const { currentUser } = useLoginStateContext()
   const [instructions, setInstructions] = useState("")
   const [tiers, setTiers] = useState([])
 
@@ -159,7 +159,7 @@ function RegisterCompletionPage() {
   if (userError || courseError) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(userError || courseError, undefined, 2)}
+        errorMessage={JSON.stringify(userError ?? courseError, undefined, 2)}
       />
     )
   }

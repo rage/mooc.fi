@@ -132,11 +132,11 @@ const testUnique = <T extends FormValues>(
 
     const fieldValues = context.values[valueField]
 
-    if (!value || value === "") {
+    if (!value) {
       return true // previous should have caught the empty
     }
 
-    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndexMatch = (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
     const otherValues = fieldValues
@@ -278,7 +278,7 @@ const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
     this: Yup.TestContext,
     value?: string | null,
   ): Promise<boolean> {
-    if (!value || value === "") {
+    if (!value) {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
 

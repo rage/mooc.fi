@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from "react"
 
-import { FileRejection, useDropzone } from "react-dropzone"
+import { DropzoneState, FileRejection, useDropzone } from "react-dropzone"
 
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
@@ -14,7 +14,9 @@ const isChrome = process.browser
     (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
   : false
 
-const DropzoneContainer = styled.div<any>`
+const DropzoneContainer = styled.div<
+  DropzoneState & { error: MessageProps["error"] }
+>`
   display: flex;
   width: 100%;
   min-height: 250px;
@@ -104,10 +106,10 @@ const ImageDropzoneInput = ({
 
   return (
     <DropzoneContainer
+      {...getRootProps()}
       isDragActive={isDragActive}
       isDragAccept={isChrome || isDragAccept}
       error={status.error}
-      {...getRootProps()}
     >
       {children}
       <input {...getInputProps()} />

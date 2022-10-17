@@ -23,17 +23,17 @@ export const cachePlugin = () =>
         rawToken = context.req?.connection.context["Authorization"]
       }*/
         if (root || info.parentType.toString() !== "Query" || rawToken) {
-          return await next(root, args, context, info)
+          return next(root, args, context, info)
         }
 
         const key = `${info.fieldName}-${JSON.stringify(
           info.fieldNodes,
         )}-${JSON.stringify(args)}`
 
-        let hash = createHash("sha512").update(key).digest("hex")
+        const hash = createHash("sha512").update(key).digest("hex")
 
         const res = await redisify<any>(
-          async () => await next(root, args, context, info),
+          async () => next(root, args, context, info),
           {
             prefix: "graphql-response",
             expireTime: 300,

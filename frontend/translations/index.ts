@@ -1,4 +1,4 @@
-import { memoize } from "lodash"
+import memoize from "lodash/memoize"
 import { NextRouter } from "next/router"
 
 import notEmpty from "/util/notEmpty"
@@ -136,11 +136,11 @@ const substitute = <T extends Translation>({
     return ret
   }
 
-  ;(replaceGroups || []).forEach((g: string) => {
+  ;(replaceGroups ?? []).forEach((g: string) => {
     const key = g.slice(2, g.length - 2)
     const variable = variables?.[key]
 
-    if (variable === null || variable === undefined) {
+    if (variable === null || typeof variable === "undefined") {
       console.warn(
         `WARNING: no variable present for translation string "${translation}" and key "${key}"`,
       )

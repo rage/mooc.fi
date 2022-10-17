@@ -72,10 +72,10 @@ const InfoContainer = styled.div`
   padding: 0rem;
 
   a {
-    font-size: clamp(12px, 1.5vw, 22px);
+    font-size: clamp(12px, 1.5vw, 18px);
   }
   h3 {
-    font-size: clamp(14px, 2vw, 22px);
+    font-size: clamp(14px, 2vw, 24px);
   }
 `
 

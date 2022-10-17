@@ -6,7 +6,9 @@ import ImagePreview from "/components/Dashboard/ImagePreview"
 export interface ControlledImageInputProps extends ControlledFieldProps {
   onImageLoad: (_: string | ArrayBuffer | null) => void
   onImageAccepted: (_: File) => void
-  onClose: Function | null
+  onClose:
+    | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
+    | null
   thumbnail: string
 }
 

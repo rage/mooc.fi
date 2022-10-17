@@ -85,7 +85,7 @@ interface CheckboxFieldProps {
 }
 
 export const CheckboxField = ({ id, label, checked }: CheckboxFieldProps) => {
-  const { setFieldValue } = useFormikContext<any>()
+  const { setFieldValue } = useFormikContext()
 
   return (
     <Field

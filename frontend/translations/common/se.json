@@ -59,7 +59,9 @@
     "ukraineText": "Help the victims of the war in Ukraine.",
     "ukraineLink": "https://www.redcross.fi/donate/disaster-relief-fund/",
     "ukraineLinkText": "Donate to the Finnish Red Cross Disaster Relief Fund",
+    "myProfile": "My profile",
     "ukraineHyLink": "https://www.helsinki.fi/en/cooperation/support-us/ukraine-appeal",
     "ukraineHyText": "Support students and researchers affected by the invasion of Ukraine",
-    "ukraineHyLinkText": "University of Helsinki Ukraine appeal"
+    "ukraineHyLinkText": "University of Helsinki Ukraine appeal",
+    "noResults": "No results"
 }

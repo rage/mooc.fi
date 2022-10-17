@@ -20,19 +20,13 @@ import { useTranslator } from "/util/useTranslator"
 import {
   CourseStatus,
   EditorCoursesDocument,
+  EditorCoursesQueryVariables,
   HandlerCoursesDocument,
 } from "/graphql/generated"
 
 const Background = styled.section`
   background-color: #61baad;
 `
-
-interface SearchVariables {
-  search?: string
-  hidden?: boolean | null
-  handledBy?: string | null
-  status?: CourseStatus[] | null
-}
 
 const notEmptyOrEmptyString = (value: any): value is string | true | number =>
   notEmpty(value) && value !== "" && value !== false
@@ -51,10 +45,10 @@ function useCourseSearch() {
     ?.split(",")
     .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
 
-  const initialSearchVariables: SearchVariables = {
-    search: useQueryParameter("search", false) || "",
+  const initialSearchVariables: EditorCoursesQueryVariables = {
+    search: useQueryParameter("search", false) ?? "",
     hidden:
-      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
+      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ??
       true,
     handledBy: useQueryParameter("handledBy", false) || null,
     status: statusParam.length
@@ -62,11 +56,10 @@ function useCourseSearch() {
       : [CourseStatus.Active, CourseStatus.Upcoming],
   }
 
-  const [searchVariables, setSearchVariables] = useState<SearchVariables>(
-    initialSearchVariables,
-  )
+  const [searchVariables, setSearchVariables] =
+    useState<EditorCoursesQueryVariables>(initialSearchVariables)
   const [status, setStatus] = useState<CourseStatus[]>(
-    initialSearchVariables.status ?? [],
+    (initialSearchVariables.status ?? []) as CourseStatus[],
   )
 
   const {
@@ -110,7 +103,10 @@ function useCourseSearch() {
         searchVariables.status.includes(CourseStatus.Upcoming)
       )
     ) {
-      searchParams.set("status", searchVariables.status.join(","))
+      searchParams.set(
+        "status",
+        (searchVariables.status as CourseStatus[]).join(","),
+      )
     }
 
     const query = searchParams.toString().length

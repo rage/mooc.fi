@@ -58,8 +58,8 @@ function CompletedCourseCard(props: CourseCardProps) {
   const t = useTranslator(CompletionsTranslations, ProfileTranslations)
 
   const humanReadableLanguage =
-    mapLangToLanguage[completion?.completion_language ?? ""] ||
-    completion?.completion_language ||
+    mapLangToLanguage[completion?.completion_language ?? ""] ??
+    completion?.completion_language ??
     "no language available"
 
   return (

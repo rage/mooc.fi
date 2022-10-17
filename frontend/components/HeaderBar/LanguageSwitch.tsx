@@ -35,8 +35,10 @@ const LanguageSwitch = () => {
   const { locale, asPath } = useRouter()
   const newLocale = locale === "en" ? "fi" : "en"
 
+  const href = asPath?.replace(/#.*/, "")
+
   return (
-    <Link href={asPath} locale={newLocale} passHref>
+    <Link href={href} locale={newLocale} passHref>
       <SwitchLink>
         <LanguageIcon />
         <LanguageName data-testid="language-switch">

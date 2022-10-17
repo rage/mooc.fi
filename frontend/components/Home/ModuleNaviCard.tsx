@@ -50,7 +50,7 @@ interface ModuleNaviCardProps {
 
 const ModuleNaviCard = ({ module }: ModuleNaviCardProps) => (
   <GridItem>
-    <Link href={`#${module ? module.slug : ""}`}>
+    <Link href={`#${module?.slug ?? ""}`} passHref>
       <Base component="div">
         {module ? (
           <>

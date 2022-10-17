@@ -7,26 +7,34 @@ import { useLazyQuery } from "@apollo/client"
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
-import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
 
-import { UserDetailsContainsDocument } from "/graphql/generated"
+import {
+  UserDetailsContainsDocument,
+  UserDetailsContainsQueryVariables,
+} from "/graphql/generated"
 
 const UserSearch = () => {
   const router = useRouter()
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
-  const [searchVariables, setSearchVariables] = useState<SearchVariables>({
-    search: textParam,
-    first: rowsParam,
-    skip: pageParam > 0 ? pageParam * rowsParam : undefined,
+
+  const userSearch = useSearch({
+    page: pageParam,
+    rowsPerPage: rowsParam,
   })
 
-  const [page, setPage] = useState(pageParam)
-  const [rowsPerPage, setRowsPerPage] = useState(rowsParam)
+  const [searchVariables, setSearchVariables] =
+    useState<UserDetailsContainsQueryVariables>({
+      search: textParam,
+      first: rowsParam,
+      skip: pageParam > 0 ? pageParam * rowsParam : undefined,
+    })
 
   const [loadData, { data, loading }] = useLazyQuery(
     UserDetailsContainsDocument,
@@ -35,22 +43,7 @@ const UserSearch = () => {
     },
   )
 
-  const crumbs: Breadcrumb[] = [
-    {
-      translation: "users",
-    },
-    {
-      translation: "userSearch",
-      href: "/users/search",
-    },
-  ]
-  if (textParam) {
-    crumbs.push({
-      translation: "userSearchResults",
-      href: `/users/search/${encodeURIComponent(textParam)}`,
-    })
-  }
-  useBreadcrumbs(crumbs)
+  const { rowsPerPage, page } = userSearch
 
   useEffect(() => {
     const searchParams = new URLSearchParams()
@@ -79,23 +72,39 @@ const UserSearch = () => {
     }
   }, [searchVariables, rowsPerPage, page])
 
-  const contextValue = useMemo(
+  const crumbs: Breadcrumb[] = [
+    {
+      translation: "users",
+    },
+    {
+      translation: "userSearch",
+      href: "/users/search",
+    },
+  ]
+
+  if (textParam) {
+    crumbs.push({
+      translation: "userSearchResults",
+      href: `/users/search/${encodeURIComponent(textParam)}`,
+    })
+  }
+  useBreadcrumbs(crumbs)
+
+  const value = useMemo(
     () => ({
+      ...userSearch,
       data,
       loading,
-      page,
-      rowsPerPage,
       searchVariables,
-      setPage,
       setSearchVariables,
-      setRowsPerPage,
     }),
-    [data, loading, page, rowsPerPage, searchVariables],
+    [data, loading, userSearch, searchVariables],
   )
+
   return (
     <>
       <Container>
-        <UserSearchContext.Provider value={contextValue}>
+        <UserSearchContext.Provider value={value}>
           <SearchForm />
         </UserSearchContext.Provider>
       </Container>

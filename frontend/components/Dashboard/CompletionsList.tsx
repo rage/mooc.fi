@@ -101,9 +101,9 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
         })
       }
       hasPrevious={
-        data.completionsPaginated?.pageInfo?.hasPreviousPage || false
+        data.completionsPaginated?.pageInfo?.hasPreviousPage ?? false
       }
-      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage || false}
+      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage ?? false}
       // pageNumber={queryDetails.page}
     />
   )

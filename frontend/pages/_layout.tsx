@@ -23,7 +23,6 @@ const Layout = ({ children }: PropsWithChildren<{}>) => {
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
 
-  // {!isHomePage && <DashboardBreadCrumbs />}
   return (
     <div>
       <SkipLink />

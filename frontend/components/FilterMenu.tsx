@@ -16,10 +16,15 @@ import {
   TextField,
 } from "@mui/material"
 
+import { useSearch } from "/hooks/useSearch"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseCoreFieldsFragment, CourseStatus } from "/graphql/generated"
+import {
+  CourseCoreFieldsFragment,
+  CourseStatus,
+  EditorCoursesQueryVariables,
+} from "/graphql/generated"
 
 const Container = styled.div`
   background-color: white;
@@ -52,26 +57,20 @@ const Row = styled.section`
   }
 `
 
-interface SearchVariables {
-  search?: string
-  hidden?: boolean | null
-  handledBy?: string | null
-  status?: CourseStatus[] | null
-}
-
 interface FilterFields {
   hidden: boolean
   status: boolean
   handler: boolean
 }
 interface FilterProps {
-  searchVariables: SearchVariables
-  setSearchVariables: React.Dispatch<SearchVariables>
+  searchVariables: EditorCoursesQueryVariables
+  setSearchVariables: React.Dispatch<EditorCoursesQueryVariables>
   handlerCourses?: CourseCoreFieldsFragment[]
   status?: string[]
   setStatus?: React.Dispatch<React.SetStateAction<CourseStatus[]>>
   loading: boolean
   fields?: FilterFields
+  label?: string
 }
 
 export default function FilterMenu({
@@ -82,20 +81,21 @@ export default function FilterMenu({
   status = [],
   setStatus = () => {},
   fields,
+  label,
 }: FilterProps) {
   const t = useTranslator(CommonTranslations)
   const {
     hidden: showHidden = true,
     status: showStatus = true,
     handler: showHandler = true,
-  } = fields || {}
+  } = fields ?? {}
   const {
     search: initialSearch,
     hidden: initialHidden,
     handledBy: initialHandledBy,
   } = searchVariables
 
-  const [searchString, setSearchString] = useState<string>(initialSearch ?? "")
+  const { search, setSearch } = useSearch({ search: initialSearch ?? "" })
   const [hidden, setHidden] = useState(
     initialHidden === null ? true : initialHidden,
   )
@@ -109,7 +109,7 @@ export default function FilterMenu({
   const onSubmit = () => {
     setSearchVariables({
       ...searchVariables,
-      search: searchString,
+      search,
       hidden,
       handledBy,
     })
@@ -120,7 +120,9 @@ export default function FilterMenu({
       const newStatus = (
         e.target.checked
           ? [...(searchVariables?.status || []), value]
-          : searchVariables?.status?.filter((v) => v !== value) || []
+          : (searchVariables?.status as CourseStatus[])?.filter(
+              (v) => v !== value,
+            ) || []
       ) as CourseStatus[]
 
       setStatus(newStatus)
@@ -151,12 +153,12 @@ export default function FilterMenu({
       <Row>
         <TextField
           id="searchString"
-          label={t("search")}
-          value={searchString}
+          label={label ?? t("search")}
+          value={search}
           autoComplete="off"
           variant="outlined"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchString(e.target.value)
+            setSearch(e.target.value)
           }
           onKeyDown={(e) => e.key === "Enter" && onSubmit()}
           InputProps={{
@@ -164,9 +166,9 @@ export default function FilterMenu({
               <InputAdornment position="end">
                 <IconButton
                   onClick={() => {
-                    setSearchString("")
+                    setSearch("")
                   }}
-                  disabled={searchString === ""}
+                  disabled={search === ""}
                   edge="end"
                   aria-label="clear search"
                   size="large"

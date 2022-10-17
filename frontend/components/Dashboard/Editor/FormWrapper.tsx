@@ -7,7 +7,12 @@ import {
   useState,
 } from "react"
 
-import { FormikErrors, FormikTouched, useFormikContext } from "formik"
+import {
+  FormikContextType,
+  FormikErrors,
+  FormikTouched,
+  useFormikContext,
+} from "formik"
 import { useConfirm } from "material-ui-confirm"
 
 import styled from "@emotion/styled"
@@ -36,11 +41,11 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled.p<any>`
+const Status = styled.p<FormikContextType<unknown>["status"]>`
   color: ${(props: any) => (props.error ? "#FF0000" : "default")};
 `
 
-interface FormWrapperProps<T> {
+interface FormWrapperProps<T extends FormValues> {
   onCancel: () => void
   onDelete: (values: T) => void
   renderForm: (props: any) => ReactNode

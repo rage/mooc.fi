@@ -52,9 +52,7 @@ interface EnumeratingAnchorProps {
   id: string
 }
 
-export const EnumeratingAnchor: React.FC<any> = ({
-  id,
-}: EnumeratingAnchorProps) => {
+export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({ id }) => {
   const { addAnchor } = useAnchorContext()
   const { tab } = useTabContext()
 
@@ -129,11 +127,11 @@ export const testUnique = <Root extends FormValues, Child extends FormValues>(
 
     const fieldValues = context.values[valueField]
 
-    if (!value || value === "" || !isArray(fieldValues)) {
+    if (!value || !isArray(fieldValues)) {
       return true // previous should have caught the empty
     }
 
-    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndexMatch = (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
     const otherValues = fieldValues

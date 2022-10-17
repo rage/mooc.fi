@@ -228,17 +228,17 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
 
               <CourseInfo
                 field="Teacher in charge:"
-                value={course?.teacher_in_charge_name || "-"}
+                value={course?.teacher_in_charge_name ?? "-"}
               />
               <CourseInfo
                 field="Teacher in charge email:"
-                value={course?.teacher_in_charge_email || "-"}
+                value={course?.teacher_in_charge_email ?? "-"}
               />
               <CourseInfo
                 field="Support email:"
-                value={course?.support_email || "-"}
+                value={course?.support_email ?? "-"}
               />
-              <CourseInfo field="Slug:" value={course?.slug || "-"} />
+              <CourseInfo field="Slug:" value={course?.slug ?? "-"} />
             </CourseInfoList>
           ) : null}
           <CourseCardActionArea>

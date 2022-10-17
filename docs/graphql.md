@@ -78,7 +78,7 @@ function SayHello(id: string) {
 }
 
 // or, if you're outside React components, assuming client is an ApolloClient instance
-async function getStaffMemberDetails(client: ApolloClient<any>, id: string) {
+async function getStaffMemberDetails(client: ApolloClient<object>, id: string) {
   const { data } = await client.query({
     query: StaffMemberDetailsDocument,
     variables: { id },

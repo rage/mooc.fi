@@ -112,7 +112,7 @@ function PaginatedPointsList(props: Props) {
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {data?.userCourseSettings?.totalCount || 0} results
+            {data?.userCourseSettings?.totalCount ?? 0} results
           </div>
           <PointsList data={users} cutterValue={cutterValue} />
           <Button
