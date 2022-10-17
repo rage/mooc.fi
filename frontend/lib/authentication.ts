@@ -69,7 +69,7 @@ export const signIn = async ({
   return details
 }
 
-export const signOut = async (apollo: ApolloClient<any>, cb: Function) => {
+export const signOut = async (apollo: ApolloClient<object>, cb: Function) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"

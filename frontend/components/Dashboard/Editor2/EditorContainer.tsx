@@ -25,8 +25,8 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled.p<any>`
-  color: ${(props: FormStatus) => (props.error ? "#FF0000" : "default")};
+const Status = styled.p<{ error: FormStatus["error"] }>`
+  color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 
 function EditorContainer<T extends FormValues>({

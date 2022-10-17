@@ -11,6 +11,7 @@ import {
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
 import * as Yup from "yup"
+import { ObjectShape } from "yup/lib/object"
 
 import styled from "@emotion/styled"
 import HelpIcon from "@mui/icons-material/Help"
@@ -285,9 +286,9 @@ const RenderForm = () => {
   )
 }
 
-interface StudyModuleEditFormProps {
+interface StudyModuleEditFormProps<SchemaType extends ObjectShape> {
   module: StudyModuleFormValues
-  validationSchema: Yup.ObjectSchema<any>
+  validationSchema: Yup.ObjectSchema<SchemaType>
   onSubmit: (
     values: StudyModuleFormValues,
     FormikHelpers: FormikHelpers<StudyModuleFormValues>,
@@ -296,13 +297,13 @@ interface StudyModuleEditFormProps {
   onDelete: (values: StudyModuleFormValues) => void
 }
 
-const StudyModuleEditForm = ({
+function StudyModuleEditForm<SchemaType extends ObjectShape>({
   module,
   validationSchema,
   onSubmit,
   onCancel,
   onDelete,
-}: StudyModuleEditFormProps) => {
+}: StudyModuleEditFormProps<SchemaType>) {
   const validate = useCallback(async (values: StudyModuleFormValues) => {
     try {
       await validationSchema.validate(values, {

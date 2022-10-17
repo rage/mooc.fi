@@ -1,3 +1,5 @@
+import React from "react"
+
 import { range } from "lodash"
 import dynamic from "next/dynamic"
 
@@ -103,14 +105,16 @@ export const Loader = () => (
   </Background>
 )
 
+type DynamicImportType = <T>() => Promise<React.ComponentType<T>>
+
 interface FAQComponentProps {
-  mdxImport?: () => Promise<any>
-  onSuccess: (mdx: any) => any
+  mdxImport?: DynamicImportType
+  onSuccess: <T>(mdx: React.ComponentType<T>) => React.ComponentType<T>
   onError: () => void
 }
 
 export function FAQComponent({
-  mdxImport = () => Promise.resolve(),
+  mdxImport = () => Promise.resolve(() => <React.Fragment />),
   onSuccess,
   onError,
 }: FAQComponentProps) {
@@ -118,9 +122,10 @@ export function FAQComponent({
     async () => {
       return mdxImport()
         .then(onSuccess)
-        .catch((error: any) => {
+        .catch((error: unknown) => {
           console.log("error", error)
           onError()
+          return () => <React.Fragment />
         })
     },
     { loading: () => <Loader /> },

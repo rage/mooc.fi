@@ -18,9 +18,9 @@ export interface EditorContext<T extends FormValues> {
 
 export const EditorContext = createContext<EditorContext<any>>({
   status: { message: null },
-  setStatus: (_: any) => {},
+  setStatus: (_) => {},
   tab: 0,
-  setTab: (_: any) => {},
+  setTab: (_) => {},
   onSubmit: () => {},
   onError: () => {},
   onCancel: () => {},
@@ -28,6 +28,6 @@ export const EditorContext = createContext<EditorContext<any>>({
   initialValues: {},
 })
 
-export function useEditorContext<T>() {
+export function useEditorContext<T extends FormValues>() {
   return useContext<EditorContext<T>>(EditorContext)
 }

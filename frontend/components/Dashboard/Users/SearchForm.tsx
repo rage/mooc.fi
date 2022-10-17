@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react"
+import { useCallback, useContext } from "react"
 
 import styled from "@emotion/styled"
 import { TextField, useMediaQuery } from "@mui/material"
@@ -21,25 +21,23 @@ const StyledButton = styled(ButtonWithPaddingAndMargin)`
 `
 
 const SearchForm = () => {
-  const { page, rowsPerPage, searchVariables, setPage, setSearchVariables } =
+  const { page, search, setSearch, rowsPerPage, setPage, setSearchVariables } =
     useContext(UserSearchContext)
   const t = useTranslator(UsersTranslations)
 
-  const [searchFormText, setSearchFormText] = useState(searchVariables.search)
-
   const handleSubmit = useCallback(() => {
-    if (searchFormText !== "") {
+    if (search !== "") {
       setSearchVariables({
-        search: searchFormText,
+        search,
         first: rowsPerPage,
         skip: 0,
       })
       setPage(0)
     }
-  }, [searchFormText, page, rowsPerPage])
+  }, [search, page, rowsPerPage])
 
   const onTextBoxChange = (event: any) => {
-    setSearchFormText(event.target.value as string)
+    setSearch(event.target.value as string)
   }
 
   const isMobile = useMediaQuery("(max-width:900px)", { noSsr: true })
@@ -63,13 +61,13 @@ const SearchForm = () => {
             type="search"
             margin="normal"
             autoComplete="off"
-            value={searchFormText}
+            value={search}
             onChange={onTextBoxChange}
           />
 
           <StyledButton
             variant="contained"
-            disabled={searchFormText === ""}
+            disabled={search === ""}
             onClick={async (event: any) => {
               event.preventDefault()
               handleSubmit()

@@ -19,6 +19,7 @@ const PointsExportButtonContainer = styled.div`
 export interface PointsExportButtonProps {
   slug: string
 }
+
 function PointsExportButton(props: PointsExportButtonProps) {
   const { slug } = props
   const client = useApolloClient()

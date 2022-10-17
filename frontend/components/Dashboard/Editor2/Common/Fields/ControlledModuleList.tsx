@@ -31,7 +31,7 @@ const ModuleList = styled(List)`
   max-height: 400px;
   overflow: auto;
 `
-const ModuleListItem = styled(ListItem)<any>`
+const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 

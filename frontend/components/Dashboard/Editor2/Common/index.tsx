@@ -52,9 +52,7 @@ interface EnumeratingAnchorProps {
   id: string
 }
 
-export const EnumeratingAnchor: React.FC<any> = ({
-  id,
-}: EnumeratingAnchorProps) => {
+export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({ id }) => {
   const { addAnchor } = useAnchorContext()
   const { tab } = useTabContext()
 

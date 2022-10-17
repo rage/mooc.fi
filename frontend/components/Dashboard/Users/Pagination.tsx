@@ -32,7 +32,7 @@ const StyledTablePagination = styled(TablePagination)`
   }
 `
 
-const TablePaginationActions: React.FC<any> = () => {
+const TablePaginationActions: React.FC = () => {
   const theme = useTheme()
   const {
     data,
@@ -140,7 +140,7 @@ const TablePaginationActions: React.FC<any> = () => {
   )
 }
 
-const Pagination: React.FC<any> = () => {
+const Pagination: React.FC = () => {
   const t = useTranslator(UsersTranslations)
   const {
     data,
