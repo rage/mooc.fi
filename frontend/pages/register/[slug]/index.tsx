@@ -307,9 +307,51 @@ const RegisterToOrganization = () => {
   return confirmationStatus === "confirmed" ? (
     <Container>
       <h1>
-        {t("leaveTitle")}{" "}
-        {organizationData.organization.organization_translations?.[0]?.name}?
+        {t("memberTitle")}{" "}
+        {organizationData.organization.organization_translations?.[0]?.name}
       </h1>
+
+      <TextBox>
+        {t("updateEmailInformation1")}{" "}
+        {currentUserOrganizationMembership?.organizational_email}
+      </TextBox>
+      <TextBox>{t("updateEmailInformation2")}</TextBox>
+
+      <StyledForm
+        ref={formRef}
+        action=""
+        method=""
+        name="mc-embedded-subscribe-form"
+        target="_blank"
+        noValidate
+      >
+        <FieldWrapper>
+          <StyledFormControl>
+            <Tooltip title="">
+              <TextField
+                id="email"
+                label="email"
+                name="EMAIL"
+                inputProps={{ "aria-label": "email" }}
+              />
+            </Tooltip>
+          </StyledFormControl>
+        </FieldWrapper>
+        <StyledButton
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            if (formRef?.current) {
+              handleSubmit()
+            }
+          }}
+        >
+          {t("update")}
+          <Send />
+        </StyledButton>
+      </StyledForm>
+
+      <h2>{t("leaveTitle")}</h2>
 
       <TextBox>{t("leaveInformation")}</TextBox>
 
