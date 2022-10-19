@@ -1,6 +1,6 @@
 import { getIn, useFormikContext } from "formik"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import {
@@ -12,7 +12,7 @@ import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const LanguageVersionContainer = styled.div`
+const LanguageVersionContainer = styled("div")`
   padding-top: 1rem;
   padding-bottom: 1.5rem;
   width: 90%;

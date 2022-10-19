@@ -1,7 +1,7 @@
-import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
 import Button from "@mui/material/Button"
 import Grid from "@mui/material/Grid"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import {
@@ -36,7 +36,7 @@ const CardText = styled(Typography)<any>`
   margin: 0.5rem;
   padding-top: 0.2rem;
 `
-const RegistrationDetails = styled.div`
+const RegistrationDetails = styled("div")`
   display: flex;
   flex-direction: column;
   @media (min-width: 600px) {

@@ -1,7 +1,7 @@
 import { range } from "lodash"
 
-import styled from "@emotion/styled"
 import { Container, Paper, Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const FormContainer = styled((props: any) => (
   <Container spacing={4} {...props} />

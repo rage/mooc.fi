@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
@@ -8,7 +8,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
-const NaviArea = styled.section`
+const NaviArea = styled("section")`
   margin-bottom: 5em;
   margin-top: 5em;
 `
@@ -28,7 +28,7 @@ const NaviTitle = styled(H2Background)`
   }
 `
 // Browsers without css grid support will see the cards below each other
-const Grid = styled.div`
+const Grid = styled("div")`
   @supports (display: grid) {
     display: grid;
     grid-gap: 50px;

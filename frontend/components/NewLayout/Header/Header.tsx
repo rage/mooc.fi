@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import MoocLogo from "/components/HeaderBar/MoocLogo"
 import {
@@ -27,7 +27,7 @@ const StyledToolbar = styled(Toolbar)`
   flex-direction: row;
 `
 
-const MenuContainer = styled.div`
+const MenuContainer = styled("div")`
   display: flex;
   align-items: center;
   justify-content: flex-end;

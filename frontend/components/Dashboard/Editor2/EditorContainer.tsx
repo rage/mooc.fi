@@ -3,7 +3,6 @@ import { PropsWithChildren, useState } from "react"
 import { useConfirm } from "material-ui-confirm"
 import { Path, useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import {
   Checkbox,
   CircularProgress,
@@ -12,6 +11,7 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { useEditorContext } from "./EditorContext"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -25,7 +25,7 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled.p<{ error: FormStatus["error"] }>`
+const Status = styled("p")<{ error: FormStatus["error"] }>`
   color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 

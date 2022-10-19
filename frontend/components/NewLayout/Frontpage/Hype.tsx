@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { SectionContainer } from "/components/NewLayout/Common"
 import {
@@ -20,7 +20,7 @@ type NaviItem = {
 }
 
 // either 4, 2 or 1 columns, depending on the number of items
-const HypeGrid = styled.div<{ count?: number }>`
+const HypeGrid = styled("div")<{ count?: number }>`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: ${({ count = 4 }) =>

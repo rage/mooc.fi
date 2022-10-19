@@ -22,11 +22,19 @@ query CurrentUserStatsSubscriptions {
   }
 }
 
-query UserSummary($upstream_id: Int) {
+query UserSummary(
+  $upstream_id: Int
+  $includeNoPointsAwardedExercises: Boolean
+  $includeDeletedExercises: Boolean
+  ) {
   user(upstream_id: $upstream_id) {
     id
     username
-    user_course_summary {
+    full_name
+    user_course_summary(
+      includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
+      includeDeletedExercises: $includeDeletedExercises
+    ) {
       ...UserCourseSummaryCoreFields
     }
   }

@@ -1,11 +1,11 @@
 import { CardSubtitle } from "components/Text/headers"
 
-import styled from "@emotion/styled"
 import LinearProgress from "@mui/material/LinearProgress"
+import { styled } from "@mui/material/styles"
 
 import { FormattedGroupPoints } from "/util/formatPointsData"
 
-const ChartContainer = styled.div`
+const ChartContainer = styled("div")`
   display: flex;
   flex-direction: row;
   width: 90%;
@@ -13,9 +13,7 @@ const ChartContainer = styled.div`
   margin-bottom: 1rem;
 `
 
-const ColoredProgressBar = styled(({ ...props }) => (
-  <LinearProgress {...props} />
-))`
+const ColoredProgressBar = styled(LinearProgress)`
   margin-top: 0.7rem;
   margin-left: 0.5rem;
   background-color: #f5f5f5;

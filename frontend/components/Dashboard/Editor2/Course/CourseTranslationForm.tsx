@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ControlledHiddenField,
@@ -27,13 +27,13 @@ const AddTranslationNotice = styled(EntryContainer)`
   color: white;
 `
 
-const CourseTranslationList = styled.ul`
+const CourseTranslationList = styled("ul")`
   list-style: none;
   margin-block-start: 0;
   padding-inline-start: 0;
 `
 
-const CourseTranslationItem = styled.li`
+const CourseTranslationItem = styled("li")`
   padding-top: 1rem;
   padding-bottom: 1.5rem;
   width: 90%;

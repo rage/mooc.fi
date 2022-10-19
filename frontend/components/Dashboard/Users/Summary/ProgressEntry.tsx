@@ -8,6 +8,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Typography,
 } from "@mui/material"
 
 import {
@@ -19,51 +20,47 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import ProfileTranslations from "/translations/profile"
+import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
-import {
-  UserCourseProgressCoreFieldsFragment,
-  UserCourseServiceProgressCoreFieldsFragment,
-  UserCourseSummaryCourseFieldsFragment,
-} from "/graphql/generated"
+import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface ProgressEntryProps {
-  userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
-  userCourseServiceProgresses?:
-    | UserCourseServiceProgressCoreFieldsFragment[]
-    | null
-  course: UserCourseSummaryCourseFieldsFragment
+  data: UserCourseSummaryCoreFieldsFragment
 }
 
-export default function ProgressEntry({
-  userCourseProgress,
-  userCourseServiceProgresses,
-  course,
-}: ProgressEntryProps) {
+export default function ProgressEntry({ data }: ProgressEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
+  const { course, user_course_progress, user_course_service_progresses } = data
+  const { exercise_progress } = user_course_progress ?? {}
+
   const isOpen = state[course?.id ?? "_"]?.points ?? false
+
   return (
     <TableContainer component={Paper} style={{ marginBottom: "1rem" }}>
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell>{t("progress")}</TableCell>
+            <TableCell>
+              <Typography variant="h3">{t("progress")}</Typography>
+            </TableCell>
             <TableCell>
               <PointsProgress
-                total={
-                  (userCourseProgress?.exercise_progress?.total ?? 0) * 100
-                }
+                percentage={(exercise_progress?.total ?? 0) * 100}
                 title={t("totalProgress")}
+                pointsTitle={t("points")}
+                amount={user_course_progress?.n_points ?? 0}
+                total={user_course_progress?.max_points ?? 0}
               />
             </TableCell>
             <TableCell>
               <PointsProgress
-                total={
-                  (userCourseProgress?.exercise_progress?.exercises ?? 0) * 100
-                }
+                percentage={(exercise_progress?.exercises ?? 0) * 100}
                 title={t("exercisesCompleted")}
+                amount={exercise_progress?.exercises_completed_count ?? 0}
+                total={exercise_progress?.exercise_count ?? 0}
               />
             </TableCell>
             <TableCell align="right">
@@ -76,6 +73,7 @@ export default function ProgressEntry({
                     course: course?.id ?? "_",
                   })
                 }
+                tooltip={t("progressCollapseTooltip")}
               />
             </TableCell>
           </TableRow>
@@ -84,8 +82,10 @@ export default function ProgressEntry({
       <Collapse in={isOpen} unmountOnExit>
         <PointsListItemCard
           course={course}
-          userCourseProgress={userCourseProgress}
-          userCourseServiceProgresses={userCourseServiceProgresses}
+          userCourseProgress={user_course_progress}
+          userCourseServiceProgresses={(
+            user_course_service_progresses ?? []
+          ).filter(notEmpty)}
           showProgress={false}
         />
       </Collapse>

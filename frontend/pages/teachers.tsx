@@ -1,6 +1,5 @@
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import {
   faBook,
   faBookOpen,
@@ -12,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { H1NoBackground } from "/components/Text/headers"
@@ -19,7 +19,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import TeachersTranslations from "/translations/teachers"
 import { useTranslator } from "/util/useTranslator"
 
-const ContentBlock = styled.div`
+const ContentBlock = styled("div")`
   padding: 5rem 1rem;
   display: flex;
   justify-content: center;

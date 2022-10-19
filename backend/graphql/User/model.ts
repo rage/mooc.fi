@@ -36,6 +36,13 @@ export const User = objectType({
     t.model.course_ownerships()
     t.model.course_stats_subscriptions()
 
+    t.field("full_name", {
+      type: "String",
+      resolve: async ({ first_name, last_name }, _, __) => {
+        return [first_name, last_name].filter(notEmpty).join(" ")
+      },
+    })
+
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
@@ -281,7 +288,21 @@ export const User = objectType({
 
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
-      resolve: async (parent, _, ctx) => {
+      args: {
+        includeNoPointsAwardedExercises: booleanArg({
+          description:
+            "Include exercise completions with max_points = 0. Only affects the exercise completion results; can be overridden later.",
+        }),
+        includeDeletedExercises: booleanArg({
+          description:
+            "Include deleted exercises. Only affects the exercise completion results; can be overridden later.",
+        }),
+      },
+      resolve: async (
+        { id },
+        { includeNoPointsAwardedExercises, includeDeletedExercises },
+        ctx,
+      ) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const startedCourses = await ctx.prisma.$queryRaw<
@@ -297,14 +318,19 @@ export const User = objectType({
               select distinct(e.course_id)
                   from exercise_completion ec
                   join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${parent.id}
+              where ec.user_id = ${id}
           );
         `)
 
-        return startedCourses.map((course) => ({
-          ...course,
-          user_id: parent.id,
-        }))
+        return startedCourses
+          .filter(({ course_id }) => notEmpty(course_id))
+          .map((course) => ({
+            ...course,
+            user_id: id,
+            include_deleted_exercises: includeDeletedExercises ?? false,
+            include_no_points_awarded_exercises:
+              includeNoPointsAwardedExercises ?? false,
+          }))
       },
     })
   },

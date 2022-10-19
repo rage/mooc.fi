@@ -1,12 +1,12 @@
-import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { H1NoBackground } from "/components/Text/headers"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-const ExplanationRoot = styled.div`
+const ExplanationRoot = styled("div")`
   max-width: 80%;
   height: 100%;
   position: relative;

@@ -1,31 +1,54 @@
+import React from "react"
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
-import { IconButton, Typography } from "@mui/material"
+import { IconButton, Tooltip, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 interface CollapseButtonProps {
   open: boolean
   onClick: () => void
   label?: string
+  tooltip?: string
 }
 
-export default function CollapseButton({
-  open,
-  onClick,
-  label,
-}: CollapseButtonProps) {
+const CollapseButtonContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+`
+
+const CollapseButton = React.memo(
+  ({ open, onClick, label, tooltip }: CollapseButtonProps) => {
+    return (
+      <CollapseButtonContainer>
+        {label ? <Typography variant="h4">{label}</Typography> : null}
+        <Tooltip title={tooltip ?? ""}>
+          <IconButton size="small" onClick={onClick}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </Tooltip>
+      </CollapseButtonContainer>
+    )
+  },
+)
+
+/*export default function CollapseButton(props: CollapseButtonProps) {
+  console.log(props)
+  if (props.tooltip) {
+    return (
+        <Tooltip title={props.tooltip}>
+          <CollapseButtonBase {...props} />
+        </Tooltip>
+    )
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
-      }}
-    >
-      {label ? <Typography variant="h4">{label}</Typography> : null}
-      <IconButton size="small" onClick={onClick}>
-        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      </IconButton>
-    </div>
+    <CollapseButtonContainer>
+      <CollapseButtonBase {...props} />
+    </CollapseButtonContainer>
   )
-}
+}*/
+
+export default CollapseButton

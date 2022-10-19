@@ -4,8 +4,8 @@ import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { SingletonRouter, withRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"

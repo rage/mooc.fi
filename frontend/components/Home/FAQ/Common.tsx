@@ -3,10 +3,10 @@ import React from "react"
 import { range } from "lodash"
 import dynamic from "next/dynamic"
 
-import styled from "@emotion/styled"
 import { Skeleton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-export const Background = styled.section`
+export const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
   padding-right: 1em;
@@ -14,11 +14,11 @@ export const Background = styled.section`
   background-color: #ffc107;
 `
 
-export const Content = styled.div`
+export const Content = styled("div")`
   position: relative;
 `
 
-export const ContentBox = styled.div`
+export const ContentBox = styled("div")`
   background-color: white;
   max-width: 39em;
   border: 3px solid black;
@@ -65,7 +65,7 @@ export const Title = styled(Typography)<any>`
   padding: 1rem;
 `
 
-export const TitleBackground = styled.div`
+export const TitleBackground = styled("div")`
   background-color: white;
   max-width: 75%;
   margin-left: auto;
@@ -73,11 +73,11 @@ export const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
-export const SectionBox = styled.div`
+export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
 
-export const Note = styled.section`
+export const Note = styled("section")`
   padding: 1em;
   background-color: #eeeeee;
 `

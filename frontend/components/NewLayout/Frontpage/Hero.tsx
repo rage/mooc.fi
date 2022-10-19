@@ -1,17 +1,17 @@
-import styled from "@emotion/styled"
 import { Button, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-const HeroContainer = styled.section`
+const HeroContainer = styled("section")`
   display: flex;
   position: relative;
   height: 80%;
   align-items: center;
 `
 
-const BackgroundImage = styled.img`
+const BackgroundImage = styled("img")`
   position: absolute;
   top: 0;
   left: 0;
@@ -21,7 +21,7 @@ const BackgroundImage = styled.img`
   z-index: -2;
 `
 
-const HeroContentContainer = styled.div`
+const HeroContentContainer = styled("div")`
   height: 100%;
   width: 100%;
   position: relative;

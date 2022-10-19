@@ -10,7 +10,6 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
-import styled from "@emotion/styled"
 import type { IconProp } from "@fortawesome/fontawesome-svg-core"
 import {
   faChalkboardTeacher,
@@ -30,6 +29,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -45,7 +45,7 @@ function useActiveTab() {
   )?.[1]
 }
 
-const NavigationMenuContainer = styled.nav`
+const NavigationMenuContainer = styled("nav")`
   width: 100%;
   height: 100%;
   display: flex;
@@ -57,7 +57,7 @@ const NavigationMenuContainer = styled.nav`
   }
 `
 
-const MobileMenuContainer = styled.div`
+const MobileMenuContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
   @media (min-width: 400px) {
@@ -65,7 +65,7 @@ const MobileMenuContainer = styled.div`
   }
 `
 
-const NavigationLink = styled.a<{ active: boolean }>`
+const NavigationLink = styled("a")<{ active: boolean }>`
   text-decoration: none;
   color: inherit;
   font-weight: ${({ active }) => (active ? "600" : "inherit")};
@@ -76,7 +76,7 @@ const NavigationLink = styled.a<{ active: boolean }>`
   transition: 0.1s;
 `
 
-const NavigationRightContainer = styled.div`
+const NavigationRightContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;

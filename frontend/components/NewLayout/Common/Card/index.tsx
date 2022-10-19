@@ -1,7 +1,7 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-export const CardWrapper = styled.div`
+export const CardWrapper = styled("div")`
   border-radius: 4px;
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
@@ -11,7 +11,7 @@ export const CardWrapper = styled.div`
   flex-direction: column;
 `
 
-export const CardHeader = styled.div`
+export const CardHeader = styled("div")`
   height: 140px;
   position: relative;
   display: flex;
@@ -20,7 +20,7 @@ export const CardHeader = styled.div`
   padding: 1rem;
 `
 
-export const CardHeaderImage = styled.img`
+export const CardHeaderImage = styled("img")`
   opacity: 0.4;
   position: absolute;
   left: 70%;
@@ -31,7 +31,7 @@ export const CardHeaderImage = styled.img`
   z-index: 0;
 `
 
-export const CardBody = styled.div`
+export const CardBody = styled("div")`
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -39,11 +39,11 @@ export const CardBody = styled.div`
   height: 100%;
 `
 
-export const CardDescription = styled.p`
+export const CardDescription = styled("p")`
   height: 100%;
 `
 
-export const CardActionArea = styled.div`
+export const CardActionArea = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -56,7 +56,7 @@ export const CardTitle = styled((props: any) => (
   z-index: 1;
 `
 
-export const CardHeaderBackground = styled.span<{
+export const CardHeaderBackground = styled("span")<{
   image: string
   hue?: number
   brightness?: number
@@ -73,7 +73,7 @@ export const CardHeaderBackground = styled.span<{
   background-image: url(${(props) => `../../../static/images/${props.image}`});
 `
 
-export const CardHeaderBackgroundSkeleton = styled.span`
+export const CardHeaderBackgroundSkeleton = styled("span")`
   opacity: 0.4;
   position: absolute;
   top: 0;

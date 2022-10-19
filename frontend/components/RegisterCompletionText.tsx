@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Button, Paper, Tooltip, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useTranslator } from "/util/useTranslator"
@@ -24,7 +24,7 @@ const RegistrationLinkButton = styled(Button)`
   margin-bottom: 1em;
 `
 
-const RegistrationButtons = styled.div`
+const RegistrationButtons = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;

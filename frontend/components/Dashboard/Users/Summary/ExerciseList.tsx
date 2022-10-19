@@ -28,7 +28,7 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
 
   return (
     <TableContainer component={Paper}>
-      <Table stickyHeader>
+      <Table stickyHeader={true}>
         <TableHead>
           <TableRow>
             <TableCell>{t("exercise")}</TableCell>
@@ -36,7 +36,7 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
             <TableCell>{t("completed")}</TableCell>
             <TableCell>{t("attempted")}</TableCell>
             <TableCell>{t("requiredActions")}</TableCell>
-            {/*<TableCell>{t("more")}</TableCell>*/}
+            <TableCell>{t("more")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -1,10 +1,10 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import Language from "@mui/icons-material/Language"
+import { styled } from "@mui/material/styles"
 
-const SwitchLink = styled.a`
+const SwitchLink = styled("a")`
   font-size: 14px;
   line-height: 1.3;
   font-weight: bold;
@@ -27,7 +27,7 @@ const LanguageIcon = styled(Language)`
   margin-right: 0.4rem;
 `
 
-const LanguageName = styled.p`
+const LanguageName = styled("p")`
   margin: auto;
 `
 

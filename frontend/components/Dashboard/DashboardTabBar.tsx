@@ -2,16 +2,16 @@ import { ChangeEvent, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
 import ViewListIcon from "@mui/icons-material/ViewList"
 import AppBar from "@mui/material/AppBar"
+import { styled } from "@mui/material/styles"
 import Tab from "@mui/material/Tab"
 import Tabs from "@mui/material/Tabs"
 
-const TabBarContainer = styled.div`
+const TabBarContainer = styled("div")`
   flex-grow: 1;
   background-color: inherit;
 `
@@ -27,7 +27,7 @@ function a11yProps(index: any) {
   }
 }
 
-const TabContainer = styled.div`
+const TabContainer = styled("div")`
   width: 100%;
   max-width: 700px;
   margin: 0 auto;

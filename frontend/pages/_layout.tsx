@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react"
 
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
@@ -11,7 +11,7 @@ import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
 
-const FooterDownPusherWrapper = styled.div`
+const FooterDownPusherWrapper = styled("div")`
   display: flex;
   min-height: 100vh;
   flex-direction: column;

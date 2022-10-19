@@ -1,7 +1,7 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ModuleImage from "/components/Home/ModuleImage"
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
@@ -34,7 +34,7 @@ const TextBackground = styled(FullCoverTextBackground)`
   width: 70%;
 `
 
-const GridItem = styled.div`
+const GridItem = styled("div")`
   width: 100%;
   /* Basic styles for browsers without css grid support */
   margin: 0 auto;

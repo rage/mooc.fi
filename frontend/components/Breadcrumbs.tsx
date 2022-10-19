@@ -4,22 +4,22 @@ import { memoize } from "lodash"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
 import { useTranslator } from "/util/useTranslator"
 
-const BreadcrumbList = styled.ul`
+const BreadcrumbList = styled("ul")`
   list-style: none;
   overflow: hidden;
   margin: 0px !important;
   padding-left: 0px;
 `
 
-const BreadcrumbItem = styled.li`
+const BreadcrumbItem = styled("li")`
   float: left;
   cursor: pointer;
   &:first-of-type a {
@@ -78,11 +78,11 @@ const BreadcrumbArrowStyle = `
   }
 `
 
-const BreadcrumbLink = styled.a`
+const BreadcrumbLink = styled("a")`
   ${BreadcrumbArrowStyle}
 `
 
-const BreadcrumbNonLink = styled.div`
+const BreadcrumbNonLink = styled("div")`
   ${BreadcrumbArrowStyle}
 `
 

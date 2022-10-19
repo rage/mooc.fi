@@ -1,13 +1,13 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import {
   faFacebook,
   faTwitter,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { styled } from "@mui/material/styles"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
@@ -18,7 +18,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin: 1rem;
 `
 
-const FooterBar = styled.footer`
+const FooterBar = styled("footer")`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,27 +29,27 @@ const FooterBar = styled.footer`
   text-align: center;
 `
 
-const SocialContainer = styled.div`
+const SocialContainer = styled("div")`
   padding: 1.5rem 0;
 `
 
-const EmailContainer = styled.div`
+const EmailContainer = styled("div")`
   padding-top: 2rem;
 `
 
-const MaintainedContainer = styled.div`
+const MaintainedContainer = styled("div")`
   a {
     color: white;
   }
 `
 
-const BottomRowContainer = styled.div`
+const BottomRowContainer = styled("div")`
   padding: 1.5rem 0;
   display: flex;
   flex-direction: row;
   padding: 2rem 0;
 `
-const PolicyContainer = styled.div`
+const PolicyContainer = styled("div")`
   :before {
     content: "|";
     margin-right: 0.5rem;
@@ -60,7 +60,7 @@ const PolicyContainer = styled.div`
   }
 `
 
-const LogoImage = styled.img`
+const LogoImage = styled("img")`
   height: 75;
 `
 

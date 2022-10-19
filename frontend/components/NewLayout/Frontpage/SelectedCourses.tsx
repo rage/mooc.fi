@@ -1,8 +1,8 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { formatDateTime } from "/components/DataFormatFunctions"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
@@ -19,7 +19,7 @@ import notEmpty from "/util/notEmpty"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
 
-const CardHeader = styled.div`
+const CardHeader = styled("div")`
   position: relative;
   background-color: #ffad14;
   height: 52px;
@@ -29,7 +29,7 @@ const CardHeader = styled.div`
   overflow: hidden;
 `
 
-const CardActionArea = styled.div`
+const CardActionArea = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -68,7 +68,7 @@ const CourseCard = ({
   )
 }
 
-export const CoursesGrid = styled.div`
+export const CoursesGrid = styled("div")`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

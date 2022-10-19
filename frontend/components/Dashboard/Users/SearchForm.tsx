@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "react"
 
-import styled from "@emotion/styled"
 import { TextField, useMediaQuery } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
@@ -11,7 +11,7 @@ import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
 
-const StyledForm = styled.form`
+const StyledForm = styled("form")`
   display: flex;
   width: 100%;
 `

@@ -1,9 +1,9 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import LanguageIcon from "@mui/icons-material/Language"
 import { Button } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const LanguageSwitchContainer = styled((props: any) => (
   <Button component="div" disableRipple={true} {...props} />
@@ -11,7 +11,7 @@ const LanguageSwitchContainer = styled((props: any) => (
   gap: 0.5rem;
 `
 
-const Language = styled.a<{ active: boolean }>`
+const Language = styled("a")<{ active: boolean }>`
   text-decoration: none;
   color: inherit;
   font-weight: ${({ active }) => (active ? "600" : "300")};

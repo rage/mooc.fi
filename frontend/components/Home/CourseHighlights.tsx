@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import Grid from "@mui/material/Grid"
+import { styled } from "@mui/material/styles"
 
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"
@@ -12,7 +12,7 @@ interface RootProps {
   backgroundColor: string
 }
 
-const Root = styled.div<RootProps>`
+const Root = styled("div")<RootProps>`
   display: flex;
   flex-direction: column;
   overflow: hidden;

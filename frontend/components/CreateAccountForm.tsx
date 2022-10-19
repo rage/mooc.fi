@@ -3,8 +3,8 @@ import { Component } from "react"
 import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { createAccount } from "/lib/account"
@@ -20,17 +20,17 @@ const StyledPaper = styled(Paper)`
   margin-top: 2em;
   margin-bottom: 2em;
 `
-const Row = styled.div`
+const Row = styled("div")`
   margin-bottom: 1.5rem;
 `
-const Form = styled.form`
+const Form = styled("form")`
   width: 100%;
 `
 const Header = styled(Typography)<any>`
   margin: 1em;
 `
 
-const InfoBox = styled.div`
+const InfoBox = styled("div")`
   margin-bottom: 2rem;
 `
 

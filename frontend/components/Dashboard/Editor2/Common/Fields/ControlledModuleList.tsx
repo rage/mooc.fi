@@ -7,7 +7,6 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import {
   Checkbox,
   FormControl,
@@ -17,6 +16,7 @@ import {
   List,
   ListItem,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {

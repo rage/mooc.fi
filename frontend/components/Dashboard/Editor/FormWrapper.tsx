@@ -15,7 +15,6 @@ import {
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import {
   CircularProgress,
   Container,
@@ -24,6 +23,7 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -41,7 +41,7 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled.p<FormikContextType<unknown>["status"]>`
+const Status = styled("p")<FormikContextType<unknown>["status"]>`
   color: ${(props: any) => (props.error ? "#FF0000" : "default")};
 `
 

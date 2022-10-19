@@ -10,7 +10,6 @@ import {
 import * as Yup from "yup"
 import { ObjectShape } from "yup/lib/object"
 
-import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import {
@@ -27,6 +26,7 @@ import {
   Tab,
   Tabs,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseAliasEditForm from "./CourseAliasEditForm"
 import CourseImageInput from "./CourseImageInput"
@@ -59,7 +59,7 @@ import {
 interface CoverProps {
   covered: boolean
 }
-const SelectLanguageFirstCover = styled.div<CoverProps>`
+const SelectLanguageFirstCover = styled("div")<CoverProps>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
 `
 const ModuleList = styled(List)`
@@ -80,7 +80,7 @@ export const StyledLabel = styled(InputLabel)<Labelprops>`
   ${(props) => `color: ${props.required ? `#DF7A46` : `#245B6D`}`}
 `
 
-export const FormFieldGroup = styled.div`
+export const FormFieldGroup = styled("div")`
   display: flex;
   flex-direction: column;
   padding: 0.5rem;

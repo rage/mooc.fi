@@ -1,13 +1,13 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 
-const InfoBox = styled.div`
+const InfoBox = styled("div")`
   margin-bottom: 2rem;
 `
 
-const FormContainer = styled.div`
+const FormContainer = styled("div")`
   height: 100%;
   margin-top: 2rem;
 `

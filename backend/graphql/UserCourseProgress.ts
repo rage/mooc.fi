@@ -124,6 +124,8 @@ export const UserCourseProgress = objectType({
         return {
           total: totalProgress,
           exercises: exerciseProgress,
+          exercise_count: exercises.length,
+          exercises_completed_count: completedExerciseCount,
         }
       },
     })

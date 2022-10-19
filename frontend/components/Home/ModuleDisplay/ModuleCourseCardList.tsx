@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-import styled from "@emotion/styled"
 import { Button, Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import HomeTranslations from "/translations/home"

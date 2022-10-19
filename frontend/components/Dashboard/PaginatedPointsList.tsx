@@ -3,8 +3,8 @@ import { ChangeEvent, useEffect, useState } from "react"
 import { range } from "lodash"
 
 import { useLazyQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"

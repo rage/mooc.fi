@@ -1,8 +1,8 @@
 import { PropsWithChildren } from "react"
 
-import styled from "@emotion/styled"
 import { MDXProvider } from "@mdx-js/react"
 import { Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ModuleCardText,
@@ -28,14 +28,14 @@ const Background = styled(Paper)`
   }
 `
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   flex-direction: column;
   display: flex;
   flex: 1;
 `
 
-const CustomModuleContainer = styled.div`
+const CustomModuleContainer = styled("div")`
   margin-top: calc(2rem - 24px);
   margin-left: calc(2rem - 24px);
   padding-top: 1rem;

@@ -1,6 +1,6 @@
 import React from "react"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
@@ -8,7 +8,7 @@ import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/NewLayout/Header/Header"
 import SkipLink from "/components/SkipLink"
 
-const FooterDownPusherWrapper = styled.div`
+const FooterDownPusherWrapper = styled("div")`
   display: flex;
   min-height: 100vh;
   flex-direction: column;

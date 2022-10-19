@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import NoOsMessage from "/components/Installation/NoOsMessage"
@@ -21,7 +21,7 @@ import InstallationTranslations from "/translations/installation"
 import getUserOS, { userOsType } from "/util/getUserOS"
 import { useTranslator } from "/util/useTranslator"
 
-const Background = styled.section`
+const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
   padding-right: 1em;
@@ -34,7 +34,7 @@ const Title = styled(Typography)<any>`
   padding: 1rem;
 `
 
-const TitleBackground = styled.div`
+const TitleBackground = styled("div")`
   background-color: white;
   max-width: 75%;
   margin-left: auto;
@@ -42,13 +42,13 @@ const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
-const Content = styled.div`
+const Content = styled("div")`
   position: relative;
 `
-export const SectionBox = styled.div`
+export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
-export const ContentBox = styled.div`
+export const ContentBox = styled("div")`
   background-color: white;
   max-width: 39em;
   border: 3px solid black;

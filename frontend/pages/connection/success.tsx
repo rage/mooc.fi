@@ -1,8 +1,8 @@
 import React from "react"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
 import { formatDateTime } from "/components/DataFormatFunctions"

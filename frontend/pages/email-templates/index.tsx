@@ -1,8 +1,8 @@
 import Link from "next/link"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"
@@ -16,7 +16,7 @@ import notEmpty from "/util/notEmpty"
 
 import { EmailTemplatesDocument } from "/graphql/generated"
 
-const Background = styled.section`
+const Background = styled("section")`
   background-color: #61baad;
 `
 

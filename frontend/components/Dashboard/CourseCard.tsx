@@ -2,7 +2,6 @@ import { PropsWithChildren } from "react"
 
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
@@ -13,6 +12,7 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -21,7 +21,7 @@ import { CardTitle } from "/components/Text/headers"
 
 import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
-const CardBase = styled.div<{ ishidden?: number }>`
+const CardBase = styled("div")<{ ishidden?: number }>`
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
 
@@ -44,7 +44,7 @@ const CardBase = styled.div<{ ishidden?: number }>`
   flex-direction: row;
 `
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   height: 235px;
   @media (max-width: 430px) {
     width: 45%;
@@ -58,11 +58,11 @@ const ImageContainer = styled.div`
   position: relative;
 `
 
-const StyledLink = styled.a`
+const StyledLink = styled("a")`
   text-decoration: none;
   margin-left: 0px;
 `
-const CourseCardItem = styled.li`
+const CourseCardItem = styled("li")`
   display: flex;
   padding: 1rem;
   height: 100%;
@@ -83,7 +83,7 @@ const CourseCardImageContainer = styled(ImageContainer)`
   }
 `
 
-const CourseCardContent = styled.div`
+const CourseCardContent = styled("div")`
   display: flex;
   width: 100%;
   height: 100%;
@@ -98,12 +98,12 @@ const CourseCardActionArea = styled(CardActions)`
   margin-top: auto;
 `
 
-const CourseInfoList = styled.ul`
+const CourseInfoList = styled("ul")`
   list-style: none;
   margin: 0;
   padding: 0;
 `
-const CourseInfoLine = styled.li`
+const CourseInfoLine = styled("li")`
   display: grid;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -133,7 +133,7 @@ const CourseInfoField = ({
   </Typography>
 )
 
-const CourseInfoValue = styled.div`
+const CourseInfoValue = styled("div")`
   display: flex;
   justify-content: flex-end;
 `

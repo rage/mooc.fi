@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
   faEnvelope,
@@ -9,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"

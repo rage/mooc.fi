@@ -1,6 +1,6 @@
-import styled from "@emotion/styled"
 import Refresh from "@mui/icons-material/Refresh"
 import Report from "@mui/icons-material/Report"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"

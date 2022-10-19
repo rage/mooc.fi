@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import {
   CardTitle,
@@ -10,7 +10,7 @@ import {
 import { CardText } from "/components/Text/paragraphs"
 import { mime } from "/util/imageUtils"
 
-export const CenteredContent = styled.div`
+export const CenteredContent = styled("div")`
   width: 80%;
   margin: auto;
   @supports (display: grid) {
@@ -27,7 +27,7 @@ export const CenteredContent = styled.div`
   }
 `
 
-export const ContentContainer = styled.div`
+export const ContentContainer = styled("div")`
   margin: 1rem;
   padding-left: 1rem;
   min-width: 33%;
@@ -56,7 +56,7 @@ export const ModuleHeader = ({ children, ...props }: PropsWithChildren<{}>) => (
   </ModuleHeaderBase>
 )
 
-const ModuleImageBase = styled.img`
+const ModuleImageBase = styled("img")`
   width: 100%;
 `
 

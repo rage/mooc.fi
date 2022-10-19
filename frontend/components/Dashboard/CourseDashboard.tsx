@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const Title = styled(Typography)<any>`
   text-transform: uppercase;

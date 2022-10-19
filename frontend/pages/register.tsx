@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { range } from "lodash"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import CancelIcon from "@mui/icons-material/Cancel"
 import {
   Button,
@@ -17,6 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"

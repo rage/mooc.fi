@@ -1,9 +1,9 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import PersonalInfoBox from "./PersonalInfoBox"
 
-const HeaderBackground = styled.div`
+const HeaderBackground = styled("div")`
   background-color: #4d92a1;
   color: white;
   position: relative;

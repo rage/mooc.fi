@@ -5,8 +5,8 @@ import { NextSeo } from "next-seo"
 import Link from "next/link"
 
 import { useApolloClient, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Card, Paper, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"

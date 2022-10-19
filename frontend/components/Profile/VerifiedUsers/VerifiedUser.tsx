@@ -1,8 +1,8 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
 import React from "react"
 
-import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { CardTitle } from "/components/Text/headers"
 

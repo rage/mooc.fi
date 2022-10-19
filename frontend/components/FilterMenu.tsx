@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import styled from "@emotion/styled"
 import { Clear, Search } from "@mui/icons-material"
 import {
   Button,
@@ -15,6 +14,7 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { useSearch } from "/hooks/useSearch"
 import CommonTranslations from "/translations/common"
@@ -26,7 +26,7 @@ import {
   EditorCoursesQueryVariables,
 } from "/graphql/generated"
 
-const Container = styled.div`
+const Container = styled("div")`
   background-color: white;
   padding: 0.5rem;
   display: flex;
@@ -34,7 +34,7 @@ const Container = styled.div`
   min-width: 300px;
 `
 
-const Row = styled.section`
+const Row = styled("section")`
   display: grid;
   grid-gap: 0.5rem;
   margin: 0.5rem;

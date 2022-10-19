@@ -2,9 +2,9 @@ import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import Grid from "@mui/material/Grid"
+import { styled } from "@mui/material/styles"
 
 import {
   BackgroundImage,
@@ -22,7 +22,7 @@ const NaviItemBase = styled(ClickableDiv)`
   align-items: flex-start;
 `
 
-const StyledLink = styled.a`
+const StyledLink = styled("a")`
   color: black;
   text-decoration: none;
 `

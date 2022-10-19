@@ -3,6 +3,7 @@ fragment UserCoreFields on User {
   upstream_id
   first_name
   last_name
+  full_name
   username
   email
   student_number

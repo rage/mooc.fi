@@ -1,7 +1,7 @@
 import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
 import { Grid, Skeleton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ModuleCardText,
@@ -68,7 +68,7 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
   }
 `
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   flex-direction: column;
   display: flex;
@@ -80,7 +80,7 @@ interface HeaderProps {
   upcoming?: boolean | null
 }
 
-const Header = styled.div<HeaderProps>`
+const Header = styled("div")<HeaderProps>`
   padding-top: 0.5rem;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;

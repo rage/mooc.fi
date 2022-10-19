@@ -95,6 +95,8 @@ export const collapseReducer = (
           return produce(state, (draft) => {
             draft[action.course].points = true
           })
+        default:
+          return state
       }
     }
     case ActionType.CLOSE: {
@@ -115,6 +117,8 @@ export const collapseReducer = (
           return produce(state, (draft) => {
             draft[action.course].points = false
           })
+        default:
+          return state
       }
     }
     case ActionType.TOGGLE: {
@@ -136,6 +140,8 @@ export const collapseReducer = (
           return produce(state, (draft) => {
             draft[action.course].points = !draft[action.course].points
           })
+        default:
+          return state
       }
     }
     case ActionType.OPEN_ALL: {
@@ -152,8 +158,9 @@ export const collapseReducer = (
             )
           })
         }
+        default:
+          return state
       }
-      return state
     }
     case ActionType.CLOSE_ALL: {
       switch (action.collapsable) {
@@ -169,8 +176,9 @@ export const collapseReducer = (
             )
           })
         }
+        default:
+          return state
       }
-      return state
     }
     case ActionType.TOGGLE_ALL: {
       switch (action.collapsable) {
@@ -188,8 +196,9 @@ export const collapseReducer = (
             )
           })
         }
+        default:
+          return state
       }
-      return state
     }
     case ActionType.INIT_STATE:
       return action.state
@@ -230,4 +239,10 @@ export default CollapseContext
 
 export function useCollapseContext() {
   return useContext(CollapseContext)
+}
+
+export function useCollapseContextCourse(course_id: string) {
+  const context = useContext(CollapseContext)
+
+  return { state: context.state[course_id], dispatch: context.dispatch }
 }

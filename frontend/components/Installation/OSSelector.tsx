@@ -1,17 +1,17 @@
 import { useContext } from "react"
 
-import styled from "@emotion/styled"
 import {
   faLinux as Linux,
   faApple as MAC,
   faWindows as Windows,
 } from "@fortawesome/free-brands-svg-icons"
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
+import { styled } from "@mui/material/styles"
 
 import OSSelectorButton from "./OSSelectorButton"
 import userOsContext from "/contexts/UserOSContext"
 
-const Container = styled.div`
+const Container = styled("div")`
   display: flex;
   flex-direction: row;
   @media (max-width: 1095px) {

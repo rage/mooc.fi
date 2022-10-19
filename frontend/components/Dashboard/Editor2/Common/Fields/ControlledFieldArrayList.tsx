@@ -7,10 +7,10 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { FormGroup, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
@@ -18,13 +18,13 @@ import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Field
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-export const ArrayList = styled.ul`
+export const ArrayList = styled("ul")`
   list-style: none;
   margin-block-start: 0;
   padding-inline-start: 0;
 `
 
-export const ArrayItem = styled.li``
+export const ArrayItem = styled("li")``
 
 interface ControlledFieldArrayListProps<T extends { _id?: string }>
   extends ControlledFieldProps {

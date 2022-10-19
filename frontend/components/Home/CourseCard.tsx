@@ -1,7 +1,7 @@
 import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
 import { Chip, Grid, Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseImage from "/components/CourseImage"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
@@ -38,7 +38,7 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
   }
 `
 
-const TextArea = styled.div`
+const TextArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   height: 100%;
   color: black;
@@ -58,7 +58,7 @@ const TextArea = styled.div`
   }
 `
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   width: 100%;
   height: 100%;
   position: relative;

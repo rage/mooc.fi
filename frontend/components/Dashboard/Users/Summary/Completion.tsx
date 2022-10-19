@@ -7,8 +7,11 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableContainerProps,
   TableRow,
+  Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ActionType,
@@ -31,6 +34,28 @@ interface CompletionProps {
   course: UserCourseSummaryCourseFieldsFragment
 }
 
+const CompletionTableContainer = styled((props: TableContainerProps) => (
+  <TableContainer component={Paper} elevation={4} {...props} />
+))`
+  margin-bottom: 1rem;
+`
+
+const CompletionListItemContainer = styled("div")`
+  padding: 0.5rem;
+  width: 100%;
+`
+
+const CollapseTableRow = styled(TableRow)`
+  & > * {
+    border-bottom: unset;
+  }
+`
+
+const CollapseTableCell = styled(TableCell)`
+  padding-top: 0;
+  padding-bottom: 0;
+`
+
 export default function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
@@ -42,19 +67,27 @@ export default function Completion({ completion, course }: CompletionProps) {
   const isOpen = state[course?.id ?? "_"]?.completion ?? false
 
   return (
-    <TableContainer component={Paper} style={{ marginBottom: "1rem" }}>
+    <CompletionTableContainer>
       <Table>
         <TableBody>
-          <TableRow>
+          <CollapseTableRow>
             <TableCell>
-              {t("completedDate")}
-              {formatDateTime(completion?.completion_date)}
+              <Typography variant="h3">
+                {t("completedDate")}
+                <strong>{formatDateTime(completion?.completion_date)}</strong>
+              </Typography>
             </TableCell>
             <TableCell align="right">
-              {t("registeredDate")}
-              {completion?.completions_registered
-                ?.map((cr) => formatDateTime(cr.created_at))
-                ?.join(", ")}
+              {completion?.completions_registered?.length > 0 && (
+                <Typography variant="h3">
+                  {t("registeredDate")}
+                  <strong>
+                    {completion?.completions_registered
+                      ?.map((cr) => formatDateTime(cr.created_at))
+                      ?.join(", ")}
+                  </strong>
+                </Typography>
+              )}
             </TableCell>
             <TableCell align="right">
               <CollapseButton
@@ -66,14 +99,21 @@ export default function Completion({ completion, course }: CompletionProps) {
                     course: course?.id ?? "_",
                   })
                 }
+                tooltip={t("completionCollapseTooltip")}
               />
             </TableCell>
-          </TableRow>
+          </CollapseTableRow>
+          <CollapseTableRow>
+            <CollapseTableCell colSpan={3}>
+              <Collapse in={isOpen} mountOnEnter unmountOnExit>
+                <CompletionListItemContainer>
+                  <CompletionListItem course={course} completion={completion} />
+                </CompletionListItemContainer>
+              </Collapse>
+            </CollapseTableCell>
+          </CollapseTableRow>
         </TableBody>
       </Table>
-      <Collapse in={isOpen} unmountOnExit>
-        <CompletionListItem course={course} completion={completion} />
-      </Collapse>
-    </TableContainer>
+    </CompletionTableContainer>
   )
 }

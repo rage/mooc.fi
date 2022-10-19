@@ -1,9 +1,9 @@
 import { useContext } from "react"
 
-import styled from "@emotion/styled"
 import { IconProp } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ButtonBase from "@mui/material/ButtonBase"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import UserOSContext from "/contexts/UserOSContext"

@@ -1,6 +1,5 @@
 import { Fragment } from "react"
 
-import styled from "@emotion/styled"
 import CloseIcon from "@mui/icons-material/Close"
 import DoneIcon from "@mui/icons-material/Done"
 import {
@@ -11,6 +10,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { formatDateTime } from "/components/DataFormatFunctions"
 
@@ -27,7 +27,7 @@ const StyledIcon = styled(Icon)`
   margin-top: 1rem;
 `
 
-const ListItemArea = styled.div`
+const ListItemArea = styled("div")`
   margin: 1rem auto 1rem auto;
 `
 

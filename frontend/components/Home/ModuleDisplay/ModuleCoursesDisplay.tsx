@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import ModuleCoursesListing, {
   ThreeOrLessCoursesListing,
@@ -9,7 +9,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 
-const CoursesListContainer = styled.div`
+const CoursesListContainer = styled("div")`
   margin: 2rem 2em 2em 2rem;
   padding: 1rem;
   min-width: 33%;

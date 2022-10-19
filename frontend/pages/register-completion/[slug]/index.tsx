@@ -5,8 +5,8 @@ import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Paper, SvgIcon, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
