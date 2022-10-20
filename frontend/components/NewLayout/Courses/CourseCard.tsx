@@ -1,9 +1,9 @@
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
 
-import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
-import BannerImage from "/static/images/homeBackground.jpg"
 import OutboundLink from "/components/OutboundLink"
+import BannerImage from "/static/images/homeBackground.jpg"
+import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
