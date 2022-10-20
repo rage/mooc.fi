@@ -100,7 +100,7 @@ const getInfoWithCourseCode = async (
   const res = await axios.get(url, {
     headers: { Authorized: "Basic " + AVOIN_TOKEN },
   })
-  return await res.data
+  return res.data
 }
 
 interface AvoinLinkData {

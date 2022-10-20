@@ -23,7 +23,7 @@ export const UserOrganization = objectType({
 export const UserOrganizationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("userOrganizations", {
+    t.list.nonNull.field("userOrganizations", {
       type: "UserOrganization",
       args: {
         user_id: idArg(),

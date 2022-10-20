@@ -76,18 +76,16 @@ export const StudyModuleTranslationMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { language, name, description, study_module } = args
 
-        const newStudyModuleTranslation =
-          await ctx.prisma.studyModuleTranslation.create({
-            data: {
-              language: language,
-              name: name ?? "",
-              description: description ?? "",
-              study_module: {
-                connect: { id: study_module },
-              },
+        return ctx.prisma.studyModuleTranslation.create({
+          data: {
+            language: language,
+            name: name ?? "",
+            description: description ?? "",
+            study_module: {
+              connect: { id: study_module },
             },
-          })
-        return newStudyModuleTranslation
+          },
+        })
       },
     })
 
