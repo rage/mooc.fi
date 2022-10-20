@@ -1,7 +1,8 @@
 import styled from "@emotion/styled"
+
 import CourseGrid from "./CourseGrid"
-import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/_new/courses"
+import { useTranslator } from "/util/useTranslator"
 
 const Container = styled.div`
   display: grid;

@@ -1,7 +1,9 @@
-import styled from "@emotion/styled"
 import Image from "next/image"
-import { useTranslator } from "/util/useTranslator"
+
+import styled from "@emotion/styled"
+
 import CoursesTranslations from "/translations/_new/courses"
+import { useTranslator } from "/util/useTranslator"
 
 const Container = styled.div`
   display: grid;

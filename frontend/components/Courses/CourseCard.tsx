@@ -1,9 +1,11 @@
 import styled from "@emotion/styled"
-import OutboundLink from "../OutboundLink"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { Button } from "@mui/material"
+
 import SponsorLogo from "../../../f-secure_logo.png"
 import BannerImage from "../../static/images/homeBackground.jpg"
-import { Button } from "@mui/material"
+import OutboundLink from "../OutboundLink"
+
+import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes = {
   csb: ["#020024", "#090979", "#00d7ff"],
@@ -16,8 +18,6 @@ const Container = styled.div`
   border: 1px solid rgba(236, 236, 236, 1);
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
-  width: 578px;
-  height: 267px;
   border-radius: 0.5rem;
   &:nth-child(n) {
     background: linear-gradient(
@@ -82,11 +82,10 @@ const Title = styled.div`
 `
 
 const Sponsor = styled.img`
-  max-width: 7rem;
-  margin-left: 4rem;
+  max-width: 9rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
-  padding: 0.2rem;
+  padding: 1rem;
 `
 
 const Description = styled.div``
@@ -118,51 +117,60 @@ const Tag = styled(Button)`
 `
 
 interface CourseCardProps {
-  course?: AllCourses_courses | null
+  course?: CourseFieldsFragment | null
   tags?: string[]
 }
 
 function CourseCard({ course, tags }: CourseCardProps) {
-  return (
+  return course ? (
     <Container>
       <TitleContainer>
         <Title>{course?.name}</Title>
-        <Sponsor src={SponsorLogo} />
       </TitleContainer>
       <ContentContainer>
-        {/*         <Description>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </Description> */}
         <Description>{course?.description}</Description>
         <Details>
-          englanti
-          <br />
-          ~135h (5 op)
-          <br />
-          Edistynyt
-          <br />
+          {course.ects && (
+            <>
+              ~{parseInt(course.ects) * 27} ({course.ects})
+            </>
+          )}
           Helsingin yliopisto
+          <Sponsor src={SponsorLogo} />
         </Details>
         <BottomLeftContainer>
           <Schedule>
-            Aikataulutettu
-            <br />
-            6.9.2021-31.12.2021
+            {course.status}{" "}
+            {course?.end_date ? (
+              <>
+                Aikataulutettu
+                <br />
+                {course?.start_date} - {course?.end_date}
+              </>
+            ) : (
+              <>Aikatauluton</>
+            )}
           </Schedule>
-          <Tags>
-            {tags?.map((tag) => (
-              <Tag size="small" variant="contained" disabled>
-                {tag}
-              </Tag>
-            ))}
-          </Tags>
         </BottomLeftContainer>
-        <Link eventLabel="derp" to="https://www.mooc.fi">
+        <Link eventLabel="to_course_material" to="https://www.mooc.fi">
           Näytä kurssi
         </Link>
+        <Tags>
+          {tags?.map((tag) => (
+            <Tag size="small" variant="contained" disabled>
+              {tag}
+            </Tag>
+          ))}
+        </Tags>
+      </ContentContainer>
+    </Container>
+  ) : (
+    <Container>
+      <TitleContainer>
+        <Title>loading...</Title>
+      </TitleContainer>
+      <ContentContainer>
+        <Description>loading...</Description>
       </ContentContainer>
     </Container>
   )

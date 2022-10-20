@@ -1,20 +1,26 @@
-import CourseCard from "./CourseCard"
-import { AllCoursesQuery } from "/graphql/queries/courses"
+import { useEffect, useState } from "react"
+
+import { useRouter } from "next/router"
+
 import { useQuery } from "@apollo/client"
-import { AllCourses } from "/static/types/generated/AllCourses"
 import styled from "@emotion/styled"
 import { Button, TextField } from "@mui/material"
-import { useTranslator } from "/util/useTranslator"
+
+import CourseCard from "./CourseCard"
 import CommonTranslations from "/translations/common"
-import { useEffect, useState } from "react"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import { useTranslator } from "/util/useTranslator"
+
+import { CoursesDocument } from "/graphql/generated"
 
 const Container = styled.div`
   display: grid;
+  max-width: 1200px;
 `
 
 const CardContainer = styled.div`
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: 2rem;
   grid-template-columns: 50% 50%;
 `
 
@@ -39,17 +45,13 @@ const TagButton = styled(Button)`
   border-width: 0.15rem;
 `
 
-function useCourseSearch() {
-  const { data: coursesData } = useQuery<AllCourses>(AllCoursesQuery)
-
-  return {
-    data: coursesData,
-  }
-}
-
 function CourseGrid() {
   const t = useTranslator(CommonTranslations)
-  const { data } = useCourseSearch()
+  const { locale = "fi" } = useRouter()
+  const language = mapNextLanguageToLocaleCode(locale)
+  const { loading, data } = useQuery(CoursesDocument, {
+    variables: { language },
+  })
   const [searchString, setSearchString] = useState<string>("")
   const [tags, setTags] = useState<string[]>([])
   const [activeTags, setActiveTags] = useState<string[]>([])
@@ -71,14 +73,11 @@ function CourseGrid() {
     ])
 
     const hardcoded: { [key: string]: string[] } = {}
-    const difficultyTags = ["beginner", "intermediate", "pro"]
-    const otherTags = ["AI", "programming", "cloud", "cyber security"]
-
     data?.courses?.map((course) =>
       course?.slug != null
-        ? (hardcoded[course?.slug] = [
-            difficultyTags[Math.floor(Math.random() * difficultyTags.length)],
-          ].concat([otherTags[Math.floor(Math.random() * otherTags.length)]]))
+        ? (hardcoded[course?.slug] = [...tags]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 4))
         : "undefined",
     )
     setHardcodedTags(hardcoded)
@@ -117,32 +116,41 @@ function CourseGrid() {
           </TagButton>
         ))}
       </Filters>
-      <CardContainer>
-        {data?.courses &&
-          data.courses
-            .filter(
-              (course) =>
-                (course?.name
-                  .toLowerCase()
-                  .includes(searchString.toLowerCase()) ||
-                  course?.description
-                    ?.toLowerCase()
-                    .includes(searchString.toLowerCase())) &&
-                (activeTags.length > 0
-                  ? activeTags.every((tag) =>
-                      hardcodedTags[course?.slug].includes(tag),
-                    )
-                  : true),
-            )
-            .map((course) => (
-              <CourseCard
-                course={course}
-                tags={
-                  course?.slug ? hardcodedTags[course?.slug] : ["undefined"]
-                }
-              />
-            ))}
-      </CardContainer>
+      {loading ? (
+        <CardContainer>
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+        </CardContainer>
+      ) : (
+        <CardContainer>
+          {data?.courses &&
+            data.courses
+              .filter(
+                (course) =>
+                  (course?.name
+                    .toLowerCase()
+                    .includes(searchString.toLowerCase()) ||
+                    course?.description
+                      ?.toLowerCase()
+                      .includes(searchString.toLowerCase())) &&
+                  (activeTags.length > 0
+                    ? activeTags.every((tag) =>
+                        hardcodedTags[course?.slug].includes(tag),
+                      )
+                    : true),
+              )
+              .map((course) => (
+                <CourseCard
+                  course={course}
+                  tags={
+                    course?.slug ? hardcodedTags[course?.slug] : ["undefined"]
+                  }
+                />
+              ))}
+        </CardContainer>
+      )}
     </Container>
   )
 }
