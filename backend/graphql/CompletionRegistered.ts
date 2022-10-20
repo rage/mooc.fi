@@ -39,7 +39,7 @@ export const CompletionRegistered = objectType({
 export const CompletionRegisteredQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("registeredCompletions", {
+    t.list.nonNull.field("registeredCompletions", {
       type: "CompletionRegistered",
       args: {
         course: stringArg({ description: "course slug or course alias" }),
@@ -93,7 +93,7 @@ export const CompletionRegisteredQueries = extendType({
 export const CompletionRegisteredMutations = extendType({
   type: "Mutation",
   definition(t) {
-    t.field("registerCompletion", {
+    t.nonNull.field("registerCompletion", {
       type: "String",
       args: {
         completions: nonNull(list(nonNull(arg({ type: "CompletionArg" })))),
@@ -102,8 +102,8 @@ export const CompletionRegisteredMutations = extendType({
       resolve: async (_, args, ctx: Context) => {
         const queue = chunk(args.completions, 500)
 
-        for (let i = 0; i < queue.length; i++) {
-          const promises = buildPromises(queue[i], ctx)
+        for (const element of queue) {
+          const promises = buildPromises(element, ctx)
           await Promise.all(promises)
         }
         return "success"

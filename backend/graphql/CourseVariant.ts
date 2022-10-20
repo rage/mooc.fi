@@ -55,7 +55,7 @@ export const CourseVariantQueries = extendType({
         ctx.prisma.courseVariant.findUnique({ where: { id } }),
     })
 
-    t.list.field("courseVariants", {
+    t.list.nonNull.field("courseVariants", {
       type: "CourseVariant",
       args: {
         course_id: idArg(),

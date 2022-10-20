@@ -20,7 +20,7 @@ export const moocfiAuthPlugin = () =>
         next: Function,
       ) => {
         if (ctx.userDetails || ctx.organization) {
-          return await next(root, args, ctx, info)
+          return next(root, args, ctx, info)
         }
 
         const rawToken = ctx.req?.headers?.authorization // connection?
@@ -33,7 +33,7 @@ export const moocfiAuthPlugin = () =>
           await setContextUser(ctx, rawToken)
         }
 
-        return await next(root, args, ctx, info)
+        return next(root, args, ctx, info)
       }
     },
   })

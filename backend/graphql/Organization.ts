@@ -13,6 +13,8 @@ import {
   stringArg,
 } from "nexus"
 
+import { Prisma } from "@prisma/client"
+
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"
 import { filterNullFields } from "../util"
@@ -125,7 +127,7 @@ export const OrganizationQueries = extendType({
       authorize: organizationQueryHiddenOrDisabledPermission,
     })
 
-    t.list.field("organizations", {
+    t.list.nonNull.field("organizations", {
       type: "Organization",
       args: {
         take: intArg(),
@@ -143,6 +145,24 @@ export const OrganizationQueries = extendType({
         { take, skip, cursor, orderBy, hidden, disabled },
         ctx,
       ) => {
+        const where: Prisma.OrganizationWhereInput = {}
+
+        if (!hidden || !disabled) {
+          where.AND = []
+
+          if (!hidden) {
+            where.AND.push({
+              OR: [{ hidden: false }, { hidden: null }],
+            })
+          }
+
+          if (!disabled) {
+            where.AND.push({
+              OR: [{ disabled: false }, { disabled: null }],
+            })
+          }
+        }
+
         return ctx.prisma.organization.findMany({
           ...filterNullFields({
             take,
@@ -154,19 +174,7 @@ export const OrganizationQueries = extendType({
             },
           }),
           orderBy: filterNullFields(orderBy),
-          where: {
-            ...(!hidden && { hidden: { not: true } }),
-            ...(!disabled && {
-              OR: [
-                {
-                  disabled: false,
-                },
-                {
-                  disabled: null,
-                },
-              ],
-            }),
-          },
+          where,
         })
       },
     })

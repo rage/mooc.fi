@@ -14,7 +14,7 @@ import { buildUserSearch } from "../common"
 export const CompletionQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("completions", {
+    t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
         course: nonNull(stringArg()),

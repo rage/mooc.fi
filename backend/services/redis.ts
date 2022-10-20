@@ -74,7 +74,7 @@ const getRedisClient = (): typeof redisClient => {
  * @returns
  */
 export async function redisify<T>(
-  fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
+  fn: ((...args: any[]) => Promise<T> | T) | Promise<T>,
   options: {
     prefix: string
     expireTime: number
@@ -128,7 +128,7 @@ export async function redisify<T>(
   } catch (e1) {
     try {
       if (!resolveSuccess) {
-        return await resolveValue()
+        value = await resolveValue()
       }
       return value
     } catch (e2) {

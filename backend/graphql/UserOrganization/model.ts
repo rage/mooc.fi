@@ -17,7 +17,7 @@ export const UserOrganization = objectType({
     t.model.organizational_email()
     t.model.organizational_identifier()
 
-    t.nonNull.list.field("user_organization_join_confirmations", {
+    t.list.nonNull.field("user_organization_join_confirmations", {
       type: "UserOrganizationJoinConfirmation",
       resolve: async ({ id }, _, ctx) => {
         return ctx.prisma.userOrganization

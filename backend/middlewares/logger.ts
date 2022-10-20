@@ -22,7 +22,7 @@ export const loggerPlugin = () =>
           )
         }
 
-        return await next(root, args, ctx, info)
+        return next(root, args, ctx, info)
       }
     },
   })

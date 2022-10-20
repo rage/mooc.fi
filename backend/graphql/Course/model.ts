@@ -64,7 +64,7 @@ export const Course = objectType({
     t.string("instructions")
     t.string("link")
 
-    t.list.field("completions", {
+    t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
         user_id: nullable(stringArg()),
@@ -103,7 +103,7 @@ export const Course = objectType({
       },
     })
 
-    t.list.field("exercises", {
+    t.list.nonNull.field("exercises", {
       type: "Exercise",
       args: {
         includeDeleted: booleanArg({ default: false }),

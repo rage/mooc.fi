@@ -93,7 +93,7 @@ export const UserCourseProgress = objectType({
       },
     })
 
-    t.field("exercise_progress", {
+    t.nonNull.field("exercise_progress", {
       type: "ExerciseProgress",
       resolve: async ({ course_id, user_id, n_points, max_points }, _, ctx) => {
         if (!course_id) {
@@ -175,7 +175,7 @@ export const UserCourseProgressQueries = extendType({
     })
 
     // FIXME: (?) broken until the nexus json thing is fixed or smth
-    t.list.field("userCourseProgresses", {
+    t.list.nonNull.field("userCourseProgresses", {
       type: "UserCourseProgress",
       args: {
         user_id: idArg(),

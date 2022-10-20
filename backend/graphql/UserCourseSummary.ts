@@ -58,7 +58,7 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("user_course_service_progresses", {
+    t.nonNull.list.nonNull.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async (
         { user: { id: user_id }, course: { id: course_id } },
@@ -81,7 +81,7 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("exercise_completions", {
+    t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
         includeDeletedExercises: booleanArg(),

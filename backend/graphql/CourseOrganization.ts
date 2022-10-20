@@ -21,7 +21,7 @@ export const CourseOrganization = objectType({
 export const CourseOrganizationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("courseOrganizations", {
+    t.list.nonNull.field("courseOrganizations", {
       type: "CourseOrganization",
       args: {
         course_id: idArg(),

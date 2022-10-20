@@ -17,10 +17,9 @@ export const StudyModule = objectType({
     t.model.updated_at()
     t.model.study_module_translations()
 
-    // @ts-ignore: false error
     t.string("description")
 
-    t.list.field("courses", {
+    t.list.nonNull.field("courses", {
       type: "Course",
       args: {
         orderBy: arg({ type: "CourseOrderByInput" }),

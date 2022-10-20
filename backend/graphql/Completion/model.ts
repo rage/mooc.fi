@@ -104,7 +104,7 @@ export const Completion = objectType({
       },
     })
 
-    t.field("registered", {
+    t.nonNull.field("registered", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
         const registered = await ctx.prisma.completion
@@ -117,7 +117,7 @@ export const Completion = objectType({
       },
     })
 
-    t.field("project_completion", {
+    t.nonNull.field("project_completion", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
         if (!parent.course_id) {
@@ -149,7 +149,7 @@ export const Completion = objectType({
       },
     })
 
-    t.field("certificate_availability", {
+    t.nullable.field("certificate_availability", {
       type: "CertificateAvailability",
       resolve: async ({ course_id, user_upstream_id }, _, ctx) => {
         if (!course_id) {

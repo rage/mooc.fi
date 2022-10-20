@@ -27,7 +27,6 @@ export const CourseStatsSubscriptionMutations = extendType({
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id }, ctx) => {
         const { user } = ctx
-
         return ctx.prisma.courseStatsSubscription.create({
           data: {
             user: { connect: { id: user?.id } },
@@ -61,7 +60,7 @@ export const CourseStatsSubscriptionMutations = extendType({
           }
         }
 
-        return await ctx.prisma.courseStatsSubscription.delete({
+        return ctx.prisma.courseStatsSubscription.delete({
           where: {
             id,
           },

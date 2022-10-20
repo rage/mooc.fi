@@ -32,7 +32,7 @@ export const Exercise = objectType({
     t.model.timestamp()
     t.model.updated_at()
 
-    t.list.field("exercise_completions", {
+    t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
         orderBy: nullable(
@@ -80,7 +80,7 @@ export const ExerciseQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.exercise.findUnique({
+        ctx.prisma.exercise.findUnique({
           where: { id },
         }),
     })

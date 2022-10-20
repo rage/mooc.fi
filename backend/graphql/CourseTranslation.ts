@@ -54,7 +54,7 @@ export const CourseTranslationUpsertInput = inputObjectType({
 export const CourseTranslationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("courseTranslations", {
+    t.list.nonNull.field("courseTranslations", {
       type: "CourseTranslation",
       args: {
         language: stringArg(),

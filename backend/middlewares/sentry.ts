@@ -9,15 +9,9 @@ export const sentryPlugin = () =>
   plugin({
     name: "SentryPlugin",
     onCreateFieldResolver(config) {
-      return async (
-        root: any,
-        args: Record<string, any>,
-        ctx: Context,
-        info: any,
-        next: Function,
-      ) => {
+      return async (root, args, ctx: Context, info, next) => {
         try {
-          const result = await next(root, args, ctx, info)
+          const result: any = await next(root, args, ctx, info) // NOSONAR: can be async, even if sonar doesn't pick it up
 
           return result
         } catch (error) {

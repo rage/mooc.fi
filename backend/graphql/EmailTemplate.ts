@@ -48,7 +48,7 @@ export const EmailTemplateQueries = extendType({
         }),
     })
 
-    t.list.field("email_templates", {
+    t.list.nonNull.field("email_templates", {
       type: "EmailTemplate",
       authorize: isAdmin,
       resolve: (_, __, ctx) => ctx.prisma.emailTemplate.findMany(),

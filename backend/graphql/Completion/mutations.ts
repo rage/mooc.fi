@@ -59,10 +59,10 @@ export const CompletionMutations = extendType({
       },
     })
 
-    t.list.field("addManualCompletion", {
+    t.list.nonNull.field("addManualCompletion", {
       type: "Completion",
       args: {
-        completions: list(arg({ type: "ManualCompletionArg" })),
+        completions: list(nonNull(arg({ type: "ManualCompletionArg" }))),
         course_id: nonNull(stringArg()),
       },
       authorize: isAdmin,

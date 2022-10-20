@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-09-27T12:44:49+03:00
+// Generated on 2022-10-20T16:19:27+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -111,8 +111,8 @@ export type Completion = {
   email: Scalars["String"]
   grade: Maybe<Scalars["String"]>
   id: Scalars["String"]
-  project_completion: Maybe<Scalars["Boolean"]>
-  registered: Maybe<Scalars["Boolean"]>
+  project_completion: Scalars["Boolean"]
+  registered: Scalars["Boolean"]
   student_number: Maybe<Scalars["String"]>
   tier: Maybe<Scalars["Int"]>
   updated_at: Maybe<Scalars["DateTime"]>
@@ -169,7 +169,7 @@ export type Course = {
   automatic_completions_eligible_for_ects: Maybe<Scalars["Boolean"]>
   completion_email: Maybe<EmailTemplate>
   completion_email_id: Maybe<Scalars["String"]>
-  completions: Maybe<Array<Maybe<Completion>>>
+  completions: Maybe<Array<Completion>>
   completions_handled_by: Maybe<Course>
   completions_handled_by_id: Maybe<Scalars["String"]>
   course_aliases: Array<CourseAlias>
@@ -183,7 +183,7 @@ export type Course = {
   ects: Maybe<Scalars["String"]>
   end_date: Maybe<Scalars["String"]>
   exercise_completions_needed: Maybe<Scalars["Int"]>
-  exercises: Maybe<Array<Maybe<Exercise>>>
+  exercises: Maybe<Array<Exercise>>
   handles_completions_for: Array<Course>
   has_certificate: Maybe<Scalars["Boolean"]>
   hidden: Maybe<Scalars["Boolean"]>
@@ -313,12 +313,10 @@ export type CourseCreateArg = {
   base64?: InputMaybe<Scalars["Boolean"]>
   completion_email_id?: InputMaybe<Scalars["ID"]>
   completions_handled_by?: InputMaybe<Scalars["ID"]>
-  course_aliases?: InputMaybe<Array<InputMaybe<CourseAliasCreateInput>>>
+  course_aliases?: InputMaybe<Array<CourseAliasCreateInput>>
   course_stats_email_id?: InputMaybe<Scalars["ID"]>
-  course_translations?: InputMaybe<
-    Array<InputMaybe<CourseTranslationCreateInput>>
-  >
-  course_variants?: InputMaybe<Array<InputMaybe<CourseVariantCreateInput>>>
+  course_translations?: InputMaybe<Array<CourseTranslationCreateInput>>
+  course_variants?: InputMaybe<Array<CourseVariantCreateInput>>
   ects?: InputMaybe<Scalars["String"]>
   end_date?: InputMaybe<Scalars["DateTime"]>
   exercise_completions_needed?: InputMaybe<Scalars["Int"]>
@@ -328,7 +326,7 @@ export type CourseCreateArg = {
   name?: InputMaybe<Scalars["String"]>
   new_photo?: InputMaybe<Scalars["Upload"]>
   open_university_registration_links?: InputMaybe<
-    Array<InputMaybe<OpenUniversityRegistrationLinkCreateInput>>
+    Array<OpenUniversityRegistrationLinkCreateInput>
   >
   order?: InputMaybe<Scalars["Int"]>
   photo?: InputMaybe<Scalars["ID"]>
@@ -340,14 +338,14 @@ export type CourseCreateArg = {
   status?: InputMaybe<CourseStatus>
   study_module_order?: InputMaybe<Scalars["Int"]>
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
-  study_modules?: InputMaybe<Array<InputMaybe<StudyModuleWhereUniqueInput>>>
+  study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
   upcoming_active_link?: InputMaybe<Scalars["Boolean"]>
   user_course_settings_visibilities?: InputMaybe<
-    Array<InputMaybe<UserCourseSettingsVisibilityCreateInput>>
+    Array<UserCourseSettingsVisibilityCreateInput>
   >
 }
 
@@ -493,12 +491,10 @@ export type CourseUpsertArg = {
   base64?: InputMaybe<Scalars["Boolean"]>
   completion_email_id?: InputMaybe<Scalars["ID"]>
   completions_handled_by?: InputMaybe<Scalars["ID"]>
-  course_aliases?: InputMaybe<Array<InputMaybe<CourseAliasUpsertInput>>>
+  course_aliases?: InputMaybe<Array<CourseAliasUpsertInput>>
   course_stats_email_id?: InputMaybe<Scalars["ID"]>
-  course_translations?: InputMaybe<
-    Array<InputMaybe<CourseTranslationUpsertInput>>
-  >
-  course_variants?: InputMaybe<Array<InputMaybe<CourseVariantUpsertInput>>>
+  course_translations?: InputMaybe<Array<CourseTranslationUpsertInput>>
+  course_variants?: InputMaybe<Array<CourseVariantUpsertInput>>
   delete_photo?: InputMaybe<Scalars["Boolean"]>
   ects?: InputMaybe<Scalars["String"]>
   end_date?: InputMaybe<Scalars["DateTime"]>
@@ -511,7 +507,7 @@ export type CourseUpsertArg = {
   new_photo?: InputMaybe<Scalars["Upload"]>
   new_slug?: InputMaybe<Scalars["String"]>
   open_university_registration_links?: InputMaybe<
-    Array<InputMaybe<OpenUniversityRegistrationLinkUpsertInput>>
+    Array<OpenUniversityRegistrationLinkUpsertInput>
   >
   order?: InputMaybe<Scalars["Int"]>
   photo?: InputMaybe<Scalars["ID"]>
@@ -523,14 +519,14 @@ export type CourseUpsertArg = {
   status?: InputMaybe<CourseStatus>
   study_module_order?: InputMaybe<Scalars["Int"]>
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
-  study_modules?: InputMaybe<Array<InputMaybe<StudyModuleWhereUniqueInput>>>
+  study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
   upcoming_active_link?: InputMaybe<Scalars["Boolean"]>
   user_course_settings_visibilities?: InputMaybe<
-    Array<InputMaybe<UserCourseSettingsVisibilityUpsertInput>>
+    Array<UserCourseSettingsVisibilityUpsertInput>
   >
 }
 
@@ -641,7 +637,7 @@ export type Exercise = {
   created_at: Maybe<Scalars["DateTime"]>
   custom_id: Scalars["String"]
   deleted: Maybe<Scalars["Boolean"]>
-  exercise_completions: Maybe<Array<Maybe<ExerciseCompletion>>>
+  exercise_completions: Maybe<Array<ExerciseCompletion>>
   id: Scalars["String"]
   max_points: Maybe<Scalars["Int"]>
   name: Maybe<Scalars["String"]>
@@ -756,7 +752,7 @@ export type Mutation = {
   addExercise: Maybe<Exercise>
   addExerciseCompletion: Maybe<ExerciseCompletion>
   addImage: Maybe<Image>
-  addManualCompletion: Maybe<Array<Maybe<Completion>>>
+  addManualCompletion: Maybe<Array<Completion>>
   addOpenUniversityRegistrationLink: Maybe<OpenUniversityRegistrationLink>
   addOrganization: Maybe<Organization>
   addService: Maybe<Service>
@@ -781,7 +777,7 @@ export type Mutation = {
   deleteStudyModuleTranslation: Maybe<StudyModuleTranslation>
   deleteUserOrganization: Maybe<UserOrganization>
   recheckCompletions: Maybe<Scalars["String"]>
-  registerCompletion: Maybe<Scalars["String"]>
+  registerCompletion: Scalars["String"]
   requestNewUserOrganizationJoinConfirmation: Maybe<UserOrganizationJoinConfirmation>
   updateAbEnrollment: Maybe<AbEnrollment>
   updateAbStudy: Maybe<AbStudy>
@@ -1251,12 +1247,15 @@ export type OrganizationOrderByInput = {
   email?: InputMaybe<SortOrder>
   hidden?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
+  join_organization_email_template_id?: InputMaybe<SortOrder>
   logo_content_type?: InputMaybe<SortOrder>
   logo_file_name?: InputMaybe<SortOrder>
   logo_file_size?: InputMaybe<SortOrder>
   logo_updated_at?: InputMaybe<SortOrder>
   phone?: InputMaybe<SortOrder>
   pinned?: InputMaybe<SortOrder>
+  required_confirmation?: InputMaybe<SortOrder>
+  required_organization_email?: InputMaybe<SortOrder>
   secret_key?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
   tmc_created_at?: InputMaybe<SortOrder>
@@ -1321,45 +1320,45 @@ export type Progress = {
   course: Maybe<Course>
   user: Maybe<User>
   user_course_progress: Maybe<UserCourseProgress>
-  user_course_service_progresses: Maybe<Array<Maybe<UserCourseServiceProgress>>>
+  user_course_service_progresses: Maybe<Array<UserCourseServiceProgress>>
 }
 
 export type Query = {
   __typename?: "Query"
-  completions: Maybe<Array<Maybe<Completion>>>
+  completions: Maybe<Array<Completion>>
   completionsPaginated: Maybe<QueryCompletionsPaginated_type_Connection>
   completionsPaginated_type: Maybe<QueryCompletionsPaginated_type_Connection>
   course: Maybe<Course>
   courseAliases: Array<CourseAlias>
-  courseOrganizations: Maybe<Array<Maybe<CourseOrganization>>>
-  courseTranslations: Maybe<Array<Maybe<CourseTranslation>>>
+  courseOrganizations: Maybe<Array<CourseOrganization>>
+  courseTranslations: Maybe<Array<CourseTranslation>>
   courseVariant: Maybe<CourseVariant>
-  courseVariants: Maybe<Array<Maybe<CourseVariant>>>
-  course_exists: Maybe<Scalars["Boolean"]>
-  courses: Maybe<Array<Maybe<Course>>>
+  courseVariants: Maybe<Array<CourseVariant>>
+  course_exists: Scalars["Boolean"]
+  courses: Maybe<Array<Course>>
   currentUser: Maybe<User>
   email_template: Maybe<EmailTemplate>
-  email_templates: Maybe<Array<Maybe<EmailTemplate>>>
+  email_templates: Maybe<Array<EmailTemplate>>
   exercise: Maybe<Exercise>
   exerciseCompletion: Maybe<ExerciseCompletion>
   exerciseCompletions: Array<ExerciseCompletion>
   exercises: Array<Exercise>
-  handlerCourses: Maybe<Array<Maybe<Course>>>
+  handlerCourses: Maybe<Array<Course>>
   openUniversityRegistrationLink: Maybe<OpenUniversityRegistrationLink>
   openUniversityRegistrationLinks: Array<OpenUniversityRegistrationLink>
   /** Get organization by id or slug. Admins can also query hidden/disabled courses. Fields that can be queried is more limited on normal users. */
   organization: Maybe<Organization>
-  organizations: Maybe<Array<Maybe<Organization>>>
-  registeredCompletions: Maybe<Array<Maybe<CompletionRegistered>>>
+  organizations: Maybe<Array<Organization>>
+  registeredCompletions: Maybe<Array<CompletionRegistered>>
   service: Maybe<Service>
   services: Array<Service>
   studyModuleTranslations: Array<StudyModuleTranslation>
   study_module: Maybe<StudyModule>
   study_module_exists: Maybe<Scalars["Boolean"]>
-  study_modules: Maybe<Array<Maybe<StudyModule>>>
+  study_modules: Maybe<Array<StudyModule>>
   user: Maybe<User>
   userCourseProgress: Maybe<UserCourseProgress>
-  userCourseProgresses: Maybe<Array<Maybe<UserCourseProgress>>>
+  userCourseProgresses: Maybe<Array<UserCourseProgress>>
   userCourseServiceProgress: Maybe<UserCourseServiceProgress>
   userCourseServiceProgresses: Array<UserCourseServiceProgress>
   userCourseSetting: Maybe<UserCourseSetting>
@@ -1367,7 +1366,7 @@ export type Query = {
   userCourseSettings: Maybe<QueryUserCourseSettings_Connection>
   userDetailsContains: Maybe<QueryUserDetailsContains_Connection>
   userOrganizationJoinConfirmation: Maybe<UserOrganizationJoinConfirmation>
-  userOrganizations: Maybe<Array<Maybe<UserOrganization>>>
+  userOrganizations: Maybe<Array<UserOrganization>>
   users: Array<User>
 }
 
@@ -1485,7 +1484,7 @@ export type QueryopenUniversityRegistrationLinksArgs = {
 }
 
 export type QueryorganizationArgs = {
-  disaled?: InputMaybe<Scalars["Boolean"]>
+  disabled?: InputMaybe<Scalars["Boolean"]>
   hidden?: InputMaybe<Scalars["Boolean"]>
   id?: InputMaybe<Scalars["ID"]>
   slug?: InputMaybe<Scalars["String"]>
@@ -1717,7 +1716,7 @@ export type StringNullableFilter = {
 
 export type StudyModule = {
   __typename?: "StudyModule"
-  courses: Maybe<Array<Maybe<Course>>>
+  courses: Maybe<Array<Course>>
   created_at: Maybe<Scalars["DateTime"]>
   description: Maybe<Scalars["String"]>
   id: Scalars["String"]
@@ -1819,14 +1818,14 @@ export type User = {
   created_at: Maybe<Scalars["DateTime"]>
   email: Scalars["String"]
   email_deliveries: Array<EmailDelivery>
-  exercise_completions: Maybe<Array<Maybe<ExerciseCompletion>>>
+  exercise_completions: Maybe<Array<ExerciseCompletion>>
   first_name: Maybe<Scalars["String"]>
   id: Scalars["String"]
   last_name: Maybe<Scalars["String"]>
   organizations: Array<Organization>
   progress: Progress
   progresses: Maybe<Array<Progress>>
-  project_completion: Maybe<Scalars["Boolean"]>
+  project_completion: Scalars["Boolean"]
   real_student_number: Maybe<Scalars["String"]>
   research_consent: Maybe<Scalars["Boolean"]>
   student_number: Maybe<Scalars["String"]>
@@ -1836,7 +1835,7 @@ export type User = {
   user_course_progressess: Maybe<UserCourseProgress>
   user_course_service_progresses: Maybe<Array<UserCourseServiceProgress>>
   user_course_settings: Array<UserCourseSetting>
-  user_course_summary: Maybe<Array<Maybe<UserCourseSummary>>>
+  user_course_summary: Maybe<Array<UserCourseSummary>>
   user_organizations: Array<UserOrganization>
   username: Scalars["String"]
   verified_users: Array<VerifiedUser>
@@ -1937,7 +1936,7 @@ export type UserCourseProgress = {
   course: Maybe<Course>
   course_id: Maybe<Scalars["String"]>
   created_at: Maybe<Scalars["DateTime"]>
-  exercise_progress: Maybe<ExerciseProgress>
+  exercise_progress: ExerciseProgress
   extra: Maybe<Scalars["Json"]>
   id: Scalars["String"]
   max_points: Maybe<Scalars["Float"]>
@@ -2040,10 +2039,10 @@ export type UserCourseSummary = {
   completion: Maybe<Completion>
   course: Course
   course_id: Scalars["ID"]
-  exercise_completions: Maybe<Array<Maybe<ExerciseCompletion>>>
+  exercise_completions: Maybe<Array<ExerciseCompletion>>
   user: User
   user_course_progress: Maybe<UserCourseProgress>
-  user_course_service_progresses: Maybe<Array<Maybe<UserCourseServiceProgress>>>
+  user_course_service_progresses: Array<UserCourseServiceProgress>
   user_id: Scalars["ID"]
 }
 
@@ -2083,13 +2082,9 @@ export type UserOrganization = {
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_id: Maybe<Scalars["String"]>
-  user_organization_join_confirmations: Array<UserOrganizationJoinConfirmation>
-}
-
-export type UserOrganizationuser_organization_join_confirmationsArgs = {
-  cursor?: InputMaybe<UserOrganizationJoinConfirmationWhereUniqueInput>
-  skip?: InputMaybe<Scalars["Int"]>
-  take?: InputMaybe<Scalars["Int"]>
+  user_organization_join_confirmations: Maybe<
+    Array<UserOrganizationJoinConfirmation>
+  >
 }
 
 export type UserOrganizationJoinConfirmation = {
@@ -2108,11 +2103,6 @@ export type UserOrganizationJoinConfirmation = {
   updated_at: Maybe<Scalars["DateTime"]>
   user_organization: UserOrganization
   user_organization_id: Scalars["String"]
-}
-
-export type UserOrganizationJoinConfirmationWhereUniqueInput = {
-  email_delivery_id?: InputMaybe<Scalars["String"]>
-  id?: InputMaybe<Scalars["String"]>
 }
 
 export type UserOrganizationWhereUniqueInput = {
@@ -2171,8 +2161,8 @@ export type CompletionCoreFieldsFragment = {
   tier: number | null
   grade: string | null
   eligible_for_ects: boolean | null
-  project_completion: boolean | null
-  registered: boolean | null
+  project_completion: boolean
+  registered: boolean
   created_at: any | null
   updated_at: any | null
 }
@@ -2214,8 +2204,8 @@ export type CompletionDetailedFieldsFragment = {
   tier: number | null
   grade: string | null
   eligible_for_ects: boolean | null
-  project_completion: boolean | null
-  registered: boolean | null
+  project_completion: boolean
+  registered: boolean
   created_at: any | null
   updated_at: any | null
   completions_registered: Array<{
@@ -2252,8 +2242,8 @@ export type CompletionDetailedFieldsWithCourseFragment = {
   tier: number | null
   grade: string | null
   eligible_for_ects: boolean | null
-  project_completion: boolean | null
-  registered: boolean | null
+  project_completion: boolean
+  registered: boolean
   created_at: any | null
   updated_at: any | null
   course: {
@@ -2313,8 +2303,8 @@ export type CompletionsQueryNodeFieldsFragment = {
   tier: number | null
   grade: string | null
   eligible_for_ects: boolean | null
-  project_completion: boolean | null
-  registered: boolean | null
+  project_completion: boolean
+  registered: boolean
   created_at: any | null
   updated_at: any | null
   user: {
@@ -2374,8 +2364,8 @@ export type CompletionsQueryConnectionFieldsFragment = {
       tier: number | null
       grade: string | null
       eligible_for_ects: boolean | null
-      project_completion: boolean | null
-      registered: boolean | null
+      project_completion: boolean
+      registered: boolean
       created_at: any | null
       updated_at: any | null
       user: {
@@ -2879,7 +2869,7 @@ export type ProgressCoreFieldsFragment = {
       __typename?: "ExerciseProgress"
       total: number | null
       exercises: number | null
-    } | null
+    }
   } | null
   user_course_service_progresses: Array<{
     __typename?: "UserCourseServiceProgress"
@@ -2891,7 +2881,7 @@ export type ProgressCoreFieldsFragment = {
     created_at: any | null
     updated_at: any | null
     service: { __typename?: "Service"; name: string; id: string } | null
-  } | null> | null
+  }> | null
 }
 
 export type StudyModuleCoreFieldsFragment = {
@@ -3004,7 +2994,7 @@ export type StudyModuleFieldsWithCoursesFragment = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type UserCoreFieldsFragment = {
@@ -3075,7 +3065,7 @@ export type UserProgressesFieldsFragment = {
         __typename?: "ExerciseProgress"
         total: number | null
         exercises: number | null
-      } | null
+      }
     } | null
     user_course_service_progresses: Array<{
       __typename?: "UserCourseServiceProgress"
@@ -3087,7 +3077,7 @@ export type UserProgressesFieldsFragment = {
       created_at: any | null
       updated_at: any | null
       service: { __typename?: "Service"; name: string; id: string } | null
-    } | null> | null
+    }> | null
   }> | null
 }
 
@@ -3118,8 +3108,8 @@ export type UserOverviewFieldsFragment = {
     tier: number | null
     grade: string | null
     eligible_for_ects: boolean | null
-    project_completion: boolean | null
-    registered: boolean | null
+    project_completion: boolean
+    registered: boolean
     created_at: any | null
     updated_at: any | null
     course: {
@@ -3182,7 +3172,7 @@ export type UserCourseProgressCoreFieldsFragment = {
     __typename?: "ExerciseProgress"
     total: number | null
     exercises: number | null
-  } | null
+  }
 }
 
 export type UserCourseServiceProgressCoreFieldsFragment = {
@@ -3266,7 +3256,7 @@ export type StudentProgressesQueryNodeFieldsFragment = {
           __typename?: "ExerciseProgress"
           total: number | null
           exercises: number | null
-        } | null
+        }
       } | null
       user_course_service_progresses: Array<{
         __typename?: "UserCourseServiceProgress"
@@ -3278,7 +3268,7 @@ export type StudentProgressesQueryNodeFieldsFragment = {
         created_at: any | null
         updated_at: any | null
         service: { __typename?: "Service"; name: string; id: string } | null
-      } | null> | null
+      }> | null
     }
   } | null
 }
@@ -3326,7 +3316,7 @@ export type UserCourseSummaryCourseFieldsFragment = {
     section: number | null
     max_points: number | null
     deleted: boolean | null
-  } | null> | null
+  }> | null
   photo: {
     __typename?: "Image"
     id: string
@@ -3363,7 +3353,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
       section: number | null
       max_points: number | null
       deleted: boolean | null
-    } | null> | null
+    }> | null
     photo: {
       __typename?: "Image"
       id: string
@@ -3395,7 +3385,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
       exercise_completion_id: string | null
       value: string
     }>
-  } | null> | null
+  }> | null
   user_course_progress: {
     __typename?: "UserCourseProgress"
     id: string
@@ -3411,7 +3401,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
       __typename?: "ExerciseProgress"
       total: number | null
       exercises: number | null
-    } | null
+    }
   } | null
   user_course_service_progresses: Array<{
     __typename?: "UserCourseServiceProgress"
@@ -3423,7 +3413,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
     created_at: any | null
     updated_at: any | null
     service: { __typename?: "Service"; name: string; id: string } | null
-  } | null> | null
+  }>
   completion: {
     __typename?: "Completion"
     id: string
@@ -3437,8 +3427,8 @@ export type UserCourseSummaryCoreFieldsFragment = {
     tier: number | null
     grade: string | null
     eligible_for_ects: boolean | null
-    project_completion: boolean | null
-    registered: boolean | null
+    project_completion: boolean
+    registered: boolean
     created_at: any | null
     updated_at: any | null
     completions_registered: Array<{
@@ -3562,7 +3552,7 @@ export type UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment =
         created_at: any | null
         updated_at: any | null
       } | null
-    }>
+    }> | null
     organization: {
       __typename?: "Organization"
       id: string
@@ -3628,8 +3618,8 @@ export type AddManualCompletionMutation = {
     tier: number | null
     grade: string | null
     eligible_for_ects: boolean | null
-    project_completion: boolean | null
-    registered: boolean | null
+    project_completion: boolean
+    registered: boolean
     created_at: any | null
     updated_at: any | null
     user: {
@@ -3645,7 +3635,7 @@ export type AddManualCompletionMutation = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type AddCourseMutationVariables = Exact<{
@@ -4164,7 +4154,7 @@ export type AddUserOrganizationMutation = {
         created_at: any | null
         updated_at: any | null
       } | null
-    }>
+    }> | null
     organization: {
       __typename?: "Organization"
       id: string
@@ -4248,7 +4238,7 @@ export type UpdateUserOrganizationOrganizationalMailMutation = {
         created_at: any | null
         updated_at: any | null
       } | null
-    }>
+    }> | null
     organization: {
       __typename?: "Organization"
       id: string
@@ -4325,7 +4315,7 @@ export type ConfirmUserOrganizationJoinMutation = {
         created_at: any | null
         updated_at: any | null
       } | null
-    }>
+    }> | null
     organization: {
       __typename?: "Organization"
       id: string
@@ -4453,8 +4443,8 @@ export type PaginatedCompletionsQuery = {
         tier: number | null
         grade: string | null
         eligible_for_ects: boolean | null
-        project_completion: boolean | null
-        registered: boolean | null
+        project_completion: boolean
+        registered: boolean
         created_at: any | null
         updated_at: any | null
         user: {
@@ -4526,8 +4516,8 @@ export type PaginatedCompletionsPreviousPageQuery = {
         tier: number | null
         grade: string | null
         eligible_for_ects: boolean | null
-        project_completion: boolean | null
-        registered: boolean | null
+        project_completion: boolean
+        registered: boolean
         created_at: any | null
         updated_at: any | null
         user: {
@@ -4622,7 +4612,7 @@ export type CoursesQuery = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type EditorCoursesQueryVariables = Exact<{
@@ -4710,7 +4700,7 @@ export type EditorCoursesQuery = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type CourseFromSlugQueryVariables = Exact<{
@@ -4765,7 +4755,7 @@ export type CourseEditorOtherCoursesQuery = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type HandlerCoursesQueryVariables = Exact<{ [key: string]: never }>
@@ -4780,7 +4770,7 @@ export type HandlerCoursesQuery = {
     ects: string | null
     created_at: any | null
     updated_at: any | null
-  } | null> | null
+  }> | null
 }
 
 export type CourseEditorDetailsQueryVariables = Exact<{
@@ -4925,7 +4915,7 @@ export type EmailTemplateEditorCoursesQuery = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type CourseDashboardQueryVariables = Exact<{
@@ -4987,7 +4977,7 @@ export type EmailTemplatesQuery = {
     template_type: string | null
     created_at: any | null
     updated_at: any | null
-  } | null> | null
+  }> | null
 }
 
 export type EmailTemplateQueryVariables = Exact<{
@@ -5035,7 +5025,7 @@ export type OrganizationsQuery = {
       name: string
       information: string | null
     }>
-  } | null> | null
+  }> | null
 }
 
 export type OrganizationQueryVariables = Exact<{
@@ -5083,7 +5073,7 @@ export type StudyModulesQuery = {
     id: string
     slug: string
     name: string
-  } | null> | null
+  }> | null
 }
 
 export type EditorStudyModulesQueryVariables = Exact<{ [key: string]: never }>
@@ -5109,7 +5099,7 @@ export type EditorStudyModulesQuery = {
       created_at: any | null
       updated_at: any | null
     }>
-  } | null> | null
+  }> | null
 }
 
 export type EditorStudyModuleDetailsQueryVariables = Exact<{
@@ -5136,7 +5126,7 @@ export type EditorStudyModuleDetailsQuery = {
       ects: string | null
       created_at: any | null
       updated_at: any | null
-    } | null> | null
+    }> | null
     study_module_translations: Array<{
       __typename?: "StudyModuleTranslation"
       id: string
@@ -5247,7 +5237,7 @@ export type UserSummaryQuery = {
           section: number | null
           max_points: number | null
           deleted: boolean | null
-        } | null> | null
+        }> | null
         photo: {
           __typename?: "Image"
           id: string
@@ -5279,7 +5269,7 @@ export type UserSummaryQuery = {
           exercise_completion_id: string | null
           value: string
         }>
-      } | null> | null
+      }> | null
       user_course_progress: {
         __typename?: "UserCourseProgress"
         id: string
@@ -5295,7 +5285,7 @@ export type UserSummaryQuery = {
           __typename?: "ExerciseProgress"
           total: number | null
           exercises: number | null
-        } | null
+        }
       } | null
       user_course_service_progresses: Array<{
         __typename?: "UserCourseServiceProgress"
@@ -5307,7 +5297,7 @@ export type UserSummaryQuery = {
         created_at: any | null
         updated_at: any | null
         service: { __typename?: "Service"; name: string; id: string } | null
-      } | null> | null
+      }>
       completion: {
         __typename?: "Completion"
         id: string
@@ -5321,8 +5311,8 @@ export type UserSummaryQuery = {
         tier: number | null
         grade: string | null
         eligible_for_ects: boolean | null
-        project_completion: boolean | null
-        registered: boolean | null
+        project_completion: boolean
+        registered: boolean
         created_at: any | null
         updated_at: any | null
         completions_registered: Array<{
@@ -5345,7 +5335,7 @@ export type UserSummaryQuery = {
           honors: boolean | null
         } | null
       } | null
-    } | null> | null
+    }> | null
   } | null
 }
 
@@ -5380,8 +5370,8 @@ export type CurrentUserOverviewQuery = {
       tier: number | null
       grade: string | null
       eligible_for_ects: boolean | null
-      project_completion: boolean | null
-      registered: boolean | null
+      project_completion: boolean
+      registered: boolean
       created_at: any | null
       updated_at: any | null
       course: {
@@ -5463,8 +5453,8 @@ export type UserOverviewQuery = {
       tier: number | null
       grade: string | null
       eligible_for_ects: boolean | null
-      project_completion: boolean | null
-      registered: boolean | null
+      project_completion: boolean
+      registered: boolean
       created_at: any | null
       updated_at: any | null
       course: {
@@ -5557,7 +5547,7 @@ export type CurrentUserProgressesQuery = {
           __typename?: "ExerciseProgress"
           total: number | null
           exercises: number | null
-        } | null
+        }
       } | null
       user_course_service_progresses: Array<{
         __typename?: "UserCourseServiceProgress"
@@ -5569,7 +5559,7 @@ export type CurrentUserProgressesQuery = {
         created_at: any | null
         updated_at: any | null
         service: { __typename?: "Service"; name: string; id: string } | null
-      } | null> | null
+      }> | null
     }> | null
   } | null
 }
@@ -5715,7 +5705,7 @@ export type ExportUserCourseProgressesQuery = {
       country: string | null
       language: string | null
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type StudentProgressesQueryVariables = Exact<{
@@ -5782,7 +5772,7 @@ export type StudentProgressesQuery = {
                 __typename?: "ExerciseProgress"
                 total: number | null
                 exercises: number | null
-              } | null
+              }
             } | null
             user_course_service_progresses: Array<{
               __typename?: "UserCourseServiceProgress"
@@ -5798,7 +5788,7 @@ export type StudentProgressesQuery = {
                 name: string
                 id: string
               } | null
-            } | null> | null
+            }> | null
           }
         } | null
       } | null
@@ -5893,7 +5883,7 @@ export type CurrentUserUserOrganizationsQuery = {
           created_at: any | null
           updated_at: any | null
         } | null
-      }>
+      }> | null
       organization: {
         __typename?: "Organization"
         id: string
@@ -5958,7 +5948,7 @@ export type UserOrganizationsQuery = {
         information: string | null
       }>
     } | null
-  } | null> | null
+  }> | null
 }
 
 export type UserOrganizationJoinConfirmationQueryVariables = Exact<{

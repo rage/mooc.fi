@@ -83,7 +83,7 @@ export const StudyModuleQueries = extendType({
       ordering: true,
     })
 
-    t.list.field("study_modules", {
+    t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
         orderBy: arg({ type: "StudyModuleOrderByInput" }),

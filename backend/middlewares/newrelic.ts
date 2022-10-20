@@ -14,13 +14,13 @@ export const newRelicPlugin = () =>
             )
           }
 
-          const result = await next(root, args, ctx, info)
+          const result = await next(root, args, ctx, info) // NOSONAR can be async, even if sonar doesn't pick it up
 
           return result
         } catch (error) {
           newrelic.noticeError(error)
 
-          return await next(root, args, ctx, info)
+          return next(root, args, ctx, info)
         }
       }
     },

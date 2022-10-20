@@ -52,25 +52,26 @@ export const ABStudyMutations = extendType({
           data: abStudy,
         })
       },
-    }),
-      t.field("updateAbStudy", {
-        type: "AbStudy",
-        args: {
-          abStudy: nonNull(
-            arg({
-              type: "AbStudyUpsertInput",
-            }),
-          ),
-        },
-        authorize: isAdmin,
-        resolve: async (_, { abStudy }, ctx: Context) => {
-          const { id } = abStudy
+    })
 
-          return ctx.prisma.abStudy.update({
-            where: { id },
-            data: abStudy,
-          })
-        },
-      })
+    t.field("updateAbStudy", {
+      type: "AbStudy",
+      args: {
+        abStudy: nonNull(
+          arg({
+            type: "AbStudyUpsertInput",
+          }),
+        ),
+      },
+      authorize: isAdmin,
+      resolve: async (_, { abStudy }, ctx: Context) => {
+        const { id } = abStudy
+
+        return ctx.prisma.abStudy.update({
+          where: { id },
+          data: abStudy,
+        })
+      },
+    })
   },
 })

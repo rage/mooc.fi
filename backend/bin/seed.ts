@@ -392,13 +392,13 @@ const seed = async () => {
           : undefined,
       }
 
-      return await prisma.studyModule.create({
+      return prisma.studyModule.create({
         data: _module,
       })
     }),
   )
 
-  return await Promise.all(
+  return Promise.all(
     Courses.map(async (course) => {
       const _course = {
         ...course,

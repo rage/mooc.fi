@@ -19,19 +19,19 @@ export const CourseCreateArg = inputObjectType({
     t.string("support_email")
     t.nonNull.datetime("start_date")
     t.datetime("end_date")
-    t.list.field("study_modules", {
+    t.list.nonNull.field("study_modules", {
       type: "StudyModuleWhereUniqueInput",
     })
-    t.list.nullable.field("course_translations", {
+    t.list.nonNull.field("course_translations", {
       type: "CourseTranslationCreateInput",
     })
-    t.list.nullable.field("open_university_registration_links", {
+    t.list.nonNull.field("open_university_registration_links", {
       type: "OpenUniversityRegistrationLinkCreateInput",
     })
-    t.list.nullable.field("course_variants", {
+    t.list.nonNull.field("course_variants", {
       type: "CourseVariantCreateInput",
     })
-    t.list.nullable.field("course_aliases", {
+    t.list.nonNull.field("course_aliases", {
       type: "CourseAliasCreateInput",
     })
     t.int("order")
@@ -43,7 +43,7 @@ export const CourseCreateArg = inputObjectType({
     t.nullable.id("inherit_settings_from")
     t.nullable.id("completions_handled_by")
     t.nullable.boolean("has_certificate")
-    t.list.nullable.field("user_course_settings_visibilities", {
+    t.list.nonNull.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityCreateInput",
     })
     t.nullable.boolean("upcoming_active_link")
@@ -76,19 +76,19 @@ export const CourseUpsertArg = inputObjectType({
     t.string("support_email")
     t.nonNull.datetime("start_date")
     t.datetime("end_date")
-    t.list.field("study_modules", {
+    t.list.nonNull.field("study_modules", {
       type: "StudyModuleWhereUniqueInput",
     })
-    t.list.nullable.field("course_translations", {
+    t.list.nonNull.field("course_translations", {
       type: "CourseTranslationUpsertInput",
     })
-    t.list.nullable.field("open_university_registration_links", {
+    t.list.nonNull.field("open_university_registration_links", {
       type: "OpenUniversityRegistrationLinkUpsertInput",
     })
-    t.list.nullable.field("course_variants", {
+    t.list.nonNull.field("course_variants", {
       type: "CourseVariantUpsertInput",
     })
-    t.list.nullable.field("course_aliases", {
+    t.list.nonNull.field("course_aliases", {
       type: "CourseAliasUpsertInput",
     })
     t.int("order")
@@ -100,7 +100,7 @@ export const CourseUpsertArg = inputObjectType({
     t.nullable.id("inherit_settings_from")
     t.nullable.id("completions_handled_by")
     t.nullable.boolean("has_certificate")
-    t.list.nullable.field("user_course_settings_visibilities", {
+    t.list.nonNull.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityUpsertInput",
     })
     t.nullable.boolean("upcoming_active_link")
