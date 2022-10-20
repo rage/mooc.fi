@@ -123,7 +123,7 @@ export const User = objectType({
       },
     })
 
-    t.field("project_completion", {
+    t.nonNull.field("project_completion", {
       type: "Boolean",
       args: {
         course_id: nullable(idArg()),
@@ -263,7 +263,7 @@ export const User = objectType({
       },
     })
 
-    t.list.field("exercise_completions", {
+    t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
         includeDeleted: nullable(booleanArg()),
@@ -286,7 +286,7 @@ export const User = objectType({
       },
     })
 
-    t.list.field("user_course_summary", {
+    t.list.nonNull.field("user_course_summary", {
       type: "UserCourseSummary",
       args: {
         includeNoPointsAwardedExercises: booleanArg({

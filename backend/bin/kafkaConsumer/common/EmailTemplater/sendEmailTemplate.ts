@@ -21,5 +21,5 @@ export async function sendEmailTemplateToUser(
 const applyTemplate = async (email_template: EmailTemplate, user: User) => {
   const templater = new EmailTemplater(email_template, user, prisma)
 
-  return await templater.resolve()
+  return templater.resolve()
 }

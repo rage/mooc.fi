@@ -29,7 +29,7 @@ export const Progress = objectType({
       },
     })
 
-    t.list.field("user_course_service_progresses", {
+    t.list.nonNull.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async (parent, _, ctx) => {
         const course_id = parent.course?.id

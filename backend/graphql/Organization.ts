@@ -82,7 +82,7 @@ export const OrganizationQueries = extendType({
           throw new UserInputError("must provide id")
         }
 
-        return await ctx.prisma.organization.findFirst({
+        return ctx.prisma.organization.findFirst({
           where: { id, hidden },
         })
       },
@@ -94,7 +94,7 @@ export const OrganizationQueries = extendType({
       authorize: organizationPermission,
     })
 
-    t.list.field("organizations", {
+    t.list.nonNull.field("organizations", {
       type: "Organization",
       args: {
         take: intArg(),
@@ -107,7 +107,7 @@ export const OrganizationQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { take, skip, cursor, orderBy, hidden } = args
 
-        const orgs = await ctx.prisma.organization.findMany({
+        return ctx.prisma.organization.findMany({
           take: take ?? undefined,
           skip: skip ?? undefined,
           cursor: cursor
@@ -122,8 +122,6 @@ export const OrganizationQueries = extendType({
             hidden,
           },
         })
-
-        return orgs
       },
     })
   },

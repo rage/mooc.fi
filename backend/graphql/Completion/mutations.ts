@@ -58,7 +58,7 @@ export const CompletionMutations = extendType({
       },
     })
 
-    t.list.field("addManualCompletion", {
+    t.list.nonNull.field("addManualCompletion", {
       type: "Completion",
       args: {
         completions: list(arg({ type: "ManualCompletionArg" })),

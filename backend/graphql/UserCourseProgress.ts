@@ -41,7 +41,7 @@ export const UserCourseProgress = objectType({
     t.model.user_course_service_progresses()
     t.model.extra()
 
-    t.list.field("progress", {
+    t.list.nonNull.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseProgress.findUnique({
@@ -87,7 +87,7 @@ export const UserCourseProgress = objectType({
       },
     })
 
-    t.field("exercise_progress", {
+    t.nonNull.field("exercise_progress", {
       type: "ExerciseProgress",
       resolve: async ({ course_id, user_id, n_points, max_points }, _, ctx) => {
         if (!course_id || !user_id) {
@@ -159,7 +159,7 @@ export const UserCourseProgressQueries = extendType({
     })
 
     // FIXME: (?) broken until the nexus json thing is fixed or smth
-    t.list.field("userCourseProgresses", {
+    t.list.nonNull.field("userCourseProgresses", {
       type: "UserCourseProgress",
       args: {
         user_id: idArg(),

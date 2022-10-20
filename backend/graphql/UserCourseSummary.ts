@@ -64,7 +64,7 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("user_course_service_progresses", {
+    t.nonNull.list.nonNull.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
         const progresses = await ctx.prisma.course
@@ -83,7 +83,7 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("exercise_completions", {
+    t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
         includeDeleted: booleanArg({

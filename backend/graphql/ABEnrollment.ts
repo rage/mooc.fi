@@ -52,30 +52,31 @@ export const ABEnrollmentMutations = extendType({
           },
         })
       },
-    }),
-      t.field("updateAbEnrollment", {
-        type: "AbEnrollment",
-        args: {
-          abEnrollment: nonNull(
-            arg({
-              type: "AbEnrollmentCreateOrUpsertInput",
-            }),
-          ),
-        },
-        authorize: isAdmin,
-        resolve: async (_, { abEnrollment }, ctx: Context) => {
-          const { user_id, ab_study_id } = abEnrollment
+    })
 
-          return ctx.prisma.abEnrollment.update({
-            where: {
-              user_id_ab_study_id: {
-                user_id,
-                ab_study_id,
-              },
+    t.field("updateAbEnrollment", {
+      type: "AbEnrollment",
+      args: {
+        abEnrollment: nonNull(
+          arg({
+            type: "AbEnrollmentCreateOrUpsertInput",
+          }),
+        ),
+      },
+      authorize: isAdmin,
+      resolve: async (_, { abEnrollment }, ctx: Context) => {
+        const { user_id, ab_study_id } = abEnrollment
+
+        return ctx.prisma.abEnrollment.update({
+          where: {
+            user_id_ab_study_id: {
+              user_id,
+              ab_study_id,
             },
-            data: abEnrollment,
-          })
-        },
-      })
+          },
+          data: abEnrollment,
+        })
+      },
+    })
   },
 })

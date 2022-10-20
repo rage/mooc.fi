@@ -62,6 +62,7 @@ const getRedisClient = (): typeof redisClient => {
 const isPromise = <T>(value: any): value is Promise<T> => {
   return value && typeof value.then === "function"
 }
+// @ts-ignore: not used for now
 const isAsync = <T>(
   fn: (...props: any[]) => Promise<T> | T,
 ): fn is (...props: any[]) => Promise<T> => {
@@ -71,7 +72,7 @@ const isAsync = <T>(
 }
 
 export async function redisify<T>(
-  fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
+  fn: ((...args: any[]) => Promise<T> | T) | Promise<T>,
   options: {
     prefix: string
     expireTime: number
@@ -86,16 +87,15 @@ export async function redisify<T>(
   const { prefix, expireTime, key, params } = options
   const { logger = _logger, client = redisClient } = ctx
 
-  const resolveValue = async () =>
-    isPromise(fn)
-      ? await fn
-      : isAsync(fn)
-      ? params
-        ? await fn(...params)
-        : await fn()
-      : params
-      ? fn(...params)
-      : fn()
+  const resolveValue = async () => {
+    if (isPromise(fn)) {
+      return fn
+    }
+    if (params) {
+      return fn(...params)
+    }
+    return fn()
+  }
 
   if (params && isPromise(fn)) {
     logger.warn(`Prefix ${prefix}: params ignored with a promise`)
@@ -125,7 +125,7 @@ export async function redisify<T>(
   } catch (e1) {
     try {
       if (!resolveSuccess) {
-        return await resolveValue()
+        value = await resolveValue()
       }
       return value
     } catch (e2) {
