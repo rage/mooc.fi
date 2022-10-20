@@ -26,6 +26,10 @@ const tmc = fakeTMCSpecific({
   9999: [404, { errors: "asdf" }],
 })
 
+function expectIsDefined<T>(value: T | null | undefined): asserts value is T {
+  expect(value).toBeDefined()
+}
+
 describe("userPoints/saveToDatabase", () => {
   const kafkaContext = {} as KafkaContext
 
@@ -195,6 +199,12 @@ describe("userPoints/saveToDatabase", () => {
         },
       })
 
+      expectIsDefined(existing)
+      expect(
+        existing.exercise_completion_required_actions.map((ra) => ra.value)
+          .length,
+      ).toEqual(0)
+
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
         timestamp: "2000-03-01T10:00:00.00+02:00",
@@ -213,8 +223,10 @@ describe("userPoints/saveToDatabase", () => {
           exercise_completion_required_actions: true,
         },
       })
-
-      expect(updated?.updated_at! > existing?.updated_at!).toBeTruthy()
+      expectIsDefined(updated)
+      expect(updated.updated_at?.valueOf() ?? -Infinity).toBeGreaterThan(
+        existing.updated_at?.valueOf() ?? -Infinity,
+      )
       expect(
         updated?.exercise_completion_required_actions
           .map((ra) => ra.value)

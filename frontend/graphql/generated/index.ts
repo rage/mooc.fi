@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-10-20T14:44:26+03:00
+// Generated on 2022-10-20T15:08:10+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
