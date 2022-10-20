@@ -3,6 +3,7 @@ import { DateTime } from "luxon"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import notEmpty from "/util/notEmpty"
 
 import {
   CourseCreateArg,
@@ -220,7 +221,7 @@ export const fromCourseForm = ({
           "",
       }
     })
-    .filter((v) => !!v)
+    .filter(notEmpty)
 
   const study_modules = Object.keys(values.study_modules || {})
     .filter((key) => values?.study_modules?.[key])
