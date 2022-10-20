@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
 
-import SponsorLogo from "../../../f-secure_logo.png"
+import SponsorLogo from "../../static/images/components/courses/f-secure_logo.png"
 import BannerImage from "../../static/images/homeBackground.jpg"
 import OutboundLink from "../OutboundLink"
 
