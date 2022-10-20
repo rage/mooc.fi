@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 
-import Catalogue from "/components/Courses/Catalogue"
-import HeroSection from "/components/Courses/HeroSection"
+import Catalogue from "/components/NewLayout/Courses/Catalogue"
+import HeroSection from "/components/NewLayout/Courses/HeroSection"
 
 const Container = styled.div`
   display: grid;
