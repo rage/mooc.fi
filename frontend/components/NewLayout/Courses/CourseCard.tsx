@@ -119,6 +119,8 @@ const Tag = styled(Button)`
   font-weight: bold;
   margin: 0 0.1rem;
 `
+const prettifyDate = (date: string) =>
+  date.split("T").shift()?.split("-").reverse().join(".")
 
 interface CourseCardProps {
   course?: CourseFieldsFragment | null
@@ -148,16 +150,18 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
         </Details>
         <Schedule>
           {course?.status == "Upcoming" ? (
-            <p>Tulossa {course.start_date && Date.parse(course.start_date)}</p>
+            <p>
+              Tulossa {course.start_date && prettifyDate(course.start_date)}
+            </p>
           ) : course?.status == "Ended" ? (
-            <p>Päättynyt {course.end_date && Date.parse(course.end_date)}</p>
+            <p>Päättynyt {course.end_date && prettifyDate(course.end_date)}</p>
           ) : (
             <p>
               Käynnissä{" "}
               {course?.end_date ? (
                 <>
-                  {Date.parse(course?.start_date)} -{" "}
-                  {Date.parse(course?.end_date)}
+                  {prettifyDate(course?.start_date)} -{" "}
+                  {prettifyDate(course?.end_date)}
                 </>
               ) : (
                 <>— Aikatauluton</>
