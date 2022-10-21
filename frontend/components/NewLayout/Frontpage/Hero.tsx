@@ -71,7 +71,8 @@ function Hero() {
       <HeroContent />
       <BackgroundImage
         src={require("../../../static/images/new/hero.png")}
-        alt=""
+        aria-hidden
+        alt="background image"
       />
     </HeroContainer>
   )

@@ -5,7 +5,7 @@ import MoocLogo from "/components/HeaderBar/MoocLogo"
 import {
   DesktopNavigationMenu,
   MobileNavigationMenu,
-} from "/components/NewLayout/Header/NavigationMenu"
+} from "/components/NewLayout/Navigation"
 
 interface HideOnScrollProps {
   window?: () => Window
@@ -25,6 +25,7 @@ function HideOnScroll({ window, children }: HideOnScrollProps) {
 const StyledToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
+  flex-shrink: 0;
 `
 
 const MenuContainer = styled.div`
