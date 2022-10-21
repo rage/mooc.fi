@@ -1,6 +1,7 @@
 import React, {
   forwardRef,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -10,7 +11,6 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
-import styled from "@emotion/styled"
 import type { IconProp } from "@fortawesome/fontawesome-svg-core"
 import {
   faChalkboardTeacher,
@@ -30,26 +30,20 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { NavigationLinks } from "./NavigationLinks"
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-function useActiveTab() {
-  const { pathname } = useRouter()
-
-  return pathname.match(
-    "/(courses|study-modules|email-templates|profile|users|admin)",
-  )?.[1]
-}
-
-const NavigationMenuContainer = styled.nav`
+const NavigationMenuContainer = styled("nav")`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
   @media (max-width: 399px) {
@@ -57,7 +51,7 @@ const NavigationMenuContainer = styled.nav`
   }
 `
 
-const MobileMenuContainer = styled.div`
+const MobileMenuContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
   @media (min-width: 400px) {
@@ -65,21 +59,26 @@ const MobileMenuContainer = styled.div`
   }
 `
 
-const NavigationLink = styled.a<{ active: boolean }>`
-  text-decoration: none;
-  color: inherit;
-  font-weight: ${({ active }) => (active ? "600" : "inherit")};
-
-  &:hover {
-    font-weight: 600;
-  }
-  transition: 0.1s;
-`
-
-const NavigationRightContainer = styled.div`
+const NavigationRightContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+  flex-grow: 1;
+`
+
+const NavigationLinksWrapper = styled("div")`
+  display: flex;
+  flex-grow: 1;
+  @media (max-width: 599px) {
+    display: none;
+  }
+`
+
+const MenuButton = styled(Button)`
+  display: flex;
+  max-height: 10vh;
+  white-space: nowrap;
+  font-size: clamp(12px, 1.5vw, 16px);
 `
 
 const UserOptionsMenu = () => {
@@ -92,16 +91,19 @@ const UserOptionsMenu = () => {
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : t("myProfile")
 
+  const onLogOut = useCallback(
+    () => signOut(client, logInOrOut),
+    [client, logInOrOut],
+  )
+
   if (loggedIn) {
     return (
       <>
         <Link href="/_new/profile" passHref>
-          <Button>{userDisplayName}</Button>
+          <MenuButton>{userDisplayName}</MenuButton>
         </Link>
         <Link href={pathname} passHref>
-          <Button onClick={() => signOut(client, logInOrOut)}>
-            {t("logout")}
-          </Button>
+          <MenuButton onClick={onLogOut}>{t("logout")}</MenuButton>
         </Link>
       </>
     )
@@ -109,43 +111,21 @@ const UserOptionsMenu = () => {
   return (
     <>
       <Link href="/_new/sign-in" passHref>
-        <Button>{t("loginShort")}</Button>
+        <MenuButton>{t("loginShort")}</MenuButton>
       </Link>
       <Link href="/_new/sign-up" prefetch={false} passHref>
-        <Button>{t("signUp")}</Button>
+        <MenuButton>{t("signUp")}</MenuButton>
       </Link>
     </>
   )
 }
 
 const DesktopNavigationMenu = () => {
-  const { admin } = useLoginStateContext()
-  const t = useTranslator(CommonTranslations)
-
-  const active = useActiveTab()
-
   return (
     <NavigationMenuContainer role="navigation">
-      <Link href="/_new/courses" passHref>
-        <NavigationLink active={active === "courses"}>
-          {t("courses")}
-        </NavigationLink>
-      </Link>
-
-      <Link href="/_new/study-modules" passHref>
-        <NavigationLink active={active === "study-modules"}>
-          {t("modules")}
-        </NavigationLink>
-      </Link>
-
-      {admin && (
-        <Link href="/_new/admin" passHref prefetch={false}>
-          <NavigationLink active={active === "study-modules"}>
-            Admin
-          </NavigationLink>
-        </Link>
-      )}
-
+      <NavigationLinksWrapper>
+        <NavigationLinks />
+      </NavigationLinksWrapper>
       <NavigationRightContainer>
         <LanguageSwitch />
         <UserOptionsMenu />
@@ -202,15 +182,15 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const client = useApolloClient()
 
-  const onClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const onClick: MouseEventHandler<HTMLButtonElement> = useCallback((event) => {
     setIsOpen((value) => !value)
     anchor.current = event.currentTarget
-  }
+  }, [])
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     setIsOpen(false)
     anchor.current = null
-  }
+  }, [])
 
   useEffect(() => {
     const resizeListener = () => {
@@ -225,7 +205,6 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : t("myProfile")
 
-  // add to menu: profile, sign out / sign in, sign up
   return (
     <MobileMenuContainer>
       <IconButton onClick={onClick}>

@@ -6,6 +6,7 @@ import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/NewLayout/Header/Header"
+import { BottomNavigation } from "/components/NewLayout/Navigation/BottomNavigation"
 import SkipLink from "/components/SkipLink"
 
 const FooterDownPusherWrapper = styled.div`
@@ -28,6 +29,7 @@ const Layout: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
           <Alerts />
           {children}
         </main>
+        <BottomNavigation />
         <Footer />
       </FooterDownPusherWrapper>
     </div>
