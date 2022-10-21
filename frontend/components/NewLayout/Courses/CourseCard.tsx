@@ -142,19 +142,22 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
               ~{parseInt(course.ects) * 27}h ({course.ects}ects)
             </>
           )}
+          <br />
+          {/* TODO: add information regarding university/organization to course */}
           Helsingin yliopisto
         </Details>
         <Schedule>
           {course?.status == "Upcoming" ? (
-            <p>Tulossa {course?.start_date}</p>
+            <p>Tulossa {course.start_date && Date.parse(course.start_date)}</p>
           ) : course?.status == "Ended" ? (
-            <p>Päättynyt {course?.end_date}</p>
+            <p>Päättynyt {course.end_date && Date.parse(course.end_date)}</p>
           ) : (
             <p>
               Käynnissä{" "}
               {course?.end_date ? (
                 <>
-                  {course?.start_date} - {course?.end_date}
+                  {Date.parse(course?.start_date)} -{" "}
+                  {Date.parse(course?.end_date)}
                 </>
               ) : (
                 <>— Aikatauluton</>
