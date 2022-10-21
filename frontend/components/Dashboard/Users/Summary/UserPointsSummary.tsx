@@ -42,7 +42,7 @@ const ToolbarContainer = styled(Paper)`
 `
 
 interface UserPointsSummaryProps {
-  data?: UserCourseSummaryCoreFieldsFragment[]
+  data?: UserCourseSummaryCoreFieldsFragment[] | null
   search?: EditorCoursesQueryVariables["search"]
 }
 

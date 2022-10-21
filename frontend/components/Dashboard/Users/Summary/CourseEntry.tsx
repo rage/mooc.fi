@@ -2,7 +2,14 @@ import React, { Dispatch, useMemo } from "react"
 
 import { sortBy } from "lodash"
 
-import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
+import {
+  Card,
+  CardContent,
+  CardProps,
+  Collapse,
+  Paper,
+  Skeleton,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -18,7 +25,6 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import RelevantDates from "/components/Dashboard/Users/Summary/RelevantDates"
 import { CardTitle } from "/components/Text/headers"
 import ProfileTranslations from "/translations/profile"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
@@ -29,14 +35,14 @@ interface CourseEntryProps {
   dispatch: Dispatch<CollapseAction>
 }
 
-const CourseEntryCard = styled(Card)`
+const CourseEntryCard = styled(({ children, ...props }: CardProps) => (
+  <Card component="section" elevation={4} {...props}>
+    {children}
+  </Card>
+))`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 `
-
-CourseEntryCard.defaultProps = {
-  elevation: 4,
-}
 
 const CourseEntryCardTitle = styled(CardTitle)`
   display: flex;
@@ -69,13 +75,12 @@ function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
   const exercisesWithCompletions = useMemo(
     () =>
       sortBy(
-        data?.course?.exercises?.filter(notEmpty).map((exercise) => ({
+        (data?.course?.exercises ?? []).map((exercise) => ({
           ...exercise,
-          exercise_completions:
-            data?.exercise_completions
-              ?.filter((ec) => ec?.exercise_id === exercise.id)
-              .filter(notEmpty) ?? [],
-        })) ?? [],
+          exercise_completions: (data?.exercise_completions ?? []).filter(
+            (ec) => ec?.exercise_id === exercise.id,
+          ),
+        })),
         ["part", "section", "name"],
       ),
     [data?.course],

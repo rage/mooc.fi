@@ -173,11 +173,11 @@ function Courses() {
           setSearchVariables={setSearchVariables}
           status={status}
           setStatus={setStatus}
-          handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
+          handlerCourses={handlersData?.handlerCourses ?? []}
           loading={loading}
         />
         <CourseGrid
-          courses={editorData?.courses?.filter(notEmpty)}
+          courses={editorData?.courses ?? []}
           onClickStatus={onClickStatus}
           loading={loading}
         />

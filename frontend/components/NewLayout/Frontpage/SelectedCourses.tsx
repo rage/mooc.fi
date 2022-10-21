@@ -15,7 +15,6 @@ import {
 import { CardTitle } from "/components/Text/headers"
 import moocLogoUrl from "/static/images/moocfi.svg"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
 
@@ -97,7 +96,6 @@ function SelectedCourses() {
         {data?.courses &&
           data.courses
             .slice(0, 3)
-            .filter(notEmpty)
             .map((course, index) => (
               <CourseCard key={`course-${index}`} {...course} />
             ))}

@@ -40,6 +40,9 @@ const createPlugins = () => {
     }),
     connectionPlugin({
       nexusFieldName: "connection",
+      nonNullDefaults: {
+        output: true,
+      },
     }),
     loggerPlugin(),
     cachePlugin(),

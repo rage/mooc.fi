@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-10-20T16:25:33+03:00
+// Generated on 2022-10-21T12:52:39+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -139,7 +139,7 @@ export type CompletionEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: Scalars["String"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node: Maybe<Completion>
+  node: Completion
 }
 
 export type CompletionRegistered = {
@@ -1271,7 +1271,7 @@ export type Query = {
   __typename?: "Query"
   completions: Maybe<Array<Completion>>
   completionsPaginated: Maybe<QueryCompletionsPaginated_type_Connection>
-  completionsPaginated_type: Maybe<QueryCompletionsPaginated_type_Connection>
+  completionsPaginated_type: QueryCompletionsPaginated_type_Connection
   course: Maybe<Course>
   courseAliases: Array<CourseAlias>
   courseOrganizations: Maybe<Array<CourseOrganization>>
@@ -1306,8 +1306,8 @@ export type Query = {
   userCourseServiceProgresses: Array<UserCourseServiceProgress>
   userCourseSetting: Maybe<UserCourseSetting>
   userCourseSettingCount: Maybe<Scalars["Int"]>
-  userCourseSettings: Maybe<QueryUserCourseSettings_Connection>
-  userDetailsContains: Maybe<QueryUserDetailsContains_Connection>
+  userCourseSettings: QueryUserCourseSettings_Connection
+  userDetailsContains: QueryUserDetailsContains_Connection
   userOrganizations: Maybe<Array<UserOrganization>>
   users: Array<User>
 }
@@ -1543,10 +1543,10 @@ export type QueryusersArgs = {
 export type QueryCompletionsPaginated_type_Connection = {
   __typename?: "QueryCompletionsPaginated_type_Connection"
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges: Maybe<Array<Maybe<CompletionEdge>>>
+  edges: Array<CompletionEdge>
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo
-  totalCount: Maybe<Scalars["Int"]>
+  totalCount: Scalars["Int"]
 }
 
 export enum QueryMode {
@@ -1563,17 +1563,17 @@ export type QueryUserCourseServiceProgressesWhereInput = {
 export type QueryUserCourseSettings_Connection = {
   __typename?: "QueryUserCourseSettings_Connection"
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges: Maybe<Array<Maybe<UserCourseSettingEdge>>>
+  edges: Array<UserCourseSettingEdge>
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo
-  totalCount: Maybe<Scalars["Int"]>
+  totalCount: Scalars["Int"]
 }
 
 export type QueryUserDetailsContains_Connection = {
   __typename?: "QueryUserDetailsContains_Connection"
-  count: Maybe<Scalars["Int"]>
+  count: Scalars["Int"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges: Maybe<Array<Maybe<UserEdge>>>
+  edges: Array<UserEdge>
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo
 }
@@ -1946,7 +1946,7 @@ export type UserCourseSettingEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: Scalars["String"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node: Maybe<UserCourseSetting>
+  node: UserCourseSetting
 }
 
 export type UserCourseSettingWhereUniqueInput = {
@@ -2004,7 +2004,7 @@ export type UserEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: Scalars["String"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node: Maybe<User>
+  node: User
 }
 
 export type UserOrganization = {
@@ -2306,8 +2306,8 @@ export type CompletionsQueryConnectionFieldsFragment = {
           slug: string
         } | null
       }>
-    } | null
-  } | null> | null
+    }
+  }>
 }
 
 export type CertificateAvailabilityFieldsFragment = {
@@ -2975,6 +2975,30 @@ export type UserProgressesFieldsFragment = {
       service: { __typename?: "Service"; name: string; id: string } | null
     }> | null
   }> | null
+}
+
+export type UserOverviewCourseFieldsFragment = {
+  __typename?: "Course"
+  has_certificate: boolean | null
+  id: string
+  slug: string
+  name: string
+  ects: string | null
+  created_at: any | null
+  updated_at: any | null
+  photo: {
+    __typename?: "Image"
+    id: string
+    name: string | null
+    original: string
+    original_mimetype: string
+    compressed: string | null
+    compressed_mimetype: string | null
+    uncompressed: string
+    uncompressed_mimetype: string
+    created_at: any | null
+    updated_at: any | null
+  } | null
 }
 
 export type UserOverviewFieldsFragment = {
@@ -3998,8 +4022,8 @@ export type PaginatedCompletionsQuery = {
             slug: string
           } | null
         }>
-      } | null
-    } | null> | null
+      }
+    }>
   } | null
 }
 
@@ -4072,8 +4096,8 @@ export type PaginatedCompletionsPreviousPageQuery = {
             slug: string
           } | null
         }>
-      } | null
-    } | null> | null
+      }
+    }>
   } | null
 }
 
@@ -5096,7 +5120,7 @@ export type UserDetailsContainsQuery = {
   __typename?: "Query"
   userDetailsContains: {
     __typename?: "QueryUserDetailsContains_Connection"
-    count: number | null
+    count: number
     pageInfo: {
       __typename?: "PageInfo"
       startCursor: string | null
@@ -5119,9 +5143,9 @@ export type UserDetailsContainsQuery = {
         real_student_number: string | null
         created_at: any | null
         updated_at: any | null
-      } | null
-    } | null> | null
-  } | null
+      }
+    }>
+  }
 }
 
 export type ConnectedUserQueryVariables = Exact<{ [key: string]: never }>
@@ -5242,7 +5266,7 @@ export type StudentProgressesQuery = {
   __typename?: "Query"
   userCourseSettings: {
     __typename?: "QueryUserCourseSettings_Connection"
-    totalCount: number | null
+    totalCount: number
     pageInfo: {
       __typename?: "PageInfo"
       hasNextPage: boolean
@@ -5317,9 +5341,9 @@ export type StudentProgressesQuery = {
             }> | null
           }
         } | null
-      } | null
-    } | null> | null
-  } | null
+      }
+    }>
+  }
 }
 
 export type UserProfileUserCourseSettingsQueryVariables = Exact<{
@@ -5354,14 +5378,14 @@ export type UserProfileUserCourseSettingsQuery = {
           created_at: any | null
           updated_at: any | null
         } | null
-      } | null
-    } | null> | null
+      }
+    }>
     pageInfo: {
       __typename?: "PageInfo"
       endCursor: string | null
       hasNextPage: boolean
     }
-  } | null
+  }
 }
 
 export type CurrentUserOrganizationsQueryVariables = Exact<{
@@ -6641,6 +6665,29 @@ export const UserDetailedFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserDetailedFieldsFragment, unknown>
+export const UserOverviewCourseFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserOverviewCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserOverviewCourseFieldsFragment, unknown>
 export const UserOverviewFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -6678,12 +6725,8 @@ export const UserOverviewFieldsFragmentDoc = {
                         kind: "FragmentSpread",
                         name: {
                           kind: "Name",
-                          value: "CourseWithPhotoCoreFields",
+                          value: "UserOverviewCourseFields",
                         },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "has_certificate" },
                       },
                     ],
                   },
@@ -10072,6 +10115,7 @@ export const CurrentUserOverviewDocument = {
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
     ...CertificateAvailabilityFieldsFragmentDoc.definitions,
+    ...UserOverviewCourseFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,
@@ -10133,6 +10177,7 @@ export const UserOverviewDocument = {
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
     ...CertificateAvailabilityFieldsFragmentDoc.definitions,
+    ...UserOverviewCourseFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,

@@ -44,6 +44,16 @@ const RegistrationDetails = styled("div")`
   }
 `
 
+const StyledDoneIcon = styled(DoneIcon)`
+  color: green;
+  margin-top: 0.5rem;
+`
+
+const RegisterButton = styled(Button)`
+  color: red;
+  margin-right: 0.5rem;
+`
+
 interface CourseCardProps {
   completion: CompletionDetailedFieldsFragment & {
     course: CourseWithPhotoCoreFieldsFragment
@@ -85,19 +95,15 @@ function CompletedCourseCard(props: CourseCardProps) {
                 {r.organization ? r.organization.slug : "Unknown organization"}
               </CardText>
 
-              <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
+              <StyledDoneIcon />
             </RegistrationDetails>
           ))
         ) : (
-          <Button
+          <RegisterButton
             href={`/register-completion/${completion.course?.slug}`}
-            style={{
-              color: "red",
-              marginRight: "0.5rem",
-            }}
           >
             {t("registerButtonText")}
-          </Button>
+          </RegisterButton>
         )}
       </Background>
     </Grid>

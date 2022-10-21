@@ -5,7 +5,6 @@ import { orderBy } from "lodash"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
 import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
-import notEmpty from "/util/notEmpty"
 
 import {
   CourseStatus,
@@ -25,7 +24,7 @@ function Module(props: ModuleProps) {
   const orderedCourses = useMemo(
     () =>
       orderBy(
-        (module?.courses || []).filter(notEmpty),
+        module?.courses ?? [],
         [
           (course) => course.study_module_order,
           (course) => course.study_module_start_point === true,

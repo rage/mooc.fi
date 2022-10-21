@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react"
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react"
 
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
@@ -17,11 +24,9 @@ import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSum
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import { useSearch } from "/hooks/useSearch"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import UsersTranslations from "/translations/users"
-import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
@@ -33,6 +38,10 @@ import {
 const StyledForm = styled("form")`
   display: flex;
   padding: 1rem;
+`
+
+const SearchContainer = styled(Paper)`
+  margin-bottom: 0.5rem;
 `
 
 function UserSummaryView() {
@@ -68,26 +77,23 @@ function UserSummaryView() {
     useState<EditorCoursesQueryVariables>({
       search: "",
     })
-  const { search: userSearch, setSearch: setUserSearch } = useSearch()
+  const userSearchInput = useRef<HTMLInputElement>()
 
   useEffect(() => {
     dispatch({
       type: ActionType.INIT_STATE,
-      state: createInitialState(
-        data?.user?.user_course_summary?.filter(notEmpty),
-      ),
+      state: createInitialState(data?.user?.user_course_summary ?? []),
     })
   }, [data])
 
-  const handleUserSearchSubmit = () => {
-    if (userSearch !== "") {
+  const onSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const userSearch = userSearchInput.current?.value
+
+    if (userSearch) {
       router.push(`/users/search/${encodeURIComponent(userSearch)}`)
     }
-  }
-
-  const onUserSearchChange = (event: any) => {
-    setUserSearch(event.target.value as string)
-  }
+  }, [])
 
   const contextValue = useMemo(() => ({ state, dispatch }), [state])
 
@@ -104,21 +110,15 @@ function UserSummaryView() {
       <NextSeo title={title} />
       <Container>
         <CollapseContext.Provider value={contextValue}>
-          <Paper style={{ marginBottom: "0.5rem" }}>
-            <StyledForm
-              onSubmit={async (event: any) => {
-                event.preventDefault()
-                handleUserSearchSubmit()
-              }}
-            >
+          <SearchContainer>
+            <StyledForm onSubmit={onSubmit}>
               <TextField
                 id="standard-search"
                 label={t("searchUser")}
                 type="search"
                 margin="normal"
                 autoComplete="off"
-                value={userSearch}
-                onChange={onUserSearchChange}
+                inputRef={userSearchInput}
               />
             </StyledForm>
             <FilterMenu
@@ -132,9 +132,9 @@ function UserSummaryView() {
                 handler: false,
               }}
             />
-          </Paper>
+          </SearchContainer>
           <UserPointsSummary
-            data={data?.user?.user_course_summary?.filter(notEmpty)}
+            data={data?.user?.user_course_summary}
             search={searchVariables.search}
           />
         </CollapseContext.Provider>

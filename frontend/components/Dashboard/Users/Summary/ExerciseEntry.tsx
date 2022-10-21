@@ -19,6 +19,10 @@ import {
   useCollapseContext,
 } from "./CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
+import {
+  CollapseTableCell,
+  CollapseTableRow,
+} from "/components/Dashboard/Users/Summary/common"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
 import notEmpty from "/util/notEmpty"
@@ -29,11 +33,6 @@ import {
   ExerciseCoreFieldsFragment,
 } from "/graphql/generated"
 
-const CollapseTableCell = styled(TableCell)`
-  padding-top: 0;
-  padding-bottom: 0;
-`
-
 const ExerciseInfoContent = styled("div")`
   display: flex;
   flex-direction: row;
@@ -41,13 +40,6 @@ const ExerciseInfoContent = styled("div")`
   padding: 1rem;
   gap: 2rem;
 `
-
-const CollapseTableRow = styled(TableRow)`
-  & > * {
-    border-bottom: unset;
-  }
-`
-
 interface ExerciseEntryProps {
   exercise: ExerciseCoreFieldsFragment & {
     exercise_completions: ExerciseCompletionCoreFieldsFragment[]

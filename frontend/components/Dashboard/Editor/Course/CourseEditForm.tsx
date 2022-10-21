@@ -91,8 +91,8 @@ export const FormFieldGroup = styled("div")`
 
 interface RenderFormProps {
   initialValues?: CourseFormValues
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  studyModules?: StudyModuleDetailedFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
+  studyModules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 interface RenderProps {
@@ -514,8 +514,8 @@ const renderForm =
 
 interface CourseEditFormProps<SchemaType extends ObjectShape> {
   course: CourseFormValues
-  studyModules?: StudyModuleDetailedFieldsFragment[]
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  studyModules?: StudyModuleDetailedFieldsFragment[] | null
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
   validationSchema: Yup.ObjectSchema<SchemaType>
   onSubmit: (
     values: CourseFormValues,

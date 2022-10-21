@@ -33,6 +33,15 @@ const TabContainer = styled("div")`
   margin: 0 auto;
 `
 
+const TabBar = styled(AppBar)`
+  box-shadow: 0 0 0 0;
+`
+
+const StyledTab = styled(Tab)`
+  margin-top: 1rem;
+  color: unset;
+`
+
 interface DashboardTabsProps {
   slug: string
   selectedValue: number
@@ -79,7 +88,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
 
   return (
     <TabBarContainer>
-      <AppBar position="static" style={{ boxShadow: "0 0 0 0" }}>
+      <TabBar position="static">
         <TabContainer>
           <StyledTabs
             variant="fullWidth"
@@ -89,18 +98,17 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
             aria-label="course dashboard navi"
           >
             {routes.map(({ label, icon }, index) => (
-              <Tab
+              <StyledTab
                 key={index}
                 value={index}
                 label={label}
                 icon={icon}
-                style={{ marginTop: "1rem", color: "unset" }}
                 {...a11yProps(index)}
               />
             ))}
           </StyledTabs>
         </TabContainer>
-      </AppBar>
+      </TabBar>
     </TabBarContainer>
   )
 }

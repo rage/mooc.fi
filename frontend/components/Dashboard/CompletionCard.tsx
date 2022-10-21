@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  TypographyProps,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -29,6 +30,14 @@ const StyledIcon = styled(Icon)`
 
 const ListItemArea = styled("div")`
   margin: 1rem auto 1rem auto;
+`
+
+const CompletionInfoText = styled(({ children, ...props }: TypographyProps) => (
+  <Typography component="span" {...props}>
+    {children}
+  </Typography>
+))`
+  display: block;
 `
 
 interface CompletionCardProps {
@@ -65,15 +74,13 @@ function CompletionCard({ completer }: CompletionCardProps) {
           primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
             <Fragment>
-              <Typography component="span" style={{ display: "block" }}>
+              <CompletionInfoText>
                 {completer.email} {studentId}
-              </Typography>
-              <Typography component="span" style={{ display: "block" }}>
+              </CompletionInfoText>
+              <CompletionInfoText>
                 Completion language: {completionLanguage}
-              </Typography>
-              <Typography component="span" style={{ display: "block" }}>
-                {completionDate}
-              </Typography>
+              </CompletionInfoText>
+              <CompletionInfoText>{completionDate}</CompletionInfoText>
             </Fragment>
           }
         />

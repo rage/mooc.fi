@@ -20,7 +20,6 @@ import { useEditorCourses } from "/hooks/useEditorCourses"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
@@ -100,16 +99,14 @@ const EditCourse = ({ router }: EditCourseProps) => {
             beta ? (
               <CourseEdit2
                 course={courseData.course}
-                courses={coursesData?.courses?.filter(notEmpty)}
-                studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+                courses={coursesData?.courses}
+                studyModules={studyModulesData?.study_modules}
               />
             ) : (
               <CourseEdit
                 course={courseData.course}
-                courses={coursesData?.courses?.filter(notEmpty)}
-                modules={
-                  studyModulesData?.study_modules?.filter(notEmpty) ?? []
-                }
+                courses={coursesData?.courses ?? []}
+                modules={studyModulesData?.study_modules ?? []}
               />
             )
           ) : (

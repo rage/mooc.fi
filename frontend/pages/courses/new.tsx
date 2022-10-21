@@ -10,7 +10,6 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useEditorCourses } from "/hooks/useEditorCourses"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
@@ -80,14 +79,14 @@ const NewCourse = () => {
         ) : beta ? (
           <CourseEdit2
             {...(clone ? { course: clonedCourse } : {})}
-            courses={coursesData?.courses?.filter(notEmpty)}
-            studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+            courses={coursesData?.courses}
+            studyModules={studyModulesData?.study_modules}
           />
         ) : (
           <CourseEdit
             {...(clone ? { course: clonedCourse ?? undefined } : {})}
-            modules={studyModulesData?.study_modules?.filter(notEmpty)}
-            courses={coursesData?.courses?.filter(notEmpty)}
+            modules={studyModulesData?.study_modules}
+            courses={coursesData?.courses}
           />
         )}
       </WideContainer>

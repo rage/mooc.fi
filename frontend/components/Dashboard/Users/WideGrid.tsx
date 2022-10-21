@@ -19,7 +19,6 @@ import { styled } from "@mui/material/styles"
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 const TableWrapper = styled("div")`
@@ -97,7 +96,7 @@ const RenderResults = () => {
   const t = useTranslator(UsersTranslations)
   const { data, loading } = useContext(UserSearchContext)
 
-  const results = data?.userDetailsContains?.edges?.filter(notEmpty) ?? []
+  const results = data?.userDetailsContains?.edges ?? []
 
   if (loading) {
     return (
@@ -113,7 +112,7 @@ const RenderResults = () => {
     )
   }
 
-  if (!results || results?.length < 1)
+  if (results.length < 1)
     return (
       <TableBody>
         <TableRow>

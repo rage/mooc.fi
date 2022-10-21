@@ -8,7 +8,6 @@ import { styled } from "@mui/material/styles"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
-import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 
 import { StudentProgressesDocument } from "/graphql/generated"
@@ -60,9 +59,7 @@ function PaginatedPointsList(props: Props) {
     label: value,
   }))
 
-  const users = (data?.userCourseSettings?.edges ?? [])
-    .map((e) => e?.node)
-    .filter(notEmpty)
+  const users = (data?.userCourseSettings?.edges ?? []).map((e) => e?.node)
 
   return (
     <ErrorBoundary>

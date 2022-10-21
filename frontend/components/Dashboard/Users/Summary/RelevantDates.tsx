@@ -1,27 +1,18 @@
 import { min } from "lodash"
 
 import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
-import { Card, CardContent, Tooltip, Typography } from "@mui/material"
+import { CardContent, Tooltip, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface RelevantDatesProps {
   data?: UserCourseSummaryCoreFieldsFragment
-}
-
-const RelevantDatesCard = styled(Card)`
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-`
-
-RelevantDatesCard.defaultProps = {
-  elevation: 4,
 }
 
 const RelevantDatesCardContent = styled(CardContent)`
@@ -35,12 +26,12 @@ export default function RelevantDates({ data }: RelevantDatesProps) {
 
   const startDate = data?.start_date
   const firstExerciseDate = min(
-    data?.exercise_completions?.filter(notEmpty).map((ec) => ec.created_at),
+    data?.exercise_completions?.map((ec) => ec.created_at),
   )
   const completionDate = data?.completion?.completion_date
 
   return (
-    <RelevantDatesCard>
+    <SummaryCard>
       <RelevantDatesCardContent>
         <Typography variant="h4">
           {t("courseStartDate")}
@@ -58,6 +49,6 @@ export default function RelevantDates({ data }: RelevantDatesProps) {
           <HelpIcon />
         </Tooltip>
       </RelevantDatesCardContent>
-    </RelevantDatesCard>
+    </SummaryCard>
   )
 }

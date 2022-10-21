@@ -17,8 +17,8 @@ import {
 const isProduction = process.env.NODE_ENV === "production"
 
 interface ToCourseFormArgs {
-  course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
+  course?: EditorCourseDetailedFieldsFragment | null
+  modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 export const toCourseForm = ({
@@ -29,8 +29,9 @@ export const toCourseForm = ({
     return initialValues
   }
 
-  const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+  const courseStudyModuleIds = (course?.study_modules ?? []).map(
+    (module) => module.id,
+  )
 
   return {
     ...omit(course, [
@@ -74,7 +75,7 @@ export const toCourseForm = ({
     study_modules: modules?.reduce(
       (acc, module) => ({
         ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
+        [module.id]: courseStudyModuleIds.includes(module.id),
       }),
       {},
     ),

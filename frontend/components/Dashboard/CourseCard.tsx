@@ -114,24 +114,21 @@ const CourseInfoLine = styled("li")`
   flex-direction: row;
 `
 
-const CourseInfoField = ({
-  variant = "h4",
-  component = "h3",
-  children,
-  ...props
-}: PropsWithChildren<TypographyProps & BoxProps>) => (
-  <Typography
-    {...props}
-    variant={variant}
-    component={component}
-    style={{
-      display: "block",
-      marginRight: "0.5rem",
-    }}
-  >
-    {children}
-  </Typography>
-)
+const CourseInfoField = styled(
+  ({
+    variant = "h4",
+    component = "h3",
+    children,
+    ...props
+  }: PropsWithChildren<TypographyProps & BoxProps>) => (
+    <Typography variant={variant} component={component} {...props}>
+      {children}
+    </Typography>
+  ),
+)`
+  display: block;
+  margin-right: 0.5rem;
+`
 
 const CourseInfoValue = styled("div")`
   display: flex;

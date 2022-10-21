@@ -17,7 +17,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import {
   CompletionDetailedFieldsFragment,
-  UserCourseSummaryCourseFieldsFragment,
+  UserOverviewCourseFieldsFragment,
 } from "/graphql/generated"
 
 const StyledButton = styled(Button)`
@@ -31,7 +31,7 @@ const StyledA = styled("a")`
 
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
-  course: Omit<UserCourseSummaryCourseFieldsFragment, "exercises">
+  course: UserOverviewCourseFieldsFragment // actually also UserCourseSummaryCourseFieldsFragment, but they are kind of compatible
 }
 
 interface CourseAvatarProps {

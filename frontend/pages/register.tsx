@@ -162,10 +162,9 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    const mIds =
-      userOrganizationsData.userOrganizations
-        ?.map((uo) => uo?.organization?.id)
-        .filter(notEmpty) ?? []
+    const mIds = (userOrganizationsData.userOrganizations ?? [])
+      .map((uo) => uo?.organization?.id)
+      .filter(notEmpty)
 
     setMemberships(mIds)
   }, [userOrganizationsData])
@@ -175,17 +174,16 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    const sortedOrganizations =
-      organizationsData?.organizations
-        ?.filter((o) => o?.organization_translations?.length)
-        .sort((a, b) =>
-          a!.organization_translations![0].name.localeCompare(
-            b!.organization_translations![0].name,
-            "fi-FI",
-          ),
-        ) ?? []
+    const sortedOrganizations = (organizationsData?.organizations ?? [])
+      .filter((o) => o?.organization_translations?.length)
+      .sort((a, b) =>
+        a.organization_translations[0].name.localeCompare(
+          b.organization_translations[0].name,
+          "fi-FI",
+        ),
+      )
 
-    const orgs = sortedOrganizations.filter(notEmpty).reduce(
+    const orgs = sortedOrganizations.reduce(
       (acc, curr) => ({
         ...acc,
         [curr.id]: curr,
@@ -211,8 +209,8 @@ function useRegisterOrganization(searchFilter: string) {
     setFilteredOrganizations(
       Object.entries(organizations).reduce((acc, [key, value]) => {
         if (
-          !value!
-            .organization_translations![0].name.toLowerCase()
+          !value.organization_translations[0].name
+            .toLowerCase()
             .includes(searchFilter.toLowerCase())
         ) {
           return acc
@@ -228,9 +226,9 @@ function useRegisterOrganization(searchFilter: string) {
 
   const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
-      const existing = userOrganizationsData?.userOrganizations
-        ?.filter(notEmpty)
-        .find((uo) => uo?.organization?.id === id)
+      const existing = (userOrganizationsData?.userOrganizations ?? []).find(
+        (uo) => uo?.organization?.id === id,
+      )
 
       if (existing) {
         await deleteUserOrganization({
@@ -317,7 +315,7 @@ const Register = () => {
             Object.entries(filteredOrganizations).map(([id, organization]) => (
               <OrganizationCard
                 key={`card-${id}`}
-                name={organization!.organization_translations![0].name}
+                name={organization.organization_translations[0].name}
                 isMember={memberships.includes(id)}
                 onToggle={toggleMembership(id)}
               />

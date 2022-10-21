@@ -57,6 +57,35 @@ const Row = styled("section")`
   }
 `
 
+const SearchTextField = styled(TextField)`
+  grid-column: span 6;
+`
+
+const HiddenFormControl = styled(FormControl)`
+  grid-area: "hidden";
+`
+
+const StatusFormControl = styled(FormControl)`
+  grid-area: "status";
+`
+
+const HandledByFormControl = styled(FormControl)`
+  grid-area: "handled-by";
+`
+
+const ActionRow = styled(Row)`
+  display: flex;
+  flex-direction: row-reverse;
+`
+
+const MarginButton = styled(Button)`
+  margin-left: 0.5rem;
+`
+
+const StatusContainer = styled("div")`
+  display: flex;
+`
+
 interface FilterFields {
   hidden: boolean
   status: boolean
@@ -151,7 +180,7 @@ export default function FilterMenu({
   return (
     <Container>
       <Row>
-        <TextField
+        <SearchTextField
           id="searchString"
           label={label ?? t("search")}
           value={search}
@@ -178,13 +207,12 @@ export default function FilterMenu({
               </InputAdornment>
             ),
           }}
-          style={{ gridColumn: "span 6" }}
         />
       </Row>
       {showHidden || showHandler || showStatus ? (
         <Row>
           {showHidden ? (
-            <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
+            <HiddenFormControl disabled={loading}>
               <FormControlLabel
                 label={t("showHidden")}
                 control={
@@ -195,11 +223,11 @@ export default function FilterMenu({
                   />
                 }
               />
-            </FormControl>
+            </HiddenFormControl>
           ) : null}
           {showStatus ? (
-            <FormControl disabled={loading} style={{ gridArea: "status" }}>
-              <div style={{ display: "flex" }}>
+            <StatusFormControl disabled={loading}>
+              <StatusContainer>
                 {["Active", "Upcoming", "Ended"].map((value) => (
                   <FormControlLabel
                     label={t(value as any)}
@@ -213,11 +241,11 @@ export default function FilterMenu({
                     }
                   />
                 ))}
-              </div>
-            </FormControl>
+              </StatusContainer>
+            </StatusFormControl>
           ) : null}
           {showHandler ? (
-            <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
+            <HandledByFormControl disabled={loading}>
               <Select
                 value={loading ? "" : handledBy}
                 variant="outlined"
@@ -240,21 +268,20 @@ export default function FilterMenu({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </HandledByFormControl>
           ) : null}
         </Row>
       ) : null}
-      <Row style={{ display: "flex", flexDirection: "row-reverse" }}>
-        <Button
+      <ActionRow>
+        <MarginButton
           disabled={loading}
           onClick={onSubmit}
           color="primary"
           variant="contained"
-          style={{ marginLeft: "0.5rem" }}
           startIcon={<Search />}
         >
           {t("search")}
-        </Button>
+        </MarginButton>
         <Button
           disabled={loading}
           color="secondary"
@@ -270,11 +297,10 @@ export default function FilterMenu({
               status: [CourseStatus.Active, CourseStatus.Upcoming],
             })
           }}
-          style={{ marginLeft: "0.5rem" }}
         >
           {t("reset")}
         </Button>
-      </Row>
+      </ActionRow>
     </Container>
   )
 }

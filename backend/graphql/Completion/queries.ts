@@ -158,6 +158,7 @@ export const CompletionQueries = extendType({
     t.connection("completionsPaginated_type", {
       // hack to generate connection type
       type: "Completion",
+      nullable: false,
       additionalArgs: {
         course: nonNull(stringArg()),
         completion_language: stringArg(),
@@ -173,7 +174,7 @@ export const CompletionQueries = extendType({
         return []
       },
       extendConnection(t) {
-        t.int("totalCount")
+        t.nonNull.int("totalCount")
       },
     })
   },

@@ -9,7 +9,7 @@ import { useTranslator } from "/util/useTranslator"
 import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
 
 export interface CompletionsProps {
-  completions: CompletionDetailedFieldsWithCourseFragment[]
+  completions?: CompletionDetailedFieldsWithCourseFragment[] | null
 }
 
 const Title = styled(Typography)<any>`
@@ -28,7 +28,7 @@ const Title = styled(Typography)<any>`
   }
 `
 
-export const Completions = ({ completions = [] }: CompletionsProps) => {
+export const Completions = ({ completions }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
 
   return (

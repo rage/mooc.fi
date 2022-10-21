@@ -11,7 +11,6 @@ import {
   ModuleCardSkeleton,
 } from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 
 import { StudyModulesDocument } from "/graphql/generated"
 
@@ -111,7 +110,7 @@ function Modules() {
             <ModuleCardSkeleton key="module-skeleton-3" />
           </>
         )}
-        {data?.study_modules?.filter(notEmpty).map((module, index) => (
+        {data?.study_modules?.map((module, index) => (
           <ModuleCard key={`module-${index}`} module={module} hue={100} />
         ))}
       </ModulesGrid>

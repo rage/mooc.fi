@@ -167,6 +167,7 @@ export const UserCourseSettingQueries = extendType({
 
     t.connection("userCourseSettings", {
       type: "UserCourseSetting",
+      nullable: false,
       additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
@@ -326,7 +327,7 @@ export const UserCourseSettingQueries = extendType({
         )
       },
       extendConnection(t) {
-        t.int("totalCount")
+        t.nonNull.int("totalCount")
       },
     })
   },
