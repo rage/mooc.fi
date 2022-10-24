@@ -2,7 +2,6 @@
  * This is an automatically generated file.
  * Run `npm run graphql-codegen` to regenerate.
  **/
-
 import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core"
 
 export type Maybe<T> = T | null
