@@ -107,6 +107,15 @@ jobs:
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
+      - run:
+          name: "Process test reports"
+          command: |
+            if [ -e ./coverage/jest/clover.xml ]; then
+              sed -i "s|`pwd`/||g" ./coverage/jest/clover.xml
+            fi
+            if [ -e ./coverage/jest/coverage-final.json ]; then
+              sed -i "s|`pwd`/||g" ./coverage/jest/coverage-final.json
+            fi
       - store_test_results:
           path: ./coverage/junit/
       - store_artifacts:
