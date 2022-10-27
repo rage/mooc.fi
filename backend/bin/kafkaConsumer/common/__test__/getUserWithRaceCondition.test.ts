@@ -3,9 +3,12 @@ import {
   fakeGetAccessToken,
   fakeTMCSpecific,
   getTestContext,
-} from "../../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../../tests/data"
-import { seed } from "../../../../tests/data/seed"
+} from "../../../../tests"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  seed,
+} from "../../../../tests/data"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 
 const ctx = getTestContext()

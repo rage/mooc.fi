@@ -1,7 +1,7 @@
 import { Course, User } from "@prisma/client"
 
-import { getTestContext } from "../../../../../tests/__helpers"
-import { seed } from "../../../../../tests/data/seed"
+import { getTestContext } from "../../../../../tests"
+import { seed } from "../../../../../tests/data"
 import { KafkaContext } from "../../../common/kafkaContext"
 import { getCombinedUserCourseProgress } from "../../userFunctions"
 import { checkAndSendThresholdEmail } from "../checkAndSendThresholdEmail"

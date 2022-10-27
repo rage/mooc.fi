@@ -7,9 +7,8 @@ import { omit, orderBy } from "lodash"
 import { Course } from "@prisma/client"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
-import { seed } from "../../../tests/data/seed"
+import { fakeTMCCurrent, getTestContext } from "../../../tests"
+import { adminUserDetails, normalUserDetails, seed } from "../../../tests/data"
 
 jest.mock("../../../services/kafkaProducer")
 

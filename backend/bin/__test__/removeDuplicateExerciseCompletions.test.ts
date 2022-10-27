@@ -3,8 +3,8 @@ import {
   ExerciseCompletionRequiredAction,
 } from "@prisma/client"
 
-import { getTestContext } from "../../tests/__helpers"
-import { seed } from "../../tests/data/seed"
+import { getTestContext } from "../../tests"
+import { seed } from "../../tests/data"
 import { removeDuplicateExerciseCompletions } from "../removeDuplicateExerciseCompletions"
 
 const ctx = getTestContext()

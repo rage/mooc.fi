@@ -9,8 +9,8 @@ import {
 } from "@prisma/client"
 
 import { BaseContext } from "../../../../context"
-import { getTestContext } from "../../../../tests/__helpers"
-import { seed } from "../../../../tests/data/seed"
+import { getTestContext } from "../../../../tests"
+import { seed } from "../../../../tests/data"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,
