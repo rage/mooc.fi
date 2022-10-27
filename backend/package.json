@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "TZ=UTC jest",
-    "test:ci": "TZ=UTC jest --ci --runInBand --coverage --reporters=default --reporters=jest-junit",
+    "test:ci": "TZ=UTC jest --ci --runInBand --coverage",
     "upgrade-interactive": "npx npm-check --update",
     "fetch-ai-completions": "node ./dist/bin/fetchAiCompletions.js",
     "fetch-organizations": "node ./dist/bin/importOrganizations.js",
