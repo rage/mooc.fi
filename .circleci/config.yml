@@ -84,7 +84,6 @@ jobs:
       DB_NAME: circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-      JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
     parallelism: 8
     working_directory: ~/project/backend
     steps:
