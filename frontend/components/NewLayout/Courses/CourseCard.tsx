@@ -1,5 +1,6 @@
+import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import { Button } from "@mui/material"
+import { Button, Skeleton, Typography } from "@mui/material"
 
 import OutboundLink from "/components/OutboundLink"
 import BannerImage from "/static/images/homeBackground.jpg"
@@ -14,36 +15,40 @@ const colorSchemes = {
   ai: ["#2c8325", "#00ff13"],
 }
 
-const Container = styled.div`
+const ContainerBase = css`
   display: grid;
-  grid-template-rows: 20% 80%;
-  grid-template-columns: 100%;
+  grid-template-rows: 1fr 4fr;
+  grid-template-columns: 1fr;
   border: 1px solid rgba(236, 236, 236, 1);
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
   border-radius: 0.5rem;
-  &:nth-child(n) {
+`
+
+const Container = styled.li`
+  ${ContainerBase};
+  &:nth-of-type(n) {
     background: linear-gradient(
       90deg,
       ${colorSchemes["cloud"][0]} 66%,
       ${colorSchemes["cloud"][1]} 100%
     );
   }
-  &:nth-child(2n) {
+  &:nth-of-type(2n) {
     background: linear-gradient(
       90deg,
       ${colorSchemes["programming"][0]} 66%,
       ${colorSchemes["programming"][1]} 100%
     );
   }
-  &:nth-child(3n) {
+  &:nth-of-type(3n) {
     background: linear-gradient(
       90deg,
       ${colorSchemes["csb"][0]} 66%,
       ${colorSchemes["csb"][1]} 100%
     );
   }
-  &:nth-child(4n) {
+  &:nth-of-type(4n) {
     background: linear-gradient(
       90deg,
       ${colorSchemes["ai"][0]} 66%,
@@ -55,6 +60,12 @@ const Container = styled.div`
   }
 `
 
+const SkeletonContainer = styled.li`
+  ${ContainerBase};
+  width: 100%;
+  background-color: #eee;
+`
+
 const TitleContainer = styled.div`
   padding: 1rem 2.5rem 1rem 2.5rem;
   display: flex;
@@ -63,8 +74,8 @@ const TitleContainer = styled.div`
 const ContentContainer = styled.div`
   display: grid;
   padding: 0.5rem 1.5rem 0.1rem 1.5rem;
-  grid-template-columns: 67% 33%;
-  grid-template-rows: 50% 30% 20%;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 5fr 3fr 2fr;
   background: rgba(255, 255, 255, 1);
 `
 
@@ -100,7 +111,8 @@ const Schedule = styled.div``
 
 const Details = styled.div`
   display: flex;
-  justify-content: right;
+  flex-direction: column;
+  align-items: flex-end;
   padding: 1rem;
 `
 
@@ -123,45 +135,46 @@ const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
 interface CourseCardProps {
-  course?: CourseFieldsFragment | null
+  course: CourseFieldsFragment
   tags?: string[]
   fifthElement?: boolean
 }
 
 function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
-  return course ? (
+  return (
     <Container className={fifthElement ? "with-background-image" : ""}>
       <TitleContainer>
         <Title className={fifthElement ? "with-background-image" : ""}>
-          {course?.name}
+          <Typography variant="h4">{course?.name}</Typography>
         </Title>
       </TitleContainer>
       <ContentContainer>
-        <Description>{course?.description}</Description>
+        <Description>
+          <Typography variant="body1">{course?.description}</Typography>
+        </Description>
         <Details>
           {course.ects && (
-            <>
-              ~{parseInt(course.ects) * 27}h ({course.ects}ects)
-            </>
+            <Typography variant="subtitle2">
+              ~{parseInt(course.ects) * 27}h ({course.ects} ECTS)
+            </Typography>
           )}
-          <br />
           {/* TODO: add information regarding university/organization to course */}
-          Helsingin yliopisto
+          <Typography variant="subtitle2">Helsingin yliopisto</Typography>
         </Details>
         <Schedule>
-          {course?.status == "Upcoming" ? (
+          {course.status == "Upcoming" ? (
             <p>
               Tulossa {course.start_date && prettifyDate(course.start_date)}
             </p>
-          ) : course?.status == "Ended" ? (
+          ) : course.status == "Ended" ? (
             <p>Päättynyt {course.end_date && prettifyDate(course.end_date)}</p>
           ) : (
             <p>
               Käynnissä{" "}
-              {course?.end_date ? (
+              {course.end_date ? (
                 <>
-                  {prettifyDate(course?.start_date)} -{" "}
-                  {prettifyDate(course?.end_date)}
+                  {prettifyDate(course.start_date)} -{" "}
+                  {prettifyDate(course.end_date)}
                 </>
               ) : (
                 <>— Aikatauluton</>
@@ -182,16 +195,39 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
         </Link>
       </ContentContainer>
     </Container>
-  ) : (
-    <Container>
-      <TitleContainer>
-        <Title>loading...</Title>
-      </TitleContainer>
-      <ContentContainer>
-        <Description>loading...</Description>
-      </ContentContainer>
-    </Container>
   )
 }
+
+export const CourseCardSkeleton = () => (
+  <SkeletonContainer>
+    <TitleContainer>
+      <Title>
+        <Typography variant="h4">
+          <Skeleton width={100 + Math.random() * 100} />
+        </Typography>
+      </Title>
+    </TitleContainer>
+    <ContentContainer>
+      <Description>
+        <Typography variant="body1">
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </Typography>
+      </Description>
+      <Details>
+        <Typography variant="subtitle2">
+          <Skeleton width={75} />
+        </Typography>
+      </Details>
+      <Schedule>
+        <Skeleton />
+      </Schedule>
+      <Sponsor />
+      <Tags />
+      <Skeleton />
+    </ContentContainer>
+  </SkeletonContainer>
+)
 
 export default CourseCard

@@ -11,11 +11,13 @@ import {
   ModuleCardSkeleton,
 } from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 
 import { StudyModulesDocument } from "/graphql/generated"
 
-const ModulesGrid = styled.div`
+const ModulesGrid = styled.ul`
+  list-style: none;
+  list-style-position: inside;
+  padding: 0;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -101,7 +103,7 @@ function Modules() {
   })
 
   return (
-    <SectionContainer>
+    <SectionContainer id="modules">
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
       <ModulesGrid>
         {loading && (
@@ -111,7 +113,7 @@ function Modules() {
             <ModuleCardSkeleton key="module-skeleton-3" />
           </>
         )}
-        {data?.study_modules?.filter(notEmpty).map((module, index) => (
+        {data?.study_modules?.map((module, index) => (
           <ModuleCard key={`module-${index}`} module={module} hue={100} />
         ))}
       </ModulesGrid>

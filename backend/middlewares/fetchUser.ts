@@ -5,7 +5,6 @@ import { Role } from "../accessControl"
 import { Context } from "../context"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
 import { UserInfo } from "/domain/UserInfo"
 
 export const moocfiAuthPlugin = () =>
@@ -96,7 +95,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
   ctx.user = await ctx.prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
-    update: convertUpdate(prismaDetails),
+    update: prismaDetails,
   })
   if (ctx.user.administrator) {
     ctx.role = Role.ADMIN

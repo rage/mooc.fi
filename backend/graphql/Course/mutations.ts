@@ -9,7 +9,6 @@ import { DatabaseInputError } from "../../bin/lib/errors"
 import { Context } from "../../context"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
-import { convertUpdate } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 import { deleteImage, uploadImage } from "../Image"
 
@@ -175,7 +174,14 @@ export const CourseMutations = extendType({
 
         const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
+          include: {
+            study_modules: true,
+            completions_handled_by: true,
+            inherit_settings_from: true,
+            user_course_settings_visibilities: true,
+          },
         })
+
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
@@ -235,10 +241,8 @@ export const CourseMutations = extendType({
           field: "user_course_settings_visibilities",
         })
 
-        const existingVisibilities = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .user_course_settings_visibilities()
-        for (const visibility of existingVisibilities) {
+        for (const visibility of existingCourse?.user_course_settings_visibilities ??
+          []) {
           await invalidate(
             "usercoursesettingscount",
             `${slug}-${visibility.language}`,
@@ -246,12 +250,9 @@ export const CourseMutations = extendType({
         }
 
         // this had different logic so it's not done with the same helper
-        const existingStudyModules = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
         const removedModuleIds =
-          existingStudyModules
+          existingCourse?.study_modules
             ?.filter((module) => !getIds(study_modules).includes(module.id))
             .map((module) => ({ id: module.id })) ?? []
         const connectModules =
@@ -272,26 +273,20 @@ export const CourseMutations = extendType({
             }
           : undefined
 
-        const existingInherit = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .inherit_settings_from()
         const inheritMutation = inherit_settings_from
           ? {
               connect: { id: inherit_settings_from },
             }
-          : existingInherit
+          : existingCourse?.inherit_settings_from
           ? {
               disconnect: true, // { id: existingInherit.id },
             }
           : undefined
-        const existingHandled = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .completions_handled_by()
         const handledMutation = completions_handled_by
           ? {
               connect: { id: completions_handled_by },
             }
-          : existingHandled
+          : existingCourse?.completions_handled_by
           ? {
               disconnect: true, // { id: existingHandled.id },
             }
@@ -302,7 +297,7 @@ export const CourseMutations = extendType({
             id: nullToUndefined(id),
             slug,
           },
-          data: convertUpdate({
+          data: {
             ...omit(course, [
               "id",
               "photo",
@@ -332,7 +327,7 @@ export const CourseMutations = extendType({
             completions_handled_by: handledMutation,
             user_course_settings_visibilities:
               userCourseSettingsVisibilityMutation,
-          }),
+          },
         })
 
         return updatedCourse

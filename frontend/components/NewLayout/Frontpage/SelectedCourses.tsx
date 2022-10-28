@@ -2,7 +2,7 @@ import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
-import { Button, Typography } from "@mui/material"
+import { Button, Typography, TypographyProps } from "@mui/material"
 
 import { formatDateTime } from "/components/DataFormatFunctions"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
@@ -19,7 +19,7 @@ import notEmpty from "/util/notEmpty"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
 
-const CardHeader = styled.div`
+const CardHeader = styled.header`
   position: relative;
   background-color: #ffad14;
   height: 52px;
@@ -36,7 +36,7 @@ const CardActionArea = styled.div`
   align-items: center;
 `
 
-const Date = styled((props: any) => (
+const Date = styled((props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
 ))``
 
@@ -90,7 +90,7 @@ function SelectedCourses() {
   })
 
   return (
-    <SectionContainer>
+    <SectionContainer id="courses">
       <SectionTitle>Suosittuja kursseja</SectionTitle>
       {loading && <p>Loading...</p>}
       <CoursesGrid>

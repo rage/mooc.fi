@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-10-20T15:08:10+03:00
+// Generated on 2022-10-27T16:30:12+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -4539,6 +4539,76 @@ export type StudyModulesQuery = {
     id: string
     slug: string
     name: string
+  }> | null
+}
+
+export type StudyModulesWithCoursesQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]>
+}>
+
+export type StudyModulesWithCoursesQuery = {
+  __typename?: "Query"
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    description: string | null
+    image: string | null
+    order: number | null
+    created_at: any | null
+    updated_at: any | null
+    id: string
+    slug: string
+    name: string
+    courses: Array<{
+      __typename?: "Course"
+      description: string | null
+      link: string | null
+      order: number | null
+      study_module_order: number | null
+      promote: boolean | null
+      status: CourseStatus | null
+      start_point: boolean | null
+      study_module_start_point: boolean | null
+      hidden: boolean | null
+      upcoming_active_link: boolean | null
+      tier: number | null
+      support_email: string | null
+      teacher_in_charge_email: string
+      teacher_in_charge_name: string
+      start_date: string
+      end_date: string | null
+      has_certificate: boolean | null
+      id: string
+      slug: string
+      name: string
+      ects: string | null
+      created_at: any | null
+      updated_at: any | null
+      course_translations: Array<{
+        __typename?: "CourseTranslation"
+        id: string
+        language: string
+        name: string
+      }>
+      study_modules: Array<{
+        __typename?: "StudyModule"
+        id: string
+        slug: string
+        name: string
+      }>
+      photo: {
+        __typename?: "Image"
+        id: string
+        name: string | null
+        original: string
+        original_mimetype: string
+        compressed: string | null
+        compressed_mimetype: string | null
+        uncompressed: string
+        uncompressed_mimetype: string
+        created_at: any | null
+        updated_at: any | null
+      } | null
+    }> | null
   }> | null
 }
 
@@ -9527,6 +9597,101 @@ export const StudyModulesDocument = {
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<StudyModulesQuery, StudyModulesQueryVariables>
+export const StudyModulesWithCoursesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "StudyModulesWithCourses" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "orderBy" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleFields" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "courses" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "language" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "language" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "CourseFields" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...StudyModuleFieldsFragmentDoc.definitions,
+    ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...CourseFieldsFragmentDoc.definitions,
+    ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
+    ...CourseCoreFieldsFragmentDoc.definitions,
+    ...ImageCoreFieldsFragmentDoc.definitions,
+    ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  StudyModulesWithCoursesQuery,
+  StudyModulesWithCoursesQueryVariables
+>
 export const EditorStudyModulesDocument = {
   kind: "Document",
   definitions: [
