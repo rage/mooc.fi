@@ -20,7 +20,9 @@ type NaviItem = {
 }
 
 // either 4, 2 or 1 columns, depending on the number of items
-const HypeGrid = styled.div<{ count?: number }>`
+const HypeGrid = styled.ul<{ count?: number }>`
+  list-style: none;
+  list-style-position: inside;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: ${({ count = 4 }) =>

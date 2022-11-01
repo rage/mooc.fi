@@ -32,6 +32,10 @@ export const CardHeaderImage = styled.img`
   z-index: 0;
 `
 
+CardHeaderImage.defaultProps = {
+  "aria-hidden": true,
+}
+
 export const CardBody = styled.div`
   background-color: #fff;
   display: flex;

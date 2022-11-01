@@ -13,7 +13,7 @@ import {
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
-import moocLogoUrl from "/static/images/moocfi.svg"
+import moocLogoUrl from "/static/images/moocfi-transparent.svg"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 
@@ -68,7 +68,9 @@ const CourseCard = ({
   )
 }
 
-export const CoursesGrid = styled.div`
+export const CoursesGrid = styled.ul`
+  list-style: none;
+  list-style-position: inside;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
