@@ -13,7 +13,7 @@ import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 import { loggerPlugin } from "./middlewares/logger"
 
 if (NEXUS_REFLECTION) {
-  require("sharp")
+  require("sharp") // image library sharp seems to crash without this require
 }
 
 const createPlugins = () => {

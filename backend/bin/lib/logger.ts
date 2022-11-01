@@ -3,8 +3,6 @@ import WinstonSentry from "winston-sentry-log"
 
 import { isProduction, isStaging } from "../../config"
 
-// import { Sentry } from "../../services/sentry"
-
 interface LoggerOptions {
   service: string
 }

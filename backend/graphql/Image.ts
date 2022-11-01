@@ -58,7 +58,9 @@ export const ImageMutations = extendType({
   },
 })
 
-const readFS = (stream: ReturnType<FileUpload["createReadStream"]>): Promise<Buffer> => {
+const readFS = (
+  stream: ReturnType<FileUpload["createReadStream"]>,
+): Promise<Buffer> => {
   const chunkList: Uint8Array[] = []
 
   return new Promise((resolve, reject) =>

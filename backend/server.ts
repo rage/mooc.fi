@@ -1,17 +1,16 @@
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
+import bodyParser from "body-parser"
 import cors from "cors"
 import express from "express"
 import { graphqlUploadExpress } from "graphql-upload"
+import helmet from "helmet"
 import morgan from "morgan"
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { ServerContext } from "./context"
 import schema from "./schema"
-
-const helmet = require("helmet")
-const bodyParser = require("body-parser")
 
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({

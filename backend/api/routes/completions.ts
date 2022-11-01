@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import JSONStream from "JSONStream"
 import { chunk, omit } from "lodash"
 import * as yup from "yup"
 
@@ -13,8 +14,6 @@ import {
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { err } from "../../util/result"
 import { ApiContext, Controller } from "../types"
-
-const JSONStream = require("JSONStream")
 
 const languageMap: Record<string, string> = {
   en: "en_US",
