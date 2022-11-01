@@ -4,7 +4,7 @@ import {
   ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { initialVariant } from "/components/Dashboard/Editor2/Course/form-validation"
-import { CourseVariantFormValues } from "/components/Dashboard/Editor2/Course/types"
+import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
@@ -12,7 +12,7 @@ export default function CourseVariantForm() {
   const t = useTranslator(CoursesTranslations)
 
   return (
-    <ControlledFieldArrayList<CourseVariantFormValues>
+    <ControlledFieldArrayList<CourseFormValues, "course_variants">
       name="course_variants"
       label={t("courseVariants")}
       initialValues={initialVariant}

@@ -1,11 +1,9 @@
 import { Controller, useFormContext } from "react-hook-form"
 
+import { FieldProps } from "."
 import notEmpty from "/util/notEmpty"
 
-interface ControlledHiddenFieldProps {
-  name: string
-  defaultValue: any
-}
+interface ControlledHiddenFieldProps extends FieldProps {}
 
 export const ControlledHiddenField = ({
   name,

@@ -4,7 +4,7 @@ import {
   ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { initialAlias } from "/components/Dashboard/Editor2/Course/form-validation"
-import { CourseAliasFormValues } from "/components/Dashboard/Editor2/Course/types"
+import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
@@ -12,7 +12,7 @@ export default function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)
 
   return (
-    <ControlledFieldArrayList<CourseAliasFormValues>
+    <ControlledFieldArrayList<CourseFormValues, "course_aliases">
       name="course_aliases"
       label={t("courseAliases")}
       initialValues={initialAlias}
@@ -21,8 +21,7 @@ export default function CourseAliasForm() {
         noFields: t("courseNoAliases"),
       }}
       conditions={{
-        add: (values: Partial<CourseAliasFormValues>[]) =>
-          values?.[values.length - 1]?.course_code !== "",
+        add: (values) => values?.[values.length - 1]?.course_code !== "",
         remove: (item) => !item._id && item.course_code === "",
       }}
       render={(item, index) => (

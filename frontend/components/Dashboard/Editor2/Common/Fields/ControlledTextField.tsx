@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react"
 
-import { omit } from "lodash"
-import { get, set } from "lodash"
-import {
-  FieldValues,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-  useFormContext,
-} from "react-hook-form"
+import { get, omit, set } from "lodash"
+import { FieldValues, PathValue, useFormContext } from "react-hook-form"
 
 import HelpIcon from "@mui/icons-material/Help"
 import HistoryIcon from "@mui/icons-material/History"
@@ -23,13 +16,16 @@ import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
 
-export interface ControlledTextFieldProps extends ControlledFieldProps {
+export interface ControlledTextFieldProps<T extends FieldValues>
+  extends ControlledFieldProps<T> {
   type?: string
   disabled?: boolean
   rows?: number
 }
 
-export function ControlledTextField<T>(props: ControlledTextFieldProps) {
+export function ControlledTextField<T extends FieldValues>(
+  props: ControlledTextFieldProps<T>,
+) {
   const t = useTranslator(CommonTranslations)
   const {
     formState: { errors },
@@ -46,11 +42,9 @@ export function ControlledTextField<T>(props: ControlledTextFieldProps) {
   }, [errors])
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(
-      name,
-      e.target.value as UnpackNestedValue<PathValue<FieldValues, Path<T>>>,
-      { shouldDirty: true },
-    )
+    setValue(name, e.target.value as PathValue<T, typeof name> & string, {
+      shouldDirty: true,
+    })
   }
 
   const initialValue = get(initialValues, name)

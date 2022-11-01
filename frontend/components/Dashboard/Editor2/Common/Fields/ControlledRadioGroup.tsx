@@ -1,27 +1,22 @@
-import {
-  Path,
-  PathValue,
-  UnpackNestedValue,
-  useFormContext,
-} from "react-hook-form"
+import { FieldValues, PathValue, useFormContext } from "react-hook-form"
 
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material"
 
-import { FormValues } from "../../types"
 import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
 
-interface ControlledRadioGroupProps extends ControlledFieldProps {
+interface ControlledRadioGroupProps<T extends FieldValues>
+  extends ControlledFieldProps<T> {
   options: Array<{ value: string; label: string }>
 }
 
-export function ControlledRadioGroup<T extends FormValues>(
-  props: ControlledRadioGroupProps,
+export function ControlledRadioGroup<T extends FieldValues>(
+  props: ControlledRadioGroupProps<T>,
 ) {
   const { label, options } = props
-  const name = props.name as Path<T>
+  const name = props.name
   const { setValue } = useFormContext<T>()
   return (
     <FieldController
@@ -32,11 +27,9 @@ export function ControlledRadioGroup<T extends FormValues>(
           aria-label={label}
           value={value}
           onChange={(_, newValue) =>
-            setValue(
-              name,
-              newValue as UnpackNestedValue<PathValue<T, Path<T>>>,
-              { shouldDirty: true },
-            )
+            setValue(name, newValue as PathValue<T, typeof name>, {
+              shouldDirty: true,
+            })
           }
         >
           {options.map((option) => (

@@ -1,8 +1,9 @@
 import { DateTime } from "luxon"
+import { FieldValues } from "react-hook-form"
 
 import { CourseStatus, ImageCoreFieldsFragment } from "/graphql/generated"
 
-interface FormValues {
+interface FormValues extends FieldValues {
   id?: string | null
 }
 

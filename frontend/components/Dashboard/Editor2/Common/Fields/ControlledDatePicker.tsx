@@ -27,7 +27,7 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
         style={{ marginBottom: "1.5rem" }}
         renderComponent={() => (
           <DatePicker
-            value={watch(name)}
+            value={watch([name])}
             onChange={onChange}
             onClose={() => trigger([name, ...validateOtherFields])}
             label={label}

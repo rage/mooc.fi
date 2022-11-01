@@ -1,10 +1,4 @@
-import {
-  FieldValues,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-  useFormContext,
-} from "react-hook-form"
+import { FieldValues, PathValue, useFormContext } from "react-hook-form"
 
 import HelpIcon from "@mui/icons-material/Help"
 import { Checkbox, FormControlLabel, Tooltip } from "@mui/material"
@@ -14,15 +8,14 @@ import {
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
 
-export function ControlledCheckbox<T>(props: ControlledFieldProps) {
+export function ControlledCheckbox<T extends FieldValues>(
+  props: ControlledFieldProps<T>,
+) {
   const { name, label, tip } = props
-  const { setValue } = useFormContext()
+  const { setValue } = useFormContext<T>()
 
   const onChange = (_: any, checked: boolean) =>
-    setValue(
-      name,
-      checked as UnpackNestedValue<PathValue<FieldValues, Path<T>>>,
-    )
+    setValue(name, checked as PathValue<T, typeof name>)
 
   return (
     <FieldController

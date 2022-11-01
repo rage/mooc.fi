@@ -1,11 +1,6 @@
 import { useCallback } from "react"
 
-import {
-  Path,
-  PathValue,
-  UnpackNestedValue,
-  useFormContext,
-} from "react-hook-form"
+import { PathValue, useFormContext } from "react-hook-form"
 
 import styled from "@emotion/styled"
 import {
@@ -36,15 +31,16 @@ const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 
-interface ControlledModuleListProps extends ControlledFieldProps {
+interface ControlledModuleListProps<T extends FormValues>
+  extends ControlledFieldProps<T> {
   modules?: StudyModuleDetailedFieldsFragment[]
 }
 
 export function ControlledModuleList<T extends FormValues>(
-  props: ControlledModuleListProps,
+  props: ControlledModuleListProps<T>,
 ) {
   const { modules, label } = props
-  const name = props.name as Path<T>
+  const name = props.name
   const { setValue, getValues } = useFormContext<T>()
 
   const setCourseModule = useCallback(
@@ -54,7 +50,7 @@ export function ControlledModuleList<T extends FormValues>(
         {
           ...getValues(name),
           [(event.target as HTMLInputElement).id]: checked,
-        } as UnpackNestedValue<PathValue<T, Path<T>>>,
+        } as PathValue<T, typeof name>,
         { shouldDirty: true },
       ),
     [],
