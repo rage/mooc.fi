@@ -50,7 +50,7 @@ export const initialValues: CourseFormValues = {
   teacher_in_charge_email: "",
   support_email: "",
   start_date: "",
-  end_date: "",
+  end_date: undefined,
   thumbnail: undefined,
   photo: undefined,
   new_photo: undefined,

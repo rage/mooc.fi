@@ -3,16 +3,16 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 import {
-  type PureQueryOptions,
   useApolloClient,
   useMutation,
+  type PureQueryOptions,
 } from "@apollo/client"
 
 import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import { useCustomValidationResolver } from "/components/Dashboard/Editor2/Common"
 import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
@@ -48,7 +48,6 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   const [tab, setTab] = useState(0)
   const { anchors } = useAnchorContext()
   const client = useApolloClient()
-
   const defaultValues = toCourseForm({
     course,
     modules: studyModules,
@@ -58,9 +57,10 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
     t,
   })
+
   const methods = useForm<CourseFormValues>({
     defaultValues,
-    resolver: customValidationResolver(validationSchema),
+    resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })

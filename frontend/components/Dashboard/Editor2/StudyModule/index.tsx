@@ -4,9 +4,9 @@ import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 import {
-  type PureQueryOptions,
   useApolloClient,
   useMutation,
+  type PureQueryOptions,
 } from "@apollo/client"
 
 import { EditorContext } from "../EditorContext"
@@ -14,7 +14,7 @@ import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import { useCustomValidationResolver } from "/components/Dashboard/Editor2/Common"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
@@ -51,7 +51,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   })
   const methods = useForm<StudyModuleFormValues>({
     defaultValues,
-    resolver: customValidationResolver(validationSchema),
+    resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",
   })
   const { trigger } = methods

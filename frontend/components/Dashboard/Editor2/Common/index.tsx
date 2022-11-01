@@ -7,11 +7,7 @@ import {
 } from "react"
 
 import { omit } from "lodash"
-import {
-  FieldValues,
-  ResolverOptions,
-  UnpackNestedValue,
-} from "react-hook-form"
+import { FieldValues, Resolver, ResolverOptions } from "react-hook-form"
 import * as Yup from "yup"
 
 import styled from "@emotion/styled"
@@ -94,17 +90,16 @@ export const useTabContext = () => {
   return useContext(TabContext)
 }
 
-export function customValidationResolver<
+export function useCustomValidationResolver<
   TFieldValues extends FieldValues,
-  TContext = undefined,
->(schema: Yup.AnyObjectSchema) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  TContext = any,
+>(schema: Yup.AnyObjectSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
     async (
-      values: UnpackNestedValue<TFieldValues>,
-      context: TContext,
+      values: TFieldValues,
+      context: TContext | undefined,
       options: ResolverOptions<TFieldValues>,
-    ) => await yupResolver(schema)(values, { ...context, values }, options),
+    ) => yupResolver(schema)(values, { ...context, values }, options),
     [schema],
   )
 }
