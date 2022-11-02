@@ -122,10 +122,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
               />
               <Typography variant="body2">
                 {t("redirectMessagePre")}
-                <Link href="/courses" passHref>
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                  <a>{t("redirectLinkText")}</a>
-                </Link>
+                <Link href="/courses">{t("redirectLinkText")}</Link>
                 {t("redirectMessagePost")}
               </Typography>
             </ErrorContainer>

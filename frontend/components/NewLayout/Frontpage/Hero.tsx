@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { Button, Typography } from "@mui/material"
 
+import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
@@ -9,16 +10,6 @@ const HeroContainer = styled.section`
   position: relative;
   height: 80%;
   align-items: center;
-`
-
-const BackgroundImage = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
 `
 
 const HeroContentContainer = styled.div`
@@ -70,7 +61,8 @@ function Hero() {
     <HeroContainer>
       <HeroContent />
       <BackgroundImage
-        src={require("../../../static/images/new/hero.png")}
+        src="/static/images/new/hero.png"
+        fill
         aria-hidden
         alt="background image"
       />

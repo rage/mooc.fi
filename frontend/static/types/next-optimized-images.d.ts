@@ -1,4 +1,4 @@
-declare module "*.png"
+/*declare module "*.png"
 declare module "*.png?include"
 declare module "*.png?webp"
 declare module "*.png?inline"
@@ -39,4 +39,4 @@ declare module "*.gif?include"
 declare module "*.gif?webp"
 declare module "*.gif?inline"
 declare module "*.gif?url"
-declare module "*.gif?original"
+declare module "*.gif?original"*/

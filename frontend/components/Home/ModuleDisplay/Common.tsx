@@ -1,6 +1,7 @@
-import { PropsWithChildren } from "react"
+import Image, { ImageProps } from "next/image"
 
-import styled from "@emotion/styled"
+import { PropsOf } from "@emotion/react"
+import { styled } from "@mui/material/styles"
 
 import {
   CardTitle,
@@ -8,9 +9,9 @@ import {
   SubtitleNoBackground,
 } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { mime } from "/util/imageUtils"
+import { staticSrc } from "/util/staticSrc"
 
-export const CenteredContent = styled.div`
+export const CenteredContent = styled("div")`
   width: 80%;
   margin: auto;
   @supports (display: grid) {
@@ -27,19 +28,36 @@ export const CenteredContent = styled.div`
   }
 `
 
-export const ContentContainer = styled.div`
+export const ContentContainer = styled("div")`
   margin: 1rem;
   padding-left: 1rem;
   min-width: 33%;
 `
 
-const ModuleHeaderBase = styled(H2NoBackground)`
+export const ModuleHeader = styled(
+  ({
+    variant = "h2",
+    component = "h2",
+    align = "left",
+    ...props
+  }: PropsOf<typeof H2NoBackground>) => (
+    <H2NoBackground
+      variant={variant}
+      component={component}
+      align={align}
+      {...props}
+    />
+  ),
+)<{
+  component?: React.ElementType
+}>`
   color: white;
   margin-left: 0px;
   font-size: 72px;
   line-height: 100px;
-  font-family: Open sans condensed, sans serif;
+  font-family: var(--open-sans-condensed-font), sans-serif;
   font-weight: 300;
+  width: 100%;
   @media (max-width: 490px) {
     font-size: 48px;
     line-height: 80px;
@@ -50,40 +68,33 @@ const ModuleHeaderBase = styled(H2NoBackground)`
   }
 `
 
-export const ModuleHeader = ({ children, ...props }: PropsWithChildren<{}>) => (
-  <ModuleHeaderBase component="h2" variant="h2" align="left" {...props}>
-    {children}
-  </ModuleHeaderBase>
-)
-
-const ModuleImageBase = styled.img`
-  width: 100%;
+const ModuleImageContainer = styled("div")`
+  position: relative;
+  height: 100%;
 `
 
-interface ModuleImageProps {
-  src: string
-  alt?: string
-}
-
-export const ModuleImage = ({ src, alt }: ModuleImageProps) => (
-  <picture>
-    <source
-      srcSet={require(`../../../static/images/${src}?webp`)}
-      type="image/webp"
-    />
-    <source
-      srcSet={require(`../../../static/images/${src}`)}
-      type={mime(src)}
-    />
-    <ModuleImageBase
-      src={require(`../../../static/images/${src}`)}
-      alt={alt}
+export const ModuleImage = ({ src, alt, ...props }: ImageProps) => (
+  <ModuleImageContainer>
+    <Image
+      src={staticSrc(src)}
+      alt={alt ?? "Module image"}
       loading="lazy"
+      style={{ objectFit: "contain" }}
+      {...(!props.width && !props.height && { fill: true })}
+      {...props}
     />
-  </picture>
+  </ModuleImageContainer>
 )
 
-const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
+export const ModuleDescriptionText = styled(
+  ({
+    variant = "subtitle1",
+    component = "h3",
+    ...props
+  }: PropsOf<typeof SubtitleNoBackground>) => (
+    <SubtitleNoBackground variant={variant} component={component} {...props} />
+  ),
+)<{ component?: React.ElementType }>`
   color: white;
   font-size: 28px;
   line-height: 47px;
@@ -93,29 +104,34 @@ const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
   }
 `
 
-export const ModuleDescriptionText = ({
-  children,
-  ...props
-}: PropsWithChildren<{}>) => (
-  <ModuleDescriptionTextBase variant="subtitle1" component="h3" {...props}>
-    {children}
-  </ModuleDescriptionTextBase>
-)
+export const ModuleCardTitle = styled(
+  ({
+    variant = "h3",
+    component = "h3",
+    align = "center",
+    ...props
+  }: PropsOf<typeof CardTitle>) => (
+    <CardTitle
+      variant={variant}
+      component={component}
+      align={align}
+      {...props}
+    />
+  ),
+)<{ component?: React.ElementType }>``
 
-export const ModuleCardTitle = ({
-  children,
-  ...props
-}: PropsWithChildren<{}>) => (
-  <CardTitle component="h3" align="center" variant="h3" {...props}>
-    {children}
-  </CardTitle>
-)
-
-export const ModuleCardText = ({
-  children,
-  ...props
-}: PropsWithChildren<{}>) => (
-  <CardText component="p" variant="body1" align="left" {...props}>
-    {children}
-  </CardText>
-)
+export const ModuleCardText = styled(
+  ({
+    variant = "body1",
+    component = "p",
+    align = "left",
+    ...props
+  }: PropsOf<typeof CardText>) => (
+    <CardText
+      variant={variant}
+      component={component}
+      align={align}
+      {...props}
+    />
+  ),
+)<{ component?: React.ElementType }>``

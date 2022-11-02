@@ -25,7 +25,7 @@ function Module(props: ModuleProps) {
   const orderedCourses = useMemo(
     () =>
       orderBy(
-        (module?.courses || []).filter(notEmpty),
+        (module?.courses ?? []).filter(notEmpty),
         [
           (course) => course.study_module_order,
           (course) => course.study_module_start_point === true,

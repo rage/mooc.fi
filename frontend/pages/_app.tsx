@@ -1,13 +1,17 @@
 import "@fortawesome/fontawesome-svg-core/styles.css"
 
-import { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
 import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CacheProvider, EmotionCache, Global } from "@emotion/react"
+import {
+  CacheProvider,
+  EmotionCache,
+  /*, Global*/
+} from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -22,7 +26,7 @@ import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
-import { fontCss } from "/src/fonts"
+// import { fontCss } from "/src/fonts"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
@@ -80,7 +84,7 @@ export function MyApp({
   )
 
   return (
-    <>
+    <React.StrictMode>
       <CacheProvider value={emotionCache}>
         <Head>
           <meta
@@ -96,7 +100,7 @@ export function MyApp({
               <BreadcrumbProvider>
                 <AlertProvider>
                   <Layout>
-                    <Global styles={fontCss} />
+                    {/*<Global styles={fontCss} />*/}
                     <Component {...pageProps} />
                   </Layout>
                 </AlertProvider>
@@ -105,7 +109,7 @@ export function MyApp({
           </LoginStateProvider>
         </ThemeProvider>
       </CacheProvider>
-    </>
+    </React.StrictMode>
   )
 }
 

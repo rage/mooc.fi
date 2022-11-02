@@ -28,9 +28,8 @@ export default function ConsentNotification() {
       <Warning />
       <Typography variant="h4" component="h2">
         {t("researchNotification1")}
-        <Link href="/profile?tab=settings" shallow passHref>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a>{t("researchNotificationLink")}</a>
+        <Link href="/profile?tab=settings" shallow>
+          {t("researchNotificationLink")}
         </Link>
         {locale !== "fi" && <span>&nbsp;</span>}
         {t("researchNotification2")}

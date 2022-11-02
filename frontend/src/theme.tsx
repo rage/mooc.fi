@@ -1,6 +1,8 @@
 import { amber } from "@mui/material/colors"
 import { createTheme, Theme } from "@mui/material/styles"
 
+import { openSansCondensed, roboto } from "./fonts"
+
 const rawTheme = createTheme({
   palette: {
     primary: {
@@ -11,11 +13,12 @@ const rawTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: "roboto",
+    fontFamily: roboto.style.fontFamily,
     button: {
       label: {
         textTransform: "none",
-        fontFamily: "Open Sans Condensed",
+        fontFamily: openSansCondensed.style.fontFamily,
+        // fontWidth: "75%"
       },
     },
   },
@@ -45,7 +48,7 @@ const rawTheme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "none",
-          fontFamily: "Open Sans Condensed",
+          fontFamily: openSansCondensed.style.fontFamily,
         },
       },
     },
@@ -60,7 +63,7 @@ const theme: Theme = {
       ...rawTheme.typography.h1,
       paddingBottom: "1rem",
       fontSize: 32,
-      fontFamily: "Open Sans Condensed",
+      fontFamily: openSansCondensed.style.fontFamily,
       "@media (min-width: 600px)": {
         fontSize: 42,
       },
@@ -75,7 +78,7 @@ const theme: Theme = {
     h2: {
       ...rawTheme.typography.h2,
       paddingBottom: "1rem",
-      fontFamily: "Open Sans Condensed",
+      fontFamily: openSansCondensed.style.fontFamily,
       fontSize: 46,
       "@media (min-width: 600px)": {
         fontSize: 56,
@@ -88,7 +91,7 @@ const theme: Theme = {
       ...rawTheme.typography.h3,
       paddingBottom: "0.5rem",
       paddingTop: "0.7rem",
-      fontFamily: "Open Sans Condensed",
+      fontFamily: openSansCondensed.style.fontFamily,
       fontSize: 16,
       "@media (min-width: 600px)": {
         fontSize: 20,
@@ -96,7 +99,7 @@ const theme: Theme = {
     },
     h4: {
       ...rawTheme.typography.h4,
-      fontFamily: "Open Sans Condensed",
+      fontFamily: openSansCondensed.style.fontFamily,
       fontSize: 14,
       "@media (min-width: 600px)": {
         fontSize: 16,
@@ -104,7 +107,7 @@ const theme: Theme = {
     },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
-      fontFamily: "Open Sans Condensed",
+      fontFamily: openSansCondensed.style.fontFamily,
       fontSize: 18,
       "@media (min-width: 600px)": {
         fontSize: 22,

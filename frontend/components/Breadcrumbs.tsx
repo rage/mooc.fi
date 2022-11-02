@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
+import { css } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"
@@ -38,7 +39,7 @@ const BreadcrumbItem = styled.li`
   }
 `
 
-const BreadcrumbArrowStyle = `
+const BreadcrumbLinkBase = css`
   color: #2f4858;
   text-decoration: none;
   padding: 10px 0 10px 45px;
@@ -78,12 +79,12 @@ const BreadcrumbArrowStyle = `
   }
 `
 
-const BreadcrumbLink = styled.a`
-  ${BreadcrumbArrowStyle}
+const BreadcrumbLink = styled(Link)`
+  ${BreadcrumbLinkBase}
 `
 
 const BreadcrumbNonLink = styled.div`
-  ${BreadcrumbArrowStyle}
+  ${BreadcrumbLinkBase}
 `
 
 const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
@@ -108,9 +109,7 @@ const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
           {text ?? <Skeleton width="100px" />}
         </BreadcrumbNonLink>
       ) : (
-        <Link href={href} passHref>
-          <BreadcrumbLink>{text}</BreadcrumbLink>
-        </Link>
+        <BreadcrumbLink href={href}>{text}</BreadcrumbLink>
       )}
     </BreadcrumbItem>
   )

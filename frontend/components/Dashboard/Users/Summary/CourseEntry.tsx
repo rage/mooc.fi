@@ -2,6 +2,7 @@ import React from "react"
 
 import { sortBy } from "lodash"
 
+import { PropsOf } from "@emotion/react"
 import styled from "@emotion/styled"
 import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
 
@@ -23,14 +24,14 @@ interface CourseEntryProps {
   data?: UserCourseSummaryCoreFieldsFragment
 }
 
-const CourseEntryCard = styled(Card)`
+const CourseEntryCard = styled(
+  ({ elevation = 4, ...props }: PropsOf<typeof Card>) => (
+    <Card elevation={elevation} {...props} />
+  ),
+)`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 `
-
-CourseEntryCard.defaultProps = {
-  elevation: 4,
-}
 
 const CourseEntryPartSkeleton = () => (
   <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>

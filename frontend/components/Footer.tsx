@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
@@ -60,13 +61,19 @@ const PolicyContainer = styled.div`
   }
 `
 
-const LogoImage = styled.img`
+/*const LogoImage = styled.img`
   height: 75;
-`
+`*/
 
 function UniversityLogo() {
   return (
-    <picture>
+    <Image
+      src="/static/images/uh-logo.png"
+      alt="Logo of the University of Helsinki"
+      width={188}
+      height={75}
+    />
+    /*<picture>
       <source
         srcSet={require(`../static/images/uh-logo.png?webp`)}
         type="image/webp"
@@ -80,7 +87,7 @@ function UniversityLogo() {
         src={require(`../static/images/uh-logo.png`)}
         loading="lazy"
       />
-    </picture>
+    </picture>*/
   )
 }
 

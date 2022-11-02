@@ -38,19 +38,16 @@ const ModuleDisplayBackground = (
 
   return (
     <Background backgroundColor={backgroundColor}>
-      <picture style={{ zIndex: -1 }}>
-        <source
-          srcSet={require("../../../static/images/backgroundPattern.svg")}
-          type="image/svg+xml"
-        />
-        <BackgroundImage
-          src={require("../../../static/images/backgroundPattern.svg")}
-          loading="lazy"
-          aria-hidden
-          hueRotateAngle={hueRotateAngle}
-          brightness={brightness}
-        />
-      </picture>
+      <BackgroundImage
+        src="/static/images/backgroundPattern.svg"
+        alt=""
+        fill
+        loading="lazy"
+        aria-hidden
+        style={{ zIndex: -1 }}
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
+      />
       {children}
     </Background>
   )

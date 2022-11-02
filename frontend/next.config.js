@@ -1,14 +1,23 @@
-const withPlugins = require("next-compose-plugins")
-const withFonts = require("next-fonts")
-const withOptimizedImages = require("next-optimized-images")
+// @ts-check
+/**
+ * @typedef {import('next').NextConfig} NextConfig
+ * @typedef {((config?: NextConfig) => NextConfig) | ((config: NextConfig) => NextConfig)} NextPlugin
+ */
+// const withFonts = require("next-fonts")
+// const withOptimizedImages = require("next-optimized-images")
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 })
+/** @type {NextPlugin} */
 const withMDX = require("@next/mdx")({
   extension: /\.mdx?$/,
 })
 
+/**
+ * @type {import('next').NextConfig}
+ */
 const nextConfiguration = {
+  reactStrictMode: true,
   images: {
     disableStaticImages: true,
   },
@@ -23,13 +32,15 @@ const nextConfiguration = {
     locales: ["en", "fi"],
     defaultLocale: "fi",
   },
-  experimental: {
-    // enabling emotion here will allow for components to be used as selectors
-    // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
+  compiler: {
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
       autoLabel: "never",
     },
+  },
+  experimental: {
+    // enabling emotion here will allow for components to be used as selectors
+    // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
     modularizeImports: {
       "@mui/icons-material": {
         transform: "@mui/icons-material/{{member}}",
@@ -42,11 +53,38 @@ const nextConfiguration = {
       },
     },
   },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(svg|jpg|png)$/,
+      type: "asset",
+    })
+    /*config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.tsx?$/,
+      resourceQuery: { not: [/url/] },
+      // include: [options.dir],
+      use: [
+        'next-swc-loader',
+        {
+          loader: '@svgr/webpack',
+          options: { babel: false }
+        }
+      ],
+    })*/
+
+    return config
+  },
 }
 
-module.exports = withPlugins(
-  [
-    withFonts,
+module.exports = () => {
+  /**
+   * @type {(
+   *  NextPlugin |
+   *   [typeof withMDX, any]
+   * )[]}
+   */
+  const plugins = [
+    /*withFonts,
     [
       withOptimizedImages,
       {
@@ -67,7 +105,7 @@ module.exports = withPlugins(
           optimizeImagesInDev: true,
         },
       },
-    ],
+    ],*/
     withBundleAnalyzer,
     // withCSS,
     [
@@ -76,6 +114,12 @@ module.exports = withPlugins(
         pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
       },
     ],
-  ],
-  nextConfiguration,
-)
+  ]
+
+  return plugins.reduce((acc, next) => {
+    if (Array.isArray(next)) {
+      return next[0]({ ...acc, ...next[1] })
+    }
+    return next(acc)
+  }, nextConfiguration)
+}

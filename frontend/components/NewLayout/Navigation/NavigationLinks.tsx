@@ -7,7 +7,7 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const NavigationLink = styled("a", {
+const NavigationLink = styled(Link, {
   shouldForwardProp: (prop) => prop !== "active",
 })<React.ComponentProps<"a"> & { active: boolean }>`
   text-decoration: none;
@@ -35,22 +35,25 @@ export const NavigationLinks = () => {
 
   return (
     <NavigationLinkContainer>
-      <Link href="/_new/courses" passHref>
-        <NavigationLink active={active === "courses"}>
-          {t("courses")}
-        </NavigationLink>
-      </Link>
+      <NavigationLink href="/_new/courses" active={active === "courses"}>
+        {t("courses")}
+      </NavigationLink>
 
-      <Link href="/_new/study-modules" passHref>
-        <NavigationLink active={active === "study-modules"}>
-          {t("modules")}
-        </NavigationLink>
-      </Link>
+      <NavigationLink
+        href="/_new/study-modules"
+        active={active === "study-modules"}
+      >
+        {t("modules")}
+      </NavigationLink>
 
       {admin && (
-        <Link href="/_new/admin" passHref prefetch={false}>
-          <NavigationLink active={active === "admin"}>Admin</NavigationLink>
-        </Link>
+        <NavigationLink
+          href="/_new/admin"
+          prefetch={false}
+          active={active === "admin"}
+        >
+          Admin
+        </NavigationLink>
       )}
     </NavigationLinkContainer>
   )

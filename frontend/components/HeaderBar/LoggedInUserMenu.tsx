@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import {
   faChalkboardTeacher,
   faEnvelope,
@@ -9,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
@@ -45,8 +45,8 @@ const StyledButton = styled(Button)<ButtonProps>`
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
 `
 
-const ButtonLabel = styled(Typography)<any>`
-  font-family: Open Sans Condensed !important;
+const ButtonLabel = styled(Typography)`
+  font-family: var(--open-sans-condensed-font) !important;
   font-size: 18px;
   @media (max-width: 600px) {
     font-size: 14px;

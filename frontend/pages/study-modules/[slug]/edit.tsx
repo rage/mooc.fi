@@ -63,7 +63,7 @@ const EditStudyModule = () => {
 
     if (!loading && !data?.study_module) {
       redirectTimeout = setTimeout(
-        () => router.push(listLink, undefined, { shallow: true }),
+        () => router.push("/study-modules", undefined, { shallow: true }),
         5000,
       )
     }
@@ -79,8 +79,6 @@ const EditStudyModule = () => {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
-  const listLink = "/study-modules"
-
   return (
     <>
       <NextSeo title={title} />
@@ -89,15 +87,15 @@ const EditStudyModule = () => {
           <H1NoBackground component="h1" variant="h1" align="center">
             {t("editStudyModule")}
           </H1NoBackground>
-          {loading ? (
-            <FormSkeleton />
-          ) : data?.study_module ? (
-            beta ? (
+          {loading && <FormSkeleton />}
+          {!loading &&
+            data?.study_module &&
+            (beta ? (
               <StudyModuleEdit2 module={data.study_module} />
             ) : (
               <StudyModuleEdit module={data.study_module} />
-            )
-          ) : (
+            ))}
+          {!loading && !data?.study_module && (
             <ErrorContainer elevation={2}>
               <Typography
                 variant="body1"
@@ -107,10 +105,7 @@ const EditStudyModule = () => {
               />
               <Typography variant="body2">
                 {t("redirectMessagePre")}
-                <Link href="/study-modules" passHref>
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                  <a>{t("redirectLinkText")}</a>
-                </Link>
+                <Link href="/study-modules">{t("redirectLinkText")}</Link>
                 {t("redirectMessagePost")}
               </Typography>
             </ErrorContainer>

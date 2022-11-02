@@ -34,6 +34,7 @@
       "title": "LUT",
       "text": "LUT-yliopisto tarjoaa ohjelmistotuotannon opintoja joustavina etäopintoina. Opinnot sopivat sinulle, jos sinulla on hieman ohjelmointitaustaa ja haluat täydentää ohjelmistoihin liittyvää suunnittelun, prosessien tai laadunhallinnan osaamistasi.",
       "titleImg": "LUT-LOGO-PNG.png",
+      "titleImgDimensions": { "width": "128", "height": "56" },
       "link": "#lut",
       "linkText": "LUT"
     }

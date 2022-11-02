@@ -326,11 +326,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <Link href={`/sign-in`} passHref>
-            {/*Link passes href*/}
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-            <a>{t("signIn")}</a>
-          </Link>
+          <Link href={`/sign-in`}>{t("signIn")}</Link>
         </Row>
 
         {this.state.error && (

@@ -1,45 +1,45 @@
 const ohpe_image = [
-  require("./static/images/courseimages/doggos.png?webp"),
+  // require("./static/images/courseimages/doggos.png?webp"),
   require("./static/images/courseimages/doggos.png"),
 ]
 const fs_image = [
-  require("./static/images/courseimages/fullstack.2.png?webp"),
+  // require("./static/images/courseimages/fullstack.2.png?webp"),
   require("./static/images/courseimages/fullstack.2.png"),
 ]
 const ai_image = [
-  require("./static/images/courseimages/elements-of-ai.png?webp"),
+  // require("./static/images/courseimages/elements-of-ai.png?webp"),
   require("./static/images/courseimages/elements-of-ai.png"),
 ]
 const dap_image = [
-  require("./static/images/courseimages/dap.jpg?webp"),
+  // require("./static/images/courseimages/dap.jpg?webp"),
   require("./static/images/courseimages/dap.jpg"),
 ]
 const wepa_image = [
-  require("./static/images/courseimages/wepa.jpg?webp"),
+  // require("./static/images/courseimages/wepa.jpg?webp"),
   require("./static/images/courseimages/wepa.jpg"),
 ]
 const tilpe_image = [
-  require("./static/images/courseimages/tilpe.png?webp"),
+  // require("./static/images/courseimages/tilpe.png?webp"),
   require("./static/images/courseimages/tilpe.png"),
 ]
 const docker_image = [
-  require("./static/images/courseimages/containers.png?webp"),
+  // require("./static/images/courseimages/containers.png?webp"),
   require("./static/images/courseimages/containers.png"),
 ]
 const tikape_image = [
-  require("./static/images/courseimages/tikape.jpg?webp"),
+  // require("./static/images/courseimages/tikape.jpg?webp"),
   require("./static/images/courseimages/tikape.jpg"),
 ]
 const tira_image = [
-  require("./static/images/courseimages/tira.png?webp"),
+  // require("./static/images/courseimages/tira.png?webp"),
   require("./static/images/courseimages/tira.png"),
 ]
 const tito_image = [
-  require("./static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg?webp"),
+  // require("./static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg?webp"),
   require("./static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg"),
 ]
 const cyber_image = [
-  require("./static/images/courseimages/cyber.png?webp"),
+  // require("./static/images/courseimages/cyber.png?webp"),
   require("./static/images/courseimages/cyber.png"),
 ]
 

@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import styled from "@emotion/styled"
 import Language from "@mui/icons-material/Language"
 
-const SwitchLink = styled.a`
+const SwitchLink = styled(Link)`
   font-size: 14px;
   line-height: 1.3;
   font-weight: bold;
@@ -38,14 +38,12 @@ const LanguageSwitch = () => {
   const href = asPath?.replace(/#.*/, "")
 
   return (
-    <Link href={href} locale={newLocale} passHref>
-      <SwitchLink>
-        <LanguageIcon />
-        <LanguageName data-testid="language-switch">
-          {locale === "en" ? "Suomi" : "English"}
-        </LanguageName>
-      </SwitchLink>
-    </Link>
+    <SwitchLink href={href} locale={newLocale}>
+      <LanguageIcon />
+      <LanguageName data-testid="language-switch">
+        {locale === "en" ? "Suomi" : "English"}
+      </LanguageName>
+    </SwitchLink>
   )
 }
 

@@ -12,12 +12,10 @@ const compression = require("compression")
 
 const Redirects = require("./Redirects")
 const port = process.env.PORT || 3000
-const app = next({ dev: !isProduction })
+const app = next({ dev: !isProduction, quiet: false })
 const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
-
-const createMockBackend = require("./tests/mockBackend")
 
 const main = async () => {
   try {

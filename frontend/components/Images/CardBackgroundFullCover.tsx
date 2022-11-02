@@ -1,6 +1,8 @@
+import Image from "next/image"
+
 import styled from "@emotion/styled"
 
-export const BackgroundImage = styled.img`
+export const BackgroundImage = styled(Image)`
   position: absolute;
   top: 0;
   left: 0;

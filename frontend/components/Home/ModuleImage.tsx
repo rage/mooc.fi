@@ -1,5 +1,4 @@
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
-import { mime } from "/util/imageUtils"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
@@ -11,21 +10,13 @@ const ModuleImage = ({ module }: ModuleImageProps) => {
 
   try {
     return (
-      <picture>
-        <source
-          srcSet={require(`../../static/images/${imageUrl}?webp`)}
-          type="image/webp"
-        />
-        <source
-          srcSet={require(`../../static/images/${imageUrl}`)}
-          type={mime(imageUrl)}
-        />
-        <BackgroundImage
-          src={require(`../../static/images/${imageUrl}`)}
-          loading="lazy"
-          alt=""
-        />
-      </picture>
+      <BackgroundImage
+        src={`/static/images/${imageUrl}`}
+        loading="lazy"
+        alt=""
+        fill
+        aria-hidden={true}
+      />
     )
   } catch (e) {
     return null

@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react"
 
+import { MDXComponents } from "mdx/types"
+
 import styled from "@emotion/styled"
 import { MDXProvider } from "@mdx-js/react"
 import { Paper } from "@mui/material"
@@ -50,8 +52,8 @@ const CustomModuleContainer = styled.div`
 
 interface CustomModuleContentProps {}
 
-const components = {
-  h3: ModuleCardTitle,
+const components: MDXComponents = {
+  h3: ModuleCardTitle as React.FC<JSX.IntrinsicElements["h3"]>,
   p: ModuleCardText,
 }
 
