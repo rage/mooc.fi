@@ -16,6 +16,7 @@ const ComponentStyle = `
 const ImageComponent = styled.img`
   ${ComponentStyle}
 `
+
 const PlaceholderComponent = styled.div`
   ${ComponentStyle}
   background-color: #F0F0F0;

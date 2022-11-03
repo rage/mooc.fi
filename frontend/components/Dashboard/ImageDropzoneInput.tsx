@@ -41,6 +41,7 @@ const DropzoneContainer = styled.div<
     border-color: #00a000;
   }
   justify-content: center;
+  position: relative;
 `
 
 interface MessageProps {

@@ -163,6 +163,7 @@ const RenderForm = () => {
           <OutlinedFormGroup>
             <ModuleImage
               src={imageFilename}
+              alt={!imageError ? `Image preview of ${imageFilename}` : ``}
               error={!!imageError}
               onError={() => setImageError(t("moduleImageError"))}
               onLoad={() => setImageError("")}
@@ -189,7 +190,7 @@ const RenderForm = () => {
                           name={`study_module_translations[${index}].language`}
                           type="select"
                           label={t("moduleLanguage")}
-                          errors={[
+                          error={[
                             getIn(
                               errors,
                               `study_module_translations[${index}].language`,

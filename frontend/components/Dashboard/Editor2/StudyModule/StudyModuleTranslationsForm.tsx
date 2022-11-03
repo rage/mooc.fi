@@ -10,7 +10,7 @@ import {
   initialTranslation,
   languages,
 } from "/components/Dashboard/Editor2/StudyModule/form-validation"
-import { StudyModuleTranslationFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
+import { StudyModuleFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import StudyModuleTranslations from "/translations/study-modules"
@@ -22,7 +22,10 @@ export default function StudyModuleTranslationsForm() {
 
   return (
     <section>
-      <ControlledFieldArrayList<StudyModuleTranslationFormValues>
+      <ControlledFieldArrayList<
+        StudyModuleFormValues,
+        "study_module_translations"
+      >
         name="study_module_translations"
         label={""}
         initialValues={initialTranslation}

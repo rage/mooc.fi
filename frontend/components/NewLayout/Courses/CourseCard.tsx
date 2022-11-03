@@ -169,7 +169,7 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
             </p>
           )}
         </Schedule>
-        <Sponsor src={SponsorLogo} />
+        <Sponsor src={SponsorLogo} alt="Sponsor logo" />
         <Tags>
           {tags?.map((tag) => (
             <Tag size="small" variant="contained" disabled>

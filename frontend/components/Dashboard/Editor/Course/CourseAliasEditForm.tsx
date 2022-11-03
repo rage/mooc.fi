@@ -37,9 +37,12 @@ const CourseAliasEditForm = () => {
           <FieldArray name="course_aliases">
             {(helpers) => (
               <>
-                {values!.length ? (
-                  values!.map((alias, index: number) => (
-                    <section style={{ display: "inline-block" }}>
+                {values?.length ? (
+                  values.map((alias, index: number) => (
+                    <section
+                      key={alias.course_code}
+                      style={{ display: "inline-block" }}
+                    >
                       <StyledFieldWithAnchor
                         id={`course_aliases[${index}].course_code`}
                         name={`course_aliases[${index}].course_code`}
@@ -47,7 +50,7 @@ const CourseAliasEditForm = () => {
                         component={StyledTextField}
                         value={alias.course_code}
                         label={t("courseAliasCourseCode")}
-                        errors={[getIn(errors, `[${index}].course_code`)]}
+                        error={[getIn(errors, `[${index}].course_code`)]}
                         variant="outlined"
                         InputLabelProps={inputLabelProps}
                         style={{ width: "70%" }}
@@ -88,9 +91,9 @@ const CourseAliasEditForm = () => {
                     {t("courseNoAliases")}
                   </Typography>
                 )}
-                {(values!.length == 0 ||
-                  (values!.length &&
-                    values![values!.length - 1].course_code !== "")) && (
+                {(!values?.length ||
+                  (values?.length &&
+                    values[values.length - 1].course_code !== "")) && (
                   <section
                     style={{ justifyContent: "center", display: "flex" }}
                   >

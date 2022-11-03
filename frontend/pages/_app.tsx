@@ -7,11 +7,7 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import {
-  CacheProvider,
-  EmotionCache,
-  /*, Global*/
-} from "@emotion/react"
+import { CacheProvider, EmotionCache } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -100,7 +96,6 @@ export function MyApp({
               <BreadcrumbProvider>
                 <AlertProvider>
                   <Layout>
-                    {/*<Global styles={fontCss} />*/}
                     <Component {...pageProps} />
                   </Layout>
                 </AlertProvider>

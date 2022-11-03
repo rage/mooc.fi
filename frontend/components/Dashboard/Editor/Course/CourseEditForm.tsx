@@ -142,7 +142,6 @@ const renderForm =
             </FormSubtitle>
             <FormFieldGroup>
               <StyledFieldWithAnchor
-                id="input-course-name"
                 style={{ width: "80%" }}
                 name="name"
                 type="text"
@@ -155,7 +154,6 @@ const renderForm =
                 required={true}
               />
               <StyledFieldWithAnchor
-                id="input-course-slug"
                 style={{ width: "40%" }}
                 name="new_slug"
                 type="text"
@@ -174,7 +172,7 @@ const renderForm =
                 type="text"
                 label={t("courseECTS")}
                 InputLabelProps={inputLabelProps}
-                errors={errors.ects}
+                error={errors.ects}
                 autoComplete="off"
                 variant="outlined"
                 component={StyledTextField}
@@ -183,7 +181,6 @@ const renderForm =
 
             <FormFieldGroup>
               <StyledFieldWithAnchor
-                id="start-date"
                 name="start_date"
                 label={t("courseStartDate")}
                 as={DatePickerField}
@@ -192,7 +189,6 @@ const renderForm =
                 placeholder={t("courseDatePlaceholder")}
               />
               <StyledFieldWithAnchor
-                id="end-date"
                 name="end_date"
                 label={t("courseEndDate")}
                 as={DatePickerField}
@@ -203,7 +199,6 @@ const renderForm =
 
             <FormFieldGroup>
               <StyledFieldWithAnchor
-                id="input-teacher-in-charge-name"
                 style={{ width: "80%" }}
                 name="teacher_in_charge_name"
                 type="text"
@@ -216,7 +211,6 @@ const renderForm =
                 required={true}
               />
               <StyledFieldWithAnchor
-                id="input-teacher-in-charge-email"
                 style={{ width: "60%" }}
                 name="teacher_in_charge_email"
                 type="text"
@@ -229,7 +223,6 @@ const renderForm =
                 required={true}
               />
               <StyledFieldWithAnchor
-                id="support-email"
                 style={{ width: "60%" }}
                 name="support_email"
                 type="text"
@@ -525,7 +518,7 @@ interface CourseEditFormProps<SchemaType extends ObjectShape> {
   onDelete: (values: CourseFormValues) => void
 }
 
-function CourseEditForm<SchemaType extends ObjectShape>({
+function CourseEditForm<SchemaType extends ObjectShape = ObjectShape>({
   course,
   studyModules,
   courses,
@@ -554,7 +547,7 @@ function CourseEditForm<SchemaType extends ObjectShape>({
       onSubmit={onSubmit}
       validateOnChange={false}
     >
-      <FormWrapper<CourseFormValues>
+      <FormWrapper
         renderForm={renderForm({
           initialValues: course,
           courses,

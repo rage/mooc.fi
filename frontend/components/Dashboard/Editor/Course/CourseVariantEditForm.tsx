@@ -50,7 +50,7 @@ const CourseVariantEditForm = () => {
                             component={StyledTextField}
                             value={variant.slug}
                             label={t("courseSlug")}
-                            errors={[getIn(errors, `[${index}].slug`)]}
+                            error={[getIn(errors, `[${index}].slug`)]}
                             variant="outlined"
                             InputLabelProps={inputLabelProps}
                             required
@@ -64,7 +64,7 @@ const CourseVariantEditForm = () => {
                             component={StyledTextField}
                             value={variant.description}
                             label={t("courseDescription")}
-                            errors={[getIn(errors, `[${index}].description`)]}
+                            error={[getIn(errors, `[${index}].description`)]}
                             variant="outlined"
                             InputLabelProps={inputLabelProps}
                           />
@@ -77,7 +77,7 @@ const CourseVariantEditForm = () => {
                             component={StyledTextField}
                             value={variant.instructions}
                             label={t("courseInstructions")}
-                            errors={[getIn(errors, `[${index}].instructions`)]}
+                            error={[getIn(errors, `[${index}].instructions`)]}
                             variant="outlined"
                             InputLabelProps={inputLabelProps}
                           />

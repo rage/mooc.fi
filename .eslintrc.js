@@ -5,6 +5,8 @@ module.exports = {
     "eslint-custom-rules",
     "react-hooks",
     "jsx-a11y",
+    "styled-components-a11y",
+    "css",
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -52,13 +54,27 @@ module.exports = {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
-  extends: ["plugin:jsx-a11y/recommended", "plugin:@next/next/recommended"],
+  extends: [
+    "plugin:jsx-a11y/recommended",
+    "plugin:@next/next/recommended",
+    "plugin:css/recommended",
+    "plugin:styled-components-a11y/recommended",
+  ],
   settings: {
     react: {
       version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
     },
     next: {
       rootDir: "frontend",
+    },
+    css: {
+      target: {
+        defineFunctions: {
+          "@emotion/styled": [["default", /^\\w+$/u]],
+          "@mui/material/styles": [["styles", /^\\w+$/u]],
+        },
+        attributes: ["css"],
+      },
     },
   },
 }

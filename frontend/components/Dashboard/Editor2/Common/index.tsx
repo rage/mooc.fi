@@ -33,7 +33,7 @@ export const FormFieldGroup = styled.div`
   border-bottom: 4px dotted #98b0a9;
 `
 
-export const AdjustingAnchorLink = styled.a<{ id: string }>`
+export const AdjustingAnchorLink = styled.div`
   display: block;
   position: relative;
   top: -120px;
@@ -44,6 +44,7 @@ export const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
 `
 
+export const Anchor = styled.div``
 interface EnumeratingAnchorProps {
   id: string
 }

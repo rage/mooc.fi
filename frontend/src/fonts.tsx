@@ -13,7 +13,7 @@ export const roboto = Roboto({
 
 // TODO/FIXME
 // @next/font/google seems to be buggy and this will just crash the program if axes is set.
-// When it's eventually fixed, we can import the variable width (75...100) and use the 
+// When it's eventually fixed, we can import the variable width (75...100) and use the
 // 75 as the equivalent of the current condensed.
 /*export const openSansCondensed = Open_Sans({
   subsets: ["latin"],

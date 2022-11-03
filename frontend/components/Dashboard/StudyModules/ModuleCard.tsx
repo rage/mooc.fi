@@ -10,7 +10,6 @@ import { BoxProps } from "@mui/system"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import { mime } from "/util/imageUtils"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
@@ -34,8 +33,8 @@ const ImageBackgroundBase = css`
 `
 
 const ImageBackground = styled(Image)`
-  ${ImageBackgroundBase}
-  object-cover: fit;
+  ${ImageBackgroundBase};
+  object-fit: cover;
 `
 
 const ImageBackgroundSkeleton = styled("span")`
@@ -110,7 +109,6 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
 
   return (
     <Grid item xs={12} sm={6} lg={6}>
-      <Typography component="div">asdf</Typography>
       <Base>
         {loading && (
           <ImageBackgroundSkeleton>

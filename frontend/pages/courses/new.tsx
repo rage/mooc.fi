@@ -79,7 +79,7 @@ const NewCourse = () => {
           <FormSkeleton />
         ) : beta ? (
           <CourseEdit2
-            {...(clone ? { course: clonedCourse } : {})}
+            {...(clone ? { course: clonedCourse ?? undefined } : {})}
             courses={coursesData?.courses?.filter(notEmpty)}
             studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
           />

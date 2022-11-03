@@ -29,7 +29,7 @@ const Status = styled.p<{ error: FormStatus["error"] }>`
   color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 
-function EditorContainer<T extends FormValues>({
+function EditorContainer<T extends FormValues = FormValues>({
   children,
 }: PropsWithChildren<{}>) {
   const t = useTranslator(CommonTranslations)

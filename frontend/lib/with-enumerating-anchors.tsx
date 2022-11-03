@@ -1,10 +1,12 @@
-import { useMemo } from "react"
+import React, { useMemo } from "react"
+
+import { PropsOf } from "@emotion/react"
 
 import AnchorContext, { Anchor } from "/contexts/AnchorContext"
 
 const withEnumeratingAnchors =
-  <T,>(Component: any) =>
-  (props: any) => {
+  <T extends React.ElementType = any>(Component: T) =>
+  (props: PropsOf<T>) => {
     let anchorId = 0
     const anchors: Record<string, Anchor> = {}
     const addAnchor = (anchor: string, tab: number = 0) => {
@@ -20,7 +22,7 @@ const withEnumeratingAnchors =
 
     return (
       <AnchorContext.Provider value={contextValue}>
-        <Component {...(props as T)}>{props.children}</Component>
+        <Component {...props}>{props.children}</Component>
       </AnchorContext.Provider>
     )
   }

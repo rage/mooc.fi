@@ -53,7 +53,9 @@ interface FormWrapperProps<T extends FormValues> {
   setTab?: Dispatch<React.SetStateAction<number>>
 }
 
-const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
+const FormWrapper = <T extends FormValues = FormValues>(
+  props: FormWrapperProps<T>,
+) => {
   const {
     submitForm,
     errors,
@@ -182,8 +184,8 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
 }
 
 // need to pass type through
-const WrappedFormWrapper: <T extends FormValues>(
+/*const WrappedFormWrapper: <T extends FormValues>(
   props: FormWrapperProps<T>,
-) => JSX.Element = withEnumeratingAnchors(FormWrapper)
+) => JSX.Element = withEnumeratingAnchors(FormWrapper)*/
 
-export default WrappedFormWrapper
+export default withEnumeratingAnchors(FormWrapper) as typeof FormWrapper

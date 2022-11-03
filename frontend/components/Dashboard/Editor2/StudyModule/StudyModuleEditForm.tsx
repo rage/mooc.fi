@@ -76,6 +76,7 @@ export default function StudyModuleEditForm() {
       </FormSubtitle>
       <ModuleImage
         src={imageFilename}
+        alt={!imageError ? `Image preview of ${imageFilename}` : ``}
         error={Boolean(imageError)}
         onError={() => {
           setImageError(t("moduleImageError"))

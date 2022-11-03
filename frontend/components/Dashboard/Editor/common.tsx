@@ -1,8 +1,9 @@
-import { PropsWithChildren, useContext } from "react"
+import React, { PropsWithChildren, useContext } from "react"
 
-import { Field, FieldProps, useFormikContext } from "formik"
+import { Field, FieldConfig, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
 
+import { PropsOf } from "@emotion/react"
 import styled from "@emotion/styled"
 import {
   Checkbox,
@@ -20,18 +21,20 @@ import AnchorContext from "/contexts/AnchorContext"
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
   background-color: white;
-`
+` as typeof TextField
 
 export const OutlinedInputLabel = styled(InputLabel)`
   background-color: #ffffff;
   padding: 0 4px 0 4px;
-`
+` as typeof InputLabel
 
 export const OutlinedFormControl = styled(FormControl)`
   margin-bottom: 1rem;
-`
+` as typeof FormControl
 
-export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
+export const OutlinedFormGroup = styled(FormGroup, {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error?: boolean }>`
   border-radius: 4px;
   border: 1px solid
     ${(props) => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
@@ -63,15 +66,15 @@ export const StyledField = styled(Field)`
   .input-required {
     color: #df7a46;
   }
-`
+` as typeof Field
 
-export const FormSubtitle = styled(Typography)<any>`
+export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
   margin-bottom: 1rem;
   font-size: 2em;
-`
+` as typeof Typography
 
-export const AdjustingAnchorLink = styled.a<{ id: string }>`
+export const AdjustingAnchorLink = styled.div`
   display: block;
   position: relative;
   top: -120px;
@@ -130,24 +133,31 @@ export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({
   return <AdjustingAnchorLink id={id} />
 }
 
-interface StyledFieldWithAnchorProps extends Partial<FieldProps> {
+type StyledFieldWithAnchorProps<
+  V = any,
+  C extends React.ElementType = any,
+> = Exclude<FieldConfig<V>, "component"> & {
+  id?: string
   name: string
   tab?: number
   error?: any
-  [key: string]: any
-}
+  component?: C
+} & Partial<PropsOf<C>>
 
-export const StyledFieldWithAnchor: React.FC<StyledFieldWithAnchorProps> = ({
-  name,
-  tab = 0,
-  error,
-  ...props
-}) => {
+export function StyledFieldWithAnchor<
+  V = any,
+  C extends React.ElementType = any,
+>({ id, name, tab = 0, error, ...props }: StyledFieldWithAnchorProps<V, C>) {
+  const { addAnchor } = useContext(AnchorContext)
+  addAnchor(id ?? name, tab)
+
   return (
-    <>
-      <EnumeratingAnchor id={name} tab={tab} />
-      <StyledField name={name} {...props} error={Boolean(error)} />
-    </>
+    <StyledField
+      id={id ?? name}
+      name={name}
+      {...props}
+      error={Boolean(error)}
+    />
   )
 }
 

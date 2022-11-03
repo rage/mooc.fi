@@ -1,8 +1,10 @@
+import Image from "next/image"
+
 import styled from "@emotion/styled"
 import { ButtonBase, Tooltip } from "@mui/material"
 
 const CloseButton = styled(ButtonBase)`
-  position: relative;
+  position: absolute;
   top: -10px;
   right: 20px;
   border-radius: 10em;
@@ -33,19 +35,28 @@ const CloseButton = styled(ButtonBase)`
   }
 `
 
-interface ImagePreviewProps {
+const ImagePreviewContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+`
+interface ImagePreviewProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   file: string | undefined
   onClose:
     | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
     | null
   height?: number
-  [key: string]: any
 }
 
 const ImagePreview = ({
   file,
   onClose = null,
-  height = 250,
+  height,
   ...rest
 }: ImagePreviewProps) => {
   if (!file) {
@@ -53,18 +64,19 @@ const ImagePreview = ({
   }
 
   return (
-    <div {...rest}>
-      <img
+    <ImagePreviewContainer {...rest}>
+      <Image
         src={file}
-        height={height}
-        alt={file} // TODO: might be gibberish if base64 image
+        alt={file.length > 64 ? "Image preview" : file} // don't spout gibberish if it's a base64
+        fill
+        style={{ objectFit: "contain" }}
       />
       {onClose && (
         <Tooltip title="Remove picture">
           <CloseButton onClick={onClose}>&times;</CloseButton>
         </Tooltip>
       )}
-    </div>
+    </ImagePreviewContainer>
   )
 }
 

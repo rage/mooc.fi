@@ -14,7 +14,6 @@ import {
 } from "@mui/material"
 
 import { FormValues } from "../../types"
-import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {
   ControlledFieldProps,
   FieldController,
@@ -61,7 +60,6 @@ export function ControlledModuleList<T extends FormValues>(
       {label && <FormLabel>{label}</FormLabel>}
       <FormGroup>
         <ModuleList>
-          <EnumeratingAnchor id={name} />
           <FieldController
             name={name}
             label={label}
