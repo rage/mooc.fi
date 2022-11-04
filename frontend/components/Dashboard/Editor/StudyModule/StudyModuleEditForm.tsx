@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   FieldArray,
@@ -10,12 +10,14 @@ import {
   yupToFormErrors,
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
+import Image from "next/image"
 import * as Yup from "yup"
 import { ObjectShape } from "yup/lib/object"
 
 import styled from "@emotion/styled"
 import HelpIcon from "@mui/icons-material/Help"
 import {
+  CircularProgress,
   Grid,
   InputAdornment,
   MenuItem,
@@ -28,6 +30,7 @@ import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import {
+  FormSubtitle,
   OutlinedFormControl,
   OutlinedFormGroup,
   OutlinedInputLabel,
@@ -35,7 +38,6 @@ import {
   StyledFieldWithAnchor,
   StyledTextField,
 } from "/components/Dashboard/Editor/common"
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
@@ -48,12 +50,17 @@ const FormContainer = styled.div`
   padding: 1rem;
 `
 
-const ModuleImage = styled.img<{ error?: boolean }>`
+const ImageContainer = styled.div`
+  position: relative;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const ModuleImage = styled(Image)<{ error?: boolean; isLoading?: boolean }>`
   object-fit: cover;
-  width: 100%;
-  height: 100%;
-  max-height: 250px;
-  display: ${(props) => (props.error ? "none" : "")};
+  display: ${(props) => (props.error || props.isLoading ? "none" : "")};
 `
 
 // prevent borked image on page load
@@ -73,14 +80,21 @@ const RenderForm = () => {
   const [image] = useDebounce(values.image, 500)
   const [slug] = useDebounce(values.new_slug, 500)
 
-  const [imageFilename, setImageFilename] = useState(pixel)
+  const [imageLoading, setImageLoading] = useState(false)
 
   useEffect(() => {
-    if (image) {
-      setImageFilename(`/static/images/${image}`)
-    } else {
-      setImageFilename(`/static/images/${slug}.jpg`)
+    setImageLoading(true)
+
+    return () => {
+      setImageLoading(false)
     }
+  }, [image, slug])
+
+  const imageFilename = useMemo(() => {
+    if (image) {
+      return `/static/images/${image}`
+    }
+    return `/static/images/${slug}.jpg`
   }, [image, slug])
 
   return (
@@ -161,18 +175,35 @@ const RenderForm = () => {
             {t("moduleImagePreview")}
           </OutlinedInputLabel>
           <OutlinedFormGroup>
-            <ModuleImage
-              src={imageFilename}
-              alt={!imageError ? `Image preview of ${imageFilename}` : ``}
-              error={!!imageError}
-              onError={() => setImageError(t("moduleImageError"))}
-              onLoad={() => setImageError("")}
-            />
-            {!!imageError ? (
-              <Typography variant="body2" style={{ color: "#FF0000" }}>
-                {imageError}
-              </Typography>
-            ) : null}
+            <ImageContainer>
+              {imageLoading && (
+                <CircularProgress
+                  size={100}
+                  style={{ objectFit: "contain", objectPosition: "50% 50%" }}
+                />
+              )}
+              <ModuleImage
+                src={imageFilename ? imageFilename + "?v=" + Date.now() : pixel}
+                alt={!imageError ? `Image preview of ${image}` : ``}
+                error={!!imageError}
+                isLoading={imageLoading}
+                priority
+                fill
+                onError={() => {
+                  setImageLoading(false)
+                  setImageError(t("moduleImageError"))
+                }}
+                onLoadingComplete={() => {
+                  setImageLoading(false)
+                  setImageError("")
+                }}
+              />
+              {!imageLoading && !!imageError ? (
+                <Typography variant="body2" style={{ color: "red" }}>
+                  {imageError}
+                </Typography>
+              ) : null}
+            </ImageContainer>
           </OutlinedFormGroup>
         </OutlinedFormControl>
         <FormSubtitle variant="h6" component="h3" align="center">

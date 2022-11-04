@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -115,9 +114,7 @@ function Modules() {
           <ModuleCard key={`module-${index}`} module={module} hue={100} />
         ))}
       </ModulesGrid>
-      <Link href="/_new/study-modules" passHref>
-        <Button>Näytä kaikki kokonaisuudet</Button>
-      </Link>
+      <Button href="/_new/study-modules">Näytä kaikki kokonaisuudet</Button>
     </SectionContainer>
   )
 }

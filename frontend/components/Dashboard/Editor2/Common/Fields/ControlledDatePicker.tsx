@@ -1,10 +1,9 @@
 import { omit } from "lodash"
 import { useFormContext } from "react-hook-form"
 
-import AdapterLuxon from "@mui/lab/AdapterLuxon"
-import DatePicker from "@mui/lab/DatePicker"
-import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import { TextField } from "@mui/material"
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import {
   ControlledFieldProps,

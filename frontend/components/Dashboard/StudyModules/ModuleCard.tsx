@@ -1,5 +1,4 @@
 import Image from "next/image"
-import Link from "next/link"
 
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
@@ -151,34 +150,28 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </ButtonWithPaddingAndMargin>
           )}
           {moduleFound && (
-            <Link
+            <ButtonWithPaddingAndMargin
               href={`/study-modules/${module.slug}/edit`}
               aria-label={`Edit study module ${module.name}`}
+              variant="text"
+              color="secondary"
+              style={{ width: "68%" }}
             >
-              <ButtonWithPaddingAndMargin
-                variant="text"
-                color="secondary"
-                style={{ width: "68%" }}
-              >
-                <EditIcon />
-                Edit
-              </ButtonWithPaddingAndMargin>
-            </Link>
+              <EditIcon />
+              Edit
+            </ButtonWithPaddingAndMargin>
           )}
           {moduleNotFound && (
-            <Link
+            <ButtonWithPaddingAndMargin
               href={`/study-modules/new`}
               aria-label="Create new study module"
+              variant="text"
+              color="secondary"
+              style={{ width: "68%" }}
             >
-              <ButtonWithPaddingAndMargin
-                variant="text"
-                color="secondary"
-                style={{ width: "68%" }}
-              >
-                <AddIcon />
-                Create
-              </ButtonWithPaddingAndMargin>
-            </Link>
+              <AddIcon />
+              Create
+            </ButtonWithPaddingAndMargin>
           )}
         </ContentArea>
       </Base>

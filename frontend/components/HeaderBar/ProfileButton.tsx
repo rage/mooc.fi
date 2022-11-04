@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import styled from "@emotion/styled"
 
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
@@ -8,11 +6,9 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-interface ButtonProps {
-  active: any
-}
-
-const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
+const StyledButton = styled(HeaderMenuButton, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<{ active?: boolean }>`
   border-radius: 0px;
   line-height: 90%;
   @media (max-width: 950px) {
@@ -32,15 +28,14 @@ const ProfileButton = () => {
     : t("myProfile")
 
   return (
-    <Link href={`/profile`} passHref>
-      <StyledButton
-        color="inherit"
-        variant="text"
-        active={active == "profile" ? 1 : null}
-      >
-        {userDisplayName}
-      </StyledButton>
-    </Link>
+    <StyledButton
+      href={`/profile`}
+      color="inherit"
+      variant="text"
+      active={active === "profile"}
+    >
+      {userDisplayName}
+    </StyledButton>
   )
 }
 

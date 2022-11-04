@@ -12,4 +12,4 @@ export const HeaderMenuButton = styled(Button)`
     margin-bottom: 0.25rem;
   }
   margin: 0.5rem;
-`
+` as typeof Button

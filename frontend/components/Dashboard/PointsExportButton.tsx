@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { utils, type WorkBook, writeFile } from "xlsx"
+import { utils, writeFile, type WorkBook } from "xlsx"
 
 import { ApolloClient, useApolloClient } from "@apollo/client"
 import styled from "@emotion/styled"
@@ -30,7 +30,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
     <PointsExportButtonContainer>
       <StyledButton
         color="secondary"
-        disabled={!(infotext == "" || infotext == "ready")}
+        disabled={!(!infotext || infotext == "ready")}
         onClick={async () => {
           try {
             setInfotext("Downloading data")

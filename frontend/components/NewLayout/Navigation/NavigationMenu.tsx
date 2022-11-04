@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
@@ -29,6 +28,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  MenuItemProps,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -99,23 +99,17 @@ const UserOptionsMenu = () => {
   if (loggedIn) {
     return (
       <>
-        <Link href="/_new/profile" passHref>
-          <MenuButton>{userDisplayName}</MenuButton>
-        </Link>
-        <Link href={pathname} passHref>
-          <MenuButton onClick={onLogOut}>{t("logout")}</MenuButton>
-        </Link>
+        <MenuButton href="/_new/profile">{userDisplayName}</MenuButton>
+        <MenuButton href={pathname} onClick={onLogOut}>
+          {t("logout")}
+        </MenuButton>
       </>
     )
   }
   return (
     <>
-      <Link href="/_new/sign-in" passHref>
-        <MenuButton>{t("loginShort")}</MenuButton>
-      </Link>
-      <Link href="/_new/sign-up" prefetch={false} passHref>
-        <MenuButton>{t("signUp")}</MenuButton>
-      </Link>
+      <MenuButton href="/_new/sign-in">{t("loginShort")}</MenuButton>
+      <MenuButton href="/_new/sign-up">{t("signUp")}</MenuButton>
     </>
   )
 }
@@ -134,42 +128,21 @@ const DesktopNavigationMenu = () => {
   )
 }
 
-interface MobileMenuItemProps {
+interface MobileMenuItemProps extends MenuItemProps {
   icon: IconProp
   text: string
-  href?: string
   onClick?: React.MouseEventHandler<HTMLLIElement>
-  [key: string]: any
 }
 
 const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  ({ icon, text, href, onClick = () => void 0, ...props }, ref) => {
-    const WrapLink: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
-      children,
-    }) => {
-      if (href) {
-        return (
-          <Link href={href} passHref {...props}>
-            <MenuItem onClick={onClick} ref={ref}>
-              {children}
-            </MenuItem>
-          </Link>
-        )
-      }
-      return (
-        <MenuItem onClick={onClick} ref={ref} {...props}>
-          {children}
-        </MenuItem>
-      )
-    }
-
+  ({ icon, text, onClick = () => void 0, ...props }, ref) => {
     return (
-      <WrapLink>
+      <MenuItem onClick={onClick} ref={ref} {...props}>
         <ListItemIcon>
           <FontAwesomeIcon icon={icon} />
         </ListItemIcon>
         <ListItemText>{text}</ListItemText>
-      </WrapLink>
+      </MenuItem>
     )
   },
 )
@@ -262,17 +235,17 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
               />,
             ]
           : [
-              <Link href="/_new/sign-in" passHref key="menu-login">
-                <MenuItem onClick={onClose}>{t("loginShort")}</MenuItem>
-              </Link>,
-              <Link
+              <MenuItem href="/_new/sign-in" key="menu-login" onClick={onClose}>
+                {t("loginShort")}
+              </MenuItem>,
+              <MenuItem
                 href="/_new/sign-up"
                 prefetch={false}
-                passHref
                 key="menu-signup"
+                onClick={onClose}
               >
-                <MenuItem onClick={onClose}>{t("signUp")}</MenuItem>
-              </Link>,
+                {t("signUp")}
+              </MenuItem>,
             ]}
       </Menu>
     </MobileMenuContainer>

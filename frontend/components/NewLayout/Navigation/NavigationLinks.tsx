@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+import { Link } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/NewLayout/Navigation"

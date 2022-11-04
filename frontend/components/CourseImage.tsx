@@ -1,24 +1,27 @@
 import { memo } from "react"
 
+import Image from "next/image"
+
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { css } from "@mui/material/styles"
 
 import { addDomain } from "/util/imageUtils"
 
 import { ImageCoreFieldsFragment } from "/graphql/generated"
 
-const ComponentStyle = `
+const ImageComponentBase = css`
   width: 100%;
   height: 100%;
   object-fit: cover;
 `
 
-const ImageComponent = styled.img`
-  ${ComponentStyle}
+const ImageComponent = styled(Image)`
+  ${ImageComponentBase}
 `
 
 const PlaceholderComponent = styled.div`
-  ${ComponentStyle}
+  ${ImageComponentBase}
   background-color: #F0F0F0;
   display: flex;
   justify-content: center;
@@ -33,24 +36,21 @@ const CourseImage = memo((props: CourseImageProps) => {
   const { photo, ...rest } = props
 
   return (
-    <picture>
+    <>
       {photo ? (
-        <>
-          <source srcSet={addDomain(photo.compressed)} type="image/webp" />
-          <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
-          <ImageComponent
-            src={addDomain(photo.uncompressed)}
-            loading="lazy"
-            alt=""
-            {...rest}
-          />
-        </>
+        <ImageComponent
+          src={addDomain(photo.uncompressed)}
+          loading="lazy"
+          alt=""
+          fill
+          {...rest}
+        />
       ) : (
         <PlaceholderComponent>
           <Typography variant="h3">no image</Typography>
         </PlaceholderComponent>
       )}
-    </picture>
+    </>
   )
 })
 

@@ -1,11 +1,10 @@
 import React from "react"
 
 import { memoize } from "lodash"
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
-import { Skeleton } from "@mui/material"
+import { Link, Skeleton } from "@mui/material"
 import { css } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"

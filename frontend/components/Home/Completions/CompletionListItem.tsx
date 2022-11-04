@@ -1,5 +1,4 @@
 import { CardSubtitle, CardTitle } from "components/Text/headers"
-import Link from "next/link"
 
 import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
@@ -25,9 +24,9 @@ const StyledButton = styled(Button)`
   color: black;
 `
 
-const StyledLink = styled(Link)`
+/*const StyledLink = styled(Link)`
   margin: auto;
-`
+`*/
 
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
@@ -113,7 +112,7 @@ export const CompletionListItem = ({
               {completion.completion_language ? (
                 <CardSubtitle>
                   {`${t("completionLanguage")} ${
-                    mapLangToLanguage[completion?.completion_language ?? ""] ||
+                    mapLangToLanguage[completion?.completion_language ?? ""] ??
                     completion.completion_language
                   }`}
                 </CardSubtitle>
@@ -177,11 +176,12 @@ export const CompletionListItem = ({
         </RegistrationColumn>
         <ButtonColumn>
           {!isRegistered && completion.eligible_for_ects ? (
-            <StyledLink href={`/register-completion/${course?.slug}`} passHref>
-              <StyledButton color="secondary">
-                {t("registerCompletion")}
-              </StyledButton>
-            </StyledLink>
+            <StyledButton
+              href={`/register-completion/${course?.slug}`}
+              color="secondary"
+            >
+              {t("registerCompletion")}
+            </StyledButton>
           ) : null}
           {hasCertificate && course ? (
             <CertificateButton course={course} completion={completion} />

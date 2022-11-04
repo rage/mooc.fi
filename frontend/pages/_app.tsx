@@ -7,7 +7,11 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CacheProvider, EmotionCache } from "@emotion/react"
+import {
+  CacheProvider,
+  /*css, */
+  EmotionCache,
+} from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -22,6 +26,7 @@ import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
+import { openSansCondensed, roboto } from "/src/fonts"
 // import { fontCss } from "/src/fonts"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
@@ -32,6 +37,15 @@ fontAwesomeConfig.autoAddCss = false
 
 const clientSideEmotionCache = createEmotionCache()
 
+console.log("roboto", roboto)
+console.log("openSansCondensed", openSansCondensed)
+
+/*const fontCss = css`
+  html {
+    --open-sans-condensed-font: ${openSansCondensed.style.fontFamily};
+    --roboto-font: ${roboto.style.fontFamily};
+  }
+`*/
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
@@ -96,6 +110,7 @@ export function MyApp({
               <BreadcrumbProvider>
                 <AlertProvider>
                   <Layout>
+                    {/*<Global styles={fontCss.styles} />*/}
                     <Component {...pageProps} />
                   </Layout>
                 </AlertProvider>
@@ -117,14 +132,14 @@ MyApp.getInitialProps = async (props: AppContext) => {
   let originalProps: any = {}
 
   if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(props)) || {}
+    originalProps = (await originalGetInitialProps(props)) ?? {}
   }
   if (Component.getInitialProps) {
     originalProps = {
       ...originalProps,
       pageProps: {
         ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) || {}),
+        ...((await Component.getInitialProps(ctx)) ?? {}),
       },
     }
   }

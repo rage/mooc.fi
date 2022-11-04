@@ -1,10 +1,15 @@
 import { Component } from "react"
 
-import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 
 import styled from "@emotion/styled"
-import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import {
+  CircularProgress,
+  Link,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { createAccount } from "/lib/account"

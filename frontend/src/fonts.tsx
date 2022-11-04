@@ -5,10 +5,11 @@ import LocalFont from "@next/font/local"
 // These css variables don't work, find a way to make them or just use the font css
 // in the few places these are actually used
 export const roboto = Roboto({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   weight: ["100", "300", "400", "500", "700", "900"],
   style: ["italic", "normal"],
-  variable: "--roboto-font",
+  // display: "swap",
+  // variable: "--roboto-font",
 })
 
 // TODO/FIXME
@@ -17,7 +18,7 @@ export const roboto = Roboto({
 // 75 as the equivalent of the current condensed.
 /*export const openSansCondensed = Open_Sans({
   subsets: ["latin"],
-  // weight: "variable", // ["300", "700"], // "variable", // ["300", "700"],
+  weight: "variable", // ["300", "700"], // "variable", // ["300", "700"],
   style: ["italic", "normal"],
   axes: ["wdth"],
   variable: "--open-sans-condensed-font"

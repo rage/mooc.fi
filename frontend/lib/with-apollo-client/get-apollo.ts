@@ -111,7 +111,7 @@ function create(initialState: any, originalAccessToken?: string) {
     link: isBrowser
       ? ApolloLink.from([errorLink, authLink.concat(uploadAndBatchHTTPLink)])
       : authLink.concat(uploadAndBatchHTTPLink),
-    cache: cache.restore(initialState || {}),
+    cache: cache.restore(initialState ?? {}),
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {

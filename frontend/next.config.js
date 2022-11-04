@@ -58,19 +58,19 @@ const nextConfiguration = {
       test: /\.(svg|jpg|png)$/,
       type: "asset",
     })
-    /*config.module.rules.push({
+    config.module.rules.push({
       test: /\.svg$/,
-      issuer: /\.tsx?$/,
-      resourceQuery: { not: [/url/] },
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: /component/,
       // include: [options.dir],
       use: [
-        'next-swc-loader',
+        "next-swc-loader",
         {
-          loader: '@svgr/webpack',
-          options: { babel: false }
-        }
+          loader: "@svgr/webpack",
+          options: { babel: false },
+        },
       ],
-    })*/
+    })
 
     return config
   },

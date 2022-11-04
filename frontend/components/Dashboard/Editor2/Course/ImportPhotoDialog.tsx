@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 
+import Image from "next/image"
 import { useFormContext } from "react-hook-form"
 
 import styled from "@emotion/styled"
@@ -31,6 +32,7 @@ const ImageContainer = styled.div`
   justify-content: center;
   border-width: 2px;
   border-radius: 4px;
+  position: relative;
 `
 
 const ImagePlaceholder = styled.div`
@@ -125,10 +127,11 @@ export default function ImportPhotoDialog({
         />
         <ImageContainer>
           {selected ? (
-            <img
+            <Image
               src={addDomain(selected.photo?.compressed)}
               alt={selected.photo?.name ?? "selected image"}
-              height="200"
+              style={{ objectFit: "contain" }}
+              fill
             />
           ) : (
             <ImagePlaceholder />

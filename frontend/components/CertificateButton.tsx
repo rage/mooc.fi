@@ -140,6 +140,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       </StyledButton>
       <StyledDialog
         open={dialogOpen}
+        disableEnforceFocus
         onClose={() => setDialogOpen(false)}
         aria-labelledby="dialog-title"
       >

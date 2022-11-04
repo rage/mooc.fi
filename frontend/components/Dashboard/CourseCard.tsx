@@ -1,7 +1,5 @@
 import { PropsWithChildren } from "react"
 
-import Link from "next/link"
-
 import styled from "@emotion/styled"
 import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
@@ -9,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit"
 import {
   BoxProps,
   CardActions,
+  Link,
   Skeleton,
   Typography,
   TypographyProps,
@@ -35,10 +34,10 @@ const CardBase = styled.div<{ ishidden?: number }>`
   width: 100%;
   min-width: 340px;
   display: grid;
-  @media (max-width: 700px) {
-    grid-template-columns: repeat(1, 1fr);
+  @media (max-width: 768) {
+    grid-template-columns: 1fr;
   }
-  @media (min-width: 700px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
   flex-direction: row;
@@ -72,14 +71,19 @@ const CourseCardImageContainer = styled(ImageContainer)`
   padding: 1rem;
   width: 100%;
   min-width: 235px;
+  position: relative;
+  height: 100%;
   @media (max-width: 430px) {
-    height: 235px;
+    min-height: 235px;
+    grid-column: span 2 / auto;
   }
-  @media (min-width: 430px) and (max-width: 600px) {
-    height: 235px;
+  @media (min-width: 430px) and (max-width: 768px) {
+    min-height: 235px;
+    width: 100%;
+    grid-column: span 2 / auto;
   }
-  @media (min-width: 600px) and (max-width: 960px) {
-    height: 240px;
+  @media (min-width: 768px) and (max-width: 960px) {
+    min-height: 240px;
   }
 `
 
@@ -244,44 +248,44 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
             {loading && <Skeleton variant="rectangular" width="100%" />}
             {courseFound && (
               <>
-                <StyledLink
+                <StyledButton
                   href={`/courses/${course.slug}`}
                   aria-label={`To the homepage of course ${course.name}`}
+                  variant="text"
+                  startIcon={<DashboardIcon />}
                 >
-                  <StyledButton variant="text" startIcon={<DashboardIcon />}>
-                    Dashboard
-                  </StyledButton>
-                </StyledLink>
-                <StyledLink
+                  Dashboard
+                </StyledButton>
+                <StyledButton
                   href={`/courses/new?clone=${course.slug}`}
                   aria-label={`Clone course ${course.name}`}
+                  variant="text"
+                  color="secondary"
+                  startIcon={<AddIcon />}
                 >
-                  <StyledButton
-                    variant="text"
-                    color="secondary"
-                    startIcon={<AddIcon />}
-                  >
-                    Clone...
-                  </StyledButton>
-                </StyledLink>
-                <StyledLink
+                  Clone...
+                </StyledButton>
+                <StyledButton
                   href={`/courses/${course.slug}/edit`}
                   prefetch={false}
                   aria-label={`Edit course ${course.name}`}
+                  variant="text"
+                  startIcon={<EditIcon />}
                 >
-                  <StyledButton variant="text" startIcon={<EditIcon />}>
-                    Edit
-                  </StyledButton>
-                </StyledLink>
+                  Edit
+                </StyledButton>
               </>
             )}
             {courseNotFound && (
-              <StyledLink href={`/courses/new`} aria-label="Create new course">
-                <StyledButton variant="text" color="secondary">
-                  <AddIcon />
-                  Create
-                </StyledButton>
-              </StyledLink>
+              <StyledButton
+                href={`/courses/new`}
+                aria-label="Create new course"
+                variant="text"
+                color="secondary"
+              >
+                <AddIcon />
+                Create
+              </StyledButton>
             )}
           </CourseCardActionArea>
         </CourseCardContent>

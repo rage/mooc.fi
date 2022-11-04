@@ -119,10 +119,10 @@ export default function FilterMenu({
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newStatus = (
         e.target.checked
-          ? [...(searchVariables?.status || []), value]
+          ? [...(searchVariables?.status ?? []), value]
           : (searchVariables?.status as CourseStatus[])?.filter(
               (v) => v !== value,
-            ) || []
+            ) ?? []
       ) as CourseStatus[]
 
       setStatus(newStatus)

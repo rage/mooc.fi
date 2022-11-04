@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import { useQuery } from "@apollo/client"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -30,11 +28,9 @@ const ProfilePointsDisplay = () => {
   return (
     <>
       <PointsListGrid data={data} showOnlyTen={true} />
-      <Link href={`/profile/points`} passHref>
-        <FormSubmitButton variant="text" fullWidth>
-          {t("seePoints")}
-        </FormSubmitButton>
-      </Link>
+      <FormSubmitButton href={`/profile/points`} variant="text" fullWidth>
+        {t("seePoints")}
+      </FormSubmitButton>
     </>
   )
 }

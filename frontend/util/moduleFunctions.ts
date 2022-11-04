@@ -5,4 +5,4 @@ const nextLanguageToLocale: { [key: string]: string } = {
 }
 
 export const mapNextLanguageToLocaleCode = (language: string) =>
-  nextLanguageToLocale[language] || "fi_FI"
+  nextLanguageToLocale[language] ?? "fi_FI"

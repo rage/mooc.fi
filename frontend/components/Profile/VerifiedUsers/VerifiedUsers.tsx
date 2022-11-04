@@ -1,6 +1,4 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
-
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
@@ -62,17 +60,21 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
         </>
       ))}
       {!isConnected("hy") && (
-        <Link href={HY_CONNECT_URL}>
-          <Button color="primary" startIcon={<LaunchIcon />}>
-            Connect to HY
-          </Button>
-        </Link>
-      )}
-      <Link href={HAKA_CONNECT_URL}>
-        <Button color="secondary" startIcon={<LaunchIcon />}>
-          Connect to another organization
+        <Button
+          href={HY_CONNECT_URL}
+          color="primary"
+          startIcon={<LaunchIcon />}
+        >
+          Connect to HY
         </Button>
-      </Link>
+      )}
+      <Button
+        href={HAKA_CONNECT_URL}
+        color="secondary"
+        startIcon={<LaunchIcon />}
+      >
+        Connect to another organization
+      </Button>
     </Container>
   )
 }

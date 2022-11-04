@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 
+import { MDXComponents } from "mdx/types"
+import Image from "next/image"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
@@ -91,6 +93,53 @@ export const ContentBox = styled.div`
     padding: 1.5rem;
   }
 `
+
+// Not used now; tested what to do if we ever ditch using img in mdx
+const ImageContainer = styled("div", {
+  shouldForwardProp: (prop) => prop !== "width" && prop !== "height",
+})<{ width: string; height: string }>`
+  position: relative;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+
+  @supports not (aspect-ratio: 16 / 9) {
+    ::before {
+      content: "";
+      float: left;
+      padding-top: 56.25%;
+    }
+
+    ::after {
+      clear: left;
+      content: "";
+      display: block;
+    }
+  }
+
+  @supports (aspect-ratio: 16 / 9) {
+    aspect-ratio: 16 / 9;
+  }
+`
+
+// Same as above
+export const ContainedImage = ({ src, alt, ...props }: any) => {
+  return (
+    <ImageContainer {...props}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="100vw"
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    </ImageContainer>
+  )
+}
+
+// @ts-ignore: used with MDXProvider, if used
+const components: MDXComponents = {
+  Image: ContainedImage,
+}
 
 const NetBeans = () => {
   const [userOS, setUserOs] = useState<userOsType>(getUserOS())

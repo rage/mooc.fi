@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 import styled from "@emotion/styled"
 import { Button } from "@mui/material"
 
@@ -84,12 +86,21 @@ const Title = styled.div`
   }
 `
 
-const Sponsor = styled.img`
+const SponsorContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  height: 100%;
+  width: 100%;
   max-width: 9rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
   padding: 1rem;
   justify-self: right;
+`
+
+const Sponsor = styled(Image)`
+  object-fit: contain;
 `
 
 const Description = styled.div`
@@ -169,7 +180,9 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
             </p>
           )}
         </Schedule>
-        <Sponsor src={SponsorLogo} alt="Sponsor logo" />
+        <SponsorContainer>
+          <Sponsor src={SponsorLogo} alt="Sponsor logo" fill />
+        </SponsorContainer>
         <Tags>
           {tags?.map((tag) => (
             <Tag size="small" variant="contained" disabled>

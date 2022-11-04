@@ -1,5 +1,4 @@
 import Image from "next/image"
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
@@ -9,6 +8,7 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Link } from "@mui/material"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
@@ -100,42 +100,42 @@ function Footer() {
       <EmailContainer>mooc@cs.helsinki.fi</EmailContainer>
       <UniversityLogo />
       <SocialContainer>
-        <a
+        <Link
           aria-label="MOOC.fi twitter"
           href="https://twitter.com/moocfi"
           target="_blank"
           rel="noopener noreferrer"
         >
           <StyledIcon icon={faTwitter} size="3x" />
-        </a>
-        <a
+        </Link>
+        <Link
           aria-label="MOOC.fi Facebook"
           href="https://www.facebook.com/Moocfi"
           target="_blank"
           rel="noopener noreferrer"
         >
           <StyledIcon icon={faFacebook} size="3x" />
-        </a>
-        <a
+        </Link>
+        <Link
           aria-label="MOOC.fi Youtube channel"
           href="https://www.youtube.com/channel/UCkHoQ5p9skFdyjrV3_tnUrA"
           target="_blank"
           rel="noopener noreferrer"
         >
           <StyledIcon icon={faYoutube} size="3x" />
-        </a>
+        </Link>
       </SocialContainer>
       <BottomRowContainer>
         <MaintainedContainer>
           This site is maintained by the{" "}
-          <a
+          <Link
             aria-label="Rage research group homepage"
             href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
             target="_blank"
             rel="noopener noreferrer"
           >
             RAGE research group
-          </a>
+          </Link>
           .
         </MaintainedContainer>
         {locale === "fi" && (

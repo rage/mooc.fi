@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import {
   faChalkboardTeacher,
   faEnvelope,
@@ -16,11 +14,9 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-interface ButtonProps {
-  active: any
-}
-
-const StyledButton = styled(Button)<ButtonProps>`
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<{ active?: boolean }>`
   margin: 1rem;
   font-size: 22px;
   border-radius: 0px;
@@ -66,48 +62,44 @@ const UserMenu = () => {
     <nav role="navigation">
       {admin && (
         <>
-          <Link href={`/courses`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "courses" ? 1 : null}
-              style={{ marginLeft: "1em" }}
-            >
-              <FontAwesomeIcon icon={faChalkboardTeacher} />
-              <ButtonLabel>{t("courses")}</ButtonLabel>
-            </StyledButton>
-          </Link>
+          <StyledButton
+            href="/courses"
+            color="inherit"
+            variant="text"
+            active={active === "courses"}
+            style={{ marginLeft: "1em" }}
+          >
+            <FontAwesomeIcon icon={faChalkboardTeacher} />
+            <ButtonLabel>{t("courses")}</ButtonLabel>
+          </StyledButton>
 
-          <Link href={`/study-modules`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "study-modules" ? 1 : null}
-            >
-              <FontAwesomeIcon icon={faList} />
-              <ButtonLabel>{t("modules")}</ButtonLabel>
-            </StyledButton>
-          </Link>
-          <Link href={`/users/search`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "users" ? 1 : null}
-            >
-              <FontAwesomeIcon icon={faSearch} />
-              <ButtonLabel>{t("userSearch")}</ButtonLabel>
-            </StyledButton>
-          </Link>
-          <Link href={`/email-templates`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "email-templates" ? 1 : null}
-            >
-              <FontAwesomeIcon icon={faEnvelope} />
-              <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
-            </StyledButton>
-          </Link>
+          <StyledButton
+            href="study-modules"
+            color="inherit"
+            variant="text"
+            active={active === "study-modules"}
+          >
+            <FontAwesomeIcon icon={faList} />
+            <ButtonLabel>{t("modules")}</ButtonLabel>
+          </StyledButton>
+          <StyledButton
+            href="/users/search"
+            color="inherit"
+            variant="text"
+            active={active === "users"}
+          >
+            <FontAwesomeIcon icon={faSearch} />
+            <ButtonLabel>{t("userSearch")}</ButtonLabel>
+          </StyledButton>
+          <StyledButton
+            href="/email-templates"
+            color="inherit"
+            variant="text"
+            active={active === "email-templates"}
+          >
+            <FontAwesomeIcon icon={faEnvelope} />
+            <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
+          </StyledButton>
         </>
       )}
     </nav>

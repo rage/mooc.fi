@@ -1,6 +1,5 @@
 import React from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import LanguageIcon from "@mui/icons-material/Language"
@@ -52,9 +51,14 @@ const LanguageSwitch = () => {
     <LanguageSwitchContainer>
       <LanguageIcon />
       {locales?.map((locale) => (
-        <Link href={asPath} locale={locale} passHref key={`switch-${locale}`}>
-          <Language active={currentLocale === locale}>{locale}</Language>
-        </Link>
+        <Language
+          href={asPath}
+          locale={locale}
+          key={`switch-${locale}`}
+          active={currentLocale === locale}
+        >
+          {locale}
+        </Language>
       ))}
     </LanguageSwitchContainer>
   )

@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react"
 
@@ -45,12 +46,16 @@ const Status = styled.p<FormikContextType<unknown>["status"]>`
   color: ${(props: any) => (props.error ? "#FF0000" : "default")};
 `
 
-interface FormWrapperProps<T extends FormValues> {
-  onCancel: () => void
-  onDelete: (values: T) => void
-  renderForm: (props: any) => ReactNode
+export interface RenderProps {
   tab?: number
   setTab?: Dispatch<React.SetStateAction<number>>
+}
+
+interface FormWrapperProps<T extends FormValues = FormValues>
+  extends RenderProps {
+  onCancel: () => void
+  onDelete: (values: T) => void
+  renderForm: (props?: RenderProps) => ReactNode
 }
 
 const FormWrapper = <T extends FormValues = FormValues>(
@@ -65,7 +70,7 @@ const FormWrapper = <T extends FormValues = FormValues>(
     status,
     setTouched,
   } = useFormikContext<T>()
-  const { onCancel, onDelete, renderForm, setTab = (_) => {} } = props
+  const { onCancel, onDelete, renderForm, tab, setTab = (_) => {} } = props
   const t = useTranslator(CommonTranslations)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
@@ -91,6 +96,7 @@ const FormWrapper = <T extends FormValues = FormValues>(
       setTab(anchor?.tab ?? 0)
 
       setImmediate(() => {
+        // TODO: add a simple pulsating animation to the field for a while
         const element = document.getElementById(anchorLink)
         element?.scrollIntoView()
       })
@@ -106,10 +112,18 @@ const FormWrapper = <T extends FormValues = FormValues>(
     }
   }, [status])
 
+  const renderFormProps: RenderProps = useMemo(
+    () => ({
+      tab,
+      setTab,
+    }),
+    [tab, setTab],
+  )
+
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-        {renderForm(props)}
+        {renderForm(renderFormProps)}
         <br />
         <Grid container direction="row" spacing={2}>
           <Grid item xs={4}>
@@ -184,8 +198,8 @@ const FormWrapper = <T extends FormValues = FormValues>(
 }
 
 // need to pass type through
-/*const WrappedFormWrapper: <T extends FormValues>(
-  props: FormWrapperProps<T>,
+/*const WrappedFormWrapper: <T extends FormValues = FormValues>(
+  props: FormWrapperProps<T>
 ) => JSX.Element = withEnumeratingAnchors(FormWrapper)*/
 
-export default withEnumeratingAnchors(FormWrapper) as typeof FormWrapper
+export default withEnumeratingAnchors(FormWrapper) // as typeof FormWrapper

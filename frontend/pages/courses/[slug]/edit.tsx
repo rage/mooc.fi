@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 
 import { NextSeo } from "next-seo"
-import Link from "next/link"
 import { SingletonRouter, withRouter } from "next/router"
 
 import styled from "@emotion/styled"
+import Link from "@mui/material/Link"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 

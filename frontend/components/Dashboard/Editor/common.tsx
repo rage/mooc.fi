@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useContext } from "react"
 
-import { Field, FieldConfig, useFormikContext } from "formik"
+import { FastField, Field, FieldConfig, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
 
 import { PropsOf } from "@emotion/react"
@@ -18,10 +18,12 @@ import {
 
 import AnchorContext from "/contexts/AnchorContext"
 
-export const StyledTextField = styled(TextField)`
+const BaseStyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
   background-color: white;
-` as typeof TextField
+`
+
+export const StyledTextField = React.memo(BaseStyledTextField)
 
 export const OutlinedInputLabel = styled(InputLabel)`
   background-color: #ffffff;
@@ -56,7 +58,7 @@ export const OutlinedFormGroup = styled(FormGroup, {
   }
 `
 
-export const StyledField = styled(Field)`
+const BaseStyledField = styled(FastField)`
   .input-label {
     background-color: white;
     font-size: 23px;
@@ -66,7 +68,9 @@ export const StyledField = styled(Field)`
   .input-required {
     color: #df7a46;
   }
-` as typeof Field
+`
+
+export const StyledField = React.memo(BaseStyledField)
 
 export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
@@ -87,7 +91,7 @@ interface CheckboxFieldProps {
   checked: boolean
 }
 
-export const CheckboxField = ({ id, label, checked }: CheckboxFieldProps) => {
+const BaseCheckboxField = ({ id, label, checked }: CheckboxFieldProps) => {
   const { setFieldValue } = useFormikContext()
 
   return (
@@ -107,16 +111,17 @@ export const CheckboxField = ({ id, label, checked }: CheckboxFieldProps) => {
     />
   )
 }
+export const CheckboxField = React.memo(BaseCheckboxField)
+
 interface CheckboxWithLabelProps extends CheckboxProps {
   Label: Omit<FormControlLabelProps, "checked" | "name" | "value" | "control">
 }
 
-export const CheckboxWithLabel = ({
-  Label,
-  ...props
-}: CheckboxWithLabelProps) => {
+const BaseCheckboxWithLabel = ({ Label, ...props }: CheckboxWithLabelProps) => {
   return <FormControlLabel control={<Checkbox {...props} />} {...Label} />
 }
+
+export const CheckboxWithLabel = React.memo(BaseCheckboxWithLabel)
 
 interface EnumeratingAnchorProps {
   id: string
@@ -133,45 +138,40 @@ export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({
   return <AdjustingAnchorLink id={id} />
 }
 
-type StyledFieldWithAnchorProps<
-  V = any,
-  C extends React.ElementType = any,
-> = Exclude<FieldConfig<V>, "component"> & {
+interface StyledFieldWithAnchorProps {
   id?: string
   name: string
   tab?: number
   error?: any
-  component?: C
-} & Partial<PropsOf<C>>
+}
 
-export function StyledFieldWithAnchor<
-  V = any,
-  C extends React.ElementType = any,
->({ id, name, tab = 0, error, ...props }: StyledFieldWithAnchorProps<V, C>) {
+export const StyledFieldWithAnchor = React.forwardRef<
+  typeof StyledField,
+  StyledFieldWithAnchorProps & PropsOf<typeof StyledField>
+>((props, ref) => {
+  const { id, name, tab = 0, error, ...rest } = props
   const { addAnchor } = useContext(AnchorContext)
   addAnchor(id ?? name, tab)
 
   return (
-    <StyledField
-      id={id ?? name}
-      name={name}
-      {...props}
-      error={Boolean(error)}
-    />
+    <>
+      <AdjustingAnchorLink id={id ?? name} />
+      <StyledField name={name} ref={ref} error={Boolean(error)} {...rest} />
+    </>
   )
-}
+})
 
 interface TabSectionProps {
   currentTab: number
   tab: number
 }
 
-export const TabSection = ({
+export const TabSection: React.FC<React.PropsWithChildren<TabSectionProps>> = ({
   currentTab,
   tab,
   children,
   ...props
-}: PropsWithChildren<TabSectionProps>) => (
+}) => (
   <section
     style={{
       display: currentTab === tab ? "initial" : "none",

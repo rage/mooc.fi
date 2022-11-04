@@ -1,4 +1,3 @@
-import Link from "next/link"
 import nookies from "nookies"
 
 import { useApolloClient } from "@apollo/client"
@@ -32,20 +31,17 @@ const UserOptionsMenu = () => {
 
   return (
     <>
-      <Link href={`/sign-in`} passHref>
-        <HeaderMenuButton
-          color="inherit"
-          variant="text"
-          onClick={() => nookies.destroy({}, "redirect-back")}
-        >
-          {t("loginShort")}
-        </HeaderMenuButton>
-      </Link>
-      <Link href={`/sign-up`} prefetch={false} passHref>
-        <HeaderMenuButton color="inherit" variant="text">
-          {t("signUp")}
-        </HeaderMenuButton>
-      </Link>
+      <HeaderMenuButton
+        href={`/sign-in`}
+        color="inherit"
+        variant="text"
+        onClick={() => nookies.destroy({}, "redirect-back")}
+      >
+        {t("loginShort")}
+      </HeaderMenuButton>
+      <HeaderMenuButton href={`/sign-up`} color="inherit" variant="text">
+        {t("signUp")}
+      </HeaderMenuButton>
     </>
   )
 }

@@ -88,7 +88,7 @@ const ModuleList = ({ modules, loading }: ModuleListProps) => {
           return (
             <PartnerDivider
               key={`divider-${idx}`}
-              style={{ padding: "0 0.5rem 0 0.5rem" }}
+              style={{ padding: "0 0.5rem" }}
             />
           )
         }

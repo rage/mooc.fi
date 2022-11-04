@@ -89,7 +89,8 @@ function SignIn() {
         color="secondary"
         fullWidth
         disabled={email.trim() === "" || password.trim() === ""}
-        onClick={async (e) => {
+        onClick={async (e: any) => {
+          // TODO: typing
           e.preventDefault()
           try {
             await signIn({ email, password, shallow: false })

@@ -37,51 +37,50 @@ const CourseAliasEditForm = () => {
           <FieldArray name="course_aliases">
             {(helpers) => (
               <>
-                {values?.length ? (
-                  values.map((alias, index: number) => (
-                    <section
-                      key={alias.course_code}
-                      style={{ display: "inline-block" }}
+                {values.map((alias, index: number) => (
+                  <section
+                    key={`course_aliases_${index}`}
+                    style={{ display: "inline-block" }}
+                  >
+                    <StyledFieldWithAnchor
+                      id={`course_aliases[${index}].course_code`}
+                      name={`course_aliases[${index}].course_code`}
+                      type="text"
+                      value={alias.course_code}
+                      component={StyledTextField}
+                      label={t("courseAliasCourseCode")}
+                      error={getIn(errors, `[${index}].course_code`)}
+                      variant="outlined"
+                      InputLabelProps={inputLabelProps}
+                      style={{ width: "70%" }}
+                      required
+                    />
+                    <StyledButton
+                      style={{ margin: "auto", width: "25%", float: "right" }}
+                      variant="contained"
+                      disabled={isSubmitting}
+                      color="secondary"
+                      onClick={() => {
+                        if (!alias.id && alias.course_code === "") {
+                          helpers.remove(index)
+                        } else {
+                          confirm({
+                            title: t("confirmationAreYouSure"),
+                            description: t("confirmationRemoveAlias"),
+                            confirmationText: t("confirmationYes"),
+                            cancellationText: t("confirmationNo"),
+                          })
+                            .then(() => helpers.remove(index))
+                            .catch(() => {})
+                        }
+                      }}
+                      endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}
                     >
-                      <StyledFieldWithAnchor
-                        id={`course_aliases[${index}].course_code`}
-                        name={`course_aliases[${index}].course_code`}
-                        type="text"
-                        component={StyledTextField}
-                        value={alias.course_code}
-                        label={t("courseAliasCourseCode")}
-                        error={[getIn(errors, `[${index}].course_code`)]}
-                        variant="outlined"
-                        InputLabelProps={inputLabelProps}
-                        style={{ width: "70%" }}
-                        required
-                      />
-                      <StyledButton
-                        style={{ margin: "auto", width: "25%", float: "right" }}
-                        variant="contained"
-                        disabled={isSubmitting}
-                        color="secondary"
-                        onClick={() => {
-                          if (!alias.id && alias.course_code === "") {
-                            helpers.remove(index)
-                          } else {
-                            confirm({
-                              title: t("confirmationAreYouSure"),
-                              description: t("confirmationRemoveAlias"),
-                              confirmationText: t("confirmationYes"),
-                              cancellationText: t("confirmationNo"),
-                            })
-                              .then(() => helpers.remove(index))
-                              .catch(() => {})
-                          }
-                        }}
-                        endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}
-                      >
-                        {t("courseRemove")}
-                      </StyledButton>
-                    </section>
-                  ))
-                ) : (
+                      {t("courseRemove")}
+                    </StyledButton>
+                  </section>
+                ))}
+                {values.length === 0 && (
                   <Typography
                     variant="h3"
                     component="p"

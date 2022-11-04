@@ -11,8 +11,6 @@ import * as Yup from "yup"
 import { ObjectShape } from "yup/lib/object"
 
 import styled from "@emotion/styled"
-import AdapterLuxon from "@mui/lab/AdapterLuxon"
-import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import {
   FormControl,
   FormControlLabel,
@@ -27,6 +25,8 @@ import {
   Tab,
   Tabs,
 } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import CourseAliasEditForm from "./CourseAliasEditForm"
 import CourseImageInput from "./CourseImageInput"
@@ -46,7 +46,9 @@ import {
   TabSection,
 } from "/components/Dashboard/Editor/common"
 import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+import FormWrapper, {
+  RenderProps,
+} from "/components/Dashboard/Editor/FormWrapper"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
@@ -95,14 +97,9 @@ interface RenderFormProps {
   studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
-interface RenderProps {
-  tab: number
-  setTab: React.Dispatch<React.SetStateAction<number>>
-}
-
 const renderForm =
   ({ courses, studyModules }: RenderFormProps) =>
-  ({ tab, setTab }: RenderProps) => {
+  ({ tab = 0, setTab = () => {} }: RenderProps) => {
     const { errors, values, setFieldValue } =
       useFormikContext<CourseFormValues>()
     const secret = useQueryParameter("secret", false)

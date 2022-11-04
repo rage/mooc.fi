@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 import styled from "@emotion/styled"
 import Typography from "@mui/material/Typography"
 
@@ -20,7 +22,7 @@ export const CardHeader = styled.div`
   padding: 1rem;
 `
 
-export const CardHeaderImage = styled.img`
+export const CardHeaderImage = styled(Image)`
   opacity: 0.4;
   position: absolute;
   left: 70%;
@@ -29,7 +31,7 @@ export const CardHeaderImage = styled.img`
   height: auto;
   clip: rect(0, auto, calc(52px - 1rem), auto);
   z-index: 0;
-`
+` as typeof Image
 
 export const CardBody = styled.div`
   background-color: #fff;

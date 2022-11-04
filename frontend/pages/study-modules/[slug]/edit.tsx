@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 
 import { NextSeo } from "next-seo"
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
+import Link from "@mui/material/Link"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 

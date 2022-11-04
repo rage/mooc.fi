@@ -1,11 +1,9 @@
 import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 import Image from "next/image"
-import Link from "next/link"
 
 import styled from "@emotion/styled"
-import { Button } from "@mui/material"
-import Grid from "@mui/material/Grid"
+import { Button, Grid, Link } from "@mui/material"
 
 import {
   BackgroundImage,

@@ -8,10 +8,19 @@ import Document, {
   NextScript,
 } from "next/document"
 
+import { css } from "@emotion/react"
 import createEmotionServer from "@emotion/server/create-instance"
 
 import createEmotionCache from "../src/createEmotionCache"
 import theme from "../src/theme"
+import { openSansCondensed, roboto } from "/src/fonts"
+
+const fontCss = css`
+  html {
+    --open-sans-condensed-font: ${openSansCondensed.style.fontFamily};
+    --roboto-font: ${roboto.style.fontFamily};
+  }
+`
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -32,15 +41,21 @@ class MyDocument extends Document {
     const emotionStyles = extractCriticalToChunks(initialProps.html)
     const emotionStyleTags = emotionStyles.styles.map((style) => (
       <style
-        data-emotion-css={`${style.key} ${style.ids.join(" ")}`}
+        data-emotion={`${style.key} ${style.ids.join(" ")}`}
         key={style.key}
         dangerouslySetInnerHTML={{ __html: style.css }}
       />
     ))
-
+    const fontVariables = (
+      <style
+        key="font-variables"
+        dangerouslySetInnerHTML={{ __html: fontCss.styles.toString() }}
+      />
+    )
     return {
       ...initialProps,
       emotionStyleTags,
+      fontVariables,
     }
   }
 
@@ -55,7 +70,9 @@ class MyDocument extends Document {
             type="image/x-icon"
             href="/static/favicon.ico"
           />
+          <meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}
+          {(this.props as any).fontVariables}
         </Head>
         <body>
           <Main />
