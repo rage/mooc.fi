@@ -57,8 +57,8 @@ app.use(compression())
 app.use(express.json())
 app.use(morgan("combined"))
 
-const port = parseInt(KAFKA_BRIDGE_SERVER_PORT || "3003")
-const host = KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
+const port = parseInt(KAFKA_BRIDGE_SERVER_PORT ?? "3003")
+const host = KAFKA_BRIDGE_SERVER_HOST ?? "0.0.0.0"
 
 app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (

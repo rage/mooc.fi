@@ -39,7 +39,7 @@ export const getTierProgress = (
       return {
         ...acc,
         [String(exercise)]: {
-          tier: Math.max(acc[exercise]?.tier || 0, tier ?? 0),
+          tier: Math.max(acc[exercise]?.tier || 0, tier || 0),
           max_points,
           n_points,
           progress: n_points / (max_points || 1),

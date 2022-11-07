@@ -7,11 +7,7 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import {
-  CacheProvider,
-  /*css, */
-  EmotionCache,
-} from "@emotion/react"
+//import { CacheProvider, EmotionCache } from "@emotion/react"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -26,8 +22,6 @@ import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
-import { openSansCondensed, roboto } from "/src/fonts"
-// import { fontCss } from "/src/fonts"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
@@ -35,26 +29,17 @@ import { useTranslator } from "/util/useTranslator"
 
 fontAwesomeConfig.autoAddCss = false
 
-const clientSideEmotionCache = createEmotionCache()
+// const clientSideEmotionCache = createEmotionCache()
 
-console.log("roboto", roboto)
-console.log("openSansCondensed", openSansCondensed)
-
-/*const fontCss = css`
-  html {
-    --open-sans-condensed-font: ${openSansCondensed.style.fontFamily};
-    --roboto-font: ${roboto.style.fontFamily};
-  }
-`*/
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
-}
+//interface MyAppProps extends AppProps {
+//  emotionCache?: EmotionCache
+//}
 
 export function MyApp({
   Component,
   pageProps,
-  emotionCache = clientSideEmotionCache,
-}: MyAppProps) {
+  // emotionCache = clientSideEmotionCache,
+}: AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -95,7 +80,6 @@ export function MyApp({
 
   return (
     <React.StrictMode>
-      <CacheProvider value={emotionCache}>
         <Head>
           <meta
             name="viewport"
@@ -110,7 +94,6 @@ export function MyApp({
               <BreadcrumbProvider>
                 <AlertProvider>
                   <Layout>
-                    {/*<Global styles={fontCss.styles} />*/}
                     <Component {...pageProps} />
                   </Layout>
                 </AlertProvider>
@@ -118,7 +101,6 @@ export function MyApp({
             </ConfirmProvider>
           </LoginStateProvider>
         </ThemeProvider>
-      </CacheProvider>
     </React.StrictMode>
   )
 }

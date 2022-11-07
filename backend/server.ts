@@ -37,7 +37,7 @@ const createExpressAppWithContext = ({
 export default async (serverContext: ServerContext) => {
   const { prisma, logger, knex, extraContext = {} } = serverContext
 
-  const apollo = new ApolloServer({
+  const apollo = new ApolloServer<ServerContext>({
     context: (ctx) => ({
       ...ctx,
       prisma,
@@ -54,6 +54,7 @@ export default async (serverContext: ServerContext) => {
     introspection: true,
     logger,
     debug: DEBUG,
+    cache: "bounded"
   })
   await apollo.start()
 
@@ -66,5 +67,3 @@ export default async (serverContext: ServerContext) => {
     app,
   }
 }
-
-// export default express

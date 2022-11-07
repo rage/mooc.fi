@@ -12,6 +12,7 @@ import {
 import { v4 as uuidv4 } from "uuid"
 
 import { Completion } from "@prisma/client"
+import { User } from "@sentry/node"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
@@ -78,7 +79,18 @@ export const CompletionMutations = extendType({
         const completions = (args.completions ?? []).filter(notEmpty)
 
         const foundUsers = await ctx.knex
-          .select([
+          .select<
+            Array<
+              Pick<
+                User,
+                | "id"
+                | "email"
+                | "upstream_id"
+                | "student_number"
+                | "real_student_number"
+              >
+            >
+          >([
             "id",
             "email",
             "upstream_id",
@@ -103,12 +115,12 @@ export const CompletionMutations = extendType({
             created_at: new Date(),
             updated_at: new Date(),
             user_upstream_id: o.user_id ? parseInt(o.user_id) : null,
-            email: databaseUser.email,
+            email: databaseUser.email ?? "",
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
             course_id: course.completions_handled_by_id ?? course_id,
-            user_id: databaseUser.id,
+            user_id: databaseUser.id ?? null,
             grade: o.grade ?? null,
             completion_date: o.completion_date,
             certificate_id: null,

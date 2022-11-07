@@ -384,7 +384,7 @@ const seed = async () => {
         ...module,
         study_module_translations: module.study_module_translations
           ? {
-              create: (module.study_module_translations || []).map((t) => ({
+              create: (module.study_module_translations ?? []).map((t) => ({
                 ...t,
                 id: undefined,
               })),
@@ -415,7 +415,7 @@ const seed = async () => {
                   (t) => ({
                     ...t,
                     id: undefined,
-                    link: t.link || "",
+                    link: t.link ?? "",
                   }),
                 ) ?? undefined,
             }

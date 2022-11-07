@@ -10,6 +10,7 @@ import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
+import { fontVariableClass } from "/src/fonts"
 
 const FooterDownPusherWrapper = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const Layout = ({ children }: PropsWithChildren<{}>) => {
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
 
   return (
-    <div>
+    <div className={fontVariableClass}>
       <SkipLink />
       <FooterDownPusherWrapper>
         <div>

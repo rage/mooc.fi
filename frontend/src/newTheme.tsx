@@ -18,6 +18,12 @@ const LinkBehavior = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
   },
 )
 
+const openSansCondensedDeclaration = {
+  ...openSansCondensed.style,
+  //fontStretch: "condensed",
+  //fontWeight: "300"
+}
+
 const rawTheme = createTheme({
   palette: {
     primary: {
@@ -32,7 +38,7 @@ const rawTheme = createTheme({
     button: {
       label: {
         textTransform: "none",
-        fontFamily: openSansCondensed.style.fontFamily,
+        ...openSansCondensedDeclaration
       },
     },
   },

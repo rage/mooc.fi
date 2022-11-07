@@ -417,10 +417,10 @@ const createMutation = async <T extends WithIdOrNull>({
     throw new DatabaseInputError(`error creating mutation`, { field, slug }, e)
   }
 
-  const newOnes = (data || [])
+  const newOnes = (data ?? [])
     .filter(hasNotId) // (t) => !t.id
     .map((t) => ({ ...t, id: undefined }))
-  const updated = (data || [])
+  const updated = (data ?? [])
     .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
       where: { id: t.id },

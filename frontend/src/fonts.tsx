@@ -1,5 +1,6 @@
-import { Roboto } from "@next/font/google"
-import LocalFont from "@next/font/local"
+import { Roboto, Open_Sans } from "@next/font/google"
+import localFont from "@next/font/local"
+import { css } from "@emotion/react"
 
 // TODO/FIXME
 // These css variables don't work, find a way to make them or just use the font css
@@ -8,23 +9,35 @@ export const roboto = Roboto({
   subsets: ["latin"],
   weight: ["100", "300", "400", "500", "700", "900"],
   style: ["italic", "normal"],
-  // display: "swap",
-  // variable: "--roboto-font",
+  display: "swap",
+  variable: "--roboto-font",
 })
 
 // TODO/FIXME
 // @next/font/google seems to be buggy and this will just crash the program if axes is set.
 // When it's eventually fixed, we can import the variable width (75...100) and use the
 // 75 as the equivalent of the current condensed.
-/*export const openSansCondensed = Open_Sans({
+/*export const openSans = Open_Sans({
   subsets: ["latin"],
   weight: "variable", // ["300", "700"], // "variable", // ["300", "700"],
   style: ["italic", "normal"],
   axes: ["wdth"],
-  variable: "--open-sans-condensed-font"
+  display: "swap",
+  variable: "--open-sans-font"
 })*/
 
-export const openSansCondensed = LocalFont({
+/*export const openSansCondensed = {
+  ...openSans,
+  style: {
+    ...openSans.style,
+    fontWeight: "300",
+    fontStretch: "condensed",
+    fontStyle: 'font-stretch: condensed;'
+  },
+  className: `${openSans.className}-condensed`,
+  variable: `${openSans.variable}-condensed`
+}*/
+export const openSansCondensed = localFont({
   src: [
     {
       path: "../static/fonts/open-sans-condensed-v14-latin-300.ttf",
@@ -44,3 +57,6 @@ export const openSansCondensed = LocalFont({
   ],
   variable: "--open-sans-condensed-font",
 })
+
+
+export const fontVariableClass = `${roboto.variable} ${openSansCondensed.variable}`

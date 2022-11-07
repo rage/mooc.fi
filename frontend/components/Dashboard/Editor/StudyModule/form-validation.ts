@@ -48,11 +48,22 @@ interface StudyModuleEditSchemaArgs {
   t: Translator<StudyModulesTranslations>
 }
 
+export type StudyModuleEditSchemaType = Yup.SchemaOf<
+  Pick<StudyModuleFormValues, "new_slug" | "name" | "order"> & {
+    study_module_translations: Array<
+      Pick<
+        StudyModuleTranslationFormValues,
+        "name" | "language" | "description"
+      >
+    >
+  }
+>
+
 const studyModuleEditSchema = ({
   client,
   initialSlug,
   t,
-}: StudyModuleEditSchemaArgs) =>
+}: StudyModuleEditSchemaArgs): StudyModuleEditSchemaType =>
   Yup.object().shape({
     new_slug: Yup.string()
       .required(t("validationRequired"))

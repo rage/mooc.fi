@@ -4,9 +4,8 @@ module.exports = {
     "@typescript-eslint",
     "eslint-custom-rules",
     "react-hooks",
-    "jsx-a11y",
+    // "jsx-a11y",
     "styled-components-a11y",
-    "css",
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -55,9 +54,8 @@ module.exports = {
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
   extends: [
-    "plugin:jsx-a11y/recommended",
+    // "plugin:jsx-a11y/recommended",
     "plugin:@next/next/recommended",
-    "plugin:css/recommended",
     "plugin:styled-components-a11y/recommended",
   ],
   settings: {
@@ -66,15 +64,6 @@ module.exports = {
     },
     next: {
       rootDir: "frontend",
-    },
-    css: {
-      target: {
-        defineFunctions: {
-          "@emotion/styled": [["default", /^\\w+$/u]],
-          "@mui/material/styles": [["styles", /^\\w+$/u]],
-        },
-        attributes: ["css"],
-      },
     },
   },
 }

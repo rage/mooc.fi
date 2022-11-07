@@ -29,7 +29,7 @@ export const OpenUniversityRegistrationLink = objectType({
           where: { id: parent.id },
           select: { tiers: true },
         })
-        return (res?.tiers as any) || []
+        return (res?.tiers as any) ?? []
       },
     })
   },

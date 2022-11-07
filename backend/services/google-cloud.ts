@@ -88,7 +88,7 @@ export const uploadStorageImage = async ({
 export const deleteStorageImage = async (
   filename: string,
 ): Promise<boolean> => {
-  if (!filename || filename === "") {
+  if (!filename) {
     return Promise.resolve(false)
   }
 

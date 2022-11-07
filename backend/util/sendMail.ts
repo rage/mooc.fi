@@ -35,7 +35,7 @@ export async function sendMail(
 
   const options: SMTPTransport.Options = {
     host: SMTP_HOST,
-    port: parseInt(SMTP_PORT || ""),
+    port: parseInt(SMTP_PORT ?? ""),
     secure: false, // true for 465, false for other ports
     auth: {
       user: SMTP_USER, // generated ethereal user
@@ -52,6 +52,7 @@ export async function sendMail(
     text, // plain text body
     html, // html body
   })
-  ;(logger?.info || console.log)(`Message sent: ${info.messageId}`)
+
+  void (logger?.info || console.log)(`Message sent: ${info.messageId}`)
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }

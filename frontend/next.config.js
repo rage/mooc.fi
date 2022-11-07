@@ -19,7 +19,13 @@ const withMDX = require("@next/mdx")({
 const nextConfiguration = {
   reactStrictMode: true,
   images: {
-    disableStaticImages: true,
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'images.mooc.fi',
+          pathname: '/**',
+        },
+      ],
   },
   publicRuntimeConfig: {
     localeSubpaths:
@@ -54,10 +60,10 @@ const nextConfiguration = {
     },
   },
   webpack: (config) => {
-    config.module.rules.push({
-      test: /\.(svg|jpg|png)$/,
-      type: "asset",
-    })
+    //config.module.rules.push({
+    //  test: /\.(svg|jpg|png)$/,
+    //  type: "asset",
+    //})
     config.module.rules.push({
       test: /\.svg$/,
       issuer: /\.[jt]sx?$/,

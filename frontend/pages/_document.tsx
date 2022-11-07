@@ -1,29 +1,22 @@
 import React from "react"
 
 import Document, {
-  DocumentContext,
+//  DocumentContext,
   Head,
   Html,
   Main,
   NextScript,
 } from "next/document"
 
-import { css } from "@emotion/react"
-import createEmotionServer from "@emotion/server/create-instance"
+//import createEmotionServer from "@emotion/server/create-instance"
+//import { css } from "@emotion/react"
 
-import createEmotionCache from "../src/createEmotionCache"
+//import createEmotionCache from "../src/createEmotionCache"
 import theme from "../src/theme"
-import { openSansCondensed, roboto } from "/src/fonts"
-
-const fontCss = css`
-  html {
-    --open-sans-condensed-font: ${openSansCondensed.style.fontFamily};
-    --roboto-font: ${roboto.style.fontFamily};
-  }
-`
+//import { openSans, openSansCondensed } from "../src/fonts"
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
+  /*static async getInitialProps(ctx: DocumentContext) {
     const originalRenderPage = ctx.renderPage
 
     const cache = createEmotionCache()
@@ -57,7 +50,7 @@ class MyDocument extends Document {
       emotionStyleTags,
       fontVariables,
     }
-  }
+  }*/
 
   render() {
     return (
@@ -70,9 +63,9 @@ class MyDocument extends Document {
             type="image/x-icon"
             href="/static/favicon.ico"
           />
-          <meta name="emotion-insertion-point" content="" />
+          {/*<meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}
-          {(this.props as any).fontVariables}
+          {(this.props as any).fontVariables}*/}
         </Head>
         <body>
           <Main />

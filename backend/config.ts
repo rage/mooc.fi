@@ -2,6 +2,7 @@ import { notEmpty } from "./util/notEmpty"
 
 export const isProduction = process.env.NODE_ENV === "production"
 export const isTest = process.env.NODE_ENV === "test"
+export const isDev = !isProduction && !isTest
 
 require("dotenv-safe").config({
   allowEmptyValues: isProduction || isTest,
@@ -9,8 +10,8 @@ require("dotenv-safe").config({
 
 export const NEXUS_REFLECTION = process.env.NEXUS_REFLECTION
 
-export const BACKEND_URL = process.env.BACKEND_URL ?? "https://mooc.fi"
-export const FRONTEND_URL = process.env.FRONTEND_URL ?? "https://www.mooc.fi"
+export const BACKEND_URL = process.env.BACKEND_URL || "https://mooc.fi"
+export const FRONTEND_URL = process.env.FRONTEND_URL || "https://www.mooc.fi"
 
 export const isStaging = () =>
   (process.env.BACKEND_URL ?? "").includes("staging")
@@ -28,27 +29,23 @@ export const DATABASE_URL =
   isTest && !CIRCLECI
     ? "postgres://prisma:prisma@localhost:5678/testing"
     : process.env.DATABASE_URL
-export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
-  const url = new URL(DATABASE_URL ?? "")
-  const baseUrl = (DATABASE_URL ?? "").split("?")[0]
-  const params = url.searchParams
-  params.delete("schema")
-  const query = params.toString().length > 0 ? `?${params.toString()}` : ""
 
-  return `${baseUrl}${query}`
-})()
+const url = new URL(DATABASE_URL || "")
+url.searchParams.delete("schema")
+
+export const DATABASE_URL_WITHOUT_SCHEMA = url.href
 
 export const EXTENSION_PATH = "extensions" // CIRCLECI ? "public" : "extensions"
 
 export let SEARCH_PATH: Array<string>
 
 if (isProduction) {
-  SEARCH_PATH = [process.env.SEARCH_PATH ?? "moocfi$production"]
+  SEARCH_PATH = [process.env.SEARCH_PATH || "moocfi$production"]
 } else {
   SEARCH_PATH =
     isTest && process.env.RUNNING_IN_CI
       ? [process.env.SEARCH_PATH, EXTENSION_PATH].filter(notEmpty)
-      : ["default$default"]
+      : [process.env.SEARCH_PATH || "default$default"]
 }
 
 // sentry, new relic
@@ -91,7 +88,7 @@ export const TMC_CLIENT_SECRET = process.env.TMC_CLIENT_SECRET
 export const TMC_PASSWORD = process.env.TMC_PASSWORD
 export const TMC_USERNAME = process.env.TMC_USERNAME
 export const RATELIMIT_PROTECTION_SAFE_API_KEY =
-  process.env.RATELIMIT_PROTECTION_SAFE_API_KEY ?? ""
+  process.env.RATELIMIT_PROTECTION_SAFE_API_KEY || ""
 
 export const PUBLIC_KEY = process.env.PUBLIC_KEY
 export const PRIVATE_KEY = process.env.PRIVATE_KEY
@@ -108,7 +105,7 @@ export const GOOGLE_CLOUD_STORAGE_KEYFILE =
 export const QUIZNATOR_HOST = process.env.QUIZNATOR_HOST
 export const QUIZNATOR_TOKEN = process.env.QUIZNATOR_TOKEN
 
-export const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
+export const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:7001"
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD
 
 export const PRISMA_LOG_LEVELS = process.env.PRISMA_LOG_LEVELS

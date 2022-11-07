@@ -1,6 +1,7 @@
-import { LinkProps as NextLinkProps } from "next/link"
+export {}
+/*import { LinkProps as NextLinkProps } from "next/link"
 
-/*declare module "@mui/material/Link" {
+declare module "@mui/material/Link" {
   import * as base from "@mui/material/Link"
   export type LinkProps<
     D extends React.ElementType = LinkTypeMap["defaultComponent"],

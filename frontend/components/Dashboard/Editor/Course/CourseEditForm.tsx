@@ -34,7 +34,7 @@ import CourseLanguageSelector from "./CourseLanguageSelector"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import CourseVariantEditForm from "./CourseVariantEditForm"
 import DatePickerField from "./DatePickers"
-import { statuses as statusesT } from "./form-validation"
+import { CourseEditSchemaType, statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
 import {
   CheckboxField,
@@ -99,7 +99,8 @@ interface RenderFormProps {
 
 const renderForm =
   ({ courses, studyModules }: RenderFormProps) =>
-  ({ tab = 0, setTab = () => {} }: RenderProps) => {
+  (renderProps?: RenderProps) => {
+    const { tab = 0, setTab = () => {} } = renderProps ?? {}
     const { errors, values, setFieldValue } =
       useFormikContext<CourseFormValues>()
     const secret = useQueryParameter("secret", false)
@@ -502,11 +503,11 @@ const renderForm =
     )
   }
 
-interface CourseEditFormProps<SchemaType extends ObjectShape> {
+interface CourseEditFormProps {
   course: CourseFormValues
   studyModules?: StudyModuleDetailedFieldsFragment[]
   courses?: EditorCourseOtherCoursesFieldsFragment[]
-  validationSchema: Yup.ObjectSchema<SchemaType>
+  validationSchema: CourseEditSchemaType
   onSubmit: (
     values: CourseFormValues,
     FormikHelpers: FormikHelpers<CourseFormValues>,
@@ -515,7 +516,7 @@ interface CourseEditFormProps<SchemaType extends ObjectShape> {
   onDelete: (values: CourseFormValues) => void
 }
 
-function CourseEditForm<SchemaType extends ObjectShape = ObjectShape>({
+function CourseEditForm({
   course,
   studyModules,
   courses,
@@ -523,7 +524,7 @@ function CourseEditForm<SchemaType extends ObjectShape = ObjectShape>({
   onSubmit,
   onCancel,
   onDelete,
-}: CourseEditFormProps<SchemaType>) {
+}: CourseEditFormProps) {
   const validate = useCallback(async (values: CourseFormValues) => {
     try {
       await validationSchema.validate(values, {
@@ -544,7 +545,7 @@ function CourseEditForm<SchemaType extends ObjectShape = ObjectShape>({
       onSubmit={onSubmit}
       validateOnChange={false}
     >
-      <FormWrapper
+      <FormWrapper<CourseFormValues>
         renderForm={renderForm({
           initialValues: course,
           courses,

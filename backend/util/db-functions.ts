@@ -114,7 +114,7 @@ export const convertPagination = (
   options?: ConvertPaginationOptions,
 ): ConvertPaginationOutput => {
   const skipValue = skip || 0
-  const { field = "id" } = options || {}
+  const { field = "id" } = options ?? {}
 
   if (!first && !last) {
     throw new Error("first or last must be defined")

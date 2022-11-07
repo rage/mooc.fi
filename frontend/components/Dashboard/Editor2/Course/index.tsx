@@ -58,7 +58,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     t,
   })
 
-  const methods = useForm<CourseFormValues>({
+  const methods = useForm({
     defaultValues,
     resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",

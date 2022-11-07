@@ -49,7 +49,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
     t,
   })
-  const methods = useForm<StudyModuleFormValues>({
+  const methods = useForm({
     defaultValues,
     resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",

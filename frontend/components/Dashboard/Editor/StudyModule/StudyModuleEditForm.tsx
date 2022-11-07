@@ -25,7 +25,7 @@ import {
   Typography,
 } from "@mui/material"
 
-import { initialTranslation, languages } from "./form-validation"
+import { initialTranslation, languages, StudyModuleEditSchemaType } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -318,9 +318,9 @@ const RenderForm = () => {
   )
 }
 
-interface StudyModuleEditFormProps<SchemaType extends ObjectShape> {
+interface StudyModuleEditFormProps {
   module: StudyModuleFormValues
-  validationSchema: Yup.ObjectSchema<SchemaType>
+  validationSchema: StudyModuleEditSchemaType
   onSubmit: (
     values: StudyModuleFormValues,
     FormikHelpers: FormikHelpers<StudyModuleFormValues>,
@@ -329,13 +329,13 @@ interface StudyModuleEditFormProps<SchemaType extends ObjectShape> {
   onDelete: (values: StudyModuleFormValues) => void
 }
 
-function StudyModuleEditForm<SchemaType extends ObjectShape>({
+function StudyModuleEditForm({
   module,
   validationSchema,
   onSubmit,
   onCancel,
   onDelete,
-}: StudyModuleEditFormProps<SchemaType>) {
+}: StudyModuleEditFormProps) {
   const validate = useCallback(async (values: StudyModuleFormValues) => {
     try {
       await validationSchema.validate(values, {
@@ -343,7 +343,7 @@ function StudyModuleEditForm<SchemaType extends ObjectShape>({
         context: { values },
       })
     } catch (err) {
-      return yupToFormErrors(err)
+      return yupToFormErrors<StudyModuleFormValues>(err)
     }
   }, [])
 

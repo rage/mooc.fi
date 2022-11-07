@@ -19,6 +19,7 @@ import {
 } from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
+import { ServerContext } from "../context"
 
 require("sharp") // ensure correct zlib thingy
 
@@ -96,7 +97,7 @@ const wait = async (time: number) =>
   new Promise((resolve) => setTimeout(resolve, time))
 
 function createTestContext(testContext: TestContext) {
-  let apolloInstance: ApolloServer | null = null
+  let apolloInstance: ApolloServer<ServerContext> | null = null
   let serverInstance: Server | null = null
   let port: number | null = null
 
@@ -220,7 +221,7 @@ export function fakeTMCCurrent(
 ) {
   return {
     setup() {
-      nock(TMC_HOST || "")
+      nock(TMC_HOST ?? "")
         .persist()
         .get(url)
         .reply(function () {
@@ -242,7 +243,7 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
   return {
     setup() {
       for (const [user_id, reply] of Object.entries(users)) {
-        nock(TMC_HOST || "")
+        nock(TMC_HOST ?? "")
           .persist()
           .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
           .reply(function () {
@@ -260,11 +261,11 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
 }
 
 export const fakeGetAccessToken = (reply: [number, string]) =>
-  nock(TMC_HOST || "")
+  nock(TMC_HOST ?? "")
     .post("/oauth/token")
     .reply(() => [reply[0], { access_token: reply[1] }])
 
 export const fakeUserDetailReply = (reply: [number, object]) =>
-  nock(TMC_HOST || "")
+  nock(TMC_HOST ?? "")
     .get("/api/v8/users/recently_changed_user_details")
     .reply(reply[0], () => reply[1])

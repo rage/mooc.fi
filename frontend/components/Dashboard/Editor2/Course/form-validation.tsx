@@ -8,6 +8,7 @@ import {
   CourseFormValues,
   CourseTranslationFormValues,
   CourseVariantFormValues,
+  OpenUniversityRegistrationValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
@@ -92,7 +93,45 @@ interface CourseEditSchemaArgs {
   t: Translator<CoursesTranslations>
 }
 
-const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
+type CourseTranslationsEditSchemaFields = 
+  Pick<
+    CourseTranslationFormValues,
+    "name" | "language" | "description" | "link"
+  > & {
+    open_university_course_link: Pick<OpenUniversityRegistrationValues, "course_code" | "link">
+  }
+
+
+type CourseAliasEditSchemaFields = 
+  Pick<CourseAliasFormValues, "course_code">
+
+
+type CourseVariantEditSchemaFields = 
+  Pick<CourseVariantFormValues, "slug" | "description">
+
+export type CourseEditSchemaType = Yup.SchemaOf<
+  Pick<
+    CourseFormValues,
+    | "name"
+    | "new_slug"
+    | "status"
+    | "order"
+    | "study_module_order"
+    | "ects"
+    | "start_date"
+    | "teacher_in_charge_email"
+    | "teacher_in_charge_name"
+    | "support_email"
+    | "points_needed"
+    | "exercise_completions_needed"
+  > & {
+    course_translations: Array<CourseTranslationsEditSchemaFields>
+    course_aliases: Array<CourseAliasEditSchemaFields>
+    course_variants: Array<CourseVariantEditSchemaFields>
+  }
+>
+
+const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs): CourseEditSchemaType => {
   return Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
@@ -121,10 +160,10 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
               (value) => value.language,
             ),
           ),
-        description: Yup.string(),
+        description: Yup.string().required(),
         link: Yup.string(),
         open_university_course_link: Yup.object().shape({
-          course_code: Yup.string(),
+          course_code: Yup.string().required(),
           link: Yup.string().url(t("validationValidUrl")).nullable(),
         }),
       }),
@@ -172,21 +211,23 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
       /(^\d+(\-\d+)?$|^$)/,
       t("validationNumberRange"),
     ),
-    start_date: Yup.date()
+    start_date: Yup.mixed<DateTime>()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
       .transform(
-        (datetime?: string | DateTime) =>
-          new Date(
-            (datetime instanceof DateTime ? datetime.toISO() : datetime) ?? "",
-          ),
+        (datetime?: string | DateTime) => {
+          if (typeof datetime === "string") {
+            return DateTime.fromISO(datetime)
+          }
+          return datetime
+        }
       )
       .test(
         "start_before_end",
         t("courseStartDateLaterThanEndDate"),
-        function (this: Yup.TestContext, value?: Date | null) {
+        function (this: Yup.TestContext, value?: DateTime | null) {
           const start = value
-          const end = this.parent.end_date
+          const end = this.parent.end_date as DateTime | null
 
           return start && end ? start <= end : true
         },

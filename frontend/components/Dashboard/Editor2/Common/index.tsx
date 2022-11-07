@@ -93,8 +93,9 @@ export const useTabContext = () => {
 
 export function useCustomValidationResolver<
   TFieldValues extends FieldValues,
+  TSchema extends Yup.AnyObjectSchema = Yup.AnyObjectSchema,
   TContext = any,
->(schema: Yup.AnyObjectSchema): Resolver<TFieldValues, TContext> {
+>(schema: TSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
     async (
       values: TFieldValues,

@@ -1,17 +1,21 @@
 import { PrismaClient } from "@prisma/client"
 
+import { isDev } from "./config"
 import { logDefinition } from "./util/prismaLogger"
 
-let _prisma: PrismaClient
+interface CustomNodeJsGlobal extends NodeJS.Global {
+  prisma: PrismaClient
+}
+declare const global: CustomNodeJsGlobal
 
-const prismaClient = () => {
-  if (!_prisma) {
-    _prisma = new PrismaClient({
-      log: logDefinition,
-    })
-  }
+const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log: logDefinition,
+  })
 
-  return _prisma
+if (isDev) {
+  global.prisma = prisma
 }
 
-export default prismaClient()
+export default prisma
