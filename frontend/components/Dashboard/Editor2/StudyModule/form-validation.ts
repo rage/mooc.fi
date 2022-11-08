@@ -89,7 +89,9 @@ const studyModuleEditSchema = ({
         t("validationSlugInUse"),
         validateSlug({ client, initialSlug }),
       ),
-    image: Yup.string().required().test("exists", t("moduleImageError"), validateImage),
+    image: Yup.string()
+      .required()
+      .test("exists", t("moduleImageError"), validateImage),
     name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
       Yup.object().shape({

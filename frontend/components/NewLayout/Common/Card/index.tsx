@@ -1,7 +1,7 @@
 import Image from "next/image"
 
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import { Typography } from "@mui/material"
 
 export const CardWrapper = styled.div`
   border-radius: 4px;

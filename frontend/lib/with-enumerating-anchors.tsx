@@ -4,10 +4,10 @@ import { PropsOf } from "@emotion/react"
 
 import AnchorContext, { Anchor } from "/contexts/AnchorContext"
 
-const withEnumeratingAnchors = <T extends React.ElementType = any>(
-  Component: T,
-): T =>
-  ((props: PropsOf<T>) => {
+const withEnumeratingAnchors = <C extends React.ElementType = any>(
+  Component: C,
+): C =>
+  ((props: PropsOf<C>) => {
     let anchorId = 0
     const anchors: Record<string, Anchor> = {}
     const addAnchor = (anchor: string, tab: number = 0) => {
@@ -26,6 +26,6 @@ const withEnumeratingAnchors = <T extends React.ElementType = any>(
         <Component {...props} />
       </AnchorContext.Provider>
     )
-  }) as T
+  }) as C
 
 export default withEnumeratingAnchors

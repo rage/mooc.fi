@@ -54,7 +54,7 @@ export default async (serverContext: ServerContext) => {
     introspection: true,
     logger,
     debug: DEBUG,
-    cache: "bounded"
+    cache: "bounded",
   })
   await apollo.start()
 

@@ -11,6 +11,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 /** @type {NextPlugin} */
 const withMDX = require("@next/mdx")({
   extension: /\.mdx?$/,
+  options: {
+    providerImportSource: "@mdx-js/react",
+  },
 })
 
 /**
@@ -19,13 +22,13 @@ const withMDX = require("@next/mdx")({
 const nextConfiguration = {
   reactStrictMode: true,
   images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'images.mooc.fi',
-          pathname: '/**',
-        },
-      ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.mooc.fi",
+        pathname: "/**",
+      },
+    ],
   },
   publicRuntimeConfig: {
     localeSubpaths:
@@ -48,11 +51,11 @@ const nextConfiguration = {
     // enabling emotion here will allow for components to be used as selectors
     // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
     modularizeImports: {
-      "@mui/icons-material": {
-        transform: "@mui/icons-material/{{member}}",
-      },
       "@mui/material": {
         transform: "@mui/material/{{member}}",
+      },
+      "@mui/icons-material/?(((\\w*)?/?)*)": {
+        transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
       },
       lodash: {
         transform: "lodash/{{member}}",
@@ -60,12 +63,12 @@ const nextConfiguration = {
     },
   },
   webpack: (config) => {
-    //config.module.rules.push({
-    //  test: /\.(svg|jpg|png)$/,
-    //  type: "asset",
-    //})
     config.module.rules.push({
-      test: /\.svg$/,
+      test: /\.svg$/, // (svg|png|jpeg|jpg|gif|webp)
+      type: "asset",
+    })
+    config.module.rules.push({
+      test: /\.svg/,
       issuer: /\.[jt]sx?$/,
       resourceQuery: /component/,
       // include: [options.dir],

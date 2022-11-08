@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid"
+import { Grid } from "@mui/material"
 
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import notEmpty from "/util/notEmpty"

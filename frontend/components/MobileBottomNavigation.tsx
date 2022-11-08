@@ -1,7 +1,6 @@
 import styled from "@emotion/styled"
-import AppBar, { AppBarProps } from "@mui/material/AppBar"
-import Toolbar from "@mui/material/Toolbar"
-import { BoxProps } from "@mui/system"
+import { AppBar, BoxProps, Toolbar } from "@mui/material"
+import { AppBarProps } from "@mui/material/AppBar"
 
 import LoggedInUserMenu from "./HeaderBar/LoggedInUserMenu"
 import { useLoginStateContext } from "/contexts/LoginStateContext"

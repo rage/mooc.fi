@@ -1,7 +1,6 @@
 import { useRouter } from "next/router"
 
-import Alert from "@mui/material/Alert"
-import AlertTitle from "@mui/material/AlertTitle"
+import { Alert, AlertTitle } from "@mui/material"
 
 import { useAlertContext } from "/contexts/AlertContext"
 

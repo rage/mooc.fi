@@ -1,3 +1,6 @@
+import * as fs from "fs"
+
+import { GetStaticPropsContext } from "next"
 import { NextSeo } from "next-seo"
 
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
@@ -5,12 +8,14 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useFAQPage } from "/hooks/useFAQPage"
 import useSubtitle from "/hooks/useSubtitle"
 import FAQTranslations from "/translations/faq"
-import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-export default function FAQTopic() {
+interface FAQTopicProps {
+  topic: string
+}
+
+export default function FAQTopic({ topic }: FAQTopicProps) {
   const t = useTranslator(FAQTranslations)
-  const topic: string = useQueryParameter("topic")
 
   const { Component, title, ingress, breadcrumb, error, render } =
     useFAQPage(topic)
@@ -43,4 +48,32 @@ export default function FAQTopic() {
       </>
     ),
   })
+}
+
+export async function getStaticPaths() {
+  const files = fs.readdirSync("./static/md_pages")
+  const faqFilePattern = new RegExp(
+    /^(?!\w+_(macOS|Linux|Windows|ZIP|vscode)_)((\w+)_)*(fi|en)\.mdx$/g,
+  )
+  const paths = [
+    ...new Set(
+      files
+        .map((file) => faqFilePattern.exec(file)?.[3])
+        .filter(Boolean)
+        .map((topic) => ({ params: { topic } })),
+    ),
+  ]
+
+  return {
+    paths,
+    fallback: true,
+  }
+}
+
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  return {
+    props: {
+      topic: params?.topic,
+    },
+  }
 }

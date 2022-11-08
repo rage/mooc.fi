@@ -1,7 +1,5 @@
 import { useState } from "react"
 
-import { utils, writeFile, type WorkBook } from "xlsx"
-
 import { ApolloClient, useApolloClient } from "@apollo/client"
 import styled from "@emotion/styled"
 
@@ -33,6 +31,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
         disabled={!(!infotext || infotext == "ready")}
         onClick={async () => {
           try {
+            const { utils, writeFile } = await import("xlsx").then((p) => p)
             setInfotext("Downloading data")
             const data = await downloadInChunks(slug, client, setInfotext)
             setInfotext("constructing csv")
@@ -41,7 +40,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
             console.log(objects)
             const sheet = utils.json_to_sheet(objects)
             console.log("sheet", sheet)
-            const workbook: WorkBook = {
+            const workbook = {
               SheetNames: [],
               Sheets: {},
             }

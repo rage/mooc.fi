@@ -3,11 +3,10 @@ import { useContext } from "react"
 import styled from "@emotion/styled"
 import { IconProp } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import ButtonBase from "@mui/material/ButtonBase"
-import Typography from "@mui/material/Typography"
+import { ButtonBase, Typography } from "@mui/material"
 
 import UserOSContext from "/contexts/UserOSContext"
-import { userOsType } from "/util/getUserOS"
+import { UserOSType } from "/util/getUserOS"
 
 interface ButtonProps {
   selected: boolean
@@ -31,7 +30,7 @@ const StyledTypography = styled(Typography)<any>`
   margin-bottom: 0.3rem;
 `
 interface OSSelectorButtonProps {
-  OSName: userOsType
+  OSName: UserOSType
   Icon: IconProp
   active: boolean
 }

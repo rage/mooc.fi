@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import { Typography } from "@mui/material"
 
 export const SectionTitle = styled((props: any) => (
   <Typography variant="h2" {...props} />

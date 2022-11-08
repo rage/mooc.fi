@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Grid from "@mui/material/Grid"
+import { Grid } from "@mui/material"
 
 export const LanguageEntry = styled(Grid)`
   spacing: 10px;

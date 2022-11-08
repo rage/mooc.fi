@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import { Typography } from "@mui/material"
 
 import PersonalInfoBox from "./PersonalInfoBox"
 

@@ -3,12 +3,14 @@ import { createRef, useState } from "react"
 import styled from "@emotion/styled"
 import Send from "@mui/icons-material/Send"
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
-import Button from "@mui/material/Button"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import FormControl from "@mui/material/FormControl"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
+import {
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  TextField,
+  Typography,
+} from "@mui/material"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"

@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-10-20T15:08:10+03:00
+// Generated on 2022-11-07T22:00:50+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -5138,6 +5138,23 @@ export type ConnectionTestQuery = {
   } | null
 }
 
+export type VerifiedUserFieldsFragment = {
+  __typename?: "VerifiedUser"
+  id: string
+  created_at: any | null
+  personal_unique_code: string
+  display_name: string | null
+  organization: {
+    __typename?: "Organization"
+    slug: string
+    organization_translations: Array<{
+      __typename?: "OrganizationTranslation"
+      language: string
+      name: string
+    }>
+  } | null
+}
+
 export type ExportUserCourseProgressesQueryVariables = Exact<{
   course_slug: Scalars["String"]
   skip?: InputMaybe<Scalars["Int"]>
@@ -7047,6 +7064,55 @@ export const UserOrganizationCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserOrganizationCoreFieldsFragment, unknown>
+export const VerifiedUserFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "VerifiedUserFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "VerifiedUser" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organization" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "organization_translations" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "language" },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "personal_unique_code" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "display_name" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<VerifiedUserFieldsFragment, unknown>
 export const CreateRegistrationAttemptDateDocument = {
   kind: "Document",
   definitions: [
@@ -10332,51 +10398,9 @@ export const ConnectionTestDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "organization" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "slug" },
-                            },
-                            {
-                              kind: "Field",
-                              name: {
-                                kind: "Name",
-                                value: "organization_translations",
-                              },
-                              selectionSet: {
-                                kind: "SelectionSet",
-                                selections: [
-                                  {
-                                    kind: "Field",
-                                    name: { kind: "Name", value: "language" },
-                                  },
-                                  {
-                                    kind: "Field",
-                                    name: { kind: "Name", value: "name" },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "created_at" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "personal_unique_code" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "display_name" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "VerifiedUserFields" },
                       },
                     ],
                   },
@@ -10388,6 +10412,7 @@ export const ConnectionTestDocument = {
       },
     },
     ...UserCoreFieldsFragmentDoc.definitions,
+    ...VerifiedUserFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<ConnectionTestQuery, ConnectionTestQueryVariables>
 export const ExportUserCourseProgressesDocument = {

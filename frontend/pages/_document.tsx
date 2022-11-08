@@ -1,18 +1,12 @@
 import React from "react"
 
-import Document, {
-//  DocumentContext,
-  Head,
-  Html,
-  Main,
-  NextScript,
-} from "next/document"
+import Document, { Head, Html, Main, NextScript } from "next/document" //  DocumentContext,
 
 //import createEmotionServer from "@emotion/server/create-instance"
 //import { css } from "@emotion/react"
-
 //import createEmotionCache from "../src/createEmotionCache"
 import theme from "../src/theme"
+
 //import { openSans, openSansCondensed } from "../src/fonts"
 
 class MyDocument extends Document {
@@ -63,8 +57,8 @@ class MyDocument extends Document {
             type="image/x-icon"
             href="/static/favicon.ico"
           />
-          {/*<meta name="emotion-insertion-point" content="" />
-          {(this.props as any).emotionStyleTags}
+          <meta name="emotion-insertion-point" content="" />
+          {/*{(this.props as any).emotionStyleTags}
           {(this.props as any).fontVariables}*/}
         </Head>
         <body>

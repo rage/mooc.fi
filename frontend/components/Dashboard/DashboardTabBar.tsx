@@ -7,9 +7,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
 import ViewListIcon from "@mui/icons-material/ViewList"
-import AppBar from "@mui/material/AppBar"
-import Tab from "@mui/material/Tab"
-import Tabs from "@mui/material/Tabs"
+import { AppBar, Tab, Tabs } from "@mui/material"
 
 const TabBarContainer = styled.div`
   flex-grow: 1;

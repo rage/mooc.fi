@@ -1,8 +1,6 @@
 import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
-import Typography from "@mui/material/Typography"
+import { Button, Grid, Typography } from "@mui/material"
 
 import {
   formatDateTime,

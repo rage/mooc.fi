@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
+import { Button } from "@mui/material"
 
 export const HeaderMenuButton = styled(Button)`
   font-size: 18px;

@@ -3,7 +3,7 @@ import { IncomingMessage } from "http"
 import { Knex } from "knex"
 import type { Logger } from "winston"
 
-import { PrismaClient, Organization, User } from "@prisma/client"
+import { Organization, PrismaClient, User } from "@prisma/client"
 
 import { Role } from "./accessControl"
 import { UserInfo } from "./domain/UserInfo"

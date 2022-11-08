@@ -7,6 +7,8 @@ import { Button, Paper } from "@mui/material"
 
 import VerifiedUser from "./VerifiedUser"
 
+import { VerifiedUserFieldsFragment } from "/graphql/generated"
+
 // import axios from "axios"
 // import { getAccessToken } from "/lib/authentication"
 
@@ -14,7 +16,7 @@ const isProduction = process.env.NODE_ENV === "production"
 
 // FIXME/DELETE: we don't have the verified user thing implemented for now so these types aren't generated
 interface VerifiedUsersProps {
-  data?: any[] // ProfileUserOverView_currentUser_verified_users[]
+  data?: Array<VerifiedUserFieldsFragment> // ProfileUserOverView_currentUser_verified_users[]
 }
 
 const Container = styled(Paper)`
@@ -28,7 +30,7 @@ const Container = styled(Paper)`
   }
 `
 
-function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
+function VerifiedUsers({ data }: VerifiedUsersProps) {
   const { locale } = useRouter()
 
   const HY_CONNECT_URL = isProduction
@@ -37,6 +39,10 @@ function VerifiedUsers({ data = [] }: VerifiedUsersProps) {
   const HAKA_CONNECT_URL = isProduction
     ? `https://mooc.fi/connect/haka?language=${locale}`
     : `http://localhost:5000/haka?language=${locale}`
+
+  if (!data) {
+    return null
+  }
 
   const isConnected = (slug: string) =>
     Boolean(

@@ -13,8 +13,7 @@ import {
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
-import MoocLogo from "/static/images/moocfi.svg?component"
-// import moocLogoUrl from "/static/images/moocfi.svg"
+import moocLogoUrl from "/static/images/moocfi.svg"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 
@@ -56,13 +55,12 @@ const CourseCard = ({
     <CardWrapper>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <MoocLogo alt="MOOC logo" width="200" height="200" />
-        {/*<CardHeaderImage
+        <CardHeaderImage
           alt="MOOC logo"
-          src={moocLogo}
+          src={moocLogoUrl}
           width={200}
           height={200}
-        />*/}
+        />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>

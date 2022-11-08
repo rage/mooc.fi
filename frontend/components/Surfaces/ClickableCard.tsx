@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import ButtonBase from "@mui/material/ButtonBase"
+import { ButtonBase } from "@mui/material"
 
 export const ClickableButtonBase = styled(ButtonBase)`
   background-color: white;

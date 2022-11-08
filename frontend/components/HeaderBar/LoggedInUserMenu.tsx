@@ -5,9 +5,8 @@ import {
   faSearch,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Button from "@mui/material/Button"
+import { Button, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
 import { useLoginStateContext } from "/contexts/LoginStateContext"

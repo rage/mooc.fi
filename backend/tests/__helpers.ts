@@ -17,9 +17,9 @@ import {
   EXTENSION_PATH,
   TMC_HOST,
 } from "../config"
+import { ServerContext } from "../context"
 import binPrisma from "../prisma"
 import server from "../server"
-import { ServerContext } from "../context"
 
 require("sharp") // ensure correct zlib thingy
 

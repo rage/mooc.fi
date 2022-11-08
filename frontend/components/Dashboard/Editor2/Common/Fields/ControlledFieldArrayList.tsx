@@ -107,7 +107,7 @@ export function ControlledFieldArrayList<
                 variant="contained"
                 disabled={isSubmitting}
                 color="secondary"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault()
                   if (conditions.remove(item)) {
                     remove(index)
@@ -145,7 +145,7 @@ export function ControlledFieldArrayList<
             variant="contained"
             color="primary"
             disabled={isSubmitting}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault()
               append({ ...initialValues })
               trigger(name as Path<TFieldValues>)

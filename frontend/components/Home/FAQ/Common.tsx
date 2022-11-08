@@ -84,23 +84,19 @@ export const Note = styled.section`
 
 export const Loader = () => (
   <Background>
-    <Title>
-      <Skeleton />
-    </Title>
     <TitleBackground>
       <Title component="h1" variant="h1" align="center">
-        <Skeleton />
-      </Title>
-    </TitleBackground>
-    <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
-      <Title component="p" variant="subtitle1" align="center">
-        <Skeleton />
+        <Skeleton variant="text" width="100%" />
       </Title>
     </TitleBackground>
     <Content>
-      {range(20).map((i) => (
-        <Skeleton key={`content-skeleton-${i}`} />
-      ))}
+      <ContentBox>
+        <SectionBox>
+          {range(20).map((i) => (
+            <Skeleton key={`content-skeleton-${i}`} />
+          ))}
+        </SectionBox>
+      </ContentBox>
     </Content>
   </Background>
 )

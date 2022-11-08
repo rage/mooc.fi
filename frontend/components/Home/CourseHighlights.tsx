@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Grid from "@mui/material/Grid"
+import { Grid } from "@mui/material"
 
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"

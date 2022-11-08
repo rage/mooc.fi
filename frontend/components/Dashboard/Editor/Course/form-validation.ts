@@ -157,21 +157,22 @@ interface CourseEditSchemaArgs {
   t: Translator<CoursesTranslations>
 }
 
-type CourseTranslationsEditSchemaFields = 
-  Pick<
-    CourseTranslationFormValues,
-    "name" | "language" | "description" | "link"
-  > & {
-    open_university_course_link: Pick<OpenUniversityRegistrationLinkCoreFieldsFragment, "course_code" | "link">
-  }
+type CourseTranslationsEditSchemaFields = Pick<
+  CourseTranslationFormValues,
+  "name" | "language" | "description" | "link"
+> & {
+  open_university_course_link: Pick<
+    OpenUniversityRegistrationLinkCoreFieldsFragment,
+    "course_code" | "link"
+  >
+}
 
+type CourseAliasEditSchemaFields = Pick<CourseAliasFormValues, "course_code">
 
-type CourseAliasEditSchemaFields = 
-  Pick<CourseAliasFormValues, "course_code">
-
-
-type CourseVariantEditSchemaFields = 
-  Pick<CourseVariantFormValues, "slug" | "description">
+type CourseVariantEditSchemaFields = Pick<
+  CourseVariantFormValues,
+  "slug" | "description"
+>
 
 export type CourseEditSchemaType = Yup.SchemaOf<
   Pick<

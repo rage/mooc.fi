@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import { Typography } from "@mui/material"
 
 export const CardText = styled(Typography)<any>`
   margin-bottom: 0.5rem;

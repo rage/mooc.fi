@@ -1,6 +1,5 @@
 import styled from "@emotion/styled"
-import Paper from "@mui/material/Paper"
-import Typography from "@mui/material/Typography"
+import { Paper, Typography } from "@mui/material"
 
 import Container from "/components/Container"
 import SignInForm from "/components/SignInForm"

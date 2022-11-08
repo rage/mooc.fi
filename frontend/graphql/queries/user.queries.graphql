@@ -104,17 +104,21 @@ query ConnectionTest {
   currentUser {
     ...UserCoreFields
     verified_users {
-      id
-      organization {
-        slug
-        organization_translations {
-          language
-          name
-        }
-      }
-      created_at
-      personal_unique_code
-      display_name
+      ...VerifiedUserFields
     }
   }
+}
+
+fragment VerifiedUserFields on VerifiedUser {
+  id
+  organization {
+    slug
+    organization_translations {
+      language
+      name
+    }
+  }
+  created_at
+  personal_unique_code
+  display_name
 }

@@ -3,9 +3,9 @@ import React from "react"
 import { memoize } from "lodash"
 import { useRouter } from "next/router"
 
+import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { Link, Skeleton } from "@mui/material"
-import { css } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"

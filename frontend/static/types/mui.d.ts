@@ -1,5 +1,4 @@
-export {}
-/*import { LinkProps as NextLinkProps } from "next/link"
+import { LinkProps as NextLinkProps } from "next/link"
 
 declare module "@mui/material/Link" {
   import * as base from "@mui/material/Link"
@@ -18,4 +17,3 @@ declare module "@mui/material/ButtonBase" {
   > = OverrideProps<ButtonBaseTypeMap<P, D>, D> & NextLinkProps
   export = base
 }
-*/

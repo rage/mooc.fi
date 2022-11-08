@@ -1,4 +1,8 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react"
+import React, {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useState,
+} from "react"
 
 import { Field, FieldInputProps, useFormikContext } from "formik"
 import { useRouter } from "next/router"
@@ -93,7 +97,7 @@ const CourseImageInput = (props: ImageInputProps) => {
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault()
             setDialogOpen(true)
           }}

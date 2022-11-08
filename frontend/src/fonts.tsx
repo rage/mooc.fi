@@ -1,6 +1,5 @@
-import { Roboto, Open_Sans } from "@next/font/google"
+import { Roboto } from "@next/font/google"
 import localFont from "@next/font/local"
-import { css } from "@emotion/react"
 
 // TODO/FIXME
 // These css variables don't work, find a way to make them or just use the font css
@@ -57,6 +56,5 @@ export const openSansCondensed = localFont({
   ],
   variable: "--open-sans-condensed-font",
 })
-
 
 export const fontVariableClass = `${roboto.variable} ${openSansCondensed.variable}`

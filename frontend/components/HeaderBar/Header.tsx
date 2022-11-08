@@ -3,10 +3,13 @@ import { ReactElement } from "react"
 import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
-import { AppBar, Toolbar } from "@mui/material"
-import CssBaseline from "@mui/material/CssBaseline"
-import Slide from "@mui/material/Slide"
-import useScrollTrigger from "@mui/material/useScrollTrigger"
+import {
+  AppBar,
+  CssBaseline,
+  Slide,
+  Toolbar,
+  useScrollTrigger,
+} from "@mui/material"
 
 import LanguageSwitch from "./LanguageSwitch"
 import LoggedInUserMenu from "./LoggedInUserMenu"

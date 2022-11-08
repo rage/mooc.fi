@@ -3,9 +3,7 @@ import { CardTitle } from "components/Text/headers"
 import Image from "next/image"
 
 import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
-import Link from "@mui/material/Link"
+import { Button, Grid, Link } from "@mui/material"
 
 import {
   BackgroundImage,

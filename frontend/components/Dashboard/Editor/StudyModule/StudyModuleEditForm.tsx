@@ -11,8 +11,6 @@ import {
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
 import Image from "next/image"
-import * as Yup from "yup"
-import { ObjectShape } from "yup/lib/object"
 
 import styled from "@emotion/styled"
 import HelpIcon from "@mui/icons-material/Help"
@@ -25,7 +23,11 @@ import {
   Typography,
 } from "@mui/material"
 
-import { initialTranslation, languages, StudyModuleEditSchemaType } from "./form-validation"
+import {
+  initialTranslation,
+  languages,
+  StudyModuleEditSchemaType,
+} from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"

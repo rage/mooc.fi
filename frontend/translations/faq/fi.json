@@ -1,4 +1,5 @@
 {
   "title": "Usein kysytyt kysymykset",
-  "unknownTopic": "Tuntematon aihe: {{topic}}"
+  "unknownTopic": "Tuntematon aihe: {{topic}}",
+  "error": "Virhe"
 }

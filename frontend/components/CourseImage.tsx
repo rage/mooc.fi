@@ -2,9 +2,9 @@ import { memo } from "react"
 
 import Image from "next/image"
 
+import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
-import { css } from "@mui/material/styles"
 
 import { addDomain } from "/util/imageUtils"
 

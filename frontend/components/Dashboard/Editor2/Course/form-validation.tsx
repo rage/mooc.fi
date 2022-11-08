@@ -93,21 +93,22 @@ interface CourseEditSchemaArgs {
   t: Translator<CoursesTranslations>
 }
 
-type CourseTranslationsEditSchemaFields = 
-  Pick<
-    CourseTranslationFormValues,
-    "name" | "language" | "description" | "link"
-  > & {
-    open_university_course_link: Pick<OpenUniversityRegistrationValues, "course_code" | "link">
-  }
+type CourseTranslationsEditSchemaFields = Pick<
+  CourseTranslationFormValues,
+  "name" | "language" | "description" | "link"
+> & {
+  open_university_course_link: Pick<
+    OpenUniversityRegistrationValues,
+    "course_code" | "link"
+  >
+}
 
+type CourseAliasEditSchemaFields = Pick<CourseAliasFormValues, "course_code">
 
-type CourseAliasEditSchemaFields = 
-  Pick<CourseAliasFormValues, "course_code">
-
-
-type CourseVariantEditSchemaFields = 
-  Pick<CourseVariantFormValues, "slug" | "description">
+type CourseVariantEditSchemaFields = Pick<
+  CourseVariantFormValues,
+  "slug" | "description"
+>
 
 export type CourseEditSchemaType = Yup.SchemaOf<
   Pick<
@@ -131,7 +132,11 @@ export type CourseEditSchemaType = Yup.SchemaOf<
   }
 >
 
-const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs): CourseEditSchemaType => {
+const courseEditSchema = ({
+  client,
+  initialSlug,
+  t,
+}: CourseEditSchemaArgs): CourseEditSchemaType => {
   return Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
@@ -214,14 +219,12 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs): Cou
     start_date: Yup.mixed<DateTime>()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
-      .transform(
-        (datetime?: string | DateTime) => {
-          if (typeof datetime === "string") {
-            return DateTime.fromISO(datetime)
-          }
-          return datetime
+      .transform((datetime?: string | DateTime) => {
+        if (typeof datetime === "string") {
+          return DateTime.fromISO(datetime)
         }
-      )
+        return datetime
+      })
       .test(
         "start_before_end",
         t("courseStartDateLaterThanEndDate"),

@@ -4,9 +4,7 @@ import { NextSeo } from "next-seo"
 import { SingletonRouter, withRouter } from "next/router"
 
 import styled from "@emotion/styled"
-import Link from "@mui/material/Link"
-import Paper from "@mui/material/Paper"
-import Typography from "@mui/material/Typography"
+import { Link, Paper, Typography } from "@mui/material"
 
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"

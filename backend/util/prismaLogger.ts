@@ -3,16 +3,12 @@ import { type Prisma } from "@prisma/client"
 import { PRISMA_LOG_LEVELS } from "../config"
 import { ServerContext } from "../context"
 
-const logLevel = (PRISMA_LOG_LEVELS?.split(
-  ",",
-) ?? []) as Prisma.LogLevel[]
+const logLevel = (PRISMA_LOG_LEVELS?.split(",") ?? []) as Prisma.LogLevel[]
 
-export const logDefinition: Prisma.LogDefinition[] = logLevel.map(
-  (level) => ({
-    emit: "event",
-    level,
-  }),
-)
+export const logDefinition: Prisma.LogDefinition[] = logLevel.map((level) => ({
+  emit: "event",
+  level,
+}))
 
 export const attachPrismaEvents = ({ logger, prisma }: ServerContext) => {
   logDefinition.forEach(({ level }) => {

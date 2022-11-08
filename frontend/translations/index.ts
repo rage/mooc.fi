@@ -47,9 +47,9 @@ const getTranslator =
             )
           : substitute({ translation, variables, router })
       },
-      (...args) =>
+      (key, variables) =>
         // cached value is supposed to depend on possible given variables
-        args.reduce((acc, curr) => {
+        [key, variables].reduce((acc, curr) => {
           if (typeof curr === "function") {
             return `${String(acc)}_${curr.name}`
           }
@@ -57,7 +57,7 @@ const getTranslator =
             return `${String(acc)}_${JSON.stringify(curr)}`
           }
           return `${String(acc)}_${String(curr)}`
-        }, ""),
+        }),
     )
 
 interface Substitute<T> {
@@ -190,8 +190,9 @@ const _combineDictionaries = <
   return combined
 }
 
-const keyResolver = (...args: any[]) => JSON.stringify(args)
-export const combineDictionaries = memoize(_combineDictionaries, keyResolver)
+//const keyResolver = (...args: any[]) => JSON.stringify(args)
+//export const combineDictionaries = memoize(_combineDictionaries, keyResolver)
+export const combineDictionaries = _combineDictionaries
 
 export const isTranslationKey = <T extends Translation>(
   key?: keyof T,

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon"
-import Typography from "@mui/material/Typography"
+import { SvgIcon, Typography } from "@mui/material"
+import { SvgIconProps } from "@mui/material/SvgIcon"
 
 const InfoBoxIcon = (props: SvgIconProps) => {
   return (

@@ -1,5 +1,5 @@
 import { AppBar, AppBarProps, Toolbar } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { styled } from "@mui/material/styles" 
 
 import { NavigationLinks } from "/components/NewLayout/Navigation/NavigationLinks"
 

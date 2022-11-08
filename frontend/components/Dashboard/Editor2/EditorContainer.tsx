@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from "react"
+import React, { PropsWithChildren, useState } from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import { Path, useFormContext } from "react-hook-form"
@@ -68,7 +68,7 @@ function EditorContainer<T extends FormValues = FormValues>({
                 style={{ width: "100%" }}
                 disabled={isSubmitting || isSubmitted}
                 variant="contained"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault()
                   return isDirty
                     ? confirm({
@@ -100,7 +100,7 @@ function EditorContainer<T extends FormValues = FormValues>({
                 variant="contained"
                 color="secondary"
                 disabled={isSubmitting || isSubmitted}
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault()
 
                   return confirm({

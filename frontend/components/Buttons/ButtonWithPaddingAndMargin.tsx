@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
+import { Button } from "@mui/material"
 
 export const ButtonWithPaddingAndMargin = styled(Button, {
   shouldForwardProp: (prop) => prop !== "color",

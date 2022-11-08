@@ -12,7 +12,6 @@ import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
-import createEmotionCache from "../src/createEmotionCache"
 import OriginalLayout from "./_layout"
 import NewLayout from "./_new/_layout"
 import { AlertProvider } from "/contexts/AlertContext"
@@ -38,8 +37,8 @@ fontAwesomeConfig.autoAddCss = false
 export function MyApp({
   Component,
   pageProps,
-  // emotionCache = clientSideEmotionCache,
-}: AppProps) {
+}: // emotionCache = clientSideEmotionCache,
+AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -80,27 +79,27 @@ export function MyApp({
 
   return (
     <React.StrictMode>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          />
-          <title>{title}</title>
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <LoginStateProvider value={loginStateContextValue}>
-            <ConfirmProvider>
-              <BreadcrumbProvider>
-                <AlertProvider>
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </AlertProvider>
-              </BreadcrumbProvider>
-            </ConfirmProvider>
-          </LoginStateProvider>
-        </ThemeProvider>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+        />
+        <title>{title}</title>
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LoginStateProvider value={loginStateContextValue}>
+          <ConfirmProvider>
+            <BreadcrumbProvider>
+              <AlertProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </AlertProvider>
+            </BreadcrumbProvider>
+          </ConfirmProvider>
+        </LoginStateProvider>
+      </ThemeProvider>
     </React.StrictMode>
   )
 }

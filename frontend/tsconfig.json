@@ -18,16 +18,13 @@
         "./components/*"
       ]
     },
-    "typeRoots": [
-      "node_modules/@types",
-      "types/"
-    ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": [
-      "dom",
-      "es2017"
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
     ],
     "module": "esnext",
     "moduleResolution": "node",
@@ -39,19 +36,25 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "esnext",
+    "target": "ES2016",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "maxNodeModuleJsDepth": 10
+    "maxNodeModuleJsDepth": 8,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     "node_modules",
     "schema.graphql"
   ],
   "include": [
+    "types/*.d.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"

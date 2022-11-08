@@ -53,7 +53,7 @@ const Container = styled.div`
     );
   }
   &.with-background-image {
-    background: url(${BannerImage});
+    background: url(${BannerImage.src});
   }
 `
 

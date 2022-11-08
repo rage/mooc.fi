@@ -4,8 +4,7 @@ import CloseIcon from "@mui/icons-material/Close"
 import ErrorIcon from "@mui/icons-material/Error"
 import InfoIcon from "@mui/icons-material/Info"
 import WarningIcon from "@mui/icons-material/Warning"
-import { Snackbar, SnackbarCloseReason } from "@mui/material"
-import IconButton from "@mui/material/IconButton"
+import { IconButton, Snackbar, SnackbarCloseReason } from "@mui/material"
 
 interface CustomSnackbarProps {
   open: boolean

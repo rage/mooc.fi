@@ -1,7 +1,8 @@
 import { PropsWithChildren } from "react"
 
 import styled from "@emotion/styled"
-import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
+import AddIcon from "@mui/icons-material/Add"
+import AddCircleIcon from "@mui/icons-material/AddCircle"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import {

@@ -52,9 +52,9 @@ const OSSelector = (props: Props) => {
         active={OS === "Windows"}
       />
       <OSSelectorButton OSName="macOS" Icon={MAC} active={OS === "macOS"} />
-      {!excludeZip ? (
+      {!excludeZip && (
         <OSSelectorButton OSName="ZIP" Icon={AnyOS} active={OS === "ZIP"} />
-      ) : null}
+      )}
     </Container>
   )
 }

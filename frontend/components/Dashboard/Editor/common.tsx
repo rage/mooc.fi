@@ -1,6 +1,6 @@
-import React, { PropsWithChildren, useContext } from "react"
+import React, { useContext } from "react"
 
-import { FastField, Field, FieldConfig, useFormikContext } from "formik"
+import { FastField, Field, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
 
 import { PropsOf } from "@emotion/react"
@@ -103,7 +103,9 @@ const BaseCheckboxField = ({ id, label, checked }: CheckboxFieldProps) => {
       checked={checked}
       component={(props: CheckboxWithLabelProps) => (
         <CheckboxWithLabel
-          onChange={(e) => setFieldValue(id, e.target.checked)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFieldValue(id, e.target.checked)
+          }
           {...props}
         />
       )}

@@ -7,8 +7,6 @@ import {
   useFormikContext,
   yupToFormErrors,
 } from "formik"
-import * as Yup from "yup"
-import { ObjectShape } from "yup/lib/object"
 
 import styled from "@emotion/styled"
 import {

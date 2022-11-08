@@ -1,27 +1,20 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { MDXComponents } from "mdx/types"
+import { GetStaticPropsContext } from "next"
+import dynamic from "next/dynamic"
 import Image from "next/image"
-import { useRouter } from "next/router"
 
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import { Typography } from "@mui/material"
 
-import NoOsMessage from "/components/Installation/NoOsMessage"
+// import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
 import Spinner from "/components/Spinner"
 import UserOSContext from "/contexts/UserOSContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import MDX_Linux_en from "/static/md_pages/netbeans_installation_Linux_en.mdx"
-import MDX_Linux from "/static/md_pages/netbeans_installation_Linux_fi.mdx"
-import MDX_MAC_en from "/static/md_pages/netbeans_installation_macOS_en.mdx"
-import MDX_MAC from "/static/md_pages/netbeans_installation_macOS_fi.mdx"
-import MDX_Windows_en from "/static/md_pages/netbeans_installation_Windows_en.mdx"
-import MDX_Windows from "/static/md_pages/netbeans_installation_Windows_fi.mdx"
-import MDX_Any_en from "/static/md_pages/netbeans_installation_ZIP_en.mdx"
-import MDX_Any from "/static/md_pages/netbeans_installation_ZIP_fi.mdx"
 import InstallationTranslations from "/translations/installation"
-import getUserOS, { userOsType } from "/util/getUserOS"
+import getUserOS, { UserOSType } from "/util/getUserOS"
 import { useTranslator } from "/util/useTranslator"
 
 const Background = styled.section`
@@ -48,9 +41,11 @@ const TitleBackground = styled.div`
 const Content = styled.div`
   position: relative;
 `
+
 export const SectionBox = styled.div`
   margin-bottom: 6rem;
 `
+
 export const ContentBox = styled.div`
   background-color: white;
   max-width: 39em;
@@ -137,47 +132,58 @@ export const ContainedImage = ({ src, alt, ...props }: any) => {
 }
 
 // @ts-ignore: used with MDXProvider, if used
-const components: MDXComponents = {
+const mdxComponents: MDXComponents = {
   Image: ContainedImage,
 }
 
-const NetBeans = () => {
-  const [userOS, setUserOs] = useState<userOsType>(getUserOS())
-  const [render, setRender] = useState(false)
+interface InstallationInstructionProps {
+  paths: Record<UserOSType, string>
+  id: typeof allowedPaths[number]
+}
+
+const InstallationInstructions = ({
+  paths,
+  id,
+}: InstallationInstructionProps) => {
+  const [userOS, setUserOS] = useState<UserOSType>("OS")
+
   const t = useTranslator(InstallationTranslations)
-  const { locale } = useRouter()
 
   useBreadcrumbs([
     {
       translation: "installation",
     },
     {
-      label: "Netbeans",
-      href: `/installation/netbeans`,
+      label: breadcrumbLabels[id],
+      href: `/installation/${id as string}`,
     },
   ])
 
-  const changeOS = (OS: userOsType) => {
-    setUserOs(OS)
+  const changeOS = (OS: UserOSType) => {
+    setUserOS(OS)
   }
 
   useEffect(() => {
-    setRender(true)
+    setUserOS(getUserOS())
   }, [])
 
-  const mapOsToInstructions: Record<
-    userOsType,
-    { en: JSX.Element; fi: JSX.Element }
-  > = {
-    Linux: { en: <MDX_Linux_en />, fi: <MDX_Linux /> },
-    Windows: { en: <MDX_Windows_en />, fi: <MDX_Windows /> },
-    macOS: { en: <MDX_MAC_en />, fi: <MDX_MAC /> },
-    OS: { en: <NoOsMessage />, fi: <NoOsMessage /> },
-    ZIP: { en: <MDX_Any_en />, fi: <MDX_Any /> },
-  }
+  const excludeZip = !combinationOverrides[id]?.allowedOS?.includes("ZIP")
+
+  const Component = dynamic(
+    async () => {
+      return import(`../../static/md_pages/${paths?.[userOS]}`)
+        .then((mdx) => mdx)
+        .catch(() => {
+          return () => <Spinner />
+        })
+    },
+    { loading: () => <Spinner /> },
+  )
+
+  const contextValue = useMemo(() => ({ OS: userOS, changeOS }), [userOS])
 
   return (
-    <UserOSContext.Provider value={{ OS: userOS, changeOS: changeOS }}>
+    <UserOSContext.Provider value={contextValue}>
       <Background>
         <TitleBackground>
           <Title component="h1" variant="h1" align="center">
@@ -190,12 +196,10 @@ const NetBeans = () => {
           </Title>
         </TitleBackground>
         <Content>
-          {render ? (
+          {userOS ? (
             <>
-              <OSSelector />
-              {locale == "fi"
-                ? mapOsToInstructions[userOS].fi
-                : mapOsToInstructions[userOS].en}
+              <OSSelector excludeZip={excludeZip} />
+              <Component />
             </>
           ) : (
             <Spinner />
@@ -206,4 +210,69 @@ const NetBeans = () => {
   )
 }
 
-export default NetBeans
+export default InstallationInstructions
+
+const allowedPaths = ["netbeans", "tmc-cli", "vscode"] as const
+const allowedOS: readonly UserOSType[] = [
+  "Linux",
+  "macOS",
+  "Windows",
+  "ZIP",
+] as const
+const languages = ["en", "fi"] as const
+const breadcrumbLabels: Record<typeof allowedPaths[number], string> = {
+  netbeans: "Netbeans",
+  "tmc-cli": "TMC Client",
+  vscode: "VSCode",
+}
+
+interface CombinationOverride {
+  languages?: { [key in typeof languages[number]]: string }
+  allowedOS?: Array<typeof allowedOS[number]>
+}
+
+const combinationOverrides: {
+  [K in typeof allowedPaths[number]]?: CombinationOverride
+} = {
+  "tmc-cli": {
+    languages: { fi: "en", en: "en" },
+    allowedOS: ["Windows", "macOS", "Linux"],
+  },
+  vscode: { allowedOS: ["Windows", "macOS", "Linux"] },
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: allowedPaths.map((path) => ({ params: { id: path } })),
+    fallback: "blocking",
+  }
+}
+
+export async function getStaticProps({
+  params,
+  locale,
+}: GetStaticPropsContext) {
+  const id = ((Array.isArray(params?.id) ? params?.id[0] : params?.id) ??
+    "") as typeof allowedPaths[number]
+  const language = (locale ?? "fi") as typeof languages[number]
+  if (!allowedPaths.includes(id)) {
+    return { notFound: true }
+  }
+
+  const paths = {} as Record<UserOSType, string>
+
+  allowedOS.forEach((os) => {
+    const lang = combinationOverrides[id]?.languages?.[language] ?? language
+    if (!combinationOverrides[id]?.allowedOS?.includes(os)) {
+      return
+    }
+    paths[os] = `${id}_installation_${os}_${lang}.mdx`
+  })
+
+  return {
+    props: {
+      paths,
+      id,
+    },
+  }
+}

@@ -11,8 +11,7 @@ import {
   faUserFriends,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
+import { Button, Typography } from "@mui/material"
 
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"

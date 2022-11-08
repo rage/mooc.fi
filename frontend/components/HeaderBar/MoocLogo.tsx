@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
-import Avatar from "@mui/material/Avatar"
-import Link from "@mui/material/Link"
-import Typography from "@mui/material/Typography"
+import { Avatar, Link, Typography } from "@mui/material"
+
+import moocLogoUrl from "/static/images/moocfi.svg"
 
 const MoocLogoText = styled(Typography)`
   font-family: var(--open-sans-condensed-font), sans-serif;
@@ -41,10 +41,7 @@ const MoocLogoLink = styled(Link)`
 `
 const MoocLogo = () => (
   <MoocLogoLink href="/" aria-label="MOOC.fi homepage">
-    <MoocLogoAvatar
-      alt="MOOC logo"
-      src={require("../../static/images/moocfi.svg")}
-    />
+    <MoocLogoAvatar alt="MOOC logo" src={moocLogoUrl} />
     <MoocLogoText>MOOC.fi</MoocLogoText>
   </MoocLogoLink>
 )

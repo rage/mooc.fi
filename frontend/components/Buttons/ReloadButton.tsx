@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
+import { Button } from "@mui/material"
 
 export const ReloadButton = styled(Button)`
   background-color: white;
