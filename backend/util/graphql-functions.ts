@@ -1,14 +1,13 @@
-import { UserInputError } from "apollo-server-express"
-
 import { Prisma } from "@prisma/client"
 
 import { Context } from "../context"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const getCourseOrCompletionHandlerCourse =
   (ctx: Context) =>
   async ({ id, slug }: Prisma.CourseWhereUniqueInput) => {
     if (!id && !slug) {
-      throw new UserInputError("must provide id and/or slug")
+      throw new GraphQLUserInputError("must provide id and/or slug")
     }
 
     // TODO: use course alias?

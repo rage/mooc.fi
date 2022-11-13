@@ -924,9 +924,15 @@ describe("Course", () => {
       ]
 
       test.each(cases)("creates a course %s", async (_, { data, expected }) => {
-        const res = await ctx!.client.request(createCourseMutation, {
-          course: data,
-        })
+        const res = await ctx!.client.request(
+          createCourseMutation,
+          {
+            course: data,
+          },
+          {
+            "apollo-require-preflight": "true",
+          },
+        )
 
         expect(res).toMatchSnapshot({
           addCourse: expected,
@@ -982,12 +988,18 @@ describe("Course", () => {
       })
 
       it("updates course", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
-          course: {
-            ...getUpdateCourse(),
-            new_photo: undefined,
+        const res = await ctx!.client.request(
+          updateCourseMutation,
+          {
+            course: {
+              ...getUpdateCourse(),
+              new_photo: undefined,
+            },
           },
-        })
+          {
+            "apollo-require-preflight": "true",
+          },
+        )
 
         expect(res).toMatchSnapshot({
           updateCourse: {
@@ -1014,9 +1026,15 @@ describe("Course", () => {
       })
 
       it("updates photo", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
-          course: getUpdateCourse(),
-        })
+        const res = await ctx!.client.request(
+          updateCourseMutation,
+          {
+            course: getUpdateCourse(),
+          },
+          {
+            "apollo-require-preflight": "true",
+          },
+        )
 
         expect(res).toMatchSnapshot({
           updateCourse: expectedUpdatedCourse,

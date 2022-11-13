@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`API /progressv2 returns correct data on course id, include deleted false 1`] = `
-Object {
-  "data": Object {
-    "completion": Object {
+{
+  "data": {
+    "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
       "completion_language": null,
@@ -21,8 +21,8 @@ Object {
       "user_upstream_id": 1,
     },
     "course_id": "00000000-0000-0000-0000-000000000001",
-    "exercise_completions": Object {
-      "50000000-0000-0000-0000-000000000001": Object {
+    "exercise_completions": {
+      "50000000-0000-0000-0000-000000000001": {
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -32,7 +32,7 @@ Object {
         "section": 1,
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      "50000000-0000-0000-0000-000000000002": Object {
+      "50000000-0000-0000-0000-000000000002": {
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -49,9 +49,9 @@ Object {
 `;
 
 exports[`API /progressv2 returns correct data on course id, include deleted true 1`] = `
-Object {
-  "data": Object {
-    "completion": Object {
+{
+  "data": {
+    "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
       "completion_language": null,
@@ -69,8 +69,8 @@ Object {
       "user_upstream_id": 1,
     },
     "course_id": "00000000-0000-0000-0000-000000000001",
-    "exercise_completions": Object {
-      "50000000-0000-0000-0000-000000000001": Object {
+    "exercise_completions": {
+      "50000000-0000-0000-0000-000000000001": {
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -80,7 +80,7 @@ Object {
         "section": 1,
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      "50000000-0000-0000-0000-000000000002": Object {
+      "50000000-0000-0000-0000-000000000002": {
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -90,7 +90,7 @@ Object {
         "section": 2,
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      "50000000-0000-0000-0000-000000000005": Object {
+      "50000000-0000-0000-0000-000000000005": {
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000005",
         "max_points": null,
@@ -107,9 +107,9 @@ Object {
 `;
 
 exports[`API /progressv2 returns correct data on course slug, include deleted false 1`] = `
-Object {
-  "data": Object {
-    "completion": Object {
+{
+  "data": {
+    "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
       "completion_language": null,
@@ -127,8 +127,8 @@ Object {
       "user_upstream_id": 1,
     },
     "course_id": "00000000-0000-0000-0000-000000000001",
-    "exercise_completions": Object {
-      "50000000-0000-0000-0000-000000000001": Object {
+    "exercise_completions": {
+      "50000000-0000-0000-0000-000000000001": {
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -138,7 +138,7 @@ Object {
         "section": 1,
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      "50000000-0000-0000-0000-000000000002": Object {
+      "50000000-0000-0000-0000-000000000002": {
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -155,9 +155,9 @@ Object {
 `;
 
 exports[`API /progressv2 returns correct data on course slug, include deleted true 1`] = `
-Object {
-  "data": Object {
-    "completion": Object {
+{
+  "data": {
+    "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
       "completion_language": null,
@@ -175,8 +175,8 @@ Object {
       "user_upstream_id": 1,
     },
     "course_id": "00000000-0000-0000-0000-000000000001",
-    "exercise_completions": Object {
-      "50000000-0000-0000-0000-000000000001": Object {
+    "exercise_completions": {
+      "50000000-0000-0000-0000-000000000001": {
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -186,7 +186,7 @@ Object {
         "section": 1,
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      "50000000-0000-0000-0000-000000000002": Object {
+      "50000000-0000-0000-0000-000000000002": {
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -196,7 +196,7 @@ Object {
         "section": 2,
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      "50000000-0000-0000-0000-000000000005": Object {
+      "50000000-0000-0000-0000-000000000005": {
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000005",
         "max_points": null,
@@ -213,37 +213,39 @@ Object {
 `;
 
 exports[`API /register-completions creates registered completions 1`] = `
-Array [
-  Object {
-    "completion_id": "30000000-0000-0000-0000-000000000102",
-    "course_id": "00000000-0000-0000-0000-000000000002",
-    "created_at": Any<Date>,
-    "id": Any<String>,
-    "organization_id": "10000000-0000-0000-0000-000000000102",
-    "real_student_number": "12345",
-    "registration_date": null,
-    "updated_at": Any<Date>,
-    "user_id": "20000000-0000-0000-0000-000000000102",
-  },
-  Object {
-    "completion_id": "30000000-0000-0000-0000-000000000103",
-    "course_id": "00000000-0000-0000-0000-000000000001",
-    "created_at": Any<Date>,
-    "id": Any<String>,
-    "organization_id": "10000000-0000-0000-0000-000000000102",
-    "real_student_number": "12345",
-    "registration_date": null,
-    "updated_at": Any<Date>,
-    "user_id": "20000000-0000-0000-0000-000000000102",
-  },
-]
+{
+  "result": [
+    {
+      "completion_id": "30000000-0000-0000-0000-000000000102",
+      "course_id": "00000000-0000-0000-0000-000000000002",
+      "created_at": Any<Date>,
+      "id": Any<String>,
+      "organization_id": "10000000-0000-0000-0000-000000000102",
+      "real_student_number": "12345",
+      "registration_date": null,
+      "updated_at": Any<Date>,
+      "user_id": "20000000-0000-0000-0000-000000000102",
+    },
+    {
+      "completion_id": "30000000-0000-0000-0000-000000000103",
+      "course_id": "00000000-0000-0000-0000-000000000001",
+      "created_at": Any<Date>,
+      "id": Any<String>,
+      "organization_id": "10000000-0000-0000-0000-000000000102",
+      "real_student_number": "12345",
+      "registration_date": null,
+      "updated_at": Any<Date>,
+      "user_id": "20000000-0000-0000-0000-000000000102",
+    },
+  ],
+}
 `;
 
 exports[`API /temporary-stored-data get returns stored data from owned course 1`] = `
-Array [
-  Object {
-    "completions": Array [
-      Object {
+[
+  {
+    "completions": [
+      {
         "certificate_id": null,
         "completion_date": "2000-01-01T08:00:00.000Z",
         "completion_language": null,
@@ -261,14 +263,14 @@ Array [
         "user_upstream_id": 1,
       },
     ],
-    "storedData": Object {
+    "storedData": {
       "course_id": "00000000-0000-0000-0000-000000000001",
       "created_at": "1900-01-01T08:00:00.000Z",
       "data": "user1_foo",
       "updated_at": "1900-01-01T08:00:00.000Z",
       "user_id": "20000000-0000-0000-0000-000000000102",
     },
-    "user": Object {
+    "user": {
       "administrator": false,
       "created_at": "1900-01-01T08:00:00.000Z",
       "email": "e@mail.com",

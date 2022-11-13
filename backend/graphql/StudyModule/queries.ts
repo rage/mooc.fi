@@ -1,10 +1,10 @@
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { GraphQLUserInputError } from "../../lib/errors"
 import { filterNull } from "../../util/db-functions"
 
 export const StudyModuleQueries = extendType({
@@ -23,7 +23,7 @@ export const StudyModuleQueries = extendType({
         const { id, slug, language, translationFallback } = args
 
         if (!id && !slug) {
-          throw new UserInputError("must provide id or slug")
+          throw new GraphQLUserInputError("must provide id or slug")
         }
 
         const study_module:

@@ -1,3 +1,5 @@
+import { GraphQLError, GraphQLErrorOptions } from "graphql/error"
+
 class CustomError extends Error {
   constructor(message: string) {
     super(message)
@@ -5,6 +7,65 @@ class CustomError extends Error {
     this.name = this.constructor.name
 
     Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+class CustomGraphQLError extends GraphQLError {
+  constructor(message: string, options?: GraphQLErrorOptions) {
+    super(message, options)
+
+    this.name = this.constructor.name
+
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+export class GraphQLUserInputError extends CustomGraphQLError {
+  override name = "UserInputError"
+
+  constructor(message: string, options?: GraphQLErrorOptions) {
+    super(message, options)
+  }
+}
+
+export class GraphQLAuthenticationError extends CustomGraphQLError {
+  override name = "AuthenticationError"
+
+  constructor(message: string, options?: GraphQLErrorOptions) {
+    super(message, options)
+  }
+}
+
+export class GraphQLForbiddenError extends CustomGraphQLError {
+  override name = "ForbiddenError"
+
+  constructor(message: string, options?: GraphQLErrorOptions) {
+    super(message, options)
+  }
+}
+
+export class UserInputError extends CustomError {
+  override name = "UserInputError"
+
+  constructor(message: string, data?: object)
+  constructor(message: string, readonly data?: object) {
+    super(message)
+  }
+}
+
+export class AuthenticationError extends CustomError {
+  override name = "AuthenticationError"
+
+  constructor(message: string) {
+    super(message)
+  }
+}
+
+export class ForbiddenError extends CustomError {
+  override name = "ForbiddenError"
+
+  constructor(message: string) {
+    super(message)
   }
 }
 

@@ -118,18 +118,23 @@ describe("API", () => {
         },
       })
 
-      expect(orderBy(addedCompletions, "completion_id")).toMatchSnapshot([
-        {
-          id: expect.any(String),
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        },
-        {
-          id: expect.any(String),
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        },
-      ])
+      // jest used to support matching array snapshots, now it doesn't so we circumvent it
+      expect({
+        result: orderBy(addedCompletions, "completion_id"),
+      }).toMatchSnapshot({
+        result: [
+          {
+            id: expect.any(String),
+            created_at: expect.any(Date),
+            updated_at: expect.any(Date),
+          },
+          {
+            id: expect.any(String),
+            created_at: expect.any(Date),
+            updated_at: expect.any(Date),
+          },
+        ],
+      })
     })
   })
 

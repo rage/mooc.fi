@@ -1,7 +1,7 @@
 import { User } from "@prisma/client"
 
 import { BaseContext } from "../../../context"
-import { TMCError } from "../../lib/errors"
+import { TMCError } from "../../../lib/errors"
 import getUserFromTMCAndCreate from "./getUserFromTMC"
 
 export async function getUserWithRaceCondition(

@@ -107,18 +107,18 @@ describe("User", () => {
             },
           },
           `
-              Object {
-                "currentUser": Object {
-                  "administrator": false,
-                  "email": "e@mail.com",
-                  "first_name": "first",
-                  "id": Any<String>,
-                  "last_name": "last",
-                  "upstream_id": 1,
-                  "username": "user",
-                },
-              }
-          `,
+          {
+            "currentUser": {
+              "administrator": false,
+              "email": "e@mail.com",
+              "first_name": "first",
+              "id": Any<String>,
+              "last_name": "last",
+              "upstream_id": 1,
+              "username": "user",
+            },
+          }
+        `,
         )
 
         jest.clearAllMocks()
@@ -146,10 +146,10 @@ describe("User", () => {
             currentUser: null,
           },
           `
-        Object {
-          "currentUser": null,
-        }
-      `,
+          {
+            "currentUser": null,
+          }
+        `,
         )
       })
     })
@@ -300,10 +300,10 @@ describe("User", () => {
         expect(res.updateResearchConsent).toMatchInlineSnapshot(
           { id: expect.any(String) },
           `
-        Object {
-          "id": Any<String>,
-        }
-      `,
+          {
+            "id": Any<String>,
+          }
+        `,
         )
         const updatedConsent = await ctx!.prisma.user.findFirst({
           where: { upstream_id: 1 },

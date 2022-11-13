@@ -30,14 +30,16 @@ const logger = winston.createLogger({
 
 const startApp = async () => {
   const ctx: ServerContext = { prisma, logger, knex }
-  const { app } = await server(ctx)
+  const { httpServer } = await server(ctx)
 
   attachPrismaEvents(ctx)
 
   if (!NEXUS_REFLECTION) {
-    app.listen(4000, () => {
+    console.log("I should _not_ be here in testing")
+    httpServer.listen(4000, () => {
       console.log("server running on port 4000")
     })
+
     wsListen()
   }
 }

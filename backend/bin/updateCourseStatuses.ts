@@ -1,8 +1,8 @@
 import { DateTime } from "luxon"
 
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
-import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "update-course-statuses" })
 

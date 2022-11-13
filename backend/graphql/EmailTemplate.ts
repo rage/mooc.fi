@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server-express"
 import {
   extendType,
   idArg,
@@ -9,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const EmailTemplate = objectType({
   name: "EmailTemplate",
@@ -83,7 +83,7 @@ export const EmailTemplateMutations = extendType({
           points_threshold,
         } = args
 
-        if (name == "") throw new UserInputError("Name is empty!")
+        if (name == "") throw new GraphQLUserInputError("Name is empty!")
 
         return ctx.prisma.emailTemplate.create({
           data: {

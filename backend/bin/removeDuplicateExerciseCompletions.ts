@@ -2,9 +2,9 @@ import { Knex } from "knex"
 import * as winston from "winston"
 
 import { CIRCLECI, isProduction } from "../config"
+import { RemoveDuplicateExerciseCompletionsError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import serviceKnex from "../services/knex"
-import { RemoveDuplicateExerciseCompletionsError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const _logger = sentryLogger({
   service: "remove-duplicate-exercise-completions",

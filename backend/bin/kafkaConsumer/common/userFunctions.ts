@@ -12,9 +12,9 @@ import {
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
 import { BaseContext } from "../../../context"
+import { DatabaseInputError } from "../../../lib/errors"
 import { isNullOrUndefined } from "../../../util/isNullOrUndefined"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
-import { DatabaseInputError } from "../../lib/errors"
 import {
   ExerciseCompletionPart,
   ServiceProgressPartType,

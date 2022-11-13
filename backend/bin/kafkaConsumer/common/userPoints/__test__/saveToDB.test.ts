@@ -1,5 +1,4 @@
-import { UserInputError } from "apollo-server-express"
-
+import { DatabaseInputError, UserInputError } from "../../../../../lib/errors"
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
@@ -7,7 +6,6 @@ import {
 } from "../../../../../tests/__helpers"
 import { adminUserDetails, normalUserDetails } from "../../../../../tests/data"
 import { seed } from "../../../../../tests/data/seed"
-import { DatabaseInputError } from "../../../../lib/errors"
 import { KafkaContext } from "../../kafkaContext"
 import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"

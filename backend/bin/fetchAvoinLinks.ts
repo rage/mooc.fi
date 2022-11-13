@@ -5,9 +5,9 @@ import { DateTime } from "luxon"
 import { OpenUniversityRegistrationLink } from "@prisma/client"
 
 import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
+import { AvoinError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
-import { AvoinError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 

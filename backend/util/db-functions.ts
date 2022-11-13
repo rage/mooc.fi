@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server-express"
 import { Knex } from "knex"
 import { omit } from "lodash"
 
@@ -6,6 +5,7 @@ import { Course, Prisma, PrismaClient } from "@prisma/client"
 
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
+import { GraphQLUserInputError } from "../lib/errors"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
 
@@ -256,11 +256,15 @@ export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
     const { select, include } = args ?? {}
 
     if (!id && !slug) {
-      throw new UserInputError("You must provide either an id or a slug")
+      throw new GraphQLUserInputError(
+        "You must../ provide either an id or a slug",
+      )
     }
 
     if (include && select) {
-      throw new UserInputError("Only provide one of include or select")
+      throw new GraphQLUserInputError(
+        "Only provide../ one of include or select",
+      )
     }
 
     if (id) {

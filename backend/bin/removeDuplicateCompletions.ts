@@ -1,6 +1,6 @@
+import { RemoveDuplicateCompletionsError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import Knex from "../services/knex"
-import { RemoveDuplicateCompletionsError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "remove-duplicate-completions" })
 

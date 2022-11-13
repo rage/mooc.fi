@@ -1,10 +1,13 @@
-import { UserInputError } from "apollo-server-express"
 import { DateTime } from "luxon"
 
 import { ExerciseCompletion, User } from "@prisma/client"
 
+import {
+  DatabaseInputError,
+  TMCError,
+  UserInputError,
+} from "../../../../lib/errors"
 import { err, ok, Result } from "../../../../util/result"
-import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"

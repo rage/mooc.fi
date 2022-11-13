@@ -1,7 +1,7 @@
 import winston, { format } from "winston"
 import WinstonSentry from "winston-sentry-log"
 
-import { isProduction, isStaging } from "../../config"
+import { isProduction, isStaging } from "../config"
 
 interface LoggerOptions {
   service: string

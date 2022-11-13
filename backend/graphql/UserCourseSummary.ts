@@ -1,5 +1,6 @@
-import { UserInputError } from "apollo-server-express"
 import { booleanArg, objectType } from "nexus"
+
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
@@ -13,7 +14,7 @@ export const UserCourseSummary = objectType({
       type: "Course",
       resolve: async ({ course_id }, _, ctx) => {
         if (!course_id) {
-          throw new UserInputError("need to specify course_id")
+          throw new GraphQLUserInputError("need to specify course_id")
         }
 
         return ctx.prisma.course.findUnique({
@@ -30,7 +31,9 @@ export const UserCourseSummary = objectType({
         ctx,
       ) => {
         if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
+          throw new GraphQLUserInputError(
+            "need to specify user_id and course_id",
+          )
         }
         const completions = await ctx.prisma.course
           .findUnique({
@@ -53,7 +56,9 @@ export const UserCourseSummary = objectType({
       type: "UserCourseProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
         if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
+          throw new GraphQLUserInputError(
+            "need to specify user_id and course_id",
+          )
         }
         const progresses = await ctx.prisma.course
           .findUnique({
@@ -75,7 +80,9 @@ export const UserCourseSummary = objectType({
       type: "UserCourseServiceProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
         if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
+          throw new GraphQLUserInputError(
+            "need to specify user_id and course_id",
+          )
         }
         const progresses = await ctx.prisma.course
           .findUnique({
@@ -104,7 +111,9 @@ export const UserCourseSummary = objectType({
         ctx,
       ) => {
         if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
+          throw new GraphQLUserInputError(
+            "need to specify user_id and course_id",
+          )
         }
 
         return ctx.prisma.user

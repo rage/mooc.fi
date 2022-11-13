@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import {
   arg,
@@ -14,6 +13,7 @@ import {
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { GraphQLUserInputError } from "../../lib/errors"
 import { filterNull, getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -33,7 +33,7 @@ export const CourseQueries = extendType({
         const { slug, id, language, translationFallback } = args
 
         if (!slug && !id) {
-          throw new UserInputError("must provide id or slug")
+          throw new GraphQLUserInputError("must provide id or slug")
         }
 
         const courseQuery: Prisma.CourseFindUniqueArgs = {

@@ -6,9 +6,9 @@ import {
   UserCourseServiceProgress,
 } from "@prisma/client"
 
+import { DatabaseInputError, TMCError } from "../../../../lib/errors"
 import { err, ok, Result } from "../../../../util/result"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
-import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"

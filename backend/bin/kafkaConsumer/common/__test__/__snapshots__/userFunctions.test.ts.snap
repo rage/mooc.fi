@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly only one course specified 1`] = `
-Array [
-  Object {
+[
+  {
     "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_2",
     "exercise_id": "18180000-0000-0000-0000-000000000002",
     "max_points": 2,
     "n_points": "3.000000000000000000000000000000",
   },
-  Object {
+  {
     "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_6",
     "exercise_id": "18180000-0000-0000-0000-000000000006",
@@ -20,22 +20,22 @@ Array [
 `;
 
 exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly with multiple courses specified 1`] = `
-Array [
-  Object {
+[
+  {
     "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_2",
     "exercise_id": "18180000-0000-0000-0000-000000000002",
     "max_points": 2,
     "n_points": "3.000000000000000000000000000000",
   },
-  Object {
+  {
     "course_id": "00000000-0000-0000-0000-000000000668",
     "custom_id": "test_exercise_5_other_course",
     "exercise_id": "18180000-0000-0000-0000-000000000005",
     "max_points": 1,
     "n_points": "1.000000000000000000000000000000",
   },
-  Object {
+  {
     "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_6",
     "exercise_id": "18180000-0000-0000-0000-000000000006",
@@ -46,8 +46,8 @@ Array [
 `;
 
 exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly with other user 1`] = `
-Array [
-  Object {
+[
+  {
     "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_4",
     "exercise_id": "18180000-0000-0000-0000-000000000004",

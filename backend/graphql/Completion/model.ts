@@ -1,9 +1,9 @@
-import { ForbiddenError } from "apollo-server-express"
 import { objectType } from "nexus"
 
 import { UserCourseProgress } from "@prisma/client"
 
 import { BAIParentCourse, BAITierCourses } from "../../config/courseConfig"
+import { GraphQLForbiddenError } from "../../lib/errors"
 import {
   checkCertificate,
   checkCertificateForUser,
@@ -65,7 +65,7 @@ export const Completion = objectType({
       type: "User",
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
-          throw new ForbiddenError(
+          throw new GraphQLForbiddenError(
             "Cannot query relations when asking for more than 50 objects",
           )
         }
@@ -170,7 +170,9 @@ export const Completion = objectType({
         let certificate_availability
         if (user_upstream_id !== ctx.user?.upstream_id) {
           if (!ctx.user?.administrator) {
-            throw new ForbiddenError("Cannot query other users' certificates")
+            throw new GraphQLForbiddenError(
+              "Cannot query other users' certificates",
+            )
           }
 
           if (!user_upstream_id) {

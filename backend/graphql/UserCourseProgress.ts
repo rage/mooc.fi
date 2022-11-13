@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server-express"
 import {
   arg,
   extendType,
@@ -14,6 +13,7 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
 
 // progress seems not to be uniform, let's try to normalize it a bit
@@ -150,7 +150,7 @@ export const UserCourseProgressQueries = extendType({
           orderBy: { created_at: "asc" },
         })
 
-        if (!result) throw new UserInputError("Not found")
+        if (!result) throw new GraphQLUserInputError("Not found")
 
         return result
       },
@@ -173,7 +173,7 @@ export const UserCourseProgressQueries = extendType({
         let { course_id, course_slug } = args
 
         if (!course_id && !course_slug) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "must provide either course_id or course_slug",
           )
         }
