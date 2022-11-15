@@ -42,9 +42,16 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - restore_cache:
+          key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
+      - save-cache:
+          key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
+          paths:
+            - ./frontend/node_modules
+            - ./frontend/.next/cache
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-frontend-image.sh"

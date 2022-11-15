@@ -57,9 +57,9 @@ export default function StudyModuleEditForm() {
 
   const imageFilename = useMemo(() => {
     if (image) {
-      return `/static/images/${image}`
+      return `/images/modules/${image}`
     }
-    return `/static/images/${slug}.jpg`
+    return `/images/modules/${slug}.jpg`
   }, [image, slug])
 
   return (

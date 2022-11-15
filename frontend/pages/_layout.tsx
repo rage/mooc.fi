@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react"
 
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
@@ -12,12 +12,25 @@ import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
 import { fontVariableClass } from "/src/fonts"
 
-const FooterDownPusherWrapper = styled.div`
+const FooterDownPusherWrapper = styled("div")`
   display: flex;
   min-height: 100vh;
   flex-direction: column;
   justify-content: space-between;
 `
+
+// when the footer is visible, it will overlap the content;
+// this empty div appears with the dynamic height of the toolbar to offset this
+const FooterUpPusher = styled("div")(
+  ({ theme }) => `
+  display: flex;
+  min-height: ${theme.mixins.toolbar.minHeight}px;
+
+  @media (min-width: 1050px) {
+    display: none;
+  }
+`,
+)
 
 const Layout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
@@ -38,6 +51,7 @@ const Layout = ({ children }: PropsWithChildren<{}>) => {
         </div>
         <MobileBottomNavigation />
         <Footer />
+        <FooterUpPusher />
       </FooterDownPusherWrapper>
     </div>
   )

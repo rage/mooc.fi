@@ -2,7 +2,7 @@ import { ImageProps } from "next/image"
 
 export const staticSrc = (
   src: ImageProps["src"],
-  path: string = "/static/images/",
+  path: string = "/images/",
 ) => {
   if (typeof src === "string") {
     if (src.startsWith("/_next") || src.startsWith(path)) {

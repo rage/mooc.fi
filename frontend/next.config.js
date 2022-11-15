@@ -17,7 +17,7 @@ const withMDX = require("@next/mdx")({
 })
 
 /**
- * @type {import('next').NextConfig}
+ * @type NextConfig}
  */
 const nextConfiguration = {
   reactStrictMode: true,
@@ -66,6 +66,10 @@ const nextConfiguration = {
     config.module.rules.push({
       test: /\.svg$/, // (svg|png|jpeg|jpg|gif|webp)
       type: "asset",
+    })
+    config.module.rules.push({
+      test: /\.(png|jpg|gif|webp)$/,
+      exclude: ["/public/images/originals/", "/public/images/courseimages/"],
     })
     config.module.rules.push({
       test: /\.svg/,

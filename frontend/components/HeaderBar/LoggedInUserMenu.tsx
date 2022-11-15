@@ -73,7 +73,7 @@ const UserMenu = () => {
           </StyledButton>
 
           <StyledButton
-            href="study-modules"
+            href="/study-modules"
             color="inherit"
             variant="text"
             active={active === "study-modules"}

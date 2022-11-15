@@ -89,7 +89,7 @@ const ImageDropzoneInput = ({
   } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".jpeg", ".png", ".gif", ".svg"],
+      "image/*": [".jpeg", ".png", ".gif", ".svg", ".webp"],
     },
     multiple: false,
     preventDropOnDocument: true,

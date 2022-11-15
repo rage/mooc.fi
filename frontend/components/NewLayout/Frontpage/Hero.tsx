@@ -61,7 +61,7 @@ function Hero() {
     <HeroContainer>
       <HeroContent />
       <BackgroundImage
-        src="/static/images/new/hero.png"
+        src="/images/new/hero.png"
         fill
         aria-hidden
         alt="background image"

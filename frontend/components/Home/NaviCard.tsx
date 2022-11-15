@@ -69,7 +69,7 @@ function NaviCard(props: NaviCardProps) {
         <NaviItemBase>
           {item.img ? (
             <BackgroundImage
-              src={`/static/images/${item.img}`}
+              src={`/images/${item.img}`}
               loading="lazy"
               alt=""
               fill
@@ -84,7 +84,7 @@ function NaviCard(props: NaviCardProps) {
             >
               {item.titleImg ? (
                 <Image
-                  src={`/static/images/${item.titleImg}`}
+                  src={`/images/${item.titleImg}`}
                   alt=""
                   fill
                   style={{ width: "70%" }}

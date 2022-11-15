@@ -1,0 +1,166 @@
+import { ContentBox, CodeBox } from "/pages/installation/[id]"
+
+<ContentBox>
+
+## Start programming <a name="start-programming"></a>
+When you have downloaded Visual Studio Code, Java, Python and TestMyCode Extension, next step is to make a **Mooc.fi-account**. 
+The account is made so we can track your points on the course. After that you can start programming.
+
+### Creating MOOC.fi account <a name="mooc.fi-create-account"></a>
+If you don't have a MOOC.fi account, go to course material and create a MOOC.fi account or press __Sign up__ at the top right corner of this page.
+
+### Logging in to programming environment <a name="login-mooc"></a>
+
+Start TestMyCode Extension by clicking TMC icon in the left bar (see picture point 1).
+
+Log in by clicking **Log in** button (see picture point 2).
+
+Use the account you made in previous step to log in.
+
+<img src="/images/installation/vscode/TMC_login.png"
+alt="TMC Login"
+width="100%" height="100%"/>
+
+### Selecting your organization <a name="select-organization"></a>
+
+When you log in, you will se a list of courses selected (at start it is empty).
+If you're not at this view, press "My courses" (see picture point 1).  
+
+You can add courses to the list by clicking **Add new course** button (see picture point 2).
+
+By clicking **Add new course** the extension will show all possible organizations that offer courses.
+Search and select the organization that is mentioned in your course material (see picture point 3).
+
+For example on the course "Ohjelmoinnin perusteet Python, kesä 2020" the organization is "Helsingin Yliopisto".
+
+<img src="/images/installation/vscode/select-org.png"
+alt="Choose organisation"
+width="100%" height="100%"/>
+
+### Selecting your course <a name="select-course"></a>
+
+After this, select the correct course. The course name is mentioned in your course material. The courses you see listed here depend on your organization.
+
+### Completing your first programming exercise <a name="first-programming-exercise"></a>
+
+Lets go through an example how you can complete the Hello Visual Studio Code exercise on the course "Ohjelmoinnin perusteet Python, kesä 2020".
+Even if you have completed exercises on some other course, read the instructions to the end. It will have important information on the programming environment.
+
+#### Downloading exercises
+
+Once you have logged in and selected the course "Ohjelmoinnin perusteet Python, kesä 2020", click the course in "My Courses" view.  
+You'll land into the course details page. Click on the __Download__ button for part 4 (see pic below), this will start a download process for part 4 exercises.  
+You can follow the download process by checking the __Downloaded__ counter for this part or via the notification at bottom right, please wait for the download process to finish and then proceed with the instructions.
+Instructions for these exercises will be in your course material.
+
+<img src="/images/installation/vscode/course_details.png"
+alt="Course details"
+width="100%" height="100%"/>
+
+When exercises have been downloaded, click __Open workspace__ (see picture below).
+<img src="/images/installation/vscode/open_exercise_workspace.png"
+alt="Open workspace"
+width="100%" height="100%"/>
+
+#### Working on your programming exercises
+
+At this point you should be see the "osa04-01_hello_visualstudio_code" folder (as in picture below) in VS Code, if you don't see this, navigate to the Explorer view by pressing the Explorer icon at the left side bar (see picture point 1). 
+Find the source code file called "hello_visualstudio_code.py" under the folder "osa04-01_hello_visualstudio_code". Source code files are located in directory __"src"__.  
+You can open the file to the editor view by clicking the file hello_visualstudio_code.py.
+<img src="/images/installation/vscode/click_exercises.png"
+alt="Select exercise"
+width="100%" height="100%"/>
+
+**NB!**
+First time you open an exercise you may receive automatic recommendations by Visual Studio Code at the bottom right corner, please install these.
+<img src="/images/installation/vscode/python_recommendation.png"
+alt="Python extension"
+width="100%" height="100%"/>
+
+Editor view (picture below) is the view on the middle. You can type there to make changes to the source code.
+<img src="/images/installation/vscode/editor_view.png"
+alt="Editor view"
+width="100%" height="100%"/>
+
+Make the following changes to the source code: 
+
+<CodeBox>
+```python
+editori = input("editori: ")
+if editor == "word" or editor == "notepad":
+    print("surkea")
+```
+</CodeBox>
+
+### Running the source code <a name="run-source-code"></a>
+
+If you installed all the necessary programs and extension recommendations you should be able to run the source code by pressing the green start button at the top right corner.
+
+<img src="/images/installation/vscode/python_run_terminal.png"
+alt="Python run in terminal"
+width="100%" height="100%"/>
+
+This will open a terminal under your source code editor where the program will print its output and ask for input.
+
+<img src="/images/installation/vscode/terminal-vscode.png"
+alt="Terminal"
+width="100%" height="100%"/>
+
+If you modified the file as instructed previously, the program should print following with input `notepad`:
+
+<CodeBox>
+```
+editori: notepad
+surkea
+```
+</CodeBox>
+
+### Testing the source code <a name="test-source-code"></a>
+
+Most of the time there will be automated test for the exercises. These tests will give information on your progress on the exercise.
+Test your solution by clicking the TMC __test__ button in the top right corner.
+
+<img src="/images/installation/vscode/tmc_run_test.png"
+alt="TMC run tests"
+width="100%" height="100%"/>
+
+When you run tests on the source code we just wrote, the tests should not pass and give you a message.
+By following the message, we see that our program printed something erroneous with some inputs.
+
+
+The program will print correctly with desired inputs when you modify the source code like the following:
+
+<CodeBox>
+```python
+while True:
+    editori = input("editori: ")
+    if editori.lower() == "visual studio code":
+        break
+    if editori == "word" or editori == "notepad":
+        print("surkea")
+    else:
+        print("ei ole hyvä")
+print("loistava valinta!")
+```
+</CodeBox>
+
+Run the tests again. This time the test will pass and TMC you can submit your code to the server for evaluation.
+
+### Submitting your solution to the server <a name="submit-solution"></a>
+
+Sending the exercise to TMC-server means that your solution will be reviewed.
+Your code will be almost always reviewed automatically. You will get points (or possible error message) really fast.
+
+You can return the solution after running tests or pressing `Submit to server` from TMC-menu which is located in the top right corner.
+
+<img src="/images/installation/vscode/tmc_menu.png"
+alt="TMC Menu"
+width="100%" height="100%"/>
+
+When you have sent right solution the the server, you will be given points from the exercise. Also if you are given a short survey, filling it is advised. We use the information to make our courses better.
+
+### Check your points <a name="check-your-points"></a>
+
+You can check your points by logging in [tmc.mooc.fi](https://tmc.mooc.fi). Use the same user you made earlier.
+
+</ContentBox>

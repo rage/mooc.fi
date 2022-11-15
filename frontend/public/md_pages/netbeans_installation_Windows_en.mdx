@@ -1,0 +1,58 @@
+import {ContentBox} from "/pages/installation/[id]"
+import StartingProgrammingGuide from "/public/md_pages/ohjelmoinnin_aloittaminen_en.mdx"
+
+<ContentBox>
+
+## Installing to Windows
+---
+
+### Contents
+1. [Installing Java](#javan-asentaminen)
+2. [Installing TMCBeans](#tmcbeansin-asentaminen)
+3. [Creating MOOC.fi account](#mooc.fi-tunnuksen-luominen)
+4. [Logging in to the development environment](#kirjautuminen-ohjelmointiympäristöön)
+5. [Selecting your organization](#organisaation-valinta)
+6. [Selecting your course](#kurssin-valinta)
+7. [Doing your first coding exercise](#ensimmäisen-tehtävän-tekeminen)
+8. [Running the source code](#lähdekoodin-ajaminen)
+9. [Testing the source code](#lähdekoodin-testaaminen)
+10. [Submitting your solution to the server](#tehtävän-lähettäminen-palvelimelle)
+11. [Checking your points](#pistetilanteen-tarkistaminen)
+
+---
+</ContentBox>
+
+<ContentBox>
+
+Follow the instructions below to install
+ - support for developing Java applications
+ - TMCBeans environment
+
+### Installing Java <a name="javan-asentaminen"></a>
+
+Download AdoptOpenJDK11, open development environment for Java 11, from [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
+
+Select OpenJDK 11 (LTS) and HotSpot. Then click "Latest release" to download Java.
+
+**NB!** When installing Java with the installation file you just downloaded, in the Custom Setup phase set both "Set JAVA_HOME variable" and "JavaSoft (Oracle) registry keys" to "Entire feature will be installed on local hard drive" (see the images below).
+
+
+<img src="/images/installation/adoptopenjdk-set-java-home.png"
+alt="Custom Setup phase of AdoptOpenJDK installer, where Set JAVA_HOME variable is set to Entire feature will be installed on local hard drive."
+width="100%" height="100%" />
+
+<img src="/images/installation/adoptopenjdk-set-registry-keys.png"
+alt="Custom Setup phase of AdoptOpenJDK installer, where JavaSoft (Oracle) registry keys is set to Entire feature will be installed on local hard drive. "
+width="100%" height="100%" />
+
+
+### Installing TMCBeans <a name="tmcbeansin-asentaminen"></a>
+
+1. Download file [https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.5.0_installer.exe](https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.5.0_installer.exe).
+2. When the download is complete, double click the file to open the installer.
+3. Follow the instructions on your screen.
+
+***
+</ContentBox>
+
+<StartingProgrammingGuide />

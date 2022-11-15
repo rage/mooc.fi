@@ -2,7 +2,7 @@ export const mockModules = {
   study_modules: [
     {
       id: "21d838c9-54c7-4fbb-8e4c-91e8f14f0d73",
-      image: "../../static/images/WebModule.jpg",
+      image: "../../public/images/modules/WebModule.jpg",
       study_module_translations: [
         {
           id: "0616fba6-e119-4d77-9b71-2b0fae2101b3",
@@ -21,7 +21,7 @@ export const mockModules = {
         {
           id: "03dfa6a0-5854-4e71-ace6-e796ff851915",
           slug: "docker",
-          photo: "../../static/images/courseimages/tikape.jpg",
+          photo: "../../public/images/courseimages/tikape.jpg",
           promote: true,
           status: "Active",
           start_point: true,
@@ -45,7 +45,7 @@ export const mockModules = {
         {
           id: "bb772ed2-7eb0-4876-9fae-9659700edc16",
           slug: "fullstack-harkka",
-          photo: "../../static/images/courseimages/fullstack.2.png",
+          photo: "../../public/images/courseimages/fullstack.2.png",
           promote: false,
           status: "Active",
           start_point: false,
@@ -69,7 +69,7 @@ export const mockModules = {
         {
           id: "dabb43a1-3e39-4ef9-ad9a-6b183fbc4cbb",
           slug: "fullstack",
-          photo: "../../static/images/courseimages/fullstack.2.png",
+          photo: "../../public/images/courseimages/fullstack.2.png",
           promote: false,
           status: "Active",
           start_point: true,
@@ -94,7 +94,7 @@ export const mockModules = {
     },
     {
       id: "662f537e-4395-40db-a32d-710b51fa169e",
-      image: "../../static/images/CodeModule.jpg",
+      image: "../../public/images/modules/CodeModule.jpg",
       study_module_translations: [
         {
           id: "9fa46739-8993-4b32-8624-00d30e47830b",
@@ -113,7 +113,7 @@ export const mockModules = {
         {
           id: "4591d276-af80-4e5c-8bb0-305d4923bcc6",
           slug: "tira",
-          photo: "../../static/images/courseimages/tira.png",
+          photo: "../../public/images/courseimages/tira.png",
           promote: false,
           status: "Active",
           start_point: false,
@@ -137,7 +137,7 @@ export const mockModules = {
         {
           id: "7c409f15-60b5-4aea-9841-d42cb5070800",
           slug: "mooc1",
-          photo: "../../static/images/courseimages/doggos.png",
+          photo: "../../public/images/courseimages/doggos.png",
           promote: true,
           status: "Active",
           start_point: true,
@@ -164,7 +164,7 @@ export const mockModules = {
           id: "af48ac2b-6790-45d0-8413-61ffca25e962",
           slug: "tito",
           photo:
-            "../../static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg",
+            "../../public/images/courseimages/tietokoneen-toiminnan-perusteet.jpg",
           promote: false,
           status: "Active",
           start_point: false,
@@ -181,7 +181,7 @@ export const mockModules = {
         {
           id: "ec3877c5-b768-453e-9998-f7068b8c2463",
           slug: "mooc2",
-          photo: "../../static/images/courseimages/doggos.png",
+          photo: "../../public/images/courseimages/doggos.png",
           promote: false,
           status: "Active",
           start_point: false,

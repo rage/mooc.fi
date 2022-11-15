@@ -51,7 +51,7 @@ export default function FAQTopic({ topic }: FAQTopicProps) {
 }
 
 export async function getStaticPaths() {
-  const files = fs.readdirSync("./static/md_pages")
+  const files = fs.readdirSync("./public/md_pages")
   const faqFilePattern = new RegExp(
     /^(?!\w+_(macOS|Linux|Windows|ZIP|vscode)_)((\w+)_)*(fi|en)\.mdx$/g,
   )

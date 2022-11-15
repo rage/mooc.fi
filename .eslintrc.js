@@ -33,10 +33,13 @@ module.exports = {
             message: "Don't use Grid from @mui/material",
           },
         ],
-        patterns: [{
-          group: ["@mui/*/*/*"],
-          message: "Don't use deep @mui imports - prevents module duplication"
-        }]
+        patterns: [
+          {
+            group: ["@mui/*/*/*"],
+            message:
+              "Don't use deep @mui imports - prevents module duplication",
+          },
+        ],
       },
     ],
     "no-restricted-modules": [

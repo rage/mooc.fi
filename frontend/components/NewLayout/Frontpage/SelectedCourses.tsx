@@ -13,7 +13,7 @@ import {
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
-import moocLogoUrl from "/static/images/moocfi.svg"
+import moocLogoUrl from "/public/images/moocfi.svg"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import notEmpty from "/util/notEmpty"
 

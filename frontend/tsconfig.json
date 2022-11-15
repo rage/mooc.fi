@@ -5,14 +5,11 @@
       "/*": [
         "./*"
       ],
-      "@static/*": [
-        "./static/*"
-      ],
       "@pages/*": [
         "pages/*"
       ],
       "@lib/*": [
-        "./lib/*"
+        "../lib/*"
       ],
       "@components/*": [
         "./components/*"
@@ -43,6 +40,10 @@
     "isolatedModules": true,
     "incremental": true,
     "maxNodeModuleJsDepth": 8,
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ],
     "plugins": [
       {
         "name": "next"
@@ -51,10 +52,11 @@
   },
   "exclude": [
     "node_modules",
-    "schema.graphql"
+    "schema.graphql",
+    "public/images/originals",
+    ".next"
   ],
   "include": [
-    "types/*.d.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"

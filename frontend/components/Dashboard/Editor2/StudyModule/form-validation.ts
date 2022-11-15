@@ -49,7 +49,7 @@ function validateImage(this: Yup.TestContext, _value?: any): boolean {
   if (image === "") return true
 
   try {
-    require(`../../../../static/images/${image}`)
+    require(`../../../../public/images/modules/${image}`)
   } catch (e) {
     return false
   }

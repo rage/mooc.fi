@@ -32,7 +32,7 @@ export function useFAQPage(topic: string) {
   const Component = sanitizedTopic
     ? FAQComponent({
         mdxImport: () =>
-          import(`../static/md_pages/${sanitizedTopic}_${locale}.mdx`),
+          import(`../public/md_pages/${sanitizedTopic}_${locale}.mdx`),
         onSuccess: (mdx: MDXComponent<any>) => {
           setTitle(mdx?.meta?.title ?? "")
           setIngress(mdx?.meta?.ingress ?? "")

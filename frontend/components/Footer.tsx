@@ -68,26 +68,11 @@ const PolicyContainer = styled.div`
 function UniversityLogo() {
   return (
     <Image
-      src="/static/images/uh-logo.png"
+      src="/images/uh-logo.webp"
       alt="Logo of the University of Helsinki"
       width={188}
       height={75}
     />
-    /*<picture>
-      <source
-        srcSet={require(`../static/images/uh-logo.png?webp`)}
-        type="image/webp"
-      />
-      <source
-        srcSet={require(`../static/images/uh-logo.png`)}
-        type="image/png"
-      />
-      <LogoImage
-        alt="Logo of the University of Helsinki"
-        src={require(`../static/images/uh-logo.png`)}
-        loading="lazy"
-      />
-    </picture>*/
   )
 }
 

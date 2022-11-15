@@ -3,7 +3,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css"
 import React, { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
-import type { AppContext, AppProps } from "next/app"
+import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
@@ -136,6 +136,10 @@ MyApp.getInitialProps = async (props: AppContext) => {
       admin,
     },
   }
+}
+
+export function reportWebVitals(metric: NextWebVitalsMetric) {
+  console.log(metric)
 }
 
 export default withApolloClient(MyApp)

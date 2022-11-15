@@ -52,7 +52,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
   return (
     <Root backgroundColor={backgroundColor}>
       <BackgroundImage
-        src={`/static/images/${headerImage}`}
+        src={`/images/${headerImage}`}
         alt=""
         fill
         aria-hidden

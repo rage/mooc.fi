@@ -15,7 +15,7 @@ function ExplanationHero() {
     <ExplanationRoot>
       <Explanation />
       <BackgroundImage
-        src="/static/images/homeBackground.jpg"
+        src="/images/homeBackground.webp"
         alt=""
         aria-hidden={true}
         fill

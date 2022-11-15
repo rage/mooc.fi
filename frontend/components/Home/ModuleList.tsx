@@ -1,6 +1,6 @@
 import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
-import LUT from "/static/md_pages/lut_module.mdx"
+import LUT from "/public/md_pages/lut_module.mdx"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 

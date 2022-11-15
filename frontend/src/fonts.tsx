@@ -39,17 +39,17 @@ export const roboto = Roboto({
 export const openSansCondensed = localFont({
   src: [
     {
-      path: "../static/fonts/open-sans-condensed-v14-latin-300.ttf",
+      path: "../public/fonts/open-sans-condensed-v14-latin-300.ttf",
       style: "normal",
       weight: "300",
     },
     {
-      path: "../static/fonts/open-sans-condensed-v14-latin-300italic.ttf",
+      path: "../public/fonts/open-sans-condensed-v14-latin-300italic.ttf",
       style: "italic",
       weight: "300",
     },
     {
-      path: "../static/fonts/open-sans-condensed-v14-latin-700.ttf",
+      path: "../public/fonts/open-sans-condensed-v14-latin-700.ttf",
       style: "normal",
       weight: "700",
     },
@@ -58,3 +58,9 @@ export const openSansCondensed = localFont({
 })
 
 export const fontVariableClass = `${roboto.variable} ${openSansCondensed.variable}`
+
+export const openSansCondensedDeclaration = {
+  ...openSansCondensed.style,
+  ///fontStretch: "condensed",
+  //fontWeight: "300"
+}

@@ -32,14 +32,10 @@ const ModuleDisplayBackground = (
 ) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
 
-  // webp for svg?
-  // const imageUrl = "/static/images/backgroundPattern.svg"
-  // <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-
   return (
     <Background backgroundColor={backgroundColor}>
       <BackgroundImage
-        src="/static/images/backgroundPattern.svg"
+        src="/images/backgroundPattern.svg"
         alt=""
         fill
         loading="lazy"

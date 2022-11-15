@@ -11,7 +11,7 @@ const ModuleImage = ({ module }: ModuleImageProps) => {
   try {
     return (
       <BackgroundImage
-        src={`/static/images/${imageUrl}`}
+        src={`/images/modules/${imageUrl}`}
         loading="lazy"
         alt=""
         fill

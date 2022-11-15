@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { Avatar, Link, Typography } from "@mui/material"
 
-import moocLogoUrl from "/static/images/moocfi.svg"
+import moocLogoUrl from "/public/images/moocfi.svg"
 
 const MoocLogoText = styled(Typography)`
   font-family: var(--open-sans-condensed-font), sans-serif;

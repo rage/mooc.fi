@@ -1,46 +1,46 @@
 const ohpe_image = [
-  // require("./static/images/courseimages/doggos.png?webp"),
-  require("./static/images/courseimages/doggos.png"),
+  // require("./public/images/courseimages/doggos.png?webp"),
+  require("./public/images/courseimages/doggos.webp"),
 ]
 const fs_image = [
-  // require("./static/images/courseimages/fullstack.2.png?webp"),
-  require("./static/images/courseimages/fullstack.2.png"),
+  // require("./public/images/courseimages/fullstack.2.png?webp"),
+  require("./public/images/courseimages/fullstack.2.webp"),
 ]
 const ai_image = [
-  // require("./static/images/courseimages/elements-of-ai.png?webp"),
-  require("./static/images/courseimages/elements-of-ai.png"),
+  // require("./public/images/courseimages/elements-of-ai.png?webp"),
+  require("./public/images/courseimages/elements-of-ai.webp"),
 ]
 const dap_image = [
-  // require("./static/images/courseimages/dap.jpg?webp"),
-  require("./static/images/courseimages/dap.jpg"),
+  // require("./public/images/courseimages/dap.jpg?webp"),
+  require("./public/images/courseimages/dap.webp"),
 ]
 const wepa_image = [
-  // require("./static/images/courseimages/wepa.jpg?webp"),
-  require("./static/images/courseimages/wepa.jpg"),
+  // require("./public/images/courseimages/wepa.jpg?webp"),
+  require("./public/images/courseimages/wepa.webp"),
 ]
 const tilpe_image = [
-  // require("./static/images/courseimages/tilpe.png?webp"),
-  require("./static/images/courseimages/tilpe.png"),
+  // require("./public/images/courseimages/tilpe.png?webp"),
+  require("./public/images/courseimages/tilpe.webp"),
 ]
 const docker_image = [
-  // require("./static/images/courseimages/containers.png?webp"),
-  require("./static/images/courseimages/containers.png"),
+  // require("./public/images/courseimages/containers.png?webp"),
+  require("./public/images/courseimages/containers.webp"),
 ]
 const tikape_image = [
-  // require("./static/images/courseimages/tikape.jpg?webp"),
-  require("./static/images/courseimages/tikape.jpg"),
+  // require("./public/images/courseimages/tikape.jpg?webp"),
+  require("./public/images/courseimages/tikape.webp"),
 ]
 const tira_image = [
-  // require("./static/images/courseimages/tira.png?webp"),
-  require("./static/images/courseimages/tira.png"),
+  // require("./public/images/courseimages/tira.png?webp"),
+  require("./public/images/courseimages/tira.webp"),
 ]
 const tito_image = [
-  // require("./static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg?webp"),
-  require("./static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg"),
+  // require("./public/images/courseimages/tietokoneen-toiminnan-perusteet.jpg?webp"),
+  require("./public/images/courseimages/tietokoneen-toiminnan-perusteet.webp"),
 ]
 const cyber_image = [
-  // require("./static/images/courseimages/cyber.png?webp"),
-  require("./static/images/courseimages/cyber.png"),
+  // require("./public/images/courseimages/cyber.png?webp"),
+  require("./public/images/courseimages/cyber.webp"),
 ]
 
 export const Courses = {

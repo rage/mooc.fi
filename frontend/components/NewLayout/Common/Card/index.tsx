@@ -72,7 +72,7 @@ export const CardHeaderBackground = styled.span<{
   right: 0;
   bottom: 0;
   background-size: cover;
-  background-image: url(${(props) => `../../../static/images/${props.image}`});
+  background-image: url(${(props) => `../../../public/images/${props.image}`});
 `
 
 export const CardHeaderBackgroundSkeleton = styled.span`

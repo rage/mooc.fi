@@ -3,8 +3,14 @@ import Image from "next/image"
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import EditIcon from "@mui/icons-material/Edit"
-import { Grid, Skeleton, Typography, TypographyProps, BoxProps } from "@mui/material"
-import { styled, css } from "@mui/material/styles"
+import {
+  BoxProps,
+  Grid,
+  Skeleton,
+  Typography,
+  TypographyProps,
+} from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
@@ -99,8 +105,8 @@ interface ModuleCardProps {
 function ModuleCard({ module, loading }: ModuleCardProps) {
   const imageUrl = module
     ? module.image
-      ? `/static/images/${module.image}`
-      : `/static/images/${module.slug}.jpg`
+      ? `/images/modules/${module.image}`
+      : `/images/modules/${module.slug}.jpg`
     : "" // TODO: placeholder
   const moduleFound = !loading && module
   const moduleNotFound = !loading && !module

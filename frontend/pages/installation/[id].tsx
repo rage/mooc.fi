@@ -80,6 +80,7 @@ export const ContentBox = styled.div`
   code {
     background-color: #e6f4f1;
     padding: 0.5rem;
+    font-size: smaller;
   }
   img {
     margin-top: 1rem;
@@ -87,6 +88,29 @@ export const ContentBox = styled.div`
     background-color: #c3fcf2;
     padding: 1.5rem;
   }
+`
+
+export const CodeBox = styled.div`
+  background-color: #e6f4f1;
+  padding: 0.5rem;
+  margin-left: 2.5rem;
+
+  pre {
+    white-space: break-spaces;
+    overflow-x: hidden;
+    margin: 0.5rem;
+  }
+
+  code {
+    background-color: unset;
+    font-size: clamp(14px, 1.5vw, 15px);
+  }
+`
+
+export const Note = styled.section`
+  padding: 1em;
+  background-color: #eeeeee;
+  font-size: 16px;
 `
 
 // Not used now; tested what to do if we ever ditch using img in mdx
@@ -171,7 +195,7 @@ const InstallationInstructions = ({
 
   const Component = dynamic(
     async () => {
-      return import(`../../static/md_pages/${paths?.[userOS]}`)
+      return import(`../../public/md_pages/${paths?.[userOS]}`)
         .then((mdx) => mdx)
         .catch(() => {
           return () => <Spinner />
@@ -263,7 +287,10 @@ export async function getStaticProps({
 
   allowedOS.forEach((os) => {
     const lang = combinationOverrides[id]?.languages?.[language] ?? language
-    if (!combinationOverrides[id]?.allowedOS?.includes(os)) {
+    if (
+      combinationOverrides[id] &&
+      !combinationOverrides[id]?.allowedOS?.includes(os)
+    ) {
       return
     }
     paths[os] = `${id}_installation_${os}_${lang}.mdx`
