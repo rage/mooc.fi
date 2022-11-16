@@ -11,7 +11,7 @@ const Container = styled("div")`
 function Courses() {
   return (
     <Container>
-      <HeroSection />
+      {/* <HeroSection /> */}
       <Catalogue />
     </Container>
   )

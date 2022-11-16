@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import ClearIcon from '@mui/icons-material/Clear'
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import CommonTranslations from "/translations/common"
@@ -37,6 +38,8 @@ const Filters = styled("div")`
   margin: 0 0 1rem 1rem;
   display: grid;
   grid-auto-flow: column;
+  grid-template-columns: 5% 50% 30% 10%;
+  grid-gap: 1rem;
 `
 
 const FilterLabel = styled("div")`
@@ -46,9 +49,15 @@ const FilterLabel = styled("div")`
 
 const TagButton = styled(Button)`
   border-radius: 2rem;
-  margin: 0 0.2rem;
+  margin: 0.05rem 0.2rem;
   font-weight: bold;
   border-width: 0.15rem;
+
+  &:hover {
+    border-width: 0.15rem;
+  }
+
+
 `
 
 const Tags = styled("div")`
@@ -59,6 +68,29 @@ const Statuses = styled("div")`
   justify-self: end;
 `
 
+const ResetFiltersButton = styled(Button)`
+  border-radius: 1rem;
+  font-weight: bold;
+  border-width: 0.15rem;
+  max-height: 2.5rem;
+`
+
+const TagsContainer = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 70% 30%;
+`
+
+const SelectAllContainer = styled.div`
+`
+
+const colorSchemes = {
+  csb: "#08457A",
+  programming: "#065853",
+  cloud: "#1A2333",
+  ai: "#51309F",
+}
+
 function CourseGrid() {
   const t = useTranslator(CommonTranslations)
   const { locale = "fi" } = useRouter()
@@ -67,17 +99,20 @@ function CourseGrid() {
     variables: { language },
   })
   const [searchString, setSearchString] = useState<string>("")
-  const [tags, setTags] = useState<string[]>([])
+  /* const [tags, setTags] = useState<string[]>([]) */
+  const [languageTags, setLanguageTags] = useState<string[]>([])
+  const [difficultyTags, setDifficultyTags] = useState<string[]>([])
+  const [moduleTags, setModuleTags] = useState<string[]>([])
   const [activeTags, setActiveTags] = useState<string[]>([])
   const [hardcodedTags, setHardcodedTags] = useState<{
     [key: string]: string[]
   }>({})
-  const [filteredStatuses, setFilteredStatuses] = useState<string[]>([])
+  const [filteredStatuses, setFilteredStatuses] = useState<string[]>([CourseStatus.Active, CourseStatus.Upcoming])
 
   // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
 
   useEffect(() => {
-    setTags([
+    /* setTags([
       "beginner",
       "intermediate",
       "pro",
@@ -85,7 +120,27 @@ function CourseGrid() {
       "programming",
       "cloud",
       "cyber security",
+      "fi",
+      "en",
+      "se",
+    ]) */
+    setDifficultyTags([
+      "beginner",
+      "intermediate",
+      "pro",
     ])
+    setModuleTags([
+      "AI",
+      "programming",
+      "cloud",
+      "cyber security",
+    ])
+    setLanguageTags([
+      "fi",
+      "en",
+      "se",
+    ])
+
   }, [])
 
   useEffect(() => {
@@ -93,13 +148,13 @@ function CourseGrid() {
     data?.courses &&
       data.courses.map((course) =>
         course?.slug != null
-          ? (hardcoded[course?.slug] = [...tags]
+          ? (hardcoded[course?.slug] = [...difficultyTags, ...moduleTags, ...languageTags]
               .sort(() => 0.5 - Math.random())
               .slice(0, Math.random() * (4 - 3) + 3))
           : "undefined",
       )
     setHardcodedTags(hardcoded)
-  }, [tags])
+  }, [difficultyTags, moduleTags, languageTags])
 
   const handleClick = (tag: string) => {
     if (activeTags.includes(tag)) {
@@ -113,6 +168,46 @@ function CourseGrid() {
     filteredStatuses.includes(status)
       ? setFilteredStatuses(filteredStatuses.filter((s) => s !== status))
       : setFilteredStatuses([...filteredStatuses, status])
+  }
+
+  const handleResetButtonClick = () => {
+    setSearchString("")
+    setActiveTags([])
+    setFilteredStatuses([CourseStatus.Active, CourseStatus.Upcoming])
+  }
+
+  const handleSelectAllClick = (category: string) => {
+    switch(category) {
+      case "difficulty":
+        if (difficultyTags.every(tag => activeTags.includes(tag))) {
+          setActiveTags(activeTags.filter(tag => !difficultyTags.includes(tag)))
+        } else {
+          let activeTagsWithAllDifficulties = [...activeTags, ...difficultyTags]
+          activeTagsWithAllDifficulties = [...new Set(activeTagsWithAllDifficulties)]
+          setActiveTags(activeTagsWithAllDifficulties)
+        }
+        break
+      case "module":
+        if (moduleTags.every(tag => activeTags.includes(tag))) {
+          setActiveTags(activeTags.filter(tag => !moduleTags.includes(tag)))
+        } else {
+          let activeTagsWithAllDifficulties = [...activeTags, ...moduleTags]
+          activeTagsWithAllDifficulties = [...new Set(activeTagsWithAllDifficulties)]
+          setActiveTags(activeTagsWithAllDifficulties)
+        }
+        break
+      case "language":
+        if (languageTags.every(tag => activeTags.includes(tag))) {
+          setActiveTags(activeTags.filter(tag => !languageTags.includes(tag)))
+        } else {
+          let activeTagsWithAllDifficulties = [...activeTags, ...languageTags]
+          activeTagsWithAllDifficulties = [...new Set(activeTagsWithAllDifficulties)]
+          setActiveTags(activeTagsWithAllDifficulties)
+        }
+        break
+      default:
+        setActiveTags([...difficultyTags, ...moduleTags, ...languageTags])
+    }
   }
 
   return (
@@ -129,10 +224,11 @@ function CourseGrid() {
       />
       <Filters>
         <FilterLabel>{t("filter")}:</FilterLabel>
+        <TagsContainer>
         <Tags>
-          {tags.map((tag) => (
+          {difficultyTags.map((tag) => (
             <TagButton
-              id=""
+              id={`difficulty-tag-${tag}`}
               variant={activeTags.includes(tag) ? "contained" : "outlined"}
               onClick={() => handleClick(tag)}
               size="small"
@@ -140,7 +236,56 @@ function CourseGrid() {
               {tag}
             </TagButton>
           ))}
-        </Tags>
+          <br />
+          {moduleTags.map((tag) => (
+            <TagButton
+              id={`module-tag-${tag}`}
+              variant={activeTags.includes(tag) ? "contained" : "outlined"}
+              onClick={() => handleClick(tag)}
+              size="small"
+            >
+              {tag}
+            </TagButton>
+          ))}
+          <br />
+          {languageTags.map((tag) => (
+            <TagButton
+              id={`language-tag-${tag}`}
+              variant={activeTags.includes(tag) ? "contained" : "outlined"}
+              onClick={() => handleClick(tag)}
+              size="small"
+            >
+              {tag}
+            </TagButton>
+          ))}
+          </Tags>
+          <SelectAllContainer>
+          <TagButton
+            id="select-all-difficulty-tags"
+            variant={difficultyTags.every(tag => activeTags.includes(tag)) ? "contained" : "outlined"}
+            onClick={() => handleSelectAllClick("difficulty")}
+            size="small"
+          >
+            {t("selectAll")}
+          </TagButton>
+          <TagButton
+            id="select-all-module-tags"
+            variant={moduleTags.every(tag => activeTags.includes(tag)) ? "contained" : "outlined"}
+            onClick={() => handleSelectAllClick("module")}
+            size="small"
+          >
+            {t("selectAll")}
+          </TagButton>
+          <TagButton
+            id="select-all-difficulties"
+            variant={languageTags.every(tag => activeTags.includes(tag)) ? "contained" : "outlined"}
+            onClick={() => handleSelectAllClick("language")}
+            size="small"
+          >
+            {t("selectAll")}
+          </TagButton>
+          </SelectAllContainer>
+          </TagsContainer>
         <Statuses>
           {["Active", "Upcoming", "Ended"].map((status) => (
             <FormControlLabel
@@ -156,6 +301,14 @@ function CourseGrid() {
             />
           ))}
         </Statuses>
+        <ResetFiltersButton
+          id="resetFiltersButton"
+          variant="outlined"
+          onClick={handleResetButtonClick}
+          startIcon={<ClearIcon />}
+        >
+          {t("reset")}
+        </ResetFiltersButton>
       </Filters>
       {loading ? (
         <CardContainer>
@@ -170,6 +323,8 @@ function CourseGrid() {
             data.courses
               .filter(
                 (course) =>
+                  (!course.hidden) &&
+                  (course.course_translations.length > 0) &&
                   (course?.name
                     .toLowerCase()
                     .includes(searchString.toLowerCase()) ||
@@ -185,10 +340,9 @@ function CourseGrid() {
                     ? filteredStatuses.includes(CourseStatus[course.status])
                     : true),
               )
-              .map((course, index) => (
+              .map((course) => (
                 <CourseCard
                   course={course}
-                  fifthElement={index % 5 == 0 ? true : false}
                   tags={
                     course?.slug ? hardcodedTags[course?.slug] : ["undefined"]
                   }
