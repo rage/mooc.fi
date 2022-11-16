@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cd node_modules/cwebp-bin/lib && node install.js && cd ../../..",
     "dev": "next dev",
     "build": "NODE_ENV=production next build",
     "export": "next export",
@@ -98,6 +97,6 @@
     "@types/uuid": "^8.3.4",
     "cors": "^2.8.5",
     "event-stream": "^4.0.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.3"
   }
 }
