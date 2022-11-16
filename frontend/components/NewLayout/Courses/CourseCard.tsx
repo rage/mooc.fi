@@ -19,13 +19,13 @@ const ContainerBase = css`
   display: grid;
   grid-template-rows: 1fr 4fr;
   grid-template-columns: 1fr;
-  border: 1px solid rgba(236, 236, 236, 1);
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
   border-radius: 0.5rem;
+  max-height: 400px;
 `
 
-const Container = styled.li`
+const Container = styled.li<{ backgroundImage?: string }>`
   ${ContainerBase};
   &:nth-of-type(n) {
     background: linear-gradient(
@@ -55,9 +55,11 @@ const Container = styled.li`
       ${colorSchemes["ai"][1]} 100%
     );
   }
-  &.with-background-image {
-    background: url(${BannerImage});
-  }
+  ${({ backgroundImage }) =>
+    backgroundImage &&
+    css`
+      background: url(${backgroundImage}) !important;
+    `}
 `
 
 const SkeletonContainer = styled.li`
@@ -77,9 +79,11 @@ const ContentContainer = styled.div`
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 5fr 3fr 2fr;
   background: rgba(255, 255, 255, 1);
+  overflow: hidden;
+  border-radius: 0 0 0.5rem 0.5rem;
 `
 
-const Title = styled.div`
+const Title = styled.div<{ withBackgroundImage?: boolean }>`
   font-weight: bold;
   color: white;
   font-size: 1.5rem;
@@ -88,11 +92,13 @@ const Title = styled.div`
   border-radius: 0.2rem;
   align-self: center;
 
-  &.with-background-image {
-    color: black;
-    background-color: white;
-    padding: 0.5rem 3rem;
-  }
+  ${({ withBackgroundImage }) =>
+    withBackgroundImage &&
+    css`
+      color: black;
+      background-color: white;
+      padding: 0.5rem 3rem;
+    `}
 `
 
 const Sponsor = styled.img`
@@ -142,9 +148,9 @@ interface CourseCardProps {
 
 function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
   return (
-    <Container className={fifthElement ? "with-background-image" : ""}>
+    <Container backgroundImage={fifthElement ? BannerImage : undefined}>
       <TitleContainer>
-        <Title className={fifthElement ? "with-background-image" : ""}>
+        <Title withBackgroundImage={fifthElement}>
           <Typography variant="h4">{course?.name}</Typography>
         </Title>
       </TitleContainer>

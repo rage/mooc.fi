@@ -19,13 +19,13 @@ const LanguageSwitchContainer = styled(
   (props: ButtonGroupProps & ButtonProps) => (
     <ButtonGroup
       component={(buttonProps) => (
-        <Button component="div" {...buttonProps} tabindex="-1" />
+        <Button component="div" {...buttonProps} tabIndex={-1} />
       )}
       disableRipple
       disableFocusRipple
       disableTouchRipple
       {...props}
-      tabindex="-1"
+      tabIndex="-1"
     />
   ),
   {
@@ -60,7 +60,10 @@ const LanguageSwitch = () => {
       <LanguageIcon />
       {locales?.map((locale) => (
         <Link href={asPath} locale={locale} passHref key={`switch-${locale}`}>
-          <Language active={currentLocale === locale} aria-label={t(locale)}>
+          <Language
+            active={currentLocale === locale}
+            aria-label={t(locale as keyof typeof CommonTranslations[string])}
+          >
             {locale}
           </Language>
         </Link>
