@@ -182,7 +182,8 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
 }
 
 // need to pass type through
-const WrappedFormWrapper: <T>(props: FormWrapperProps<T>) => JSX.Element =
-  withEnumeratingAnchors(FormWrapper)
+const WrappedFormWrapper: <T extends FormValues>(
+  props: FormWrapperProps<T>,
+) => JSX.Element = withEnumeratingAnchors(FormWrapper)
 
 export default WrappedFormWrapper

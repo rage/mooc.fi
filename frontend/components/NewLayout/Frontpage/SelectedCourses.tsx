@@ -54,7 +54,7 @@ const CourseCard = ({
     <CardWrapper>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <CardHeaderImage src={moocLogoUrl} />
+        <CardHeaderImage alt="MOOC logo" src={moocLogoUrl} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>

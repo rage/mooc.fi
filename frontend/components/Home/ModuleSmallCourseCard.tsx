@@ -80,7 +80,9 @@ interface HeaderProps {
   upcoming?: boolean | null
 }
 
-const Header = styled("div")<HeaderProps>`
+const Header = styled("div", {
+  shouldForwardProp: (prop) => prop !== "startPoint" && prop !== "upcoming",
+})<HeaderProps>`
   padding-top: 0.5rem;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;

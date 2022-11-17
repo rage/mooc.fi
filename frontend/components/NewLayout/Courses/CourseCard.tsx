@@ -8,13 +8,16 @@ import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes = {
-  csb: ["#020024", "#090979", "#00d7ff"],
-  programming: ["#1b0024", "#791779", "#ff00e2"],
-  cloud: ["#160a01", "#a35e27", "#ff7900"],
-  ai: ["#161601", "#a3a127", "#fffa00"],
+  csb: ["#090979", "#00d7ff"],
+  programming: ["#791779", "#ff00e2"],
+  cloud: ["#832525", "#ff0000"],
+  ai: ["#2c8325", "#00ff13"],
 }
 
 const Container = styled("div")`
+  display: grid;
+  grid-template-rows: 20% 80%;
+  grid-template-columns: 100%;
   border: 1px solid rgba(236, 236, 236, 1);
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
@@ -22,63 +25,63 @@ const Container = styled("div")`
   &:nth-child(n) {
     background: linear-gradient(
       90deg,
-      ${colorSchemes["cloud"][0]} 0%,
-      ${colorSchemes["cloud"][1]} 35%,
-      ${colorSchemes["cloud"][2]} 100%
+      ${colorSchemes["cloud"][0]} 66%,
+      ${colorSchemes["cloud"][1]} 100%
     );
   }
   &:nth-child(2n) {
     background: linear-gradient(
       90deg,
-      ${colorSchemes["programming"][0]} 0%,
-      ${colorSchemes["programming"][1]} 35%,
-      ${colorSchemes["programming"][2]} 100%
+      ${colorSchemes["programming"][0]} 66%,
+      ${colorSchemes["programming"][1]} 100%
     );
   }
   &:nth-child(3n) {
     background: linear-gradient(
       90deg,
-      ${colorSchemes["csb"][0]} 0%,
-      ${colorSchemes["csb"][1]} 35%,
-      ${colorSchemes["csb"][2]} 100%
+      ${colorSchemes["csb"][0]} 66%,
+      ${colorSchemes["csb"][1]} 100%
     );
   }
   &:nth-child(4n) {
     background: linear-gradient(
       90deg,
-      ${colorSchemes["ai"][0]} 0%,
-      ${colorSchemes["ai"][1]} 35%,
-      ${colorSchemes["ai"][2]} 100%
+      ${colorSchemes["ai"][0]} 66%,
+      ${colorSchemes["ai"][1]} 100%
     );
   }
-  &:nth-child(5n) {
+  &.with-background-image {
     background: url(${BannerImage});
   }
 `
 
 const TitleContainer = styled("div")`
-  display: grid;
-  grid-gap: 1rem;
-  padding: 1rem 1.5rem 0.5rem 1.5rem;
-  grid-template-columns: 67% 33%;
-  grid-template-rows: 100%;
+  padding: 1rem 2.5rem 1rem 2.5rem;
+  display: flex;
 `
 
 const ContentContainer = styled("div")`
   display: grid;
-  grid-gap: 1rem 2rem;
   padding: 0.5rem 1.5rem 0.1rem 1.5rem;
   grid-template-columns: 67% 33%;
-  grid-template-rows: 67% 33%;
+  grid-template-rows: 50% 30% 20%;
   background: rgba(255, 255, 255, 1);
 `
 
 const Title = styled("div")`
   font-weight: bold;
+  color: white;
+  font-size: 1.5rem;
   text-align: center;
-  background: rgba(255, 255, 255, 1);
   padding: 0.5rem;
   border-radius: 0.2rem;
+  align-self: center;
+
+  &.with-background-image {
+    color: black;
+    background-color: white;
+    padding: 0.5rem 3rem;
+  }
 `
 
 const Sponsor = styled("img")`
@@ -86,23 +89,24 @@ const Sponsor = styled("img")`
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
   padding: 1rem;
+  justify-self: right;
 `
 
-const Description = styled("div")``
+const Description = styled("div")`
+  padding: 1rem 0;
+`
 
 const Schedule = styled("div")``
 
-const Details = styled("div")``
-
-const Link = styled(OutboundLink)`
-  align-self: end;
-  margin: 1rem;
+const Details = styled("div")`
+  display: flex;
+  justify-content: right;
+  padding: 1rem;
 `
 
-const BottomLeftContainer = styled("div")`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const Link = styled(OutboundLink)`
+  justify-self: right;
+  margin: 1rem;
 `
 
 const Tags = styled("div")``
@@ -113,48 +117,59 @@ const Tag = styled(Button)`
   border-color: #378170 !important;
   color: #fff !important;
   font-weight: bold;
-  margin: 0.1rem;
+  margin: 0 0.1rem;
 `
+const prettifyDate = (date: string) =>
+  date.split("T").shift()?.split("-").reverse().join(".")
 
 interface CourseCardProps {
   course?: CourseFieldsFragment | null
   tags?: string[]
+  fifthElement?: boolean
 }
 
-function CourseCard({ course, tags }: CourseCardProps) {
+function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
   return course ? (
-    <Container>
+    <Container className={fifthElement ? "with-background-image" : ""}>
       <TitleContainer>
-        <Title>{course?.name}</Title>
+        <Title className={fifthElement ? "with-background-image" : ""}>
+          {course?.name}
+        </Title>
       </TitleContainer>
       <ContentContainer>
         <Description>{course?.description}</Description>
         <Details>
           {course.ects && (
             <>
-              ~{parseInt(course.ects) * 27} ({course.ects})
+              ~{parseInt(course.ects) * 27}h ({course.ects}ects)
             </>
           )}
+          <br />
+          {/* TODO: add information regarding university/organization to course */}
           Helsingin yliopisto
-          <Sponsor src={SponsorLogo} />
         </Details>
-        <BottomLeftContainer>
-          <Schedule>
-            {course.status}{" "}
-            {course?.end_date ? (
-              <>
-                Aikataulutettu
-                <br />
-                {course?.start_date} - {course?.end_date}
-              </>
-            ) : (
-              <>Aikatauluton</>
-            )}
-          </Schedule>
-        </BottomLeftContainer>
-        <Link eventLabel="to_course_material" to="https://www.mooc.fi">
-          Näytä kurssi
-        </Link>
+        <Schedule>
+          {course?.status == "Upcoming" ? (
+            <p>
+              Tulossa {course.start_date && prettifyDate(course.start_date)}
+            </p>
+          ) : course?.status == "Ended" ? (
+            <p>Päättynyt {course.end_date && prettifyDate(course.end_date)}</p>
+          ) : (
+            <p>
+              Käynnissä{" "}
+              {course?.end_date ? (
+                <>
+                  {prettifyDate(course?.start_date)} -{" "}
+                  {prettifyDate(course?.end_date)}
+                </>
+              ) : (
+                <>— Aikatauluton</>
+              )}
+            </p>
+          )}
+        </Schedule>
+        <Sponsor src={SponsorLogo} />
         <Tags>
           {tags?.map((tag) => (
             <Tag size="small" variant="contained" disabled>
@@ -162,6 +177,9 @@ function CourseCard({ course, tags }: CourseCardProps) {
             </Tag>
           ))}
         </Tags>
+        <Link eventLabel="to_course_material" to="https://www.mooc.fi">
+          Näytä kurssi
+        </Link>
       </ContentContainer>
     </Container>
   ) : (

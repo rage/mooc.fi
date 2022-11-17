@@ -12,7 +12,9 @@ interface RootProps {
   backgroundColor: string
 }
 
-const Root = styled("div")<RootProps>`
+const Root = styled("div", {
+  shouldForwardProp: (prop) => prop !== "backgroundColor",
+})<RootProps>`
   display: flex;
   flex-direction: column;
   overflow: hidden;

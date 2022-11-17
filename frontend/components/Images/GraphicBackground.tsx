@@ -4,7 +4,10 @@ interface BackgroundProps {
   hueRotateAngle: number
   brightness: number
 }
-export const BackgroundImage = styled("img")<BackgroundProps>`
+export const BackgroundImage = styled("img", {
+  shouldForwardProp: (prop) =>
+    prop !== "hueRotateAngle" && prop !== "brightness",
+})<BackgroundProps>`
   position: absolute;
   top: 0;
   left: 0;

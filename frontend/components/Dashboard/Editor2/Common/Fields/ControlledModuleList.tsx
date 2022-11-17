@@ -18,6 +18,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { FormValues } from "../../types"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {
   ControlledFieldProps,
@@ -39,7 +40,9 @@ interface ControlledModuleListProps extends ControlledFieldProps {
   modules?: StudyModuleDetailedFieldsFragment[]
 }
 
-export function ControlledModuleList<T>(props: ControlledModuleListProps) {
+export function ControlledModuleList<T extends FormValues>(
+  props: ControlledModuleListProps,
+) {
   const { modules, label } = props
   const name = props.name as Path<T>
   const { setValue, getValues } = useFormContext<T>()
