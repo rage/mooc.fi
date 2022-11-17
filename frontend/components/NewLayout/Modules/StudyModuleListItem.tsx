@@ -1,15 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
 
-import { css } from "@emotion/react"
 import { Skeleton, Typography } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
 
-import {
-  CardBody,
-  CardDescription,
-  CardHeader,
-  CardWrapper,
-} from "../Common/Card"
+import { CardDescription, CardHeader, CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
@@ -18,11 +12,6 @@ interface StudyModuleListItemProps {
   module: StudyModuleFieldsWithCoursesFragment
 }
 
-const Container = styled("li")`
-  margin-bottom: 2rem;
-  position: relative;
-`
-
 const HeroContainer = styled("section")`
   display: block;
   position: relative;
@@ -30,9 +19,6 @@ const HeroContainer = styled("section")`
   align-items: center;
   height: 400px;
   min-height: 100%;
-`
-const CourseContainer = styled("div")`
-  display: flex;
 `
 
 const ModuleCardWrapper = styled(CardWrapper)`
@@ -44,6 +30,8 @@ const ModuleCardWrapper = styled(CardWrapper)`
 `
 
 const ModuleCardBody = styled("ul")`
+  list-style-position: inside;
+  padding: 0;
   padding: 1rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -103,76 +91,7 @@ const CenteredHeader = styled(Typography)`
   padding: 1rem;
 `
 
-const CourseGrid = styled("ul")`
-  list-style-position: inside;
-  padding: 0;
-  grid-gap: 1rem;
-  width: 100%;
-`
-
-const ModuleCourseCard = styled(CourseCard)`
-  margin: 6000rem;
-  max-height: 200px;
-  grid-column: auto / span 2 !important;
-  grid-row-end: span 1;
-`
-
-type StudyModuleListItemHeroProps = {
-  image:
-    | StudyModuleFieldsWithCoursesFragment["image"]
-    | StudyModuleFieldsWithCoursesFragment["slug"]
-  name: StudyModuleFieldsWithCoursesFragment["name"]
-}
-
-function Hero({ image, name }: StudyModuleListItemHeroProps) {
-  const imageUrl = `../../../static/images/${image}`
-
-  // TODO
-  return (
-    <ModuleCardHeader>
-      <ImageBackground src={imageUrl} />
-      <CenteredHeader variant="h2">{name}</CenteredHeader>
-    </ModuleCardHeader>
-  )
-}
-
-function HeroSkeleton() {
-  return (
-    <ModuleCardHeader>
-      <SkeletonBackground />
-      <CenteredHeader variant="h2">
-        <Skeleton width={300 + Math.random() * 400} />
-      </CenteredHeader>
-    </ModuleCardHeader>
-  )
-}
-
-type StudyModuleCoursesProps = Pick<
-  StudyModuleFieldsWithCoursesFragment,
-  "courses"
->
-
-function CourseList({ courses }: StudyModuleCoursesProps) {
-  // TODO
-  return (
-    <CourseGrid>
-      {courses?.map((course) => (
-        <ModuleCourseCard course={course} key={course.id} />
-      ))}
-    </CourseGrid>
-  )
-}
-
-function CourseListSkeleton() {
-  return (
-    <CourseGrid>
-      <CourseCardSkeleton />
-      <CourseCardSkeleton />
-      <CourseCardSkeleton />
-      <CourseCardSkeleton />
-    </CourseGrid>
-  )
-}
+const ModuleCourseCard = styled(CourseCard)``
 
 export function ListItem({ module }: StudyModuleListItemProps) {
   const des = module.name.includes("Ohj")
@@ -194,7 +113,6 @@ export function ListItem({ module }: StudyModuleListItemProps) {
     }
 
     if (description.scrollHeight > description.offsetHeight) {
-      // description.style.height = '0px';
       description.style.height = description.scrollHeight + "px"
       description.style.gridRow = `auto / span 2` // ${2 + Math.floor(description.scrollHeight / description.offsetHeight)}`;
     } /* else {
@@ -218,7 +136,6 @@ export function ListItem({ module }: StudyModuleListItemProps) {
   return (
     <ModuleCardWrapper>
       <ImageBackground src={imageUrl} />
-      {/*<Hero image={module.image ?? `${module.slug}.jpg`} name={module.name} />*/}
       <ModuleCardHeader>
         <CenteredHeader variant="h1">{module.name}</CenteredHeader>
       </ModuleCardHeader>
@@ -231,29 +148,34 @@ export function ListItem({ module }: StudyModuleListItemProps) {
         {courses?.map((course) => (
           <ModuleCourseCard course={course} key={course.id} />
         ))}
-        {/*<CourseList courses={courses} />*/}
       </ModuleCardBody>
     </ModuleCardWrapper>
   )
 }
+
 // can't use a wrapper for the course list because of the grid?
-// TODO: update skeleton to use the grid thingy
 export function ListItemSkeleton() {
   return (
-    <Container>
-      <ModuleCardWrapper>
-        <HeroSkeleton />
-        <CardBody>
-          <CardDescription>
-            <Skeleton width="100%" />
-            <Skeleton width="100%" />
-            <Skeleton width="40%" />
-          </CardDescription>
-        </CardBody>
-      </ModuleCardWrapper>
-      <CourseContainer>
-        <CourseListSkeleton />
-      </CourseContainer>
-    </Container>
+    <ModuleCardWrapper>
+      <SkeletonBackground />
+      <ModuleCardHeader>
+        <CenteredHeader variant="h1">
+          <Skeleton />
+        </CenteredHeader>
+      </ModuleCardHeader>
+      <ModuleCardBody>
+        <HeroContainer>
+          <ModuleCardDescription>
+            <Typography variant="subtitle1">
+              <Skeleton />
+            </Typography>
+          </ModuleCardDescription>
+        </HeroContainer>
+        <CourseCardSkeleton />
+        <CourseCardSkeleton />
+        <CourseCardSkeleton />
+        <CourseCardSkeleton />
+      </ModuleCardBody>
+    </ModuleCardWrapper>
   )
 }

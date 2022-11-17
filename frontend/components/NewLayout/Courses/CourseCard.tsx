@@ -1,6 +1,5 @@
-import { css } from "@emotion/react"
-import styled from "@emotion/styled"
 import { Button, Skeleton, Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import OutboundLink from "/components/OutboundLink"
 import BannerImage from "/static/images/homeBackground.jpg"
@@ -25,7 +24,7 @@ const ContainerBase = css`
   max-height: 400px;
 `
 
-const Container = styled.li<{ backgroundImage?: string }>`
+const Container = styled("li")<{ backgroundImage?: string }>`
   ${ContainerBase};
   &:nth-of-type(n) {
     background: linear-gradient(
@@ -62,18 +61,18 @@ const Container = styled.li<{ backgroundImage?: string }>`
     `}
 `
 
-const SkeletonContainer = styled.li`
+const SkeletonContainer = styled("li")`
   ${ContainerBase};
   width: 100%;
   background-color: #eee;
 `
 
-const TitleContainer = styled.div`
+const TitleContainer = styled("div")`
   padding: 1rem 2.5rem 1rem 2.5rem;
   display: flex;
 `
 
-const ContentContainer = styled.div`
+const ContentContainer = styled("div")`
   display: grid;
   padding: 0.5rem 1.5rem 0.1rem 1.5rem;
   grid-template-columns: 2fr 1fr;
@@ -83,7 +82,7 @@ const ContentContainer = styled.div`
   border-radius: 0 0 0.5rem 0.5rem;
 `
 
-const Title = styled.div<{ withBackgroundImage?: boolean }>`
+const Title = styled("div")<{ withBackgroundImage?: boolean }>`
   font-weight: bold;
   color: white;
   font-size: 1.5rem;
@@ -101,7 +100,7 @@ const Title = styled.div<{ withBackgroundImage?: boolean }>`
     `}
 `
 
-const Sponsor = styled.img`
+const Sponsor = styled("img")`
   max-width: 9rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
@@ -109,13 +108,13 @@ const Sponsor = styled.img`
   justify-self: right;
 `
 
-const Description = styled.div`
+const Description = styled("div")`
   padding: 1rem 0;
 `
 
-const Schedule = styled.div``
+const Schedule = styled("div")``
 
-const Details = styled.div`
+const Details = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -127,7 +126,7 @@ const Link = styled(OutboundLink)`
   margin: 1rem;
 `
 
-const Tags = styled.div``
+const Tags = styled("div")``
 
 const Tag = styled(Button)`
   border-radius: 2rem;
