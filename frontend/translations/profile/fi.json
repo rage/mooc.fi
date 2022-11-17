@@ -49,5 +49,7 @@
     "completionCollapseTooltip": "Näytä/piilota suoritus",
     "courseCollapseTooltip": "Näytä/piilota kurssi",
     "exerciseCompletionCollapseTooltip": "Näytä/piilota tehtäväpalautus",
-    "progressCollapseTooltip": "Näytä/piilota edistyminen"
+    "progressCollapseTooltip": "Näytä/piilota edistyminen",
+    "exerciseCompletionCollapseAllTooltip": "Näytä/piilota kaikki tehtäväpalautukset",
+    "allCoursesCollapseTooltip": "Näytä/piilota kaikki kurssit"
 }

@@ -6,6 +6,8 @@ import dynamic from "next/dynamic"
 import { Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ErrorMessage from "/components/ErrorMessage"
+
 export const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
@@ -110,7 +112,9 @@ type DynamicImportType = <T>() => Promise<React.ComponentType<T>>
 interface FAQComponentProps {
   mdxImport?: DynamicImportType
   onSuccess: <T>(mdx: React.ComponentType<T>) => React.ComponentType<T>
-  onError: () => void
+  onError: <C>(
+    errorComponent?: React.ComponentType<C>,
+  ) => React.ComponentType<C> | null
 }
 
 export function FAQComponent({
@@ -123,12 +127,19 @@ export function FAQComponent({
       return mdxImport()
         .then(onSuccess)
         .catch((error: unknown) => {
-          console.log("error", error)
+          console.log(error)
           onError()
-          return () => <React.Fragment />
+          return () => <ErrorMessage />
         })
     },
-    { loading: () => <Loader /> },
+    {
+      loading: ({ error }) => {
+        if (error) {
+          return <ErrorMessage />
+        }
+        return <Loader />
+      },
+    },
   )
 }
 

@@ -49,5 +49,7 @@
     "completionCollapseTooltip": "Show/hide completion details",
     "courseCollapseTooltip": "Show/hide course details",
     "exerciseCompletionCollapseTooltip": "Show/hide exercise completion details",
-    "progressCollapseTooltip": "Show/hide progress details"
+    "progressCollapseTooltip": "Show/hide progress details",
+    "exerciseCompletionCollapseAllTooltip": "Show/hide all exercise completion details",
+    "allCoursesCollapseTooltip": "Show/hide all courses"
 }

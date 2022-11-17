@@ -28,9 +28,7 @@ query UserSummary(
   $includeDeletedExercises: Boolean
   ) {
   user(upstream_id: $upstream_id) {
-    id
-    username
-    full_name
+    ...UserDetailedFields
     user_course_summary(
       includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
       includeDeletedExercises: $includeDeletedExercises

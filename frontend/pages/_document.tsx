@@ -1,20 +1,14 @@
 import React from "react"
 
-import Document, {
-  DocumentContext,
-  Head,
-  Html,
-  Main,
-  NextScript,
-} from "next/document"
+import Document, { Head, Html, Main, NextScript } from "next/document" //DocumentContext,
 
-import createEmotionServer from "@emotion/server/create-instance"
+/*import createEmotionServer from "@emotion/server/create-instance"
 
-import createEmotionCache from "../src/createEmotionCache"
+import createEmotionCache from "../src/createEmotionCache"*/
 import theme from "../src/theme"
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
+  /*static async getInitialProps(ctx: DocumentContext) {
     const originalRenderPage = ctx.renderPage
 
     const cache = createEmotionCache()
@@ -42,7 +36,7 @@ class MyDocument extends Document {
       ...initialProps,
       emotionStyleTags,
     }
-  }
+  }*/
 
   render() {
     return (

@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-10-21T12:52:39+03:00
+// Generated on 2022-11-17T17:33:48+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -4746,9 +4746,19 @@ export type UserSummaryQuery = {
   __typename?: "Query"
   user: {
     __typename?: "User"
+    administrator: boolean
+    research_consent: boolean | null
     id: string
-    username: string
+    upstream_id: number
+    first_name: string | null
+    last_name: string | null
     full_name: string | null
+    username: string
+    email: string
+    student_number: string | null
+    real_student_number: string | null
+    created_at: any | null
+    updated_at: any | null
     user_course_summary: Array<{
       __typename?: "UserCourseSummary"
       start_date: any | null
@@ -10015,9 +10025,10 @@ export const UserSummaryDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } },
-                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserDetailedFields" },
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "user_course_summary" },
@@ -10067,6 +10078,8 @@ export const UserSummaryDocument = {
         ],
       },
     },
+    ...UserDetailedFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
     ...UserCourseSummaryCoreFieldsFragmentDoc.definitions,
     ...UserCourseSummaryCourseFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,

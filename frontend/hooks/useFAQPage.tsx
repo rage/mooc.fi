@@ -12,7 +12,7 @@ type MDXComponent<T> = {
   }
 } & React.ComponentType<T>
 
-export function useFAQPage(topic: string) {
+export function useFAQPage(topic: string = "toc_faq") {
   const { locale } = useRouter()
 
   const [render, setRender] = useState(false)
@@ -34,7 +34,10 @@ export function useFAQPage(topic: string) {
       setBreadcrumb(mdx?.meta?.breadcrumb ?? mdx?.meta?.title ?? "")
       return mdx
     },
-    onError: () => setError(true),
+    onError: (errorComponent) => {
+      setError(true)
+      return errorComponent ?? null
+    },
   })
 
   return {
