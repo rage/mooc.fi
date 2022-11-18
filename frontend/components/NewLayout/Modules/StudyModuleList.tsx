@@ -8,6 +8,16 @@ import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesWithCoursesDocument } from "/graphql/generated"
+import Modules from "/components/NewLayout/Frontpage/Modules/Modules"
+import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
+import ErrorMessage from "/components/ErrorMessage"
+
+const colorSchemes = {
+  csb: "#08457A",
+  programming: "#065853",
+  cloud: "#1A2333",
+  ai: "#51309F",
+}
 
 const Container = styled(SectionContainer)`
   flex: 1;
@@ -23,7 +33,6 @@ const ModuleList = styled.ul`
   justify-content: center;
   flex: 1;
   width: 100%;
-  padding: 1rem;
 `
 
 export function StudyModuleList() {
@@ -36,16 +45,16 @@ export function StudyModuleList() {
 
   if (error) {
     // TODO
-    return <div>error</div>
+    return <ErrorMessage />
   }
 
   if (loading) {
     return (
       <Container>
         <ModuleList>
-          <ListItemSkeleton />
-          <ListItemSkeleton />
-          <ListItemSkeleton />
+          <ListItemSkeleton backgroundColor={colorSchemes.csb} />
+          <ListItemSkeleton backgroundColor={colorSchemes.programming} />
+          <ListItemSkeleton backgroundColor={colorSchemes.cloud} />
         </ModuleList>
       </Container>
     )
@@ -53,9 +62,10 @@ export function StudyModuleList() {
 
   return (
     <Container>
+      <ModuleNaviList modules={data?.study_modules!} loading={loading} />
       <ModuleList>
-        {data?.study_modules?.map((module) => (
-          <ListItem module={module} key={module.id} />
+        {data?.study_modules?.map((module, index) => (
+          <ListItem module={module} key={module.id} backgroundColor={Object.values(colorSchemes)[index]}/>
         ))}
       </ModuleList>
     </Container>

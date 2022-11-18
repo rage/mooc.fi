@@ -23,7 +23,7 @@ import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { fontCss } from "/src/fonts"
-import newTheme from "/src/newTheme"
+import newTheme, { newFontCss } from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
@@ -70,6 +70,7 @@ export function MyApp({
 
   const Layout = isNew ? NewLayout : OriginalLayout
   const theme = isNew ? newTheme : originalTheme
+  
   const loginStateContextValue = useMemo(
     () => ({
       loggedIn: pageProps?.signedIn,
@@ -97,6 +98,7 @@ export function MyApp({
                 <AlertProvider>
                   <Layout>
                     <Global styles={fontCss} />
+                    {isNew && <Global styles={newFontCss} />}
                     <Component {...pageProps} />
                   </Layout>
                 </AlertProvider>

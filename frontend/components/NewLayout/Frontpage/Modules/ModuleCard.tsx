@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { Button, Skeleton } from "@mui/material"
+import Link from "next/link"
 
 import {
   CardBody,
@@ -30,7 +31,7 @@ const CardActionArea = styled.div`
 `
 
 export const ModuleCard = ({
-  module: { name, image, description },
+  module: { name, slug, image, description },
   hue,
   brightness,
 }: ModuleCardProps) => {
@@ -47,9 +48,11 @@ export const ModuleCard = ({
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActionArea>
+          <Link href={`/_new/study-modules/#${slug}`} passHref>
           <ModuleButton hue={hue} brightness={brightness}>
             Kokonaisuuden tiedot
           </ModuleButton>
+          </Link>
         </CardActionArea>
       </CardBody>
     </CardWrapper>

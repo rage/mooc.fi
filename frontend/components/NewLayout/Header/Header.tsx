@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
 
-import MoocLogo from "/components/HeaderBar/MoocLogo"
+import MoocLogo from "./MoocLogo"
 import {
   DesktopNavigationMenu,
   MobileNavigationMenu,

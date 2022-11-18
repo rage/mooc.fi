@@ -16,3 +16,10 @@ export const SectionContainer = styled.section`
     margin: 0;
   }
 `
+
+export const CorrectedAnchor = styled("a")`
+  display: block;
+  position: relative;
+  top: -120px;
+  visibility: hidden;
+`

@@ -10,48 +10,56 @@ import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 
 interface StudyModuleListItemProps {
   module: StudyModuleFieldsWithCoursesFragment
+  backgroundColor: string
 }
 
 const HeroContainer = styled("section")`
   display: block;
   position: relative;
-  justify-content: center;
-  align-items: center;
   height: 400px;
   min-height: 100%;
+  grid-row-end: auto;
+
+  @media(max-width: 1200px) {
+    grid-column: span auto;
+    grid-row: 1 / 1;
+  }
 `
 
-const ModuleCardWrapper = styled(CardWrapper)`
+const ModuleCardWrapper = styled(CardWrapper)<{ backgroundColor: string }>`
   display: flex;
   width: 100%;
   flex-direction: column;
   margin-bottom: 1rem;
   position: relative;
-`
+  ${(props) =>
+    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  @media(max-width: 1200px) {
+    ${(props) =>
+      `background-image: linear-gradient(to top, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  }`
 
 const ModuleCardBody = styled("ul")`
   list-style-position: inside;
-  padding: 0;
   padding: 1rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(36rem, 1fr));
+  grid-template-rows: auto;
   background-color: transparent;
   grid-gap: 2rem;
-  grid-auto-flow: row dense;
-
-  /*section { // ingress/hero
-    grid-row: auto / span 2;
-  }*/
+  grid-auto-flow: row;
 `
 
 const ModuleCardDescription = styled(CardDescription)`
-  background-color: #fff;
   padding: 1rem;
   display: flex;
   flex-grow: 1;
   height: 100%;
   margin: 0;
+  flex-direction: column;
+  color: white;
+  text-align: justify;
+  text-justify: auto;
 `
 
 const ImageBackgroundBase = css`
@@ -65,6 +73,14 @@ const ImageBackgroundBase = css`
   z-index: -10;
 `
 
+const GradientBackground = styled("span")<{ backgroundColor: string }>`
+  ${(props) =>
+    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  @media(max-width: 1200px) {
+    ${(props) =>
+      `background-image: linear-gradient(to top, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  }
+`
 const ImageBackground = styled("span")<{ src: string }>`
   ${ImageBackgroundBase};
   background-image: url(${(props) => props.src});
@@ -86,16 +102,14 @@ const ModuleCardHeader = styled(CardHeader)`
 `
 
 const CenteredHeader = styled(Typography)`
-  margin: auto;
-  background-color: white;
-  padding: 1rem;
+  margin-bottom: 2rem;
 `
 
 const ModuleCourseCard = styled(CourseCard)``
 
-export function ListItem({ module }: StudyModuleListItemProps) {
+export function ListItem({ module, backgroundColor }: StudyModuleListItemProps) {
   const des = module.name.includes("Ohj")
-    ? "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et, sequi dolor maiores hic atque vel, officia animi maxime accusamus voluptate laborum eaque ea reiciendis beatae labore cupiditate, aliquid quis consequuntur? Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, beatae. Voluptatem recusandae est voluptatibus fugit tempore omnis delectus maxime praesentium repellendus voluptate? Sint a eveniet, dolorum cum distinctio repudiandae maiores! Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus error hic voluptatum? Placeat commodi optio quisquam, animi est quibusdam architecto, ipsam tenetur, provident aspernatur quas dicta. In soluta modi neque. Placeat commodi optio quisquam, animi est quibusdam architecto, ipsam tenetur, provident aspernatur quas dicta. In soluta modi neque."
+    ? "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et, sequi dolor maiores hic atque vel, officia animi maxime accusamus voluptate laborum eaque ea reiciendis beatae labore cupiditate, aliquid quis consequuntur? Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, beatae. Voluptatem recusandae est voluptatibus fugit tempore omnis delectus maxime praesentium repellendus voluptate? Sint a eveniet, dolorum cum distinctio repudiandae maiores! Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus error hic voluptatum? Placeat commodi optio quisquam, animi est quibusdam architecto, ipsam tenetur, provident aspernatur quas dicta. In soluta modi neque."
     : module.description
   const descriptionRef = useRef<HTMLElement | null>()
   const courses = useMemo(
@@ -112,9 +126,9 @@ export function ListItem({ module }: StudyModuleListItemProps) {
       return
     }
 
-    if (description.scrollHeight > description.offsetHeight) {
+    /*if (description.scrollHeight > description.offsetHeight && description.scrollWidth > description.offsetWidth) {
       description.style.height = description.scrollHeight + "px"
-      description.style.gridRow = `auto / span 2` // ${2 + Math.floor(description.scrollHeight / description.offsetHeight)}`;
+      description.style.gridRow = `auto / span ${2 + Math.floor(description.scrollHeight / description.offsetHeight)}`;
     } /* else {
       description.style.height = '100%';
       description.style.gridRow = '';
@@ -133,15 +147,14 @@ export function ListItem({ module }: StudyModuleListItemProps) {
   })
   useEffect(setDescriptionHeight, [des])
 
+  // TODO: the anchor link may have to be shifted by the amount of the header again
   return (
-    <ModuleCardWrapper>
+    <ModuleCardWrapper backgroundColor={backgroundColor} id={module.slug}>
       <ImageBackground src={imageUrl} />
-      <ModuleCardHeader>
-        <CenteredHeader variant="h1">{module.name}</CenteredHeader>
-      </ModuleCardHeader>
       <ModuleCardBody>
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>
+          <CenteredHeader variant="h1">{module.name}</CenteredHeader>
             <Typography variant="subtitle1">{des}</Typography>
           </ModuleCardDescription>
         </HeroContainer>
@@ -154,9 +167,9 @@ export function ListItem({ module }: StudyModuleListItemProps) {
 }
 
 // can't use a wrapper for the course list because of the grid?
-export function ListItemSkeleton() {
+export function ListItemSkeleton({ backgroundColor }: { backgroundColor: string }) {
   return (
-    <ModuleCardWrapper>
+    <ModuleCardWrapper backgroundColor={backgroundColor}>
       <SkeletonBackground />
       <ModuleCardHeader>
         <CenteredHeader variant="h1">

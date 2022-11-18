@@ -2,34 +2,13 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button } from "@mui/material"
 
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
-import {
-  ModuleCard,
-  ModuleCardSkeleton,
-} from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
-
-const ModulesGrid = styled.ul`
-  list-style: none;
-  list-style-position: inside;
-  padding: 0;
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  padding: 2rem;
-  justify-content: center;
-  width: 80%;
-  @media (max-width: 500px) {
-    padding: 0;
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-`
+import ModuleNaviList from "./ModuleNaviList"
 
 /*const ShowMore = styled(Button)`
   --color: #eee;
@@ -95,7 +74,7 @@ const Arrow = styled.div`
   }
 `*/
 
-function Modules() {
+export function ModuleNavigation() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(StudyModulesDocument, {
@@ -105,23 +84,10 @@ function Modules() {
   return (
     <SectionContainer id="modules">
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
-      <ModulesGrid>
-        {loading && (
-          <>
-            <ModuleCardSkeleton key="module-skeleton-1" />
-            <ModuleCardSkeleton key="module-skeleton-2" />
-            <ModuleCardSkeleton key="module-skeleton-3" />
-          </>
-        )}
-        {data?.study_modules?.map((module, index) => (
-          <ModuleCard key={`module-${index}`} module={module} hue={100} />
-        ))}
-      </ModulesGrid>
+      <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <Link href="/_new/study-modules" passHref>
         <Button>Näytä kaikki kokonaisuudet</Button>
       </Link>
     </SectionContainer>
   )
 }
-
-export default Modules

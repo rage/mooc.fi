@@ -1,5 +1,8 @@
 import { amber } from "@mui/material/colors"
-import { createTheme, Theme } from "@mui/material/styles"
+import { createTheme, Theme, css } from "@mui/material/styles"
+
+const latoFamily = "Lato, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+const ralewayFamily = "Raleway, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
 
 const rawTheme = createTheme({
   palette: {
@@ -11,11 +14,11 @@ const rawTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: "roboto",
+    fontFamily: latoFamily,
     button: {
       label: {
-        textTransform: "none",
-        fontFamily: "Open Sans Condensed",
+        textTransform: "uppercase" ,
+        // fontFamily: "",
       },
     },
   },
@@ -44,8 +47,8 @@ const rawTheme = createTheme({
       },
       styleOverrides: {
         root: {
-          textTransform: "none",
-          fontFamily: "Roboto",
+          textTransform: "uppercase",
+          fontFamily: latoFamily,
           borderRadius: "20px",
         },
       },
@@ -60,7 +63,7 @@ const theme: Theme = {
     h1: {
       ...rawTheme.typography.h1,
       paddingBottom: "1rem",
-      fontFamily: "Roboto",
+      fontFamily: ralewayFamily,
       fontSize: 48,
       "@media (min-width: 600px)": {
         fontSize: 56,
@@ -73,7 +76,7 @@ const theme: Theme = {
       ...rawTheme.typography.h2,
       paddingBottom: "1rem",
       fontSize: 40,
-      fontFamily: "Roboto",
+      fontFamily: ralewayFamily,
       "@media (min-width: 600px)": {
         fontSize: 30,
       },
@@ -88,7 +91,7 @@ const theme: Theme = {
       ...rawTheme.typography.h3,
       paddingBottom: "0.5rem",
       paddingTop: "0.7rem",
-      fontFamily: "Roboto",
+      fontFamily: ralewayFamily,
       fontSize: 16,
       "@media (min-width: 600px)": {
         fontSize: 20,
@@ -96,7 +99,7 @@ const theme: Theme = {
     },
     h4: {
       ...rawTheme.typography.h4,
-      fontFamily: "Roboto",
+      fontFamily: ralewayFamily,
       fontSize: 14,
       "@media (min-width: 600px)": {
         fontSize: 16,
@@ -104,7 +107,7 @@ const theme: Theme = {
     },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
-      fontFamily: "Roboto",
+      fontFamily: ralewayFamily,
       fontSize: 18,
       "@media (min-width: 600px)": {
         fontSize: 22,
@@ -125,5 +128,10 @@ const theme: Theme = {
     },
   },
 }
+
+export const newFontCss = css`
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
+`
 
 export default theme
