@@ -1,7 +1,8 @@
+import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import Typography from "@mui/material/Typography"
+import Typography, { TypographyProps } from "@mui/material/Typography"
 
-export const CardWrapper = styled.div`
+export const CardWrapper = styled.li`
   border-radius: 4px;
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
@@ -11,7 +12,7 @@ export const CardWrapper = styled.div`
   flex-direction: column;
 `
 
-export const CardHeader = styled.div`
+export const CardHeader = styled.header`
   height: 140px;
   position: relative;
   display: flex;
@@ -30,6 +31,10 @@ export const CardHeaderImage = styled.img`
   clip: rect(0, auto, calc(52px - 1rem), auto);
   z-index: 0;
 `
+
+CardHeaderImage.defaultProps = {
+  "aria-hidden": true,
+}
 
 export const CardBody = styled.div`
   background-color: #fff;
@@ -50,10 +55,18 @@ export const CardActionArea = styled.div`
   align-items: center;
 `
 
-export const CardTitle = styled((props: any) => (
+export const CardTitle = styled((props: TypographyProps) => (
   <Typography variant="h6" {...props} />
 ))`
   z-index: 1;
+`
+const CommonHeaderBackground = css`
+  opacity: 0.4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `
 
 export const CardHeaderBackground = styled.span<{
@@ -61,24 +74,18 @@ export const CardHeaderBackground = styled.span<{
   hue?: number
   brightness?: number
 }>`
-  opacity: 0.4;
+  ${CommonHeaderBackground};
   filter: hue-rotate(${(props) => props.hue ?? 0}deg)
     brightness(${(props) => props.brightness ?? 1});
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   background-size: cover;
   background-image: url(${(props) => `../../../static/images/${props.image}`});
 `
 
+CardHeaderBackground.defaultProps = {
+  "aria-hidden": true,
+}
+
 export const CardHeaderBackgroundSkeleton = styled.span`
-  opacity: 0.4;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  ${CommonHeaderBackground};
   background-color: #aaa;
 `

@@ -91,9 +91,7 @@ export const StudyModuleQueries = extendType({
         orderBy: arg({ type: "StudyModuleOrderByInput" }),
         language: stringArg(),
       },
-      resolve: async (_, args, ctx) => {
-        const { orderBy, language } = args
-
+      resolve: async (_, { orderBy, language }, ctx) => {
         const modules: (StudyModule & {
           study_module_translations?: StudyModuleTranslation[]
         })[] = await ctx.prisma.studyModule.findMany({

@@ -20,7 +20,7 @@ export const CenteredContent = styled.div`
     grid-template-columns: 1fr;
 
     @media only screen and (min-width: 1200px) {
-      grid-template-columns: 45% 55%;
+      grid-template-columns: 4.5fr 5.5fr;
       grid-auto-rows: 1fr;
       width: 90%;
     }

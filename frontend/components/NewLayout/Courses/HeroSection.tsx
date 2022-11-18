@@ -1,6 +1,7 @@
 import Image from "next/image"
 
 import styled from "@emotion/styled"
+import { Typography } from "@mui/material"
 
 import CoursesTranslations from "/translations/_new/courses"
 import { useTranslator } from "/util/useTranslator"
@@ -27,7 +28,7 @@ function HeroSection() {
 
   return (
     <Container>
-      <h1>{t("heroSectionHeader")}</h1>
+      <Typography variant="h1">{t("heroSectionHeader")}</Typography>
       <ItemContainer>
         <Item>
           <Image

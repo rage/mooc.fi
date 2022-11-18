@@ -6,7 +6,7 @@ import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material"
 
-import CourseCard from "./CourseCard"
+import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import CommonTranslations from "/translations/common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useTranslator } from "/util/useTranslator"
@@ -16,12 +16,19 @@ import { CoursesDocument, CourseStatus } from "/graphql/generated"
 const Container = styled.div`
   display: grid;
   max-width: 1200px;
+  padding: 1rem;
 `
 
-const CardContainer = styled.div`
+const CardContainer = styled.ul`
+  list-style: none;
+  padding: 0;
   display: grid;
   grid-gap: 2rem;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 const SearchBar = styled(TextField)`
@@ -154,10 +161,10 @@ function CourseGrid() {
       </Filters>
       {loading ? (
         <CardContainer>
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
         </CardContainer>
       ) : (
         <CardContainer>

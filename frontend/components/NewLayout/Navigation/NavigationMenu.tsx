@@ -3,6 +3,7 @@ import React, {
   MouseEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
@@ -108,6 +109,7 @@ const UserOptionsMenu = () => {
       </>
     )
   }
+
   return (
     <>
       <Link href="/_new/sign-in" passHref>
@@ -122,7 +124,7 @@ const UserOptionsMenu = () => {
 
 const DesktopNavigationMenu = () => {
   return (
-    <NavigationMenuContainer role="navigation">
+    <NavigationMenuContainer role="navigation" aria-label="main navigation">
       <NavigationLinksWrapper>
         <NavigationLinks />
       </NavigationLinksWrapper>
@@ -205,9 +207,73 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : t("myProfile")
 
+  const menuItems = useMemo(() => {
+    const items = [
+      <MenuItem key="mobile-menu-language-switch">
+        <LanguageSwitch />
+      </MenuItem>,
+      <MobileMenuItem
+        key="mobile-menu-courses"
+        href="/_new/courses"
+        icon={faChalkboardTeacher}
+        text={t("courses")}
+        onClick={onClose}
+      />,
+      <MobileMenuItem
+        key="mobile-menu-modules"
+        href="/_new/study-modules"
+        icon={faList}
+        text={t("modules")}
+        onClick={onClose}
+      />,
+      <Divider key="menu-divider-1" />,
+    ]
+
+    if (admin) {
+      items.push(
+        <MobileMenuItem
+          key="mobile-menu-admin"
+          href="/_new/admin"
+          icon={faDashboard}
+          text="Admin"
+          onClick={onClose}
+        />,
+        <Divider key="menu-divider-admin" />,
+      )
+    }
+    if (loggedIn) {
+      items.push(
+        <MobileMenuItem
+          key="mobile-menu-profile"
+          href="/_new/profile"
+          icon={faUser}
+          text={userDisplayName}
+          onClick={onClose}
+        />,
+        <MobileMenuItem
+          key="mobile-menu-logout"
+          icon={faSignOut}
+          text={t("logout")}
+          onClick={() => signOut(client, logInOrOut)}
+        />,
+      )
+    } else {
+      items.push(
+        <Link href="/_new/sign-in" passHref key="menu-login">
+          <MenuItem onClick={onClose}>{t("loginShort")}</MenuItem>
+        </Link>,
+        <Link href="/_new/sign-up" prefetch={false} passHref key="menu-signup">
+          <MenuItem onClick={onClose}>{t("signUp")}</MenuItem>
+        </Link>,
+      )
+    }
+
+    return items
+  }, [loggedIn, admin])
+
   return (
     <MobileMenuContainer>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} aria-hidden={true}>
         <MenuIcon />
       </IconButton>
       <Menu
@@ -217,63 +283,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         anchorEl={anchor.current}
         ref={ref}
       >
-        <MenuItem key="mobile-menu-language-switch">
-          <LanguageSwitch />
-        </MenuItem>
-        <MobileMenuItem
-          key="mobile-menu-courses"
-          href="/_new/courses"
-          icon={faChalkboardTeacher}
-          text={t("courses")}
-          onClick={onClose}
-        />
-        <MobileMenuItem
-          key="mobile-menu-modules"
-          href="/_new/study-modules"
-          icon={faList}
-          text={t("modules")}
-          onClick={onClose}
-        />
-        <Divider key="menu-divider-1" />
-        {admin && [
-          <MobileMenuItem
-            key="mobile-menu-admin"
-            href="/_new/admin"
-            icon={faDashboard}
-            text="Admin"
-            onClick={onClose}
-          />,
-          <Divider key="menu-divider-admin" />,
-        ]}
-        {loggedIn
-          ? [
-              <MobileMenuItem
-                key="mobile-menu-profile"
-                href="/_new/profile"
-                icon={faUser}
-                text={userDisplayName}
-                onClick={onClose}
-              />,
-              <MobileMenuItem
-                key="mobile-menu-logout"
-                icon={faSignOut}
-                text={t("logout")}
-                onClick={() => signOut(client, logInOrOut)}
-              />,
-            ]
-          : [
-              <Link href="/_new/sign-in" passHref key="menu-login">
-                <MenuItem onClick={onClose}>{t("loginShort")}</MenuItem>
-              </Link>,
-              <Link
-                href="/_new/sign-up"
-                prefetch={false}
-                passHref
-                key="menu-signup"
-              >
-                <MenuItem onClick={onClose}>{t("signUp")}</MenuItem>
-              </Link>,
-            ]}
+        {menuItems}
       </Menu>
     </MobileMenuContainer>
   )
