@@ -1,6 +1,21 @@
 import { amber } from "@mui/material/colors"
 import { createTheme, Theme } from "@mui/material/styles"
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    spgray: Palette["primary"]
+    spgreen: Palette["primary"]
+    sppurple: Palette["primary"]
+    spblue: Palette["primary"]
+  }
+  interface PaletteOptions {
+    spgray: PaletteOptions["primary"]
+    spgreen: PaletteOptions["primary"]
+    sppurple: PaletteOptions["primary"]
+    spblue: PaletteOptions["primary"]
+  }
+}
+
 const rawTheme = createTheme({
   palette: {
     primary: {
@@ -8,6 +23,18 @@ const rawTheme = createTheme({
     },
     secondary: {
       main: amber[500],
+    },
+    spgray: {
+      main: "#1A2333",
+    },
+    spgreen: {
+      main: "#065853",
+    },
+    sppurple: {
+      main: "#51309F",
+    },
+    spblue: {
+      main: "#08457A",
     },
   },
   typography: {

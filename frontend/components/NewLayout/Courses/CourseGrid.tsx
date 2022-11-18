@@ -14,6 +14,33 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CoursesDocument, CourseStatus } from "/graphql/generated"
 
+/* const Container = styled.div`
+  display: grid;
+  max-width: 600px;
+
+  @media (min-width: 960px) {
+    max-width: 960px;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 1440px;
+  }
+`
+
+const CardContainer = styled.div`
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: 100%;
+
+  @media (min-width: 960px) {
+    grid-template-columns: 50% 50%;
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: 33% 33% 33%;
+  }
+` */
+
 const Container = styled("div")`
   display: grid;
   max-width: 1200px;
@@ -56,8 +83,6 @@ const TagButton = styled(Button)`
   &:hover {
     border-width: 0.15rem;
   }
-
-
 `
 
 const Tags = styled("div")`
@@ -81,8 +106,7 @@ const TagsContainer = styled.div`
   grid-template-columns: 70% 30%;
 `
 
-const SelectAllContainer = styled.div`
-`
+const SelectAllContainer = styled.div``
 
 const colorSchemes = {
   csb: "#08457A",
@@ -107,7 +131,10 @@ function CourseGrid() {
   const [hardcodedTags, setHardcodedTags] = useState<{
     [key: string]: string[]
   }>({})
-  const [filteredStatuses, setFilteredStatuses] = useState<string[]>([CourseStatus.Active, CourseStatus.Upcoming])
+  const [filteredStatuses, setFilteredStatuses] = useState<string[]>([
+    CourseStatus.Active,
+    CourseStatus.Upcoming,
+  ])
 
   // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
 
@@ -124,23 +151,9 @@ function CourseGrid() {
       "en",
       "se",
     ]) */
-    setDifficultyTags([
-      "beginner",
-      "intermediate",
-      "pro",
-    ])
-    setModuleTags([
-      "AI",
-      "programming",
-      "cloud",
-      "cyber security",
-    ])
-    setLanguageTags([
-      "fi",
-      "en",
-      "se",
-    ])
-
+    setDifficultyTags(["beginner", "intermediate", "pro"])
+    setModuleTags(["AI", "programming", "cloud", "cyber security"])
+    setLanguageTags(["fi", "en", "se"])
   }, [])
 
   useEffect(() => {
@@ -148,7 +161,11 @@ function CourseGrid() {
     data?.courses &&
       data.courses.map((course) =>
         course?.slug != null
-          ? (hardcoded[course?.slug] = [...difficultyTags, ...moduleTags, ...languageTags]
+          ? (hardcoded[course?.slug] = [
+              ...difficultyTags,
+              ...moduleTags,
+              ...languageTags,
+            ]
               .sort(() => 0.5 - Math.random())
               .slice(0, Math.random() * (4 - 3) + 3))
           : "undefined",
@@ -177,31 +194,39 @@ function CourseGrid() {
   }
 
   const handleSelectAllClick = (category: string) => {
-    switch(category) {
+    switch (category) {
       case "difficulty":
-        if (difficultyTags.every(tag => activeTags.includes(tag))) {
-          setActiveTags(activeTags.filter(tag => !difficultyTags.includes(tag)))
+        if (difficultyTags.every((tag) => activeTags.includes(tag))) {
+          setActiveTags(
+            activeTags.filter((tag) => !difficultyTags.includes(tag)),
+          )
         } else {
           let activeTagsWithAllDifficulties = [...activeTags, ...difficultyTags]
-          activeTagsWithAllDifficulties = [...new Set(activeTagsWithAllDifficulties)]
+          activeTagsWithAllDifficulties = [
+            ...new Set(activeTagsWithAllDifficulties),
+          ]
           setActiveTags(activeTagsWithAllDifficulties)
         }
         break
       case "module":
-        if (moduleTags.every(tag => activeTags.includes(tag))) {
-          setActiveTags(activeTags.filter(tag => !moduleTags.includes(tag)))
+        if (moduleTags.every((tag) => activeTags.includes(tag))) {
+          setActiveTags(activeTags.filter((tag) => !moduleTags.includes(tag)))
         } else {
           let activeTagsWithAllDifficulties = [...activeTags, ...moduleTags]
-          activeTagsWithAllDifficulties = [...new Set(activeTagsWithAllDifficulties)]
+          activeTagsWithAllDifficulties = [
+            ...new Set(activeTagsWithAllDifficulties),
+          ]
           setActiveTags(activeTagsWithAllDifficulties)
         }
         break
       case "language":
-        if (languageTags.every(tag => activeTags.includes(tag))) {
-          setActiveTags(activeTags.filter(tag => !languageTags.includes(tag)))
+        if (languageTags.every((tag) => activeTags.includes(tag))) {
+          setActiveTags(activeTags.filter((tag) => !languageTags.includes(tag)))
         } else {
           let activeTagsWithAllDifficulties = [...activeTags, ...languageTags]
-          activeTagsWithAllDifficulties = [...new Set(activeTagsWithAllDifficulties)]
+          activeTagsWithAllDifficulties = [
+            ...new Set(activeTagsWithAllDifficulties),
+          ]
           setActiveTags(activeTagsWithAllDifficulties)
         }
         break
@@ -225,67 +250,79 @@ function CourseGrid() {
       <Filters>
         <FilterLabel>{t("filter")}:</FilterLabel>
         <TagsContainer>
-        <Tags>
-          {difficultyTags.map((tag) => (
-            <TagButton
-              id={`difficulty-tag-${tag}`}
-              variant={activeTags.includes(tag) ? "contained" : "outlined"}
-              onClick={() => handleClick(tag)}
-              size="small"
-            >
-              {tag}
-            </TagButton>
-          ))}
-          <br />
-          {moduleTags.map((tag) => (
-            <TagButton
-              id={`module-tag-${tag}`}
-              variant={activeTags.includes(tag) ? "contained" : "outlined"}
-              onClick={() => handleClick(tag)}
-              size="small"
-            >
-              {tag}
-            </TagButton>
-          ))}
-          <br />
-          {languageTags.map((tag) => (
-            <TagButton
-              id={`language-tag-${tag}`}
-              variant={activeTags.includes(tag) ? "contained" : "outlined"}
-              onClick={() => handleClick(tag)}
-              size="small"
-            >
-              {tag}
-            </TagButton>
-          ))}
+          <Tags>
+            {difficultyTags.map((tag) => (
+              <TagButton
+                id={`difficulty-tag-${tag}`}
+                variant={activeTags.includes(tag) ? "contained" : "outlined"}
+                onClick={() => handleClick(tag)}
+                size="small"
+              >
+                {tag}
+              </TagButton>
+            ))}
+            <br />
+            {moduleTags.map((tag) => (
+              <TagButton
+                id={`module-tag-${tag}`}
+                variant={activeTags.includes(tag) ? "contained" : "outlined"}
+                onClick={() => handleClick(tag)}
+                size="small"
+              >
+                {tag}
+              </TagButton>
+            ))}
+            <br />
+            {languageTags.map((tag) => (
+              <TagButton
+                id={`language-tag-${tag}`}
+                variant={activeTags.includes(tag) ? "contained" : "outlined"}
+                onClick={() => handleClick(tag)}
+                size="small"
+              >
+                {tag}
+              </TagButton>
+            ))}
           </Tags>
           <SelectAllContainer>
-          <TagButton
-            id="select-all-difficulty-tags"
-            variant={difficultyTags.every(tag => activeTags.includes(tag)) ? "contained" : "outlined"}
-            onClick={() => handleSelectAllClick("difficulty")}
-            size="small"
-          >
-            {t("selectAll")}
-          </TagButton>
-          <TagButton
-            id="select-all-module-tags"
-            variant={moduleTags.every(tag => activeTags.includes(tag)) ? "contained" : "outlined"}
-            onClick={() => handleSelectAllClick("module")}
-            size="small"
-          >
-            {t("selectAll")}
-          </TagButton>
-          <TagButton
-            id="select-all-difficulties"
-            variant={languageTags.every(tag => activeTags.includes(tag)) ? "contained" : "outlined"}
-            onClick={() => handleSelectAllClick("language")}
-            size="small"
-          >
-            {t("selectAll")}
-          </TagButton>
+            <TagButton
+              id="select-all-difficulty-tags"
+              variant={
+                difficultyTags.every((tag) => activeTags.includes(tag))
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => handleSelectAllClick("difficulty")}
+              size="small"
+            >
+              {t("selectAll")}
+            </TagButton>
+            <TagButton
+              id="select-all-module-tags"
+              variant={
+                moduleTags.every((tag) => activeTags.includes(tag))
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => handleSelectAllClick("module")}
+              size="small"
+            >
+              {t("selectAll")}
+            </TagButton>
+            <TagButton
+              id="select-all-difficulties"
+              variant={
+                languageTags.every((tag) => activeTags.includes(tag))
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => handleSelectAllClick("language")}
+              size="small"
+            >
+              {t("selectAll")}
+            </TagButton>
           </SelectAllContainer>
-          </TagsContainer>
+        </TagsContainer>
         <Statuses>
           {["Active", "Upcoming", "Ended"].map((status) => (
             <FormControlLabel
@@ -323,8 +360,8 @@ function CourseGrid() {
             data.courses
               .filter(
                 (course) =>
-                  (!course.hidden) &&
-                  (course.course_translations.length > 0) &&
+                  !course.hidden &&
+                  course.course_translations.length > 0 &&
                   (course?.name
                     .toLowerCase()
                     .includes(searchString.toLowerCase()) ||

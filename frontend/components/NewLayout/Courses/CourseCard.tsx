@@ -1,12 +1,12 @@
 import { Button, Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
+import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
+import moocLogoUrl from "/static/images/moocfi_white.svg"
 import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
 
 import { CourseFieldsFragment } from "/graphql/generated"
-import { CardTitle } from "../Common/Card"
-import moocLogoUrl from "/static/images/moocfi_white.svg"
 
 const colorSchemes = {
   csb: "#08457A",
@@ -172,7 +172,12 @@ function CourseCard({ course, tags }: CourseCardProps) {
               Tulossa {course.start_date && prettifyDate(course.start_date)}
             </p>
           ) : course?.status == "Ended" ? (
-            <p>Päättynyt {(course.end_date && Date.parse(course.end_date) < Date.now()) && prettifyDate(course.end_date)}</p>
+            <p>
+              Päättynyt{" "}
+              {course.end_date &&
+                Date.parse(course.end_date) < Date.now() &&
+                prettifyDate(course.end_date)}
+            </p>
           ) : (
             <p>
               Käynnissä{" "}
