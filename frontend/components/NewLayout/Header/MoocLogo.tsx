@@ -3,6 +3,7 @@ import Link from "next/link"
 import styled from "@emotion/styled"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
+
 import MoocSvg from "/static/images/moocfi.svg"
 
 const MoocLogoText = styled(Typography)`
@@ -42,10 +43,7 @@ const MoocLogoLink = styled.a`
 const MoocLogo = () => (
   <Link href="/_new" passHref>
     <MoocLogoLink aria-label="MOOC.fi homepage">
-      <MoocLogoAvatar
-        alt="MOOC logo"
-        src={MoocSvg}
-      />
+      <MoocLogoAvatar alt="MOOC logo" src={MoocSvg} />
       <MoocLogoText>MOOC.fi</MoocLogoText>
     </MoocLogoLink>
   </Link>

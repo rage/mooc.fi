@@ -1,3 +1,5 @@
+import React from "react"
+
 import styled from "@emotion/styled"
 import Typography, { TypographyProps } from "@mui/material/Typography"
 
@@ -17,7 +19,11 @@ export const SectionContainer = styled.section`
   }
 `
 
-export const CorrectedAnchor = styled("a")`
+export const CorrectedAnchor = styled(
+  (props: React.HTMLAttributes<HTMLDivElement>) => (
+    <div tabIndex={-1} {...props} />
+  ),
+)`
   display: block;
   position: relative;
   top: -120px;

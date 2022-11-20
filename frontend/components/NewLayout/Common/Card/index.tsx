@@ -13,12 +13,13 @@ export const CardWrapper = styled.li`
 `
 
 export const CardHeader = styled.header`
-  height: 140px;
+  height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 1rem;
+  z-index: -2;
 `
 
 export const CardHeaderImage = styled.img`
@@ -56,7 +57,7 @@ export const CardActionArea = styled.div`
 `
 
 export const CardTitle = styled((props: TypographyProps) => (
-  <Typography variant="h6" {...props} />
+  <Typography variant="h2" {...props} />
 ))`
   z-index: 1;
 `
@@ -75,10 +76,11 @@ export const CardHeaderBackground = styled.span<{
   brightness?: number
 }>`
   ${CommonHeaderBackground};
-  filter: hue-rotate(${(props) => props.hue ?? 0}deg)
-    brightness(${(props) => props.brightness ?? 1});
+  /*filter: hue-rotate(${(props) => props.hue ?? 0}deg)
+    brightness(${(props) => props.brightness ?? 1});*/
   background-size: cover;
-  background-image: url(${(props) => `../../../static/images/${props.image}`});
+  background-image: linear-gradient(to left, rgba(255, 0, 0, 0), #065853 55%),
+    url(${(props) => `../../../static/images/${props.image}`});
 `
 
 CardHeaderBackground.defaultProps = {

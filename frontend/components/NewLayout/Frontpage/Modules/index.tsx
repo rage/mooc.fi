@@ -1,2 +1,3 @@
 export * from "./ModuleCard"
-export * as default from "./Modules"
+export * from "./ModuleNavigation"
+export * from "./ModuleNaviList"

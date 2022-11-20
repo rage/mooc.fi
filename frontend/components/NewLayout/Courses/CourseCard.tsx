@@ -24,7 +24,9 @@ const ContainerBase = css`
   max-height: 400px;
 `
 
-const Container = styled("li")<{ backgroundImage?: string }>`
+const Container = styled("li", {
+  shouldForwardProp: (prop) => prop !== "backgroundImage",
+})<{ backgroundImage?: string }>`
   ${ContainerBase};
   &:nth-of-type(n) {
     background: linear-gradient(
@@ -82,7 +84,9 @@ const ContentContainer = styled("div")`
   border-radius: 0 0 0.5rem 0.5rem;
 `
 
-const Title = styled("div")<{ withBackgroundImage?: boolean }>`
+const Title = styled("div", {
+  shouldForwardProp: (prop) => prop !== "withBackgroundImage",
+})<{ withBackgroundImage?: boolean }>`
   font-weight: bold;
   color: white;
   font-size: 1.5rem;
@@ -150,7 +154,7 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
     <Container backgroundImage={fifthElement ? BannerImage : undefined}>
       <TitleContainer>
         <Title withBackgroundImage={fifthElement}>
-          <Typography variant="h4">{course?.name}</Typography>
+          <Typography variant="h3">{course?.name}</Typography>
         </Title>
       </TitleContainer>
       <ContentContainer>

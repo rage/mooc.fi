@@ -77,6 +77,7 @@ export default function UserPointsSummary({
         <Button
           variant="outlined"
           startIcon={<BuildIcon />}
+          aria-controls="raw-view"
           onClick={() => setRawViewOpen(!rawViewOpen)}
         >
           Raw view
@@ -101,6 +102,7 @@ export default function UserPointsSummary({
         ),
       )}
       <Dialog
+        id="raw-view"
         fullWidth
         maxWidth="md"
         open={rawViewOpen}

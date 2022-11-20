@@ -1,8 +1,15 @@
 import { amber } from "@mui/material/colors"
-import { createTheme, Theme, css } from "@mui/material/styles"
+import { createTheme, css, Theme } from "@mui/material/styles"
 
 const latoFamily = "Lato, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
-const ralewayFamily = "Raleway, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+// @ts-ignore: not used
+const ralewayFamily =
+  "Raleway, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+// @ts-ignore: not used
+const epilogueFamily =
+  "Epilogue, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+const encodeSansFamily =
+  "Encode Sans, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
 
 const rawTheme = createTheme({
   palette: {
@@ -17,7 +24,7 @@ const rawTheme = createTheme({
     fontFamily: latoFamily,
     button: {
       label: {
-        textTransform: "uppercase" ,
+        textTransform: "uppercase",
         // fontFamily: "",
       },
     },
@@ -63,7 +70,8 @@ const theme: Theme = {
     h1: {
       ...rawTheme.typography.h1,
       paddingBottom: "1rem",
-      fontFamily: ralewayFamily,
+      fontFamily: encodeSansFamily,
+      fontStretch: "condensed",
       fontSize: 48,
       "@media (min-width: 600px)": {
         fontSize: 56,
@@ -76,7 +84,7 @@ const theme: Theme = {
       ...rawTheme.typography.h2,
       paddingBottom: "1rem",
       fontSize: 40,
-      fontFamily: ralewayFamily,
+      fontFamily: encodeSansFamily,
       "@media (min-width: 600px)": {
         fontSize: 30,
       },
@@ -91,7 +99,8 @@ const theme: Theme = {
       ...rawTheme.typography.h3,
       paddingBottom: "0.5rem",
       paddingTop: "0.7rem",
-      fontFamily: ralewayFamily,
+      fontFamily: encodeSansFamily,
+      fontWeight: 600,
       fontSize: 16,
       "@media (min-width: 600px)": {
         fontSize: 20,
@@ -99,7 +108,7 @@ const theme: Theme = {
     },
     h4: {
       ...rawTheme.typography.h4,
-      fontFamily: ralewayFamily,
+      fontFamily: encodeSansFamily,
       fontSize: 14,
       "@media (min-width: 600px)": {
         fontSize: 16,
@@ -107,7 +116,7 @@ const theme: Theme = {
     },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
-      fontFamily: ralewayFamily,
+      fontFamily: encodeSansFamily,
       fontSize: 18,
       "@media (min-width: 600px)": {
         fontSize: 22,
@@ -130,8 +139,7 @@ const theme: Theme = {
 }
 
 export const newFontCss = css`
-  @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Encode+Sans:wdth,wght@75,400;75,500;75,600;75,700&family=Epilogue:wght@400;500;700;900&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,800;0,900;1,300;1,400;1,500;1,600&display=swap");
 `
 
 export default theme

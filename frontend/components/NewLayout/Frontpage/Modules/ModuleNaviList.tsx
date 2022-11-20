@@ -1,6 +1,17 @@
-import { StudyModuleFieldsFragment } from "/graphql/generated"
 import { styled } from "@mui/material/styles"
+
 import { ModuleCard, ModuleCardSkeleton } from "./ModuleCard"
+
+import { StudyModuleFieldsFragment } from "/graphql/generated"
+
+const Container = styled("nav")`
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`
 
 const ModulesGrid = styled("ul")`
   list-style: none;
@@ -20,25 +31,36 @@ const ModulesGrid = styled("ul")`
 `
 interface ModuleNaviListProps {
   modules?: Array<StudyModuleFieldsFragment> | null
+  variant?: "small" | "large"
   loading?: boolean
 }
 
-function ModuleNaviList({ modules, loading }: ModuleNaviListProps) {
+function ModuleNaviList({
+  modules,
+  loading,
+  variant = "large",
+}: ModuleNaviListProps) {
   return (
-    <ModulesGrid>
-    {loading && (
-      <>
-        <ModuleCardSkeleton key="module-skeleton-1" />
-        <ModuleCardSkeleton key="module-skeleton-2" />
-        <ModuleCardSkeleton key="module-skeleton-3" />
-      </>
-    )}
-    {modules?.map((module, index) => (
-      <ModuleCard key={`module-${index}`} module={module} hue={100} />
-    ))}
-  </ModulesGrid>
-
+    <Container>
+      <ModulesGrid>
+        {loading && (
+          <>
+            <ModuleCardSkeleton key="module-skeleton-1" />
+            <ModuleCardSkeleton key="module-skeleton-2" />
+            <ModuleCardSkeleton key="module-skeleton-3" />
+          </>
+        )}
+        {modules?.map((module, index) => (
+          <ModuleCard
+            key={`module-${index}`}
+            module={module}
+            hue={100}
+            variant={variant}
+          />
+        ))}
+      </ModulesGrid>
+    </Container>
   )
-} 
+}
 
 export default ModuleNaviList

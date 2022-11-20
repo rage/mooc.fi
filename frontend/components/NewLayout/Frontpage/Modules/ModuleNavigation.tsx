@@ -4,11 +4,11 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import { Button } from "@mui/material"
 
+import ModuleNaviList from "./ModuleNaviList"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
-import ModuleNaviList from "./ModuleNaviList"
 
 /*const ShowMore = styled(Button)`
   --color: #eee;

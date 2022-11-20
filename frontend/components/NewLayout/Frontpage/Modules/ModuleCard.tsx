@@ -1,6 +1,7 @@
+import Link from "next/link"
+
 import styled from "@emotion/styled"
 import { Button, Skeleton } from "@mui/material"
-import Link from "next/link"
 
 import {
   CardBody,
@@ -18,6 +19,7 @@ interface ModuleCardProps {
   module: StudyModuleFieldsFragment
   hue?: number
   brightness?: number
+  variant?: "small" | "large"
 }
 
 const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
@@ -49,9 +51,9 @@ export const ModuleCard = ({
         <CardDescription>{description}</CardDescription>
         <CardActionArea>
           <Link href={`/_new/study-modules/#${slug}`} passHref>
-          <ModuleButton hue={hue} brightness={brightness}>
-            Kokonaisuuden tiedot
-          </ModuleButton>
+            <ModuleButton hue={hue} brightness={brightness}>
+              Kokonaisuuden tiedot
+            </ModuleButton>
           </Link>
         </CardActionArea>
       </CardBody>
@@ -81,3 +83,11 @@ export const ModuleCardSkeleton = () => {
     </CardWrapper>
   )
 }
+
+/*const SmallModuleCard = ({
+  module: { name, slug, image, description },
+  hue,
+  brightness,
+}: ModuleCardProps) => {
+
+}*/

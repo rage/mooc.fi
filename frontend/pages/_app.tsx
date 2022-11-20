@@ -70,7 +70,7 @@ export function MyApp({
 
   const Layout = isNew ? NewLayout : OriginalLayout
   const theme = isNew ? newTheme : originalTheme
-  
+
   const loginStateContextValue = useMemo(
     () => ({
       loggedIn: pageProps?.signedIn,
@@ -80,6 +80,13 @@ export function MyApp({
     [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
   )
 
+  const alternateLanguage = useMemo(() => {
+    if (router.locale === "en") {
+      return { hreflang: "fi_FI", href: router.asPath.replace("/en/", "/") }
+    }
+    return { hreflang: "en_US", href: `/en${router.asPath}` }
+  }, [router.locale, router.pathname])
+
   return (
     <>
       <CacheProvider value={emotionCache}>
@@ -88,6 +95,7 @@ export function MyApp({
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
+          <link rel="alternate" {...alternateLanguage} />
           <title>{title}</title>
         </Head>
         <ThemeProvider theme={theme}>

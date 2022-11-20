@@ -3,14 +3,12 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled"
 
-import { SectionContainer } from "../Common"
+import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
 import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
+import ErrorMessage from "/components/ErrorMessage"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesWithCoursesDocument } from "/graphql/generated"
-import Modules from "/components/NewLayout/Frontpage/Modules/Modules"
-import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
-import ErrorMessage from "/components/ErrorMessage"
 
 const colorSchemes = {
   csb: "#08457A",
@@ -19,14 +17,7 @@ const colorSchemes = {
   ai: "#51309F",
 }
 
-const Container = styled(SectionContainer)`
-  flex: 1;
-  width: 100%;
-`
-
-const ModuleList = styled.ul`
-  list-style: none;
-  list-style-position: inside;
+const ModuleList = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -50,24 +41,30 @@ export function StudyModuleList() {
 
   if (loading) {
     return (
-      <Container>
-        <ModuleList>
-          <ListItemSkeleton backgroundColor={colorSchemes.csb} />
-          <ListItemSkeleton backgroundColor={colorSchemes.programming} />
-          <ListItemSkeleton backgroundColor={colorSchemes.cloud} />
-        </ModuleList>
-      </Container>
+      <ModuleList>
+        <ListItemSkeleton backgroundColor={colorSchemes.csb} />
+        <ListItemSkeleton backgroundColor={colorSchemes.programming} />
+        <ListItemSkeleton backgroundColor={colorSchemes.cloud} />
+      </ModuleList>
     )
   }
 
   return (
-    <Container>
-      <ModuleNaviList modules={data?.study_modules!} loading={loading} />
+    <>
+      <ModuleNaviList
+        modules={data?.study_modules!}
+        loading={loading}
+        variant="small"
+      />
       <ModuleList>
         {data?.study_modules?.map((module, index) => (
-          <ListItem module={module} key={module.id} backgroundColor={Object.values(colorSchemes)[index]}/>
+          <ListItem
+            module={module}
+            key={module.id}
+            backgroundColor={Object.values(colorSchemes)[index]}
+          />
         ))}
       </ModuleList>
-    </Container>
+    </>
   )
 }
