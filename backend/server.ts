@@ -78,6 +78,7 @@ export default async (serverContext: ServerContext) => {
     introspection: true,
     logger: serverContext.logger,
     includeStacktraceInErrorResponses: DEBUG,
+    allowBatchedHttpRequests: true,
     // cache: "bounded",
   })
   await apolloServer.start()

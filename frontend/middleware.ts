@@ -1,5 +1,4 @@
-import { ForegroundColor } from "ansi-styles"
-import chalk from "chalk"
+import styles, { ForegroundColor } from "ansi-styles"
 import { NextRequest, NextResponse } from "next/server"
 
 import { redirects_list } from "./Redirects"
@@ -76,11 +75,8 @@ const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
   const httpVersion = "HTTP/1.1"
   const resContentLength = res.headers.get("content-length") || "-"
 
-  const log = `${remoteAddress} ${remoteUser} [${date}] "${chalk[
-    responseStatusToColor(status)
-  ](
-    `${method} ${url} ${httpVersion}`,
-  )}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
+  const color = styles[responseStatusToColor(status)]
+  const log = `${remoteAddress} ${remoteUser} [${date}] "${color.open}${method} ${url} ${httpVersion}${color.close}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
 
   console.log(log)
   // console.log(request.nextUrl)

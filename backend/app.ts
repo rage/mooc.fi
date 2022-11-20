@@ -35,7 +35,6 @@ const startApp = async () => {
   attachPrismaEvents(ctx)
 
   if (!NEXUS_REFLECTION) {
-    console.log("I should _not_ be here in testing")
     httpServer.listen(4000, () => {
       console.log("server running on port 4000")
     })

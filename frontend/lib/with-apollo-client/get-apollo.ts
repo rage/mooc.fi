@@ -59,6 +59,7 @@ function create(initialState: any, originalAccessToken?: string) {
   )
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
+    console.log("wait a minute, am I in the errorlink now")
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
