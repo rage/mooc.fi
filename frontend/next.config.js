@@ -29,6 +29,20 @@ const nextConfiguration = {
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
       autoLabel: "never",
+      importMap: {
+        "@mui/system": {
+          styled: {
+            canonicalImport: ["@emotion/styled", "default"],
+            styledBaseImport: ["@mui/system", "styled"],
+          },
+        },
+        "@mui/material/styles": {
+          styled: {
+            canonicalImport: ["@emotion/styled", "default"],
+            styledBaseImport: ["@mui/material/styles", "styled"],
+          },
+        },
+      },
     },
     modularizeImports: {
       "@mui/icons-material": {
@@ -39,6 +53,12 @@ const nextConfiguration = {
       },
       lodash: {
         transform: "lodash/{{member}}",
+      },
+      "@fortawesome/free-brands-svg-icons": {
+        transform: "@fortawesome/free-brands-svg-icons/{{member}}",
+      },
+      "@fortawesome/free-solid-svg-icons": {
+        transform: "@fortawesome/free-solid-svg-icons/{{member}}",
       },
     },
   },

@@ -1,7 +1,7 @@
 import { useContext } from "react"
 
 import styled from "@emotion/styled"
-import { IconProp } from "@fortawesome/fontawesome-svg-core"
+import { type IconProp } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import ButtonBase from "@mui/material/ButtonBase"
 import Typography from "@mui/material/Typography"
