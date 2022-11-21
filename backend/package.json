@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "patch-package",
     "test": "TZ=UTC jest",
     "test:ci": "TZ=UTC jest --ci --runInBand --coverage",
     "upgrade-interactive": "npx npm-check --update",
@@ -97,6 +98,7 @@
     "nexus-plugin-prisma": "^0.35.0",
     "node-rdkafka": "^2.13.0",
     "nodemailer": "^6.7.5",
+    "patch-package": "^6.5.0",
     "pg": "^8.7.3",
     "pg-query-stream": "^4.2.3",
     "redis": "^4.1.0",
