@@ -27,7 +27,7 @@ const ChartContainer = styled("div")`
 
 const PointsProgressTitle = styled(CardSubtitle)`
   margin-right: 1rem;
-`
+` as typeof CardSubtitle
 
 interface PointsProgressProps {
   percentage: number

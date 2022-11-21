@@ -42,7 +42,7 @@ import {
 } from "/graphql/generated"
 
 const SelectLanguageFirstCover = styled("div")<{ covered: boolean }>`
-  ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
+  opacity: ${(props) => (props.covered ? 0.2 : 1)};
 `
 
 interface CourseEditFormProps {

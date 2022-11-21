@@ -57,10 +57,10 @@ const StyledIcon = styled(SvgIcon)`
   height: 30px;
   margin: 0.5em;
 `
-const StyledText = styled(Typography)<any>`
+const StyledText = styled(Typography)`
   margin-top: 0px;
   margin-left: 1em;
-`
+` as typeof Typography
 
 function RegisterCompletionPage() {
   const accessToken = getAccessToken(undefined)

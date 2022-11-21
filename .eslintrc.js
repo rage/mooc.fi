@@ -31,16 +31,11 @@ module.exports = {
             importNames: ["default"],
             message: "Don't use Grid from @mui/material",
           },
-        ],
-      },
-    ],
-    "no-restricted-modules": [
-      "warn",
-      {
-        paths: [
           {
-            name: "@mui/material/Grid",
-            message: "Don't use Grid from @mui/material",
+            name: "@emotion/styled",
+            importNames: ["css", "default"],
+            message:
+              "Use `styled` and `css` from `@mui/material/styles` instead",
           },
         ],
       },

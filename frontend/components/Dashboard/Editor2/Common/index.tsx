@@ -22,11 +22,11 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import { FormValues } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 
-export const FormSubtitle = styled(Typography)<any>`
+export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
   margin-bottom: 1rem;
   font-size: 2em;
-`
+` as typeof Typography
 
 export const FormFieldGroup = styled("div")`
   display: flex;

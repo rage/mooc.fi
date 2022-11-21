@@ -62,7 +62,7 @@ const ContentArea = styled("span")`
   padding-top: 1em;
 `
 
-const NaviCardTitle = styled(Typography)<any>`
+const NaviCardTitle = styled(Typography)`
   margin-bottom: 1rem;
   margin-left: 1rem;
   max-width: 60%;
@@ -81,6 +81,7 @@ const NaviCardTitle = styled(Typography)<any>`
   }
   flex: 1;
 `
+
 interface ModuleCardProps {
   module?: StudyModuleDetailedFieldsFragment
   loading?: boolean
@@ -120,7 +121,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
         <ImageCover />
         <ContentArea>
           {loading ? (
-            <NaviCardTitle align="left" component="div">
+            <NaviCardTitle align="left">
               <Skeleton variant="text" />
             </NaviCardTitle>
           ) : (

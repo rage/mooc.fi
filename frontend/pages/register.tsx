@@ -9,7 +9,9 @@ import {
   Card,
   CardContent,
   Container,
+  ContainerProps,
   Grid,
+  GridProps,
   IconButton,
   InputAdornment,
   Skeleton,
@@ -36,11 +38,11 @@ import {
   UserOrganizationsDocument,
 } from "/graphql/generated"
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin-top: 1em;
-`
+` as typeof Typography
 
-const FormContainer = styled((props: any) => (
+const FormContainer = styled((props: ContainerProps & GridProps) => (
   <Container spacing={4} {...props} />
 ))``
 

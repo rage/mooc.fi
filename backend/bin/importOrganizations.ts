@@ -4,7 +4,6 @@ import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
@@ -26,7 +25,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
-  const details: Omit<Prisma.OrganizationCreateInput, "secret_key"> = {
+  const details = {
     slug: org.slug,
     verified_at: org.verified_at,
     verified: org.verified || false,
@@ -58,7 +57,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
       where: {
         slug: org.slug,
       },
-      data: convertUpdate(details), // TODO: remove convertUpdate
+      data: details,
     })
   } else {
     organization = await prisma.organization.create({
@@ -83,7 +82,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   if (organizationTranslationId != null) {
     await prisma.organizationTranslation.update({
       where: { id: organizationTranslationId },
-      data: convertUpdate(translationDetails),
+      data: translationDetails,
     })
   } else {
     await prisma.organizationTranslation.create({ data: translationDetails })
@@ -121,7 +120,7 @@ const getUserFromTmc = async (user_id: number) => {
   return prisma.user.upsert({
     where: { upstream_id: details.id },
     create: prismaDetails,
-    update: convertUpdate(prismaDetails),
+    update: prismaDetails,
   })
 }
 

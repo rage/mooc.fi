@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import { Button, Typography } from "@mui/material"
+import { Button, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { formatDateTime } from "/components/DataFormatFunctions"
@@ -13,7 +13,7 @@ import {
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
-import moocLogoUrl from "/static/images/moocfi.svg"
+import moocLogoUrl from "/static/images/moocfi-transparent.svg"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
@@ -35,7 +35,7 @@ const CardActionArea = styled("div")`
   align-items: center;
 `
 
-const Date = styled((props: any) => (
+const Date = styled((props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
 ))``
 
@@ -89,7 +89,7 @@ function SelectedCourses() {
   })
 
   return (
-    <SectionContainer>
+    <SectionContainer id="courses">
       <SectionTitle>Suosittuja kursseja</SectionTitle>
       {loading && <p>Loading...</p>}
       <CoursesGrid>

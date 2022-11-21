@@ -30,9 +30,9 @@ const ContentBlock = styled("div")`
   }
 `
 
-const TextBlock = styled(Typography)<any>`
+const TextBlock = styled(Typography)`
   max-width: 800px;
-`
+` as typeof Typography
 
 const StyledIcon = styled(FontAwesomeIcon)`
   color: rgba(0, 0, 0, 0.54);

@@ -10,11 +10,12 @@ const StyledCard = styled("div")`
   flex-direction: row;
   border-bottom: 1.5px solid #4d78a3;
 `
-const StyledText = styled(Typography)<any>`
+const StyledText = styled(Typography)`
   font-size: 16px;
   line-height: 30px;
   margin: auto;
-`
+` as typeof Typography
+
 interface LanguageSelectorProps {
   handleLanguageChange: React.ChangeEventHandler<HTMLInputElement>
   languageValue: string

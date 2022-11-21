@@ -13,7 +13,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
-const Background = styled(ClickableButtonBase)<{ component: any }>`
+const Background = styled(ClickableButtonBase)`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -21,7 +21,7 @@ const Background = styled(ClickableButtonBase)<{ component: any }>`
   @media (max-width: 959px) {
     flex-direction: row;
   }
-`
+` as typeof ClickableButtonBase
 
 const ResponsiveCourseImageBase = styled(CourseImageBase)`
   @media (max-width: 430px) {

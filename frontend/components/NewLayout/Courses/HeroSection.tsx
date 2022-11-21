@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CoursesTranslations from "/translations/_new/courses"
@@ -27,7 +28,7 @@ function HeroSection() {
 
   return (
     <Container>
-      <h1>{t("heroSectionHeader")}</h1>
+      <Typography variant="h1">{t("heroSectionHeader")}</Typography>
       <ItemContainer>
         <Item>
           <Image

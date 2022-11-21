@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseGrid from "./CourseGrid"
@@ -14,7 +15,7 @@ function Catalogue() {
 
   return (
     <Container>
-      <h2>{t("coursesHeader")}</h2>
+      <Typography variant="h2">{t("coursesHeader")}</Typography>
       <CourseGrid />
     </Container>
   )

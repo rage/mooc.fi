@@ -29,10 +29,10 @@ const Background = styled("section")`
   background-color: #ffc107;
 `
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   margin-bottom: 0.4em;
   padding: 1rem;
-`
+` as typeof Typography
 
 const TitleBackground = styled("div")`
   background-color: white;

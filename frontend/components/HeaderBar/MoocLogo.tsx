@@ -4,7 +4,7 @@ import Avatar from "@mui/material/Avatar"
 import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-const MoocLogoText = styled(Typography)<any>`
+const MoocLogoText = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
   font-size: 1.75rem !important;
   @media (max-width: 425px) {

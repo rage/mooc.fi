@@ -11,7 +11,7 @@ export const ClickableButtonBase = styled(ButtonBase)`
     transition-duration: 0.4s;
     cursor: pointer;
   }
-`
+` as typeof ButtonBase
 
 export const ShadowedDiv = styled("div")`
   position: relative;

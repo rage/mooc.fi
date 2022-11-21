@@ -18,9 +18,9 @@ const StyledPaper = styled(Paper)`
   margin-bottom: 2em;
 `
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin: 1em;
-`
+` as typeof Typography
 
 const SignInPage = () => {
   const t = useTranslator(SignInTranslations)

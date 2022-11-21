@@ -6,7 +6,6 @@ import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
@@ -118,7 +117,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: convertUpdate(prismaDetails), // TODO: remove convertUpdate
+      update: prismaDetails,
     })
 
     return result

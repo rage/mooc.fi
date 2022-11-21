@@ -52,12 +52,13 @@ const CourseButton = styled(Button)`
     color: #fff;
   }
 `
+
 function HeroContent() {
   const t = useTranslator(HomeTranslations)
 
   return (
     <HeroContentContainer>
-      <Title variant="h1">{t("tagLine")}</Title>
+      <Title variant="h2">{t("tagLine")}</Title>
       <Paragraph variant="subtitle2">{t("intro")}</Paragraph>
       <CourseButton variant="outlined" href="#courses">
         {t("courseButton")}
@@ -65,6 +66,7 @@ function HeroContent() {
     </HeroContentContainer>
   )
 }
+
 function Hero() {
   return (
     <HeroContainer>

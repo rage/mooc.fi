@@ -1,5 +1,5 @@
-import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
+import { css, styled } from "@mui/material/styles"
+import Typography, { TypographyProps } from "@mui/material/Typography"
 
 export const CardWrapper = styled("div")`
   border-radius: 4px;
@@ -31,6 +31,10 @@ export const CardHeaderImage = styled("img")`
   z-index: 0;
 `
 
+CardHeaderImage.defaultProps = {
+  "aria-hidden": true,
+}
+
 export const CardBody = styled("div")`
   background-color: #fff;
   display: flex;
@@ -50,10 +54,18 @@ export const CardActionArea = styled("div")`
   align-items: center;
 `
 
-export const CardTitle = styled((props: any) => (
+export const CardTitle = styled((props: TypographyProps) => (
   <Typography variant="h6" {...props} />
 ))`
   z-index: 1;
+`
+const CommonHeaderBackground = css`
+  opacity: 0.4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `
 
 export const CardHeaderBackground = styled("span")<{
@@ -61,24 +73,18 @@ export const CardHeaderBackground = styled("span")<{
   hue?: number
   brightness?: number
 }>`
-  opacity: 0.4;
+  ${CommonHeaderBackground};
   filter: hue-rotate(${(props) => props.hue ?? 0}deg)
     brightness(${(props) => props.brightness ?? 1});
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   background-size: cover;
   background-image: url(${(props) => `../../../static/images/${props.image}`});
 `
 
+CardHeaderBackground.defaultProps = {
+  "aria-hidden": true,
+}
+
 export const CardHeaderBackgroundSkeleton = styled("span")`
-  opacity: 0.4;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  ${CommonHeaderBackground};
   background-color: #aaa;
 `

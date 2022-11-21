@@ -19,12 +19,12 @@ const LanguageVersionContainer = styled("div")`
   margin: auto;
 `
 
-const LanguageVersionTitle = styled(Typography)<any>`
+const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
   font-size: 33px;
   line-height: 52px;
   color: #005b5b;
-`
+` as typeof Typography
 
 const inputLabelProps = {
   fontSize: 16,

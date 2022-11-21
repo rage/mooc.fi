@@ -27,9 +27,10 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin-bottom: 0.25rem;
 `
 
-const StyledTypography = styled(Typography)<any>`
+const StyledTypography = styled(Typography)`
   margin-bottom: 0.3rem;
 `
+
 interface OSSelectorButtonProps {
   OSName: userOsType
   Icon: IconProp

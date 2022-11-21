@@ -12,14 +12,20 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
+
 const LanguageSwitchContainer = styled(
   (props: ButtonGroupProps & ButtonProps) => (
     <ButtonGroup
-      component={(buttonProps) => <Button component="div" {...buttonProps} />}
+      component={(buttonProps) => (
+        <Button component="div" {...buttonProps} tabIndex={-1} />
+      )}
       disableRipple
       disableFocusRipple
       disableTouchRipple
       {...props}
+      tabIndex="-1"
     />
   ),
   {
@@ -46,6 +52,7 @@ const Language = styled(Button, {
 `
 
 const LanguageSwitch = () => {
+  const t = useTranslator(CommonTranslations)
   const { locale: currentLocale, locales, asPath } = useRouter()
 
   return (
@@ -53,7 +60,12 @@ const LanguageSwitch = () => {
       <LanguageIcon />
       {locales?.map((locale) => (
         <Link href={asPath} locale={locale} passHref key={`switch-${locale}`}>
-          <Language active={currentLocale === locale}>{locale}</Language>
+          <Language
+            active={currentLocale === locale}
+            aria-label={t(locale as keyof typeof CommonTranslations[string])}
+          >
+            {locale}
+          </Language>
         </Link>
       ))}
     </LanguageSwitchContainer>

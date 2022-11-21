@@ -32,9 +32,9 @@ import {
   UserCourseStatsUnsubscribeDocument,
 } from "/graphql/generated"
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   margin-bottom: 0.7em;
-`
+` as typeof Typography
 
 const Row = styled(Paper)`
   padding: 0.5rem;

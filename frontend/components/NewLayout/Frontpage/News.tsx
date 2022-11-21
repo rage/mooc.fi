@@ -10,7 +10,7 @@ const NewsContainer = styled("section")`
 
 const NewsListContainer = styled("ul")`
   list-style: none;
-  padding-left: 0;
+  padding: 0;
   color: #fff;
   display: flex;
   flex-direction: column;

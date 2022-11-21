@@ -23,7 +23,7 @@ const ExplanationRoot = styled("div")`
   }
 `
 
-const Subtitle = styled(Typography)<any>`
+const Subtitle = styled(Typography)`
   padding-right: 1.5rem;
   padding-left: 1.5rem;
   padding-bottom: 1em;
@@ -36,7 +36,7 @@ const Subtitle = styled(Typography)<any>`
     padding-left: 82px;
     padding-right: 82px;
   }
-`
+` as typeof Typography
 
 const CourseButton = styled(Button)`
   background-color: #378170;

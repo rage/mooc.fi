@@ -31,7 +31,7 @@ const StyledCard = styled(Card)`
   margin: 0 1rem;
 `
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   text-align: center;
   margin-bottom: 4rem !important;
 `
@@ -69,7 +69,7 @@ function EmailSubscribe() {
     <MailingList>
       <StyledCard>
         <CardContent>
-          <StyledHeader variant="h5" component="h4">
+          <StyledHeader variant="h5" as="h4">
             {t("emailHeader")}
           </StyledHeader>
           <div>

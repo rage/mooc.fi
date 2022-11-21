@@ -134,14 +134,16 @@ export function Breadcrumbs() {
   }
 
   return (
-    <BreadcrumbList>
-      <BreadcrumbComponent translation="home" href="/" key="home" />
-      {breadcrumbs.map((breadcrumb, index) => (
-        <BreadcrumbComponent
-          {...breadcrumb}
-          key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
-        />
-      ))}
-    </BreadcrumbList>
+    <nav aria-label="breadcrumbs">
+      <BreadcrumbList>
+        <BreadcrumbComponent translation="home" href="/" key="home" />
+        {breadcrumbs.map((breadcrumb, index) => (
+          <BreadcrumbComponent
+            {...breadcrumb}
+            key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
+          />
+        ))}
+      </BreadcrumbList>
+    </nav>
   )
 }

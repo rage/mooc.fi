@@ -26,19 +26,19 @@ const Row = styled("div")`
 const Form = styled("form")`
   width: 100%;
 `
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin: 1em;
-`
+` as typeof Typography
 
 const InfoBox = styled("div")`
   margin-bottom: 2rem;
 `
 
-const StyledTypography = styled(Typography)<any>`
+const StyledTypography = styled(Typography)`
   margin-bottom: 2rem;
-`
+` as typeof Typography
 
-interface state {
+interface State {
   email?: string
   password?: string
   password_confirmation?: string
@@ -54,7 +54,7 @@ interface state {
   last_name?: string
 }
 
-export function capitalizeFirstLetter(string: String) {
+export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
@@ -155,7 +155,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   validate = () => {
     const t = getSignUpTranslator(this.props.router.locale ?? "fi")
 
-    let newState: state = {
+    let newState: State = {
       error: "",
       errorObj: {},
     }
@@ -201,7 +201,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
     return !newState.error
   }
 
-  state: state = {
+  state: State = {
     email: "",
     password: "",
     password_confirmation: "",

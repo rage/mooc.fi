@@ -23,12 +23,12 @@ const SkeletonBodyText = styled(Skeleton)`
   margin-top: 0.2rem;
 `
 
-const Base = styled(ClickableButtonBase)<{ component: any }>`
+const Base = styled(ClickableButtonBase)`
   display: block;
   width: 100%;
   height: 100%;
   background-color: transparent;
-`
+` as typeof ClickableButtonBase
 
 const TextBackground = styled(FullCoverTextBackground)`
   width: 70%;

@@ -20,7 +20,7 @@ export const CenteredContent = styled("div")`
     grid-template-columns: 1fr;
 
     @media only screen and (min-width: 1200px) {
-      grid-template-columns: 45% 55%;
+      grid-template-columns: 4.5fr 5.5fr;
       grid-auto-rows: 1fr;
       width: 90%;
     }
@@ -48,7 +48,7 @@ const ModuleHeaderBase = styled(H2NoBackground)`
     font-size: 37px;
     line-height: 70px;
   }
-`
+` as typeof H2NoBackground
 
 export const ModuleHeader = ({ children, ...props }: PropsWithChildren<{}>) => (
   <ModuleHeaderBase component="h2" variant="h2" align="left" {...props}>
@@ -91,7 +91,7 @@ const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
     font-size: 18px;
     line-height: 37px;
   }
-`
+` as typeof SubtitleNoBackground
 
 export const ModuleDescriptionText = ({
   children,

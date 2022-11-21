@@ -16,10 +16,11 @@ const StyledIcon = styled(Report)`
   width: 35%;
 `
 
-const ErrorMessageText = styled(Typography)<any>`
+const ErrorMessageText = styled(Typography)`
   margin-bottom: 1rem;
   font-size: 1.2rem;
-`
+` as typeof Typography
+
 interface Props {
   errorMessage: string
 }

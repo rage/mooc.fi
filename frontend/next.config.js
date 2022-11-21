@@ -40,6 +40,12 @@ const nextConfiguration = {
       lodash: {
         transform: "lodash/{{member}}",
       },
+      "@fortawesome/free-brands-svg-icons": {
+        transform: "@fortawesome/free-brands-svg-icons/{{member}}",
+      },
+      "@fortawesome/free-solid-svg-icons": {
+        transform: "@fortawesome/free-solid-svg-icons/{{member}}",
+      },
     },
   },
 }

@@ -20,12 +20,12 @@ const VerifiedUserCard = styled(Card)`
 const VerifiedUserCardTitle = styled(CardTitle)`
   display: flex;
   justify-content: space-between;
-`
+` as typeof CardTitle
 
 function VerifiedUser({ data }: VerifiedUserProps) {
   return (
     <VerifiedUserCard>
-      <VerifiedUserCardTitle variant="section">
+      <VerifiedUserCardTitle component="section">
         <Typography variant="h3">
           {data?.organization?.organization_translations[0].name}
         </Typography>

@@ -21,7 +21,9 @@ import { CardTitle } from "/components/Text/headers"
 
 import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
-const CardBase = styled("div")<{ ishidden?: number }>`
+const CardBase = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isHidden",
+})<{ isHidden?: number }>`
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
 
@@ -30,7 +32,7 @@ const CardBase = styled("div")<{ ishidden?: number }>`
     transition-duration: 0.4s;
   }
 
-  background-color: ${(props) => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
+  background-color: ${(props) => (props.isHidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
   min-width: 340px;
@@ -166,7 +168,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
     <CourseCardItem key={`course-card-${course?.id ?? "new"}`}>
       <CardBase
         style={{ gridColumn: "span 1" }}
-        ishidden={course?.hidden ? 1 : undefined}
+        isHidden={course?.hidden ? 1 : undefined}
       >
         <CourseCardImageContainer>
           {loading ? (

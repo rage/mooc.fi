@@ -45,7 +45,7 @@ const StyledButton = styled(Button)<ButtonProps>`
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
 `
 
-const ButtonLabel = styled(Typography)<any>`
+const ButtonLabel = styled(Typography)`
   font-family: Open Sans Condensed !important;
   font-size: 18px;
   @media (max-width: 600px) {

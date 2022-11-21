@@ -12,7 +12,7 @@ export interface CompletionsProps {
   completions?: CompletionDetailedFieldsWithCourseFragment[] | null
 }
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   font-family: "Open Sans Condensed", sans-serif !important;
   margin-top: 7rem;
   margin-left: 2rem;
@@ -26,7 +26,7 @@ const Title = styled(Typography)<any>`
   @media (min-width: 960px) {
     font-size: 72px;
   }
-`
+` as typeof Typography
 
 export const Completions = ({ completions }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)

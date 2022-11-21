@@ -10,7 +10,7 @@ const HeaderBackground = styled("div")`
   margin-bottom: 6em;
 `
 
-const HeaderTitle = styled(Typography)<any>`
+const HeaderTitle = styled(Typography)`
   padding: 0.5em;
   @media (min-width: 768px) {
     font-size: 64px;
@@ -21,7 +21,7 @@ const HeaderTitle = styled(Typography)<any>`
   @media (max-width: 425px) {
     font-size: 48px;
   }
-`
+` as typeof Typography
 
 interface ProfilePageHeaderProps {
   first_name: string

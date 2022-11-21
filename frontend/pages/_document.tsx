@@ -1,6 +1,8 @@
 import React from "react"
 
-import Document, { Head, Html, Main, NextScript } from "next/document" //DocumentContext,
+import Document, { Head, Html, Main, NextScript } from "next/document"
+
+//DocumentContext,
 
 /*import createEmotionServer from "@emotion/server/create-instance"
 

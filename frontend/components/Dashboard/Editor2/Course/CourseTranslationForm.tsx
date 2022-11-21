@@ -13,12 +13,12 @@ import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const LanguageVersionTitle = styled(Typography)<any>`
+const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
   font-size: 33px;
   line-height: 52px;
   color: #005b5b;
-`
+` as typeof Typography
 
 const AddTranslationNotice = styled(EntryContainer)`
   margin-bottom: 1rem;

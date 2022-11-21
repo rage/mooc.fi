@@ -57,9 +57,20 @@ const theme: Theme = {
   ...rawTheme,
   typography: {
     ...rawTheme.typography,
-    // FIXME: disrepancy as h2 is larger than h1?
     h1: {
       ...rawTheme.typography.h1,
+      paddingBottom: "1rem",
+      fontFamily: "Roboto",
+      fontSize: 48,
+      "@media (min-width: 600px)": {
+        fontSize: 56,
+      },
+      "@media (min-width: 960px)": {
+        fontSize: 72,
+      },
+    },
+    h2: {
+      ...rawTheme.typography.h2,
       paddingBottom: "1rem",
       fontSize: 40,
       fontFamily: "Roboto",
@@ -71,18 +82,6 @@ const theme: Theme = {
       },
       "@media (min-width: 1440px)": {
         fontSize: 44,
-      },
-    },
-    h2: {
-      ...rawTheme.typography.h2,
-      paddingBottom: "1rem",
-      fontFamily: "Roboto",
-      fontSize: 32,
-      "@media (min-width: 600px)": {
-        fontSize: 56,
-      },
-      "@media (min-width: 960px)": {
-        fontSize: 72,
       },
     },
     h3: {

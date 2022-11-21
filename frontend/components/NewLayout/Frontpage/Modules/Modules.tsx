@@ -100,7 +100,7 @@ function Modules() {
   })
 
   return (
-    <SectionContainer>
+    <SectionContainer id="modules">
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
       <ModulesGrid>
         {loading && (
