@@ -249,7 +249,9 @@ const RenderForm = () => {
                                 cancellationText: t("moduleConfirmationNo"),
                               })
                                 .then(() => helpers.remove(index))
-                                .catch(() => {})
+                                .catch(() => {
+                                  // ignore
+                                })
                             }
                           >
                             {t("moduleRemoveTranslation")}

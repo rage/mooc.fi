@@ -30,7 +30,7 @@ function AlertIcon(props: SvgIconProps) {
 }
 
 type RegProps = {
-  email: String
+  email: string
 }
 
 function ImportantNotice(props: RegProps) {

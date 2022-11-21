@@ -12,7 +12,7 @@ type MDXComponent<T> = {
   }
 } & React.ComponentType<T>
 
-export function useFAQPage(topic: string = "toc_faq") {
+export function useFAQPage(topic = "toc_faq") {
   const { locale } = useRouter()
 
   const [render, setRender] = useState(false)

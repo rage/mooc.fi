@@ -23,10 +23,10 @@ export interface LoginState {
 
 export const LoginStateContext = createContext<LoginState>({
   loggedIn: false,
-  logInOrOut: () => {},
+  logInOrOut: () => void 0,
   currentUser: undefined,
   admin: false,
-  updateUser: (_) => {},
+  updateUser: (_) => void 0,
 })
 
 export function useLoginStateContext() {

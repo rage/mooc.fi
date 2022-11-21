@@ -178,7 +178,7 @@ const ManualCompletions = () => {
         .then(() =>
           addCompletions({
             variables: {
-              course_id: courseData!.course!.id,
+              course_id: courseData?.course?.id ?? "",
               completions: filteredData,
             },
           }),
@@ -188,7 +188,7 @@ const ManualCompletions = () => {
     } else {
       addCompletions({
         variables: {
-          course_id: courseData!.course!.id,
+          course_id: courseData?.course?.id ?? "",
           completions: filteredData,
         },
       })

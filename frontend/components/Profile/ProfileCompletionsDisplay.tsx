@@ -5,6 +5,7 @@ import { Typography } from "@mui/material"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { CompletionListItem } from "/components/Home/Completions"
 import ProfileTranslations from "/translations/profile"
+import { completionHasCourse } from "/util/guards"
 import { useTranslator } from "/util/useTranslator"
 
 import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
@@ -19,9 +20,12 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
 
   return (
     <>
-      {completions.slice(0, 10).map((c) => (
-        <CompletionListItem course={c.course!} completion={c} key={c.id} />
-      ))}
+      {completions
+        .filter(completionHasCourse)
+        .slice(0, 10)
+        .map((c) => (
+          <CompletionListItem course={c.course} completion={c} key={c.id} />
+        ))}
       {completions.length === 0 && (
         <Typography>{t("nocompletionsText")}</Typography>
       )}

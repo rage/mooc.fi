@@ -101,14 +101,14 @@ export function abStudiesRouter(ctx: ApiContext) {
         .json({ message: `ab_study with id ${id} not found` })
     }
 
-    const groupByUser = enrollments.reduce((acc, curr) => {
-      if (!curr.user) return acc
+    const groupByUser: Record<string, number | null> = {}
 
-      return {
-        ...acc,
-        [curr.user.upstream_id]: curr.group,
+    for (const enrollment of enrollments) {
+      if (!enrollment.user) {
+        continue
       }
-    }, {})
+      groupByUser[enrollment.user.upstream_id] = enrollment.group
+    }
 
     return res.status(200).json({ study_id: id, users: groupByUser })
   }

@@ -146,7 +146,7 @@ interface MobileMenuItemProps {
 
 const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
   ({ icon, text, href, onClick = () => void 0, ...props }, ref) => {
-    const WrapLink: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
+    const WrapLink: React.FunctionComponent<React.PropsWithChildren> = ({
       children,
     }) => {
       if (href) {

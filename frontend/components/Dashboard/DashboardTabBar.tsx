@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react"
+import { SyntheticEvent, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -81,7 +81,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
   const [value, setValue] = useState(selectedValue)
   const router = useRouter()
 
-  function handleChange(_: ChangeEvent<{}>, newValue: number) {
+  function handleChange(_: SyntheticEvent<Element, Event>, newValue: number) {
     setValue(newValue)
     router.push(`/courses/${slug}${routes[newValue].path}`)
   }

@@ -123,7 +123,7 @@ export function ListItem({ module }: StudyModuleListItemProps) {
 
   useEffect(() => {
     if (!window) {
-      return () => {}
+      return () => void 0
     }
     window.addEventListener("resize", setDescriptionHeight)
 

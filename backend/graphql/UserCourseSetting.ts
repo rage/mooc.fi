@@ -46,7 +46,7 @@ export const UserCourseSettingQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id } = args
-        let { course_id } = args
+        const { course_id } = args
 
         const settingsData = await ctx.prisma.course.findUnique({
           where: { id: course_id },

@@ -46,7 +46,7 @@ interface ExerciseEntryProps {
   }
 }
 
-const round = (num: number, precision: number = 100) =>
+const round = (num: number, precision = 100) =>
   Math.round(num * precision) / precision
 
 interface ExerciseInfoProps {

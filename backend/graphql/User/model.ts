@@ -50,7 +50,7 @@ export const User = objectType({
         course_slug: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id, course_slug } = args
+        const { course_id, course_slug } = args
         let course: Course | null = null
 
         // TODO: get by alias and then handler
@@ -91,7 +91,7 @@ export const User = objectType({
         organization_id: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id, course_slug, organization_id } = args
+        const { course_id, course_slug, organization_id } = args
         let course: Course | null = null
 
         // TODO: get by alias and then handler

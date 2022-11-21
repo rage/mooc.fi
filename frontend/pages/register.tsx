@@ -33,7 +33,7 @@ import { useTranslator } from "/util/useTranslator"
 import {
   AddUserOrganizationDocument,
   DeleteUserOrganizationDocument,
-  Organization,
+  OrganizationCoreFieldsFragment,
   OrganizationsDocument,
   UserOrganizationsDocument,
 } from "/graphql/generated"
@@ -118,10 +118,10 @@ function useRegisterOrganization(searchFilter: string) {
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
-    Record<string, Organization>
+    Record<string, OrganizationCoreFieldsFragment>
   >({})
   const [filteredOrganizations, setFilteredOrganizations] = useState<
-    Record<string, Organization>
+    Record<string, OrganizationCoreFieldsFragment>
   >({})
 
   const {
@@ -134,13 +134,13 @@ function useRegisterOrganization(searchFilter: string) {
     error: userOrganizationsError,
     // loading: userOrganizationsLoading,
   } = useQuery(UserOrganizationsDocument, {
-    variables: { user_id: currentUser!.id },
+    variables: { user_id: currentUser?.id },
   })
   const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
       {
         query: UserOrganizationsDocument,
-        variables: { user_id: currentUser!.id },
+        variables: { user_id: currentUser?.id },
       },
     ],
   })
@@ -150,7 +150,7 @@ function useRegisterOrganization(searchFilter: string) {
     refetchQueries: [
       {
         query: UserOrganizationsDocument,
-        variables: { user_id: currentUser!.id },
+        variables: { user_id: currentUser?.id },
       },
     ],
   })
@@ -184,14 +184,11 @@ function useRegisterOrganization(searchFilter: string) {
           "fi-FI",
         ),
       )
+    const orgs = {} as Record<string, OrganizationCoreFieldsFragment>
 
-    const orgs = sortedOrganizations.reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.id]: curr,
-      }),
-      {},
-    )
+    for (const org of sortedOrganizations) {
+      orgs[org.id] = org
+    }
 
     setOrganizations(orgs)
     setFilteredOrganizations(orgs)
@@ -208,22 +205,22 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    setFilteredOrganizations(
-      Object.entries(organizations).reduce((acc, [key, value]) => {
-        if (
-          !value.organization_translations[0].name
-            .toLowerCase()
-            .includes(searchFilter.toLowerCase())
-        ) {
-          return acc
-        }
+    const newFilteredOrganizations = {} as Record<
+      string,
+      OrganizationCoreFieldsFragment
+    >
 
-        return {
-          ...acc,
-          [key]: value,
-        }
-      }, {}),
-    )
+    for (const [id, org] of Object.entries(organizations)) {
+      if (
+        !org.organization_translations[0].name
+          .toLowerCase()
+          .includes(searchFilter.toLowerCase())
+      ) {
+        continue
+      }
+      newFilteredOrganizations[id] = org
+    }
+    setFilteredOrganizations(newFilteredOrganizations)
   }, [searchFilter, organizations])
 
   const toggleMembership = (id: string) => async () => {
@@ -243,7 +240,7 @@ function useRegisterOrganization(searchFilter: string) {
     } else {
       await addUserOrganization({
         variables: {
-          user_id: currentUser!.id,
+          user_id: currentUser?.id ?? "",
           organization_id: id,
         },
       })

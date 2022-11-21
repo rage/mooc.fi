@@ -133,9 +133,10 @@ const Course = () => {
           ? UserCourseStatsSubscribeDocument
           : UserCourseStatsUnsubscribeDocument,
         variables: {
-          id: !isSubscribed
-            ? data?.course?.course_stats_email?.id!
-            : subscription!.id!,
+          id:
+            (!isSubscribed
+              ? data?.course?.course_stats_email?.id
+              : subscription?.id) ?? "",
         },
         refetchQueries: [{ query: CurrentUserStatsSubscriptionsDocument }],
       })

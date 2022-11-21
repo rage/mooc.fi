@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 
-export function useQueryParameter(parameter: string, check: boolean = true) {
+export function useQueryParameter(parameter: string, check = true) {
   const router = useRouter()
 
   if (!router) {

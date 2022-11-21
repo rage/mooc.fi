@@ -103,7 +103,9 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
                       .then(() => {
                         remove(index)
                       })
-                      .catch(() => {})
+                      .catch(() => {
+                        // ignore
+                      })
                   }
                 }}
                 endIcon={<RemoveIcon>{removeText}</RemoveIcon>}

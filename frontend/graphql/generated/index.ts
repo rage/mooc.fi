@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-11-21T10:49:08+02:00
+// Generated on 2022-11-21T19:38:40+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -4561,8 +4561,12 @@ export type OrganizationsQuery = {
     id: string
     slug: string
     hidden: boolean | null
+    created_at: any | null
+    updated_at: any | null
     organization_translations: Array<{
       __typename?: "OrganizationTranslation"
+      id: string
+      organization_id: string | null
       language: string
       name: string
       information: string | null
@@ -9596,26 +9600,9 @@ export const OrganizationsDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "slug" } },
-                { kind: "Field", name: { kind: "Name", value: "hidden" } },
                 {
-                  kind: "Field",
-                  name: { kind: "Name", value: "organization_translations" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "language" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "information" },
-                      },
-                    ],
-                  },
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "OrganizationCoreFields" },
                 },
               ],
             },
@@ -9623,6 +9610,7 @@ export const OrganizationsDocument = {
         ],
       },
     },
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<OrganizationsQuery, OrganizationsQueryVariables>
 export const OrganizationByIdDocument = {

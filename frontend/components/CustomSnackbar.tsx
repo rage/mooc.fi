@@ -9,7 +9,7 @@ import { styled } from "@mui/material/styles"
 
 interface CustomSnackbarProps {
   open: boolean
-  setOpen: Function
+  setOpen: (...args: any[]) => any
   type: "error" | "success" | "warning" | "error"
   message: string
 }

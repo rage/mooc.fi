@@ -6,7 +6,7 @@ const ConfirmEmailPage = () => {
   return (
     <div>
       <RegularContainer>
-        <ConfirmEmail onComplete={() => {}} />
+        <ConfirmEmail onComplete={() => void 0} />
       </RegularContainer>
     </div>
   )

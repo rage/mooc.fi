@@ -59,7 +59,7 @@ export function capitalizeFirstLetter(string: string) {
 }
 
 export interface CreateAccountFormProps {
-  onComplete: Function
+  onComplete: (...args: any[]) => any
   router: NextRouter
 }
 
@@ -155,7 +155,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   validate = () => {
     const t = getSignUpTranslator(this.props.router.locale ?? "fi")
 
-    let newState: State = {
+    const newState: State = {
       error: "",
       errorObj: {},
     }

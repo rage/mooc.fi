@@ -16,7 +16,7 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
-const Layout: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
+const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
   children,
 }) => {
   return (

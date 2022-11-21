@@ -13,11 +13,11 @@ const FormContainer = styled("div")`
 `
 
 export interface ConfirmEmailProps {
-  onComplete: Function
+  onComplete: (...args: any[]) => any
 }
 
 // @ts-ignore: onComplete function not used at the moment
-const ConfirmEmail = (props: ConfirmEmailProps) => {
+const ConfirmEmail = (_props: ConfirmEmailProps) => {
   const t = useTranslator(SignUpTranslations)
 
   return (

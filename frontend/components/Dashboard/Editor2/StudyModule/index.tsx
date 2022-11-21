@@ -145,7 +145,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
       tab: 0,
       initialValues: defaultValues,
       setStatus,
-      setTab: () => {},
+      setTab: () => void 0,
       onSubmit,
       onError,
       onCancel,

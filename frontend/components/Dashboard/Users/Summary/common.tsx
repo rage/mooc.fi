@@ -7,12 +7,7 @@ export const SummaryCardContainer = styled((props: PaperProps) => (
   margin-bottom: 1rem;
 `
 
-interface SummaryCardProps {}
-
-export function SummaryCard({
-  children,
-  ...props
-}: PaperProps & SummaryCardProps) {
+export function SummaryCard({ children, ...props }: PaperProps) {
   return <SummaryCardContainer {...props}>{children}</SummaryCardContainer>
 }
 

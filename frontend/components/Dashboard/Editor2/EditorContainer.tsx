@@ -31,7 +31,7 @@ const Status = styled("p")<{ error: FormStatus["error"] }>`
 
 function EditorContainer<T extends FormValues>({
   children,
-}: PropsWithChildren<{}>) {
+}: PropsWithChildren) {
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
@@ -78,7 +78,9 @@ function EditorContainer<T extends FormValues>({
                         cancellationText: t("confirmationNo"),
                       })
                         .then(onCancel)
-                        .catch(() => {})
+                        .catch(() => {
+                          // ignore
+                        })
                     : onCancel()
                 }}
               >
@@ -110,7 +112,9 @@ function EditorContainer<T extends FormValues>({
                     cancellationText: t("confirmationNo"),
                   })
                     .then(() => onDelete(id))
-                    .catch(() => {})
+                    .catch(() => {
+                      // ignore
+                    })
                 }}
               >
                 {t("delete")}

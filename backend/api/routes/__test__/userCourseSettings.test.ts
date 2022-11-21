@@ -93,7 +93,7 @@ describe("API", () => {
           })
           const expected = {
             ...omit(settings, "other"),
-            ...((settings!.other as object) ?? {}),
+            ...((settings?.other as object) ?? {}),
           }
 
           expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
@@ -111,7 +111,7 @@ describe("API", () => {
           })
           const expected = {
             ...omit(settings, "other"),
-            ...((settings!.other as object) ?? {}),
+            ...((settings?.other as object) ?? {}),
           }
 
           expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
@@ -216,6 +216,9 @@ describe("API", () => {
           },
         })
 
+        if (!existingSetting) {
+          fail()
+        }
         const res = await postSettings("course1")({
           data: {
             id: "bogus",
@@ -237,13 +240,18 @@ describe("API", () => {
           },
         })
 
-        expect(updatedSetting!.updated_at! > existingSetting!.updated_at!).toBe(
-          true,
-        )
-        expect(updatedSetting!.language).toBe("fi")
-        expect(updatedSetting!.country).toBe("en")
-        expect(updatedSetting!.marketing).toBe(true)
-        expect(updatedSetting!.other).toEqual({
+        if (!updatedSetting) {
+          fail()
+        }
+
+        expect(
+          (updatedSetting.updated_at ?? new Date(0)) >
+            (existingSetting.updated_at ?? new Date(0)),
+        ).toBe(true)
+        expect(updatedSetting.language).toBe("fi")
+        expect(updatedSetting.country).toBe("en")
+        expect(updatedSetting.marketing).toBe(true)
+        expect(updatedSetting.other).toEqual({
           hasWings: true,
           isCat: true,
           sound: "meow",
@@ -256,6 +264,10 @@ describe("API", () => {
             id: "40000000-0000-0000-0000-000000000105",
           },
         })
+        if (!existingSetting) {
+          fail()
+        }
+
         const res = await postSettings("inherits")({
           data: {
             id: "bogus",
@@ -275,14 +287,18 @@ describe("API", () => {
             id: "40000000-0000-0000-0000-000000000105",
           },
         })
+        if (!updatedSetting) {
+          fail()
+        }
 
-        expect(updatedSetting!.updated_at! > existingSetting!.updated_at!).toBe(
-          true,
-        )
-        expect(updatedSetting!.language).toBe("fi")
-        expect(updatedSetting!.country).toBe("en")
-        expect(updatedSetting!.marketing).toBe(true)
-        expect(updatedSetting!.other).toEqual({
+        expect(
+          (updatedSetting.updated_at ?? new Date(0)) >
+            (existingSetting.updated_at ?? new Date(0)),
+        ).toBe(true)
+        expect(updatedSetting.language).toBe("fi")
+        expect(updatedSetting.country).toBe("en")
+        expect(updatedSetting.marketing).toBe(true)
+        expect(updatedSetting.other).toEqual({
           hasWings: true,
           isCat: true,
           sound: "meow",

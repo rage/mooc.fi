@@ -121,14 +121,14 @@ function ModuleSmallCourseCard({
             aria-label={`To the course homepage of ${course.name}`}
           >
             {showHeader &&
-              (course!.study_module_start_point ||
-                course!.status === CourseStatus.Upcoming) && (
+              (course.study_module_start_point ||
+                course.status === CourseStatus.Upcoming) && (
                 <Header
-                  startPoint={course!.study_module_start_point}
-                  upcoming={course!.status === CourseStatus.Upcoming}
+                  startPoint={course.study_module_start_point}
+                  upcoming={course.status === CourseStatus.Upcoming}
                 >
                   <Typography variant="body1">
-                    {course!.status === CourseStatus.Upcoming
+                    {course.status === CourseStatus.Upcoming
                       ? t("upcomingShort")
                       : t("moduleCourseStartPoint")}
                   </Typography>

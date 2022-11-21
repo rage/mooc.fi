@@ -14,7 +14,7 @@ if (!url) {
   throw "no AI_SLACK_URL env variable"
 }
 
-let data = { text: "" }
+const data = { text: "" }
 
 // languages used moved to /backend/config/languageConfig.ts
 

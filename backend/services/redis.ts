@@ -16,7 +16,7 @@ const _logger = winston.createLogger({
 let redisClient: ReturnType<typeof redis.createClient> | undefined
 
 export const redisReconnectStrategy =
-  (redisName: string = "Redis", logger: winston.Logger = _logger) =>
+  (redisName = "Redis", logger: winston.Logger = _logger) =>
   (retriesOrError: number | Error) => {
     if (retriesOrError instanceof Error) {
       logger.error(`${redisName} reconnection failed`, retriesOrError)

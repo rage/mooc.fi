@@ -1,15 +1,6 @@
 query Organizations {
   organizations {
-    id
-    slug
-    hidden
-    # required_confirmation
-    # required_organization_email
-    organization_translations {
-      language
-      name
-      information
-    }
+    ...OrganizationCoreFields
   }
 }
 

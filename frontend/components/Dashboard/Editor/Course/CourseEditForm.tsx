@@ -118,7 +118,7 @@ const renderForm =
         : values?.course_translations[0].language,
     )
     // @ts-ignore: for now
-    const [enableSuperSecret, setEnableSuperSecret] = useState(!!secret)
+    const [enableSuperSecret] = useState(!!secret)
     const sortedCourses = useMemo(
       () =>
         courses

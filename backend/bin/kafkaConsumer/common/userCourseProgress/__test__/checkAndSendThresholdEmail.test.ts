@@ -1,3 +1,5 @@
+import assert from "assert"
+
 import { Course, User } from "@prisma/client"
 
 import { getTestContext } from "../../../../../tests"
@@ -106,14 +108,17 @@ describe("Email threshold", () => {
       const emailDeliveries = await ctx.prisma.emailDelivery.findMany({})
       expect(emailDeliveries.length).toEqual(1)
 
+      assert(user)
+      assert(course)
+
       const combined = await getCombinedUserCourseProgress({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context: kafkaContext,
       })
       await checkAndSendThresholdEmail({
-        user: user!,
-        course: course!,
+        user,
+        course,
         combinedUserCourseProgress: combined,
         context: kafkaContext,
       })

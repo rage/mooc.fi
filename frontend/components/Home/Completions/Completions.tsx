@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles"
 import { RegularContainer as Container } from "/components/Container"
 import { CompletionListItem } from "/components/Home/Completions"
 import ProfileTranslations from "/translations/profile"
+import { completionHasCourse } from "/util/guards"
 import { useTranslator } from "/util/useTranslator"
 
 import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
@@ -38,13 +39,15 @@ export const Completions = ({ completions }: CompletionsProps) => {
       </Title>
 
       <Container style={{ maxWidth: 900 }}>
-        {completions?.map((completion) => (
-          <CompletionListItem
-            key={`completion-${completion.id}`}
-            course={completion.course!}
-            completion={completion}
-          />
-        )) ?? <Typography>{t("nocompletionsText")}</Typography>}
+        {completions
+          ?.filter(completionHasCourse)
+          .map((completion) => (
+            <CompletionListItem
+              key={`completion-${completion.id}`}
+              course={completion.course}
+              completion={completion}
+            />
+          )) ?? <Typography>{t("nocompletionsText")}</Typography>}
       </Container>
     </section>
   )

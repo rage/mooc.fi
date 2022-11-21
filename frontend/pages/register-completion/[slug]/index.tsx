@@ -113,9 +113,7 @@ function RegisterCompletionPage() {
   useEffect(() => {
     if (locale) {
       axios
-        .get<{}, any>(
-          `${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`,
-        )
+        .get(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`)
         .then((res) => res.data)
         .then((json) => {
           setInstructions(json)

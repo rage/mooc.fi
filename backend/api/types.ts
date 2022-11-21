@@ -6,7 +6,7 @@ import {
   requireAdmin,
 } from "../util/server-functions"
 
-export interface ApiContext extends BaseContext {}
+export type ApiContext = BaseContext
 
 export abstract class Controller {
   protected getCourseKnex

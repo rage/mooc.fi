@@ -42,7 +42,7 @@ const FormBackground = styled(Paper)`
 `
 
 const Status = styled("p")<FormikContextType<unknown>["status"]>`
-  color: ${(props: any) => (props.error ? "#FF0000" : "default")};
+  color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 
 interface FormWrapperProps<T extends FormValues> {
@@ -63,7 +63,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     status,
     setTouched,
   } = useFormikContext<T>()
-  const { onCancel, onDelete, renderForm, setTab = (_) => {} } = props
+  const { onCancel, onDelete, renderForm, setTab = (_) => void 0 } = props
   const t = useTranslator(CommonTranslations)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
@@ -135,7 +135,9 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
                       cancellationText: t("confirmationNo"),
                     })
                       .then(onCancel)
-                      .catch(() => {})
+                      .catch(() => {
+                        // ignore
+                      })
                   : onCancel()
               }
             >

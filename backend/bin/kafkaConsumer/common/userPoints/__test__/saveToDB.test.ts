@@ -93,8 +93,9 @@ describe("userPoints/saveToDatabase", () => {
     it("no exercise id given errors", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
+        // @ts-expect-error: testing error
         exercise_id: undefined,
-      } as any)
+      })
       if (!ret.isErr()) {
         fail()
       }
@@ -134,12 +135,12 @@ describe("userPoints/saveToDatabase", () => {
         },
       })
       expect(created).not.toBeNull()
-      expect(created!.attempted).toBe(false)
-      expect(created!.completed).toBe(false)
-      expect(created!.n_points).toBe(1)
-      expect(created!.timestamp.toISOString()).toBe("2000-02-01T08:00:00.000Z")
+      expect(created?.attempted).toBe(false)
+      expect(created?.completed).toBe(false)
+      expect(created?.n_points).toBe(1)
+      expect(created?.timestamp.toISOString()).toBe("2000-02-01T08:00:00.000Z")
       expect(
-        created!.exercise_completion_required_actions
+        created?.exercise_completion_required_actions
           .map((ra) => ra.value)
           .sort(),
       ).toEqual(["test1", "test2"])
@@ -165,7 +166,7 @@ describe("userPoints/saveToDatabase", () => {
       })
       expect(created).not.toBeNull()
       expect(
-        created!.exercise_completion_required_actions.map((ra) => ra.value)
+        created?.exercise_completion_required_actions.map((ra) => ra.value)
           .length,
       ).toEqual(0)
     })

@@ -18,7 +18,7 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
-const Layout = ({ children }: PropsWithChildren<{}>) => {
+const Layout = ({ children }: PropsWithChildren) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)

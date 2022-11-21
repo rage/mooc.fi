@@ -32,7 +32,7 @@ const RegistrationButtons = styled("div")`
 
 interface LinkButtonProps {
   link: string
-  onRegistrationClick: Function
+  onRegistrationClick: (...args: any[]) => any
 }
 
 function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
@@ -63,10 +63,10 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
 }
 
 interface RegisterCompletionTextProps {
-  email: String
+  email: string
   link: string
   tiers: any
-  onRegistrationClick: Function
+  onRegistrationClick: (...args: any[]) => any
 }
 function RegisterCompletionText({
   email,

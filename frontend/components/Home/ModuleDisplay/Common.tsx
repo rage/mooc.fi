@@ -1,5 +1,4 @@
-import { PropsWithChildren } from "react"
-
+import { BoxProps, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -50,7 +49,10 @@ const ModuleHeaderBase = styled(H2NoBackground)`
   }
 ` as typeof H2NoBackground
 
-export const ModuleHeader = ({ children, ...props }: PropsWithChildren<{}>) => (
+export const ModuleHeader = ({
+  children,
+  ...props
+}: TypographyProps & BoxProps) => (
   <ModuleHeaderBase component="h2" variant="h2" align="left" {...props}>
     {children}
   </ModuleHeaderBase>
@@ -96,7 +98,7 @@ const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
 export const ModuleDescriptionText = ({
   children,
   ...props
-}: PropsWithChildren<{}>) => (
+}: TypographyProps & BoxProps) => (
   <ModuleDescriptionTextBase variant="subtitle1" component="h3" {...props}>
     {children}
   </ModuleDescriptionTextBase>
@@ -105,7 +107,7 @@ export const ModuleDescriptionText = ({
 export const ModuleCardTitle = ({
   children,
   ...props
-}: PropsWithChildren<{}>) => (
+}: TypographyProps & BoxProps) => (
   <CardTitle component="h3" align="center" variant="h3" {...props}>
     {children}
   </CardTitle>
@@ -114,7 +116,7 @@ export const ModuleCardTitle = ({
 export const ModuleCardText = ({
   children,
   ...props
-}: PropsWithChildren<{}>) => (
+}: TypographyProps & BoxProps) => (
   <CardText component="p" variant="body1" align="left" {...props}>
     {children}
   </CardText>

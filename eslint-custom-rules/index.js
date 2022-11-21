@@ -1,4 +1,8 @@
-module.exports = {
+// @ts-check
+const eslint = require("eslint")
+
+/** @type {eslint.ESLint.Plugin} */
+const customRules = {
   rules: {
     "ban-ts-ignore-without-comment": {
       meta: {
@@ -7,7 +11,7 @@ module.exports = {
           description:
             'Bans "// @ts-ignore" comments from being used if no comment is specified',
           category: "Best Practices",
-          recommended: "error",
+          recommended: true,
         },
         schema: [],
         messages: {
@@ -29,8 +33,55 @@ module.exports = {
               }
               if (tsIgnoreRegExp.test(comment.value)) {
                 context.report({
-                  node: comment,
+                  node: /** @type{*} */ (comment),
                   messageId: "tsIgnoreWithoutCommentComment",
+                })
+              }
+            })
+          },
+        }
+      },
+    },
+    "no-restricted-imports-clone":
+      new eslint.Linter().getRules().get("no-restricted-imports") ||
+      ((..._) => void 0),
+    "no-emotion-styled-import": {
+      meta: {
+        type: "problem",
+        fixable: "code",
+        docs: {
+          description:
+            "Errors if `styled` or `css` are imported directly from @emotion/styled",
+          category: "Best Practices",
+          recommended: true,
+        },
+        schema: [],
+        messages: {
+          noEmotionStyledImport:
+            "Do not use `styled` or `css` from @emotion/styled; use the ones exported from @mui/material/styles instead.",
+        },
+      },
+      create: function (context) {
+        return {
+          ImportDeclaration(node) {
+            const importedFrom = /** @type {string | null | undefined} */ (
+              node.source.value
+            )
+            if (!importedFrom || importedFrom.indexOf("@emotion/styled") < 0) {
+              return
+            }
+            node.specifiers.forEach((spec) => {
+              console.log("spec", spec)
+              if (spec.type === "ImportDefaultSpecifier") {
+                context.report({
+                  node,
+                  messageId: "noEmotionStyledImport",
+                  fix: function (fixer) {
+                    return fixer.replaceText(
+                      node,
+                      'import { styled } from "@mui/material/styles"',
+                    )
+                  },
                 })
               }
             })
@@ -44,7 +95,7 @@ module.exports = {
         docs: {
           description: "Warns if Grid component is imported from @mui/material",
           category: "Best Practices",
-          recommended: "error",
+          recommended: true,
         },
         schema: [],
         messages: {
@@ -55,17 +106,15 @@ module.exports = {
       create: function (context) {
         return {
           ImportDeclaration(node) {
-            const {
-              source: { value: importedFrom },
-              specifiers,
-            } = node
-
-            if (importedFrom.indexOf("@mui/material") < 0) {
+            const importedFrom = /** @type {string | null | undefined} */ (
+              node.source.value
+            )
+            if (!importedFrom || importedFrom.indexOf("@mui/material") < 0) {
               return
             }
             const importedFromGrid = !!importedFrom.match(/Grid$/)
 
-            specifiers.forEach((spec) => {
+            node.specifiers.forEach((spec) => {
               // if it's a default import, report if it's imported from Grid
               // if it's not, report if what we're importing is actually Grid, even if we alias it
               if (
@@ -85,3 +134,5 @@ module.exports = {
     },
   },
 }
+
+module.exports = customRules

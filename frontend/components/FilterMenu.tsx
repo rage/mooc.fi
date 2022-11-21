@@ -108,7 +108,7 @@ export default function FilterMenu({
   loading,
   handlerCourses = [],
   status = [],
-  setStatus = () => {},
+  setStatus = () => void 0,
   fields,
   label,
 }: FilterProps) {

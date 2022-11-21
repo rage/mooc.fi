@@ -24,8 +24,8 @@ export interface AlertState {
 
 export const AlertContext = createContext<AlertState>({
   alerts: [],
-  addAlert: (_: Alert) => {},
-  removeAlert: (_: Alert) => {},
+  addAlert: (_: Alert) => void 0,
+  removeAlert: (_: Alert) => void 0,
   nextAlertId: 0,
 })
 
@@ -64,7 +64,7 @@ const reducer = (state: AlertState, action: AlertAction) => {
 
 export const AlertProvider = React.memo(function AlertProvider({
   children,
-}: React.PropsWithChildren<{}>) {
+}: React.PropsWithChildren) {
   const addAlert = useCallback(
     (alert: Alert) => dispatch({ type: "addAlert", payload: alert }),
     [],

@@ -232,7 +232,7 @@ export const createInitialState = (
 
 const CollapseContext = createContext<CollapseContext>({
   state: {},
-  dispatch: () => {},
+  dispatch: () => void 0,
 })
 
 export default CollapseContext

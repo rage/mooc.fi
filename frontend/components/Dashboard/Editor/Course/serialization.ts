@@ -30,8 +30,16 @@ export const toCourseForm = ({
   }
 
   const courseStudyModuleIds = (course?.study_modules ?? []).map(
-    (module) => module.id,
+    (studyModule) => studyModule.id,
   )
+
+  const study_modules: Record<string, boolean> = {}
+
+  for (const studyModule of modules ?? []) {
+    study_modules[studyModule.id] = courseStudyModuleIds.includes(
+      studyModule.id,
+    )
+  }
 
   return {
     ...omit(course, [
@@ -72,13 +80,7 @@ export const toCourseForm = ({
         instructions: course_translation.instructions ?? undefined,
       }),
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModuleIds.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, ["__typename", "created_at", "updated_at"]),

@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react"
 
+import { MDXComponents } from "mdx/types"
+
 import { MDXProvider } from "@mdx-js/react"
 import { Paper } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -48,16 +50,12 @@ const CustomModuleContainer = styled("div")`
   justify-content: center;
 `
 
-interface CustomModuleContentProps {}
-
-const components = {
-  h3: ModuleCardTitle,
-  p: ModuleCardText,
+const components: MDXComponents = {
+  h3: ModuleCardTitle as React.ElementType,
+  p: ModuleCardText as React.ElementType,
 }
 
-export const CustomModuleContent = ({
-  children,
-}: PropsWithChildren<CustomModuleContentProps>) => {
+export const CustomModuleContent = ({ children }: PropsWithChildren) => {
   return (
     <MDXProvider components={components}>
       <CustomModuleContainer>

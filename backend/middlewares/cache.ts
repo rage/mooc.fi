@@ -2,20 +2,13 @@ import { createHash } from "crypto"
 
 import { plugin } from "nexus"
 
-import { Context } from "../context"
 import { redisify } from "../services/redis"
 
 export const cachePlugin = () =>
   plugin({
     name: "CachePlugin",
-    onCreateFieldResolver(_: any) {
-      return async (
-        root: any,
-        args: Record<string, any>,
-        context: Context,
-        info: any,
-        next: Function,
-      ) => {
+    onCreateFieldResolver() {
+      return async (root, args, context, info, next) => {
         let rawToken: string | undefined = undefined
         if (context.req?.headers) {
           rawToken = context?.req?.headers?.authorization
