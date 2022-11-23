@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -54,7 +55,7 @@ const CourseCard = ({
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
+        <CardTitle variant="h4">{name}</CardTitle>
         <CardHeaderImage alt="MOOC logo" src={moocLogoUrl} />
       </CardHeader>
       <CardBody>
@@ -104,6 +105,9 @@ function SelectedCourses() {
               <CourseCard key={`course-${index}`} {...course} />
             ))}
       </CoursesGrid>
+      <Link href="/_new/courses" passHref>
+        <Button>Näytä kaikki kurssit</Button>
+      </Link>
     </SectionContainer>
   )
 }

@@ -55,7 +55,7 @@ const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle variant="h2">{title}</CardTitle>
       </CardHeader>
       <CardBody>
         <CardDescription>{text}</CardDescription>

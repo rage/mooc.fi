@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
+import BackgroundPattern from "../../../static/images/backgroundPattern.svg"
 import { CorrectedAnchor } from "../Common"
 import { CardHeader, CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
@@ -133,9 +134,9 @@ export function ListItem({
     () => module.courses?.filter((course) => course.description) ?? [],
     [module],
   )
-  const imageUrl = `../../../static/images/${
+  /*const imageUrl = `../../../static/images/${
     module.image ?? module.slug + "jpg"
-  }`
+  }`*/
 
   const setDescriptionHeight = useCallback(() => {
     const description = descriptionRef.current
@@ -145,8 +146,8 @@ export function ListItem({
 
     console.log(description.scrollHeight, description.clientHeight)
     if (description.scrollHeight > description.clientHeight) {
-      const span = Math.round(description.scrollHeight / 300) // the max size of row should be in a var
-      description.style.cssText = `--hero-span : ${span};`
+      const span = Math.round(description.scrollHeight / 200) // the max size of row should be in a var
+      description.style.cssText = `--hero-span: ${span};`
     }
   }, [descriptionRef.current])
 
@@ -166,7 +167,7 @@ export function ListItem({
   return (
     <ModuleCardWrapper as="section" backgroundColor={backgroundColor}>
       <CorrectedAnchor id={module.slug} />
-      <ImageBackground src={imageUrl} />
+      <ImageBackground src={BackgroundPattern} />
       <ModuleCardBody>
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>

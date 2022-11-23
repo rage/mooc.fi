@@ -15,6 +15,7 @@ interface OutboundLinkProps {
   label?: string
 }
 
+console.log(faUpRightFromSquare)
 const ExternalLinkIcon = styled((props: Partial<FontAwesomeIconProps>) => (
   <FontAwesomeIcon {...props} icon={faUpRightFromSquare} size="xs" />
 ))`

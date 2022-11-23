@@ -62,6 +62,15 @@ const nextConfiguration = {
       },
     },
   },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@fortawesome/fontawesome-free$":
+        "@fortawesome/fontawesome-free-solid/shakable.es.js",
+    }
+
+    return config
+  },
 }
 
 module.exports = withPlugins(

@@ -11,6 +11,9 @@ const epilogueFamily =
 const encodeSansFamily =
   "Encode Sans, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
 
+const headerFontFamily = ralewayFamily
+const bodyFontFamily = latoFamily
+
 const rawTheme = createTheme({
   palette: {
     primary: {
@@ -21,7 +24,7 @@ const rawTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: latoFamily,
+    fontFamily: bodyFontFamily,
     button: {
       label: {
         textTransform: "uppercase",
@@ -55,7 +58,7 @@ const rawTheme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "uppercase",
-          fontFamily: latoFamily,
+          fontFamily: bodyFontFamily,
           borderRadius: "20px",
         },
       },
@@ -70,36 +73,40 @@ const theme: Theme = {
     h1: {
       ...rawTheme.typography.h1,
       paddingBottom: "1rem",
-      fontFamily: encodeSansFamily,
+      fontFamily: headerFontFamily,
       fontStretch: "condensed",
-      fontSize: 48,
+      fontWeight: 600,
+      fontSize: 40,
       "@media (min-width: 600px)": {
-        fontSize: 56,
+        fontSize: 48,
       },
       "@media (min-width: 960px)": {
-        fontSize: 72,
+        fontSize: 60,
       },
     },
     h2: {
       ...rawTheme.typography.h2,
       paddingBottom: "1rem",
-      fontSize: 40,
-      fontFamily: encodeSansFamily,
+      fontSize: 36,
+      fontFamily: headerFontFamily,
+      fontWeight: 600,
+      fontStretch: "condensed",
       "@media (min-width: 600px)": {
-        fontSize: 30,
+        fontSize: 20,
       },
       "@media (min-width: 960px)": {
-        fontSize: 36,
+        fontSize: 24,
       },
       "@media (min-width: 1440px)": {
-        fontSize: 44,
+        fontSize: 28,
       },
     },
     h3: {
       ...rawTheme.typography.h3,
       paddingBottom: "0.5rem",
       paddingTop: "0.7rem",
-      fontFamily: encodeSansFamily,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
       fontWeight: 600,
       fontSize: 16,
       "@media (min-width: 600px)": {
@@ -108,15 +115,27 @@ const theme: Theme = {
     },
     h4: {
       ...rawTheme.typography.h4,
-      fontFamily: encodeSansFamily,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
       fontSize: 14,
       "@media (min-width: 600px)": {
         fontSize: 16,
       },
     },
+    h5: {
+      ...rawTheme.typography.h5,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
+    },
+    h6: {
+      ...rawTheme.typography.h6,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
+    },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
-      fontFamily: encodeSansFamily,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
       fontSize: 18,
       "@media (min-width: 600px)": {
         fontSize: 22,
@@ -128,6 +147,7 @@ const theme: Theme = {
     body1: {
       ...rawTheme.typography.body1,
       fontSize: 12,
+      fontFamily: bodyFontFamily,
       "@media (min-width: 600px)": {
         fontSize: 14,
       },

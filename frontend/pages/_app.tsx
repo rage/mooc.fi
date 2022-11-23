@@ -83,9 +83,9 @@ export function MyApp({
 
   const alternateLanguage = useMemo(() => {
     if (router.locale === "en") {
-      return { hreflang: "fi_FI", href: router.asPath.replace("/en/", "/") }
+      return { hrefLang: "fi_FI", href: router.asPath.replace("/en/", "/") }
     }
-    return { hreflang: "en_US", href: `/en${router.asPath}` }
+    return { hrefLang: "en_US", href: `/en${router.asPath}` }
   }, [router.locale, router.pathname])
 
   return (
