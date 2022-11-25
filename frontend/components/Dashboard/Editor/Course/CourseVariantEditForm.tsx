@@ -3,11 +3,11 @@ import { useConfirm } from "material-ui-confirm"
 
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { FormControl, FormGroup, Grid, Typography } from "@mui/material"
+import { Button, FormControl, FormGroup, Grid, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { initialVariant } from "./form-validation"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import {
   inputLabelProps,
   StyledFieldWithAnchor,
@@ -17,8 +17,14 @@ import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const ButtonWithWhiteText = styled(StyledButton)`
+const ButtonWithWhiteText = styled(ButtonWithPaddingAndMargin)`
   color: white;
+  width: 100%;
+`
+
+export const StyledButton = styled(Button)`
+  margin: 0.25rem;
+  height: 3rem;
 `
 
 const CourseVariantEditForm = () => {
@@ -42,7 +48,7 @@ const CourseVariantEditForm = () => {
                   {values.length ? (
                     values.map((variant, index: number) => (
                       <Grid container spacing={2} key={`variant-${index}`}>
-                        <Grid item xs={4}>
+                        <Grid item xs={2}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].slug`}
                             name={`course_variants[${index}].slug`}
@@ -56,7 +62,7 @@ const CourseVariantEditForm = () => {
                             required
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={10}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].description`}
                             name={`course_variants[${index}].description`}
@@ -69,11 +75,13 @@ const CourseVariantEditForm = () => {
                             InputLabelProps={inputLabelProps}
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={10}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].instructions`}
                             name={`course_variants[${index}].instructions`}
                             type="text"
+                            multiline
+                            rows={6}
                             component={StyledTextField}
                             value={variant.instructions}
                             label={t("courseInstructions")}
@@ -139,7 +147,6 @@ const CourseVariantEditForm = () => {
                         disabled={isSubmitting}
                         onClick={() => helpers.push({ ...initialVariant })}
                         endIcon={<AddIcon>{t("courseAdd")}</AddIcon>}
-                        style={{ width: "45%" }}
                       >
                         {t("courseAdd")}
                       </ButtonWithWhiteText>

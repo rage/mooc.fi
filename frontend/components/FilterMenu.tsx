@@ -62,15 +62,15 @@ const SearchTextField = styled(TextField)`
 `
 
 const HiddenFormControl = styled(FormControl)`
-  grid-area: "hidden";
+  grid-area: hidden;
 `
 
 const StatusFormControl = styled(FormControl)`
-  grid-area: "status";
+  grid-area: status;
 `
 
 const HandledByFormControl = styled(FormControl)`
-  grid-area: "handled-by";
+  grid-area: handled-by;
 `
 
 const ActionRow = styled(Row)`

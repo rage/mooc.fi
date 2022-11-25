@@ -18,7 +18,7 @@
   "courseECTS": "Opintopisteet",
   "courseStatus": "Tila",
   "courseOrder": "Järjestys",
-  "courseModuleOrder": "Modulijärjestys",
+  "courseModuleOrder": "Järjestys modulin sisällä",
   "courseProperties": "Ominaisuudet",
   "coursePromote": "Mainosta, ei vaadi esitietoja",
   "courseStartPoint": "Aloitus",

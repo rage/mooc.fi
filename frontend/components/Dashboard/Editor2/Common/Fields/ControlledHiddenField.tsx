@@ -1,3 +1,4 @@
+import { omit } from "lodash"
 import { Controller, useFormContext } from "react-hook-form"
 
 import notEmpty from "/util/notEmpty"
@@ -18,7 +19,9 @@ export const ControlledHiddenField = ({
       name={name}
       control={control}
       {...(notEmpty(defaultValue) ? { defaultValue } : {})}
-      render={(props) => <input type="hidden" {...props} />}
+      render={(props) => (
+        <input type="hidden" {...omit(props, ["formState", "fieldState"])} />
+      )}
     />
   )
 }

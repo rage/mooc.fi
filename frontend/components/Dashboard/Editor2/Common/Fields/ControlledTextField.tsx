@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { omit } from "lodash"
-import { get, set } from "lodash"
+import { get, omit, set } from "lodash"
 import {
   FieldValues,
   Path,
@@ -13,6 +12,7 @@ import {
 import HelpIcon from "@mui/icons-material/Help"
 import HistoryIcon from "@mui/icons-material/History"
 import { IconButton, TextField, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ControlledFieldProps,
@@ -23,10 +23,14 @@ import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
 
+const StyledTextField = styled(TextField)`
+  margin-bottom: 1.5rem;
+` as typeof TextField
 export interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
   disabled?: boolean
   rows?: number
+  width?: string
 }
 
 export function ControlledTextField<T>(props: ControlledTextFieldProps) {
@@ -38,7 +42,17 @@ export function ControlledTextField<T>(props: ControlledTextFieldProps) {
     getValues,
   } = useFormContext()
   const { initialValues } = useEditorContext()
-  const { label, required, name, tip, type, disabled, revertable, rows } = props
+  const {
+    label,
+    required,
+    name,
+    tip,
+    type,
+    disabled,
+    revertable,
+    rows,
+    width,
+  } = props
 
   const [error, setError] = useState(Boolean(flattenKeys(errors)[name]))
   useEffect(() => {
@@ -58,10 +72,10 @@ export function ControlledTextField<T>(props: ControlledTextFieldProps) {
   return (
     <FieldController
       {...omit(props, ["revertable", "validateOtherFields"])}
-      style={{ marginBottom: "1.5rem" }}
       renderComponent={({ onBlur, value }) => (
         <>
-          <TextField
+          <StyledTextField
+            {...(width ? { style: { width } } : {})}
             onChange={onChange}
             onBlur={onBlur}
             value={value}
