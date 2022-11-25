@@ -34,7 +34,6 @@ export default function FAQTopic() {
     content: (
       <>
         <NextSeo title={pageTitle} />
-        <Component />
         {render && !error ? <Component /> : null}
         {error ? (
           <ContentBox>

@@ -10,7 +10,6 @@ import { useRouter } from "next/router"
 import { CssBaseline, GlobalStyles } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
-// import createEmotionCache from "../src/createEmotionCache"
 import OriginalLayout from "./_layout"
 import NewLayout from "./_new/_layout"
 import { AlertProvider } from "/contexts/AlertContext"
@@ -26,17 +25,7 @@ import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
-/*const clientSideEmotionCache = createEmotionCache()
-
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
-}*/
-
-export function MyApp({
-  Component,
-  pageProps,
-}: // emotionCache = clientSideEmotionCache,
-AppProps) {
+export function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -77,7 +66,6 @@ AppProps) {
 
   return (
     <>
-      {/*<CacheProvider value={emotionCache}>*/}
       <Head>
         <meta
           name="viewport"
@@ -101,7 +89,6 @@ AppProps) {
           </ConfirmProvider>
         </LoginStateProvider>
       </ThemeProvider>
-      {/*</CacheProvider>*/}
     </>
   )
 }

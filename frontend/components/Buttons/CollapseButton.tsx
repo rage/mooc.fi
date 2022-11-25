@@ -34,21 +34,4 @@ const CollapseButton = React.memo(
   },
 )
 
-/*export default function CollapseButton(props: CollapseButtonProps) {
-  console.log(props)
-  if (props.tooltip) {
-    return (
-        <Tooltip title={props.tooltip}>
-          <CollapseButtonBase {...props} />
-        </Tooltip>
-    )
-  }
-
-  return (
-    <CollapseButtonContainer>
-      <CollapseButtonBase {...props} />
-    </CollapseButtonContainer>
-  )
-}*/
-
 export default CollapseButton
