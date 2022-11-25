@@ -22,8 +22,8 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
-    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" --cache",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" --cache",
+    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.d.ts\" --cache",
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.d.ts\" --cache",
     "eslint": "eslint '*/**/*.{js,ts,tsx}'",
     "helm-lint": "helm lint ./helm",
     "prepare": "husky install"
