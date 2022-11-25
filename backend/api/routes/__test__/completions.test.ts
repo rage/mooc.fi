@@ -28,7 +28,7 @@ describe("API", () => {
     beforeEach(async () => {
       await seed(ctx.prisma)
       const { get } = createRequestHelpers(ctx.port)
-      getCompletions = (slug: string, registered: boolean = false) =>
+      getCompletions = (slug: string, registered = false) =>
         get(
           `/api/completions/${slug}${
             registered ? `?registered=${registered}` : ""

@@ -421,7 +421,7 @@ const createMutation = async <T extends WithIdOrNull>({
       where: { id: t.id },
       data: t, //{ ...t, id: undefined },
     }))
-  const removed = filterNotIncluded(existing!, data)
+  const removed = filterNotIncluded(existing ?? [], data)
 
   return {
     create: newOnes.length ? newOnes : undefined,

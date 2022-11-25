@@ -1,10 +1,10 @@
 import { FieldArray, getIn, useFormikContext } from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { FormControl, FormGroup, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { initialAlias } from "./form-validation"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -37,8 +37,8 @@ const CourseAliasEditForm = () => {
           <FieldArray name="course_aliases">
             {(helpers) => (
               <>
-                {values!.length ? (
-                  values!.map((alias, index: number) => (
+                {values.length ? (
+                  values.map((alias, index: number) => (
                     <section style={{ display: "inline-block" }}>
                       <StyledFieldWithAnchor
                         id={`course_aliases[${index}].course_code`}
@@ -69,7 +69,9 @@ const CourseAliasEditForm = () => {
                               cancellationText: t("confirmationNo"),
                             })
                               .then(() => helpers.remove(index))
-                              .catch(() => {})
+                              .catch(() => {
+                                // ignore
+                              })
                           }
                         }}
                         endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}
@@ -88,9 +90,9 @@ const CourseAliasEditForm = () => {
                     {t("courseNoAliases")}
                   </Typography>
                 )}
-                {(values!.length == 0 ||
-                  (values!.length &&
-                    values![values!.length - 1].course_code !== "")) && (
+                {(values.length == 0 ||
+                  (values.length &&
+                    values[values.length - 1].course_code !== "")) && (
                   <section
                     style={{ justifyContent: "center", display: "flex" }}
                   >

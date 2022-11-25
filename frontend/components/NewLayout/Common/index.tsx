@@ -1,11 +1,11 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import Typography, { TypographyProps } from "@mui/material/Typography"
 
 export const SectionTitle = styled((props: TypographyProps) => (
   <Typography variant="h1" {...props} />
 ))``
 
-export const SectionContainer = styled.section`
+export const SectionContainer = styled("section")`
   display: flex;
   flex-direction: column;
   justify-items: center;

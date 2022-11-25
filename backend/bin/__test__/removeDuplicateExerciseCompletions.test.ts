@@ -99,7 +99,7 @@ describe("removeDuplicateExerciseCompletions", () => {
               ...(testData[i].actions
                 ? {
                     exercise_completion_required_actions: {
-                      create: testData[i].actions!.map((value) => ({
+                      create: (testData[i].actions ?? []).map((value) => ({
                         value,
                       })),
                     },
@@ -150,10 +150,11 @@ describe("removeDuplicateExerciseCompletions", () => {
 
     expect(removed.length).toBe(0)
 
-    const createdMap: Record<string, CreatedDataEntry> = createdData.reduce(
-      (acc, curr) => ({ ...acc, [curr.created.id]: curr }),
-      {},
-    )
+    const createdMap: Record<string, CreatedDataEntry> = {}
+
+    for (const datum of createdData) {
+      createdMap[datum.created.id] = datum
+    }
 
     // those that were not expected to be pruned are still in the database, as are their actions
     for (const completion of after) {
@@ -165,7 +166,7 @@ describe("removeDuplicateExerciseCompletions", () => {
             .sort(),
         ).toEqual(
           expect.arrayContaining(
-            createdMap[completion.id].testData.actions!.sort(),
+            (createdMap[completion.id].testData.actions ?? []).sort(),
           ),
         )
       }

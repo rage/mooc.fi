@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { SectionContainer } from "../Common"
 import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
@@ -14,7 +14,7 @@ const Container = styled(SectionContainer)`
   width: 100%;
 `
 
-const ModuleList = styled.ul`
+const ModuleList = styled("ul")`
   list-style: none;
   list-style-position: inside;
   padding: 0;

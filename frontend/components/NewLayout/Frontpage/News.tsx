@@ -1,14 +1,14 @@
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-const NewsContainer = styled.section`
+const NewsContainer = styled("section")`
   background-color: #000;
   padding-left: 3rem;
   padding-right: 3rem;
   display: flex;
 `
 
-const NewsListContainer = styled.ul`
+const NewsListContainer = styled("ul")`
   list-style: none;
   padding: 0;
   color: #fff;
@@ -22,7 +22,7 @@ const NewsListContainer = styled.ul`
   }
 `
 
-const NewsItemContainer = styled.li`
+const NewsItemContainer = styled("li")`
   padding: 0.5rem;
   width: 100%;
 `

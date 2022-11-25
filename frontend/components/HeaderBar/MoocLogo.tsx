@@ -1,10 +1,10 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import Avatar from "@mui/material/Avatar"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-const MoocLogoText = styled(Typography)<any>`
+const MoocLogoText = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
   font-size: 1.75rem !important;
   @media (max-width: 425px) {
@@ -29,7 +29,7 @@ const MoocLogoAvatar = styled(Avatar)`
     width: 2.5em;
   }
 `
-const MoocLogoLink = styled.a`
+const MoocLogoLink = styled("a")`
   color: black;
   text-decoration: none;
   display: flex;

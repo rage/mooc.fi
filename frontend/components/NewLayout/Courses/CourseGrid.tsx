@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import CommonTranslations from "/translations/common"
@@ -13,15 +13,13 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CoursesDocument, CourseStatus } from "/graphql/generated"
 
-const Container = styled.div`
+const Container = styled("div")`
   display: grid;
   max-width: 1200px;
   padding: 1rem;
 `
 
-const CardContainer = styled.ul`
-  list-style: none;
-  padding: 0;
+const CardContainer = styled("div")`
   display: grid;
   grid-gap: 2rem;
   grid-template-columns: 1fr 1fr;
@@ -35,13 +33,13 @@ const SearchBar = styled(TextField)`
   margin: 0.5rem 0;
 `
 
-const Filters = styled.div`
+const Filters = styled("div")`
   margin: 0 0 1rem 1rem;
   display: grid;
   grid-auto-flow: column;
 `
 
-const FilterLabel = styled.div`
+const FilterLabel = styled("div")`
   align-self: center;
   margin-right: 1rem;
 `
@@ -53,11 +51,11 @@ const TagButton = styled(Button)`
   border-width: 0.15rem;
 `
 
-const Tags = styled.div`
+const Tags = styled("div")`
   align-self: center;
 `
 
-const Statuses = styled.div`
+const Statuses = styled("div")`
   justify-self: end;
 `
 

@@ -35,12 +35,12 @@ const UserCourseSettingsVisibilityEditForm = () => {
               freeSolo
               disabled={isSubmitting}
               disableClearable
-              options={[]}
-              value={values as any}
-              onChange={(_, newValue: any) =>
+              options={values}
+              value={values}
+              onChange={(_, newValue) =>
                 setFieldValue(
                   "user_course_settings_visibilities",
-                  newValue.map((v: any) => (isString(v) ? { language: v } : v)),
+                  newValue.map((v) => (isString(v) ? { language: v } : v)),
                 )
               }
               renderTags={(_, getTagProps) => {
@@ -52,9 +52,7 @@ const UserCourseSettingsVisibilityEditForm = () => {
                     onDelete={() =>
                       setFieldValue(
                         "user_course_settings_visibilities",
-                        values.filter(
-                          (_: any, _index: number) => index !== _index,
-                        ),
+                        values.filter((_, _index: number) => index !== _index),
                       )
                     }
                   />

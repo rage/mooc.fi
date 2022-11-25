@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material"
 
 import PointsListItemCard from "./PointsListItemCard"
-import notEmpty from "/util/notEmpty"
 
 import { StudentProgressesQueryNodeFieldsFragment } from "/graphql/generated"
 
@@ -16,14 +15,14 @@ const PointsList = (props: PointsListProps) => {
   return (
     <section>
       <Grid container spacing={3}>
-        {data.filter(notEmpty).map((p) =>
+        {data.map((p) =>
           p?.user?.progress ? (
             <PointsListItemCard
               course={p.user.progress.course}
               userCourseProgress={p.user.progress.user_course_progress}
-              userCourseServiceProgresses={p.user.progress.user_course_service_progresses?.filter(
-                notEmpty,
-              )}
+              userCourseServiceProgresses={
+                p.user.progress.user_course_service_progresses
+              }
               cutterValue={cutterValue}
               showPersonalDetails={true}
               personalDetails={{

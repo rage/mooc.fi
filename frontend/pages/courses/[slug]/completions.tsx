@@ -4,8 +4,8 @@ import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CompletionsList from "/components/Dashboard/CompletionsList"
@@ -26,7 +26,7 @@ import { CourseFromSlugDocument } from "/graphql/generated"
 
 // import useDebounce from "/util/useDebounce"
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   max-width: 39em;
   margin: auto;
 `

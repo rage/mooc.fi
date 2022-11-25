@@ -1,5 +1,3 @@
-import { UserInputError } from "apollo-server-express"
-
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
@@ -10,7 +8,7 @@ import {
   normalUserDetails,
   seed,
 } from "../../../../../tests/data"
-import { DatabaseInputError } from "../../../../lib/errors"
+import { DatabaseInputError, ValidationError } from "../../../../lib/errors"
 import { KafkaContext } from "../../kafkaContext"
 import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"
@@ -66,7 +64,7 @@ describe("userPoints/saveToDatabase", () => {
   }
 
   describe("errors", () => {
-    it("no user found errors", async () => {
+    it("no user found", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
         user_id: 9999,
@@ -90,19 +88,20 @@ describe("userPoints/saveToDatabase", () => {
       expect(ret.error.message).toContain("Invalid course")
     })
 
-    it("no exercise id given errors", async () => {
+    it("no exercise id given", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
+        // @ts-expect-error: testing error
         exercise_id: undefined,
-      } as any)
+      })
       if (!ret.isErr()) {
         fail()
       }
-      expect(ret.error).toBeInstanceOf(UserInputError)
+      expect(ret.error).toBeInstanceOf(ValidationError)
       expect(ret.error.message).toContain("Message doesn't contain")
     })
 
-    it("no exercise found errors", async () => {
+    it("no exercise found", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
         exercise_id: "bogus",
@@ -134,12 +133,12 @@ describe("userPoints/saveToDatabase", () => {
         },
       })
       expect(created).not.toBeNull()
-      expect(created!.attempted).toBe(false)
-      expect(created!.completed).toBe(false)
-      expect(created!.n_points).toBe(1)
-      expect(created!.timestamp.toISOString()).toBe("2000-02-01T08:00:00.000Z")
+      expect(created?.attempted).toBe(false)
+      expect(created?.completed).toBe(false)
+      expect(created?.n_points).toBe(1)
+      expect(created?.timestamp.toISOString()).toBe("2000-02-01T08:00:00.000Z")
       expect(
-        created!.exercise_completion_required_actions
+        created?.exercise_completion_required_actions
           .map((ra) => ra.value)
           .sort(),
       ).toEqual(["test1", "test2"])
@@ -165,7 +164,7 @@ describe("userPoints/saveToDatabase", () => {
       })
       expect(created).not.toBeNull()
       expect(
-        created!.exercise_completion_required_actions.map((ra) => ra.value)
+        created?.exercise_completion_required_actions.map((ra) => ra.value)
           .length,
       ).toEqual(0)
     })

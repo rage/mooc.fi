@@ -1,17 +1,17 @@
-import { ChangeEvent, useState } from "react"
+import { SyntheticEvent, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
 import ViewListIcon from "@mui/icons-material/ViewList"
 import AppBar from "@mui/material/AppBar"
+import { styled } from "@mui/material/styles"
 import Tab from "@mui/material/Tab"
 import Tabs from "@mui/material/Tabs"
 
-const TabBarContainer = styled.div`
+const TabBarContainer = styled("div")`
   flex-grow: 1;
   background-color: inherit;
 `
@@ -27,10 +27,19 @@ function a11yProps(index: any) {
   }
 }
 
-const TabContainer = styled.div`
+const TabContainer = styled("div")`
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
+`
+
+const TabBar = styled(AppBar)`
+  box-shadow: 0 0 0 0;
+`
+
+const StyledTab = styled(Tab)`
+  margin-top: 1rem;
+  color: unset;
 `
 
 interface DashboardTabsProps {
@@ -72,14 +81,14 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
   const [value, setValue] = useState(selectedValue)
   const router = useRouter()
 
-  function handleChange(_: ChangeEvent<{}>, newValue: number) {
+  function handleChange(_: SyntheticEvent<Element, Event>, newValue: number) {
     setValue(newValue)
     router.push(`/courses/${slug}${routes[newValue].path}`)
   }
 
   return (
     <TabBarContainer>
-      <AppBar position="static" style={{ boxShadow: "0 0 0 0" }}>
+      <TabBar position="static">
         <TabContainer>
           <StyledTabs
             variant="fullWidth"
@@ -89,18 +98,17 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
             aria-label="course dashboard navi"
           >
             {routes.map(({ label, icon }, index) => (
-              <Tab
+              <StyledTab
                 key={index}
                 value={index}
                 label={label}
                 icon={icon}
-                style={{ marginTop: "1rem", color: "unset" }}
                 {...a11yProps(index)}
               />
             ))}
           </StyledTabs>
         </TabContainer>
-      </AppBar>
+      </TabBar>
     </TabBarContainer>
   )
 }

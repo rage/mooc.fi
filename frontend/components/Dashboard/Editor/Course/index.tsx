@@ -33,8 +33,8 @@ import {
 
 interface CourseEditProps {
   course?: EditorCourseDetailedFieldsFragment
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  modules?: StudyModuleDetailedFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
+  modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {

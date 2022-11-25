@@ -1,7 +1,7 @@
 import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
 import { Grid, Skeleton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ModuleCardText,
@@ -68,7 +68,7 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
   }
 `
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   flex-direction: column;
   display: flex;
@@ -80,7 +80,9 @@ interface HeaderProps {
   upcoming?: boolean | null
 }
 
-const Header = styled.div<HeaderProps>`
+const Header = styled("div", {
+  shouldForwardProp: (prop) => prop !== "startPoint" && prop !== "upcoming",
+})<HeaderProps>`
   padding-top: 0.5rem;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -119,14 +121,14 @@ function ModuleSmallCourseCard({
             aria-label={`To the course homepage of ${course.name}`}
           >
             {showHeader &&
-              (course!.study_module_start_point ||
-                course!.status === CourseStatus.Upcoming) && (
+              (course.study_module_start_point ||
+                course.status === CourseStatus.Upcoming) && (
                 <Header
-                  startPoint={course!.study_module_start_point}
-                  upcoming={course!.status === CourseStatus.Upcoming}
+                  startPoint={course.study_module_start_point}
+                  upcoming={course.status === CourseStatus.Upcoming}
                 >
                   <Typography variant="body1">
-                    {course!.status === CourseStatus.Upcoming
+                    {course.status === CourseStatus.Upcoming
                       ? t("upcomingShort")
                       : t("moduleCourseStartPoint")}
                   </Typography>

@@ -14,21 +14,21 @@ import {
 } from "react-hook-form"
 import * as Yup from "yup"
 
-import styled from "@emotion/styled"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormValues } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 
-export const FormSubtitle = styled(Typography)<any>`
+export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
   margin-bottom: 1rem;
   font-size: 2em;
-`
+` as typeof Typography
 
-export const FormFieldGroup = styled.div`
+export const FormFieldGroup = styled("div")`
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
@@ -37,7 +37,7 @@ export const FormFieldGroup = styled.div`
   border-bottom: 4px dotted #98b0a9;
 `
 
-export const AdjustingAnchorLink = styled.a<{ id: string }>`
+export const AdjustingAnchorLink = styled("a")<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;

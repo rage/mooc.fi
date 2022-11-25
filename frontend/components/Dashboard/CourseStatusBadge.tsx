@@ -1,9 +1,9 @@
-import styled from "@emotion/styled"
 import AlarmOff from "@mui/icons-material/AlarmOff"
 import CheckCircle from "@mui/icons-material/CheckCircle"
 import Error from "@mui/icons-material/Error"
 import Schedule from "@mui/icons-material/Schedule"
 import { Chip, ChipProps } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { CourseStatus } from "/graphql/generated"
 

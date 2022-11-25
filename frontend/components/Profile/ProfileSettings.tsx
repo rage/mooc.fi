@@ -49,7 +49,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     useState<SnackbarProps>(initialSnackbarState)
 
   const handleResearchConsentInput = async (
-    event: ChangeEvent<{}>,
+    event: ChangeEvent<HTMLInputElement>,
     value: string,
   ) => {
     event.preventDefault()

@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ControlledHiddenField,
@@ -13,12 +13,12 @@ import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const LanguageVersionTitle = styled(Typography)<any>`
+const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
   font-size: 33px;
   line-height: 52px;
   color: #005b5b;
-`
+` as typeof Typography
 
 const AddTranslationNotice = styled(EntryContainer)`
   margin-bottom: 1rem;
@@ -27,13 +27,13 @@ const AddTranslationNotice = styled(EntryContainer)`
   color: white;
 `
 
-const CourseTranslationList = styled.ul`
+const CourseTranslationList = styled("ul")`
   list-style: none;
   margin-block-start: 0;
   padding-inline-start: 0;
 `
 
-const CourseTranslationItem = styled.li`
+const CourseTranslationItem = styled("li")`
   padding-top: 1rem;
   padding-bottom: 1.5rem;
   width: 90%;

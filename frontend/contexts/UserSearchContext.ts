@@ -29,8 +29,8 @@ export default createContext<UserSearchContext>({
     search: "",
   },
   search: "",
-  setPage: () => {},
-  setSearchVariables: () => {},
-  setRowsPerPage: () => {},
-  setSearch: () => {},
+  setPage: () => void 0,
+  setSearchVariables: () => void 0,
+  setRowsPerPage: () => void 0,
+  setSearch: () => void 0,
 })

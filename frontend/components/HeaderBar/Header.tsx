@@ -2,10 +2,10 @@ import { ReactElement } from "react"
 
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import { AppBar, Toolbar } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import Slide from "@mui/material/Slide"
+import { styled } from "@mui/material/styles"
 import useScrollTrigger from "@mui/material/useScrollTrigger"
 
 import LanguageSwitch from "./LanguageSwitch"
@@ -34,13 +34,13 @@ const StyledToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
 `
-const HiddenMenuContainer = styled.div`
+const HiddenMenuContainer = styled("div")`
   flex: 1;
   @media (max-width: 1050px) {
     display: none;
   }
 `
-const MenuContainer = styled.div`
+const MenuContainer = styled("div")`
   flex: 1;
 `
 

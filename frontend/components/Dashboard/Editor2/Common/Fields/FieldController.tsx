@@ -17,7 +17,7 @@ import notEmpty from "/util/notEmpty"
 
 export interface FieldControllerProps<T extends FormValues> extends FieldProps {
   renderComponent: (props: ControllerRenderProps<T>) => JSX.Element
-  onChange?: (e: any, newValue: any) => {}
+  onChange?: (e: any, newValue: any) => any
 }
 
 export function FieldController<T extends FormValues>({

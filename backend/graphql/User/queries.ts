@@ -50,6 +50,7 @@ export const UserQueries = extendType({
 
     t.connection("userDetailsContains", {
       type: "User",
+      nullable: false,
       additionalArgs: {
         search: stringArg(),
         skip: intArg({ default: 0 }),

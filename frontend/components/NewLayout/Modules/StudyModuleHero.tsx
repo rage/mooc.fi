@@ -1,7 +1,7 @@
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-const Container = styled.header`
+const Container = styled("header")`
   display: flex;
   justify-content: center;
 `

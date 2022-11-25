@@ -10,7 +10,7 @@ export class StoredDataController extends Controller {
   }
 
   post = async (
-    req: Request<{ slug: string }, {}, { data: string }>,
+    req: Request<{ slug: string }, any, { data: string }>,
     res: Response,
   ) => {
     const { prisma } = this.ctx

@@ -1,36 +1,53 @@
-import React from "react"
+import React, { Dispatch, useMemo } from "react"
 
 import { sortBy } from "lodash"
 
-import styled from "@emotion/styled"
-import { Card, CardContent, Collapse, Paper, Skeleton } from "@mui/material"
+import {
+  Card,
+  CardContent,
+  CardProps,
+  Collapse,
+  Paper,
+  Skeleton,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ActionType,
   CollapsablePart,
-  useCollapseContext,
+  CollapseAction,
+  CourseState,
 } from "./CollapseContext"
 import Completion from "./Completion"
 import ExerciseList from "./ExerciseList"
 import ProgressEntry from "./ProgressEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
+import RelevantDates from "/components/Dashboard/Users/Summary/RelevantDates"
 import { CardTitle } from "/components/Text/headers"
-import notEmpty from "/util/notEmpty"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface CourseEntryProps {
-  data?: UserCourseSummaryCoreFieldsFragment
+  data: UserCourseSummaryCoreFieldsFragment
+  state: CourseState
+  dispatch: Dispatch<CollapseAction>
 }
 
-const CourseEntryCard = styled(Card)`
+const CourseEntryCard = styled(({ children, ...props }: CardProps) => (
+  <Card component="section" elevation={4} {...props}>
+    {children}
+  </Card>
+))`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 `
 
-CourseEntryCard.defaultProps = {
-  elevation: 4,
-}
+const CourseEntryCardTitle = styled(CardTitle)`
+  display: flex;
+  justify-content: space-between;
+`
 
 const CourseEntryPartSkeleton = () => (
   <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
@@ -38,7 +55,7 @@ const CourseEntryPartSkeleton = () => (
   </Paper>
 )
 
-const CourseEntryCardSkeleton = () => (
+export const SkeletonCourseEntry = () => (
   <CourseEntryCard>
     <CardTitle>
       <Skeleton />
@@ -50,37 +67,35 @@ const CourseEntryCardSkeleton = () => (
     </CardContent>
   </CourseEntryCard>
 )
-function CourseEntry({ data }: CourseEntryProps) {
-  const { state, dispatch } = useCollapseContext()
 
-  if (!data) {
-    return <CourseEntryCardSkeleton />
-  }
+function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
+  const t = useTranslator(ProfileTranslations)
+
+  // TODO: subheaders for parts?
+  const exercisesWithCompletions = useMemo(
+    () =>
+      sortBy(
+        (data?.course?.exercises ?? []).map((exercise) => ({
+          ...exercise,
+          exercise_completions: (data?.exercise_completions ?? []).filter(
+            (ec) => ec?.exercise_id === exercise.id,
+          ),
+        })),
+        ["part", "section", "name"],
+      ),
+    [data?.course],
+  )
 
   if (!data.course) {
     return null
   }
 
-  const isOpen = state[data?.course?.id ?? "_"]?.open
-  // TODO: subheaders for parts?
-  const exercisesWithCompletions =
-    data.course?.exercises?.filter(notEmpty).map((exercise) => ({
-      ...exercise,
-      exercise_completions:
-        data.exercise_completions
-          ?.filter((ec) => ec?.exercise_id === exercise.id)
-          .filter(notEmpty) ?? [],
-    })) ?? []
-
   return (
     <CourseEntryCard>
-      <CardTitle
-        variant="h3"
-        style={{ display: "flex", justifyContent: "space-between" }}
-      >
+      <CourseEntryCardTitle variant="h3">
         {data?.course?.name}
         <CollapseButton
-          open={isOpen}
+          open={state?.open}
           onClick={() =>
             dispatch({
               type: ActionType.TOGGLE,
@@ -88,24 +103,18 @@ function CourseEntry({ data }: CourseEntryProps) {
               course: data?.course?.id ?? "_",
             })
           }
+          tooltip={t("courseCollapseTooltip")}
         />
-      </CardTitle>
-      <Collapse in={isOpen} unmountOnExit>
+      </CourseEntryCardTitle>
+      <Collapse in={state?.open} unmountOnExit>
         <CardContent>
+          <RelevantDates data={data} />
           <Completion
             course={data.course}
             completion={data.completion ?? undefined}
           />
-          <ProgressEntry
-            course={data.course}
-            userCourseProgress={data.user_course_progress}
-            userCourseServiceProgresses={data.user_course_service_progresses?.filter(
-              notEmpty,
-            )}
-          />
-          <ExerciseList
-            exercises={sortBy(exercisesWithCompletions, ["name"])}
-          />
+          <ProgressEntry data={data} />
+          <ExerciseList exercises={exercisesWithCompletions} />
         </CardContent>
       </Collapse>
     </CourseEntryCard>

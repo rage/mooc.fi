@@ -12,7 +12,7 @@ import {
 } from "./types"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { Translator } from "/translations"
-import { type CoursesTranslations } from "/translations/courses"
+import { Courses } from "/translations/courses"
 
 import {
   CourseFromSlugDocument,
@@ -87,7 +87,7 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
   course: undefined,
 }
 
-export const statuses = (t: Translator<CoursesTranslations>) => [
+export const statuses = (t: Translator<Courses>) => [
   {
     value: CourseStatus.Upcoming,
     label: t("courseUpcoming"),
@@ -102,7 +102,7 @@ export const statuses = (t: Translator<CoursesTranslations>) => [
   },
 ]
 
-export const languages = (t: Translator<CoursesTranslations>) => [
+export const languages = (t: Translator<Courses>) => [
   {
     value: "fi_FI",
     label: t("courseFinnish"),
@@ -154,7 +154,7 @@ const testUnique = <T extends FormValues>(
 interface CourseEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<CoursesTranslations>
+  t: Translator<Courses>
 }
 
 const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) =>

@@ -1,8 +1,8 @@
 import Link from "next/link"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"
@@ -12,22 +12,15 @@ import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import notEmpty from "/util/notEmpty"
 
 import { EmailTemplatesDocument } from "/graphql/generated"
 
-const Background = styled.section`
+const Background = styled("section")`
   background-color: #61baad;
 `
 
-const EmailTemplates = (admin: Boolean) => {
+const EmailTemplates = (admin: boolean) => {
   const { loading, error, data } = useQuery(EmailTemplatesDocument)
-
-  if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
-  }
 
   useBreadcrumbs([
     {
@@ -35,6 +28,14 @@ const EmailTemplates = (admin: Boolean) => {
       href: `/email-templates`,
     },
   ])
+
+  if (error) {
+    return (
+      <div>
+        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      </div>
+    )
+  }
 
   if (!admin) {
     return <AdminError />
@@ -54,7 +55,7 @@ const EmailTemplates = (admin: Boolean) => {
         <br></br>
         <br></br>
         <ul>
-          {data?.email_templates?.filter(notEmpty).map((p) => {
+          {data?.email_templates?.map((p) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
                 <Link

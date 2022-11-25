@@ -77,16 +77,11 @@ export class ProgressController extends Controller {
         { column: "ec.updated_at", order: "desc" },
       ])
 
-    const resObject = (exercise_completions ?? []).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.exercise_id]: {
-          ...curr,
-          // tier: baiCourseTiers[curr.quizzes_id],
-        },
-      }),
-      {},
-    )
+    const resObject: Record<string, ExerciseCompletionResult> = {}
+
+    for (const completion of exercise_completions) {
+      resObject[completion.exercise_id] = completion
+    }
 
     res.json({
       data: resObject,
@@ -94,7 +89,7 @@ export class ProgressController extends Controller {
   }
 
   progressV2 = async (
-    req: Request<{ idOrSlug: string }, {}, {}, { deleted?: string }>,
+    req: Request<{ idOrSlug: string }, any, any, { deleted?: string }>,
     res: Response,
   ) => {
     const { knex } = this.ctx
@@ -158,16 +153,12 @@ export class ProgressController extends Controller {
       .andWhere("user_id", user.id)
       .orderBy("created_at", "asc")
 
-    const exercise_completions_map = (exercise_completions ?? []).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.exercise_id]: {
-          ...curr,
-          // tier: baiCourseTiers[curr.quizzes_id],
-        },
-      }),
-      {},
-    )
+    const exercise_completions_map: Record<string, ExerciseCompletionResult> =
+      {}
+
+    for (const completion of exercise_completions) {
+      exercise_completions_map[completion.exercise_id] = completion
+    }
 
     res.json({
       data: {
@@ -389,7 +380,11 @@ export class ProgressController extends Controller {
       const updated = after.filter((entry) => {
         const beforeEntry = beforeMap[entry.id]?.[0]
 
-        return beforeEntry && entry.updated_at! > beforeEntry.updated_at!
+        return (
+          beforeEntry &&
+          (entry.updated_at ?? new Date(0)) >
+            (beforeEntry.updated_at ?? new Date(0))
+        )
       })
       const updatedUsers = getUsers(updated)
 

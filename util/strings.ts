@@ -1,4 +1,4 @@
-export function wordCount(string: String) {
+export function wordCount(string: string) {
   if (!string) {
     return 0
   }

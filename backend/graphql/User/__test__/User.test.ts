@@ -78,7 +78,7 @@ describe("User", () => {
       })
 
       it("shows current user when logged in", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
         const res = await ctx.client.request(`
       query {
@@ -125,7 +125,7 @@ describe("User", () => {
       })
 
       it("shows null when not logged in", async () => {
-        ctx!.client.setHeader("Authorization", "")
+        ctx.client.setHeader("Authorization", "")
 
         const res = await ctx.client.request(`
       query {
@@ -160,7 +160,7 @@ describe("User", () => {
       })
 
       it("returns courses with completions", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
         const res = await ctx.client.request(`
           query {
@@ -237,7 +237,7 @@ describe("User", () => {
     })
 
     describe("addUser", () => {
-      beforeAll(() => ctx!.client.setHeader("Authorization", ""))
+      beforeAll(() => ctx.client.setHeader("Authorization", ""))
 
       it("creates user correctly", async () => {
         const res = await ctx.client.request(addUserMutation, {
@@ -280,20 +280,20 @@ describe("User", () => {
 
     describe("updateResearchConsent", () => {
       beforeEach(async () => {
-        await ctx!.prisma.user.create({
+        await ctx.prisma.user.create({
           data: normalUser,
         })
       })
 
       afterEach(async () => {
-        await ctx!.prisma.user.delete({ where: { upstream_id: 1 } })
+        await ctx.prisma.user.delete({ where: { upstream_id: 1 } })
         ctx.user = undefined
       })
 
       it("updates correctly", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx!.client.request(updateReseachConsentMutation, {
+        const res = await ctx.client.request(updateReseachConsentMutation, {
           value: true,
         })
 
@@ -305,7 +305,7 @@ describe("User", () => {
         }
       `,
         )
-        const updatedConsent = await ctx!.prisma.user.findFirst({
+        const updatedConsent = await ctx.prisma.user.findFirst({
           where: { upstream_id: 1 },
           select: { research_consent: true },
         })
@@ -314,10 +314,10 @@ describe("User", () => {
       })
 
       it("won't update research consent without auth", async () => {
-        ctx!.client.setHeader("Authorization", "")
+        ctx.client.setHeader("Authorization", "")
 
         try {
-          await ctx!.client.request(updateReseachConsentMutation, {
+          await ctx.client.request(updateReseachConsentMutation, {
             value: true,
           })
           fail()
@@ -327,15 +327,15 @@ describe("User", () => {
 
     describe("updateUserName", () => {
       beforeEach(async () => {
-        await ctx!.prisma.user.create({
+        await ctx.prisma.user.create({
           data: normalUser,
         })
       })
 
       it("updates correctly", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx!.client.request(updateUserNameMutation, {
+        const res = await ctx.client.request(updateUserNameMutation, {
           first_name: "updated first",
           last_name: "updated last",
         })
@@ -347,9 +347,9 @@ describe("User", () => {
       })
 
       it("errors without auth", async () => {
-        ctx!.client.setHeader("Authorization", "")
+        ctx.client.setHeader("Authorization", "")
         try {
-          await ctx!.client.request(updateUserNameMutation, {})
+          await ctx.client.request(updateUserNameMutation, {})
           fail()
         } catch {}
       })

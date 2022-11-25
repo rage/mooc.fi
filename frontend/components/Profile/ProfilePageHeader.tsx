@@ -1,16 +1,16 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import PersonalInfoBox from "./PersonalInfoBox"
 
-const HeaderBackground = styled.div`
+const HeaderBackground = styled("div")`
   background-color: #4d92a1;
   color: white;
   position: relative;
   margin-bottom: 6em;
 `
 
-const HeaderTitle = styled(Typography)<any>`
+const HeaderTitle = styled(Typography)`
   padding: 0.5em;
   @media (min-width: 768px) {
     font-size: 64px;
@@ -21,7 +21,7 @@ const HeaderTitle = styled(Typography)<any>`
   @media (max-width: 425px) {
     font-size: 48px;
   }
-`
+` as typeof Typography
 
 interface ProfilePageHeaderProps {
   first_name: string

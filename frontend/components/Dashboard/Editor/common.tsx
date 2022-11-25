@@ -3,7 +3,6 @@ import { PropsWithChildren, useContext } from "react"
 import { Field, FieldProps, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
 
-import styled from "@emotion/styled"
 import {
   Checkbox,
   CheckboxProps,
@@ -14,6 +13,7 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import AnchorContext from "/contexts/AnchorContext"
 
@@ -65,13 +65,13 @@ export const StyledField = styled(Field)`
   }
 `
 
-export const FormSubtitle = styled(Typography)<any>`
+export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
   margin-bottom: 1rem;
   font-size: 2em;
-`
+` as typeof Typography
 
-export const AdjustingAnchorLink = styled.a<{ id: string }>`
+export const AdjustingAnchorLink = styled("a")<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;

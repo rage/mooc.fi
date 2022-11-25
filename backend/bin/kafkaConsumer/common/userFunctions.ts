@@ -54,7 +54,7 @@ export const getCombinedUserCourseProgress = async ({
     (entry: UserCourseServiceProgress) => entry.progress as any, // type error otherwise
   )
 
-  let combined = new CombinedUserCourseProgress()
+  const combined = new CombinedUserCourseProgress()
   progresses.forEach((entry) => {
     const entries = Array.isArray(entry) ? entry : [entry]
 
@@ -411,7 +411,7 @@ export const createCompletion = async ({
         RETURNING tier;`,
         tier,
         eligible_for_ects,
-        completions[0]!.id,
+        completions[0].id,
       )
       if (updated.length > 0) {
         logger.info("Existing completion found, updated tier")
@@ -432,7 +432,7 @@ export class CombinedUserCourseProgress {
   public addProgress(newProgress: ServiceProgressPartType) {
     this.total_max_points += newProgress.max_points
     this.total_n_points += newProgress.n_points
-    let index = this.groupIndex(newProgress.group)
+    const index = this.groupIndex(newProgress.group)
     if (index < 0) {
       this.progress.push(newProgress)
     } else {

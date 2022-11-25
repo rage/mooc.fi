@@ -7,7 +7,7 @@ import ModuleCard from "./ModuleCard"
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
 interface ModuleGridProps {
-  modules?: StudyModuleDetailedFieldsFragment[]
+  modules?: StudyModuleDetailedFieldsFragment[] | null
   loading: boolean
 }
 

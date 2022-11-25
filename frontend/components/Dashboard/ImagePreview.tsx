@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { ButtonBase, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const CloseButton = styled(ButtonBase)`
   position: relative;

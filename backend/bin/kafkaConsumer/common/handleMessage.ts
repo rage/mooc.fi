@@ -11,7 +11,7 @@ import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 
 // Each partition has their own commit counter
-let commitCounterMap = new Map<number, number>()
+const commitCounterMap = new Map<number, number>()
 
 const commitInterval = config.commit_interval
 

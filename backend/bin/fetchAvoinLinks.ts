@@ -43,7 +43,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
     })
     .filter((link) => Boolean(link.link))
 
-  let openLinks = alternatives.filter(
+  const openLinks = alternatives.filter(
     (o) => o.startTime < now && o.stopDate > now,
   )
 

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 
 export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
   margin: 0.5rem;

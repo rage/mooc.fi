@@ -2,13 +2,14 @@ import React from "react"
 
 import {
   Collapse,
-  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
+  Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ActionType,
@@ -16,6 +17,7 @@ import {
   useCollapseContext,
 } from "./CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
+import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import { CompletionListItem } from "/components/Home/Completions"
 import ProfileTranslations from "/translations/profile"
@@ -31,6 +33,22 @@ interface CompletionProps {
   course: UserCourseSummaryCourseFieldsFragment
 }
 
+const CompletionListItemContainer = styled("div")`
+  padding: 0.5rem;
+  width: 100%;
+`
+
+const CollapseTableRow = styled(TableRow)`
+  & > * {
+    border-bottom: unset;
+  }
+`
+
+const CollapseTableCell = styled(TableCell)`
+  padding-top: 0;
+  padding-bottom: 0;
+`
+
 export default function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
@@ -42,38 +60,58 @@ export default function Completion({ completion, course }: CompletionProps) {
   const isOpen = state[course?.id ?? "_"]?.completion ?? false
 
   return (
-    <TableContainer component={Paper} style={{ marginBottom: "1rem" }}>
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell>
-              {t("completedDate")}
-              {formatDateTime(completion?.completion_date)}
-            </TableCell>
-            <TableCell align="right">
-              {t("registeredDate")}
-              {completion?.completions_registered
-                ?.map((cr) => formatDateTime(cr.created_at))
-                ?.join(", ")}
-            </TableCell>
-            <TableCell align="right">
-              <CollapseButton
-                open={isOpen}
-                onClick={() =>
-                  dispatch({
-                    type: ActionType.TOGGLE,
-                    collapsable: CollapsablePart.COMPLETION,
-                    course: course?.id ?? "_",
-                  })
-                }
-              />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      <Collapse in={isOpen} unmountOnExit>
-        <CompletionListItem course={course} completion={completion} />
-      </Collapse>
-    </TableContainer>
+    <SummaryCard>
+      <TableContainer>
+        <Table>
+          <TableBody>
+            <CollapseTableRow>
+              <TableCell>
+                <Typography variant="h3">
+                  {t("completedDate")}
+                  <strong>{formatDateTime(completion?.completion_date)}</strong>
+                </Typography>
+              </TableCell>
+              <TableCell align="right">
+                {completion?.completions_registered?.length > 0 && (
+                  <Typography variant="h3">
+                    {t("registeredDate")}
+                    <strong>
+                      {completion?.completions_registered
+                        ?.map((cr) => formatDateTime(cr.created_at))
+                        ?.join(", ")}
+                    </strong>
+                  </Typography>
+                )}
+              </TableCell>
+              <TableCell align="right">
+                <CollapseButton
+                  open={isOpen}
+                  onClick={() =>
+                    dispatch({
+                      type: ActionType.TOGGLE,
+                      collapsable: CollapsablePart.COMPLETION,
+                      course: course?.id ?? "_",
+                    })
+                  }
+                  tooltip={t("completionCollapseTooltip")}
+                />
+              </TableCell>
+            </CollapseTableRow>
+            <CollapseTableRow>
+              <CollapseTableCell colSpan={3}>
+                <Collapse in={isOpen} mountOnEnter unmountOnExit>
+                  <CompletionListItemContainer>
+                    <CompletionListItem
+                      course={course}
+                      completion={completion}
+                    />
+                  </CompletionListItemContainer>
+                </Collapse>
+              </CollapseTableCell>
+            </CollapseTableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </SummaryCard>
   )
 }

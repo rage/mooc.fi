@@ -1,24 +1,34 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
-import {
-  faFacebook,
-  faTwitter,
-  faYoutube,
-} from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Facebook from "@fortawesome/fontawesome-free/svgs/brands/facebook.svg?icon"
+import Twitter from "@fortawesome/fontawesome-free/svgs/brands/twitter.svg?icon"
+import Youtube from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
+import { css, styled } from "@mui/material/styles"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-const StyledIcon = styled(FontAwesomeIcon)`
-  color: white;
+const IconBaseStyle = css`
+  fill: white;
   margin-bottom: 1rem;
   margin: 1rem;
+  width: 3rem;
 `
 
-const FooterBar = styled.footer`
+const TwitterIcon = styled(Twitter)`
+  ${IconBaseStyle};
+`
+
+const FacebookIcon = styled(Facebook)`
+  ${IconBaseStyle};
+`
+
+const YoutubeIcon = styled(Youtube)`
+  ${IconBaseStyle};
+`
+
+const FooterBar = styled("footer")`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,27 +39,27 @@ const FooterBar = styled.footer`
   text-align: center;
 `
 
-const SocialContainer = styled.div`
+const SocialContainer = styled("div")`
   padding: 1.5rem 0;
 `
 
-const EmailContainer = styled.div`
+const EmailContainer = styled("div")`
   padding-top: 2rem;
 `
 
-const MaintainedContainer = styled.div`
+const MaintainedContainer = styled("div")`
   a {
     color: white;
   }
 `
 
-const BottomRowContainer = styled.div`
+const BottomRowContainer = styled("div")`
   padding: 1.5rem 0;
   display: flex;
   flex-direction: row;
   padding: 2rem 0;
 `
-const PolicyContainer = styled.div`
+const PolicyContainer = styled("div")`
   :before {
     content: "|";
     margin-right: 0.5rem;
@@ -60,7 +70,7 @@ const PolicyContainer = styled.div`
   }
 `
 
-const LogoImage = styled.img`
+const LogoImage = styled("img")`
   height: 75;
 `
 
@@ -99,7 +109,8 @@ function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledIcon icon={faTwitter} size="3x" />
+          <TwitterIcon />{" "}
+          {/*<StyledIcon icon={["fab", "twitter"]} size="3x" />*/}
         </a>
         <a
           aria-label="MOOC.fi Facebook"
@@ -107,7 +118,8 @@ function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledIcon icon={faFacebook} size="3x" />
+          <FacebookIcon />
+          {/*<StyledIcon icon={["fab", "facebook"]} size="3x" />*/}
         </a>
         <a
           aria-label="MOOC.fi Youtube channel"
@@ -115,7 +127,8 @@ function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledIcon icon={faYoutube} size="3x" />
+          <YoutubeIcon />
+          {/*<StyledIcon icon={["fab", "youtube"]} size="3x" />*/}
         </a>
       </SocialContainer>
       <BottomRowContainer>

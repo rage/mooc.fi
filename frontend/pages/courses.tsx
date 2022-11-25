@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
@@ -24,11 +24,13 @@ import {
   HandlerCoursesDocument,
 } from "/graphql/generated"
 
-const Background = styled.section`
+const Background = styled("section")`
   background-color: #61baad;
 `
 
-const notEmptyOrEmptyString = (value: any): value is string | true | number =>
+const notEmptyOrEmptyString = (
+  value: unknown,
+): value is string | true | number =>
   notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
@@ -119,13 +121,15 @@ function useCourseSearch() {
     }
   }, [searchVariables])
 
-  const onClickStatus = (value: CourseStatus | null) => (_: any) => {
-    setStatus(value ? [value] : [])
-    setSearchVariables({
-      ...searchVariables,
-      status: value ? [value] : [],
-    })
-  }
+  const onClickStatus =
+    (value: CourseStatus | null) =>
+    (_: React.MouseEvent<Element, MouseEvent>) => {
+      setStatus(value ? [value] : [])
+      setSearchVariables({
+        ...searchVariables,
+        status: value ? [value] : [],
+      })
+    }
 
   return {
     loading: editorLoading || handlersLoading,
@@ -173,11 +177,11 @@ function Courses() {
           setSearchVariables={setSearchVariables}
           status={status}
           setStatus={setStatus}
-          handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
+          handlerCourses={handlersData?.handlerCourses ?? []}
           loading={loading}
         />
         <CourseGrid
-          courses={editorData?.courses?.filter(notEmpty)}
+          courses={editorData?.courses ?? []}
           onClickStatus={onClickStatus}
           loading={loading}
         />

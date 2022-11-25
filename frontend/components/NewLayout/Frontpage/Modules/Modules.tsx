@@ -2,8 +2,8 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import {
@@ -14,10 +14,7 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
 
-const ModulesGrid = styled.ul`
-  list-style: none;
-  list-style-position: inside;
-  padding: 0;
+const ModulesGrid = styled("div")`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -73,7 +70,7 @@ const ModulesGrid = styled.ul`
   }
 `
 
-const Arrow = styled.div`
+const Arrow = styled("div")`
   width: 120%;
   &:before {
     content: "";

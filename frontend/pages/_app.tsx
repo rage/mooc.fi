@@ -1,4 +1,4 @@
-import "@fortawesome/fontawesome-svg-core/styles.css"
+import "@fortawesome/fontawesome-free/css/all.min.css"
 
 import { useEffect, useMemo } from "react"
 
@@ -7,12 +7,9 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CacheProvider, EmotionCache, Global } from "@emotion/react"
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, GlobalStyles } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
-import createEmotionCache from "../src/createEmotionCache"
 import OriginalLayout from "./_layout"
 import NewLayout from "./_new/_layout"
 import { AlertProvider } from "/contexts/AlertContext"
@@ -28,19 +25,7 @@ import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
-fontAwesomeConfig.autoAddCss = false
-
-const clientSideEmotionCache = createEmotionCache()
-
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
-}
-
-export function MyApp({
-  Component,
-  pageProps,
-  emotionCache = clientSideEmotionCache,
-}: MyAppProps) {
+export function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -81,30 +66,29 @@ export function MyApp({
 
   return (
     <>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          />
-          <title>{title}</title>
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <LoginStateProvider value={loginStateContextValue}>
-            <ConfirmProvider>
-              <BreadcrumbProvider>
-                <AlertProvider>
-                  <Layout>
-                    <Global styles={fontCss} />
-                    <Component {...pageProps} />
-                  </Layout>
-                </AlertProvider>
-              </BreadcrumbProvider>
-            </ConfirmProvider>
-          </LoginStateProvider>
-        </ThemeProvider>
-      </CacheProvider>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+        />
+        <title>{title}</title>
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LoginStateProvider value={loginStateContextValue}>
+          <ConfirmProvider>
+            <BreadcrumbProvider>
+              <AlertProvider>
+                <Layout>
+                  {/*<Global styles={fontCss} />*/}
+                  <GlobalStyles styles={fontCss} />
+                  <Component {...pageProps} />
+                </Layout>
+              </AlertProvider>
+            </BreadcrumbProvider>
+          </ConfirmProvider>
+        </LoginStateProvider>
+      </ThemeProvider>
     </>
   )
 }

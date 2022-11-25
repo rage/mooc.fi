@@ -18,13 +18,12 @@ import { useTranslator } from "/util/useTranslator"
 import { EditorCourseOtherCoursesFieldsFragment } from "/graphql/generated"
 
 interface ImageInputProps {
-  courses: EditorCourseOtherCoursesFieldsFragment[] | undefined
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
 }
 
-const CourseImageInput = (props: ImageInputProps) => {
+const CourseImageInput = ({ courses }: ImageInputProps) => {
   const { values, setFieldValue, initialValues } =
     useFormikContext<CourseFormValues>()
-  const { courses } = props
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
   const [dialogOpen, setDialogOpen] = useState(false)

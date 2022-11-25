@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react"
 
-import styled from "@emotion/styled"
 import WarningIcon from "@mui/icons-material/Warning"
 import {
   CircularProgress,
@@ -14,6 +13,7 @@ import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
+import { styled } from "@mui/material/styles"
 
 import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import EmailSubscribe from "/components/Home/EmailSubscribe"
 import CourseList from "/components/NewLayout/Frontpage/CourseList"
@@ -8,7 +8,7 @@ import Modules from "/components/NewLayout/Frontpage/Modules/Modules"
 import News from "/components/NewLayout/Frontpage/News"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
 
-const HomeContainer = styled.div`
+const HomeContainer = styled("div")`
   * + * {
     margin: 0;
   }

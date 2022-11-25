@@ -1,10 +1,10 @@
 import { FieldArray, getIn, useFormikContext } from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
 import { FormControl, FormGroup, Grid, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { initialVariant } from "./form-validation"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -39,8 +39,8 @@ const CourseVariantEditForm = () => {
             <FieldArray name="course_variants">
               {(helpers) => (
                 <>
-                  {values!.length ? (
-                    values!.map((variant, index: number) => (
+                  {values.length ? (
+                    values.map((variant, index: number) => (
                       <Grid container spacing={2} key={`variant-${index}`}>
                         <Grid item xs={4}>
                           <StyledFieldWithAnchor
@@ -104,7 +104,9 @@ const CourseVariantEditForm = () => {
                                     cancellationText: t("confirmationNo"),
                                   })
                                     .then(() => helpers.remove(index))
-                                    .catch(() => {})
+                                    .catch(() => {
+                                      // ignore
+                                    })
                                 }
                               }}
                               endIcon={
@@ -127,9 +129,9 @@ const CourseVariantEditForm = () => {
                       {t("courseNoVariants")}
                     </Typography>
                   )}
-                  {(values!.length == 0 ||
-                    (values!.length &&
-                      values![values!.length - 1].slug !== "")) && (
+                  {(values.length === 0 ||
+                    (values.length &&
+                      values[values.length - 1].slug !== "")) && (
                     <Grid container justifyItems="center">
                       <ButtonWithWhiteText
                         variant="contained"

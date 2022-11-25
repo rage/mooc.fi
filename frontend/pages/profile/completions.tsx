@@ -35,7 +35,7 @@ function CompletionsPage() {
     return <Spinner />
   }
 
-  const completions = data?.currentUser?.completions ?? []
+  const completions = data?.currentUser?.completions
 
   return (
     <>
