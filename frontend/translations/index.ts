@@ -27,17 +27,17 @@ export type Translator<T extends Translation> = (
   variables?: TranslationVariables,
 ) => any
 
-const isArrayTranslation = <T extends Translation>(
-  translation: T | TranslationEntry,
+const isArrayTranslation = (
+  translation: TranslationEntry,
 ): translation is ArrayTranslation => Array.isArray(translation)
-const isObjectTranslation = <T extends Translation>(
-  translation: T | TranslationEntry,
+const isObjectTranslation = (
+  translation: TranslationEntry,
 ): translation is ObjectTranslation =>
   !isArrayTranslation(translation) &&
   typeof translation === "object" &&
   translation !== null
-const isStringTranslation = <T extends Translation>(
-  translation: T | TranslationEntry,
+const isStringTranslation = (
+  translation: TranslationEntry,
 ): translation is TranslationString => typeof translation === "string"
 
 const getTranslator =
@@ -97,11 +97,14 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
         router,
       })
     }
+    return substituteObject
   }
 
   if (!isStringTranslation(translation)) {
     console.warn(
-      `WARNING: translation only supports strings, arrays or objects - got ${translation} of type ${typeof translation}`,
+      `WARNING: translation only supports strings, arrays or objects - got ${JSON.stringify(
+        translation,
+      )} of type ${typeof translation}`,
     )
 
     return translation

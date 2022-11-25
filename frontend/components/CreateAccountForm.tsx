@@ -9,7 +9,7 @@ import { styled } from "@mui/material/styles"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
-import getTranslator from "/translations"
+import getTranslator, { LanguageKey } from "/translations"
 import SignUpTranslations from "/translations/sign-up"
 
 const StyledPaper = styled(Paper)`
@@ -88,7 +88,10 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   onClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
 
-    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
+    const t = getSignUpTranslator(
+      (this.props.router.locale ?? "fi") as LanguageKey,
+      this.props.router,
+    )
 
     this.setState({ submitting: true, triedSubmitting: true })
 
@@ -153,7 +156,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 
   validate = () => {
-    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
+    const t = getSignUpTranslator(
+      (this.props.router.locale ?? "fi") as LanguageKey,
+    )
 
     const newState: State = {
       error: "",
@@ -217,7 +222,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 
   render() {
-    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
+    const t = getSignUpTranslator(
+      (this.props.router.locale ?? "fi") as LanguageKey,
+    )
 
     return (
       <StyledPaper>

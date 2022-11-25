@@ -40,13 +40,42 @@ const nextConfiguration = {
       lodash: {
         transform: "lodash/{{member}}",
       },
-      "@fortawesome/free-brands-svg-icons": {
-        transform: "@fortawesome/free-brands-svg-icons/{{member}}",
-      },
-      "@fortawesome/free-solid-svg-icons": {
-        transform: "@fortawesome/free-solid-svg-icons/{{member}}",
-      },
     },
+  },
+  webpack: (config) => {
+    const found = config.module.rules?.findIndex((rule) =>
+      rule.test?.exec("u.svg"),
+    )
+    // remove the original svg rule but store the one variation with no resourcequery to load svg files
+    let originalRule
+    if (config.module.rules?.[found]) {
+      config.module.rules[found].test = /\.(jpe?g|png|gif)$/i
+      originalRule = config.module.rules[found].oneOf.find(
+        (rule) => !rule.resourceQuery,
+      )
+    }
+
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: /icon/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: { typescript: true, memo: true },
+        },
+      ],
+    })
+    if (originalRule) {
+      // insert it back
+      config.module.rules.push({
+        ...originalRule,
+        test: /\.svg$/,
+        resourceQuery: { not: [/icon/] },
+      })
+    }
+
+    return config
   },
 }
 

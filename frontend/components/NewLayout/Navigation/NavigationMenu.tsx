@@ -12,15 +12,11 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
-import type { IconProp } from "@fortawesome/fontawesome-svg-core"
-import {
-  faChalkboardTeacher,
-  faDashboard,
-  faList,
-  faSignOut,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import Dashboard from "@fortawesome/fontawesome-free/svgs/solid/gauge-high.svg?icon"
+import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
+import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
 import MenuIcon from "@mui/icons-material/Menu"
 import {
   Button,
@@ -31,7 +27,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
+import { SerializedStyles } from "@mui/styled-engine"
 
 import { NavigationLinks } from "./NavigationLinks"
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
@@ -47,7 +44,7 @@ const NavigationMenuContainer = styled("nav")`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  @media (max-width: 399px) {
+  @media (max-width: 599px) {
     display: none;
   }
 `
@@ -55,7 +52,7 @@ const NavigationMenuContainer = styled("nav")`
 const MobileMenuContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
-  @media (min-width: 400px) {
+  @media (min-width: 600px) {
     display: none;
   }
 `
@@ -80,6 +77,10 @@ const MenuButton = styled(Button)`
   max-height: 10vh;
   white-space: nowrap;
   font-size: clamp(12px, 1.5vw, 16px);
+`
+
+const iconStyle = css`
+  height: 1rem;
 `
 
 const UserOptionsMenu = () => {
@@ -137,7 +138,9 @@ const DesktopNavigationMenu = () => {
 }
 
 interface MobileMenuItemProps {
-  icon: IconProp
+  Icon: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & { css: SerializedStyles }
+  >
   text: string
   href?: string
   onClick?: React.MouseEventHandler<HTMLLIElement>
@@ -145,7 +148,7 @@ interface MobileMenuItemProps {
 }
 
 const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  ({ icon, text, href, onClick = () => void 0, ...props }, ref) => {
+  ({ Icon, text, href, onClick = () => void 0, ...props }, ref) => {
     const WrapLink: React.FunctionComponent<React.PropsWithChildren> = ({
       children,
     }) => {
@@ -168,7 +171,7 @@ const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
     return (
       <WrapLink>
         <ListItemIcon>
-          <FontAwesomeIcon icon={icon} />
+          <Icon css={iconStyle} />
         </ListItemIcon>
         <ListItemText>{text}</ListItemText>
       </WrapLink>
@@ -206,7 +209,6 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : t("myProfile")
-
   const menuItems = useMemo(() => {
     const items = [
       <MenuItem key="mobile-menu-language-switch">
@@ -215,14 +217,14 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
       <MobileMenuItem
         key="mobile-menu-courses"
         href="/_new/courses"
-        icon={faChalkboardTeacher}
+        Icon={ChalkboardTeacher}
         text={t("courses")}
         onClick={onClose}
       />,
       <MobileMenuItem
         key="mobile-menu-modules"
         href="/_new/study-modules"
-        icon={faList}
+        Icon={List}
         text={t("modules")}
         onClick={onClose}
       />,
@@ -234,7 +236,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         <MobileMenuItem
           key="mobile-menu-admin"
           href="/_new/admin"
-          icon={faDashboard}
+          Icon={Dashboard}
           text="Admin"
           onClick={onClose}
         />,
@@ -246,13 +248,13 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         <MobileMenuItem
           key="mobile-menu-profile"
           href="/_new/profile"
-          icon={faUser}
+          Icon={User}
           text={userDisplayName}
           onClick={onClose}
         />,
         <MobileMenuItem
           key="mobile-menu-logout"
-          icon={faSignOut}
+          Icon={SignOut}
           text={t("logout")}
           onClick={() => signOut(client, logInOrOut)}
         />,

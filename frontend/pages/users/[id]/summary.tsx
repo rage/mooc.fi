@@ -146,6 +146,7 @@ function UserSummaryView() {
             type="search"
             margin="normal"
             autoComplete="off"
+            size="small"
             inputRef={userSearchInput}
           />
         </StyledForm>

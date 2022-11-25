@@ -1,14 +1,11 @@
 import Link from "next/link"
 
-import {
-  faChalkboardTeacher,
-  faEnvelope,
-  faList,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import Envelope from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
+import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import Search from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
 import Button from "@mui/material/Button"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
@@ -16,6 +13,9 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
+const iconBaseStyle = css`
+  height: 1.5rem;
+`
 interface ButtonProps {
   active: any
 }
@@ -73,7 +73,7 @@ const UserMenu = () => {
               active={active == "courses" ? 1 : null}
               style={{ marginLeft: "1em" }}
             >
-              <FontAwesomeIcon icon={faChalkboardTeacher} />
+              <ChalkboardTeacher css={iconBaseStyle} />
               <ButtonLabel>{t("courses")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -84,7 +84,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "study-modules" ? 1 : null}
             >
-              <FontAwesomeIcon icon={faList} />
+              <List css={iconBaseStyle} />
               <ButtonLabel>{t("modules")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -94,7 +94,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "users" ? 1 : null}
             >
-              <FontAwesomeIcon icon={faSearch} />
+              <Search css={iconBaseStyle} />
               <ButtonLabel>{t("userSearch")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -104,7 +104,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "email-templates" ? 1 : null}
             >
-              <FontAwesomeIcon icon={faEnvelope} />
+              <Envelope css={iconBaseStyle} />
               <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
             </StyledButton>
           </Link>

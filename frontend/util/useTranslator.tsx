@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useCallback } from "react"
 
 import { useRouter } from "next/router"
 
@@ -49,12 +49,11 @@ export function useTranslator<
     dicts[1] ?? {},
     dicts[2] ?? {},
   ])*/
-  const translator = useMemo(
-    () =>
-      getTranslator(combinedDict)(
-        (router?.locale ?? "fi") as LanguageKey,
-        router,
-      ),
+  const translator = useCallback(
+    getTranslator(combinedDict)(
+      (router?.locale ?? "fi") as LanguageKey,
+      router,
+    ),
     [dicts, router?.locale],
   )
 

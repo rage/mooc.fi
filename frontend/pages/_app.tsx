@@ -1,4 +1,4 @@
-import "@fortawesome/fontawesome-svg-core/styles.css"
+import "@fortawesome/fontawesome-free/css/all.min.css"
 
 import { useEffect, useMemo } from "react"
 
@@ -7,8 +7,6 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-// import { CacheProvider, EmotionCache, Global } from "@emotion/react"
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline, GlobalStyles } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
@@ -27,8 +25,6 @@ import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
-
-fontAwesomeConfig.autoAddCss = false
 
 /*const clientSideEmotionCache = createEmotionCache()
 
