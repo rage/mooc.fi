@@ -41,7 +41,9 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled("p")<FormikContextType<unknown>["status"]>`
+const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<
+  FormikContextType<unknown>["status"]
+>`
   color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 

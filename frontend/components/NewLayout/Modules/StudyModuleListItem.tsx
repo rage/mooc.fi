@@ -65,7 +65,9 @@ const ImageBackgroundBase = css`
   z-index: -10;
 `
 
-const ImageBackground = styled("span")<{ src: string }>`
+const ImageBackground = styled("span", {
+  shouldForwardProp: (prop) => prop !== "src",
+})<{ src: string }>`
   ${ImageBackgroundBase};
   background-image: url(${(props) => props.src});
   opacity: 0.4;

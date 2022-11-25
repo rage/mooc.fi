@@ -14,9 +14,11 @@ const isChrome = process.browser
     (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
   : false
 
-const DropzoneContainer = styled("div")<
-  DropzoneState & { error: MessageProps["error"] }
->`
+const DropzoneContainer = styled("div", {
+  shouldForwardProp: (prop) =>
+    typeof prop !== "string" ||
+    !["isDragActive", "isDragAccept", "error"].includes(prop), // TODO: should I list _all_ dropzonestate things
+})<DropzoneState & { error: MessageProps["error"] }>`
   display: flex;
   width: 100%;
   min-height: 250px;

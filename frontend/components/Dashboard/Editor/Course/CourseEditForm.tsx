@@ -59,7 +59,9 @@ import {
 interface CoverProps {
   covered: boolean
 }
-const SelectLanguageFirstCover = styled("div")<CoverProps>`
+const SelectLanguageFirstCover = styled("div", {
+  shouldForwardProp: (prop) => prop !== "covered",
+})<CoverProps>`
   opacity: ${(props) => (props.covered ? 0.2 : 1)};
 `
 

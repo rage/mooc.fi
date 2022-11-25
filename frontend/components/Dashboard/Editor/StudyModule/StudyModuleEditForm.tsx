@@ -48,7 +48,9 @@ const FormContainer = styled("div")`
   padding: 1rem;
 `
 
-const ModuleImage = styled("img")<{ error?: boolean }>`
+const ModuleImage = styled("img", {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error?: boolean }>`
   object-fit: cover;
   width: 100%;
   height: 100%;

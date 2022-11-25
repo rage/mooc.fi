@@ -17,7 +17,9 @@ import StudyModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
-const ModuleImage = styled("img")<{ error?: boolean }>`
+const ModuleImage = styled("img", {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error?: boolean }>`
   object-fit: cover;
   width: 100%;
   height: 100%;

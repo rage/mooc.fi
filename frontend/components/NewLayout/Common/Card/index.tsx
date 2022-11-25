@@ -68,7 +68,10 @@ const CommonHeaderBackground = css`
   bottom: 0;
 `
 
-export const CardHeaderBackground = styled("span")<{
+export const CardHeaderBackground = styled("span", {
+  shouldForwardProp: (prop) =>
+    typeof prop !== "string" || !["image", "hue", "brightness"].includes(prop),
+})<{
   image: string
   hue?: number
   brightness?: number

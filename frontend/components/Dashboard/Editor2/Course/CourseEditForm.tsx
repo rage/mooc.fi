@@ -41,7 +41,9 @@ import {
   StudyModuleDetailedFieldsFragment,
 } from "/graphql/generated"
 
-const SelectLanguageFirstCover = styled("div")<{ covered: boolean }>`
+const SelectLanguageFirstCover = styled("div", {
+  shouldForwardProp: (prop) => prop !== "covered",
+})<{ covered: boolean }>`
   opacity: ${(props) => (props.covered ? 0.2 : 1)};
 `
 

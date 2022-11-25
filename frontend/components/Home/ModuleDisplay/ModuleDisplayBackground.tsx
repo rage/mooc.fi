@@ -6,7 +6,9 @@ interface RootProps {
   backgroundColor: string
 }
 
-const Background = styled("div")<RootProps>`
+const Background = styled("div", {
+  shouldForwardProp: (prop) => prop !== "backgroundColor",
+})<RootProps>`
   margin-top: 1em;
   display: flex;
   flex-direction: row;
@@ -31,10 +33,6 @@ const ModuleDisplayBackground = (
   props: React.PropsWithChildren<DisplayBackgroundProps>,
 ) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
-
-  // webp for svg?
-  // const imageUrl = "/static/images/backgroundPattern.svg"
-  // <source srcSet={`${imageUrl}?webp`} type="image/webp" />
 
   return (
     <Background backgroundColor={backgroundColor}>
