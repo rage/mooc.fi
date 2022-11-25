@@ -14,7 +14,7 @@ import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
 const iconBaseStyle = css`
-  height: 1.5rem;
+  height: 1.25rem;
 `
 interface ButtonProps {
   active: any

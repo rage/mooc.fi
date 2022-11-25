@@ -13,7 +13,7 @@ const IconBaseStyle = css`
   fill: white;
   margin-bottom: 1rem;
   margin: 1rem;
-  width: 33px;
+  width: 3rem;
 `
 
 const TwitterIcon = styled(Twitter)`

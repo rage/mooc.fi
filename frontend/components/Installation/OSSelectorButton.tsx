@@ -20,7 +20,7 @@ const StyledButtonBase = styled(ButtonBase)<ButtonProps>`
   padding: 1 em;
 `
 const iconStyle = css`
-  height: 3rem;
+  height: 3.5rem;
   margin-top: 0.5rem;
   margin-left: 0.7rem;
   margin-right: 0.7rem;

@@ -6,7 +6,7 @@ import CommentsIcon from "@fortawesome/fontawesome-free/svgs/solid/comments.svg?
 import GraduationCapIcon from "@fortawesome/fontawesome-free/svgs/solid/graduation-cap.svg?icon"
 import LaptopIcon from "@fortawesome/fontawesome-free/svgs/solid/laptop.svg?icon"
 import PlusSquareIcon from "@fortawesome/fontawesome-free/svgs/solid/square-plus.svg?icon"
-import UserFriendsIcon from "@fortawesome/fontawesome-free/svgs/solid/users.svg?icon"
+import UserFriendsIcon from "@fortawesome/fontawesome-free/svgs/solid/user-group.svg?icon"
 import Button from "@mui/material/Button"
 import { css, styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
