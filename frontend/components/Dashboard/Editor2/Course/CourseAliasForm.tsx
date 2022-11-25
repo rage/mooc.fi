@@ -1,3 +1,5 @@
+import { styled } from "@mui/material/styles"
+
 import {
   ControlledFieldArrayList,
   ControlledHiddenField,
@@ -8,6 +10,9 @@ import { CourseAliasFormValues } from "/components/Dashboard/Editor2/Course/type
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
+const FullWidthControlledTextField = styled(ControlledTextField)`
+  width: 100%;
+`
 export default function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)
 
@@ -31,7 +36,7 @@ export default function CourseAliasForm() {
             name={`course_aliases.${index}._id`}
             defaultValue={item._id}
           />
-          <ControlledTextField
+          <FullWidthControlledTextField
             name={`course_aliases.${index}.course_code`}
             label={t("courseAliasCourseCode")}
             defaultValue={item.course_code}

@@ -1,5 +1,4 @@
-import "@fortawesome/fontawesome-free/css/all.min.css"
-
+// import "@fortawesome/fontawesome-free/css/all.min.css"
 import { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"

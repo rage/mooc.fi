@@ -1,3 +1,4 @@
+import { omit } from "lodash"
 import { Controller, useFormContext } from "react-hook-form"
 
 import { Autocomplete, Chip, TextField } from "@mui/material"
@@ -17,7 +18,7 @@ export default function UserCourseSettingsVisibilityForm() {
       control={control}
       render={(renderProps) => (
         <Autocomplete
-          {...renderProps}
+          {...omit(renderProps, ["formState", "fieldState"])}
           multiple={true}
           freeSolo={true}
           options={[] as string[]}

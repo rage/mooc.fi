@@ -147,7 +147,6 @@ const renderForm =
             <FormFieldGroup>
               <StyledFieldWithAnchor
                 id="input-course-name"
-                style={{ width: "80%" }}
                 name="name"
                 type="text"
                 label={t("courseName")}
@@ -160,7 +159,6 @@ const renderForm =
               />
               <StyledFieldWithAnchor
                 id="input-course-slug"
-                style={{ width: "40%" }}
                 name="new_slug"
                 type="text"
                 label={t("courseSlug")}
@@ -173,7 +171,6 @@ const renderForm =
                 helperText={t("courseSlugHelper")}
               />
               <StyledFieldWithAnchor
-                style={{ width: "25%" }}
                 name="ects"
                 type="text"
                 label={t("courseECTS")}
@@ -350,7 +347,6 @@ const renderForm =
                   autoComplete="off"
                   variant="outlined"
                   component={StyledTextField}
-                  style={{ width: "20%" }}
                   InputLabelProps={inputLabelProps}
                 />
                 <StyledFieldWithAnchor
@@ -362,7 +358,6 @@ const renderForm =
                   autoComplete="off"
                   variant="outlined"
                   component={StyledTextField}
-                  style={{ width: "20%" }}
                   InputLabelProps={inputLabelProps}
                 />
               </FormFieldGroup>

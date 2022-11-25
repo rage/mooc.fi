@@ -39,7 +39,6 @@ const TabBar = styled(AppBar)`
 
 const StyledTab = styled(Tab)`
   margin-top: 1rem;
-  color: unset;
 `
 
 interface DashboardTabsProps {
