@@ -90,19 +90,10 @@ const getCookie = (key: string) => {
     return
   }
 
-  const found = document.cookie.split("; ").find((cookie) => {
-    try {
-      const [cookie_key] = cookie.split("=")
+  const cookieString = decodeURIComponent(document.cookie)
+  const found = cookieString.match("(^|[^;]+)s*" + key + "s*=s*([^;]+)")
 
-      return cookie_key === key
-    } catch (e) {
-      //
-    }
-
-    return false
-  })
-
-  return found || ""
+  return found ? found.pop() ?? "" : ""
 }
 
 export const getAccessToken = (ctx: NextContext | undefined) => {
