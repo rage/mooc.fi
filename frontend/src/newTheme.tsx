@@ -9,6 +9,19 @@ const rawTheme = createTheme({
     secondary: {
       main: amber[500],
     },
+    /*  Coming in a later PR for the custom colors
+      spgray: {
+      main: "#1A2333",
+    },
+    spgreen: {
+      main: "#065853",
+    },
+    sppurple: {
+      main: "#51309F",
+    },
+    spblue: {
+      main: "#08457A",
+    }, */
   },
   typography: {
     fontFamily: "roboto",
