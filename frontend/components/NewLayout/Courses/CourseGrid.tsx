@@ -101,13 +101,13 @@ const ResetFiltersButton = styled(Button)`
   max-height: 2.5rem;
 `
 
-const TagsContainer = styled.div`
+const TagsContainer = styled("div")`
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: 70% 30%;
 `
 
-const SelectAllContainer = styled.div``
+const SelectAllContainer = styled("div")``
 
 function CourseGrid() {
   const t = useTranslator(CommonTranslations)
