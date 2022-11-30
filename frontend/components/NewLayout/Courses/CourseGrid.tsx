@@ -4,7 +4,13 @@ import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import ClearIcon from "@mui/icons-material/Clear"
-import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material"
+import {
+  Button,
+  ButtonProps,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
@@ -60,6 +66,7 @@ const CardContainer = styled("div")`
 
 const SearchBar = styled(TextField)`
   margin: 0.5rem 0;
+  background: #f5f6f7;
 `
 
 const Filters = styled("div")`
@@ -75,14 +82,21 @@ const FilterLabel = styled("div")`
   margin-right: 1rem;
 `
 
-const TagButton = styled(Button)`
+const TagButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "variant",
+})<ButtonProps & { variant: string }>`
   border-radius: 2rem;
   margin: 0.05rem 0.2rem;
   font-weight: bold;
   border-width: 0.15rem;
+  color: ${({ variant }) => (variant === "contained" ? "#F5F6F7" : "#378170")};
+  background-color: ${({ variant }) =>
+    variant === "contained" ? "#378170" : "#F5F6F7"};
 
   &:hover {
     border-width: 0.15rem;
+    background-color: ${({ variant }) =>
+      variant === "contained" ? "#378170" : "#F5F6F7"};
   }
 `
 
@@ -94,11 +108,22 @@ const Statuses = styled("div")`
   justify-self: end;
 `
 
-const ResetFiltersButton = styled(Button)`
+const ResetFiltersButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "variant",
+})<ButtonProps & { variant: string }>`
   border-radius: 1rem;
   font-weight: bold;
   border-width: 0.15rem;
   max-height: 2.5rem;
+  color: ${({ variant }) => (variant === "contained" ? "#F5F6F7" : "#378170")};
+  background-color: ${({ variant }) =>
+    variant === "contained" ? "#378170" : "#F5F6F7"};
+
+  &:hover {
+    border-width: 0.15rem;
+    background-color: ${({ variant }) =>
+      variant === "contained" ? "#378170" : "#F5F6F7"};
+  }
 `
 
 const TagsContainer = styled("div")`
