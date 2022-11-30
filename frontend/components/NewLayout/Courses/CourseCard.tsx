@@ -15,9 +15,10 @@ const colorSchemes = {
   ai: "#51309F",
 }
 
-const difficultyTags = ["beginner", "intermediate", "pro"]
+/* Needed in a later PR for the custom tag colors per tag type
+const difficultyTags = ["beginner", "intermediate", "advanced"]
 const moduleTags = ["AI", "programming", "cloud", "cyber security"]
-const languageTags = ["fi", "en", "se"]
+const languageTags = ["fi", "en", "se"] */
 
 const ContainerBase = css`
   display: grid;
@@ -132,12 +133,15 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
-const tagType = (tag: string) =>
+/*  Coming in a later PR for the custom colors
+  const tagType = (tag: string) =>
   difficultyTags.includes(tag)
     ? "difficulty"
     : moduleTags.includes(tag)
     ? "module"
-    : "language"
+    : languageTags.includes(tag)
+    ? "language"
+    : "unknown" */
 
 interface CourseCardProps {
   course: CourseFieldsFragment
@@ -199,13 +203,14 @@ function CourseCard({ course, tags }: CourseCardProps) {
               size="small"
               variant="contained"
               disabled
-              color={
+              /*  Coming in a later PR for the custom colors
+                color={
                 tagType(tag) == "difficulty"
                   ? "spgray"
                   : tagType(tag) == "module"
                   ? "sppurple"
                   : "spblue"
-              }
+              } */
             >
               {tag}
             </Tag>

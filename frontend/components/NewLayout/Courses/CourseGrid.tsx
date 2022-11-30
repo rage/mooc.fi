@@ -14,7 +14,8 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CoursesDocument, CourseStatus } from "/graphql/generated"
 
-/* const Container = styled.div`
+/*  Coming in a later PR for better mobile view
+  const Container = styled.div`
   display: grid;
   max-width: 600px;
 
@@ -108,13 +109,6 @@ const TagsContainer = styled.div`
 
 const SelectAllContainer = styled.div``
 
-const colorSchemes = {
-  csb: "#08457A",
-  programming: "#065853",
-  cloud: "#1A2333",
-  ai: "#51309F",
-}
-
 function CourseGrid() {
   const t = useTranslator(CommonTranslations)
   const { locale = "fi" } = useRouter()
@@ -151,7 +145,7 @@ function CourseGrid() {
       "en",
       "se",
     ]) */
-    setDifficultyTags(["beginner", "intermediate", "pro"])
+    setDifficultyTags(["beginner", "intermediate", "advanced"])
     setModuleTags(["AI", "programming", "cloud", "cyber security"])
     setLanguageTags(["fi", "en", "se"])
   }, [])
