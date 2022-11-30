@@ -3,9 +3,9 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
+import ClearIcon from "@mui/icons-material/Clear"
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import ClearIcon from '@mui/icons-material/Clear'
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import CommonTranslations from "/translations/common"
