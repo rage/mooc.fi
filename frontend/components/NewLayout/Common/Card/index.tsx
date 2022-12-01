@@ -58,7 +58,8 @@ export const CardTitle = styled((props: TypographyProps) => (
   <Typography variant="h6" {...props} />
 ))`
   z-index: 1;
-`
+` as typeof Typography
+
 const CommonHeaderBackground = css`
   opacity: 0.4;
   position: absolute;

@@ -6,11 +6,8 @@ import { Avatar, Button, Paper } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CertificateButton from "/components/CertificateButton"
-import {
-  formatDateTime,
-  mapLangToLanguage,
-} from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
+import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
 import { addDomain } from "/util/imageUtils"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"

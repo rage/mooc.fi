@@ -4,7 +4,6 @@ import { useQuery } from "@apollo/client"
 import { Button, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { formatDateTime } from "/components/DataFormatFunctions"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import {
   CardBody,
@@ -14,6 +13,7 @@ import {
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
 import moocLogoUrl from "/static/images/moocfi-transparent.svg"
+import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"

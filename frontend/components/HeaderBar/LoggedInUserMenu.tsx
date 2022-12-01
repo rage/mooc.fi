@@ -5,7 +5,7 @@ import Envelope from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon
 import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import Search from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
 import Button from "@mui/material/Button"
-import { css, styled } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
@@ -13,9 +13,6 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const iconBaseStyle = css`
-  height: 1.25rem;
-`
 interface ButtonProps {
   active: any
 }
@@ -63,7 +60,7 @@ const UserMenu = () => {
   const active = useActiveTab()
 
   return (
-    <nav role="navigation">
+    <>
       {admin && (
         <>
           <Link href={`/courses`} passHref>
@@ -73,7 +70,7 @@ const UserMenu = () => {
               active={active == "courses" ? 1 : null}
               style={{ marginLeft: "1em" }}
             >
-              <ChalkboardTeacher css={iconBaseStyle} />
+              <ChalkboardTeacher />
               <ButtonLabel>{t("courses")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -84,7 +81,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "study-modules" ? 1 : null}
             >
-              <List css={iconBaseStyle} />
+              <List />
               <ButtonLabel>{t("modules")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -94,7 +91,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "users" ? 1 : null}
             >
-              <Search css={iconBaseStyle} />
+              <Search />
               <ButtonLabel>{t("userSearch")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -104,13 +101,13 @@ const UserMenu = () => {
               variant="text"
               active={active == "email-templates" ? 1 : null}
             >
-              <Envelope css={iconBaseStyle} />
+              <Envelope />
               <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
             </StyledButton>
           </Link>
         </>
       )}
-    </nav>
+    </>
   )
 }
 

@@ -23,13 +23,15 @@ const nextConfiguration = {
     locales: ["en", "fi"],
     defaultLocale: "fi",
   },
-  experimental: {
+  compiler: {
     // enabling emotion here will allow for components to be used as selectors
     // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
       autoLabel: "never",
     },
+  },
+  experimental: {
     modularizeImports: {
       "@mui/icons-material": {
         transform: "@mui/icons-material/{{member}}",
@@ -62,7 +64,11 @@ const nextConfiguration = {
       use: [
         {
           loader: "@svgr/webpack",
-          options: { typescript: true, memo: true },
+          options: {
+            typescript: true,
+            memo: true,
+            template: require("./src/iconTemplate"),
+          },
         },
       ],
     })

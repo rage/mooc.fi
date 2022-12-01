@@ -23,8 +23,8 @@ import {
   CollapseTableCell,
   CollapseTableRow,
 } from "/components/Dashboard/Users/Summary/common"
-import { formatDateTime } from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
+import { formatDateTime } from "/util/dataFormatFunctions"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 

@@ -12,26 +12,13 @@ import userOsContext from "/contexts/UserOSContext"
 const Container = styled("div")`
   display: flex;
   flex-direction: row;
-  @media (max-width: 1095px) {
-    width: 60%;
-    left: 20%;
-  }
-  @media (max-width: 675px) {
-    width: 80%;
-    left: 10%;
-  }
-  @media (max-width: 500px) {
-    width: 100%;
-    left: 0;
-  }
+  position: absolute;
   justify-content: center;
   background-color: white;
   border: 2px solid black;
-  width: 33%;
-  margin: auto;
-  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   top: -3.5rem;
-  left: 33%;
 `
 
 interface Props {

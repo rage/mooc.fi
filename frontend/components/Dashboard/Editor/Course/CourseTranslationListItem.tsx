@@ -8,8 +8,8 @@ import {
   StyledTextField,
 } from "/components/Dashboard/Editor/common"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import CoursesTranslations from "/translations/courses"
+import { mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionContainer = styled("div")`

@@ -4,13 +4,10 @@ import Grid from "@mui/material/Grid"
 import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-import {
-  formatDateTime,
-  mapLangToLanguage,
-} from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
+import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
 import {

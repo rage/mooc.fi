@@ -54,7 +54,9 @@ const Container = styled("div")`
   padding: 1rem;
 `
 
-const CardContainer = styled("div")`
+const CardContainer = styled("ul")`
+  list-style: none;
+  padding: 0;
   display: grid;
   grid-gap: 2rem;
   grid-template-columns: 1fr 1fr;

@@ -18,9 +18,9 @@ import {
 } from "./CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
-import { formatDateTime } from "/components/DataFormatFunctions"
 import { CompletionListItem } from "/components/Home/Completions"
 import ProfileTranslations from "/translations/profile"
+import { formatDateTime } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
 import {

@@ -5,6 +5,7 @@ import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
 import moocLogoUrl from "/static/images/moocfi_white.svg"
 import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
@@ -79,7 +80,7 @@ const Title = styled(CardTitle)`
   padding: 0.5rem;
   border-radius: 0.2rem;
   align-self: center;
-`
+` as typeof CardTitle
 
 const Sponsor = styled("img")`
   max-width: 9rem;
@@ -152,8 +153,8 @@ function CourseCard({ course, tags }: CourseCardProps) {
   return (
     <Container>
       <TitleContainer>
-        <Title>
-          <Typography variant="h4">{course?.name}</Typography>
+        <Title variant="h4" component="h2">
+          {course?.name}
         </Title>
         <MoocfiLogo alt="MOOC logo" src={moocLogoUrl} />
       </TitleContainer>
@@ -180,15 +181,15 @@ function CourseCard({ course, tags }: CourseCardProps) {
               Päättynyt{" "}
               {course.end_date &&
                 Date.parse(course.end_date) < Date.now() &&
-                prettifyDate(course.end_date)}
+                formatDateTime(course.end_date)}
             </p>
           ) : (
             <p>
               Käynnissä{" "}
               {course.end_date ? (
                 <>
-                  {prettifyDate(course.start_date)} -{" "}
-                  {prettifyDate(course.end_date)}
+                  {formatDateTime(course.start_date)} -{" "}
+                  {formatDateTime(course.end_date)}
                 </>
               ) : (
                 <>— Aikatauluton</>
@@ -228,7 +229,7 @@ export const CourseCardSkeleton = () => (
   <SkeletonContainer>
     <TitleContainer>
       <Title>
-        <Typography variant="h4">
+        <Typography variant="h4" component="h2">
           <Skeleton width={100 + Math.random() * 100} />
         </Typography>
       </Title>

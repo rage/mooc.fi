@@ -18,6 +18,7 @@ import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
@@ -154,8 +155,6 @@ const CourseInfo = ({
     {children}
   </CourseInfoLine>
 )
-const formatDate = (date?: string | null) =>
-  date ? new Date(date).toLocaleDateString() : "-"
 
 interface CourseCardProps {
   course?: EditorCourseFieldsFragment
@@ -221,8 +220,8 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
           {course ? (
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
-                {formatDate(course?.start_date)} to{" "}
-                {formatDate(course?.end_date)}
+                {formatDateTime(course?.start_date)} to{" "}
+                {formatDateTime(course?.end_date ?? "")}
               </CourseInfo>
 
               <CourseInfo
