@@ -165,7 +165,7 @@ describe("redisify", () => {
       expect(res).toEqual(undefined)
       expect(getMock).toHaveBeenCalledWith("bar:baz")
       expect(logger.info).toHaveBeenCalledWith("Cache miss: bar")
-      expect(logger.error).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Could not resolve value for bar:baz; error: ",
         "foo",
       )
