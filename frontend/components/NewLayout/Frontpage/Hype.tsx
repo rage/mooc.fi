@@ -47,6 +47,9 @@ const HypeGrid = styled("div", {
   }
 `
 
+const HypeCardHeader = styled(CardHeader)`
+  background-color: #f5f5f5;
+`
 interface HypeCardProps {
   item: NaviItem
 }
@@ -54,9 +57,9 @@ interface HypeCardProps {
 const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
   return (
     <CardWrapper>
-      <CardHeader>
+      <HypeCardHeader>
         <CardTitle variant="h2">{title}</CardTitle>
-      </CardHeader>
+      </HypeCardHeader>
       <CardBody>
         <CardDescription>{text}</CardDescription>
       </CardBody>

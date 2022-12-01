@@ -1,5 +1,7 @@
 import React from "react"
 
+import backgroundPattern from "static/images/backgroundPattern2.svg"
+
 import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
@@ -16,6 +18,21 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
+const Background = styled("div")`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -10;
+  background: #fefefe;
+  background-image: url(${backgroundPattern});
+`
+
+const MainContent = styled("main")`
+  position: relative;
+`
+
 const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
   children,
 }) => {
@@ -24,13 +41,14 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
       <SkipLink />
       <FooterDownPusherWrapper>
         <Header />
-        <main id="main">
+        <MainContent id="main">
+          <Background />
           <Breadcrumbs />
           <Alerts />
           {children}
-        </main>
-        <BottomNavigation />
+        </MainContent>
         <Footer />
+        <BottomNavigation />
       </FooterDownPusherWrapper>
     </div>
   )

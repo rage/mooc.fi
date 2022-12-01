@@ -29,11 +29,14 @@ const HeroContainer = styled("li")`
 const ModuleCardWrapper = styled(CardWrapper, {
   shouldForwardProp: (prop) => prop !== "backgroundColor" && prop !== "as",
 })<{ backgroundColor: string }>`
+  border-radius: 0;
   display: flex;
   width: 100%;
   flex-direction: column;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
   position: relative;
+  z-index: -8;
+  background-color: #fefefe;
   ${(props) =>
     `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
   @media(max-width: 1200px) {
@@ -90,7 +93,7 @@ const ImageBackgroundBase = css`
   bottom: 0;
   background-size: cover;
   background-position: center 40%;
-  z-index: -10;
+  z-index: -5;
 `
 
 const ImageBackground = styled("span", {
@@ -98,7 +101,6 @@ const ImageBackground = styled("span", {
 })<{ src: string }>`
   ${ImageBackgroundBase};
   background-image: url(${(props) => props.src});
-  opacity: 0.4;
 `
 
 const SkeletonBackground = styled("span")`
@@ -126,9 +128,6 @@ export function ListItem({
   module,
   backgroundColor,
 }: StudyModuleListItemProps) {
-  const des = module.name.includes("Ohj")
-    ? "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et, sequi dolor maiores hic atque vel, officia animi maxime accusamus voluptate laborum eaque ea reiciendis beatae labore cupiditate, aliquid quis consequuntur? Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, beatae. Voluptatem recusandae est voluptatibus fugit tempore omnis delectus maxime praesentium repellendus voluptate? Sint a eveniet, dolorum cum distinctio repudiandae maiores! Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus error hic voluptatum? Placeat commodi optio quisquam, animi est quibusdam architecto, ipsam tenetur, provident aspernatur quas dicta. In soluta modi neque."
-    : module.description
   const descriptionRef = useRef<HTMLElement | null>()
   const courses = useMemo(
     () => module.courses?.filter((course) => course.description) ?? [],
@@ -144,7 +143,6 @@ export function ListItem({
       return
     }
 
-    console.log(description.scrollHeight, description.clientHeight)
     if (description.scrollHeight > description.clientHeight) {
       const span = Math.round(description.scrollHeight / 200) // the max size of row should be in a var
       description.style.cssText = `--hero-span: ${span};`
@@ -161,7 +159,7 @@ export function ListItem({
       window.removeEventListener("resize", setDescriptionHeight)
     }
   })
-  useEffect(setDescriptionHeight, [des])
+  useEffect(setDescriptionHeight, [module.description])
 
   // TODO: the anchor link may have to be shifted by the amount of the header again
   return (
@@ -172,7 +170,7 @@ export function ListItem({
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>
             <CenteredHeader variant="h1">{module.name}</CenteredHeader>
-            <Typography variant="subtitle1">{des}</Typography>
+            <Typography variant="subtitle1">{module.description}</Typography>
           </ModuleCardDescription>
         </HeroContainer>
         {courses?.map((course) => (

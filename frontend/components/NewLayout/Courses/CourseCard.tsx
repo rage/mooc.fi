@@ -57,7 +57,9 @@ const SkeletonContainer = styled("li")`
 
 const TitleContainer = styled("div")`
   position: relative;
-  padding: 1rem 2.5rem 1rem 2.5rem;
+  min-height: 80px;
+  height: 80px;
+  padding: 1rem 2.5rem 1rem 1.5rem;
   display: flex;
 `
 
@@ -76,10 +78,10 @@ const Title = styled(CardTitle)`
   font-weight: bold;
   color: white;
   font-size: 1.5rem;
-  text-align: center;
-  padding: 0.5rem;
+  text-align: left;
   border-radius: 0.2rem;
   align-self: center;
+  width: 70%;
 ` as typeof CardTitle
 
 const Sponsor = styled("img")`

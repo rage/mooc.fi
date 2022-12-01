@@ -54,7 +54,6 @@ function ModuleNaviList({
           <ModuleCard
             key={`module-${index}`}
             module={module}
-            hue={100}
             variant={variant}
           />
         ))}

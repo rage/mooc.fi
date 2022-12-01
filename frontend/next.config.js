@@ -28,7 +28,8 @@ const nextConfiguration = {
     // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
-      autoLabel: "never",
+      autoLabel: "dev-only",
+      labelFormat: "[dirname]-[filename]-[local]",
       importMap: {
         "@mui/system": {
           styled: {

@@ -12,12 +12,13 @@ export const CardWrapper = styled("div")`
 `
 
 export const CardHeader = styled("div")`
-  height: 140px;
+  height: 120px;
+  min-height: 120px;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 1rem;
+  justify-content: center;
+  padding: 2rem 1rem;
   z-index: -2;
 `
 
@@ -72,19 +73,23 @@ const CommonHeaderBackground = css`
 
 export const CardHeaderBackground = styled("span", {
   shouldForwardProp: (prop) =>
-    typeof prop !== "string" || !["image", "hue", "brightness"].includes(prop),
+    typeof prop !== "string" ||
+    !["color", "image", "hue", "brightness"].includes(prop),
 })<{
   image: string
+  color?: string
   hue?: number
   brightness?: number
 }>`
   ${CommonHeaderBackground};
-  /*filter: hue-rotate(${(props) => props.hue ?? 0}deg)
-    brightness(${(props) => props.brightness ?? 1});*/
   background-size: cover;
-  background-image: linear-gradient(to left, rgba(255, 0, 0, 0), #065853 55%),
-    url(${(props) => `../../../static/images/${props.image}`});
+  ${({ color, image }) => `background-image: ${
+    color ? `linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%), ` : ""
+  }
+    url("../../../static/images/${image}");`}
 `
+//   /*filter: hue-rotate(${props.hue ?? 0}deg)
+// brightness(${props.brightness} ?? 1});*/
 
 CardHeaderBackground.defaultProps = {
   "aria-hidden": true,

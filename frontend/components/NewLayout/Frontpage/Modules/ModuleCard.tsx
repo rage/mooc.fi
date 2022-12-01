@@ -23,8 +23,8 @@ interface ModuleCardProps {
 }
 
 const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
-  filter: hue-rotate(${(props) => props.hue ?? 0}deg)
-    brightness(${(props) => props.brightness ?? 1});
+  /*filter: hue-rotate(${(props) => props.hue ?? 0}deg)
+    brightness(${(props) => props.brightness ?? 1});*/
 `
 
 const CardActionArea = styled("div")`
@@ -34,26 +34,18 @@ const CardActionArea = styled("div")`
 
 export const ModuleCard = ({
   module: { name, slug, image, description },
-  hue,
-  brightness,
 }: ModuleCardProps) => {
   return (
     <CardWrapper>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <CardHeaderBackground
-          hue={hue}
-          brightness={brightness}
-          image={image ?? ""}
-        />
+        <CardHeaderBackground image={image ?? ""} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActionArea>
           <Link href={`/_new/study-modules/#${slug}`} passHref>
-            <ModuleButton hue={hue} brightness={brightness}>
-              Kokonaisuuden tiedot
-            </ModuleButton>
+            <ModuleButton>Kokonaisuuden tiedot</ModuleButton>
           </Link>
         </CardActionArea>
       </CardBody>
