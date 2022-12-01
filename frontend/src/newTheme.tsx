@@ -1,5 +1,19 @@
 import { amber } from "@mui/material/colors"
-import { createTheme, Theme } from "@mui/material/styles"
+import { createTheme, css, Theme } from "@mui/material/styles"
+
+const latoFamily = "Lato, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+// @ts-ignore: not used
+const ralewayFamily =
+  "Raleway, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+// @ts-ignore: not used
+const epilogueFamily =
+  "Epilogue, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+// @ts-ignore: not used
+const encodeSansFamily =
+  "Encode Sans, system-ui, Cantarell, Ubuntu, roboto, sans-serif"
+
+const headerFontFamily = ralewayFamily
+const bodyFontFamily = latoFamily
 
 const rawTheme = createTheme({
   palette: {
@@ -24,11 +38,11 @@ const rawTheme = createTheme({
     }, */
   },
   typography: {
-    fontFamily: "roboto",
+    fontFamily: bodyFontFamily,
     button: {
       label: {
-        textTransform: "none",
-        fontFamily: "Open Sans Condensed",
+        textTransform: "uppercase",
+        // fontFamily: "",
       },
     },
   },
@@ -57,8 +71,8 @@ const rawTheme = createTheme({
       },
       styleOverrides: {
         root: {
-          textTransform: "none",
-          fontFamily: "Roboto",
+          textTransform: "uppercase",
+          fontFamily: bodyFontFamily,
           borderRadius: "20px",
         },
       },
@@ -73,35 +87,41 @@ const theme: Theme = {
     h1: {
       ...rawTheme.typography.h1,
       paddingBottom: "1rem",
-      fontFamily: "Roboto",
-      fontSize: 48,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
+      fontWeight: 600,
+      fontSize: 40,
       "@media (min-width: 600px)": {
-        fontSize: 56,
+        fontSize: 48,
       },
       "@media (min-width: 960px)": {
-        fontSize: 72,
+        fontSize: 60,
       },
     },
     h2: {
       ...rawTheme.typography.h2,
       paddingBottom: "1rem",
-      fontSize: 40,
-      fontFamily: "Roboto",
+      fontSize: 36,
+      fontFamily: headerFontFamily,
+      fontWeight: 600,
+      fontStretch: "condensed",
       "@media (min-width: 600px)": {
-        fontSize: 30,
+        fontSize: 20,
       },
       "@media (min-width: 960px)": {
-        fontSize: 36,
+        fontSize: 24,
       },
       "@media (min-width: 1440px)": {
-        fontSize: 44,
+        fontSize: 28,
       },
     },
     h3: {
       ...rawTheme.typography.h3,
       paddingBottom: "0.5rem",
       paddingTop: "0.7rem",
-      fontFamily: "Roboto",
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
+      fontWeight: 600,
       fontSize: 16,
       "@media (min-width: 600px)": {
         fontSize: 20,
@@ -109,15 +129,27 @@ const theme: Theme = {
     },
     h4: {
       ...rawTheme.typography.h4,
-      fontFamily: "Roboto",
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
       fontSize: 14,
       "@media (min-width: 600px)": {
         fontSize: 16,
       },
     },
+    h5: {
+      ...rawTheme.typography.h5,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
+    },
+    h6: {
+      ...rawTheme.typography.h6,
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
+    },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
-      fontFamily: "Roboto",
+      fontFamily: headerFontFamily,
+      fontStretch: "condensed",
       fontSize: 18,
       "@media (min-width: 600px)": {
         fontSize: 22,
@@ -129,6 +161,7 @@ const theme: Theme = {
     body1: {
       ...rawTheme.typography.body1,
       fontSize: 12,
+      fontFamily: bodyFontFamily,
       "@media (min-width: 600px)": {
         fontSize: 14,
       },
@@ -138,5 +171,9 @@ const theme: Theme = {
     },
   },
 }
+
+export const newFontCss = css`
+  @import url("https://fonts.googleapis.com/css2?family=Encode+Sans:wdth,wght@75,400;75,500;75,600;75,700&family=Epilogue:wght@400;500;700;900&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,800;0,900;1,300;1,400;1,500;1,600&display=swap");
+`
 
 export default theme

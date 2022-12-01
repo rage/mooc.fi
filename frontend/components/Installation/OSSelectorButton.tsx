@@ -28,14 +28,6 @@ const iconStyle = css`
   margin-left: 0.7rem;
   margin-right: 0.7rem;
   margin-bottom: 0.25rem;
-  /*@media (max-width: 600px) {
-    font-size: 2.5rem;
-    width: 2.5rem;
-  }
-  @media (max-width: 400px) {
-    font-size: 1.5rem;
-    width: 1.5rem;
-  }*/
 `
 
 const StyledTypography = styled(Typography)`

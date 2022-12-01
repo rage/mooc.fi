@@ -5,15 +5,13 @@ import { useQuery } from "@apollo/client"
 import { Button } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ModuleNaviList from "./ModuleNaviList"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
-import {
-  ModuleCard,
-  ModuleCardSkeleton,
-} from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
 
+// @ts-ignore: not used?
 const ModulesGrid = styled("div")`
   display: grid;
   grid-gap: 1rem;
@@ -92,7 +90,7 @@ const Arrow = styled("div")`
   }
 `*/
 
-function Modules() {
+export function ModuleNavigation() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(StudyModulesDocument, {
@@ -102,23 +100,10 @@ function Modules() {
   return (
     <SectionContainer id="modules">
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
-      <ModulesGrid>
-        {loading && (
-          <>
-            <ModuleCardSkeleton key="module-skeleton-1" />
-            <ModuleCardSkeleton key="module-skeleton-2" />
-            <ModuleCardSkeleton key="module-skeleton-3" />
-          </>
-        )}
-        {data?.study_modules?.map((module, index) => (
-          <ModuleCard key={`module-${index}`} module={module} hue={100} />
-        ))}
-      </ModulesGrid>
+      <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <Link href="/_new/study-modules" passHref>
         <Button>Näytä kaikki kokonaisuudet</Button>
       </Link>
     </SectionContainer>
   )
 }
-
-export default Modules

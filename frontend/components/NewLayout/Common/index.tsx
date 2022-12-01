@@ -16,3 +16,14 @@ export const SectionContainer = styled("section")`
     margin: 0;
   }
 `
+
+export const CorrectedAnchor = styled(
+  (props: React.HTMLAttributes<HTMLDivElement>) => (
+    <div tabIndex={-1} {...props} />
+  ),
+)`
+  display: block;
+  position: relative;
+  top: -120px;
+  visibility: hidden;
+`

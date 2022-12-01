@@ -20,7 +20,7 @@ import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
 import { fontCss } from "/src/fonts"
-import newTheme from "/src/newTheme"
+import newTheme, { newFontCss } from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
@@ -62,6 +62,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
 
   const Layout = isNew ? NewLayout : OriginalLayout
   const theme = isNew ? newTheme : originalTheme
+
   const loginStateContextValue = useMemo(
     () => ({
       loggedIn: pageProps?.signedIn,
@@ -71,6 +72,13 @@ export function MyApp({ Component, pageProps }: AppProps) {
     [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
   )
 
+  const alternateLanguage = useMemo(() => {
+    if (router.locale === "en") {
+      return { hrefLang: "fi_FI", href: router.asPath.replace("/en/", "/") }
+    }
+    return { hrefLang: "en_US", href: `/en${router.asPath}` }
+  }, [router.locale, router.pathname])
+
   return (
     <>
       <Head>
@@ -78,6 +86,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
         />
+        <link rel="alternate" {...alternateLanguage} />
         <title>{title}</title>
       </Head>
       <ThemeProvider theme={theme}>
@@ -88,6 +97,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
               <AlertProvider>
                 <Layout>
                   <GlobalStyles styles={fontCss} />
+                  {isNew && <GlobalStyles styles={newFontCss} />}
                   <Component {...pageProps} />
                 </Layout>
               </AlertProvider>

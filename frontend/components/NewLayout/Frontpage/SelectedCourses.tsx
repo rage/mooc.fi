@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -11,6 +12,7 @@ import {
   CardHeaderImage,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
+import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
 import moocLogoUrl from "/static/images/moocfi-transparent.svg"
 import { formatDateTime } from "/util/dataFormatFunctions"
@@ -39,6 +41,7 @@ const Date = styled((props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
 ))``
 
+// @ts-ignore: not used for now
 const CourseCard = ({
   name,
   description,
@@ -53,7 +56,7 @@ const CourseCard = ({
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
+        <CardTitle variant="h4">{name}</CardTitle>
         <CardHeaderImage alt="MOOC logo" src={moocLogoUrl} />
       </CardHeader>
       <CardBody>
@@ -97,9 +100,12 @@ function SelectedCourses() {
           data.courses
             .slice(0, 3)
             .map((course, index) => (
-              <CourseCard key={`course-${index}`} {...course} />
+              <CommonCourseCard key={`course-${index}`} course={course} />
             ))}
       </CoursesGrid>
+      <Link href="/_new/courses" passHref>
+        <Button>Näytä kaikki kurssit</Button>
+      </Link>
     </SectionContainer>
   )
 }

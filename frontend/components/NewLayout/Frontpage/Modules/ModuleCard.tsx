@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { Button, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -17,11 +19,12 @@ interface ModuleCardProps {
   module: StudyModuleFieldsFragment
   hue?: number
   brightness?: number
+  variant?: "small" | "large"
 }
 
 const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
-  filter: hue-rotate(${(props) => props.hue ?? 0}deg)
-    brightness(${(props) => props.brightness ?? 1});
+  /*filter: hue-rotate(${(props) => props.hue ?? 0}deg)
+    brightness(${(props) => props.brightness ?? 1});*/
 `
 
 const CardActionArea = styled("div")`
@@ -30,26 +33,20 @@ const CardActionArea = styled("div")`
 `
 
 export const ModuleCard = ({
-  module: { name, image, description },
-  hue,
-  brightness,
+  module: { name, slug, image, description },
 }: ModuleCardProps) => {
   return (
     <CardWrapper>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <CardHeaderBackground
-          hue={hue}
-          brightness={brightness}
-          image={image ?? ""}
-        />
+        <CardHeaderBackground image={image ?? ""} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActionArea>
-          <ModuleButton hue={hue} brightness={brightness}>
-            Kokonaisuuden tiedot
-          </ModuleButton>
+          <Link href={`/_new/study-modules/#${slug}`} passHref>
+            <ModuleButton>Kokonaisuuden tiedot</ModuleButton>
+          </Link>
         </CardActionArea>
       </CardBody>
     </CardWrapper>
@@ -78,3 +75,11 @@ export const ModuleCardSkeleton = () => {
     </CardWrapper>
   )
 }
+
+/*const SmallModuleCard = ({
+  module: { name, slug, image, description },
+  hue,
+  brightness,
+}: ModuleCardProps) => {
+
+}*/

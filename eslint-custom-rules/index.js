@@ -71,7 +71,6 @@ const customRules = {
               return
             }
             node.specifiers.forEach((spec) => {
-              console.log("spec", spec)
               if (spec.type === "ImportDefaultSpecifier") {
                 context.report({
                   node,

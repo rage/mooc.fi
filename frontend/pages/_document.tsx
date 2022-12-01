@@ -8,7 +8,7 @@ import { augmentDocumentWithEmotionCache } from "./_app"
 class CustomDocument extends Document {
   render() {
     return (
-      <Html lang="fi" dir="ltr">
+      <Html dir="ltr">
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content={theme.palette.primary.main} />
