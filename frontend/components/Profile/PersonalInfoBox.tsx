@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon"
 import Typography from "@mui/material/Typography"
 
@@ -26,7 +26,7 @@ const StyledIcon = styled(InfoBoxIcon)`
   }
 `
 
-const InfoBoxBackground = styled.div`
+const InfoBoxBackground = styled("div")`
   background-color: white;
   padding: 0.7rem;
   color: black;
@@ -56,7 +56,7 @@ const InfoBoxBackground = styled.div`
     bottom: -50px;
   }
 `
-const Info = styled(Typography)<any>`
+const Info = styled(Typography)`
   margin-left: 1rem;
   font-size: 24px;
   @media (max-width: 425px) {

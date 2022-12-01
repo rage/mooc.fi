@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import EditorContainer from "../EditorContainer"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
@@ -17,7 +17,9 @@ import StudyModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
-const ModuleImage = styled.img<{ error?: boolean }>`
+const ModuleImage = styled("img", {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error?: boolean }>`
   object-fit: cover;
   width: 100%;
   height: 100%;

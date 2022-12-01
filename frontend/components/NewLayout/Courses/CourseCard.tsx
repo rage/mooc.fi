@@ -1,18 +1,25 @@
 import { Button, Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
+import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
-import BannerImage from "/static/images/homeBackground.jpg"
+import moocLogoUrl from "/static/images/moocfi_white.svg"
 import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes = {
-  csb: ["#090979", "#00d7ff"],
-  programming: ["#791779", "#ff00e2"],
-  cloud: ["#832525", "#ff0000"],
-  ai: ["#2c8325", "#00ff13"],
+  csb: "#08457A",
+  programming: "#065853",
+  cloud: "#1A2333",
+  ai: "#51309F",
 }
+
+/* Needed in a later PR for the custom tag colors per tag type
+const difficultyTags = ["beginner", "intermediate", "advanced"]
+const moduleTags = ["AI", "programming", "cloud", "cyber security"]
+const languageTags = ["fi", "en", "se"] */
 
 const ContainerBase = css`
   display: grid;
@@ -29,38 +36,17 @@ const Container = styled("li", {
 })<{ backgroundImage?: string }>`
   ${ContainerBase};
   &:nth-of-type(n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["cloud"][0]} 66%,
-      ${colorSchemes["cloud"][1]} 100%
-    );
+    background: ${colorSchemes["cloud"]};
   }
   &:nth-of-type(2n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["programming"][0]} 66%,
-      ${colorSchemes["programming"][1]} 100%
-    );
+    background: ${colorSchemes["programming"]};
   }
   &:nth-of-type(3n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["csb"][0]} 66%,
-      ${colorSchemes["csb"][1]} 100%
-    );
+    background: ${colorSchemes["csb"]};
   }
   &:nth-of-type(4n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["ai"][0]} 66%,
-      ${colorSchemes["ai"][1]} 100%
-    );
+    background: ${colorSchemes["ai"]};
   }
-  ${({ backgroundImage }) =>
-    backgroundImage &&
-    css`
-      background: url(${backgroundImage}) !important;
-    `}
 `
 
 const SkeletonContainer = styled("li")`
@@ -70,6 +56,7 @@ const SkeletonContainer = styled("li")`
 `
 
 const TitleContainer = styled("div")`
+  position: relative;
   padding: 1rem 2.5rem 1rem 2.5rem;
   display: flex;
 `
@@ -81,12 +68,11 @@ const ContentContainer = styled("div")`
   grid-template-rows: 5fr 3fr 2fr;
   background: rgba(255, 255, 255, 1);
   overflow: hidden;
+  z-index: 1;
   border-radius: 0 0 0.5rem 0.5rem;
 `
 
-const Title = styled("div", {
-  shouldForwardProp: (prop) => prop !== "withBackgroundImage",
-})<{ withBackgroundImage?: boolean }>`
+const Title = styled(CardTitle)`
   font-weight: bold;
   color: white;
   font-size: 1.5rem;
@@ -94,15 +80,7 @@ const Title = styled("div", {
   padding: 0.5rem;
   border-radius: 0.2rem;
   align-self: center;
-
-  ${({ withBackgroundImage }) =>
-    withBackgroundImage &&
-    css`
-      color: black;
-      background-color: white;
-      padding: 0.5rem 3rem;
-    `}
-`
+` as typeof CardTitle
 
 const Sponsor = styled("img")`
   max-width: 9rem;
@@ -140,22 +118,45 @@ const Tag = styled(Button)`
   font-weight: bold;
   margin: 0 0.1rem;
 `
+
+const CardHeaderImage = styled("img")`
+  opacity: 0.4;
+  position: absolute;
+  left: 60%;
+  top: 0.5rem;
+  width: 35%;
+  height: auto;
+  z-index: 0;
+`
+
+const MoocfiLogo = styled(CardHeaderImage)``
+
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
+
+/*  Coming in a later PR for the custom colors
+  const tagType = (tag: string) =>
+  difficultyTags.includes(tag)
+    ? "difficulty"
+    : moduleTags.includes(tag)
+    ? "module"
+    : languageTags.includes(tag)
+    ? "language"
+    : "unknown" */
 
 interface CourseCardProps {
   course: CourseFieldsFragment
   tags?: string[]
-  fifthElement?: boolean
 }
 
-function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
+function CourseCard({ course, tags }: CourseCardProps) {
   return (
-    <Container backgroundImage={fifthElement ? BannerImage : undefined}>
+    <Container>
       <TitleContainer>
-        <Title withBackgroundImage={fifthElement}>
-          <Typography variant="h3">{course?.name}</Typography>
+        <Title variant="h4" component="h2">
+          {course?.name}
         </Title>
+        <MoocfiLogo alt="MOOC logo" src={moocLogoUrl} />
       </TitleContainer>
       <ContentContainer>
         <Description>
@@ -175,15 +176,20 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
             <p>
               Tulossa {course.start_date && prettifyDate(course.start_date)}
             </p>
-          ) : course.status == "Ended" ? (
-            <p>Päättynyt {course.end_date && prettifyDate(course.end_date)}</p>
+          ) : course?.status == "Ended" ? (
+            <p>
+              Päättynyt{" "}
+              {course.end_date &&
+                Date.parse(course.end_date) < Date.now() &&
+                formatDateTime(course.end_date)}
+            </p>
           ) : (
             <p>
               Käynnissä{" "}
               {course.end_date ? (
                 <>
-                  {prettifyDate(course.start_date)} -{" "}
-                  {prettifyDate(course.end_date)}
+                  {formatDateTime(course.start_date)} -{" "}
+                  {formatDateTime(course.end_date)}
                 </>
               ) : (
                 <>— Aikatauluton</>
@@ -194,7 +200,19 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
         <Sponsor src={SponsorLogo} />
         <Tags>
           {tags?.map((tag) => (
-            <Tag size="small" variant="contained" disabled>
+            <Tag
+              size="small"
+              variant="contained"
+              disabled
+              /*  Coming in a later PR for the custom colors
+                color={
+                tagType(tag) == "difficulty"
+                  ? "spgray"
+                  : tagType(tag) == "module"
+                  ? "sppurple"
+                  : "spblue"
+              } */
+            >
               {tag}
             </Tag>
           ))}
@@ -211,7 +229,7 @@ export const CourseCardSkeleton = () => (
   <SkeletonContainer>
     <TitleContainer>
       <Title>
-        <Typography variant="h4">
+        <Typography variant="h4" component="h2">
           <Skeleton width={100 + Math.random() * 100} />
         </Typography>
       </Title>

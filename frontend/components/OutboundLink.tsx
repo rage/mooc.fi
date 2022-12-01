@@ -1,44 +1,40 @@
-import { PropsWithChildren } from "react"
+import React, { PropsWithChildren } from "react"
 
 import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
-import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons"
-import {
-  FontAwesomeIcon,
-  FontAwesomeIconProps,
-} from "@fortawesome/react-fontawesome"
+import UpRightFromSquareSvg from "@fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg"
+import { styled } from "@mui/material/styles"
 
 interface OutboundLinkProps {
-  eventLabel: string
-  to: string
   label?: string
 }
 
-console.log(faUpRightFromSquare)
-const ExternalLinkIcon = styled((props: Partial<FontAwesomeIconProps>) => (
-  <FontAwesomeIcon {...props} icon={faUpRightFromSquare} size="xs" />
-))`
-  padding-left: 0.25rem;
-`
+const StyledOutboundLink = styled(ReactGA.OutboundLink)`
+  padding-right: 0.5rem;
+  ::after {
+    content: "";
+    background-image: url(${UpRightFromSquareSvg});
+    background-size: 0.75rem 0.75rem;
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-left: 0.5rem;
+  }
+` as React.FC<ReactGA.OutboundLinkProps & React.HTMLProps<HTMLAnchorElement>>
+
 function OutboundLink({
-  eventLabel,
-  to,
   label,
   children,
   ...props
-}: PropsWithChildren<OutboundLinkProps>) {
+}: PropsWithChildren<
+  ReactGA.OutboundLinkProps &
+    React.HTMLProps<HTMLAnchorElement> &
+    OutboundLinkProps
+>) {
   return (
-    <ReactGA.OutboundLink
-      eventLabel={eventLabel}
-      to={to}
-      target="_blank"
-      aria-label={label}
-      {...props}
-    >
+    <StyledOutboundLink target="_blank" aria-label={label} {...props}>
       {children}
-      <ExternalLinkIcon />
-    </ReactGA.OutboundLink>
+    </StyledOutboundLink>
   )
 }
 

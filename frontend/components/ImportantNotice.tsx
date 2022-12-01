@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Paper, SvgIcon, SvgIconProps, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useTranslator } from "/util/useTranslator"
@@ -30,7 +30,7 @@ function AlertIcon(props: SvgIconProps) {
 }
 
 type RegProps = {
-  email: String
+  email: string
 }
 
 function ImportantNotice(props: RegProps) {

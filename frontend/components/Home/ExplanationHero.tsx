@@ -1,15 +1,15 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import Explanation from "./Explanation"
 
-const ExplanationRoot = styled.section`
+const ExplanationRoot = styled("section")`
   display: flex;
   position: relative;
   margin-bottom: 2rem;
   height: 80%;
 `
 
-const BackgroundImage = styled.img`
+const BackgroundImage = styled("img")`
   position: absolute;
   top: 0;
   left: 0;

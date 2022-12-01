@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useActiveTab } from "/components/HeaderBar/Header"

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react"
+import React, { SyntheticEvent, useCallback, useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -25,10 +25,11 @@ const tabs: Record<string, number> = {
   settings: 2,
 }
 
-const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
-  (acc, [key, value]) => ({ ...acc, [value]: key }),
-  {},
-)
+const tabsByNumber: Record<number, string> = {}
+
+for (const tab of Object.keys(tabs)) {
+  tabsByNumber[tabs[tab]] = tab
+}
 
 function Profile() {
   const _tab = useQueryParameter("tab", false) ?? "points"
@@ -37,7 +38,7 @@ function Profile() {
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
 
   const handleTabChange = useCallback(
-    (_: ChangeEvent<{}>, newValue: number) => {
+    (_: SyntheticEvent<Element, Event>, newValue: number) => {
       setTab(newValue)
       router.replace(
         router.pathname,

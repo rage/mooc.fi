@@ -1,5 +1,4 @@
-import "@fortawesome/fontawesome-svg-core/styles.css"
-
+// import "@fortawesome/fontawesome-free/css/all.min.css"
 import { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
@@ -7,13 +6,9 @@ import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CacheProvider, EmotionCache, Global } from "@emotion/react"
-// using require to import this may solve bundling issues, but not sure
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, GlobalStyles } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
-import createEmotionCache from "../src/createEmotionCache"
 import OriginalLayout from "./_layout"
 import NewLayout from "./_new/_layout"
 import { AlertProvider } from "/contexts/AlertContext"
@@ -23,25 +18,21 @@ import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
+import { createEmotionSsr } from "/src/createEmotionSsr"
 import { fontCss } from "/src/fonts"
 import newTheme, { newFontCss } from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
-fontAwesomeConfig.autoAddCss = false
+const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
+  createEmotionSsr({
+    key: "emotion-css",
+  })
 
-const clientSideEmotionCache = createEmotionCache()
+export { augmentDocumentWithEmotionCache }
 
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
-}
-
-export function MyApp({
-  Component,
-  pageProps,
-  emotionCache = clientSideEmotionCache,
-}: MyAppProps) {
+export function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -90,32 +81,30 @@ export function MyApp({
 
   return (
     <>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          />
-          <link rel="alternate" {...alternateLanguage} />
-          <title>{title}</title>
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <LoginStateProvider value={loginStateContextValue}>
-            <ConfirmProvider>
-              <BreadcrumbProvider>
-                <AlertProvider>
-                  <Layout>
-                    <Global styles={fontCss} />
-                    {isNew && <Global styles={newFontCss} />}
-                    <Component {...pageProps} />
-                  </Layout>
-                </AlertProvider>
-              </BreadcrumbProvider>
-            </ConfirmProvider>
-          </LoginStateProvider>
-        </ThemeProvider>
-      </CacheProvider>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+        />
+        <link rel="alternate" {...alternateLanguage} />
+        <title>{title}</title>
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LoginStateProvider value={loginStateContextValue}>
+          <ConfirmProvider>
+            <BreadcrumbProvider>
+              <AlertProvider>
+                <Layout>
+                  <GlobalStyles styles={fontCss} />
+                  {isNew && <GlobalStyles styles={newFontCss} />}
+                  <Component {...pageProps} />
+                </Layout>
+              </AlertProvider>
+            </BreadcrumbProvider>
+          </ConfirmProvider>
+        </LoginStateProvider>
+      </ThemeProvider>
     </>
   )
 }
@@ -154,4 +143,4 @@ MyApp.getInitialProps = async (props: AppContext) => {
   }
 }
 
-export default withApolloClient(MyApp)
+export default withAppEmotionCache(withApolloClient(MyApp))

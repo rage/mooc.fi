@@ -131,7 +131,9 @@ export const convertPagination = (
   }
 }
 
-export const filterNull = <T extends {}>(o?: T | null): T | undefined =>
+export const filterNull = <T extends Record<string, unknown>>(
+  o?: T | null,
+): T | undefined =>
   o
     ? (Object.fromEntries(
         Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),

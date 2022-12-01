@@ -1,14 +1,11 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
-import {
-  faChalkboardTeacher,
-  faEnvelope,
-  faList,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import Envelope from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
+import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import Search from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
@@ -45,7 +42,7 @@ const StyledButton = styled(Button)<ButtonProps>`
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
 `
 
-const ButtonLabel = styled(Typography)<any>`
+const ButtonLabel = styled(Typography)`
   font-family: Open Sans Condensed !important;
   font-size: 18px;
   @media (max-width: 600px) {
@@ -63,7 +60,7 @@ const UserMenu = () => {
   const active = useActiveTab()
 
   return (
-    <nav role="navigation">
+    <>
       {admin && (
         <>
           <Link href={`/courses`} passHref>
@@ -73,7 +70,7 @@ const UserMenu = () => {
               active={active == "courses" ? 1 : null}
               style={{ marginLeft: "1em" }}
             >
-              <FontAwesomeIcon icon={faChalkboardTeacher} />
+              <ChalkboardTeacher />
               <ButtonLabel>{t("courses")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -84,7 +81,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "study-modules" ? 1 : null}
             >
-              <FontAwesomeIcon icon={faList} />
+              <List />
               <ButtonLabel>{t("modules")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -94,7 +91,7 @@ const UserMenu = () => {
               variant="text"
               active={active == "users" ? 1 : null}
             >
-              <FontAwesomeIcon icon={faSearch} />
+              <Search />
               <ButtonLabel>{t("userSearch")}</ButtonLabel>
             </StyledButton>
           </Link>
@@ -104,13 +101,13 @@ const UserMenu = () => {
               variant="text"
               active={active == "email-templates" ? 1 : null}
             >
-              <FontAwesomeIcon icon={faEnvelope} />
+              <Envelope />
               <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
             </StyledButton>
           </Link>
         </>
       )}
-    </nav>
+    </>
   )
 }
 

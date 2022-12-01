@@ -1,17 +1,36 @@
-import { useMemo } from "react"
+import { useCallback } from "react"
 
 import { useRouter } from "next/router"
 
 import getTranslator, {
   combineDictionaries,
+  LanguageKey,
   Translation,
   TranslationDictionary,
+  Translator,
 } from "/translations"
 
-export const useTranslator = <
+export function useTranslator<T extends Translation>(
+  ...dicts: [TranslationDictionary<T>]
+): Translator<T>
+export function useTranslator<T extends Translation, U extends Translation>(
+  ...dicts: [TranslationDictionary<T>, TranslationDictionary<U>]
+): Translator<T & U>
+export function useTranslator<
   T extends Translation,
-  U extends Translation = {},
-  V extends Translation = {},
+  U extends Translation,
+  V extends Translation,
+>(
+  ...dicts: [
+    TranslationDictionary<T>,
+    TranslationDictionary<U>,
+    TranslationDictionary<V>,
+  ]
+): Translator<T & U & V>
+export function useTranslator<
+  T extends Translation,
+  U extends Translation = any,
+  V extends Translation = any,
 >(
   ...dicts:
     | [TranslationDictionary<T>]
@@ -21,7 +40,7 @@ export const useTranslator = <
         TranslationDictionary<U>,
         TranslationDictionary<V>,
       ]
-) => {
+) {
   const router = useRouter()
 
   const combinedDict = combineDictionaries(dicts)
@@ -30,8 +49,11 @@ export const useTranslator = <
     dicts[1] ?? {},
     dicts[2] ?? {},
   ])*/
-  const translator = useMemo(
-    () => getTranslator(combinedDict)(router?.locale ?? "fi", router),
+  const translator = useCallback(
+    getTranslator(combinedDict)(
+      (router?.locale ?? "fi") as LanguageKey,
+      router,
+    ),
     [dicts, router?.locale],
   )
 

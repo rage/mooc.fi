@@ -2,10 +2,9 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Typography, TypographyProps } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { formatDateTime } from "/components/DataFormatFunctions"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import {
   CardBody,
@@ -15,12 +14,12 @@ import {
 } from "/components/NewLayout/Common/Card"
 import { CardTitle } from "/components/Text/headers"
 import moocLogoUrl from "/static/images/moocfi-transparent.svg"
+import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
 
-const CardHeader = styled.header`
+const CardHeader = styled("div")`
   position: relative;
   background-color: #ffad14;
   height: 52px;
@@ -30,7 +29,7 @@ const CardHeader = styled.header`
   overflow: hidden;
 `
 
-const CardActionArea = styled.div`
+const CardActionArea = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -69,9 +68,7 @@ const CourseCard = ({
   )
 }
 
-export const CoursesGrid = styled.ul`
-  list-style: none;
-  list-style-position: inside;
+export const CoursesGrid = styled("div")`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -100,7 +97,6 @@ function SelectedCourses() {
         {data?.courses &&
           data.courses
             .slice(0, 3)
-            .filter(notEmpty)
             .map((course, index) => (
               <CourseCard key={`course-${index}`} {...course} />
             ))}

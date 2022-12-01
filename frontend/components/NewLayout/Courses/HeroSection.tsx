@@ -1,22 +1,22 @@
 import Image from "next/image"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CoursesTranslations from "/translations/_new/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const Container = styled.div`
+const Container = styled("header")`
   display: grid;
   justify-items: center;
 `
 
-const ItemContainer = styled.div`
+const ItemContainer = styled("div")`
   display: flex;
   align-items: center;
 `
 
-const Item = styled.div`
+const Item = styled("div")`
   margin: 2rem;
   display: grid;
   grid-gap: 2rem;

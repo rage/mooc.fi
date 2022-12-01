@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { CenteredContent } from "/components/Home/ModuleDisplay/Common"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
@@ -12,7 +12,7 @@ interface CustomModuleProps {
   id?: string
 }
 
-const CustomModuleSection = styled.section`
+const CustomModuleSection = styled("section")`
   margin-bottom: 3em;
 `
 

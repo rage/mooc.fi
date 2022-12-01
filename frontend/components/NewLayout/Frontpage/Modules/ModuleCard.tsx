@@ -1,7 +1,7 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import { Button, Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   CardBody,
@@ -27,7 +27,7 @@ const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
     brightness(${(props) => props.brightness ?? 1});
 `
 
-const CardActionArea = styled.div`
+const CardActionArea = styled("div")`
   display: flex;
   justify-content: flex-end;
 `

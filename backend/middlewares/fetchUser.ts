@@ -10,14 +10,8 @@ import { UserInfo } from "/domain/UserInfo"
 export const moocfiAuthPlugin = () =>
   plugin({
     name: "moocfiAuthPlugin",
-    onCreateFieldResolver(_: any) {
-      return async (
-        root: any,
-        args: Record<string, any>,
-        ctx: Context,
-        info: any,
-        next: Function,
-      ) => {
+    onCreateFieldResolver() {
+      return async (root, args, ctx: Context, info, next) => {
         if (ctx.userDetails || ctx.organization) {
           return next(root, args, ctx, info)
         }
@@ -67,9 +61,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
         expireTime: 3600,
         key: rawToken,
       },
-      {
-        logger: ctx.logger,
-      },
+      ctx,
     )
   } catch (e) {
     // console.log("error", e)

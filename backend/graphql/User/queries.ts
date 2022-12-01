@@ -50,18 +50,20 @@ export const UserQueries = extendType({
 
     t.connection("userDetailsContains", {
       type: "User",
+      nullable: false,
       additionalArgs: {
         search: stringArg(),
         skip: intArg({ default: 0 }),
       },
       authorize: isAdmin,
-      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
-      nodes: async (_, args, ctx) => {
-        const { search, first, last, before, after, skip } = args
-
+      validateArgs({ first, last }) {
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
+      },
+      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
+      nodes: async (_, args, ctx) => {
+        const { search, first, last, before, after, skip } = args
 
         return ctx.prisma.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),

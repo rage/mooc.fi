@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import Card from "@mui/material/Card"
+import { styled } from "@mui/material/styles"
 
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 

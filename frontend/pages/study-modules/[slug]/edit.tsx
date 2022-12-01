@@ -5,8 +5,8 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import Paper from "@mui/material/Paper"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"

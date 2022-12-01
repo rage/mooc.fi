@@ -1,6 +1,6 @@
-import styled from "@emotion/styled"
 import Refresh from "@mui/icons-material/Refresh"
 import Report from "@mui/icons-material/Report"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
@@ -16,10 +16,11 @@ const StyledIcon = styled(Report)`
   width: 35%;
 `
 
-const ErrorMessageText = styled(Typography)<any>`
+const ErrorMessageText = styled(Typography)`
   margin-bottom: 1rem;
   font-size: 1.2rem;
-`
+` as typeof Typography
+
 interface Props {
   errorMessage: string
 }

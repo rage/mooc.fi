@@ -501,9 +501,7 @@ describe("Course", () => {
       afterEach(() => (createdCourses = null))
 
       describe("normal user", () => {
-        beforeEach(() =>
-          ctx!.client.setHeader("Authorization", "Bearer normal"),
-        )
+        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer normal"))
 
         it("should error on no parameters", async () => {
           try {
@@ -514,7 +512,7 @@ describe("Course", () => {
 
         it("returns course on id and slug", async () => {
           const resId = await ctx.client.request(courseQuery, {
-            id: createdCourses![0].id,
+            id: createdCourses?.[0].id,
           })
           const resSlug = await ctx.client.request(courseQuery, {
             slug: "course1",
@@ -566,11 +564,11 @@ describe("Course", () => {
       })
 
       describe("admin", () => {
-        beforeEach(() => ctx!.client.setHeader("Authorization", "Bearer admin"))
+        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer admin"))
 
         it("returns full course on id and slug", async () => {
           const resId = await ctx.client.request(fullCourseQuery, {
-            id: createdCourses![0].id,
+            id: createdCourses?.[0].id,
           })
           const resSlug = await ctx.client.request(fullCourseQuery, {
             slug: "course1",
@@ -684,7 +682,7 @@ describe("Course", () => {
     describe("course_exists", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
       })
 
       it("returns true on existing course", async () => {
@@ -707,7 +705,7 @@ describe("Course", () => {
     describe("handlerCourses", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("returns correctly", async () => {
@@ -717,9 +715,9 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(handlerCoursesQuery)
+          await ctx.client.request(handlerCoursesQuery)
           fail()
         } catch {}
       })
@@ -887,7 +885,7 @@ describe("Course", () => {
     describe("addCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
         mocked(KafkaProducer).mockClear()
       })
 
@@ -923,7 +921,7 @@ describe("Course", () => {
       ]
 
       test.each(cases)("creates a course %s", async (_, { data, expected }) => {
-        const res = await ctx!.client.request(createCourseMutation, {
+        const res = await ctx.client.request(createCourseMutation, {
           course: data,
         })
 
@@ -944,8 +942,8 @@ describe("Course", () => {
           topic: "new-course",
         })
 
-        expect(createdCourse).not.toEqual(null)
-        expect(createdCourse!.id).toEqual(res.addCourse.id)
+        expect(createdCourse).toBeDefined()
+        expect(createdCourse?.id).toEqual(res.addCourse.id)
         expect(createdCourse).toMatchSnapshot({
           created_at: expect.any(Date),
           updated_at: expect.any(Date),
@@ -955,9 +953,9 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(createCourseMutation, {
+          await ctx.client.request(createCourseMutation, {
             course: getNewCourse(),
           })
           fail()
@@ -968,12 +966,12 @@ describe("Course", () => {
     describe("updateCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("errors on no slug given", async () => {
         try {
-          await ctx!.client.request(updateCourseMutation, {
+          await ctx.client.request(updateCourseMutation, {
             course: omit(getUpdateCourse(), "slug"),
           })
           fail()
@@ -981,7 +979,7 @@ describe("Course", () => {
       })
 
       it("updates course", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
+        const res = await ctx.client.request(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -1013,7 +1011,7 @@ describe("Course", () => {
       })
 
       it("updates photo", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
+        const res = await ctx.client.request(updateCourseMutation, {
           course: getUpdateCourse(),
         })
 
@@ -1041,7 +1039,7 @@ describe("Course", () => {
       })
 
       it("deletes photo", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
+        const res = await ctx.client.request(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -1066,9 +1064,9 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(updateCourseMutation, {
+          await ctx.client.request(updateCourseMutation, {
             course: getUpdateCourse(),
           })
           fail()
@@ -1079,11 +1077,11 @@ describe("Course", () => {
     describe("deleteCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("deletes course on id", async () => {
-        const res = await ctx!.client.request(deleteCourseMutation, {
+        const res = await ctx.client.request(deleteCourseMutation, {
           id: "00000000000000000000000000000002",
         })
 
@@ -1099,7 +1097,7 @@ describe("Course", () => {
       })
 
       it("deletes course on slug", async () => {
-        const res = await ctx!.client.request(deleteCourseMutation, {
+        const res = await ctx.client.request(deleteCourseMutation, {
           slug: "course1",
         })
 
@@ -1111,9 +1109,9 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(deleteCourseMutation, {
+          await ctx.client.request(deleteCourseMutation, {
             slug: "course1",
           })
           fail()

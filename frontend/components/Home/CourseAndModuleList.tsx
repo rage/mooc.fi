@@ -10,7 +10,6 @@ import ModuleNavi from "./ModuleNavi"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -38,46 +37,40 @@ const CourseAndModuleList = () => {
     data: modulesData,
   } = useQuery(StudyModulesDocument, { variables: { language } })
 
-  const courses = coursesData?.courses
-  let study_modules = modulesData?.study_modules?.filter(notEmpty)
+  const courses = coursesData?.courses ?? []
 
-  const modulesWithCourses = useMemo(
-    () =>
-      (study_modules || [])
-        .filter(notEmpty)
-        .map((module) => {
-          const moduleCourses =
-            courses
-              ?.filter(notEmpty)
-              .filter(
-                (course) =>
-                  course?.study_modules?.some(
-                    (courseModule) => courseModule.id === module.id,
-                  ) && course?.status !== CourseStatus.Ended,
-              ) ?? []
+  const { studyModules, modulesWithCourses } = useMemo(() => {
+    let studyModules = modulesData?.study_modules ?? []
+    const modulesWithCourses = studyModules
+      .map((module) => {
+        const moduleCourses = (courses ?? []).filter(
+          (course) =>
+            course.study_modules?.some(
+              (courseModule) => courseModule.id === module.id,
+            ) && course?.status !== CourseStatus.Ended,
+        )
 
-          return { ...module, courses: moduleCourses }
-        })
-        .filter((m) => m.courses.length > 0) ?? [],
-    [study_modules, courses],
-  )
+        return { ...module, courses: moduleCourses }
+      })
+      .filter((m) => m.courses.length > 0)
 
-  study_modules = study_modules?.filter((s) =>
-    modulesWithCourses.find((m) => m.id === s.id),
-  )
+    studyModules = studyModules.filter((s) =>
+      modulesWithCourses.find((m) => m.id === s.id),
+    )
+
+    return { studyModules, modulesWithCourses }
+  }, [modulesData?.study_modules, courses])
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
       ["Active", "Upcoming", "Ended"].map((status) =>
-        (courses ?? [])
-          .filter(notEmpty)
-          .filter((c) => !c.hidden && c.status === status),
+        courses.filter((c) => !c.hidden && c.status === status),
       ),
     [courses],
   )
 
   const promotedCourses = useMemo(
-    () => activeCourses?.filter(notEmpty).filter((c) => c.promote) ?? [],
+    () => activeCourses.filter((c) => c.promote),
     [activeCourses],
   )
 
@@ -131,12 +124,12 @@ const CourseAndModuleList = () => {
           titleBackground="#ffffff"
         />
       </section>
-      {language === "fi_FI" ? (
+      {language === "fi_FI" && (
         <section id="modules">
-          <ModuleNavi modules={study_modules} loading={modulesLoading} />
+          <ModuleNavi modules={studyModules} loading={modulesLoading} />
           <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
         </section>
-      ) : null}
+      )}
       <CourseHighlights
         courses={endedCourses}
         loading={coursesLoading}

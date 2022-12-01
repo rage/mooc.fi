@@ -23,7 +23,7 @@ const nextConfiguration = {
     locales: ["en", "fi"],
     defaultLocale: "fi",
   },
-  experimental: {
+  compiler: {
     // enabling emotion here will allow for components to be used as selectors
     // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
     emotion: {
@@ -44,6 +44,8 @@ const nextConfiguration = {
         },
       },
     },
+  },
+  experimental: {
     modularizeImports: {
       "@mui/icons-material": {
         transform: "@mui/icons-material/{{member}}",
@@ -63,10 +65,40 @@ const nextConfiguration = {
     },
   },
   webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      "@fortawesome/fontawesome-free$":
-        "@fortawesome/fontawesome-free-solid/shakable.es.js",
+    const found = config.module.rules?.findIndex((rule) =>
+      rule.test?.exec("u.svg"),
+    )
+    // remove the original svg rule but store the one variation with no resourcequery to load svg files
+    let originalRule
+    if (config.module.rules?.[found]) {
+      config.module.rules[found].test = /\.(jpe?g|png|gif)$/i
+      originalRule = config.module.rules[found].oneOf.find(
+        (rule) => !rule.resourceQuery,
+      )
+    }
+
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: /icon/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            typescript: true,
+            memo: true,
+            template: require("./src/iconTemplate"),
+          },
+        },
+      ],
+    })
+    if (originalRule) {
+      // insert it back
+      config.module.rules.push({
+        ...originalRule,
+        test: /\.svg$/,
+        resourceQuery: { not: [/icon/] },
+      })
     }
 
     return config

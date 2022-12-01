@@ -82,7 +82,7 @@ describe("API", () => {
     beforeEach(async () => {
       await seed(ctx.prisma)
       const { get } = createRequestHelpers(ctx.port)
-      getProgressv2 = (idOrSlug: string, deleted: boolean = false) =>
+      getProgressv2 = (idOrSlug: string, deleted = false) =>
         get(`/api/progressv2/${idOrSlug}${deleted ? "?deleted=true" : ""}`, {})
     })
 

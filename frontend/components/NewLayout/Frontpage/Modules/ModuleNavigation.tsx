@@ -3,12 +3,28 @@ import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import { Button } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ModuleNaviList from "./ModuleNaviList"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
+
+// @ts-ignore: not used?
+const ModulesGrid = styled("div")`
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  padding: 2rem;
+  justify-content: center;
+  width: 80%;
+  @media (max-width: 500px) {
+    padding: 0;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+`
 
 /*const ShowMore = styled(Button)`
   --color: #eee;
@@ -52,7 +68,7 @@ import { StudyModulesDocument } from "/graphql/generated"
   }
 `
 
-const Arrow = styled.div`
+const Arrow = styled("div")`
   width: 120%;
   &:before {
     content: "";

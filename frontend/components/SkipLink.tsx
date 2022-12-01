@@ -1,10 +1,10 @@
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const SkipLinkContainer = styled.a`
+const SkipLinkContainer = styled("a")`
   left: -999;
   position: absolute;
   top: auto;

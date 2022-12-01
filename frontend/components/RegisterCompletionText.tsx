@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Button, Paper, Tooltip, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useTranslator } from "/util/useTranslator"
@@ -24,7 +24,7 @@ const RegistrationLinkButton = styled(Button)`
   margin-bottom: 1em;
 `
 
-const RegistrationButtons = styled.div`
+const RegistrationButtons = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +32,7 @@ const RegistrationButtons = styled.div`
 
 interface LinkButtonProps {
   link: string
-  onRegistrationClick: Function
+  onRegistrationClick: (...args: any[]) => any
 }
 
 function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
@@ -63,10 +63,10 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
 }
 
 interface RegisterCompletionTextProps {
-  email: String
+  email: string
   link: string
   tiers: any
-  onRegistrationClick: Function
+  onRegistrationClick: (...args: any[]) => any
 }
 function RegisterCompletionText({
   email,

@@ -1,11 +1,11 @@
-import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   text-transform: uppercase;
   margin-top: 0.7em;
   margin-bottom: 0.7em;
-`
+` as typeof Typography
 
 const CourseDashboard = () => (
   <section>

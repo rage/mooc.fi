@@ -17,8 +17,8 @@ import {
 const isProduction = process.env.NODE_ENV === "production"
 
 interface ToCourseFormArgs {
-  course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
+  course?: EditorCourseDetailedFieldsFragment | null
+  modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 export const toCourseForm = ({
@@ -29,8 +29,17 @@ export const toCourseForm = ({
     return initialValues
   }
 
-  const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+  const courseStudyModuleIds = (course?.study_modules ?? []).map(
+    (studyModule) => studyModule.id,
+  )
+
+  const study_modules: Record<string, boolean> = {}
+
+  for (const studyModule of modules ?? []) {
+    study_modules[studyModule.id] = courseStudyModuleIds.includes(
+      studyModule.id,
+    )
+  }
 
   return {
     ...omit(course, [
@@ -71,13 +80,7 @@ export const toCourseForm = ({
         instructions: course_translation.instructions ?? undefined,
       }),
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, ["__typename", "created_at", "updated_at"]),

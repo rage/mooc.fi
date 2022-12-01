@@ -1,6 +1,6 @@
 import React from "react"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
@@ -9,14 +9,14 @@ import Header from "/components/NewLayout/Header/Header"
 import { BottomNavigation } from "/components/NewLayout/Navigation/BottomNavigation"
 import SkipLink from "/components/SkipLink"
 
-const FooterDownPusherWrapper = styled.div`
+const FooterDownPusherWrapper = styled("div")`
   display: flex;
   min-height: 100vh;
   flex-direction: column;
   justify-content: space-between;
 `
 
-const Layout: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
+const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
   children,
 }) => {
   return (

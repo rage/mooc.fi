@@ -153,7 +153,7 @@ export function ListItem({
 
   useEffect(() => {
     if (!window) {
-      return () => {}
+      return () => void 0
     }
     window.addEventListener("resize", setDescriptionHeight)
 

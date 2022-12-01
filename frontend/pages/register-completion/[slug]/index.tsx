@@ -5,8 +5,8 @@ import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Paper, SvgIcon, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
@@ -57,10 +57,10 @@ const StyledIcon = styled(SvgIcon)`
   height: 30px;
   margin: 0.5em;
 `
-const StyledText = styled(Typography)<any>`
+const StyledText = styled(Typography)`
   margin-top: 0px;
   margin-left: 1em;
-`
+` as typeof Typography
 
 function RegisterCompletionPage() {
   const accessToken = getAccessToken(undefined)
@@ -113,9 +113,7 @@ function RegisterCompletionPage() {
   useEffect(() => {
     if (locale) {
       axios
-        .get<{}, any>(
-          `${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`,
-        )
+        .get(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`)
         .then((res) => res.data)
         .then((json) => {
           setInstructions(json)

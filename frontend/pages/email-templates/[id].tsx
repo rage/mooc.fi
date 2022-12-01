@@ -4,7 +4,6 @@ import { NextSeo } from "next-seo"
 import Router from "next/router"
 
 import { useApolloClient, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import {
   Button,
   Card,
@@ -14,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
@@ -82,7 +82,7 @@ const templateValues: Array<TemplateType> = [
   },
 ]
 
-const TemplateList = styled.div`
+const TemplateList = styled("div")`
   * + * {
     margin-top: 0.5rem;
   }

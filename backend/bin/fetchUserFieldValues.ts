@@ -42,7 +42,7 @@ const fetcUserFieldValues = async () => {
 
   for (let i = 0; i < data.length; i++) {
     saveCounter++
-    let p = data[i]
+    const p = data[i]
     if (p.user_id == null) continue
     if (i % 1000 == 0) logger.info(`${i}/${data.length}`)
     if (!p || p == null) {

@@ -64,7 +64,8 @@
     "ukraineHyLink": "https://www.helsinki.fi/en/cooperation/support-us/ukraine-appeal",
     "ukraineHyText": "Support students and researchers affected by the invasion of Ukraine",
     "ukraineHyLinkText": "University of Helsinki Ukraine appeal",
-    "noResults": "No results",
     "fi": "Suomeksi",
-    "en": "In English"
+    "en": "In English",
+    "selectAll": "Select all",
+    "noResults": "No results"
 }

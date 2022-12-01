@@ -89,10 +89,14 @@ const withCourse = async (
     },
   })
 
+  if (!courseReference) {
+    return []
+  }
+
   return ctx.prisma.course
     .findUnique({
       where: {
-        id: courseReference!.id,
+        id: courseReference.id,
       },
     })
     .completions_registered({

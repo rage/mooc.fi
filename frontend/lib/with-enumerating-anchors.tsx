@@ -7,7 +7,7 @@ const withEnumeratingAnchors =
   (props: any) => {
     let anchorId = 0
     const anchors: Record<string, Anchor> = {}
-    const addAnchor = (anchor: string, tab: number = 0) => {
+    const addAnchor = (anchor: string, tab = 0) => {
       if (!anchors[anchor]) {
         anchors[anchor] = {
           id: anchorId++,

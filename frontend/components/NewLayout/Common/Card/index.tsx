@@ -1,8 +1,7 @@
-import { css } from "@emotion/react"
-import styled from "@emotion/styled"
+import { css, styled } from "@mui/material/styles"
 import Typography, { TypographyProps } from "@mui/material/Typography"
 
-export const CardWrapper = styled.li`
+export const CardWrapper = styled("div")`
   border-radius: 4px;
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
@@ -12,8 +11,8 @@ export const CardWrapper = styled.li`
   flex-direction: column;
 `
 
-export const CardHeader = styled.header`
-  height: 100%;
+export const CardHeader = styled("div")`
+  height: 140px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -22,7 +21,7 @@ export const CardHeader = styled.header`
   z-index: -2;
 `
 
-export const CardHeaderImage = styled.img`
+export const CardHeaderImage = styled("img")`
   opacity: 0.4;
   position: absolute;
   left: 70%;
@@ -37,7 +36,7 @@ CardHeaderImage.defaultProps = {
   "aria-hidden": true,
 }
 
-export const CardBody = styled.div`
+export const CardBody = styled("div")`
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -45,11 +44,11 @@ export const CardBody = styled.div`
   height: 100%;
 `
 
-export const CardDescription = styled.p`
+export const CardDescription = styled("p")`
   height: 100%;
 `
 
-export const CardActionArea = styled.div`
+export const CardActionArea = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -60,7 +59,8 @@ export const CardTitle = styled((props: TypographyProps) => (
   <Typography variant="h2" {...props} />
 ))`
   z-index: 1;
-`
+` as typeof Typography
+
 const CommonHeaderBackground = css`
   opacity: 0.4;
   position: absolute;
@@ -70,7 +70,10 @@ const CommonHeaderBackground = css`
   bottom: 0;
 `
 
-export const CardHeaderBackground = styled.span<{
+export const CardHeaderBackground = styled("span", {
+  shouldForwardProp: (prop) =>
+    typeof prop !== "string" || !["image", "hue", "brightness"].includes(prop),
+})<{
   image: string
   hue?: number
   brightness?: number
@@ -87,7 +90,7 @@ CardHeaderBackground.defaultProps = {
   "aria-hidden": true,
 }
 
-export const CardHeaderBackgroundSkeleton = styled.span`
+export const CardHeaderBackgroundSkeleton = styled("span")`
   ${CommonHeaderBackground};
   background-color: #aaa;
 `

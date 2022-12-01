@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
 import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
@@ -17,7 +17,9 @@ const colorSchemes = {
   ai: "#51309F",
 }
 
-const ModuleList = styled.div`
+const ModuleList = styled("ul")`
+  list-style: none;
+  list-style-position: inside;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -52,7 +54,7 @@ export function StudyModuleList() {
   return (
     <>
       <ModuleNaviList
-        modules={data?.study_modules!}
+        modules={data?.study_modules}
         loading={loading}
         variant="small"
       />

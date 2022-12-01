@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-10-27T16:30:12+03:00
+// Generated on 2022-11-25T17:50:48+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -139,7 +139,7 @@ export type CompletionEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: Scalars["String"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node: Maybe<Completion>
+  node: Completion
 }
 
 export type CompletionRegistered = {
@@ -249,6 +249,7 @@ export type Coursecourse_variantsArgs = {
 
 export type CourseexercisesArgs = {
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
+  includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
 }
 
 export type Coursehandles_completions_forArgs = {
@@ -696,7 +697,9 @@ export type ExerciseCompletionWhereUniqueInput = {
 
 export type ExerciseProgress = {
   __typename?: "ExerciseProgress"
+  exercise_count: Maybe<Scalars["Int"]>
   exercises: Maybe<Scalars["Float"]>
+  exercises_completed_count: Maybe<Scalars["Int"]>
   total: Maybe<Scalars["Float"]>
 }
 
@@ -1268,7 +1271,7 @@ export type Query = {
   __typename?: "Query"
   completions: Maybe<Array<Completion>>
   completionsPaginated: Maybe<QueryCompletionsPaginated_type_Connection>
-  completionsPaginated_type: Maybe<QueryCompletionsPaginated_type_Connection>
+  completionsPaginated_type: QueryCompletionsPaginated_type_Connection
   course: Maybe<Course>
   courseAliases: Array<CourseAlias>
   courseOrganizations: Maybe<Array<CourseOrganization>>
@@ -1303,8 +1306,8 @@ export type Query = {
   userCourseServiceProgresses: Array<UserCourseServiceProgress>
   userCourseSetting: Maybe<UserCourseSetting>
   userCourseSettingCount: Maybe<Scalars["Int"]>
-  userCourseSettings: Maybe<QueryUserCourseSettings_Connection>
-  userDetailsContains: Maybe<QueryUserDetailsContains_Connection>
+  userCourseSettings: QueryUserCourseSettings_Connection
+  userDetailsContains: QueryUserDetailsContains_Connection
   userOrganizations: Maybe<Array<UserOrganization>>
   users: Array<User>
 }
@@ -1540,10 +1543,10 @@ export type QueryusersArgs = {
 export type QueryCompletionsPaginated_type_Connection = {
   __typename?: "QueryCompletionsPaginated_type_Connection"
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges: Maybe<Array<Maybe<CompletionEdge>>>
+  edges: Array<CompletionEdge>
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo
-  totalCount: Maybe<Scalars["Int"]>
+  totalCount: Scalars["Int"]
 }
 
 export enum QueryMode {
@@ -1560,17 +1563,17 @@ export type QueryUserCourseServiceProgressesWhereInput = {
 export type QueryUserCourseSettings_Connection = {
   __typename?: "QueryUserCourseSettings_Connection"
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges: Maybe<Array<Maybe<UserCourseSettingEdge>>>
+  edges: Array<UserCourseSettingEdge>
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo
-  totalCount: Maybe<Scalars["Int"]>
+  totalCount: Scalars["Int"]
 }
 
 export type QueryUserDetailsContains_Connection = {
   __typename?: "QueryUserDetailsContains_Connection"
-  count: Maybe<Scalars["Int"]>
+  count: Scalars["Int"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges: Maybe<Array<Maybe<UserEdge>>>
+  edges: Array<UserEdge>
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo
 }
@@ -1750,6 +1753,7 @@ export type User = {
   email_deliveries: Array<EmailDelivery>
   exercise_completions: Maybe<Array<ExerciseCompletion>>
   first_name: Maybe<Scalars["String"]>
+  full_name: Maybe<Scalars["String"]>
   id: Scalars["String"]
   last_name: Maybe<Scalars["String"]>
   organizations: Array<Organization>
@@ -1834,6 +1838,11 @@ export type Useruser_course_settingsArgs = {
   cursor?: InputMaybe<UserCourseSettingWhereUniqueInput>
   skip?: InputMaybe<Scalars["Int"]>
   take?: InputMaybe<Scalars["Int"]>
+}
+
+export type Useruser_course_summaryArgs = {
+  includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
+  includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
 }
 
 export type Useruser_organizationsArgs = {
@@ -1937,7 +1946,7 @@ export type UserCourseSettingEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: Scalars["String"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node: Maybe<UserCourseSetting>
+  node: UserCourseSetting
 }
 
 export type UserCourseSettingWhereUniqueInput = {
@@ -1974,16 +1983,20 @@ export type UserCourseSummary = {
   completion: Maybe<Completion>
   completions_handled_by_id: Maybe<Scalars["ID"]>
   course: Maybe<Course>
-  course_id: Maybe<Scalars["ID"]>
+  course_id: Scalars["ID"]
   exercise_completions: Maybe<Array<ExerciseCompletion>>
+  include_deleted_exercises: Maybe<Scalars["Boolean"]>
+  include_no_points_awarded_exercises: Maybe<Scalars["Boolean"]>
   inherit_settings_from_id: Maybe<Scalars["ID"]>
+  start_date: Maybe<Scalars["DateTime"]>
   user_course_progress: Maybe<UserCourseProgress>
   user_course_service_progresses: Array<UserCourseServiceProgress>
-  user_id: Maybe<Scalars["ID"]>
+  user_id: Scalars["ID"]
 }
 
 export type UserCourseSummaryexercise_completionsArgs = {
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
+  includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
 }
 
 export type UserEdge = {
@@ -1991,7 +2004,7 @@ export type UserEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: Scalars["String"]
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node: Maybe<User>
+  node: User
 }
 
 export type UserOrganization = {
@@ -2205,6 +2218,7 @@ export type CompletionsQueryNodeFieldsFragment = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -2266,6 +2280,7 @@ export type CompletionsQueryConnectionFieldsFragment = {
         upstream_id: number
         first_name: string | null
         last_name: string | null
+        full_name: string | null
         username: string
         email: string
         student_number: string | null
@@ -2291,8 +2306,8 @@ export type CompletionsQueryConnectionFieldsFragment = {
           slug: string
         } | null
       }>
-    } | null
-  } | null> | null
+    }
+  }>
 }
 
 export type CertificateAvailabilityFieldsFragment = {
@@ -2743,6 +2758,8 @@ export type ProgressCoreFieldsFragment = {
       __typename?: "ExerciseProgress"
       total: number | null
       exercises: number | null
+      exercise_count: number | null
+      exercises_completed_count: number | null
     }
   } | null
   user_course_service_progresses: Array<{
@@ -2877,6 +2894,7 @@ export type UserCoreFieldsFragment = {
   upstream_id: number
   first_name: string | null
   last_name: string | null
+  full_name: string | null
   username: string
   email: string
   student_number: string | null
@@ -2893,6 +2911,7 @@ export type UserDetailedFieldsFragment = {
   upstream_id: number
   first_name: string | null
   last_name: string | null
+  full_name: string | null
   username: string
   email: string
   student_number: string | null
@@ -2907,6 +2926,7 @@ export type UserProgressesFieldsFragment = {
   upstream_id: number
   first_name: string | null
   last_name: string | null
+  full_name: string | null
   username: string
   email: string
   student_number: string | null
@@ -2939,6 +2959,8 @@ export type UserProgressesFieldsFragment = {
         __typename?: "ExerciseProgress"
         total: number | null
         exercises: number | null
+        exercise_count: number | null
+        exercises_completed_count: number | null
       }
     } | null
     user_course_service_progresses: Array<{
@@ -2955,6 +2977,30 @@ export type UserProgressesFieldsFragment = {
   }> | null
 }
 
+export type UserOverviewCourseFieldsFragment = {
+  __typename?: "Course"
+  has_certificate: boolean | null
+  id: string
+  slug: string
+  name: string
+  ects: string | null
+  created_at: any | null
+  updated_at: any | null
+  photo: {
+    __typename?: "Image"
+    id: string
+    name: string | null
+    original: string
+    original_mimetype: string
+    compressed: string | null
+    compressed_mimetype: string | null
+    uncompressed: string
+    uncompressed_mimetype: string
+    created_at: any | null
+    updated_at: any | null
+  } | null
+}
+
 export type UserOverviewFieldsFragment = {
   __typename?: "User"
   administrator: boolean
@@ -2963,6 +3009,7 @@ export type UserOverviewFieldsFragment = {
   upstream_id: number
   first_name: string | null
   last_name: string | null
+  full_name: string | null
   username: string
   email: string
   student_number: string | null
@@ -3046,6 +3093,8 @@ export type UserCourseProgressCoreFieldsFragment = {
     __typename?: "ExerciseProgress"
     total: number | null
     exercises: number | null
+    exercise_count: number | null
+    exercises_completed_count: number | null
   }
 }
 
@@ -3098,6 +3147,7 @@ export type StudentProgressesQueryNodeFieldsFragment = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -3130,6 +3180,8 @@ export type StudentProgressesQueryNodeFieldsFragment = {
           __typename?: "ExerciseProgress"
           total: number | null
           exercises: number | null
+          exercise_count: number | null
+          exercises_completed_count: number | null
         }
       } | null
       user_course_service_progresses: Array<{
@@ -3174,6 +3226,8 @@ export type UserProfileUserCourseSettingsQueryNodeFieldsFragment = {
 export type UserCourseSummaryCourseFieldsFragment = {
   __typename?: "Course"
   has_certificate: boolean | null
+  points_needed: number | null
+  exercise_completions_needed: number | null
   id: string
   slug: string
   name: string
@@ -3208,9 +3262,12 @@ export type UserCourseSummaryCourseFieldsFragment = {
 
 export type UserCourseSummaryCoreFieldsFragment = {
   __typename?: "UserCourseSummary"
+  start_date: any | null
   course: {
     __typename?: "Course"
     has_certificate: boolean | null
+    points_needed: number | null
+    exercise_completions_needed: number | null
     id: string
     slug: string
     name: string
@@ -3275,6 +3332,8 @@ export type UserCourseSummaryCoreFieldsFragment = {
       __typename?: "ExerciseProgress"
       total: number | null
       exercises: number | null
+      exercise_count: number | null
+      exercises_completed_count: number | null
     }
   } | null
   user_course_service_progresses: Array<{
@@ -3405,6 +3464,7 @@ export type AddManualCompletionMutation = {
       upstream_id: number
       first_name: string | null
       last_name: string | null
+      full_name: string | null
       username: string
       email: string
       student_number: string | null
@@ -3821,6 +3881,7 @@ export type UpdateUserNameMutation = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -3935,6 +3996,7 @@ export type PaginatedCompletionsQuery = {
           upstream_id: number
           first_name: string | null
           last_name: string | null
+          full_name: string | null
           username: string
           email: string
           student_number: string | null
@@ -3960,8 +4022,8 @@ export type PaginatedCompletionsQuery = {
             slug: string
           } | null
         }>
-      } | null
-    } | null> | null
+      }
+    }>
   } | null
 }
 
@@ -4008,6 +4070,7 @@ export type PaginatedCompletionsPreviousPageQuery = {
           upstream_id: number
           first_name: string | null
           last_name: string | null
+          full_name: string | null
           username: string
           email: string
           student_number: string | null
@@ -4033,8 +4096,8 @@ export type PaginatedCompletionsPreviousPageQuery = {
             slug: string
           } | null
         }>
-      } | null
-    } | null> | null
+      }
+    }>
   } | null
 }
 
@@ -4498,8 +4561,12 @@ export type OrganizationsQuery = {
     id: string
     slug: string
     hidden: boolean | null
+    created_at: any | null
+    updated_at: any | null
     organization_translations: Array<{
       __typename?: "OrganizationTranslation"
+      id: string
+      organization_id: string | null
       language: string
       name: string
       information: string | null
@@ -4694,6 +4761,7 @@ export type CurrentUserQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -4715,6 +4783,7 @@ export type CurrentUserDetailedQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -4743,19 +4812,35 @@ export type CurrentUserStatsSubscriptionsQuery = {
 
 export type UserSummaryQueryVariables = Exact<{
   upstream_id?: InputMaybe<Scalars["Int"]>
+  includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
+  includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
 }>
 
 export type UserSummaryQuery = {
   __typename?: "Query"
   user: {
     __typename?: "User"
+    administrator: boolean
+    research_consent: boolean | null
     id: string
+    upstream_id: number
+    first_name: string | null
+    last_name: string | null
+    full_name: string | null
     username: string
+    email: string
+    student_number: string | null
+    real_student_number: string | null
+    created_at: any | null
+    updated_at: any | null
     user_course_summary: Array<{
       __typename?: "UserCourseSummary"
+      start_date: any | null
       course: {
         __typename?: "Course"
         has_certificate: boolean | null
+        points_needed: number | null
+        exercise_completions_needed: number | null
         id: string
         slug: string
         name: string
@@ -4820,6 +4905,8 @@ export type UserSummaryQuery = {
           __typename?: "ExerciseProgress"
           total: number | null
           exercises: number | null
+          exercise_count: number | null
+          exercises_completed_count: number | null
         }
       } | null
       user_course_service_progresses: Array<{
@@ -4886,6 +4973,7 @@ export type CurrentUserOverviewQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -4969,6 +5057,7 @@ export type UserOverviewQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -5050,6 +5139,7 @@ export type CurrentUserProgressesQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -5082,6 +5172,8 @@ export type CurrentUserProgressesQuery = {
           __typename?: "ExerciseProgress"
           total: number | null
           exercises: number | null
+          exercise_count: number | null
+          exercises_completed_count: number | null
         }
       } | null
       user_course_service_progresses: Array<{
@@ -5112,7 +5204,7 @@ export type UserDetailsContainsQuery = {
   __typename?: "Query"
   userDetailsContains: {
     __typename?: "QueryUserDetailsContains_Connection"
-    count: number | null
+    count: number
     pageInfo: {
       __typename?: "PageInfo"
       startCursor: string | null
@@ -5128,15 +5220,16 @@ export type UserDetailsContainsQuery = {
         upstream_id: number
         first_name: string | null
         last_name: string | null
+        full_name: string | null
         username: string
         email: string
         student_number: string | null
         real_student_number: string | null
         created_at: any | null
         updated_at: any | null
-      } | null
-    } | null> | null
-  } | null
+      }
+    }>
+  }
 }
 
 export type ConnectedUserQueryVariables = Exact<{ [key: string]: never }>
@@ -5149,6 +5242,7 @@ export type ConnectedUserQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -5184,6 +5278,7 @@ export type ConnectionTestQuery = {
     upstream_id: number
     first_name: string | null
     last_name: string | null
+    full_name: string | null
     username: string
     email: string
     student_number: string | null
@@ -5227,6 +5322,7 @@ export type ExportUserCourseProgressesQuery = {
       upstream_id: number
       first_name: string | null
       last_name: string | null
+      full_name: string | null
       username: string
       email: string
       student_number: string | null
@@ -5254,7 +5350,7 @@ export type StudentProgressesQuery = {
   __typename?: "Query"
   userCourseSettings: {
     __typename?: "QueryUserCourseSettings_Connection"
-    totalCount: number | null
+    totalCount: number
     pageInfo: {
       __typename?: "PageInfo"
       hasNextPage: boolean
@@ -5275,6 +5371,7 @@ export type StudentProgressesQuery = {
           upstream_id: number
           first_name: string | null
           last_name: string | null
+          full_name: string | null
           username: string
           email: string
           student_number: string | null
@@ -5307,6 +5404,8 @@ export type StudentProgressesQuery = {
                 __typename?: "ExerciseProgress"
                 total: number | null
                 exercises: number | null
+                exercise_count: number | null
+                exercises_completed_count: number | null
               }
             } | null
             user_course_service_progresses: Array<{
@@ -5326,9 +5425,9 @@ export type StudentProgressesQuery = {
             }> | null
           }
         } | null
-      } | null
-    } | null> | null
-  } | null
+      }
+    }>
+  }
 }
 
 export type UserProfileUserCourseSettingsQueryVariables = Exact<{
@@ -5363,14 +5462,14 @@ export type UserProfileUserCourseSettingsQuery = {
           created_at: any | null
           updated_at: any | null
         } | null
-      } | null
-    } | null> | null
+      }
+    }>
     pageInfo: {
       __typename?: "PageInfo"
       endCursor: string | null
       hasNextPage: boolean
     }
-  } | null
+  }
 }
 
 export type CurrentUserOrganizationsQueryVariables = Exact<{
@@ -5753,6 +5852,7 @@ export const UserCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "upstream_id" } },
           { kind: "Field", name: { kind: "Name", value: "first_name" } },
           { kind: "Field", name: { kind: "Name", value: "last_name" } },
+          { kind: "Field", name: { kind: "Name", value: "full_name" } },
           { kind: "Field", name: { kind: "Name", value: "username" } },
           { kind: "Field", name: { kind: "Name", value: "email" } },
           { kind: "Field", name: { kind: "Name", value: "student_number" } },
@@ -6473,6 +6573,14 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "total" } },
                 { kind: "Field", name: { kind: "Name", value: "exercises" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_count" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercises_completed_count" },
+                },
               ],
             },
           },
@@ -6641,6 +6749,29 @@ export const UserDetailedFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserDetailedFieldsFragment, unknown>
+export const UserOverviewCourseFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserOverviewCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserOverviewCourseFieldsFragment, unknown>
 export const UserOverviewFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -6678,12 +6809,8 @@ export const UserOverviewFieldsFragmentDoc = {
                         kind: "FragmentSpread",
                         name: {
                           kind: "Name",
-                          value: "CourseWithPhotoCoreFields",
+                          value: "UserOverviewCourseFields",
                         },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "has_certificate" },
                       },
                     ],
                   },
@@ -6890,9 +7017,35 @@ export const UserCourseSummaryCourseFieldsFragmentDoc = {
             name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
           },
           { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          { kind: "Field", name: { kind: "Name", value: "points_needed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions_needed" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exercises" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeDeleted" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "includeDeletedExercises" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeNoPointsAwarded" },
+                value: {
+                  kind: "Variable",
+                  name: {
+                    kind: "Name",
+                    value: "includeNoPointsAwardedExercises",
+                  },
+                },
+              },
+            ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
@@ -7037,6 +7190,7 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
               ],
             },
           },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
         ],
       },
     },
@@ -9446,26 +9600,9 @@ export const OrganizationsDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "slug" } },
-                { kind: "Field", name: { kind: "Name", value: "hidden" } },
                 {
-                  kind: "Field",
-                  name: { kind: "Name", value: "organization_translations" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "language" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "information" },
-                      },
-                    ],
-                  },
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "OrganizationCoreFields" },
                 },
               ],
             },
@@ -9473,6 +9610,7 @@ export const OrganizationsDocument = {
         ],
       },
     },
+    ...OrganizationCoreFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<OrganizationsQuery, OrganizationsQueryVariables>
 export const OrganizationByIdDocument = {
@@ -10004,6 +10142,22 @@ export const UserSummaryDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeNoPointsAwardedExercises" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeDeletedExercises" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -10024,11 +10178,40 @@ export const UserSummaryDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserDetailedFields" },
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "user_course_summary" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: {
+                        kind: "Name",
+                        value: "includeNoPointsAwardedExercises",
+                      },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "includeNoPointsAwardedExercises",
+                        },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "includeDeletedExercises" },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "includeDeletedExercises",
+                        },
+                      },
+                    },
+                  ],
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
@@ -10048,6 +10231,8 @@ export const UserSummaryDocument = {
         ],
       },
     },
+    ...UserDetailedFieldsFragmentDoc.definitions,
+    ...UserCoreFieldsFragmentDoc.definitions,
     ...UserCourseSummaryCoreFieldsFragmentDoc.definitions,
     ...UserCourseSummaryCourseFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
@@ -10096,6 +10281,7 @@ export const CurrentUserOverviewDocument = {
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
     ...CertificateAvailabilityFieldsFragmentDoc.definitions,
+    ...UserOverviewCourseFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,
@@ -10157,6 +10343,7 @@ export const UserOverviewDocument = {
     ...CompletionCoreFieldsFragmentDoc.definitions,
     ...CompletionRegisteredCoreFieldsFragmentDoc.definitions,
     ...CertificateAvailabilityFieldsFragmentDoc.definitions,
+    ...UserOverviewCourseFieldsFragmentDoc.definitions,
     ...CourseWithPhotoCoreFieldsFragmentDoc.definitions,
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,

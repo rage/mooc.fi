@@ -65,7 +65,7 @@ const CreateEmailTemplateDialog = ({
 
   const courseOptions =
     templateType === "completion"
-      ? data!.courses
+      ? data?.courses
           ?.filter((c) => c?.completion_email === null)
           .map((c, i) => {
             return (
@@ -74,7 +74,7 @@ const CreateEmailTemplateDialog = ({
               </option>
             )
           })
-      : data!.courses?.map((c, i) => {
+      : data?.courses?.map((c, i) => {
           return (
             <option key={i} value={i}>
               {c?.name}
@@ -179,7 +179,7 @@ const CreateEmailTemplateDialog = ({
                 onChange={(e) => {
                   e.preventDefault()
                   setSelectedCourse(
-                    data!.courses?.[Number(e.target.value)] ?? null,
+                    data?.courses?.[Number(e.target.value)] ?? null,
                   )
                 }}
                 id="selectCourse"

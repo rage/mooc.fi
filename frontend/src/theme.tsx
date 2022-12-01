@@ -49,6 +49,16 @@ const rawTheme = createTheme({
         },
       },
     },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: "unset",
+          "&.Mui-selected": {
+            color: "inherit",
+          },
+        },
+      },
+    },
   },
 })
 

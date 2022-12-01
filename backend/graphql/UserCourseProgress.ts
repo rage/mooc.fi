@@ -124,6 +124,8 @@ export const UserCourseProgress = objectType({
         return {
           total: totalProgress,
           exercises: exerciseProgress,
+          exercise_count: exercises.length,
+          exercises_completed_count: completedExerciseCount,
         }
       },
     })
@@ -169,8 +171,8 @@ export const UserCourseProgressQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
-        const { skip, take, cursor, user_id } = args
-        let { course_id, course_slug } = args
+        const { course_slug, skip, take, cursor, user_id } = args
+        let { course_id } = args
 
         if (!course_id && !course_slug) {
           throw new UserInputError(

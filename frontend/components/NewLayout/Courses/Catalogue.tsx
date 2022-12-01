@@ -1,11 +1,11 @@
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseGrid from "./CourseGrid"
 import CoursesTranslations from "/translations/_new/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const Container = styled.div`
+const Container = styled("section")`
   display: grid;
   justify-items: center;
 `
