@@ -8,9 +8,9 @@ import {
   ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import CoursesTranslations from "/translations/courses"
+import { mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionTitle = styled(Typography)`

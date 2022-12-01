@@ -35,8 +35,8 @@ const Layout = ({ children }: PropsWithChildren) => {
             {children}
           </main>
         </div>
-        <MobileBottomNavigation />
         <Footer />
+        <MobileBottomNavigation />
       </FooterDownPusherWrapper>
     </div>
   )

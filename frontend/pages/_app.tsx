@@ -18,11 +18,19 @@ import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
+import { createEmotionSsr } from "/src/createEmotionSsr"
 import { fontCss } from "/src/fonts"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
+
+const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
+  createEmotionSsr({
+    key: "emotion-css",
+  })
+
+export { augmentDocumentWithEmotionCache }
 
 export function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -79,7 +87,6 @@ export function MyApp({ Component, pageProps }: AppProps) {
             <BreadcrumbProvider>
               <AlertProvider>
                 <Layout>
-                  {/*<Global styles={fontCss} />*/}
                   <GlobalStyles styles={fontCss} />
                   <Component {...pageProps} />
                 </Layout>
@@ -126,4 +133,4 @@ MyApp.getInitialProps = async (props: AppContext) => {
   }
 }
 
-export default withApolloClient(MyApp)
+export default withAppEmotionCache(withApolloClient(MyApp))

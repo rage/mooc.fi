@@ -1,4 +1,4 @@
-import backgroundPattern from "static/images/backgroundPattern2.svg"
+import backgroundPattern from "static/images/backgroundPattern.svg"
 
 import { styled } from "@mui/material/styles"
 
@@ -7,6 +7,7 @@ import Catalogue from "/components/NewLayout/Courses/Catalogue"
 const Container = styled("div")`
   display: grid;
   justify-content: center;
+  position: relative;
 `
 
 /*
@@ -24,12 +25,11 @@ const Background = styled("div")`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 180vh;
-  object-fit: cover;
+  right: 0;
+  bottom: 0;
   z-index: -1;
-  background: #f5f6f7;
-  background-image: url(${backgroundPattern});
+  background: #5f6ff7;
+  mask-image: url(${backgroundPattern});
 `
 
 function Courses() {

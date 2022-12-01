@@ -16,7 +16,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import TeachersTranslations from "/translations/teachers"
 import { useTranslator } from "/util/useTranslator"
 
-const ContentBlock = styled("div")`
+const ContentBlock = styled("article")`
   padding: 5rem 1rem;
   display: flex;
   justify-content: center;
@@ -34,7 +34,7 @@ const TextBlock = styled(Typography)`
 const iconStyle = css`
   fill: rgba(0, 0, 0, 0.54);
   margin-bottom: 1rem;
-  height: 3rem;
+  font-size: 3rem;
 `
 
 const StyledButton = styled(Button)`
@@ -58,18 +58,14 @@ const ForTeachers = () => {
         {t("siteTitle")}
       </H1NoBackground>
       <ContentBlock>
-        <TextBlock>
-          <span dangerouslySetInnerHTML={{ __html: t("siteIntro") }} />
-        </TextBlock>
+        <TextBlock>{t("siteIntro")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
         <GraduationCapIcon css={iconStyle} />
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("teachingTitle")}
         </H1NoBackground>
-        <TextBlock>
-          <span dangerouslySetInnerHTML={{ __html: t("teachingText") }} />
-        </TextBlock>
+        <TextBlock>{t("teachingText")}</TextBlock>
         <TextBlock>{t("teachingText2")}</TextBlock>
         <TextBlock>{t("teachingText3")}</TextBlock>
       </ContentBlock>

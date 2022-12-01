@@ -26,9 +26,9 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  SvgIcon,
 } from "@mui/material"
-import { css, styled } from "@mui/material/styles"
-import { SerializedStyles } from "@mui/styled-engine"
+import { styled } from "@mui/material/styles"
 
 import { NavigationLinks } from "./NavigationLinks"
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
@@ -77,10 +77,6 @@ const MenuButton = styled(Button)`
   max-height: 10vh;
   white-space: nowrap;
   font-size: clamp(12px, 1.5vw, 16px);
-`
-
-const iconStyle = css`
-  height: 1rem;
 `
 
 const UserOptionsMenu = () => {
@@ -138,9 +134,7 @@ const DesktopNavigationMenu = () => {
 }
 
 interface MobileMenuItemProps {
-  Icon: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & { css: SerializedStyles }
-  >
+  Icon: typeof SvgIcon
   text: string
   href?: string
   onClick?: React.MouseEventHandler<HTMLLIElement>
@@ -171,7 +165,7 @@ const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
     return (
       <WrapLink>
         <ListItemIcon>
-          <Icon css={iconStyle} />
+          <Icon />
         </ListItemIcon>
         <ListItemText>{text}</ListItemText>
       </WrapLink>

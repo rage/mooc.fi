@@ -13,7 +13,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { formatDateTime } from "/components/DataFormatFunctions"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 

@@ -13,7 +13,7 @@ const IconBaseStyle = css`
   fill: white;
   margin-bottom: 1rem;
   margin: 1rem;
-  width: 3rem;
+  font-size: 48px;
 `
 
 const TwitterIcon = styled(Twitter)`
@@ -109,8 +109,7 @@ function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <TwitterIcon />{" "}
-          {/*<StyledIcon icon={["fab", "twitter"]} size="3x" />*/}
+          <TwitterIcon />
         </a>
         <a
           aria-label="MOOC.fi Facebook"
@@ -119,7 +118,6 @@ function Footer() {
           rel="noopener noreferrer"
         >
           <FacebookIcon />
-          {/*<StyledIcon icon={["fab", "facebook"]} size="3x" />*/}
         </a>
         <a
           aria-label="MOOC.fi Youtube channel"
@@ -128,7 +126,6 @@ function Footer() {
           rel="noopener noreferrer"
         >
           <YoutubeIcon />
-          {/*<StyledIcon icon={["fab", "youtube"]} size="3x" />*/}
         </a>
       </SocialContainer>
       <BottomRowContainer>

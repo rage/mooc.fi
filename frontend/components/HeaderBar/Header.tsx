@@ -34,12 +34,14 @@ const StyledToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
 `
+
 const HiddenMenuContainer = styled("div")`
   flex: 1;
   @media (max-width: 1050px) {
     display: none;
   }
 `
+
 const MenuContainer = styled("div")`
   flex: 1;
 `
