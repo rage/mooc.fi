@@ -1,26 +1,23 @@
 import { createContext } from "react"
 
-import { UserDetailsContainsQuery } from "/graphql/generated"
-
-export interface SearchVariables {
-  search: string
-  cursor?: string
-  first?: number
-  last?: number
-  skip?: number
-  after?: string | null
-  before?: string | null
-}
+import {
+  UserDetailsContainsQuery,
+  UserDetailsContainsQueryVariables,
+} from "/graphql/generated"
 
 interface UserSearchContext {
   data?: UserDetailsContainsQuery
   loading: boolean
   page: number
   rowsPerPage: number
-  searchVariables: SearchVariables
+  search: string
+  searchVariables: UserDetailsContainsQueryVariables
   setPage: React.Dispatch<React.SetStateAction<number>>
-  setSearchVariables: React.Dispatch<React.SetStateAction<any>>
-  setRowsPerPage: React.Dispatch<React.SetStateAction<any>>
+  setSearchVariables: React.Dispatch<
+    React.SetStateAction<UserDetailsContainsQueryVariables>
+  >
+  setRowsPerPage: React.Dispatch<React.SetStateAction<number>>
+  setSearch: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default createContext<UserSearchContext>({
@@ -31,7 +28,9 @@ export default createContext<UserSearchContext>({
   searchVariables: {
     search: "",
   },
-  setPage: () => {},
-  setSearchVariables: () => {},
-  setRowsPerPage: () => {},
+  search: "",
+  setPage: () => void 0,
+  setSearchVariables: () => void 0,
+  setRowsPerPage: () => void 0,
+  setSearch: () => void 0,
 })

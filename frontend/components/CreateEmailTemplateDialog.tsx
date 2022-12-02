@@ -188,7 +188,7 @@ const CreateEmailTemplateDialog = ({
                 onChange={(e) => {
                   e.preventDefault()
                   setSelectedCourse(
-                    data!.courses?.[Number(e.target.value)] ?? null,
+                    data?.courses?.[Number(e.target.value)] ?? null,
                   )
                 }}
                 id="selectCourse"

@@ -3,7 +3,7 @@ import { get, orderBy } from "lodash"
 
 import { Course } from "@prisma/client"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../../tests"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
@@ -30,9 +30,7 @@ describe("Course", () => {
       afterEach(() => (createdCourses = null))
 
       describe("normal user", () => {
-        beforeEach(() =>
-          ctx!.client.setHeader("Authorization", "Bearer normal"),
-        )
+        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer normal"))
 
         it("should error on no parameters", async () => {
           try {
@@ -43,13 +41,13 @@ describe("Course", () => {
 
         it("returns course on id and slug", async () => {
           const resId = await ctx.client.request(courseQuery, {
-            id: createdCourses![0].id,
+            id: createdCourses?.[0].id,
           })
           const resSlug = await ctx.client.request(courseQuery, {
             slug: "course1",
           })
 
-          ;[resId, resSlug].map((res) =>
+          ;[resId, resSlug].forEach((res) =>
             // had sortStudyModules
             expect(res.course).toMatchSnapshot({
               id: expect.any(String),
@@ -95,17 +93,17 @@ describe("Course", () => {
       })
 
       describe("admin", () => {
-        beforeEach(() => ctx!.client.setHeader("Authorization", "Bearer admin"))
+        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer admin"))
 
         it("returns full course on id and slug", async () => {
           const resId = await ctx.client.request(fullCourseQuery, {
-            id: createdCourses![0].id,
+            id: createdCourses?.[0].id,
           })
           const resSlug = await ctx.client.request(fullCourseQuery, {
             slug: "course1",
           })
 
-          ;[resId, resSlug].map((res) =>
+          ;[resId, resSlug].forEach((res) =>
             expect(
               applySortFns([sortExercises, sortStudyModules, sortCourseTags])(
                 res.course,
@@ -219,7 +217,7 @@ describe("Course", () => {
     describe("course_exists", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
       })
 
       it("returns true on existing course", async () => {
@@ -242,19 +240,29 @@ describe("Course", () => {
     describe("handlerCourses", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("returns correctly", async () => {
-        const res = await ctx.client.request(handlerCoursesQuery)
+        const res = await ctx.client.request(
+          handlerCoursesQuery,
+          {},
+          {
+            Authorization: "Bearer admin",
+          },
+        )
 
         expect(res.handlerCourses).toMatchSnapshot()
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(handlerCoursesQuery)
+          await ctx.client.request(
+            handlerCoursesQuery,
+            {},
+            {
+              Authorization: "Bearer normal",
+            },
+          )
           fail()
         } catch {}
       })
@@ -359,6 +367,10 @@ const fullCourseQuery = gql`
             name
             description
             language
+          }
+          tag_types {
+            name
+            color
           }
           color
         }

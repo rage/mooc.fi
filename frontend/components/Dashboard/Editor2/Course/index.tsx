@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import {
+  type PureQueryOptions,
+  useApolloClient,
+  useMutation,
+} from "@apollo/client"
 
 import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"
@@ -14,7 +18,6 @@ import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
 
@@ -86,17 +89,18 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     })
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
-    const refetchQueries = [
+    const refetchQueries: PureQueryOptions[] = [
       { query: CoursesDocument },
       { query: EditorCoursesDocument },
       { query: CourseEditorOtherCoursesDocument },
-      !isNewCourse
-        ? {
-            query: CourseFromSlugDocument,
-            variables: { slug: values.new_slug },
-          }
-        : undefined,
-    ].filter(notEmpty) as PureQueryOptions[]
+    ]
+
+    if (!isNewCourse) {
+      refetchQueries.push({
+        query: CourseFromSlugDocument,
+        variables: { slug: values.new_slug },
+      })
+    }
 
     console.log("would mutate", mutationVariables)
     try {

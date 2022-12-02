@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
 
 export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
   margin: 0.5rem;
@@ -8,7 +8,7 @@ export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
       ? "#4e4637"
       : color === "primary"
       ? "#FFFFFF"
-      : color || "#000000"};
+      : color ?? "#000000"};
   font-size: 18px;
   padding: 0.5em;
 `

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 
@@ -6,7 +6,9 @@ interface RootProps {
   backgroundColor: string
 }
 
-const Background = styled.div<RootProps>`
+const Background = styled("div", {
+  shouldForwardProp: (prop) => prop !== "backgroundColor",
+})<RootProps>`
   margin-top: 1em;
   display: flex;
   flex-direction: row;
@@ -32,25 +34,16 @@ const ModuleDisplayBackground = (
 ) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
 
-  // webp for svg?
-  // const imageUrl = "/static/images/backgroundPattern.svg"
-  // <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-
   return (
     <Background backgroundColor={backgroundColor}>
-      <picture style={{ zIndex: -1 }}>
-        <source
-          srcSet={require("../../../static/images/backgroundPattern.svg")}
-          type="image/svg+xml"
-        />
-        <BackgroundImage
-          src={require("../../../static/images/backgroundPattern.svg")}
-          loading="lazy"
-          aria-hidden
-          hueRotateAngle={hueRotateAngle}
-          brightness={brightness}
-        />
-      </picture>
+      <BackgroundImage
+        src={require("../../../static/images/backgroundPattern.svg")}
+        loading="lazy"
+        aria-hidden
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
+        style={{ zIndex: -1 }}
+      />
       {children}
     </Background>
   )

@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import Id from "/pages/email-templates/[id]"
+import notEmpty from "/util/notEmpty"
 
 import {
   CourseCreateArg,
@@ -29,7 +29,13 @@ export const toCourseForm = ({
   }
 
   const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+    course?.study_modules?.map((studyModule) => studyModule.id) ?? []
+
+  const study_modules: Record<string, boolean> = {}
+
+  for (const studyModule of modules ?? []) {
+    study_modules[studyModule.id] = courseStudyModules.includes(studyModule.id)
+  }
 
   return {
     ...omit(course, [
@@ -81,13 +87,7 @@ export const toCourseForm = ({
         }
       },
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, [
@@ -249,7 +249,7 @@ export const fromCourseForm = ({
           "",
       }
     })
-    .filter((v) => !!v)
+    .filter(notEmpty)
 
   const study_modules = Object.keys(values.study_modules || {})
     .filter((key) => values?.study_modules?.[key])

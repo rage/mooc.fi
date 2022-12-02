@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
@@ -20,21 +20,17 @@ import { useTranslator } from "/util/useTranslator"
 import {
   CourseStatus,
   EditorCoursesDocument,
+  EditorCoursesQueryVariables,
   HandlerCoursesDocument,
 } from "/graphql/generated"
 
-const Background = styled.section`
+const Background = styled("section")`
   background-color: #61baad;
 `
 
-interface SearchVariables {
-  search?: string
-  hidden?: boolean | null
-  handledBy?: string | null
-  status?: CourseStatus[] | null
-}
-
-const notEmptyOrEmptyString = (value: any): value is string | true | number =>
+const notEmptyOrEmptyString = (
+  value: unknown,
+): value is string | true | number =>
   notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
@@ -51,10 +47,10 @@ function useCourseSearch() {
     ?.split(",")
     .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
 
-  const initialSearchVariables: SearchVariables = {
-    search: useQueryParameter("search", false) || "",
+  const initialSearchVariables: EditorCoursesQueryVariables = {
+    search: useQueryParameter("search", false) ?? "",
     hidden:
-      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
+      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ??
       true,
     handledBy: useQueryParameter("handledBy", false) || null,
     status: statusParam.length
@@ -62,11 +58,10 @@ function useCourseSearch() {
       : [CourseStatus.Active, CourseStatus.Upcoming],
   }
 
-  const [searchVariables, setSearchVariables] = useState<SearchVariables>(
-    initialSearchVariables,
-  )
+  const [searchVariables, setSearchVariables] =
+    useState<EditorCoursesQueryVariables>(initialSearchVariables)
   const [status, setStatus] = useState<CourseStatus[]>(
-    initialSearchVariables.status ?? [],
+    (initialSearchVariables.status ?? []) as CourseStatus[],
   )
 
   const {
@@ -110,7 +105,10 @@ function useCourseSearch() {
         searchVariables.status.includes(CourseStatus.Upcoming)
       )
     ) {
-      searchParams.set("status", searchVariables.status.join(","))
+      searchParams.set(
+        "status",
+        (searchVariables.status as CourseStatus[]).join(","),
+      )
     }
 
     const query = searchParams.toString().length
@@ -123,13 +121,15 @@ function useCourseSearch() {
     }
   }, [searchVariables])
 
-  const onClickStatus = (value: CourseStatus | null) => (_: any) => {
-    setStatus(value ? [value] : [])
-    setSearchVariables({
-      ...searchVariables,
-      status: value ? [value] : [],
-    })
-  }
+  const onClickStatus =
+    (value: CourseStatus | null) =>
+    (_: React.MouseEvent<Element, MouseEvent>) => {
+      setStatus(value ? [value] : [])
+      setSearchVariables({
+        ...searchVariables,
+        status: value ? [value] : [],
+      })
+    }
 
   return {
     loading: editorLoading || handlersLoading,
@@ -177,11 +177,11 @@ function Courses() {
           setSearchVariables={setSearchVariables}
           status={status}
           setStatus={setStatus}
-          handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
+          handlerCourses={handlersData?.handlerCourses ?? []}
           loading={loading}
         />
         <CourseGrid
-          courses={editorData?.courses?.filter(notEmpty)}
+          courses={editorData?.courses ?? []}
           onClickStatus={onClickStatus}
           loading={loading}
         />

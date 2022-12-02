@@ -2,7 +2,6 @@ import { PropsWithChildren } from "react"
 
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
@@ -13,15 +12,19 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
-const CardBase = styled.div<{ ishidden?: number }>`
+const CardBase = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isHidden",
+})<{ isHidden?: number }>`
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
 
@@ -30,7 +33,7 @@ const CardBase = styled.div<{ ishidden?: number }>`
     transition-duration: 0.4s;
   }
 
-  background-color: ${(props) => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
+  background-color: ${(props) => (props.isHidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
   min-width: 340px;
@@ -44,7 +47,7 @@ const CardBase = styled.div<{ ishidden?: number }>`
   flex-direction: row;
 `
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   height: 235px;
   @media (max-width: 430px) {
     width: 45%;
@@ -58,11 +61,11 @@ const ImageContainer = styled.div`
   position: relative;
 `
 
-const StyledLink = styled.a`
+const StyledLink = styled("a")`
   text-decoration: none;
   margin-left: 0px;
 `
-const CourseCardItem = styled.li`
+const CourseCardItem = styled("li")`
   display: flex;
   padding: 1rem;
   height: 100%;
@@ -83,7 +86,7 @@ const CourseCardImageContainer = styled(ImageContainer)`
   }
 `
 
-const CourseCardContent = styled.div`
+const CourseCardContent = styled("div")`
   display: flex;
   width: 100%;
   height: 100%;
@@ -98,12 +101,12 @@ const CourseCardActionArea = styled(CardActions)`
   margin-top: auto;
 `
 
-const CourseInfoList = styled.ul`
+const CourseInfoList = styled("ul")`
   list-style: none;
   margin: 0;
   padding: 0;
 `
-const CourseInfoLine = styled.li`
+const CourseInfoLine = styled("li")`
   display: grid;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -114,26 +117,23 @@ const CourseInfoLine = styled.li`
   flex-direction: row;
 `
 
-const CourseInfoField = ({
-  variant = "h4",
-  component = "h3",
-  children,
-  ...props
-}: PropsWithChildren<TypographyProps & BoxProps>) => (
-  <Typography
-    {...props}
-    variant={variant}
-    component={component}
-    style={{
-      display: "block",
-      marginRight: "0.5rem",
-    }}
-  >
-    {children}
-  </Typography>
-)
+const CourseInfoField = styled(
+  ({
+    variant = "h4",
+    component = "h3",
+    children,
+    ...props
+  }: PropsWithChildren<TypographyProps & BoxProps>) => (
+    <Typography variant={variant} component={component} {...props}>
+      {children}
+    </Typography>
+  ),
+)`
+  display: block;
+  margin-right: 0.5rem;
+`
 
-const CourseInfoValue = styled.div`
+const CourseInfoValue = styled("div")`
   display: flex;
   justify-content: flex-end;
 `
@@ -155,8 +155,6 @@ const CourseInfo = ({
     {children}
   </CourseInfoLine>
 )
-const formatDate = (date?: string | null) =>
-  date ? new Date(date).toLocaleDateString() : "-"
 
 interface CourseCardProps {
   course?: EditorCourseFieldsFragment
@@ -169,7 +167,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
     <CourseCardItem key={`course-card-${course?.id ?? "new"}`}>
       <CardBase
         style={{ gridColumn: "span 1" }}
-        ishidden={course?.hidden ? 1 : undefined}
+        isHidden={course?.hidden ? 1 : undefined}
       >
         <CourseCardImageContainer>
           {loading ? (
@@ -222,23 +220,23 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
           {course ? (
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
-                {formatDate(course?.start_date)} to{" "}
-                {formatDate(course?.end_date)}
+                {formatDateTime(course?.start_date)} to{" "}
+                {formatDateTime(course?.end_date ?? "")}
               </CourseInfo>
 
               <CourseInfo
                 field="Teacher in charge:"
-                value={course?.teacher_in_charge_name || "-"}
+                value={course?.teacher_in_charge_name ?? "-"}
               />
               <CourseInfo
                 field="Teacher in charge email:"
-                value={course?.teacher_in_charge_email || "-"}
+                value={course?.teacher_in_charge_email ?? "-"}
               />
               <CourseInfo
                 field="Support email:"
-                value={course?.support_email || "-"}
+                value={course?.support_email ?? "-"}
               />
-              <CourseInfo field="Slug:" value={course?.slug || "-"} />
+              <CourseInfo field="Slug:" value={course?.slug ?? "-"} />
             </CourseInfoList>
           ) : null}
           <CourseCardActionArea>

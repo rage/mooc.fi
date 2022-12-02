@@ -40,6 +40,9 @@ const createPlugins = () => {
     }),
     connectionPlugin({
       nexusFieldName: "connection",
+      nonNullDefaults: {
+        output: true,
+      },
     }),
     loggerPlugin(),
     cachePlugin(),
@@ -83,6 +86,7 @@ export default makeSchema({
     ),
     schema: __dirname + "/generated/schema.graphql",
   },
+  prettierConfig: path.join(__dirname, "../.prettierrc.js"),
   shouldGenerateArtifacts: true,
   shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),
 })

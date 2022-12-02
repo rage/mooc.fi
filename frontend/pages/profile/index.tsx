@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react"
+import React, { SyntheticEvent, useCallback, useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -19,41 +19,26 @@ import { CurrentUserOverviewDocument } from "/graphql/generated"
 
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 
-// TODO: not visible in here, so don't query it?
-/*
-      verified_users {
-        id
-        organization {
-          slug
-          organization_translations {
-            language
-            name
-          }
-        }
-        created_at
-        personal_unique_code
-        display_name
-      }
-*/
 const tabs: Record<string, number> = {
   points: 0,
   completions: 1,
   settings: 2,
 }
 
-const tabsByNumber: Record<number, string> = Object.entries(tabs).reduce(
-  (acc, [key, value]) => ({ ...acc, [value]: key }),
-  {},
-)
+const tabsByNumber: Record<number, string> = {}
+
+for (const tab of Object.keys(tabs)) {
+  tabsByNumber[tabs[tab]] = tab
+}
 
 function Profile() {
-  const _tab = useQueryParameter("tab", false) || "points"
+  const _tab = useQueryParameter("tab", false) ?? "points"
   const router = useRouter()
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
 
   const handleTabChange = useCallback(
-    (_: ChangeEvent<{}>, newValue: number) => {
+    (_: SyntheticEvent<Element, Event>, newValue: number) => {
       setTab(newValue)
       router.replace(
         router.pathname,
@@ -88,10 +73,10 @@ function Profile() {
     return <Spinner />
   }
 
-  const first_name = data?.currentUser?.first_name || "No first name"
-  const last_name = data?.currentUser?.last_name || "No last name"
-  const email = data?.currentUser?.email || "no email"
-  const studentNumber = data?.currentUser?.student_number || "no student number"
+  const first_name = data?.currentUser?.first_name ?? "No first name"
+  const last_name = data?.currentUser?.last_name ?? "No last name"
+  const email = data?.currentUser?.email ?? "no email"
+  const studentNumber = data?.currentUser?.student_number ?? "no student number"
   const { research_consent } = data?.currentUser ?? {}
 
   return (

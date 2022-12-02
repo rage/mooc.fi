@@ -131,36 +131,81 @@ export const convertPagination = (
   }
 }
 
-export const filterNull = <T>(o: T): T | undefined =>
+export const filterNull = <T extends Record<string, unknown>>(
+  o?: T | null,
+): T | undefined =>
   o
-    ? Object.entries(o).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
-        {} as T,
-      )
+    ? (Object.fromEntries(
+        Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
+      ) as T)
     : undefined
+
+// convertUpdate not needed anymore, hopefully
+/*type ObjectEntries<T> = {
+  [K in keyof T]: [K, T[K]]
+}[keyof T][]
+
+type ConvertedUpdate<T> = T extends Array<infer U>
+  ? U extends { [key: string]: any }
+    ? Array<ConvertedUpdate<U>>
+    : U extends Array<infer _>
+    ? Array<ConvertedUpdate<U>>
+    : Array<U>
+  : T extends NonNullable<{ [key: string]: any }>
+  ? T extends Date
+    ? T
+    : { [K in keyof T]: 
+        K extends string & "disconnect" | "skipDuplicates" | "order"
+          ? T[K]
+        : ConvertedUpdate<T[K]> }
+  : T extends number
+  ? { set: number } | undefined
+  : T extends boolean
+  ? { set: boolean }
+  : T
+
+const isObject = <T>(o: T): o is T & { [key: string]: any } =>
+  o !== null && typeof o === "object"
+
 
 // helper function to convert to atomicNumberOperations
 // https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
-export const convertUpdate = <T extends object>(input: {
-  [key: string]: any
-}): T =>
-  Object.entries(input).reduce(
-    (acc: any, [key, value]: [string, any]) => ({
-      ...acc,
-      [key]: Array.isArray(value)
-        ? value.map(convertUpdate)
-        : typeof value === "object" && value !== null
-        ? convertUpdate(value)
-        : typeof value === "number"
-        ? Number.isNaN(value)
-          ? undefined
-          : { set: value }
-        : typeof value === "boolean"
-        ? { set: value }
-        : value,
-    }),
-    {},
-  )
+export function convertUpdate<T extends { [key: string]: any }>(
+  input: T,
+): ConvertedUpdate<T> {
+  if (!isObject(input)) {
+    return input
+  }
+
+  const result = {} as Record<keyof T, any>
+
+  for (const [key, value] of Object.entries(input) as ObjectEntries<T>) {
+    if (Array.isArray(value)) {
+      result[key] = value.map(convertUpdate)
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !((value as object) instanceof Date)
+    ) {
+      result[key] = convertUpdate(value)
+    } else if (typeof value === "number") {
+      if (Number.isNaN(value)) {
+        result[key] = undefined
+      } else {
+        result[key] = { set: value }
+      }
+    } else if (typeof value === "boolean") {
+      if (key === "disconnect" || key === "skipDuplicates") {
+        result[key] = value
+      } else {
+        result[key] = { set: value }
+      }
+    } else {
+      result[key] = value
+    }
+  }
+  return result as ConvertedUpdate<T>
+}*/
 
 export const createExtensions = async (knex: Knex) => {
   /*if (CIRCLECI) {

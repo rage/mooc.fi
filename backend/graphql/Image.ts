@@ -1,5 +1,3 @@
-import { ReadStream } from "fs"
-
 import { FileUpload } from "graphql-upload"
 import { arg, booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
 
@@ -61,7 +59,9 @@ export const ImageMutations = extendType({
   },
 })
 
-const readFS = (stream: ReadStream): Promise<Buffer> => {
+const readFS = (
+  stream: ReturnType<FileUpload["createReadStream"]>,
+): Promise<Buffer> => {
   const chunkList: Uint8Array[] = []
 
   return new Promise((resolve, reject) =>

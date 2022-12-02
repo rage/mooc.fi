@@ -11,8 +11,8 @@ import {
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
 import * as Yup from "yup"
+import { ObjectShape } from "yup/lib/object"
 
-import styled from "@emotion/styled"
 import HelpIcon from "@mui/icons-material/Help"
 import {
   Grid,
@@ -21,6 +21,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { initialTranslation, languages } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
@@ -42,12 +43,14 @@ import ModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
-const FormContainer = styled.div`
+const FormContainer = styled("div")`
   background-color: white;
   padding: 1rem;
 `
 
-const ModuleImage = styled.img<{ error?: boolean }>`
+const ModuleImage = styled("img", {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error?: boolean }>`
   object-fit: cover;
   width: 100%;
   height: 100%;
@@ -248,7 +251,9 @@ const RenderForm = () => {
                                 cancellationText: t("moduleConfirmationNo"),
                               })
                                 .then(() => helpers.remove(index))
-                                .catch(() => {})
+                                .catch(() => {
+                                  // ignore
+                                })
                             }
                           >
                             {t("moduleRemoveTranslation")}
@@ -285,9 +290,9 @@ const RenderForm = () => {
   )
 }
 
-interface StudyModuleEditFormProps {
+interface StudyModuleEditFormProps<SchemaType extends ObjectShape> {
   module: StudyModuleFormValues
-  validationSchema: Yup.ObjectSchema<any>
+  validationSchema: Yup.ObjectSchema<SchemaType>
   onSubmit: (
     values: StudyModuleFormValues,
     FormikHelpers: FormikHelpers<StudyModuleFormValues>,
@@ -296,13 +301,13 @@ interface StudyModuleEditFormProps {
   onDelete: (values: StudyModuleFormValues) => void
 }
 
-const StudyModuleEditForm = ({
+function StudyModuleEditForm<SchemaType extends ObjectShape>({
   module,
   validationSchema,
   onSubmit,
   onCancel,
   onDelete,
-}: StudyModuleEditFormProps) => {
+}: StudyModuleEditFormProps<SchemaType>) {
   const validate = useCallback(async (values: StudyModuleFormValues) => {
     try {
       await validationSchema.validate(values, {

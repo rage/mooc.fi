@@ -7,10 +7,14 @@ import {
   useState,
 } from "react"
 
-import { FormikErrors, FormikTouched, useFormikContext } from "formik"
+import {
+  FormikContextType,
+  FormikErrors,
+  FormikTouched,
+  useFormikContext,
+} from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import {
   CircularProgress,
   Container,
@@ -19,6 +23,7 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -36,11 +41,13 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled.p<any>`
-  color: ${(props: any) => (props.error ? "#FF0000" : "default")};
+const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<
+  FormikContextType<unknown>["status"]
+>`
+  color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 
-interface FormWrapperProps<T> {
+interface FormWrapperProps<T extends FormValues> {
   onCancel: () => void
   onDelete: (values: T) => void
   renderForm: (props: any) => ReactNode
@@ -58,7 +65,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     status,
     setTouched,
   } = useFormikContext<T>()
-  const { onCancel, onDelete, renderForm, setTab = (_) => {} } = props
+  const { onCancel, onDelete, renderForm, setTab = (_) => void 0 } = props
   const t = useTranslator(CommonTranslations)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
@@ -130,7 +137,9 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
                       cancellationText: t("confirmationNo"),
                     })
                       .then(onCancel)
-                      .catch(() => {})
+                      .catch(() => {
+                        // ignore
+                      })
                   : onCancel()
               }
             >
@@ -177,7 +186,8 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
 }
 
 // need to pass type through
-const WrappedFormWrapper: <T>(props: FormWrapperProps<T>) => JSX.Element =
-  withEnumeratingAnchors(FormWrapper)
+const WrappedFormWrapper: <T extends FormValues>(
+  props: FormWrapperProps<T>,
+) => JSX.Element = withEnumeratingAnchors(FormWrapper)
 
 export default WrappedFormWrapper

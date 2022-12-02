@@ -4,7 +4,7 @@ export interface Message {
   course_id: string
   service_id: string
   progress: PointsByGroup[]
-  message_format_version: Number
+  message_format_version: number
 }
 
 export interface PointsByGroup {
@@ -21,7 +21,7 @@ export interface ServiceProgressPartType {
   progress: number
 }
 
-export interface ServiceProgressType extends Array<ServiceProgressPartType> {}
+export type ServiceProgressType = Array<ServiceProgressPartType>
 
 export interface TierProgress {
   tier: number

@@ -1,7 +1,7 @@
 import { FieldArray } from "formik"
 
-import styled from "@emotion/styled"
 import { Button, ButtonGroup } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { initialTranslation } from "./form-validation"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"

@@ -1,10 +1,10 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import EditIcon from "@mui/icons-material/Edit"
 import { Grid, Skeleton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
@@ -21,7 +21,7 @@ const Base = styled(ClickableDiv)`
   }
 `
 
-const ImageBackground = styled.span`
+const ImageBackground = styled("span")`
   position: absolute;
   left: 0;
   right: 0;
@@ -31,7 +31,7 @@ const ImageBackground = styled.span`
   background-position: center 40%;
 `
 
-const IconBackground = styled.span`
+const IconBackground = styled("span")`
   position: absolute;
   left: 0;
   right: 0;
@@ -39,7 +39,7 @@ const IconBackground = styled.span`
   bottom: 0;
 `
 
-const ImageCover = styled.span`
+const ImageCover = styled("span")`
   position: absolute;
   left: 0;
   right: 0;
@@ -49,7 +49,7 @@ const ImageCover = styled.span`
   opacity: 0.9;
   width: 70%;
 `
-const ContentArea = styled.span`
+const ContentArea = styled("span")`
   position: absolute;
   left: 0;
   right: 0;
@@ -62,7 +62,7 @@ const ContentArea = styled.span`
   padding-top: 1em;
 `
 
-const NaviCardTitle = styled(Typography)<any>`
+const NaviCardTitle = styled(Typography)`
   margin-bottom: 1rem;
   margin-left: 1rem;
   max-width: 60%;
@@ -81,6 +81,7 @@ const NaviCardTitle = styled(Typography)<any>`
   }
   flex: 1;
 `
+
 interface ModuleCardProps {
   module?: StudyModuleDetailedFieldsFragment
   loading?: boolean
@@ -120,7 +121,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
         <ImageCover />
         <ContentArea>
           {loading ? (
-            <NaviCardTitle align="left" component="div">
+            <NaviCardTitle align="left">
               <Skeleton variant="text" />
             </NaviCardTitle>
           ) : (

@@ -4,7 +4,15 @@ import { useRouter } from "next/router"
 
 import { FAQComponent } from "/components/Home/FAQ/Common"
 
-export function useFAQPage(topic: string) {
+type MDXComponent<T> = {
+  meta?: {
+    title?: string
+    ingress?: string
+    breadcrumb?: string
+  }
+} & React.ComponentType<T>
+
+export function useFAQPage(topic = "toc_faq") {
   const { locale } = useRouter()
 
   const [render, setRender] = useState(false)
@@ -20,13 +28,16 @@ export function useFAQPage(topic: string) {
   const Component = FAQComponent({
     mdxImport: () =>
       import(`../static/md_pages/${sanitizedTopic}_${locale}.mdx`),
-    onSuccess: (mdx: any) => {
+    onSuccess: (mdx: MDXComponent<any>) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")
       setBreadcrumb(mdx?.meta?.breadcrumb ?? mdx?.meta?.title ?? "")
       return mdx
     },
-    onError: () => setError(true),
+    onError: (errorComponent) => {
+      setError(true)
+      return errorComponent ?? null
+    },
   })
 
   return {

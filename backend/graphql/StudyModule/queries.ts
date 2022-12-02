@@ -85,15 +85,13 @@ export const StudyModuleQueries = extendType({
       ordering: true,
     })
 
-    t.list.field("study_modules", {
+    t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
         orderBy: arg({ type: "StudyModuleOrderByInput" }),
         language: stringArg(),
       },
-      resolve: async (_, args, ctx) => {
-        const { orderBy, language } = args
-
+      resolve: async (_, { orderBy, language }, ctx) => {
         const modules: (StudyModule & {
           study_module_translations?: StudyModuleTranslation[]
         })[] = await ctx.prisma.studyModule.findMany({

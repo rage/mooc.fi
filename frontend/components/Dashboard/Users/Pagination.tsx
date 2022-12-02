@@ -5,19 +5,19 @@ import {
   useContext,
 } from "react"
 
-import styled from "@emotion/styled"
 import FirstPageIcon from "@mui/icons-material/FirstPage"
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft"
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 import LastPageIcon from "@mui/icons-material/LastPage"
 import { IconButton, TablePagination } from "@mui/material"
+import { styled } from "@mui/material/styles"
 import { useTheme } from "@mui/material/styles"
 
 import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
 import { useTranslator } from "/util/useTranslator"
 
-const StyledFooter = styled.footer`
+const StyledFooter = styled("footer")`
   flex-shrink: 0;
   margin-left: 2.5;
 `
@@ -32,7 +32,7 @@ const StyledTablePagination = styled(TablePagination)`
   }
 `
 
-const TablePaginationActions: React.FC<any> = () => {
+const TablePaginationActions: React.FC = () => {
   const theme = useTheme()
   const {
     data,
@@ -140,7 +140,7 @@ const TablePaginationActions: React.FC<any> = () => {
   )
 }
 
-const Pagination: React.FC<any> = () => {
+const Pagination: React.FC = () => {
   const t = useTranslator(UsersTranslations)
   const {
     data,

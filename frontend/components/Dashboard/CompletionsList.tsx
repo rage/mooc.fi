@@ -6,7 +6,6 @@ import { CircularProgress } from "@mui/material"
 import CompletionsListWithData from "./CompletionsListWithData"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
-import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
@@ -74,10 +73,10 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
     return <div>no data</div>
   }
 
-  const completions =
-    data.completionsPaginated?.edges
-      ?.map((edge) => edge?.node)
-      .filter(notEmpty) ?? []
+  const completions = (data.completionsPaginated?.edges ?? []).map(
+    (edge) => edge?.node,
+  )
+
   const startCursor = data.completionsPaginated?.pageInfo?.startCursor
   const endCursor = data.completionsPaginated?.pageInfo?.endCursor
 
@@ -101,9 +100,9 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
         })
       }
       hasPrevious={
-        data.completionsPaginated?.pageInfo?.hasPreviousPage || false
+        data.completionsPaginated?.pageInfo?.hasPreviousPage ?? false
       }
-      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage || false}
+      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage ?? false}
       // pageNumber={queryDetails.page}
     />
   )

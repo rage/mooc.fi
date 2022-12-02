@@ -28,8 +28,8 @@ export const toStudyModuleForm = ({
     image: module.image || "",
     new_slug: module.slug,
     order: module.order ?? undefined,
-    study_module_translations:
-      module?.study_module_translations?.map((study_module_translation) => ({
+    study_module_translations: (module?.study_module_translations ?? []).map(
+      (study_module_translation) => ({
         ...omit(study_module_translation, [
           "__typename",
           "id",
@@ -41,7 +41,8 @@ export const toStudyModuleForm = ({
         name: study_module_translation.name ?? "",
         language: study_module_translation.language ?? "",
         description: study_module_translation.description ?? "",
-      })) ?? [],
+      }),
+    ),
   }
 }
 interface FromStudyModuleFormArgs {

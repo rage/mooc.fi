@@ -1,163 +1,42 @@
-import "@fortawesome/fontawesome-svg-core/styles.css"
-
-import { useCallback, useEffect, useMemo, useReducer } from "react"
+// import "@fortawesome/fontawesome-free/css/all.min.css"
+import { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
 import type { AppContext, AppProps } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CacheProvider, EmotionCache, Global } from "@emotion/react"
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, GlobalStyles } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
-import createEmotionCache from "../src/createEmotionCache"
-import Layout from "./_layout"
-import AlertContext, { Alert } from "/contexts/AlertContext"
-import { Breadcrumb, BreadcrumbContext } from "/contexts/BreadcrumbContext"
-import LoginStateContext from "/contexts/LoginStateContext"
+import OriginalLayout from "./_layout"
+import NewLayout from "./_new/_layout"
+import { AlertProvider } from "/contexts/AlertContext"
+import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
+import { LoginStateProvider } from "/contexts/LoginStateContext"
+import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
+import { createEmotionSsr } from "/src/createEmotionSsr"
 import { fontCss } from "/src/fonts"
-import theme from "/src/theme"
+import newTheme, { newFontCss } from "/src/newTheme"
+import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
-import { CurrentUserQuery } from "/graphql/generated"
+const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
+  createEmotionSsr({
+    key: "emotion-css",
+  })
 
-fontAwesomeConfig.autoAddCss = false
+export { augmentDocumentWithEmotionCache }
 
-const clientSideEmotionCache = createEmotionCache()
-
-type UpdateUserPayload = {
-  user: CurrentUserQuery["currentUser"]
-  admin?: boolean
-}
-interface AppState {
-  loggedIn: boolean
-  logInOrOut: () => void
-  alerts: Alert[]
-  breadcrumbs: Breadcrumb[]
-  admin: boolean
-  validated: boolean
-  currentUser: any
-  updateUser: (data: UpdateUserPayload) => void
-  nextAlertId: number
-}
-type AppReducerAction =
-  | {
-      type: "addAlert"
-      payload: Alert
-    }
-  | {
-      type: "removeAlert"
-      payload: Alert
-    }
-  | {
-      type: "setBreadcrumbs"
-      payload: Array<Breadcrumb>
-    }
-  | {
-      type: "updateUser"
-      payload: UpdateUserPayload
-    }
-  | {
-      type: "logInOrOut"
-    }
-
-const reducer = (state: AppState, action: AppReducerAction) => {
-  switch (action.type) {
-    case "addAlert":
-      const nextAlertId = state.nextAlertId + 1
-      return {
-        ...state,
-        alerts: [...state.alerts, { ...action.payload, id: nextAlertId }],
-        nextAlertId,
-      }
-    case "removeAlert":
-      return {
-        ...state,
-        alerts: state.alerts.filter((alert) => alert.id !== action.payload.id),
-      }
-    case "setBreadcrumbs":
-      return {
-        ...state,
-        breadcrumbs: action.payload,
-      }
-    case "updateUser":
-      return {
-        ...state,
-        currentUser: action.payload.user,
-        admin: action.payload.admin || false,
-      }
-    case "logInOrOut":
-      return {
-        ...state,
-        loggedIn: !state.loggedIn,
-      }
-    default:
-      return state
-  }
-}
-
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
-}
-
-export function MyApp({
-  Component,
-  pageProps,
-  emotionCache = clientSideEmotionCache,
-}: MyAppProps) {
+export function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
-  const logInOrOut = useCallback(() => dispatch({ type: "logInOrOut" }), [])
-
-  const updateUser = useCallback(
-    (data: UpdateUserPayload) =>
-      dispatch({ type: "updateUser", payload: data }),
-    [],
-  )
-
-  const addAlert = useCallback(
-    (alert: Alert) => dispatch({ type: "addAlert", payload: alert }),
-    [],
-  )
-
-  const removeAlert = useCallback(
-    (alert: Alert) => dispatch({ type: "removeAlert", payload: alert }),
-    [],
-  )
-
-  const setBreadcrumbs = useCallback(
-    (breadcrumbs: Breadcrumb[]) =>
-      dispatch({ type: "setBreadcrumbs", payload: breadcrumbs }),
-    [],
-  )
-
-  const [state, dispatch] = useReducer(reducer, {
-    loggedIn: pageProps?.signedIn,
-    logInOrOut,
-    alerts: [],
-    breadcrumbs: [],
-    admin: pageProps?.admin,
-    validated: pageProps?.validated,
-    currentUser: pageProps?.currentUser,
-    updateUser,
-    nextAlertId: 0,
-  })
-
-  useEffect(() => {
-    if (pageProps?.currentUser !== state.currentUser) {
-      dispatch({
-        type: "updateUser",
-        payload: { user: pageProps?.currentUser, admin: pageProps?.admin },
-      })
-    }
-  }, [pageProps?.currentUser])
+  const isNew = router.pathname?.includes("_new")
 
   useEffect(() => {
     initGA()
@@ -175,55 +54,57 @@ export function MyApp({
     }
   }, [router])
 
+  useScrollToHash()
+
   const titleString = t("title", { title: "..." })?.[router?.pathname ?? ""]
 
   const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
+  const Layout = isNew ? NewLayout : OriginalLayout
+  const theme = isNew ? newTheme : originalTheme
+
   const loginStateContextValue = useMemo(
     () => ({
-      loggedIn: state.loggedIn,
-      logInOrOut,
-      admin: state.admin,
-      currentUser: state.currentUser,
-      updateUser,
+      loggedIn: pageProps?.signedIn,
+      admin: pageProps?.admin,
+      currentUser: pageProps?.currentUser,
     }),
-    [state.loggedIn, state.admin, state.currentUser],
+    [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
   )
-  const breadcrumbContextValue = useMemo(
-    () => ({ breadcrumbs: state.breadcrumbs, setBreadcrumbs }),
-    [state.breadcrumbs],
-  )
-  const alertContextValue = useMemo(
-    () => ({ alerts: state.alerts, addAlert, removeAlert }),
-    [state.alerts],
-  )
+
+  const alternateLanguage = useMemo(() => {
+    if (router.locale === "en") {
+      return { hrefLang: "fi_FI", href: router.asPath.replace("/en/", "/") }
+    }
+    return { hrefLang: "en_US", href: `/en${router.asPath}` }
+  }, [router.locale, router.pathname])
 
   return (
     <>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          />
-          <title>{title}</title>
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <LoginStateContext.Provider value={loginStateContextValue}>
-            <ConfirmProvider>
-              <BreadcrumbContext.Provider value={breadcrumbContextValue}>
-                <AlertContext.Provider value={alertContextValue}>
-                  <Layout>
-                    <Global styles={fontCss} />
-                    <Component {...pageProps} />
-                  </Layout>
-                </AlertContext.Provider>
-              </BreadcrumbContext.Provider>
-            </ConfirmProvider>
-          </LoginStateContext.Provider>
-        </ThemeProvider>
-      </CacheProvider>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+        />
+        <link rel="alternate" {...alternateLanguage} />
+        <title>{title}</title>
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LoginStateProvider value={loginStateContextValue}>
+          <ConfirmProvider>
+            <BreadcrumbProvider>
+              <AlertProvider>
+                <Layout>
+                  <GlobalStyles styles={fontCss} />
+                  {isNew && <GlobalStyles styles={newFontCss} />}
+                  <Component {...pageProps} />
+                </Layout>
+              </AlertProvider>
+            </BreadcrumbProvider>
+          </ConfirmProvider>
+        </LoginStateProvider>
+      </ThemeProvider>
     </>
   )
 }
@@ -250,7 +131,7 @@ MyApp.getInitialProps = async (props: AppContext) => {
   }
 
   const signedIn = isSignedIn(ctx)
-  const admin = isAdmin(ctx)
+  const admin = signedIn && isAdmin(ctx)
 
   return {
     ...originalProps,
@@ -262,4 +143,4 @@ MyApp.getInitialProps = async (props: AppContext) => {
   }
 }
 
-export default withApolloClient(MyApp)
+export default withAppEmotionCache(withApolloClient(MyApp))

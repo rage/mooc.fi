@@ -1,6 +1,5 @@
-import { PropsWithChildren } from "react"
-
-import styled from "@emotion/styled"
+import { BoxProps, TypographyProps } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   CardTitle,
@@ -10,7 +9,7 @@ import {
 import { CardText } from "/components/Text/paragraphs"
 import { mime } from "/util/imageUtils"
 
-export const CenteredContent = styled.div`
+export const CenteredContent = styled("div")`
   width: 80%;
   margin: auto;
   @supports (display: grid) {
@@ -20,14 +19,14 @@ export const CenteredContent = styled.div`
     grid-template-columns: 1fr;
 
     @media only screen and (min-width: 1200px) {
-      grid-template-columns: 45% 55%;
+      grid-template-columns: 4.5fr 5.5fr;
       grid-auto-rows: 1fr;
       width: 90%;
     }
   }
 `
 
-export const ContentContainer = styled.div`
+export const ContentContainer = styled("div")`
   margin: 1rem;
   padding-left: 1rem;
   min-width: 33%;
@@ -48,15 +47,18 @@ const ModuleHeaderBase = styled(H2NoBackground)`
     font-size: 37px;
     line-height: 70px;
   }
-`
+` as typeof H2NoBackground
 
-export const ModuleHeader = ({ children, ...props }: PropsWithChildren<{}>) => (
+export const ModuleHeader = ({
+  children,
+  ...props
+}: TypographyProps & BoxProps) => (
   <ModuleHeaderBase component="h2" variant="h2" align="left" {...props}>
     {children}
   </ModuleHeaderBase>
 )
 
-const ModuleImageBase = styled.img`
+const ModuleImageBase = styled("img")`
   width: 100%;
 `
 
@@ -91,12 +93,12 @@ const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
     font-size: 18px;
     line-height: 37px;
   }
-`
+` as typeof SubtitleNoBackground
 
 export const ModuleDescriptionText = ({
   children,
   ...props
-}: PropsWithChildren<{}>) => (
+}: TypographyProps & BoxProps) => (
   <ModuleDescriptionTextBase variant="subtitle1" component="h3" {...props}>
     {children}
   </ModuleDescriptionTextBase>
@@ -105,7 +107,7 @@ export const ModuleDescriptionText = ({
 export const ModuleCardTitle = ({
   children,
   ...props
-}: PropsWithChildren<{}>) => (
+}: TypographyProps & BoxProps) => (
   <CardTitle component="h3" align="center" variant="h3" {...props}>
     {children}
   </CardTitle>
@@ -114,7 +116,7 @@ export const ModuleCardTitle = ({
 export const ModuleCardText = ({
   children,
   ...props
-}: PropsWithChildren<{}>) => (
+}: TypographyProps & BoxProps) => (
   <CardText component="p" variant="body1" align="left" {...props}>
     {children}
   </CardText>

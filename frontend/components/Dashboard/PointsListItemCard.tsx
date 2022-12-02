@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -15,7 +15,7 @@ import {
   UserCourseServiceProgressCoreFieldsFragment,
 } from "/graphql/generated"
 
-const Root = styled(Grid)`
+const PointsListItemCardContainer = styled(Grid)`
   background-color: white;
   margin: 1rem;
   padding: 1rem;
@@ -74,7 +74,7 @@ function PointsListItemCard(props: PointsListItemCardProps) {
   })
 
   return (
-    <Root item sm={12} lg={12}>
+    <PointsListItemCardContainer item sm={12} lg={12}>
       {showPersonalDetails && personalDetails ? (
         <PersonalDetailsDisplay personalDetails={personalDetails} />
       ) : (
@@ -85,11 +85,11 @@ function PointsListItemCard(props: PointsListItemCardProps) {
       {showProgress && (
         <>
           <PointsProgress
-            total={formattedPointsData.total * 100}
+            percentage={formattedPointsData.total * 100}
             title="Total progress"
           />
           <PointsProgress
-            total={formattedPointsData.exercises * 100}
+            percentage={formattedPointsData.exercises * 100}
             title="Exercises completed"
           />
           <hr />
@@ -113,7 +113,7 @@ function PointsListItemCard(props: PointsListItemCardProps) {
       ) : (
         <p>No points data available</p>
       )}
-    </Root>
+    </PointsListItemCardContainer>
   )
 }
 

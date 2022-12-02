@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import OutboundLink from "/components/OutboundLink"
@@ -39,7 +39,7 @@ const FlagBackground = styled(FullCoverTextBackground)`
 `
 
 // @ts-ignore: not used for now
-const WaveOverlay = styled.div`
+const WaveOverlay = styled("div")`
   overflow: hidden;
   &:after {
     z-index: -1;
@@ -64,7 +64,7 @@ const WaveOverlay = styled.div`
   }
 `
 
-const InfoContainer = styled.div`
+const InfoContainer = styled("div")`
   display: flex;
   flex-direction: column;
   z-index: 1;
@@ -72,10 +72,10 @@ const InfoContainer = styled.div`
   padding: 0rem;
 
   a {
-    font-size: clamp(12px, 1.5vw, 22px);
+    font-size: clamp(12px, 1.5vw, 18px);
   }
   h3 {
-    font-size: clamp(14px, 2vw, 22px);
+    font-size: clamp(14px, 2vw, 24px);
   }
 `
 

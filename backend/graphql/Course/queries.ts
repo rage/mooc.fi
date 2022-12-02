@@ -124,7 +124,7 @@ export const CourseQueries = extendType({
       ordering: true,
     })
 
-    t.list.field("courses", {
+    t.list.nonNull.field("courses", {
       type: "Course",
       args: {
         orderBy: arg({ type: "CourseOrderByInput" }),
@@ -250,7 +250,7 @@ export const CourseQueries = extendType({
       },
     })
 
-    t.list.field("handlerCourses", {
+    t.list.nonNull.field("handlerCourses", {
       type: "Course",
       authorize: isAdmin,
       resolve: async (_, __, ctx) => {
@@ -264,7 +264,7 @@ export const CourseQueries = extendType({
       },
     })
 
-    t.field("course_exists", {
+    t.nonNull.field("course_exists", {
       type: "Boolean",
       args: {
         slug: nonNull(stringArg()),

@@ -3,7 +3,7 @@ import { useState } from "react"
 import { utils, type WorkBook, writeFile } from "xlsx"
 
 import { ApolloClient, useApolloClient } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
@@ -12,13 +12,14 @@ import {
   ExportUserCourseProgressesQuery,
 } from "/graphql/generated"
 
-const PointsExportButtonContainer = styled.div`
+const PointsExportButtonContainer = styled("div")`
   margin-bottom: 1rem;
 `
 
 export interface PointsExportButtonProps {
   slug: string
 }
+
 function PointsExportButton(props: PointsExportButtonProps) {
   const { slug } = props
   const client = useApolloClient()
@@ -35,7 +36,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
             setInfotext("Downloading data")
             const data = await downloadInChunks(slug, client, setInfotext)
             setInfotext("constructing csv")
-            let objects = await flatten(data)
+            const objects = await flatten(data)
             console.log(data)
             console.log(objects)
             const sheet = utils.json_to_sheet(objects)
@@ -80,6 +81,11 @@ async function flatten(
     } = datum?.user ?? {}
     const { course_variant, country, language } =
       datum?.user_course_settings ?? {}
+    const groups: Record<string, number> = {}
+
+    for (const progress of datum?.progress ?? []) {
+      groups[progress.group] = progress.n_points
+    }
 
     const newDatum = {
       user_id: upstream_id,
@@ -92,13 +98,7 @@ async function flatten(
       course_variant: course_variant?.replace(/\s+/g, " ").trim() ?? "",
       country: country?.replace(/\s+/g, " ").trim() ?? "",
       language: language?.replace(/\s+/g, " ").trim() ?? "",
-      ...(datum?.progress?.reduce(
-        (obj: any, progress: any) => ({
-          ...obj,
-          [progress.group]: progress.n_points,
-        }),
-        {},
-      ) ?? {}),
+      ...groups,
     }
     return newDatum
   })
@@ -125,7 +125,7 @@ async function downloadInChunks(
         first: 100*/
       },
     })
-    let downloaded = data?.userCourseProgresses ?? []
+    const downloaded = data?.userCourseProgresses ?? []
     if (downloaded.length === 0) {
       break
     }

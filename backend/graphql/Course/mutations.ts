@@ -13,12 +13,8 @@ import {
   createCourseMutations,
   getIds,
 } from "../../util/courseMutationHelpers"
-import { convertUpdate } from "../../util/db-functions"
 import { isNotNullOrUndefined } from "../../util/isNullOrUndefined"
 import { deleteImage, uploadImage } from "../Image"
-
-const isNotNull = <T>(value: T | null | undefined): value is T =>
-  value !== null && value !== undefined
 
 const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
   value ?? undefined
@@ -178,9 +174,9 @@ export const CourseMutations = extendType({
         const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
           include: {
-            inherit_settings_from: true,
-            completions_handled_by: true,
             study_modules: true,
+            completions_handled_by: true,
+            inherit_settings_from: true,
             user_course_settings_visibilities: true,
           },
         })
@@ -188,7 +184,7 @@ export const CourseMutations = extendType({
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
-          end_date === ""
+          end_date !== ""
         ) {
           end_date = new Date().toLocaleDateString()
         }
@@ -255,7 +251,7 @@ export const CourseMutations = extendType({
             id: nullToUndefined(id),
             slug,
           },
-          data: convertUpdate({
+          data: {
             ...omit(course, [
               "id",
               "photo",
@@ -280,7 +276,7 @@ export const CourseMutations = extendType({
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-          }),
+          },
         })
 
         return updatedCourse

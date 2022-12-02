@@ -4,6 +4,7 @@ import { DateTime } from "luxon"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import notEmpty from "/util/notEmpty"
 
 import {
   CourseCreateArg,
@@ -16,8 +17,8 @@ import {
 const isProduction = process.env.NODE_ENV === "production"
 
 interface ToCourseFormArgs {
-  course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
+  course?: EditorCourseDetailedFieldsFragment | null
+  modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 export const toCourseForm = ({
@@ -28,8 +29,17 @@ export const toCourseForm = ({
     return initialValues
   }
 
-  const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+  const courseStudyModuleIds = (course?.study_modules ?? []).map(
+    (studyModule) => studyModule.id,
+  )
+
+  const study_modules: Record<string, boolean> = {}
+
+  for (const studyModule of modules ?? []) {
+    study_modules[studyModule.id] = courseStudyModuleIds.includes(
+      studyModule.id,
+    )
+  }
 
   return {
     ...omit(course, [
@@ -70,13 +80,7 @@ export const toCourseForm = ({
         instructions: course_translation.instructions ?? undefined,
       }),
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, ["__typename", "created_at", "updated_at"]),
@@ -194,7 +198,7 @@ export const fromCourseForm = ({
           course_translation.open_university_course_link.course_code.trim(),
       }
     })
-    .filter(notNullOrUndefined)
+    .filter(notEmpty)
 
   const study_modules = Object.keys(values.study_modules || {})
     .filter((key) => values?.study_modules?.[key])
@@ -285,6 +289,3 @@ export const fromCourseForm = ({
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
 }
-
-const notNullOrUndefined = <T>(data?: T | null): data is T =>
-  data !== null && typeof data !== "undefined"

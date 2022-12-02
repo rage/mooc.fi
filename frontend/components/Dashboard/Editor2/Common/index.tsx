@@ -14,21 +14,21 @@ import {
 } from "react-hook-form"
 import * as Yup from "yup"
 
-import styled from "@emotion/styled"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormValues } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 
-export const FormSubtitle = styled(Typography)<any>`
+export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
   margin-bottom: 1rem;
   font-size: 2em;
-`
+` as typeof Typography
 
-export const FormFieldGroup = styled.div`
+export const FormFieldGroup = styled("div")`
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
@@ -37,7 +37,7 @@ export const FormFieldGroup = styled.div`
   border-bottom: 4px dotted #98b0a9;
 `
 
-export const AdjustingAnchorLink = styled.a<{ id: string }>`
+export const AdjustingAnchorLink = styled("a")<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;
@@ -52,9 +52,7 @@ interface EnumeratingAnchorProps {
   id: string
 }
 
-export const EnumeratingAnchor: React.FC<any> = ({
-  id,
-}: EnumeratingAnchorProps) => {
+export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({ id }) => {
   const { addAnchor } = useAnchorContext()
   const { tab } = useTabContext()
 
@@ -129,11 +127,11 @@ export const testUnique = <Root extends FormValues, Child extends FormValues>(
 
     const fieldValues = context.values[valueField]
 
-    if (!value || value === "" || !isArray(fieldValues)) {
+    if (!value || !isArray(fieldValues)) {
       return true // previous should have caught the empty
     }
 
-    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndexMatch = (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
     const otherValues = fieldValues

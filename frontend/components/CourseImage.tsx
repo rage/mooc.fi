@@ -1,7 +1,7 @@
 import { memo } from "react"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { addDomain } from "/util/imageUtils"
 
@@ -13,10 +13,10 @@ const ComponentStyle = `
   object-fit: cover;
 `
 
-const ImageComponent = styled.img`
+const ImageComponent = styled("img")`
   ${ComponentStyle}
 `
-const PlaceholderComponent = styled.div`
+const PlaceholderComponent = styled("div")`
   ${ComponentStyle}
   background-color: #F0F0F0;
   display: flex;

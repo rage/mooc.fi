@@ -1,11 +1,9 @@
-import { useContext } from "react"
-
 import Router from "next/router"
 
 import { RegularContainer } from "/components/Container"
 import CreateAccountForm from "/components/CreateAccountForm"
-import AlertContext from "/contexts/AlertContext"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useAlertContext } from "/contexts/AlertContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedOut from "/lib/with-signed-out"
 import SignUpTranslations from "/translations/sign-up"
@@ -21,8 +19,8 @@ const SignUpPage = () => {
     },
   ])
 
-  const { addAlert } = useContext(AlertContext)
-  const { logInOrOut } = useContext(LoginStateContext)
+  const { addAlert } = useAlertContext()
+  const { logInOrOut } = useLoginStateContext()
 
   const onStepComplete = () => {
     logInOrOut()

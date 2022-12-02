@@ -73,7 +73,7 @@ const UserPage = () => {
               query: UserProfileUserCourseSettingsDocument,
               variables: { upstream_id: Number(id) },
             })
-            let newData = more
+            const newData = more
             newData.push(...(data?.userCourseSettings?.edges ?? []))
             setMore(newData)
           }}

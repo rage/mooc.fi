@@ -1,7 +1,5 @@
-import { MouseEvent as ReactMouseEvent } from "react"
-
-import styled from "@emotion/styled"
 import { ButtonBase, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const CloseButton = styled(ButtonBase)`
   position: relative;
@@ -37,7 +35,9 @@ const CloseButton = styled(ButtonBase)`
 
 interface ImagePreviewProps {
   file: string | undefined
-  onClose: Function | null
+  onClose:
+    | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
+    | null
   height?: number
   [key: string]: any
 }
@@ -61,9 +61,7 @@ const ImagePreview = ({
       />
       {onClose && (
         <Tooltip title="Remove picture">
-          <CloseButton onClick={(e: ReactMouseEvent) => onClose(e)}>
-            &times;
-          </CloseButton>
+          <CloseButton onClick={onClose}>&times;</CloseButton>
         </Tooltip>
       )}
     </div>

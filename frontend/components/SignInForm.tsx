@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useContext } from "react"
 
-import styled from "@emotion/styled"
 import {
   FormControl,
   FormHelperText,
@@ -9,19 +7,20 @@ import {
   InputLabel,
   Link,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { isSignedIn, signIn } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const StyledForm = styled.form`
+const StyledForm = styled("form")`
   padding: 1em;
 `
 
 function SignIn() {
-  const { logInOrOut } = useContext(LoginStateContext)
+  const { logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
 
   const [password, setPassword] = useState("")
@@ -46,9 +45,10 @@ function SignIn() {
       setTimeout(inputFieldSetter, 10),
       setTimeout(inputFieldSetter, 1000),
       setTimeout(inputFieldSetter, 5000),
+      errorTimeout,
     ]
 
-    return () => timeouts.forEach((t) => clearTimeout(t))
+    return () => timeouts.forEach((t) => t && clearTimeout(t))
   }, [])
 
   return (

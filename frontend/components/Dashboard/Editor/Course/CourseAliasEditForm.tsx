@@ -1,13 +1,13 @@
 import { FieldArray, getIn, useFormikContext } from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { FormControl, FormGroup, Typography } from "@mui/material"
+import { Button, FormControl, FormGroup, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { initialAlias } from "./form-validation"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import {
   inputLabelProps,
   StyledFieldWithAnchor,
@@ -17,8 +17,20 @@ import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const ButtonWithWhiteText = styled(StyledButton)`
+const ButtonWithWhiteText = styled(ButtonWithPaddingAndMargin)`
   color: white;
+  width: 100%;
+`
+
+const Row = styled("section")`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+`
+
+export const StyledButton = styled(Button)`
+  margin: 0.25rem;
+  height: 3rem;
 `
 
 const CourseAliasEditForm = () => {
@@ -37,9 +49,9 @@ const CourseAliasEditForm = () => {
           <FieldArray name="course_aliases">
             {(helpers) => (
               <>
-                {values!.length ? (
-                  values!.map((alias, index: number) => (
-                    <section style={{ display: "inline-block" }}>
+                {values.length ? (
+                  values.map((alias, index: number) => (
+                    <Row>
                       <StyledFieldWithAnchor
                         id={`course_aliases[${index}].course_code`}
                         name={`course_aliases[${index}].course_code`}
@@ -50,11 +62,10 @@ const CourseAliasEditForm = () => {
                         errors={[getIn(errors, `[${index}].course_code`)]}
                         variant="outlined"
                         InputLabelProps={inputLabelProps}
-                        style={{ width: "70%" }}
+                        style={{ width: "100%" }}
                         required
                       />
                       <StyledButton
-                        style={{ margin: "auto", width: "25%", float: "right" }}
                         variant="contained"
                         disabled={isSubmitting}
                         color="secondary"
@@ -69,14 +80,16 @@ const CourseAliasEditForm = () => {
                               cancellationText: t("confirmationNo"),
                             })
                               .then(() => helpers.remove(index))
-                              .catch(() => {})
+                              .catch(() => {
+                                // ignore
+                              })
                           }
                         }}
                         endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}
                       >
                         {t("courseRemove")}
                       </StyledButton>
-                    </section>
+                    </Row>
                   ))
                 ) : (
                   <Typography
@@ -88,9 +101,9 @@ const CourseAliasEditForm = () => {
                     {t("courseNoAliases")}
                   </Typography>
                 )}
-                {(values!.length == 0 ||
-                  (values!.length &&
-                    values![values!.length - 1].course_code !== "")) && (
+                {(values.length == 0 ||
+                  (values.length &&
+                    values[values.length - 1].course_code !== "")) && (
                   <section
                     style={{ justifyContent: "center", display: "flex" }}
                   >
@@ -100,7 +113,6 @@ const CourseAliasEditForm = () => {
                       disabled={isSubmitting}
                       onClick={() => helpers.push({ ...initialAlias })}
                       endIcon={<AddIcon>{t("courseAdd")}</AddIcon>}
-                      style={{ width: "45%" }}
                     >
                       {t("courseAdd")}
                     </ButtonWithWhiteText>

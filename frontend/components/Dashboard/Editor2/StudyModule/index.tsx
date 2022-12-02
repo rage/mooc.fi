@@ -3,7 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
-import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import {
+  type PureQueryOptions,
+  useApolloClient,
+  useMutation,
+} from "@apollo/client"
 
 import { EditorContext } from "../EditorContext"
 import studyModuleEditSchema from "./form-validation"
@@ -141,7 +145,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
       tab: 0,
       initialValues: defaultValues,
       setStatus,
-      setTab: () => {},
+      setTab: () => void 0,
       onSubmit,
       onError,
       onCancel,

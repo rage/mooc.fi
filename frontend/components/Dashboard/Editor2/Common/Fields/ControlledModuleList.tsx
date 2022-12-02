@@ -7,7 +7,6 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import {
   Checkbox,
   FormControl,
@@ -17,7 +16,9 @@ import {
   List,
   ListItem,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { FormValues } from "../../types"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {
   ControlledFieldProps,
@@ -31,7 +32,7 @@ const ModuleList = styled(List)`
   max-height: 400px;
   overflow: auto;
 `
-const ModuleListItem = styled(ListItem)<any>`
+const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 
@@ -39,7 +40,9 @@ interface ControlledModuleListProps extends ControlledFieldProps {
   modules?: StudyModuleDetailedFieldsFragment[]
 }
 
-export function ControlledModuleList<T>(props: ControlledModuleListProps) {
+export function ControlledModuleList<T extends FormValues>(
+  props: ControlledModuleListProps,
+) {
   const { modules, label } = props
   const name = props.name as Path<T>
   const { setValue, getValues } = useFormContext<T>()

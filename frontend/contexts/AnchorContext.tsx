@@ -12,7 +12,7 @@ interface AnchorContext {
 
 const AnchorContext = createContext<AnchorContext>({
   anchors: {},
-  addAnchor: (_: string, __: number) => {},
+  addAnchor: (_: string, __: number) => void 0,
 })
 
 export default AnchorContext

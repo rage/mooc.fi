@@ -1,5 +1,5 @@
 import { amber } from "@mui/material/colors"
-import { createTheme } from "@mui/material/styles"
+import { createTheme, Theme } from "@mui/material/styles"
 
 const rawTheme = createTheme({
   palette: {
@@ -49,10 +49,20 @@ const rawTheme = createTheme({
         },
       },
     },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: "unset",
+          "&.Mui-selected": {
+            color: "inherit",
+          },
+        },
+      },
+    },
   },
 })
 
-const theme = {
+const theme: Theme = {
   ...rawTheme,
   typography: {
     ...rawTheme.typography,

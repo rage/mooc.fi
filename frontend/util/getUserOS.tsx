@@ -1,7 +1,7 @@
 export type userOsType = "OS" | "Linux" | "Windows" | "macOS" | "ZIP"
 
 function getUserOS(): userOsType {
-  var OSName: userOsType = "OS"
+  let OSName: userOsType = "OS"
   if (typeof window != "undefined") {
     if (window.navigator.appVersion.indexOf("Win") != -1) OSName = "Windows"
     if (window.navigator.appVersion.indexOf("Mac") != -1) OSName = "macOS"

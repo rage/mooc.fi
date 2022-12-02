@@ -7,25 +7,35 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { FormGroup, Typography } from "@mui/material"
+import { Button, FormGroup, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
 import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-export const ArrayList = styled.ul`
+export const ArrayList = styled("ul")`
   list-style: none;
   margin-block-start: 0;
   padding-inline-start: 0;
+  align-content: center;
 `
 
-export const ArrayItem = styled.li``
+export const ArrayItem = styled("li")`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  align-items: stretch;
+`
 
+export const StyledButton = styled(Button)`
+  margin: 0.25rem;
+  height: 3rem;
+`
 interface ControlledFieldArrayListProps<T extends { _id?: string }>
   extends ControlledFieldProps {
   initialValues: Partial<UnpackNestedValue<FieldArrayWithId<T, any, "_id">>>
@@ -85,7 +95,6 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
             <ArrayItem key={`${name}-${item._id ?? index}`}>
               {render(item, index)}
               <StyledButton
-                style={{ margin: "auto" }}
                 variant="contained"
                 disabled={isSubmitting}
                 color="secondary"
@@ -103,7 +112,9 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
                       .then(() => {
                         remove(index)
                       })
-                      .catch(() => {})
+                      .catch(() => {
+                        // ignore
+                      })
                   }
                 }}
                 endIcon={<RemoveIcon>{removeText}</RemoveIcon>}

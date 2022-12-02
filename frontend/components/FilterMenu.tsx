@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import styled from "@emotion/styled"
 import { Clear, Search } from "@mui/icons-material"
 import {
   Button,
@@ -15,13 +14,19 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { useSearch } from "/hooks/useSearch"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseCoreFieldsFragment, CourseStatus } from "/graphql/generated"
+import {
+  CourseCoreFieldsFragment,
+  CourseStatus,
+  EditorCoursesQueryVariables,
+} from "/graphql/generated"
 
-const Container = styled.div`
+const Container = styled("div")`
   background-color: white;
   padding: 0.5rem;
   display: flex;
@@ -29,7 +34,7 @@ const Container = styled.div`
   min-width: 300px;
 `
 
-const Row = styled.section`
+const Row = styled("section")`
   display: grid;
   grid-gap: 0.5rem;
   margin: 0.5rem;
@@ -52,12 +57,34 @@ const Row = styled.section`
   }
 `
 
-interface SearchVariables {
-  search?: string
-  hidden?: boolean | null
-  handledBy?: string | null
-  status?: CourseStatus[] | null
-}
+const SearchTextField = styled(TextField)`
+  grid-column: span 6;
+`
+
+const HiddenFormControl = styled(FormControl)`
+  grid-area: hidden;
+`
+
+const StatusFormControl = styled(FormControl)`
+  grid-area: status;
+`
+
+const HandledByFormControl = styled(FormControl)`
+  grid-area: handled-by;
+`
+
+const ActionRow = styled(Row)`
+  display: flex;
+  flex-direction: row-reverse;
+`
+
+const MarginButton = styled(Button)`
+  margin-left: 0.5rem;
+`
+
+const StatusContainer = styled("div")`
+  display: flex;
+`
 
 interface FilterFields {
   hidden: boolean
@@ -65,13 +92,14 @@ interface FilterFields {
   handler: boolean
 }
 interface FilterProps {
-  searchVariables: SearchVariables
-  setSearchVariables: React.Dispatch<SearchVariables>
+  searchVariables: EditorCoursesQueryVariables
+  setSearchVariables: React.Dispatch<EditorCoursesQueryVariables>
   handlerCourses?: CourseCoreFieldsFragment[]
   status?: string[]
   setStatus?: React.Dispatch<React.SetStateAction<CourseStatus[]>>
   loading: boolean
   fields?: FilterFields
+  label?: string
 }
 
 export default function FilterMenu({
@@ -80,22 +108,23 @@ export default function FilterMenu({
   loading,
   handlerCourses = [],
   status = [],
-  setStatus = () => {},
+  setStatus = () => void 0,
   fields,
+  label,
 }: FilterProps) {
   const t = useTranslator(CommonTranslations)
   const {
     hidden: showHidden = true,
     status: showStatus = true,
     handler: showHandler = true,
-  } = fields || {}
+  } = fields ?? {}
   const {
     search: initialSearch,
     hidden: initialHidden,
     handledBy: initialHandledBy,
   } = searchVariables
 
-  const [searchString, setSearchString] = useState<string>(initialSearch ?? "")
+  const { search, setSearch } = useSearch({ search: initialSearch ?? "" })
   const [hidden, setHidden] = useState(
     initialHidden === null ? true : initialHidden,
   )
@@ -109,7 +138,7 @@ export default function FilterMenu({
   const onSubmit = () => {
     setSearchVariables({
       ...searchVariables,
-      search: searchString,
+      search,
       hidden,
       handledBy,
     })
@@ -120,7 +149,9 @@ export default function FilterMenu({
       const newStatus = (
         e.target.checked
           ? [...(searchVariables?.status || []), value]
-          : searchVariables?.status?.filter((v) => v !== value) || []
+          : (searchVariables?.status as CourseStatus[])?.filter(
+              (v) => v !== value,
+            ) || []
       ) as CourseStatus[]
 
       setStatus(newStatus)
@@ -149,14 +180,14 @@ export default function FilterMenu({
   return (
     <Container>
       <Row>
-        <TextField
+        <SearchTextField
           id="searchString"
-          label={t("search")}
-          value={searchString}
+          label={label ?? t("search")}
+          value={search}
           autoComplete="off"
           variant="outlined"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchString(e.target.value)
+            setSearch(e.target.value)
           }
           onKeyDown={(e) => e.key === "Enter" && onSubmit()}
           InputProps={{
@@ -164,9 +195,9 @@ export default function FilterMenu({
               <InputAdornment position="end">
                 <IconButton
                   onClick={() => {
-                    setSearchString("")
+                    setSearch("")
                   }}
-                  disabled={searchString === ""}
+                  disabled={search === ""}
                   edge="end"
                   aria-label="clear search"
                   size="large"
@@ -176,13 +207,12 @@ export default function FilterMenu({
               </InputAdornment>
             ),
           }}
-          style={{ gridColumn: "span 6" }}
         />
       </Row>
       {showHidden || showHandler || showStatus ? (
         <Row>
           {showHidden ? (
-            <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
+            <HiddenFormControl disabled={loading}>
               <FormControlLabel
                 label={t("showHidden")}
                 control={
@@ -193,11 +223,11 @@ export default function FilterMenu({
                   />
                 }
               />
-            </FormControl>
+            </HiddenFormControl>
           ) : null}
           {showStatus ? (
-            <FormControl disabled={loading} style={{ gridArea: "status" }}>
-              <div style={{ display: "flex" }}>
+            <StatusFormControl disabled={loading}>
+              <StatusContainer>
                 {["Active", "Upcoming", "Ended"].map((value) => (
                   <FormControlLabel
                     label={t(value as any)}
@@ -211,11 +241,11 @@ export default function FilterMenu({
                     }
                   />
                 ))}
-              </div>
-            </FormControl>
+              </StatusContainer>
+            </StatusFormControl>
           ) : null}
           {showHandler ? (
-            <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
+            <HandledByFormControl disabled={loading}>
               <Select
                 value={loading ? "" : handledBy}
                 variant="outlined"
@@ -238,21 +268,20 @@ export default function FilterMenu({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </HandledByFormControl>
           ) : null}
         </Row>
       ) : null}
-      <Row style={{ display: "flex", flexDirection: "row-reverse" }}>
-        <Button
+      <ActionRow>
+        <MarginButton
           disabled={loading}
           onClick={onSubmit}
           color="primary"
           variant="contained"
-          style={{ marginLeft: "0.5rem" }}
           startIcon={<Search />}
         >
           {t("search")}
-        </Button>
+        </MarginButton>
         <Button
           disabled={loading}
           color="secondary"
@@ -268,11 +297,10 @@ export default function FilterMenu({
               status: [CourseStatus.Active, CourseStatus.Upcoming],
             })
           }}
-          style={{ marginLeft: "0.5rem" }}
         >
           {t("reset")}
         </Button>
-      </Row>
+      </ActionRow>
     </Container>
   )
 }

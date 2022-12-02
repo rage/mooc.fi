@@ -1,6 +1,5 @@
 import { Fragment } from "react"
 
-import styled from "@emotion/styled"
 import CloseIcon from "@mui/icons-material/Close"
 import DoneIcon from "@mui/icons-material/Done"
 import {
@@ -10,9 +9,11 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  TypographyProps,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { formatDateTime } from "/components/DataFormatFunctions"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 
@@ -27,8 +28,16 @@ const StyledIcon = styled(Icon)`
   margin-top: 1rem;
 `
 
-const ListItemArea = styled.div`
+const ListItemArea = styled("div")`
   margin: 1rem auto 1rem auto;
+`
+
+const CompletionInfoText = styled(({ children, ...props }: TypographyProps) => (
+  <Typography component="span" {...props}>
+    {children}
+  </Typography>
+))`
+  display: block;
 `
 
 interface CompletionCardProps {
@@ -65,15 +74,13 @@ function CompletionCard({ completer }: CompletionCardProps) {
           primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
             <Fragment>
-              <Typography component="span" style={{ display: "block" }}>
+              <CompletionInfoText>
                 {completer.email} {studentId}
-              </Typography>
-              <Typography component="span" style={{ display: "block" }}>
+              </CompletionInfoText>
+              <CompletionInfoText>
                 Completion language: {completionLanguage}
-              </Typography>
-              <Typography component="span" style={{ display: "block" }}>
-                {completionDate}
-              </Typography>
+              </CompletionInfoText>
+              <CompletionInfoText>{completionDate}</CompletionInfoText>
             </Fragment>
           }
         />

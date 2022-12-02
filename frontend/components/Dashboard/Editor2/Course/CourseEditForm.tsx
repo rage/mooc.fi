@@ -2,8 +2,8 @@ import { useMemo, useState } from "react"
 
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import { FormControl, FormGroup, FormLabel, Tab, Tabs } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
@@ -41,8 +41,10 @@ import {
   StudyModuleDetailedFieldsFragment,
 } from "/graphql/generated"
 
-const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
-  ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
+const SelectLanguageFirstCover = styled("div", {
+  shouldForwardProp: (prop) => prop !== "covered",
+})<{ covered: boolean }>`
+  opacity: ${(props) => (props.covered ? 0.2 : 1)};
 `
 
 interface CourseEditFormProps {

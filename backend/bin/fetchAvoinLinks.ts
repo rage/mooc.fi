@@ -43,7 +43,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
     })
     .filter((link) => Boolean(link.link))
 
-  let openLinks = alternatives.filter(
+  const openLinks = alternatives.filter(
     (o) => o.startTime < now && o.stopDate > now,
   )
 
@@ -100,7 +100,7 @@ const getInfoWithCourseCode = async (
   const res = await axios.get(url, {
     headers: { Authorized: "Basic " + AVOIN_TOKEN },
   })
-  return await res.data
+  return res.data
 }
 
 interface AvoinLinkData {

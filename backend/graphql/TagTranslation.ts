@@ -7,6 +7,8 @@ import {
   stringArg,
 } from "nexus"
 
+import { isAdmin } from "../accessControl"
+
 export const TagTranslation = objectType({
   name: "TagTranslation",
   definition(t) {
@@ -41,6 +43,7 @@ export const TagTranslationMutations = extendType({
         name: nonNull(stringArg()),
         description: stringArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, { tag_id, language, name, description }, ctx) => {
         return ctx.prisma.tagTranslation.create({
           data: {
@@ -61,6 +64,7 @@ export const TagTranslationMutations = extendType({
         name: nonNull(stringArg()),
         description: stringArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, { tag_id, language, name, description }, ctx) => {
         return ctx.prisma.tagTranslation.update({
           where: {
@@ -83,6 +87,7 @@ export const TagTranslationMutations = extendType({
         tag_id: nonNull(idArg()),
         language: nonNull(stringArg()),
       },
+      authorize: isAdmin,
       resolve: async (_, { tag_id, language }, ctx) => {
         return ctx.prisma.tagTranslation.delete({
           where: {

@@ -4,7 +4,6 @@ import { NextSeo } from "next-seo"
 import Router from "next/router"
 
 import { useApolloClient, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import {
   Button,
   Card,
@@ -14,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
@@ -28,6 +28,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import {
   DeleteEmailTemplateDocument,
   EmailTemplateDocument,
+  EmailTemplateFieldsFragment,
   UpdateEmailTemplateDocument,
 } from "/graphql/generated"
 
@@ -81,36 +82,42 @@ const templateValues: Array<TemplateType> = [
   },
 ]
 
-const TemplateList = styled.div`
+const TemplateList = styled("div")`
   * + * {
     margin-top: 0.5rem;
   }
 `
 
+interface SnackbarData {
+  type: "error" | "success" | "warning" | "error"
+  message: string
+}
+
 const EmailTemplateView = () => {
-  // TODO: Get rid of any
-  const [emailTemplate, setEmailTemplate] = useState<any>()
-  const [name, setName] = useState<any>()
-  const [txtBody, setTxtBody] = useState<any>()
-  const [htmlBody, setHtmlBody] = useState<any>()
-  const [title, setTitle] = useState<any>()
-  const [exerciseThreshold, setExerciseThreshold] = useState<
-    number | null | undefined
-  >()
-  const [pointsThreshold, setPointsThreshold] = useState<
-    number | null | undefined
-  >()
-  const [templateType, setTemplateType] = useState<string | null | undefined>()
-  const [triggeredByCourseId, setTriggeredByCourseId] = useState<any>()
+  const [emailTemplate, setEmailTemplate] =
+    useState<EmailTemplateFieldsFragment | null>()
+  const [name, setName] = useState<EmailTemplateFieldsFragment["name"]>()
+  const [txtBody, setTxtBody] =
+    useState<EmailTemplateFieldsFragment["txt_body"]>()
+  const [htmlBody, setHtmlBody] =
+    useState<EmailTemplateFieldsFragment["html_body"]>()
+  const [title, setTitle] = useState<EmailTemplateFieldsFragment["title"]>()
+  const [exerciseThreshold, setExerciseThreshold] =
+    useState<EmailTemplateFieldsFragment["exercise_completions_threshold"]>()
+  const [pointsThreshold, setPointsThreshold] =
+    useState<EmailTemplateFieldsFragment["points_threshold"]>()
+  const [templateType, setTemplateType] =
+    useState<EmailTemplateFieldsFragment["template_type"]>()
+  const [triggeredByCourseId, setTriggeredByCourseId] =
+    useState<
+      EmailTemplateFieldsFragment["triggered_automatically_by_course_id"]
+    >()
   const [didInit, setDidInit] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
   const client = useApolloClient()
-  interface SnackbarData {
-    type: "error" | "success" | "warning" | "error"
-    message: string
-  }
-  const [snackbarData, setSnackbarData]: [SnackbarData, any] = useState({
+
+  const [snackbarData, setSnackbarData] = useState<SnackbarData>({
     type: "error",
     message: "Error: Could not save",
   })

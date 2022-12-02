@@ -3,12 +3,11 @@ import { ChangeEvent, useEffect, useState } from "react"
 import { range } from "lodash"
 
 import { useLazyQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
-import notEmpty from "/util/notEmpty"
 import useDebounce from "/util/useDebounce"
 
 import { StudentProgressesDocument } from "/graphql/generated"
@@ -60,9 +59,7 @@ function PaginatedPointsList(props: Props) {
     label: value,
   }))
 
-  const users = (data?.userCourseSettings?.edges ?? [])
-    .map((e) => e?.node)
-    .filter(notEmpty)
+  const users = (data?.userCourseSettings?.edges ?? []).map((e) => e?.node)
 
   return (
     <ErrorBoundary>
@@ -112,7 +109,7 @@ function PaginatedPointsList(props: Props) {
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {data?.userCourseSettings?.totalCount || 0} results
+            {data?.userCourseSettings?.totalCount ?? 0} results
           </div>
           <PointsList data={users} cutterValue={cutterValue} />
           <Button

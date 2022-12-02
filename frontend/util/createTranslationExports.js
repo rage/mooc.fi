@@ -4,7 +4,7 @@ const path = require("path")
 const DIRECTORY = "translations"
 const IGNORED_FILES = []
 const OUTPUT_FILE = "index.ts"
-
+const PATTERN = /^\w+\.json$/
 // @ts-ignore: not used for now
 const capitalize = (str) => str[0].toUpperCase() + str.slice(1)
 const camelCase = (str) => str.split("-").map(capitalize).join("")
@@ -15,7 +15,9 @@ const traverse = (dir) => {
   const data = files
     .filter(
       (filename) =>
-        !IGNORED_FILES.includes(filename) && filename !== OUTPUT_FILE,
+        !IGNORED_FILES.includes(filename) &&
+        filename !== OUTPUT_FILE &&
+        PATTERN.test(filename),
     )
     .map((filename) => {
       const fullname = `${dir ? dir + "/" : ""}${filename}`
@@ -30,16 +32,16 @@ const traverse = (dir) => {
           )
           .join("\n")
         const languages = res.map((r) => r.basename)
-        const typename = `${camelCase(basename)}Translations`
+        const typename = camelCase(basename)
         const exports = `import { TranslationDictionary } from "/translations"\n
 ${imports}\n
 export type ${typename} = ${languages
           .map((lang) => `typeof ${lang}`)
           .join(" | ")}\n
-const ${typename}: TranslationDictionary<${typename}> = { ${languages.join(
+const ${typename}Translations: TranslationDictionary<${typename}> = { ${languages.join(
           ", ",
         )} }\n
-export default ${typename}`
+export default ${typename}Translations as const\n`
 
         outputExports(exports, fullname)
       }

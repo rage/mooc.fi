@@ -1,8 +1,8 @@
-import { useContext, useMemo, useReducer, useRef, useState } from "react"
+import { useMemo, useReducer, useRef, useState } from "react"
 
 import { useMutation } from "@apollo/client"
 
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { updateAccount } from "/lib/account"
 import { createCertificate } from "/lib/certificates"
 
@@ -98,17 +98,17 @@ interface UseCertificateOptions {
 export const useCertificate = ({
   course,
   completion,
-  onUpdateNameSuccess = () => {},
-  onUpdateNameError = () => {},
-  onReceiveGeneratedCertificateSuccess = () => {},
-  onReceiveGeneratedCertificateError = () => {},
+  onUpdateNameSuccess = () => void 0,
+  onUpdateNameError = () => void 0,
+  onReceiveGeneratedCertificateSuccess = () => void 0,
+  onReceiveGeneratedCertificateError = () => void 0,
 }: UseCertificateOptions) => {
   const initialState = useRef<CertificateState>({
     status: "IDLE",
     certificateId:
       completion?.certificate_availability?.existing_certificate ?? undefined,
   })
-  const { currentUser, updateUser, admin } = useContext(LoginStateContext)
+  const { currentUser, updateUser, admin } = useLoginStateContext()
 
   const [state, dispatch] = useReducer(reducer, initialState.current)
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
@@ -141,6 +141,10 @@ export const useCertificate = ({
 
     if (isNameChanged) {
       try {
+        if (!currentUser) {
+          throw new Error("No current user")
+        }
+
         dispatch({ type: "UPDATE_NAME" })
         const res = await updateAccount(firstName, lastName)
         await updateUserName({
@@ -149,8 +153,13 @@ export const useCertificate = ({
             last_name: lastName,
           },
         })
+
         updateUser({
-          user: { ...currentUser!, first_name: firstName, last_name: lastName },
+          user: {
+            ...currentUser,
+            first_name: firstName,
+            last_name: lastName,
+          },
           admin,
         })
         onUpdateNameSuccess()

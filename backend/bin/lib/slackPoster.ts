@@ -5,7 +5,7 @@ import { SlackPosterError } from "./errors"
 
 export default class SlackPoster {
   // @ts-ignore: not used for now
-  accessToken: String | null
+  accessToken: string | null
 
   constructor(readonly logger: winston.Logger) {}
 

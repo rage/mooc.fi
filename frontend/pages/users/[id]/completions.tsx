@@ -30,7 +30,7 @@ function CompletionsPage() {
     },
   ])
 
-  const completions = data?.user?.completions ?? []
+  const completions = data?.user?.completions
 
   if (error) {
     return (

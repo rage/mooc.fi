@@ -3,12 +3,12 @@ import { Course, Prisma } from "@prisma/client"
 import { isNotNullOrUndefined } from "./isNullOrUndefined"
 import { Context } from "/context"
 
-export const getIds = (arr: any[], idField: string = "id") =>
+export const getIds = (arr: any[], idField = "id") =>
   (arr || []).map((t) => t[idField])
 const filterNotIncluded = (
   arr1: any[],
   arr2: any[],
-  idField: string = "id",
+  idField = "id",
   mapToId = true,
 ) => {
   const ids1 = getIds(arr1, idField)
@@ -139,11 +139,14 @@ export const connectOrDisconnect = <T>(
   receivedArg: string | null | undefined,
   existing: T | null,
 ) => {
-  return receivedArg
-    ? { connect: { id: receivedArg } }
-    : existing
-    ? { disconnect: true }
-    : undefined
+  if (receivedArg) {
+    return { connect: { id: receivedArg } }
+  }
+  if (existing) {
+    return { disconnect: true }
+  }
+
+  return undefined
 }
 
 const hasId =

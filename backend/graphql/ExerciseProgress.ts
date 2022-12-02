@@ -5,5 +5,7 @@ export const ExerciseProgress = objectType({
   definition(t) {
     t.float("total")
     t.float("exercises")
+    t.int("exercise_count")
+    t.int("exercises_completed_count")
   },
 })

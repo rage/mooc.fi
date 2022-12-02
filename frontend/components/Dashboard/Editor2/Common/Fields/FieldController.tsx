@@ -1,21 +1,26 @@
 import React, { useCallback } from "react"
 
-import { ControllerRenderProps, Path, useFormContext } from "react-hook-form"
-import { Controller } from "react-hook-form"
+import {
+  Controller,
+  ControllerRenderProps,
+  Path,
+  useFormContext,
+} from "react-hook-form"
 
 import { ErrorMessage } from "@hookform/error-message"
 import { FormHelperText } from "@mui/material"
 
 import { FieldProps } from "."
+import { FormValues } from "../../types"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import notEmpty from "/util/notEmpty"
 
-export interface FieldControllerProps<T> extends FieldProps {
+export interface FieldControllerProps<T extends FormValues> extends FieldProps {
   renderComponent: (props: ControllerRenderProps<T>) => JSX.Element
-  onChange?: (e: any, newValue: any) => {}
+  onChange?: (e: any, newValue: any) => any
 }
 
-export function FieldController<T>({
+export function FieldController<T extends FormValues>({
   name,
   label,
   required = false,

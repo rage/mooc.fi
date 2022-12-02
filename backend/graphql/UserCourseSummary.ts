@@ -1,21 +1,20 @@
-import { UserInputError } from "apollo-server-express"
 import { booleanArg, objectType } from "nexus"
+
+import { notEmpty } from "../util/notEmpty"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
   definition(t) {
-    t.id("course_id")
-    t.id("user_id")
+    t.nonNull.id("course_id")
+    t.nonNull.id("user_id")
     t.id("inherit_settings_from_id")
     t.id("completions_handled_by_id")
+    t.boolean("include_no_points_awarded_exercises")
+    t.boolean("include_deleted_exercises")
 
     t.field("course", {
       type: "Course",
       resolve: async ({ course_id }, _, ctx) => {
-        if (!course_id) {
-          throw new UserInputError("need to specify course_id")
-        }
-
         return ctx.prisma.course.findUnique({
           where: { id: course_id },
         })
@@ -29,9 +28,6 @@ export const UserCourseSummary = objectType({
         _,
         ctx,
       ) => {
-        if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
-        }
         const completions = await ctx.prisma.course
           .findUnique({
             where: { id: completions_handled_by_id ?? course_id },
@@ -52,9 +48,6 @@ export const UserCourseSummary = objectType({
     t.field("user_course_progress", {
       type: "UserCourseProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
-        if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
-        }
         const progresses = await ctx.prisma.course
           .findUnique({
             where: { id: course_id },
@@ -71,12 +64,9 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("user_course_service_progresses", {
+    t.nonNull.list.nonNull.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async ({ user_id, course_id }, _, ctx) => {
-        if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
-        }
         const progresses = await ctx.prisma.course
           .findUnique({
             where: { id: course_id },
@@ -93,19 +83,34 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("exercise_completions", {
+    t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        includeDeleted: booleanArg(),
+        includeDeleted: booleanArg({
+          description:
+            "Include deleted exercises. Will override parent setting.",
+        }),
+        includeNoPointsAwarded: booleanArg({
+          description:
+            "Include exercises with max_points = 0. Will override parent setting.",
+        }),
       },
       resolve: async (
-        { user_id, course_id },
-        { includeDeleted = false },
+        {
+          user_id,
+          course_id,
+          include_deleted_exercises,
+          include_no_points_awarded_exercises,
+        },
+        { includeNoPointsAwarded, includeDeleted },
         ctx,
       ) => {
-        if (!user_id || !course_id) {
-          throw new UserInputError("need to specify user_id and course_id")
-        }
+        const deleted = notEmpty(includeDeleted)
+          ? includeDeleted
+          : include_deleted_exercises
+        const noPoints = notEmpty(includeNoPointsAwarded)
+          ? includeNoPointsAwarded
+          : include_no_points_awarded_exercises
 
         return ctx.prisma.user
           .findUnique({
@@ -115,7 +120,10 @@ export const UserCourseSummary = objectType({
             where: {
               exercise: {
                 course_id,
-                ...(!includeDeleted && {
+                ...(!noPoints && {
+                  max_points: { gt: 0 },
+                }),
+                ...(!deleted && {
                   // same here: { deleted: { not: true } } will skip null
                   OR: [{ deleted: false }, { deleted: null }],
                 }),
@@ -124,6 +132,27 @@ export const UserCourseSummary = objectType({
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
             distinct: "exercise_id",
           })
+      },
+    })
+
+    t.field("start_date", {
+      type: "DateTime",
+      resolve: async (
+        { user_id, course_id, inherit_settings_from_id },
+        _,
+        ctx,
+      ) => {
+        const userCourseSetting = await ctx.prisma.user
+          .findUnique({
+            where: { id: user_id },
+          })
+          .user_course_settings({
+            where: { course_id: inherit_settings_from_id ?? course_id },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
+
+        return userCourseSetting?.[0]?.created_at
       },
     })
   },

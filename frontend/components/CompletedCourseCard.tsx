@@ -1,16 +1,13 @@
-import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
 import Button from "@mui/material/Button"
 import Grid from "@mui/material/Grid"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-import {
-  formatDateTime,
-  mapLangToLanguage,
-} from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
+import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -28,20 +25,31 @@ const Background = styled(ClickableDiv)`
   width: 100%;
 `
 
-const CourseTitle = styled(Typography)<any>`
+const CourseTitle = styled(Typography)`
   margin: 0.5rem;
   padding-left: 1rem;
-`
-const CardText = styled(Typography)<any>`
+` as typeof Typography
+
+const CardText = styled(Typography)`
   margin: 0.5rem;
   padding-top: 0.2rem;
 `
-const RegistrationDetails = styled.div`
+const RegistrationDetails = styled("div")`
   display: flex;
   flex-direction: column;
   @media (min-width: 600px) {
     flex-direction: row;
   }
+`
+
+const StyledDoneIcon = styled(DoneIcon)`
+  color: green;
+  margin-top: 0.5rem;
+`
+
+const RegisterButton = styled(Button)`
+  color: red;
+  margin-right: 0.5rem;
 `
 
 interface CourseCardProps {
@@ -58,8 +66,8 @@ function CompletedCourseCard(props: CourseCardProps) {
   const t = useTranslator(CompletionsTranslations, ProfileTranslations)
 
   const humanReadableLanguage =
-    mapLangToLanguage[completion?.completion_language ?? ""] ||
-    completion?.completion_language ||
+    mapLangToLanguage[completion?.completion_language ?? ""] ??
+    completion?.completion_language ??
     "no language available"
 
   return (
@@ -85,19 +93,15 @@ function CompletedCourseCard(props: CourseCardProps) {
                 {r.organization ? r.organization.slug : "Unknown organization"}
               </CardText>
 
-              <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
+              <StyledDoneIcon />
             </RegistrationDetails>
           ))
         ) : (
-          <Button
+          <RegisterButton
             href={`/register-completion/${completion.course?.slug}`}
-            style={{
-              color: "red",
-              marginRight: "0.5rem",
-            }}
           >
             {t("registerButtonText")}
-          </Button>
+          </RegisterButton>
         )}
       </Background>
     </Grid>

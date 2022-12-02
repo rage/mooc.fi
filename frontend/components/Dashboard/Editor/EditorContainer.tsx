@@ -1,13 +1,13 @@
 import { PropsWithChildren } from "react"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin-top: 1em;
-`
+` as typeof Typography
 
 const EditorContainer = ({
   title,

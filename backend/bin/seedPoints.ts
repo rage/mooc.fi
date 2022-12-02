@@ -75,7 +75,7 @@ const addServices = async () => {
 const addUserCourseProgressess = async (courseId: string) => {
   const usersInDb = await prisma.user.findMany({ take: 100 })
 
-  return await Promise.all(
+  return Promise.all(
     usersInDb.map(async (user) => {
       const progress = [
         {
@@ -126,14 +126,14 @@ const addUserCourseProgressess = async (courseId: string) => {
         max_points: progress.reduce((acc, curr) => acc + curr.max_points, 0),
       }
 
-      return await prisma.userCourseProgress.create({ data: ucp })
+      return prisma.userCourseProgress.create({ data: ucp })
     }),
   )
 }
 
 const addUserCourseSettingses = async (courseId: string) => {
   const UsersInDb = await prisma.user.findMany({ take: 100 })
-  return await Promise.all(
+  return Promise.all(
     UsersInDb.map(async (user) => {
       const ucs: Prisma.UserCourseSettingCreateInput = {
         user: {
@@ -153,7 +153,7 @@ const addUserCourseSettingses = async (courseId: string) => {
         course_variant: null,
         other: null,
       }
-      return await prisma.userCourseSetting.create({ data: ucs })
+      return prisma.userCourseSetting.create({ data: ucs })
     }),
   )
 }

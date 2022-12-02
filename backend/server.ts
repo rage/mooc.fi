@@ -29,6 +29,7 @@ const createExpressAppWithContext = ({
   }
   app.use(graphqlUploadExpress())
   app.use(express.json())
+
   app.use("/api", apiRouter({ prisma, knex, logger }))
 
   return app

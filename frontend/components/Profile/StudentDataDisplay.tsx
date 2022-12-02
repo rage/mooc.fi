@@ -7,7 +7,6 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
 import ProfileSettings from "/components/Profile/ProfileSettings"
-import notEmpty from "/util/notEmpty"
 
 import { UserOverviewFieldsFragment } from "/graphql/generated"
 
@@ -38,7 +37,7 @@ interface StudentDataDisplayProps {
 }
 
 const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
-  const { completions = [] } = data || {}
+  const { completions = [] } = data ?? {}
 
   return (
     <>
@@ -46,9 +45,7 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
         <ProfilePointsDisplay />
       </TabPanel>
       <TabPanel index={1} value={tab}>
-        <ProfileCompletionsDisplay
-          completions={completions?.filter(notEmpty) ?? []}
-        />
+        <ProfileCompletionsDisplay completions={completions ?? []} />
       </TabPanel>
       <TabPanel index={2} value={tab}>
         <ProfileSettings data={data} />

@@ -1,7 +1,7 @@
 import Link from "next/link"
 
-import styled from "@emotion/styled"
 import { Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ModuleImage from "/components/Home/ModuleImage"
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
@@ -23,18 +23,18 @@ const SkeletonBodyText = styled(Skeleton)`
   margin-top: 0.2rem;
 `
 
-const Base = styled(ClickableButtonBase)<{ component: any }>`
+const Base = styled(ClickableButtonBase)`
   display: block;
   width: 100%;
   height: 100%;
   background-color: transparent;
-`
+` as typeof ClickableButtonBase
 
 const TextBackground = styled(FullCoverTextBackground)`
   width: 70%;
 `
 
-const GridItem = styled.div`
+const GridItem = styled("div")`
   width: 100%;
   /* Basic styles for browsers without css grid support */
   margin: 0 auto;
@@ -50,7 +50,7 @@ interface ModuleNaviCardProps {
 
 const ModuleNaviCard = ({ module }: ModuleNaviCardProps) => (
   <GridItem>
-    <Link href={`#${module ? module.slug : ""}`}>
+    <Link href={`#${module?.slug ?? ""}`} passHref>
       <Base component="div">
         {module ? (
           <>

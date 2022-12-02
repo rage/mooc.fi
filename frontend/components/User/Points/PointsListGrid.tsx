@@ -1,7 +1,6 @@
 import Grid from "@mui/material/Grid"
 
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
-import notEmpty from "/util/notEmpty"
 
 import { CurrentUserProgressesQuery } from "/graphql/generated"
 
@@ -24,9 +23,7 @@ function PointsListGrid(props: GridProps) {
           key={`${progress.course?.id}-${index}`}
           course={progress.course}
           userCourseProgress={progress.user_course_progress}
-          userCourseServiceProgresses={progress.user_course_service_progresses?.filter(
-            notEmpty,
-          )}
+          userCourseServiceProgresses={progress.user_course_service_progresses}
         />
       ))}
     </Grid>

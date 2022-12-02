@@ -70,7 +70,7 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.openUniversityRegistrationLink.findUnique({
+        ctx.prisma.openUniversityRegistrationLink.findUnique({
           where: { id },
         }),
     })

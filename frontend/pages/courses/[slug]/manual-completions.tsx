@@ -7,13 +7,13 @@ import { withRouter } from "next/router"
 import * as Papa from "papaparse"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import DatePicker from "@mui/lab/DatePicker"
 import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import { Button, Container, TextField, TextFieldProps } from "@mui/material"
 import Alert from "@mui/material/Alert"
 import AlertTitle from "@mui/material/AlertTitle"
+import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -178,7 +178,7 @@ const ManualCompletions = () => {
         .then(() =>
           addCompletions({
             variables: {
-              course_id: courseData!.course!.id,
+              course_id: courseData?.course?.id ?? "",
               completions: filteredData,
             },
           }),
@@ -188,7 +188,7 @@ const ManualCompletions = () => {
     } else {
       addCompletions({
         variables: {
-          course_id: courseData!.course!.id,
+          course_id: courseData?.course?.id ?? "",
           completions: filteredData,
         },
       })

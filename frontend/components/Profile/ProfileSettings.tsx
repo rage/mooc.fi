@@ -30,7 +30,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     message: t("researchOkAnswer"),
   }
 
-  const { research_consent } = data || {}
+  const { research_consent } = data ?? {}
   const [researchConsent, setResearchConsent] = useState<string | undefined>(
     research_consent === null || typeof research_consent === "undefined"
       ? undefined
@@ -49,7 +49,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     useState<SnackbarProps>(initialSnackbarState)
 
   const handleResearchConsentInput = async (
-    event: ChangeEvent<{}>,
+    event: ChangeEvent<HTMLInputElement>,
     value: string,
   ) => {
     event.preventDefault()

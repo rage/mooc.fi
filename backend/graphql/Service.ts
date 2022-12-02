@@ -58,7 +58,7 @@ export const ServiceMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { url, name } = args
 
-        return await ctx.prisma.service.create({
+        return ctx.prisma.service.create({
           data: {
             url,
             name,

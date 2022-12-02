@@ -3,9 +3,12 @@ import {
   fakeGetAccessToken,
   fakeTMCSpecific,
   getTestContext,
-} from "../../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../../tests/data"
-import { seed } from "../../../../tests/data/seed"
+} from "../../../../tests"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  seed,
+} from "../../../../tests/data"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 
 const ctx = getTestContext()
@@ -40,15 +43,15 @@ describe("getUserWithRaceCondition", () => {
 
   it("returns user found in database", async () => {
     const user = await getUserWithRaceCondition(context, 1)
-    expect(user).not.toBeNull()
-    expect(user!.upstream_id).toBe(1)
+    expect(user).toBeDefined()
+    expect(user?.upstream_id).toBe(1)
   })
 
   it("user not found in database, found in TMC and created", async () => {
     const user = await getUserWithRaceCondition(context, 9998)
 
     expect(user).not.toBeNull()
-    expect(user!.upstream_id).toBe(9998)
+    expect(user?.upstream_id).toBe(9998)
 
     const created = await ctx.prisma.user.findFirst({
       where: {
@@ -70,12 +73,12 @@ describe("getUserWithRaceCondition", () => {
       .mockResolvedValueOnce("")
       .mockResolvedValueOnce(["found"])
 
-    const knexMocked: jest.Mocked<any> = () => ({
+    const knexMocked = (() => ({
       where: jest.fn().mockReturnThis(),
       raw: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       limit: returning,
-    })
+    })) as unknown as jest.Mocked<typeof context.knex>
 
     const user = await getUserWithRaceCondition(
       {

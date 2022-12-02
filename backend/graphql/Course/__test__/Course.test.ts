@@ -1,7 +1,7 @@
 import { gql } from "graphql-request"
 import { orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../../tests"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 

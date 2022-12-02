@@ -1,12 +1,12 @@
-import { useContext } from "react"
-
 import Link from "next/link"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useActiveTab } from "/components/HeaderBar/Header"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
   active: any
@@ -23,12 +23,13 @@ const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
 `
 
 const ProfileButton = () => {
-  const { currentUser } = useContext(LoginStateContext)
+  const t = useTranslator(CommonTranslations)
+  const { currentUser } = useLoginStateContext()
   const active = useActiveTab()
 
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
-    : "Oma profiili"
+    : t("myProfile")
 
   return (
     <Link href={`/profile`} passHref>

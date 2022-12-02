@@ -1,5 +1,7 @@
 import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
 
+import { Prisma } from "@prisma/client"
+
 import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({
@@ -63,7 +65,7 @@ export const Course = objectType({
     t.string("instructions")
     t.string("link")
 
-    t.list.field("completions", {
+    t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
         user_id: nullable(stringArg()),
@@ -96,23 +98,32 @@ export const Course = objectType({
       },
     })
 
-    t.list.field("exercises", {
+    t.list.nonNull.field("exercises", {
       type: "Exercise",
       args: {
         includeDeleted: booleanArg({ default: false }),
+        includeNoPointsAwarded: booleanArg({ default: true }),
       },
-      resolve: async (parent, args, ctx) => {
-        const { includeDeleted } = args
+      resolve: async (
+        parent,
+        { includeDeleted, includeNoPointsAwarded },
+        ctx,
+      ) => {
+        const exerciseCondition: Prisma.ExerciseWhereInput = {}
+
+        if (!includeNoPointsAwarded) {
+          exerciseCondition.max_points = { gt: 0 }
+        }
+        if (!includeDeleted) {
+          exerciseCondition.OR = [{ deleted: false }, { deleted: null }]
+        }
 
         return ctx.prisma.course
           .findUnique({
             where: { id: parent.id },
           })
           .exercises({
-            ...(!includeDeleted && {
-              // same here: { deleted: { not: true } } will skip null
-              where: { OR: [{ deleted: false }, { deleted: null }] },
-            }),
+            where: exerciseCondition,
           })
       },
     })

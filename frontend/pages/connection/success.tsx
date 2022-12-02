@@ -1,15 +1,15 @@
 import React from "react"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
-import { formatDateTime } from "/components/DataFormatFunctions"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
 import withSignedIn from "/lib/with-signed-in"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { ConnectedUserDocument } from "/graphql/generated"
 

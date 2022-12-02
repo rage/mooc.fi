@@ -1,9 +1,11 @@
+import type { Config } from "jest"
+
 /*
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/en/configuration.html
  */
 
-export default {
+const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -96,7 +98,16 @@ export default {
   // projects: undefined,
 
   // Use this configuration option to add custom reporters to Jest
-  // reporters: undefined,
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      {
+        addFileAttribute: "true",
+        outputDirectory: "./coverage/junit/",
+      },
+    ],
+  ],
 
   // Automatically reset mock state between every test
   // resetMocks: false,
@@ -191,3 +202,5 @@ export default {
   // watchman: true,
   testTimeout: 15000,
 }
+
+export default config

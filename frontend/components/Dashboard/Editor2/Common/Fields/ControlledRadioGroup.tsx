@@ -7,6 +7,7 @@ import {
 
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material"
 
+import { FormValues } from "../../types"
 import {
   ControlledFieldProps,
   FieldController,
@@ -16,7 +17,9 @@ interface ControlledRadioGroupProps extends ControlledFieldProps {
   options: Array<{ value: string; label: string }>
 }
 
-export function ControlledRadioGroup<T>(props: ControlledRadioGroupProps) {
+export function ControlledRadioGroup<T extends FormValues>(
+  props: ControlledRadioGroupProps,
+) {
   const { label, options } = props
   const name = props.name as Path<T>
   const { setValue } = useFormContext<T>()

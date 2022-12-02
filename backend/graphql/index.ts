@@ -1,4 +1,4 @@
-// generated Tue Sep 27 2022 11:23:58 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Fri Dec 02 2022 11:28:08 GMT+0200 (Itä-Euroopan normaaliaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
@@ -31,6 +31,7 @@ export * from "./StudyModule"
 export * from "./StudyModuleTranslation"
 export * from "./Tag"
 export * from "./TagTranslation"
+export * from "./TagType"
 export * from "./Upload"
 export * from "./User"
 export * from "./UserAppDatumConfig"

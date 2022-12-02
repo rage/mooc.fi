@@ -1,6 +1,6 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
-export const BackgroundImage = styled.img`
+export const BackgroundImage = styled("img")`
   position: absolute;
   top: 0;
   left: 0;
@@ -10,7 +10,7 @@ export const BackgroundImage = styled.img`
   z-index: -2;
 `
 
-export const FullCoverTextBackground = styled.div`
+export const FullCoverTextBackground = styled("div")`
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.8);
@@ -18,7 +18,7 @@ export const FullCoverTextBackground = styled.div`
   display: flex;
   flex-direction: column;
 `
-export const CourseImageBase = styled.div`
+export const CourseImageBase = styled("div")`
   height: 230px;
   width: 100%;
 `

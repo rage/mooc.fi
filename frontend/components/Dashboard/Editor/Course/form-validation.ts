@@ -12,7 +12,7 @@ import {
 } from "./types"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { Translator } from "/translations"
-import { type CoursesTranslations } from "/translations/courses"
+import { Courses } from "/translations/courses"
 
 import {
   CourseFromSlugDocument,
@@ -87,7 +87,7 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
   course: undefined,
 }
 
-export const statuses = (t: Translator<CoursesTranslations>) => [
+export const statuses = (t: Translator<Courses>) => [
   {
     value: CourseStatus.Upcoming,
     label: t("courseUpcoming"),
@@ -102,7 +102,7 @@ export const statuses = (t: Translator<CoursesTranslations>) => [
   },
 ]
 
-export const languages = (t: Translator<CoursesTranslations>) => [
+export const languages = (t: Translator<Courses>) => [
   {
     value: "fi_FI",
     label: t("courseFinnish"),
@@ -132,11 +132,11 @@ const testUnique = <T extends FormValues>(
 
     const fieldValues = context.values[valueField]
 
-    if (!value || value === "") {
+    if (!value) {
       return true // previous should have caught the empty
     }
 
-    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndexMatch = (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
     const otherValues = fieldValues
@@ -154,7 +154,7 @@ const testUnique = <T extends FormValues>(
 interface CourseEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<CoursesTranslations>
+  t: Translator<Courses>
 }
 
 const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) =>
@@ -278,7 +278,7 @@ const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
     this: Yup.TestContext,
     value?: string | null,
   ): Promise<boolean> {
-    if (!value || value === "") {
+    if (!value) {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
 

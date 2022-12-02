@@ -1,7 +1,7 @@
 import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
 import { Chip, Grid, Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseImage from "/components/CourseImage"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
@@ -13,7 +13,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
-const Background = styled(ClickableButtonBase)<{ component: any }>`
+const Background = styled(ClickableButtonBase)`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -21,7 +21,7 @@ const Background = styled(ClickableButtonBase)<{ component: any }>`
   @media (max-width: 959px) {
     flex-direction: row;
   }
-`
+` as typeof ClickableButtonBase
 
 const ResponsiveCourseImageBase = styled(CourseImageBase)`
   @media (max-width: 430px) {
@@ -38,7 +38,7 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
   }
 `
 
-const TextArea = styled.div`
+const TextArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   height: 100%;
   color: black;
@@ -58,7 +58,7 @@ const TextArea = styled.div`
   }
 `
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   width: 100%;
   height: 100%;
   position: relative;
@@ -78,7 +78,7 @@ export default function CourseCard({ course }: CourseCardProps) {
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <CardLinkWithGA
         eventLabel={`coursesite: ${course?.name ?? ""}`}
-        to={course ? course.link || "" : ""}
+        to={course?.link ?? ""}
         target="_blank"
       >
         <Background
@@ -86,7 +86,6 @@ export default function CourseCard({ course }: CourseCardProps) {
           disabled={
             !course ||
             !course.link ||
-            course.link === "" ||
             (course?.status === "Upcoming" && !course?.upcoming_active_link)
           }
           component="div"

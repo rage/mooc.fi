@@ -3,14 +3,14 @@ import React from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import Warning from "@mui/icons-material/Warning"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-const ConsentNotificationWrapper = styled.div`
+const ConsentNotificationWrapper = styled("div")`
   display: flex;
   padding: 6px 16px;
   line-height: 1.43;

@@ -1,6 +1,5 @@
-import { useCallback, useContext, useState } from "react"
+import { useCallback, useState } from "react"
 
-import styled from "@emotion/styled"
 import WarningIcon from "@mui/icons-material/Warning"
 import {
   CircularProgress,
@@ -14,9 +13,10 @@ import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
+import { styled } from "@mui/material/styles"
 
-import AlertContext from "/contexts/AlertContext"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useAlertContext } from "/contexts/AlertContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useCertificate } from "/hooks/useCertificate"
 import CompletionsTranslations from "/translations/completions"
 import { useTranslator } from "/util/useTranslator"
@@ -56,8 +56,8 @@ interface CertificateProps {
 
 const CertificateButton = ({ course, completion }: CertificateProps) => {
   const t = useTranslator(CompletionsTranslations)
-  const { currentUser } = useContext(LoginStateContext)
-  const { addAlert } = useContext(AlertContext)
+  const { currentUser } = useLoginStateContext()
+  const { addAlert } = useAlertContext()
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const isOtherUser = currentUser?.id !== completion.user_id

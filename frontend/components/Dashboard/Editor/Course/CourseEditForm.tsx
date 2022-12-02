@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 
 import {
   Form,
@@ -8,8 +8,8 @@ import {
   yupToFormErrors,
 } from "formik"
 import * as Yup from "yup"
+import { ObjectShape } from "yup/lib/object"
 
-import styled from "@emotion/styled"
 import AdapterLuxon from "@mui/lab/AdapterLuxon"
 import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import {
@@ -26,6 +26,7 @@ import {
   Tab,
   Tabs,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseAliasEditForm from "./CourseAliasEditForm"
 import CourseImageInput from "./CourseImageInput"
@@ -58,28 +59,32 @@ import {
 interface CoverProps {
   covered: boolean
 }
-const SelectLanguageFirstCover = styled.div<CoverProps>`
-  ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
+const SelectLanguageFirstCover = styled("div", {
+  shouldForwardProp: (prop) => prop !== "covered",
+})<CoverProps>`
+  opacity: ${(props) => (props.covered ? 0.2 : 1)};
 `
+
 const ModuleList = styled(List)`
   padding: 0px;
   max-height: 400px;
   overflow: auto;
 `
 
-const ModuleListItem = styled(ListItem)<any>`
+const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 
 interface Labelprops {
   required?: boolean
 }
+
 export const StyledLabel = styled(InputLabel)<Labelprops>`
   margin-bottom: 0.3rem;
-  ${(props) => `color: ${props.required ? `#DF7A46` : `#245B6D`}`}
+  color: ${(props) => (props.required ? "#DF7A46" : "#245B6D")};
 `
 
-export const FormFieldGroup = styled.div`
+export const FormFieldGroup = styled("div")`
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
@@ -90,8 +95,8 @@ export const FormFieldGroup = styled.div`
 
 interface RenderFormProps {
   initialValues?: CourseFormValues
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  studyModules?: StudyModuleDetailedFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
+  studyModules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 interface RenderProps {
@@ -115,7 +120,7 @@ const renderForm =
         : values?.course_translations[0].language,
     )
     // @ts-ignore: for now
-    const [enableSuperSecret, setEnableSuperSecret] = useState(!!secret)
+    const [enableSuperSecret] = useState(!!secret)
     const sortedCourses = useMemo(
       () =>
         courses
@@ -142,7 +147,6 @@ const renderForm =
             <FormFieldGroup>
               <StyledFieldWithAnchor
                 id="input-course-name"
-                style={{ width: "80%" }}
                 name="name"
                 type="text"
                 label={t("courseName")}
@@ -155,7 +159,6 @@ const renderForm =
               />
               <StyledFieldWithAnchor
                 id="input-course-slug"
-                style={{ width: "40%" }}
                 name="new_slug"
                 type="text"
                 label={t("courseSlug")}
@@ -168,7 +171,6 @@ const renderForm =
                 helperText={t("courseSlugHelper")}
               />
               <StyledFieldWithAnchor
-                style={{ width: "25%" }}
                 name="ects"
                 type="text"
                 label={t("courseECTS")}
@@ -345,7 +347,6 @@ const renderForm =
                   autoComplete="off"
                   variant="outlined"
                   component={StyledTextField}
-                  style={{ width: "20%" }}
                   InputLabelProps={inputLabelProps}
                 />
                 <StyledFieldWithAnchor
@@ -357,7 +358,6 @@ const renderForm =
                   autoComplete="off"
                   variant="outlined"
                   component={StyledTextField}
-                  style={{ width: "20%" }}
                   InputLabelProps={inputLabelProps}
                 />
               </FormFieldGroup>
@@ -511,11 +511,11 @@ const renderForm =
     )
   }
 
-interface CourseEditFormProps {
+interface CourseEditFormProps<SchemaType extends ObjectShape> {
   course: CourseFormValues
-  studyModules?: StudyModuleDetailedFieldsFragment[]
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  validationSchema: Yup.ObjectSchema<any>
+  studyModules?: StudyModuleDetailedFieldsFragment[] | null
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
+  validationSchema: Yup.ObjectSchema<SchemaType>
   onSubmit: (
     values: CourseFormValues,
     FormikHelpers: FormikHelpers<CourseFormValues>,
@@ -524,50 +524,48 @@ interface CourseEditFormProps {
   onDelete: (values: CourseFormValues) => void
 }
 
-const CourseEditForm = memo(
-  ({
-    course,
-    studyModules,
-    courses,
-    validationSchema,
-    onSubmit,
-    onCancel,
-    onDelete,
-  }: CourseEditFormProps) => {
-    const validate = useCallback(async (values: CourseFormValues) => {
-      try {
-        await validationSchema.validate(values, {
-          abortEarly: false,
-          context: { values },
-        })
-      } catch (e) {
-        return yupToFormErrors(e)
-      }
-    }, [])
+function CourseEditForm<SchemaType extends ObjectShape>({
+  course,
+  studyModules,
+  courses,
+  validationSchema,
+  onSubmit,
+  onCancel,
+  onDelete,
+}: CourseEditFormProps<SchemaType>) {
+  const validate = useCallback(async (values: CourseFormValues) => {
+    try {
+      await validationSchema.validate(values, {
+        abortEarly: false,
+        context: { values },
+      })
+    } catch (e) {
+      return yupToFormErrors(e)
+    }
+  }, [])
 
-    const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(0)
 
-    return (
-      <Formik
-        initialValues={course}
-        validate={validate}
-        onSubmit={onSubmit}
-        validateOnChange={false}
-      >
-        <FormWrapper<CourseFormValues>
-          renderForm={renderForm({
-            initialValues: course,
-            courses,
-            studyModules,
-          })}
-          onCancel={onCancel}
-          onDelete={onDelete}
-          tab={tab}
-          setTab={setTab}
-        />
-      </Formik>
-    )
-  },
-)
+  return (
+    <Formik
+      initialValues={course}
+      validate={validate}
+      onSubmit={onSubmit}
+      validateOnChange={false}
+    >
+      <FormWrapper<CourseFormValues>
+        renderForm={renderForm({
+          initialValues: course,
+          courses,
+          studyModules,
+        })}
+        onCancel={onCancel}
+        onDelete={onDelete}
+        tab={tab}
+        setTab={setTab}
+      />
+    </Formik>
+  )
+}
 
-export default CourseEditForm
+export default React.memo(CourseEditForm)

@@ -27,7 +27,7 @@ const producer = new Kafka.Producer({
   "metadata.broker.list": KAFKA_HOST,
 })
 
-let flushProducer = promisify(producer.flush.bind(producer))
+const flushProducer = promisify(producer.flush.bind(producer))
 
 let producerReady = false
 producer.on("ready", () => {
@@ -51,7 +51,7 @@ producer.on("delivery-report", function (err, report) {
   logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
 
-let app = express()
+const app = express()
 
 app.use(compression())
 app.use(express.json())

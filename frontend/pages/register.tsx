@@ -1,26 +1,28 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { range } from "lodash"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import CancelIcon from "@mui/icons-material/Cancel"
 import {
   Button,
   Card,
   CardContent,
   Container,
+  ContainerProps,
   Grid,
+  GridProps,
   IconButton,
   InputAdornment,
   Skeleton,
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import LoginStateContext from "/contexts/LoginStateContext"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
@@ -31,18 +33,18 @@ import { useTranslator } from "/util/useTranslator"
 import {
   AddUserOrganizationDocument,
   DeleteUserOrganizationDocument,
-  Organization,
+  OrganizationCoreFieldsFragment,
   OrganizationsDocument,
   UserOrganizationsDocument,
 } from "/graphql/generated"
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin-top: 1em;
-`
+` as typeof Typography
 
-const FormContainer = styled(Container)`
-  spacing: 4;
-`
+const FormContainer = styled((props: ContainerProps & GridProps) => (
+  <Container spacing={4} {...props} />
+))``
 
 interface OrganizationCardProps {
   name: string
@@ -112,14 +114,14 @@ function useSearchBox() {
 }
 
 function useRegisterOrganization(searchFilter: string) {
-  const { currentUser } = useContext(LoginStateContext)
+  const { currentUser } = useLoginStateContext()
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
-    Record<string, Organization>
+    Record<string, OrganizationCoreFieldsFragment>
   >({})
   const [filteredOrganizations, setFilteredOrganizations] = useState<
-    Record<string, Organization>
+    Record<string, OrganizationCoreFieldsFragment>
   >({})
 
   const {
@@ -135,7 +137,7 @@ function useRegisterOrganization(searchFilter: string) {
     refetchQueries: [
       {
         query: UserOrganizationsDocument,
-        variables: { user_id: currentUser!.id },
+        variables: { user_id: currentUser?.id },
       },
     ],
   })
@@ -144,7 +146,7 @@ function useRegisterOrganization(searchFilter: string) {
     refetchQueries: [
       {
         query: UserOrganizationsDocument,
-        variables: { user_id: currentUser!.id },
+        variables: { user_id: currentUser?.id },
       },
     ],
   })
@@ -158,10 +160,9 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    const mIds =
-      userOrganizationsData.userOrganizations
-        ?.map((uo) => uo?.organization?.id)
-        .filter(notEmpty) ?? []
+    const mIds = (userOrganizationsData.userOrganizations ?? [])
+      .map((uo) => uo?.organization?.id)
+      .filter(notEmpty)
 
     setMemberships(mIds)
   }, [userOrganizationsData])
@@ -171,23 +172,19 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    const sortedOrganizations =
-      organizationsData?.organizations
-        ?.filter((o) => o?.organization_translations?.length)
-        .sort((a, b) =>
-          a!.organization_translations![0].name.localeCompare(
-            b!.organization_translations![0].name,
-            "fi-FI",
-          ),
-        ) ?? []
+    const sortedOrganizations = (organizationsData?.organizations ?? [])
+      .filter((o) => o?.organization_translations?.length)
+      .sort((a, b) =>
+        a.organization_translations[0].name.localeCompare(
+          b.organization_translations[0].name,
+          "fi-FI",
+        ),
+      )
+    const orgs = {} as Record<string, OrganizationCoreFieldsFragment>
 
-    const orgs = sortedOrganizations.filter(notEmpty).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.id]: curr,
-      }),
-      {},
-    )
+    for (const org of sortedOrganizations) {
+      orgs[org.id] = org
+    }
 
     setOrganizations(orgs)
     setFilteredOrganizations(orgs)
@@ -198,35 +195,35 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    if (!searchFilter || searchFilter === "") {
+    if (!searchFilter) {
       setFilteredOrganizations(organizations)
 
       return
     }
 
-    setFilteredOrganizations(
-      Object.entries(organizations).reduce((acc, [key, value]) => {
-        if (
-          !value!
-            .organization_translations![0].name.toLowerCase()
-            .includes(searchFilter.toLowerCase())
-        ) {
-          return acc
-        }
+    const newFilteredOrganizations = {} as Record<
+      string,
+      OrganizationCoreFieldsFragment
+    >
 
-        return {
-          ...acc,
-          [key]: value,
-        }
-      }, {}),
-    )
+    for (const [id, org] of Object.entries(organizations)) {
+      if (
+        !org.organization_translations[0].name
+          .toLowerCase()
+          .includes(searchFilter.toLowerCase())
+      ) {
+        continue
+      }
+      newFilteredOrganizations[id] = org
+    }
+    setFilteredOrganizations(newFilteredOrganizations)
   }, [searchFilter, organizations])
 
   const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
-      const existing = userOrganizationsData?.userOrganizations
-        ?.filter(notEmpty)
-        .find((uo) => uo?.organization?.id === id)
+      const existing = (userOrganizationsData?.userOrganizations ?? []).find(
+        (uo) => uo?.organization?.id === id,
+      )
 
       if (existing) {
         await deleteUserOrganization({
@@ -239,7 +236,7 @@ function useRegisterOrganization(searchFilter: string) {
     } else {
       await addUserOrganization({
         variables: {
-          user_id: currentUser!.id,
+          user_id: currentUser?.id ?? "",
           organization_id: id,
         },
       })
@@ -293,7 +290,7 @@ const OrganizationItems = () => {
       {Object.entries(filteredOrganizations).map(([id, organization]) => (
         <OrganizationCard
           key={`card-${id}`}
-          name={organization!.organization_translations![0].name}
+          name={organization.organization_translations![0].name}
           isMember={memberships.includes(id)}
           onToggle={toggleMembership(id)}
         />

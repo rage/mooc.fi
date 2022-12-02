@@ -9,6 +9,8 @@ fragment UserCourseProgressCoreFields on UserCourseProgress {
   exercise_progress {
     total
     exercises
+    exercise_count
+    exercises_completed_count
   }
   created_at
   updated_at

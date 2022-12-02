@@ -9,6 +9,8 @@ import {
   stringArg,
 } from "nexus"
 
+import { isAdmin } from "../accessControl"
+
 export const Tag = objectType({
   name: "Tag",
   definition(t) {
@@ -82,6 +84,7 @@ export const TagMutations = extendType({
           ),
         ),
       },
+      authorize: isAdmin,
       resolve: async (_, { color, tag_translations }, ctx) => {
         return ctx.prisma.tag.create({
           data: {
@@ -111,6 +114,7 @@ export const TagMutations = extendType({
           ),
         ),
       },
+      authorize: isAdmin,
       resolve: async (_, { id, color, tag_translations }, ctx) => {
         if (!tag_translations) {
           return ctx.prisma.tag.update({
@@ -167,6 +171,7 @@ export const TagMutations = extendType({
       args: {
         id: nonNull(idArg()),
       },
+      authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {
         return ctx.prisma.tag.delete({
           where: {

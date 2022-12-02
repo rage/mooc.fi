@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import {
   Button,
   Dialog,
@@ -11,6 +10,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
@@ -22,7 +22,7 @@ import {
   ImageCoreFieldsFragment,
 } from "/graphql/generated"
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   display: flex;
   width: 100%;
   min-width: 350px;
@@ -33,7 +33,7 @@ const ImageContainer = styled.div`
   border-radius: 4px;
 `
 
-const ImagePlaceholder = styled.div`
+const ImagePlaceholder = styled("div")`
   width: 350px;
   height: 250px;
   background-color: #eeeeee;
