@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-11-25T17:50:48+02:00
+// Generated on 2022-12-02T23:51:06+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -210,6 +210,7 @@ export type Course = {
   study_module_start_point: Maybe<Scalars["Boolean"]>
   study_modules: Array<StudyModule>
   support_email: Maybe<Scalars["String"]>
+  tags: Maybe<Array<Tag>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier: Maybe<Scalars["Int"]>
@@ -276,6 +277,13 @@ export type Coursestudy_modulesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type CoursetagsArgs = {
+  includeHidden?: InputMaybe<Scalars["Boolean"]>
+  language?: InputMaybe<Scalars["String"]>
+  search?: InputMaybe<Scalars["String"]>
+  types?: InputMaybe<Array<Scalars["String"]>>
+}
+
 export type Courseuser_course_settings_visibilitiesArgs = {
   cursor?: InputMaybe<UserCourseSettingsVisibilityWhereUniqueInput>
   skip?: InputMaybe<Scalars["Int"]>
@@ -316,6 +324,7 @@ export type CourseCreateArg = {
   completions_handled_by?: InputMaybe<Scalars["ID"]>
   course_aliases?: InputMaybe<Array<CourseAliasCreateInput>>
   course_stats_email_id?: InputMaybe<Scalars["ID"]>
+  course_tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
   course_translations?: InputMaybe<Array<CourseTranslationCreateInput>>
   course_variants?: InputMaybe<Array<CourseVariantCreateInput>>
   ects?: InputMaybe<Scalars["String"]>
@@ -449,6 +458,35 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
+export type CourseTag = {
+  __typename?: "CourseTag"
+  course: Maybe<Course>
+  course_id: Scalars["String"]
+  created_at: Maybe<Scalars["DateTime"]>
+  language: Maybe<Scalars["String"]>
+  tag: Maybe<Tag>
+  tag_id: Scalars["String"]
+  updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type CourseTagCourse_idTag_idCompoundUniqueInput = {
+  course_id: Scalars["String"]
+  tag_id: Scalars["String"]
+}
+
+export type CourseTagCreateOrUpsertInput = {
+  course_id: Scalars["ID"]
+  tag_id: Scalars["ID"]
+}
+
+export type CourseTagCreateOrUpsertWithoutCourseIdInput = {
+  tag_id: Scalars["ID"]
+}
+
+export type CourseTagWhereUniqueInput = {
+  course_id_tag_id?: InputMaybe<CourseTagCourse_idTag_idCompoundUniqueInput>
+}
+
 export type CourseTranslation = {
   __typename?: "CourseTranslation"
   course: Maybe<Course>
@@ -494,6 +532,7 @@ export type CourseUpsertArg = {
   completions_handled_by?: InputMaybe<Scalars["ID"]>
   course_aliases?: InputMaybe<Array<CourseAliasUpsertInput>>
   course_stats_email_id?: InputMaybe<Scalars["ID"]>
+  course_tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
   course_translations?: InputMaybe<Array<CourseTranslationUpsertInput>>
   course_variants?: InputMaybe<Array<CourseVariantUpsertInput>>
   delete_photo?: InputMaybe<Scalars["Boolean"]>
@@ -738,6 +777,7 @@ export type Mutation = {
   addCourse: Maybe<Course>
   addCourseAlias: Maybe<CourseAlias>
   addCourseOrganization: Maybe<CourseOrganization>
+  addCourseTag: CourseTag
   addCourseTranslation: Maybe<CourseTranslation>
   addCourseVariant: Maybe<CourseVariant>
   addEmailTemplate: Maybe<EmailTemplate>
@@ -757,15 +797,22 @@ export type Mutation = {
   addVerifiedUser: Maybe<VerifiedUser>
   createCourseStatsSubscription: Maybe<CourseStatsSubscription>
   createRegistrationAttemptDate: Maybe<Completion>
+  createTag: Maybe<Tag>
+  createTagTranslation: Maybe<TagTranslation>
+  createTagType: Maybe<TagType>
   deleteCourse: Maybe<Course>
   deleteCourseOrganization: Maybe<CourseOrganization>
   deleteCourseStatsSubscription: Maybe<CourseStatsSubscription>
+  deleteCourseTag: CourseTag
   deleteCourseTranslation: Maybe<CourseTranslation>
   deleteCourseVariant: Maybe<CourseVariant>
   deleteEmailTemplate: Maybe<EmailTemplate>
   deleteImage: Maybe<Scalars["Boolean"]>
   deleteStudyModule: Maybe<StudyModule>
   deleteStudyModuleTranslation: Maybe<StudyModuleTranslation>
+  deleteTag: Maybe<Tag>
+  deleteTagTranslation: Maybe<TagTranslation>
+  deleteTagType: Maybe<TagType>
   deleteUserOrganization: Maybe<UserOrganization>
   recheckCompletions: Maybe<Scalars["String"]>
   registerCompletion: Scalars["String"]
@@ -780,6 +827,9 @@ export type Mutation = {
   updateService: Maybe<Service>
   updateStudyModule: Maybe<StudyModule>
   updateStudyModuletranslation: Maybe<StudyModuleTranslation>
+  updateTag: Maybe<Tag>
+  updateTagTranslation: Maybe<TagTranslation>
+  updateTagType: Maybe<TagType>
   updateUserName: Maybe<User>
   updateUserOrganization: Maybe<UserOrganization>
 }
@@ -815,6 +865,13 @@ export type MutationaddCourseOrganizationArgs = {
   course_id: Scalars["ID"]
   creator?: InputMaybe<Scalars["Boolean"]>
   organization_id: Scalars["ID"]
+}
+
+export type MutationaddCourseTagArgs = {
+  course_id?: InputMaybe<Scalars["ID"]>
+  course_slug?: InputMaybe<Scalars["String"]>
+  tag_id?: InputMaybe<Scalars["ID"]>
+  tag_name?: InputMaybe<Scalars["String"]>
 }
 
 export type MutationaddCourseTranslationArgs = {
@@ -936,6 +993,23 @@ export type MutationcreateRegistrationAttemptDateArgs = {
   id: Scalars["ID"]
 }
 
+export type MutationcreateTagArgs = {
+  hidden?: InputMaybe<Scalars["Boolean"]>
+  translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
+  types?: InputMaybe<Array<Scalars["String"]>>
+}
+
+export type MutationcreateTagTranslationArgs = {
+  description?: InputMaybe<Scalars["String"]>
+  language: Scalars["String"]
+  name: Scalars["String"]
+  tag_id: Scalars["ID"]
+}
+
+export type MutationcreateTagTypeArgs = {
+  name: Scalars["String"]
+}
+
 export type MutationdeleteCourseArgs = {
   id?: InputMaybe<Scalars["ID"]>
   slug?: InputMaybe<Scalars["String"]>
@@ -947,6 +1021,11 @@ export type MutationdeleteCourseOrganizationArgs = {
 
 export type MutationdeleteCourseStatsSubscriptionArgs = {
   id: Scalars["ID"]
+}
+
+export type MutationdeleteCourseTagArgs = {
+  course_id: Scalars["ID"]
+  tag_id: Scalars["ID"]
 }
 
 export type MutationdeleteCourseTranslationArgs = {
@@ -972,6 +1051,19 @@ export type MutationdeleteStudyModuleArgs = {
 
 export type MutationdeleteStudyModuleTranslationArgs = {
   id: Scalars["ID"]
+}
+
+export type MutationdeleteTagArgs = {
+  id: Scalars["ID"]
+}
+
+export type MutationdeleteTagTranslationArgs = {
+  language: Scalars["String"]
+  tag_id: Scalars["ID"]
+}
+
+export type MutationdeleteTagTypeArgs = {
+  name: Scalars["String"]
 }
 
 export type MutationdeleteUserOrganizationArgs = {
@@ -1055,6 +1147,24 @@ export type MutationupdateStudyModuletranslationArgs = {
   language?: InputMaybe<Scalars["String"]>
   name?: InputMaybe<Scalars["String"]>
   study_module: Scalars["ID"]
+}
+
+export type MutationupdateTagArgs = {
+  hidden?: InputMaybe<Scalars["Boolean"]>
+  id: Scalars["ID"]
+  translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
+  types?: InputMaybe<Array<Scalars["String"]>>
+}
+
+export type MutationupdateTagTranslationArgs = {
+  description?: InputMaybe<Scalars["String"]>
+  language: Scalars["String"]
+  name: Scalars["String"]
+  tag_id: Scalars["ID"]
+}
+
+export type MutationupdateTagTypeArgs = {
+  name: Scalars["String"]
 }
 
 export type MutationupdateUserNameArgs = {
@@ -1275,6 +1385,7 @@ export type Query = {
   course: Maybe<Course>
   courseAliases: Array<CourseAlias>
   courseOrganizations: Maybe<Array<CourseOrganization>>
+  courseTags: Maybe<Array<CourseTag>>
   courseTranslations: Maybe<Array<CourseTranslation>>
   courseVariant: Maybe<CourseVariant>
   courseVariants: Maybe<Array<CourseVariant>>
@@ -1299,6 +1410,8 @@ export type Query = {
   study_module: Maybe<StudyModule>
   study_module_exists: Maybe<Scalars["Boolean"]>
   study_modules: Maybe<Array<StudyModule>>
+  tagTypes: Maybe<Array<TagType>>
+  tags: Maybe<Array<Maybe<Tag>>>
   user: Maybe<User>
   userCourseProgress: Maybe<UserCourseProgress>
   userCourseProgresses: Maybe<Array<UserCourseProgress>>
@@ -1361,6 +1474,15 @@ export type QuerycourseOrganizationsArgs = {
   organization_id?: InputMaybe<Scalars["ID"]>
 }
 
+export type QuerycourseTagsArgs = {
+  course_id?: InputMaybe<Scalars["ID"]>
+  course_slug?: InputMaybe<Scalars["String"]>
+  includeHidden?: InputMaybe<Scalars["Boolean"]>
+  language?: InputMaybe<Scalars["String"]>
+  tag_id?: InputMaybe<Scalars["ID"]>
+  tag_types?: InputMaybe<Array<Scalars["String"]>>
+}
+
 export type QuerycourseTranslationsArgs = {
   language?: InputMaybe<Scalars["String"]>
 }
@@ -1384,6 +1506,7 @@ export type QuerycoursesArgs = {
   orderBy?: InputMaybe<CourseOrderByInput>
   search?: InputMaybe<Scalars["String"]>
   status?: InputMaybe<Array<CourseStatus>>
+  tags?: InputMaybe<Array<Scalars["String"]>>
 }
 
 export type QuerycurrentUserArgs = {
@@ -1463,6 +1586,12 @@ export type Querystudy_module_existsArgs = {
 export type Querystudy_modulesArgs = {
   language?: InputMaybe<Scalars["String"]>
   orderBy?: InputMaybe<StudyModuleOrderByInput>
+}
+
+export type QuerytagsArgs = {
+  includeHidden?: InputMaybe<Scalars["Boolean"]>
+  language?: InputMaybe<Scalars["String"]>
+  search?: InputMaybe<Scalars["String"]>
 }
 
 export type QueryuserArgs = {
@@ -1738,6 +1867,94 @@ export type StudyModuleUpsertArg = {
 export type StudyModuleWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
   slug?: InputMaybe<Scalars["String"]>
+}
+
+export type Tag = {
+  __typename?: "Tag"
+  course_tags: Array<CourseTag>
+  created_at: Maybe<Scalars["DateTime"]>
+  description: Maybe<Scalars["String"]>
+  hidden: Maybe<Scalars["Boolean"]>
+  id: Scalars["String"]
+  language: Maybe<Scalars["String"]>
+  name: Maybe<Scalars["String"]>
+  tag_translations: Array<TagTranslation>
+  tag_types: Array<TagType>
+  types: Maybe<Array<Scalars["String"]>>
+  updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type Tagcourse_tagsArgs = {
+  cursor?: InputMaybe<CourseTagWhereUniqueInput>
+  skip?: InputMaybe<Scalars["Int"]>
+  take?: InputMaybe<Scalars["Int"]>
+}
+
+export type Tagtag_translationsArgs = {
+  cursor?: InputMaybe<TagTranslationWhereUniqueInput>
+  skip?: InputMaybe<Scalars["Int"]>
+  take?: InputMaybe<Scalars["Int"]>
+}
+
+export type Tagtag_typesArgs = {
+  cursor?: InputMaybe<TagTypeWhereUniqueInput>
+  skip?: InputMaybe<Scalars["Int"]>
+  take?: InputMaybe<Scalars["Int"]>
+}
+
+export type TagTranslation = {
+  __typename?: "TagTranslation"
+  created_at: Maybe<Scalars["DateTime"]>
+  description: Maybe<Scalars["String"]>
+  language: Scalars["String"]
+  name: Scalars["String"]
+  tag: Maybe<Tag>
+  tag_id: Scalars["String"]
+  updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type TagTranslationCreateOrUpdateInput = {
+  description?: InputMaybe<Scalars["String"]>
+  language: Scalars["String"]
+  name: Scalars["String"]
+  tag_id?: InputMaybe<Scalars["ID"]>
+}
+
+export type TagTranslationNameLanguageCompoundUniqueInput = {
+  language: Scalars["String"]
+  name: Scalars["String"]
+}
+
+export type TagTranslationTag_idLanguageCompoundUniqueInput = {
+  language: Scalars["String"]
+  tag_id: Scalars["String"]
+}
+
+export type TagTranslationWhereUniqueInput = {
+  name_language?: InputMaybe<TagTranslationNameLanguageCompoundUniqueInput>
+  tag_id_language?: InputMaybe<TagTranslationTag_idLanguageCompoundUniqueInput>
+}
+
+export type TagType = {
+  __typename?: "TagType"
+  created_at: Maybe<Scalars["DateTime"]>
+  name: Scalars["String"]
+  tags: Array<Tag>
+  updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type TagTypetagsArgs = {
+  cursor?: InputMaybe<TagWhereUniqueInput>
+  skip?: InputMaybe<Scalars["Int"]>
+  take?: InputMaybe<Scalars["Int"]>
+}
+
+export type TagTypeWhereUniqueInput = {
+  name?: InputMaybe<Scalars["String"]>
+}
+
+export type TagWhereUniqueInput = {
+  id?: InputMaybe<Scalars["String"]>
 }
 
 export type User = {
@@ -2380,6 +2597,24 @@ export type CourseTranslationDetailedFieldsFragment = {
   name: string
 }
 
+export type CourseTagFieldsFragment = {
+  __typename?: "CourseTag"
+  tag: {
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  } | null
+}
+
 export type CourseFieldsFragment = {
   __typename?: "Course"
   description: string | null
@@ -2417,6 +2652,20 @@ export type CourseFieldsFragment = {
     slug: string
     name: string
   }>
+  tags: Array<{
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  }> | null
   photo: {
     __typename?: "Image"
     id: string
@@ -2483,6 +2732,20 @@ export type EditorCourseFieldsFragment = {
     id: string
     language: string
   }>
+  tags: Array<{
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  }> | null
   course_translations: Array<{
     __typename?: "CourseTranslation"
     id: string
@@ -2585,6 +2848,20 @@ export type EditorCourseDetailedFieldsFragment = {
     id: string
     language: string
   }>
+  tags: Array<{
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  }> | null
   study_modules: Array<{
     __typename?: "StudyModule"
     id: string
@@ -2872,6 +3149,20 @@ export type StudyModuleFieldsWithCoursesFragment = {
       slug: string
       name: string
     }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }> | null
     photo: {
       __typename?: "Image"
       id: string
@@ -2886,6 +3177,29 @@ export type StudyModuleFieldsWithCoursesFragment = {
       updated_at: any | null
     } | null
   }> | null
+}
+
+export type TagCoreFieldsFragment = {
+  __typename?: "Tag"
+  id: string
+  hidden: boolean | null
+  types: Array<string> | null
+  name: string | null
+  tag_translations: Array<{
+    __typename?: "TagTranslation"
+    tag_id: string
+    name: string
+    description: string | null
+    language: string
+  }>
+}
+
+export type TagTranslationFieldsFragment = {
+  __typename?: "TagTranslation"
+  tag_id: string
+  name: string
+  description: string | null
+  language: string
 }
 
 export type UserCoreFieldsFragment = {
@@ -3556,6 +3870,20 @@ export type AddCourseMutation = {
       id: string
       language: string
     }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }> | null
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
@@ -3681,6 +4009,20 @@ export type UpdateCourseMutation = {
       id: string
       language: string
     }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }> | null
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
@@ -4144,6 +4486,20 @@ export type CoursesQuery = {
       slug: string
       name: string
     }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }> | null
     photo: {
       __typename?: "Image"
       id: string
@@ -4220,6 +4576,20 @@ export type EditorCoursesQuery = {
       id: string
       language: string
     }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }> | null
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
@@ -4404,6 +4774,20 @@ export type CourseEditorDetailsQuery = {
       id: string
       language: string
     }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }> | null
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
@@ -4662,6 +5046,20 @@ export type StudyModulesWithCoursesQuery = {
         slug: string
         name: string
       }>
+      tags: Array<{
+        __typename?: "Tag"
+        id: string
+        hidden: boolean | null
+        types: Array<string> | null
+        name: string | null
+        tag_translations: Array<{
+          __typename?: "TagTranslation"
+          tag_id: string
+          name: string
+          description: string | null
+          language: string
+        }>
+      }> | null
       photo: {
         __typename?: "Image"
         id: string
@@ -6000,6 +6398,94 @@ export const CompletionsQueryConnectionFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CompletionsQueryConnectionFieldsFragment, unknown>
+export const TagTranslationFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagTranslationFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TagTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TagTranslationFieldsFragment, unknown>
+export const TagCoreFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Tag" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "types" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tag_translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagTranslationFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TagCoreFieldsFragment, unknown>
+export const CourseTagFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTagFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTag" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tag" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CourseTagFieldsFragment, unknown>
 export const CourseTranslationCoreFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -6117,6 +6603,19 @@ export const CourseFieldsFragmentDoc = {
               ],
             },
           },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -6188,6 +6687,19 @@ export const EditorCourseFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "language" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
               ],
             },
           },
@@ -7554,6 +8066,8 @@ export const AddCourseDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
     ...CourseTranslationDetailedFieldsFragmentDoc.definitions,
     ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
@@ -7650,6 +8164,8 @@ export const UpdateCourseDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
     ...CourseTranslationDetailedFieldsFragmentDoc.definitions,
     ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
     ...EmailTemplateCoreFieldsFragmentDoc.definitions,
@@ -9008,6 +9524,8 @@ export const CoursesDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<CoursesQuery, CoursesQueryVariables>
 export const EditorCoursesDocument = {
@@ -9148,6 +9666,8 @@ export const EditorCoursesDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<EditorCoursesQuery, EditorCoursesQueryVariables>
 export const CourseFromSlugDocument = {
@@ -9326,6 +9846,8 @@ export const CourseEditorDetailsDocument = {
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
     ...StudyModuleCoreFieldsFragmentDoc.definitions,
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
     ...CourseTranslationDetailedFieldsFragmentDoc.definitions,
     ...OpenUniversityRegistrationLinkCoreFieldsFragmentDoc.definitions,
   ],
@@ -9825,6 +10347,8 @@ export const StudyModulesWithCoursesDocument = {
     ...CourseCoreFieldsFragmentDoc.definitions,
     ...ImageCoreFieldsFragmentDoc.definitions,
     ...CourseTranslationCoreFieldsFragmentDoc.definitions,
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
   ],
 } as unknown as DocumentNode<
   StudyModulesWithCoursesQuery,

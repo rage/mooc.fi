@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 import { getIn } from "formik"
 import { omit } from "lodash"
 import { DateTime } from "luxon"
@@ -112,21 +114,14 @@ export const toCourseForm = ({
     exercise_completions_needed:
       course?.exercise_completions_needed ?? undefined,
     points_needed: course?.points_needed ?? undefined,
-    course_tags:
-      course?.course_tags?.map((courseTag) => ({
-        ...omit(courseTag, ["__typename"]),
-        tag: courseTag.tag
-          ? {
-              ...omit(courseTag.tag, ["__typename"]),
-              color: courseTag.tag.color ?? undefined,
-              tag_translations: courseTag.tag.tag_translations?.map(
-                (tagTranslation) => ({
-                  ...omit(tagTranslation, ["__typename"]),
-                  description: tagTranslation.description ?? undefined,
-                }),
-              ),
-            }
-          : undefined,
+    tags:
+      course?.tags?.map((tag) => ({
+        ...omit(tag, ["__typename"]),
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename"]),
+          description: tagTranslation.description ?? undefined,
+        })),
       })) ?? [],
   }
 }
@@ -205,20 +200,17 @@ export const fromCourseForm = ({
     .map((id) => ({ id }))
 
   const course_tags =
-    values.course_tags?.map((courseTag) => ({
-      ...omit(courseTag, ["__typename"]),
-      tag: courseTag.tag
-        ? {
-            ...omit(courseTag.tag, ["__typename"]),
-            color: courseTag.tag.color ?? undefined,
-            tag_translations: courseTag.tag.tag_translations?.map(
-              (tagTranslation) => ({
-                ...omit(tagTranslation, ["__typename"]),
-                description: tagTranslation.description ?? undefined,
-              }),
-            ),
-          }
-        : undefined,
+    values.tags?.map((tag) => ({
+      course_id: values.id,
+      tag_id: tag.id,
+      tag: {
+        ...omit(tag, ["__typename"]),
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename"]),
+          description: tagTranslation.description ?? undefined,
+        })),
+      },
     })) ?? []
 
   const formValues = newCourse

@@ -1,6 +1,15 @@
-import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
+import { ForbiddenError } from "apollo-server-core"
+import {
+  booleanArg,
+  intArg,
+  list,
+  nonNull,
+  nullable,
+  objectType,
+  stringArg,
+} from "nexus"
 
-import { Prisma } from "@prisma/client"
+import { Prisma, Tag } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 
@@ -59,7 +68,7 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
-    t.model.course_tags()
+    // t.model.course_tags()
 
     t.string("description")
     t.string("instructions")
@@ -125,6 +134,86 @@ export const Course = objectType({
           .exercises({
             where: exerciseCondition,
           })
+      },
+    })
+
+    t.list.nonNull.field("tags", {
+      type: "Tag",
+      args: {
+        language: stringArg(),
+        types: list(nonNull(stringArg())),
+        search: stringArg(),
+        includeHidden: booleanArg(),
+      },
+      validate: (_, { includeHidden }, ctx) => {
+        if (includeHidden && !isAdmin({}, {}, ctx, {})) {
+          throw new ForbiddenError("no admin rights")
+        }
+      },
+      resolve: async (
+        parent,
+        { language, types, search, includeHidden },
+        ctx,
+      ) => {
+        const where = {} as Prisma.CourseTagWhereInput
+
+        if (language) {
+          where.tag = {
+            tag_translations: {
+              some: {
+                language,
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (types) {
+          where.tag = {
+            ...where.tag,
+            tag_types: {
+              some: {
+                name: { in: types },
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (search) {
+          where.tag = {
+            ...where.tag,
+            tag_translations: {
+              ...(language && { where: { language } }),
+              some: {
+                OR: [
+                  {
+                    name: { contains: search, mode: "insensitive" },
+                  },
+                  {
+                    description: { contains: search, mode: "insensitive" },
+                  },
+                ],
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (!includeHidden) {
+          where.tag = {
+            ...where.tag,
+            OR: [{ hidden: false }, { hidden: null }],
+          } as Prisma.TagWhereInput
+        }
+
+        const res = await ctx.prisma.course
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .course_tags({
+            where,
+          })
+
+        // force it as tag resolver does the rest and only needs the id
+        return res.map((ct) => ({
+          id: ct.tag_id,
+          language,
+        })) as unknown[] as Tag[]
       },
     })
   },

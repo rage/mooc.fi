@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
@@ -147,7 +149,6 @@ export const CourseMutations = extendType({
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
-          user_course_settings_visibilities,
           course_stats_email_id,
         } = course
         let { end_date } = course
@@ -217,7 +218,9 @@ export const CourseMutations = extendType({
         // this had different logic so it's not done with the same helper
         const removedModuleIds =
           existingCourse?.study_modules
-            ?.filter((module) => !getIds(study_modules).includes(module.id))
+            ?.filter(
+              (module) => !getIds(study_modules ?? []).includes(module.id),
+            )
             .map((module) => ({ id: module.id })) ?? []
         const connectModules =
           study_modules?.map((s) => ({

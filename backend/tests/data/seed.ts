@@ -18,6 +18,7 @@ import {
   storedData,
   study_modules,
   tags,
+  tagTypes,
   userCourseProgresses,
   userCourseServiceProgresses,
   userCourseSettings,
@@ -83,6 +84,7 @@ export const seed = async (prisma: PrismaClient) => {
     "courseOwnership",
     courseOwnerships,
   )
+  const seededTagTypes = await create("tagType", tagTypes)
   const seededTags = await create("tag", tags)
   const seededCourseTags = await create("courseTag", courseTags)
 
@@ -107,6 +109,7 @@ export const seed = async (prisma: PrismaClient) => {
     storedData: seededStoredData,
     courseOwnerships: seededCourseOwnerships,
     tags: seededTags,
+    tagTypes: seededTagTypes,
     courseTags: seededCourseTags,
   }
 }

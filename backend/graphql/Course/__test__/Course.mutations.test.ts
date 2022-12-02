@@ -5,7 +5,7 @@ import { mocked } from "jest-mock"
 import { omit } from "lodash"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../../tests"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 

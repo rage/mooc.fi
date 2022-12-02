@@ -11,6 +11,7 @@ import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 import { loggerPlugin } from "./middlewares/logger"
+import { validateArgsPlugin } from "./middlewares/validate"
 
 if (NEXUS_REFLECTION) {
   require("sharp")
@@ -48,6 +49,7 @@ const createPlugins = () => {
     cachePlugin(),
     moocfiAuthPlugin(),
     fieldAuthorizePlugin(),
+    validateArgsPlugin(),
   ]
 
   if (isProduction && !NEXUS_REFLECTION && NEW_RELIC_LICENSE_KEY) {

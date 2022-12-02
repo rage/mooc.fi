@@ -30,17 +30,9 @@ fragment CourseTranslationDetailedFields on CourseTranslation {
   updated_at
 }
 
-fragment CourseTagTranslationFields on CouresTagTranslation {
-    language
-    name
-    description
-}
-
 fragment CourseTagFields on CourseTag {
-  id
-  color
-  tag_translations {
-    ...CourseTagTranslationFields
+  tag {
+    ...TagCoreFields
   }
 }
 
@@ -69,8 +61,8 @@ fragment CourseFields on Course {
   study_modules {
     ...StudyModuleCoreFields
   }
-  course_tags {
-    ...CourseTagFields
+  tags {
+    ...TagCoreFields
   }
 }
 
@@ -94,8 +86,8 @@ fragment EditorCourseFields on Course {
     id
     language
   }
-  course_tags {
-    ...CourseTagFields
+  tags {
+    ...TagCoreFields
   }
 }
 

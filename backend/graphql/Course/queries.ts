@@ -111,12 +111,6 @@ export const CourseQueries = extendType({
         }
 
         return returnedCourse
-        /*return {
-          ...course,
-          name,
-          description,
-          link,
-        }*/
       },
     })
 
@@ -133,9 +127,11 @@ export const CourseQueries = extendType({
         hidden: nullable(booleanArg({ default: true })),
         handledBy: nullable(stringArg()),
         status: nullable(list(nonNull(arg({ type: "CourseStatus" })))),
+        tags: nullable(list(nonNull(stringArg()))),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language, search, hidden, handledBy, status } = args
+        const { orderBy, language, search, hidden, handledBy, status, tags } =
+          args
 
         const searchQuery: Prisma.Enumerable<Prisma.CourseWhereInput> = []
 
@@ -198,10 +194,30 @@ export const CourseQueries = extendType({
             status: { in: status },
           })
         }
-
+        // TODO: if we want a filter that is strict (i.e. all tags must be present)
+        // then we may need a raw query or just do that filtering in the frontend
+        if (tags) {
+          searchQuery.push({
+            course_tags: {
+              some: {
+                tag: {
+                  is: {
+                    tag_translations: {
+                      some: {
+                        language: language ?? undefined,
+                        name: { in: tags },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          })
+        }
+        console.log(JSON.stringify(searchQuery, null, 2))
         const courses: (Course & {
           course_translations?: CourseTranslation[]
-          course_tags?: CourseTag[]
+          course_tags?: (CourseTag & { language?: string })[]
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
@@ -241,10 +257,15 @@ export const CourseQueries = extendType({
               ...omit(course, "course_translations"),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
+              course_tags: course.course_tags?.map((course_tag) => ({
+                ...course_tag,
+                language,
+              })),
             }
           })
           .filter(notEmpty)
 
+        console.log(JSON.stringify(filtered, null, 2))
         // TODO: (?) provide proper typing
         return filtered as (Course & { description: string; link: string })[]
       },

@@ -44,7 +44,7 @@ export interface CourseFormValues extends FormValues {
   automatic_completions_eligible_for_ects?: boolean
   exercise_completions_needed?: number
   points_needed?: number
-  course_tags: CourseTagFormValues[]
+  tags: TagFormValues[]
 }
 
 export interface CourseTranslationFormValues extends FormValues {
@@ -95,7 +95,7 @@ export interface CourseTagFormValues extends FormValues {
 
 export interface TagFormValues extends FormValues {
   _id?: string
-  color?: string
+  hidden?: boolean
   tag_translations?: TagTranslationFormValues[]
 }
 
@@ -104,4 +104,9 @@ export interface TagTranslationFormValues extends FormValues {
   language: string
   name: string
   description?: string
+}
+
+export interface TagTypeFormValues extends FormValues {
+  _id?: string
+  name: string
 }

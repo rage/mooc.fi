@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "tag" (
       "id" uuid NOT NULL DEFAULT ${EXTENSION_PATH}.uuid_generate_v4(),
-      "color" text,
+      "hidden" boolean NOT NULL DEFAULT false,
       "created_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updated_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP 
     );
@@ -38,7 +38,6 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "tag_type" (
       "name" text NOT NULL,
-      "color" text,
       "created_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updated_at" TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP  
     );

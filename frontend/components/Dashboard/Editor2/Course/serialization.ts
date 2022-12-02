@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 import { omit } from "lodash"
 import { DateTime } from "luxon"
 
@@ -136,33 +138,18 @@ export const toCourseForm = ({
         _id: link.id ?? undefined,
         course_code: link.course_code ?? undefined,
       })) ?? [],
-    course_tags:
-      course?.course_tags?.map((courseTag) => ({
-        ...omit(courseTag, ["__typename", "created_at", "updated_at"]),
-        _id: `${courseTag.course_id}:${courseTag.tag_id}`,
-        tag: courseTag.tag
-          ? {
-              ...omit(courseTag.tag, [
-                "__typename",
-                "id",
-                "created_at",
-                "updated_at",
-              ]),
-              _id: courseTag.tag.id ?? undefined,
-              color: courseTag.tag.color ?? undefined,
-              tag_translations: courseTag.tag.tag_translations?.map(
-                (tagTranslation) => ({
-                  ...omit(tagTranslation, [
-                    "__typename",
-                    "created_at",
-                    "updated_at",
-                  ]),
-                  _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
-                  description: tagTranslation.description ?? undefined,
-                }),
-              ),
-            }
-          : undefined,
+    tags:
+      course?.tags?.map((tag) => ({
+        ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
+        _id: tag.id ?? undefined,
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
+          _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
+          language: tagTranslation.language,
+          name: tagTranslation.name,
+          description: tagTranslation.description ?? undefined,
+        })),
       })) ?? [],
   }
 }
@@ -255,34 +242,25 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 
-  const course_tags = values?.course_tags?.map((courseTag) => {
-    const [course_id, tag_id] = splitCompositeId(courseTag._id ?? "")
-
+  const course_tags = values?.tags?.map((tag) => {
     return {
-      ...omit(courseTag, ["__typename", "_id"]),
-      course_id,
-      tag_id,
-      tag: courseTag.tag
-        ? {
-            ...omit(courseTag.tag, ["__typename", "_id"]),
-            id: courseTag.tag._id ?? undefined,
-            color: courseTag.tag.color ?? undefined,
-            tag_translations: courseTag.tag.tag_translations?.map(
-              (tagTranslation) => {
-                const [tag_id, language] = splitCompositeId(
-                  tagTranslation._id ?? "",
-                )
+      course_id: values.id,
+      tag_id: tag._id,
+      tag: {
+        ...omit(tag, ["__typename", "_id"]),
+        id: tag._id ?? undefined,
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => {
+          const [tag_id, language] = splitCompositeId(tagTranslation._id ?? "")
 
-                return {
-                  ...omit(tagTranslation, ["__typename", "_id"]),
-                  tag_id,
-                  language,
-                  description: tagTranslation.description ?? undefined,
-                }
-              },
-            ),
+          return {
+            ...omit(tagTranslation, ["__typename", "_id"]),
+            tag_id,
+            language,
+            description: tagTranslation.description ?? undefined,
           }
-        : undefined,
+        }),
+      },
     }
   })
 

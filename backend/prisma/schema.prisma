@@ -566,7 +566,7 @@ model Tag {
   created_at                               DateTime?        @default(now())
   updated_at                               DateTime?        @updatedAt
   id                                       String           @id @default(uuid())
-  color                                    String?           
+  hidden                                   Boolean?         @default(false) 
   tag_types                                TagType[]      
   tag_translations                         TagTranslation[]
   course_tags                              CourseTag[]         
@@ -578,7 +578,6 @@ model TagType {
   created_at                               DateTime?        @default(now())
   updated_at                               DateTime?        @updatedAt
   name                                     String           @id
-  color                                    String?   
   tags                                     Tag[]
 
   @@map("tag_type")

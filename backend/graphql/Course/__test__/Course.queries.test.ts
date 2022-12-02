@@ -363,6 +363,7 @@ const fullCourseQuery = gql`
       course_tags {
         tag {
           id
+          hidden
           tag_translations {
             name
             description
@@ -370,9 +371,7 @@ const fullCourseQuery = gql`
           }
           tag_types {
             name
-            color
           }
-          color
         }
       }
     }
@@ -424,6 +423,14 @@ const coursesQuery = gql`
       user_course_settings_visibilities {
         id
         language
+      }
+      course_tags {
+        tag {
+          id
+          name
+          description
+          types
+        }
       }
     }
   }

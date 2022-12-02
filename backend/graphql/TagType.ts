@@ -6,7 +6,6 @@ export const TagType = objectType({
   name: "TagType",
   definition(t) {
     t.model.name()
-    t.model.color()
     t.model.tags()
     t.model.created_at()
     t.model.updated_at()
@@ -32,14 +31,12 @@ export const TagTypeMutations = extendType({
     t.field("createTagType", {
       type: "TagType",
       args: {
-        color: stringArg(),
         name: nonNull(stringArg()),
       },
       authorize: isAdmin,
-      resolve: async (_, { color, name }, ctx) => {
+      resolve: async (_, { name }, ctx) => {
         return ctx.prisma.tagType.create({
           data: {
-            color,
             name,
           },
         })
@@ -50,14 +47,13 @@ export const TagTypeMutations = extendType({
       type: "TagType",
       args: {
         name: nonNull(stringArg()),
-        color: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, { name, color }, ctx) => {
+      resolve: async (_, { name }, ctx) => {
         return ctx.prisma.tagType.update({
           where: { name },
           data: {
-            color,
+            name,
           },
         })
       },
