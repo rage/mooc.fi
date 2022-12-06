@@ -25,7 +25,7 @@ export const TagTranslation = objectType({
 export const TagTranslationCreateOrUpdateInput = inputObjectType({
   name: "TagTranslationCreateOrUpdateInput",
   definition(t) {
-    t.nullable.id("tag_id")
+    t.id("tag_id")
     t.nonNull.string("name")
     t.nonNull.string("language")
     t.string("description")

@@ -10,7 +10,7 @@ import { filterNull } from "../../util/db-functions"
 export const StudyModuleQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("study_module", {
+    t.field("study_module", {
       type: "StudyModule",
       args: {
         id: idArg(),
@@ -19,12 +19,13 @@ export const StudyModuleQueries = extendType({
         translationFallback: booleanArg({ default: false }),
       },
       authorize: or(isAdmin, isUser),
-      resolve: async (_, args, ctx) => {
-        const { id, slug, language, translationFallback } = args
-
+      validate: (_, { id, slug }) => {
         if (!id && !slug) {
           throw new UserInputError("must provide id or slug")
         }
+      },
+      resolve: async (_, args, ctx) => {
+        const { id, slug, language, translationFallback } = args
 
         const study_module:
           | (StudyModule & {

@@ -1,13 +1,5 @@
 import { ForbiddenError } from "apollo-server-core"
-import {
-  booleanArg,
-  intArg,
-  list,
-  nonNull,
-  nullable,
-  objectType,
-  stringArg,
-} from "nexus"
+import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma, Tag } from "@prisma/client"
 
@@ -77,17 +69,16 @@ export const Course = objectType({
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
-        user_id: nullable(stringArg()),
-        user_upstream_id: nullable(intArg()),
+        user_id: stringArg(),
+        user_upstream_id: intArg(),
       },
       authorize: isAdmin,
-      resolve: async (parent, args, ctx) => {
-        const { user_id, user_upstream_id } = args
-
+      validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
           throw new Error("needs user_id or user_upstream_id")
         }
-
+      },
+      resolve: async (parent, { user_id, user_upstream_id }, ctx) => {
         return ctx.prisma.course
           .findUnique({
             where: {
@@ -137,7 +128,7 @@ export const Course = objectType({
       },
     })
 
-    t.list.nonNull.field("tags", {
+    t.nonNull.list.nonNull.field("tags", {
       type: "Tag",
       args: {
         language: stringArg(),
@@ -180,8 +171,8 @@ export const Course = objectType({
           where.tag = {
             ...where.tag,
             tag_translations: {
-              ...(language && { where: { language } }),
               some: {
+                ...(language && { language }),
                 OR: [
                   {
                     name: { contains: search, mode: "insensitive" },
@@ -210,7 +201,7 @@ export const Course = objectType({
           })
 
         // force it as tag resolver does the rest and only needs the id
-        return res.map((ct) => ({
+        return (res ?? []).map((ct) => ({
           id: ct.tag_id,
           language,
         })) as unknown[] as Tag[]

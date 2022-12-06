@@ -68,7 +68,7 @@ const organizationPermission = (
 export const OrganizationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("organization", {
+    t.field("organization", {
       type: "Organization",
       args: {
         id: idArg(),

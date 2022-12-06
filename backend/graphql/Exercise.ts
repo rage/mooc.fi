@@ -5,7 +5,6 @@ import {
   idArg,
   intArg,
   nonNull,
-  nullable,
   objectType,
   stringArg,
 } from "nexus"
@@ -35,13 +34,11 @@ export const Exercise = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        orderBy: nullable(
-          arg({
-            // FIXME?
-            type: "ExerciseCompletionOrderByInput",
-          }),
-        ),
-        user_id: nullable(idArg()),
+        orderBy: arg({
+          // FIXME?
+          type: "ExerciseCompletionOrderByInput",
+        }),
+        user_id: idArg(),
       },
       resolve: async (parent, args, ctx: Context) => {
         const { orderBy, user_id: user_id_arg } = args
@@ -72,7 +69,7 @@ export const Exercise = objectType({
 export const ExerciseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("exercise", {
+    t.field("exercise", {
       type: "Exercise",
       args: {
         id: nonNull(idArg()),

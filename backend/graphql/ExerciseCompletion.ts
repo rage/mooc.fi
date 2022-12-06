@@ -23,7 +23,7 @@ export const ExerciseCompletion = objectType({
 export const ExerciseCompletionQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("exerciseCompletion", {
+    t.field("exerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
         id: nonNull(idArg()),

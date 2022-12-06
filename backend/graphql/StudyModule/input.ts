@@ -4,10 +4,10 @@ export const StudyModuleCreateArg = inputObjectType({
   name: "StudyModuleCreateArg",
   definition(t) {
     t.nonNull.string("slug")
-    t.nullable.string("name")
-    t.nullable.string("image")
-    t.nullable.int("order")
-    t.list.nullable.field("study_module_translations", {
+    t.string("name")
+    t.string("image")
+    t.int("order")
+    t.list.nonNull.field("study_module_translations", {
       type: "StudyModuleTranslationUpsertInput",
     })
   },
@@ -16,13 +16,13 @@ export const StudyModuleCreateArg = inputObjectType({
 export const StudyModuleUpsertArg = inputObjectType({
   name: "StudyModuleUpsertArg",
   definition(t) {
-    t.nullable.id("id")
+    t.id("id")
     t.nonNull.string("slug")
-    t.nullable.string("new_slug")
-    t.nullable.string("name")
-    t.nullable.string("image")
-    t.nullable.int("order")
-    t.list.nullable.field("study_module_translations", {
+    t.string("new_slug")
+    t.string("name")
+    t.string("image")
+    t.int("order")
+    t.list.nonNull.field("study_module_translations", {
       type: "StudyModuleTranslationUpsertInput",
     })
   },

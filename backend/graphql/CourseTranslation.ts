@@ -31,22 +31,22 @@ export const CourseTranslationCreateInput = inputObjectType({
     t.nonNull.string("name")
     t.nonNull.string("language")
     t.nonNull.string("description")
-    t.nullable.string("link")
-    t.nullable.id("course")
-    t.nullable.string("instructions")
+    t.string("link")
+    t.id("course")
+    t.string("instructions")
   },
 })
 
 export const CourseTranslationUpsertInput = inputObjectType({
   name: "CourseTranslationUpsertInput",
   definition(t) {
-    t.nullable.id("id")
+    t.id("id")
     t.nonNull.string("name")
     t.nonNull.string("language")
     t.nonNull.string("description")
-    t.nullable.string("link")
-    t.nullable.id("course")
-    t.nullable.string("instructions")
+    t.string("link")
+    t.id("course")
+    t.string("instructions")
   },
 })
 

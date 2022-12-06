@@ -3,10 +3,10 @@ import { objectType } from "nexus"
 export const Progress = objectType({
   name: "Progress",
   definition(t) {
-    t.nullable.field("course", { type: "Course" })
+    t.field("course", { type: "Course" })
     t.field("user", { type: "User" })
 
-    t.nullable.field("user_course_progress", {
+    t.field("user_course_progress", {
       type: "UserCourseProgress",
       resolve: async (parent, _, ctx) => {
         const course_id = parent.course?.id

@@ -857,7 +857,7 @@ export const tags: Prisma.TagCreateInput[] = [
         },
         {
           language: "fi_FI",
-          name: "tag1 in finnish",
+          name: "tag1 suomeksi",
           description: "tag1 kuvaus",
         },
       ],
@@ -877,8 +877,24 @@ export const tags: Prisma.TagCreateInput[] = [
         },
         {
           language: "fi_FI",
-          name: "tag2 in finnish",
-          description: "tag2 kuvaus",
+          name: "tag2 suomeksi",
+          description: "tag2 kuvaus ja jotain muuta",
+        },
+      ],
+    },
+  },
+  {
+    id: "48100000-0000-0000-0000-000000000003",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    tag_types: { connect: [{ name: "type2" }] },
+    hidden: true,
+    tag_translations: {
+      create: [
+        {
+          language: "fi_FI",
+          name: "piilotettu tag3",
+          description: "piilotettu tag3 kuvaus ja täts it",
         },
       ],
     },
@@ -895,6 +911,12 @@ export const courseTags: Prisma.CourseTagCreateInput[] = [
   {
     tag: { connect: { id: "48100000-0000-0000-0000-000000000002" } }, // tag2
     course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    tag: { connect: { id: "48100000-0000-0000-0000-000000000003" } }, // hidden tag3
+    course: { connect: { id: "00000000000000000000000000000001" } }, // course2,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },

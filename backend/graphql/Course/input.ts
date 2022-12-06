@@ -6,8 +6,8 @@ export const CourseCreateArg = inputObjectType({
     t.string("name")
     t.nonNull.string("slug")
     t.string("ects")
-    t.nullable.id("photo")
-    t.nullable.field("new_photo", { type: "Upload" })
+    t.id("photo")
+    t.field("new_photo", { type: "Upload" })
     t.boolean("base64")
     t.boolean("start_point")
     t.boolean("promote")
@@ -39,20 +39,20 @@ export const CourseCreateArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.nullable.id("completion_email_id")
-    t.nullable.id("inherit_settings_from")
-    t.nullable.id("completions_handled_by")
-    t.nullable.boolean("has_certificate")
+    t.id("completion_email_id")
+    t.id("inherit_settings_from")
+    t.id("completions_handled_by")
+    t.boolean("has_certificate")
     t.list.nonNull.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityCreateInput",
     })
-    t.nullable.boolean("upcoming_active_link")
+    t.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
-    t.nullable.id("course_stats_email_id")
-    t.list.nullable.field("course_tags", {
-      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
+    t.id("course_stats_email_id")
+    t.list.nonNull.field("tags", {
+      type: nonNull("TagCreateOrUpsertInput"),
     })
   },
 })
@@ -60,14 +60,14 @@ export const CourseCreateArg = inputObjectType({
 export const CourseUpsertArg = inputObjectType({
   name: "CourseUpsertArg",
   definition(t) {
-    t.nullable.id("id")
+    t.id("id")
     t.nonNull.string("name")
     t.nonNull.string("slug")
-    t.nullable.string("new_slug")
+    t.string("new_slug")
     t.string("ects")
-    t.nullable.id("photo")
-    t.nullable.field("new_photo", { type: "Upload" })
-    t.nullable.boolean("delete_photo")
+    t.id("photo")
+    t.field("new_photo", { type: "Upload" })
+    t.boolean("delete_photo")
     t.boolean("base64")
     t.boolean("start_point")
     t.boolean("promote")
@@ -99,20 +99,20 @@ export const CourseUpsertArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.nullable.id("completion_email_id")
-    t.nullable.id("inherit_settings_from")
-    t.nullable.id("completions_handled_by")
-    t.nullable.boolean("has_certificate")
+    t.id("completion_email_id")
+    t.id("inherit_settings_from")
+    t.id("completions_handled_by")
+    t.boolean("has_certificate")
     t.list.nonNull.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityUpsertInput",
     })
-    t.nullable.boolean("upcoming_active_link")
+    t.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
-    t.nullable.id("course_stats_email_id")
-    t.list.nullable.field("course_tags", {
-      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
+    t.id("course_stats_email_id")
+    t.list.nonNull.field("tags", {
+      type: nonNull("TagCreateOrUpsertInput"),
     })
   },
 })

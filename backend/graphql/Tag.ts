@@ -36,10 +36,9 @@ export const Tag = objectType({
     t.model.updated_at()
 
     t.string("language") // passed down
-    t.nullable.string("name", {
+    t.string("name", {
       // @ts-ignore: language exists
       resolve: async ({ id, language }, _args, ctx) => {
-        console.log("I am in here", language, id)
         if (!language) {
           return null
         }
@@ -54,7 +53,7 @@ export const Tag = objectType({
         return name[0]?.name ?? null
       },
     })
-    t.nullable.string("description", {
+    t.string("description", {
       // @ts-ignore: language exists
       resolve: async ({ id, language }, _args, ctx) => {
         if (!language) {
@@ -86,18 +85,19 @@ export const Tag = objectType({
 export const TagCreateOrUpsertInput = inputObjectType({
   name: "TagCreateOrUpsertInput",
   definition(t) {
+    t.id("id")
     t.list.nonNull.field("tag_translations", {
-      type: "TagTranslationCreateOrUpdateInput"
+      type: "TagTranslationCreateOrUpdateInput",
     })
     t.boolean("hidden")
     t.list.nonNull.string("types")
-  }
+  },
 })
 
 export const TagQueries = extendType({
   type: "Query",
   definition(t) {
-    t.list.field("tags", {
+    t.list.nonNull.field("tags", {
       type: "Tag",
       args: {
         language: stringArg(),

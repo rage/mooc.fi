@@ -29,18 +29,18 @@ export const StudyModuleTranslationCreateInput = inputObjectType({
     t.nonNull.string("name")
     t.nonNull.string("language")
     t.nonNull.string("description")
-    t.nullable.id("study_module")
+    t.id("study_module")
   },
 })
 
 export const StudyModuleTranslationUpsertInput = inputObjectType({
   name: "StudyModuleTranslationUpsertInput",
   definition(t) {
-    t.nullable.id("id")
+    t.id("id")
     t.nonNull.string("name")
     t.nonNull.string("language")
     t.nonNull.string("description")
-    t.nullable.id("study_module")
+    t.id("study_module")
   },
 })
 

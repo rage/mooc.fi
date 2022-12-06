@@ -3,7 +3,7 @@ import { get, orderBy } from "lodash"
 
 import { Course } from "@prisma/client"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests"
+import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
@@ -50,7 +50,7 @@ describe("Course", () => {
           ;[resId, resSlug].forEach((res) =>
             // had sortStudyModules
             expect(res.course).toMatchSnapshot({
-              id: expect.any(String),
+              id: expect.stringMatching(ID_REGEX),
             }),
           )
         })
@@ -63,7 +63,7 @@ describe("Course", () => {
 
           // had sortStudyModules
           expect(res.course).toMatchSnapshot({
-            id: expect.any(String),
+            id: expect.stringMatching(ID_REGEX),
           })
         })
 
@@ -105,11 +105,11 @@ describe("Course", () => {
 
           ;[resId, resSlug].forEach((res) =>
             expect(
-              applySortFns([sortExercises, sortStudyModules, sortCourseTags])(
+              applySortFns([sortExercises, sortStudyModules, sortTags])(
                 res.course,
               ),
             ).toMatchSnapshot({
-              id: expect.any(String),
+              id: expect.stringMatching(ID_REGEX),
             }),
           )
         })
@@ -121,7 +121,7 @@ describe("Course", () => {
           })
 
           expect(
-            applySortFns([sortExercises, sortStudyModules, sortCourseTags])(
+            applySortFns([sortExercises, sortStudyModules, sortTags])(
               res.course,
             ),
           ).toMatchSnapshot()
@@ -360,18 +360,19 @@ const fullCourseQuery = gql`
       automatic_completions_eligible_for_ects
       exercise_completions_needed
       points_needed
-      course_tags {
-        tag {
-          id
-          hidden
-          tag_translations {
-            name
-            description
-            language
-          }
-          tag_types {
-            name
-          }
+      tags(language: $language) {
+        id
+        hidden
+        name
+        description
+        types
+        tag_types {
+          name
+        }
+        tag_translations {
+          language
+          name
+          description
         }
       }
     }
@@ -424,13 +425,12 @@ const coursesQuery = gql`
         id
         language
       }
-      course_tags {
-        tag {
-          id
-          name
-          description
-          types
-        }
+      tags(language: $language) {
+        id
+        hidden
+        name
+        description
+        types
       }
     }
   }
@@ -469,12 +469,22 @@ const sortArrayField =
 
 const sortStudyModules = sortArrayField("study_modules")
 const sortExercises = sortArrayField("exercises")
-const sortCourseTags = (course: any) =>
-  sortArrayField("course_tags", ["tag_id"])({
+const sortTags = (course: any) =>
+  sortArrayField("tags")({
     ...course,
-    course_tags: course?.course_tags.map((course_tag: any) => ({
-      ...course_tag,
-      tag: sortArrayField("tag_translations", ["language"])(course_tag.tag),
+    tags: course?.tags.map((tag: any) => ({
+      ...tag,
+      ...(tag.types && { types: orderBy(tag.types) }),
+      ...(tag.tag_types && {
+        tag_types: sortArrayField("tag_types", ["name"])(tag).tag_types,
+      }),
+      ...(tag.tag_translations && {
+        tag_translations: sortArrayField("tag_translations", [
+          "language",
+          "name",
+          "description",
+        ])(tag).tag_translations,
+      }),
     })),
   })
 

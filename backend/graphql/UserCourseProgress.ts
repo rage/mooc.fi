@@ -56,7 +56,7 @@ export const UserCourseProgress = objectType({
 
     // t.prismaFields(["*"])
 
-    t.nullable.field("user_course_settings", {
+    t.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
         if (!parent.course_id) {

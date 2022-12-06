@@ -5,7 +5,7 @@ import { mocked } from "jest-mock"
 import { omit } from "lodash"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import { fakeTMCCurrent, getTestContext } from "../../../tests"
+import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
 
@@ -51,9 +51,9 @@ describe("Course", () => {
       completions_handled_by: "00000000000000000000000000000002",
       user_course_settings_visibilities: [{ language: "en_US" }],
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
-      course_tags: [
+      tags: [
         {
-          tag_id: "48100000-0000-0000-0000-000000000001",
+          id: "48100000-0000-0000-0000-000000000001",
         },
       ],
     })
@@ -103,46 +103,44 @@ describe("Course", () => {
       user_course_settings_visibilities: [{ language: "en_US" }],
       photo: "00000000000000000000000000001101",
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
-      course_tags: [
+      tags: [
         {
-          tag_id: "48100000-0000-0000-0000-000000000002",
+          id: "48100000-0000-0000-0000-000000000002",
         },
       ],
     })
 
     const expectedAddedCourse = {
-      id: expect.any(String),
+      id: expect.stringMatching(ID_REGEX),
       course_translations: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
       course_variants: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
       course_aliases: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
       photo: {
         original: expect.stringContaining("image.gif"),
         compressed: expect.stringContaining("webp"),
         uncompressed: expect.stringContaining("jpeg"),
-        id: expect.any(String),
+        id: expect.stringMatching(ID_REGEX),
       },
       user_course_settings_visibilities: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
-      course_tags: [
+      tags: [
         {
-          tag: {
-            id: "48100000-0000-0000-0000-000000000001",
-          },
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
     }
@@ -156,38 +154,36 @@ describe("Course", () => {
       ],
       course_translations: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
       course_variants: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
       course_aliases: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
       photo: {
         original: expect.stringContaining("image.gif"),
         compressed: expect.stringContaining("webp"),
         uncompressed: expect.stringContaining("jpeg"),
-        id: expect.any(String),
+        id: expect.stringMatching(ID_REGEX),
       },
       user_course_settings_visibilities: [
         {
-          id: expect.any(String),
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
-      course_tags: [
+      tags: [
         {
-          tag: {
-            id: "48100000-0000-0000-0000-000000000002",
-          },
+          id: expect.stringMatching(ID_REGEX),
         },
       ],
     }
@@ -203,7 +199,7 @@ describe("Course", () => {
     describe("addCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
         mocked(KafkaProducer).mockClear()
       })
 
@@ -239,14 +235,14 @@ describe("Course", () => {
         [
           "with no course tags",
           {
-            data: omit(getNewCourse(), "course_tags"),
-            expected: omit(expectedAddedCourse, "course_tags"),
+            data: omit(getNewCourse(), "tags"),
+            expected: omit(expectedAddedCourse, "tags"),
           },
         ],
       ]
 
       test.each(cases)("creates a course %s", async (_, { data, expected }) => {
-        const res = await ctx!.client.request(createCourseMutation, {
+        const res = await ctx.client.request(createCourseMutation, {
           course: data,
         })
 
@@ -268,19 +264,21 @@ describe("Course", () => {
         })
 
         expect(createdCourse).not.toEqual(null)
-        expect(createdCourse!.id).toEqual(res.addCourse.id)
+        expect(createdCourse?.id).toEqual(res.addCourse.id)
         expect(createdCourse).toMatchSnapshot({
           created_at: expect.any(Date),
           updated_at: expect.any(Date),
-          id: expect.any(String),
-          photo_id: (expected as any).photo ? expect.any(String) : null,
+          id: expect.stringMatching(ID_REGEX),
+          photo_id: (expected as any).photo
+            ? expect.stringMatching(ID_REGEX)
+            : null,
         })
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(createCourseMutation, {
+          await ctx.client.request(createCourseMutation, {
             course: getNewCourse(),
           })
           fail()
@@ -291,12 +289,12 @@ describe("Course", () => {
     describe("updateCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("errors on no slug given", async () => {
         try {
-          await ctx!.client.request(updateCourseMutation, {
+          await ctx.client.request(updateCourseMutation, {
             course: omit(getUpdateCourse(), "slug"),
           })
           fail()
@@ -304,7 +302,7 @@ describe("Course", () => {
       })
 
       it("updates course", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
+        const res = await ctx.client.request(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -331,12 +329,12 @@ describe("Course", () => {
         expect(updatedCourse).toMatchSnapshot({
           created_at: expect.any(Date),
           updated_at: expect.any(Date),
-          photo_id: expect.any(String),
+          photo_id: expect.stringMatching(ID_REGEX),
         })
       })
 
       it("updates photo", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
+        const res = await ctx.client.request(updateCourseMutation, {
           course: getUpdateCourse(),
         })
 
@@ -359,12 +357,12 @@ describe("Course", () => {
         expect(updatedCourse).toMatchSnapshot({
           created_at: expect.any(Date),
           updated_at: expect.any(Date),
-          photo_id: expect.any(String),
+          photo_id: expect.stringMatching(ID_REGEX),
         })
       })
 
       it("deletes photo", async () => {
-        const res = await ctx!.client.request(updateCourseMutation, {
+        const res = await ctx.client.request(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -389,9 +387,9 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(updateCourseMutation, {
+          await ctx.client.request(updateCourseMutation, {
             course: getUpdateCourse(),
           })
           fail()
@@ -402,11 +400,11 @@ describe("Course", () => {
     describe("deleteCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx!.client.setHeader("Authorization", "Bearer admin")
+        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("deletes course on id", async () => {
-        const res = await ctx!.client.request(deleteCourseMutation, {
+        const res = await ctx.client.request(deleteCourseMutation, {
           id: "00000000000000000000000000000002",
         })
 
@@ -422,7 +420,7 @@ describe("Course", () => {
       })
 
       it("deletes course on slug", async () => {
-        const res = await ctx!.client.request(deleteCourseMutation, {
+        const res = await ctx.client.request(deleteCourseMutation, {
           slug: "course1",
         })
 
@@ -434,9 +432,9 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx!.client.request(deleteCourseMutation, {
+          await ctx.client.request(deleteCourseMutation, {
             slug: "course1",
           })
           fail()
@@ -515,15 +513,14 @@ const createCourseMutation = gql`
       automatic_completions_eligible_for_ects
       exercise_completions_needed
       points_needed
-      course_tags {
-        tag {
-          id
-          tag_translations {
-            name
-            description
-            language
-          }
-          color
+      tags {
+        id
+        hidden
+        types
+        tag_translations {
+          name
+          description
+          language
         }
       }
     }
@@ -599,15 +596,14 @@ const updateCourseMutation = gql`
       automatic_completions_eligible_for_ects
       exercise_completions_needed
       points_needed
-      course_tags {
-        tag {
-          id
-          tag_translations {
-            name
-            description
-            language
-          }
-          color
+      tags {
+        id
+        hidden
+        types
+        tag_translations {
+          name
+          description
+          language
         }
       }
     }

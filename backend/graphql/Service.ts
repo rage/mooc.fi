@@ -19,7 +19,7 @@ export const Service = objectType({
 export const ServiceQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("service", {
+    t.field("service", {
       type: "Service",
       args: {
         service_id: nonNull(idArg()),

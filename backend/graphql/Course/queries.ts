@@ -7,7 +7,6 @@ import {
   idArg,
   list,
   nonNull,
-  nullable,
   stringArg,
 } from "nexus"
 
@@ -20,7 +19,7 @@ import { notEmpty } from "../../util/notEmpty"
 export const CourseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("course", {
+    t.field("course", {
       type: "Course",
       args: {
         slug: stringArg(),
@@ -36,24 +35,44 @@ export const CourseQueries = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const courseQuery: Prisma.CourseFindUniqueArgs = {
+        const query: Prisma.CourseFindUniqueArgs = {
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
           },
-          // TODO: limit these in the model
-          ...(ctx.role !== Role.ADMIN && {
+        }
+
+        if (language) {
+          query.include = {
+            course_translations: {
+              where: {
+                language,
+              },
+            },
+            course_tags: {
+              where: {
+                tag: {
+                  tag_translations: {
+                    some: {
+                      language,
+                    },
+                  },
+                },
+              },
+            },
+          }
+        }
+        // TODO: limit these in the model
+        /*...(ctx.role !== Role.ADMIN && {
             select: {
               id: true,
               slug: true,
               name: true,
             },
-          }),
-        }
+          }),*/
+        const course = await getCourseOrAlias(ctx)(query)
 
-        const course = await getCourseOrAlias(ctx)(courseQuery)
-
-        if (!course) {
+        if (!course || (course.hidden && ctx.role !== Role.ADMIN)) {
           throw new Error("course not found")
         }
 
@@ -61,23 +80,15 @@ export const CourseQueries = extendType({
           ...course,
           description: "",
           link: "",
-        } as any
+          tags: [] as Array<{ id: string; language?: string }>,
+        }
 
         if (language) {
-          const course_translation = (
-            await ctx.prisma.course
-              .findUnique({
-                where: {
-                  id: course.id,
-                },
-              })
-              .course_translations({
-                where: {
-                  language,
-                },
-                take: 1,
-              })
-          )?.[0]
+          const { course_translations, course_tags } = course as Course & {
+            course_translations: CourseTranslation[]
+            course_tags: CourseTag[]
+          }
+          const course_translation = course_translations?.[0]
 
           if (!course_translation) {
             if (!translationFallback) {
@@ -89,25 +100,11 @@ export const CourseQueries = extendType({
             returnedCourse.name = course_translation.name
           }
 
-          const course_tags = await ctx.prisma.course
-            .findUnique({
-              where: {
-                id: course.id,
-              },
-            })
-            .course_tags({
-              where: {
-                tag: {
-                  tag_translations: {
-                    some: {
-                      language,
-                    },
-                  },
-                },
-              },
-            })
-
-          returnedCourse.course_tags = course_tags
+          returnedCourse.tags =
+            course_tags?.map((course_tag) => ({
+              id: course_tag.tag_id,
+              language,
+            })) ?? []
         }
 
         return returnedCourse
@@ -123,15 +120,24 @@ export const CourseQueries = extendType({
       args: {
         orderBy: arg({ type: "CourseOrderByInput" }),
         language: stringArg(),
-        search: nullable(stringArg()),
-        hidden: nullable(booleanArg({ default: true })),
-        handledBy: nullable(stringArg()),
-        status: nullable(list(nonNull(arg({ type: "CourseStatus" })))),
-        tags: nullable(list(nonNull(stringArg()))),
+        search: stringArg(),
+        hidden: booleanArg({ default: true }),
+        handledBy: stringArg(),
+        status: list(nonNull(arg({ type: "CourseStatus" }))),
+        tags: list(nonNull(stringArg())),
+        tag_types: list(nonNull(stringArg())),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language, search, hidden, handledBy, status, tags } =
-          args
+        const {
+          orderBy,
+          language,
+          search,
+          hidden,
+          handledBy,
+          status,
+          tags,
+          tag_types,
+        } = args
 
         const searchQuery: Prisma.Enumerable<Prisma.CourseWhereInput> = []
 
@@ -214,11 +220,31 @@ export const CourseQueries = extendType({
             },
           })
         }
-        console.log(JSON.stringify(searchQuery, null, 2))
-        const courses: (Course & {
-          course_translations?: CourseTranslation[]
-          course_tags?: (CourseTag & { language?: string })[]
-        })[] = await ctx.prisma.course.findMany({
+
+        if (tag_types) {
+          searchQuery.push({
+            course_tags: {
+              some: {
+                tag: {
+                  is: {
+                    tag_types: {
+                      some: {
+                        name: { in: tag_types },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          })
+        }
+
+        const courses: Array<
+          Course & {
+            course_translations?: Array<CourseTranslation>
+            course_tags?: Array<CourseTag>
+          }
+        > = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
           where: {
@@ -233,6 +259,7 @@ export const CourseQueries = extendType({
                     },
                   },
                   course_tags: {
+                    // TODO: is this needed?
                     where: {
                       tag: {
                         tag_translations: {
@@ -254,20 +281,25 @@ export const CourseQueries = extendType({
               return null
             }
             return {
-              ...omit(course, "course_translations"),
+              ...omit(course, ["course_translations", "course_tags"]),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
-              course_tags: course.course_tags?.map((course_tag) => ({
-                ...course_tag,
+              tags: (course.course_tags ?? []).map((course_tag) => ({
+                id: course_tag.tag_id,
                 language,
               })),
             }
           })
           .filter(notEmpty)
 
-        console.log(JSON.stringify(filtered, null, 2))
         // TODO: (?) provide proper typing
-        return filtered as (Course & { description: string; link: string })[]
+        return filtered as Array<
+          Course & {
+            description: string
+            link: string
+            tags?: Array<{ id: string; language?: string }>
+          }
+        >
       },
     })
 

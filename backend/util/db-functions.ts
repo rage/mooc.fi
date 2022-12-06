@@ -284,8 +284,22 @@ export const getCourseOrAliasKnex =
 type InferPrismaClientGlobalReject<C extends PrismaClient> =
   C extends PrismaClient<any, any, infer GlobalReject> ? GlobalReject : never
 
-type FindUniqueCourseType<ClientType extends PrismaClient> =
-  Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>["findUnique"]
+type FindUniqueCourseType<
+  ClientType extends PrismaClient,
+  T extends Prisma.CourseFindUniqueArgs,
+> = {
+  [K in keyof Prisma.CourseDelegate<
+    InferPrismaClientGlobalReject<ClientType>
+  >]: K extends "findUnique"
+    ? Prisma.CourseDelegate<
+        InferPrismaClientGlobalReject<ClientType>
+      >[K] extends (
+        args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
+      ) => infer _
+      ? Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>[K]
+      : never
+    : never
+}[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
 
 /**
  * Get course by id or slug, or course_alias course_code provided by slug.
@@ -345,7 +359,7 @@ export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
       })
 
     return alias
-  }) as FindUniqueCourseType<typeof ctx["prisma"]>
+  }) as FindUniqueCourseType<typeof ctx["prisma"], T>
 // we're telling TS that this is a course findUnique when in reality
 // it isn't strictly speaking. But it's close enough for our purposes
 // to get the type inference we want.

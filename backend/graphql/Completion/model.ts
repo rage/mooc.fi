@@ -31,37 +31,7 @@ export const Completion = objectType({
     t.model.tier()
     t.model.completion_registration_attempt_date()
 
-    // we're not querying completion course languages for now, and this was buggy
-    /*     t.field("course", {
-      type: "Course",
-      args: {
-        language: schema.nullable(stringArg()),
-      },
-      resolve: async (parent, args, ctx) => {
-        const { language } = args
-        const { prisma } = ctx
-
-        const course = await prisma.course({ id: parent.course })
-
-        if (language) {
-          const course_translations = await prisma.courseTranslations({
-            where: { course, language },
-          })
-
-          if (!course_translations.length) {
-            return course
-          }
-
-          const { name = course.name, description } = course_translations[0]
-
-          return { ...course, name, description }
-        }
-
-        return course
-      },
-    })
- */
-    t.nullable.field("user", {
+    t.field("user", {
       type: "User",
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
@@ -77,7 +47,7 @@ export const Completion = objectType({
       },
     })
 
-    t.nullable.field("completion_link", {
+    t.field("completion_link", {
       type: "String",
       resolve: async (parent, _, ctx) => {
         if (!parent.course_id) {
@@ -149,7 +119,7 @@ export const Completion = objectType({
       },
     })
 
-    t.nullable.field("certificate_availability", {
+    t.field("certificate_availability", {
       type: "CertificateAvailability",
       resolve: async ({ course_id, user_upstream_id }, _, ctx) => {
         if (!course_id) {
@@ -207,11 +177,7 @@ export const Completion = objectType({
           )
         }
 
-        if (!certificate_availability) {
-          return null
-        }
-
-        return certificate_availability
+        return certificate_availability ?? null
       },
     })
   },

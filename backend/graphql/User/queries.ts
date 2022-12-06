@@ -11,13 +11,6 @@ export const UserQueries = extendType({
       filtering: false,
       authorize: isAdmin,
     })
-    /*t.list.field("users", {
-      type: "user",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.user.findMany()
-      },
-    })*/
 
     t.field("user", {
       type: "User",
@@ -27,15 +20,14 @@ export const UserQueries = extendType({
         upstream_id: intArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx) => {
-        const { id, search, upstream_id } = args
-
+      validate: (_, { id, search, upstream_id }) => {
         if (!id && !search && !upstream_id) {
           throw new UserInputError(
             "must provide id, search string or upstream_id",
           )
         }
-
+      },
+      resolve: async (_, { id, search, upstream_id }, ctx) => {
         const user = await ctx.prisma.user.findFirst({
           where: {
             ...buildUserSearch(search),
@@ -44,6 +36,7 @@ export const UserQueries = extendType({
           },
         })
         if (!user) throw new UserInputError("User not found")
+
         return user
       },
     })
@@ -84,7 +77,7 @@ export const UserQueries = extendType({
       },
     })
 
-    t.nullable.field("currentUser", {
+    t.field("currentUser", {
       type: "User",
       args: { search: stringArg() }, // was: email
       resolve: (_, __, ctx) => {
