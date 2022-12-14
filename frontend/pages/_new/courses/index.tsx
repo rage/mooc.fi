@@ -28,8 +28,8 @@ const Background = styled("div")`
   right: 0;
   bottom: 0;
   z-index: -1;
-  background: #5f6ff7;
-  mask-image: url(${backgroundPattern});
+  background: #f5f6f7;
+  background-image: url(${backgroundPattern});
 `
 
 function Courses() {
