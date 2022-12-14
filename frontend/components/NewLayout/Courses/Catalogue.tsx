@@ -10,12 +10,17 @@ const Container = styled("section")`
   justify-items: center;
 `
 
+const Header = styled(Typography)`
+  background: #f5f6f7;
+  padding: 1rem;
+`
+
 function Catalogue() {
   const t = useTranslator(CoursesTranslations)
 
   return (
     <Container>
-      <Typography variant="h2">{t("coursesHeader")}</Typography>
+      <Header variant="h2">{t("coursesHeader")}</Header>
       <CourseGrid />
     </Container>
   )

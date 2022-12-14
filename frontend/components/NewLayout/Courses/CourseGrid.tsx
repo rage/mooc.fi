@@ -60,19 +60,24 @@ const CardContainer = styled("ul")`
   display: grid;
   grid-gap: 2rem;
   grid-template-columns: 1fr 1fr;
+  margin-top: 0;
 
   @media (max-width: 800px) {
     grid-template-columns: 1fr;
   }
 `
 
-const SearchBar = styled(TextField)`
-  margin: 0.5rem 0;
+const FiltersContainer = styled("div")`
   background: #f5f6f7;
+  padding-bottom: 1.5rem;
+`
+
+const SearchBar = styled(TextField)`
+  margin-bottom: 0.5rem 0;
 `
 
 const Filters = styled("div")`
-  margin: 0 0 1rem 1rem;
+  margin: 1rem 0 1rem 0;
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: 5% 50% 30% 10%;
@@ -102,10 +107,6 @@ const TagButton = styled(Button, {
   }
 `
 
-const Tags = styled("div")`
-  align-self: center;
-`
-
 const Statuses = styled("div")`
   justify-self: end;
 `
@@ -132,9 +133,39 @@ const TagsContainer = styled("div")`
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: 70% 30%;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "difficultyTags selectAllDifficulties"
+    "moduleTags selectAllModules"
+    "languageTags selectAllLanguages";
+  gap: 0.5rem;
+  justify-items: left;
+  align-items: center;
 `
 
-const SelectAllContainer = styled("div")``
+const DifficultyTagsContainer = styled("div")`
+  grid-area: difficultyTags;
+`
+
+const ModuleTagsContainer = styled("div")`
+  grid-area: moduleTags;
+`
+
+const LanguageTagsContainer = styled("div")`
+  grid-area: languageTags;
+`
+
+const SelectAllDifficultiesButton = styled(TagButton)`
+  grid-area: selectAllDifficulties;
+`
+
+const SelectAllModulesButton = styled(TagButton)`
+  grid-area: selectAllModules;
+`
+
+const SelectAllLanguagesButton = styled(TagButton)`
+  grid-area: selectAllLanguages;
+`
 
 function CourseGrid() {
   const t = useTranslator(CommonTranslations)
@@ -258,55 +289,33 @@ function CourseGrid() {
 
   return (
     <Container>
-      <SearchBar
-        id="searchCourses"
-        label={t("search")}
-        value={searchString}
-        autoComplete="off"
-        variant="outlined"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSearchString(e.target.value)
-        }
-      />
-      <Filters>
-        <FilterLabel>{t("filter")}:</FilterLabel>
-        <TagsContainer>
-          <Tags>
-            {difficultyTags.map((tag) => (
-              <TagButton
-                id={`difficulty-tag-${tag}`}
-                variant={activeTags.includes(tag) ? "contained" : "outlined"}
-                onClick={() => handleClick(tag)}
-                size="small"
-              >
-                {tag}
-              </TagButton>
-            ))}
-            <br />
-            {moduleTags.map((tag) => (
-              <TagButton
-                id={`module-tag-${tag}`}
-                variant={activeTags.includes(tag) ? "contained" : "outlined"}
-                onClick={() => handleClick(tag)}
-                size="small"
-              >
-                {tag}
-              </TagButton>
-            ))}
-            <br />
-            {languageTags.map((tag) => (
-              <TagButton
-                id={`language-tag-${tag}`}
-                variant={activeTags.includes(tag) ? "contained" : "outlined"}
-                onClick={() => handleClick(tag)}
-                size="small"
-              >
-                {tag}
-              </TagButton>
-            ))}
-          </Tags>
-          <SelectAllContainer>
-            <TagButton
+      <FiltersContainer>
+        <SearchBar
+          id="searchCourses"
+          label={t("search")}
+          value={searchString}
+          autoComplete="off"
+          variant="outlined"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchString(e.target.value)
+          }
+        />
+        <Filters>
+          <FilterLabel>{t("filter")}:</FilterLabel>
+          <TagsContainer>
+            <DifficultyTagsContainer>
+              {difficultyTags.map((tag) => (
+                <TagButton
+                  id={`difficulty-tag-${tag}`}
+                  variant={activeTags.includes(tag) ? "contained" : "outlined"}
+                  onClick={() => handleClick(tag)}
+                  size="small"
+                >
+                  {tag}
+                </TagButton>
+              ))}
+            </DifficultyTagsContainer>
+            <SelectAllDifficultiesButton
               id="select-all-difficulty-tags"
               variant={
                 difficultyTags.every((tag) => activeTags.includes(tag))
@@ -317,8 +326,20 @@ function CourseGrid() {
               size="small"
             >
               {t("selectAll")}
-            </TagButton>
-            <TagButton
+            </SelectAllDifficultiesButton>
+            <ModuleTagsContainer>
+              {moduleTags.map((tag) => (
+                <TagButton
+                  id={`module-tag-${tag}`}
+                  variant={activeTags.includes(tag) ? "contained" : "outlined"}
+                  onClick={() => handleClick(tag)}
+                  size="small"
+                >
+                  {tag}
+                </TagButton>
+              ))}
+            </ModuleTagsContainer>
+            <SelectAllModulesButton
               id="select-all-module-tags"
               variant={
                 moduleTags.every((tag) => activeTags.includes(tag))
@@ -329,9 +350,21 @@ function CourseGrid() {
               size="small"
             >
               {t("selectAll")}
-            </TagButton>
-            <TagButton
-              id="select-all-difficulties"
+            </SelectAllModulesButton>
+            <LanguageTagsContainer>
+              {languageTags.map((tag) => (
+                <TagButton
+                  id={`language-tag-${tag}`}
+                  variant={activeTags.includes(tag) ? "contained" : "outlined"}
+                  onClick={() => handleClick(tag)}
+                  size="small"
+                >
+                  {tag}
+                </TagButton>
+              ))}
+            </LanguageTagsContainer>
+            <SelectAllLanguagesButton
+              id="select-all-language-tags"
               variant={
                 languageTags.every((tag) => activeTags.includes(tag))
                   ? "contained"
@@ -341,33 +374,33 @@ function CourseGrid() {
               size="small"
             >
               {t("selectAll")}
-            </TagButton>
-          </SelectAllContainer>
-        </TagsContainer>
-        <Statuses>
-          {["Active", "Upcoming", "Ended"].map((status) => (
-            <FormControlLabel
-              label={t(status as any)}
-              key={status}
-              control={
-                <Checkbox
-                  id={status}
-                  checked={filteredStatuses.includes(status)}
-                  onChange={() => handleStatusChange(status)}
-                />
-              }
-            />
-          ))}
-        </Statuses>
-        <ResetFiltersButton
-          id="resetFiltersButton"
-          variant="outlined"
-          onClick={handleResetButtonClick}
-          startIcon={<ClearIcon />}
-        >
-          {t("reset")}
-        </ResetFiltersButton>
-      </Filters>
+            </SelectAllLanguagesButton>
+          </TagsContainer>
+          <Statuses>
+            {["Active", "Upcoming", "Ended"].map((status) => (
+              <FormControlLabel
+                label={t(status as any)}
+                key={status}
+                control={
+                  <Checkbox
+                    id={status}
+                    checked={filteredStatuses.includes(status)}
+                    onChange={() => handleStatusChange(status)}
+                  />
+                }
+              />
+            ))}
+          </Statuses>
+          <ResetFiltersButton
+            id="resetFiltersButton"
+            variant="outlined"
+            onClick={handleResetButtonClick}
+            startIcon={<ClearIcon />}
+          >
+            {t("reset")}
+          </ResetFiltersButton>
+        </Filters>
+      </FiltersContainer>
       {loading ? (
         <CardContainer>
           <CourseCardSkeleton />
