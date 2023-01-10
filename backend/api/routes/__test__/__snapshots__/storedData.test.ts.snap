@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`API /api/temporary-stored-data get returns stored data from owned course 1`] = `
-Array [
-  Object {
-    "completions": Array [
-      Object {
+[
+  {
+    "completions": [
+      {
         "certificate_id": null,
         "completion_date": "2000-01-01T08:00:00.000Z",
         "completion_language": null,
@@ -22,14 +22,14 @@ Array [
         "user_upstream_id": 1,
       },
     ],
-    "storedData": Object {
+    "storedData": {
       "course_id": "00000000-0000-0000-0000-000000000001",
       "created_at": "1900-01-01T08:00:00.000Z",
       "data": "user1_foo",
       "updated_at": "1900-01-01T08:00:00.000Z",
       "user_id": "20000000-0000-0000-0000-000000000102",
     },
-    "user": Object {
+    "user": {
       "administrator": false,
       "created_at": "1900-01-01T08:00:00.000Z",
       "email": "e@mail.com",

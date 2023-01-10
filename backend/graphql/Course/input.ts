@@ -52,7 +52,7 @@ export const CourseCreateArg = inputObjectType({
     t.int("points_needed")
     t.id("course_stats_email_id")
     t.list.nonNull.field("tags", {
-      type: nonNull("TagCreateOrUpsertInput"),
+      type: nonNull("TagUpsertInput"),
     })
   },
 })
@@ -112,7 +112,29 @@ export const CourseUpsertArg = inputObjectType({
     t.int("points_needed")
     t.id("course_stats_email_id")
     t.list.nonNull.field("tags", {
-      type: nonNull("TagCreateOrUpsertInput"),
+      type: nonNull("TagUpsertInput"),
     })
+  },
+})
+
+export const CourseOrderByInput = inputObjectType({
+  name: "CourseOrderByInput",
+  definition(t) {
+    t.field("id", { type: "SortOrder" })
+    t.field("name", { type: "SortOrder" })
+    t.field("slug", { type: "SortOrder" })
+    t.field("ects", { type: "SortOrder" })
+    t.field("start_date", { type: "SortOrder" })
+    t.field("end_date", { type: "SortOrder" })
+    t.field("order", { type: "SortOrder" })
+    t.field("study_module_order", { type: "SortOrder" })
+    t.field("points_needed", { type: "SortOrder" })
+    t.field("exercise_completions_needed", { type: "SortOrder" })
+    t.field("tier", { type: "SortOrder" })
+    t.field("teacher_in_charge_name", { type: "SortOrder" })
+    t.field("teacher_in_charge_email", { type: "SortOrder" })
+    t.field("support_email", { type: "SortOrder" })
+    t.field("created_at", { type: "SortOrder" })
+    t.field("updated_at", { type: "SortOrder" })
   },
 })

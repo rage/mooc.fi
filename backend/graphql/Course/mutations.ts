@@ -102,7 +102,10 @@ export const CourseMutations = extendType({
               ? { connect: { id: course_stats_email_id } }
               : undefined,
             course_tags: {
-              create: tags?.map((t) => ({ tag_id: t.id })),
+              create: tags
+                ?.map((tag) => tag.id)
+                .filter(isNotNullOrUndefined)
+                .map((id) => ({ tag: { connect: { id } } })),
             },
           },
         })
@@ -265,17 +268,27 @@ export const CourseMutations = extendType({
         }
       },
       resolve: async (_, { id, slug }, ctx: Context) => {
-        const photo = await ctx.prisma.course
-          .findUnique({
+        const existing = await ctx.prisma.course.findUnique({
+          where: {
+            id: id ?? undefined,
+            slug: slug ?? undefined,
+          },
+          include: {
+            photo: true,
+            course_tags: true,
+          },
+        })
+
+        if (existing?.photo) {
+          await deleteImage({ ctx, id: existing?.photo.id })
+        }
+        if (existing?.course_tags?.length) {
+          // prisma won't allow cascade deletes until 2.26 and referentialActions
+          await ctx.prisma.courseTag.deleteMany({
             where: {
-              id: id ?? undefined,
-              slug: slug ?? undefined,
+              course_id: existing.id,
             },
           })
-          .photo()
-
-        if (photo) {
-          await deleteImage({ ctx, id: photo.id })
         }
 
         const deletedCourse = await ctx.prisma.course.delete({

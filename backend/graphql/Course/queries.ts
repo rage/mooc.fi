@@ -10,10 +10,16 @@ import {
   stringArg,
 } from "nexus"
 
-import { Course, CourseTag, CourseTranslation, Prisma } from "@prisma/client"
+import {
+  Course,
+  CourseTag,
+  CourseTranslation,
+  Prisma,
+  Tag,
+} from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNull, getCourseOrAlias } from "../../util/db-functions"
+import { filterNullRecursive, getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
@@ -35,33 +41,41 @@ export const CourseQueries = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const query: Prisma.CourseFindUniqueArgs = {
+        const query = {
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
           },
-        }
-
-        if (language) {
-          query.include = {
-            course_translations: {
-              where: {
-                language,
+          include: {
+            course_tags: {
+              include: {
+                tag: true,
               },
             },
-            course_tags: {
-              where: {
-                tag: {
-                  tag_translations: {
-                    some: {
-                      language,
+            ...(language && {
+              course_translations: {
+                where: {
+                  language,
+                },
+              },
+              course_tags: {
+                where: {
+                  tag: {
+                    tag_translations: {
+                      some: {
+                        language,
+                      },
                     },
                   },
                 },
+                include: {
+                  tag: true,
+                },
               },
-            },
-          }
+            }),
+          },
         }
+
         // TODO: limit these in the model
         /*...(ctx.role !== Role.ADMIN && {
             select: {
@@ -77,17 +91,17 @@ export const CourseQueries = extendType({
         }
 
         const returnedCourse = {
-          ...course,
+          ...omit(course, "course_tags"),
           description: "",
           link: "",
-          tags: [] as Array<{ id: string; language?: string }>,
+          tags: (course.course_tags ?? []).map((ct) => ct.tag), // [] as Array<{ id: string; language?: string }>,
         }
 
         if (language) {
-          const { course_translations, course_tags } = course as Course & {
-            course_translations: CourseTranslation[]
-            course_tags: CourseTag[]
-          }
+          const { course_translations, course_tags } =
+            course as typeof course & {
+              course_translations?: Array<CourseTranslation>
+            }
           const course_translation = course_translations?.[0]
 
           if (!course_translation) {
@@ -101,24 +115,17 @@ export const CourseQueries = extendType({
           }
 
           returnedCourse.tags =
-            course_tags?.map((course_tag) => ({
-              id: course_tag.tag_id,
-              language,
-            })) ?? []
+            course_tags?.map((course_tag) => course_tag.tag) ?? []
         }
 
         return returnedCourse
       },
     })
 
-    t.crud.courses({
-      ordering: true,
-    })
-
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
+        orderBy: arg({ type: "CourseOrderByWithRelationInput" }),
         language: stringArg(),
         search: stringArg(),
         hidden: booleanArg({ default: true }),
@@ -242,13 +249,19 @@ export const CourseQueries = extendType({
         const courses: Array<
           Course & {
             course_translations?: Array<CourseTranslation>
-            course_tags?: Array<CourseTag>
+            course_tags?: Array<CourseTag & { tag?: Tag }>
           }
         > = await ctx.prisma.course.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+          orderBy: filterNullRecursive(orderBy) ?? undefined,
           where: {
             AND: searchQuery,
+          },
+          include: {
+            course_tags: {
+              include: {
+                tag: true,
+              },
+            },
           },
           ...(language
             ? {
@@ -269,6 +282,9 @@ export const CourseQueries = extendType({
                         },
                       },
                     },
+                    include: {
+                      tag: true,
+                    },
                   },
                 },
               }
@@ -285,7 +301,7 @@ export const CourseQueries = extendType({
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
               tags: (course.course_tags ?? []).map((course_tag) => ({
-                id: course_tag.tag_id,
+                ...course_tag.tag,
                 language,
               })),
             }

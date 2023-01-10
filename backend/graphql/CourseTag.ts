@@ -44,7 +44,7 @@ export const CourseTagCreateOrUpsertInput = inputObjectType({
     t.nonNull.id("course_id")
     t.nonNull.id("tag_id")
     t.field("tag", {
-      type: "TagCreateOrUpsertInput",
+      type: "TagUpsertInput",
     })
   },
 })
@@ -54,7 +54,7 @@ export const CourseTagCreateOrUpsertWithoutCourseIdInput = inputObjectType({
   definition(t) {
     t.nonNull.id("tag_id")
     t.field("tag", {
-      type: "TagCreateOrUpsertInput",
+      type: "TagUpsertInput",
     })
   },
 })

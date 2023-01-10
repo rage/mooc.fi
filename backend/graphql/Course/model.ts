@@ -1,7 +1,7 @@
 import { ForbiddenError } from "apollo-server-core"
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
-import { Prisma, Tag } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 
@@ -192,19 +192,19 @@ export const Course = objectType({
           } as Prisma.TagWhereInput
         }
 
-        const res = await ctx.prisma.course
-          .findUnique({
-            where: { id: parent.id },
-          })
-          .course_tags({
-            where,
-          })
+        const res = await ctx.prisma.course.findUnique({
+          where: { id: parent.id },
+          select: {
+            course_tags: {
+              where,
+              include: {
+                tag: true,
+              },
+            },
+          },
+        })
 
-        // force it as tag resolver does the rest and only needs the id
-        return (res ?? []).map((ct) => ({
-          id: ct.tag_id,
-          language,
-        })) as unknown[] as Tag[]
+        return (res?.course_tags ?? []).map((ct) => ({ ...ct.tag, language }))
       },
     })
   },

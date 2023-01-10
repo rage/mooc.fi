@@ -8,6 +8,7 @@ import KafkaProducer from "../../../services/kafkaProducer"
 import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
 import { adminUserDetails, normalUserDetails } from "../../../tests/data"
 import { seed } from "../../../tests/data/seed"
+import { courseInclude } from "./util"
 
 jest.mock("../../../services/kafkaProducer")
 
@@ -16,6 +17,15 @@ const tmc = fakeTMCCurrent({
   "Bearer normal": [200, normalUserDetails],
   "Bearer admin": [200, adminUserDetails],
 })
+
+const anyPhoto = {
+  photo_id: expect.stringMatching(ID_REGEX),
+  photo: {
+    original: expect.stringContaining("image.gif"),
+    compressed: expect.stringContaining("webp"),
+    uncompressed: expect.stringContaining("jpeg"),
+  },
+}
 
 describe("Course", () => {
   describe("mutations", () => {
@@ -111,79 +121,16 @@ describe("Course", () => {
     })
 
     const expectedAddedCourse = {
-      id: expect.stringMatching(ID_REGEX),
-      course_translations: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      course_variants: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      course_aliases: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
       photo: {
-        original: expect.stringContaining("image.gif"),
-        compressed: expect.stringContaining("webp"),
-        uncompressed: expect.stringContaining("jpeg"),
-        id: expect.stringMatching(ID_REGEX),
+        ...anyPhoto.photo,
       },
-      user_course_settings_visibilities: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      tags: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
     }
 
     const expectedUpdatedCourse = {
       id: "00000000-0000-0000-0000-000000000002",
       study_modules: [
         {
-          id: expect.stringMatching("00000000-0000-0000-0000-000000000101"),
-        },
-      ],
-      course_translations: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      course_variants: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      course_aliases: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      photo: {
-        original: expect.stringContaining("image.gif"),
-        compressed: expect.stringContaining("webp"),
-        uncompressed: expect.stringContaining("jpeg"),
-        id: expect.stringMatching(ID_REGEX),
-      },
-      user_course_settings_visibilities: [
-        {
-          id: expect.stringMatching(ID_REGEX),
-        },
-      ],
-      tags: [
-        {
-          id: expect.stringMatching(ID_REGEX),
+          id: "00000000-0000-0000-0000-000000000101",
         },
       ],
     }
@@ -191,8 +138,9 @@ describe("Course", () => {
     type TestCase = [
       string,
       {
-        data: object
-        expected: object
+        data: Record<string, unknown>
+        expected: Record<string, unknown>
+        omitIdFields?: Array<string>
       },
     ]
 
@@ -230,6 +178,7 @@ describe("Course", () => {
           {
             data: omit(getNewCourse(), "new_photo"),
             expected: omit(expectedAddedCourse, "photo"),
+            omitIdFields: ["photo_id"],
           },
         ],
         [
@@ -241,39 +190,59 @@ describe("Course", () => {
         ],
       ]
 
-      test.each(cases)("creates a course %s", async (_, { data, expected }) => {
-        const res = await ctx.client.request(createCourseMutation, {
-          course: data,
-        })
+      test.each(cases)(
+        "creates a course %s",
+        async (_, { data, expected, omitIdFields = [] }) => {
+          const res = await ctx.client.request(createCourseMutation, {
+            course: data,
+          })
 
-        expect(res).toMatchSnapshot({
-          addCourse: expected,
-        })
+          expect(res.addCourse).toMatchStrippedSnapshot(expected)
 
-        expect(KafkaProducer).toHaveBeenCalledTimes(1)
+          expect(KafkaProducer).toHaveBeenCalledTimes(1)
 
-        const createdCourse = await ctx.prisma.course.findFirst({
-          where: { slug: "new1" },
-        })
-        expect(
-          mocked(KafkaProducer).mock.instances[0].queueProducerMessage,
-        ).toHaveBeenCalledWith({
-          message: JSON.stringify(createdCourse),
-          partition: null,
-          topic: "new-course",
-        })
+          const createdCourse = await ctx.prisma.course.findUnique({
+            where: { slug: "new1" },
+            include: courseInclude,
+          })
 
-        expect(createdCourse).not.toEqual(null)
-        expect(createdCourse?.id).toEqual(res.addCourse.id)
-        expect(createdCourse).toMatchSnapshot({
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-          id: expect.stringMatching(ID_REGEX),
-          photo_id: (expected as any).photo
-            ? expect.stringMatching(ID_REGEX)
-            : null,
-        })
-      })
+          expect(
+            mocked(KafkaProducer).mock.instances[0].queueProducerMessage,
+          ).toHaveBeenCalledWith({
+            message: JSON.stringify(
+              omit(createdCourse, Object.keys(courseInclude)),
+            ),
+            partition: null,
+            topic: "new-course",
+          })
+
+          const hasPhoto = Boolean(expected?.photo)
+
+          expect(createdCourse).not.toEqual(null)
+          expect(createdCourse?.id).toEqual(res.addCourse.id)
+          expect(createdCourse).toMatchStrippedSnapshot(
+            {
+              ...(hasPhoto && {
+                photo: {
+                  ...anyPhoto.photo,
+                  original: expect.stringContaining("image.gif"),
+                },
+              }),
+            },
+            {
+              idFields: [
+                "id",
+                "course_id",
+                /*"course_aliases.course_id",
+                "course_variants.course_id",
+                "course_tags.course_id",
+                "course_translations.course_id",*/
+                "photo_id",
+              ].filter((f) => !omitIdFields.includes(f)), //.filter(isNotNullOrUndefined),
+            },
+          )
+        },
+      )
 
       it("errors with non-admin", async () => {
         ctx.client.setHeader("Authorization", "Bearer normal")
@@ -309,28 +278,40 @@ describe("Course", () => {
           },
         })
 
-        expect(res).toMatchSnapshot({
-          updateCourse: {
+        expect(res.updateCourse).toMatchStrippedSnapshot(
+          {
             ...expectedUpdatedCourse,
             photo: {
-              ...expectedUpdatedCourse.photo,
+              ...anyPhoto.photo,
               original: expect.stringContaining("original.gif"),
             },
           },
-        })
+          {
+            excludePaths: ["id", "study_modules"],
+          },
+        )
 
-        const oldCourse = await ctx.prisma.course.findFirst({
+        const oldCourse = await ctx.prisma.course.findUnique({
           where: { slug: "course1" },
+          include: courseInclude,
         })
         expect(oldCourse).toBeNull()
-        const updatedCourse = await ctx.prisma.course.findFirst({
+        const updatedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "updated_course1" },
+          include: courseInclude,
         })
-        expect(updatedCourse).toMatchSnapshot({
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-          photo_id: expect.stringMatching(ID_REGEX),
-        })
+        expect(updatedCourse).toMatchStrippedSnapshot(
+          {
+            ...anyPhoto,
+            photo: {
+              ...anyPhoto.photo,
+              original: expect.stringContaining("original.gif"),
+            },
+          },
+          {
+            excludePaths: ["id", "study_modules"],
+          },
+        )
       })
 
       it("updates photo", async () => {
@@ -338,26 +319,36 @@ describe("Course", () => {
           course: getUpdateCourse(),
         })
 
-        expect(res).toMatchSnapshot({
-          updateCourse: expectedUpdatedCourse,
-        })
+        expect(res.updateCourse).toMatchStrippedSnapshot(
+          {
+            photo: {
+              ...anyPhoto.photo,
+            },
+          },
+          {
+            excludePaths: ["id", "study_modules"],
+          },
+        )
 
-        const oldCourse = await ctx.prisma.course.findFirst({
+        const oldCourse = await ctx.prisma.course.findUnique({
           where: { slug: "course1" },
+          include: courseInclude,
         })
         expect(oldCourse).toBeNull()
-        const oldImage = await ctx.prisma.image.findFirst({
+        const oldImage = await ctx.prisma.image.findUnique({
           where: { id: "00000000000000000000000000001101" },
         })
         expect(oldImage).toBeNull()
 
-        const updatedCourse = await ctx.prisma.course.findFirst({
+        const updatedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "updated_course1" },
+          include: courseInclude,
         })
-        expect(updatedCourse).toMatchSnapshot({
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-          photo_id: expect.stringMatching(ID_REGEX),
+        expect(updatedCourse).toMatchStrippedSnapshot({
+          ...anyPhoto,
+          photo_id: expect.not.stringContaining(
+            "00000000000000000000000000001101",
+          ),
         })
       })
 
@@ -371,19 +362,15 @@ describe("Course", () => {
           },
         })
 
-        expect(res).toMatchSnapshot({
-          updateCourse: {
-            ...expectedUpdatedCourse,
-            photo: null,
-          },
+        expect(res.updateCourse).toMatchStrippedSnapshot({
+          ...expectedUpdatedCourse,
+          photo: null,
         })
-        const updatedCourse = await ctx.prisma.course.findFirst({
+        const updatedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "course1" },
+          include: courseInclude,
         })
-        expect(updatedCourse).toMatchSnapshot({
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        })
+        expect(updatedCourse).toMatchStrippedSnapshot()
       })
 
       it("errors with non-admin", async () => {
@@ -409,11 +396,11 @@ describe("Course", () => {
         })
 
         expect(res).toMatchSnapshot()
-        const deletedCourse = await ctx.prisma.course.findFirst({
+        const deletedCourse = await ctx.prisma.course.findUnique({
           where: { id: "00000000000000000000000000000002" },
         })
         expect(deletedCourse).toBeNull()
-        const deletedImage = await ctx.prisma.image.findFirst({
+        const deletedImage = await ctx.prisma.image.findUnique({
           where: { id: "00000000000000000000000000001101" },
         })
         expect(deletedImage).toBeNull()
@@ -425,7 +412,7 @@ describe("Course", () => {
         })
 
         expect(res).toMatchSnapshot()
-        const deletedCourse = await ctx.prisma.course.findFirst({
+        const deletedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "course1" },
         })
         expect(deletedCourse).toBeNull()

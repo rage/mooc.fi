@@ -1,7 +1,7 @@
 import { omit } from "lodash"
 import { arg, objectType, stringArg } from "nexus"
 
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import { Course, CourseTranslation } from "@prisma/client"
 
 import { filterNull } from "../../util/db-functions"
 
@@ -22,7 +22,7 @@ export const StudyModule = objectType({
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
+        orderBy: arg({ type: "CourseOrderByWithRelationInput" }),
         language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
@@ -35,8 +35,7 @@ export const StudyModule = objectType({
             where: { id: parent.id },
           })
           .courses({
-            orderBy:
-              (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+            orderBy: filterNull(orderBy) ?? undefined,
             ...(language
               ? {
                   include: {

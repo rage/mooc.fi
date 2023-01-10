@@ -51,13 +51,6 @@ export const StudyModuleTranslationQueries = extendType({
       pagination: false,
       authorize: isAdmin,
     })
-    /*t.list.field("StudyModuleTranslations", {
-      type: "study_module_translation",
-      resolve: (_, __, ctx) => {
-        // checkAccess(ctx, { allowOrganizations: false })
-        return ctx.prisma.study_module_translation.findMany()
-      },
-    })*/
   },
 })
 

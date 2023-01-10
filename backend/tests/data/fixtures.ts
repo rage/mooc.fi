@@ -70,6 +70,8 @@ export const organizations: Prisma.OrganizationCreateInput[] = [
     id: "10000000000000000000000000000102",
     secret_key: "kissa",
     slug: "test",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -85,15 +87,21 @@ export const study_modules: Prisma.StudyModuleCreateInput[] = [
           description: "module1_en_US",
           language: "en_US",
           name: "module1_en_US",
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
         },
         {
           id: "00000000000000000000000000001102",
           description: "module1_fi_FI",
           language: "fi_FI",
           name: "module1_fi_FI",
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
         },
       ],
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "00000000000000000000000000000101",
@@ -106,9 +114,13 @@ export const study_modules: Prisma.StudyModuleCreateInput[] = [
           description: "module2_fi_FI",
           language: "fi_FI",
           name: "module2_fi_FI",
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
         },
       ],
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -130,6 +142,8 @@ export const courses: Prisma.CourseCreateInput[] = [
           language: "en_US",
           name: "course1_en_US",
           link: "http://link.com",
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
         },
         {
           id: "00000000000000000000000000000012",
@@ -138,6 +152,8 @@ export const courses: Prisma.CourseCreateInput[] = [
           language: "fi_FI",
           name: "course1_fi_FI",
           link: "http:/link.fi.com",
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
         },
       ],
     },
@@ -156,11 +172,15 @@ export const courses: Prisma.CourseCreateInput[] = [
         compressed_mimetype: "image/webp",
         uncompressed: "jpeg",
         uncompressed_mimetype: "image/jpeg",
+        created_at: "1900-01-01T10:00:00.00+02:00",
+        updated_at: "1900-01-01T10:00:00.00+02:00",
       },
     },
     automatic_completions: true,
     points_needed: 3,
     exercise_completions_needed: 1,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "00000000000000000000000000000001",
@@ -178,12 +198,16 @@ export const courses: Prisma.CourseCreateInput[] = [
           instructions: "course2_instructions_fi_FI",
           language: "fi_FI",
           name: "course2_fi_FI",
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
         },
       ],
     },
     study_modules: {
       connect: { id: "00000000000000000000000000000102" },
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "00000000-0000-0000-0000-000000000666",
@@ -194,6 +218,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     teacher_in_charge_email: "t@mail.com",
     teacher_in_charge_name: "foo",
     hidden: false,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "00000000-0000-0000-0000-000000000667",
@@ -207,6 +233,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     completions_handled_by: {
       connect: { id: "00000000000000000000000000000666" },
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "00000000-0000-0000-0000-000000000668",
@@ -220,6 +248,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     inherit_settings_from: {
       connect: { id: "00000000000000000000000000000666" },
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -457,6 +487,8 @@ export const services: Prisma.ServiceCreateInput[] = [
     courses: {
       connect: { id: "00000000000000000000000000000001" },
     },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -465,11 +497,15 @@ export const abStudies: Prisma.AbStudyCreateInput[] = [
     id: "99000000-0000-0000-0000-000000000001",
     group_count: 3,
     name: "test_study",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "99000000-0000-0000-0000-000000000002",
     group_count: 2,
     name: "test_study2",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -478,11 +514,15 @@ export const abEnrollments: Prisma.AbEnrollmentCreateInput[] = [
     user: { connect: { id: "20000000000000000000000000000103" } },
     ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
     group: 2,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     user: { connect: { id: "20000000000000000000000000000102" } },
     ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
     group: 3,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -498,6 +538,8 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     part: 1,
     section: 1,
     deleted: false,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "50000000-0000-0000-0000-000000000002",
@@ -510,6 +552,8 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     part: 1,
     section: 2,
     deleted: false,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "50000000-0000-0000-0000-000000000003",
@@ -520,6 +564,8 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     timestamp: new Date("2021-01-01 10:00:00.00"),
     deleted: false,
     max_points: 3,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "50000000-0000-0000-0000-000000000004",
@@ -529,6 +575,8 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     custom_id: "customid4",
     timestamp: new Date("2021-01-01 10:00:00.00"),
     deleted: true,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "50000000-0000-0000-0000-000000000005",
@@ -538,6 +586,8 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     custom_id: "customid5",
     timestamp: new Date("2021-01-01 10:00:00.00"),
     deleted: true,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -697,6 +747,8 @@ export const userCourseServiceProgresses: Prisma.UserCourseServiceProgressCreate
         connect: { id: "40000000-0000-0000-0000-000000000102" },
       },
       progress: [{ group: "week1", max_points: 3, n_points: 3 }],
+      created_at: "1900-01-01T10:00:00.00+02:00",
+      updated_at: "1900-01-01T10:00:00.00+02:00",
     },
   ]
 
@@ -748,16 +800,22 @@ export const courseAliases: Prisma.CourseAliasCreateInput[] = [
     id: "67000000-0000-0000-0000-000000000001",
     course: { connect: { id: "00000000000000000000000000000002" } },
     course_code: "alias",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "67000000-0000-0000-0000-000000000002",
     course: { connect: { id: "00000000000000000000000000000001" } },
     course_code: "alias2",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "67000000-0000-0000-0000-000000000003",
     course: { connect: { id: "00000000000000000000000000000666" } },
     course_code: "alias3",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
 
@@ -789,6 +847,8 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
           ],
         },
       ],
+      created_at: "1900-01-01T10:00:00.00+02:00",
+      updated_at: "1900-01-01T10:00:00.00+02:00",
     },
     {
       id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d92",
@@ -797,6 +857,8 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
       course: { connect: { id: "00000000000000000000000000000001" } },
       link: "avoin-link-alias2",
       tiers: null,
+      created_at: "1900-01-01T10:00:00.00+02:00",
+      updated_at: "1900-01-01T10:00:00.00+02:00",
     },
     {
       id: "e3eea9b5-1ff1-47f8-94f4-269c7a092d91",
@@ -805,6 +867,8 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
       course: { connect: { id: "00000000000000000000000000000666" } },
       link: "avoin-link-alias3",
       tiers: null,
+      created_at: "1900-01-01T10:00:00.00+02:00",
+      updated_at: "1900-01-01T10:00:00.00+02:00",
     },
   ]
 
@@ -838,8 +902,16 @@ export const courseOwnerships: Prisma.CourseOwnershipCreateInput[] = [
 ]
 
 export const tagTypes: Prisma.TagTypeCreateInput[] = [
-  { name: "type1" },
-  { name: "type2" },
+  {
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    name: "type1",
+  },
+  {
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    name: "type2",
+  },
 ]
 
 export const tags: Prisma.TagCreateInput[] = [
@@ -851,11 +923,15 @@ export const tags: Prisma.TagCreateInput[] = [
     tag_translations: {
       create: [
         {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
           language: "en_US",
           name: "tag1 in english",
           description: "tag1 description",
         },
         {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
           language: "fi_FI",
           name: "tag1 suomeksi",
           description: "tag1 kuvaus",
@@ -871,11 +947,15 @@ export const tags: Prisma.TagCreateInput[] = [
     tag_translations: {
       create: [
         {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
           language: "en_US",
           name: "tag2 in english",
           description: "tag2 description",
         },
         {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
           language: "fi_FI",
           name: "tag2 suomeksi",
           description: "tag2 kuvaus ja jotain muuta",
@@ -892,6 +972,8 @@ export const tags: Prisma.TagCreateInput[] = [
     tag_translations: {
       create: [
         {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
           language: "fi_FI",
           name: "piilotettu tag3",
           description: "piilotettu tag3 kuvaus ja täts it",

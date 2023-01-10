@@ -2,7 +2,7 @@ import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
+import { StudyModule, StudyModuleTranslation } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -89,16 +89,14 @@ export const StudyModuleQueries = extendType({
     t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: arg({ type: "StudyModuleOrderByInput" }),
+        orderBy: arg({ type: "StudyModuleOrderByWithRelationInput" }),
         language: stringArg(),
       },
       resolve: async (_, { orderBy, language }, ctx) => {
         const modules: (StudyModule & {
           study_module_translations?: StudyModuleTranslation[]
         })[] = await ctx.prisma.studyModule.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.StudyModuleOrderByInput) ??
-            undefined,
+          orderBy: filterNull(orderBy) ?? undefined,
           ...(language
             ? {
                 include: {

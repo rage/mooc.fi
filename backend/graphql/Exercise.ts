@@ -10,6 +10,7 @@ import {
 } from "nexus"
 
 import { isAdmin, Role } from "../accessControl"
+import { filterNullRecursive } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
 import { Context } from "/context"
 
@@ -35,8 +36,7 @@ export const Exercise = objectType({
       type: "ExerciseCompletion",
       args: {
         orderBy: arg({
-          // FIXME?
-          type: "ExerciseCompletionOrderByInput",
+          type: "ExerciseCompletionOrderByWithRelationInput",
         }),
         user_id: idArg(),
       },
@@ -58,7 +58,7 @@ export const Exercise = objectType({
             orderBy: [
               { timestamp: "desc" },
               { updated_at: "desc" },
-              orderBy,
+              filterNullRecursive(orderBy),
             ].filter(notEmpty),
           })
       },

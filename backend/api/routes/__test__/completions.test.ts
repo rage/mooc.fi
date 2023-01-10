@@ -230,18 +230,22 @@ describe("API", () => {
         },
       })
 
-      expect(orderBy(addedCompletions, "completion_id")).toMatchSnapshot([
-        {
-          id: expect.stringMatching(ID_REGEX),
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        },
-        {
-          id: expect.stringMatching(ID_REGEX),
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        },
-      ])
+      expect({
+        addedCompletions: orderBy(addedCompletions, "completion_id"),
+      }).toMatchSnapshot({
+        addedCompletions: [
+          {
+            id: expect.stringMatching(ID_REGEX),
+            created_at: expect.any(Date),
+            updated_at: expect.any(Date),
+          },
+          {
+            id: expect.stringMatching(ID_REGEX),
+            created_at: expect.any(Date),
+            updated_at: expect.any(Date),
+          },
+        ],
+      })
     })
   })
 })

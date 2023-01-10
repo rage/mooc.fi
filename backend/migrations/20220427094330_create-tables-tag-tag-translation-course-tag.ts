@@ -51,11 +51,17 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     ALTER TABLE "tag_translation"
       ADD CONSTRAINT tag_translation_pkey PRIMARY KEY ("tag_id", "language");
+    ALTER TABLE "tag_translation"
+      ADD CONSTRAINT tag_translation_tag_fkey FOREIGN KEY ("tag_id") REFERENCES "tag"("id") ON DELETE CASCADE;
   `)
 
   await knex.raw(`
     ALTER TABLE "course_tag"
       ADD CONSTRAINT course_tag_pkey PRIMARY KEY ("course_id", "tag_id");
+    ALTER TABLE "course_tag"
+      ADD CONSTRAINT course_tag_course_fkey FOREIGN KEY ("course_id") REFERENCES "course"("id") ON DELETE CASCADE;
+    ALTER TABLE "course_tag"
+      ADD CONSTRAINT course_tag_tag_fkey FOREIGN KEY ("tag_id") REFERENCES "tag"("id") ON DELETE CASCADE;
   `)
 
   await knex.raw(`

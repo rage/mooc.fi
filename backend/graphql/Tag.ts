@@ -82,14 +82,26 @@ export const Tag = objectType({
   },
 })
 
-export const TagCreateOrUpsertInput = inputObjectType({
-  name: "TagCreateOrUpsertInput",
+export const TagCreateInput = inputObjectType({
+  name: "TagCreateInput",
   definition(t) {
     t.id("id")
     t.list.nonNull.field("tag_translations", {
       type: "TagTranslationCreateOrUpdateInput",
     })
-    t.boolean("hidden")
+    t.boolean("hidden", { default: false })
+    t.list.nonNull.string("types")
+  },
+})
+
+export const TagUpsertInput = inputObjectType({
+  name: "TagUpsertInput",
+  definition(t) {
+    t.nonNull.id("id")
+    t.list.nonNull.field("tag_translations", {
+      type: "TagTranslationCreateOrUpdateInput",
+    })
+    t.boolean("hidden", { default: false })
     t.list.nonNull.string("types")
   },
 })

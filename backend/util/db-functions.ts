@@ -131,81 +131,55 @@ export const convertPagination = (
   }
 }
 
-export const filterNull = <T extends Record<string, unknown>>(
+type NullFiltered<T> = T extends null
+  ? Exclude<T, null>
+  : T extends Array<infer R>
+  ? Array<NullFiltered<R>>
+  : T extends Record<string | symbol | number, unknown>
+  ? {
+      [K in keyof T]: NullFiltered<T[K]>
+    }
+  : T
+
+export const filterNull = <T extends Record<string | symbol | number, unknown>>(
   o?: T | null,
-): T | undefined =>
+): NullFiltered<T> | undefined =>
   o
     ? (Object.fromEntries(
         Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
-      ) as T)
+      ) as NullFiltered<T>)
     : undefined
 
-// convertUpdate not needed anymore, hopefully
-/*type ObjectEntries<T> = {
-  [K in keyof T]: [K, T[K]]
-}[keyof T][]
-
-type ConvertedUpdate<T> = T extends Array<infer U>
-  ? U extends { [key: string]: any }
-    ? Array<ConvertedUpdate<U>>
-    : U extends Array<infer _>
-    ? Array<ConvertedUpdate<U>>
-    : Array<U>
-  : T extends NonNullable<{ [key: string]: any }>
-  ? T extends Date
-    ? T
-    : { [K in keyof T]: 
-        K extends string & "disconnect" | "skipDuplicates" | "order"
-          ? T[K]
-        : ConvertedUpdate<T[K]> }
-  : T extends number
-  ? { set: number } | undefined
-  : T extends boolean
-  ? { set: boolean }
-  : T
-
-const isObject = <T>(o: T): o is T & { [key: string]: any } =>
-  o !== null && typeof o === "object"
-
-
-// helper function to convert to atomicNumberOperations
-// https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
-export function convertUpdate<T extends { [key: string]: any }>(
-  input: T,
-): ConvertedUpdate<T> {
-  if (!isObject(input)) {
-    return input
+export const filterNullRecursive = <
+  T extends Record<string | symbol | number, unknown>,
+>(
+  o?: T | null,
+): NullFiltered<T> | undefined => {
+  if (!o) {
+    return undefined
   }
 
-  const result = {} as Record<keyof T, any>
+  const filtered = filterNull(o)
 
-  for (const [key, value] of Object.entries(input) as ObjectEntries<T>) {
-    if (Array.isArray(value)) {
-      result[key] = value.map(convertUpdate)
-    } else if (
-      typeof value === "object" &&
-      value !== null &&
-      !((value as object) instanceof Date)
-    ) {
-      result[key] = convertUpdate(value)
-    } else if (typeof value === "number") {
-      if (Number.isNaN(value)) {
-        result[key] = undefined
-      } else {
-        result[key] = { set: value }
-      }
-    } else if (typeof value === "boolean") {
-      if (key === "disconnect" || key === "skipDuplicates") {
-        result[key] = value
-      } else {
-        result[key] = { set: value }
-      }
-    } else {
-      result[key] = value
-    }
+  if (!filtered) {
+    return undefined
   }
-  return result as ConvertedUpdate<T>
-}*/
+
+  return Object.fromEntries(
+    Object.entries(filtered).map(([k, v]) => {
+      if (Array.isArray(v)) {
+        return [k, v.map(filterNullRecursive)]
+      }
+      if (typeof v === "object" && v !== null) {
+        return [
+          k,
+          filterNullRecursive(v as Record<string | symbol | number, unknown>),
+        ]
+      }
+      return [k, v === null ? undefined : v]
+    }),
+  ) as NullFiltered<T>
+}
 
 export const createExtensions = async (knex: Knex) => {
   /*if (CIRCLECI) {
@@ -284,6 +258,30 @@ export const getCourseOrAliasKnex =
 type InferPrismaClientGlobalReject<C extends PrismaClient> =
   C extends PrismaClient<any, any, infer GlobalReject> ? GlobalReject : never
 
+type FindUniqueFunction<
+  T extends Prisma.CourseFindUniqueArgs,
+  _LocalRejectSettings = T["rejectOnNotFound"] extends Prisma.RejectOnNotFound
+    ? T["rejectOnNotFound"]
+    : undefined,
+> = <_, _LocalRejectSettings>(
+  args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
+) => any
+type FindUniqueSelectType<
+  T extends Prisma.CourseFindUniqueArgs,
+  RejectOnNotFound = any,
+> = RejectOnNotFound extends Prisma.True
+  ? Prisma.CheckSelect<
+      T,
+      Prisma.Prisma__CourseClient<Course>,
+      Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T>>
+    >
+  : Prisma.CheckSelect<
+      T,
+      Prisma.Prisma__CourseClient<Course | null>,
+      Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T> | null>
+    >
+
+// @ts-ignore: not used
 type FindUniqueCourseType<
   ClientType extends PrismaClient,
   T extends Prisma.CourseFindUniqueArgs,
@@ -295,8 +293,23 @@ type FindUniqueCourseType<
         InferPrismaClientGlobalReject<ClientType>
       >[K] extends (
         args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
-      ) => infer _
-      ? Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>[K]
+      ) => infer U
+      ? <T2>(args: Prisma.SelectSubset<T2, Prisma.CourseFindUniqueArgs>) => U
+      : never
+    : never
+}[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
+
+type FindUniqueCourseReturnType<
+  ClientType extends PrismaClient,
+  T extends Prisma.CourseFindUniqueArgs,
+> = {
+  [K in keyof Prisma.CourseDelegate<
+    InferPrismaClientGlobalReject<ClientType>
+  >]: K extends "findUnique"
+    ? Prisma.CourseDelegate<
+        InferPrismaClientGlobalReject<ClientType>
+      >[K] extends FindUniqueFunction<T, infer LocalRejectSettings>
+      ? FindUniqueSelectType<T, LocalRejectSettings>
       : never
     : never
 }[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
@@ -307,10 +320,20 @@ type FindUniqueCourseType<
  * If slug is given, we also try to find a `course_alias` with that `course_code`.
  * Course found with slug is preferred to course found with course_code.
  */
-export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
-  ctx: BaseContext,
-) =>
-  ((args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>) => {
+const checkSelect = <T extends Prisma.CourseFindUniqueArgs>(
+  args: any,
+): args is T & Prisma.SelectAndInclude => {
+  if (args.select && args.include) {
+    return true
+  }
+  return false
+}
+// Prisma.CheckSelect<T, Prisma.Prisma__CourseClient<Course>, Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T>>> {
+export const getCourseOrAlias =
+  (ctx: BaseContext) =>
+  async <T extends Prisma.CourseFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
+  ): Promise<FindUniqueCourseReturnType<typeof ctx["prisma"], T>> => {
     const { id, slug } = args?.where ?? {}
     const { select, include } = args ?? {}
 
@@ -318,29 +341,23 @@ export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
       throw new UserInputError("You must provide either an id or a slug")
     }
 
-    if (include && select) {
+    if (checkSelect(args)) {
       throw new UserInputError("Only provide one of include or select")
     }
 
-    if (id) {
-      return ctx.prisma.course.findUnique({
-        where: {
-          id,
-          slug: slug ?? undefined,
-        },
-        ...omit(args, "where"),
-      })
-    }
-
-    const course = ctx.prisma.course.findUnique({
+    const course = await ctx.prisma.course.findUnique({
       where: {
-        slug,
+        id: id ?? undefined,
+        slug: slug ?? undefined,
       },
       ...omit(args, "where"),
     })
 
     if (course) {
-      return course
+      return course as unknown as FindUniqueCourseReturnType<
+        typeof ctx["prisma"],
+        T
+      >
     }
 
     const selectOrInclude: {
@@ -358,8 +375,8 @@ export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
         ...selectOrInclude,
       })
 
-    return alias
-  }) as FindUniqueCourseType<typeof ctx["prisma"], T>
+    return alias as FindUniqueCourseReturnType<typeof ctx["prisma"], T>
+  }
 // we're telling TS that this is a course findUnique when in reality
 // it isn't strictly speaking. But it's close enough for our purposes
 // to get the type inference we want.

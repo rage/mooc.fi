@@ -1,4 +1,12 @@
-import { arg, extendType, idArg, intArg, nonNull, objectType } from "nexus"
+import {
+  arg,
+  extendType,
+  idArg,
+  inputObjectType,
+  intArg,
+  nonNull,
+  objectType,
+} from "nexus"
 
 import { isAdmin } from "../accessControl"
 
@@ -17,6 +25,19 @@ export const ExerciseCompletion = objectType({
     t.model.user()
     t.model.exercise_completion_required_actions()
     t.model.attempted()
+  },
+})
+
+export const ExerciseCompletionOrderByInput = inputObjectType({
+  name: "ExerciseCompletionOrderByInput",
+  definition(t) {
+    t.field("id", { type: "SortOrder" })
+    t.field("created_at", { type: "SortOrder" })
+    t.field("updated_at", { type: "SortOrder" })
+    t.field("exercise_id", { type: "SortOrder" })
+    t.field("n_points", { type: "SortOrder" })
+    t.field("timestamp", { type: "SortOrder" })
+    t.field("user_id", { type: "SortOrder" })
   },
 })
 

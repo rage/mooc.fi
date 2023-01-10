@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["orderByRelation", "selectRelationCount", "orderByAggregateGroup", "filterJson"]
 }
 
 datasource db {
@@ -590,7 +591,7 @@ model TagTranslation {
   language                                 String
   name                                     String
   description                              String?
-  tag                                      Tag?             @relation(fields: [tag_id], references: [id])
+  tag                                      Tag              @relation(fields: [tag_id], references: [id])
 
   @@id([tag_id, language])
   @@unique([name, language])
@@ -602,8 +603,8 @@ model CourseTag {
   updated_at                               DateTime?        @updatedAt
   course_id                                String
   tag_id                                   String
-  course                                   Course?          @relation(fields: [course_id], references: [id])
-  tag                                      Tag?             @relation(fields: [tag_id], references: [id])
+  course                                   Course           @relation(fields: [course_id], references: [id]) 
+  tag                                      Tag              @relation(fields: [tag_id], references: [id])
 
   @@id([course_id, tag_id])
   @@map("course_tag")

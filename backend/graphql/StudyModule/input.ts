@@ -27,3 +27,14 @@ export const StudyModuleUpsertArg = inputObjectType({
     })
   },
 })
+
+export const StudyModuleOrderByInput = inputObjectType({
+  name: "StudyModuleOrderByInput",
+  definition(t) {
+    t.field("id", { type: "SortOrder" })
+    t.field("slug", { type: "SortOrder" })
+    t.field("name", { type: "SortOrder" })
+    t.field("image", { type: "SortOrder" })
+    t.field("order", { type: "SortOrder" })
+  },
+})

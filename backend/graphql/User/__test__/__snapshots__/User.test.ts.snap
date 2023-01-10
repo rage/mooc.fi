@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User mutations addUser creates user correctly 1`] = `
-Object {
-  "addUser": Object {
+{
+  "addUser": {
     "administrator": false,
     "email": "e@mail.com",
     "first_name": "first",
@@ -16,14 +16,14 @@ Object {
 `;
 
 exports[`User mutations updateResearchConsent updates correctly 1`] = `
-Object {
+{
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
 }
 `;
 
 exports[`User queries currentUser shows current user when logged in 1`] = `
-Object {
-  "currentUser": Object {
+{
+  "currentUser": {
     "administrator": false,
     "email": "e@mail.com",
     "first_name": "first",
@@ -36,14 +36,14 @@ Object {
 `;
 
 exports[`User queries user_course_summary returns courses with completions 1`] = `
-Object {
-  "currentUser": Object {
+{
+  "currentUser": {
     "id": "20000000-0000-0000-0000-000000000102",
-    "user_course_summary": Array [
-      Object {
-        "course": Object {
-          "exercises": Array [
-            Object {
+    "user_course_summary": [
+      {
+        "course": {
+          "exercises": [
+            {
               "course_id": "00000000-0000-0000-0000-000000000002",
               "id": "50000000-0000-0000-0000-000000000003",
               "max_points": 3,
@@ -56,12 +56,12 @@ Object {
           "name": "course1",
         },
         "course_id": "00000000-0000-0000-0000-000000000002",
-        "exercise_completions": Array [
-          Object {
+        "exercise_completions": [
+          {
             "attempted": true,
             "completed": false,
-            "exercise_completion_required_actions": Array [
-              Object {
+            "exercise_completion_required_actions": [
+              {
                 "id": "66666666-0000-0000-0000-000000000003",
                 "value": "TOO_MANY_DUCKS",
               },
@@ -74,10 +74,10 @@ Object {
         ],
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
-      Object {
-        "course": Object {
-          "exercises": Array [
-            Object {
+      {
+        "course": {
+          "exercises": [
+            {
               "course_id": "00000000-0000-0000-0000-000000000001",
               "id": "50000000-0000-0000-0000-000000000001",
               "max_points": 2,
@@ -85,7 +85,7 @@ Object {
               "part": 1,
               "section": 1,
             },
-            Object {
+            {
               "course_id": "00000000-0000-0000-0000-000000000001",
               "id": "50000000-0000-0000-0000-000000000002",
               "max_points": 3,
@@ -98,20 +98,20 @@ Object {
           "name": "course2",
         },
         "course_id": "00000000-0000-0000-0000-000000000001",
-        "exercise_completions": Array [
-          Object {
+        "exercise_completions": [
+          {
             "attempted": null,
             "completed": true,
-            "exercise_completion_required_actions": Array [],
+            "exercise_completion_required_actions": [],
             "exercise_id": "50000000-0000-0000-0000-000000000001",
             "id": "60000000-0000-0000-0000-000000000001",
             "n_points": 6,
             "timestamp": "2000-02-01T08:00:00.000Z",
           },
-          Object {
+          {
             "attempted": null,
             "completed": false,
-            "exercise_completion_required_actions": Array [],
+            "exercise_completion_required_actions": [],
             "exercise_id": "50000000-0000-0000-0000-000000000002",
             "id": "60000000-0000-0000-0000-000000000002",
             "n_points": 0,
