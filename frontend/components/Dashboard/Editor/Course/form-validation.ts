@@ -79,7 +79,7 @@ export const initialValues: CourseFormValues = {
   automatic_completions_eligible_for_ects: false,
   exercise_completions_needed: undefined,
   points_needed: undefined,
-  tags: []
+  tags: [],
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {

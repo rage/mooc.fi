@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-
 import { omit } from "lodash"
 import { DateTime } from "luxon"
 

@@ -187,7 +187,7 @@ export const languageInfo = [
   },
 ] as const
 
-export type LanguageInfo = typeof languageInfo[number]
+export type LanguageInfo = (typeof languageInfo)[number]
 export type LanguageAbbreviation = LanguageInfo["language"]
 export type CompletionLanguage = LanguageInfo["completion_language"]
 

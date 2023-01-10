@@ -1,5 +1,5 @@
 import { type MatcherContext } from "expect"
-import { type Context, toMatchSnapshot } from "jest-snapshot"
+import { toMatchSnapshot, type Context } from "jest-snapshot"
 import { omit } from "lodash"
 import { DateTime } from "luxon"
 
@@ -43,7 +43,7 @@ export function stripDates<T>(
   for (const key of Object.keys(obj) as Array<keyof typeof ret>) {
     const value = obj[key]
     if (Array.isArray(value)) {
-      ret[key] = value.map(stripDates) as typeof value[number]
+      ret[key] = value.map(stripDates) as (typeof value)[number]
     } else if (isObject(value)) {
       ret[key] = stripDates(value)
     }
@@ -323,14 +323,14 @@ function getExpectedArray<
   options: StrippedSnapshotFinalOptions<T>,
   currentPath: string,
 ): Array<Partial<U[keyof U]>> {
-  return value.map((val: typeof value[number], index: number) => {
+  return value.map((val: (typeof value)[number], index: number) => {
     const matchers = getArrayMatchers(ret, key, index)
     if (!isObjectOrArray(val)) {
       return matchers ?? val
     }
     if (Array.isArray(val)) {
       return getExpectedArray(
-        val as typeof value[number][number],
+        val as (typeof value)[number][number],
         ret,
         key,
         options,

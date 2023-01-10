@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"

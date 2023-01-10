@@ -333,7 +333,7 @@ export const getCourseOrAlias =
   (ctx: BaseContext) =>
   async <T extends Prisma.CourseFindUniqueArgs>(
     args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
-  ): Promise<FindUniqueCourseReturnType<typeof ctx["prisma"], T>> => {
+  ): Promise<FindUniqueCourseReturnType<(typeof ctx)["prisma"], T>> => {
     const { id, slug } = args?.where ?? {}
     const { select, include } = args ?? {}
 
@@ -355,7 +355,7 @@ export const getCourseOrAlias =
 
     if (course) {
       return course as unknown as FindUniqueCourseReturnType<
-        typeof ctx["prisma"],
+        (typeof ctx)["prisma"],
         T
       >
     }
@@ -375,7 +375,7 @@ export const getCourseOrAlias =
         ...selectOrInclude,
       })
 
-    return alias as FindUniqueCourseReturnType<typeof ctx["prisma"], T>
+    return alias as FindUniqueCourseReturnType<(typeof ctx)["prisma"], T>
   }
 // we're telling TS that this is a course findUnique when in reality
 // it isn't strictly speaking. But it's close enough for our purposes
