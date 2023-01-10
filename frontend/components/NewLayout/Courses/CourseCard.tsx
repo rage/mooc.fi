@@ -10,10 +10,11 @@ import { formatDateTime } from "/util/dataFormatFunctions"
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes = {
-  csb: "#08457A",
-  programming: "#065853",
-  cloud: "#1A2333",
-  ai: "#51309F",
+  csb: "#215887",
+  programming: "#1F6964",
+  cloud: "#822630",
+  ai: "#6245A9",
+  other: "#313947",
 }
 
 /* Needed in a later PR for the custom tag colors per tag type
