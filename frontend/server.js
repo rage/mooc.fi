@@ -11,6 +11,7 @@ const next = require("next")
 const compression = require("compression")
 
 const Redirects = require("./Redirects")
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const port = process.env.PORT || 3000
 const app = next({ dev: !isProduction })
 const handle = app.getRequestHandler()

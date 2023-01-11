@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 
 import {
   Collapse,
@@ -53,11 +53,14 @@ export default function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
+  const isOpen = useMemo(
+    () => state[course?.id ?? "_"]?.completion ?? false,
+    [state, course],
+  )
+
   if (!completion) {
     return null
   }
-
-  const isOpen = state[course?.id ?? "_"]?.completion ?? false
 
   return (
     <SummaryCard>

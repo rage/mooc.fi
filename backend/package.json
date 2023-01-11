@@ -59,6 +59,7 @@
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "^2.2.1",
     "@google-cloud/storage": "^5.19.1",
+    "@ianvs/prettier-plugin-sort-imports": "^3.7.1",
     "@prisma/client": "2.23",
     "@sentry/integrations": "^6.19.6",
     "@sentry/node": "^6.19.6",

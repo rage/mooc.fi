@@ -78,7 +78,7 @@ const CourseAndModuleList = () => {
     return (
       <ModifiableErrorMessage
         errorMessage={JSON.stringify(
-          coursesError || modulesError,
+          coursesError ?? modulesError,
           undefined,
           2,
         )}
