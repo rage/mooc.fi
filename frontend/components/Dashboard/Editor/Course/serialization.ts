@@ -65,7 +65,7 @@ export const toCourseForm = ({
     order: course.order ?? undefined,
     study_module_order: course.study_module_order ?? undefined,
     status: course.status ?? CourseStatus.Upcoming,
-    course_translations: (course.course_translations || []).map(
+    course_translations: (course.course_translations ?? []).map(
       (course_translation) => ({
         ...omit(course_translation, [
           "__typename",
@@ -73,7 +73,7 @@ export const toCourseForm = ({
           "created_at",
           "updated_at",
         ]),
-        link: course_translation.link || "",
+        link: course_translation.link ?? "",
         open_university_course_link:
           course?.open_university_registration_links?.find(
             (link) => link.language === course_translation.language,
@@ -140,7 +140,7 @@ export const fromCourseForm = ({
     values?.course_translations?.map(
       (course_translation: CourseTranslationFormValues) => ({
         ...omit(course_translation, "open_university_course_link"),
-        link: course_translation.link || "",
+        link: course_translation.link ?? "",
         id:
           !course_translation.id || course_translation.id === ""
             ? undefined
@@ -194,7 +194,7 @@ export const fromCourseForm = ({
     })
     .filter(notEmpty)
 
-  const study_modules = Object.keys(values.study_modules || {})
+  const study_modules = Object.keys(values.study_modules ?? {})
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 

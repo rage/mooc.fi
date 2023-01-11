@@ -117,6 +117,7 @@ export const UserCourseProgress = objectType({
         const completedExerciseCount = exercises.filter(
           (e) => e.exercise_completion_id,
         ).length
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const totalProgress = (n_points || 0) / (max_points || 1)
         const exerciseProgress =
           completedExerciseCount / (exercises.length || 1)

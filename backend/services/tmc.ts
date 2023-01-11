@@ -38,9 +38,9 @@ async function fetchAccessToken(): Promise<string> {
     const response = await axios.post(
       `${TMC_HOST}/oauth/token`,
       `client_secret=${TMC_CLIENT_SECRET}&client_id=${TMC_CLIENT_ID}&username=${encodeURIComponent(
-        TMC_USERNAME || "",
+        TMC_USERNAME ?? "",
       )}&password=${encodeURIComponent(
-        TMC_PASSWORD || "",
+        TMC_PASSWORD ?? "",
       )}&grant_type=password`,
       {
         headers: {

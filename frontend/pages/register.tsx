@@ -245,7 +245,7 @@ function useRegisterOrganization(searchFilter: string) {
   }
 
   return {
-    error: organizationsError || userOrganizationsError,
+    error: organizationsError ?? userOrganizationsError,
     loading: organizationsLoading,
     organizations,
     filteredOrganizations,

@@ -83,7 +83,7 @@ function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
         })),
         ["part", "section", "name"],
       ),
-    [data?.course],
+    [data?.course, data?.exercise_completions],
   )
 
   if (!data.course) {

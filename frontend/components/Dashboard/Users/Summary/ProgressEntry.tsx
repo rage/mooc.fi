@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 
 import {
   Collapse,
@@ -39,7 +39,10 @@ export default function ProgressEntry({ data }: ProgressEntryProps) {
   const { course, user_course_progress, user_course_service_progresses } = data
   const { exercise_progress } = user_course_progress ?? {}
 
-  const isOpen = state[course?.id ?? "_"]?.points ?? false
+  const isOpen = useMemo(
+    () => state[course?.id ?? "_"]?.points ?? false,
+    [state, course],
+  )
 
   return (
     <SummaryCard>

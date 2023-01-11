@@ -84,8 +84,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <Background
           focusRipple
           disabled={
-            !course ||
-            !course.link ||
+            !course?.link ||
             (course?.status === "Upcoming" && !course?.upcoming_active_link)
           }
           component="div"

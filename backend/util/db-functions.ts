@@ -110,24 +110,35 @@ interface ConvertPaginationOutput {
 }
 
 export const convertPagination = (
-  { first, last, before, after, skip }: ConvertPaginationInput,
+  { first, last, before, after, skip: skipValue }: ConvertPaginationInput,
   options?: ConvertPaginationOptions,
 ): ConvertPaginationOutput => {
-  const skipValue = skip || 0
-  const { field = "id" } = options || {}
+  const { field = "id" } = options ?? {}
 
   if (!first && !last) {
     throw new Error("first or last must be defined")
   }
 
+  let skip = skipValue ?? 0
+  let take = 0
+  let cursor = undefined
+
+  if (notEmpty(before)) {
+    skip += 1
+    cursor = { [field]: before }
+  } else if (notEmpty(after)) {
+    cursor = { [field]: after }
+  }
+  if (notEmpty(last)) {
+    take = -(last ?? 0)
+  } else if (notEmpty(first)) {
+    take = first
+  }
+
   return {
-    skip: notEmpty(before) ? skipValue + 1 : skipValue,
-    take: notEmpty(last) ? -(last ?? 0) : notEmpty(first) ? first : 0,
-    cursor: notEmpty(before)
-      ? { [field]: before }
-      : notEmpty(after)
-      ? { [field]: after }
-      : undefined,
+    skip,
+    take,
+    cursor,
   }
 }
 

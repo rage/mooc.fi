@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 
 import { DateTime } from "luxon"
 
@@ -58,7 +58,7 @@ interface ExerciseInfoProps {
 const ExerciseInfo = ({ exercise }: ExerciseInfoProps) => {
   const t = useTranslator(ProfileTranslations)
 
-  if (!exercise || !exercise.exercise_completions?.length) {
+  if (!exercise?.exercise_completions?.length) {
     return null
   }
 
@@ -120,12 +120,31 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
-  const exerciseCompletion = exercise.exercise_completions?.[0]
-  const collapseVisible = notEmpty(exerciseCompletion)
-  const isOpen =
-    state[exercise.course_id ?? "_"]?.exercises[
-      exerciseCompletion?.id ?? "_"
-    ] ?? false
+  const exerciseCompletion = useMemo(
+    () => exercise.exercise_completions?.[0],
+    [exercise],
+  )
+  const collapseVisible = useMemo(
+    () => notEmpty(exerciseCompletion),
+    [exerciseCompletion],
+  )
+  const isOpen = useMemo(
+    () =>
+      state[exercise.course_id ?? "_"]?.exercises[
+        exerciseCompletion?.id ?? "_"
+      ] ?? false,
+    [exercise, exerciseCompletion, state],
+  )
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.TOGGLE,
+        collapsable: CollapsablePart.EXERCISE,
+        course: exercise?.course_id ?? "_",
+        collapsableId: exerciseCompletion?.id ?? "_",
+      }),
+    [dispatch, exercise, exerciseCompletion],
+  )
 
   return (
     <>
@@ -152,14 +171,7 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
           {collapseVisible && (
             <CollapseButton
               open={isOpen}
-              onClick={() =>
-                dispatch({
-                  type: ActionType.TOGGLE,
-                  collapsable: CollapsablePart.EXERCISE,
-                  course: exercise?.course_id ?? "_",
-                  collapsableId: exerciseCompletion?.id ?? "_",
-                })
-              }
+              onClick={onCollapseClick}
               tooltip={t("exerciseCompletionCollapseTooltip")}
             />
           )}

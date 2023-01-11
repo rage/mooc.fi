@@ -60,16 +60,16 @@ export const StudyModuleMutations = extendType({
         const existingTranslations = await ctx.prisma.studyModule
           .findUnique({ where: { slug } })
           .study_module_translations()
-        const newTranslations = (study_module_translations || [])
+        const newTranslations = (study_module_translations ?? [])
           .filter((t) => !t?.id)
           .map((t) => ({ ...t, id: undefined }))
-        const updatedTranslations = (study_module_translations || [])
+        const updatedTranslations = (study_module_translations ?? [])
           .filter((t) => !!t?.id)
           .map((t) => ({ where: { id: t?.id }, data: { ...t, id: undefined } }))
-        const existingTranslationIds = (existingTranslations || []).map(
+        const existingTranslationIds = (existingTranslations ?? []).map(
           (t) => t.id,
         )
-        const moduleTranslationIds = (study_module_translations || []).map(
+        const moduleTranslationIds = (study_module_translations ?? []).map(
           (t) => t?.id,
         )
         const removedTranslationIds = existingTranslationIds

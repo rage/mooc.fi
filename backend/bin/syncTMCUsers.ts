@@ -11,7 +11,7 @@ import { notEmpty } from "../util/notEmpty"
 import { TMCError } from "./lib/errors"
 import sentryLogger from "./lib/logger"
 
-const URL = `${TMC_HOST || ""}/api/v8/users/recently_changed_user_details`
+const URL = `${TMC_HOST ?? ""}/api/v8/users/recently_changed_user_details`
 
 export interface Change {
   id: number

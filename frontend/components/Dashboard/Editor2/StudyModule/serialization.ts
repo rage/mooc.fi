@@ -25,7 +25,7 @@ export const toStudyModuleForm = ({
 
   return {
     ...omit(module, ["__typename", "description", "created_at", "updated_at"]),
-    image: module.image || "",
+    image: module.image ?? "",
     new_slug: module.slug,
     order: module.order ?? undefined,
     study_module_translations: (module?.study_module_translations ?? []).map(

@@ -133,7 +133,7 @@ function useCourseSearch() {
 
   return {
     loading: editorLoading || handlersLoading,
-    error: editorError || handlersError,
+    error: editorError ?? handlersError,
     handlersData,
     editorData,
     status,
