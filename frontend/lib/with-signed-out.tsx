@@ -1,44 +1,46 @@
-import { PropsWithChildren, Component as ReactComponent } from "react"
+import { PropsWithChildren } from "react"
 
 import { NextPageContext as NextContext } from "next"
 
 import { isSignedIn } from "/lib/authentication"
-import redirectTo from "/lib/redirect"
+import redirect from "/lib/redirect"
 
 // TODO: add more redirect parameters?
-export default function withSignedOut(redirect = "/") {
+export default function withSignedOut(target = "/") {
   return (Component: any) => {
-    return class WithSignedOut extends ReactComponent<
-      PropsWithChildren<{ signedIn: boolean }>
-    > {
-      static displayName = `withSignedOut(${
-        Component.name || Component.displayName || "AnonymousComponent"
-      })`
+    function WithSignedOut(props: PropsWithChildren<{ signedIn: boolean }>) {
+      if (props.signedIn) {
+        return <div>Redirecting...</div>
+      }
 
-      static async getInitialProps(context: NextContext) {
-        const signedIn = isSignedIn(context)
+      return <Component {...props}>{props.children}</Component>
+    }
 
-        if (signedIn) {
-          redirectTo({
-            context,
-            target: redirect,
-            shallow: false,
-          })
-        }
+    WithSignedOut.displayName = `withSignedOut(${
+      Component.name || Component.displayName || "AnonymousComponent"
+    })`
+
+    WithSignedOut.getInitialProps = async (context: NextContext) => {
+      const signedIn = isSignedIn(context)
+
+      if (signedIn) {
+        redirect({
+          context,
+          target,
+          shallow: false,
+        })
 
         return {
-          ...(await Component.getInitialProps?.(context)),
-          signedIn,
+          signedIn: true,
         }
       }
 
-      render() {
-        if (this.props.signedIn) {
-          return <div>Redirecting...</div>
-        }
-
-        return <Component {...this.props}>{this.props.children}</Component>
+      return {
+        ...(await Component.getInitialProps?.(context)),
+        signedIn,
       }
     }
+
+    return WithSignedOut
   }
 }

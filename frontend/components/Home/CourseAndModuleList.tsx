@@ -42,7 +42,7 @@ const CourseAndModuleList = () => {
   const { studyModules, modulesWithCourses } = useMemo(() => {
     let studyModules = modulesData?.study_modules ?? []
     const modulesWithCourses = studyModules
-      .map((module) => {
+      .map((studyModule) => {
         const moduleCourses = (courses ?? []).filter(
           (course) =>
             course.study_modules?.some(
@@ -50,7 +50,7 @@ const CourseAndModuleList = () => {
             ) && course?.status !== CourseStatus.Ended,
         )
 
-        return { ...module, courses: moduleCourses }
+        return { ...studyModule, courses: moduleCourses }
       })
       .filter((m) => m.courses.length > 0)
 
@@ -126,8 +126,14 @@ const CourseAndModuleList = () => {
       </section>
       {language === "fi_FI" && (
         <section id="modules">
-          <ModuleNavi modules={studyModules} loading={modulesLoading} />
-          <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
+          <ModuleNavi
+            modules={studyModules}
+            loading={coursesLoading || modulesLoading}
+          />
+          <ModuleList
+            modules={modulesWithCourses}
+            loading={coursesLoading || modulesLoading}
+          />
         </section>
       )}
       <CourseHighlights

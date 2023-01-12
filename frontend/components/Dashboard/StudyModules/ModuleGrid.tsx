@@ -20,8 +20,8 @@ const ModuleGrid = ({ modules, loading }: ModuleGridProps) => (
         ))
       ) : (
         <>
-          {modules?.map((module) => (
-            <ModuleCard key={module.slug} module={module} />
+          {modules?.map((studyModule) => (
+            <ModuleCard key={studyModule.slug} studyModule={studyModule} />
           ))}
           <ModuleCard key={"newmodule"} />
         </>

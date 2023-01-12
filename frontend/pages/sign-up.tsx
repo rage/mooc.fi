@@ -1,5 +1,7 @@
 import Router from "next/router"
 
+import { useApolloClient } from "@apollo/client"
+
 import { RegularContainer } from "/components/Container"
 import CreateAccountForm from "/components/CreateAccountForm"
 import { useAlertContext } from "/contexts/AlertContext"
@@ -11,6 +13,7 @@ import { useTranslator } from "/util/useTranslator"
 
 const SignUpPage = () => {
   const t = useTranslator(SignUpTranslations)
+  const client = useApolloClient()
 
   useBreadcrumbs([
     {
@@ -40,7 +43,7 @@ const SignUpPage = () => {
   return (
     <div>
       <RegularContainer>
-        <CreateAccountForm onComplete={onStepComplete} />
+        <CreateAccountForm onComplete={onStepComplete} apolloClient={client} />
       </RegularContainer>
     </div>
   )

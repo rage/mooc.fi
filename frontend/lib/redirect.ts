@@ -3,7 +3,8 @@ import Router from "next/router"
 import nookies from "nookies"
 
 export interface RedirectType {
-  context: NextContext
+  context?: NextContext
+  locale?: NextContext["locale"]
   target: string
   savePage?: boolean
   shallow?: boolean
@@ -11,6 +12,7 @@ export interface RedirectType {
 
 export default function redirect({
   context,
+  locale,
   target,
   savePage = true,
   shallow = true,
@@ -36,6 +38,7 @@ export default function redirect({
     // In the browser, we just pretend like this never even happened ;)
     Router.push(target, target, {
       shallow,
+      locale: locale ?? context?.locale,
     })
   }
 }

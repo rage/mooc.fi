@@ -69,7 +69,8 @@ function Profile() {
   if (error) {
     return <ErrorMessage />
   }
-  if (loading) {
+  if (loading || !data?.currentUser) {
+    // don't show flash of "no first name" content
     return <Spinner />
   }
 

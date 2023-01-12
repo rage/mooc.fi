@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { NextSeo } from "next-seo"
 import Router from "next/router"
@@ -89,7 +89,7 @@ const TemplateList = styled("div")`
 `
 
 interface SnackbarData {
-  type: "error" | "success" | "warning" | "error"
+  type: "error" | "success" | "warning"
   message: string
 }
 
@@ -140,27 +140,41 @@ const EmailTemplateView = () => {
   ])
   const pageTitle = useSubtitle(data?.email_template?.name ?? "")
 
+  useEffect(() => {
+    if (data && !didInit) {
+      setName(data.email_template?.name)
+      setTxtBody(data.email_template?.txt_body)
+      setHtmlBody(data.email_template?.html_body)
+      setTitle(data.email_template?.title)
+      setTemplateType(data.email_template?.template_type)
+      setExerciseThreshold(data.email_template?.exercise_completions_threshold)
+      setPointsThreshold(data.email_template?.points_threshold)
+      setTriggeredByCourseId(
+        data.email_template?.triggered_automatically_by_course_id,
+      )
+      setDidInit(true)
+      setEmailTemplate(data.email_template)
+    }
+  }, [
+    data,
+    setName,
+    setTxtBody,
+    setHtmlBody,
+    setTitle,
+    setTemplateType,
+    didInit,
+    setExerciseThreshold,
+    setPointsThreshold,
+    setTriggeredByCourseId,
+    setEmailTemplate,
+  ])
+
   if (loading) {
     return <Spinner />
   }
   //TODO fix error message
   if (error || !data) {
     return <p>Error has occurred</p>
-  }
-
-  if (data && !didInit) {
-    setName(data.email_template?.name)
-    setTxtBody(data.email_template?.txt_body)
-    setHtmlBody(data.email_template?.html_body)
-    setTitle(data.email_template?.title)
-    setTemplateType(data.email_template?.template_type)
-    setExerciseThreshold(data.email_template?.exercise_completions_threshold)
-    setPointsThreshold(data.email_template?.points_threshold)
-    setTriggeredByCourseId(
-      data.email_template?.triggered_automatically_by_course_id,
-    )
-    setDidInit(true)
-    setEmailTemplate(data.email_template)
   }
 
   return (
@@ -302,12 +316,12 @@ const EmailTemplateView = () => {
                                   Limited to template type
                                   {value.types.length > 1 ? "s" : ""}{" "}
                                   {value.types.map((type, index) => (
-                                    <>
+                                    <span key={`value-type-${type}`}>
                                       {index > 0 ? ", " : ""}
                                       <strong>
                                         {templateNames[type] ?? type}
                                       </strong>
-                                    </>
+                                    </span>
                                   ))}
                                 </p>
                               )}

@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid"
 import { styled } from "@mui/material/styles"
 
-import CourseCard from "./CourseCard"
+import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import Container from "/components/Container"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
@@ -24,6 +24,10 @@ const Root = styled("div", {
   ${(props) => `background-color: ${props.backgroundColor};`}
 `
 
+const TitleContainer = styled("div")`
+  z-index: 20;
+`
+
 interface CourseHighlightsProps {
   courses?: CourseFieldsFragment[]
   loading: boolean
@@ -35,6 +39,29 @@ interface CourseHighlightsProps {
   brightness: number
   fontColor: string
   titleBackground: string
+}
+
+interface CourseListProps {
+  courses: CourseFieldsFragment[]
+}
+
+const CourseList = ({ courses }: CourseListProps) => {
+  return (
+    <Grid container spacing={3}>
+      {courses.map((course) => (
+        <CourseCard key={`course-${course.id}`} course={course} />
+      ))}
+    </Grid>
+  )
+}
+
+const CourseListSkeleton = () => {
+  return (
+    <Grid container spacing={3}>
+      <CourseCardSkeleton key="skeletoncard1" />
+      <CourseCardSkeleton key="skeletoncard2" />
+    </Grid>
+  )
 }
 
 const CourseHighlights = (props: CourseHighlightsProps) => {
@@ -60,7 +87,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
         brightness={brightness}
       />
 
-      <div style={{ zIndex: 20 }}>
+      <TitleContainer>
         <H2Background
           component="h2"
           variant="h2"
@@ -78,20 +105,13 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
             {subtitle}
           </SubtitleBackground>
         )}
-      </div>
+      </TitleContainer>
       <Container>
-        <Grid container spacing={3}>
-          {loading ? (
-            <>
-              <CourseCard key="skeletoncard1" />
-              <CourseCard key="skeletoncard2" />
-            </>
-          ) : (
-            courses?.map((course) => (
-              <CourseCard key={`course-${course.id}`} course={course} />
-            ))
-          )}
-        </Grid>
+        {loading ? (
+          <CourseListSkeleton />
+        ) : (
+          <CourseList courses={courses ?? []} />
+        )}
       </Container>
     </Root>
   )

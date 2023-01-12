@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useCallback, useState } from "react"
 
 import { Clear, Search } from "@mui/icons-material"
 import {
@@ -135,16 +135,16 @@ export default function FilterMenu({
 
   useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])*/
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     setSearchVariables({
       ...searchVariables,
       search,
       hidden,
       handledBy,
     })
-  }
+  }, [searchVariables, search, hidden, handledBy, setSearchVariables])
 
-  const handleStatusChange =
+  const handleStatusChange = useCallback(
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newStatus = (
         e.target.checked
@@ -159,23 +159,63 @@ export default function FilterMenu({
         ...searchVariables,
         status: newStatus,
       })
-    }
+    },
+    [setStatus, setSearchVariables, searchVariables],
+  )
 
-  const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHidden(e.target.checked)
-    setSearchVariables({
-      ...searchVariables,
-      hidden: e.target.checked,
-    })
-  }
+  const handleHiddenChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setHidden(e.target.checked)
+      setSearchVariables({
+        ...searchVariables,
+        hidden: e.target.checked,
+      })
+    },
+    [setHidden, setSearchVariables, searchVariables],
+  )
 
-  const handleHandledByChange = (e: SelectChangeEvent<string>) => {
-    setHandledBy(e.target.value)
+  const handleHandledByChange = useCallback(
+    (e: SelectChangeEvent<string>) => {
+      setHandledBy(e.target.value)
+      setSearchVariables({
+        ...searchVariables,
+        handledBy: e.target.value,
+      })
+    },
+    [setHandledBy, setSearchVariables, searchVariables],
+  )
+
+  const handleSearchReset = useCallback(() => {
+    setSearch("")
+  }, [setSearch])
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value)
+    },
+    [setSearch],
+  )
+
+  const handleSearchEnter = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter") {
+        onSubmit()
+      }
+    },
+    [onSubmit],
+  )
+
+  const handleResetAll = useCallback(() => {
+    setHidden(true)
+    setHandledBy("")
+    setStatus([CourseStatus.Active, CourseStatus.Upcoming])
     setSearchVariables({
-      ...searchVariables,
-      handledBy: e.target.value,
+      search: "",
+      hidden: true,
+      handledBy: null,
+      status: [CourseStatus.Active, CourseStatus.Upcoming],
     })
-  }
+  }, [setHidden, setHandledBy, setStatus, setSearchVariables])
 
   return (
     <Container>
@@ -186,17 +226,13 @@ export default function FilterMenu({
           value={search}
           autoComplete="off"
           variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
-          }
-          onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+          onChange={handleSearchChange}
+          onKeyDown={handleSearchEnter}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => {
-                    setSearch("")
-                  }}
+                  onClick={handleSearchReset}
                   disabled={search === ""}
                   edge="end"
                   aria-label="clear search"
@@ -286,17 +322,7 @@ export default function FilterMenu({
           disabled={loading}
           color="secondary"
           variant="contained"
-          onClick={() => {
-            setHidden(true)
-            setHandledBy("")
-            setStatus([CourseStatus.Active, CourseStatus.Upcoming])
-            setSearchVariables({
-              search: "",
-              hidden: true,
-              handledBy: null,
-              status: [CourseStatus.Active, CourseStatus.Upcoming],
-            })
-          }}
+          onClick={handleResetAll}
         >
           {t("reset")}
         </Button>
