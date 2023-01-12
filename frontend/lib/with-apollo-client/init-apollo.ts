@@ -1,7 +1,9 @@
 import { createUploadLink } from "apollo-upload-client"
+import deepmerge from "deepmerge"
 import extractFiles from "extract-files/extractFiles.mjs"
 import isExtractableFile from "extract-files/isExtractableFile.mjs"
 import fetch from "isomorphic-unfetch"
+import { isEqual } from "lodash"
 import nookies from "nookies"
 
 import {
@@ -20,7 +22,52 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 const production = process.env.NODE_ENV === "production"
 const isBrowser = typeof window !== "undefined"
 
-function create(initialState: any, originalAccessToken?: string) {
+function createCache() {
+  // these cache settings are mainly for the breadcrumbs
+  return new InMemoryCache({
+    dataIdFromObject: (object: any) => {
+      switch (object.__typename) {
+        case "Course":
+          return `Course:${object.slug}:${object.id}`
+        case "StudyModule":
+          return `StudyModule:${object.slug}:${object.id}`
+        default:
+          return defaultDataIdFromObject(object)
+      }
+    },
+    typePolicies: {
+      Query: {
+        fields: {
+          userCourseSettings: {
+            // for "fetch more" type querying of user points
+            keyArgs: false,
+            merge: (existing, incoming) => {
+              const existingEdges = existing?.edges ?? []
+              const incomingEdges = incoming?.edges ?? []
+              const pageInfo = incoming?.pageInfo ?? {
+                hasNextPage: false,
+                endCursor: null,
+                __typename: "PageInfo",
+              }
+
+              const edges = [...existingEdges, ...incomingEdges]
+
+              return {
+                pageInfo,
+                edges,
+                totalCount: incoming?.totalCount ?? null,
+              }
+            },
+          },
+        },
+      },
+    },
+  })
+}
+
+const cache: InMemoryCache = createCache()
+
+function createApolloClient(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]
@@ -64,61 +111,21 @@ function create(initialState: any, originalAccessToken?: string) {
     if (networkError) console.log(`[Network error]: ${networkError}`)
   })
 
-  // these cache settings are mainly for the breadcrumbs
-  const cache: InMemoryCache = new InMemoryCache({
-    dataIdFromObject: (object: any) => {
-      switch (object.__typename) {
-        case "Course":
-          return `Course:${object.slug}:${object.id}`
-        case "StudyModule":
-          return `StudyModule:${object.slug}:${object.id}`
-        default:
-          return defaultDataIdFromObject(object)
-      }
-    },
-    typePolicies: {
-      Query: {
-        fields: {
-          userCourseSettings: {
-            // for "fetch more" type querying of user points
-            keyArgs: false,
-            merge: (existing, incoming) => {
-              const existingEdges = existing?.edges ?? []
-              const incomingEdges = incoming?.edges ?? []
-              const pageInfo = incoming?.pageInfo ?? {
-                hasNextPage: false,
-                endCursor: null,
-                __typename: "PageInfo",
-              }
-
-              const edges = [...existingEdges, ...incomingEdges]
-
-              return {
-                pageInfo,
-                edges,
-                totalCount: incoming?.totalCount ?? null,
-              }
-            },
-          },
-        },
-      },
-    },
-  })
-
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser
       ? ApolloLink.from([errorLink, authLink.concat(uploadAndBatchHTTPLink)])
       : authLink.concat(uploadAndBatchHTTPLink),
-    cache: cache.restore(initialState || {}),
+    // create a new cache on the server
+    cache: !isBrowser ? createCache() : cache.restore(initialState || {}),
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {
       watchQuery: {
-        fetchPolicy: "cache-first", //"no-cache",
+        fetchPolicy: isBrowser ? "cache-first" : "no-cache", //"no-cache",
         errorPolicy: "ignore",
       },
       query: {
-        fetchPolicy: "cache-first", //"no-cache",
+        fetchPolicy: isBrowser ? "cache-first" : "no-cache", //"no-cache",
         errorPolicy: "all",
       },
     },
@@ -127,26 +134,45 @@ function create(initialState: any, originalAccessToken?: string) {
 
 let previousAccessToken: string | undefined = undefined
 
-export default function getApollo(initialState: any, accessToken?: string) {
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
-  if (typeof window === "undefined") {
-    return create(initialState, accessToken)
-  }
-
+export default function initApollo(initialState: any, accessToken?: string) {
   // Reuse client on the client-side
   // Also force new client if access token has changed because we don't want to risk accidentally
   // serving cached data from the previous user.
-  if (!apolloClient || accessToken !== previousAccessToken) {
-    apolloClient = create(initialState, accessToken)
-  }
+  const userChanged = accessToken !== previousAccessToken
+  //if (isBrowser && userChanged) {
+  //  cache = createCache()
+  //}
+
+  const _apolloClient =
+    !userChanged && apolloClient && isBrowser
+      ? apolloClient
+      : createApolloClient(undefined, accessToken)
 
   previousAccessToken = accessToken
 
-  return apolloClient
-}
+  if (initialState) {
+    const existingCache = _apolloClient.extract()
+    const data = deepmerge(existingCache, initialState, {
+      arrayMerge: (destination: any, source: any) => [
+        ...source,
+        ...destination.filter((d: any) =>
+          source.every((s: any) => !isEqual(d, s)),
+        ),
+      ],
+    })
 
-export function initNewApollo(accessToken?: string) {
-  apolloClient = create(undefined, accessToken)
-  return apolloClient
+    _apolloClient.cache.restore(data)
+  }
+
+  // Make sure to create a new client for every server-side request so that data
+  // isn't shared between connections (which would be bad)
+  if (!isBrowser) {
+    return _apolloClient
+  }
+
+  if (!apolloClient) {
+    apolloClient = _apolloClient
+  }
+
+  return _apolloClient
 }

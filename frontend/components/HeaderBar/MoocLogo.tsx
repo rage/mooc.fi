@@ -44,7 +44,8 @@ const MoocLogo = () => (
     <MoocLogoLink aria-label="MOOC.fi homepage">
       <MoocLogoAvatar
         alt="MOOC logo"
-        src={require("../../static/images/moocfi.svg")}
+        // src={require("../../static/images/moocfi.svg")}
+        src="/static/images/moocfi.svg"
       />
       <MoocLogoText>MOOC.fi</MoocLogoText>
     </MoocLogoLink>

@@ -70,6 +70,7 @@ function useCourseSearch() {
     data: editorData,
   } = useQuery(EditorCoursesDocument, {
     variables: searchVariables || initialSearchVariables,
+    ssr: false,
   })
   const {
     loading: handlersLoading,
@@ -147,7 +148,7 @@ function useCourseSearch() {
 function Courses() {
   const t = useTranslator(CoursesTranslations)
   const {
-    loading,
+    loading = true,
     error,
     handlersData,
     editorData,

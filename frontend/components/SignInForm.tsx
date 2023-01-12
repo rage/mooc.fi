@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
+import { useApolloClient } from "@apollo/client"
 import {
   FormControl,
   FormHelperText,
@@ -22,6 +23,7 @@ const StyledForm = styled("form")`
 function SignIn() {
   const { logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
+  const client = useApolloClient()
 
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
@@ -92,7 +94,7 @@ function SignIn() {
         onClick={async (e) => {
           e.preventDefault()
           try {
-            await signIn({ email, password, shallow: false })
+            await signIn({ email, password, shallow: false }, client)
             try {
               await logInOrOut()
             } catch (e) {

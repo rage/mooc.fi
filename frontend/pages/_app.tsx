@@ -1,8 +1,10 @@
 // import "@fortawesome/fontawesome-free/css/all.min.css"
-import { useEffect, useMemo } from "react"
+import { PropsWithChildren, useEffect, useMemo, useState } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
-import type { AppContext, AppProps } from "next/app"
+import { NextPageContext } from "next"
+import type { AppContext, AppInitialProps, AppProps } from "next/app"
+import App from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
@@ -14,9 +16,8 @@ import NewLayout from "./_new/_layout"
 import { AlertProvider } from "/contexts/AlertContext"
 import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
+import { useLogPageView } from "/hooks/useLogPageView"
 import { useScrollToHash } from "/hooks/useScrollToHash"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
 import { fontCss } from "/src/fonts"
@@ -25,6 +26,8 @@ import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
+import { CurrentUserQuery } from "/graphql/generated"
+
 const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
   createEmotionSsr({
     key: "emotion-css",
@@ -32,27 +35,48 @@ const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
 
 export { augmentDocumentWithEmotionCache }
 
-export function MyApp({ Component, pageProps }: AppProps) {
+interface MyAppProps extends AppProps {
+  currentUser: CurrentUserQuery["currentUser"]
+  signedIn: boolean
+  admin: boolean
+}
+
+// @ts-ignore: not used, try as workaround for SSR hydration problems
+function Hydrated(props: PropsWithChildren<any>) {
+  const [hydration, setHydration] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHydration(true)
+    }
+  }, [])
+
+  if (hydration) {
+    return props.children
+  }
+
+  return null
+}
+
+export function MyApp({
+  Component,
+  pageProps,
+  currentUser,
+  signedIn,
+  admin,
+}: MyAppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
   const isNew = router.pathname?.includes("_new")
 
+  useLogPageView()
   useEffect(() => {
-    initGA()
-    logPageView()
-
-    router.events.on("routeChangeComplete", logPageView)
-
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-
-    return () => {
-      router.events.off("routeChangeComplete", logPageView)
-    }
-  }, [router])
+  }, [])
 
   useScrollToHash()
 
@@ -65,11 +89,11 @@ export function MyApp({ Component, pageProps }: AppProps) {
 
   const loginStateContextValue = useMemo(
     () => ({
-      loggedIn: pageProps?.signedIn,
-      admin: pageProps?.admin,
-      currentUser: pageProps?.currentUser,
+      loggedIn: signedIn,
+      admin,
+      currentUser,
     }),
-    [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
+    [signedIn, admin, currentUser],
   )
 
   const alternateLanguage = useMemo(() => {
@@ -112,35 +136,28 @@ export function MyApp({ Component, pageProps }: AppProps) {
 // @ts-ignore: initialProps
 const originalGetInitialProps = MyApp.getInitialProps
 
-MyApp.getInitialProps = async (props: AppContext) => {
-  const { ctx, Component } = props
+const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
+  return "Component" in ctx
+}
 
-  let originalProps: any = {}
+MyApp.getInitialProps = async (appContext: AppContext | NextPageContext) => {
+  const ctx = isAppContext(appContext) ? appContext.ctx : appContext
 
-  if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(props)) || {}
+  const appProps = isAppContext(appContext)
+    ? await App.getInitialProps(appContext)
+    : ({} as AppInitialProps)
+
+  const componentInitialProps =
+    isAppContext(appContext) && appContext.Component.getInitialProps
+      ? await appContext.Component.getInitialProps(ctx)
+      : {}
+
+  appProps.pageProps = {
+    ...appProps.pageProps,
+    ...componentInitialProps,
   }
-  if (Component.getInitialProps) {
-    originalProps = {
-      ...originalProps,
-      pageProps: {
-        ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) || {}),
-      },
-    }
-  }
 
-  const signedIn = isSignedIn(ctx)
-  const admin = signedIn && isAdmin(ctx)
-
-  return {
-    ...originalProps,
-    pageProps: {
-      ...originalProps.pageProps,
-      signedIn,
-      admin,
-    },
-  }
+  return appProps
 }
 
 export default withAppEmotionCache(withApolloClient(MyApp))

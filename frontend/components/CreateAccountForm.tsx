@@ -3,6 +3,7 @@ import { Component } from "react"
 import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 
+import { ApolloClient } from "@apollo/client"
 import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -60,6 +61,7 @@ export function capitalizeFirstLetter(string: string) {
 
 export interface CreateAccountFormProps {
   onComplete: (...args: any[]) => any
+  apolloClient?: ApolloClient<object>
   router: NextRouter
 }
 
@@ -109,11 +111,14 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         password_confirmation: this.state.password_confirmation,
       })
 
-      await authenticate({
-        email: this.state.email ?? "",
-        password: this.state.password ?? "",
-        redirect: false,
-      })
+      await authenticate(
+        {
+          email: this.state.email ?? "",
+          password: this.state.password ?? "",
+          redirect: false,
+        },
+        this.props.apolloClient,
+      )
 
       this.props.onComplete()
     } catch (error: any) {
@@ -177,7 +182,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         newState.error += t("emailNoAt")
         newState.errorObj.email = true
       }
-      if (email && email.indexOf(".") === -1) {
+      if (email.indexOf(".") === -1) {
         newState.error += t("emailNoPoint")
         newState.errorObj.email = true
       }

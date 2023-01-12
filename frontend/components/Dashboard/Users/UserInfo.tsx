@@ -139,7 +139,9 @@ const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
       if (!content || !title) {
         return null
       }
-      return <InfoRow title={title} content={content} />
+      return (
+        <InfoRow title={title} content={content} key={`${data.id}-${field}`} />
+      )
     })
     .filter(notEmpty)
 }

@@ -68,11 +68,35 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
 interface CourseCardProps {
-  course?: CourseFieldsFragment
+  course: CourseFieldsFragment
+}
+
+export function CourseCardSkeleton() {
+  return (
+    <Background focusRipple disabled component="div" role="none">
+      <ResponsiveCourseImageBase>
+        <ImageContainer>
+          <Skeleton variant="rectangular" height="100%" />
+        </ImageContainer>
+      </ResponsiveCourseImageBase>
+      <TextArea>
+        <CardTitle component="h3" variant="h3">
+          <Skeleton variant="text" width="100%" />
+        </CardTitle>
+        <CardText component="p" variant="body1" paragraph align="left">
+          <Skeleton variant="text" width="100%" />
+          <Skeleton variant="text" width="100%" />
+        </CardText>
+      </TextArea>
+    </Background>
+  )
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
   const t = useTranslator(HomeTranslations)
+  const linkDisabled =
+    !course?.link ||
+    (course?.status === "Upcoming" && !course?.upcoming_active_link)
 
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
@@ -83,27 +107,19 @@ export default function CourseCard({ course }: CourseCardProps) {
       >
         <Background
           focusRipple
-          disabled={
-            !course ||
-            !course.link ||
-            (course?.status === "Upcoming" && !course?.upcoming_active_link)
-          }
+          disabled={linkDisabled}
           component="div"
           role="none"
         >
           <ResponsiveCourseImageBase>
             <ImageContainer>
-              {course ? (
-                <CourseImage
-                  photo={course.photo}
-                  style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
-                />
-              ) : (
-                <Skeleton variant="rectangular" height="100%" />
-              )}
-              {course?.link &&
-                course?.status === "Upcoming" &&
-                course?.upcoming_active_link && (
+              <CourseImage
+                photo={course.photo}
+                style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+              />
+              {course.link &&
+                course.status === "Upcoming" &&
+                course.upcoming_active_link && (
                   <Chip
                     variant="outlined"
                     style={{
@@ -119,24 +135,12 @@ export default function CourseCard({ course }: CourseCardProps) {
             </ImageContainer>
           </ResponsiveCourseImageBase>
           <TextArea>
-            {course ? (
-              <>
-                <CardTitle component="h3" variant="h3">
-                  {course.name}
-                </CardTitle>
-                <CardText component="p" variant="body1" paragraph align="left">
-                  {course.description}
-                </CardText>
-              </>
-            ) : (
-              <>
-                <h3>
-                  <Skeleton variant="text" width="100%" />
-                </h3>
-                <Skeleton variant="text" width="100%" />
-                <Skeleton variant="text" width="100%" />
-              </>
-            )}
+            <CardTitle component="h3" variant="h3">
+              {course.name}
+            </CardTitle>
+            <CardText component="p" variant="body1" paragraph align="left">
+              {course.description}
+            </CardText>
           </TextArea>
         </Background>
       </CardLinkWithGA>

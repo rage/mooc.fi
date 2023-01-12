@@ -83,15 +83,15 @@ const NaviCardTitle = styled(Typography)`
 `
 
 interface ModuleCardProps {
-  module?: StudyModuleDetailedFieldsFragment
+  studyModule?: StudyModuleDetailedFieldsFragment
   loading?: boolean
 }
 
-function ModuleCard({ module, loading }: ModuleCardProps) {
-  const imageUrl = module
-    ? module.image
-      ? `../../../static/images/${module.image}`
-      : `../../../static/images/${module.slug}.jpg`
+function ModuleCard({ studyModule, loading }: ModuleCardProps) {
+  const imageUrl = studyModule
+    ? studyModule.image
+      ? `../../../static/images/${studyModule.image}`
+      : `../../../static/images/${studyModule.slug}.jpg`
     : "" // TODO: placeholder
 
   return (
@@ -126,7 +126,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </NaviCardTitle>
           ) : (
             <NaviCardTitle align="left">
-              {module ? module.name : "New module"}
+              {studyModule?.name ?? "New module"}
             </NaviCardTitle>
           )}
 
@@ -138,10 +138,10 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             >
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
-          ) : module ? (
-            <Link href={`/study-modules/${module.slug}/edit`} passHref>
+          ) : studyModule ? (
+            <Link href={`/study-modules/${studyModule.slug}/edit`} passHref>
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a aria-label={`Edit study module ${module.name}`}>
+              <a aria-label={`Edit study module ${studyModule.name}`}>
                 <ButtonWithPaddingAndMargin
                   variant="text"
                   color="secondary"

@@ -58,7 +58,9 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
   children,
 }: React.PropsWithChildren<ProviderProps>) {
   const { loggedIn, admin, currentUser } = value
-  const logInOrOut = () => dispatch({ type: "logInOrOut" })
+  const logInOrOut = () => {
+    dispatch({ type: "logInOrOut" })
+  }
 
   const updateUser = (user: any) =>
     dispatch({ type: "updateUser", payload: { user } })

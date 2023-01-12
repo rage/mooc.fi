@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
 } from "react"
@@ -10,6 +11,7 @@ export interface Alert {
   id?: number
   title?: string
   message?: string
+  timeout?: number
   component?: JSX.Element
   severity?: "error" | "warning" | "info" | "success"
   ignorePages?: string[]
@@ -46,11 +48,11 @@ type AlertAction =
 const reducer = (state: AlertState, action: AlertAction) => {
   switch (action.type) {
     case "addAlert":
-      const nextAlertId = state.nextAlertId + 1
+      const nextAlertId = state.nextAlertId
       return {
         ...state,
         alerts: [...state.alerts, { ...action.payload, id: nextAlertId }],
-        nextAlertId,
+        nextAlertId: nextAlertId + 1,
       }
     case "removeAlert":
       return {
@@ -91,6 +93,27 @@ export const AlertProvider = React.memo(function AlertProvider({
     }),
     [state.alerts, state.nextAlertId],
   )
+
+  useEffect(() => {
+    const lastAlertId = state.nextAlertId - 1
+    if (lastAlertId < 0) return () => void 0
+    const newestAlert = state.alerts.filter(
+      (alert) => alert.id === lastAlertId,
+    )[0]
+
+    let timeout: NodeJS.Timeout
+
+    if (newestAlert.timeout) {
+      timeout = setTimeout(() => {
+        removeAlert(newestAlert)
+      }, newestAlert.timeout)
+    }
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+    }
+  }, [state.nextAlertId])
 
   return (
     <AlertContext.Provider value={alertContextValue}>

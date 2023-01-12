@@ -17,6 +17,7 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
     error: courseError,
   } = useQuery(CourseEditorDetailsDocument, {
     variables: { slug },
+    ssr: false,
   })
   const {
     data: studyModulesData,

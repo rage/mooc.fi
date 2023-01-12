@@ -28,14 +28,15 @@ interface SignInProps {
   shallow?: boolean
 }
 
-export const signIn = async ({
-  email,
-  password,
-  redirect = true,
-  shallow = true,
-}: SignInProps) => {
+export const signIn = async (
+  { email, password, redirect = true, shallow = true }: SignInProps,
+  apolloClient?: ApolloClient<object>,
+) => {
   const res = await tmcClient.authenticate({ username: email, password })
+
   const details = await userDetails(res.accessToken)
+
+  apolloClient?.resetStore()
 
   document.cookie = `access_token=${res.accessToken};path=/`
 
