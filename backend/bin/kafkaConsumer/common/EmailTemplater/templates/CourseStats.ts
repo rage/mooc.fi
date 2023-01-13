@@ -1,3 +1,7 @@
+import {
+  completionLanguageMap,
+  LanguageAbbreviation,
+} from "../../../../../config/languageConfig"
 import { redisify } from "../../../../../services/redis"
 import Template from "../types/Template"
 
@@ -11,23 +15,28 @@ export class StartedCourseCount extends Template {
       return ""
     }
 
+    const courseInstanceLanguage = this.emailTemplate.course_instance_language
+
     const startedCourse = await redisify<string>(
       async () => {
-        const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
-            SELECT 
-              COUNT(DISTINCT user_id) 
-            FROM user_course_setting 
-            WHERE course_id = ${course.id};
-          `
-        )?.[0]?.count
+        const count = this.prisma.userCourseSetting.count({
+          where: {
+            course_id: course.inherit_settings_from_id ?? course.id,
+            ...(courseInstanceLanguage
+              ? { language: courseInstanceLanguage }
+              : {}),
+          },
+          distinct: ["user_id"],
+        })
 
         return `${count}`
       },
       {
         prefix: "startedcoursecount",
         expireTime: 60 * 60, // hour,
-        key: `${course.id}`,
+        key:
+          `${course.id}` +
+          (courseInstanceLanguage ? `-${courseInstanceLanguage}` : ""),
       },
     )
 
@@ -45,23 +54,31 @@ export class CompletedCourseCount extends Template {
       return ""
     }
 
+    const courseInstanceLanguage = this.emailTemplate.course_instance_language
+    const completionLanguage = courseInstanceLanguage
+      ? completionLanguageMap[courseInstanceLanguage as LanguageAbbreviation]
+      : undefined
+
     const completedCourse = await redisify<string>(
       async () => {
-        const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
-          SELECT 
-            COUNT(DISTINCT user_id) 
-          FROM completion 
-          WHERE course_id = ${course.completions_handled_by_id ?? course.id};
-        `
-        )?.[0]?.count
+        const count = await this.prisma.completion.count({
+          where: {
+            course_id: course.completions_handled_by_id ?? course.id,
+            ...(completionLanguage
+              ? { completion_language: completionLanguage }
+              : {}),
+          },
+          distinct: ["user_id"],
+        })
 
         return `${count}`
       },
       {
         prefix: "completedcoursecount",
         expireTime: 60 * 60, // hour,
-        key: `${course.id}`,
+        key:
+          `${course.id}` +
+          (courseInstanceLanguage ? `-${courseInstanceLanguage}` : ""),
       },
     )
 
@@ -81,15 +98,14 @@ export class AtLeastOneExerciseCount extends Template {
 
     const atLeastOneExercise = await redisify<string>(
       async () => {
-        const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
-          SELECT 
-            COUNT(DISTINCT user_id) 
-          FROM exercise_completion ec
-          JOIN exercise e ON ec.exercise_id = e.id
-          WHERE course_id = ${course.id};
-        `
-        )?.[0]?.count
+        const count = await this.prisma.exerciseCompletion.count({
+          where: {
+            exercise: {
+              course_id: course.id,
+            },
+          },
+          distinct: ["user_id"],
+        })
 
         return `${count}`
       },
@@ -125,9 +141,37 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
       throw new Error("no permission - user is not the owner of this course")
     }
 
+    const courseInstanceLanguage = this.emailTemplate.course_instance_language
+    const completionLanguage = courseInstanceLanguage
+      ? completionLanguageMap[courseInstanceLanguage as LanguageAbbreviation]
+      : undefined
+
     const atLeastOneExerciseButNotCompletedEmails = await redisify<string>(
       async () => {
-        const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
+        const result = await this.prisma.user.findMany({
+          where: {
+            exercise_completions: {
+              some: {
+                exercise: {
+                  course_id: course.id,
+                },
+              },
+            },
+            completions: {
+              none: {
+                course_id: course.completions_handled_by_id ?? course.id,
+                ...(completionLanguage
+                  ? { completion_language: completionLanguage }
+                  : {}),
+              },
+            },
+          },
+          distinct: ["id"],
+          select: {
+            email: true,
+          },
+        })
+        /*const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
             SELECT DISTINCT u.email
               FROM exercise_completion ec
               JOIN exercise e ON ec.exercise_id = e.id
@@ -141,16 +185,19 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
                     WHERE c.course_id = ${
                       course.completions_handled_by_id ?? course.id
                     }
+                    ${completionLanguage ? `AND c.completion_language = ${completionLanguage} ` : ""}
                     AND user_id IS NOT NULL
                 );
-          `
+          `*/
 
         return result?.map((entry) => entry.email).join("\n")
       },
       {
         prefix: "atleastoneexercisebutnotcompletedemails",
         expireTime: 60 * 60, // hour,
-        key: `${course.id}`,
+        key:
+          `${course.id}` +
+          (courseInstanceLanguage ? `-${courseInstanceLanguage}` : ""),
       },
     )
 

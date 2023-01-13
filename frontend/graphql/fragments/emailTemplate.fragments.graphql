@@ -5,6 +5,7 @@ fragment EmailTemplateCoreFields on EmailTemplate {
   txt_body
   html_body
   template_type
+  course_instance_language
   created_at
   updated_at
 }

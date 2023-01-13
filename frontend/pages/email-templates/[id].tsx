@@ -89,7 +89,7 @@ const TemplateList = styled("div")`
 `
 
 interface SnackbarData {
-  type: "error" | "success" | "warning" | "error"
+  type: "error" | "success" | "warning"
   message: string
 }
 
@@ -112,6 +112,9 @@ const EmailTemplateView = () => {
     useState<
       EmailTemplateFieldsFragment["triggered_automatically_by_course_id"]
     >()
+  const [courseInstanceLanguage, setCourseInstanceLanguage] =
+    useState<EmailTemplateFieldsFragment["course_instance_language"]>()
+
   const [didInit, setDidInit] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
@@ -159,6 +162,7 @@ const EmailTemplateView = () => {
     setTriggeredByCourseId(
       data.email_template?.triggered_automatically_by_course_id,
     )
+    setCourseInstanceLanguage(data.email_template?.course_instance_language)
     setDidInit(true)
     setEmailTemplate(data.email_template)
   }
@@ -265,6 +269,21 @@ const EmailTemplateView = () => {
                   />
                 </>
               ) : null}
+              {templateType === "course-stats" ? (
+                <>
+                  <TextField
+                    label="Course instance language (used if course is handled by a parent course; short code like fi, sv, fr-be)"
+                    fullWidth
+                    autoComplete="off"
+                    variant="outlined"
+                    value={courseInstanceLanguage ?? ""}
+                    onChange={(e) => {
+                      e.preventDefault()
+                      setCourseInstanceLanguage(e.target.value)
+                    }}
+                  />
+                </>
+              ) : null}
               <CollapseButton
                 open={isHelpOpen}
                 label="Help"
@@ -292,16 +311,17 @@ const EmailTemplateView = () => {
                               {` }}`}
                             </code>
                           </CardTitle>
-                          {(value.description || value.types?.length) && (
+                          {(value.description ||
+                            (value.types?.length ?? 0) > 0) && (
                             <CardContent>
                               <Typography variant="body1">
                                 {value.description}
                               </Typography>
-                              {value.types?.length && (
+                              {(value.types?.length ?? 0) > 0 && (
                                 <p>
                                   Limited to template type
-                                  {value.types.length > 1 ? "s" : ""}{" "}
-                                  {value.types.map((type, index) => (
+                                  {value.types!.length > 1 ? "s" : ""}{" "}
+                                  {value.types!.map((type, index) => (
                                     <>
                                       {index > 0 ? ", " : ""}
                                       <strong>
@@ -339,6 +359,7 @@ const EmailTemplateView = () => {
                         exercise_completions_threshold: exerciseThreshold,
                         points_threshold: pointsThreshold,
                         template_type: templateType,
+                        course_instance_language: courseInstanceLanguage,
                       },
                     })
                     console.log(data)
