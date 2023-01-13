@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-11-25T17:50:48+02:00
+// Generated on 2023-01-13T15:36:40+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -586,6 +586,7 @@ export type EmailDeliveryWhereUniqueInput = {
 
 export type EmailTemplate = {
   __typename?: "EmailTemplate"
+  course_instance_language: Maybe<Scalars["String"]>
   course_stats_subscriptions: Array<CourseStatsSubscription>
   courses: Array<Course>
   created_at: Maybe<Scalars["DateTime"]>
@@ -833,6 +834,7 @@ export type MutationaddCourseVariantArgs = {
 }
 
 export type MutationaddEmailTemplateArgs = {
+  course_instance_language?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   html_body?: InputMaybe<Scalars["String"]>
   name: Scalars["String"]
@@ -1016,6 +1018,7 @@ export type MutationupdateCourseVariantArgs = {
 }
 
 export type MutationupdateEmailTemplateArgs = {
+  course_instance_language?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   html_body?: InputMaybe<Scalars["String"]>
   id: Scalars["ID"]
@@ -2643,6 +2646,7 @@ export type EmailTemplateCoreFieldsFragment = {
   txt_body: string | null
   html_body: string | null
   template_type: string | null
+  course_instance_language: string | null
   created_at: any | null
   updated_at: any | null
 }
@@ -2658,6 +2662,7 @@ export type EmailTemplateFieldsFragment = {
   txt_body: string | null
   html_body: string | null
   template_type: string | null
+  course_instance_language: string | null
   created_at: any | null
   updated_at: any | null
 }
@@ -3622,6 +3627,7 @@ export type UpdateCourseMutation = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -3633,6 +3639,7 @@ export type UpdateCourseMutation = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -3745,6 +3752,7 @@ export type UpdateEmailTemplateMutation = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3774,6 +3782,7 @@ export type AddEmailTemplateMutation = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3793,6 +3802,7 @@ export type DeleteEmailTemplateMutation = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4451,6 +4461,7 @@ export type EmailTemplateEditorCoursesQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4462,6 +4473,7 @@ export type EmailTemplateEditorCoursesQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4493,6 +4505,7 @@ export type CourseDashboardQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4504,6 +4517,7 @@ export type CourseDashboardQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4525,6 +4539,7 @@ export type EmailTemplatesQuery = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   }> | null
@@ -4547,6 +4562,7 @@ export type EmailTemplateQuery = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -6383,6 +6399,10 @@ export const EmailTemplateCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "txt_body" } },
           { kind: "Field", name: { kind: "Name", value: "html_body" } },
           { kind: "Field", name: { kind: "Name", value: "template_type" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
