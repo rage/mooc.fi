@@ -16,7 +16,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-01-13T15:36:40+02:00
+// Generated on 2023-01-13T16:44:49+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -3737,6 +3737,7 @@ export type UpdateEmailTemplateMutationVariables = Exact<{
   triggered_automatically_by_course_id?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   points_threshold?: InputMaybe<Scalars["Int"]>
+  course_instance_language?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateEmailTemplateMutation = {
@@ -3767,6 +3768,7 @@ export type AddEmailTemplateMutationVariables = Exact<{
   triggered_automatically_by_course_id?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   points_threshold?: InputMaybe<Scalars["Int"]>
+  course_instance_language?: InputMaybe<Scalars["String"]>
 }>
 
 export type AddEmailTemplateMutation = {
@@ -7810,6 +7812,14 @@ export const UpdateEmailTemplateDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -7897,6 +7907,14 @@ export const UpdateEmailTemplateDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "points_threshold" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "course_instance_language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "course_instance_language" },
                 },
               },
             ],
@@ -7998,6 +8016,14 @@ export const AddEmailTemplateDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -8077,6 +8103,14 @@ export const AddEmailTemplateDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "points_threshold" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "course_instance_language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "course_instance_language" },
                 },
               },
             ],
