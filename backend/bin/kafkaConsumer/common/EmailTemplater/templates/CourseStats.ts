@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client"
+
 import {
   completionLanguageMap,
   LanguageAbbreviation,
@@ -19,15 +21,23 @@ export class StartedCourseCount extends Template {
 
     const startedCourse = await redisify<string>(
       async () => {
-        const count = this.prisma.userCourseSetting.count({
-          where: {
-            course_id: course.inherit_settings_from_id ?? course.id,
-            ...(courseInstanceLanguage
-              ? { language: courseInstanceLanguage }
-              : {}),
-          },
-          distinct: ["user_id"],
-        })
+        const conditions = [
+          Prisma.sql`course_id = ${
+            course.inherit_settings_from_id ?? course.id
+          }`,
+        ]
+        if (courseInstanceLanguage) {
+          conditions.push(Prisma.sql`language = ${courseInstanceLanguage}`)
+        }
+        const where = Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
+        const count = (
+          await this.prisma.$queryRaw<Array<{ count: number }>>`
+            SELECT
+              COUNT(DISTINCT user_id)
+            FROM user_course_setting
+            ${where};
+          `
+        )?.[0]?.count
 
         return `${count}`
       },
@@ -61,15 +71,25 @@ export class CompletedCourseCount extends Template {
 
     const completedCourse = await redisify<string>(
       async () => {
-        const count = await this.prisma.completion.count({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-            ...(completionLanguage
-              ? { completion_language: completionLanguage }
-              : {}),
-          },
-          distinct: ["user_id"],
-        })
+        const conditions = [
+          Prisma.sql`course_id = ${
+            course.completions_handled_by_id ?? course.id
+          }`,
+        ]
+        if (completionLanguage) {
+          conditions.push(
+            Prisma.sql`completion_language = ${completionLanguage}`,
+          )
+        }
+        const where = Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
+        const count = (
+          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          SELECT
+            COUNT(DISTINCT user_id)
+          FROM completion
+          ${where};
+        `
+        )?.[0]?.count
 
         return `${count}`
       },
@@ -98,14 +118,15 @@ export class AtLeastOneExerciseCount extends Template {
 
     const atLeastOneExercise = await redisify<string>(
       async () => {
-        const count = await this.prisma.exerciseCompletion.count({
-          where: {
-            exercise: {
-              course_id: course.id,
-            },
-          },
-          distinct: ["user_id"],
-        })
+        const count = (
+          await this.prisma.$queryRaw<Array<{ count: number }>>`
+            SELECT
+              COUNT(DISTINCT user_id)
+            FROM exercise_completion ec
+            JOIN exercise e ON ec.exercise_id = e.id
+            WHERE course_id = ${course.id};
+          `
+        )?.[0]?.count
 
         return `${count}`
       },
@@ -148,30 +169,18 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
 
     const atLeastOneExerciseButNotCompletedEmails = await redisify<string>(
       async () => {
-        const result = await this.prisma.user.findMany({
-          where: {
-            exercise_completions: {
-              some: {
-                exercise: {
-                  course_id: course.id,
-                },
-              },
-            },
-            completions: {
-              none: {
-                course_id: course.completions_handled_by_id ?? course.id,
-                ...(completionLanguage
-                  ? { completion_language: completionLanguage }
-                  : {}),
-              },
-            },
-          },
-          distinct: ["id"],
-          select: {
-            email: true,
-          },
-        })
-        /*const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
+        const conditions = [
+          Prisma.sql`course_id = ${
+            course.completions_handled_by_id ?? course.id
+          }`,
+        ]
+        if (completionLanguage) {
+          conditions.push(
+            Prisma.sql`completion_language = ${completionLanguage}`,
+          )
+        }
+        const where = Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
+        const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
             SELECT DISTINCT u.email
               FROM exercise_completion ec
               JOIN exercise e ON ec.exercise_id = e.id
@@ -182,14 +191,10 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
                 u.id NOT IN (
                   SELECT DISTINCT(user_id)
                     FROM completion c
-                    WHERE c.course_id = ${
-                      course.completions_handled_by_id ?? course.id
-                    }
-                    ${completionLanguage ? `AND c.completion_language = ${completionLanguage} ` : ""}
-                    AND user_id IS NOT NULL
+                    ${where}
+                    AND user_id IS NOT NULL;
                 );
-          `*/
-
+            `
         return result?.map((entry) => entry.email).join("\n")
       },
       {
