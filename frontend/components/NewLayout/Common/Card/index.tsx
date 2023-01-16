@@ -19,6 +19,7 @@ export const CardHeader = styled("div")`
   flex-direction: column;
   justify-content: center;
   padding: 2rem 1rem;
+  background-color: #fefefe;
   z-index: -2;
 `
 
