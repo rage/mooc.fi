@@ -32,7 +32,7 @@ const CourseTranslationEditForm = () => {
               {values.length ? (
                 values?.map(
                   (value: CourseTranslationFormValues, index: number) => (
-                    <LanguageEntry item key={`translation-${index}`}>
+                    <LanguageEntry item key={`translation-${value.language}`}>
                       <CourseTranslationListItem
                         index={index}
                         translationLanguage={value.language}

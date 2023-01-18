@@ -20,6 +20,7 @@ import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
 import MenuIcon from "@mui/icons-material/Menu"
 import {
   Button,
+  ButtonProps,
   Divider,
   IconButton,
   ListItemIcon,
@@ -27,6 +28,8 @@ import {
   Menu,
   MenuItem,
   SvgIcon,
+  SvgIconProps,
+  useMediaQuery,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -62,32 +65,72 @@ const NavigationRightContainer = styled("div")`
   justify-content: flex-end;
   gap: 0.5rem;
   flex-grow: 1;
+  width: 100%;
 `
 
 const NavigationLinksWrapper = styled("div")`
   display: flex;
-  flex-grow: 1;
-  @media (max-width: 599px) {
+  flex-shrink: 1;
+  @media (max-width: 799px) {
     display: none;
   }
 `
 
-const MenuButton = styled(Button)`
+const MenuButtonBase = styled(Button)`
   display: flex;
   max-height: 10vh;
   white-space: nowrap;
   font-size: clamp(12px, 1.5vw, 16px);
+  gap: 0.5rem;
+  max-width: 240px;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: normal;
 `
+
+interface MenuButtonProps {
+  Icon?: React.FunctionComponent<SvgIconProps>
+  narrow?: boolean
+}
+
+const MenuButton = React.memo(
+  ({
+    Icon,
+    narrow,
+    children,
+    ...props
+  }: React.PropsWithChildren<MenuButtonProps & ButtonProps>) => {
+    return (
+      <MenuButtonBase {...props}>
+        {Icon && <Icon fontSize="small" />}
+        {children}
+      </MenuButtonBase>
+    )
+  },
+)
 
 const UserOptionsMenu = () => {
   const client = useApolloClient()
-  const { pathname } = useRouter()
+  const { pathname, locale } = useRouter()
   const { loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
+  const isNarrow = useMediaQuery("(max-width: 899px)", { noSsr: true })
 
-  const userDisplayName = currentUser?.first_name
-    ? `${currentUser.first_name} ${currentUser.last_name}`
-    : t("myProfile")
+  const userDisplayName = useMemo(() => {
+    const name = currentUser?.full_name
+    const initials = (
+      (currentUser?.first_name?.[0] ?? "") + (currentUser?.last_name?.[0] ?? "")
+    ).toLocaleUpperCase()
+
+    if (!name) {
+      return t("myProfile")
+    }
+    if (name.length > 20) {
+      return initials
+    }
+
+    return name
+  }, [currentUser, locale, t])
 
   const onLogOut = useCallback(
     () => signOut(client, logInOrOut),
@@ -98,10 +141,12 @@ const UserOptionsMenu = () => {
     return (
       <>
         <Link href="/_new/profile" passHref>
-          <MenuButton>{userDisplayName}</MenuButton>
+          <MenuButton Icon={User} narrow={isNarrow} title={t("myProfile")}>
+            {isNarrow ? null : userDisplayName}
+          </MenuButton>
         </Link>
         <Link href={pathname} passHref>
-          <MenuButton onClick={onLogOut}>{t("logout")}</MenuButton>
+          <MenuButton Icon={SignOut} onClick={onLogOut} title={t("logout")} />
         </Link>
       </>
     )
@@ -141,34 +186,42 @@ interface MobileMenuItemProps {
   [key: string]: any
 }
 
-const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  ({ Icon, text, href, onClick = () => void 0, ...props }, ref) => {
-    const WrapLink: React.FunctionComponent<React.PropsWithChildren> = ({
+const MobileMenuItemLink = forwardRef<HTMLLIElement, MobileMenuItemProps>(
+  (
+    {
+      href,
       children,
-    }) => {
-      if (href) {
-        return (
-          <Link href={href} passHref {...props}>
-            <MenuItem onClick={onClick} ref={ref}>
-              {children}
-            </MenuItem>
-          </Link>
-        )
-      }
+      onClick,
+      ...props
+    }: React.PropsWithChildren<MobileMenuItemProps>,
+    ref,
+  ) => {
+    if (href) {
       return (
-        <MenuItem onClick={onClick} ref={ref} {...props}>
-          {children}
-        </MenuItem>
+        <Link href={href} passHref {...props}>
+          <MenuItem onClick={onClick} ref={ref}>
+            {children}
+          </MenuItem>
+        </Link>
       )
     }
-
     return (
-      <WrapLink>
+      <MenuItem onClick={onClick} ref={ref} {...props}>
+        {children}
+      </MenuItem>
+    )
+  },
+)
+
+const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
+  ({ Icon, text, ...props }, ref) => {
+    return (
+      <MobileMenuItemLink ref={ref} {...props}>
         <ListItemIcon>
           <Icon />
         </ListItemIcon>
         <ListItemText>{text}</ListItemText>
-      </WrapLink>
+      </MobileMenuItemLink>
     )
   },
 )
@@ -180,6 +233,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const client = useApolloClient()
+  const { locale } = useRouter()
 
   const onClick: MouseEventHandler<HTMLButtonElement> = useCallback((event) => {
     setIsOpen((value) => !value)
@@ -200,9 +254,20 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     return () => window?.removeEventListener("resize", resizeListener)
   }, [])
 
-  const userDisplayName = currentUser?.first_name
-    ? `${currentUser.first_name} ${currentUser.last_name}`
-    : t("myProfile")
+  const onSignOut = useCallback(() => {
+    signOut(client, logInOrOut)
+  }, [signOut, client, logInOrOut])
+
+  const userDisplayName = useMemo(() => {
+    const name = currentUser?.full_name
+
+    if (!name) {
+      return t("myProfile")
+    }
+
+    return name
+  }, [currentUser, locale, t])
+
   const menuItems = useMemo(() => {
     const items = [
       <MenuItem key="mobile-menu-language-switch">
@@ -213,6 +278,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         href="/_new/courses"
         Icon={ChalkboardTeacher}
         text={t("courses")}
+        title={t("courses")}
         onClick={onClose}
       />,
       <MobileMenuItem
@@ -220,6 +286,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         href="/_new/study-modules"
         Icon={List}
         text={t("modules")}
+        title={t("modules")}
         onClick={onClose}
       />,
       <Divider key="menu-divider-1" />,
@@ -232,6 +299,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
           href="/_new/admin"
           Icon={Dashboard}
           text="Admin"
+          title="Admin"
           onClick={onClose}
         />,
         <Divider key="menu-divider-admin" />,
@@ -244,22 +312,28 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
           href="/_new/profile"
           Icon={User}
           text={userDisplayName}
+          title={t("myProfile")}
           onClick={onClose}
         />,
         <MobileMenuItem
           key="mobile-menu-logout"
           Icon={SignOut}
           text={t("logout")}
-          onClick={() => signOut(client, logInOrOut)}
+          title={t("logout")}
+          onClick={onSignOut}
         />,
       )
     } else {
       items.push(
         <Link href="/_new/sign-in" passHref key="menu-login">
-          <MenuItem onClick={onClose}>{t("loginShort")}</MenuItem>
+          <MenuItem onClick={onClose} title={t("loginShort")}>
+            {t("loginShort")}
+          </MenuItem>
         </Link>,
         <Link href="/_new/sign-up" prefetch={false} passHref key="menu-signup">
-          <MenuItem onClick={onClose}>{t("signUp")}</MenuItem>
+          <MenuItem onClick={onClose} title={t("signUp")}>
+            {t("signUp")}
+          </MenuItem>
         </Link>,
       )
     }

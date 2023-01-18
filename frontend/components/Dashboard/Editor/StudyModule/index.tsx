@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo, useRef } from "react"
 
 import { FormikHelpers } from "formik"
 import Router from "next/router"
@@ -45,13 +45,17 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
   const client = useApolloClient()
 
-  const initialValues = toStudyModuleForm({ module })
+  const initialValues = useRef(toStudyModuleForm({ module }))
 
-  const validationSchema = studyModuleEditSchema({
-    client,
-    initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
-    t,
-  })
+  const validationSchema = useMemo(
+    () =>
+      studyModuleEditSchema({
+        client,
+        initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
+        t,
+      }),
+    [client, module, t],
+  )
 
   const onSubmit = useCallback(
     async (
@@ -116,7 +120,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
   return (
     <StudyModuleEditForm
-      module={initialValues}
+      module={initialValues.current}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       onCancel={onCancel}

@@ -51,7 +51,7 @@ const CourseAliasEditForm = () => {
               <>
                 {values.length ? (
                   values.map((alias, index: number) => (
-                    <Row>
+                    <Row key={`course_alias_${alias.course_code}`}>
                       <StyledFieldWithAnchor
                         id={`course_aliases[${index}].course_code`}
                         name={`course_aliases[${index}].course_code`}

@@ -26,6 +26,7 @@ const StyledToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
+  overflow: hidden;
 `
 
 const MenuContainer = styled("div")`

@@ -50,10 +50,10 @@ function ModuleNaviList({
             <ModuleCardSkeleton key="module-skeleton-3" />
           </>
         )}
-        {modules?.map((module, index) => (
+        {modules?.map((studyModule) => (
           <ModuleCard
-            key={`module-${index}`}
-            module={module}
+            key={`module-${studyModule.id}`}
+            module={studyModule}
             variant={variant}
           />
         ))}

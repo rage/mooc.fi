@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react"
+import { Dispatch, useCallback, useContext, useEffect, useState } from "react"
 
 import {
   FormikContextType,
@@ -50,12 +43,14 @@ const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<
 interface FormWrapperProps<T extends FormValues> {
   onCancel: () => void
   onDelete: (values: T) => void
-  renderForm: (props: any) => ReactNode
+  // renderForm: (props: any) => ReactNode
   tab?: number
   setTab?: Dispatch<React.SetStateAction<number>>
 }
 
-const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
+const FormWrapper = <T extends FormValues>(
+  props: React.PropsWithChildren<FormWrapperProps<T>>,
+) => {
   const {
     submitForm,
     errors,
@@ -65,7 +60,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     status,
     setTouched,
   } = useFormikContext<T>()
-  const { onCancel, onDelete, renderForm, setTab = (_) => void 0 } = props
+  const { onCancel, onDelete, setTab = (_) => void 0, children } = props
   const t = useTranslator(CommonTranslations)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
@@ -109,7 +104,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-        {renderForm(props)}
+        {children}
         <br />
         <Grid container direction="row" spacing={2}>
           <Grid item xs={4}>
@@ -187,7 +182,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
 
 // need to pass type through
 const WrappedFormWrapper: <T extends FormValues>(
-  props: FormWrapperProps<T>,
+  props: React.PropsWithChildren<FormWrapperProps<T>>,
 ) => JSX.Element = withEnumeratingAnchors(FormWrapper)
 
 export default WrappedFormWrapper
