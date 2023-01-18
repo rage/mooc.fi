@@ -568,4 +568,4 @@ function CourseEditForm<SchemaType extends ObjectShape>({
   )
 }
 
-export default React.memo(CourseEditForm)
+export default CourseEditForm
