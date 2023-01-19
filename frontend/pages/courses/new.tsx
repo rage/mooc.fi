@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 
 import { WideContainer } from "/components/Container"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
@@ -14,14 +14,9 @@ import { stripId } from "/util/stripId"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
-import { CourseEditorDetailsQuery } from "/graphql/generated"
-
 const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
 
-  const [clonedCourse, setClonedCourse] = useState<
-    CourseEditorDetailsQuery["course"] | undefined
-  >(undefined)
   const clone = useQueryParameter("clone", false)
   const beta = useQueryParameter("beta", false)
 
@@ -41,13 +36,12 @@ const NewCourse = () => {
     },
   ])
 
-  useEffect(() => {
+  const clonedCourse = useMemo(() => {
     if (!courseData?.course) {
-      return
+      return undefined
     }
 
-    // TODO: needs the photo import logic
-    setClonedCourse({ ...stripId(courseData.course), slug: "" })
+    return { ...stripId(courseData.course), slug: "" }
   }, [courseData])
 
   if (error) {
@@ -64,13 +58,13 @@ const NewCourse = () => {
           <FormSkeleton />
         ) : beta ? (
           <CourseEdit2
-            {...(clone ? { course: clonedCourse } : {})}
+            {...(clonedCourse ? { course: clonedCourse } : {})}
             courses={coursesData?.courses}
             studyModules={studyModulesData?.study_modules}
           />
         ) : (
           <CourseEdit
-            {...(clone ? { course: clonedCourse ?? undefined } : {})}
+            {...(clonedCourse ? { course: clonedCourse } : {})}
             modules={studyModulesData?.study_modules}
             courses={coursesData?.courses}
           />
