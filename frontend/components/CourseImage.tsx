@@ -1,4 +1,4 @@
-import { memo } from "react"
+import React from "react"
 
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -28,7 +28,7 @@ interface CourseImageProps {
   [k: string]: any
 }
 
-const CourseImage = memo((props: CourseImageProps) => {
+const CourseImage = React.memo((props: CourseImageProps) => {
   const { photo, ...rest } = props
 
   return (
