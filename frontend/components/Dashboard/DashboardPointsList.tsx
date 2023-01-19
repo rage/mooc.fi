@@ -25,13 +25,7 @@ const PointsList = (props: PointsListProps) => {
               }
               cutterValue={cutterValue}
               showPersonalDetails={true}
-              personalDetails={{
-                firstName: p.user.first_name || "n/a",
-                lastName: p.user.last_name || "n/a",
-                email: p.user.email || "n/a",
-                sid:
-                  p.user.real_student_number || p.user.student_number || "n/a",
-              }}
+              user={p.user}
               key={`pointslistitemcard_${p.id}`}
             />
           ) : null,

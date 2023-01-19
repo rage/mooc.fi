@@ -23,8 +23,9 @@ const NavigationLink = styled("a", {
 
 const NavigationLinkContainer = styled("div")`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   gap: 2rem;
+  width: 100%;
 `
 
 export const NavigationLinks = () => {
