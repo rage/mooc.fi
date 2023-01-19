@@ -214,6 +214,7 @@ model EmailTemplate {
   exercise_completions_threshold           Int?         
   points_threshold                         Int?         
   updated_at                               DateTime?                  @updatedAt
+  course_instance_language                 String?
   triggered_automatically_by_course_id     String?              
   triggered_automatically_by_course        Course?                    @relation("emailTemplateToCourse_triggered", fields: [triggered_automatically_by_course_id], references: [id])
   courses                                  Course[]                   @relation("courseTocourse_completion_email")

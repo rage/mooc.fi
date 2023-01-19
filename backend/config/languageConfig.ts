@@ -6,6 +6,12 @@ export const languageInfo = [
     langName: "Swedish",
   },
   {
+    language: "sv",
+    completion_language: "sv_SE",
+    country: "Sweden",
+    langName: "Swedish",
+  },
+  {
     language: "fi",
     completion_language: "fi_FI",
     country: "Finland",

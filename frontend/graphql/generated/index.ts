@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2022-12-02T23:51:06+02:00
+// Generated on 2023-01-19T20:19:31+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -48,6 +48,11 @@ export type AbEnrollmentCreateOrUpsertInput = {
   ab_study_id: Scalars["ID"]
   group: Scalars["Int"]
   user_id: Scalars["ID"]
+}
+
+export type AbEnrollmentOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type AbEnrollmentUser_idAb_study_idCompoundUniqueInput = {
@@ -141,6 +146,11 @@ export type CompletionEdge = {
   node: Completion
 }
 
+export type CompletionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type CompletionRegistered = {
   __typename?: "CompletionRegistered"
   completion: Maybe<Completion>
@@ -156,6 +166,11 @@ export type CompletionRegistered = {
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_id: Maybe<Scalars["String"]>
+}
+
+export type CompletionRegisteredOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type CompletionRegisteredWhereUniqueInput = {
@@ -209,7 +224,7 @@ export type Course = {
   study_module_start_point: Maybe<Scalars["Boolean"]>
   study_modules: Array<StudyModule>
   support_email: Maybe<Scalars["String"]>
-  tags: Maybe<Array<Tag>>
+  tags: Array<Tag>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier: Maybe<Scalars["Int"]>
@@ -304,6 +319,11 @@ export type CourseAliasCreateInput = {
   course_code: Scalars["String"]
 }
 
+export type CourseAliasOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type CourseAliasUpsertInput = {
   course?: InputMaybe<Scalars["ID"]>
   course_code: Scalars["String"]
@@ -323,7 +343,6 @@ export type CourseCreateArg = {
   completions_handled_by?: InputMaybe<Scalars["ID"]>
   course_aliases?: InputMaybe<Array<CourseAliasCreateInput>>
   course_stats_email_id?: InputMaybe<Scalars["ID"]>
-  course_tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
   course_translations?: InputMaybe<Array<CourseTranslationCreateInput>>
   course_variants?: InputMaybe<Array<CourseVariantCreateInput>>
   ects?: InputMaybe<Scalars["String"]>
@@ -349,6 +368,7 @@ export type CourseCreateArg = {
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
   study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
+  tags?: InputMaybe<Array<TagUpsertInput>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
@@ -359,37 +379,87 @@ export type CourseCreateArg = {
 }
 
 export type CourseOrderByInput = {
-  automatic_completions?: InputMaybe<SortOrder>
-  automatic_completions_eligible_for_ects?: InputMaybe<SortOrder>
-  completion_email_id?: InputMaybe<SortOrder>
-  completions_handled_by_id?: InputMaybe<SortOrder>
-  course_stats_email_id?: InputMaybe<SortOrder>
   created_at?: InputMaybe<SortOrder>
   ects?: InputMaybe<SortOrder>
   end_date?: InputMaybe<SortOrder>
   exercise_completions_needed?: InputMaybe<SortOrder>
-  has_certificate?: InputMaybe<SortOrder>
-  hidden?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
-  inherit_settings_from_id?: InputMaybe<SortOrder>
   name?: InputMaybe<SortOrder>
   order?: InputMaybe<SortOrder>
-  owner_organization_id?: InputMaybe<SortOrder>
-  photo_id?: InputMaybe<SortOrder>
   points_needed?: InputMaybe<SortOrder>
-  promote?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
   start_date?: InputMaybe<SortOrder>
-  start_point?: InputMaybe<SortOrder>
-  status?: InputMaybe<SortOrder>
   study_module_order?: InputMaybe<SortOrder>
-  study_module_start_point?: InputMaybe<SortOrder>
   support_email?: InputMaybe<SortOrder>
   teacher_in_charge_email?: InputMaybe<SortOrder>
   teacher_in_charge_name?: InputMaybe<SortOrder>
   tier?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
+}
+
+export type CourseOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type CourseOrderByWithRelationInput = {
+  automatic_completions?: InputMaybe<SortOrder>
+  automatic_completions_eligible_for_ects?: InputMaybe<SortOrder>
+  completion_email?: InputMaybe<EmailTemplateOrderByWithRelationInput>
+  completion_email_id?: InputMaybe<SortOrder>
+  completions?: InputMaybe<CompletionOrderByRelationAggregateInput>
+  completions_handled_by?: InputMaybe<CourseOrderByWithRelationInput>
+  completions_handled_by_id?: InputMaybe<SortOrder>
+  completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
+  course_aliases?: InputMaybe<CourseAliasOrderByRelationAggregateInput>
+  course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
+  course_stats_email?: InputMaybe<EmailTemplateOrderByWithRelationInput>
+  course_stats_email_id?: InputMaybe<SortOrder>
+  course_tags?: InputMaybe<CourseTagOrderByRelationAggregateInput>
+  course_translations?: InputMaybe<CourseTranslationOrderByRelationAggregateInput>
+  course_variants?: InputMaybe<CourseVariantOrderByRelationAggregateInput>
+  created_at?: InputMaybe<SortOrder>
+  ects?: InputMaybe<SortOrder>
+  end_date?: InputMaybe<SortOrder>
+  exercise_completions_needed?: InputMaybe<SortOrder>
+  exercises?: InputMaybe<ExerciseOrderByRelationAggregateInput>
+  handles_completions_for?: InputMaybe<CourseOrderByRelationAggregateInput>
+  has_certificate?: InputMaybe<SortOrder>
+  hidden?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  inherit_settings_from?: InputMaybe<CourseOrderByWithRelationInput>
+  inherit_settings_from_id?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
+  open_university_registration_links?: InputMaybe<OpenUniversityRegistrationLinkOrderByRelationAggregateInput>
+  order?: InputMaybe<SortOrder>
+  other_course_courseTocourse_inherit_settings_from?: InputMaybe<CourseOrderByRelationAggregateInput>
+  owner_organization?: InputMaybe<OrganizationOrderByWithRelationInput>
+  owner_organization_id?: InputMaybe<SortOrder>
+  ownerships?: InputMaybe<CourseOwnershipOrderByRelationAggregateInput>
+  photo?: InputMaybe<ImageOrderByWithRelationInput>
+  photo_id?: InputMaybe<SortOrder>
+  points_needed?: InputMaybe<SortOrder>
+  promote?: InputMaybe<SortOrder>
+  services?: InputMaybe<ServiceOrderByRelationAggregateInput>
+  slug?: InputMaybe<SortOrder>
+  start_date?: InputMaybe<SortOrder>
+  start_point?: InputMaybe<SortOrder>
+  status?: InputMaybe<SortOrder>
+  stored_data?: InputMaybe<StoredDataOrderByRelationAggregateInput>
+  study_module_order?: InputMaybe<SortOrder>
+  study_module_start_point?: InputMaybe<SortOrder>
+  study_modules?: InputMaybe<StudyModuleOrderByRelationAggregateInput>
+  support_email?: InputMaybe<SortOrder>
+  teacher_in_charge_email?: InputMaybe<SortOrder>
+  teacher_in_charge_name?: InputMaybe<SortOrder>
+  tier?: InputMaybe<SortOrder>
+  triggered_automatically_email?: InputMaybe<EmailTemplateOrderByRelationAggregateInput>
   upcoming_active_link?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
+  user_course_progresses?: InputMaybe<UserCourseProgressOrderByRelationAggregateInput>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressOrderByRelationAggregateInput>
+  user_course_settings?: InputMaybe<UserCourseSettingOrderByRelationAggregateInput>
+  user_course_settings_visibilities?: InputMaybe<UserCourseSettingsVisibilityOrderByRelationAggregateInput>
 }
 
 export type CourseOrganization = {
@@ -402,6 +472,11 @@ export type CourseOrganization = {
   organization: Maybe<Organization>
   organization_id: Maybe<Scalars["String"]>
   updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type CourseOrganizationOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type CourseOrganizationWhereUniqueInput = {
@@ -417,6 +492,11 @@ export type CourseOwnership = {
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_id: Maybe<Scalars["String"]>
+}
+
+export type CourseOwnershipOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type CourseOwnershipUser_idCourse_idCompoundUniqueInput = {
@@ -440,6 +520,11 @@ export type CourseStatsSubscription = {
   user_id: Maybe<Scalars["String"]>
 }
 
+export type CourseStatsSubscriptionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type CourseStatsSubscriptionUser_idEmail_template_idCompoundUniqueInput =
   {
     email_template_id: Scalars["String"]
@@ -459,7 +544,7 @@ export enum CourseStatus {
 
 export type CourseTag = {
   __typename?: "CourseTag"
-  course: Maybe<Course>
+  course: Course
   course_id: Scalars["String"]
   created_at: Maybe<Scalars["DateTime"]>
   language: Maybe<Scalars["String"]>
@@ -475,11 +560,18 @@ export type CourseTagCourse_idTag_idCompoundUniqueInput = {
 
 export type CourseTagCreateOrUpsertInput = {
   course_id: Scalars["ID"]
+  tag?: InputMaybe<TagUpsertInput>
   tag_id: Scalars["ID"]
 }
 
 export type CourseTagCreateOrUpsertWithoutCourseIdInput = {
+  tag?: InputMaybe<TagUpsertInput>
   tag_id: Scalars["ID"]
+}
+
+export type CourseTagOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type CourseTagWhereUniqueInput = {
@@ -509,6 +601,11 @@ export type CourseTranslationCreateInput = {
   name: Scalars["String"]
 }
 
+export type CourseTranslationOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type CourseTranslationUpsertInput = {
   course?: InputMaybe<Scalars["ID"]>
   description: Scalars["String"]
@@ -531,7 +628,6 @@ export type CourseUpsertArg = {
   completions_handled_by?: InputMaybe<Scalars["ID"]>
   course_aliases?: InputMaybe<Array<CourseAliasUpsertInput>>
   course_stats_email_id?: InputMaybe<Scalars["ID"]>
-  course_tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
   course_translations?: InputMaybe<Array<CourseTranslationUpsertInput>>
   course_variants?: InputMaybe<Array<CourseVariantUpsertInput>>
   delete_photo?: InputMaybe<Scalars["Boolean"]>
@@ -560,6 +656,7 @@ export type CourseUpsertArg = {
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
   study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
+  tags?: InputMaybe<Array<TagUpsertInput>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
@@ -585,6 +682,11 @@ export type CourseVariantCreateInput = {
   description?: InputMaybe<Scalars["String"]>
   instructions?: InputMaybe<Scalars["String"]>
   slug: Scalars["String"]
+}
+
+export type CourseVariantOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type CourseVariantUpsertInput = {
@@ -618,12 +720,18 @@ export type EmailDelivery = {
   user_id: Maybe<Scalars["String"]>
 }
 
+export type EmailDeliveryOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type EmailDeliveryWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
 }
 
 export type EmailTemplate = {
   __typename?: "EmailTemplate"
+  course_instance_language: Maybe<Scalars["String"]>
   course_stats_subscriptions: Array<CourseStatsSubscription>
   courses: Array<Course>
   created_at: Maybe<Scalars["DateTime"]>
@@ -658,6 +766,31 @@ export type EmailTemplateemail_deliveriesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type EmailTemplateOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type EmailTemplateOrderByWithRelationInput = {
+  course_instance_language?: InputMaybe<SortOrder>
+  course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionOrderByRelationAggregateInput>
+  courses?: InputMaybe<CourseOrderByRelationAggregateInput>
+  created_at?: InputMaybe<SortOrder>
+  email_deliveries?: InputMaybe<EmailDeliveryOrderByRelationAggregateInput>
+  exercise_completions_threshold?: InputMaybe<SortOrder>
+  html_body?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
+  points_threshold?: InputMaybe<SortOrder>
+  stats_courses?: InputMaybe<CourseOrderByRelationAggregateInput>
+  template_type?: InputMaybe<SortOrder>
+  title?: InputMaybe<SortOrder>
+  triggered_automatically_by_course?: InputMaybe<CourseOrderByWithRelationInput>
+  triggered_automatically_by_course_id?: InputMaybe<SortOrder>
+  txt_body?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
+}
+
 export type Exercise = {
   __typename?: "Exercise"
   course: Maybe<Course>
@@ -678,7 +811,7 @@ export type Exercise = {
 }
 
 export type Exerciseexercise_completionsArgs = {
-  orderBy?: InputMaybe<ExerciseCompletionOrderByInput>
+  orderBy?: InputMaybe<ExerciseCompletionOrderByWithRelationInput>
   user_id?: InputMaybe<Scalars["ID"]>
 }
 
@@ -705,15 +838,33 @@ export type ExerciseCompletionexercise_completion_required_actionsArgs = {
 }
 
 export type ExerciseCompletionOrderByInput = {
+  created_at?: InputMaybe<SortOrder>
+  exercise_id?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  n_points?: InputMaybe<SortOrder>
+  timestamp?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
+  user_id?: InputMaybe<SortOrder>
+}
+
+export type ExerciseCompletionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type ExerciseCompletionOrderByWithRelationInput = {
   attempted?: InputMaybe<SortOrder>
   completed?: InputMaybe<SortOrder>
   created_at?: InputMaybe<SortOrder>
+  exercise?: InputMaybe<ExerciseOrderByWithRelationInput>
+  exercise_completion_required_actions?: InputMaybe<ExerciseCompletionRequiredActionOrderByRelationAggregateInput>
   exercise_id?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
   n_points?: InputMaybe<SortOrder>
   original_submission_date?: InputMaybe<SortOrder>
   timestamp?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
+  user?: InputMaybe<UserOrderByWithRelationInput>
   user_id?: InputMaybe<SortOrder>
 }
 
@@ -725,12 +876,40 @@ export type ExerciseCompletionRequiredAction = {
   value: Scalars["String"]
 }
 
+export type ExerciseCompletionRequiredActionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type ExerciseCompletionRequiredActionWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
 }
 
 export type ExerciseCompletionWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
+}
+
+export type ExerciseOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type ExerciseOrderByWithRelationInput = {
+  course?: InputMaybe<CourseOrderByWithRelationInput>
+  course_id?: InputMaybe<SortOrder>
+  created_at?: InputMaybe<SortOrder>
+  custom_id?: InputMaybe<SortOrder>
+  deleted?: InputMaybe<SortOrder>
+  exercise_completions?: InputMaybe<ExerciseCompletionOrderByRelationAggregateInput>
+  id?: InputMaybe<SortOrder>
+  max_points?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
+  part?: InputMaybe<SortOrder>
+  section?: InputMaybe<SortOrder>
+  service?: InputMaybe<ServiceOrderByWithRelationInput>
+  service_id?: InputMaybe<SortOrder>
+  timestamp?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
 }
 
 export type ExerciseProgress = {
@@ -759,6 +938,22 @@ export type Image = {
   uncompressed: Scalars["String"]
   uncompressed_mimetype: Scalars["String"]
   updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type ImageOrderByWithRelationInput = {
+  compressed?: InputMaybe<SortOrder>
+  compressed_mimetype?: InputMaybe<SortOrder>
+  courses?: InputMaybe<CourseOrderByRelationAggregateInput>
+  created_at?: InputMaybe<SortOrder>
+  default?: InputMaybe<SortOrder>
+  encoding?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
+  original?: InputMaybe<SortOrder>
+  original_mimetype?: InputMaybe<SortOrder>
+  uncompressed?: InputMaybe<SortOrder>
+  uncompressed_mimetype?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
 }
 
 export type ManualCompletionArg = {
@@ -889,6 +1084,7 @@ export type MutationaddCourseVariantArgs = {
 }
 
 export type MutationaddEmailTemplateArgs = {
+  course_instance_language?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   html_body?: InputMaybe<Scalars["String"]>
   name: Scalars["String"]
@@ -923,7 +1119,7 @@ export type MutationaddImageArgs = {
 }
 
 export type MutationaddManualCompletionArgs = {
-  completions?: InputMaybe<Array<InputMaybe<ManualCompletionArg>>>
+  completions?: InputMaybe<Array<ManualCompletionArg>>
   course_id: Scalars["String"]
 }
 
@@ -1107,6 +1303,7 @@ export type MutationupdateCourseVariantArgs = {
 }
 
 export type MutationupdateEmailTemplateArgs = {
+  course_instance_language?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   html_body?: InputMaybe<Scalars["String"]>
   id: Scalars["ID"]
@@ -1201,7 +1398,7 @@ export type OpenUniversityRegistrationLink = {
   link: Maybe<Scalars["String"]>
   start_date: Maybe<Scalars["DateTime"]>
   stop_date: Maybe<Scalars["DateTime"]>
-  tiers: Maybe<Scalars["Json"]>
+  tiers: Array<Scalars["Json"]>
   updated_at: Maybe<Scalars["DateTime"]>
 }
 
@@ -1211,7 +1408,12 @@ export type OpenUniversityRegistrationLinkCreateInput = {
   link?: InputMaybe<Scalars["String"]>
   start_date?: InputMaybe<Scalars["DateTime"]>
   stop_date?: InputMaybe<Scalars["DateTime"]>
-  tiers?: InputMaybe<Scalars["Json"]>
+  tiers?: InputMaybe<Array<Scalars["Json"]>>
+}
+
+export type OpenUniversityRegistrationLinkOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type OpenUniversityRegistrationLinkUpsertInput = {
@@ -1221,7 +1423,7 @@ export type OpenUniversityRegistrationLinkUpsertInput = {
   link?: InputMaybe<Scalars["String"]>
   start_date?: InputMaybe<Scalars["DateTime"]>
   stop_date?: InputMaybe<Scalars["DateTime"]>
-  tiers?: InputMaybe<Scalars["Json"]>
+  tiers?: InputMaybe<Array<Scalars["Json"]>>
 }
 
 export type OpenUniversityRegistrationLinkWhereUniqueInput = {
@@ -1298,6 +1500,28 @@ export type Organizationverified_usersArgs = {
 export type OrganizationOrderByInput = {
   contact_information?: InputMaybe<SortOrder>
   created_at?: InputMaybe<SortOrder>
+  email?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  phone?: InputMaybe<SortOrder>
+  slug?: InputMaybe<SortOrder>
+  tmc_created_at?: InputMaybe<SortOrder>
+  tmc_updated_at?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
+  website?: InputMaybe<SortOrder>
+}
+
+export type OrganizationOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type OrganizationOrderByWithRelationInput = {
+  completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
+  contact_information?: InputMaybe<SortOrder>
+  course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
+  courses?: InputMaybe<CourseOrderByRelationAggregateInput>
+  created_at?: InputMaybe<SortOrder>
+  creator?: InputMaybe<UserOrderByWithRelationInput>
   creator_id?: InputMaybe<SortOrder>
   disabled?: InputMaybe<SortOrder>
   email?: InputMaybe<SortOrder>
@@ -1307,6 +1531,7 @@ export type OrganizationOrderByInput = {
   logo_file_name?: InputMaybe<SortOrder>
   logo_file_size?: InputMaybe<SortOrder>
   logo_updated_at?: InputMaybe<SortOrder>
+  organization_translations?: InputMaybe<OrganizationTranslationOrderByRelationAggregateInput>
   phone?: InputMaybe<SortOrder>
   pinned?: InputMaybe<SortOrder>
   secret_key?: InputMaybe<SortOrder>
@@ -1314,8 +1539,10 @@ export type OrganizationOrderByInput = {
   tmc_created_at?: InputMaybe<SortOrder>
   tmc_updated_at?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
+  user_organizations?: InputMaybe<UserOrganizationOrderByRelationAggregateInput>
   verified?: InputMaybe<SortOrder>
   verified_at?: InputMaybe<SortOrder>
+  verified_users?: InputMaybe<VerifiedUserOrderByRelationAggregateInput>
   website?: InputMaybe<SortOrder>
 }
 
@@ -1336,6 +1563,11 @@ export type OrganizationTranslation = {
   organization: Maybe<Organization>
   organization_id: Maybe<Scalars["String"]>
   updated_at: Maybe<Scalars["DateTime"]>
+}
+
+export type OrganizationTranslationOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type OrganizationTranslationWhereUniqueInput = {
@@ -1410,7 +1642,7 @@ export type Query = {
   study_module_exists: Maybe<Scalars["Boolean"]>
   study_modules: Maybe<Array<StudyModule>>
   tagTypes: Maybe<Array<TagType>>
-  tags: Maybe<Array<Maybe<Tag>>>
+  tags: Maybe<Array<Tag>>
   user: Maybe<User>
   userCourseProgress: Maybe<UserCourseProgress>
   userCourseProgresses: Maybe<Array<UserCourseProgress>>
@@ -1502,9 +1734,10 @@ export type QuerycoursesArgs = {
   handledBy?: InputMaybe<Scalars["String"]>
   hidden?: InputMaybe<Scalars["Boolean"]>
   language?: InputMaybe<Scalars["String"]>
-  orderBy?: InputMaybe<CourseOrderByInput>
+  orderBy?: InputMaybe<CourseOrderByWithRelationInput>
   search?: InputMaybe<Scalars["String"]>
   status?: InputMaybe<Array<CourseStatus>>
+  tag_types?: InputMaybe<Array<Scalars["String"]>>
   tags?: InputMaybe<Array<Scalars["String"]>>
 }
 
@@ -1526,7 +1759,7 @@ export type QueryexerciseCompletionArgs = {
 
 export type QueryexerciseCompletionsArgs = {
   cursor?: InputMaybe<ExerciseCompletionWhereUniqueInput>
-  orderBy?: InputMaybe<Array<ExerciseCompletionOrderByInput>>
+  orderBy?: InputMaybe<Array<ExerciseCompletionOrderByWithRelationInput>>
   skip?: InputMaybe<Scalars["Int"]>
   take?: InputMaybe<Scalars["Int"]>
 }
@@ -1555,7 +1788,7 @@ export type QueryorganizationArgs = {
 export type QueryorganizationsArgs = {
   cursor?: InputMaybe<OrganizationWhereUniqueInput>
   hidden?: InputMaybe<Scalars["Boolean"]>
-  orderBy?: InputMaybe<OrganizationOrderByInput>
+  orderBy?: InputMaybe<OrganizationOrderByWithRelationInput>
   skip?: InputMaybe<Scalars["Int"]>
   take?: InputMaybe<Scalars["Int"]>
 }
@@ -1584,7 +1817,7 @@ export type Querystudy_module_existsArgs = {
 
 export type Querystudy_modulesArgs = {
   language?: InputMaybe<Scalars["String"]>
-  orderBy?: InputMaybe<StudyModuleOrderByInput>
+  orderBy?: InputMaybe<StudyModuleOrderByWithRelationInput>
 }
 
 export type QuerytagsArgs = {
@@ -1740,6 +1973,22 @@ export type Serviceuser_course_service_progressesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type ServiceOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type ServiceOrderByWithRelationInput = {
+  courses?: InputMaybe<CourseOrderByRelationAggregateInput>
+  created_at?: InputMaybe<SortOrder>
+  exercises?: InputMaybe<ExerciseOrderByRelationAggregateInput>
+  id?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
+  url?: InputMaybe<SortOrder>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressOrderByRelationAggregateInput>
+}
+
 export type ServiceWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
 }
@@ -1758,6 +2007,11 @@ export type StoredData = {
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_id: Scalars["String"]
+}
+
+export type StoredDataOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type StringNullableFilter = {
@@ -1791,7 +2045,7 @@ export type StudyModule = {
 
 export type StudyModulecoursesArgs = {
   language?: InputMaybe<Scalars["String"]>
-  orderBy?: InputMaybe<CourseOrderByInput>
+  orderBy?: InputMaybe<CourseOrderByWithRelationInput>
 }
 
 export type StudyModulestudy_module_translationsArgs = {
@@ -1806,17 +2060,32 @@ export type StudyModuleCreateArg = {
   order?: InputMaybe<Scalars["Int"]>
   slug: Scalars["String"]
   study_module_translations?: InputMaybe<
-    Array<InputMaybe<StudyModuleTranslationUpsertInput>>
+    Array<StudyModuleTranslationUpsertInput>
   >
 }
 
 export type StudyModuleOrderByInput = {
+  id?: InputMaybe<SortOrder>
+  image?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
+  order?: InputMaybe<SortOrder>
+  slug?: InputMaybe<SortOrder>
+}
+
+export type StudyModuleOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
+export type StudyModuleOrderByWithRelationInput = {
+  courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
   image?: InputMaybe<SortOrder>
   name?: InputMaybe<SortOrder>
   order?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
+  study_module_translations?: InputMaybe<StudyModuleTranslationOrderByRelationAggregateInput>
   updated_at?: InputMaybe<SortOrder>
 }
 
@@ -1839,6 +2108,11 @@ export type StudyModuleTranslationCreateInput = {
   study_module?: InputMaybe<Scalars["ID"]>
 }
 
+export type StudyModuleTranslationOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type StudyModuleTranslationUpsertInput = {
   description: Scalars["String"]
   id?: InputMaybe<Scalars["ID"]>
@@ -1859,7 +2133,7 @@ export type StudyModuleUpsertArg = {
   order?: InputMaybe<Scalars["Int"]>
   slug: Scalars["String"]
   study_module_translations?: InputMaybe<
-    Array<InputMaybe<StudyModuleTranslationUpsertInput>>
+    Array<StudyModuleTranslationUpsertInput>
   >
 }
 
@@ -1901,13 +2175,20 @@ export type Tagtag_typesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type TagCreateInput = {
+  hidden?: InputMaybe<Scalars["Boolean"]>
+  id?: InputMaybe<Scalars["ID"]>
+  tag_translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
+  types?: InputMaybe<Array<Scalars["String"]>>
+}
+
 export type TagTranslation = {
   __typename?: "TagTranslation"
   created_at: Maybe<Scalars["DateTime"]>
   description: Maybe<Scalars["String"]>
   language: Scalars["String"]
   name: Scalars["String"]
-  tag: Maybe<Tag>
+  tag: Tag
   tag_id: Scalars["String"]
   updated_at: Maybe<Scalars["DateTime"]>
 }
@@ -1950,6 +2231,13 @@ export type TagTypetagsArgs = {
 
 export type TagTypeWhereUniqueInput = {
   name?: InputMaybe<Scalars["String"]>
+}
+
+export type TagUpsertInput = {
+  hidden?: InputMaybe<Scalars["Boolean"]>
+  id: Scalars["ID"]
+  tag_translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
+  types?: InputMaybe<Array<Scalars["String"]>>
 }
 
 export type TagWhereUniqueInput = {
@@ -2115,6 +2403,11 @@ export type UserCourseProgressuser_course_service_progressesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type UserCourseProgressOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type UserCourseProgressWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
 }
@@ -2125,7 +2418,7 @@ export type UserCourseServiceProgress = {
   course_id: Maybe<Scalars["String"]>
   created_at: Maybe<Scalars["DateTime"]>
   id: Scalars["String"]
-  progress: Maybe<Array<Maybe<Scalars["Json"]>>>
+  progress: Array<Scalars["Json"]>
   service: Maybe<Service>
   service_id: Maybe<Scalars["String"]>
   timestamp: Maybe<Scalars["DateTime"]>
@@ -2134,6 +2427,11 @@ export type UserCourseServiceProgress = {
   user_course_progress: Maybe<UserCourseProgress>
   user_course_progress_id: Maybe<Scalars["String"]>
   user_id: Maybe<Scalars["String"]>
+}
+
+export type UserCourseServiceProgressOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type UserCourseServiceProgressWhereUniqueInput = {
@@ -2165,6 +2463,11 @@ export type UserCourseSettingEdge = {
   node: UserCourseSetting
 }
 
+export type UserCourseSettingOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
+}
+
 export type UserCourseSettingWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
 }
@@ -2182,6 +2485,11 @@ export type UserCourseSettingsVisibility = {
 export type UserCourseSettingsVisibilityCreateInput = {
   course?: InputMaybe<Scalars["ID"]>
   language: Scalars["String"]
+}
+
+export type UserCourseSettingsVisibilityOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type UserCourseSettingsVisibilityUpsertInput = {
@@ -2223,6 +2531,35 @@ export type UserEdge = {
   node: User
 }
 
+export type UserOrderByWithRelationInput = {
+  ab_enrollments?: InputMaybe<AbEnrollmentOrderByRelationAggregateInput>
+  administrator?: InputMaybe<SortOrder>
+  completions?: InputMaybe<CompletionOrderByRelationAggregateInput>
+  completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
+  course_ownerships?: InputMaybe<CourseOwnershipOrderByRelationAggregateInput>
+  course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionOrderByRelationAggregateInput>
+  created_at?: InputMaybe<SortOrder>
+  email?: InputMaybe<SortOrder>
+  email_deliveries?: InputMaybe<EmailDeliveryOrderByRelationAggregateInput>
+  exercise_completions?: InputMaybe<ExerciseCompletionOrderByRelationAggregateInput>
+  first_name?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  last_name?: InputMaybe<SortOrder>
+  organizations?: InputMaybe<OrganizationOrderByRelationAggregateInput>
+  real_student_number?: InputMaybe<SortOrder>
+  research_consent?: InputMaybe<SortOrder>
+  stored_data?: InputMaybe<StoredDataOrderByRelationAggregateInput>
+  student_number?: InputMaybe<SortOrder>
+  updated_at?: InputMaybe<SortOrder>
+  upstream_id?: InputMaybe<SortOrder>
+  user_course_progresses?: InputMaybe<UserCourseProgressOrderByRelationAggregateInput>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressOrderByRelationAggregateInput>
+  user_course_settings?: InputMaybe<UserCourseSettingOrderByRelationAggregateInput>
+  user_organizations?: InputMaybe<UserOrganizationOrderByRelationAggregateInput>
+  username?: InputMaybe<SortOrder>
+  verified_users?: InputMaybe<VerifiedUserOrderByRelationAggregateInput>
+}
+
 export type UserOrganization = {
   __typename?: "UserOrganization"
   created_at: Maybe<Scalars["DateTime"]>
@@ -2233,6 +2570,11 @@ export type UserOrganization = {
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_id: Maybe<Scalars["String"]>
+}
+
+export type UserOrganizationOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type UserOrganizationWhereUniqueInput = {
@@ -2263,6 +2605,11 @@ export type VerifiedUserArg = {
   organization_id: Scalars["ID"]
   organization_secret: Scalars["String"]
   personal_unique_code: Scalars["String"]
+}
+
+export type VerifiedUserOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type VerifiedUserWhereUniqueInput = {
@@ -2664,7 +3011,7 @@ export type CourseFieldsFragment = {
       description: string | null
       language: string
     }>
-  }> | null
+  }>
   photo: {
     __typename?: "Image"
     id: string
@@ -2744,7 +3091,7 @@ export type EditorCourseFieldsFragment = {
       description: string | null
       language: string
     }>
-  }> | null
+  }>
   course_translations: Array<{
     __typename?: "CourseTranslation"
     id: string
@@ -2860,7 +3207,7 @@ export type EditorCourseDetailedFieldsFragment = {
       description: string | null
       language: string
     }>
-  }> | null
+  }>
   study_modules: Array<{
     __typename?: "StudyModule"
     id: string
@@ -2919,6 +3266,7 @@ export type EmailTemplateCoreFieldsFragment = {
   txt_body: string | null
   html_body: string | null
   template_type: string | null
+  course_instance_language: string | null
   created_at: any | null
   updated_at: any | null
 }
@@ -2934,6 +3282,7 @@ export type EmailTemplateFieldsFragment = {
   txt_body: string | null
   html_body: string | null
   template_type: string | null
+  course_instance_language: string | null
   created_at: any | null
   updated_at: any | null
 }
@@ -3044,7 +3393,7 @@ export type ProgressCoreFieldsFragment = {
     course_id: string | null
     service_id: string | null
     user_id: string | null
-    progress: Array<any | null> | null
+    progress: Array<any>
     created_at: any | null
     updated_at: any | null
     service: { __typename?: "Service"; name: string; id: string } | null
@@ -3161,7 +3510,7 @@ export type StudyModuleFieldsWithCoursesFragment = {
         description: string | null
         language: string
       }>
-    }> | null
+    }>
     photo: {
       __typename?: "Image"
       id: string
@@ -3282,7 +3631,7 @@ export type UserProgressesFieldsFragment = {
       course_id: string | null
       service_id: string | null
       user_id: string | null
-      progress: Array<any | null> | null
+      progress: Array<any>
       created_at: any | null
       updated_at: any | null
       service: { __typename?: "Service"; name: string; id: string } | null
@@ -3417,7 +3766,7 @@ export type UserCourseServiceProgressCoreFieldsFragment = {
   course_id: string | null
   service_id: string | null
   user_id: string | null
-  progress: Array<any | null> | null
+  progress: Array<any>
   created_at: any | null
   updated_at: any | null
   service: { __typename?: "Service"; name: string; id: string } | null
@@ -3503,7 +3852,7 @@ export type StudentProgressesQueryNodeFieldsFragment = {
         course_id: string | null
         service_id: string | null
         user_id: string | null
-        progress: Array<any | null> | null
+        progress: Array<any>
         created_at: any | null
         updated_at: any | null
         service: { __typename?: "Service"; name: string; id: string } | null
@@ -3655,7 +4004,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
     course_id: string | null
     service_id: string | null
     user_id: string | null
-    progress: Array<any | null> | null
+    progress: Array<any>
     created_at: any | null
     updated_at: any | null
     service: { __typename?: "Service"; name: string; id: string } | null
@@ -3882,7 +4231,7 @@ export type AddCourseMutation = {
         description: string | null
         language: string
       }>
-    }> | null
+    }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
@@ -3949,6 +4298,7 @@ export type UpdateCourseMutation = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -3960,6 +4310,7 @@ export type UpdateCourseMutation = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4021,7 +4372,7 @@ export type UpdateCourseMutation = {
         description: string | null
         language: string
       }>
-    }> | null
+    }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
@@ -4071,6 +4422,7 @@ export type UpdateEmailTemplateMutationVariables = Exact<{
   triggered_automatically_by_course_id?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   points_threshold?: InputMaybe<Scalars["Int"]>
+  course_instance_language?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateEmailTemplateMutation = {
@@ -4086,6 +4438,7 @@ export type UpdateEmailTemplateMutation = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4100,6 +4453,7 @@ export type AddEmailTemplateMutationVariables = Exact<{
   triggered_automatically_by_course_id?: InputMaybe<Scalars["String"]>
   exercise_completions_threshold?: InputMaybe<Scalars["Int"]>
   points_threshold?: InputMaybe<Scalars["Int"]>
+  course_instance_language?: InputMaybe<Scalars["String"]>
 }>
 
 export type AddEmailTemplateMutation = {
@@ -4115,6 +4469,7 @@ export type AddEmailTemplateMutation = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4134,6 +4489,7 @@ export type DeleteEmailTemplateMutation = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4498,7 +4854,7 @@ export type CoursesQuery = {
         description: string | null
         language: string
       }>
-    }> | null
+    }>
     photo: {
       __typename?: "Image"
       id: string
@@ -4588,7 +4944,7 @@ export type EditorCoursesQuery = {
         description: string | null
         language: string
       }>
-    }> | null
+    }>
     course_translations: Array<{
       __typename?: "CourseTranslation"
       id: string
@@ -4786,7 +5142,7 @@ export type CourseEditorDetailsQuery = {
         description: string | null
         language: string
       }>
-    }> | null
+    }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
@@ -4834,6 +5190,7 @@ export type EmailTemplateEditorCoursesQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4845,6 +5202,7 @@ export type EmailTemplateEditorCoursesQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4876,6 +5234,7 @@ export type CourseDashboardQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4887,6 +5246,7 @@ export type CourseDashboardQuery = {
       txt_body: string | null
       html_body: string | null
       template_type: string | null
+      course_instance_language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4908,6 +5268,7 @@ export type EmailTemplatesQuery = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   }> | null
@@ -4930,6 +5291,7 @@ export type EmailTemplateQuery = {
     txt_body: string | null
     html_body: string | null
     template_type: string | null
+    course_instance_language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -5058,7 +5420,7 @@ export type StudyModulesWithCoursesQuery = {
           description: string | null
           language: string
         }>
-      }> | null
+      }>
       photo: {
         __typename?: "Image"
         id: string
@@ -5312,7 +5674,7 @@ export type UserSummaryQuery = {
         course_id: string | null
         service_id: string | null
         user_id: string | null
-        progress: Array<any | null> | null
+        progress: Array<any>
         created_at: any | null
         updated_at: any | null
         service: { __typename?: "Service"; name: string; id: string } | null
@@ -5579,7 +5941,7 @@ export type CurrentUserProgressesQuery = {
         course_id: string | null
         service_id: string | null
         user_id: string | null
-        progress: Array<any | null> | null
+        progress: Array<any>
         created_at: any | null
         updated_at: any | null
         service: { __typename?: "Service"; name: string; id: string } | null
@@ -5811,7 +6173,7 @@ export type StudentProgressesQuery = {
               course_id: string | null
               service_id: string | null
               user_id: string | null
-              progress: Array<any | null> | null
+              progress: Array<any>
               created_at: any | null
               updated_at: any | null
               service: {
@@ -6894,6 +7256,10 @@ export const EmailTemplateCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "txt_body" } },
           { kind: "Field", name: { kind: "Name", value: "html_body" } },
           { kind: "Field", name: { kind: "Name", value: "template_type" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -8305,6 +8671,14 @@ export const UpdateEmailTemplateDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -8392,6 +8766,14 @@ export const UpdateEmailTemplateDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "points_threshold" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "course_instance_language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "course_instance_language" },
                 },
               },
             ],
@@ -8493,6 +8875,14 @@ export const AddEmailTemplateDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -8572,6 +8962,14 @@ export const AddEmailTemplateDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "points_threshold" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "course_instance_language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "course_instance_language" },
                 },
               },
             ],
