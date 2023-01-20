@@ -5,7 +5,7 @@ import { css, styled } from "@mui/material/styles"
 
 import BackgroundPattern from "../../../static/images/backgroundPattern.svg"
 import { CorrectedAnchor } from "../Common"
-import { CardHeader, CardWrapper } from "../Common/Card"
+import { CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
@@ -105,17 +105,7 @@ const ImageBackground = styled("span", {
 
 const SkeletonBackground = styled("span")`
   ${ImageBackgroundBase};
-  width: 100%;
   background-color: #eee;
-`
-
-const ModuleCardHeader = styled(CardHeader)`
-  height: 200px;
-  display: flex;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
 `
 
 const CenteredHeader = styled(Typography)`
@@ -133,9 +123,6 @@ export function ListItem({
     () => module.courses?.filter((course) => course.description) ?? [],
     [module],
   )
-  /*const imageUrl = `../../../static/images/${
-    module.image ?? module.slug + "jpg"
-  }`*/
 
   const setDescriptionHeight = useCallback(() => {
     const description = descriptionRef.current
@@ -189,16 +176,14 @@ export function ListItemSkeleton({
   backgroundColor: string
 }) {
   return (
-    <ModuleCardWrapper backgroundColor={backgroundColor}>
+    <ModuleCardWrapper as="section" backgroundColor={backgroundColor}>
       <SkeletonBackground />
-      <ModuleCardHeader>
-        <CenteredHeader variant="h1">
-          <Skeleton />
-        </CenteredHeader>
-      </ModuleCardHeader>
       <ModuleCardBody>
         <HeroContainer>
           <ModuleCardDescription>
+            <CenteredHeader variant="h1">
+              <Skeleton />
+            </CenteredHeader>
             <Typography variant="subtitle1">
               <Skeleton />
             </Typography>

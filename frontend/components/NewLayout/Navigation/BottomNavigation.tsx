@@ -6,10 +6,11 @@ import { NavigationLinks } from "/components/NewLayout/Navigation/NavigationLink
 const BottomNavigationContainer = styled((props: AppBarProps) => (
   <AppBar position="fixed" color="inherit" component="nav" {...props} />
 ))`
-  @media (min-width: 600px) {
+  @media (min-width: 800px) {
     display: none;
   }
   top: auto;
+  margin: auto;
   bottom: 0;
 `
 

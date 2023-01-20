@@ -1,3 +1,5 @@
+import Background from "components/NewLayout/Background"
+
 import { styled } from "@mui/material/styles"
 
 import { StudyModuleHero, StudyModuleList } from "/components/NewLayout/Modules"
@@ -11,6 +13,7 @@ const Container = styled("div")`
 function StudyModules() {
   return (
     <Container>
+      <Background />
       <StudyModuleHero />
       <StudyModuleList />
     </Container>

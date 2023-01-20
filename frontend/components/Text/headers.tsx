@@ -92,11 +92,14 @@ export const CardTitle = styled(Typography)`
   color: black;
 ` as typeof Typography
 
-export const CardSubtitle = styled(Typography)`
+export const CardSubtitle = styled(Typography)(
+  ({ theme }) => `
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
   margin-left: 0.1rem;
   margin-right: 0.1rem;
   color: gray;
-  font-family: "Open Sans Condensed", sans-serif !important;
-` as typeof Typography
+  font-family: ${theme.typography.subtitle1.fontFamily}; 
+  font-stretch: ${theme.typography.subtitle1.fontStretch};
+`,
+) as typeof Typography

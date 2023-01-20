@@ -1,4 +1,9 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react"
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react"
 
 import { Field, FieldInputProps, useFormikContext } from "formik"
 import { useRouter } from "next/router"
@@ -21,29 +26,9 @@ interface ImageInputProps {
   courses?: EditorCourseOtherCoursesFieldsFragment[] | null
 }
 
-const CourseImageInput = ({ courses }: ImageInputProps) => {
+const ImageDropzoneField = (props: FieldInputProps<CourseFormValues>) => {
   const { values, setFieldValue, initialValues } =
     useFormikContext<CourseFormValues>()
-  const { locale = "fi" } = useRouter()
-  const t = useTranslator(CoursesTranslations)
-  const [dialogOpen, setDialogOpen] = useState(false)
-
-  const coursesWithPhotos =
-    courses
-      ?.filter(
-        (course) => course.slug !== values.slug && !!course?.photo?.compressed,
-      )
-      .map((course) => {
-        const translation = (course.course_translations?.filter(
-          (t) => t.language === locale,
-        ) ?? [])[0]
-
-        return {
-          ...course,
-          name: translation?.name ?? course.name,
-        }
-      })
-      .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? []
 
   const resetPhoto = useCallback(() => {
     // setFieldValue("photo", null)
@@ -53,7 +38,77 @@ const CourseImageInput = ({ courses }: ImageInputProps) => {
     if (initialValues?.photo) {
       setFieldValue("delete_photo", true)
     }
-  }, [])
+  }, [setFieldValue, initialValues])
+
+  const onImageLoad = useCallback(
+    (value: any) => setFieldValue("thumbnail", value),
+    [setFieldValue],
+  )
+  const onImageAccepted = useCallback(
+    (value: any) => setFieldValue("new_photo", value),
+    [setFieldValue],
+  )
+
+  const onClose = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.stopPropagation()
+      e.nativeEvent.stopImmediatePropagation()
+      resetPhoto()
+    },
+    [resetPhoto],
+  )
+
+  const imagePreviewFile = useMemo(() => addDomain(values.thumbnail), [values])
+
+  return (
+    <ImageDropzoneInput
+      {...props}
+      onImageLoad={onImageLoad}
+      onImageAccepted={onImageAccepted}
+    >
+      <ImagePreview file={imagePreviewFile} onClose={onClose} />
+    </ImageDropzoneInput>
+  )
+}
+const CourseImageInput = ({ courses }: ImageInputProps) => {
+  const { values } = useFormikContext<CourseFormValues>()
+  const { locale = "fi" } = useRouter()
+  const t = useTranslator(CoursesTranslations)
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const coursesWithPhotos = useMemo(
+    () =>
+      courses
+        ?.filter(
+          (course) =>
+            course.slug !== values.slug && !!course?.photo?.compressed,
+        )
+        .map((course) => {
+          const translation = (course.course_translations?.filter(
+            (t) => t.language === locale,
+          ) ?? [])[0]
+
+          return {
+            ...course,
+            name: translation?.name ?? course.name,
+          }
+        })
+        .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? [],
+    [courses, locale, values],
+  )
+
+  const onImportPhotoClick = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
+      setDialogOpen(true)
+    },
+    [setDialogOpen],
+  )
+
+  const onImportPhotoDialogClose = useCallback(
+    () => setDialogOpen(false),
+    [setDialogOpen],
+  )
 
   return (
     <FormFieldGroup>
@@ -66,42 +121,20 @@ const CourseImageInput = ({ courses }: ImageInputProps) => {
           name="new_photo"
           type="file"
           label={t("courseNewPhoto")}
-          as={(props: FieldInputProps<CourseFormValues>) => (
-            <ImageDropzoneInput
-              {...props}
-              onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
-              onImageAccepted={(value: any) =>
-                setFieldValue("new_photo", value)
-              }
-            >
-              <ImagePreview
-                file={addDomain(values.thumbnail)}
-                onClose={(
-                  e: ReactMouseEvent<HTMLButtonElement, MouseEvent>,
-                ): void => {
-                  e.stopPropagation()
-                  e.nativeEvent.stopImmediatePropagation()
-                  resetPhoto()
-                }}
-              />
-            </ImageDropzoneInput>
-          )}
+          as={ImageDropzoneField}
           //errors={errors.new_photo}
           fullWidth
         />
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}
-          onClick={(e) => {
-            e.preventDefault()
-            setDialogOpen(true)
-          }}
+          onClick={onImportPhotoClick}
         >
           {t("importPhotoButton")}
         </Button>
         <ImportPhotoDialog
           open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
+          onClose={onImportPhotoDialogClose}
           courses={coursesWithPhotos}
         />
       </FormControl>

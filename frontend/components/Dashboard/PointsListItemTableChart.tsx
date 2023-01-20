@@ -3,7 +3,9 @@ import { CardSubtitle } from "components/Text/headers"
 import LinearProgress from "@mui/material/LinearProgress"
 import { styled } from "@mui/material/styles"
 
+import ProfileTranslations from "/translations/profile"
 import { FormattedGroupPoints } from "/util/formatPointsData"
+import { useTranslator } from "/util/useTranslator"
 
 const ChartContainer = styled("div")`
   display: flex;
@@ -32,13 +34,12 @@ interface Props {
   showDetailed: boolean
 }
 function PointsListItemTableChart(props: Props) {
+  const t = useTranslator(ProfileTranslations)
+
   const { title, points, cuttervalue, showDetailed } = props
   const value =
     (points.courseProgress.n_points / (points.courseProgress.max_points ?? 1)) *
     100
-  const services = points?.service_progresses?.length
-    ? points.service_progresses
-    : null
 
   return (
     <>
@@ -48,7 +49,7 @@ function PointsListItemTableChart(props: Props) {
           variant="body1"
           style={{ marginRight: "1rem" }}
         >
-          {title}
+          {t(title as any)}
         </CardSubtitle>
         <CardSubtitle align="right">
           {points.courseProgress.n_points.toFixed(2)} /{" "}
@@ -62,7 +63,7 @@ function PointsListItemTableChart(props: Props) {
         />
       </ChartContainer>
       {showDetailed &&
-        (services?.map((s) => (
+        (points.service_progresses?.map((s) => (
           <ChartContainer
             style={{ width: "72%", marginLeft: "18%" }}
             key={s.service}
@@ -87,7 +88,7 @@ function PointsListItemTableChart(props: Props) {
               color="secondary"
             />
           </ChartContainer>
-        )) ?? <p>No details available</p>)}
+        )) ?? <p>{t("noDetailsAvailable")}</p>)}
     </>
   )
 }

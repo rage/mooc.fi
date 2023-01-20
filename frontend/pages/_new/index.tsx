@@ -1,3 +1,5 @@
+import Background from "components/NewLayout/Background"
+
 import { styled } from "@mui/material/styles"
 
 import EmailSubscribe from "/components/Home/EmailSubscribe"
@@ -16,6 +18,7 @@ const HomeContainer = styled("div")`
 const Home = () => {
   return (
     <HomeContainer>
+      <Background />
       <Hero />
       <News />
       <Hype />

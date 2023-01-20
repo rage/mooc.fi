@@ -62,7 +62,8 @@ const LanguageSwitch = () => {
         <Link href={asPath} locale={locale} passHref key={`switch-${locale}`}>
           <Language
             active={currentLocale === locale}
-            aria-label={t(locale as keyof (typeof CommonTranslations)[string])}
+            title={t(locale as keyof typeof CommonTranslations[string])}
+            aria-label={t(locale as keyof typeof CommonTranslations[string])}
           >
             {locale}
           </Language>

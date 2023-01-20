@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
@@ -48,17 +48,24 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
   const { anchors } = useAnchorContext()
   const client = useApolloClient()
 
-  const defaultValues = toCourseForm({
-    course,
-    modules: studyModules,
-  })
-  const validationSchema = courseEditSchema({
-    client,
-    initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
-    t,
-  })
+  const defaultValues = useRef(
+    toCourseForm({
+      course,
+      modules: studyModules,
+    }),
+  )
+  const validationSchema = useMemo(
+    () =>
+      courseEditSchema({
+        client,
+        initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
+        t,
+      }),
+    [course, client, t],
+  )
+
   const methods = useForm<CourseFormValues>({
-    defaultValues,
+    defaultValues: defaultValues.current,
     resolver: customValidationResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
@@ -85,7 +92,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
 
     const mutationVariables = fromCourseForm({
       values,
-      initialValues: defaultValues,
+      initialValues: defaultValues.current,
     })
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
@@ -147,7 +154,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
     () => ({
       status,
       tab,
-      initialValues: defaultValues,
+      initialValues: defaultValues.current,
       setStatus,
       setTab,
       onSubmit,
