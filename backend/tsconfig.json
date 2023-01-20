@@ -10,6 +10,7 @@
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
+    "strictNullChecks": true,
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,
@@ -18,7 +19,7 @@
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "plugins": [{ "name": "nexus/typescript-language-service" }]
+    "plugins": [{ "name": "nexus/typescript-language-service" }],
     // "typeRoots": ["node_modules/@types", "types"]
   },
   "include": [".", "./bin/**/*", "types.d.ts"],

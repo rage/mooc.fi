@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { omit } from "lodash"
 import { DateTime } from "luxon"
 
@@ -60,7 +61,7 @@ export const toCourseForm = ({
     order: course.order ?? undefined,
     study_module_order: course.study_module_order ?? undefined,
     status: course.status ?? CourseStatus.Upcoming,
-    course_translations: (course.course_translations || []).map(
+    course_translations: (course.course_translations ?? []).map(
       (course_translation) => {
         const open_university_course_link =
           course?.open_university_registration_links?.find(
@@ -136,6 +137,19 @@ export const toCourseForm = ({
         _id: link.id ?? undefined,
         course_code: link.course_code ?? undefined,
       })) ?? [],
+    tags:
+      course?.tags?.map((tag) => ({
+        ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
+        _id: tag.id ?? undefined,
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
+          _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
+          language: tagTranslation.language,
+          name: tagTranslation.name,
+          description: tagTranslation.description ?? undefined,
+        })),
+      })) ?? [],
   }
 }
 
@@ -155,8 +169,8 @@ export const fromCourseForm = ({
     values?.course_translations?.map(
       (course_translation: CourseTranslationFormValues) => ({
         ...omit(course_translation, ["open_university_course_link", "_id"]),
-        link: course_translation.link || "",
-        description: course_translation.description || "",
+        link: course_translation.link ?? "",
+        description: course_translation.description ?? "",
         id:
           !course_translation._id || course_translation._id === ""
             ? undefined
@@ -223,9 +237,31 @@ export const fromCourseForm = ({
     })
     .filter(notEmpty)
 
-  const study_modules = Object.keys(values.study_modules || {})
+  const study_modules = Object.keys(values.study_modules ?? {})
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
+
+  const course_tags = values?.tags?.map((tag) => {
+    return {
+      course_id: values.id,
+      tag_id: tag._id,
+      tag: {
+        ...omit(tag, ["__typename", "_id"]),
+        id: tag._id ?? undefined,
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => {
+          const [tag_id, language] = splitCompositeId(tagTranslation._id ?? "")
+
+          return {
+            ...omit(tagTranslation, ["__typename", "_id"]),
+            tag_id,
+            language,
+            description: tagTranslation.description ?? undefined,
+          }
+        }),
+      },
+    }
+  })
 
   const formValues = newCourse
     ? omit(values, [
@@ -292,7 +328,14 @@ export const fromCourseForm = ({
         : values.exercise_completions_needed,
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
+    course_tags,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
+}
+
+const splitCompositeId = (id: string) => {
+  const res = id.split(":")
+
+  return res.map((r) => (r === "" ? undefined : r))
 }

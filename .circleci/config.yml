@@ -1,9 +1,10 @@
 version: 2.1
 orbs:
-  helm: circleci/helm@1.1.2
+  helm: circleci/helm@2.0.1
   docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
-  node: circleci/node@5.0.2
+  node: circleci/node@5.0.3
+#  codecov: codecov/codecov@3.2.4
 executors:
   backend_test:
     docker:
@@ -132,10 +133,10 @@ jobs:
           command: |
             curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
             chmod +x /tmp/codecov
-            /tmp/codecov -F backend
-      #- run:
-      #    name: "Upload coverage"
-      #    command: bash <(curl -s https://codecov.io/bash)
+            /tmp/codecov -F backend -n "${CIRCLE_BUILD_NUM}"
+  ### when codecov orb is enabled
+  #    - codecov/upload:
+  #        flags: backend
     # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
     resource_class: large
   # could combine the artifacts in this step if needed, now the codecov/junit stuff combines automatically
@@ -255,7 +256,6 @@ jobs:
     resource_class: large
 
 workflows:
-  version: 2
   build-deploy:
     jobs:
       - code_style

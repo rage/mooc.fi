@@ -34,7 +34,7 @@ export const EmailTemplate = objectType({
 export const EmailTemplateQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("email_template", {
+    t.field("email_template", {
       type: "EmailTemplate",
       args: {
         id: nonNull(idArg()),

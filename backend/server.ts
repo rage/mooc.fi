@@ -8,7 +8,7 @@ import morgan from "morgan"
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { ServerContext } from "./context"
-import schema from "./schema"
+import createSchema from "./schema"
 
 const helmet = require("helmet")
 const bodyParser = require("body-parser")
@@ -37,6 +37,7 @@ const createExpressAppWithContext = ({
 
 export default async (serverContext: ServerContext) => {
   const { prisma, logger, knex, extraContext = {} } = serverContext
+  const schema = createSchema()
 
   const apollo = new ApolloServer({
     context: (ctx) => ({

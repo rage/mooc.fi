@@ -70,7 +70,9 @@ const esLintConfig = {
     "plugin:@typescript-eslint/recommended",
     // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now
     "plugin:jsx-a11y/recommended",
+    "prettier",
     "plugin:@next/next/recommended",
+    "plugin:@next/next/core-web-vitals",
   ],
   settings: {
     react: {

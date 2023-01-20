@@ -7,13 +7,12 @@ import {
   booleanArg,
   extendType,
   idArg,
+  inputObjectType,
   intArg,
   nonNull,
   objectType,
   stringArg,
 } from "nexus"
-
-import { Prisma } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"
@@ -54,6 +53,22 @@ export const Organization = objectType({
   },
 })
 
+export const OrganizationOrderByInput = inputObjectType({
+  name: "OrganizationOrderByInput",
+  definition(t) {
+    t.field("contact_information", { type: "SortOrder" })
+    t.field("created_at", { type: "SortOrder" })
+    t.field("email", { type: "SortOrder" })
+    t.field("id", { type: "SortOrder" })
+    t.field("phone", { type: "SortOrder" })
+    t.field("slug", { type: "SortOrder" })
+    t.field("tmc_created_at", { type: "SortOrder" })
+    t.field("tmc_updated_at", { type: "SortOrder" })
+    t.field("updated_at", { type: "SortOrder" })
+    t.field("website", { type: "SortOrder" })
+  },
+})
+
 const organizationPermission = (
   _: any,
   args: any,
@@ -68,7 +83,7 @@ const organizationPermission = (
 export const OrganizationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("organization", {
+    t.field("organization", {
       type: "Organization",
       args: {
         id: idArg(),
@@ -88,19 +103,13 @@ export const OrganizationQueries = extendType({
       },
     })
 
-    t.crud.organizations({
-      ordering: true,
-      pagination: true,
-      authorize: organizationPermission,
-    })
-
     t.list.nonNull.field("organizations", {
       type: "Organization",
       args: {
         take: intArg(),
         skip: intArg(),
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
-        orderBy: arg({ type: "OrganizationOrderByInput" }),
+        orderBy: arg({ type: "OrganizationOrderByWithRelationInput" }),
         hidden: booleanArg(),
       },
       authorize: organizationPermission,
@@ -115,9 +124,7 @@ export const OrganizationQueries = extendType({
                 id: cursor.id ?? undefined,
               }
             : undefined,
-          orderBy:
-            (filterNull(orderBy) as Prisma.OrganizationOrderByInput) ??
-            undefined,
+          orderBy: filterNull(orderBy) ?? undefined,
           where: {
             hidden,
           },

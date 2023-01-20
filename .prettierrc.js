@@ -1,3 +1,5 @@
+// @ts-check
+/** @type {import("@ianvs/prettier-plugin-sort-imports").PrettierConfig} */
 module.exports = {
   printWidth: 80,
   semi: false,
@@ -15,7 +17,7 @@ module.exports = {
     "",
     "^/graphql",
   ],
-  plugins: [require.resolve("@ianvs/prettier-plugin-sort-imports")],
+  // plugins: [require.resolve("@ianvs/prettier-plugin-sort-imports")],
   importOrderBuiltinModulesToTop: true,
   importOrderSortSpecifiers: true,
   importOrderCaseInsensitive: true,

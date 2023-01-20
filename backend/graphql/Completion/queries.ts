@@ -1,5 +1,4 @@
 // import { convertPagination } from "../../util/db-functions"
-
 import { ForbiddenError } from "apollo-server-express"
 import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"

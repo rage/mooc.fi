@@ -1,5 +1,5 @@
 import { UserInputError } from "apollo-server-express"
-import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
+import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
@@ -38,7 +38,7 @@ export const User = objectType({
 
     t.field("full_name", {
       type: "String",
-      resolve: async ({ first_name, last_name }, _, __) => {
+      resolve: async ({ first_name, last_name }) => {
         return [first_name, last_name].filter(notEmpty).join(" ")
       },
     })
@@ -46,8 +46,8 @@ export const User = objectType({
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
-        course_id: nullable(stringArg()),
-        course_slug: nullable(stringArg()),
+        course_id: stringArg(),
+        course_slug: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { course_id, course_slug } = args
@@ -86,9 +86,9 @@ export const User = objectType({
     t.list.nonNull.field("completions_registered", {
       type: "CompletionRegistered",
       args: {
-        course_id: nullable(stringArg()),
-        course_slug: nullable(stringArg()),
-        organization_id: nullable(stringArg()),
+        course_id: stringArg(),
+        course_slug: stringArg(),
+        organization_id: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { course_id, course_slug, organization_id } = args
@@ -126,14 +126,15 @@ export const User = objectType({
     t.nonNull.field("project_completion", {
       type: "Boolean",
       args: {
-        course_id: nullable(idArg()),
-        course_slug: nullable(stringArg()),
+        course_id: idArg(),
+        course_slug: stringArg(),
+      },
+      validate: (_, { course_id, course_slug }) => {
+        if (!course_id && !course_slug) {
+          throw new UserInputError("course_id or course_slug is required")
+        }
       },
       resolve: async (parent, { course_id, course_slug }, ctx) => {
-        if (!course_id && !course_slug) {
-          throw new Error("need course_id or course_slug")
-        }
-
         // TODO/FIXME: Semantically it's right now, as we're quering a specific course,
         // be it tier or handler, and if the user does not have a project_completion
         // iin _that_ specific course progress, then we return false.
@@ -240,7 +241,7 @@ export const User = objectType({
     })
 
     // TODO/FIXME: is this used anywhere? if is, find better name
-    t.nullable.field("user_course_progressess", {
+    t.field("user_course_progressess", {
       type: "UserCourseProgress",
       args: {
         course_id: idArg(),
@@ -266,7 +267,7 @@ export const User = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        includeDeleted: nullable(booleanArg()),
+        includeDeleted: booleanArg(),
       },
       resolve: async (parent, { includeDeleted = false }, ctx) => {
         return ctx.prisma.user

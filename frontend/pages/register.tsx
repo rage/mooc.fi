@@ -129,13 +129,10 @@ function useRegisterOrganization(searchFilter: string) {
     error: organizationsError,
     loading: organizationsLoading,
   } = useQuery(OrganizationsDocument)
-  const {
-    data: userOrganizationsData,
-    error: userOrganizationsError,
-    // loading: userOrganizationsLoading,
-  } = useQuery(UserOrganizationsDocument, {
-    variables: { user_id: currentUser?.id },
-  })
+  const { data: userOrganizationsData, error: userOrganizationsError } =
+    useQuery(UserOrganizationsDocument, {
+      variables: { user_id: currentUser!.id },
+    })
   const [addUserOrganization] = useMutation(AddUserOrganizationDocument, {
     refetchQueries: [
       {
@@ -145,7 +142,6 @@ function useRegisterOrganization(searchFilter: string) {
     ],
   })
 
-  // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
   const [deleteUserOrganization] = useMutation(DeleteUserOrganizationDocument, {
     refetchQueries: [
       {
@@ -249,7 +245,7 @@ function useRegisterOrganization(searchFilter: string) {
   }
 
   return {
-    error: organizationsError || userOrganizationsError,
+    error: organizationsError ?? userOrganizationsError,
     loading: organizationsLoading,
     organizations,
     filteredOrganizations,
@@ -258,22 +254,54 @@ function useRegisterOrganization(searchFilter: string) {
   }
 }
 
-const Register = () => {
+const OrganizationItems = () => {
   const t = useTranslator(RegistrationTranslations)
-  const { searchFilter, cancelFilterDebounce, searchBox, setSearchBox } =
-    useSearchBox()
+
+  const { searchFilter } = useSearchBox()
   const {
     error,
-    loading,
-    toggleMembership,
     organizations,
+    loading,
     filteredOrganizations,
     memberships,
+    toggleMembership,
   } = useRegisterOrganization(searchFilter)
 
-  if (error /*organizationsError || userOrganizationsError*/) {
+  if (error) {
     return <ErrorMessage />
   }
+
+  if (loading) {
+    return (
+      <>
+        {range(5).map((i) => (
+          <SkeletonCard key={`skeleton-${i}`} />
+        ))}
+      </>
+    )
+  }
+
+  if (!organizations || Object.keys(organizations).length === 0) {
+    return <div>{t("noResults", { search: searchFilter })}</div>
+  }
+
+  return (
+    <>
+      {Object.entries(filteredOrganizations).map(([id, organization]) => (
+        <OrganizationCard
+          key={`card-${id}`}
+          name={organization.organization_translations![0].name}
+          isMember={memberships.includes(id)}
+          onToggle={toggleMembership(id)}
+        />
+      ))}
+    </>
+  )
+}
+
+const Register = () => {
+  const t = useTranslator(RegistrationTranslations)
+  const { cancelFilterDebounce, searchBox, setSearchBox } = useSearchBox()
 
   return (
     <WideContainer>
@@ -307,22 +335,7 @@ const Register = () => {
             ),
           }}
         />
-        <>
-          {loading || !Object.keys(organizations).length ? (
-            range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
-          ) : Object.keys(filteredOrganizations).length ? (
-            Object.entries(filteredOrganizations).map(([id, organization]) => (
-              <OrganizationCard
-                key={`card-${id}`}
-                name={organization.organization_translations[0].name}
-                isMember={memberships.includes(id)}
-                onToggle={toggleMembership(id)}
-              />
-            ))
-          ) : (
-            <div>{t("noResults", { search: searchFilter })}</div>
-          )}
-        </>
+        <OrganizationItems />
       </FormContainer>
     </WideContainer>
   )

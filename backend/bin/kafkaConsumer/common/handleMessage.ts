@@ -93,6 +93,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
   const { logger, consumer } = kafkaContext
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const commitCounter = commitCounterMap.get(message.partition) || 0
   commitCounterMap.set(message.partition, commitCounter + 1)
 

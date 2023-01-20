@@ -24,7 +24,7 @@ export const CourseAlias = objectType({
 export const CourseAliasCreateInput = inputObjectType({
   name: "CourseAliasCreateInput",
   definition(t) {
-    t.nullable.id("course")
+    t.id("course")
     t.nonNull.string("course_code")
   },
 })
@@ -32,8 +32,8 @@ export const CourseAliasCreateInput = inputObjectType({
 export const CourseAliasUpsertInput = inputObjectType({
   name: "CourseAliasUpsertInput",
   definition(t) {
-    t.nullable.id("id")
-    t.nullable.id("course")
+    t.id("id")
+    t.id("course")
     t.nonNull.string("course_code")
   },
 })

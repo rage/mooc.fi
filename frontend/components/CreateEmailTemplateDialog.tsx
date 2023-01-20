@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { omit } from "lodash"
 import Router from "next/router"
@@ -18,6 +18,7 @@ import {
 
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
+import notEmpty from "/util/notEmpty"
 
 import {
   AddEmailTemplateDocument,
@@ -47,14 +48,6 @@ const CreateEmailTemplateDialog = ({
   const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
   const client = useApolloClient()
 
-  if (loading) {
-    return <Spinner />
-  }
-  //TODO fix error messages
-  if (error || !data) {
-    return <p>Error has occurred</p>
-  }
-
   const handleDialogClickOpen = () => {
     setOpenDialog(true)
   }
@@ -63,24 +56,32 @@ const CreateEmailTemplateDialog = ({
     setOpenDialog(false)
   }
 
-  const courseOptions =
-    templateType === "completion"
-      ? data?.courses
+  const courseOptions = useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    if (templateType === "completion") {
+      return (
+        data.courses
+          ?.filter(notEmpty)
           ?.filter((c) => c?.completion_email === null)
-          .map((c, i) => {
-            return (
-              <option key={i} value={i}>
-                {c?.name}
-              </option>
-            )
-          })
-      : data?.courses?.map((c, i) => {
-          return (
-            <option key={i} value={i}>
+          .map((c, i) => (
+            <option key={`course-option-${c.id}`} value={i}>
               {c?.name}
             </option>
-          )
-        })
+          )) ?? []
+      )
+    }
+
+    return (
+      data.courses?.filter(notEmpty)?.map((c, i) => (
+        <option key={`course-option-${c.id}`} value={i}>
+          {c?.name}
+        </option>
+      )) ?? []
+    )
+  }, [templateType, data])
 
   const handleCreate = async () => {
     try {
@@ -129,6 +130,14 @@ const CreateEmailTemplateDialog = ({
     } catch {
       setIsErrorSnackbarOpen(true)
     }
+  }
+
+  if (loading) {
+    return <Spinner />
+  }
+  //TODO fix error messages
+  if (error || !data) {
+    return <p>Error has occurred</p>
   }
 
   return (

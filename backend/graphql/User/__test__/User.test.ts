@@ -1,7 +1,7 @@
 import { gql } from "graphql-request"
 import { orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests"
+import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
 import {
   adminUserDetails,
   normalUser,
@@ -94,32 +94,11 @@ describe("User", () => {
       }
     `)
 
-        expect(res).toMatchInlineSnapshot(
-          {
-            currentUser: {
-              id: expect.any(String),
-              administrator: false,
-              email: "e@mail.com",
-              first_name: "first",
-              last_name: "last",
-              username: "user",
-              upstream_id: 1,
-            },
+        expect(res).toMatchSnapshot({
+          currentUser: {
+            id: expect.stringMatching(ID_REGEX),
           },
-          `
-              Object {
-                "currentUser": Object {
-                  "administrator": false,
-                  "email": "e@mail.com",
-                  "first_name": "first",
-                  "id": Any<String>,
-                  "last_name": "last",
-                  "upstream_id": 1,
-                  "username": "user",
-                },
-              }
-          `,
-        )
+        })
 
         jest.clearAllMocks()
       })
@@ -141,16 +120,7 @@ describe("User", () => {
       }
     `)
 
-        expect(res).toMatchInlineSnapshot(
-          {
-            currentUser: null,
-          },
-          `
-        Object {
-          "currentUser": null,
-        }
-      `,
-        )
+        expect(res.currentUser).toBeNull()
       })
     })
 
@@ -297,14 +267,9 @@ describe("User", () => {
           value: true,
         })
 
-        expect(res.updateResearchConsent).toMatchInlineSnapshot(
-          { id: expect.any(String) },
-          `
-        Object {
-          "id": Any<String>,
-        }
-      `,
-        )
+        expect(res.updateResearchConsent).toMatchSnapshot({
+          id: expect.stringMatching(ID_REGEX),
+        })
         const updatedConsent = await ctx.prisma.user.findFirst({
           where: { upstream_id: 1 },
           select: { research_consent: true },

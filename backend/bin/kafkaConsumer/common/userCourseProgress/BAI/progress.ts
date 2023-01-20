@@ -181,6 +181,7 @@ export const getProgress = ({
   highestTier,
   totalExerciseCompletions,
 }: GetProgressArgs) => {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const pointsProgress = (n_points || 0) / (max_points || 1)
   const newProgress = {
     progress: [

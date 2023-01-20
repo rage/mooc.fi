@@ -12,12 +12,9 @@ import { PrismaClient, User } from "@prisma/client"
 import { DATABASE_URL, DB_USER, DEBUG, EXTENSION_PATH } from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
+import { fail } from "./util"
 
 require("sharp") // ensure correct zlib thingy
-
-export function fail(reason = "fail was called in a test") {
-  throw new Error(reason)
-}
 
 // @ts-ignore: jest has no explicit fail anymore
 global.fail = fail

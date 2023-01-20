@@ -1,4 +1,5 @@
-import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
+import { ForbiddenError } from "apollo-server-core"
+import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
@@ -59,6 +60,7 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
+    // t.model.course_tags()
 
     t.string("description")
     t.string("instructions")
@@ -67,17 +69,16 @@ export const Course = objectType({
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
-        user_id: nullable(stringArg()),
-        user_upstream_id: nullable(intArg()),
+        user_id: stringArg(),
+        user_upstream_id: intArg(),
       },
       authorize: isAdmin,
-      resolve: async (parent, args, ctx) => {
-        const { user_id, user_upstream_id } = args
-
+      validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
           throw new Error("needs user_id or user_upstream_id")
         }
-
+      },
+      resolve: async (parent, { user_id, user_upstream_id }, ctx) => {
         return ctx.prisma.course
           .findUnique({
             where: {
@@ -124,6 +125,86 @@ export const Course = objectType({
           .exercises({
             where: exerciseCondition,
           })
+      },
+    })
+
+    t.nonNull.list.nonNull.field("tags", {
+      type: "Tag",
+      args: {
+        language: stringArg(),
+        types: list(nonNull(stringArg())),
+        search: stringArg(),
+        includeHidden: booleanArg(),
+      },
+      validate: (_, { includeHidden }, ctx) => {
+        if (includeHidden && !isAdmin({}, {}, ctx, {})) {
+          throw new ForbiddenError("no admin rights")
+        }
+      },
+      resolve: async (
+        parent,
+        { language, types, search, includeHidden },
+        ctx,
+      ) => {
+        const where = {} as Prisma.CourseTagWhereInput
+
+        if (language) {
+          where.tag = {
+            tag_translations: {
+              some: {
+                language,
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (types) {
+          where.tag = {
+            ...where.tag,
+            tag_types: {
+              some: {
+                name: { in: types },
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (search) {
+          where.tag = {
+            ...where.tag,
+            tag_translations: {
+              some: {
+                ...(language && { language }),
+                OR: [
+                  {
+                    name: { contains: search, mode: "insensitive" },
+                  },
+                  {
+                    description: { contains: search, mode: "insensitive" },
+                  },
+                ],
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (!includeHidden) {
+          where.tag = {
+            ...where.tag,
+            OR: [{ hidden: false }, { hidden: null }],
+          } as Prisma.TagWhereInput
+        }
+
+        const res = await ctx.prisma.course.findUnique({
+          where: { id: parent.id },
+          select: {
+            course_tags: {
+              where,
+              include: {
+                tag: true,
+              },
+            },
+          },
+        })
+
+        return (res?.course_tags ?? []).map((ct) => ({ ...ct.tag, language }))
       },
     })
   },

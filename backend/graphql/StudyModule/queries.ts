@@ -2,7 +2,7 @@ import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
+import { StudyModule, StudyModuleTranslation } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -10,7 +10,7 @@ import { filterNull } from "../../util/db-functions"
 export const StudyModuleQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("study_module", {
+    t.field("study_module", {
       type: "StudyModule",
       args: {
         id: idArg(),
@@ -19,12 +19,13 @@ export const StudyModuleQueries = extendType({
         translationFallback: booleanArg({ default: false }),
       },
       authorize: or(isAdmin, isUser),
-      resolve: async (_, args, ctx) => {
-        const { id, slug, language, translationFallback } = args
-
+      validate: (_, { id, slug }) => {
         if (!id && !slug) {
           throw new UserInputError("must provide id or slug")
         }
+      },
+      resolve: async (_, args, ctx) => {
+        const { id, slug, language, translationFallback } = args
 
         const study_module:
           | (StudyModule & {
@@ -88,16 +89,14 @@ export const StudyModuleQueries = extendType({
     t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: arg({ type: "StudyModuleOrderByInput" }),
+        orderBy: arg({ type: "StudyModuleOrderByWithRelationInput" }),
         language: stringArg(),
       },
       resolve: async (_, { orderBy, language }, ctx) => {
         const modules: (StudyModule & {
           study_module_translations?: StudyModuleTranslation[]
         })[] = await ctx.prisma.studyModule.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.StudyModuleOrderByInput) ??
-            undefined,
+          orderBy: filterNull(orderBy) ?? undefined,
           ...(language
             ? {
                 include: {

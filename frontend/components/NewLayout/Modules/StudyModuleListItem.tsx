@@ -126,6 +126,7 @@ export function ListItem({
 
   const setDescriptionHeight = useCallback(() => {
     const description = descriptionRef.current
+
     if (!description) {
       return
     }

@@ -1,6 +1,6 @@
 import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
-import { arg, extendType, idArg, nonNull, nullable, stringArg } from "nexus"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
@@ -60,16 +60,16 @@ export const StudyModuleMutations = extendType({
         const existingTranslations = await ctx.prisma.studyModule
           .findUnique({ where: { slug } })
           .study_module_translations()
-        const newTranslations = (study_module_translations || [])
+        const newTranslations = (study_module_translations ?? [])
           .filter((t) => !t?.id)
           .map((t) => ({ ...t, id: undefined }))
-        const updatedTranslations = (study_module_translations || [])
+        const updatedTranslations = (study_module_translations ?? [])
           .filter((t) => !!t?.id)
           .map((t) => ({ where: { id: t?.id }, data: { ...t, id: undefined } }))
-        const existingTranslationIds = (existingTranslations || []).map(
+        const existingTranslationIds = (existingTranslations ?? []).map(
           (t) => t.id,
         )
-        const moduleTranslationIds = (study_module_translations || []).map(
+        const moduleTranslationIds = (study_module_translations ?? []).map(
           (t) => t?.id,
         )
         const removedTranslationIds = existingTranslationIds
@@ -109,17 +109,16 @@ export const StudyModuleMutations = extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: nullable(idArg()),
+        id: idArg(),
         slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx) => {
-        const { id, slug } = args
-
+      validate: (_, { id, slug }) => {
         if (!id && !slug) {
-          throw "must have at least id or slug"
+          throw new UserInputError("must provide id or slug")
         }
-
+      },
+      resolve: async (_, { id, slug }, ctx) => {
         const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
             id: id ?? undefined,

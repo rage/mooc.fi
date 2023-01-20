@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["orderByRelation", "selectRelationCount", "orderByAggregateGroup", "filterJson"]
 }
 
 datasource db {
@@ -130,6 +131,7 @@ model Course {
   ownerships                                         CourseOwnership[]
   course_stats_email_id                              String?
   course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
+  course_tags                                        CourseTag[]         
 
   @@map("course")
 }
@@ -560,6 +562,53 @@ model CourseStatsSubscription {
 
   @@unique([user_id, email_template_id])
   @@map("course_stats_subscription")
+}
+
+model Tag {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  id                                       String           @id @default(uuid())
+  hidden                                   Boolean?         @default(false) 
+  tag_types                                TagType[]      
+  tag_translations                         TagTranslation[]
+  course_tags                              CourseTag[]         
+
+  @@map("tag")
+}
+
+model TagType {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  name                                     String           @id
+  tags                                     Tag[]
+
+  @@map("tag_type")
+}
+
+model TagTranslation {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  tag_id                                   String          
+  language                                 String
+  name                                     String
+  description                              String?
+  tag                                      Tag              @relation(fields: [tag_id], references: [id])
+
+  @@id([tag_id, language])
+  @@unique([name, language])
+  @@map("tag_translation")
+}
+
+model CourseTag {
+  created_at                               DateTime?        @default(now())
+  updated_at                               DateTime?        @updatedAt
+  course_id                                String
+  tag_id                                   String
+  course                                   Course           @relation(fields: [course_id], references: [id]) 
+  tag                                      Tag              @relation(fields: [tag_id], references: [id])
+
+  @@id([course_id, tag_id])
+  @@map("course_tag")
 }
 
 enum CourseStatus {
