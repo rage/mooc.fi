@@ -43,14 +43,12 @@ After installing DataGrip
 * `postgres` in database field
 4. in Schemas-tab, check which dbs you want (probably certificates, exams, moocfi, quizzes1, 2 and 3, staging, maybe others based on usage)
 5. refresh the data source in the database explorer to see the databases
-6. for moocfi -db, set schema in console to `moocfi$production` (this must be done every time you use datagrip)
-    - Can be set to remember this on console/SQL file basis; needs to be set again for each new window, though: https://www.jetbrains.com/help/datagrip/schemas.html#save-a-search-path-between-ide-restarts
+6. for `moocfi` database, set schema in console to `moocfi$production` 
+    - You can save this on console/SQL file basis; needs to be set again for each new window, though: https://www.jetbrains.com/help/datagrip/schemas.html#save-a-search-path-between-ide-restarts
 
 Now you can run sql commands in console, test for example `select * from course;` and you should see courses listed in output window.
 
-You can name queries by adding comments before queries, e.g. `/*query all courses*/`
-
-We recommend configuring DataGrip to open a new result window for each query: https://www.jetbrains.com/help/datagrip/viewing-query-results.html#open-a-new-tab-for-each-query
+You can name queries by adding comments before queries, e.g. `/*query all courses*/` -- this will be shown in the output window title, which helps finding the query results among many tabs. We recommend configuring DataGrip to open a new result window for each query: https://www.jetbrains.com/help/datagrip/viewing-query-results.html#open-a-new-tab-for-each-query
 
 ## Miscellaneous stuff
 
@@ -58,8 +56,8 @@ We recommend configuring DataGrip to open a new result window for each query: ht
 
 * `kubectl get pods` - Check pod status
 * `kubectl logs <pod_name>` - get logs for a single pod
-    - where `pod_name` is the full name with suffix like fet`ch-avoin-links-27777615-xyzzy`
-    - what `stern` does is basically `kubectl logs <prefix>*`
+    - where `pod_name` is the full name with suffix like `fetch-avoin-links-27777615-xyzzy`
+    - what `stern` (see below) does is basically `kubectl logs <prefix>*`
 * `kubectl get jobs`
 * `kubectl get cronjobs`
 * `kubectl describe <resource> <resource_name>` - describe resource
@@ -70,6 +68,6 @@ We recommend configuring DataGrip to open a new result window for each query: ht
 
 ### Check logs
 
-Install [stern](https://github.com/wercker/stern)
+Install [stern](https://github.com/wercker/stern) to check logs for all pods with a certain prefix easily.
 
 `stern <pod cluster prefix>`, prefix is e.g. moocfi-backend

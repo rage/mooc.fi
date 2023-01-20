@@ -18,6 +18,7 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
+// @ts-ignore: disabled
 const Background = styled("div")`
   position: absolute;
   top: 0;
@@ -42,7 +43,6 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
       <FooterDownPusherWrapper>
         <Header />
         <MainContent id="main">
-          <Background />
           <Breadcrumbs />
           <Alerts />
           {children}

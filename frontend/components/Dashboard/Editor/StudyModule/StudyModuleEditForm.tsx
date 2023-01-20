@@ -28,6 +28,7 @@ import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import {
+  FormSubtitle,
   OutlinedFormControl,
   OutlinedFormGroup,
   OutlinedInputLabel,
@@ -35,7 +36,6 @@ import {
   StyledFieldWithAnchor,
   StyledTextField,
 } from "/components/Dashboard/Editor/common"
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
@@ -63,7 +63,7 @@ const pixel =
   "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 
 // capitalized to please the hook linter
-const RenderForm = () => {
+const StudyModuleFormComponent = () => {
   const { errors, values, isSubmitting } =
     useFormikContext<StudyModuleFormValues>()
 
@@ -184,8 +184,13 @@ const RenderForm = () => {
             {(helpers) => (
               <>
                 {values?.study_module_translations?.map(
-                  (_: any, index: number) => (
-                    <LanguageEntry item key={`translation-${index}`}>
+                  (translation, index: number) => (
+                    <LanguageEntry
+                      item
+                      key={`translation-${
+                        translation.id ?? translation.language
+                      }`}
+                    >
                       <EntryContainer elevation={2}>
                         <StyledFieldWithAnchor
                           name={`study_module_translations[${index}].language`}
@@ -322,12 +327,18 @@ function StudyModuleEditForm<SchemaType extends ObjectShape>({
   return (
     <Formik initialValues={module} validate={validate} onSubmit={onSubmit}>
       <FormWrapper<StudyModuleFormValues>
-        renderForm={RenderForm}
         onCancel={onCancel}
         onDelete={onDelete}
-      />
+      >
+        <StudyModuleFormComponent />
+      </FormWrapper>
     </Formik>
   )
 }
 
+/*
+        renderForm={RenderForm}
+        onCancel={onCancel}
+        onDelete={onDelete}
+*/
 export default StudyModuleEditForm

@@ -307,6 +307,7 @@ function CourseGrid() {
               {difficultyTags.map((tag) => (
                 <TagButton
                   id={`difficulty-tag-${tag}`}
+                  key={`difficulty-tag-${tag}`}
                   variant={activeTags.includes(tag) ? "contained" : "outlined"}
                   onClick={() => handleClick(tag)}
                   size="small"
@@ -331,6 +332,7 @@ function CourseGrid() {
               {moduleTags.map((tag) => (
                 <TagButton
                   id={`module-tag-${tag}`}
+                  key={`module-tag-${tag}`}
                   variant={activeTags.includes(tag) ? "contained" : "outlined"}
                   onClick={() => handleClick(tag)}
                   size="small"
@@ -355,6 +357,7 @@ function CourseGrid() {
               {languageTags.map((tag) => (
                 <TagButton
                   id={`language-tag-${tag}`}
+                  key={`language-tag-${tag}`}
                   variant={activeTags.includes(tag) ? "contained" : "outlined"}
                   onClick={() => handleClick(tag)}
                   size="small"
@@ -433,6 +436,7 @@ function CourseGrid() {
               )
               .map((course) => (
                 <CourseCard
+                  key={course.id}
                   course={course}
                   tags={
                     course?.slug ? hardcodedTags[course?.slug] : ["undefined"]

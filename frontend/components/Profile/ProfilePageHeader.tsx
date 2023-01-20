@@ -29,6 +29,7 @@ interface ProfilePageHeaderProps {
   email: string
   student_number: string
 }
+
 const ProfilePageHeader = (props: ProfilePageHeaderProps) => {
   const { first_name, last_name, email, student_number } = props
   return (

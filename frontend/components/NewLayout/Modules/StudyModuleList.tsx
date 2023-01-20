@@ -43,11 +43,18 @@ export function StudyModuleList() {
 
   if (loading) {
     return (
-      <ModuleList>
-        <ListItemSkeleton backgroundColor={colorSchemes.csb} />
-        <ListItemSkeleton backgroundColor={colorSchemes.programming} />
-        <ListItemSkeleton backgroundColor={colorSchemes.cloud} />
-      </ModuleList>
+      <>
+        <ModuleNaviList
+          modules={data?.study_modules}
+          loading={loading}
+          variant="small"
+        />
+        <ModuleList>
+          <ListItemSkeleton backgroundColor={colorSchemes.csb} />
+          <ListItemSkeleton backgroundColor={colorSchemes.programming} />
+          <ListItemSkeleton backgroundColor={colorSchemes.cloud} />
+        </ModuleList>
+      </>
     )
   }
 
@@ -59,10 +66,10 @@ export function StudyModuleList() {
         variant="small"
       />
       <ModuleList>
-        {data?.study_modules?.map((module, index) => (
+        {data?.study_modules?.map((studyModule, index) => (
           <ListItem
-            module={module}
-            key={module.id}
+            module={studyModule}
+            key={studyModule.id}
             backgroundColor={Object.values(colorSchemes)[index]}
           />
         ))}

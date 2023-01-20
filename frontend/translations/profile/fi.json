@@ -51,5 +51,13 @@
     "exerciseCompletionCollapseTooltip": "Näytä/piilota tehtäväpalautus",
     "progressCollapseTooltip": "Näytä/piilota edistyminen",
     "exerciseCompletionCollapseAllTooltip": "Näytä/piilota kaikki tehtäväpalautukset",
-    "allCoursesCollapseTooltip": "Näytä/piilota kaikki kurssit"
+    "allCoursesCollapseTooltip": "Näytä/piilota kaikki kurssit",
+    "showLess": "Näytä vähemmän",
+    "showDetailedBreakdown": "Näytä enemmän",
+    "name": "Nimi: ",
+    "email": "Sähköposti: ",
+    "studentNumber": "Opiskelijanumero: ",
+    "noPointsData": "Tietoja ei saatavilla",
+    "noDetailsAvailable": "Lisätietoja ei saatavilla",
+    "total": "yhteensä"
 }

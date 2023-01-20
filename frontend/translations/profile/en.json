@@ -17,7 +17,7 @@
     "tabPoints": "Points",
     "tabCompletions": "Completions",
     "tabSettings": "Settings",
-    "registerCompletion": "Register Completion",
+    "registerCompletion": "Register completion",
     "completionTier": "completion tier:",
     "completionTier-1": "beginner",
     "completionTier-2": "intermediate",
@@ -51,5 +51,13 @@
     "exerciseCompletionCollapseTooltip": "Show/hide exercise completion details",
     "progressCollapseTooltip": "Show/hide progress details",
     "exerciseCompletionCollapseAllTooltip": "Show/hide all exercise completion details",
-    "allCoursesCollapseTooltip": "Show/hide all courses"
+    "allCoursesCollapseTooltip": "Show/hide all courses",
+    "showLess": "Show less",
+    "showDetailedBreakdown": "Show detailed breakdown",
+    "name": "Name: ",
+    "email": "Email: ",
+    "studentNumber": "Student number: ",
+    "noPointsData": "No points data available",
+    "noDetailsAvailable": "No details available",
+    "total": "total"
 }
