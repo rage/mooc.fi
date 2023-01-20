@@ -89,7 +89,7 @@ const createSchema = () =>
       ),
       schema: __dirname + "/generated/schema.graphql",
     },
-    prettierConfig: path.join(__dirname, "../.prettierrc.js"),
+    prettierConfig: path.join(__dirname, "/.prettierrc.js"),
     shouldGenerateArtifacts: true,
     shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),
   })
