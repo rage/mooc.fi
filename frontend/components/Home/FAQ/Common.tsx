@@ -3,10 +3,12 @@ import React from "react"
 import { range } from "lodash"
 import dynamic from "next/dynamic"
 
-import styled from "@emotion/styled"
 import { Skeleton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-export const Background = styled.section`
+import ErrorMessage from "/components/ErrorMessage"
+
+export const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
   padding-right: 1em;
@@ -14,11 +16,11 @@ export const Background = styled.section`
   background-color: #ffc107;
 `
 
-export const Content = styled.div`
+export const Content = styled("div")`
   position: relative;
 `
 
-export const ContentBox = styled.div`
+export const ContentBox = styled("div")`
   background-color: white;
   max-width: 39em;
   border: 3px solid black;
@@ -60,12 +62,12 @@ export const ContentBox = styled.div`
   }
 `
 
-export const Title = styled(Typography)<any>`
+export const Title = styled(Typography)`
   margin-bottom: 0.4em;
   padding: 1rem;
-`
+` as typeof Typography
 
-export const TitleBackground = styled.div`
+export const TitleBackground = styled("div")`
   background-color: white;
   max-width: 75%;
   margin-left: auto;
@@ -73,11 +75,11 @@ export const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
-export const SectionBox = styled.div`
+export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
 
-export const Note = styled.section`
+export const Note = styled("section")`
   padding: 1em;
   background-color: #eeeeee;
 `
@@ -106,7 +108,9 @@ type DynamicImportType = <T>() => Promise<React.ComponentType<T>>
 interface FAQComponentProps {
   mdxImport?: DynamicImportType
   onSuccess: <T>(mdx: React.ComponentType<T>) => React.ComponentType<T>
-  onError: () => void
+  onError: <C>(
+    errorComponent?: React.ComponentType<C>,
+  ) => React.ComponentType<C> | null
 }
 
 export function FAQComponent({
@@ -119,12 +123,19 @@ export function FAQComponent({
       return mdxImport()
         .then(onSuccess)
         .catch((error: unknown) => {
-          console.log("error", error)
+          console.log(error)
           onError()
-          return () => <React.Fragment />
+          return () => <ErrorMessage />
         })
     },
-    { loading: () => <Loader /> },
+    {
+      loading: ({ error }) => {
+        if (error) {
+          return <ErrorMessage />
+        }
+        return <Loader />
+      },
+    },
   )
 }
 

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Avatar, Link, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import moocLogoUrl from "/public/images/moocfi.svg"
 

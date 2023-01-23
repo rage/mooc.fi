@@ -1,16 +1,16 @@
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ControlledHiddenField,
   ControlledTextField,
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import CoursesTranslations from "/translations/courses"
+import { mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionTitle = styled(Typography)`
@@ -27,13 +27,13 @@ const AddTranslationNotice = styled(EntryContainer)`
   color: white;
 `
 
-const CourseTranslationList = styled.ul`
+const CourseTranslationList = styled("ul")`
   list-style: none;
   margin-block-start: 0;
   padding-inline-start: 0;
 `
 
-const CourseTranslationItem = styled.li`
+const CourseTranslationItem = styled("li")`
   padding-top: 1rem;
   padding-bottom: 1.5rem;
   width: 90%;

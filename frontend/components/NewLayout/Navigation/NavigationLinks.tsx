@@ -12,7 +12,7 @@ const NavigationLink = styled(Link, {
   text-decoration: none;
   color: inherit;
   font-weight: ${({ active }) => (active ? "600" : "inherit")};
-  font-size: clamp(12px, 1.5vw, 16px);
+  font-size: clamp(14px, 1.5vw, 16px);
 
   &:hover {
     font-weight: 600;
@@ -22,9 +22,9 @@ const NavigationLink = styled(Link, {
 
 const NavigationLinkContainer = styled("div")`
   display: flex;
-  justify-content: space-evenly;
-  flex-grow: 1;
+  justify-content: space-between;
   gap: 2rem;
+  width: 100%;
 `
 
 export const NavigationLinks = () => {

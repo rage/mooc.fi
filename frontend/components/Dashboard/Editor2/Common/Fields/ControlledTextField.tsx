@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { get, omit, set } from "lodash"
-import { FieldValues, PathValue, useFormContext } from "react-hook-form"
+import {
+  ControllerRenderProps,
+  FieldValues,
+  PathValue,
+  useFormContext,
+} from "react-hook-form"
 
 import HelpIcon from "@mui/icons-material/Help"
 import HistoryIcon from "@mui/icons-material/History"
 import { IconButton, TextField, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ControlledFieldProps,
@@ -21,7 +27,12 @@ export interface ControlledTextFieldProps<T extends FieldValues>
   type?: string
   disabled?: boolean
   rows?: number
+  width?: string
 }
+
+const StyledTextField = styled(TextField)`
+  margin-bottom: 1.5rem;
+` as typeof TextField
 
 export function ControlledTextField<T extends FieldValues>(
   props: ControlledTextFieldProps<T>,
@@ -34,70 +45,105 @@ export function ControlledTextField<T extends FieldValues>(
     getValues,
   } = useFormContext()
   const { initialValues } = useEditorContext()
-  const { label, required, name, tip, type, disabled, revertable, rows } = props
+  const {
+    label,
+    required,
+    name,
+    tip,
+    type,
+    disabled,
+    revertable,
+    rows,
+    width,
+  } = props
 
-  const [error, setError] = useState(Boolean(flattenKeys(errors)[name]))
-  useEffect(() => {
-    setError(Boolean(flattenKeys(errors)[name]))
-  }, [errors])
+  const error = useMemo(
+    () => Boolean(flattenKeys(errors)[name]),
+    [errors, name],
+  )
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(name, e.target.value as PathValue<T, typeof name> & string, {
-      shouldDirty: true,
-    })
-  }
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(name, e.target.value as PathValue<T, typeof name> & string, {
+        shouldDirty: true,
+      })
+    },
+    [name, setValue],
+  )
 
   const initialValue = get(initialValues, name)
+
+  const onRevert = useCallback(
+    () => reset(set(getValues(), name, initialValue)),
+    [reset, set, getValues, name, initialValue],
+  )
+
+  const renderTextField = useCallback(
+    ({ onBlur, value }: ControllerRenderProps<T>) => (
+      <StyledTextField
+        {...(width ? { style: { width } } : {})}
+        onChange={onChange}
+        onBlur={onBlur}
+        value={value}
+        label={label}
+        required={required}
+        variant="outlined"
+        error={error}
+        type={type}
+        disabled={disabled}
+        rows={rows}
+        multiline={(rows && rows > 0) || false}
+        InputProps={{
+          autoComplete: "none",
+          endAdornment: (
+            <>
+              {revertable ? (
+                <Tooltip title={t("editorRevert")}>
+                  <span>
+                    <IconButton
+                      aria-label={t("editorRevert")}
+                      disabled={getValues(name) === initialValue}
+                      onClick={onRevert}
+                      size="large"
+                    >
+                      <HistoryIcon />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              ) : null}
+              {tip ? (
+                <Tooltip title={tip}>
+                  <HelpIcon />
+                </Tooltip>
+              ) : null}
+            </>
+          ),
+        }}
+      />
+    ),
+    [
+      width,
+      onChange,
+      label,
+      required,
+      error,
+      type,
+      disabled,
+      rows,
+      initialValue,
+      revertable,
+      tip,
+      t,
+      getValues,
+      name,
+      onRevert,
+    ],
+  )
 
   return (
     <FieldController
       {...omit(props, ["revertable", "validateOtherFields"])}
-      style={{ marginBottom: "1.5rem" }}
-      renderComponent={({ onBlur, value }) => (
-        <>
-          <TextField
-            onChange={onChange}
-            onBlur={onBlur}
-            value={value}
-            label={label}
-            required={required}
-            variant="outlined"
-            error={error}
-            type={type}
-            disabled={disabled}
-            rows={rows}
-            multiline={(rows && rows > 0) || false}
-            InputProps={{
-              autoComplete: "none",
-              endAdornment: (
-                <>
-                  {revertable ? (
-                    <Tooltip title={t("editorRevert")}>
-                      <span>
-                        <IconButton
-                          aria-label={t("editorRevert")}
-                          disabled={getValues(name) === initialValue}
-                          onClick={() =>
-                            reset(set(getValues(), name, initialValue))
-                          }
-                          size="large"
-                        >
-                          <HistoryIcon />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                  ) : null}
-                  {tip ? (
-                    <Tooltip title={tip}>
-                      <HelpIcon />
-                    </Tooltip>
-                  ) : null}
-                </>
-              ),
-            }}
-          />
-        </>
-      )}
+      renderComponent={renderTextField}
     />
   )
 }

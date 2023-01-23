@@ -1,97 +1,102 @@
 import Image from "next/image"
 
-import styled from "@emotion/styled"
-import { Button } from "@mui/material"
+import { Button, Skeleton, Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
+import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
-import BannerImage from "/public/images/homeBackground.webp"
+import moocLogoUrl from "/public/images/moocfi_white.svg"
 import SponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes = {
-  csb: ["#090979", "#00d7ff"],
-  programming: ["#791779", "#ff00e2"],
-  cloud: ["#832525", "#ff0000"],
-  ai: ["#2c8325", "#00ff13"],
+  csb: "#215887",
+  programming: "#1F6964",
+  cloud: "#822630",
+  ai: "#6245A9",
+  other: "#313947",
 }
 
-const Container = styled.div`
+/* Needed in a later PR for the custom tag colors per tag type
+const difficultyTags = ["beginner", "intermediate", "advanced"]
+const moduleTags = ["AI", "programming", "cloud", "cyber security"]
+const languageTags = ["fi", "en", "se"] */
+
+const ContainerBase = css`
   display: grid;
-  grid-template-rows: 20% 80%;
-  grid-template-columns: 100%;
-  border: 1px solid rgba(236, 236, 236, 1);
+  grid-template-rows: 1fr 4fr;
+  grid-template-columns: 1fr;
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
   border-radius: 0.5rem;
-  &:nth-child(n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["cloud"][0]} 66%,
-      ${colorSchemes["cloud"][1]} 100%
-    );
+  max-height: 400px;
+`
+
+const Container = styled("li", {
+  shouldForwardProp: (prop) => prop !== "backgroundImage",
+})<{ backgroundImage?: string }>`
+  ${ContainerBase};
+  &:nth-of-type(n) {
+    background: ${colorSchemes["cloud"]};
   }
-  &:nth-child(2n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["programming"][0]} 66%,
-      ${colorSchemes["programming"][1]} 100%
-    );
+  &:nth-of-type(2n) {
+    background: ${colorSchemes["programming"]};
   }
-  &:nth-child(3n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["csb"][0]} 66%,
-      ${colorSchemes["csb"][1]} 100%
-    );
+  &:nth-of-type(3n) {
+    background: ${colorSchemes["csb"]};
   }
-  &:nth-child(4n) {
-    background: linear-gradient(
-      90deg,
-      ${colorSchemes["ai"][0]} 66%,
-      ${colorSchemes["ai"][1]} 100%
-    );
-  }
-  &.with-background-image {
-    background: url(${BannerImage.src});
+  &:nth-of-type(4n) {
+    background: ${colorSchemes["ai"]};
   }
 `
 
-const TitleContainer = styled.div`
-  padding: 1rem 2.5rem 1rem 2.5rem;
+const SkeletonContainer = styled("li")`
+  ${ContainerBase};
+  width: 100%;
+  background-color: #eee;
+`
+
+const TitleContainer = styled("div")`
+  position: relative;
+  min-height: 80px;
+  height: 80px;
+  padding: 1rem 2.5rem 1rem 1.5rem;
   display: flex;
 `
 
-const ContentContainer = styled.div`
+const ContentContainer = styled("div")`
   display: grid;
   padding: 0.5rem 1.5rem 0.1rem 1.5rem;
-  grid-template-columns: 67% 33%;
-  grid-template-rows: 50% 30% 20%;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 5fr 3fr 2fr;
   background: rgba(255, 255, 255, 1);
+  overflow: hidden;
+  z-index: 1;
+  border-radius: 0 0 0.5rem 0.5rem;
 `
 
-const Title = styled.div`
+const Title = styled(CardTitle)`
   font-weight: bold;
   color: white;
   font-size: 1.5rem;
-  text-align: center;
-  padding: 0.5rem;
+  text-align: left;
   border-radius: 0.2rem;
   align-self: center;
+  width: 70%;
+` as typeof CardTitle
 
-  &.with-background-image {
-    color: black;
-    background-color: white;
-    padding: 0.5rem 3rem;
-  }
-`
-
-const SponsorContainer = styled.div`
+const SponsorContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
   position: relative;
   height: 100%;
   width: 100%;
+`
+
+const Sponsor = styled(Image)`
+  object-fit: contain;
   max-width: 9rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
@@ -99,19 +104,16 @@ const SponsorContainer = styled.div`
   justify-self: right;
 `
 
-const Sponsor = styled(Image)`
-  object-fit: contain;
-`
-
-const Description = styled.div`
+const Description = styled("div")`
   padding: 1rem 0;
 `
 
-const Schedule = styled.div``
+const Schedule = styled("div")``
 
-const Details = styled.div`
+const Details = styled("div")`
   display: flex;
-  justify-content: right;
+  flex-direction: column;
+  align-items: flex-end;
   padding: 1rem;
 `
 
@@ -120,7 +122,7 @@ const Link = styled(OutboundLink)`
   margin: 1rem;
 `
 
-const Tags = styled.div``
+const Tags = styled("div")``
 
 const Tag = styled(Button)`
   border-radius: 2rem;
@@ -130,49 +132,78 @@ const Tag = styled(Button)`
   font-weight: bold;
   margin: 0 0.1rem;
 `
+
+const CardHeaderImage = styled("img")`
+  opacity: 0.4;
+  position: absolute;
+  left: 60%;
+  top: 0.5rem;
+  width: 35%;
+  height: auto;
+  z-index: 0;
+`
+
+const MoocfiLogo = styled(CardHeaderImage)``
+
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
+/*  Coming in a later PR for the custom colors
+  const tagType = (tag: string) =>
+  difficultyTags.includes(tag)
+    ? "difficulty"
+    : moduleTags.includes(tag)
+    ? "module"
+    : languageTags.includes(tag)
+    ? "language"
+    : "unknown" */
+
 interface CourseCardProps {
-  course?: CourseFieldsFragment | null
+  course: CourseFieldsFragment
   tags?: string[]
-  fifthElement?: boolean
 }
 
-function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
-  return course ? (
-    <Container className={fifthElement ? "with-background-image" : ""}>
+function CourseCard({ course, tags }: CourseCardProps) {
+  return (
+    <Container>
       <TitleContainer>
-        <Title className={fifthElement ? "with-background-image" : ""}>
+        <Title variant="h4" component="h2">
           {course?.name}
         </Title>
+        <MoocfiLogo alt="MOOC logo" src={moocLogoUrl} />
       </TitleContainer>
       <ContentContainer>
-        <Description>{course?.description}</Description>
+        <Description>
+          <Typography variant="body1">{course?.description}</Typography>
+        </Description>
         <Details>
           {course.ects && (
-            <>
-              ~{parseInt(course.ects) * 27}h ({course.ects}ects)
-            </>
+            <Typography variant="subtitle2">
+              ~{parseInt(course.ects) * 27}h ({course.ects} ECTS)
+            </Typography>
           )}
-          <br />
           {/* TODO: add information regarding university/organization to course */}
-          Helsingin yliopisto
+          <Typography variant="subtitle2">Helsingin yliopisto</Typography>
         </Details>
         <Schedule>
-          {course?.status == "Upcoming" ? (
+          {course.status == "Upcoming" ? (
             <p>
               Tulossa {course.start_date && prettifyDate(course.start_date)}
             </p>
           ) : course?.status == "Ended" ? (
-            <p>Päättynyt {course.end_date && prettifyDate(course.end_date)}</p>
+            <p>
+              Päättynyt{" "}
+              {course.end_date &&
+                Date.parse(course.end_date) < Date.now() &&
+                formatDateTime(course.end_date)}
+            </p>
           ) : (
             <p>
               Käynnissä{" "}
-              {course?.end_date ? (
+              {course.end_date ? (
                 <>
-                  {prettifyDate(course?.start_date)} -{" "}
-                  {prettifyDate(course?.end_date)}
+                  {formatDateTime(course.start_date)} -{" "}
+                  {formatDateTime(course.end_date)}
                 </>
               ) : (
                 <>— Aikatauluton</>
@@ -185,7 +216,19 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
         </SponsorContainer>
         <Tags>
           {tags?.map((tag) => (
-            <Tag size="small" variant="contained" disabled>
+            <Tag
+              size="small"
+              variant="contained"
+              disabled
+              /*  Coming in a later PR for the custom colors
+                color={
+                tagType(tag) == "difficulty"
+                  ? "spgray"
+                  : tagType(tag) == "module"
+                  ? "sppurple"
+                  : "spblue"
+              } */
+            >
               {tag}
             </Tag>
           ))}
@@ -195,16 +238,39 @@ function CourseCard({ course, tags, fifthElement }: CourseCardProps) {
         </Link>
       </ContentContainer>
     </Container>
-  ) : (
-    <Container>
-      <TitleContainer>
-        <Title>loading...</Title>
-      </TitleContainer>
-      <ContentContainer>
-        <Description>loading...</Description>
-      </ContentContainer>
-    </Container>
   )
 }
+
+export const CourseCardSkeleton = () => (
+  <SkeletonContainer>
+    <TitleContainer>
+      <Title>
+        <Typography variant="h4" component="h2">
+          <Skeleton width={100 + Math.random() * 100} />
+        </Typography>
+      </Title>
+    </TitleContainer>
+    <ContentContainer>
+      <Description>
+        <Typography variant="body1">
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </Typography>
+      </Description>
+      <Details>
+        <Typography variant="subtitle2">
+          <Skeleton width={75} />
+        </Typography>
+      </Details>
+      <Schedule>
+        <Skeleton />
+      </Schedule>
+      <SponsorContainer />
+      <Tags />
+      <Skeleton />
+    </ContentContainer>
+  </SkeletonContainer>
+)
 
 export default CourseCard

@@ -1,13 +1,10 @@
-// generated Tue Apr 13 2021 16:34:47 GMT+0300 (GMT+03:00)
+// generated Wed Nov 23 2022 13:42:15 GMT+0200 (Itä-Euroopan normaaliaika)
 import en from "./en.json"
 import fi from "./fi.json"
 import { TranslationDictionary } from "/translations"
 
-export type BreadcrumbsTranslations = typeof en & typeof fi
-const BreadcrumbsTranslations: TranslationDictionary<BreadcrumbsTranslations> =
-  {
-    en,
-    fi,
-  }
+export type Breadcrumbs = typeof en & typeof fi
+
+const BreadcrumbsTranslations: TranslationDictionary<Breadcrumbs> = { en, fi }
 
 export default BreadcrumbsTranslations

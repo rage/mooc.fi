@@ -2,6 +2,7 @@ import * as redis from "redis"
 import * as winston from "winston"
 
 import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
+import { BaseContext } from "../context"
 
 const _logger = winston.createLogger({
   level: "info",
@@ -16,7 +17,7 @@ const _logger = winston.createLogger({
 let redisClient: ReturnType<typeof redis.createClient> | undefined
 
 export const redisReconnectStrategy =
-  (redisName: string = "Redis", logger: winston.Logger = _logger) =>
+  (redisName = "Redis", logger: winston.Logger = _logger) =>
   (retriesOrError: number | Error) => {
     if (retriesOrError instanceof Error) {
       logger.error(`${redisName} reconnection failed`, retriesOrError)
@@ -71,18 +72,20 @@ const isAsync = <T>(
   )
 }
 
+interface RedisifyOptions {
+  prefix: string
+  expireTime: number
+  key: string
+  params?: any
+  disableResolveError?: boolean
+}
+
+type RedisifyContext = Partial<BaseContext> & { client?: typeof redisClient }
+
 export async function redisify<T>(
   fn: ((...args: any[]) => Promise<T> | T) | Promise<T>,
-  options: {
-    prefix: string
-    expireTime: number
-    key: string
-    params?: any
-  },
-  ctx: {
-    client?: typeof redisClient
-    logger?: winston.Logger
-  } = {},
+  options: RedisifyOptions,
+  ctx: RedisifyContext = {},
 ) {
   const { prefix, expireTime, key, params } = options
   const { logger = _logger, client = redisClient } = ctx
@@ -129,7 +132,7 @@ export async function redisify<T>(
       }
       return value
     } catch (e2) {
-      logger.error(
+      logger.warn(
         `Could not resolve value for ${prefixedKey}; error: `,
         e2 instanceof Error ? e2.message : e2,
       )

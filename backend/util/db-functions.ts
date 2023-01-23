@@ -110,57 +110,87 @@ interface ConvertPaginationOutput {
 }
 
 export const convertPagination = (
-  { first, last, before, after, skip }: ConvertPaginationInput,
+  { first, last, before, after, skip: skipValue }: ConvertPaginationInput,
   options?: ConvertPaginationOptions,
 ): ConvertPaginationOutput => {
-  const skipValue = skip || 0
   const { field = "id" } = options ?? {}
 
   if (!first && !last) {
     throw new Error("first or last must be defined")
   }
 
+  let skip = skipValue ?? 0
+  let take = 0
+  let cursor = undefined
+
+  if (notEmpty(before)) {
+    skip += 1
+    cursor = { [field]: before }
+  } else if (notEmpty(after)) {
+    cursor = { [field]: after }
+  }
+  if (notEmpty(last)) {
+    take = -(last ?? 0)
+  } else if (notEmpty(first)) {
+    take = first
+  }
+
   return {
-    skip: notEmpty(before) ? skipValue + 1 : skipValue,
-    take: notEmpty(last) ? -(last ?? 0) : notEmpty(first) ? first : 0,
-    cursor: notEmpty(before)
-      ? { [field]: before }
-      : notEmpty(after)
-      ? { [field]: after }
-      : undefined,
+    skip,
+    take,
+    cursor,
   }
 }
 
-export const filterNull = <T>(o: T): T | undefined =>
+type NullFiltered<T> = T extends null
+  ? Exclude<T, null>
+  : T extends Array<infer R>
+  ? Array<NullFiltered<R>>
+  : T extends Record<string | symbol | number, unknown>
+  ? {
+      [K in keyof T]: NullFiltered<T[K]>
+    }
+  : T
+
+export const filterNull = <T extends Record<string | symbol | number, unknown>>(
+  o?: T | null,
+): NullFiltered<T> | undefined =>
   o
-    ? Object.entries(o).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
-        {} as T,
-      )
+    ? (Object.fromEntries(
+        Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
+      ) as NullFiltered<T>)
     : undefined
 
-// helper function to convert to atomicNumberOperations
-// https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
-export const convertUpdate = <T extends object>(input: {
-  [key: string]: any
-}): T =>
-  Object.entries(input).reduce(
-    (acc: any, [key, value]: [string, any]) => ({
-      ...acc,
-      [key]: Array.isArray(value)
-        ? value.map(convertUpdate)
-        : typeof value === "object" && value !== null
-        ? convertUpdate(value)
-        : typeof value === "number"
-        ? Number.isNaN(value)
-          ? undefined
-          : { set: value }
-        : typeof value === "boolean"
-        ? { set: value }
-        : value,
+export const filterNullRecursive = <
+  T extends Record<string | symbol | number, unknown>,
+>(
+  o?: T | null,
+): NullFiltered<T> | undefined => {
+  if (!o) {
+    return undefined
+  }
+
+  const filtered = filterNull(o)
+
+  if (!filtered) {
+    return undefined
+  }
+
+  return Object.fromEntries(
+    Object.entries(filtered).map(([k, v]) => {
+      if (Array.isArray(v)) {
+        return [k, v.map(filterNullRecursive)]
+      }
+      if (typeof v === "object" && v !== null) {
+        return [
+          k,
+          filterNullRecursive(v as Record<string | symbol | number, unknown>),
+        ]
+      }
+      return [k, v === null ? undefined : v]
     }),
-    {},
-  )
+  ) as NullFiltered<T>
+}
 
 export const createExtensions = async (knex: Knex) => {
   /*if (CIRCLECI) {
@@ -239,8 +269,61 @@ export const getCourseOrAliasKnex =
 type InferPrismaClientGlobalReject<C extends PrismaClient> =
   C extends PrismaClient<any, any, infer GlobalReject> ? GlobalReject : never
 
-type FindUniqueCourseType<ClientType extends PrismaClient> =
-  Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>["findUnique"]
+type FindUniqueFunction<
+  T extends Prisma.CourseFindUniqueArgs,
+  _LocalRejectSettings = T["rejectOnNotFound"] extends Prisma.RejectOnNotFound
+    ? T["rejectOnNotFound"]
+    : undefined,
+> = <_, _LocalRejectSettings>(
+  args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
+) => any
+type FindUniqueSelectType<
+  T extends Prisma.CourseFindUniqueArgs,
+  RejectOnNotFound = any,
+> = RejectOnNotFound extends Prisma.True
+  ? Prisma.CheckSelect<
+      T,
+      Prisma.Prisma__CourseClient<Course>,
+      Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T>>
+    >
+  : Prisma.CheckSelect<
+      T,
+      Prisma.Prisma__CourseClient<Course | null>,
+      Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T> | null>
+    >
+
+// @ts-ignore: not used
+type FindUniqueCourseType<
+  ClientType extends PrismaClient,
+  T extends Prisma.CourseFindUniqueArgs,
+> = {
+  [K in keyof Prisma.CourseDelegate<
+    InferPrismaClientGlobalReject<ClientType>
+  >]: K extends "findUnique"
+    ? Prisma.CourseDelegate<
+        InferPrismaClientGlobalReject<ClientType>
+      >[K] extends (
+        args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
+      ) => infer U
+      ? <T2>(args: Prisma.SelectSubset<T2, Prisma.CourseFindUniqueArgs>) => U
+      : never
+    : never
+}[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
+
+type FindUniqueCourseReturnType<
+  ClientType extends PrismaClient,
+  T extends Prisma.CourseFindUniqueArgs,
+> = {
+  [K in keyof Prisma.CourseDelegate<
+    InferPrismaClientGlobalReject<ClientType>
+  >]: K extends "findUnique"
+    ? Prisma.CourseDelegate<
+        InferPrismaClientGlobalReject<ClientType>
+      >[K] extends FindUniqueFunction<T, infer LocalRejectSettings>
+      ? FindUniqueSelectType<T, LocalRejectSettings>
+      : never
+    : never
+}[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
 
 /**
  * Get course by id or slug, or course_alias course_code provided by slug.
@@ -248,10 +331,20 @@ type FindUniqueCourseType<ClientType extends PrismaClient> =
  * If slug is given, we also try to find a `course_alias` with that `course_code`.
  * Course found with slug is preferred to course found with course_code.
  */
-export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
-  ctx: BaseContext,
-) =>
-  ((args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>) => {
+const checkSelect = <T extends Prisma.CourseFindUniqueArgs>(
+  args: any,
+): args is T & Prisma.SelectAndInclude => {
+  if (args.select && args.include) {
+    return true
+  }
+  return false
+}
+// Prisma.CheckSelect<T, Prisma.Prisma__CourseClient<Course>, Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T>>> {
+export const getCourseOrAlias =
+  (ctx: BaseContext) =>
+  async <T extends Prisma.CourseFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
+  ): Promise<FindUniqueCourseReturnType<(typeof ctx)["prisma"], T>> => {
     const { id, slug } = args?.where ?? {}
     const { select, include } = args ?? {}
 
@@ -261,31 +354,23 @@ export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
       )
     }
 
-    if (include && select) {
-      throw new GraphQLUserInputError(
-        "Only provide../ one of include or select",
-      )
+    if (checkSelect(args)) {
+      throw new GraphQLUserInputError("Only provide one of include or select")
     }
 
-    if (id) {
-      return ctx.prisma.course.findUnique({
-        where: {
-          id,
-          slug: slug ?? undefined,
-        },
-        ...omit(args, "where"),
-      })
-    }
-
-    const course = ctx.prisma.course.findUnique({
+    const course = await ctx.prisma.course.findUnique({
       where: {
-        slug,
+        id: id ?? undefined,
+        slug: slug ?? undefined,
       },
       ...omit(args, "where"),
     })
 
     if (course) {
-      return course
+      return course as unknown as FindUniqueCourseReturnType<
+        (typeof ctx)["prisma"],
+        T
+      >
     }
 
     const selectOrInclude: {
@@ -303,8 +388,8 @@ export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
         ...selectOrInclude,
       })
 
-    return alias
-  }) as FindUniqueCourseType<typeof ctx["prisma"]>
+    return alias as FindUniqueCourseReturnType<(typeof ctx)["prisma"], T>
+  }
 // we're telling TS that this is a course findUnique when in reality
 // it isn't strictly speaking. But it's close enough for our purposes
 // to get the type inference we want.

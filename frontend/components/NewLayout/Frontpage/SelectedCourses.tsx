@@ -1,10 +1,9 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, Typography } from "@mui/material"
+import { Button, Typography, TypographyProps } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { formatDateTime } from "/components/DataFormatFunctions"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import {
   CardBody,
@@ -12,14 +11,15 @@ import {
   CardHeaderImage,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
+import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
-import moocLogoUrl from "/public/images/moocfi.svg"
+import moocLogoUrl from "/static/images/moocfi-transparent.svg"
+import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 
 import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
 
-const CardHeader = styled.div`
+const CardHeader = styled("div")`
   position: relative;
   background-color: #ffad14;
   height: 52px;
@@ -29,17 +29,18 @@ const CardHeader = styled.div`
   overflow: hidden;
 `
 
-const CardActionArea = styled.div`
+const CardActionArea = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 `
 
-const Date = styled((props: any) => (
+const Date = styled((props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
 ))``
 
+// @ts-ignore: not used for now
 const CourseCard = ({
   name,
   description,
@@ -54,7 +55,7 @@ const CourseCard = ({
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
+        <CardTitle variant="h4">{name}</CardTitle>
         <CardHeaderImage
           alt="MOOC logo"
           src={moocLogoUrl}
@@ -73,7 +74,7 @@ const CourseCard = ({
   )
 }
 
-export const CoursesGrid = styled.div`
+export const CoursesGrid = styled("div")`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -95,18 +96,18 @@ function SelectedCourses() {
   })
 
   return (
-    <SectionContainer>
+    <SectionContainer id="courses">
       <SectionTitle>Suosittuja kursseja</SectionTitle>
       {loading && <p>Loading...</p>}
       <CoursesGrid>
         {data?.courses &&
           data.courses
             .slice(0, 3)
-            .filter(notEmpty)
             .map((course, index) => (
-              <CourseCard key={`course-${index}`} {...course} />
+              <CommonCourseCard key={`course-${index}`} course={course} />
             ))}
       </CoursesGrid>
+      <Button href="/_new/courses">Näytä kaikki kurssit</Button>
     </SectionContainer>
   )
 }

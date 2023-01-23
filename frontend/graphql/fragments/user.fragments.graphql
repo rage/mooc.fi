@@ -3,6 +3,7 @@ fragment UserCoreFields on User {
   upstream_id
   first_name
   last_name
+  full_name
   username
   email
   student_number
@@ -24,13 +25,17 @@ fragment UserProgressesFields on User {
   }
 }
 
+fragment UserOverviewCourseFields on Course {
+  ...CourseWithPhotoCoreFields
+  has_certificate
+}
+
 fragment UserOverviewFields on User {
   ...UserDetailedFields
   completions {
     ...CompletionDetailedFields
     course {
-      ...CourseWithPhotoCoreFields
-      has_certificate
+      ...UserOverviewCourseFields
     }
   }
 }

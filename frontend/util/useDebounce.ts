@@ -6,7 +6,7 @@ const isFunction = <T>(value: T | (() => T)): value is () => T =>
 export default function useDebounce<T>(
   value: T | (() => T),
   delay: number,
-  compare: boolean = false,
+  compare = false,
 ): [T, (cancelValue?: T) => void] {
   const _value = isFunction(value) ? value() : value
   const [debouncedValue, setDebouncedValue] = useState(_value)

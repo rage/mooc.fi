@@ -1,7 +1,12 @@
 fragment UserCourseSummaryCourseFields on Course {
   ...CourseWithPhotoCoreFields
   has_certificate
-  exercises {
+  points_needed
+  exercise_completions_needed
+  exercises(
+    includeDeleted: $includeDeletedExercises
+    includeNoPointsAwarded: $includeNoPointsAwardedExercises
+  ) {
     ...ExerciseCoreFields
   }
 }
@@ -22,4 +27,5 @@ fragment UserCourseSummaryCoreFields on UserCourseSummary {
   completion {
     ...CompletionDetailedFields
   }
+  start_date
 }

@@ -3,8 +3,8 @@ import { useEffect } from "react"
 import { NextSeo } from "next-seo"
 import { SingletonRouter, withRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import { Link, Paper, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -18,7 +18,6 @@ import { useEditorCourses } from "/hooks/useEditorCourses"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
@@ -98,16 +97,14 @@ const EditCourse = ({ router }: EditCourseProps) => {
             beta ? (
               <CourseEdit2
                 course={courseData.course}
-                courses={coursesData?.courses?.filter(notEmpty)}
-                studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+                courses={coursesData?.courses ?? []}
+                studyModules={studyModulesData?.study_modules ?? []}
               />
             ) : (
               <CourseEdit
                 course={courseData.course}
-                courses={coursesData?.courses?.filter(notEmpty)}
-                modules={
-                  studyModulesData?.study_modules?.filter(notEmpty) ?? []
-                }
+                courses={coursesData?.courses ?? []}
+                modules={studyModulesData?.study_modules ?? []}
               />
             )
           ) : (

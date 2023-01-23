@@ -15,8 +15,6 @@ import { BatchHttpLink } from "@apollo/client/link/batch-http"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
 
-import notEmpty from "/util/notEmpty"
-
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
@@ -90,8 +88,8 @@ function create(initialState: any, originalAccessToken?: string) {
             // for "fetch more" type querying of user points
             keyArgs: false,
             merge: (existing, incoming) => {
-              const existingEdges = (existing?.edges ?? []).filter(notEmpty)
-              const incomingEdges = (incoming?.edges ?? []).filter(notEmpty)
+              const existingEdges = existing?.edges ?? []
+              const incomingEdges = incoming?.edges ?? []
               const pageInfo = incoming?.pageInfo ?? {
                 hasNextPage: false,
                 endCursor: null,

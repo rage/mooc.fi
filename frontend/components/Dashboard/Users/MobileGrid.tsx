@@ -2,7 +2,6 @@ import React, { useCallback, useContext } from "react"
 
 import range from "lodash/range"
 
-import styled from "@emotion/styled"
 import {
   Button,
   Card,
@@ -18,6 +17,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"

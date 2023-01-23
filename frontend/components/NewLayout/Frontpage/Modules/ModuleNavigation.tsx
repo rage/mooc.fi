@@ -1,20 +1,17 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import ModuleNaviList from "./ModuleNaviList"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
-import {
-  ModuleCard,
-  ModuleCardSkeleton,
-} from "/components/NewLayout/Frontpage/Modules/ModuleCard"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 
 import { StudyModulesDocument } from "/graphql/generated"
 
-const ModulesGrid = styled.div`
+// @ts-ignore: not used?
+const ModulesGrid = styled("div")`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -70,7 +67,7 @@ const ModulesGrid = styled.div`
   }
 `
 
-const Arrow = styled.div`
+const Arrow = styled("div")`
   width: 120%;
   &:before {
     content: "";
@@ -92,7 +89,7 @@ const Arrow = styled.div`
   }
 `*/
 
-function Modules() {
+export function ModuleNavigation() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(StudyModulesDocument, {
@@ -100,23 +97,10 @@ function Modules() {
   })
 
   return (
-    <SectionContainer>
+    <SectionContainer id="modules">
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
-      <ModulesGrid>
-        {loading && (
-          <>
-            <ModuleCardSkeleton key="module-skeleton-1" />
-            <ModuleCardSkeleton key="module-skeleton-2" />
-            <ModuleCardSkeleton key="module-skeleton-3" />
-          </>
-        )}
-        {data?.study_modules?.filter(notEmpty).map((module, index) => (
-          <ModuleCard key={`module-${index}`} module={module} hue={100} />
-        ))}
-      </ModulesGrid>
+      <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <Button href="/_new/study-modules">Näytä kaikki kokonaisuudet</Button>
     </SectionContainer>
   )
 }
-
-export default Modules

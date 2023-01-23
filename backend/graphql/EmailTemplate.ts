@@ -26,6 +26,7 @@ export const EmailTemplate = objectType({
     t.model.triggered_automatically_by_course_id()
     t.model.exercise_completions_threshold()
     t.model.points_threshold()
+    t.model.course_instance_language()
     t.model.course_stats_subscriptions()
   },
 })
@@ -33,7 +34,7 @@ export const EmailTemplate = objectType({
 export const EmailTemplateQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("email_template", {
+    t.field("email_template", {
       type: "EmailTemplate",
       args: {
         id: nonNull(idArg()),
@@ -69,6 +70,7 @@ export const EmailTemplateMutations = extendType({
         triggered_automatically_by_course_id: stringArg(),
         exercise_completions_threshold: intArg(),
         points_threshold: intArg(),
+        course_instance_language: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -81,6 +83,7 @@ export const EmailTemplateMutations = extendType({
           triggered_automatically_by_course_id,
           exercise_completions_threshold,
           points_threshold,
+          course_instance_language,
         } = args
 
         if (name == "") throw new GraphQLUserInputError("Name is empty!")
@@ -95,6 +98,7 @@ export const EmailTemplateMutations = extendType({
             triggered_automatically_by_course_id,
             exercise_completions_threshold,
             points_threshold,
+            course_instance_language,
           },
         })
       },
@@ -112,6 +116,7 @@ export const EmailTemplateMutations = extendType({
         triggered_automatically_by_course_id: stringArg(),
         exercise_completions_threshold: intArg(),
         points_threshold: intArg(),
+        course_instance_language: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -125,6 +130,7 @@ export const EmailTemplateMutations = extendType({
           triggered_automatically_by_course_id,
           exercise_completions_threshold,
           points_threshold,
+          course_instance_language,
         } = args
 
         return ctx.prisma.emailTemplate.update({
@@ -140,6 +146,7 @@ export const EmailTemplateMutations = extendType({
             triggered_automatically_by_course_id,
             exercise_completions_threshold,
             points_threshold,
+            course_instance_language,
           },
         })
       },

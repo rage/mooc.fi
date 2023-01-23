@@ -1,13 +1,13 @@
 import { FieldArray, getIn, useFormikContext } from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { FormControl, FormGroup, Typography } from "@mui/material"
+import { Button, FormControl, FormGroup, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { initialAlias } from "./form-validation"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import {
   inputLabelProps,
   StyledFieldWithAnchor,
@@ -17,8 +17,20 @@ import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const ButtonWithWhiteText = styled(StyledButton)`
+const ButtonWithWhiteText = styled(ButtonWithPaddingAndMargin)`
   color: white;
+  width: 100%;
+`
+
+const Row = styled("section")`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+`
+
+export const StyledButton = styled(Button)`
+  margin: 0.25rem;
+  height: 3rem;
 `
 
 const CourseAliasEditForm = () => {
@@ -37,50 +49,49 @@ const CourseAliasEditForm = () => {
           <FieldArray name="course_aliases">
             {(helpers) => (
               <>
-                {values.map((alias, index: number) => (
-                  <section
-                    key={`course_aliases_${index}`}
-                    style={{ display: "inline-block" }}
-                  >
-                    <StyledFieldWithAnchor
-                      id={`course_aliases[${index}].course_code`}
-                      name={`course_aliases[${index}].course_code`}
-                      type="text"
-                      value={alias.course_code}
-                      component={StyledTextField}
-                      label={t("courseAliasCourseCode")}
-                      error={getIn(errors, `[${index}].course_code`)}
-                      variant="outlined"
-                      InputLabelProps={inputLabelProps}
-                      style={{ width: "70%" }}
-                      required
-                    />
-                    <StyledButton
-                      style={{ margin: "auto", width: "25%", float: "right" }}
-                      variant="contained"
-                      disabled={isSubmitting}
-                      color="secondary"
-                      onClick={() => {
-                        if (!alias.id && alias.course_code === "") {
-                          helpers.remove(index)
-                        } else {
-                          confirm({
-                            title: t("confirmationAreYouSure"),
-                            description: t("confirmationRemoveAlias"),
-                            confirmationText: t("confirmationYes"),
-                            cancellationText: t("confirmationNo"),
-                          })
-                            .then(() => helpers.remove(index))
-                            .catch(() => {})
-                        }
-                      }}
-                      endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}
-                    >
-                      {t("courseRemove")}
-                    </StyledButton>
-                  </section>
-                ))}
-                {values.length === 0 && (
+                {values.length ? (
+                  values.map((alias, index: number) => (
+                    <Row key={`course_alias_${alias.course_code}`}>
+                      <StyledFieldWithAnchor
+                        id={`course_aliases[${index}].course_code`}
+                        name={`course_aliases[${index}].course_code`}
+                        type="text"
+                        component={StyledTextField}
+                        value={alias.course_code}
+                        label={t("courseAliasCourseCode")}
+                        errors={[getIn(errors, `[${index}].course_code`)]}
+                        variant="outlined"
+                        InputLabelProps={inputLabelProps}
+                        style={{ width: "100%" }}
+                        required
+                      />
+                      <StyledButton
+                        variant="contained"
+                        disabled={isSubmitting}
+                        color="secondary"
+                        onClick={() => {
+                          if (!alias.id && alias.course_code === "") {
+                            helpers.remove(index)
+                          } else {
+                            confirm({
+                              title: t("confirmationAreYouSure"),
+                              description: t("confirmationRemoveAlias"),
+                              confirmationText: t("confirmationYes"),
+                              cancellationText: t("confirmationNo"),
+                            })
+                              .then(() => helpers.remove(index))
+                              .catch(() => {
+                                // ignore
+                              })
+                          }
+                        }}
+                        endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}
+                      >
+                        {t("courseRemove")}
+                      </StyledButton>
+                    </Row>
+                  ))
+                ) : (
                   <Typography
                     variant="h3"
                     component="p"
@@ -90,8 +101,8 @@ const CourseAliasEditForm = () => {
                     {t("courseNoAliases")}
                   </Typography>
                 )}
-                {(!values?.length ||
-                  (values?.length &&
+                {(values.length == 0 ||
+                  (values.length &&
                     values[values.length - 1].course_code !== "")) && (
                   <section
                     style={{ justifyContent: "center", display: "flex" }}
@@ -102,7 +113,6 @@ const CourseAliasEditForm = () => {
                       disabled={isSubmitting}
                       onClick={() => helpers.push({ ...initialAlias })}
                       endIcon={<AddIcon>{t("courseAdd")}</AddIcon>}
-                      style={{ width: "45%" }}
                     >
                       {t("courseAdd")}
                     </ButtonWithWhiteText>

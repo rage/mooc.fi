@@ -1,30 +1,30 @@
 import { getIn, useFormikContext } from "formik"
 
-import styled from "@emotion/styled"
-import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
 
 import {
   StyledFieldWithAnchor,
   StyledTextField,
 } from "/components/Dashboard/Editor/common"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import CoursesTranslations from "/translations/courses"
+import { mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
 
-const LanguageVersionContainer = styled.div`
+const LanguageVersionContainer = styled("div")`
   padding-top: 1rem;
   padding-bottom: 1.5rem;
   width: 90%;
   margin: auto;
 `
 
-const LanguageVersionTitle = styled(Typography)<any>`
+const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
   font-size: 33px;
   line-height: 52px;
   color: #005b5b;
-`
+` as typeof Typography
 
 const inputLabelProps = {
   fontSize: 16,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
@@ -43,14 +43,19 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const client = useApolloClient()
   const { anchors } = useAnchorContext()
 
-  const defaultValues = toStudyModuleForm({ module })
-  const validationSchema = studyModuleEditSchema({
-    client,
-    initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
-    t,
-  })
-  const methods = useForm({
-    defaultValues,
+  const defaultValues = useRef(toStudyModuleForm({ module }))
+  const validationSchema = useMemo(
+    () =>
+      studyModuleEditSchema({
+        client,
+        initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
+        t,
+      }),
+    [client, module, t],
+  )
+
+  const methods = useForm<StudyModuleFormValues>({
+    defaultValues: defaultValues.current,
     resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",
   })
@@ -143,9 +148,9 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     () => ({
       status,
       tab: 0,
-      initialValues: defaultValues,
+      initialValues: defaultValues.current,
       setStatus,
-      setTab: () => {},
+      setTab: () => void 0,
       onSubmit,
       onError,
       onCancel,

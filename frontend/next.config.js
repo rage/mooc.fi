@@ -73,17 +73,21 @@ const nextConfiguration = {
       },
     },
   },
-  experimental: {
-    modularizeImports: {
-      "@mui/material": {
-        transform: "@mui/material/{{member}}",
-      },
-      "@mui/icons-material/?(((\\w*)?/?)*)": {
-        transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
-      },
-      lodash: {
-        transform: "lodash/{{member}}",
-      },
+  modularizeImports: {
+    "@mui/material": {
+      transform: "@mui/material/{{member}}",
+    },
+    "@mui/icons-material/?(((\\w*)?/?)*)": {
+      transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
+    },
+    lodash: {
+      transform: "lodash/{{member}}",
+    },
+    "@fortawesome/free-brands-svg-icons": {
+      transform: "@fortawesome/free-brands-svg-icons/{{member}}",
+    },
+    "@fortawesome/free-solid-svg-icons": {
+      transform: "@fortawesome/free-solid-svg-icons/{{member}}",
     },
   },
   webpack: (config) => {
@@ -95,6 +99,42 @@ const nextConfiguration = {
       test: /\.(png|jpg|gif|webp)$/,
       exclude: ["/public/images/originals/", "/public/images/courseimages/"],
     })
+    const found = config.module.rules?.findIndex((rule) =>
+      rule.test?.exec("u.svg"),
+    )
+    // remove the original svg rule but store the one variation with no resourcequery to load svg files
+    let originalRule
+    if (config.module.rules?.[found]) {
+      config.module.rules[found].test = /\.(jpe?g|png|gif)$/i
+      originalRule = config.module.rules[found].oneOf.find(
+        (rule) => !rule.resourceQuery,
+      )
+    }
+
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: /icon/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            typescript: true,
+            memo: true,
+            template: require("./src/iconTemplate"),
+          },
+        },
+      ],
+    })
+    if (originalRule) {
+      // insert it back
+      config.module.rules.push({
+        ...originalRule,
+        test: /\.svg$/,
+        resourceQuery: { not: [/icon/] },
+      })
+    }
+
     /*config.module.rules.push({
       test: /\.svg/,
       issuer: /\.[jt]sx?$/,

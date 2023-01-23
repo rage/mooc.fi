@@ -97,7 +97,7 @@ export const saveToDatabase = async (
     .where("service_id", message.service_id)
     .orderBy("created_at", "asc")
 
-  let userCourseServiceProgress = userCourseServiceProgresses[0]
+  const userCourseServiceProgress = userCourseServiceProgresses[0]
 
   if (userCourseServiceProgress) {
     if (userCourseServiceProgresses.length > 1) {

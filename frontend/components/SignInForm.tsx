@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 
-import styled from "@emotion/styled"
 import {
   FormControl,
   FormHelperText,
@@ -8,6 +7,7 @@ import {
   InputLabel,
   Link,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -15,7 +15,7 @@ import { isSignedIn, signIn } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const StyledForm = styled.form`
+const StyledForm = styled("form")`
   padding: 1em;
 `
 

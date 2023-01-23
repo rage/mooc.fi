@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Link, Paper, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
@@ -9,11 +9,10 @@ import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import notEmpty from "/util/notEmpty"
 
 import { EmailTemplatesDocument } from "/graphql/generated"
 
-const Background = styled.section`
+const Background = styled("section")`
   background-color: #61baad;
 `
 
@@ -53,7 +52,7 @@ const EmailTemplates = (admin: boolean) => {
         <br></br>
         <br></br>
         <ul>
-          {data?.email_templates?.filter(notEmpty).map((p) => {
+          {data?.email_templates?.map((p) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
                 <Link

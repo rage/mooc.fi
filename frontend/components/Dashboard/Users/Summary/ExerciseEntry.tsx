@@ -1,10 +1,31 @@
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 
-import { Chip, Collapse, TableCell, TableRow } from "@mui/material"
+import { DateTime } from "luxon"
 
-import { useCollapseContext } from "./CollapseContext"
+import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
+import {
+  Chip,
+  Collapse,
+  TableCell,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
+
+import {
+  ActionType,
+  CollapsablePart,
+  useCollapseContext,
+} from "./CollapseContext"
+import CollapseButton from "/components/Buttons/CollapseButton"
+import {
+  CollapseTableCell,
+  CollapseTableRow,
+} from "/components/Dashboard/Users/Summary/common"
 import ProfileTranslations from "/translations/profile"
-// import CollapseButton from "/components/Buttons/CollapseButton"
+import { formatDateTime } from "/util/dataFormatFunctions"
+import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -12,29 +33,122 @@ import {
   ExerciseCoreFieldsFragment,
 } from "/graphql/generated"
 
+const ExerciseInfoContent = styled("div")`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+  gap: 2rem;
+`
 interface ExerciseEntryProps {
   exercise: ExerciseCoreFieldsFragment & {
     exercise_completions: ExerciseCompletionCoreFieldsFragment[]
   }
 }
 
-const round = (num: number, precision: number = 100) =>
+const round = (num: number, precision = 100) =>
   Math.round(num * precision) / precision
 
-export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
-  const t = useTranslator(ProfileTranslations)
-  // @ts-ignore: collapse disabled
-  const { state, dispatch } = useCollapseContext()
+interface ExerciseInfoProps {
+  exercise?: ExerciseCoreFieldsFragment & {
+    exercise_completions: ExerciseCompletionCoreFieldsFragment[]
+  }
+}
 
-  const isOpen =
-    state[exercise.course_id ?? "_"]?.exercises[
-      exercise.exercise_completions?.[0]?.id ?? "_"
-    ] ?? false
-  const exerciseCompletion = exercise.exercise_completions?.[0]
+const ExerciseInfo = ({ exercise }: ExerciseInfoProps) => {
+  const t = useTranslator(ProfileTranslations)
+
+  if (!exercise?.exercise_completions?.length) {
+    return null
+  }
+
+  const exerciseCompletion = exercise.exercise_completions[0]
+
+  return (
+    <ExerciseInfoContent>
+      <Typography variant="h4">
+        {t("createdAt")}
+        <strong>
+          {formatDateTime(
+            exerciseCompletion.created_at,
+            DateTime.DATETIME_SHORT,
+          )}
+        </strong>
+      </Typography>
+      <Typography variant="h4">
+        {t("timestamp")}
+        <strong>
+          {formatDateTime(
+            exerciseCompletion.timestamp,
+            DateTime.DATETIME_SHORT,
+          )}
+        </strong>
+      </Typography>
+      <Tooltip title={t("exerciseInfoTooltip")}>
+        <HelpIcon />
+      </Tooltip>
+    </ExerciseInfoContent>
+  )
+}
+
+// @ts-ignore: not used yet
+const PartSection = ({
+  exercise,
+}: {
+  exercise: ExerciseCoreFieldsFragment
+}) => {
+  const t = useTranslator(ProfileTranslations)
 
   return (
     <>
-      <TableRow>
+      {notEmpty(exercise.part) && (
+        <>
+          {t("part")} {exercise.part}
+        </>
+      )}
+      {notEmpty(exercise.part) && notEmpty(exercise.section) && <>{" - "}</>}
+      {notEmpty(exercise.section) && (
+        <>
+          {t("section")} {exercise.section}
+        </>
+      )}
+    </>
+  )
+}
+
+export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
+  const t = useTranslator(ProfileTranslations)
+  const { state, dispatch } = useCollapseContext()
+
+  const exerciseCompletion = useMemo(
+    () => exercise.exercise_completions?.[0],
+    [exercise],
+  )
+  const collapseVisible = useMemo(
+    () => notEmpty(exerciseCompletion),
+    [exerciseCompletion],
+  )
+  const isOpen = useMemo(
+    () =>
+      state[exercise.course_id ?? "_"]?.exercises[
+        exerciseCompletion?.id ?? "_"
+      ] ?? false,
+    [exercise, exerciseCompletion, state],
+  )
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.TOGGLE,
+        collapsable: CollapsablePart.EXERCISE,
+        course: exercise?.course_id ?? "_",
+        collapsableId: exerciseCompletion?.id ?? "_",
+      }),
+    [dispatch, exercise, exerciseCompletion],
+  )
+
+  return (
+    <>
+      <CollapseTableRow>
         <TableCell>{exercise.name}</TableCell>
         <TableCell>
           {round(exerciseCompletion?.n_points ?? 0)}/{exercise?.max_points ?? 0}
@@ -53,25 +167,22 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
             ),
           ) ?? null}
         </TableCell>
-        {/*<TableCell>
-          <CollapseButton
-            open={isOpen}
-            onClick={() =>
-              dispatch({
-                type: ActionType.TOGGLE,
-                collapsable: CollapsablePart.EXERCISE,
-                course: exerciseCompletion.exercise?.course?.id ?? "_",
-                collapsableId: exerciseCompletion?.id ?? "_",
-              })
-            }
-          />
-          </TableCell>*/}
-      </TableRow>
-      {/* TODO/FIXME: not shown ever since collapse is disabled */}
-      <TableRow>
-        <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={5}>
-          <Collapse in={isOpen}>{JSON.stringify(exerciseCompletion)}</Collapse>
+        <TableCell>
+          {collapseVisible && (
+            <CollapseButton
+              open={isOpen}
+              onClick={onCollapseClick}
+              tooltip={t("exerciseCompletionCollapseTooltip")}
+            />
+          )}
         </TableCell>
+      </CollapseTableRow>
+      <TableRow>
+        <CollapseTableCell colSpan={6}>
+          <Collapse in={isOpen}>
+            <ExerciseInfo exercise={exercise} />
+          </Collapse>
+        </CollapseTableCell>
       </TableRow>
     </>
   )

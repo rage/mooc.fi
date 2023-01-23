@@ -1,6 +1,6 @@
 import Image, { ImageProps } from "next/image"
 
-import { PropsOf } from "@emotion/react"
+import { BoxProps, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -21,7 +21,7 @@ export const CenteredContent = styled("div")`
     grid-template-columns: 1fr;
 
     @media only screen and (min-width: 1200px) {
-      grid-template-columns: 45% 55%;
+      grid-template-columns: 4.5fr 5.5fr;
       grid-auto-rows: 1fr;
       width: 90%;
     }
@@ -40,7 +40,7 @@ export const ModuleHeader = styled(
     component = "h2",
     align = "left",
     ...props
-  }: PropsOf<typeof H2NoBackground>) => (
+  }: TypographyProps & BoxProps) => (
     <H2NoBackground
       variant={variant}
       component={component}
@@ -66,7 +66,7 @@ export const ModuleHeader = styled(
     font-size: 37px;
     line-height: 70px;
   }
-`
+` as typeof H2NoBackground
 
 const ModuleImageContainer = styled("div")`
   position: relative;
@@ -91,10 +91,10 @@ export const ModuleDescriptionText = styled(
     variant = "subtitle1",
     component = "h3",
     ...props
-  }: PropsOf<typeof SubtitleNoBackground>) => (
+  }: TypographyProps & BoxProps) => (
     <SubtitleNoBackground variant={variant} component={component} {...props} />
   ),
-)<{ component?: React.ElementType }>`
+)`
   color: white;
   font-size: 28px;
   line-height: 47px;
@@ -102,7 +102,7 @@ export const ModuleDescriptionText = styled(
     font-size: 18px;
     line-height: 37px;
   }
-`
+` as typeof SubtitleNoBackground
 
 export const ModuleCardTitle = styled(
   ({
@@ -110,7 +110,7 @@ export const ModuleCardTitle = styled(
     component = "h3",
     align = "center",
     ...props
-  }: PropsOf<typeof CardTitle>) => (
+  }: TypographyProps & BoxProps) => (
     <CardTitle
       variant={variant}
       component={component}
@@ -118,7 +118,7 @@ export const ModuleCardTitle = styled(
       {...props}
     />
   ),
-)<{ component?: React.ElementType }>``
+)``
 
 export const ModuleCardText = styled(
   ({
@@ -126,7 +126,7 @@ export const ModuleCardText = styled(
     component = "p",
     align = "left",
     ...props
-  }: PropsOf<typeof CardText>) => (
+  }: TypographyProps & BoxProps) => (
     <CardText
       variant={variant}
       component={component}
@@ -134,4 +134,4 @@ export const ModuleCardText = styled(
       {...props}
     />
   ),
-)<{ component?: React.ElementType }>``
+)``

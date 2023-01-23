@@ -46,7 +46,7 @@ export const UserCourseSettingQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id } = args
-        let { course_id } = args
+        const { course_id } = args
 
         const settingsData = await ctx.prisma.course.findUnique({
           where: { id: course_id },
@@ -167,6 +167,7 @@ export const UserCourseSettingQueries = extendType({
 
     t.connection("userCourseSettings", {
       type: "UserCourseSetting",
+      nullable: false,
       additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
@@ -178,22 +179,20 @@ export const UserCourseSettingQueries = extendType({
         before: stringArg(),
         after: stringArg(),
       },
-      authorize: isAdmin,
-      resolve: async (_, args, ctx) => {
-        const {
-          first,
-          last,
-          // after,
-          user_id,
-          user_upstream_id,
-          search,
-        } = args
-
-        let { course_id } = args
-
-        if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
+      validateArgs: ({ first, last }) => {
+        if (
+          (!notEmpty(first) && !notEmpty(last)) ||
+          (first ?? 0) > 50 ||
+          (last ?? 0) > 50
+        ) {
           throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
+      },
+      authorize: isAdmin,
+      resolve: async (_, args, ctx) => {
+        const { user_id, user_upstream_id, search } = args
+
+        let { course_id } = args
 
         if (course_id) {
           const inheritSettingsCourse = await ctx.prisma.course
@@ -326,7 +325,7 @@ export const UserCourseSettingQueries = extendType({
         )
       },
       extendConnection(t) {
-        t.int("totalCount")
+        t.nonNull.int("totalCount")
       },
     })
   },

@@ -1,5 +1,3 @@
-import "@fortawesome/fontawesome-svg-core/styles.css"
-
 import React, { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
@@ -7,9 +5,7 @@ import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-//import { CacheProvider, EmotionCache } from "@emotion/react"
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, GlobalStyles } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
 import OriginalLayout from "./_layout"
@@ -21,12 +17,16 @@ import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
-import newTheme from "/src/newTheme"
+import { createEmotionSsr } from "/src/createEmotionSsr"
+import newTheme, { newFontCss } from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
 
-fontAwesomeConfig.autoAddCss = false
+const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
+  createEmotionSsr({
+    key: "emotion-css",
+  })
 
 // const clientSideEmotionCache = createEmotionCache()
 
@@ -34,11 +34,9 @@ fontAwesomeConfig.autoAddCss = false
 //  emotionCache?: EmotionCache
 //}
 
-export function MyApp({
-  Component,
-  pageProps,
-}: // emotionCache = clientSideEmotionCache,
-AppProps) {
+export { augmentDocumentWithEmotionCache }
+
+export function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const t = useTranslator(PagesTranslations)
 
@@ -68,6 +66,7 @@ AppProps) {
 
   const Layout = isNew ? NewLayout : OriginalLayout
   const theme = isNew ? newTheme : originalTheme
+
   const loginStateContextValue = useMemo(
     () => ({
       loggedIn: pageProps?.signedIn,
@@ -77,6 +76,13 @@ AppProps) {
     [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
   )
 
+  const alternateLanguage = useMemo(() => {
+    if (router.locale === "en") {
+      return { hrefLang: "fi_FI", href: router.asPath.replace("/en/", "/") }
+    }
+    return { hrefLang: "en_US", href: `/en${router.asPath}` }
+  }, [router.locale, router.pathname])
+
   return (
     <React.StrictMode>
       <Head>
@@ -84,6 +90,7 @@ AppProps) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
         />
+        <link rel="alternate" {...alternateLanguage} />
         <title>{title}</title>
       </Head>
       <ThemeProvider theme={theme}>
@@ -93,6 +100,8 @@ AppProps) {
             <BreadcrumbProvider>
               <AlertProvider>
                 <Layout>
+                  {/*<GlobalStyles styles={fontCss} />*/}
+                  {isNew && <GlobalStyles styles={newFontCss} />}
                   <Component {...pageProps} />
                 </Layout>
               </AlertProvider>
@@ -142,4 +151,4 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   console.log(metric)
 }
 
-export default withApolloClient(MyApp)
+export default withAppEmotionCache(withApolloClient(MyApp))

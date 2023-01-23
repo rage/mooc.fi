@@ -8,4 +8,6 @@ export function useActiveTab() {
   )?.[1]
 }
 
-export * from "./NavigationMenu"
+export { default as MobileNavigationMenu } from "./MobileNavigationMenu"
+export { default as DesktopNavigationMenu } from "./DesktopNavigationMenu"
+export * from "./BottomNavigation"

@@ -1,7 +1,7 @@
 import Image from "next/image"
 
-import styled from "@emotion/styled"
 import { ButtonBase, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const CloseButton = styled(ButtonBase)`
   position: absolute;
@@ -35,7 +35,7 @@ const CloseButton = styled(ButtonBase)`
   }
 `
 
-const ImagePreviewContainer = styled.div`
+const ImagePreviewContainer = styled("div")`
   width: 100%;
   height: 100%;
   display: flex;

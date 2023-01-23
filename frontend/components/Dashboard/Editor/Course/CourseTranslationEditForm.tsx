@@ -1,7 +1,7 @@
 import { FieldArray, useFormikContext } from "formik"
 
-import styled from "@emotion/styled"
 import { Grid, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
@@ -32,7 +32,7 @@ const CourseTranslationEditForm = () => {
               {values.length ? (
                 values?.map(
                   (value: CourseTranslationFormValues, index: number) => (
-                    <LanguageEntry item key={`translation-${index}`}>
+                    <LanguageEntry item key={`translation-${value.language}`}>
                       <CourseTranslationListItem
                         index={index}
                         translationLanguage={value.language}

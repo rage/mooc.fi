@@ -5,8 +5,8 @@ import { GetStaticPropsContext } from "next"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 // import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
@@ -17,7 +17,7 @@ import InstallationTranslations from "/translations/installation"
 import getUserOS, { UserOSType } from "/util/getUserOS"
 import { useTranslator } from "/util/useTranslator"
 
-const Background = styled.section`
+const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
   padding-right: 1em;
@@ -25,12 +25,12 @@ const Background = styled.section`
   background-color: #ffc107;
 `
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   margin-bottom: 0.4em;
   padding: 1rem;
-`
+` as typeof Typography
 
-const TitleBackground = styled.div`
+const TitleBackground = styled("div")`
   background-color: white;
   max-width: 75%;
   margin-left: auto;
@@ -38,15 +38,15 @@ const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
-const Content = styled.div`
+const Content = styled("div")`
   position: relative;
 `
 
-export const SectionBox = styled.div`
+export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
 
-export const ContentBox = styled.div`
+export const ContentBox = styled("div")`
   background-color: white;
   max-width: 39em;
   border: 3px solid black;
@@ -90,7 +90,7 @@ export const ContentBox = styled.div`
   }
 `
 
-export const CodeBox = styled.div`
+export const CodeBox = styled("div")`
   background-color: #e6f4f1;
   padding: 0.5rem;
   margin-left: 2.5rem;
@@ -107,7 +107,7 @@ export const CodeBox = styled.div`
   }
 `
 
-export const Note = styled.section`
+export const Note = styled("section")`
   padding: 1em;
   background-color: #eeeeee;
   font-size: 16px;
@@ -162,7 +162,7 @@ const mdxComponents: MDXComponents = {
 
 interface InstallationInstructionProps {
   paths: Record<UserOSType, string>
-  id: typeof allowedPaths[number]
+  id: (typeof allowedPaths)[number]
 }
 
 const InstallationInstructions = ({
@@ -244,19 +244,19 @@ const allowedOS: readonly UserOSType[] = [
   "ZIP",
 ] as const
 const languages = ["en", "fi"] as const
-const breadcrumbLabels: Record<typeof allowedPaths[number], string> = {
+const breadcrumbLabels: Record<(typeof allowedPaths)[number], string> = {
   netbeans: "Netbeans",
   "tmc-cli": "TMC Client",
   vscode: "VSCode",
 }
 
 interface CombinationOverride {
-  languages?: { [key in typeof languages[number]]: string }
-  allowedOS?: Array<typeof allowedOS[number]>
+  languages?: { [key in (typeof languages)[number]]: string }
+  allowedOS?: Array<(typeof allowedOS)[number]>
 }
 
 const combinationOverrides: {
-  [K in typeof allowedPaths[number]]?: CombinationOverride
+  [K in (typeof allowedPaths)[number]]?: CombinationOverride
 } = {
   "tmc-cli": {
     languages: { fi: "en", en: "en" },
@@ -277,8 +277,8 @@ export async function getStaticProps({
   locale,
 }: GetStaticPropsContext) {
   const id = ((Array.isArray(params?.id) ? params?.id[0] : params?.id) ??
-    "") as typeof allowedPaths[number]
-  const language = (locale ?? "fi") as typeof languages[number]
+    "") as (typeof allowedPaths)[number]
+  const language = (locale ?? "fi") as (typeof languages)[number]
   if (!allowedPaths.includes(id)) {
     return { notFound: true }
   }

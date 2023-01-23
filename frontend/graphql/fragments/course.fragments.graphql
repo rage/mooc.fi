@@ -30,6 +30,12 @@ fragment CourseTranslationDetailedFields on CourseTranslation {
   updated_at
 }
 
+fragment CourseTagFields on CourseTag {
+  tag {
+    ...TagCoreFields
+  }
+}
+
 fragment CourseFields on Course {
   ...CourseWithPhotoCoreFields
   description
@@ -55,6 +61,9 @@ fragment CourseFields on Course {
   study_modules {
     ...StudyModuleCoreFields
   }
+  tags {
+    ...TagCoreFields
+  }
 }
 
 fragment EditorCourseFields on Course {
@@ -76,6 +85,9 @@ fragment EditorCourseFields on Course {
   user_course_settings_visibilities {
     id
     language
+  }
+  tags {
+    ...TagCoreFields
   }
 }
 

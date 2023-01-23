@@ -15,7 +15,7 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { ServerContext } from "./context"
-import schema from "./schema"
+import createSchema from "./schema"
 
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({
@@ -66,6 +66,7 @@ const useExpressMiddleware = (
 export default async (serverContext: ServerContext) => {
   const app = createExpressAppWithContext(serverContext)
   const httpServer = http.createServer(app)
+  const schema = createSchema()
 
   const apolloServer = new ApolloServer<ServerContext>({
     schema,

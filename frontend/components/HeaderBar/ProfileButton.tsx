@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useActiveTab } from "/components/HeaderBar/Header"
@@ -23,9 +23,7 @@ const ProfileButton = () => {
   const { currentUser } = useLoginStateContext()
   const active = useActiveTab()
 
-  const userDisplayName = currentUser?.first_name
-    ? `${currentUser.first_name} ${currentUser.last_name}`
-    : t("myProfile")
+  const userDisplayName = currentUser?.full_name ?? t("myProfile")
 
   return (
     <StyledButton

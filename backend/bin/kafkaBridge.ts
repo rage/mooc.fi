@@ -27,7 +27,7 @@ const producer = new Kafka.Producer({
   "metadata.broker.list": KAFKA_HOST,
 })
 
-let flushProducer = promisify(producer.flush.bind(producer))
+const flushProducer = promisify(producer.flush.bind(producer))
 
 let producerReady = false
 producer.on("ready", () => {
@@ -51,14 +51,16 @@ producer.on("delivery-report", function (err, report) {
   logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
 
-let app = express()
+const app = express()
 
 app.use(compression())
 app.use(express.json())
 app.use(morgan("combined"))
 
-const port = parseInt(KAFKA_BRIDGE_SERVER_PORT ?? "3003")
-const host = KAFKA_BRIDGE_SERVER_HOST ?? "0.0.0.0"
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+const port = parseInt(KAFKA_BRIDGE_SERVER_PORT || "3003")
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+const host = KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 
 app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (

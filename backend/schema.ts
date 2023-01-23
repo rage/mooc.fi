@@ -11,6 +11,7 @@ import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 import { loggerPlugin } from "./middlewares/logger"
+import { validateArgsPlugin } from "./middlewares/validate"
 
 if (NEXUS_REFLECTION) {
   require("sharp") // image library sharp seems to crash without this require
@@ -40,11 +41,15 @@ const createPlugins = () => {
     }),
     connectionPlugin({
       nexusFieldName: "connection",
+      nonNullDefaults: {
+        output: true,
+      },
     }),
     loggerPlugin(),
     cachePlugin(),
     moocfiAuthPlugin(),
     fieldAuthorizePlugin(),
+    validateArgsPlugin(),
   ]
 
   if (isProduction && !NEXUS_REFLECTION && NEW_RELIC_LICENSE_KEY) {
@@ -57,32 +62,40 @@ const createPlugins = () => {
   return plugins
 }
 
-export default makeSchema({
-  types,
-  contextType: {
-    module: join(process.cwd(), "context.ts"),
-    export: "Context",
-  },
-  sourceTypes: {
-    modules: [
-      {
-        module: require.resolve(".prisma/client/index.d.ts"),
-        alias: "prisma",
-      },
-      { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
-    ],
-    mapping: {
-      Upload: "upload.Upload['promise']",
+const createSchema = () =>
+  makeSchema({
+    types,
+    contextType: {
+      module: join(process.cwd(), "context.ts"),
+      export: "Context",
     },
-  },
-  plugins: createPlugins(),
-  outputs: {
-    typegen: path.join(
-      __dirname,
-      "./node_modules/@types/nexus-typegen/index.d.ts",
-    ),
-    schema: __dirname + "/generated/schema.graphql",
-  },
-  shouldGenerateArtifacts: true,
-  shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),
-})
+    sourceTypes: {
+      modules: [
+        {
+          module: require.resolve(".prisma/client/index.d.ts"),
+          alias: "prisma",
+        },
+        { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
+      ],
+      mapping: {
+        Upload: "upload.Upload['promise']",
+      },
+    },
+    plugins: createPlugins(),
+    outputs: {
+      typegen: path.join(
+        __dirname,
+        "./node_modules/@types/nexus-typegen/index.d.ts",
+      ),
+      schema: __dirname + "/generated/schema.graphql",
+    },
+    // prettierConfig: path.join(__dirname, "/.prettierrc.js"),
+    shouldGenerateArtifacts: true,
+    shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),
+  })
+
+if (NEXUS_REFLECTION) {
+  createSchema()
+}
+
+export default createSchema

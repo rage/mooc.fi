@@ -1,9 +1,13 @@
 import {
+  ControllerFieldState,
+  ControllerRenderProps,
   FieldArrayPath,
   FieldArrayPathValue,
+  FieldPath,
   FieldPathValue,
   FieldValues,
   Path,
+  UseFormStateReturn,
 } from "react-hook-form"
 
 export * from "./ControlledCheckbox"
@@ -63,4 +67,13 @@ export interface ControlledFieldArrayProps<
     LabeledFieldProps,
     RequiredFieldProps {
   validateOtherFields?: Array<TPath>
+}
+
+export interface DefaultFieldRenderProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> {
+  field: ControllerRenderProps<TFieldValues, TName>
+  fieldState: ControllerFieldState
+  formState: UseFormStateReturn<TFieldValues>
 }

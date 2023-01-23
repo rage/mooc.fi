@@ -1,6 +1,5 @@
 import { createRef, useState } from "react"
 
-import styled from "@emotion/styled"
 import Send from "@mui/icons-material/Send"
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
 import {
@@ -11,11 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
-const MailingList = styled.div`
+const MailingList = styled("div")`
   height: 20rem;
   display: flex;
   align-items: center;
@@ -33,7 +33,7 @@ const StyledCard = styled(Card)`
   margin: 0 1rem;
 `
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   text-align: center;
   margin-bottom: 4rem !important;
 `
@@ -42,7 +42,7 @@ const StyledHeader = styled(Header)`
   margin-bottom: 2rem !important;
 `
 
-const FieldWrapper = styled.div`
+const FieldWrapper = styled("div")`
   display: flex;
   margin-bottom: 1rem;
 `
@@ -71,7 +71,7 @@ function EmailSubscribe() {
     <MailingList>
       <StyledCard>
         <CardContent>
-          <StyledHeader variant="h5" component="h4">
+          <StyledHeader variant="h5" as="h4">
             {t("emailHeader")}
           </StyledHeader>
           <div>

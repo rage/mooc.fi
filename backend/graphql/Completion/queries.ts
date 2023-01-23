@@ -25,7 +25,7 @@ export const CompletionQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
         const { first, last, completion_language } = args
-        let { course: slug } = args
+        const { course: slug } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           ctx.disableRelations = true
         }
@@ -73,7 +73,7 @@ export const CompletionQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx, __) => {
         const { completion_language, first, last, before, after, search } = args
-        let { course: slug } = args
+        const { course: slug } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new GraphQLForbiddenError("Cannot query more than 50 objects")
@@ -102,7 +102,7 @@ export const CompletionQueries = extendType({
           (args) =>
             ctx.prisma.course
               .findUnique({
-                where: { id: course!.completions_handled_by_id ?? course!.id },
+                where: { id: course.completions_handled_by_id ?? course.id },
               })
               .completions(merge(baseArgs, args)),
           async () => {
@@ -157,6 +157,7 @@ export const CompletionQueries = extendType({
     t.connection("completionsPaginated_type", {
       // hack to generate connection type
       type: "Completion",
+      nullable: false,
       additionalArgs: {
         course: nonNull(stringArg()),
         completion_language: stringArg(),
@@ -172,7 +173,7 @@ export const CompletionQueries = extendType({
         return []
       },
       extendConnection(t) {
-        t.int("totalCount")
+        t.nonNull.int("totalCount")
       },
     })
   },

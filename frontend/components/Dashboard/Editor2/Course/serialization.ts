@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { omit } from "lodash"
 import { DateTime } from "luxon"
 
@@ -29,7 +30,13 @@ export const toCourseForm = ({
   }
 
   const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+    course?.study_modules?.map((studyModule) => studyModule.id) ?? []
+
+  const study_modules: Record<string, boolean> = {}
+
+  for (const studyModule of modules ?? []) {
+    study_modules[studyModule.id] = courseStudyModules.includes(studyModule.id)
+  }
 
   return {
     ...omit(course, [
@@ -81,13 +88,7 @@ export const toCourseForm = ({
         }
       },
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, ["__typename", "id"]),
@@ -130,6 +131,19 @@ export const toCourseForm = ({
         ...omit(link, ["__typename", "id"]),
         _id: link.id ?? undefined,
         course_code: link.course_code ?? undefined,
+      })) ?? [],
+    tags:
+      course?.tags?.map((tag) => ({
+        ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
+        _id: tag.id ?? undefined,
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
+          _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
+          language: tagTranslation.language,
+          name: tagTranslation.name,
+          description: tagTranslation.description ?? undefined,
+        })),
       })) ?? [],
   }
 }
@@ -231,6 +245,28 @@ export const fromCourseForm = ({
     | CourseCreateArg["study_modules"]
     | CourseUpsertArg["study_modules"]
 
+  const course_tags = values?.tags?.map((tag) => {
+    return {
+      course_id: values.id,
+      tag_id: tag._id,
+      tag: {
+        ...omit(tag, ["__typename", "_id"]),
+        id: tag._id ?? undefined,
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => {
+          const [tag_id, language] = splitCompositeId(tagTranslation._id ?? "")
+
+          return {
+            ...omit(tagTranslation, ["__typename", "_id"]),
+            tag_id,
+            language,
+            description: tagTranslation.description ?? undefined,
+          }
+        }),
+      },
+    }
+  })
+
   const formValues = newCourse
     ? omit(values, [
         "id",
@@ -296,7 +332,14 @@ export const fromCourseForm = ({
         : values.exercise_completions_needed,
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
+    course_tags,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
+}
+
+const splitCompositeId = (id: string) => {
+  const res = id.split(":")
+
+  return res.map((r) => (r === "" ? undefined : r))
 }

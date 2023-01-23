@@ -4,8 +4,8 @@ import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
 
 import { useApolloClient, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Card, Link, Paper, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
@@ -31,9 +31,9 @@ import {
   UserCourseStatsUnsubscribeDocument,
 } from "/graphql/generated"
 
-const Title = styled(Typography)<any>`
+const Title = styled(Typography)`
   margin-bottom: 0.7em;
-`
+` as typeof Typography
 
 const Row = styled(Paper)`
   padding: 0.5rem;
@@ -132,9 +132,10 @@ const Course = () => {
           ? UserCourseStatsSubscribeDocument
           : UserCourseStatsUnsubscribeDocument,
         variables: {
-          id: !isSubscribed
-            ? data?.course?.course_stats_email?.id!
-            : subscription!.id!,
+          id:
+            (!isSubscribed
+              ? data?.course?.course_stats_email?.id
+              : subscription?.id) ?? "",
         },
         refetchQueries: [{ query: CurrentUserStatsSubscriptionsDocument }],
       })

@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo, useRef } from "react"
 
 import { FormikHelpers } from "formik"
 import Router from "next/router"
@@ -33,8 +33,8 @@ import {
 
 interface CourseEditProps {
   course?: EditorCourseDetailedFieldsFragment
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  modules?: StudyModuleDetailedFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
+  modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
@@ -50,16 +50,18 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
       { query: EmailTemplateEditorCoursesDocument },
     ],
   })
-
+  const initialValues = useRef(toCourseForm({ course, modules }))
   const client = useApolloClient()
 
-  const initialValues = toCourseForm({ course, modules })
-
-  const validationSchema = courseEditSchema({
-    client,
-    initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
-    t,
-  })
+  const validationSchema = useMemo(
+    () =>
+      courseEditSchema({
+        client,
+        initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
+        t,
+      }),
+    [course, client, t],
+  )
 
   const onSubmit = useCallback(
     async (
@@ -68,7 +70,10 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
     ): Promise<void> => {
       const newCourse = !values.id
 
-      const mutationVariables = fromCourseForm({ values, initialValues })
+      const mutationVariables = fromCourseForm({
+        values,
+        initialValues: initialValues.current,
+      })
 
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
@@ -129,7 +134,7 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
 
   return (
     <CourseEditForm
-      course={initialValues}
+      course={initialValues.current}
       studyModules={modules}
       courses={courses}
       validationSchema={validationSchema}

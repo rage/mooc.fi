@@ -69,7 +69,10 @@ export const signIn = async ({
   return details
 }
 
-export const signOut = async (apollo: ApolloClient<object>, cb: Function) => {
+export const signOut = async (
+  apollo: ApolloClient<object>,
+  cb: (...args: any[]) => any,
+) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
@@ -87,24 +90,10 @@ const getCookie = (key: string) => {
     return
   }
 
-  const vals = document.cookie
-    .split("; ")
-    .reduce<{ [key: string]: string }>((acc, curr) => {
-      try {
-        const [key, value] = curr.split("=")
+  const cookieString = decodeURIComponent(document.cookie)
+  const found = cookieString.match("(^|[^;]+)s*" + key + "s*=s*([^;]+)")
 
-        return {
-          ...acc,
-          [key]: value,
-        }
-      } catch (e) {
-        //
-      }
-
-      return acc
-    }, {})
-
-  return vals[key] || ""
+  return found ? found.pop() ?? "" : ""
 }
 
 export const getAccessToken = (ctx: NextContext | undefined) => {
@@ -117,7 +106,7 @@ export const getAccessToken = (ctx: NextContext | undefined) => {
 
 export async function userDetails(accessToken: string) {
   const res = await axios.get<
-    {},
+    any,
     {
       data: {
         id: string

@@ -1,7 +1,7 @@
 import ReactGA from "react-ga"
 
-import styled from "@emotion/styled"
 import { Chip, Grid, Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseImage from "/components/CourseImage"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
@@ -13,7 +13,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
-const Background = styled(ClickableButtonBase)<{ component: any }>`
+const Background = styled(ClickableButtonBase)`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -21,7 +21,7 @@ const Background = styled(ClickableButtonBase)<{ component: any }>`
   @media (max-width: 959px) {
     flex-direction: row;
   }
-`
+` as typeof ClickableButtonBase
 
 const ResponsiveCourseImageBase = styled(CourseImageBase)`
   position: relative;
@@ -42,7 +42,7 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
   }
 `
 
-const TextArea = styled.div`
+const TextArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   height: 100%;
   color: black;
@@ -82,8 +82,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <Background
           focusRipple
           disabled={
-            !course ||
-            !course.link ||
+            !course?.link ||
             (course?.status === "Upcoming" && !course?.upcoming_active_link)
           }
           component="div"

@@ -1,7 +1,10 @@
-import styled from "@emotion/styled"
+import { useCallback } from "react"
+
 import Refresh from "@mui/icons-material/Refresh"
 import Report from "@mui/icons-material/Report"
-import { CardActions, Typography } from "@mui/material"
+import CardActions from "@mui/material/CardActions"
+import { styled } from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
 
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
 import {
@@ -15,6 +18,8 @@ const StyledIcon = styled(Report)`
 `
 
 function ErrorMessage() {
+  const onRefreshClick = useCallback(() => window.location.reload(), [])
+
   return (
     <StyledCard>
       <StyledCardContent>
@@ -28,10 +33,7 @@ function ErrorMessage() {
         </Typography>
       </StyledCardContent>
       <CardActions>
-        <StyledRefreshButton
-          variant="text"
-          onClick={() => window.location.reload()}
-        >
+        <StyledRefreshButton variant="text" onClick={onRefreshClick}>
           <Refresh />
         </StyledRefreshButton>
       </CardActions>

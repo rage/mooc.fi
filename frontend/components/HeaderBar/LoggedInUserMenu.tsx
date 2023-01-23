@@ -1,12 +1,10 @@
-import {
-  faChalkboardTeacher,
-  faEnvelope,
-  faList,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Typography } from "@mui/material"
+import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import Envelope from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
+import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import Search from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
+import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -58,17 +56,17 @@ const UserMenu = () => {
   const active = useActiveTab()
 
   return (
-    <nav role="navigation">
+    <>
       {admin && (
         <>
           <StyledButton
             href="/courses"
             color="inherit"
             variant="text"
-            active={active === "courses"}
+            active={active == "courses" ? 1 : null}
             style={{ marginLeft: "1em" }}
           >
-            <FontAwesomeIcon icon={faChalkboardTeacher} />
+            <ChalkboardTeacher />
             <ButtonLabel>{t("courses")}</ButtonLabel>
           </StyledButton>
 
@@ -76,32 +74,32 @@ const UserMenu = () => {
             href="/study-modules"
             color="inherit"
             variant="text"
-            active={active === "study-modules"}
+            active={active == "study-modules" ? 1 : null}
           >
-            <FontAwesomeIcon icon={faList} />
+            <List />
             <ButtonLabel>{t("modules")}</ButtonLabel>
           </StyledButton>
           <StyledButton
             href="/users/search"
             color="inherit"
             variant="text"
-            active={active === "users"}
+            active={active == "users" ? 1 : null}
           >
-            <FontAwesomeIcon icon={faSearch} />
+            <Search />
             <ButtonLabel>{t("userSearch")}</ButtonLabel>
           </StyledButton>
           <StyledButton
             href="/email-templates"
             color="inherit"
             variant="text"
-            active={active === "email-templates"}
+            active={active == "email-templates" ? 1 : null}
           >
-            <FontAwesomeIcon icon={faEnvelope} />
+            <Envelope />
             <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
           </StyledButton>
         </>
       )}
-    </nav>
+    </>
   )
 }
 

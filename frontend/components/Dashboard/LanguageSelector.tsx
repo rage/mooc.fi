@@ -1,20 +1,21 @@
-import styled from "@emotion/styled"
-import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
 
 import LanguageSelectorForm from "./LanguageSelectorForm"
 
-const StyledCard = styled.div`
+const StyledCard = styled("div")`
   margin: 5px;
   padding: 1rem;
   display: flex;
   flex-direction: row;
   border-bottom: 1.5px solid #4d78a3;
 `
-const StyledText = styled(Typography)<any>`
+const StyledText = styled(Typography)`
   font-size: 16px;
   line-height: 30px;
   margin: auto;
-`
+` as typeof Typography
+
 interface LanguageSelectorProps {
   handleLanguageChange: React.ChangeEventHandler<HTMLInputElement>
   languageValue: string

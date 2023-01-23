@@ -1,19 +1,11 @@
-import { useState } from "react"
+import { useMemo } from "react"
 
 import { sortBy } from "lodash"
 
-import styled from "@emotion/styled"
-import BuildIcon from "@mui/icons-material/Build"
-import { Button, Dialog, Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import CourseEntry from "./CourseEntry"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import {
-  ActionType,
-  CollapsablePart,
-  useCollapseContext,
-} from "/components/Dashboard/Users/Summary/CollapseContext"
-import RawView from "/components/Dashboard/Users/Summary/RawView"
+import { SkeletonCourseEntry } from "./CourseEntry"
+import CourseList from "/components/Dashboard/Users/Summary/CourseList"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
@@ -22,13 +14,13 @@ import {
   UserCourseSummaryCoreFieldsFragment,
 } from "/graphql/generated"
 
-const DataPlaceholder = styled.div`
+const DataPlaceholder = styled("div")`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 `
 
 interface UserPointsSummaryProps {
-  data?: UserCourseSummaryCoreFieldsFragment[]
+  data?: UserCourseSummaryCoreFieldsFragment[] | null
   search?: EditorCoursesQueryVariables["search"]
 }
 
@@ -37,79 +29,45 @@ export default function UserPointsSummary({
   search,
 }: UserPointsSummaryProps) {
   const t = useTranslator(CommonTranslations)
-  const { state, dispatch } = useCollapseContext()
-  const [rawViewOpen, setRawViewOpen] = useState(false)
+
+  // TODO: add search from other fields?
+  const filteredData = useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    if (!search) {
+      return sortBy(data, "course.name")
+    }
+
+    return sortBy(
+      data?.filter(
+        (entry) =>
+          entry?.course?.name
+            .trim()
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase()),
+        "course.name",
+      ),
+    )
+  }, [search, data])
 
   if (!data) {
     return (
       <>
-        <CourseEntry key="skeleton-course-1" />
-        <CourseEntry key="skeleton-course-2" />
-        <CourseEntry key="skeleton-course-3" />
+        <SkeletonCourseEntry key="skeleton-course-1" />
+        <SkeletonCourseEntry key="skeleton-course-2" />
+        <SkeletonCourseEntry key="skeleton-course-3" />
       </>
     )
   }
 
-  // TODO: add search from other fields?
-  const filteredData =
-    search && search !== ""
-      ? data.filter((stats) =>
-          stats?.course?.name
-            .trim()
-            .toLocaleLowerCase()
-            .includes(search.toLocaleLowerCase()),
-        )
-      : data
-  const coursesClosed = !Object.values(state).some((s) => s.open)
-
   return (
     <>
-      <Paper
-        style={{
-          marginBottom: "0.5rem",
-          display: "flex",
-          justifyContent: "flex-end",
-          flexDirection: "row",
-          gap: "0.5rem",
-          padding: "0.5rem",
-        }}
-      >
-        <Button
-          variant="outlined"
-          startIcon={<BuildIcon />}
-          onClick={() => setRawViewOpen(!rawViewOpen)}
-        >
-          Raw view
-        </Button>
-        <CollapseButton
-          onClick={() =>
-            dispatch({
-              type: coursesClosed ? ActionType.OPEN_ALL : ActionType.CLOSE_ALL,
-              collapsable: CollapsablePart.COURSE,
-            })
-          }
-          open={!coursesClosed}
-          label={coursesClosed ? t("showAll") : t("hideAll")}
-        />
-      </Paper>
-      {filteredData.length === 0 ? (
+      {filteredData?.length === 0 && (
         <DataPlaceholder>{t("noResults")}</DataPlaceholder>
-      ) : null}
-      {sortBy(filteredData, (stats) => stats?.course?.name).map(
-        (entry, index) => (
-          <CourseEntry key={entry.course?.id ?? index} data={entry} />
-        ),
       )}
-      <Dialog
-        fullWidth
-        maxWidth="md"
-        open={rawViewOpen}
-        onClose={() => setRawViewOpen(false)}
-      >
-        <div style={{ overflowY: "hidden" }}>
-          <RawView value={JSON.stringify(data, undefined, 2)} />
-        </div>
-      </Dialog>
+      <CourseList data={filteredData} />
     </>
   )
 }

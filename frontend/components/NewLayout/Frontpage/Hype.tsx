@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { SectionContainer } from "/components/NewLayout/Common"
 import {
@@ -20,7 +20,9 @@ type NaviItem = {
 }
 
 // either 4, 2 or 1 columns, depending on the number of items
-const HypeGrid = styled.div<{ count?: number }>`
+const HypeGrid = styled("div", {
+  shouldForwardProp: (prop) => prop !== "count",
+})<{ count?: number }>`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: ${({ count = 4 }) =>
@@ -45,6 +47,9 @@ const HypeGrid = styled.div<{ count?: number }>`
   }
 `
 
+const HypeCardHeader = styled(CardHeader)`
+  background-color: #f5f5f5;
+`
 interface HypeCardProps {
   item: NaviItem
 }
@@ -52,9 +57,9 @@ interface HypeCardProps {
 const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
   return (
     <CardWrapper>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
+      <HypeCardHeader>
+        <CardTitle variant="h2">{title}</CardTitle>
+      </HypeCardHeader>
       <CardBody>
         <CardDescription>{text}</CardDescription>
       </CardBody>

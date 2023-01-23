@@ -14,7 +14,7 @@ const responseStatus = [
 
 const statusToResponseStatus = (
   status: number,
-): typeof responseStatus[number] => {
+): (typeof responseStatus)[number] => {
   if (status >= 100 && status < 200) return "info"
   if (status >= 200 && status < 300) return "success"
   if (status >= 300 && status < 400) return "redirect"
@@ -24,7 +24,7 @@ const statusToResponseStatus = (
   return "warn"
 }
 
-const colors: Record<typeof responseStatus[number], keyof ForegroundColor> = {
+const colors: Record<(typeof responseStatus)[number], keyof ForegroundColor> = {
   success: "white",
   info: "white",
   warn: "yellow",

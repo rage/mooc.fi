@@ -62,7 +62,7 @@ export const AVOIN_TOKEN = process.env.AVOIN_TOKEN
 
 // certificates api
 export const CERTIFICATES_URL =
-  process.env.CERTIFICATES_URL || "https://certificates.mooc.fi"
+  process.env.CERTIFICATES_URL ?? "https://certificates.mooc.fi"
 
 // userAppDatum related
 export const CONFIG_NAME = process.env.CONFIG_NAME

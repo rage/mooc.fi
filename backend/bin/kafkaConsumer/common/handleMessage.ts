@@ -11,7 +11,7 @@ import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 
 // Each partition has their own commit counter
-let commitCounterMap = new Map<number, number>()
+const commitCounterMap = new Map<number, number>()
 
 const commitInterval = config.commit_interval
 
@@ -93,7 +93,8 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
   const { logger, consumer } = kafkaContext
 
-  const commitCounter = commitCounterMap.get(message.partition) ?? 0
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const commitCounter = commitCounterMap.get(message.partition) || 0
   commitCounterMap.set(message.partition, commitCounter + 1)
 
   if (commitCounter >= commitInterval) {

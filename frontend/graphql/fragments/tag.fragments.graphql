@@ -1,0 +1,16 @@
+fragment TagCoreFields on Tag {
+  id
+  hidden
+  types
+  name
+  tag_translations {
+    ...TagTranslationFields
+  }
+}
+
+fragment TagTranslationFields on TagTranslation {
+  tag_id
+  name
+  description
+  language
+}

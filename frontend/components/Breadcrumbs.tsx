@@ -3,23 +3,22 @@ import React from "react"
 import { memoize } from "lodash"
 import { useRouter } from "next/router"
 
-import { css } from "@emotion/react"
-import styled from "@emotion/styled"
 import { Link, Skeleton } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { isTranslationKey } from "/translations"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
 import { useTranslator } from "/util/useTranslator"
 
-const BreadcrumbList = styled.ul`
+const BreadcrumbList = styled("ul")`
   list-style: none;
   overflow: hidden;
   margin: 0px !important;
   padding-left: 0px;
 `
 
-const BreadcrumbItem = styled.li`
+const BreadcrumbItem = styled("li")`
   float: left;
   cursor: pointer;
   &:first-of-type a {
@@ -82,7 +81,7 @@ const BreadcrumbLink = styled(Link)`
   ${BreadcrumbLinkBase}
 `
 
-const BreadcrumbNonLink = styled.div`
+const BreadcrumbNonLink = styled("div")`
   ${BreadcrumbLinkBase}
 `
 
@@ -132,14 +131,16 @@ export function Breadcrumbs() {
   }
 
   return (
-    <BreadcrumbList>
-      <BreadcrumbComponent translation="home" href="/" key="home" />
-      {breadcrumbs.map((breadcrumb, index) => (
-        <BreadcrumbComponent
-          {...breadcrumb}
-          key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
-        />
-      ))}
-    </BreadcrumbList>
+    <nav aria-label="breadcrumbs">
+      <BreadcrumbList>
+        <BreadcrumbComponent translation="home" href="/" key="home" />
+        {breadcrumbs.map((breadcrumb, index) => (
+          <BreadcrumbComponent
+            {...breadcrumb}
+            key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
+          />
+        ))}
+      </BreadcrumbList>
+    </nav>
   )
 }

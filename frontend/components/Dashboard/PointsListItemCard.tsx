@@ -1,32 +1,29 @@
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
-import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
+import ProfileTranslations from "/translations/profile"
 import formatPointsData from "/util/formatPointsData"
+import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseCoreFieldsFragment,
+  UserCoreFieldsFragment,
   UserCourseProgressCoreFieldsFragment,
   UserCourseServiceProgressCoreFieldsFragment,
 } from "/graphql/generated"
 
-const Root = styled(Grid)`
+const PointsListItemCardContainer = styled(Grid)`
   background-color: white;
   margin: 1rem;
   padding: 1rem;
 `
 
-interface PersonalDetails {
-  firstName: string
-  lastName: string
-  email: string
-  sid: string
-}
 interface PointsListItemCardProps {
   course?: CourseCoreFieldsFragment | null
   userCourseProgress?: UserCourseProgressCoreFieldsFragment | null
@@ -35,48 +32,63 @@ interface PointsListItemCardProps {
     | null
   cutterValue?: number
   showPersonalDetails?: boolean
-  personalDetails?: PersonalDetails
+  user?: UserCoreFieldsFragment
   showProgress?: boolean
 }
 
 interface PersonalDetailsDisplayProps {
-  personalDetails: PersonalDetails
+  user: UserCoreFieldsFragment
 }
 
-const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
-  const { personalDetails } = props
+const PersonalDetailsDisplay = ({ user }: PersonalDetailsDisplayProps) => {
+  const t = useTranslator(ProfileTranslations)
+
   return (
     <>
       <CardSubtitle>
-        Name: {personalDetails.firstName} {personalDetails.lastName}
+        {t("name")} {user.full_name}
       </CardSubtitle>
-      <CardSubtitle>e-mail: {personalDetails.email}</CardSubtitle>
-      <CardSubtitle>student number: {personalDetails.sid}</CardSubtitle>
+      <CardSubtitle>
+        {t("email")} {user.email ?? "-"}
+      </CardSubtitle>
+      <CardSubtitle>
+        {t("studentNumber")} {user.real_student_number ?? "-"}
+      </CardSubtitle>
     </>
   )
 }
 function PointsListItemCard(props: PointsListItemCardProps) {
+  const t = useTranslator(ProfileTranslations)
   const {
     course,
     userCourseProgress,
     userCourseServiceProgresses,
     cutterValue = 0,
     showPersonalDetails,
-    personalDetails,
+    user,
     showProgress = true,
   } = props
   const [showDetails, setShowDetails] = useState(false)
 
   // TODO: do this in the backend
-  const formattedPointsData = formatPointsData({
-    userCourseProgress,
-    userCourseServiceProgresses,
-  })
+  const formattedPointsData = useMemo(
+    () =>
+      formatPointsData({
+        userCourseProgress,
+        userCourseServiceProgresses,
+      }),
+    [userCourseProgress, userCourseServiceProgresses],
+  )
+
+  const onShowDetailsClick = useCallback(
+    () => setShowDetails((prev) => !prev),
+    [setShowDetails],
+  )
 
   return (
-    <Root item sm={12} lg={12}>
-      {showPersonalDetails && personalDetails ? (
-        <PersonalDetailsDisplay personalDetails={personalDetails} />
+    <PointsListItemCardContainer item xs={12} sm={12} md={12} lg={12}>
+      {showPersonalDetails && user ? (
+        <PersonalDetailsDisplay user={user} />
       ) : (
         <CardTitle component="h2" variant="h3">
           {course?.name}
@@ -85,17 +97,16 @@ function PointsListItemCard(props: PointsListItemCardProps) {
       {showProgress && (
         <>
           <PointsProgress
-            total={formattedPointsData.total * 100}
-            title="Total progress"
+            percentage={formattedPointsData.total * 100}
+            title={t("totalProgress")}
           />
           <PointsProgress
-            total={formattedPointsData.exercises * 100}
-            title="Exercises completed"
+            percentage={formattedPointsData.exercises * 100}
+            title={t("exercisesCompleted")}
           />
-          <hr />
         </>
       )}
-      {Object.keys(formattedPointsData?.groups ?? {}).length ? (
+      {Object.keys(formattedPointsData?.groups ?? {}).length > 0 ? (
         <>
           <PointsItemTable
             studentPoints={formattedPointsData.groups}
@@ -104,16 +115,16 @@ function PointsListItemCard(props: PointsListItemCardProps) {
           />
           <FormSubmitButton
             variant="text"
-            onClick={() => setShowDetails(!showDetails)}
+            onClick={onShowDetailsClick}
             fullWidth
           >
-            {showDetails ? "show less" : "show detailed breakdown"}
+            {showDetails ? t("showLess") : t("showDetailedBreakdown")}
           </FormSubmitButton>
         </>
       ) : (
-        <p>No points data available</p>
+        <p>{t("noPointsData")}</p>
       )}
-    </Root>
+    </PointsListItemCardContainer>
   )
 }
 

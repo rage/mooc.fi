@@ -1,14 +1,5 @@
 import { chunk, difference, groupBy } from "lodash"
-import {
-  arg,
-  extendType,
-  idArg,
-  intArg,
-  list,
-  nonNull,
-  nullable,
-  stringArg,
-} from "nexus"
+import { arg, extendType, idArg, intArg, list, nonNull, stringArg } from "nexus"
 import { v4 as uuidv4 } from "uuid"
 
 import { Completion } from "@prisma/client"
@@ -31,7 +22,7 @@ export const CompletionMutations = extendType({
         user: nonNull(idArg()),
         course: nonNull(idArg()),
         completion_language: stringArg(),
-        tier: nullable(intArg()),
+        tier: intArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -62,7 +53,7 @@ export const CompletionMutations = extendType({
     t.list.nonNull.field("addManualCompletion", {
       type: "Completion",
       args: {
-        completions: list(arg({ type: "ManualCompletionArg" })),
+        completions: list(nonNull(arg({ type: "ManualCompletionArg" }))),
         course_id: nonNull(stringArg()),
       },
       authorize: isAdmin,

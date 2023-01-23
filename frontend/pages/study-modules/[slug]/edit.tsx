@@ -4,8 +4,8 @@ import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Link, Paper, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"

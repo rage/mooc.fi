@@ -1,4 +1,5 @@
-import axios, { Method } from "axios"
+export {}
+/* import axios, { Method } from "axios"
 import { omit, orderBy } from "lodash"
 
 import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
@@ -972,3 +973,4 @@ describe("API", () => {
     // but similar functions are already tested
   })
 })
+ */

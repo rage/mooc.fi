@@ -1,22 +1,19 @@
 import { CardSubtitle, CardTitle } from "components/Text/headers"
 
-import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
 import { Avatar, Button, Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CertificateButton from "/components/CertificateButton"
-import {
-  formatDateTime,
-  mapLangToLanguage,
-} from "/components/DataFormatFunctions"
 import ProfileTranslations from "/translations/profile"
+import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
 import { addDomain } from "/util/imageUtils"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import {
   CompletionDetailedFieldsFragment,
-  UserCourseSummaryCourseFieldsFragment,
+  UserOverviewCourseFieldsFragment,
 } from "/graphql/generated"
 
 const StyledButton = styled(Button)`
@@ -30,7 +27,7 @@ const StyledButton = styled(Button)`
 
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
-  course: Omit<UserCourseSummaryCourseFieldsFragment, "exercises">
+  course: UserOverviewCourseFieldsFragment // actually also UserCourseSummaryCourseFieldsFragment, but they are kind of compatible
 }
 
 interface CourseAvatarProps {
@@ -56,7 +53,7 @@ const ListItemContainer = styled(Paper)`
   padding: 0.5rem;
 `
 
-const Row = styled.section`
+const Row = styled("section")`
   display: flex;
   grid-gap: 0.5rem;
   margin: 0.5rem;
@@ -68,7 +65,7 @@ const Row = styled.section`
   }
 `
 
-const Column = styled.div`
+const Column = styled("div")`
   display: flex;
   flex-direction: column;
 `

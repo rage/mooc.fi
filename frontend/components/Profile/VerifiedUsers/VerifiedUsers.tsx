@@ -1,9 +1,9 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import LaunchIcon from "@mui/icons-material/Launch"
 import { Button, Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import VerifiedUser from "./VerifiedUser"
 

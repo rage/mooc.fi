@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Typography, TypographyProps } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
@@ -20,7 +20,7 @@ const PartnerDividerText = styled((props: Partial<TypographyProps>) => (
   }
 `
 
-const PartnerDividerWrapper = styled.section`
+const PartnerDividerWrapper = styled("section")`
   width: 100%;
   padding-left: 24px;
 `

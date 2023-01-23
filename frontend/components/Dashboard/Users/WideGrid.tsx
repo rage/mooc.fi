@@ -2,7 +2,6 @@ import { useCallback, useContext } from "react"
 
 import range from "lodash/range"
 
-import styled from "@emotion/styled"
 import {
   Button,
   Paper,
@@ -14,14 +13,14 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
-const TableWrapper = styled.div`
+const TableWrapper = styled("div")`
   overflow-x: auto;
 `
 
@@ -35,7 +34,7 @@ const StyledPaper = styled(Paper)`
   margin-top: 5px;
 `
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled("div")`
   display: flex;
   gap: 0.5rem;
 `
@@ -96,7 +95,7 @@ const RenderResults = () => {
   const t = useTranslator(UsersTranslations)
   const { data, loading } = useContext(UserSearchContext)
 
-  const results = data?.userDetailsContains?.edges?.filter(notEmpty) ?? []
+  const results = data?.userDetailsContains?.edges ?? []
 
   if (loading) {
     return (
@@ -112,7 +111,7 @@ const RenderResults = () => {
     )
   }
 
-  if (!results || results?.length < 1)
+  if (results.length < 1)
     return (
       <TableBody>
         <TableRow>

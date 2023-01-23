@@ -5,8 +5,8 @@ import {
   fakeGetAccessToken,
   fakeUserDetailReply,
   getTestContext,
-} from "../../tests/__helpers"
-import { seed } from "../../tests/data/seed"
+} from "../../tests"
+import { seed } from "../../tests/data"
 import {
   Change,
   deleteUsers,

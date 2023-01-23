@@ -1,5 +1,5 @@
 import { omit } from "lodash"
-import { arg, extendType, idArg, nonNull, nullable, stringArg } from "nexus"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
@@ -109,17 +109,16 @@ export const StudyModuleMutations = extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: nullable(idArg()),
+        id: idArg(),
         slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx) => {
-        const { id, slug } = args
-
+      validate: (_, { id, slug }) => {
         if (!id && !slug) {
-          throw "must have at least id or slug"
+          throw new GraphQLUserInputError("must provide id or slug")
         }
-
+      },
+      resolve: async (_, { id, slug }, ctx) => {
         const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
             id: id ?? undefined,

@@ -1,9 +1,8 @@
-import { Typography } from "@mui/material"
+import { BoxProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import Typography, { TypographyProps } from "@mui/material/Typography"
 
-export const H1NoBackground = styled(Typography)<{
-  component?: React.ElementType
-}>`
+export const H1NoBackground = styled(Typography)`
   padding-top: 0.7em;
   padding-bottom: 0.7em;
   padding-left: 1.5rem;
@@ -18,20 +17,16 @@ export const H1NoBackground = styled(Typography)<{
     padding-left: 1em;
     padding-right: 1em;
   }
-`
+` as typeof Typography
 
-export const SubtitleNoBackground = styled(Typography)<{
-  component?: React.ElementType
-}>`
+export const SubtitleNoBackground = styled(Typography)`
   padding-bottom: 1em;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size: 2em;
-`
+` as typeof Typography
 
-export const H1Background = styled(Typography)<{
-  component?: React.ElementType
-}>`
+export const H1Background = styled(Typography)`
   margin-left: auto;
   margin-right: auto;
   padding-top: 0.7em;
@@ -42,7 +37,8 @@ export const H1Background = styled(Typography)<{
   margin-bottom: 0.7em;
   background-color: white;
   width: 45%;
-`
+` as typeof Typography
+
 interface TitleProps {
   fontcolor: string
   titlebackground: string
@@ -51,7 +47,7 @@ interface TitleProps {
 export const H2Background = styled(Typography, {
   shouldForwardProp: (prop) =>
     prop !== "fontcolor" && prop !== "titlebackground",
-})<TitleProps & { component?: React.ElementType }>`
+})<TitleProps & TypographyProps & BoxProps>`
   margin: 5rem auto 1rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -65,9 +61,7 @@ export const H2Background = styled(Typography, {
     ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
 `
 
-export const H2NoBackground = styled(Typography)<{
-  component?: React.ElementType
-}>`
+export const H2NoBackground = styled(Typography)`
   margin: 3rem auto 0.7rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -76,14 +70,15 @@ export const H2NoBackground = styled(Typography)<{
   font-weight: 550;
   font-size: 37px;
   line-height: 58px;
-`
+` as typeof Typography
+
 interface SubTitleProps {
   fontcolor?: string
 }
 
 export const SubtitleBackground = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "fontcolor",
-})<SubTitleProps & { component: React.ElementType }>`
+})<SubTitleProps & TypographyProps & BoxProps>`
   margin: 0rem auto 3rem auto;
   padding: 1rem;
   display: table;
@@ -93,21 +88,22 @@ export const SubtitleBackground = styled(Typography, {
   ${(props) => `color: ${props.fontcolor ?? "black"};`}
 `
 
-export const CardTitle = styled(Typography)<{ component?: React.ElementType }>`
+export const CardTitle = styled(Typography)`
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
   margin-left: 0.1rem;
   margin-right: 0.1rem;
   color: black;
-`
+` as typeof Typography
 
-export const CardSubtitle = styled(Typography)<{
-  component?: React.ElementType
-}>`
+export const CardSubtitle = styled(Typography)(
+  ({ theme }) => `
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
   margin-left: 0.1rem;
   margin-right: 0.1rem;
   color: gray;
-  font-family: var(--open-sans-condensed-font), sans-serif !important;
-`
+  font-family: ${theme.typography.subtitle1.fontFamily}; 
+  font-stretch: ${theme.typography.subtitle1.fontStretch};
+`,
+) as typeof Typography

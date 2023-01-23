@@ -22,7 +22,7 @@ const SHIBBOLETH_HEADERS = [
   "schachomeorganization",
 ] as const
 
-const defaultHeaders: Record<typeof SHIBBOLETH_HEADERS[number], string> = {
+const defaultHeaders: Record<(typeof SHIBBOLETH_HEADERS)[number], string> = {
   displayname: "kissa kissanen",
   schachomeorganization: "yliopisto.fi",
   schacpersonaluniquecode:

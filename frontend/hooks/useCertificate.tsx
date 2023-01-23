@@ -141,6 +141,10 @@ export const useCertificate = ({
 
     if (isNameChanged) {
       try {
+        if (!currentUser) {
+          throw new Error("No current user")
+        }
+
         dispatch({ type: "UPDATE_NAME" })
         const res = await updateAccount(firstName, lastName)
         await updateUserName({
@@ -149,8 +153,13 @@ export const useCertificate = ({
             last_name: lastName,
           },
         })
+
         updateUser({
-          user: { ...currentUser!, first_name: firstName, last_name: lastName },
+          user: {
+            ...currentUser,
+            first_name: firstName,
+            last_name: lastName,
+          },
           admin,
         })
         onUpdateNameSuccess?.()

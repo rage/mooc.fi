@@ -60,7 +60,7 @@ export const VerifiedUserMutations = extendType({
           where: { id: organization_id },
         })
 
-        if (!organization || !organization?.secret_key) {
+        if (!organization?.secret_key) {
           throw new GraphQLForbiddenError(
             "no organization or organization secret",
           )

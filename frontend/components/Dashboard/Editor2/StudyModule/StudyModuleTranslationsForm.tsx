@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 
 import {
   ControlledFieldArrayList,
+  ControlledFieldArrayListProps,
   ControlledHiddenField,
   ControlledSelect,
   ControlledTextField,
@@ -20,6 +21,50 @@ export default function StudyModuleTranslationsForm() {
   const t = useTranslator(StudyModuleTranslations)
   const _languages = languages(t)
 
+  const renderArrayListItem: ControlledFieldArrayListProps<
+    StudyModuleFormValues,
+    "study_module_translations"
+  >["render"] = useCallback(
+    (item, index) => (
+      <LanguageEntry item>
+        <EntryContainer elevation={2}>
+          <ControlledHiddenField name="_id" defaultValue={item._id} />
+          <ControlledSelect
+            name={`study_module_translations.${index}.language`}
+            label={t("moduleLanguage")}
+            items={_languages}
+            keyField="value"
+            nameField="label"
+          />
+          <ControlledTextField
+            name={`study_module_translations.${index}.name`}
+            label={t("moduleName")}
+            revertable
+          />
+          <ControlledTextField
+            name={`study_module_translations.${index}.description`}
+            label={t("moduleDescription")}
+            type="textarea"
+            rows={5}
+            revertable
+          />
+        </EntryContainer>
+      </LanguageEntry>
+    ),
+    [],
+  )
+
+  const conditions: ControlledFieldArrayListProps<
+    StudyModuleFormValues,
+    "study_module_translations"
+  >["conditions"] = useMemo(
+    () => ({
+      add: (values) => values.length < _languages.length,
+      remove: () => true,
+    }),
+    [_languages],
+  )
+
   return (
     <section>
       <ControlledFieldArrayList<
@@ -33,36 +78,8 @@ export default function StudyModuleTranslationsForm() {
           description: t("moduleConfirmationContent"),
           noFields: t("moduleAtLeastOneTranslation"),
         }}
-        conditions={{
-          add: (values) => values.length < _languages.length,
-          remove: () => true,
-        }}
-        render={(item, index) => (
-          <LanguageEntry item>
-            <EntryContainer elevation={2}>
-              <ControlledHiddenField name="_id" defaultValue={item._id} />
-              <ControlledSelect
-                name={`study_module_translations.${index}.language`}
-                label={t("moduleLanguage")}
-                items={_languages}
-                keyField="value"
-                nameField="label"
-              />
-              <ControlledTextField
-                name={`study_module_translations.${index}.name`}
-                label={t("moduleName")}
-                revertable
-              />
-              <ControlledTextField
-                name={`study_module_translations.${index}.description`}
-                label={t("moduleDescription")}
-                type="textarea"
-                rows={5}
-                revertable
-              />
-            </EntryContainer>
-          </LanguageEntry>
-        )}
+        conditions={conditions}
+        render={renderArrayListItem}
       />
     </section>
   )

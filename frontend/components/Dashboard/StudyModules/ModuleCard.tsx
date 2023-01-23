@@ -63,7 +63,6 @@ const ImageCover = styled("span")`
   opacity: 0.9;
   width: 70%;
 `
-
 const ContentArea = styled("span")`
   position: absolute;
   left: 0;
@@ -136,7 +135,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
         <ImageCover />
         <ContentArea>
           {loading ? (
-            <NaviCardTitle align="left" component="div">
+            <NaviCardTitle align="left">
               <Skeleton variant="text" />
             </NaviCardTitle>
           ) : (

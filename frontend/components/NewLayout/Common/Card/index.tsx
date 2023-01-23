@@ -1,9 +1,9 @@
 import Image from "next/image"
 
-import styled from "@emotion/styled"
-import { Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
+import Typography, { TypographyProps } from "@mui/material/Typography"
 
-export const CardWrapper = styled.div`
+export const CardWrapper = styled("div")`
   border-radius: 4px;
   box-sizing: border-box;
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
@@ -13,13 +13,16 @@ export const CardWrapper = styled.div`
   flex-direction: column;
 `
 
-export const CardHeader = styled.div`
-  height: 140px;
+export const CardHeader = styled("div")`
+  height: 120px;
+  min-height: 120px;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 1rem;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: #fefefe;
+  z-index: -2;
 `
 
 export const CardHeaderImage = styled(Image)`
@@ -33,7 +36,11 @@ export const CardHeaderImage = styled(Image)`
   z-index: 0;
 ` as typeof Image
 
-export const CardBody = styled.div`
+//CardHeaderImage.defaultProps = {
+//  "aria-hidden": true,
+//}
+
+export const CardBody = styled("div")`
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -41,46 +48,57 @@ export const CardBody = styled.div`
   height: 100%;
 `
 
-export const CardDescription = styled.p`
+export const CardDescription = styled("p")`
   height: 100%;
 `
 
-export const CardActionArea = styled.div`
+export const CardActionArea = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 `
 
-export const CardTitle = styled((props: any) => (
-  <Typography variant="h6" {...props} />
+export const CardTitle = styled((props: TypographyProps) => (
+  <Typography variant="h2" {...props} />
 ))`
   z-index: 1;
+` as typeof Typography
+
+const CommonHeaderBackground = css`
+  opacity: 0.4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `
 
-export const CardHeaderBackground = styled.span<{
+export const CardHeaderBackground = styled("span", {
+  shouldForwardProp: (prop) =>
+    typeof prop !== "string" ||
+    !["color", "image", "hue", "brightness"].includes(prop),
+})<{
   image: string
+  color?: string
   hue?: number
   brightness?: number
 }>`
-  opacity: 0.4;
-  filter: hue-rotate(${(props) => props.hue ?? 0}deg)
-    brightness(${(props) => props.brightness ?? 1});
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  ${CommonHeaderBackground};
   background-size: cover;
-  background-image: url(${(props) => `../../../public/images/${props.image}`});
+  ${({ color, image }) => `background-image: ${
+    color ? `linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%), ` : ""
+  }
+    url("../../../public/images/${image}");`}
 `
+//   /*filter: hue-rotate(${props.hue ?? 0}deg)
+// brightness(${props.brightness} ?? 1});*/
 
-export const CardHeaderBackgroundSkeleton = styled.span`
-  opacity: 0.4;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+CardHeaderBackground.defaultProps = {
+  "aria-hidden": true,
+}
+
+export const CardHeaderBackgroundSkeleton = styled("span")`
+  ${CommonHeaderBackground};
   background-color: #aaa;
 `

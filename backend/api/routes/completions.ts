@@ -122,7 +122,7 @@ export class CompletionController extends Controller {
     const { slug } = req.params
 
     // TODO: typing
-    let tierData: any = []
+    const tierData: any = []
 
     const course = await this.getCourseKnex({ slug })
 
@@ -153,7 +153,7 @@ export class CompletionController extends Controller {
     )?.[0].tiers
 
     if (tiers) {
-      let t: any = tiers
+      const t: any = tiers
 
       for (let i = 0; i < t.length; i++) {
         if (t[i].tier === completion.tier) {
@@ -193,7 +193,7 @@ export class CompletionController extends Controller {
       {
         slug: string
       },
-      {},
+      any,
       {
         user_upstream_id: number
         certificate_id: string
@@ -272,8 +272,8 @@ export class CompletionController extends Controller {
 
   recheckCompletion = async (
     req: Request<
-      {},
-      {},
+      any,
+      any,
       {
         course_id?: string
         slug?: string
@@ -388,8 +388,8 @@ export class CompletionController extends Controller {
 
   registerCompletions = async (
     req: Request<
-      {},
-      {},
+      any,
+      any,
       {
         completions: RegisterCompletionInput[]
       }

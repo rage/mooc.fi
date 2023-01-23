@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { Field, useFormikContext } from "formik"
 import Image from "next/image"
 
-import styled from "@emotion/styled"
 import {
   Button,
   Dialog,
@@ -13,6 +12,7 @@ import {
   DialogTitle,
   MenuItem,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
@@ -25,7 +25,7 @@ import {
   ImageCoreFieldsFragment,
 } from "/graphql/generated"
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   display: flex;
   width: 100%;
   min-width: 350px;
@@ -37,7 +37,7 @@ const ImageContainer = styled.div`
   position: relative;
 `
 
-const ImagePlaceholder = styled.div`
+const ImagePlaceholder = styled("div")`
   width: 350px;
   height: 250px;
   background-color: #eeeeee;

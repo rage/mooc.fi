@@ -6,21 +6,26 @@ import {
   idArg,
   list,
   nonNull,
-  nullable,
   stringArg,
 } from "nexus"
 
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import {
+  Course,
+  CourseTag,
+  CourseTranslation,
+  Prisma,
+  Tag,
+} from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { GraphQLUserInputError } from "../../lib/errors"
-import { filterNull, getCourseOrAlias } from "../../util/db-functions"
+import { filterNullRecursive, getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("course", {
+    t.field("course", {
       type: "Course",
       args: {
         slug: stringArg(),
@@ -36,76 +41,110 @@ export const CourseQueries = extendType({
           throw new GraphQLUserInputError("must provide id or slug")
         }
 
-        const courseQuery: Prisma.CourseFindUniqueArgs = {
+        const query = {
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
           },
-          // TODO: limit these in the model
-          ...(ctx.role !== Role.ADMIN && {
+          include: {
+            course_tags: {
+              include: {
+                tag: true,
+              },
+            },
+            ...(language && {
+              course_translations: {
+                where: {
+                  language,
+                },
+              },
+              course_tags: {
+                where: {
+                  tag: {
+                    tag_translations: {
+                      some: {
+                        language,
+                      },
+                    },
+                  },
+                },
+                include: {
+                  tag: true,
+                },
+              },
+            }),
+          },
+        }
+
+        // TODO: limit these in the model
+        /*...(ctx.role !== Role.ADMIN && {
             select: {
               id: true,
               slug: true,
               name: true,
             },
-          }),
-        }
+          }),*/
+        const course = await getCourseOrAlias(ctx)(query)
 
-        const course = await getCourseOrAlias(ctx)(courseQuery)
-
-        if (!course) {
+        if (!course || (course.hidden && ctx.role !== Role.ADMIN)) {
           throw new Error("course not found")
         }
 
-        let description = ""
-        let link = ""
-        let name = course.name
+        const returnedCourse = {
+          ...omit(course, "course_tags"),
+          description: "",
+          link: "",
+          tags: (course.course_tags ?? []).map((ct) => ct.tag), // [] as Array<{ id: string; language?: string }>,
+        }
 
         if (language) {
-          const course_translation =
-            await ctx.prisma.courseTranslation.findFirst({
-              where: {
-                course_id: course.id,
-                language,
-              },
-            })
+          const { course_translations, course_tags } =
+            course as typeof course & {
+              course_translations?: Array<CourseTranslation>
+            }
+          const course_translation = course_translations?.[0]
 
           if (!course_translation) {
             if (!translationFallback) {
               return Promise.resolve(null)
             }
           } else {
-            description = course_translation.description ?? ""
-            link = course_translation.link ?? ""
-            name = course_translation.name
+            returnedCourse.description = course_translation.description ?? ""
+            returnedCourse.link = course_translation.link ?? ""
+            returnedCourse.name = course_translation.name
           }
+
+          returnedCourse.tags =
+            course_tags?.map((course_tag) => course_tag.tag) ?? []
         }
 
-        return {
-          ...course,
-          name,
-          description,
-          link,
-        }
+        return returnedCourse
       },
-    })
-
-    t.crud.courses({
-      ordering: true,
     })
 
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
+        orderBy: arg({ type: "CourseOrderByWithRelationInput" }),
         language: stringArg(),
-        search: nullable(stringArg()),
-        hidden: nullable(booleanArg({ default: true })),
-        handledBy: nullable(stringArg()),
-        status: nullable(list(nonNull(arg({ type: "CourseStatus" })))),
+        search: stringArg(),
+        hidden: booleanArg({ default: true }),
+        handledBy: stringArg(),
+        status: list(nonNull(arg({ type: "CourseStatus" }))),
+        tags: list(nonNull(stringArg())),
+        tag_types: list(nonNull(stringArg())),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language, search, hidden, handledBy, status } = args
+        const {
+          orderBy,
+          language,
+          search,
+          hidden,
+          handledBy,
+          status,
+          tags,
+          tag_types,
+        } = args
 
         const searchQuery: Prisma.Enumerable<Prisma.CourseWhereInput> = []
 
@@ -168,14 +207,61 @@ export const CourseQueries = extendType({
             status: { in: status },
           })
         }
+        // TODO: if we want a filter that is strict (i.e. all tags must be present)
+        // then we may need a raw query or just do that filtering in the frontend
+        if (tags) {
+          searchQuery.push({
+            course_tags: {
+              some: {
+                tag: {
+                  is: {
+                    tag_translations: {
+                      some: {
+                        language: language ?? undefined,
+                        name: { in: tags },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          })
+        }
 
-        const courses: (Course & {
-          course_translations?: CourseTranslation[]
-        })[] = await ctx.prisma.course.findMany({
-          orderBy:
-            (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+        if (tag_types) {
+          searchQuery.push({
+            course_tags: {
+              some: {
+                tag: {
+                  is: {
+                    tag_types: {
+                      some: {
+                        name: { in: tag_types },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          })
+        }
+
+        const courses: Array<
+          Course & {
+            course_translations?: Array<CourseTranslation>
+            course_tags?: Array<CourseTag & { tag?: Tag }>
+          }
+        > = await ctx.prisma.course.findMany({
+          orderBy: filterNullRecursive(orderBy) ?? undefined,
           where: {
             AND: searchQuery,
+          },
+          include: {
+            course_tags: {
+              include: {
+                tag: true,
+              },
+            },
           },
           ...(language
             ? {
@@ -183,6 +269,21 @@ export const CourseQueries = extendType({
                   course_translations: {
                     where: {
                       language: { equals: language },
+                    },
+                  },
+                  course_tags: {
+                    // TODO: is this needed?
+                    where: {
+                      tag: {
+                        tag_translations: {
+                          some: {
+                            language,
+                          },
+                        },
+                      },
+                    },
+                    include: {
+                      tag: true,
                     },
                   },
                 },
@@ -196,15 +297,25 @@ export const CourseQueries = extendType({
               return null
             }
             return {
-              ...omit(course, "course_translations"),
+              ...omit(course, ["course_translations", "course_tags"]),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
+              tags: (course.course_tags ?? []).map((course_tag) => ({
+                ...course_tag.tag,
+                language,
+              })),
             }
           })
           .filter(notEmpty)
 
         // TODO: (?) provide proper typing
-        return filtered as (Course & { description: string; link: string })[]
+        return filtered as Array<
+          Course & {
+            description: string
+            link: string
+            tags?: Array<{ id: string; language?: string }>
+          }
+        >
       },
     })
 

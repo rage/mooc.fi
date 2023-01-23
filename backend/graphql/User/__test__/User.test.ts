@@ -1,13 +1,13 @@
 import { gql } from "graphql-request"
 import { orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
 import {
   adminUserDetails,
   normalUser,
   normalUserDetails,
+  seed,
 } from "../../../tests/data"
-import { seed } from "../../../tests/data/seed"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
@@ -78,7 +78,7 @@ describe("User", () => {
       })
 
       it("shows current user when logged in", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
         const res = await ctx.client.request(`
       query {
@@ -94,38 +94,17 @@ describe("User", () => {
       }
     `)
 
-        expect(res).toMatchInlineSnapshot(
-          {
-            currentUser: {
-              id: expect.any(String),
-              administrator: false,
-              email: "e@mail.com",
-              first_name: "first",
-              last_name: "last",
-              username: "user",
-              upstream_id: 1,
-            },
+        expect(res).toMatchSnapshot({
+          currentUser: {
+            id: expect.stringMatching(ID_REGEX),
           },
-          `
-          {
-            "currentUser": {
-              "administrator": false,
-              "email": "e@mail.com",
-              "first_name": "first",
-              "id": Any<String>,
-              "last_name": "last",
-              "upstream_id": 1,
-              "username": "user",
-            },
-          }
-        `,
-        )
+        })
 
         jest.clearAllMocks()
       })
 
       it("shows null when not logged in", async () => {
-        ctx!.client.setHeader("Authorization", "")
+        ctx.client.setHeader("Authorization", "")
 
         const res = await ctx.client.request(`
       query {
@@ -141,16 +120,7 @@ describe("User", () => {
       }
     `)
 
-        expect(res).toMatchInlineSnapshot(
-          {
-            currentUser: null,
-          },
-          `
-          {
-            "currentUser": null,
-          }
-        `,
-        )
+        expect(res.currentUser).toBeNull()
       })
     })
 
@@ -160,7 +130,7 @@ describe("User", () => {
       })
 
       it("returns courses with completions", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
         const res = await ctx.client.request(`
           query {
@@ -237,7 +207,7 @@ describe("User", () => {
     })
 
     describe("addUser", () => {
-      beforeAll(() => ctx!.client.setHeader("Authorization", ""))
+      beforeAll(() => ctx.client.setHeader("Authorization", ""))
 
       it("creates user correctly", async () => {
         const res = await ctx.client.request(addUserMutation, {
@@ -280,32 +250,27 @@ describe("User", () => {
 
     describe("updateResearchConsent", () => {
       beforeEach(async () => {
-        await ctx!.prisma.user.create({
+        await ctx.prisma.user.create({
           data: normalUser,
         })
       })
 
       afterEach(async () => {
-        await ctx!.prisma.user.delete({ where: { upstream_id: 1 } })
+        await ctx.prisma.user.delete({ where: { upstream_id: 1 } })
         ctx.user = undefined
       })
 
       it("updates correctly", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx!.client.request(updateReseachConsentMutation, {
+        const res = await ctx.client.request(updateReseachConsentMutation, {
           value: true,
         })
 
-        expect(res.updateResearchConsent).toMatchInlineSnapshot(
-          { id: expect.any(String) },
-          `
-          {
-            "id": Any<String>,
-          }
-        `,
-        )
-        const updatedConsent = await ctx!.prisma.user.findFirst({
+        expect(res.updateResearchConsent).toMatchSnapshot({
+          id: expect.stringMatching(ID_REGEX),
+        })
+        const updatedConsent = await ctx.prisma.user.findFirst({
           where: { upstream_id: 1 },
           select: { research_consent: true },
         })
@@ -314,10 +279,10 @@ describe("User", () => {
       })
 
       it("won't update research consent without auth", async () => {
-        ctx!.client.setHeader("Authorization", "")
+        ctx.client.setHeader("Authorization", "")
 
         try {
-          await ctx!.client.request(updateReseachConsentMutation, {
+          await ctx.client.request(updateReseachConsentMutation, {
             value: true,
           })
           fail()
@@ -327,15 +292,15 @@ describe("User", () => {
 
     describe("updateUserName", () => {
       beforeEach(async () => {
-        await ctx!.prisma.user.create({
+        await ctx.prisma.user.create({
           data: normalUser,
         })
       })
 
       it("updates correctly", async () => {
-        ctx!.client.setHeader("Authorization", "Bearer normal")
+        ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx!.client.request(updateUserNameMutation, {
+        const res = await ctx.client.request(updateUserNameMutation, {
           first_name: "updated first",
           last_name: "updated last",
         })
@@ -347,9 +312,9 @@ describe("User", () => {
       })
 
       it("errors without auth", async () => {
-        ctx!.client.setHeader("Authorization", "")
+        ctx.client.setHeader("Authorization", "")
         try {
-          await ctx!.client.request(updateUserNameMutation, {})
+          await ctx.client.request(updateUserNameMutation, {})
           fail()
         } catch {}
       })

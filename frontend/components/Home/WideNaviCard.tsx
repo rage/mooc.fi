@@ -2,8 +2,8 @@ import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 import Image from "next/image"
 
-import styled from "@emotion/styled"
 import { Button, Grid, Link } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   BackgroundImage,
@@ -56,7 +56,7 @@ const Background = styled(FullCoverTextBackground)`
 
 const TitleImage = styled(Image)``
 
-const TitleImageContainer = styled.div`
+const TitleImageContainer = styled("div")`
   position: relative;
   width: 70%;
 `

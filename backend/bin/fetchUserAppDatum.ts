@@ -8,7 +8,6 @@ import { DatabaseInputError, TMCError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
@@ -253,7 +252,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: convertUpdate(prismaDetails), // TODO: remove convertUpdate
+      update: prismaDetails,
     })
 
     return result

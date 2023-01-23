@@ -7,7 +7,7 @@ export interface UserInfo {
   administrator: boolean
 }
 
-export interface ExtraFields {}
+export type ExtraFields = Record<string, any>
 
 export interface UserField {
   first_name: string

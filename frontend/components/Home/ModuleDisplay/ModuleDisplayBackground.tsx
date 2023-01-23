@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 
@@ -6,7 +6,9 @@ interface RootProps {
   backgroundColor: string
 }
 
-const Background = styled.div<RootProps>`
+const Background = styled("div", {
+  shouldForwardProp: (prop) => prop !== "backgroundColor",
+})<RootProps>`
   margin-top: 1em;
   display: flex;
   flex-direction: row;

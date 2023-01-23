@@ -13,7 +13,7 @@ import {
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
 import { Translator } from "/translations"
-import { type CoursesTranslations } from "/translations/courses"
+import { Courses } from "/translations/courses"
 
 import { CourseFromSlugDocument, CourseStatus } from "/graphql/generated"
 
@@ -77,6 +77,7 @@ export const initialValues: CourseFormValues = {
   automatic_completions_eligible_for_ects: undefined,
   exercise_completions_needed: undefined,
   points_needed: undefined,
+  tags: [],
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
@@ -90,7 +91,7 @@ export const study_modules: { value: any; label: any }[] = []
 interface CourseEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<CoursesTranslations>
+  t: Translator<Courses>
 }
 
 type CourseTranslationsEditSchemaFields = Pick<

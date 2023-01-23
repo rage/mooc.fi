@@ -4,6 +4,8 @@ import {
   Controller,
   ControllerRenderProps,
   FieldValues,
+  Message,
+  MultipleFieldErrors,
   PathValue,
   useFormContext,
 } from "react-hook-form"
@@ -12,7 +14,7 @@ import { ErrorMessage } from "@hookform/error-message"
 import { FormHelperText } from "@mui/material"
 
 import { FieldProps, LabeledFieldProps, RequiredFieldProps } from "."
-import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
+import { EnumeratingAnchor } from ".."
 import notEmpty from "/util/notEmpty"
 
 export interface FieldControllerProps<T extends FieldValues>
@@ -20,7 +22,20 @@ export interface FieldControllerProps<T extends FieldValues>
     LabeledFieldProps,
     RequiredFieldProps {
   renderComponent: (props: ControllerRenderProps<T>) => JSX.Element
-  onChange?: (e: any, newValue: PathValue<T, FieldProps<T>["name"]>) => {}
+  onChange?: (e: any, newValue: PathValue<T, FieldProps<T>["name"]>) => void
+}
+
+interface ErrorMessageComponentProps {
+  message: Message
+  messages?: MultipleFieldErrors
+}
+
+const ErrorMessageComponent = ({ message }: ErrorMessageComponentProps) => (
+  <FormHelperText style={{ color: "#f44336" }}>{message}</FormHelperText>
+)
+
+interface FieldControllerRenderedElementProps<T extends FieldValues> {
+  field: ControllerRenderProps<T>
 }
 
 export function FieldController<T extends FieldValues>({
@@ -45,27 +60,28 @@ export function FieldController<T extends FieldValues>({
     [name],
   )
 
+  const renderElement = useCallback(
+    (renderProps: FieldControllerRenderedElementProps<T>) => (
+      <div {...props}>
+        <EnumeratingAnchor id={name} />
+        {renderComponent({ ...renderProps.field, onChange })}
+        <ErrorMessage
+          errors={errors}
+          name={name as any} // TODO/FIXME: annoying typing here
+          render={ErrorMessageComponent}
+        />
+      </div>
+    ),
+    [name, renderComponent, props, errors, onChange],
+  )
+
   return (
     <Controller<T>
       name={name}
       control={control}
       // autoComplete="disabled"
       {...(notEmpty(defaultValue) ? { defaultValue } : {})}
-      render={(renderProps) => (
-        <div {...props}>
-          <EnumeratingAnchor id={name} />
-          {renderComponent({ ...renderProps.field, onChange })}
-          <ErrorMessage
-            errors={errors}
-            name={name as any} // TODO/FIXME: annoying typing here
-            render={({ message }) => (
-              <FormHelperText style={{ color: "#f44336" }}>
-                {message}
-              </FormHelperText>
-            )}
-          />
-        </div>
-      )}
+      render={renderElement}
     />
   )
 }

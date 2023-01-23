@@ -1,4 +1,11 @@
-import { Path, PathValue, useFormContext } from "react-hook-form"
+import { useCallback } from "react"
+
+import {
+  ControllerRenderProps,
+  Path,
+  PathValue,
+  useFormContext,
+} from "react-hook-form"
 
 import { MenuItem, TextField } from "@mui/material"
 
@@ -34,51 +41,64 @@ export function ControlledSelect<
   const { watch, setValue, trigger, formState } = useFormContext<T>()
   const { errors } = formState
 
-  const _onChange = onChange
-    ? onChange
-    : (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setValue(
-          name,
-          (e.target.value !== "_empty" ? e.target.value : "") as PathValue<
-            T,
-            typeof name
-          >,
-          {
-            shouldDirty: true,
-            shouldValidate: true,
-          },
-        )
-        trigger(name)
+  const _onChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      value?: any,
+    ) => {
+      if (onChange) {
+        return onChange(e, value)
       }
+
+      setValue(
+        name,
+        (e.target.value !== "_empty" ? e.target.value : "") as PathValue<
+          T,
+          typeof name
+        >,
+        {
+          shouldDirty: true,
+          shouldValidate: true,
+        },
+      )
+      trigger(name)
+    },
+    [name, setValue, trigger, onChange],
+  )
+
+  const renderSelect = useCallback(
+    ({ value }: ControllerRenderProps<T>) => (
+      <TextField
+        select
+        variant="outlined"
+        label={label}
+        value={value !== "" ? value : "_empty"}
+        error={Boolean(flattenKeys(errors as Record<string, any>)[name])}
+        onChange={_onChange}
+        style={{ marginTop: "1.5rem" }}
+      >
+        <MenuItem key={`${name}-empty`} value="_empty">
+          {t("selectNoChoice")}
+        </MenuItem>
+        {items.map((item) => (
+          <MenuItem
+            key={`${name}-${item[keyField]}`}
+            value={`${item[keyField]}`}
+          >
+            {item[nameField]}
+          </MenuItem>
+        ))}
+      </TextField>
+    ),
+    [label, errors, name, items, keyField, nameField, _onChange],
+  )
 
   return (
     <FieldController
       name={name}
       label={label}
       defaultValue={watch(name) ?? ("_empty" as PathValue<T, typeof name>)}
-      renderComponent={({ value }) => (
-        <TextField
-          select
-          variant="outlined"
-          label={label}
-          value={value !== "" ? value : "_empty"}
-          error={Boolean(flattenKeys(errors as Record<string, any>)[name])}
-          onChange={_onChange}
-          style={{ marginTop: "1.5rem" }}
-        >
-          <MenuItem key={`${name}-empty`} value="_empty">
-            {t("selectNoChoice")}
-          </MenuItem>
-          {items.map((item) => (
-            <MenuItem
-              key={`${name}-${item[keyField]}`}
-              value={`${item[keyField]}`}
-            >
-              {item[nameField]}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
+      renderComponent={renderSelect}
     />
   )
 }

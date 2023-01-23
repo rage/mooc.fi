@@ -1,4 +1,6 @@
-module.exports = {
+// @ts-check
+/** @type {import("eslint").ESLint.ConfigData} **/
+const esLintConfig = {
   parser: "@typescript-eslint/parser", // Specifies the ESLint parser
   plugins: [
     "@typescript-eslint",
@@ -17,7 +19,15 @@ module.exports = {
   },
   ignorePatterns: ["node_modules/", "generated/", "dist/", "sourcemap/"],
   rules: {
-    "eslint-custom-rules/ban-ts-ignore-without-comment": "error",
+    "@typescript-eslint/ban-ts-comment": [
+      "error",
+      {
+        "ts-ignore": "allow-with-description",
+        "ts-expect-error": "allow-with-description",
+        "ts-nocheck": "allow-with-description",
+        "ts-check": false,
+      },
+    ],
     "no-restricted-imports": [
       "warn",
       {
@@ -42,28 +52,36 @@ module.exports = {
         ],
       },
     ],
-    "no-restricted-modules": [
-      "warn",
-      {
-        paths: [
-          {
-            name: "@mui/material/Grid",
-            message: "Don't use Grid from @mui/material",
-          },
-        ],
-      },
-    ],
+    "eslint-custom-rules/no-emotion-styled-import": "error",
     "react-hooks/rules-of-hooks": "error",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
-    // complexity: "warn",
-    // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
-    // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-extra-semi": "off", // clashes with prettier
+    "@typescript-eslint/no-unused-vars": "off", // TS will handle it
+    "@typescript-eslint/no-extra-parens": "off",
+    "@typescript-eslint/no-non-null-asserted-nullish-coalescing": "error",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    /*[
+      "warn", 
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_ "
+      }
+    ],*/
+    complexity: "warn",
   },
   extends: [
     // "plugin:jsx-a11y/recommended",
     "plugin:@next/next/recommended",
     "plugin:styled-components-a11y/recommended",
+    "plugin:@typescript-eslint/recommended",
+    // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now
+    "prettier",
+    "plugin:@next/next/core-web-vitals",
   ],
   settings: {
     react: {
@@ -74,3 +92,5 @@ module.exports = {
     },
   },
 }
+
+module.exports = esLintConfig

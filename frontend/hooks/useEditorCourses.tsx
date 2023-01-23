@@ -31,8 +31,8 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
   } = useQuery(CourseEditorOtherCoursesDocument)
 
   return {
-    loading: courseLoading || studyModulesLoading || coursesLoading,
-    error: courseError || studyModulesError || coursesError,
+    loading: courseLoading ?? studyModulesLoading ?? coursesLoading,
+    error: courseError ?? studyModulesError ?? coursesError,
     courseData,
     studyModulesData,
     coursesData,

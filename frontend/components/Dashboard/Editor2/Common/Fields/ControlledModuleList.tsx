@@ -1,8 +1,11 @@
 import { useCallback } from "react"
 
-import { PathValue, useFormContext } from "react-hook-form"
+import {
+  ControllerRenderProps,
+  PathValue,
+  useFormContext,
+} from "react-hook-form"
 
-import styled from "@emotion/styled"
 import {
   Checkbox,
   FormControl,
@@ -12,6 +15,7 @@ import {
   List,
   ListItem,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormValues } from "../../types"
 import {
@@ -55,6 +59,27 @@ export function ControlledModuleList<T extends FormValues>(
     [],
   )
 
+  const renderModuleList = useCallback(
+    ({ value }: ControllerRenderProps<T>) => (
+      <>
+        {modules?.map((studyModule) => (
+          <ModuleListItem key={studyModule.id}>
+            <FormControlLabel
+              key={`module-${studyModule.id}`}
+              checked={
+                (value as Record<string, boolean>)[studyModule.id] ?? false
+              }
+              onChange={setCourseModule}
+              control={<Checkbox id={studyModule.id} />}
+              label={studyModule.name}
+            />
+          </ModuleListItem>
+        ))}
+      </>
+    ),
+    [modules, setCourseModule],
+  )
+
   return (
     <FormControl>
       {label && <FormLabel>{label}</FormLabel>}
@@ -63,23 +88,7 @@ export function ControlledModuleList<T extends FormValues>(
           <FieldController
             name={name}
             label={label}
-            renderComponent={({ value }) => (
-              <>
-                {modules?.map((module) => (
-                  <ModuleListItem key={module.id}>
-                    <FormControlLabel
-                      key={`module-${module.id}`}
-                      checked={
-                        (value as Record<string, boolean>)[module.id] ?? false
-                      }
-                      onChange={setCourseModule}
-                      control={<Checkbox id={module.id} />}
-                      label={module.name}
-                    />
-                  </ModuleListItem>
-                ))}
-              </>
-            )}
+            renderComponent={renderModuleList}
           />
         </ModuleList>
       </FormGroup>

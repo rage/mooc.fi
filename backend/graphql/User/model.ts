@@ -1,4 +1,4 @@
-import { booleanArg, idArg, nullable, objectType, stringArg } from "nexus"
+import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
@@ -36,14 +36,21 @@ export const User = objectType({
     t.model.course_ownerships()
     t.model.course_stats_subscriptions()
 
+    t.field("full_name", {
+      type: "String",
+      resolve: async ({ first_name, last_name }) => {
+        return [first_name, last_name].filter(notEmpty).join(" ")
+      },
+    })
+
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
-        course_id: nullable(stringArg()),
-        course_slug: nullable(stringArg()),
+        course_id: stringArg(),
+        course_slug: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id, course_slug } = args
+        const { course_id, course_slug } = args
         let course: Course | null = null
 
         // TODO: get by alias and then handler
@@ -79,12 +86,12 @@ export const User = objectType({
     t.list.nonNull.field("completions_registered", {
       type: "CompletionRegistered",
       args: {
-        course_id: nullable(stringArg()),
-        course_slug: nullable(stringArg()),
-        organization_id: nullable(stringArg()),
+        course_id: stringArg(),
+        course_slug: stringArg(),
+        organization_id: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
-        let { course_id, course_slug, organization_id } = args
+        const { course_id, course_slug, organization_id } = args
         let course: Course | null = null
 
         // TODO: get by alias and then handler
@@ -119,14 +126,15 @@ export const User = objectType({
     t.nonNull.field("project_completion", {
       type: "Boolean",
       args: {
-        course_id: nullable(idArg()),
-        course_slug: nullable(stringArg()),
+        course_id: idArg(),
+        course_slug: stringArg(),
+      },
+      validate: (_, { course_id, course_slug }) => {
+        if (!course_id && !course_slug) {
+          throw new UserInputError("course_id or course_slug is required")
+        }
       },
       resolve: async (parent, { course_id, course_slug }, ctx) => {
-        if (!course_id && !course_slug) {
-          throw new Error("need course_id or course_slug")
-        }
-
         // TODO/FIXME: Semantically it's right now, as we're quering a specific course,
         // be it tier or handler, and if the user does not have a project_completion
         // iin _that_ specific course progress, then we return false.
@@ -233,7 +241,7 @@ export const User = objectType({
     })
 
     // TODO/FIXME: is this used anywhere? if is, find better name
-    t.nullable.field("user_course_progressess", {
+    t.field("user_course_progressess", {
       type: "UserCourseProgress",
       args: {
         course_id: idArg(),
@@ -259,7 +267,7 @@ export const User = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        includeDeleted: nullable(booleanArg()),
+        includeDeleted: booleanArg(),
       },
       resolve: async (parent, { includeDeleted = false }, ctx) => {
         return ctx.prisma.user
@@ -281,7 +289,21 @@ export const User = objectType({
 
     t.list.nonNull.field("user_course_summary", {
       type: "UserCourseSummary",
-      resolve: async (parent, _, ctx) => {
+      args: {
+        includeNoPointsAwardedExercises: booleanArg({
+          description:
+            "Include exercise completions with max_points = 0. Only affects the exercise completion results; can be overridden later.",
+        }),
+        includeDeletedExercises: booleanArg({
+          description:
+            "Include deleted exercises. Only affects the exercise completion results; can be overridden later.",
+        }),
+      },
+      resolve: async (
+        { id },
+        { includeNoPointsAwardedExercises, includeDeletedExercises },
+        ctx,
+      ) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const startedCourses = await ctx.prisma.$queryRaw<
@@ -297,14 +319,19 @@ export const User = objectType({
               select distinct(e.course_id)
                   from exercise_completion ec
                   join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${parent.id}
+              where ec.user_id = ${id}
           );
         `)
 
-        return startedCourses.map((course) => ({
-          ...course,
-          user_id: parent.id,
-        }))
+        return startedCourses
+          .filter(({ course_id }) => notEmpty(course_id))
+          .map((course) => ({
+            ...course,
+            user_id: id,
+            include_deleted_exercises: includeDeletedExercises ?? false,
+            include_no_points_awarded_exercises:
+              includeNoPointsAwardedExercises ?? false,
+          }))
       },
     })
   },

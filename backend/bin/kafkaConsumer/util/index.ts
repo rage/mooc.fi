@@ -3,7 +3,7 @@ import { DateTime } from "luxon"
 type DateTimeKeys = keyof typeof DateTime
 type DateTimeFromStringFunctions = {
   [K in DateTimeKeys]: K extends `from${infer Type}`
-    ? typeof DateTime[K] extends (text: string) => DateTime
+    ? (typeof DateTime)[K] extends (text: string) => DateTime
       ? `from${Type}`
       : never
     : never

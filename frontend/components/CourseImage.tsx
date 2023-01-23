@@ -1,10 +1,9 @@
-import { memo } from "react"
+import React from "react"
 
 import Image from "next/image"
 
-import { css } from "@emotion/react"
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import { addDomain } from "/util/imageUtils"
 
@@ -20,7 +19,7 @@ const ImageComponent = styled(Image)`
   ${ImageComponentBase}
 `
 
-const PlaceholderComponent = styled.div`
+const PlaceholderComponent = styled("div")`
   ${ImageComponentBase}
   background-color: #F0F0F0;
   display: flex;
@@ -32,7 +31,7 @@ interface CourseImageProps {
   [k: string]: any
 }
 
-const CourseImage = memo((props: CourseImageProps) => {
+const CourseImage = React.memo((props: CourseImageProps) => {
   const { photo, ...rest } = props
 
   return (
@@ -42,7 +41,7 @@ const CourseImage = memo((props: CourseImageProps) => {
           src={addDomain(photo.uncompressed)}
           loading="lazy"
           alt=""
-          fill
+          // fill
           {...rest}
         />
       ) : (

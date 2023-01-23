@@ -7,49 +7,12 @@ import Document, { Head, Html, Main, NextScript } from "next/document"
 //import { css } from "@emotion/react"
 //import createEmotionCache from "../src/createEmotionCache"
 import theme from "../src/theme"
+import { augmentDocumentWithEmotionCache } from "./_app"
 
-//import { openSans, openSansCondensed } from "../src/fonts"
-
-class MyDocument extends Document {
-  /*static async getInitialProps(ctx: DocumentContext) {
-    const originalRenderPage = ctx.renderPage
-
-    const cache = createEmotionCache()
-    const { extractCriticalToChunks } = createEmotionServer(cache)
-
-    ctx.renderPage = () =>
-      originalRenderPage({
-        enhanceApp: (App: any) =>
-          function EnhanceApp(props) {
-            return <App emotionCache={cache} {...props} />
-          },
-      })
-
-    const initialProps = await Document.getInitialProps(ctx)
-    const emotionStyles = extractCriticalToChunks(initialProps.html)
-    const emotionStyleTags = emotionStyles.styles.map((style) => (
-      <style
-        data-emotion={`${style.key} ${style.ids.join(" ")}`}
-        key={style.key}
-        dangerouslySetInnerHTML={{ __html: style.css }}
-      />
-    ))
-    const fontVariables = (
-      <style
-        key="font-variables"
-        dangerouslySetInnerHTML={{ __html: fontCss.styles.toString() }}
-      />
-    )
-    return {
-      ...initialProps,
-      emotionStyleTags,
-      fontVariables,
-    }
-  }*/
-
+class CustomDocument extends Document {
   render() {
     return (
-      <Html lang="fi" dir="ltr">
+      <Html dir="ltr">
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content={theme.palette.primary.main} />
@@ -67,4 +30,6 @@ class MyDocument extends Document {
   }
 }
 
-export default MyDocument
+augmentDocumentWithEmotionCache(CustomDocument)
+
+export default CustomDocument

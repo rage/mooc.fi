@@ -9,6 +9,7 @@
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
+    "strictNullChecks": true,
     "noEmit": false,
     "noImplicitAny": true,
     "noUnusedLocals": true,

@@ -1,6 +1,6 @@
 import { range } from "lodash"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import CourseCard from "./CourseCard"
 
@@ -14,7 +14,10 @@ interface CourseGridProps {
   ) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-const CourseList = styled.ul``
+const CourseList = styled("ul")`
+  list-style: none;
+  padding: 0;
+`
 
 const CourseGrid = ({ courses, loading, onClickStatus }: CourseGridProps) => (
   <section>

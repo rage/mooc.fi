@@ -1,43 +1,52 @@
+import { useCallback } from "react"
+
 import { useConfirm } from "material-ui-confirm"
 import {
   FieldArray,
   FieldArrayPath,
   FieldArrayPathValue,
+  FieldArrayWithId,
   FieldValues,
   Path,
   useFieldArray,
   useFormContext,
 } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { FormGroup, Typography } from "@mui/material"
+import { Button, FormGroup, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
 import { ControlledFieldArrayProps } from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-export const ArrayList = styled.ul`
+export const ArrayList = styled("ul")`
   list-style: none;
   margin-block-start: 0;
   padding-inline-start: 0;
+  align-content: center;
 `
 
-export const ArrayItem = styled.li``
+export const ArrayItem = styled("li")`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  align-items: stretch;
+`
 
 type UnwrapArray<T> = T extends (infer U)[] ? U : T
 
-type FieldArrayWithOptionalId<
+export type FieldArrayWithOptionalId<
   TFieldValues extends FieldValues = FieldValues,
   TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
   TKeyName extends string = "id",
 > = FieldArray<TFieldValues, TFieldArrayName> &
   Partial<Record<TKeyName, string>>
 
-interface ControlledFieldArrayListProps<
+export interface ControlledFieldArrayListProps<
   TFieldValues extends FieldValues,
   TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
   TKeyName extends string = "_id",
@@ -63,6 +72,11 @@ interface ControlledFieldArrayListProps<
     removeText?: string
   }
 }
+
+export const StyledButton = styled(Button)`
+  margin: 0.25rem;
+  height: 3rem;
+`
 
 export function ControlledFieldArrayList<
   TFieldValues extends Partial<FieldValues> & Partial<Record<"_id", string>>,
@@ -95,6 +109,42 @@ export function ControlledFieldArrayList<
 
   const watchedFields = watch([name as Path<TFieldValues>])
 
+  const onRemove = useCallback(
+    (
+        item: FieldArrayWithId<TFieldValues, TFieldArrayName, "_id">,
+        index: number,
+      ) =>
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (conditions.remove(item)) {
+          remove(index)
+        } else {
+          confirm({
+            title,
+            description,
+            confirmationText,
+            cancellationText,
+          })
+            .then(() => {
+              remove(index)
+            })
+            .catch(() => {
+              // ignore
+            })
+        }
+      },
+    [conditions, confirm, description, remove, title],
+  )
+
+  const onAdd = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      append({ ...initialValues })
+      trigger(name as Path<TFieldValues>)
+    },
+    [append, initialValues, name, trigger],
+  )
+
   return (
     <FormGroup>
       <ArrayList>
@@ -103,27 +153,10 @@ export function ControlledFieldArrayList<
             <ArrayItem key={`${name}-${item._id ?? index}`}>
               {render(item, index)}
               <StyledButton
-                style={{ margin: "auto" }}
                 variant="contained"
                 disabled={isSubmitting}
                 color="secondary"
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.preventDefault()
-                  if (conditions.remove(item)) {
-                    remove(index)
-                  } else {
-                    confirm({
-                      title,
-                      description,
-                      confirmationText,
-                      cancellationText,
-                    })
-                      .then(() => {
-                        remove(index)
-                      })
-                      .catch(() => {})
-                  }
-                }}
+                onClick={onRemove(item, index)}
                 endIcon={<RemoveIcon>{removeText}</RemoveIcon>}
               >
                 {removeText}
@@ -145,11 +178,7 @@ export function ControlledFieldArrayList<
             variant="contained"
             color="primary"
             disabled={isSubmitting}
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault()
-              append({ ...initialValues })
-              trigger(name as Path<TFieldValues>)
-            }}
+            onClick={onAdd}
             endIcon={<AddIcon>{addText}</AddIcon>}
             fullWidth
           >

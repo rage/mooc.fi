@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import Image from "next/image"
 import { useFormContext } from "react-hook-form"
 
-import styled from "@emotion/styled"
 import { CircularProgress, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import EditorContainer from "../EditorContainer"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
@@ -18,7 +18,7 @@ import StudyModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   position: relative;
   height: 250px;
   display: flex;
@@ -26,7 +26,9 @@ const ImageContainer = styled.div`
   align-items: center;
 `
 
-const ModuleImage = styled(Image)<{ error?: boolean; isLoading?: boolean }>`
+const ModuleImage = styled(Image, {
+  shouldForwardProp: (prop) => prop !== "error" && prop !== "isLoading",
+})<{ error?: boolean; isLoading?: boolean }>`
   object-fit: cover;
   display: ${(props) => (props.error || props.isLoading ? "none" : "")};
 `
@@ -61,6 +63,16 @@ export default function StudyModuleEditForm() {
     }
     return `/images/modules/${slug}.jpg`
   }, [image, slug])
+
+  const onImageError = useCallback(() => {
+    setImageLoading(false)
+    setImageError(t("moduleImageError"))
+  }, [t])
+
+  const onImageLoadingComplete = useCallback(() => {
+    setImageLoading(false)
+    setImageError("")
+  }, [])
 
   return (
     <EditorContainer<StudyModuleFormValues>>
@@ -100,14 +112,8 @@ export default function StudyModuleEditForm() {
           isLoading={imageLoading}
           priority
           fill
-          onError={() => {
-            setImageLoading(false)
-            setImageError(t("moduleImageError"))
-          }}
-          onLoadingComplete={() => {
-            setImageLoading(false)
-            setImageError("")
-          }}
+          onError={onImageError}
+          onLoadingComplete={onImageLoadingComplete}
         />
         {!imageLoading && !!imageError ? (
           <Typography variant="body2" style={{ color: "red" }}>

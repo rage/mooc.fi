@@ -30,7 +30,9 @@ model StaffMember {
 
 You've also created the appropriate database migration and created a resolver for a query called `staffMember`, taking a single required parameter `id` of type `ID` and returing a `StaffMember` or `null` if none found.
 
-First, ensure that you have a fresh GraphQL schema by running `npm run generate` in the backend folder. The generated schema is automatically linked to the frontend folder.
+If you've created a new file for your model in the backend `graphql` folder (as you probably should) and added the appropriate Nexus types, add that file to the `index.ts` file as an export or run `npm run createExports`. If your model starts growing and there are many queries and mutations related to it, better create a new directory for it -- just like `Course`, `Completion` etc. now. 
+
+When you've added the exports, ensure that you have a fresh GraphQL schema and Nexus types by running `npm run generate` in the backend folder. The generated schema is automatically linked to the frontend folder.
 
 You then might define the query in the frontend as follows in a `.graphql` file situated somewhere in the `graphql` folder:
 

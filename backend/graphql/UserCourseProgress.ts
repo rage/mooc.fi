@@ -56,7 +56,7 @@ export const UserCourseProgress = objectType({
 
     // t.prismaFields(["*"])
 
-    t.nullable.field("user_course_settings", {
+    t.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
         if (!parent.course_id) {
@@ -117,6 +117,7 @@ export const UserCourseProgress = objectType({
         const completedExerciseCount = exercises.filter(
           (e) => e.exercise_completion_id,
         ).length
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const totalProgress = (n_points || 0) / (max_points || 1)
         const exerciseProgress =
           completedExerciseCount / (exercises.length || 1)
@@ -124,6 +125,8 @@ export const UserCourseProgress = objectType({
         return {
           total: totalProgress,
           exercises: exerciseProgress,
+          exercise_count: exercises.length,
+          exercises_completed_count: completedExerciseCount,
         }
       },
     })
@@ -169,8 +172,8 @@ export const UserCourseProgressQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
-        const { skip, take, cursor, user_id } = args
-        let { course_id, course_slug } = args
+        const { course_slug, skip, take, cursor, user_id } = args
+        let { course_id } = args
 
         if (!course_id && !course_slug) {
           throw new GraphQLUserInputError(

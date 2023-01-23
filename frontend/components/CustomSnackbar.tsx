@@ -1,14 +1,14 @@
-import styled from "@emotion/styled"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import CloseIcon from "@mui/icons-material/Close"
 import ErrorIcon from "@mui/icons-material/Error"
 import InfoIcon from "@mui/icons-material/Info"
 import WarningIcon from "@mui/icons-material/Warning"
 import { IconButton, Snackbar, SnackbarCloseReason } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 interface CustomSnackbarProps {
   open: boolean
-  setOpen: Function
+  setOpen: (...args: any[]) => any
   type: "error" | "success" | "warning" | "error"
   message: string
 }

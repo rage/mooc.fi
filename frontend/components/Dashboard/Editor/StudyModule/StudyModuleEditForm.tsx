@@ -12,7 +12,6 @@ import {
 import { useConfirm } from "material-ui-confirm"
 import Image from "next/image"
 
-import styled from "@emotion/styled"
 import HelpIcon from "@mui/icons-material/Help"
 import {
   CircularProgress,
@@ -22,6 +21,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   initialTranslation,
@@ -47,12 +47,12 @@ import ModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
-const FormContainer = styled.div`
+const FormContainer = styled("div")`
   background-color: white;
   padding: 1rem;
 `
 
-const ImageContainer = styled.div`
+const ImageContainer = styled("div")`
   position: relative;
   height: 250px;
   display: flex;
@@ -60,7 +60,9 @@ const ImageContainer = styled.div`
   align-items: center;
 `
 
-const ModuleImage = styled(Image)<{ error?: boolean; isLoading?: boolean }>`
+const ModuleImage = styled(Image, {
+  shouldForwardProp: (prop) => prop !== "error" && prop !== "isLoading",
+})<{ error?: boolean; isLoading?: boolean }>`
   object-fit: cover;
   display: ${(props) => (props.error || props.isLoading ? "none" : "")};
 `
@@ -70,7 +72,7 @@ const pixel =
   "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 
 // capitalized to please the hook linter
-const RenderForm = () => {
+const StudyModuleFormComponent = () => {
   const { errors, values, isSubmitting } =
     useFormikContext<StudyModuleFormValues>()
 
@@ -216,8 +218,13 @@ const RenderForm = () => {
             {(helpers) => (
               <>
                 {values?.study_module_translations?.map(
-                  (_: any, index: number) => (
-                    <LanguageEntry item key={`translation-${index}`}>
+                  (translation, index: number) => (
+                    <LanguageEntry
+                      item
+                      key={`translation-${
+                        translation.id ?? translation.language
+                      }`}
+                    >
                       <EntryContainer elevation={2}>
                         <StyledFieldWithAnchor
                           name={`study_module_translations[${index}].language`}
@@ -283,7 +290,9 @@ const RenderForm = () => {
                                 cancellationText: t("moduleConfirmationNo"),
                               })
                                 .then(() => helpers.remove(index))
-                                .catch(() => {})
+                                .catch(() => {
+                                  // ignore
+                                })
                             }
                           >
                             {t("moduleRemoveTranslation")}
@@ -352,12 +361,18 @@ function StudyModuleEditForm({
   return (
     <Formik initialValues={module} validate={validate} onSubmit={onSubmit}>
       <FormWrapper<StudyModuleFormValues>
-        renderForm={RenderForm}
         onCancel={onCancel}
         onDelete={onDelete}
-      />
+      >
+        <StudyModuleFormComponent />
+      </FormWrapper>
     </Formik>
   )
 }
 
+/*
+        renderForm={RenderForm}
+        onCancel={onCancel}
+        onDelete={onDelete}
+*/
 export default StudyModuleEditForm

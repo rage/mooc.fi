@@ -123,7 +123,7 @@ export const updateEmails = async (
         existing[username]?.length &&
         existing[username][0].email !== newestChange.new_value
       ) {
-        await prisma!.user.update({
+        await prisma.user.update({
           where: {
             username,
           },

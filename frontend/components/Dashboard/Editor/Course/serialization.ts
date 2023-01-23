@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { getIn } from "formik"
 import { omit } from "lodash"
 import { DateTime } from "luxon"
@@ -17,8 +18,8 @@ import {
 const isProduction = process.env.NODE_ENV === "production"
 
 interface ToCourseFormArgs {
-  course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
+  course?: EditorCourseDetailedFieldsFragment | null
+  modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
 export const toCourseForm = ({
@@ -29,8 +30,17 @@ export const toCourseForm = ({
     return initialValues
   }
 
-  const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+  const courseStudyModuleIds = (course?.study_modules ?? []).map(
+    (studyModule) => studyModule.id,
+  )
+
+  const study_modules: Record<string, boolean> = {}
+
+  for (const studyModule of modules ?? []) {
+    study_modules[studyModule.id] = courseStudyModuleIds.includes(
+      studyModule.id,
+    )
+  }
 
   return {
     ...omit(course, [
@@ -71,13 +81,7 @@ export const toCourseForm = ({
         instructions: course_translation.instructions ?? undefined,
       }),
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, ["__typename", "created_at", "updated_at"]),
@@ -109,6 +113,15 @@ export const toCourseForm = ({
     exercise_completions_needed:
       course?.exercise_completions_needed ?? undefined,
     points_needed: course?.points_needed ?? undefined,
+    tags:
+      course?.tags?.map((tag) => ({
+        ...omit(tag, ["__typename"]),
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename"]),
+          description: tagTranslation.description ?? undefined,
+        })),
+      })) ?? [],
   }
 }
 
@@ -185,6 +198,20 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 
+  const course_tags =
+    values.tags?.map((tag) => ({
+      course_id: values.id,
+      tag_id: tag.id,
+      tag: {
+        ...omit(tag, ["__typename"]),
+        hidden: tag.hidden ?? false,
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename"]),
+          description: tagTranslation.description ?? undefined,
+        })),
+      },
+    })) ?? []
+
   const formValues = newCourse
     ? omit(values, [
         "id",
@@ -248,6 +275,7 @@ export const fromCourseForm = ({
         : values.exercise_completions_needed,
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
+    course_tags,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)

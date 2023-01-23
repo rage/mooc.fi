@@ -11,13 +11,6 @@ export const UserQueries = extendType({
       filtering: false,
       authorize: isAdmin,
     })
-    /*t.list.field("users", {
-      type: "user",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.user.findMany()
-      },
-    })*/
 
     t.field("user", {
       type: "User",
@@ -27,15 +20,14 @@ export const UserQueries = extendType({
         upstream_id: intArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx) => {
-        const { id, search, upstream_id } = args
-
+      validate: (_, { id, search, upstream_id }) => {
         if (!id && !search && !upstream_id) {
           throw new UserInputError(
             "must provide id, search string or upstream_id",
           )
         }
-
+      },
+      resolve: async (_, { id, search, upstream_id }, ctx) => {
         const user = await ctx.prisma.user.findFirst({
           where: {
             ...buildUserSearch(search),
@@ -44,24 +36,27 @@ export const UserQueries = extendType({
           },
         })
         if (!user) throw new UserInputError("User not found")
+
         return user
       },
     })
 
     t.connection("userDetailsContains", {
       type: "User",
+      nullable: false,
       additionalArgs: {
         search: stringArg(),
         skip: intArg({ default: 0 }),
       },
       authorize: isAdmin,
-      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
-      nodes: async (_, args, ctx) => {
-        const { search, first, last, before, after, skip } = args
-
+      validateArgs({ first, last }) {
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
+      },
+      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
+      nodes: async (_, args, ctx) => {
+        const { search, first, last, before, after, skip } = args
 
         return ctx.prisma.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),
@@ -82,7 +77,7 @@ export const UserQueries = extendType({
       },
     })
 
-    t.nullable.field("currentUser", {
+    t.field("currentUser", {
       type: "User",
       args: { search: stringArg() }, // was: email
       resolve: (_, __, ctx) => {

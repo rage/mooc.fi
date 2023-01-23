@@ -8,7 +8,7 @@ import {
 } from "./types"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
 import { Translator } from "/translations"
-import { type StudyModulesTranslations } from "/translations/study-modules"
+import { StudyModules } from "/translations/study-modules"
 
 import { StudyModuleExistsDocument } from "/graphql/generated"
 
@@ -28,7 +28,7 @@ export const initialValues: StudyModuleFormValues = {
   study_module_translations: [initialTranslation],
 }
 
-export const languages = (t: Translator<StudyModulesTranslations>) => [
+export const languages = (t: Translator<StudyModules>) => [
   {
     value: "fi_FI",
     label: t("moduleFinnish"),
@@ -60,7 +60,7 @@ function validateImage(this: Yup.TestContext, _value?: any): boolean {
 interface StudyModuleEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<StudyModulesTranslations>
+  t: Translator<StudyModules>
 }
 
 export type StudyModuleEditSchemaType = Yup.SchemaOf<

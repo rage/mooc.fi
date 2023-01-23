@@ -20,7 +20,7 @@ export const UserCourseServiceProgress = objectType({
     t.model.course_id()
     t.model.course()
 
-    t.list.field("progress", {
+    t.nonNull.list.nonNull.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseServiceProgress.findUnique({
@@ -39,7 +39,7 @@ export const UserCourseServiceProgress = objectType({
 export const UserCourseServiceProgressQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("userCourseServiceProgress", {
+    t.field("userCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
         user_id: idArg(),

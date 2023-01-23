@@ -32,7 +32,7 @@ const FooterUpPusher = styled("div")(
 `,
 )
 
-const Layout = ({ children }: PropsWithChildren<{}>) => {
+const Layout = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
@@ -49,9 +49,9 @@ const Layout = ({ children }: PropsWithChildren<{}>) => {
             {children}
           </main>
         </div>
-        <MobileBottomNavigation />
         <Footer />
         <FooterUpPusher />
+        <MobileBottomNavigation />
       </FooterDownPusherWrapper>
     </div>
   )

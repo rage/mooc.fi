@@ -1,6 +1,9 @@
-import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
+import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
+
+import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 
 export const Course = objectType({
   name: "Course",
@@ -57,6 +60,7 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
+    // t.model.course_tags()
 
     t.string("description")
     t.string("instructions")
@@ -65,17 +69,16 @@ export const Course = objectType({
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
-        user_id: nullable(stringArg()),
-        user_upstream_id: nullable(intArg()),
+        user_id: stringArg(),
+        user_upstream_id: intArg(),
       },
       authorize: isAdmin,
-      resolve: async (parent, args, ctx) => {
-        const { user_id, user_upstream_id } = args
-
+      validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
-          throw new Error("needs user_id or user_upstream_id")
+          throw new GraphQLUserInputError("needs user_id or user_upstream_id")
         }
-
+      },
+      resolve: async (parent, { user_id, user_upstream_id }, ctx) => {
         return ctx.prisma.course
           .findUnique({
             where: {
@@ -99,20 +102,109 @@ export const Course = objectType({
       type: "Exercise",
       args: {
         includeDeleted: booleanArg({ default: false }),
+        includeNoPointsAwarded: booleanArg({ default: true }),
       },
-      resolve: async (parent, args, ctx) => {
-        const { includeDeleted } = args
+      resolve: async (
+        parent,
+        { includeDeleted, includeNoPointsAwarded },
+        ctx,
+      ) => {
+        const exerciseCondition: Prisma.ExerciseWhereInput = {}
+
+        if (!includeNoPointsAwarded) {
+          exerciseCondition.max_points = { gt: 0 }
+        }
+        if (!includeDeleted) {
+          exerciseCondition.OR = [{ deleted: false }, { deleted: null }]
+        }
 
         return ctx.prisma.course
           .findUnique({
             where: { id: parent.id },
           })
           .exercises({
-            ...(!includeDeleted && {
-              // same here: { deleted: { not: true } } will skip null
-              where: { OR: [{ deleted: false }, { deleted: null }] },
-            }),
+            where: exerciseCondition,
           })
+      },
+    })
+
+    t.nonNull.list.nonNull.field("tags", {
+      type: "Tag",
+      args: {
+        language: stringArg(),
+        types: list(nonNull(stringArg())),
+        search: stringArg(),
+        includeHidden: booleanArg(),
+      },
+      validate: (_, { includeHidden }, ctx) => {
+        if (includeHidden && !isAdmin({}, {}, ctx, {})) {
+          throw new GraphQLForbiddenError("no admin rights")
+        }
+      },
+      resolve: async (
+        parent,
+        { language, types, search, includeHidden },
+        ctx,
+      ) => {
+        const where = {} as Prisma.CourseTagWhereInput
+
+        if (language) {
+          where.tag = {
+            tag_translations: {
+              some: {
+                language,
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (types) {
+          where.tag = {
+            ...where.tag,
+            tag_types: {
+              some: {
+                name: { in: types },
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (search) {
+          where.tag = {
+            ...where.tag,
+            tag_translations: {
+              some: {
+                ...(language && { language }),
+                OR: [
+                  {
+                    name: { contains: search, mode: "insensitive" },
+                  },
+                  {
+                    description: { contains: search, mode: "insensitive" },
+                  },
+                ],
+              },
+            },
+          } as Prisma.TagWhereInput
+        }
+        if (!includeHidden) {
+          where.tag = {
+            ...where.tag,
+            OR: [{ hidden: false }, { hidden: null }],
+          } as Prisma.TagWhereInput
+        }
+
+        const res = await ctx.prisma.course.findUnique({
+          where: { id: parent.id },
+          select: {
+            course_tags: {
+              where,
+              include: {
+                tag: true,
+              },
+            },
+          },
+        })
+
+        return (res?.course_tags ?? []).map((ct) => ({ ...ct.tag, language }))
       },
     })
   },

@@ -7,7 +7,6 @@ import { withRouter } from "next/router"
 import * as Papa from "papaparse"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import {
   Alert,
   AlertTitle,
@@ -17,6 +16,7 @@ import {
   TextFieldProps,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
@@ -182,7 +182,7 @@ const ManualCompletions = () => {
         .then(() =>
           addCompletions({
             variables: {
-              course_id: courseData!.course!.id,
+              course_id: courseData?.course?.id ?? "",
               completions: filteredData,
             },
           }),
@@ -192,7 +192,7 @@ const ManualCompletions = () => {
     } else {
       addCompletions({
         variables: {
-          course_id: courseData!.course!.id,
+          course_id: courseData?.course?.id ?? "",
           completions: filteredData,
         },
       })

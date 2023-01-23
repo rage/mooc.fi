@@ -5,20 +5,13 @@ import { Context } from "../context"
 import { GraphQLAuthenticationError } from "../lib/errors"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { convertUpdate } from "../util/db-functions"
 import { UserInfo } from "/domain/UserInfo"
 
 export const moocfiAuthPlugin = () =>
   plugin({
     name: "moocfiAuthPlugin",
-    onCreateFieldResolver(_: any) {
-      return async (
-        root: any,
-        args: Record<string, any>,
-        ctx: Context,
-        info: any,
-        next: Function,
-      ) => {
+    onCreateFieldResolver() {
+      return async (root, args, ctx: Context, info, next) => {
         if (ctx.userDetails || ctx.organization) {
           return next(root, args, ctx, info)
         }
@@ -69,9 +62,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
         expireTime: 3600,
         key: rawToken,
       },
-      {
-        logger: ctx.logger,
-      },
+      ctx,
     )
   } catch (e) {
     // console.log("error", e)
@@ -97,7 +88,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
   ctx.user = await ctx.prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
-    update: convertUpdate(prismaDetails),
+    update: prismaDetails,
   })
   if (ctx.user.administrator) {
     ctx.role = Role.ADMIN

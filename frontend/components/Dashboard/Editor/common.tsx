@@ -1,10 +1,8 @@
 import React, { useContext } from "react"
 
-import { FastField, Field, useFormikContext } from "formik"
+import { FastField, Field, FieldAttributes, useFormikContext } from "formik"
 import { TextField } from "formik-mui"
 
-import { PropsOf } from "@emotion/react"
-import styled from "@emotion/styled"
 import {
   Checkbox,
   CheckboxProps,
@@ -15,6 +13,7 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import AnchorContext from "/contexts/AnchorContext"
 
@@ -78,7 +77,7 @@ export const FormSubtitle = styled(Typography)`
   font-size: 2em;
 ` as typeof Typography
 
-export const AdjustingAnchorLink = styled.div`
+export const AdjustingAnchorLink = styled("div")<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;
@@ -149,7 +148,7 @@ interface StyledFieldWithAnchorProps {
 
 export const StyledFieldWithAnchor = React.forwardRef<
   typeof StyledField,
-  StyledFieldWithAnchorProps & PropsOf<typeof StyledField>
+  StyledFieldWithAnchorProps & FieldAttributes<any> //& PropsOf<typeof StyledField>
 >((props, ref) => {
   const { id, name, tab = 0, error, ...rest } = props
   const { addAnchor } = useContext(AnchorContext)

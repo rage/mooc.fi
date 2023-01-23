@@ -1,7 +1,8 @@
-import { Grid } from "@mui/material"
+import { useMemo } from "react"
+
+import Grid from "@mui/material/Grid"
 
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
-import notEmpty from "/util/notEmpty"
 
 import { CurrentUserProgressesQuery } from "/graphql/generated"
 
@@ -13,20 +14,22 @@ interface GridProps {
 function PointsListGrid(props: GridProps) {
   const { data, showOnlyTen } = props
 
-  const progressesToShow = showOnlyTen
-    ? (data.currentUser?.progresses ?? []).slice(0, 10)
-    : data.currentUser?.progresses ?? []
+  const progressesToShow = useMemo(
+    () =>
+      showOnlyTen
+        ? (data.currentUser?.progresses ?? []).slice(0, 10)
+        : data.currentUser?.progresses ?? [],
+    [data, showOnlyTen],
+  )
 
   return (
     <Grid container spacing={3}>
-      {progressesToShow.map((progress, index) => (
+      {progressesToShow.map((progress) => (
         <PointsListItemCard
-          key={`${progress.course?.id}-${index}`}
+          key={`${progress.course?.id}-${progress?.user_course_progress?.id}`}
           course={progress.course}
           userCourseProgress={progress.user_course_progress}
-          userCourseServiceProgresses={progress.user_course_service_progresses?.filter(
-            notEmpty,
-          )}
+          userCourseServiceProgresses={progress.user_course_service_progresses}
         />
       ))}
     </Grid>

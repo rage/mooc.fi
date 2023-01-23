@@ -1,41 +1,40 @@
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
-import {
-  faBook,
-  faBookOpen,
-  faComments,
-  faGraduationCap,
-  faLaptop,
-  faPlusSquare,
-  faUserFriends,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Typography } from "@mui/material"
+import BookOpenIcon from "@fortawesome/fontawesome-free/svgs/solid/book-open.svg?icon"
+import BookIcon from "@fortawesome/fontawesome-free/svgs/solid/book.svg?icon"
+import CommentsIcon from "@fortawesome/fontawesome-free/svgs/solid/comments.svg?icon"
+import GraduationCapIcon from "@fortawesome/fontawesome-free/svgs/solid/graduation-cap.svg?icon"
+import LaptopIcon from "@fortawesome/fontawesome-free/svgs/solid/laptop.svg?icon"
+import PlusSquareIcon from "@fortawesome/fontawesome-free/svgs/solid/square-plus.svg?icon"
+import UserFriendsIcon from "@fortawesome/fontawesome-free/svgs/solid/user-group.svg?icon"
+import Button from "@mui/material/Button"
+import { css, styled } from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
 
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import TeachersTranslations from "/translations/teachers"
 import { useTranslator } from "/util/useTranslator"
 
-const ContentBlock = styled.div`
+const ContentBlock = styled("article")`
   padding: 5rem 1rem;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  :nth-child(even) {
+  :nth-of-type(even) {
     background-color: #f6f9fc;
   }
 `
 
-const TextBlock = styled(Typography)<any>`
+const TextBlock = styled(Typography)`
   max-width: 800px;
-`
+` as typeof Typography
 
-const StyledIcon = styled(FontAwesomeIcon)`
-  color: rgba(0, 0, 0, 0.54);
+const iconStyle = css`
+  fill: rgba(0, 0, 0, 0.54);
   margin-bottom: 1rem;
+  font-size: 3rem;
 `
 
 const StyledButton = styled(Button)`
@@ -59,23 +58,19 @@ const ForTeachers = () => {
         {t("siteTitle")}
       </H1NoBackground>
       <ContentBlock>
-        <TextBlock>
-          <span dangerouslySetInnerHTML={{ __html: t("siteIntro") }} />
-        </TextBlock>
+        <TextBlock>{t("siteIntro")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
-        <StyledIcon icon={faGraduationCap} size="3x" />
+        <GraduationCapIcon css={iconStyle} />
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("teachingTitle")}
         </H1NoBackground>
-        <TextBlock>
-          <span dangerouslySetInnerHTML={{ __html: t("teachingText") }} />
-        </TextBlock>
+        <TextBlock>{t("teachingText")}</TextBlock>
         <TextBlock>{t("teachingText2")}</TextBlock>
         <TextBlock>{t("teachingText3")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
-        <StyledIcon icon={faBookOpen} size="3x" />
+        <BookOpenIcon css={iconStyle} />
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("organizeTitle")}
         </H1NoBackground>
@@ -84,7 +79,7 @@ const ForTeachers = () => {
         <TextBlock>{t("organizeText3")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
-        <StyledIcon icon={faLaptop} size="3x" />
+        <LaptopIcon css={iconStyle} />
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("tmcTitle")}
         </H1NoBackground>
@@ -92,7 +87,7 @@ const ForTeachers = () => {
         <TextBlock>{t("tmcText2")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
-        <StyledIcon icon={faPlusSquare} size="3x" />
+        <PlusSquareIcon css={iconStyle} />
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("howtoTitle")}
         </H1NoBackground>
@@ -112,7 +107,7 @@ const ForTeachers = () => {
       {locale === "fi" ? (
         <section>
           <ContentBlock>
-            <StyledIcon icon={faUserFriends} size="3x" />
+            <UserFriendsIcon css={iconStyle} />
             <H1NoBackground variant="h4" component="h2" align="center">
               {t("teachingTipsTitle")}
             </H1NoBackground>
@@ -121,7 +116,7 @@ const ForTeachers = () => {
             <TextBlock>{t("teachingTips3")}</TextBlock>
           </ContentBlock>
           <ContentBlock>
-            <StyledIcon icon={faBook} size="3x" />
+            <BookIcon css={iconStyle} />
             <H1NoBackground variant="h4" component="h2" align="center">
               {t("2016Title")}
             </H1NoBackground>
@@ -132,7 +127,7 @@ const ForTeachers = () => {
         </section>
       ) : null}
       <ContentBlock>
-        <StyledIcon icon={faComments} size="3x" />
+        <CommentsIcon css={iconStyle} />
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("contactTitle")}
         </H1NoBackground>

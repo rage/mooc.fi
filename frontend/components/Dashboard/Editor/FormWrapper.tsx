@@ -1,12 +1,4 @@
-import {
-  Dispatch,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
+import { Dispatch, useCallback, useContext, useEffect, useState } from "react"
 
 import {
   FormikContextType,
@@ -16,7 +8,6 @@ import {
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
 
-import styled from "@emotion/styled"
 import {
   CircularProgress,
   Container,
@@ -25,6 +16,7 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -42,24 +34,22 @@ const FormBackground = styled(Paper)`
   padding: 2em;
 `
 
-const Status = styled.p<FormikContextType<unknown>["status"]>`
-  color: ${(props: any) => (props.error ? "#FF0000" : "default")};
+const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<
+  FormikContextType<unknown>["status"]
+>`
+  color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 
-export interface RenderProps {
+interface FormWrapperProps<T extends FormValues> {
+  onCancel: () => void
+  onDelete: (values: T) => void
+  // renderForm: (props: any) => ReactNode
   tab?: number
   setTab?: Dispatch<React.SetStateAction<number>>
 }
 
-interface FormWrapperProps<T extends FormValues = FormValues>
-  extends RenderProps {
-  onCancel: () => void
-  onDelete: (values: T) => void
-  renderForm: (props?: RenderProps) => ReactNode
-}
-
-const FormWrapper = <T extends FormValues = FormValues>(
-  props: FormWrapperProps<T>,
+const FormWrapper = <T extends FormValues>(
+  props: React.PropsWithChildren<FormWrapperProps<T>>,
 ) => {
   const {
     submitForm,
@@ -70,7 +60,7 @@ const FormWrapper = <T extends FormValues = FormValues>(
     status,
     setTouched,
   } = useFormikContext<T>()
-  const { onCancel, onDelete, renderForm, tab, setTab = (_) => {} } = props
+  const { onCancel, onDelete, setTab = (_) => void 0, children } = props
   const t = useTranslator(CommonTranslations)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
@@ -112,18 +102,10 @@ const FormWrapper = <T extends FormValues = FormValues>(
     }
   }, [status])
 
-  const renderFormProps: RenderProps = useMemo(
-    () => ({
-      tab,
-      setTab,
-    }),
-    [tab, setTab],
-  )
-
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-        {renderForm(renderFormProps)}
+        {children}
         <br />
         <Grid container direction="row" spacing={2}>
           <Grid item xs={4}>
@@ -151,7 +133,9 @@ const FormWrapper = <T extends FormValues = FormValues>(
                       cancellationText: t("confirmationNo"),
                     })
                       .then(onCancel)
-                      .catch(() => {})
+                      .catch(() => {
+                        // ignore
+                      })
                   : onCancel()
               }
             >
@@ -198,8 +182,8 @@ const FormWrapper = <T extends FormValues = FormValues>(
 }
 
 // need to pass type through
-/*const WrappedFormWrapper: <T extends FormValues = FormValues>(
-  props: FormWrapperProps<T>
-) => JSX.Element = withEnumeratingAnchors(FormWrapper)*/
+const WrappedFormWrapper: <T extends FormValues>(
+  props: React.PropsWithChildren<FormWrapperProps<T>>,
+) => JSX.Element = withEnumeratingAnchors(FormWrapper)
 
 export default withEnumeratingAnchors(FormWrapper) // as typeof FormWrapper
