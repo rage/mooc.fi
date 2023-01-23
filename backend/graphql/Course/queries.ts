@@ -18,7 +18,7 @@ import {
   Tag,
 } from "@prisma/client"
 
-import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { isAdmin, isUser, or } from "../../accessControl"
 import { filterNullRecursive, getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -86,7 +86,7 @@ export const CourseQueries = extendType({
           }),*/
         const course = await getCourseOrAlias(ctx)(query)
 
-        if (!course || (course.hidden && ctx.role !== Role.ADMIN)) {
+        if (!course) {
           throw new Error("course not found")
         }
 
