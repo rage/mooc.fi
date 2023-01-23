@@ -47,7 +47,11 @@ const pragueStatsEmailer = async () => {
 
   for (let tier = 1; tier <= 3; tier++) {
     text += `${tierNames[tier]}:\n\n`
-    text += tiers[tier].join("\n")
+    if (!tiers[tier]?.length) {
+      text += "No completions for this tier\n"
+    } else {
+      text += tiers[tier].join("\n")
+    }
     text += "\n"
   }
 
