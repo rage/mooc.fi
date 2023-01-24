@@ -34,21 +34,21 @@ export const ContentBox = styled("div")`
   h2 {
     font-size: 37px;
     line-height: 64px;
-    font-family: var(--open-sans-condensed-font), sans-serif !important;
+    font-family: var(--header-font), sans-serif !important;
     padding: 0.5rem;
     margin-top: 1rem;
   }
   h3 {
     font-size: 29px;
     line-height: 53px;
-    font-family: var(--open-sans-condensed-font), sans-serif !important;
+    font-family: var(--header-font), sans-serif !important;
     text-decoration: underline;
     text-decoration-color: #00d2ff;
   }
   h4 {
     font-size: 23px;
     line-height: 44px;
-    font-family: var(--open-sans-condensed-font), sans-serif !important;
+    font-family: var(--header-font), sans-serif !important;
   }
   code {
     background-color: #e6f4f1;

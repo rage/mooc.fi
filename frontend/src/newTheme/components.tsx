@@ -5,7 +5,7 @@ import Link, { LinkProps as NextLinkProps } from "next/link"
 import { LinkProps } from "@mui/material"
 import { createTheme, Theme } from "@mui/material/styles"
 
-import { roboto } from "/src/fonts"
+import { bodyFont } from "./typography"
 
 const LinkBehavior = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
   (props, ref) => {
@@ -56,8 +56,8 @@ export const withComponents = (theme: Theme) =>
         },
         styleOverrides: {
           root: {
-            textTransform: "none",
-            fontFamily: roboto.style.fontFamily,
+            textTransform: "uppercase",
+            fontFamily: bodyFont.style.fontFamily,
             borderRadius: "20px",
           },
         },

@@ -54,7 +54,7 @@ export const H2Background = styled(Typography, {
   padding-top: 0.5rem;
   padding-bottom: 1rem;
   display: table;
-  font-family: var(--roboto-font);
+  font-family: var(--body-font);
   font-weight: 550;
 
   ${(props) =>
@@ -66,7 +66,7 @@ export const H2NoBackground = styled(Typography)`
   padding-left: 1rem;
   padding-right: 1rem;
   display: table;
-  font-family: var(--roboto-font);
+  font-family: var(--body-font);
   font-weight: 550;
   font-size: 37px;
   line-height: 58px;
@@ -83,7 +83,7 @@ export const SubtitleBackground = styled(Typography, {
   padding: 1rem;
   display: table;
   background-color: white;
-  font-family: var(--roboto-font);
+  font-family: var(--body-font);
   font-weight: 450;
   ${(props) => `color: ${props.fontcolor ?? "black"};`}
 `

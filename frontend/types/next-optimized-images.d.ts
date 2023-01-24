@@ -1,4 +1,4 @@
-declare module "*.png"
+/*declare module "*.png"
 declare module "*.png?include"
 declare module "*.png?webp"
 declare module "*.png?inline"
@@ -25,9 +25,9 @@ declare module "*.webp?webp"
 declare module "*.webp?inline"
 declare module "*.webp?url"
 declare module "*.webp?original"
-
+*/
 declare module "*.svg"
-declare module "*.svg?include"
+/*declare module "*.svg?include"
 declare module "*.svg?webp"
 declare module "*.svg?inline"
 declare module "*.svg?url"
@@ -39,4 +39,4 @@ declare module "*.gif?include"
 declare module "*.gif?webp"
 declare module "*.gif?inline"
 declare module "*.gif?url"
-declare module "*.gif?original"
+declare module "*.gif?original"*/

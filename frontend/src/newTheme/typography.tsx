@@ -1,77 +1,85 @@
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles"
+import { Lato, Raleway } from "@next/font/google"
 
-import { openSansCondensedDeclaration, roboto } from "/src/fonts"
+//import { openSansCondensedDeclaration, roboto } from "/src/fonts"
+
+export const headerFont = Raleway({
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+  fallback: ["system-ui", "Cantarell", "Ubuntu", "roboto", "sans-serif"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--header-font",
+})
+
+export const bodyFont = Lato({
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  fallback: ["system-ui", "Cantarell", "Ubuntu", "roboto", "sans-serif"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--body-font",
+})
+
+export const fontVariableClass = `${headerFont.variable} ${bodyFont.variable}`
 
 export const withTypography = (theme: Theme) => {
   let newTheme = createTheme(theme, {
     typography: {
-      fontFamily: roboto.style.fontFamily,
+      fontFamily: bodyFont.style.fontFamily,
       button: {
         label: {
-          textTransform: "none",
-          ...openSansCondensedDeclaration,
+          textTransform: "uppercase",
+          fontFamily: bodyFont.style.fontFamily,
         },
       },
-      // FIXME: disrepancy as h2 is larger than h1?
       h1: {
         paddingBottom: "1rem",
-        fontSize: 40,
-        fontFamily: roboto.style.fontFamily,
-        /*"@media (min-width: 600px)": {
-        fontSize: 30,
-      },
-      "@media (min-width: 960px)": {
-        fontSize: 36,
-      },
-      "@media (min-width: 1440px)": {
-        fontSize: 44,
-      },*/
+        fontSize: 60,
+        fontFamily: headerFont.style.fontFamily,
+        fontStretch: "condensed",
+        fontWeight: 600,
       },
       h2: {
         paddingBottom: "1rem",
-        fontFamily: roboto.style.fontFamily,
-        fontSize: 32,
-        /*"@media (min-width: 600px)": {
-        fontSize: 56,
-      },
-      "@media (min-width: 960px)": {
-        fontSize: 72,
-      },*/
+        fontFamily: headerFont.style.fontFamily,
+        fontSize: 36,
+        fontWeight: 600,
+        fontStretch: "condensed",
       },
       h3: {
         paddingBottom: "0.5rem",
         paddingTop: "0.7rem",
-        fontFamily: roboto.style.fontFamily,
-        fontSize: 16,
-        /*"@media (min-width: 600px)": {
-        fontSize: 20,
-      },*/
+        fontFamily: headerFont.style.fontFamily,
+        fontSize: 24,
+        fontStretch: "condensed",
+        fontWeight: 600,
       },
       h4: {
-        fontFamily: roboto.style.fontFamily,
-        fontSize: 14,
-        /*"@media (min-width: 600px)": {
-        fontSize: 16,
-      },*/
+        fontFamily: headerFont.style.fontFamily,
+        fontSize: 18,
+        fontStretch: "condensed",
+      },
+      h5: {
+        fontFamily: headerFont.style.fontFamily,
+        fontStretch: "condensed",
+      },
+      h6: {
+        fontFamily: headerFont.style.fontFamily,
+        fontStretch: "condensed",
       },
       subtitle1: {
-        fontFamily: roboto.style.fontFamily,
-        fontSize: 18,
-        /*"@media (min-width: 600px)": {
-        fontSize: 22,
-      },
-      "@media (min-width: 1440px)": {
+        fontFamily: headerFont.style.fontFamily,
         fontSize: 32,
-      },*/
+        fontStretch: "condensed",
+      },
+      subtitle2: {
+        fontFamily: bodyFont.style.fontFamily,
+        fontSize: 20,
       },
       body1: {
-        fontSize: 12,
-        /*"@media (min-width: 600px)": {
-        fontSize: 14,
-      },
-      "@media (min-width: 960px)": {
         fontSize: 16,
-      },*/
+        fontFamily: bodyFont.style.fontFamily,
       },
     },
   })

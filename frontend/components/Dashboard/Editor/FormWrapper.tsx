@@ -182,6 +182,7 @@ const FormWrapper = <T extends FormValues>(
 }
 
 // need to pass type through
+// @ts-ignore: not used for now?
 const WrappedFormWrapper: <T extends FormValues>(
   props: React.PropsWithChildren<FormWrapperProps<T>>,
 ) => JSX.Element = withEnumeratingAnchors(FormWrapper)

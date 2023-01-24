@@ -41,7 +41,7 @@ const CourseImage = React.memo((props: CourseImageProps) => {
           src={addDomain(photo.uncompressed)}
           loading="lazy"
           alt=""
-          // fill
+          fill
           {...rest}
         />
       ) : (

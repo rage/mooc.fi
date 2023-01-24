@@ -17,3 +17,9 @@ declare module "@mui/material/ButtonBase" {
   > = OverrideProps<ButtonBaseTypeMap<P, D>, D> & NextLinkProps
   export = base
 }
+
+declare module "@mui/material/styles" {
+  interface BreakpointOverrides {
+    xxs: true // adds the `xxs` breakpoint
+  }
+}

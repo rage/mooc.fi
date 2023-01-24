@@ -135,8 +135,8 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
   return (
     <CourseEditForm
       course={initialValues.current}
-      studyModules={modules}
-      courses={courses}
+      studyModules={modules ?? []}
+      courses={courses ?? []}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       onCancel={onCancel}

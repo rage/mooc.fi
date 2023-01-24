@@ -5,8 +5,8 @@ import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
-import moocLogoUrl from "/public/images/moocfi_white.svg"
-import SponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+//import moocLogoUrl from "/public/images/moocfi_white.svg"
+//import SponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseFieldsFragment } from "/graphql/generated"
@@ -80,7 +80,6 @@ const ContentContainer = styled("div")`
 const Title = styled(CardTitle)`
   font-weight: bold;
   color: white;
-  font-size: 1.5rem;
   text-align: left;
   border-radius: 0.2rem;
   align-self: center;
@@ -167,10 +166,8 @@ function CourseCard({ course, tags }: CourseCardProps) {
   return (
     <Container>
       <TitleContainer>
-        <Title variant="h4" component="h2">
-          {course?.name}
-        </Title>
-        <MoocfiLogo alt="MOOC logo" src={moocLogoUrl} />
+        <Title variant="h4">{course?.name}</Title>
+        <MoocfiLogo alt="MOOC logo" src="/images/moocfi_white.svg" />
       </TitleContainer>
       <ContentContainer>
         <Description>
@@ -212,7 +209,11 @@ function CourseCard({ course, tags }: CourseCardProps) {
           )}
         </Schedule>
         <SponsorContainer>
-          <Sponsor src={SponsorLogo} alt="Sponsor logo" fill />
+          <Sponsor
+            src="/images/new/components/courses/f-secure_logo.png"
+            alt="Sponsor logo"
+            fill
+          />
         </SponsorContainer>
         <Tags>
           {tags?.map((tag) => (
@@ -245,9 +246,7 @@ export const CourseCardSkeleton = () => (
   <SkeletonContainer>
     <TitleContainer>
       <Title>
-        <Typography variant="h4" component="h2">
-          <Skeleton width={100 + Math.random() * 100} />
-        </Typography>
+        <Skeleton width={100 + Math.random() * 100} />
       </Title>
     </TitleContainer>
     <ContentContainer>

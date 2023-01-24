@@ -37,7 +37,7 @@ export const ModuleCard = ({
     <CardWrapper>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <CardHeaderBackground image={image ?? ""} />
+        <CardHeaderBackground image={image ? `/images/modules/${image}` : ""} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>

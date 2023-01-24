@@ -32,7 +32,7 @@ const main = async () => {
   try {
     await app.prepare()
   } catch (e) {
-    console.error("Prepairing Next.js app failed", e)
+    console.error("Preparing Next.js app failed", e)
     throw e
   }
 

@@ -17,7 +17,8 @@ const UserInfoWrapper = styled("div")`
   margin: min(2rem, 20%);
 `
 
-const InfoRowContainer = styled("div")`
+const InfoRowContainer = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -30,12 +31,13 @@ const InfoRowContainer = styled("div")`
     margin-bottom: 1rem;
   }
 
-  @media (max-width: 400px) {
+  ${theme.breakpoints.down("xs")} {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
   }
-`
+`,
+)
 
 const InfoRowTitle = styled(Typography)`
   color: #666;

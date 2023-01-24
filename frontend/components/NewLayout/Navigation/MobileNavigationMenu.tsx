@@ -34,13 +34,15 @@ import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const MobileMenuContainer = styled("div")`
+const MobileMenuContainer = styled("div")(
+  ({ theme }) => `
   display: flex;
   justify-content: flex-end;
-  @media (min-width: 600px) {
+  ${theme.breakpoints.up("sm")} {
     display: none;
   }
-`
+`,
+)
 
 interface MobileMenuItemProps {
   Icon: typeof SvgIcon

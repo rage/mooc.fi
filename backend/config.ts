@@ -115,3 +115,7 @@ export const PRISMA_LOG_LEVELS = process.env.PRISMA_LOG_LEVELS
 // addresses to send Linköping completions, separated by ;
 export const LINKOPING_COMPLETION_RECIPIENTS =
   process.env.LINKOPING_COMPLETION_RECIPIENTS
+
+// addresses to send Prague completions, separated by ;
+export const PRAGUE_COMPLETION_RECIPIENTS =
+  process.env.PRAGUE_COMPLETION_RECIPIENTS

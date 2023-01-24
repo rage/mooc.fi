@@ -34,7 +34,7 @@ export const CardHeaderImage = styled(Image)`
   height: auto;
   clip: rect(0, auto, calc(52px - 1rem), auto);
   z-index: 0;
-` as typeof Image
+`
 
 //CardHeaderImage.defaultProps = {
 //  "aria-hidden": true,
@@ -89,7 +89,7 @@ export const CardHeaderBackground = styled("span", {
   ${({ color, image }) => `background-image: ${
     color ? `linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%), ` : ""
   }
-    url("../../../public/images/${image}");`}
+    url(${image});`}
 `
 //   /*filter: hue-rotate(${props.hue ?? 0}deg)
 // brightness(${props.brightness} ?? 1});*/

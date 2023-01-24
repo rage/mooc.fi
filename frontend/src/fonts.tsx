@@ -12,7 +12,7 @@ export const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
   style: ["italic", "normal"],
   display: "swap",
-  variable: "--roboto-font",
+  variable: "--body-font",
 })
 
 // TODO/FIXME
@@ -46,7 +46,7 @@ export const openSansCondensed = localFont({
       weight: "700",
     },
   ],
-  variable: "--open-sans-condensed-font",
+  variable: "--header-font",
 })
 
 export const fontVariableClass = `${roboto.variable} ${openSansCondensed.variable}`

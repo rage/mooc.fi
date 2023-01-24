@@ -39,7 +39,7 @@ const StyledButton = styled(Button, {
 `
 
 const ButtonLabel = styled(Typography)`
-  font-family: var(--open-sans-condensed-font) !important;
+  font-family: var(--header-font) !important;
   font-size: 18px;
   @media (max-width: 600px) {
     font-size: 14px;

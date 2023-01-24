@@ -55,7 +55,7 @@ export const ModuleHeader = styled(
   margin-left: 0px;
   font-size: 72px;
   line-height: 100px;
-  font-family: var(--open-sans-condensed-font), sans-serif;
+  font-family: var(--header-font), sans-serif;
   font-weight: 300;
   width: 100%;
   @media (max-width: 490px) {

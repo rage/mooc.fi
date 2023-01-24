@@ -15,17 +15,20 @@ import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const NavigationMenuContainer = styled("nav")`
+const NavigationMenuContainer = styled("nav")(
+  ({ theme }) => `
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  @media (max-width: 599px) {
+
+  ${theme.breakpoints.down("sm")} {
     display: none;
   }
-`
+`,
+)
 
 const NavigationRightContainer = styled("div")`
   display: flex;
@@ -35,13 +38,16 @@ const NavigationRightContainer = styled("div")`
   width: 100%;
 `
 
-const NavigationLinksWrapper = styled("div")`
+const NavigationLinksWrapper = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-shrink: 1;
-  @media (max-width: 799px) {
+  
+  ${theme.breakpoints.down("md")} {
     display: none;
   }
-`
+`,
+)
 
 const MenuButtonBase = styled(Button)`
   display: flex;

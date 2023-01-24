@@ -13,7 +13,7 @@ import {
 } from "/components/NewLayout/Common/Card"
 import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
-import moocLogoUrl from "/static/images/moocfi-transparent.svg"
+// import moocLogoUrl from "/public/images/moocfi-transparent.svg"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
@@ -58,7 +58,7 @@ const CourseCard = ({
         <CardTitle variant="h4">{name}</CardTitle>
         <CardHeaderImage
           alt="MOOC logo"
-          src={moocLogoUrl}
+          src="/images/moocfi-transparent.svg"
           width={200}
           height={200}
         />
@@ -74,19 +74,22 @@ const CourseCard = ({
   )
 }
 
-export const CoursesGrid = styled("div")`
+export const CoursesGrid = styled("div")(
+  ({ theme }) => `
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   padding: 2rem;
   justify-content: center;
   width: 80%;
-  @media (max-width: 500px) {
+
+  ${theme.breakpoints.down("sm")} {
     padding: 0;
     width: 100%;
     grid-template-columns: 1fr;
   }
-`
+`,
+)
 
 function SelectedCourses() {
   const { locale = "fi" } = useRouter()

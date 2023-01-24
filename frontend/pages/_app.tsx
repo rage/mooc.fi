@@ -5,7 +5,7 @@ import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CssBaseline, GlobalStyles } from "@mui/material"
+import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
 import OriginalLayout from "./_layout"
@@ -18,7 +18,7 @@ import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
-import newTheme, { newFontCss } from "/src/newTheme"
+import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
@@ -101,7 +101,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
               <AlertProvider>
                 <Layout>
                   {/*<GlobalStyles styles={fontCss} />*/}
-                  {isNew && <GlobalStyles styles={newFontCss} />}
+                  {/* isNew && <GlobalStyles styles={newFontCss} /> */}
                   <Component {...pageProps} />
                 </Layout>
               </AlertProvider>

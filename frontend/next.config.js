@@ -56,7 +56,9 @@ const nextConfiguration = {
   compiler: {
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
-      autoLabel: "never",
+      // autoLabel: "never",
+      autoLabel: "dev-only",
+      // labelFormat: "[dirname]--[filename]--[local]",
       importMap: {
         "@mui/system": {
           styled: {
@@ -91,25 +93,35 @@ const nextConfiguration = {
     },
   },
   webpack: (config) => {
-    config.module.rules.push({
+    /*config.module.rules.push({
       test: /\.svg$/, // (svg|png|jpeg|jpg|gif|webp)
       type: "asset",
-    })
-    config.module.rules.push({
+    })*/
+    /*config.module.rules.push({
       test: /\.(png|jpg|gif|webp)$/,
       exclude: ["/public/images/originals/", "/public/images/courseimages/"],
-    })
+    })*/
     const found = config.module.rules?.findIndex((rule) =>
-      rule.test?.exec("u.svg"),
+      rule.test?.exec?.("u.svg"),
     )
-    // remove the original svg rule but store the one variation with no resourcequery to load svg files
+    /*const foundOneOf = config.module.rules?.findIndex((rule) => {
+      if (!rule.oneOf) {
+        return false
+      }
+
+      const hasOneOfRule = rule.oneOf.some((r) => r.test?.exec?.("u.svg"))
+
+      return hasOneOfRule
+    })*/
+
     let originalRule
-    if (config.module.rules?.[found]) {
-      config.module.rules[found].test = /\.(jpe?g|png|gif)$/i
-      originalRule = config.module.rules[found].oneOf.find(
-        (rule) => !rule.resourceQuery,
-      )
+    if (found >= 0) {
+      config.module.rules[found].test =
+        /\.(png|jpg|jpeg|gif|webp|avif|ico|bmp)$/i
+      originalRule = config.module.rules[found]
     }
+    // lacks the case that the rule is in oneOf
+    // -- in this case we also need to check that the rule _doesn't_ have a resourceQuery
 
     config.module.rules.push({
       test: /\.svg$/,

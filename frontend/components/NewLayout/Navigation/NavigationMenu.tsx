@@ -10,15 +10,20 @@ import React, {
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
-import type { IconProp } from "@fortawesome/fontawesome-svg-core"
-import {
+import ChalkboardTeacherIcon from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-teacher.svg?icon"
+import DashboardIcon from "@fortawesome/fontawesome-free/svgs/solid/dashboard.svg?icon"
+import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import SignOutIcon from "@fortawesome/fontawesome-free/svgs/solid/sign-out.svg?icon"
+import UserIcon from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
+
+/*import {
   faChalkboardTeacher,
   faDashboard,
   faList,
   faSignOut,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"*/
 import MenuIcon from "@mui/icons-material/Menu"
 import {
   Button,
@@ -39,25 +44,31 @@ import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const NavigationMenuContainer = styled("nav")`
+const NavigationMenuContainer = styled("nav")(
+  ({ theme }) => `
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  @media (max-width: 399px) {
+
+  ${theme.breakpoints.down("xs")} {
     display: none;
   }
-`
+`,
+)
 
-const MobileMenuContainer = styled("div")`
+const MobileMenuContainer = styled("div")(
+  ({ theme }) => `
   display: flex;
   justify-content: flex-end;
-  @media (min-width: 400px) {
+
+  ${theme.breakpoints.down("xs")} {
     display: none;
   }
-`
+`,
+)
 
 const NavigationRightContainer = styled("div")`
   display: flex;
@@ -66,13 +77,16 @@ const NavigationRightContainer = styled("div")`
   flex-grow: 1;
 `
 
-const NavigationLinksWrapper = styled("div")`
+const NavigationLinksWrapper = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-grow: 1;
-  @media (max-width: 599px) {
+  
+  ${theme.breakpoints.down("sm")} {
     display: none;
   }
-`
+`,
+)
 
 const MenuButton = styled(Button)`
   display: flex;
@@ -129,17 +143,17 @@ const DesktopNavigationMenu = () => {
 }
 
 interface MobileMenuItemProps extends MenuItemProps {
-  icon: IconProp
+  icon: React.ElementType
   text: string
   onClick?: React.MouseEventHandler<HTMLLIElement>
 }
 
 const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  ({ icon, text, onClick = () => void 0, ...props }, ref) => {
+  ({ icon: Icon, text, onClick = () => void 0, ...props }, ref) => {
     return (
       <MenuItem onClick={onClick} ref={ref} {...props}>
         <ListItemIcon>
-          <FontAwesomeIcon icon={icon} />
+          <Icon />
         </ListItemIcon>
         <ListItemText>{text}</ListItemText>
       </MenuItem>
@@ -196,14 +210,14 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         <MobileMenuItem
           key="mobile-menu-courses"
           href="/_new/courses"
-          icon={faChalkboardTeacher}
+          icon={ChalkboardTeacherIcon}
           text={t("courses")}
           onClick={onClose}
         />
         <MobileMenuItem
           key="mobile-menu-modules"
           href="/_new/study-modules"
-          icon={faList}
+          icon={ListIcon}
           text={t("modules")}
           onClick={onClose}
         />
@@ -212,7 +226,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
           <MobileMenuItem
             key="mobile-menu-admin"
             href="/_new/admin"
-            icon={faDashboard}
+            icon={DashboardIcon}
             text="Admin"
             onClick={onClose}
           />,
@@ -223,13 +237,13 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
               <MobileMenuItem
                 key="mobile-menu-profile"
                 href="/_new/profile"
-                icon={faUser}
+                icon={UserIcon}
                 text={userDisplayName}
                 onClick={onClose}
               />,
               <MobileMenuItem
                 key="mobile-menu-logout"
-                icon={faSignOut}
+                icon={SignOutIcon}
                 text={t("logout")}
                 onClick={() => signOut(client, logInOrOut)}
               />,

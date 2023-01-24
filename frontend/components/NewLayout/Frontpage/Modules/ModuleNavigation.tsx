@@ -11,19 +11,21 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { StudyModulesDocument } from "/graphql/generated"
 
 // @ts-ignore: not used?
-const ModulesGrid = styled("div")`
+const ModulesGrid = styled("div")(
+  ({ theme }) => `
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   padding: 2rem;
   justify-content: center;
   width: 80%;
-  @media (max-width: 500px) {
+  ${theme.breakpoints.down("sm")}} {
     padding: 0;
     width: 100%;
     grid-template-columns: 1fr;
   }
-`
+`,
+)
 
 /*const ShowMore = styled(Button)`
   --color: #eee;

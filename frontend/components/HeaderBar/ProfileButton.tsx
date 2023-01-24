@@ -11,9 +11,6 @@ const StyledButton = styled(HeaderMenuButton, {
 })<{ active?: boolean }>`
   border-radius: 0px;
   line-height: 90%;
-  @media (max-width: 950px) {
-    font-size: 22px;
-  }
   color: ${(props) => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${(props) => (props.active ? "1px solid #3C8C7A" : "")};
 `

@@ -17,6 +17,29 @@ let theme = createTheme({
     secondary: {
       main: amber[500],
     },
+    /*  Coming in a later PR for the custom colors
+      spgray: {
+      main: "#1A2333",
+    },
+    spgreen: {
+      main: "#065853",
+    },
+    sppurple: {
+      main: "#51309F",
+    },
+    spblue: {
+      main: "#08457A",
+    }, */
+  },
+  breakpoints: {
+    values: {
+      xxs: 0,
+      xs: 400,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
   },
 })
 

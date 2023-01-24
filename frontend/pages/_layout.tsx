@@ -11,6 +11,7 @@ import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
 import { fontVariableClass } from "/src/fonts"
+import { fontVariableClass as newThemeFontVariableClass } from "/src/newTheme/typography"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;
@@ -36,9 +37,11 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
+  const isNew = router.pathname?.includes("_new")
+  const fontClass = isNew ? newThemeFontVariableClass : fontVariableClass
 
   return (
-    <div className={fontVariableClass}>
+    <div className={fontClass}>
       <SkipLink />
       <FooterDownPusherWrapper>
         <div>
