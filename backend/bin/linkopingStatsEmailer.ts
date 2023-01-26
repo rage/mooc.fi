@@ -20,7 +20,7 @@ const linkopingStatsEmailer = async () => {
       FROM "user" u
       JOIN user_course_setting ucs on ucs.user_id = u.id
       JOIN completion c on c.user_id = u.id
-    WHERE u.email LIKE '%liu.se'
+    WHERE u.email ILIKE '%liu.se'
       AND ucs.other ->> 'ects_consent_sweden' = 'true'
       AND ucs.other ->> 'bai_completion' = 'true'
       AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'
