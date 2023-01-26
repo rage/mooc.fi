@@ -1,4 +1,4 @@
-import createUploadLink from "apollo-upload-client/public/createUploadLink.js"
+import { createUploadLink } from "apollo-upload-client/public/index.mjs"
 import extractFiles from "extract-files/extractFiles.mjs"
 import isExtractableFile from "extract-files/isExtractableFile.mjs"
 import fetch from "isomorphic-unfetch"
@@ -57,7 +57,6 @@ function create(initialState: any, originalAccessToken?: string) {
   )
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    console.log("wait a minute, am I in the errorlink now")
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(

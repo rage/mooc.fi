@@ -5,8 +5,8 @@ import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
-//import moocLogoUrl from "/public/images/moocfi_white.svg"
-//import SponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+import moocLogo from "/public/images/moocfi_white.svg"
+import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseFieldsFragment } from "/graphql/generated"
@@ -167,7 +167,7 @@ function CourseCard({ course, tags }: CourseCardProps) {
     <Container>
       <TitleContainer>
         <Title variant="h4">{course?.name}</Title>
-        <MoocfiLogo alt="MOOC logo" src="/images/moocfi_white.svg" />
+        <MoocfiLogo alt="MOOC logo" src={moocLogo.src} />
       </TitleContainer>
       <ContentContainer>
         <Description>
@@ -209,11 +209,7 @@ function CourseCard({ course, tags }: CourseCardProps) {
           )}
         </Schedule>
         <SponsorContainer>
-          <Sponsor
-            src="/images/new/components/courses/f-secure_logo.png"
-            alt="Sponsor logo"
-            fill
-          />
+          <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
         </SponsorContainer>
         <Tags>
           {tags?.map((tag) => (

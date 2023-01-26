@@ -15,15 +15,6 @@ import DashboardIcon from "@fortawesome/fontawesome-free/svgs/solid/dashboard.sv
 import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import SignOutIcon from "@fortawesome/fontawesome-free/svgs/solid/sign-out.svg?icon"
 import UserIcon from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
-
-/*import {
-  faChalkboardTeacher,
-  faDashboard,
-  faList,
-  faSignOut,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"*/
 import MenuIcon from "@mui/icons-material/Menu"
 import {
   Button,

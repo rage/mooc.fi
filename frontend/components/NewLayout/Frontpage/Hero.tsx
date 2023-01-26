@@ -67,6 +67,7 @@ function Hero() {
         fill
         aria-hidden
         alt="background image"
+        priority
       />
     </HeroContainer>
   )

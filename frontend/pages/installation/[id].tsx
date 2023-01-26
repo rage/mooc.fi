@@ -158,7 +158,6 @@ export const ContainedImage = ({ src, alt, ...props }: any) => {
   )
 }
 
-// @ts-ignore: used with MDXProvider, if used
 const mdxComponents: MDXComponents = {
   // Image: ContainedImage,
   a: Link,

@@ -23,5 +23,5 @@
     //"typeRoots": ["node_modules/@types", "types"]
   },
   "include": [".", "./bin/**/*", "types.d.ts"],
-  "exclude": ["node_modules", "public/images/originals", "public/images/courseimages"]
+  "exclude": ["node_modules"]
 }
