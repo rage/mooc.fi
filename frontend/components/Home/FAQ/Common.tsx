@@ -1,9 +1,11 @@
 import React from "react"
 
 import { range } from "lodash"
+import { MDXComponents } from "mdx/types"
 import dynamic from "next/dynamic"
 
-import { Skeleton, Typography } from "@mui/material"
+import { MDXProvider } from "@mdx-js/react"
+import { Link as MUILink, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ErrorMessage from "/components/ErrorMessage"
@@ -84,6 +86,14 @@ export const Note = styled("section")`
   background-color: #eeeeee;
 `
 
+export const Link = styled(MUILink)`
+  color: default;
+`
+
+const List = styled("ul")``
+const OrderedList = styled("ol")``
+const ListItem = styled("li")``
+
 export const Loader = () => (
   <Background>
     <TitleBackground>
@@ -146,26 +156,35 @@ interface FAQPageProps {
   content: JSX.Element
 }
 
+const mdxComponents: MDXComponents = {
+  a: Link,
+  ul: List,
+  ol: OrderedList,
+  li: ListItem,
+}
+
 export function FAQPage({ error, title, ingress, content }: FAQPageProps) {
   return (
     <Background>
-      {!error && (
-        <>
-          <TitleBackground>
-            <Title component="h1" variant="h1" align="center">
-              {title}
-            </Title>
-          </TitleBackground>
-          {ingress && (
-            <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
-              <Title component="p" variant="subtitle1" align="center">
-                {ingress}
+      <MDXProvider components={mdxComponents}>
+        {!error && (
+          <>
+            <TitleBackground>
+              <Title component="h1" variant="h1" align="center">
+                {title}
               </Title>
             </TitleBackground>
-          )}
-        </>
-      )}
-      <Content>{content}</Content>
+            {ingress && (
+              <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
+                <Title component="p" variant="subtitle1" align="center">
+                  {ingress}
+                </Title>
+              </TitleBackground>
+            )}
+          </>
+        )}
+        <Content>{content}</Content>
+      </MDXProvider>
     </Background>
   )
 }

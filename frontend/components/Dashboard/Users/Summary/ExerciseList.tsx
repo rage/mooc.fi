@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 
 import {
   Table,
@@ -31,13 +31,22 @@ interface ExerciseListProps {
   })[]
 }
 
-export default function ExerciseList({ exercises }: ExerciseListProps) {
+function ExerciseList({ exercises }: ExerciseListProps) {
   const { state, dispatch } = useCollapseContext()
   const t = useTranslator(ProfileTranslations)
   const courseId = useMemo(() => exercises?.[0]?.course_id ?? "_", [exercises])
   const isOpen = useMemo(
     () => Object.values(state[courseId].exercises).some((e) => e),
     [courseId, state],
+  )
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: isOpen ? ActionType.CLOSE_ALL : ActionType.OPEN_ALL,
+        collapsable: CollapsablePart.EXERCISE,
+        course: courseId,
+      }),
+    [dispatch, isOpen, courseId],
   )
 
   return (
@@ -54,22 +63,16 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
               <TableCell>
                 <CollapseButton
                   open={isOpen}
-                  onClick={() =>
-                    dispatch({
-                      type: isOpen ? ActionType.CLOSE_ALL : ActionType.OPEN_ALL,
-                      collapsable: CollapsablePart.EXERCISE,
-                      course: courseId,
-                    })
-                  }
+                  onClick={onCollapseClick}
                   tooltip={t("exerciseCompletionCollapseAllTooltip")}
                 />
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {exercises.map((exercise, index) => (
+            {exercises.map((exercise) => (
               <ExerciseEntry
-                key={`exercise-${exercise.id}-${index}`}
+                key={`exercise-${exercise.id}`}
                 exercise={exercise}
               />
             ))}
@@ -79,3 +82,5 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
     </SummaryCard>
   )
 }
+
+export default ExerciseList

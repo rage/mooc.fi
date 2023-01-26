@@ -35,12 +35,14 @@ export function useFAQPage(topic = "toc_faq") {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")
       setBreadcrumb(mdx?.meta?.breadcrumb ?? mdx?.meta?.title ?? "")
+
       return mdx
     },
     onError: (errorComponent) => {
       setError(true)
       setTitle(t("error"))
       setBreadcrumb(t("error"))
+
       return errorComponent ?? null
     },
   })

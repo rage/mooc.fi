@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
 import {
   Collapse,
@@ -32,7 +32,7 @@ interface ProgressEntryProps {
   data: UserCourseSummaryCoreFieldsFragment
 }
 
-export default function ProgressEntry({ data }: ProgressEntryProps) {
+function ProgressEntry({ data }: ProgressEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
@@ -42,6 +42,15 @@ export default function ProgressEntry({ data }: ProgressEntryProps) {
   const isOpen = useMemo(
     () => state[course?.id ?? "_"]?.points ?? false,
     [state, course],
+  )
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.TOGGLE,
+        collapsable: CollapsablePart.POINTS,
+        course: course?.id ?? "_",
+      }),
+    [dispatch, course],
   )
 
   return (
@@ -73,13 +82,7 @@ export default function ProgressEntry({ data }: ProgressEntryProps) {
               <TableCell align="right">
                 <CollapseButton
                   open={isOpen}
-                  onClick={() =>
-                    dispatch({
-                      type: ActionType.TOGGLE,
-                      collapsable: CollapsablePart.POINTS,
-                      course: course?.id ?? "_",
-                    })
-                  }
+                  onClick={onCollapseClick}
                   tooltip={t("progressCollapseTooltip")}
                 />
               </TableCell>
@@ -102,3 +105,5 @@ export default function ProgressEntry({ data }: ProgressEntryProps) {
     </SummaryCard>
   )
 }
+
+export default ProgressEntry

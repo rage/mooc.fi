@@ -69,7 +69,7 @@ interface CourseCardProps {
   course?: CourseFieldsFragment
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+function CourseCard({ course }: CourseCardProps) {
   const t = useTranslator(HomeTranslations)
 
   return (
@@ -138,3 +138,5 @@ export default function CourseCard({ course }: CourseCardProps) {
     </Grid>
   )
 }
+
+export default CourseCard

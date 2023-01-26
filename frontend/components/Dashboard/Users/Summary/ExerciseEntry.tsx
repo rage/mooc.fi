@@ -116,7 +116,7 @@ const PartSection = ({
   )
 }
 
-export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
+function ExerciseEntry({ exercise }: ExerciseEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
@@ -187,3 +187,5 @@ export default function ExerciseEntry({ exercise }: ExerciseEntryProps) {
     </>
   )
 }
+
+export default ExerciseEntry

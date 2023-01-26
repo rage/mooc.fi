@@ -1,3 +1,5 @@
+import { useCallback } from "react"
+
 import nookies from "nookies"
 
 import { useApolloClient } from "@apollo/client"
@@ -14,6 +16,15 @@ const UserOptionsMenu = () => {
   const { loggedIn, logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
 
+  const onLogoutClick = useCallback(
+    () => signOut(client, logInOrOut),
+    [client, logInOrOut],
+  )
+  const onLoginClick = useCallback(
+    () => nookies.destroy({}, "redirect-back"),
+    [],
+  )
+
   if (loggedIn) {
     return (
       <>
@@ -21,7 +32,7 @@ const UserOptionsMenu = () => {
         <HeaderMenuButton
           color="inherit"
           variant="text"
-          onClick={() => signOut(client, logInOrOut)}
+          onClick={onLogoutClick}
         >
           {t("logout")}
         </HeaderMenuButton>
@@ -35,7 +46,7 @@ const UserOptionsMenu = () => {
         href={`/sign-in`}
         color="inherit"
         variant="text"
-        onClick={() => nookies.destroy({}, "redirect-back")}
+        onClick={onLoginClick}
       >
         {t("loginShort")}
       </HeaderMenuButton>

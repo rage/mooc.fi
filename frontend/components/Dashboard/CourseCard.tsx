@@ -37,7 +37,7 @@ const CardBase = styled("div", {
   width: 100%;
   min-width: 340px;
   display: grid;
-  @media (max-width: 768) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
   @media (min-width: 768px) {

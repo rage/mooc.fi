@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react"
+import { SyntheticEvent, useCallback, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -73,15 +73,18 @@ const routes: Route[] = [
   },
 ]
 
-export default function DashboardTabBar(props: DashboardTabsProps) {
+function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
   const [value, setValue] = useState(selectedValue)
   const router = useRouter()
 
-  function handleChange(_: SyntheticEvent<Element, Event>, newValue: number) {
-    setValue(newValue)
-    router.push(`/courses/${slug}${routes[newValue].path}`)
-  }
+  const handleChange = useCallback(
+    (_: SyntheticEvent<Element, Event>, newValue: number) => {
+      setValue(newValue)
+      router.push(`/courses/${slug}${routes[newValue].path}`)
+    },
+    [slug, router],
+  )
 
   return (
     <TabBarContainer>
@@ -96,7 +99,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
           >
             {routes.map(({ label, icon }, index) => (
               <StyledTab
-                key={index}
+                key={label}
                 value={index}
                 label={label}
                 icon={icon}
@@ -109,3 +112,5 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
     </TabBarContainer>
   )
 }
+
+export default DashboardTabBar

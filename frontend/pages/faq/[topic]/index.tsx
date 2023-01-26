@@ -14,7 +14,7 @@ interface FAQTopicProps {
   topic: string
 }
 
-export default function FAQTopic({ topic }: FAQTopicProps) {
+function FAQTopic({ topic }: FAQTopicProps) {
   const t = useTranslator(FAQTranslations)
 
   const { Component, title, ingress, breadcrumb, error, render } =
@@ -32,6 +32,7 @@ export default function FAQTopic({ topic }: FAQTopicProps) {
   ])
 
   const pageTitle = useSubtitle(title)
+
   return FAQPage({
     title,
     ingress,
@@ -77,3 +78,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     },
   }
 }
+
+export default FAQTopic

@@ -1,7 +1,7 @@
 import { Avatar, Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-// import moocLogoUrl from "/public/images/moocfi.svg"
+import moocLogo from "/public/images/moocfi.svg"
 
 const MoocLogoText = styled(Typography)`
   font-family: var(--header-font);
@@ -41,7 +41,7 @@ const MoocLogoLink = styled(Link)`
 `
 const MoocLogo = () => (
   <MoocLogoLink href="/" aria-label="MOOC.fi homepage">
-    <MoocLogoAvatar alt="MOOC logo" src="/images/moocfi.svg" />
+    <MoocLogoAvatar alt="MOOC logo" src={moocLogo.src} />
     <MoocLogoText>MOOC.fi</MoocLogoText>
   </MoocLogoLink>
 )

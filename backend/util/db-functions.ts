@@ -349,9 +349,7 @@ export const getCourseOrAlias =
     const { select, include } = args ?? {}
 
     if (!id && !slug) {
-      throw new GraphQLUserInputError(
-        "You must../ provide either an id or a slug",
-      )
+      throw new GraphQLUserInputError("You must provide either an id or a slug")
     }
 
     if (checkSelect(args)) {

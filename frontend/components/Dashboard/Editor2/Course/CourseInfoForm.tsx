@@ -11,7 +11,7 @@ import {
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-export default function CourseInfoForm() {
+function CourseInfoForm() {
   const t = useTranslator(CoursesTranslations)
 
   return (
@@ -68,3 +68,5 @@ export default function CourseInfoForm() {
     </>
   )
 }
+
+export default CourseInfoForm

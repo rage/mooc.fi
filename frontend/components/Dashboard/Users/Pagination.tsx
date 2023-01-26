@@ -9,9 +9,12 @@ import FirstPageIcon from "@mui/icons-material/FirstPage"
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft"
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 import LastPageIcon from "@mui/icons-material/LastPage"
-import { IconButton, TablePagination } from "@mui/material"
-import { styled } from "@mui/material/styles"
-import { useTheme } from "@mui/material/styles"
+import {
+  IconButton,
+  LabelDisplayedRowsArgs,
+  TablePagination,
+} from "@mui/material"
+import { styled, useTheme } from "@mui/material/styles"
 
 import UserSearchContext from "/contexts/UserSearchContext"
 import UsersTranslations from "/translations/users"
@@ -153,8 +156,8 @@ const Pagination: React.FC = () => {
   } = useContext(UserSearchContext)
 
   const handleChangeRowsPerPage = useCallback(
-    async (eventValue: string) => {
-      const newRowsPerPage = parseInt(eventValue, 10)
+    async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const newRowsPerPage = parseInt(e.target.value, 10)
 
       setSearchVariables({
         search: searchVariables.search,
@@ -165,6 +168,16 @@ const Pagination: React.FC = () => {
     },
     [searchVariables],
   )
+
+  const labelDisplayedRows = useCallback(
+    ({ from, to, count }: LabelDisplayedRowsArgs) =>
+      count > 0
+        ? `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
+        : "",
+    [],
+  )
+
+  const onPageChange = useCallback(() => null, [])
 
   return (
     <StyledTablePagination
@@ -178,16 +191,10 @@ const Pagination: React.FC = () => {
         native: true,
       }}
       labelRowsPerPage={t("rowsPerPage")}
-      labelDisplayedRows={({ from, to, count }) =>
-        count > 0
-          ? `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
-          : ""
-      }
-      onPageChange={() => null}
-      onRowsPerPageChange={(
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      ) => handleChangeRowsPerPage(event.target.value)}
-      ActionsComponent={() => <TablePaginationActions />}
+      labelDisplayedRows={labelDisplayedRows}
+      onPageChange={onPageChange}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+      ActionsComponent={TablePaginationActions}
     />
   )
 }

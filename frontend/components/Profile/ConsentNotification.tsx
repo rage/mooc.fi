@@ -18,7 +18,7 @@ const ConsentNotificationWrapper = styled("div")`
   background-color: rgb(255, 244, 229);
 `
 
-export default function ConsentNotification() {
+function ConsentNotification() {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
 
@@ -36,3 +36,5 @@ export default function ConsentNotification() {
     </ConsentNotificationWrapper>
   )
 }
+
+export default ConsentNotification

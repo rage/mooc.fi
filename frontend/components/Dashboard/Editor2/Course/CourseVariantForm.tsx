@@ -17,7 +17,7 @@ const FullWidthControlledTextField = styled(ControlledTextField)`
   width: 100%;
 `
 
-export default function CourseVariantForm() {
+function CourseVariantForm() {
   const t = useTranslator(CoursesTranslations)
 
   const renderArrayListItem: ControlledFieldArrayListProps<
@@ -68,3 +68,5 @@ export default function CourseVariantForm() {
     />
   )
 }
+
+export default CourseVariantForm

@@ -1,4 +1,4 @@
-export default function DisableAutoComplete() {
+function DisableAutoComplete() {
   return (
     <input
       name="disableAutocomplete"
@@ -13,3 +13,5 @@ export default function DisableAutoComplete() {
     />
   )
 }
+
+export default DisableAutoComplete

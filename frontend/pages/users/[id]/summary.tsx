@@ -127,6 +127,15 @@ function UserSummaryView() {
     [state],
   )
 
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: allCoursesClosed ? ActionType.OPEN_ALL : ActionType.CLOSE_ALL,
+        collapsable: CollapsablePart.COURSE,
+      }),
+    [allCoursesClosed],
+  )
+
   if (error) {
     return (
       <Container>
@@ -173,14 +182,7 @@ function UserSummaryView() {
                 Raw view
               </Button>
               <CollapseButton
-                onClick={() =>
-                  dispatch({
-                    type: allCoursesClosed
-                      ? ActionType.OPEN_ALL
-                      : ActionType.CLOSE_ALL,
-                    collapsable: CollapsablePart.COURSE,
-                  })
-                }
+                onClick={onCollapseClick}
                 open={!allCoursesClosed}
                 label={allCoursesClosed ? t("showAll") : t("hideAll")}
                 tooltip={t("allCoursesCollapseTooltip")}

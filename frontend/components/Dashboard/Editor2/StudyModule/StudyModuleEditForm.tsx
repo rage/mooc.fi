@@ -36,7 +36,7 @@ const ModuleImage = styled(Image, {
 const pixel =
   "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 
-export default function StudyModuleEditForm() {
+function StudyModuleEditForm() {
   const t = useTranslator(StudyModulesTranslations)
   const { watch } = useFormContext()
 
@@ -128,3 +128,5 @@ export default function StudyModuleEditForm() {
     </EditorContainer>
   )
 }
+
+export default StudyModuleEditForm

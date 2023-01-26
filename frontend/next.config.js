@@ -58,7 +58,7 @@ const nextConfiguration = {
       // would label things with [local] or something; will break styling if not set to never
       // autoLabel: "never",
       autoLabel: "dev-only",
-      // labelFormat: "[dirname]--[filename]--[local]",
+      labelFormat: "[dirname]--[filename]--[local]",
       importMap: {
         "@mui/system": {
           styled: {

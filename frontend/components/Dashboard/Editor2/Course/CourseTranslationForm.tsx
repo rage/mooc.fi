@@ -40,7 +40,7 @@ const CourseTranslationItem = styled("li")`
   margin: auto;
 `
 
-export default function CourseTranslationForm() {
+function CourseTranslationForm() {
   const t = useTranslator(CoursesTranslations)
 
   const { watch } = useFormContext()
@@ -127,3 +127,5 @@ export default function CourseTranslationForm() {
     </section>
   )
 }
+
+export default CourseTranslationForm

@@ -53,7 +53,7 @@ interface CourseEditFormProps {
   studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
-export default function CourseEditForm({
+function CourseEditForm({
   course,
   courses,
   studyModules,
@@ -260,3 +260,5 @@ export default function CourseEditForm({
     </EditorContainer>
   )
 }
+
+export default CourseEditForm

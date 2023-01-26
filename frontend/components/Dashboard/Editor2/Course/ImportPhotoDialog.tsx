@@ -47,7 +47,7 @@ interface ImportPhotoDialogProps {
   onClose: () => void
 }
 
-export default function ImportPhotoDialog({
+function ImportPhotoDialog({
   open,
   onClose,
   courses = [],
@@ -150,3 +150,5 @@ export default function ImportPhotoDialog({
     </Dialog>
   )
 }
+
+export default ImportPhotoDialog

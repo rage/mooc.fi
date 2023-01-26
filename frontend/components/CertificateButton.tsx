@@ -94,16 +94,29 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
     onReceiveGeneratedCertificateError,
   })
 
+  const onShowCertificate = useCallback(
+    () =>
+      window.open(
+        `${CERTIFICATES_URL}/validate/${state.certificateId}`,
+        "_blank",
+      ),
+    [state.certificateId],
+  )
+
+  const onDialogOpen = useCallback(() => setDialogOpen(true), [])
+  const onDialogClose = useCallback(() => setDialogOpen(false), [])
+  const onFirstNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value),
+    [],
+  )
+  const onLastNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value),
+    [],
+  )
+
   if (state.certificateId) {
     return (
-      <StyledButton
-        onClick={() =>
-          window.open(
-            `${CERTIFICATES_URL}/validate/${state.certificateId}`,
-            "_blank",
-          )
-        }
-      >
+      <StyledButton onClick={onShowCertificate}>
         {t("showCertificate")}
       </StyledButton>
     )
@@ -126,12 +139,10 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       </>
     )
   }
+
   return (
     <>
-      <StyledButton
-        disabled={state.status !== "IDLE"}
-        onClick={() => setDialogOpen(true)}
-      >
+      <StyledButton disabled={state.status !== "IDLE"} onClick={onDialogOpen}>
         {state.status !== "IDLE" ? (
           <CircularProgress size={24} color="secondary" />
         ) : (
@@ -141,7 +152,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       <StyledDialog
         open={dialogOpen}
         disableEnforceFocus
-        onClose={() => setDialogOpen(false)}
+        onClose={onDialogClose}
         aria-labelledby="dialog-title"
       >
         <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
@@ -153,7 +164,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
             id="first-name"
             label={t("nameFormFirstName")}
             value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
+            onChange={onFirstNameChange}
             defaultValue={firstName}
             fullWidth
           />
@@ -162,13 +173,13 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
             label={t("nameFormLastName")}
             defaultValue={lastName}
             value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
+            onChange={onLastNameChange}
             fullWidth
           />
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setDialogOpen(false)}
+            onClick={onDialogClose}
             variant="outlined"
             color="inherit"
             fullWidth

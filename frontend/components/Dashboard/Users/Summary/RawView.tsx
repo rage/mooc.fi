@@ -32,7 +32,7 @@ const DynamicEditor = dynamic(() => import("@monaco-editor/react"), {
   },
 })
 
-export default function RawView({ value }: RawViewProps) {
+function RawView({ value }: RawViewProps) {
   return (
     <DynamicEditor
       options={{ wordWrap: "on" }}
@@ -42,3 +42,5 @@ export default function RawView({ value }: RawViewProps) {
     />
   )
 }
+
+export default RawView

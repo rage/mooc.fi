@@ -18,7 +18,7 @@ const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,
 ): value is string => typeof value === "string"
 
-export default function UserCourseSettingsVisibilityForm() {
+function UserCourseSettingsVisibilityForm() {
   const { control, setValue, getValues } = useFormContext()
 
   const onChange = useCallback(
@@ -100,3 +100,5 @@ export default function UserCourseSettingsVisibilityForm() {
     />
   )
 }
+
+export default UserCourseSettingsVisibilityForm

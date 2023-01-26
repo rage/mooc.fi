@@ -26,7 +26,7 @@ interface CourseImageFormProps {
   courses?: EditorCourseOtherCoursesFieldsFragment[]
 }
 
-export default function CourseImageForm({ courses }: CourseImageFormProps) {
+function CourseImageForm({ courses }: CourseImageFormProps) {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
   const { watch, setValue } = useFormContext()
@@ -125,3 +125,5 @@ export default function CourseImageForm({ courses }: CourseImageFormProps) {
     </FormFieldGroup>
   )
 }
+
+export default CourseImageForm

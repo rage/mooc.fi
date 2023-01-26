@@ -62,7 +62,6 @@
     "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
     "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
     "@google-cloud/storage": "^6.9.0",
-    "@ianvs/prettier-plugin-sort-imports": "^3.7.1",
     "@prisma/client": "2.23.0",
     "@sentry/integrations": "^6.19.7",
     "@sentry/node": "^6.19.7",

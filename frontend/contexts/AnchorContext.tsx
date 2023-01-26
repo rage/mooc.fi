@@ -5,18 +5,18 @@ export type Anchor = {
   tab: number
 }
 
-interface AnchorContext {
+export interface AnchorContext {
   anchors: Record<string, Anchor>
   addAnchor: (anchor: string, tab: number) => void
 }
 
-const AnchorContext = createContext<AnchorContext>({
+const AnchorContextImpl = createContext<AnchorContext>({
   anchors: {},
   addAnchor: (_: string, __: number) => void 0,
 })
 
-export default AnchorContext
+export default AnchorContextImpl
 
 export function useAnchorContext() {
-  return useContext(AnchorContext)
+  return useContext(AnchorContextImpl)
 }

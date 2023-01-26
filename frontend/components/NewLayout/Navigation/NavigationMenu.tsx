@@ -192,6 +192,11 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : t("myProfile")
 
+  const onLogOut = useCallback(
+    () => signOut(client, logInOrOut),
+    [client, logInOrOut],
+  )
+
   return (
     <MobileMenuContainer>
       <IconButton onClick={onClick}>
@@ -245,7 +250,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
                 key="mobile-menu-logout"
                 icon={SignOutIcon}
                 text={t("logout")}
-                onClick={() => signOut(client, logInOrOut)}
+                onClick={onLogOut}
               />,
             ]
           : [

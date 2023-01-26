@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useCallback, useState } from "react"
 
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
@@ -40,15 +40,27 @@ const Completions = () => {
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
 
-  const handleLanguageChange = (event: ChangeEvent<unknown>) => {
+  const handleLanguageChange = useCallback((e: ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes
 
     const href = `/courses/${slug}/completions?language=${
-      (event.target as HTMLInputElement).value
+      (e.target as HTMLInputElement).value
     }`
-    changeLng((event.target as HTMLInputElement).value as string)
+    changeLng((e.target as HTMLInputElement).value as string)
     router.replace(router.pathname, href, { shallow: true })
-  }
+  }, [])
+
+  const handleSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setSearchString(e.target.value)
+  }, [])
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        setSearch(searchString)
+      }
+    },
+    [searchString],
+  )
 
   const { data, loading, error } = useQuery(CourseFromSlugDocument, {
     variables: { slug },
@@ -113,10 +125,8 @@ const Completions = () => {
               value={searchString}
               autoComplete="off"
               variant="outlined"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setSearchString(e.target.value)
-              }
-              onKeyDown={(e) => e.key === "Enter" && setSearch(searchString)}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
             />
             <CompletionsList search={search} />
           </ContentArea>

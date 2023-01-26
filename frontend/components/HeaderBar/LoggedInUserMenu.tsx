@@ -1,7 +1,7 @@
-import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
-import Envelope from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
-import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
-import Search from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
+import ChalkboardTeacherIcon from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import EnvelopeIcon from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
+import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import SearchIcon from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
@@ -66,7 +66,7 @@ const UserMenu = () => {
             active={active == "courses" ? 1 : null}
             style={{ marginLeft: "1em" }}
           >
-            <ChalkboardTeacher />
+            <ChalkboardTeacherIcon />
             <ButtonLabel>{t("courses")}</ButtonLabel>
           </StyledButton>
 
@@ -76,7 +76,7 @@ const UserMenu = () => {
             variant="text"
             active={active == "study-modules" ? 1 : null}
           >
-            <List />
+            <ListIcon />
             <ButtonLabel>{t("modules")}</ButtonLabel>
           </StyledButton>
           <StyledButton
@@ -85,7 +85,7 @@ const UserMenu = () => {
             variant="text"
             active={active == "users" ? 1 : null}
           >
-            <Search />
+            <SearchIcon />
             <ButtonLabel>{t("userSearch")}</ButtonLabel>
           </StyledButton>
           <StyledButton
@@ -94,7 +94,7 @@ const UserMenu = () => {
             variant="text"
             active={active == "email-templates" ? 1 : null}
           >
-            <Envelope />
+            <EnvelopeIcon />
             <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
           </StyledButton>
         </>

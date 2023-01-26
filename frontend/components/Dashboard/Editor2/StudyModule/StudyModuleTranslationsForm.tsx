@@ -17,7 +17,7 @@ import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import StudyModuleTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 
-export default function StudyModuleTranslationsForm() {
+function StudyModuleTranslationsForm() {
   const t = useTranslator(StudyModuleTranslations)
   const _languages = languages(t)
 
@@ -84,3 +84,5 @@ export default function StudyModuleTranslationsForm() {
     </section>
   )
 }
+
+export default StudyModuleTranslationsForm

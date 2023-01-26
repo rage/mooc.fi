@@ -16,7 +16,7 @@ import { useTranslator } from "/util/useTranslator"
 const FullWidthControlledTextField = styled(ControlledTextField)`
   width: 100%;
 `
-export default function CourseAliasForm() {
+function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)
 
   const renderArrayListItem: ControlledFieldArrayListProps<
@@ -64,3 +64,5 @@ export default function CourseAliasForm() {
     />
   )
 }
+
+export default CourseAliasForm

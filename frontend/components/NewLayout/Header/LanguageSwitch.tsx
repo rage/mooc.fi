@@ -14,12 +14,13 @@ import { styled } from "@mui/material/styles"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
+const LanguageSwitchButton = (buttonProps: ButtonProps) => (
+  <Button component="div" {...buttonProps} tabIndex={-1} />
+)
 const LanguageSwitchContainer = styled(
   (props: ButtonGroupProps & ButtonProps) => (
     <ButtonGroup
-      component={(buttonProps) => (
-        <Button component="div" {...buttonProps} tabIndex={-1} />
-      )}
+      component={LanguageSwitchButton}
       disableRipple
       disableFocusRipple
       disableTouchRipple

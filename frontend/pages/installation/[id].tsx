@@ -5,7 +5,8 @@ import { GetStaticPropsContext } from "next"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 
-import { Typography } from "@mui/material"
+import { MDXProvider } from "@mdx-js/react"
+import { Link as MUILink, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 // import NoOsMessage from "/components/Installation/NoOsMessage"
@@ -113,6 +114,8 @@ export const Note = styled("section")`
   font-size: 16px;
 `
 
+export const Link = styled(MUILink)``
+
 // Not used now; tested what to do if we ever ditch using img in mdx
 const ImageContainer = styled("div", {
   shouldForwardProp: (prop) => prop !== "width" && prop !== "height",
@@ -157,7 +160,8 @@ export const ContainedImage = ({ src, alt, ...props }: any) => {
 
 // @ts-ignore: used with MDXProvider, if used
 const mdxComponents: MDXComponents = {
-  Image: ContainedImage,
+  // Image: ContainedImage,
+  a: Link,
 }
 
 interface InstallationInstructionProps {
@@ -198,38 +202,40 @@ const InstallationInstructions = ({
       return import(`../../public/md_pages/${paths?.[userOS]}`)
         .then((mdx) => mdx)
         .catch(() => {
-          return () => <Spinner />
+          return Spinner
         })
     },
-    { loading: () => <Spinner /> },
+    { loading: Spinner },
   )
 
   const contextValue = useMemo(() => ({ OS: userOS, changeOS }), [userOS])
 
   return (
     <UserOSContext.Provider value={contextValue}>
-      <Background>
-        <TitleBackground>
-          <Title component="h1" variant="h1" align="center">
-            {t("title")}
-          </Title>
-        </TitleBackground>
-        <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
-          <Title component="p" variant="subtitle1" align="center">
-            {t("subtitle")}
-          </Title>
-        </TitleBackground>
-        <Content>
-          {userOS ? (
-            <>
-              <OSSelector excludeZip={excludeZip} />
-              <Component />
-            </>
-          ) : (
-            <Spinner />
-          )}
-        </Content>
-      </Background>
+      <MDXProvider components={mdxComponents}>
+        <Background>
+          <TitleBackground>
+            <Title component="h1" variant="h1" align="center">
+              {t("title")}
+            </Title>
+          </TitleBackground>
+          <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
+            <Title component="p" variant="subtitle1" align="center">
+              {t("subtitle")}
+            </Title>
+          </TitleBackground>
+          <Content>
+            {userOS ? (
+              <>
+                <OSSelector excludeZip={excludeZip} />
+                <Component />
+              </>
+            ) : (
+              <Spinner />
+            )}
+          </Content>
+        </Background>
+      </MDXProvider>
     </UserOSContext.Provider>
   )
 }
