@@ -18,7 +18,11 @@ import CommonTranslations from "/translations/common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useTranslator } from "/util/useTranslator"
 
-import { CoursesDocument, CourseStatus } from "/graphql/generated"
+import {
+  CourseFieldsFragment,
+  CoursesDocument,
+  CourseStatus,
+} from "/graphql/generated"
 
 /*  Coming in a later PR for better mobile view
   const Container = styled.div`
@@ -187,6 +191,7 @@ function CourseGrid() {
     CourseStatus.Active,
     CourseStatus.Upcoming,
   ])
+  const [courses, setCourses] = useState<CourseFieldsFragment[]>([])
 
   // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
 
@@ -223,7 +228,12 @@ function CourseGrid() {
           : "undefined",
       )
     setHardcodedTags(hardcoded)
-  }, [difficultyTags, moduleTags, languageTags])
+
+    if (data?.courses) {
+      const filteredCourses = data.courses.slice().sort(compareCourses)
+      setCourses(filteredCourses)
+    }
+  }, [data])
 
   const handleClick = (tag: string) => {
     if (activeTags.includes(tag)) {
@@ -284,6 +294,23 @@ function CourseGrid() {
         break
       default:
         setActiveTags([...difficultyTags, ...moduleTags, ...languageTags])
+    }
+  }
+
+  const compareCourses = (
+    course1: CourseFieldsFragment,
+    course2: CourseFieldsFragment,
+  ) => {
+    if (course1.study_modules.length == 0) {
+      return 1
+    } else if (course2.study_modules.length == 0) {
+      return -1
+    } else if (course1.study_modules[0].name < course2.study_modules[0].name) {
+      return -1
+    } else if (course1.study_modules[0].name >= course2.study_modules[0].name) {
+      return 1
+    } else {
+      return 0
     }
   }
 
@@ -413,36 +440,35 @@ function CourseGrid() {
         </CardContainer>
       ) : (
         <CardContainer>
-          {data?.courses &&
-            data.courses
-              .filter(
-                (course) =>
-                  !course.hidden &&
-                  course.course_translations.length > 0 &&
-                  (course?.name
-                    .toLowerCase()
-                    .includes(searchString.toLowerCase()) ||
-                    course?.description
-                      ?.toLowerCase()
-                      .includes(searchString.toLowerCase())) &&
-                  (activeTags.length > 0
-                    ? activeTags.every((tag) =>
-                        hardcodedTags[course?.slug].includes(tag),
-                      )
-                    : true) &&
-                  (filteredStatuses.length > 0 && course.status
-                    ? filteredStatuses.includes(CourseStatus[course.status])
-                    : true),
-              )
-              .map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  tags={
-                    course?.slug ? hardcodedTags[course?.slug] : ["undefined"]
-                  }
-                />
-              ))}
+          {courses
+            .filter(
+              (course) =>
+                !course.hidden &&
+                course.course_translations.length > 0 &&
+                (course?.name
+                  .toLowerCase()
+                  .includes(searchString.toLowerCase()) ||
+                  course?.description
+                    ?.toLowerCase()
+                    .includes(searchString.toLowerCase())) &&
+                (activeTags.length > 0
+                  ? activeTags.every((tag) =>
+                      hardcodedTags[course?.slug].includes(tag),
+                    )
+                  : true) &&
+                (filteredStatuses.length > 0 && course.status
+                  ? filteredStatuses.includes(CourseStatus[course.status])
+                  : true),
+            )
+            .map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                tags={
+                  course?.slug ? hardcodedTags[course?.slug] : ["undefined"]
+                }
+              />
+            ))}
         </CardContainer>
       )}
     </Container>
