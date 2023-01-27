@@ -12,10 +12,10 @@ import { useTranslator } from "/util/useTranslator"
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes = {
-  csb: "#215887",
-  programming: "#1F6964",
-  cloud: "#822630",
-  ai: "#6245A9",
+  "Cyber Security Base": "#215887",
+  Ohjelmointi: "#1F6964",
+  "Pilvipohjaiset websovellukset": "#822630",
+  "Tekoäly ja data": "#6245A9",
   other: "#313947",
 }
 
@@ -128,25 +128,6 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
-const getStudyModule = (course: CourseFieldsFragment) => {
-  if (course.study_modules.length == 0) {
-    return "other"
-  } else {
-    switch (course.study_modules[0].name) {
-      case "Ohjelmointi":
-        return "programming"
-      case "Pilvipohjaiset websovellukset":
-        return "cloud"
-      case "Cyber Security Base":
-        return "csb"
-      case "Tekoäly ja data":
-        return "ai"
-      default:
-        return "other"
-    }
-  }
-}
-
 /*  Coming in a later PR for the custom colors
   const tagType = (tag: string) =>
   difficultyTags.includes(tag)
@@ -166,7 +147,13 @@ function CourseCard({ course, tags }: CourseCardProps) {
   const t = useTranslator(CommonTranslations)
 
   return (
-    <Container module={getStudyModule(course)}>
+    <Container
+      module={
+        course.study_modules.length == 0
+          ? "other"
+          : course.study_modules[0].name
+      }
+    >
       <TitleContainer>
         <Title variant="h4" component="h2">
           {course?.name}
