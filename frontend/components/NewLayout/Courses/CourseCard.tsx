@@ -5,7 +5,9 @@ import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
 import moocLogoUrl from "/static/images/moocfi_white.svg"
 import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
+import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
+import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
@@ -33,21 +35,10 @@ const ContainerBase = css`
 `
 
 const Container = styled("li", {
-  shouldForwardProp: (prop) => prop !== "backgroundImage",
-})<{ backgroundImage?: string }>`
+  shouldForwardProp: (prop) => prop !== "module",
+})<{ module?: string }>`
   ${ContainerBase};
-  &:nth-of-type(n) {
-    background: ${colorSchemes["cloud"]};
-  }
-  &:nth-of-type(2n) {
-    background: ${colorSchemes["programming"]};
-  }
-  &:nth-of-type(3n) {
-    background: ${colorSchemes["csb"]};
-  }
-  &:nth-of-type(4n) {
-    background: ${colorSchemes["ai"]};
-  }
+  background-color: ${(props) => colorSchemes[props.module]};
 `
 
 const SkeletonContainer = styled("li")`
@@ -137,6 +128,25 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
+const getStudyModule = (course: CourseFieldsFragment) => {
+  if (course.study_modules.length == 0) {
+    return "other"
+  } else {
+    switch (course.study_modules[0].name) {
+      case "Ohjelmointi":
+        return "programming"
+      case "Pilvipohjaiset websovellukset":
+        return "cloud"
+      case "Cyber Security Base":
+        return "csb"
+      case "Tekoäly ja data":
+        return "ai"
+      default:
+        return "other"
+    }
+  }
+}
+
 /*  Coming in a later PR for the custom colors
   const tagType = (tag: string) =>
   difficultyTags.includes(tag)
@@ -153,8 +163,10 @@ interface CourseCardProps {
 }
 
 function CourseCard({ course, tags }: CourseCardProps) {
+  const t = useTranslator(CommonTranslations)
+
   return (
-    <Container>
+    <Container module={getStudyModule(course)}>
       <TitleContainer>
         <Title variant="h4" component="h2">
           {course?.name}
@@ -177,25 +189,26 @@ function CourseCard({ course, tags }: CourseCardProps) {
         <Schedule>
           {course.status == "Upcoming" ? (
             <p>
-              Tulossa {course.start_date && prettifyDate(course.start_date)}
+              {t("Upcoming")}{" "}
+              {course.start_date && prettifyDate(course.start_date)}
             </p>
           ) : course?.status == "Ended" ? (
             <p>
-              Päättynyt{" "}
+              {t("Ended")}{" "}
               {course.end_date &&
                 Date.parse(course.end_date) < Date.now() &&
                 formatDateTime(course.end_date)}
             </p>
           ) : (
             <p>
-              Käynnissä{" "}
+              {t("Active")}{" "}
               {course.end_date ? (
                 <>
                   {formatDateTime(course.start_date)} -{" "}
                   {formatDateTime(course.end_date)}
                 </>
               ) : (
-                <>— Aikatauluton</>
+                <>— {t("unscheduled")}</>
               )}
             </p>
           )}
@@ -221,7 +234,7 @@ function CourseCard({ course, tags }: CourseCardProps) {
           ))}
         </Tags>
         <Link eventLabel="to_course_material" to="https://www.mooc.fi">
-          Näytä kurssi
+          {t("showCourse")}
         </Link>
       </ContentContainer>
     </Container>
