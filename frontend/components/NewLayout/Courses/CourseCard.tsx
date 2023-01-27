@@ -38,7 +38,8 @@ const Container = styled("li", {
   shouldForwardProp: (prop) => prop !== "module",
 })<{ module?: string }>`
   ${ContainerBase};
-  background-color: ${(props) => colorSchemes[props.module]};
+  background-color: ${(props) =>
+    props.module ? colorSchemes[props.module] : "#313947"};
 `
 
 const SkeletonContainer = styled("li")`
