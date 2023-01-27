@@ -11,7 +11,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
-const colorSchemes = {
+const colorSchemes: Record<string, string> = {
   "Cyber Security Base": "#215887",
   Ohjelmointi: "#1F6964",
   "Pilvipohjaiset websovellukset": "#822630",
