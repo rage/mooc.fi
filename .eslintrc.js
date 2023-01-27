@@ -15,7 +15,9 @@ const esLintConfig = {
     ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
-    project: "./tsconfig.json",
+    parser: "@typescript-eslint/parser",
+    project: ["./tsconfig.json"],
+    tsconfigRootDir: __dirname,
   },
   ignorePatterns: ["node_modules/", "generated/", "dist/", "sourcemap/"],
   rules: {

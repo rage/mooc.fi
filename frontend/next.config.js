@@ -101,7 +101,7 @@ const nextConfiguration = {
       test: /\.(png|jpg|gif|webp)$/,
       exclude: ["/public/images/originals/", "/public/images/courseimages/"],
     })*/
-    const found = config.module.rules?.findIndex((rule) =>
+    const found = config.module.rules?.findIndex((/** @type {any} */ rule) =>
       rule.test?.exec?.("u.svg"),
     )
     /*const foundOneOf = config.module.rules?.findIndex((rule) => {
