@@ -62,7 +62,9 @@ const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
   return (
     <CardWrapper>
       <HypeCardHeader>
-        <CardTitle variant="h3">{title}</CardTitle>
+        <CardTitle variant="h5" component="h3">
+          {title}
+        </CardTitle>
       </HypeCardHeader>
       <CardBody>
         <CardDescription>{text}</CardDescription>

@@ -3,6 +3,7 @@ import React, { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
+import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
@@ -19,6 +20,18 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CurrentUserOverviewDocument } from "/graphql/generated"
 
 // import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
+const ProfileContainer = styled(Container)(
+  ({ theme }) => `
+  max-width: 900px;
+  width: 85%;
+  margin: auto;
+
+  ${theme.breakpoints.down("sm")} {
+    width: 90%;
+    margin: auto;
+  }
+`,
+)
 
 const tabs: Record<string, number> = {
   points: 0,
@@ -84,13 +97,13 @@ function Profile() {
     <>
       <Background />
       <ProfilePageHeader user={data?.currentUser} />
-      <Container style={{ maxWidth: 900 }}>
+      <ProfileContainer>
         {(research_consent === null ||
           typeof research_consent === "undefined") && <ConsentNotification />}
         <ProfileTabs selected={tab} onChange={handleTabChange}>
           <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
         </ProfileTabs>
-      </Container>
+      </ProfileContainer>
     </>
   )
 }

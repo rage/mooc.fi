@@ -18,13 +18,6 @@ const StyledTabs = styled(Tabs)`
   box-shadow: 0 0 0 0;
 `
 
-function a11yProps(index: any) {
-  return {
-    id: `nav-tab-${index}`,
-    "aria-controls": `nav-tabpanel-${index}`,
-  }
-}
-
 const TabContainer = styled("div")`
   width: 100%;
   max-width: 700px;
@@ -37,7 +30,7 @@ const TabBar = styled(AppBar)`
 
 const StyledTab = styled(Tab)`
   margin-top: 1rem;
-`
+` as typeof Tab
 
 interface DashboardTabsProps {
   slug: string
@@ -94,6 +87,7 @@ function DashboardTabBar(props: DashboardTabsProps) {
             variant="fullWidth"
             value={value}
             onChange={handleChange}
+            textColor="inherit"
             indicatorColor="secondary"
             aria-label="course dashboard navi"
           >
@@ -103,7 +97,8 @@ function DashboardTabBar(props: DashboardTabsProps) {
                 value={index}
                 label={label}
                 icon={icon}
-                {...a11yProps(index)}
+                id={`nav-tab-${index}`}
+                aria-controls={`nav-tabpanel-${index}`}
               />
             ))}
           </StyledTabs>

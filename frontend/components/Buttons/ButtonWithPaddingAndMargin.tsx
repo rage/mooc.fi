@@ -1,9 +1,7 @@
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 
-export const ButtonWithPaddingAndMargin = styled(Button, {
-  shouldForwardProp: (prop) => prop !== "color",
-})<{ color?: string }>`
+export const ButtonWithPaddingAndMargin = styled(Button)`
   margin: 0.5rem;
   color: ${({ color }) =>
     color === "secondary"

@@ -30,9 +30,14 @@ import { useTranslator } from "/util/useTranslator"
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
 
-const FormBackground = styled(Paper)`
+const FormBackground = styled(Paper)(
+  ({ theme }) => `
   padding: 2em;
-`
+  ${theme.breakpoints.down("md")} {
+    padding: 0;
+  }
+`,
+)
 
 const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<
   FormikContextType<unknown>["status"]

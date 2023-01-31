@@ -1,4 +1,4 @@
-import { createRef, useState } from "react"
+import { createRef, useCallback, useState } from "react"
 
 import Send from "@mui/icons-material/Send"
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
@@ -63,9 +63,12 @@ function EmailSubscribe() {
   const formRef = createRef<HTMLFormElement>()
   const t = useTranslator(HomeTranslations)
 
-  function handleSubmit() {
-    setSent(true)
-  }
+  const handleSubmit = useCallback(() => {
+    if (formRef?.current) {
+      formRef.current.submit()
+      setSent(true)
+    }
+  }, [formRef?.current])
 
   return (
     <MailingList>
@@ -102,12 +105,7 @@ function EmailSubscribe() {
                 <StyledButton
                   variant="contained"
                   color="primary"
-                  onClick={() => {
-                    if (formRef?.current) {
-                      formRef.current.submit()
-                      handleSubmit()
-                    }
-                  }}
+                  onClick={handleSubmit}
                 >
                   {t("emailButton")}
                   <Send />

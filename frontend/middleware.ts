@@ -78,13 +78,14 @@ const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
   const color = styles[responseStatusToColor(status)]
   const log = `${remoteAddress} ${remoteUser} [${date}] "${color.open}${method} ${url} ${httpVersion}${color.close}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
 
-  console.log(log)
+  const logFunction = status >= 400 ? console.error : console.log
+  logFunction(log)
   // console.log(request.nextUrl)
   return res
 }
 
 const redirectMiddleware = (req: NextRequest, res: NextResponse) => {
-  const { pathname, protocol, host } = req.nextUrl
+  const { pathname, protocol, host } = req.nextUrl.clone()
   const redirect = redirects_list.find((redirect) =>
     decodeURI(pathname).startsWith(redirect.from),
   )
@@ -112,5 +113,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // TODO: make this per middleware
-  matcher: ["/((?!api|_next|public/favicon.ico).*)"],
+  matcher: ["/((?!api|_next|favicon.ico).*)"],
 }

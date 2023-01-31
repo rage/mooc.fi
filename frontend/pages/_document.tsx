@@ -16,7 +16,7 @@ class CustomDocument extends Document {
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content={theme.palette.primary.main} />
-          <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+          <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
           <meta name="emotion-insertion-point" content="" />
           {/*{(this.props as any).emotionStyleTags}
           {(this.props as any).fontVariables}*/}

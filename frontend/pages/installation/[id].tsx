@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { MDXComponents } from "mdx/types"
-import { GetStaticPropsContext } from "next"
+import { GetServerSidePropsContext } from "next"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 
@@ -270,17 +270,10 @@ const combinationOverrides: {
   vscode: { allowedOS: ["Windows", "macOS", "Linux"] },
 }
 
-export async function getStaticPaths() {
-  return {
-    paths: allowedPaths.map((path) => ({ params: { id: path } })),
-    fallback: "blocking",
-  }
-}
-
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
   locale,
-}: GetStaticPropsContext) {
+}: GetServerSidePropsContext) {
   const id = ((Array.isArray(params?.id) ? params?.id[0] : params?.id) ??
     "") as (typeof allowedPaths)[number]
   const language = (locale ?? "fi") as (typeof languages)[number]
@@ -292,10 +285,7 @@ export async function getStaticProps({
 
   allowedOS.forEach((os) => {
     const lang = combinationOverrides[id]?.languages?.[language] ?? language
-    if (
-      combinationOverrides[id] &&
-      !combinationOverrides[id]?.allowedOS?.includes(os)
-    ) {
+    if (!combinationOverrides[id]?.allowedOS?.includes(os)) {
       return
     }
     paths[os] = `${id}_installation_${os}_${lang}.mdx`

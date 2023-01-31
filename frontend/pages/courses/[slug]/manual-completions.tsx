@@ -255,7 +255,6 @@ const ManualCompletions = () => {
           label="csv"
           fullWidth
           rows={20}
-          maxRows={5000}
           multiline
         />
         <Button disabled={submitting} onClick={onSubmit}>

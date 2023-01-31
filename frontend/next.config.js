@@ -18,6 +18,9 @@ if (process.env.ANALYZE === "true") {
     open: "file",
     compressor: "gzip",
     extensions: [],
+    statsOptions: {
+      source: true,
+    },
   })
 }
 /** @type {NextPlugin} */
@@ -58,7 +61,7 @@ const nextConfiguration = {
       // would label things with [local] or something; will break styling if not set to never
       // autoLabel: "never",
       autoLabel: "dev-only",
-      labelFormat: "[dirname]--[filename]--[local]",
+      // labelFormat: "[dirname]--[filename]--[local]",
       importMap: {
         "@mui/system": {
           styled: {

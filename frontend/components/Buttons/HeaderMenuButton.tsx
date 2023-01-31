@@ -3,10 +3,10 @@ import { styled } from "@mui/material/styles"
 
 export const HeaderMenuButton = styled(Button)(
   ({ theme }) => `
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   margin: 0.5rem;
   ${theme.breakpoints.down("md")} {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
   ${theme.breakpoints.down("xs")} {
     font-size: 1.2rem;

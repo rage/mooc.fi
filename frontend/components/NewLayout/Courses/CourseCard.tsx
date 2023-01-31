@@ -132,11 +132,12 @@ const Tag = styled(Button)`
   margin: 0 0.1rem;
 `
 
-const CardHeaderImage = styled("img")`
+const CardHeaderImage = styled(Image)`
+  object-fit: cover;
   opacity: 0.4;
   position: absolute;
-  left: 60%;
-  top: 0.5rem;
+  right: 1rem;
+  top: 1rem;
   width: 35%;
   height: auto;
   z-index: 0;
@@ -166,8 +167,13 @@ function CourseCard({ course, tags }: CourseCardProps) {
   return (
     <Container>
       <TitleContainer>
-        <Title variant="h4">{course?.name}</Title>
-        <MoocfiLogo alt="MOOC logo" src={moocLogo.src} />
+        <Title variant="h6">{course?.name}</Title>
+        <MoocfiLogo
+          alt="MOOC logo"
+          src={moocLogo.src}
+          width={105}
+          height={95}
+        />
       </TitleContainer>
       <ContentContainer>
         <Description>

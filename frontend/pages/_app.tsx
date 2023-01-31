@@ -28,12 +28,6 @@ const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
     key: "emotion-css",
   })
 
-// const clientSideEmotionCache = createEmotionCache()
-
-//interface MyAppProps extends AppProps {
-//  emotionCache?: EmotionCache
-//}
-
 export { augmentDocumentWithEmotionCache }
 
 export function MyApp({ Component, pageProps }: AppProps) {
@@ -100,8 +94,6 @@ export function MyApp({ Component, pageProps }: AppProps) {
             <BreadcrumbProvider>
               <AlertProvider>
                 <Layout>
-                  {/*<GlobalStyles styles={fontCss} />*/}
-                  {/* isNew && <GlobalStyles styles={newFontCss} /> */}
                   <Component {...pageProps} />
                 </Layout>
               </AlertProvider>

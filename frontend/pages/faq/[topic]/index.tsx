@@ -1,6 +1,4 @@
-import * as fs from "fs"
-
-import { GetStaticPropsContext } from "next"
+import { GetServerSidePropsContext } from "next"
 import { NextSeo } from "next-seo"
 
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
@@ -51,27 +49,9 @@ function FAQTopic({ topic }: FAQTopicProps) {
   })
 }
 
-export async function getStaticPaths() {
-  const files = fs.readdirSync("./public/md_pages")
-  const faqFilePattern = new RegExp(
-    /^(?!\w+_(macOS|Linux|Windows|ZIP|vscode)_)((\w+)_)*(fi|en)\.mdx$/g,
-  )
-  const paths = [
-    ...new Set(
-      files
-        .map((file) => faqFilePattern.exec(file)?.[3])
-        .filter(Boolean)
-        .map((topic) => ({ params: { topic } })),
-    ),
-  ]
-
-  return {
-    paths,
-    fallback: true,
-  }
-}
-
-export async function getStaticProps({ params }: GetStaticPropsContext) {
+export async function getServerSideProps({
+  params,
+}: GetServerSidePropsContext) {
   return {
     props: {
       topic: params?.topic,

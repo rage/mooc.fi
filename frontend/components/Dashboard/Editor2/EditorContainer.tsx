@@ -50,38 +50,37 @@ function EditorContainer<T extends FormValues = FormValues>({
   )
 
   const onCancelClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      return isDirty
-        ? confirm({
-            title: t("confirmationUnsavedChanges"),
-            description: t("confirmationLeaveWithoutSaving"),
-            confirmationText: t("confirmationYes"),
-            cancellationText: t("confirmationNo"),
-          })
-            .then(onCancel)
-            .catch(() => {
-              // ignore
-            })
-        : onCancel()
+      if (isDirty) {
+        return onCancel()
+      }
+      try {
+        confirm({
+          title: t("confirmationUnsavedChanges"),
+          description: t("confirmationLeaveWithoutSaving"),
+          confirmationText: t("confirmationYes"),
+          cancellationText: t("confirmationNo"),
+        })
+        return onCancel()
+      } catch {}
     },
     [isDirty, onCancel, confirm, t],
   )
 
   const onDeleteClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
 
-      return confirm({
-        title: t("confirmationAboutToDelete"),
-        description: t("confirmationDelete"),
-        confirmationText: t("confirmationYes"),
-        cancellationText: t("confirmationNo"),
-      })
-        .then(() => onDelete(id))
-        .catch(() => {
-          // ignore
+      try {
+        await confirm({
+          title: t("confirmationAboutToDelete"),
+          description: t("confirmationDelete"),
+          confirmationText: t("confirmationYes"),
+          cancellationText: t("confirmationNo"),
         })
+        return onDelete(id)
+      } catch {}
     },
     [id, onDelete, confirm, t],
   )

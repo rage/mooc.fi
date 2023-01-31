@@ -7,7 +7,7 @@ const BottomNavigationContainer = styled((props: AppBarProps) => (
   <AppBar position="fixed" color="inherit" component="nav" {...props} />
 ))(
   ({ theme }) => `
-  ${theme.breakpoints.down("md")} {
+  ${theme.breakpoints.up("md")} {
     display: none;
   }
   top: auto;

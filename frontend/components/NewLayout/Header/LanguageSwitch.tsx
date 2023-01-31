@@ -17,6 +17,7 @@ import { useTranslator } from "/util/useTranslator"
 const LanguageSwitchButton = (buttonProps: ButtonProps) => (
   <Button component="div" {...buttonProps} tabIndex={-1} />
 )
+
 const LanguageSwitchContainer = styled(
   (props: ButtonGroupProps & ButtonProps) => (
     <ButtonGroup
@@ -34,8 +35,7 @@ const LanguageSwitchContainer = styled(
   },
 )`
   cursor: unset;
-  padding: 0.5rem;
-  max-height: 10vh;
+  max-height: 8vh;
 `
 
 const Language = styled(Button, {

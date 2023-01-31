@@ -50,7 +50,7 @@ function HeroContent() {
   return (
     <HeroContentContainer>
       <Title variant="h1">{t("tagLine")}</Title>
-      <Paragraph variant="subtitle2">{t("intro")}</Paragraph>
+      <Paragraph variant="subtitle1">{t("intro")}</Paragraph>
       <CourseButton variant="outlined" href="#courses">
         {t("courseButton")}
       </CourseButton>

@@ -20,6 +20,8 @@ declare module "@mui/material/ButtonBase" {
 
 declare module "@mui/material/styles" {
   interface BreakpointOverrides {
-    xxs: true // adds the `xxs` breakpoint
+    // adds breakpoints
+    xxxs: true
+    xxs: true
   }
 }

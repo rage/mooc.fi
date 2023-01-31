@@ -1,5 +1,5 @@
 import { Link } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/NewLayout/Navigation"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -11,12 +11,20 @@ const NavigationLink = styled(Link, {
 })<React.ComponentProps<"a"> & { active: boolean }>`
   text-decoration: none;
   color: inherit;
-  font-weight: ${({ active }) => (active ? "600" : "inherit")};
-  font-size: clamp(14px, 1.5vw, 16px);
+  font-size: 1rem;
+  padding: 0.2rem;
+  ${({ active }) =>
+    active
+      ? css`
+          border-bottom: 2px solid rgba(200, 100, 0, 0.25);
+          font-weight: 600;
+        `
+      : css`
+          &:hover {
+            text-shadow: 0px 0px 1px black;
+          }
+        `}
 
-  &:hover {
-    font-weight: 600;
-  }
   transition: 0.1s;
 `
 

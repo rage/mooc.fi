@@ -1,4 +1,4 @@
-// from https://github.com/garronej/tss-react/blob/main/src/next.tsx - a bit modified
+// from https://github.com/garronej/tss-react/blob/main/src/next/pagesDir.tsx - a bit modified
 import React, { type ReactNode } from "react"
 
 import type { NextComponentType } from "next"
@@ -10,7 +10,8 @@ import createCache, {
   type Options as OptionsOfCreateCache,
 } from "@emotion/cache"
 import { CacheProvider as DefaultCacheProvider } from "@emotion/react"
-import createEmotionServer from "@emotion/server/create-instance"
+
+// import createEmotionServer from "@emotion/server/create-instance"
 
 /**
  * @see <https://docs.tss-react.dev/ssr/next>
@@ -42,6 +43,9 @@ export function createEmotionSsr(
     ;(Document as any).getInitialProps = async (
       documentContext: DocumentContext,
     ) => {
+      const createEmotionServer = (
+        await import("@emotion/server/create-instance")
+      ).default
       const cache = createCache(optionsWithoutPrependProp)
 
       const emotionServer = createEmotionServer(cache)
@@ -63,7 +67,7 @@ export function createEmotionSsr(
       const initialProps = await super_getInitialProps(documentContext)
 
       const emotionStyles = [
-        <meta name={insertionPointId} content="" />,
+        <meta key={insertionPointId} name={insertionPointId} content="" />,
         ...emotionServer
           .extractCriticalToChunks(initialProps.html)
           .styles.filter(({ css }) => css !== "")

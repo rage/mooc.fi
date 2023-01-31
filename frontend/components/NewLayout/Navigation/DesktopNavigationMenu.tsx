@@ -51,9 +51,9 @@ const NavigationLinksWrapper = styled("div")(
 
 const MenuButtonBase = styled(Button)`
   display: flex;
-  max-height: 10vh;
+  max-height: 8vh;
   white-space: nowrap;
-  font-size: clamp(12px, 1.5vw, 16px);
+  font-size: 1rem;
   gap: 0.5rem;
   max-width: 240px;
   overflow: hidden;

@@ -82,6 +82,11 @@ const ModuleCardDescription = styled("div")`
   color: #fff;
 `
 
+const ModuleCardDescriptionText = styled(Typography)`
+  font-family: var(--body-font) !important;
+  font-weight: 400 !important;
+`
+
 const ImageBackgroundBase = css`
   position: absolute;
   left: 0;
@@ -107,7 +112,7 @@ const SkeletonBackground = styled("span")`
 
 const CenteredHeader = styled(Typography)`
   margin-bottom: 2rem;
-`
+` as typeof Typography
 
 const ModuleCourseCard = styled(CourseCard)``
 
@@ -128,13 +133,11 @@ export function ListItem({
       return
     }
 
-    console.log(description.scrollHeight, description.clientHeight)
     if (description.clientHeight > 320) {
       const span = Math.round(description.scrollHeight / 320) // the max size of row should be in a var
       description.style.cssText = `--hero-span: ${span};`
     }
   }, [
-    descriptionRef.current,
     descriptionRef.current?.scrollHeight,
     descriptionRef.current?.clientHeight,
   ])
@@ -159,8 +162,12 @@ export function ListItem({
       <ModuleCardBody>
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>
-            <CenteredHeader variant="h1">{module.name}</CenteredHeader>
-            <Typography variant="subtitle1">{module.description}</Typography>
+            <CenteredHeader variant="h3" component="h2">
+              {module.name}
+            </CenteredHeader>
+            <ModuleCardDescriptionText variant="subtitle1">
+              {module.description}
+            </ModuleCardDescriptionText>
           </ModuleCardDescription>
         </HeroContainer>
         {courses?.map((course) => (

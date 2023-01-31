@@ -58,7 +58,9 @@ const TitleImage = styled(Image)``
 
 const TitleImageContainer = styled("div")`
   position: relative;
-  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 function WideNaviCard(props: NaviCardProps) {
@@ -79,11 +81,11 @@ function WideNaviCard(props: NaviCardProps) {
           )}
           <Background>
             {item.titleImg ? (
-              <TitleImageContainer>
+              <TitleImageContainer style={{ gridArea: "title" }}>
                 <TitleImage
                   src={`/images/${item.titleImg}`}
                   alt={item.title ?? ""}
-                  style={{ objectFit: "contain", gridArea: "title" }}
+                  style={{ objectFit: "contain" }}
                   {...(item.titleImgDimensions ?? { fill: true })}
                 />
               </TitleImageContainer>

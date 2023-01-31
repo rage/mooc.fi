@@ -8,13 +8,15 @@ import { CurrentUserQuery } from "/graphql/generated"
 const Title = styled(Typography)`
   display: flex;
   justify-content: center;
-`
+` as typeof Typography
 
 const UserInfoWrapper = styled("div")`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: min(2rem, 20%);
+  width: 85%;
+  margin: auto;
+  max-width: 900px;
 `
 
 const InfoRowContainer = styled("div")(
@@ -41,13 +43,13 @@ const InfoRowContainer = styled("div")(
 
 const InfoRowTitle = styled(Typography)`
   color: #666;
-`
+` as typeof Typography
 
 const InfoRowContent = styled(Typography)`
   font-weight: 600;
   overflow: hidden;
   overflow-wrap: break-word;
-`
+` as typeof Typography
 
 const ProfileCardWrapper = styled(CardWrapper)`
   min-height: unset;
@@ -64,8 +66,12 @@ interface InfoRowProps {
 function InfoRow({ title, content }: InfoRowProps) {
   return (
     <InfoRowContainer>
-      <InfoRowTitle variant="h4">{title}</InfoRowTitle>
-      <InfoRowContent variant="h4">{content}</InfoRowContent>
+      <InfoRowTitle variant="h6" component="h3">
+        {title}
+      </InfoRowTitle>
+      <InfoRowContent variant="h6" component="h3">
+        {content}
+      </InfoRowContent>
     </InfoRowContainer>
   )
 }
@@ -73,7 +79,9 @@ function InfoRow({ title, content }: InfoRowProps) {
 function ProfilePageHeader({ user }: ProfilePageHeaderProps) {
   return (
     <header>
-      <Title variant="h1">{user?.full_name}</Title>
+      <Title variant="h2" component="h1">
+        {user?.full_name}
+      </Title>
       <UserInfoWrapper>
         <ProfileCardWrapper>
           <CardBody>

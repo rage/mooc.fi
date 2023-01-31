@@ -83,7 +83,7 @@ function CompletedCourseCard(props: CourseCardProps) {
         </CardText>
         {isRegistered ? (
           registeredCompletions.map((r) => (
-            <RegistrationDetails>
+            <RegistrationDetails key={r.id}>
               <CardText>
                 {t("registeredDate")} {formatDateTime(r.created_at)}
               </CardText>
