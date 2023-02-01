@@ -48,7 +48,7 @@ jobs:
       - run:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
-      - save-cache:
+      - save_cache:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
           paths:
             - ./frontend/node_modules
