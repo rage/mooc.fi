@@ -49,7 +49,7 @@
     "showHidden": "Näytä piilotetut",
     "Active": "Käynnissä",
     "Upcoming": "Tulossa",
-    "Ended": "Loppunut",
+    "Ended": "Päättynyt",
     "handledBy": "Handled by",
     "search": "Etsi...",
     "filter": "Suodata",
@@ -67,6 +67,8 @@
     "fi": "Suomeksi",
     "en": "In English",
     "selectAll": "Valitse kaikki",
+    "unscheduled": "Aikatauluton",
+    "showCourse": "Näytä kurssi",
     "noResults": "Ei tuloksia"
 }
 

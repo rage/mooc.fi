@@ -75,7 +75,7 @@ const assertUserCredentials = async (ctx: Context, id: string) => {
   }
 
   if (!user || (user && user.id !== existingUser.id && role !== Role.ADMIN)) {
-    throw new GraphQLForbiddenError("invalid c../lib/errors that")
+    throw new GraphQLForbiddenError("invalid credentials to do that")
   }
 }
 

@@ -67,5 +67,7 @@
     "fi": "Suomeksi",
     "en": "In English",
     "selectAll": "Select all",
+    "unscheduled": "Indefinitely open",
+    "showCourse": "Show course",
     "noResults": "No results"
 }

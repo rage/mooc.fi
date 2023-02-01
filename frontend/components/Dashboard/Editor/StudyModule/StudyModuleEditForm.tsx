@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   FieldArray,
+  FieldArrayRenderProps,
   Form,
   Formik,
   FormikHelpers,
@@ -95,11 +96,39 @@ const StudyModuleFormComponent = () => {
   }, [image, slug])
 
   const imageFilename = useMemo(() => {
-    if (image) {
-      return `/images/modules/${image}`
-    }
-    return `/images/modules/${slug}.jpg`
+    return image ?? `${slug}.jpg`
   }, [image, slug])
+
+  const onImageError = useCallback(() => {
+    setImageLoading(false)
+    setImageError(t("moduleImageError"))
+  }, [t])
+
+  const onImageLoadingComplete = useCallback(() => {
+    setImageLoading(false)
+    setImageError("")
+  }, [])
+
+  const onRemoveTranslationClick = useCallback(
+    (helpers: FieldArrayRenderProps, index: number) => () =>
+      confirm({
+        title: t("moduleConfirmationTitle"),
+        description: t("moduleConfirmationContent"),
+        confirmationText: t("moduleConfirmationYes"),
+        cancellationText: t("moduleConfirmationNo"),
+      })
+        .then(() => helpers.remove(index))
+        .catch(() => {
+          // ignore
+        }),
+    [],
+  )
+
+  const onAddTranslationClick = useCallback(
+    (helpers: FieldArrayRenderProps) => () =>
+      helpers.push({ ...initialTranslation }),
+    [],
+  )
 
   return (
     <FormContainer>
@@ -187,20 +216,22 @@ const StudyModuleFormComponent = () => {
                 />
               )}
               <ModuleImage
-                src={imageFilename ? imageFilename + "?v=" + Date.now() : pixel}
-                alt={!imageError ? `Image preview of ${image}` : ``}
+                src={
+                  imageFilename
+                    ? `/images/modules/${imageFilename}` + "?v=" + Date.now()
+                    : pixel
+                }
+                alt={
+                  !imageError
+                    ? `Image preview of ${imageFilename ?? "a module image"}`
+                    : ``
+                }
                 error={!!imageError}
                 isLoading={imageLoading}
                 priority
                 fill
-                onError={() => {
-                  setImageLoading(false)
-                  setImageError(t("moduleImageError"))
-                }}
-                onLoadingComplete={() => {
-                  setImageLoading(false)
-                  setImageError("")
-                }}
+                onError={onImageError}
+                onLoadingComplete={onImageLoadingComplete}
               />
               {!imageLoading && !!imageError ? (
                 <Typography variant="body2" style={{ color: "red" }}>
@@ -282,18 +313,7 @@ const StudyModuleFormComponent = () => {
                             variant="contained"
                             disabled={isSubmitting}
                             color="secondary"
-                            onClick={() =>
-                              confirm({
-                                title: t("moduleConfirmationTitle"),
-                                description: t("moduleConfirmationContent"),
-                                confirmationText: t("moduleConfirmationYes"),
-                                cancellationText: t("moduleConfirmationNo"),
-                              })
-                                .then(() => helpers.remove(index))
-                                .catch(() => {
-                                  // ignore
-                                })
-                            }
+                            onClick={onRemoveTranslationClick(helpers, index)}
                           >
                             {t("moduleRemoveTranslation")}
                           </StyledButton>
@@ -315,7 +335,7 @@ const StudyModuleFormComponent = () => {
                     color="primary"
                     fullWidth
                     disabled={isSubmitting}
-                    onClick={() => helpers.push({ ...initialTranslation })}
+                    onClick={onAddTranslationClick(helpers)}
                   >
                     {t("moduleAddTranslation")}
                   </FormSubmitButton>
@@ -370,9 +390,4 @@ function StudyModuleEditForm({
   )
 }
 
-/*
-        renderForm={RenderForm}
-        onCancel={onCancel}
-        onDelete={onDelete}
-*/
 export default StudyModuleEditForm

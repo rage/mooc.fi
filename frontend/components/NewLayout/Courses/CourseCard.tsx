@@ -7,15 +7,17 @@ import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
 import moocLogo from "/public/images/moocfi_white.svg"
 import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
+import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 
-const colorSchemes = {
-  csb: "#215887",
-  programming: "#1F6964",
-  cloud: "#822630",
-  ai: "#6245A9",
+const colorSchemes: Record<string, string> = {
+  "Cyber Security Base": "#215887",
+  Ohjelmointi: "#1F6964",
+  "Pilvipohjaiset websovellukset": "#822630",
+  "Tekoäly ja data": "#6245A9",
   other: "#313947",
 }
 
@@ -35,21 +37,11 @@ const ContainerBase = css`
 `
 
 const Container = styled("li", {
-  shouldForwardProp: (prop) => prop !== "backgroundImage",
-})<{ backgroundImage?: string }>`
+  shouldForwardProp: (prop) => prop !== "module",
+})<{ module?: string }>`
   ${ContainerBase};
-  &:nth-of-type(n) {
-    background: ${colorSchemes["cloud"]};
-  }
-  &:nth-of-type(2n) {
-    background: ${colorSchemes["programming"]};
-  }
-  &:nth-of-type(3n) {
-    background: ${colorSchemes["csb"]};
-  }
-  &:nth-of-type(4n) {
-    background: ${colorSchemes["ai"]};
-  }
+  background-color: ${(props) =>
+    props.module ? colorSchemes[props.module] : "#313947"};
 `
 
 const SkeletonContainer = styled("li")`
@@ -164,8 +156,16 @@ interface CourseCardProps {
 }
 
 function CourseCard({ course, tags }: CourseCardProps) {
+  const t = useTranslator(CommonTranslations)
+
   return (
-    <Container>
+    <Container
+      module={
+        course.study_modules.length == 0
+          ? "other"
+          : course.study_modules[0].name
+      }
+    >
       <TitleContainer>
         <Title variant="h6">{course?.name}</Title>
         <MoocfiLogo
@@ -191,25 +191,26 @@ function CourseCard({ course, tags }: CourseCardProps) {
         <Schedule>
           {course.status == "Upcoming" ? (
             <p>
-              Tulossa {course.start_date && prettifyDate(course.start_date)}
+              {t("Upcoming")}{" "}
+              {course.start_date && prettifyDate(course.start_date)}
             </p>
           ) : course?.status == "Ended" ? (
             <p>
-              Päättynyt{" "}
+              {t("Ended")}{" "}
               {course.end_date &&
                 Date.parse(course.end_date) < Date.now() &&
                 formatDateTime(course.end_date)}
             </p>
           ) : (
             <p>
-              Käynnissä{" "}
+              {t("Active")}{" "}
               {course.end_date ? (
                 <>
                   {formatDateTime(course.start_date)} -{" "}
                   {formatDateTime(course.end_date)}
                 </>
               ) : (
-                <>— Aikatauluton</>
+                <>— {t("unscheduled")}</>
               )}
             </p>
           )}
@@ -237,7 +238,7 @@ function CourseCard({ course, tags }: CourseCardProps) {
           ))}
         </Tags>
         <Link eventLabel="to_course_material" to="https://www.mooc.fi">
-          Näytä kurssi
+          {t("showCourse")}
         </Link>
       </ContentContainer>
     </Container>
