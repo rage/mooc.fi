@@ -32,7 +32,7 @@ function HeroSection() {
       <ItemContainer>
         <Item>
           <Image
-            src="/static/images/new/components/courses/herosection_icon1.png"
+            src="/images/new/components/courses/herosection_icon1.png"
             alt="Not Found"
             className="group-3487"
             width="150"
@@ -42,7 +42,7 @@ function HeroSection() {
         </Item>
         <Item>
           <Image
-            src="/static/images/new/components/courses/herosection_transition_icon.png"
+            src="/images/new/components/courses/herosection_transition_icon.png"
             alt="Not Found"
             className="group-3487"
             width="25"
@@ -51,7 +51,7 @@ function HeroSection() {
         </Item>
         <Item>
           <Image
-            src="/static/images/new/components/courses/herosection_icon2.png"
+            src="/images/new/components/courses/herosection_icon2.png"
             alt="Not Found"
             className="group-3487"
             width="150"
@@ -61,7 +61,7 @@ function HeroSection() {
         </Item>
         <Item>
           <Image
-            src="/static/images/new/components/courses/herosection_transition_icon.png"
+            src="/images/new/components/courses/herosection_transition_icon.png"
             alt="Not Found"
             className="group-3487"
             width="25"
@@ -70,7 +70,7 @@ function HeroSection() {
         </Item>
         <Item>
           <Image
-            src="/static/images/new/components/courses/herosection_icon3.png"
+            src="/images/new/components/courses/herosection_icon3.png"
             alt="Not Found"
             className="group-3487"
             width="150"

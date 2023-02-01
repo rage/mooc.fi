@@ -53,7 +53,7 @@ export const toCourseForm = ({
     teacher_in_charge_email: course.teacher_in_charge_email ?? "",
     support_email: course.support_email ?? "",
     start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
-    end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
+    end_date: course.end_date ? DateTime.fromISO(course.end_date) : undefined,
     start_point: course.start_point ?? false,
     promote: course.promote ?? false,
     hidden: course.hidden ?? false,
@@ -91,19 +91,14 @@ export const toCourseForm = ({
     study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
-        ...omit(course_variant, [
-          "__typename",
-          "id",
-          "created_at",
-          "updated_at",
-        ]),
+        ...omit(course_variant, ["__typename", "id"]),
         _id: course_variant.id ?? undefined,
         slug: course_variant.slug ?? undefined,
         description: course_variant.description ?? undefined,
       })) ?? [],
     course_aliases:
       course?.course_aliases?.map((course_alias) => ({
-        ...omit(course_alias, ["__typename", "id", "created_at", "updated_at"]),
+        ...omit(course_alias, ["__typename", "id"]),
         _id: course_alias.id ?? undefined,
         course_code: course_alias.course_code ?? undefined,
       })) ?? [],
@@ -116,7 +111,7 @@ export const toCourseForm = ({
     has_certificate: course?.has_certificate ?? false,
     user_course_settings_visibilities:
       course?.user_course_settings_visibilities?.map((visibility) => ({
-        ...omit(visibility, ["__typename", "id", "created_at", "updated_at"]),
+        ...omit(visibility, ["__typename", "id"]),
         _id: visibility.id ?? undefined,
         language: visibility.language ?? undefined,
       })) ?? [],
@@ -133,7 +128,7 @@ export const toCourseForm = ({
     photo: course?.photo ?? "",
     open_university_registration_links:
       course?.open_university_registration_links?.map((link) => ({
-        ...omit(link, ["__typename", "id", "created_at", "updated_at"]),
+        ...omit(link, ["__typename", "id"]),
         _id: link.id ?? undefined,
         course_code: link.course_code ?? undefined,
       })) ?? [],
@@ -165,18 +160,21 @@ export const fromCourseForm = ({
   const newCourse = !values.id
 
   console.log(values)
-  const course_translations =
-    values?.course_translations?.map(
-      (course_translation: CourseTranslationFormValues) => ({
-        ...omit(course_translation, ["open_university_course_link", "_id"]),
-        link: course_translation.link ?? "",
-        description: course_translation.description ?? "",
-        id:
-          !course_translation._id || course_translation._id === ""
-            ? undefined
-            : course_translation._id,
-      }),
-    ) ?? []
+  const course_translations = (values?.course_translations ?? []).map(
+    (course_translation: CourseTranslationFormValues) => ({
+      ...omit(course_translation, ["open_university_course_link", "_id"]),
+      language: course_translation.language,
+      name: course_translation.name,
+      link: course_translation.link ?? "",
+      description: course_translation.description ?? "",
+      id:
+        !course_translation._id || course_translation._id === ""
+          ? undefined
+          : course_translation._id,
+    }),
+  ) as
+    | CourseCreateArg["course_translations"]
+    | CourseUpsertArg["course_translations"]
 
   const course_variants = (values?.course_variants ?? []).map(
     (course_variant) => ({
@@ -186,23 +184,25 @@ export const fromCourseForm = ({
           ? undefined
           : course_variant._id,
     }),
-  )
+  ) as CourseCreateArg["course_variants"] | CourseUpsertArg["course_variants"]
 
   const course_aliases = (values?.course_aliases ?? []).map((course_alias) => ({
     ...omit(course_alias, ["__typename", "_id"]),
     id: course_alias._id ?? undefined,
     course_code: course_alias.course_code ?? undefined,
-  }))
+  })) as CourseCreateArg["course_aliases"] | CourseUpsertArg["course_aliases"]
 
   const user_course_settings_visibilities = (
     values?.user_course_settings_visibilities ?? []
   ).map((visibility) => ({
     ...omit(visibility, ["__typename", "_id"]),
     id: !visibility._id || visibility._id === "" ? undefined : visibility._id,
-  }))
+  })) as
+    | CourseCreateArg["user_course_settings_visibilities"]
+    | CourseUpsertArg["user_course_settings_visibilities"]
 
-  const open_university_registration_links = values?.course_translations
-    ?.map((course_translation: CourseTranslationFormValues) => {
+  const open_university_registration_links = (values?.course_translations ?? [])
+    .map((course_translation: CourseTranslationFormValues) => {
       if (
         !course_translation.open_university_course_link ||
         (course_translation.open_university_course_link?.course_code === "" &&
@@ -235,11 +235,15 @@ export const fromCourseForm = ({
           "",
       }
     })
-    .filter(notEmpty)
+    .filter(notEmpty) as
+    | CourseCreateArg["open_university_registration_links"]
+    | CourseUpsertArg["open_university_registration_links"]
 
   const study_modules = Object.keys(values.study_modules ?? {})
     .filter((key) => values?.study_modules?.[key])
-    .map((id) => ({ id }))
+    .map((id) => ({ id })) as
+    | CourseCreateArg["study_modules"]
+    | CourseUpsertArg["study_modules"]
 
   const course_tags = values?.tags?.map((tag) => {
     return {

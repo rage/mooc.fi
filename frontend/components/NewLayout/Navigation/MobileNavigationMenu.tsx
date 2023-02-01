@@ -8,7 +8,6 @@ import React, {
   useState,
 } from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
@@ -35,13 +34,15 @@ import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const MobileMenuContainer = styled("div")`
+const MobileMenuContainer = styled("div")(
+  ({ theme }) => `
   display: flex;
   justify-content: flex-end;
-  @media (min-width: 600px) {
+  ${theme.breakpoints.up("sm")} {
     display: none;
   }
-`
+`,
+)
 
 interface MobileMenuItemProps {
   Icon: typeof SvgIcon
@@ -51,6 +52,7 @@ interface MobileMenuItemProps {
   [key: string]: any
 }
 
+// TODO: check if necessary and remove if it isn't
 const MobileMenuItemLink = forwardRef<HTMLLIElement, MobileMenuItemProps>(
   (
     {
@@ -63,11 +65,9 @@ const MobileMenuItemLink = forwardRef<HTMLLIElement, MobileMenuItemProps>(
   ) => {
     if (href) {
       return (
-        <Link href={href} passHref {...props}>
-          <MenuItem onClick={onClick} ref={ref}>
-            {children}
-          </MenuItem>
-        </Link>
+        <MenuItem href={href} onClick={onClick} ref={ref} {...props}>
+          {children}
+        </MenuItem>
       )
     }
     return (
@@ -190,16 +190,24 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
       )
     } else {
       items.push(
-        <Link href="/_new/sign-in" passHref key="menu-login">
-          <MenuItem onClick={onClose} title={t("loginShort")}>
+        <>
+          <MenuItem
+            href="/_new/sign-in"
+            key="menu-login"
+            onClick={onClose}
+            title={t("loginShort")}
+          >
             {t("loginShort")}
           </MenuItem>
-        </Link>,
-        <Link href="/_new/sign-up" prefetch={false} passHref key="menu-signup">
-          <MenuItem onClick={onClose} title={t("signUp")}>
+          <MenuItem
+            href="/_new/sign-up"
+            key="menu-signup"
+            onClick={onClose}
+            title={t("signUp")}
+          >
             {t("signUp")}
           </MenuItem>
-        </Link>,
+        </>,
       )
     }
 

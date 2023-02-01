@@ -26,6 +26,7 @@ const ModuleList = styled("ul")`
   justify-content: center;
   flex: 1;
   width: 100%;
+  z-index: 0;
 `
 
 export function StudyModuleList() {

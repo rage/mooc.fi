@@ -20,7 +20,7 @@ import {
 
 const PointsListItemCardContainer = styled(Grid)`
   background-color: white;
-  margin: 1rem;
+  width: 100%;
   padding: 1rem;
 `
 

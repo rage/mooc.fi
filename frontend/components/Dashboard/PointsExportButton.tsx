@@ -1,6 +1,4 @@
-import { useState } from "react"
-
-import { utils, writeFile, type WorkBook } from "xlsx"
+import { useCallback, useState } from "react"
 
 import { ApolloClient, useApolloClient } from "@apollo/client"
 import { styled } from "@mui/material/styles"
@@ -26,33 +24,38 @@ function PointsExportButton(props: PointsExportButtonProps) {
 
   const [infotext, setInfotext] = useState("")
 
+  const onExportClick = useCallback(async () => {
+    try {
+      const { utils, writeFile } = await import("xlsx").then((p) => p)
+      setInfotext("Downloading data")
+      const data = await downloadInChunks(slug, client, setInfotext)
+      setInfotext("constructing csv")
+      const objects = await flatten(data)
+      console.log(data)
+      console.log(objects)
+      const sheet = utils.json_to_sheet(objects)
+      console.log("sheet", sheet)
+      const workbook = {
+        SheetNames: [],
+        Sheets: {},
+      }
+      utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
+      await writeFile(workbook, slug + "-points.csv", {
+        bookType: "csv",
+        type: "string",
+      })
+      setInfotext("ready")
+    } catch (e) {
+      setInfotext(`Error: ${e}`)
+    }
+  }, [slug, client])
+
   return (
     <PointsExportButtonContainer>
       <StyledButton
         color="secondary"
-        disabled={!(infotext == "" || infotext == "ready")}
-        onClick={async () => {
-          try {
-            setInfotext("Downloading data")
-            const data = await downloadInChunks(slug, client, setInfotext)
-            setInfotext("constructing csv")
-            const objects = await flatten(data)
-            console.log(data)
-            console.log(objects)
-            const sheet = utils.json_to_sheet(objects)
-            console.log("sheet", sheet)
-            const workbook: WorkBook = {
-              SheetNames: [],
-              Sheets: {},
-            }
-            utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
-            await writeFile(workbook, slug + "-points.csv"),
-              { bookType: "csv", type: "string" }
-            setInfotext("ready")
-          } catch (e) {
-            setInfotext(`Error: ${e}`)
-          }
-        }}
+        disabled={!(!infotext || infotext == "ready")}
+        onClick={onExportClick}
       >
         Export
       </StyledButton>
@@ -114,7 +117,7 @@ async function downloadInChunks(
   // let after: string | undefined = undefined
   let skip = 0
 
-  while (1 === 1) {
+  while (true) {
     const { data } = await client.query({
       query: ExportUserCourseProgressesDocument,
       variables: {

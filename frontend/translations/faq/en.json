@@ -1,4 +1,5 @@
 {
   "title": "Frequently asked questions",
-  "unknownTopic": "Unknown topic: {{topic}}"
+  "unknownTopic": "Unknown topic: {{topic}}",
+  "error": "Error"
 }

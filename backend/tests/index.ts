@@ -1,15 +1,16 @@
 import { Server } from "http"
 
-import type { ApolloServer } from "apollo-server-express"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { knex, Knex } from "knex"
 import { nanoid } from "nanoid"
 import winston from "winston"
 
+import type { ApolloServer } from "@apollo/server"
 import { PrismaClient, User } from "@prisma/client"
 
 import { DATABASE_URL, DB_USER, DEBUG, EXTENSION_PATH } from "../config"
+import { ServerContext } from "../context"
 import binPrisma from "../prisma"
 import server from "../server"
 import { fail } from "./util"
@@ -86,7 +87,7 @@ const wait = async (time: number) =>
   new Promise((resolve) => setTimeout(resolve, time))
 
 function createTestContext(testContext: TestContext) {
-  let apolloInstance: ApolloServer | null = null
+  let apolloInstance: ApolloServer<ServerContext> | null = null
   let serverInstance: Server | null = null
   let port: number | null = null
 
@@ -96,7 +97,7 @@ function createTestContext(testContext: TestContext) {
     async before() {
       const { prisma, knexClient } = await prismaCtx.before()
 
-      const { apollo, app } = await server({
+      const { apolloServer, httpServer } = await server({
         prisma,
         knex: knexClient,
         logger: testContext.logger,
@@ -104,14 +105,18 @@ function createTestContext(testContext: TestContext) {
           version: version++,
         },
       })
-      apolloInstance = apollo
+      apolloInstance = apolloServer
 
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 4999) })
-          serverInstance = app.listen(port).on("error", (err) => {
-            throw err
-          })
+          serverInstance = await new Promise((resolve) =>
+            httpServer
+              .listen(port, () => resolve(httpServer))
+              .on("error", (err) => {
+                throw err
+              }),
+          )
           DEBUG && console.log(`got port ${port}`)
 
           return {

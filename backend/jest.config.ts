@@ -1,11 +1,11 @@
-import type { Config } from "jest"
+import type { JestConfigWithTsJest } from "ts-jest/dist/types"
 
 /*
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/en/configuration.html
  */
 
-const config: Config = {
+const config: JestConfigWithTsJest = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 

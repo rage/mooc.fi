@@ -58,7 +58,8 @@ const Container = styled("div")`
   padding: 1rem;
 `
 
-const CardContainer = styled("ul")`
+const CardContainer = styled("ul")(
+  ({ theme }) => `
   list-style: none;
   padding: 0;
   display: grid;
@@ -66,10 +67,11 @@ const CardContainer = styled("ul")`
   grid-template-columns: 1fr 1fr;
   margin-top: 0;
 
-  @media (max-width: 800px) {
+  ${theme.breakpoints.up("md")} {
     grid-template-columns: 1fr;
   }
-`
+`,
+)
 
 const FiltersContainer = styled("div")`
   background: #f5f6f7;

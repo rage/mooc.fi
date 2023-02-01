@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 
-import { UserInputError } from "apollo-server-express"
 import {
   arg,
   booleanArg,
@@ -16,6 +15,7 @@ import {
 
 import { isAdmin, Role } from "../accessControl"
 import { Context } from "../context"
+import { GraphQLUserInputError } from "../lib/errors"
 import { filterNull } from "../util/db-functions"
 
 export const Organization = objectType({
@@ -94,7 +94,7 @@ export const OrganizationQueries = extendType({
         const { id, hidden } = args
 
         if (!id) {
-          throw new UserInputError("must provide id")
+          throw new GraphQLUserInputError("must provide id")
         }
 
         return ctx.prisma.organization.findFirst({

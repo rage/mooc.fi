@@ -2,10 +2,10 @@ import { Prisma } from "@prisma/client"
 
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
+import { TMCError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { TMCError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const tmc = new TmcClient()
 
@@ -28,21 +28,21 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   const details = {
     slug: org.slug,
     verified_at: org.verified_at,
-    verified: org.verified || false,
-    disabled: org.disabled || false,
+    verified: org.verified ?? false,
+    disabled: org.disabled ?? false,
     tmc_created_at: org.created_at,
     tmc_updated_at: org.updated_at,
-    hidden: org.hidden || false,
+    hidden: org.hidden ?? false,
     creator: user !== null ? { connect: { id: user.id } } : undefined,
     logo_file_name: org.logo_file_name,
     logo_content_type: org.logo_content_type,
-    logo_file_size: parseInt(org.logo_file_size ?? "") || undefined,
+    logo_file_size: parseInt(org.logo_file_size ?? "") ?? undefined,
     logo_updated_at: org.logo_updated_at,
     phone: org.phone,
     contact_information: org.contact_information,
     email: org.email,
     website: org.website,
-    pinned: org.pinned || false,
+    pinned: org.pinned ?? false,
   }
 
   const existingOrganizations = await prisma.organization.findMany({

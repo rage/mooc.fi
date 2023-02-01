@@ -1,14 +1,19 @@
-import Link from "next/link"
+import Image from "next/image"
 
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import EditIcon from "@mui/icons-material/Edit"
-import { Grid, Skeleton, Typography } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import {
+  BoxProps,
+  Grid,
+  Skeleton,
+  Typography,
+  TypographyProps,
+} from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import { mime } from "/util/imageUtils"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
@@ -21,7 +26,7 @@ const Base = styled(ClickableDiv)`
   }
 `
 
-const ImageBackground = styled("span")`
+const ImageBackgroundBase = css`
   position: absolute;
   left: 0;
   right: 0;
@@ -29,6 +34,15 @@ const ImageBackground = styled("span")`
   bottom: 0;
   background-size: cover;
   background-position: center 40%;
+`
+
+const ImageBackground = styled(Image)`
+  ${ImageBackgroundBase};
+  object-fit: cover;
+`
+
+const ImageBackgroundSkeleton = styled("span")`
+  ${ImageBackgroundBase}
 `
 
 const IconBackground = styled("span")`
@@ -62,7 +76,7 @@ const ContentArea = styled("span")`
   padding-top: 1em;
 `
 
-const NaviCardTitle = styled(Typography)`
+const NaviCardTitle = styled(Typography)<TypographyProps & BoxProps>`
   margin-bottom: 1rem;
   margin-left: 1rem;
   max-width: 60%;
@@ -90,24 +104,24 @@ interface ModuleCardProps {
 function ModuleCard({ module, loading }: ModuleCardProps) {
   const imageUrl = module
     ? module.image
-      ? `../../../static/images/${module.image}`
-      : `../../../static/images/${module.slug}.jpg`
+      ? `/images/modules/${module.image}`
+      : `/images/modules/${module.slug}.jpg`
     : "" // TODO: placeholder
+  const moduleFound = !loading && module
+  const moduleNotFound = !loading && !module
 
   return (
     <Grid item xs={12} sm={6} lg={6}>
       <Base>
-        {loading ? (
-          <ImageBackground>
+        {loading && (
+          <ImageBackgroundSkeleton>
             <Skeleton variant="rectangular" height="100%" />
-          </ImageBackground>
-        ) : module ? (
-          <picture>
-            <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-            <source srcSet={imageUrl} type={mime(imageUrl)} />
-            <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
-          </picture>
-        ) : (
+          </ImageBackgroundSkeleton>
+        )}
+        {moduleFound && (
+          <ImageBackground src={imageUrl} alt="" aria-hidden="true" fill />
+        )}
+        {moduleNotFound && (
           <IconBackground>
             <AddCircleIcon
               style={{
@@ -130,7 +144,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </NaviCardTitle>
           )}
 
-          {loading ? (
+          {loading && (
             <ButtonWithPaddingAndMargin
               variant="text"
               color="secondary"
@@ -138,34 +152,30 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             >
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
-          ) : module ? (
-            <Link href={`/study-modules/${module.slug}/edit`} passHref>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a aria-label={`Edit study module ${module.name}`}>
-                <ButtonWithPaddingAndMargin
-                  variant="text"
-                  color="secondary"
-                  style={{ width: "68%" }}
-                >
-                  <EditIcon />
-                  Edit
-                </ButtonWithPaddingAndMargin>
-              </a>
-            </Link>
-          ) : (
-            <Link href={`/study-modules/new`} passHref>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a aria-label="Create new study module">
-                <ButtonWithPaddingAndMargin
-                  variant="text"
-                  color="secondary"
-                  style={{ width: "68%" }}
-                >
-                  <AddIcon />
-                  Create
-                </ButtonWithPaddingAndMargin>
-              </a>
-            </Link>
+          )}
+          {moduleFound && (
+            <ButtonWithPaddingAndMargin
+              href={`/study-modules/${module.slug}/edit`}
+              aria-label={`Edit study module ${module.name}`}
+              variant="text"
+              color="secondary"
+              style={{ width: "68%" }}
+            >
+              <EditIcon />
+              Edit
+            </ButtonWithPaddingAndMargin>
+          )}
+          {moduleNotFound && (
+            <ButtonWithPaddingAndMargin
+              href={`/study-modules/new`}
+              aria-label="Create new study module"
+              variant="text"
+              color="secondary"
+              style={{ width: "68%" }}
+            >
+              <AddIcon />
+              Create
+            </ButtonWithPaddingAndMargin>
           )}
         </ContentArea>
       </Base>

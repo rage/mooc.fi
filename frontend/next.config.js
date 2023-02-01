@@ -1,16 +1,49 @@
-const withPlugins = require("next-compose-plugins")
-const withFonts = require("next-fonts")
-const withOptimizedImages = require("next-optimized-images")
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+// @ts-check
+/**
+ * @typedef {import('next').NextConfig} NextConfig
+ * @typedef {((config?: NextConfig) => NextConfig) | ((config: NextConfig) => NextConfig)} NextPlugin
+ */
+/*const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
-})
+})*/
+/** @type {NextPlugin} */
+let withStatoscope
+
+if (process.env.ANALYZE === "true") {
+  withStatoscope = require("next-statoscope")({
+    enabled: true,
+    saveOnlyStats: false,
+    watchMode: false,
+    additionalStats: [],
+    open: "file",
+    compressor: "gzip",
+    extensions: [],
+    statsOptions: {
+      source: true,
+    },
+  })
+}
+/** @type {NextPlugin} */
 const withMDX = require("@next/mdx")({
   extension: /\.mdx?$/,
+  options: {
+    providerImportSource: "@mdx-js/react",
+  },
 })
 
+/**
+ * @type NextConfig}
+ */
 const nextConfiguration = {
+  reactStrictMode: true,
   images: {
-    disableStaticImages: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.mooc.fi",
+        pathname: "/**",
+      },
+    ],
   },
   publicRuntimeConfig: {
     localeSubpaths:
@@ -24,12 +57,11 @@ const nextConfiguration = {
     defaultLocale: "fi",
   },
   compiler: {
-    // enabling emotion here will allow for components to be used as selectors
-    // ie. assuming there's a Card component we can do styled.div`${Card} + ${Card} { padding-top: 0.5rem; }`
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
+      // autoLabel: "never",
       autoLabel: "dev-only",
-      labelFormat: "[dirname]-[filename]-[local]",
+      // labelFormat: "[dirname]--[filename]--[local]",
       importMap: {
         "@mui/system": {
           styled: {
@@ -46,37 +78,53 @@ const nextConfiguration = {
       },
     },
   },
-  experimental: {
-    modularizeImports: {
-      "@mui/icons-material": {
-        transform: "@mui/icons-material/{{member}}",
-      },
-      "@mui/material": {
-        transform: "@mui/material/{{member}}",
-      },
-      lodash: {
-        transform: "lodash/{{member}}",
-      },
-      "@fortawesome/free-brands-svg-icons": {
-        transform: "@fortawesome/free-brands-svg-icons/{{member}}",
-      },
-      "@fortawesome/free-solid-svg-icons": {
-        transform: "@fortawesome/free-solid-svg-icons/{{member}}",
-      },
+  modularizeImports: {
+    "@mui/material": {
+      transform: "@mui/material/{{member}}",
+    },
+    "@mui/icons-material/?(((\\w*)?/?)*)": {
+      transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
+    },
+    lodash: {
+      transform: "lodash/{{member}}",
+    },
+    "@fortawesome/free-brands-svg-icons": {
+      transform: "@fortawesome/free-brands-svg-icons/{{member}}",
+    },
+    "@fortawesome/free-solid-svg-icons": {
+      transform: "@fortawesome/free-solid-svg-icons/{{member}}",
     },
   },
   webpack: (config) => {
-    const found = config.module.rules?.findIndex((rule) =>
-      rule.test?.exec("u.svg"),
+    /*config.module.rules.push({
+      test: /\.svg$/, // (svg|png|jpeg|jpg|gif|webp)
+      type: "asset",
+    })*/
+    /*config.module.rules.push({
+      test: /\.(png|jpg|gif|webp)$/,
+      exclude: ["/public/images/originals/", "/public/images/courseimages/"],
+    })*/
+    const found = config.module.rules?.findIndex((/** @type {any} */ rule) =>
+      rule.test?.exec?.("u.svg"),
     )
-    // remove the original svg rule but store the one variation with no resourcequery to load svg files
+    /*const foundOneOf = config.module.rules?.findIndex((rule) => {
+      if (!rule.oneOf) {
+        return false
+      }
+
+      const hasOneOfRule = rule.oneOf.some((r) => r.test?.exec?.("u.svg"))
+
+      return hasOneOfRule
+    })*/
+
     let originalRule
-    if (config.module.rules?.[found]) {
-      config.module.rules[found].test = /\.(jpe?g|png|gif)$/i
-      originalRule = config.module.rules[found].oneOf.find(
-        (rule) => !rule.resourceQuery,
-      )
+    if (found >= 0) {
+      config.module.rules[found].test =
+        /\.(png|jpg|jpeg|gif|webp|avif|ico|bmp)$/i
+      originalRule = config.module.rules[found]
     }
+    // lacks the case that the rule is in oneOf
+    // -- in this case we also need to check that the rule _doesn't_ have a resourceQuery
 
     config.module.rules.push({
       test: /\.svg$/,
@@ -102,42 +150,46 @@ const nextConfiguration = {
       })
     }
 
+    /*config.module.rules.push({
+      test: /\.svg/,
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: /component/,
+      // include: [options.dir],
+      use: [
+        "next-swc-loader",
+        {
+          loader: "@svgr/webpack",
+          options: { babel: false },
+        },
+      ],
+    })*/
+
     return config
   },
+  // swcMinify: false
 }
 
-module.exports = withPlugins(
-  [
-    withFonts,
-    [
-      withOptimizedImages,
-      {
-        handleImages: ["jpeg", "png", "svg", "webp", "gif"],
-        overwriteImageLoaderPaths: require.resolve.paths("")[0],
-        optimizeImages: true,
-        optimizeImagesInDev: true,
-        webp: {
-          preset: "default",
-          quality: 75,
-        },
-        inlineImageLimit: -1,
-        responsive: {
-          adapter: require("responsive-loader/sharp"),
-          sizes: [320, 640, 960, 1200, 1800, 2400],
-          placeholder: true,
-          placeholderSize: 50,
-          optimizeImagesInDev: true,
-        },
-      },
-    ],
-    withBundleAnalyzer,
-    // withCSS,
-    [
-      withMDX,
-      {
-        pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
-      },
-    ],
-  ],
-  nextConfiguration,
-)
+module.exports = () => {
+  /**
+   * @type {Array<(
+   *  NextPlugin |
+   *   [NextPlugin, NextConfig]
+   * )>}
+   */
+  const plugins = []
+
+  if (withStatoscope) {
+    plugins.push(withStatoscope)
+  }
+  plugins.push([
+    withMDX,
+    { pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"] },
+  ])
+
+  return plugins.reduce((acc, next) => {
+    if (Array.isArray(next)) {
+      return next[0]({ ...acc, ...next[1] })
+    }
+    return next(acc)
+  }, nextConfiguration)
+}

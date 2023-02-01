@@ -1,7 +1,7 @@
-import { UserInputError } from "apollo-server-express"
 import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const UserCourseServiceProgress = objectType({
   name: "UserCourseServiceProgress",
@@ -66,7 +66,7 @@ export const UserCourseServiceProgressQueries = extendType({
           })
         }
         if (!baseQuery) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "provide at least one of user_id, course_id, service_id",
           )
         }

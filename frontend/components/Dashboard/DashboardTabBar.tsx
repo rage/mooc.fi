@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react"
+import { SyntheticEvent, useCallback, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -6,10 +6,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
 import ViewListIcon from "@mui/icons-material/ViewList"
-import AppBar from "@mui/material/AppBar"
+import { AppBar, Tab, Tabs } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Tab from "@mui/material/Tab"
-import Tabs from "@mui/material/Tabs"
 
 const TabBarContainer = styled("div")`
   flex-grow: 1;
@@ -19,13 +17,6 @@ const TabBarContainer = styled("div")`
 const StyledTabs = styled(Tabs)`
   box-shadow: 0 0 0 0;
 `
-
-function a11yProps(index: any) {
-  return {
-    id: `nav-tab-${index}`,
-    "aria-controls": `nav-tabpanel-${index}`,
-  }
-}
 
 const TabContainer = styled("div")`
   width: 100%;
@@ -39,7 +30,7 @@ const TabBar = styled(AppBar)`
 
 const StyledTab = styled(Tab)`
   margin-top: 1rem;
-`
+` as typeof Tab
 
 interface DashboardTabsProps {
   slug: string
@@ -75,15 +66,18 @@ const routes: Route[] = [
   },
 ]
 
-export default function DashboardTabBar(props: DashboardTabsProps) {
+function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
   const [value, setValue] = useState(selectedValue)
   const router = useRouter()
 
-  function handleChange(_: SyntheticEvent<Element, Event>, newValue: number) {
-    setValue(newValue)
-    router.push(`/courses/${slug}${routes[newValue].path}`)
-  }
+  const handleChange = useCallback(
+    (_: SyntheticEvent<Element, Event>, newValue: number) => {
+      setValue(newValue)
+      router.push(`/courses/${slug}${routes[newValue].path}`)
+    },
+    [slug, router],
+  )
 
   return (
     <TabBarContainer>
@@ -93,16 +87,18 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
             variant="fullWidth"
             value={value}
             onChange={handleChange}
+            textColor="inherit"
             indicatorColor="secondary"
             aria-label="course dashboard navi"
           >
             {routes.map(({ label, icon }, index) => (
               <StyledTab
-                key={index}
+                key={label}
                 value={index}
                 label={label}
                 icon={icon}
-                {...a11yProps(index)}
+                id={`nav-tab-${index}`}
+                aria-controls={`nav-tabpanel-${index}`}
               />
             ))}
           </StyledTabs>
@@ -111,3 +107,5 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
     </TabBarContainer>
   )
 }
+
+export default DashboardTabBar

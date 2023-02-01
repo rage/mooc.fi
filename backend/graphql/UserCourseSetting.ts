@@ -1,4 +1,3 @@
-import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { pick } from "lodash"
 import {
   extendType,
@@ -12,6 +11,7 @@ import {
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { buildUserSearch } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
 
@@ -75,7 +75,7 @@ export const UserCourseSettingQueries = extendType({
           settingsData?.user_course_settings?.[0]
 
         if (!result) {
-          throw new UserInputError("Not found")
+          throw new GraphQLUserInputError("Not found")
         }
         return result
       },
@@ -185,7 +185,7 @@ export const UserCourseSettingQueries = extendType({
           (first ?? 0) > 50 ||
           (last ?? 0) > 50
         ) {
-          throw new ForbiddenError("Cannot query more than 50 objects")
+          throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
       },
       authorize: isAdmin,
@@ -205,7 +205,7 @@ export const UserCourseSettingQueries = extendType({
         }
 
         if (!course_id && !user_id && !user_upstream_id) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "Needs at least one of course_id, user_id or user_upstream_id",
           )
         }

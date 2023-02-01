@@ -1,5 +1,4 @@
 // import { convertPagination } from "../../util/db-functions"
-import { ForbiddenError } from "apollo-server-express"
 import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
@@ -7,6 +6,7 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
+import { GraphQLForbiddenError } from "../../lib/errors"
 import { buildUserSearch, getCourseOrAlias } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
@@ -76,7 +76,7 @@ export const CompletionQueries = extendType({
         const { course: slug } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
-          throw new ForbiddenError("Cannot query more than 50 objects")
+          throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
 
         const course = await getCourseOrAlias(ctx)({ where: { slug } })

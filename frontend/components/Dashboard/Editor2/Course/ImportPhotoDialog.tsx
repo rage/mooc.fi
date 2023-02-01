@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
+import { useCallback, useMemo } from "react"
 
+import Image from "next/image"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -31,6 +32,7 @@ const ImageContainer = styled("div")`
   justify-content: center;
   border-width: 2px;
   border-radius: 4px;
+  position: relative;
 `
 
 const ImagePlaceholder = styled("div")`
@@ -45,73 +47,74 @@ interface ImportPhotoDialogProps {
   onClose: () => void
 }
 
-export default function ImportPhotoDialog({
+function ImportPhotoDialog({
   open,
   onClose,
   courses = [],
 }: ImportPhotoDialogProps) {
   const { setValue, getValues, watch } = useFormContext()
-  const [selected, setSelected] =
-    useState<EditorCourseOtherCoursesFieldsFragment | null>(null)
   const t = useTranslator(CoursesTranslations)
 
-  const fetchBase64 = (photo: ImageCoreFieldsFragment, filename: string) => {
-    fetch(filename, {
-      mode: "no-cors",
-      cache: "no-cache",
-      headers: { Origin: "https://www.mooc.fi" },
-    })
-      .then((res) => res.blob())
-      .then((blob) => {
-        const file = new File([blob], photo?.name ?? "", {
+  const fetchBase64 = useCallback(
+    (photo: ImageCoreFieldsFragment, filename: string) => {
+      fetch(filename, {
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: { Origin: "https://www.mooc.fi" },
+      })
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], photo?.name ?? "", {
+            type: photo?.original_mimetype ?? "image/png",
+          })
+          setValue("new_photo", file)
+        })
+    },
+    [setValue],
+  )
+
+  const fetchURL = useCallback(
+    (photo: ImageCoreFieldsFragment, filename: string) => {
+      const req = new XMLHttpRequest()
+      req.open("GET", filename, true)
+      req.responseType = "blob"
+      req.onload = () => {
+        const file = new File([req.response], photo?.name ?? "", {
           type: photo?.original_mimetype ?? "image/png",
         })
         setValue("new_photo", file)
-      })
-  }
-
-  const fetchURL = (photo: ImageCoreFieldsFragment, filename: string) => {
-    const req = new XMLHttpRequest()
-    req.open("GET", filename, true)
-    req.responseType = "blob"
-    req.onload = () => {
-      const file = new File([req.response], photo?.name ?? "", {
-        type: photo?.original_mimetype ?? "image/png",
-      })
-      setValue("new_photo", file)
-    }
-    req.send()
-  }
+      }
+      req.send()
+    },
+    [setValue],
+  )
 
   const photo = watch("import_photo")
 
-  const handleSelection = () => {
-    const photo = courses?.find(
-      (course) => course.id === getValues("import_photo"),
-    )?.photo
+  const handleSelection = useCallback(() => {
+    const selectedPhoto = courses?.find((course) => course.id === photo)?.photo
 
-    if (!photo) {
+    if (!selectedPhoto) {
       return
     }
 
-    const base64 = photo?.original?.startsWith("data") ?? false
-    setValue("thumbnail", photo?.compressed)
+    const base64 = selectedPhoto?.original?.startsWith("data") ?? false
+    setValue("thumbnail", selectedPhoto?.compressed)
     const filename =
-      (base64 ? photo?.original : addDomain(photo?.original)) ?? ""
+      (base64 ? selectedPhoto?.original : addDomain(selectedPhoto?.original)) ??
+      ""
     if (base64) {
-      fetchBase64(photo, filename)
+      fetchBase64(selectedPhoto, filename)
     } else {
-      fetchURL(photo, filename)
+      fetchURL(selectedPhoto, filename)
     }
     onClose()
-  }
+  }, [photo, courses, getValues, onClose, setValue, watch])
 
-  useEffect(() => {
-    const _selected =
-      courses?.find((course) => course.id === getValues("import_photo")) ?? null
-
-    setSelected(_selected)
-  }, [photo])
+  const selected = useMemo(
+    () => courses?.find((course) => course.id === photo) ?? null,
+    [courses, photo],
+  )
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -125,10 +128,11 @@ export default function ImportPhotoDialog({
         />
         <ImageContainer>
           {selected ? (
-            <img
+            <Image
               src={addDomain(selected.photo?.compressed)}
               alt={selected.photo?.name ?? "selected image"}
-              height="200"
+              style={{ objectFit: "contain" }}
+              fill
             />
           ) : (
             <ImagePlaceholder />
@@ -146,3 +150,5 @@ export default function ImportPhotoDialog({
     </Dialog>
   )
 }
+
+export default ImportPhotoDialog

@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -12,19 +11,21 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { StudyModulesDocument } from "/graphql/generated"
 
 // @ts-ignore: not used?
-const ModulesGrid = styled("div")`
+const ModulesGrid = styled("div")(
+  ({ theme }) => `
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   padding: 2rem;
   justify-content: center;
   width: 80%;
-  @media (max-width: 500px) {
+  ${theme.breakpoints.down("sm")}} {
     padding: 0;
     width: 100%;
     grid-template-columns: 1fr;
   }
-`
+`,
+)
 
 /*const ShowMore = styled(Button)`
   --color: #eee;
@@ -101,9 +102,7 @@ export function ModuleNavigation() {
     <SectionContainer id="modules">
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
-      <Link href="/_new/study-modules" passHref>
-        <Button>Näytä kaikki kokonaisuudet</Button>
-      </Link>
+      <Button href="/_new/study-modules">Näytä kaikki kokonaisuudet</Button>
     </SectionContainer>
   )
 }

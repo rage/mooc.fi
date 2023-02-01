@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 import { Clear, Search } from "@mui/icons-material"
 import {
@@ -102,7 +102,7 @@ interface FilterProps {
   label?: string
 }
 
-export default function FilterMenu({
+function FilterMenu({
   searchVariables,
   setSearchVariables,
   loading,
@@ -135,23 +135,23 @@ export default function FilterMenu({
 
   useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])*/
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     setSearchVariables({
       ...searchVariables,
       search,
       hidden,
       handledBy,
     })
-  }
+  }, [searchVariables, search, hidden, handledBy])
 
-  const handleStatusChange =
+  const handleStatusChange = useCallback(
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newStatus = (
         e.target.checked
-          ? [...(searchVariables?.status || []), value]
+          ? [...(searchVariables?.status ?? []), value]
           : (searchVariables?.status as CourseStatus[])?.filter(
               (v) => v !== value,
-            ) || []
+            ) ?? []
       ) as CourseStatus[]
 
       setStatus(newStatus)
@@ -159,23 +159,60 @@ export default function FilterMenu({
         ...searchVariables,
         status: newStatus,
       })
-    }
+    },
+    [searchVariables],
+  )
 
-  const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHidden(e.target.checked)
-    setSearchVariables({
-      ...searchVariables,
-      hidden: e.target.checked,
-    })
-  }
+  const handleHiddenChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setHidden(e.target.checked)
+      setSearchVariables({
+        ...searchVariables,
+        hidden: e.target.checked,
+      })
+    },
+    [searchVariables],
+  )
 
-  const handleHandledByChange = (e: SelectChangeEvent<string>) => {
-    setHandledBy(e.target.value)
+  const handleHandledByChange = useCallback(
+    (e: SelectChangeEvent<string>) => {
+      setHandledBy(e.target.value)
+      setSearchVariables({
+        ...searchVariables,
+        handledBy: e.target.value,
+      })
+    },
+    [searchVariables],
+  )
+
+  const onSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value)
+    },
+    [],
+  )
+  const onSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        onSubmit()
+      }
+    },
+    [],
+  )
+  const onSearchReset = useCallback(() => {
+    setSearch("")
+  }, [])
+  const onFormReset = useCallback(() => {
+    setHidden(true)
+    setHandledBy("")
+    setStatus([CourseStatus.Active, CourseStatus.Upcoming])
     setSearchVariables({
-      ...searchVariables,
-      handledBy: e.target.value,
+      search: "",
+      hidden: true,
+      handledBy: null,
+      status: [CourseStatus.Active, CourseStatus.Upcoming],
     })
-  }
+  }, [])
 
   return (
     <Container>
@@ -186,17 +223,13 @@ export default function FilterMenu({
           value={search}
           autoComplete="off"
           variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
-          }
-          onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+          onChange={onSearchChange}
+          onKeyDown={onSearchKeyDown}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => {
-                    setSearch("")
-                  }}
+                  onClick={onSearchReset}
                   disabled={search === ""}
                   edge="end"
                   aria-label="clear search"
@@ -286,17 +319,7 @@ export default function FilterMenu({
           disabled={loading}
           color="secondary"
           variant="contained"
-          onClick={() => {
-            setHidden(true)
-            setHandledBy("")
-            setStatus([CourseStatus.Active, CourseStatus.Upcoming])
-            setSearchVariables({
-              search: "",
-              hidden: true,
-              handledBy: null,
-              status: [CourseStatus.Active, CourseStatus.Upcoming],
-            })
-          }}
+          onClick={onFormReset}
         >
           {t("reset")}
         </Button>
@@ -304,3 +327,5 @@ export default function FilterMenu({
     </Container>
   )
 }
+
+export default FilterMenu

@@ -1,22 +1,27 @@
+import { useCallback } from "react"
+
 import { useRouter } from "next/router"
 
-import Alert from "@mui/material/Alert"
-import AlertTitle from "@mui/material/AlertTitle"
+import { Alert, AlertTitle } from "@mui/material"
 
-import { useAlertContext } from "/contexts/AlertContext"
+import { Alert as AlertType, useAlertContext } from "/contexts/AlertContext"
 
 const Alerts = () => {
   const { alerts, removeAlert } = useAlertContext()
   const router = useRouter()
+  const onRemoveAlert = useCallback(
+    (alert: AlertType) => () => removeAlert(alert),
+    [],
+  )
 
   return (
     <>
       {alerts
         .filter((alert) => !alert.ignorePages?.includes(router.pathname))
-        .map((alert, idx) => (
+        .map((alert) => (
           <Alert
-            key={`alert-${idx}`}
-            onClose={() => removeAlert(alert)}
+            key={`alert-${alert.id}`}
+            onClose={onRemoveAlert(alert)}
             severity={alert.severity ?? "info"}
           >
             {alert.title ? <AlertTitle>{alert.title}</AlertTitle> : null}

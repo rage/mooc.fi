@@ -1,12 +1,12 @@
 import nock from "nock"
 
+import { TMCError } from "../../lib/errors"
 import {
   fakeGetAccessToken,
   fakeUserDetailReply,
   getTestContext,
 } from "../../tests"
 import { seed } from "../../tests/data"
-import { TMCError } from "../lib/errors"
 import {
   Change,
   deleteUsers,

@@ -7,11 +7,7 @@ import {
 } from "react"
 
 import { omit } from "lodash"
-import {
-  FieldValues,
-  ResolverOptions,
-  UnpackNestedValue,
-} from "react-hook-form"
+import { FieldValues, Resolver, ResolverOptions } from "react-hook-form"
 import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -37,7 +33,7 @@ export const FormFieldGroup = styled("div")`
   border-bottom: 4px dotted #98b0a9;
 `
 
-export const AdjustingAnchorLink = styled("a")<{ id: string }>`
+export const AdjustingAnchorLink = styled("div")<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;
@@ -47,6 +43,8 @@ export const AdjustingAnchorLink = styled("a")<{ id: string }>`
 export const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
 `
+
+export const Anchor = styled("div")``
 
 interface EnumeratingAnchorProps {
   id: string
@@ -94,17 +92,17 @@ export const useTabContext = () => {
   return useContext(TabContext)
 }
 
-export function customValidationResolver<
+export function useCustomValidationResolver<
   TFieldValues extends FieldValues,
-  TContext = undefined,
->(schema: Yup.AnyObjectSchema) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  TSchema extends Yup.AnyObjectSchema = Yup.AnyObjectSchema,
+  TContext = any,
+>(schema: TSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
     async (
-      values: UnpackNestedValue<TFieldValues>,
-      context: TContext,
+      values: TFieldValues,
+      context: TContext | undefined,
       options: ResolverOptions<TFieldValues>,
-    ) => await yupResolver(schema)(values, { ...context, values }, options),
+    ) => yupResolver(schema)(values, { ...context, values }, options),
     [schema],
   )
 }

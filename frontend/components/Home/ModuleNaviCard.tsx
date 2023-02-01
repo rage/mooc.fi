@@ -1,6 +1,4 @@
-import Link from "next/link"
-
-import { Skeleton } from "@mui/material"
+import { ButtonBase, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ModuleImage from "/components/Home/ModuleImage"
@@ -23,12 +21,12 @@ const SkeletonBodyText = styled(Skeleton)`
   margin-top: 0.2rem;
 `
 
-const Base = styled(ClickableButtonBase)`
+const ClickableContainer = styled(ClickableButtonBase)`
   display: block;
   width: 100%;
   height: 100%;
   background-color: transparent;
-` as typeof ClickableButtonBase
+` as typeof ButtonBase
 
 const TextBackground = styled(FullCoverTextBackground)`
   width: 70%;
@@ -50,30 +48,28 @@ interface ModuleNaviCardProps {
 
 const ModuleNaviCard = ({ module }: ModuleNaviCardProps) => (
   <GridItem>
-    <Link href={`#${module?.slug ?? ""}`} passHref>
-      <Base component="div">
-        {module ? (
-          <>
-            <ModuleImage module={module} />
-            <TextBackground>
-              <CardTitle variant="h3" component="h3" align="left">
-                {module.name}
-              </CardTitle>
-              <CardText component="p" variant="body1" align="left">
-                {module.description}
-              </CardText>
-            </TextBackground>
-          </>
-        ) : (
-          <>
-            <TextBackground style={{ width: "70%" }}>
-              <SkeletonTitle width="100%" />
-              <SkeletonBodyText variant="text" />
-            </TextBackground>
-          </>
-        )}
-      </Base>
-    </Link>
+    <ClickableContainer href={`#${module?.slug ?? ""}`}>
+      {module ? (
+        <>
+          <ModuleImage module={module} />
+          <TextBackground>
+            <CardTitle variant="h3" component="h3" align="left">
+              {module.name}
+            </CardTitle>
+            <CardText component="p" variant="body1" align="left">
+              {module.description}
+            </CardText>
+          </TextBackground>
+        </>
+      ) : (
+        <>
+          <TextBackground style={{ width: "70%" }}>
+            <SkeletonTitle width="100%" />
+            <SkeletonBodyText variant="text" />
+          </TextBackground>
+        </>
+      )}
+    </ClickableContainer>
   </GridItem>
 )
 

@@ -1,10 +1,12 @@
+import Image from "next/image"
+
 import { Button, Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
-import moocLogoUrl from "/static/images/moocfi_white.svg"
-import SponsorLogo from "/static/images/new/components/courses/f-secure_logo.png"
+import moocLogo from "/public/images/moocfi_white.svg"
+import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
@@ -70,14 +72,22 @@ const ContentContainer = styled("div")`
 const Title = styled(CardTitle)`
   font-weight: bold;
   color: white;
-  font-size: 1.5rem;
   text-align: left;
   border-radius: 0.2rem;
   align-self: center;
   width: 70%;
 ` as typeof CardTitle
 
-const Sponsor = styled("img")`
+const SponsorContainer = styled("div")`
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  height: 100%;
+  width: 100%;
+`
+
+const Sponsor = styled(Image)`
+  object-fit: contain;
   max-width: 9rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
@@ -114,11 +124,12 @@ const Tag = styled(Button)`
   margin: 0 0.1rem;
 `
 
-const CardHeaderImage = styled("img")`
+const CardHeaderImage = styled(Image)`
+  object-fit: cover;
   opacity: 0.4;
   position: absolute;
-  left: 60%;
-  top: 0.5rem;
+  right: 1rem;
+  top: 1rem;
   width: 35%;
   height: auto;
   z-index: 0;
@@ -156,10 +167,13 @@ function CourseCard({ course, tags }: CourseCardProps) {
       }
     >
       <TitleContainer>
-        <Title variant="h4" component="h2">
-          {course?.name}
-        </Title>
-        <MoocfiLogo alt="MOOC logo" src={moocLogoUrl} />
+        <Title variant="h6">{course?.name}</Title>
+        <MoocfiLogo
+          alt="MOOC logo"
+          src={moocLogo.src}
+          width={105}
+          height={95}
+        />
       </TitleContainer>
       <ContentContainer>
         <Description>
@@ -201,7 +215,9 @@ function CourseCard({ course, tags }: CourseCardProps) {
             </p>
           )}
         </Schedule>
-        <Sponsor src={SponsorLogo} />
+        <SponsorContainer>
+          <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
+        </SponsorContainer>
         <Tags>
           {tags?.map((tag) => (
             <Tag
@@ -233,9 +249,7 @@ export const CourseCardSkeleton = () => (
   <SkeletonContainer>
     <TitleContainer>
       <Title>
-        <Typography variant="h4" component="h2">
-          <Skeleton width={100 + Math.random() * 100} />
-        </Typography>
+        <Skeleton width={100 + Math.random() * 100} />
       </Title>
     </TitleContainer>
     <ContentContainer>
@@ -254,7 +268,7 @@ export const CourseCardSkeleton = () => (
       <Schedule>
         <Skeleton />
       </Schedule>
-      <Sponsor />
+      <SponsorContainer />
       <Tags />
       <Skeleton />
     </ContentContainer>

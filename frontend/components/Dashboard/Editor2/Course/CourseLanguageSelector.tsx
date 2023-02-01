@@ -1,3 +1,5 @@
+import { useCallback } from "react"
+
 import { useFieldArray, useFormContext } from "react-hook-form"
 
 import { Button, ButtonGroup } from "@mui/material"
@@ -65,6 +67,36 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
 
   const t = useTranslator(CoursesTranslations)
 
+  const onSelectFinnish = useCallback(() => {
+    setSelectedLanguage(selectedLanguage === "en_US" ? "both" : "fi_FI")
+    append({ ...initialTranslation, language: "fi_FI" })
+  }, [selectedLanguage, setSelectedLanguage, append])
+  const onSelectEnglish = useCallback(() => {
+    setSelectedLanguage(selectedLanguage === "fi_FI" ? "both" : "en_US")
+    append({ ...initialTranslation, language: "en_US" })
+  }, [selectedLanguage, setSelectedLanguage, append])
+  const onSelectBoth = useCallback(() => {
+    if (selectedLanguage === "") {
+      append({
+        ...initialTranslation,
+        language: "en_US",
+      })
+      append({
+        ...initialTranslation,
+        language: "fi_FI",
+      })
+    } else if (selectedLanguage === "fi") {
+      append({ ...initialTranslation, language: "en_US" })
+    } else {
+      append({
+        ...initialTranslation,
+        language: "fi_FI",
+      })
+    }
+
+    setSelectedLanguage("both")
+  }, [selectedLanguage, setSelectedLanguage, append])
+
   return (
     <>
       <FormSubtitle variant="h6" component="h3" align="center">
@@ -77,10 +109,7 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
         disabled={selectedLanguage == "both"}
       >
         <StyledLanguageButton
-          onClick={() => {
-            setSelectedLanguage(selectedLanguage === "en_US" ? "both" : "fi_FI")
-            append({ ...initialTranslation, language: "fi_FI" })
-          }}
+          onClick={onSelectFinnish}
           disabled={
             selectedLanguage === "fi_FI" || selectedLanguage === "en_US"
           }
@@ -93,36 +122,13 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
             selectedLanguage === "en_US" || selectedLanguage === "fi_FI"
           }
           selected={selectedLanguage === "en_US"}
-          onClick={() => {
-            setSelectedLanguage(selectedLanguage === "fi_FI" ? "both" : "en_US")
-            append({ ...initialTranslation, language: "en_US" })
-          }}
+          onClick={onSelectEnglish}
         >
           {t("courseEnglish")}
         </StyledLanguageButton>
         <StyledLanguageButton
           selected={selectedLanguage === "both"}
-          onClick={() => {
-            if (selectedLanguage === "") {
-              append({
-                ...initialTranslation,
-                language: "en_US",
-              })
-              append({
-                ...initialTranslation,
-                language: "fi_FI",
-              })
-            } else if (selectedLanguage === "fi") {
-              append({ ...initialTranslation, language: "en_US" })
-            } else {
-              append({
-                ...initialTranslation,
-                language: "fi_FI",
-              })
-            }
-
-            setSelectedLanguage("both")
-          }}
+          onClick={onSelectBoth}
         >
           {t("courseBoth")}
         </StyledLanguageButton>

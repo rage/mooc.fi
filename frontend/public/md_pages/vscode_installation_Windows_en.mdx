@@ -1,0 +1,137 @@
+import {ContentBox} from "/pages/installation/[id]"
+import StartingProgrammingGuide from "/public/md_pages/ohjelmoinnin_aloittaminen_vscode_en.mdx"
+import TableOfContents from "/public/md_pages/sisallysluettelo_vscode_en.mdx"
+
+<ContentBox>
+
+## Installing to Windows
+
+---
+
+<TableOfContents />
+
+</ContentBox>
+
+
+<ContentBox>
+Follow the instructions below to download Visual Studio Code (VS Code) and TestMyCode (TMC) extension for VS Code. 
+
+You need to have administrator priviledges on your computer to install the necessary programs.  
+If you are using a computer provided by the computer science department you can skip directly to [Installing TestMyCode extension](#installing-tmc) section.
+
+###  Installing Visual Studio Code <a name="installing-vscode"></a>
+
+Please install Visual Studio Code from the link below. Visual Studio Code is not the same program as Microsoft Visual Studio.  
+
+1. Download the Windows installation file from [https://code.visualstudio.com/download](https://code.visualstudio.com/download).
+2. Once download is completed, double-click the file to open it.
+3. Follow the instructions of the installation file.
+
+### Installing TestMyCode Extension for VS Code <a name="installing-tmc"></a>
+
+1. Open Visual Studio Code.  
+2. At the left you can see icons, choose the Extension view (see picture point 1).  
+3. Type **TestMyCode** in the search field (see picture point 2).  
+4. Press the search result **TestMyCode**.
+5. Press "Install" (see picture point 3).  
+
+The first initilization of the extension will download some necessary components (this will take a while).
+<img src="/images/installation/vscode/download_extension.webp"
+alt="Installing the TMC extension for VS Code"
+width="100%" height="100%" />
+
+</ContentBox>
+
+<ContentBox>
+
+### Installing Python environment <a name="installing-python"></a>
+
+For courses using Python you will need Python and Python Extension for VS Code to run your source code.  
+Please install Python following the instructions below.
+
+#### Installing Python <a name="python3"></a>
+
+1. Go to [https://www.python.org/downloads/](https://www.python.org/downloads/)
+2. Download the latest version of Python 3.
+3. Double-click the installation file to start the installation. 
+4. Make sure you choose "Add Python 3.x to PATH" (see picture point 1).
+5. Choose "Install now" (see picture point 2).
+6. Once installation is completed, you can close the install window.
+
+<img src="/images/installation/python/install_python.webp"
+alt="Setup phase for Python - settings"
+width="100%" height="100%" />
+
+#### Installing Python Extension for VS Code <a name="python-extension"></a>
+
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Python` and select the extension by Microsoft (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+<img src="/images/installation/vscode/vscode_python_extension.webp"
+alt="Installing the Python extension for VS Code"
+width="100%" height="100%" />
+
+</ContentBox>
+
+<ContentBox>
+
+### Installing Java environment <a name="java-environment"></a>
+
+For courses using Java you will need Java Development kit & Runtime Environment, Java Extension Pack for Visual Studio Code and Maven to build and run your source code.  
+Please install Java following the instructions below.
+
+#### Installing Java <a name="adopt-open-jdk"></a>
+
+1. Download AdoptOpenJDK11, open development and runtime environment for Java 11, from [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
+2. Select OpenJDK 11 (LTS) and HotSpot. Then click "Latest release" to download Java.
+
+**NB!** When installing Java with the installation file you just downloaded, in the Custom Setup phase set both "Set JAVA_HOME variable" (pic 1, step 1) and "JavaSoft (Oracle) registry keys" (pic 2, step 2) to "Entire feature will be installed on local hard drive" (see the images below).  
+Once you have chosen these, press "Next" (pic 2, step 3).
+
+<img src="/images/installation/vscode/adoptopenjdk-set-java-home.webp"
+alt="Custom Setup phase of AdoptOpenJDK installer, where Set JAVA_HOME variable is set to Entire feature will be installed on local hard drive."
+width="100%" height="100%" />
+Picture 1
+
+<img src="/images/installation/vscode/adoptopenjdk-set-registry-keys.webp"
+alt="Custom Setup phase of AdoptOpenJDK installer, where JavaSoft (Oracle) registry keys is set to Entire feature will be installed on local hard drive. "
+width="100%" height="100%" />
+Picture 2
+
+#### Java Extension Pack for VS Code <a name="java-extension"></a>
+
+You will need Java Extension Pack for Visual Studio Code to compile and run your Java code.
+
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Java Extension Pack` (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+<img src="/images/installation/vscode/vscode_java_extension_pack.webp"
+alt="Installing the Java Extension Pack for VS Code"
+width="100%" height="100%" />
+
+
+#### Installing Maven and configuring settings <a name="maven-configuring"></a>
+
+You can install Maven by following the instructions below.  
+
+1. Download the latest Binary zip archive, `apache-maven-3.x.y-bin.zip`, from [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
+2. Extract the archive to your desired location, e.g. `C:\Program Files\`, this will create automatically a folder named `apache-maven-3.x.y`.
+3. If you installed the Java Extension Pack in VS Code, it comes with `Maven for Java`. Set Maven path in this extension as below:
+    * Open Visual Studio Code
+    * Press at top left "File -> Preferences -> Settings" or use the hotkey: `CTRL + ,`
+    * Find `maven.executable.path` (pic below 1.) and set Maven path (pic below 2.) as:  
+    `<your extracted location\apache-maven-3.x.y\bin\mvn.cmd`  
+    for example with version 3.6.3 of Maven extracted to C:\Program Files the path would be:  
+    `C:\Program Files\apache-maven-3.6.3\bin\mvn.cmd`
+
+    <img src="/images/installation/vscode/maven_executable_path.webp"
+    alt="Setting the Maven executable path"
+    width="100%" height="100%" />
+
+</ContentBox>
+
+<StartingProgrammingGuide />

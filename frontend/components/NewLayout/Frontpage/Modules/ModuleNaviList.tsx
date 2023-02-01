@@ -13,7 +13,8 @@ const Container = styled("nav")`
   width: 100%;
 `
 
-const ModulesGrid = styled("ul")`
+const ModulesGrid = styled("ul")(
+  ({ theme }) => `
   list-style: none;
   list-style-position: inside;
   padding: 0;
@@ -23,12 +24,15 @@ const ModulesGrid = styled("ul")`
   padding: 2rem;
   justify-content: center;
   width: 80%;
-  @media (max-width: 500px) {
+
+  ${theme.breakpoints.down("sm")}}} {
     padding: 0;
     width: 100%;
     grid-template-columns: 1fr;
   }
-`
+`,
+)
+
 interface ModuleNaviListProps {
   modules?: Array<StudyModuleFieldsFragment> | null
   variant?: "small" | "large"

@@ -1,7 +1,6 @@
 import { useCallback, useContext } from "react"
 
 import range from "lodash/range"
-import Link from "next/link"
 
 import {
   Button,
@@ -137,12 +136,18 @@ const RenderResults = () => {
             <TableCell align="right">{student_number}</TableCell>
             <TableCell align="right">
               <ButtonContainer>
-                <Link href={`/users/${upstream_id}/summary`} passHref>
-                  <Button variant="contained">{t("summary")}</Button>
-                </Link>
-                <Link href={`/users/${upstream_id}/completions`} passHref>
-                  <Button variant="contained">{t("completions")}</Button>
-                </Link>
+                <Button
+                  href={`/users/${upstream_id}/summary`}
+                  variant="contained"
+                >
+                  {t("summary")}
+                </Button>
+                <Button
+                  href={`/users/${upstream_id}/completions`}
+                  variant="contained"
+                >
+                  {t("completions")}
+                </Button>
               </ButtonContainer>
             </TableCell>
           </TableRow>

@@ -5,29 +5,23 @@
       "/*": [
         "./*"
       ],
-      "@static/*": [
-        "./static/*"
-      ],
       "@pages/*": [
         "pages/*"
       ],
       "@lib/*": [
-        "./lib/*"
+        "../lib/*"
       ],
       "@components/*": [
         "./components/*"
       ]
     },
-    "typeRoots": [
-      "node_modules/@types",
-      "types/"
-    ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": [
-      "dom",
-      "es2017"
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
     ],
     "module": "esnext",
     "moduleResolution": "node",
@@ -46,15 +40,27 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "maxNodeModuleJsDepth": 10
+    "maxNodeModuleJsDepth": 8,
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     "node_modules",
-    "schema.graphql"
+    "schema.graphql",
+    "public/images/originals",
+    ".next"
   ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "**/*.js"
   ]
 }

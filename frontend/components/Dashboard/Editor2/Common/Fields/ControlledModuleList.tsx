@@ -1,9 +1,8 @@
 import { useCallback } from "react"
 
 import {
-  Path,
+  ControllerRenderProps,
   PathValue,
-  UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
 
@@ -19,7 +18,6 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { FormValues } from "../../types"
-import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {
   ControlledFieldProps,
   FieldController,
@@ -36,15 +34,16 @@ const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 
-interface ControlledModuleListProps extends ControlledFieldProps {
+interface ControlledModuleListProps<T extends FormValues>
+  extends ControlledFieldProps<T> {
   modules?: StudyModuleDetailedFieldsFragment[]
 }
 
 export function ControlledModuleList<T extends FormValues>(
-  props: ControlledModuleListProps,
+  props: ControlledModuleListProps<T>,
 ) {
   const { modules, label } = props
-  const name = props.name as Path<T>
+  const name = props.name
   const { setValue, getValues } = useFormContext<T>()
 
   const setCourseModule = useCallback(
@@ -54,10 +53,31 @@ export function ControlledModuleList<T extends FormValues>(
         {
           ...getValues(name),
           [(event.target as HTMLInputElement).id]: checked,
-        } as UnpackNestedValue<PathValue<T, Path<T>>>,
+        } as PathValue<T, typeof name>,
         { shouldDirty: true },
       ),
     [],
+  )
+
+  const renderModuleList = useCallback(
+    ({ value }: ControllerRenderProps<T>) => (
+      <>
+        {modules?.map((studyModule) => (
+          <ModuleListItem key={studyModule.id}>
+            <FormControlLabel
+              key={`module-${studyModule.id}`}
+              checked={
+                (value as Record<string, boolean>)[studyModule.id] ?? false
+              }
+              onChange={setCourseModule}
+              control={<Checkbox id={studyModule.id} />}
+              label={studyModule.name}
+            />
+          </ModuleListItem>
+        ))}
+      </>
+    ),
+    [modules, setCourseModule],
   )
 
   return (
@@ -65,27 +85,10 @@ export function ControlledModuleList<T extends FormValues>(
       {label && <FormLabel>{label}</FormLabel>}
       <FormGroup>
         <ModuleList>
-          <EnumeratingAnchor id={name} />
           <FieldController
             name={name}
             label={label}
-            renderComponent={({ value }) => (
-              <>
-                {modules?.map((module) => (
-                  <ModuleListItem key={module.id}>
-                    <FormControlLabel
-                      key={`module-${module.id}`}
-                      checked={
-                        (value as Record<string, boolean>)[module.id] ?? false
-                      }
-                      onChange={setCourseModule}
-                      control={<Checkbox id={module.id} />}
-                      label={module.name}
-                    />
-                  </ModuleListItem>
-                ))}
-              </>
-            )}
+            renderComponent={renderModuleList}
           />
         </ModuleList>
       </FormGroup>

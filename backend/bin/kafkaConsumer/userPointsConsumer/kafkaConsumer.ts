@@ -1,10 +1,10 @@
 import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
 
+import { Mutex } from "../../../lib/await-semaphore"
+import { KafkaError } from "../../../lib/errors"
+import sentryLogger from "../../../lib/logger"
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
-import { Mutex } from "../../lib/await-semaphore"
-import { KafkaError } from "../../lib/errors"
-import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
 import { KafkaContext } from "../common/kafkaContext"

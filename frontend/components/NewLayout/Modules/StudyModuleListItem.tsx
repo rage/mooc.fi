@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
-import BackgroundPattern from "../../../static/images/backgroundPattern.svg"
+import backgroundPattern from "../../../public/images/backgroundPattern.svg"
 import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
@@ -28,7 +28,8 @@ const HeroContainer = styled("li")`
 
 const ModuleCardWrapper = styled(CardWrapper, {
   shouldForwardProp: (prop) => prop !== "backgroundColor" && prop !== "as",
-})<{ backgroundColor: string }>`
+})<{ backgroundColor: string }>(
+  ({ theme, backgroundColor }) => `
   border-radius: 0;
   display: flex;
   width: 100%;
@@ -37,13 +38,13 @@ const ModuleCardWrapper = styled(CardWrapper, {
   position: relative;
   z-index: -8;
   background-color: #fefefe;
-  ${(props) =>
-    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
-  @media(max-width: 1200px) {
-    ${(props) =>
-      `background-image: linear-gradient(to top, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  background-image: linear-gradient(to left, rgba(255,0,0,0) ,${backgroundColor} 55%);
+
+  ${theme.breakpoints.down("lg")} {
+    background-image: linear-gradient(to top, rgba(255,0,0,0) ,${backgroundColor} 55%);
   }
-`
+`,
+)
 
 const ModuleCardBody = styled("ul")`
   --_cols: max(
@@ -67,22 +68,23 @@ const ModuleCardBody = styled("ul")`
       1fr
     )
   );
-  grid-template-rows: repeat(
-    auto-fill,
-    minmax(200px, 1fr)
-  ); ///repeat(auto-fit, 1fr);
+  grid-template-rows: repeat(auto-fill, minmax(200px, 1fr));
   background-color: transparent;
-  grid-gap: var(--_gap); // 2rem;
+  grid-gap: var(--_gap);
   grid-auto-flow: row;
 `
 
 const ModuleCardDescription = styled("div")`
   padding: 1rem;
   display: flex;
-  // height: 100%;
   margin: 0;
   flex-direction: column;
-  color: white;
+  color: #fff;
+`
+
+const ModuleCardDescriptionText = styled(Typography)`
+  font-family: var(--body-font) !important;
+  font-weight: 400 !important;
 `
 
 const ImageBackgroundBase = css`
@@ -110,7 +112,7 @@ const SkeletonBackground = styled("span")`
 
 const CenteredHeader = styled(Typography)`
   margin-bottom: 2rem;
-`
+` as typeof Typography
 
 const ModuleCourseCard = styled(CourseCard)``
 
@@ -131,11 +133,14 @@ export function ListItem({
       return
     }
 
-    if (description.scrollHeight > description.clientHeight) {
-      const span = Math.round(description.scrollHeight / 200) // the max size of row should be in a var
+    if (description.clientHeight > 320) {
+      const span = Math.round(description.scrollHeight / 320) // the max size of row should be in a var
       description.style.cssText = `--hero-span: ${span};`
     }
-  }, [descriptionRef.current])
+  }, [
+    descriptionRef.current?.scrollHeight,
+    descriptionRef.current?.clientHeight,
+  ])
 
   useEffect(() => {
     if (!window) {
@@ -153,12 +158,16 @@ export function ListItem({
   return (
     <ModuleCardWrapper as="section" backgroundColor={backgroundColor}>
       <CorrectedAnchor id={module.slug} />
-      <ImageBackground src={BackgroundPattern} />
+      <ImageBackground src={backgroundPattern.src} />
       <ModuleCardBody>
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>
-            <CenteredHeader variant="h1">{module.name}</CenteredHeader>
-            <Typography variant="subtitle1">{module.description}</Typography>
+            <CenteredHeader variant="h3" component="h2">
+              {module.name}
+            </CenteredHeader>
+            <ModuleCardDescriptionText variant="subtitle1">
+              {module.description}
+            </ModuleCardDescriptionText>
           </ModuleCardDescription>
         </HeroContainer>
         {courses?.map((course) => (

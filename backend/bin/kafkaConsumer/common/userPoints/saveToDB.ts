@@ -8,12 +8,12 @@ import {
   User,
 } from "@prisma/client"
 
-import { err, ok, Result } from "../../../../util/result"
 import {
   DatabaseInputError,
   TMCError,
   ValidationError,
-} from "../../../lib/errors"
+} from "../../../../lib/errors"
+import { err, ok, Result } from "../../../../util/result"
 import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"

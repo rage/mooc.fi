@@ -1,4 +1,3 @@
-import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import {
   arg,
@@ -12,14 +11,15 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma, Tag as TagType } from "@prisma/client"
+import { Prisma, Tag as TypeofTag } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { isNotNullOrUndefined } from "../util/isNullOrUndefined"
 
 const wrapLanguage =
   (language?: null | string) =>
-  (tag: TagType): TagType & { language?: string } => ({
+  (tag: TypeofTag): TypeofTag & { language?: string } => ({
     ...tag,
     language: language ?? undefined,
   })
@@ -118,7 +118,7 @@ export const TagQueries = extendType({
       },
       validate: (_, { includeHidden }, ctx) => {
         if (includeHidden && ctx.role !== Role.ADMIN) {
-          throw new ForbiddenError("admins only")
+          throw new GraphQLForbiddenError("admins only")
         }
       },
       resolve: async (_, { language, search, includeHidden }, ctx) => {
@@ -281,7 +281,7 @@ export const TagMutations = extendType({
         }
 
         if (Object.keys(data).length === 0) {
-          throw new UserInputError("No data to update")
+          throw new GraphQLUserInputError("No data to update")
         }
 
         return ctx.prisma.tag.update({

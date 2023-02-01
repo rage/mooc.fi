@@ -7,7 +7,7 @@ interface RegisterCompletionProps {
   title: string
 }
 
-export default function RegisterCompletion({
+function RegisterCompletion({
   title,
   children,
 }: PropsWithChildren<RegisterCompletionProps>) {
@@ -23,3 +23,5 @@ export default function RegisterCompletion({
     </Container>
   )
 }
+
+export default RegisterCompletion

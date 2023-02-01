@@ -24,10 +24,7 @@ interface UserPointsSummaryProps {
   search?: EditorCoursesQueryVariables["search"]
 }
 
-export default function UserPointsSummary({
-  data,
-  search,
-}: UserPointsSummaryProps) {
+function UserPointsSummary({ data, search }: UserPointsSummaryProps) {
   const t = useTranslator(CommonTranslations)
 
   // TODO: add search from other fields?
@@ -71,3 +68,5 @@ export default function UserPointsSummary({
     </>
   )
 }
+
+export default UserPointsSummary

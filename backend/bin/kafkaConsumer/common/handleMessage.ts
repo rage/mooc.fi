@@ -1,12 +1,12 @@
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
-import { Result } from "../../../util/result"
 import {
   DatabaseInputError,
   KafkaMessageError,
   ValidationError,
-} from "../../lib/errors"
+} from "../../../lib/errors"
+import { Result } from "../../../util/result"
 import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 

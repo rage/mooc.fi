@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useCallback, useContext } from "react"
 
 import { SvgIconProps } from "@mui/material"
 import ButtonBase from "@mui/material/ButtonBase"
@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography"
 import { SerializedStyles } from "@mui/styled-engine"
 
 import UserOSContext from "/contexts/UserOSContext"
-import { userOsType } from "/util/getUserOS"
+import { UserOSType } from "/util/getUserOS"
 
 interface ButtonProps {
   selected: boolean
@@ -35,7 +35,7 @@ const StyledTypography = styled(Typography)`
 `
 
 interface OSSelectorButtonProps {
-  OSName: userOsType
+  OSName: UserOSType
   Icon: React.FunctionComponent<SvgIconProps & { css?: SerializedStyles }>
   active: boolean
 }
@@ -43,8 +43,10 @@ interface OSSelectorButtonProps {
 const OSSelectorButton = (props: OSSelectorButtonProps) => {
   const { OSName, Icon, active } = props
   const { changeOS } = useContext(UserOSContext)
+  const onClick = useCallback(() => changeOS(OSName), [changeOS, OSName])
+
   return (
-    <StyledButtonBase onClick={() => changeOS(OSName)} selected={active}>
+    <StyledButtonBase onClick={onClick} selected={active}>
       <Icon css={iconStyle} />
       <StyledTypography>{OSName}</StyledTypography>
     </StyledButtonBase>

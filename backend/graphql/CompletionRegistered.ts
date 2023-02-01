@@ -1,4 +1,3 @@
-import { ForbiddenError } from "apollo-server-express"
 import { chunk } from "lodash"
 import {
   arg,
@@ -15,6 +14,7 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
 import { Context } from "../context"
+import { GraphQLForbiddenError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
 
 export const CompletionRegistered = objectType({
@@ -53,7 +53,7 @@ export const CompletionRegisteredQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { course: slug, skip, take, cursor } = args
         if ((take ?? 0) > 50) {
-          throw new ForbiddenError("Cannot query more than 50 items")
+          throw new GraphQLForbiddenError("Cannot query more than 50 items")
         }
         if (slug) {
           return withCourse(

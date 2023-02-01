@@ -1,9 +1,11 @@
 import React from "react"
 
 import { range } from "lodash"
+import { MDXComponents } from "mdx/types"
 import dynamic from "next/dynamic"
 
-import { Skeleton, Typography } from "@mui/material"
+import { MDXProvider } from "@mdx-js/react"
+import { Link as MUILink, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ErrorMessage from "/components/ErrorMessage"
@@ -34,21 +36,21 @@ export const ContentBox = styled("div")`
   h2 {
     font-size: 37px;
     line-height: 64px;
-    font-family: "Open Sans Condensed", sans serif !important;
+    font-family: var(--header-font), sans-serif !important;
     padding: 0.5rem;
     margin-top: 1rem;
   }
   h3 {
     font-size: 29px;
     line-height: 53px;
-    font-family: "Open Sans Condensed", sans serif !important;
+    font-family: var(--header-font), sans-serif !important;
     text-decoration: underline;
     text-decoration-color: #00d2ff;
   }
   h4 {
     font-size: 23px;
     line-height: 44px;
-    font-family: "Open Sans Condensed", sans serif !important;
+    font-family: var(--header-font), sans-serif !important;
   }
   code {
     background-color: #e6f4f1;
@@ -84,25 +86,29 @@ export const Note = styled("section")`
   background-color: #eeeeee;
 `
 
+export const Link = styled(MUILink)`
+  color: default;
+`
+
+const List = styled("ul")``
+const OrderedList = styled("ol")``
+const ListItem = styled("li")``
+
 export const Loader = () => (
   <Background>
-    <Title>
-      <Skeleton />
-    </Title>
     <TitleBackground>
       <Title component="h1" variant="h1" align="center">
-        <Skeleton />
-      </Title>
-    </TitleBackground>
-    <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
-      <Title component="p" variant="subtitle1" align="center">
-        <Skeleton />
+        <Skeleton variant="text" width="100%" />
       </Title>
     </TitleBackground>
     <Content>
-      {range(20).map((i) => (
-        <Skeleton key={`content-skeleton-${i}`} />
-      ))}
+      <ContentBox>
+        <SectionBox>
+          {range(20).map((i) => (
+            <Skeleton key={`content-skeleton-${i}`} />
+          ))}
+        </SectionBox>
+      </ContentBox>
     </Content>
   </Background>
 )
@@ -150,26 +156,35 @@ interface FAQPageProps {
   content: JSX.Element
 }
 
+const mdxComponents: MDXComponents = {
+  a: Link,
+  ul: List,
+  ol: OrderedList,
+  li: ListItem,
+}
+
 export function FAQPage({ error, title, ingress, content }: FAQPageProps) {
   return (
     <Background>
-      {!error && (
-        <>
-          <TitleBackground>
-            <Title component="h1" variant="h1" align="center">
-              {title}
-            </Title>
-          </TitleBackground>
-          {ingress && (
-            <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
-              <Title component="p" variant="subtitle1" align="center">
-                {ingress}
+      <MDXProvider components={mdxComponents}>
+        {!error && (
+          <>
+            <TitleBackground>
+              <Title component="h1" variant="h1" align="center">
+                {title}
               </Title>
             </TitleBackground>
-          )}
-        </>
-      )}
-      <Content>{content}</Content>
+            {ingress && (
+              <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
+                <Title component="p" variant="subtitle1" align="center">
+                  {ingress}
+                </Title>
+              </TitleBackground>
+            )}
+          </>
+        )}
+        <Content>{content}</Content>
+      </MDXProvider>
     </Background>
   )
 }

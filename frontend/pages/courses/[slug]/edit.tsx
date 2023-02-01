@@ -1,12 +1,10 @@
 import { useEffect } from "react"
 
 import { NextSeo } from "next-seo"
-import Link from "next/link"
 import { SingletonRouter, withRouter } from "next/router"
 
-import Paper from "@mui/material/Paper"
+import { Link, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -99,8 +97,8 @@ const EditCourse = ({ router }: EditCourseProps) => {
             beta ? (
               <CourseEdit2
                 course={courseData.course}
-                courses={coursesData?.courses}
-                studyModules={studyModulesData?.study_modules}
+                courses={coursesData?.courses ?? []}
+                studyModules={studyModulesData?.study_modules ?? []}
               />
             ) : (
               <CourseEdit
@@ -119,10 +117,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
               />
               <Typography variant="body2">
                 {t("redirectMessagePre")}
-                <Link href="/courses" passHref>
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                  <a>{t("redirectLinkText")}</a>
-                </Link>
+                <Link href="/courses">{t("redirectLinkText")}</Link>
                 {t("redirectMessagePost")}
               </Typography>
             </ErrorContainer>

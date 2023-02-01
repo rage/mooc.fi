@@ -1,12 +1,12 @@
-import Link from "next/link"
-
-import Avatar from "@mui/material/Avatar"
+import { Avatar, Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
+
+import moocLogo from "/public/images/moocfi.svg"
 
 const MoocLogoText = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
+  font-family: var(--header-font);
   font-size: 1.75rem !important;
+  font-weight: lighter;
   @media (max-width: 425px) {
     font-size: 1.5rem !important;
   }
@@ -29,7 +29,7 @@ const MoocLogoAvatar = styled(Avatar)`
     width: 2.5em;
   }
 `
-const MoocLogoLink = styled("a")`
+const MoocLogoLink = styled(Link)`
   color: black;
   text-decoration: none;
   display: flex;
@@ -40,15 +40,10 @@ const MoocLogoLink = styled("a")`
   }
 `
 const MoocLogo = () => (
-  <Link href="/" passHref>
-    <MoocLogoLink aria-label="MOOC.fi homepage">
-      <MoocLogoAvatar
-        alt="MOOC logo"
-        src={require("../../static/images/moocfi.svg")}
-      />
-      <MoocLogoText>MOOC.fi</MoocLogoText>
-    </MoocLogoLink>
-  </Link>
+  <MoocLogoLink href="/" aria-label="MOOC.fi homepage">
+    <MoocLogoAvatar alt="MOOC logo" src={moocLogo.src} />
+    <MoocLogoText>MOOC.fi</MoocLogoText>
+  </MoocLogoLink>
 )
 
 export default MoocLogo

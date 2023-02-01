@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { NexusGenInputs } from "nexus-typegen"
@@ -8,6 +7,7 @@ import { Course, CourseTag, Prisma, StudyModule } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
+import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import {
@@ -55,7 +55,7 @@ export const CourseMutations = extendType({
         const photo = await updatePossibleNewPhoto(course, ctx)
 
         if (study_modules?.some((s) => !s?.id && !s?.slug)) {
-          throw new UserInputError("study modules must have id or slug")
+          throw new GraphQLUserInputError("study modules must have id or slug")
         }
 
         const newCourse = await ctx.prisma.course.create({
@@ -263,7 +263,7 @@ export const CourseMutations = extendType({
       authorize: isAdmin,
       validate: (_, { id, slug }) => {
         if (!id && !slug) {
-          throw new UserInputError("must provide id or slug")
+          throw new GraphQLUserInputError("must provide id or slug")
         }
       },
       resolve: async (_, { id, slug }, ctx: Context) => {

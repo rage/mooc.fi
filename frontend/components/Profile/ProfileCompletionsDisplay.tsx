@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import { Typography } from "@mui/material"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -29,11 +27,9 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
       {completions.length === 0 && (
         <Typography>{t("nocompletionsText")}</Typography>
       )}
-      <Link href={`/profile/completions`} passHref>
-        <FormSubmitButton variant="text" fullWidth>
-          {t("seeCompletions")}
-        </FormSubmitButton>
-      </Link>
+      <FormSubmitButton href={`/profile/completions`} variant="text" fullWidth>
+        {t("seeCompletions")}
+      </FormSubmitButton>
     </>
   )
 }

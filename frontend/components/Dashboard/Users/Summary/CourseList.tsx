@@ -7,7 +7,7 @@ interface CourseListProps {
   data?: Array<UserCourseSummaryCoreFieldsFragment>
 }
 
-export default function CourseList({ data }: CourseListProps) {
+function CourseList({ data }: CourseListProps) {
   const { state, dispatch } = useCollapseContext()
 
   if (!data) {
@@ -27,3 +27,5 @@ export default function CourseList({ data }: CourseListProps) {
     </>
   )
 }
+
+export default CourseList

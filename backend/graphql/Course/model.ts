@@ -1,9 +1,9 @@
-import { ForbiddenError } from "apollo-server-core"
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 
 export const Course = objectType({
   name: "Course",
@@ -75,7 +75,7 @@ export const Course = objectType({
       authorize: isAdmin,
       validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
-          throw new Error("needs user_id or user_upstream_id")
+          throw new GraphQLUserInputError("needs user_id or user_upstream_id")
         }
       },
       resolve: async (parent, { user_id, user_upstream_id }, ctx) => {
@@ -138,7 +138,7 @@ export const Course = objectType({
       },
       validate: (_, { includeHidden }, ctx) => {
         if (includeHidden && !isAdmin({}, {}, ctx, {})) {
-          throw new ForbiddenError("no admin rights")
+          throw new GraphQLForbiddenError("no admin rights")
         }
       },
       resolve: async (

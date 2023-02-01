@@ -1,9 +1,7 @@
-import Link from "next/link"
-
-import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
-import Envelope from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
-import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
-import Search from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
+import ChalkboardTeacherIcon from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import EnvelopeIcon from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
+import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import SearchIcon from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
@@ -13,11 +11,9 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-interface ButtonProps {
-  active: any
-}
-
-const StyledButton = styled(Button)<ButtonProps>`
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<{ active?: boolean }>`
   margin: 1rem;
   font-size: 22px;
   border-radius: 0px;
@@ -43,7 +39,7 @@ const StyledButton = styled(Button)<ButtonProps>`
 `
 
 const ButtonLabel = styled(Typography)`
-  font-family: Open Sans Condensed !important;
+  font-family: var(--header-font) !important;
   font-size: 18px;
   @media (max-width: 600px) {
     font-size: 14px;
@@ -63,48 +59,44 @@ const UserMenu = () => {
     <>
       {admin && (
         <>
-          <Link href={`/courses`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "courses" ? 1 : null}
-              style={{ marginLeft: "1em" }}
-            >
-              <ChalkboardTeacher />
-              <ButtonLabel>{t("courses")}</ButtonLabel>
-            </StyledButton>
-          </Link>
+          <StyledButton
+            href="/courses"
+            color="inherit"
+            variant="text"
+            active={active == "courses" ? 1 : null}
+            style={{ marginLeft: "1em" }}
+          >
+            <ChalkboardTeacherIcon />
+            <ButtonLabel>{t("courses")}</ButtonLabel>
+          </StyledButton>
 
-          <Link href={`/study-modules`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "study-modules" ? 1 : null}
-            >
-              <List />
-              <ButtonLabel>{t("modules")}</ButtonLabel>
-            </StyledButton>
-          </Link>
-          <Link href={`/users/search`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "users" ? 1 : null}
-            >
-              <Search />
-              <ButtonLabel>{t("userSearch")}</ButtonLabel>
-            </StyledButton>
-          </Link>
-          <Link href={`/email-templates`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "email-templates" ? 1 : null}
-            >
-              <Envelope />
-              <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
-            </StyledButton>
-          </Link>
+          <StyledButton
+            href="/study-modules"
+            color="inherit"
+            variant="text"
+            active={active == "study-modules" ? 1 : null}
+          >
+            <ListIcon />
+            <ButtonLabel>{t("modules")}</ButtonLabel>
+          </StyledButton>
+          <StyledButton
+            href="/users/search"
+            color="inherit"
+            variant="text"
+            active={active == "users" ? 1 : null}
+          >
+            <SearchIcon />
+            <ButtonLabel>{t("userSearch")}</ButtonLabel>
+          </StyledButton>
+          <StyledButton
+            href="/email-templates"
+            color="inherit"
+            variant="text"
+            active={active == "email-templates" ? 1 : null}
+          >
+            <EnvelopeIcon />
+            <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
+          </StyledButton>
         </>
       )}
     </>

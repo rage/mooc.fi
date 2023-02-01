@@ -12,7 +12,7 @@ import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import { useCustomValidationResolver } from "/components/Dashboard/Editor2/Common"
 import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexts/AnchorContext"
@@ -66,7 +66,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
 
   const methods = useForm<CourseFormValues>({
     defaultValues: defaultValues.current,
-    resolver: customValidationResolver(validationSchema),
+    resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })

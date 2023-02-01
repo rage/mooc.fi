@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 
 import { Field, useFormikContext } from "formik"
+import Image from "next/image"
 
 import {
   Button,
@@ -33,6 +34,7 @@ const ImageContainer = styled("div")`
   justify-content: center;
   border-width: 2px;
   border-radius: 4px;
+  position: relative;
 `
 
 const ImagePlaceholder = styled("div")`
@@ -137,10 +139,11 @@ const ImportPhotoDialog = ({
         </Field>
         <ImageContainer>
           {values.import_photo ? (
-            <img
+            <Image
               src={addDomain(selectedCourse?.photo?.compressed)}
               alt={selectedCourse?.photo?.name ?? "image from other course"}
-              height="200"
+              style={{ objectFit: "contain" }}
+              fill
             />
           ) : (
             <ImagePlaceholder />

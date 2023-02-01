@@ -1,6 +1,7 @@
 import { Button, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
 
@@ -9,16 +10,6 @@ const HeroContainer = styled("section")`
   position: relative;
   height: 80%;
   align-items: center;
-`
-
-const BackgroundImage = styled("img")`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
 `
 
 const HeroContentContainer = styled("div")`
@@ -59,7 +50,7 @@ function HeroContent() {
   return (
     <HeroContentContainer>
       <Title variant="h1">{t("tagLine")}</Title>
-      <Paragraph variant="subtitle2">{t("intro")}</Paragraph>
+      <Paragraph variant="subtitle1">{t("intro")}</Paragraph>
       <CourseButton variant="outlined" href="#courses">
         {t("courseButton")}
       </CourseButton>
@@ -72,9 +63,11 @@ function Hero() {
     <HeroContainer>
       <HeroContent />
       <BackgroundImage
-        src={require("../../../static/images/new/hero.png")}
+        src="/images/new/hero.png"
+        fill
         aria-hidden
         alt="background image"
+        priority
       />
     </HeroContainer>
   )

@@ -9,12 +9,12 @@ export interface Breadcrumb {
   href?: string
 }
 
-interface BreadcrumbContext {
+export interface BreadcrumbContextType {
   breadcrumbs: Breadcrumb[]
   setBreadcrumbs: React.Dispatch<React.SetStateAction<Array<Breadcrumb>>>
 }
 
-export const BreadcrumbContext = createContext<BreadcrumbContext>({
+export const BreadcrumbContext = createContext<BreadcrumbContextType>({
   breadcrumbs: [] as Breadcrumb[],
   setBreadcrumbs: () => void 0,
 })

@@ -12,8 +12,8 @@ import {
   KAFKA_BRIDGE_SERVER_PORT,
   KAFKA_HOST,
 } from "../config"
-import { KafkaError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
+import { KafkaError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 
 const logger = sentryLogger({ service: "kafka-bridge" })
 

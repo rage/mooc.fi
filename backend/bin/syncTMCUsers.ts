@@ -1,4 +1,3 @@
-// import { PrismaClient } from "@prisma/client"
 import axios from "axios"
 import { groupBy, orderBy } from "lodash"
 import * as winston from "winston"
@@ -6,10 +5,10 @@ import * as winston from "winston"
 import { PrismaClient } from "@prisma/client"
 
 import { isTest, TMC_HOST } from "../config"
+import { TMCError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import { getAccessToken } from "../services/tmc"
 import { notEmpty } from "../util/notEmpty"
-import { TMCError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const URL = `${TMC_HOST ?? ""}/api/v8/users/recently_changed_user_details`
 

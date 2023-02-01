@@ -1,13 +1,12 @@
 import { PropsWithChildren } from "react"
 
-import Link from "next/link"
-
 import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import {
   BoxProps,
   CardActions,
+  Link,
   Skeleton,
   Typography,
   TypographyProps,
@@ -38,10 +37,10 @@ const CardBase = styled("div", {
   width: 100%;
   min-width: 340px;
   display: grid;
-  @media (max-width: 700px) {
-    grid-template-columns: repeat(1, 1fr);
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
-  @media (min-width: 700px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
   flex-direction: row;
@@ -61,7 +60,7 @@ const ImageContainer = styled("div")`
   position: relative;
 `
 
-const StyledLink = styled("a")`
+const StyledLink = styled(Link)`
   text-decoration: none;
   margin-left: 0px;
 `
@@ -75,14 +74,19 @@ const CourseCardImageContainer = styled(ImageContainer)`
   padding: 1rem;
   width: 100%;
   min-width: 235px;
+  position: relative;
+  height: 100%;
   @media (max-width: 430px) {
-    height: 235px;
+    min-height: 235px;
+    grid-column: span 2 / auto;
   }
-  @media (min-width: 430px) and (max-width: 600px) {
-    height: 235px;
+  @media (min-width: 430px) and (max-width: 768px) {
+    min-height: 235px;
+    width: 100%;
+    grid-column: span 2 / auto;
   }
-  @media (min-width: 600px) and (max-width: 960px) {
-    height: 240px;
+  @media (min-width: 768px) and (max-width: 960px) {
+    min-height: 240px;
   }
 `
 
@@ -163,6 +167,9 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
+  const courseFound = !loading && !!course
+  const courseNotFound = !course && !loading
+
   return (
     <CourseCardItem key={`course-card-${course?.id ?? "new"}`}>
       <CardBase
@@ -170,33 +177,30 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
         isHidden={course?.hidden ? 1 : undefined}
       >
         <CourseCardImageContainer>
-          {loading ? (
-            <Skeleton variant="rectangular" height="100%" />
-          ) : course ? (
+          {loading && <Skeleton variant="rectangular" height="100%" />}
+          {courseFound && (
             <CourseImage photo={course.photo} alt={course.name} />
-          ) : (
-            <Link href={`/courses/new`} passHref>
-              <StyledLink aria-label={`Create new course`}>
-                <div
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
-                    display: "flex",
-                    border: "2px solid #E0E0E0",
-                  }}
-                >
-                  <AddCircleIcon fontSize="large" />
-                </div>
-              </StyledLink>
-            </Link>
+          )}
+          {courseNotFound && (
+            <StyledLink href={`/courses/new`} aria-label={`Create new course`}>
+              <div
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  display: "flex",
+                  border: "2px solid #E0E0E0",
+                }}
+              >
+                <AddCircleIcon fontSize="large" />
+              </div>
+            </StyledLink>
           )}
         </CourseCardImageContainer>
         <CourseCardContent style={{ gridColumn: "span 2" }}>
           <CardTitle variant="h3" component="h2" align="left">
-            {loading ? (
-              <Skeleton variant="text" />
-            ) : course ? (
+            {loading && <Skeleton variant="text" />}
+            {courseFound && (
               <div
                 style={{
                   display: "flex",
@@ -213,11 +217,10 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                   }
                 />
               </div>
-            ) : (
-              "New Course"
             )}
+            {courseNotFound && "New Course"}
           </CardTitle>
-          {course ? (
+          {course && (
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
                 {formatDateTime(course?.start_date)} to{" "}
@@ -238,55 +241,49 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
               />
               <CourseInfo field="Slug:" value={course?.slug ?? "-"} />
             </CourseInfoList>
-          ) : null}
+          )}
           <CourseCardActionArea>
-            {loading ? (
+            {loading && <Skeleton variant="rectangular" width="100%" />}
+            {courseFound && (
               <>
-                <Skeleton variant="rectangular" width="100%" />
-              </>
-            ) : course ? (
-              <>
-                <Link href={`/courses/${course.slug}`} passHref>
-                  <StyledLink
-                    aria-label={`To the homepage of course ${course.name}`}
-                  >
-                    <StyledButton variant="text" startIcon={<DashboardIcon />}>
-                      Dashboard
-                    </StyledButton>
-                  </StyledLink>
-                </Link>
-                <Link href={`/courses/new?clone=${course.slug}`} passHref>
-                  <StyledLink aria-label={`Clone course ${course.name}`}>
-                    <StyledButton
-                      variant="text"
-                      color="secondary"
-                      startIcon={<AddIcon />}
-                    >
-                      Clone...
-                    </StyledButton>
-                  </StyledLink>
-                </Link>
-                <Link
-                  href={`/courses/${course.slug}/edit`}
-                  passHref
-                  prefetch={false}
+                <StyledButton
+                  href={`/courses/${course.slug}`}
+                  aria-label={`To the homepage of course ${course.name}`}
+                  variant="text"
+                  startIcon={<DashboardIcon />}
                 >
-                  <StyledLink aria-label={`Edit course ${course.name}`}>
-                    <StyledButton variant="text" startIcon={<EditIcon />}>
-                      Edit
-                    </StyledButton>
-                  </StyledLink>
-                </Link>
+                  Dashboard
+                </StyledButton>
+                <StyledButton
+                  href={`/courses/new?clone=${course.slug}`}
+                  aria-label={`Clone course ${course.name}`}
+                  variant="text"
+                  color="secondary"
+                  startIcon={<AddIcon />}
+                >
+                  Clone...
+                </StyledButton>
+                <StyledButton
+                  href={`/courses/${course.slug}/edit`}
+                  prefetch={false}
+                  aria-label={`Edit course ${course.name}`}
+                  variant="text"
+                  startIcon={<EditIcon />}
+                >
+                  Edit
+                </StyledButton>
               </>
-            ) : (
-              <Link href={`/courses/new`} passHref>
-                <StyledLink aria-label="Create new course">
-                  <StyledButton variant="text" color="secondary">
-                    <AddIcon />
-                    Create
-                  </StyledButton>
-                </StyledLink>
-              </Link>
+            )}
+            {courseNotFound && (
+              <StyledButton
+                href={`/courses/new`}
+                aria-label="Create new course"
+                variant="text"
+                color="secondary"
+              >
+                <AddIcon />
+                Create
+              </StyledButton>
             )}
           </CourseCardActionArea>
         </CourseCardContent>

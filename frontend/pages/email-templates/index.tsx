@@ -1,14 +1,12 @@
-import Link from "next/link"
-
 import { useQuery } from "@apollo/client"
-import Paper from "@mui/material/Paper"
+import { Paper, PaperProps, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import AdminError from "/components/Dashboard/AdminError"
 import Spinner from "/components/Spinner"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
@@ -17,6 +15,21 @@ import { EmailTemplatesDocument } from "/graphql/generated"
 
 const Background = styled("section")`
   background-color: #61baad;
+`
+
+const CardBackground = styled(ClickableButtonBase)`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  @media (max-width: 959px) {
+    flex-direction: row;
+  }
+` as typeof ClickableButtonBase
+
+const TemplateCard = styled((props: PaperProps) => <Paper {...props} />)`
+  width: 100%;
+  padding: 0.5rem;
 `
 
 const EmailTemplates = (admin: boolean) => {
@@ -58,21 +71,21 @@ const EmailTemplates = (admin: boolean) => {
           {data?.email_templates?.map((p) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
-                <Link
+                <CardBackground
                   href={`/email-templates/${p.id}`}
                   prefetch={false}
                   passHref
                 >
-                  <Paper>
-                    <Typography variant="h5" component="h2">
+                  <TemplateCard>
+                    <Typography variant="h6" component="h2">
                       Name: {p.name}
                     </Typography>
                     <Typography component="p">
                       {" "}
                       Content: {p.txt_body}
                     </Typography>
-                  </Paper>
-                </Link>
+                  </TemplateCard>
+                </CardBackground>
                 <br></br>
               </li>
             )

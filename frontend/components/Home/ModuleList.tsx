@@ -1,6 +1,6 @@
 import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
-import LUT from "/static/md_pages/lut_module.mdx"
+import LUT from "/public/md_pages/lut_module.mdx"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 
@@ -88,7 +88,7 @@ const ModuleList = ({ modules, loading }: ModuleListProps) => {
           return (
             <PartnerDivider
               key={`divider-${idx}`}
-              style={{ padding: "0 0.5rem 0 0.5rem" }}
+              style={{ padding: "0 0.5rem" }}
             />
           )
         }

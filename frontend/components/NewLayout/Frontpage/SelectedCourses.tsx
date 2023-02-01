@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -14,7 +13,7 @@ import {
 } from "/components/NewLayout/Common/Card"
 import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
-import moocLogoUrl from "/static/images/moocfi-transparent.svg"
+import moocLogo from "/public/images/moocfi-transparent.svg"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
@@ -57,7 +56,12 @@ const CourseCard = ({
     <CardWrapper>
       <CardHeader>
         <CardTitle variant="h4">{name}</CardTitle>
-        <CardHeaderImage alt="MOOC logo" src={moocLogoUrl} />
+        <CardHeaderImage
+          alt="MOOC logo"
+          src={moocLogo.src}
+          width={200}
+          height={200}
+        />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
@@ -70,19 +74,22 @@ const CourseCard = ({
   )
 }
 
-export const CoursesGrid = styled("div")`
+export const CoursesGrid = styled("div")(
+  ({ theme }) => `
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   padding: 2rem;
   justify-content: center;
   width: 80%;
-  @media (max-width: 500px) {
+
+  ${theme.breakpoints.down("sm")} {
     padding: 0;
     width: 100%;
     grid-template-columns: 1fr;
   }
-`
+`,
+)
 
 function SelectedCourses() {
   const { locale = "fi" } = useRouter()
@@ -99,13 +106,14 @@ function SelectedCourses() {
         {data?.courses &&
           data.courses
             .slice(0, 3)
-            .map((course, index) => (
-              <CommonCourseCard key={`course-${index}`} course={course} />
+            .map((course) => (
+              <CommonCourseCard
+                key={`selected-course-${course.id}`}
+                course={course}
+              />
             ))}
       </CoursesGrid>
-      <Link href="/_new/courses" passHref>
-        <Button>Näytä kaikki kurssit</Button>
-      </Link>
+      <Button href="/_new/courses">Näytä kaikki kurssit</Button>
     </SectionContainer>
   )
 }

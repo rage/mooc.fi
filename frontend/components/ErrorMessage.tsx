@@ -1,3 +1,5 @@
+import { useCallback } from "react"
+
 import Refresh from "@mui/icons-material/Refresh"
 import Report from "@mui/icons-material/Report"
 import CardActions from "@mui/material/CardActions"
@@ -16,6 +18,8 @@ const StyledIcon = styled(Report)`
 `
 
 function ErrorMessage() {
+  const onRefreshClick = useCallback(() => window.location.reload(), [])
+
   return (
     <StyledCard>
       <StyledCardContent>
@@ -29,10 +33,7 @@ function ErrorMessage() {
         </Typography>
       </StyledCardContent>
       <CardActions>
-        <StyledRefreshButton
-          variant="text"
-          onClick={() => window.location.reload()}
-        >
+        <StyledRefreshButton variant="text" onClick={onRefreshClick}>
           <Refresh />
         </StyledRefreshButton>
       </CardActions>

@@ -1,5 +1,4 @@
 import { CardSubtitle, CardTitle } from "components/Text/headers"
-import Link from "next/link"
 
 import DoneIcon from "@mui/icons-material/Done"
 import { Avatar, Button, Paper } from "@mui/material"
@@ -22,9 +21,9 @@ const StyledButton = styled(Button)`
   color: black;
 `
 
-const StyledA = styled("a")`
+/*const StyledLink = styled(Link)`
   margin: auto;
-`
+`*/
 
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
@@ -110,7 +109,7 @@ export const CompletionListItem = ({
               {completion.completion_language ? (
                 <CardSubtitle>
                   {`${t("completionLanguage")} ${
-                    mapLangToLanguage[completion?.completion_language ?? ""] ||
+                    mapLangToLanguage[completion?.completion_language ?? ""] ??
                     completion.completion_language
                   }`}
                 </CardSubtitle>
@@ -143,46 +142,43 @@ export const CompletionListItem = ({
 
         <RegistrationColumn>
           {isRegistered && completion.completions_registered
-            ? completion.completions_registered?.map((r) => {
-                return (
-                  <Row key={`registration-${r.id}`}>
-                    <Column>
+            ? completion.completions_registered?.map((r) => (
+                <Row key={`registration-${r.id}`}>
+                  <Column>
+                    <CardSubtitle>
+                      <strong>
+                        {t("registeredDate")}
+                        {formatDateTime(r.created_at)}
+                      </strong>
+                    </CardSubtitle>
+                    {r.organization ? (
                       <CardSubtitle>
-                        <strong>
-                          {t("registeredDate")}
-                          {formatDateTime(r.created_at)}
-                        </strong>
+                        {t("organization")}
+                        {r.organization.slug}
                       </CardSubtitle>
-                      {r.organization ? (
-                        <CardSubtitle>
-                          {t("organization")}
-                          {r.organization.slug}
-                        </CardSubtitle>
-                      ) : null}
-                    </Column>
-                    <div
-                      style={{
-                        margin: "auto auto auto 0",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <DoneIcon style={{ color: "green" }} />
-                    </div>
-                  </Row>
-                )
-              })
+                    ) : null}
+                  </Column>
+                  <div
+                    style={{
+                      margin: "auto auto auto 0",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <DoneIcon style={{ color: "green" }} />
+                  </div>
+                </Row>
+              ))
             : null}
         </RegistrationColumn>
         <ButtonColumn>
           {!isRegistered && completion.eligible_for_ects ? (
-            <Link href={`/register-completion/${course?.slug}`} passHref>
-              <StyledA>
-                <StyledButton color="secondary">
-                  {t("registerCompletion")}
-                </StyledButton>
-              </StyledA>
-            </Link>
+            <StyledButton
+              href={`/register-completion/${course?.slug}`}
+              color="secondary"
+            >
+              {t("registerCompletion")}
+            </StyledButton>
           ) : null}
           {hasCertificate && course ? (
             <CertificateButton course={course} completion={completion} />

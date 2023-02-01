@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 import ClipboardIcon from "@fortawesome/fontawesome-free/svgs/regular/clipboard.svg?icon"
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
@@ -60,20 +60,20 @@ const StyledIconButton = styled(IconButton)`
 const InfoRow = ({ title, content }: InfoRowProps) => {
   const [isCopied, setIsCopied] = useState(false)
 
+  const onCopyToClipboard = useCallback(() => {
+    navigator.clipboard.writeText(content).then(() => {
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
+    })
+  }, [content])
+
   return (
     <InfoRowContainer>
       <InfoRowTitle variant="h4">{title}</InfoRowTitle>
       <InfoRowContent variant="h4">{content}</InfoRowContent>
       {isClipboardSupported && (
         <Tooltip title={isCopied ? "Copied!" : "Copy to clipboard"}>
-          <StyledIconButton
-            onClick={() => {
-              navigator.clipboard.writeText(content).then(() => {
-                setIsCopied(true)
-                setTimeout(() => setIsCopied(false), 2000)
-              })
-            }}
-          >
+          <StyledIconButton onClick={onCopyToClipboard}>
             {isCopied ? (
               <CheckIcon css={iconStyle} />
             ) : (
@@ -144,7 +144,7 @@ const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
     .filter(notEmpty)
 }
 
-export default function UserInfo({ data }: UserInfoProps) {
+function UserInfo({ data }: UserInfoProps) {
   if (!data?.full_name) {
     return <UserInfoSkeleton />
   }
@@ -176,3 +176,5 @@ const UserInfoSkeleton = () => (
     </InfoRowContainer>
   </UserInfoContainer>
 )
+
+export default UserInfo

@@ -49,7 +49,7 @@ function validateImage(this: Yup.TestContext, _value?: any): boolean {
   if (image === "") return true
 
   try {
-    require(`../../../../static/images/${image}`)
+    require(`../../../../public/images/modules/${image}`)
   } catch (e) {
     return false
   }
@@ -63,11 +63,22 @@ interface StudyModuleEditSchemaArgs {
   t: Translator<StudyModules>
 }
 
+export type StudyModuleEditSchemaType = Yup.SchemaOf<
+  Pick<StudyModuleFormValues, "new_slug" | "image" | "name" | "order"> & {
+    study_module_translations: Array<
+      Pick<
+        StudyModuleTranslationFormValues,
+        "name" | "language" | "description"
+      >
+    >
+  }
+>
+
 const studyModuleEditSchema = ({
   client,
   initialSlug,
   t,
-}: StudyModuleEditSchemaArgs) =>
+}: StudyModuleEditSchemaArgs): StudyModuleEditSchemaType =>
   Yup.object().shape({
     new_slug: Yup.string()
       .required(t("validationRequired"))
@@ -78,7 +89,9 @@ const studyModuleEditSchema = ({
         t("validationSlugInUse"),
         validateSlug({ client, initialSlug }),
       ),
-    image: Yup.string().test("exists", t("moduleImageError"), validateImage),
+    image: Yup.string()
+      .required()
+      .test("exists", t("moduleImageError"), validateImage),
     name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
       Yup.object().shape({

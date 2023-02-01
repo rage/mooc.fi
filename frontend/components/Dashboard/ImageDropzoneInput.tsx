@@ -43,6 +43,7 @@ const DropzoneContainer = styled("div", {
     border-color: #00a000;
   }
   justify-content: center;
+  position: relative;
 `
 
 interface MessageProps {
@@ -90,7 +91,7 @@ const ImageDropzoneInput = ({
   } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".jpeg", ".png", ".gif", ".svg"],
+      "image/*": [".jpeg", ".png", ".gif", ".svg", ".webp"],
     },
     multiple: false,
     preventDropOnDocument: true,

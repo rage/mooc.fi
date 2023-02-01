@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react"
 
 import ReactGA from "react-ga"
 
-import UpRightFromSquareSvg from "@fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg"
+import upRightFromSquareSvg from "@fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg"
 import { styled } from "@mui/material/styles"
 
 interface OutboundLinkProps {
@@ -13,7 +13,7 @@ const StyledOutboundLink = styled(ReactGA.OutboundLink)`
   padding-right: 0.5rem;
   ::after {
     content: "";
-    background-image: url(${UpRightFromSquareSvg});
+    background-image: url(${upRightFromSquareSvg.src});
     background-size: 0.75rem 0.75rem;
     display: inline-block;
     width: 0.75rem;

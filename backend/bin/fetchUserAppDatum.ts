@@ -4,11 +4,11 @@ import { Course, PrismaClient, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
+import { DatabaseInputError, TMCError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
 import { notEmpty } from "../util/notEmpty"
-import { DatabaseInputError, TMCError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 

@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   FieldArray,
+  FieldArrayRenderProps,
   Form,
   Formik,
   FormikHelpers,
@@ -10,11 +11,11 @@ import {
   yupToFormErrors,
 } from "formik"
 import { useConfirm } from "material-ui-confirm"
-import * as Yup from "yup"
-import { ObjectShape } from "yup/lib/object"
+import Image from "next/image"
 
 import HelpIcon from "@mui/icons-material/Help"
 import {
+  CircularProgress,
   Grid,
   InputAdornment,
   MenuItem,
@@ -23,7 +24,11 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { initialTranslation, languages } from "./form-validation"
+import {
+  initialTranslation,
+  languages,
+  StudyModuleEditSchemaType,
+} from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -48,14 +53,19 @@ const FormContainer = styled("div")`
   padding: 1rem;
 `
 
-const ModuleImage = styled("img", {
-  shouldForwardProp: (prop) => prop !== "error",
-})<{ error?: boolean }>`
+const ImageContainer = styled("div")`
+  position: relative;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const ModuleImage = styled(Image, {
+  shouldForwardProp: (prop) => prop !== "error" && prop !== "isLoading",
+})<{ error?: boolean; isLoading?: boolean }>`
   object-fit: cover;
-  width: 100%;
-  height: 100%;
-  max-height: 250px;
-  display: ${(props) => (props.error ? "none" : "")};
+  display: ${(props) => (props.error || props.isLoading ? "none" : "")};
 `
 
 // prevent borked image on page load
@@ -75,15 +85,50 @@ const StudyModuleFormComponent = () => {
   const [image] = useDebounce(values.image, 500)
   const [slug] = useDebounce(values.new_slug, 500)
 
-  const [imageFilename, setImageFilename] = useState(pixel)
+  const [imageLoading, setImageLoading] = useState(false)
 
   useEffect(() => {
-    if (image) {
-      setImageFilename(`/static/images/${image}`)
-    } else {
-      setImageFilename(`/static/images/${slug}.jpg`)
+    setImageLoading(true)
+
+    return () => {
+      setImageLoading(false)
     }
   }, [image, slug])
+
+  const imageFilename = useMemo(() => {
+    return image ?? `${slug}.jpg`
+  }, [image, slug])
+
+  const onImageError = useCallback(() => {
+    setImageLoading(false)
+    setImageError(t("moduleImageError"))
+  }, [t])
+
+  const onImageLoadingComplete = useCallback(() => {
+    setImageLoading(false)
+    setImageError("")
+  }, [])
+
+  const onRemoveTranslationClick = useCallback(
+    (helpers: FieldArrayRenderProps, index: number) => () =>
+      confirm({
+        title: t("moduleConfirmationTitle"),
+        description: t("moduleConfirmationContent"),
+        confirmationText: t("moduleConfirmationYes"),
+        cancellationText: t("moduleConfirmationNo"),
+      })
+        .then(() => helpers.remove(index))
+        .catch(() => {
+          // ignore
+        }),
+    [],
+  )
+
+  const onAddTranslationClick = useCallback(
+    (helpers: FieldArrayRenderProps) => () =>
+      helpers.push({ ...initialTranslation }),
+    [],
+  )
 
   return (
     <FormContainer>
@@ -163,17 +208,37 @@ const StudyModuleFormComponent = () => {
             {t("moduleImagePreview")}
           </OutlinedInputLabel>
           <OutlinedFormGroup>
-            <ModuleImage
-              src={imageFilename}
-              error={!!imageError}
-              onError={() => setImageError(t("moduleImageError"))}
-              onLoad={() => setImageError("")}
-            />
-            {!!imageError ? (
-              <Typography variant="body2" style={{ color: "#FF0000" }}>
-                {imageError}
-              </Typography>
-            ) : null}
+            <ImageContainer>
+              {imageLoading && (
+                <CircularProgress
+                  size={100}
+                  style={{ objectFit: "contain", objectPosition: "50% 50%" }}
+                />
+              )}
+              <ModuleImage
+                src={
+                  imageFilename
+                    ? `/images/modules/${imageFilename}` + "?v=" + Date.now()
+                    : pixel
+                }
+                alt={
+                  !imageError
+                    ? `Image preview of ${imageFilename ?? "a module image"}`
+                    : ``
+                }
+                error={!!imageError}
+                isLoading={imageLoading}
+                priority
+                fill
+                onError={onImageError}
+                onLoadingComplete={onImageLoadingComplete}
+              />
+              {!imageLoading && !!imageError ? (
+                <Typography variant="body2" style={{ color: "red" }}>
+                  {imageError}
+                </Typography>
+              ) : null}
+            </ImageContainer>
           </OutlinedFormGroup>
         </OutlinedFormControl>
         <FormSubtitle variant="h6" component="h3" align="center">
@@ -196,7 +261,7 @@ const StudyModuleFormComponent = () => {
                           name={`study_module_translations[${index}].language`}
                           type="select"
                           label={t("moduleLanguage")}
-                          errors={[
+                          error={[
                             getIn(
                               errors,
                               `study_module_translations[${index}].language`,
@@ -248,18 +313,7 @@ const StudyModuleFormComponent = () => {
                             variant="contained"
                             disabled={isSubmitting}
                             color="secondary"
-                            onClick={() =>
-                              confirm({
-                                title: t("moduleConfirmationTitle"),
-                                description: t("moduleConfirmationContent"),
-                                confirmationText: t("moduleConfirmationYes"),
-                                cancellationText: t("moduleConfirmationNo"),
-                              })
-                                .then(() => helpers.remove(index))
-                                .catch(() => {
-                                  // ignore
-                                })
-                            }
+                            onClick={onRemoveTranslationClick(helpers, index)}
                           >
                             {t("moduleRemoveTranslation")}
                           </StyledButton>
@@ -281,7 +335,7 @@ const StudyModuleFormComponent = () => {
                     color="primary"
                     fullWidth
                     disabled={isSubmitting}
-                    onClick={() => helpers.push({ ...initialTranslation })}
+                    onClick={onAddTranslationClick(helpers)}
                   >
                     {t("moduleAddTranslation")}
                   </FormSubmitButton>
@@ -295,9 +349,9 @@ const StudyModuleFormComponent = () => {
   )
 }
 
-interface StudyModuleEditFormProps<SchemaType extends ObjectShape> {
+interface StudyModuleEditFormProps {
   module: StudyModuleFormValues
-  validationSchema: Yup.ObjectSchema<SchemaType>
+  validationSchema: StudyModuleEditSchemaType
   onSubmit: (
     values: StudyModuleFormValues,
     FormikHelpers: FormikHelpers<StudyModuleFormValues>,
@@ -306,13 +360,13 @@ interface StudyModuleEditFormProps<SchemaType extends ObjectShape> {
   onDelete: (values: StudyModuleFormValues) => void
 }
 
-function StudyModuleEditForm<SchemaType extends ObjectShape>({
+function StudyModuleEditForm({
   module,
   validationSchema,
   onSubmit,
   onCancel,
   onDelete,
-}: StudyModuleEditFormProps<SchemaType>) {
+}: StudyModuleEditFormProps) {
   const validate = useCallback(async (values: StudyModuleFormValues) => {
     try {
       await validationSchema.validate(values, {
@@ -320,7 +374,7 @@ function StudyModuleEditForm<SchemaType extends ObjectShape>({
         context: { values },
       })
     } catch (err) {
-      return yupToFormErrors(err)
+      return yupToFormErrors<StudyModuleFormValues>(err)
     }
   }, [])
 
@@ -336,9 +390,4 @@ function StudyModuleEditForm<SchemaType extends ObjectShape>({
   )
 }
 
-/*
-        renderForm={RenderForm}
-        onCancel={onCancel}
-        onDelete={onDelete}
-*/
 export default StudyModuleEditForm

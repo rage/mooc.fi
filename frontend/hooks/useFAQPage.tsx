@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { FAQComponent } from "/components/Home/FAQ/Common"
+import FAQTranslations from "/translations/faq"
+import { useTranslator } from "/util/useTranslator"
 
 type MDXComponent<T> = {
   meta?: {
@@ -13,6 +15,7 @@ type MDXComponent<T> = {
 } & React.ComponentType<T>
 
 export function useFAQPage(topic = "toc_faq") {
+  const t = useTranslator(FAQTranslations)
   const { locale } = useRouter()
 
   const [render, setRender] = useState(false)
@@ -23,19 +26,23 @@ export function useFAQPage(topic = "toc_faq") {
 
   useEffect(() => setRender(true), [])
 
-  const sanitizedTopic = topic.replace(/[./\\]/g, "").trim()
+  const sanitizedTopic = topic?.replace(/[./\\]/g, "").trim()
 
   const Component = FAQComponent({
     mdxImport: () =>
-      import(`../static/md_pages/${sanitizedTopic}_${locale}.mdx`),
+      import(`../public/md_pages/${sanitizedTopic}_${locale}.mdx`),
     onSuccess: (mdx: MDXComponent<any>) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")
       setBreadcrumb(mdx?.meta?.breadcrumb ?? mdx?.meta?.title ?? "")
+
       return mdx
     },
     onError: (errorComponent) => {
       setError(true)
+      setTitle(t("error"))
+      setBreadcrumb(t("error"))
+
       return errorComponent ?? null
     },
   })

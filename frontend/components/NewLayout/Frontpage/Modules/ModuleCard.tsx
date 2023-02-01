@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import { Button, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -38,15 +36,17 @@ export const ModuleCard = ({
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
-        <CardHeaderBackground image={image ?? ""} />
+        <CardTitle variant="h3" component="h2">
+          {name}
+        </CardTitle>
+        <CardHeaderBackground image={image ? `/images/modules/${image}` : ""} />
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActionArea>
-          <Link href={`/_new/study-modules/#${slug}`} passHref>
-            <ModuleButton>Kokonaisuuden tiedot</ModuleButton>
-          </Link>
+          <ModuleButton href={`/_new/study-modules/#${slug}`}>
+            Kokonaisuuden tiedot
+          </ModuleButton>
         </CardActionArea>
       </CardBody>
     </CardWrapper>

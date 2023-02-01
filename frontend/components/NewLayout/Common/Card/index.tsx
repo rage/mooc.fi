@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 import { css, styled } from "@mui/material/styles"
 import Typography, { TypographyProps } from "@mui/material/Typography"
 
@@ -23,7 +25,7 @@ export const CardHeader = styled("div")`
   z-index: -2;
 `
 
-export const CardHeaderImage = styled("img")`
+export const CardHeaderImage = styled(Image)`
   opacity: 0.4;
   position: absolute;
   left: 70%;
@@ -34,9 +36,9 @@ export const CardHeaderImage = styled("img")`
   z-index: 0;
 `
 
-CardHeaderImage.defaultProps = {
-  "aria-hidden": true,
-}
+//CardHeaderImage.defaultProps = {
+//  "aria-hidden": true,
+//}
 
 export const CardBody = styled("div")`
   background-color: #fff;
@@ -87,7 +89,7 @@ export const CardHeaderBackground = styled("span", {
   ${({ color, image }) => `background-image: ${
     color ? `linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%), ` : ""
   }
-    url("../../../static/images/${image}");`}
+    url(${image});`}
 `
 //   /*filter: hue-rotate(${props.hue ?? 0}deg)
 // brightness(${props.brightness} ?? 1});*/

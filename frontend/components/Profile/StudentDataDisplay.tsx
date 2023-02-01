@@ -3,8 +3,7 @@ import { PropsWithChildren } from "react"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 
-import Box from "@mui/material/Box"
-import Typography from "@mui/material/Typography"
+import { Box, Typography } from "@mui/material"
 
 import ProfileSettings from "/components/Profile/ProfileSettings"
 

@@ -1,9 +1,10 @@
-import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/router"
 
 import Facebook from "@fortawesome/fontawesome-free/svgs/brands/facebook.svg?icon"
 import Twitter from "@fortawesome/fontawesome-free/svgs/brands/twitter.svg?icon"
 import Youtube from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
+import { Link } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import HomeTranslations from "/translations/home"
@@ -70,27 +71,18 @@ const PolicyContainer = styled("div")`
   }
 `
 
-const LogoImage = styled("img")`
+/*const LogoImage = styled.img`
   height: 75;
-`
+`*/
 
 function UniversityLogo() {
   return (
-    <picture>
-      <source
-        srcSet={require(`../static/images/uh-logo.png?webp`)}
-        type="image/webp"
-      />
-      <source
-        srcSet={require(`../static/images/uh-logo.png`)}
-        type="image/png"
-      />
-      <LogoImage
-        alt="Logo of the University of Helsinki"
-        src={require(`../static/images/uh-logo.png`)}
-        loading="lazy"
-      />
-    </picture>
+    <Image
+      src="/images/uh-logo.webp"
+      alt="Logo of the University of Helsinki"
+      width={188}
+      height={75}
+    />
   )
 }
 
@@ -103,42 +95,42 @@ function Footer() {
       <EmailContainer>mooc@cs.helsinki.fi</EmailContainer>
       <UniversityLogo />
       <SocialContainer>
-        <a
+        <Link
           aria-label="MOOC.fi twitter"
           href="https://twitter.com/moocfi"
           target="_blank"
           rel="noopener noreferrer"
         >
           <TwitterIcon />
-        </a>
-        <a
+        </Link>
+        <Link
           aria-label="MOOC.fi Facebook"
           href="https://www.facebook.com/Moocfi"
           target="_blank"
           rel="noopener noreferrer"
         >
           <FacebookIcon />
-        </a>
-        <a
+        </Link>
+        <Link
           aria-label="MOOC.fi Youtube channel"
           href="https://www.youtube.com/channel/UCkHoQ5p9skFdyjrV3_tnUrA"
           target="_blank"
           rel="noopener noreferrer"
         >
           <YoutubeIcon />
-        </a>
+        </Link>
       </SocialContainer>
       <BottomRowContainer>
         <MaintainedContainer>
           This site is maintained by the{" "}
-          <a
+          <Link
             aria-label="Rage research group homepage"
             href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
             target="_blank"
             rel="noopener noreferrer"
           >
             RAGE research group
-          </a>
+          </Link>
           .
         </MaintainedContainer>
         {locale === "fi" && (

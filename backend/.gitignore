@@ -9,4 +9,5 @@ env.json
 coverage/
 sourcemap/
 config/*.pem
+.idea
 .env.*

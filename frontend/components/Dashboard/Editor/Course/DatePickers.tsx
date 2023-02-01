@@ -1,8 +1,8 @@
 import { ErrorMessage, useField } from "formik"
 
-import DatePicker from "@mui/lab/DatePicker"
 import { TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 
 const StyledErrorMessage = styled("p")`
   color: #f44336;

@@ -1,10 +1,10 @@
-import { ForbiddenError } from "apollo-server-express"
 import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { OrganizationRole } from "@prisma/client"
 
 import { isAdmin, isVisitor, or, Role } from "../accessControl"
 import { Context } from "../context"
+import { GraphQLForbiddenError } from "../lib/errors"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",
@@ -75,7 +75,7 @@ const assertUserCredentials = async (ctx: Context, id: string) => {
   }
 
   if (!user || (user && user.id !== existingUser.id && role !== Role.ADMIN)) {
-    throw new ForbiddenError("invalid credentials to do that")
+    throw new GraphQLForbiddenError("invalid credentials to do that")
   }
 }
 

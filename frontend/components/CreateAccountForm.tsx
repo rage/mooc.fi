@@ -1,9 +1,14 @@
 import { Component } from "react"
 
-import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 
-import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import {
+  CircularProgress,
+  Link,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -333,11 +338,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <Link href={`/sign-in`} passHref>
-            {/*Link passes href*/}
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-            <a>{t("signIn")}</a>
-          </Link>
+          <Link href={`/sign-in`}>{t("signIn")}</Link>
         </Row>
 
         {this.state.error && (

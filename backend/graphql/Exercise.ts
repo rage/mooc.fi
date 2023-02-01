@@ -1,4 +1,3 @@
-import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
   extendType,
@@ -10,6 +9,7 @@ import {
 } from "nexus"
 
 import { isAdmin, Role } from "../accessControl"
+import { GraphQLAuthenticationError } from "../lib/errors"
 import { filterNullRecursive } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
 import { Context } from "/context"
@@ -46,7 +46,7 @@ export const Exercise = objectType({
         const user_id = isAdmin && user_id_arg ? user_id_arg : ctx?.user?.id
 
         if (!user_id) {
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
         return ctx.prisma.exercise
           .findUnique({ where: { id: parent.id } })

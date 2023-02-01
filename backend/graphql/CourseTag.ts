@@ -1,4 +1,3 @@
-import { ForbiddenError, UserInputError } from "apollo-server-core"
 import {
   booleanArg,
   extendType,
@@ -13,6 +12,7 @@ import {
 import { Prisma, Tag } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 
 export const CourseTag = objectType({
   name: "CourseTag",
@@ -74,12 +74,12 @@ export const CourseTagQueries = extendType({
       },
       validate: (_, { course_id, course_slug, includeHidden }, ctx) => {
         if (course_id && course_slug) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "provide only one of course_id or course_slug",
           )
         }
         if (includeHidden && ctx.role !== Role.ADMIN) {
-          throw new ForbiddenError("admins only")
+          throw new GraphQLForbiddenError("admins only")
         }
       },
       resolve: async (
@@ -153,15 +153,17 @@ export const CourseTagMutations = extendType({
       authorize: isAdmin,
       validate: (_, { course_id, course_slug, tag_id, tag_name }) => {
         if (course_id && course_slug) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "provide only one of course_id or course_slug",
           )
         }
         if (tag_id && tag_name) {
-          throw new UserInputError("provide only one of tag_id or tag_name")
+          throw new GraphQLUserInputError(
+            "provide only one of tag_id or tag_name",
+          )
         }
         if (!tag_id && !tag_name) {
-          throw new UserInputError("provide either tag_id or tag_name")
+          throw new GraphQLUserInputError("provide either tag_id or tag_name")
         }
       },
       resolve: async (_, { course_id, course_slug, tag_id, tag_name }, ctx) => {
@@ -174,7 +176,7 @@ export const CourseTagMutations = extendType({
           _course_id = course?.id
         }
         if (!_course_id) {
-          throw new UserInputError("course not found")
+          throw new GraphQLUserInputError("course not found")
         }
 
         let _tag_id = tag_id
@@ -193,7 +195,7 @@ export const CourseTagMutations = extendType({
         }
 
         if (!_tag_id) {
-          throw new UserInputError("tag not found")
+          throw new GraphQLUserInputError("tag not found")
         }
 
         return ctx.prisma.courseTag.create({

@@ -1,4 +1,4 @@
-import React, { Dispatch, useMemo } from "react"
+import React, { Dispatch, useCallback, useMemo } from "react"
 
 import { sortBy } from "lodash"
 
@@ -35,10 +35,8 @@ interface CourseEntryProps {
   dispatch: Dispatch<CollapseAction>
 }
 
-const CourseEntryCard = styled(({ children, ...props }: CardProps) => (
-  <Card component="section" elevation={4} {...props}>
-    {children}
-  </Card>
+const CourseEntryCard = styled(({ elevation = 4, ...props }: CardProps) => (
+  <Card elevation={elevation} {...props} />
 ))`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
@@ -86,6 +84,16 @@ function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
     [data?.course, data?.exercise_completions],
   )
 
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.TOGGLE,
+        collapsable: CollapsablePart.COURSE,
+        course: data?.course?.id ?? "_",
+      }),
+    [data?.course?.id, dispatch],
+  )
+
   if (!data.course) {
     return null
   }
@@ -96,13 +104,7 @@ function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
         {data?.course?.name}
         <CollapseButton
           open={state?.open}
-          onClick={() =>
-            dispatch({
-              type: ActionType.TOGGLE,
-              collapsable: CollapsablePart.COURSE,
-              course: data?.course?.id ?? "_",
-            })
-          }
+          onClick={onCollapseClick}
           tooltip={t("courseCollapseTooltip")}
         />
       </CourseEntryCardTitle>

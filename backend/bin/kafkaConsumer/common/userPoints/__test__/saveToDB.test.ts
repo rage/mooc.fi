@@ -1,3 +1,4 @@
+import { DatabaseInputError, ValidationError } from "../../../../../lib/errors"
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
@@ -8,7 +9,6 @@ import {
   normalUserDetails,
   seed,
 } from "../../../../../tests/data"
-import { DatabaseInputError, ValidationError } from "../../../../lib/errors"
 import { KafkaContext } from "../../kafkaContext"
 import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"

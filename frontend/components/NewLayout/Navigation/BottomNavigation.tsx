@@ -5,14 +5,16 @@ import { NavigationLinks } from "/components/NewLayout/Navigation/NavigationLink
 
 const BottomNavigationContainer = styled((props: AppBarProps) => (
   <AppBar position="fixed" color="inherit" component="nav" {...props} />
-))`
-  @media (min-width: 800px) {
+))(
+  ({ theme }) => `
+  ${theme.breakpoints.up("md")} {
     display: none;
   }
   top: auto;
   margin: auto;
   bottom: 0;
-`
+`,
+)
 
 export const BottomNavigation = () => {
   return (

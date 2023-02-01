@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import { useFormContext } from "react-hook-form"
 
@@ -53,7 +53,7 @@ interface CourseEditFormProps {
   studyModules?: StudyModuleDetailedFieldsFragment[]
 }
 
-export default function CourseEditForm({
+function CourseEditForm({
   course,
   courses,
   studyModules,
@@ -83,13 +83,14 @@ export default function CourseEditForm({
     [courses],
   )
 
+  const onChangeTab = useCallback(
+    (_: any, newTab: any) => setTab(newTab),
+    [setTab],
+  )
+
   return (
     <EditorContainer<CourseFormValues>>
-      <Tabs
-        variant="fullWidth"
-        value={tab}
-        onChange={(_, newTab) => setTab(newTab)}
-      >
+      <Tabs variant="fullWidth" value={tab} onChange={onChangeTab}>
         <Tab label="Course info" value={0} />
         <Tab label="Course status" value={1} />
         <Tab label="Advanced" value={2} />
@@ -259,3 +260,5 @@ export default function CourseEditForm({
     </EditorContainer>
   )
 }
+
+export default CourseEditForm

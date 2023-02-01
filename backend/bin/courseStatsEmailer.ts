@@ -1,5 +1,5 @@
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "course-stats-emailer" })
 

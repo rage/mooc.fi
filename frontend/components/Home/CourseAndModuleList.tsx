@@ -18,8 +18,6 @@ import {
   StudyModulesDocument,
 } from "/graphql/generated"
 
-// const highlightsBanner = "/static/images/backgroundPattern.svg"
-
 const CourseAndModuleList = () => {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(HomeTranslations)

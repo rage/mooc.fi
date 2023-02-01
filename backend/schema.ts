@@ -14,7 +14,7 @@ import { loggerPlugin } from "./middlewares/logger"
 import { validateArgsPlugin } from "./middlewares/validate"
 
 if (NEXUS_REFLECTION) {
-  require("sharp")
+  require("sharp") // image library sharp seems to crash without this require
 }
 
 const createPlugins = () => {

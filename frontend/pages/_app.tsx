@@ -1,12 +1,11 @@
-// import "@fortawesome/fontawesome-free/css/all.min.css"
-import { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 
 import { ConfirmProvider } from "material-ui-confirm"
-import type { AppContext, AppProps } from "next/app"
+import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { CssBaseline, GlobalStyles } from "@mui/material"
+import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
 import OriginalLayout from "./_layout"
@@ -19,8 +18,7 @@ import { isAdmin, isSignedIn } from "/lib/authentication"
 import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
-import { fontCss } from "/src/fonts"
-import newTheme, { newFontCss } from "/src/newTheme"
+import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
@@ -80,7 +78,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
   }, [router.locale, router.pathname])
 
   return (
-    <>
+    <React.StrictMode>
       <Head>
         <meta
           name="viewport"
@@ -96,8 +94,6 @@ export function MyApp({ Component, pageProps }: AppProps) {
             <BreadcrumbProvider>
               <AlertProvider>
                 <Layout>
-                  <GlobalStyles styles={fontCss} />
-                  {isNew && <GlobalStyles styles={newFontCss} />}
                   <Component {...pageProps} />
                 </Layout>
               </AlertProvider>
@@ -105,7 +101,7 @@ export function MyApp({ Component, pageProps }: AppProps) {
           </ConfirmProvider>
         </LoginStateProvider>
       </ThemeProvider>
-    </>
+    </React.StrictMode>
   )
 }
 
@@ -118,14 +114,14 @@ MyApp.getInitialProps = async (props: AppContext) => {
   let originalProps: any = {}
 
   if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(props)) || {}
+    originalProps = (await originalGetInitialProps(props)) ?? {}
   }
   if (Component.getInitialProps) {
     originalProps = {
       ...originalProps,
       pageProps: {
         ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) || {}),
+        ...((await Component.getInitialProps(ctx)) ?? {}),
       },
     }
   }
@@ -141,6 +137,10 @@ MyApp.getInitialProps = async (props: AppContext) => {
       admin,
     },
   }
+}
+
+export function reportWebVitals(metric: NextWebVitalsMetric) {
+  console.log(metric)
 }
 
 export default withAppEmotionCache(withApolloClient(MyApp))

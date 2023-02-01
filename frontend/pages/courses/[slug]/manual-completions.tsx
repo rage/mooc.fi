@@ -7,14 +7,18 @@ import { withRouter } from "next/router"
 import * as Papa from "papaparse"
 
 import { useMutation, useQuery } from "@apollo/client"
-import AdapterLuxon from "@mui/lab/AdapterLuxon"
-import DatePicker from "@mui/lab/DatePicker"
-import LocalizationProvider from "@mui/lab/LocalizationProvider"
-import { Button, Container, TextField, TextFieldProps } from "@mui/material"
-import Alert from "@mui/material/Alert"
-import AlertTitle from "@mui/material/AlertTitle"
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Container,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
@@ -251,7 +255,6 @@ const ManualCompletions = () => {
           label="csv"
           fullWidth
           rows={20}
-          maxRows={5000}
           multiline
         />
         <Button disabled={submitting} onClick={onSubmit}>

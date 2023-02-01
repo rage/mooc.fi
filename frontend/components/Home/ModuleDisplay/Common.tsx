@@ -1,3 +1,5 @@
+import Image, { ImageProps } from "next/image"
+
 import { BoxProps, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -7,7 +9,7 @@ import {
   SubtitleNoBackground,
 } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { mime } from "/util/imageUtils"
+import { staticSrc } from "/util/staticSrc"
 
 export const CenteredContent = styled("div")`
   width: 80%;
@@ -32,13 +34,30 @@ export const ContentContainer = styled("div")`
   min-width: 33%;
 `
 
-const ModuleHeaderBase = styled(H2NoBackground)`
+export const ModuleHeader = styled(
+  ({
+    variant = "h2",
+    component = "h2",
+    align = "left",
+    ...props
+  }: TypographyProps & BoxProps) => (
+    <H2NoBackground
+      variant={variant}
+      component={component}
+      align={align}
+      {...props}
+    />
+  ),
+)<{
+  component?: React.ElementType
+}>`
   color: white;
   margin-left: 0px;
   font-size: 72px;
   line-height: 100px;
-  font-family: Open sans condensed, sans serif;
+  font-family: var(--header-font), sans-serif;
   font-weight: 300;
+  width: 100%;
   @media (max-width: 490px) {
     font-size: 48px;
     line-height: 80px;
@@ -49,43 +68,33 @@ const ModuleHeaderBase = styled(H2NoBackground)`
   }
 ` as typeof H2NoBackground
 
-export const ModuleHeader = ({
-  children,
-  ...props
-}: TypographyProps & BoxProps) => (
-  <ModuleHeaderBase component="h2" variant="h2" align="left" {...props}>
-    {children}
-  </ModuleHeaderBase>
-)
-
-const ModuleImageBase = styled("img")`
-  width: 100%;
+const ModuleImageContainer = styled("div")`
+  position: relative;
+  height: 100%;
 `
 
-interface ModuleImageProps {
-  src: string
-  alt?: string
-}
-
-export const ModuleImage = ({ src, alt }: ModuleImageProps) => (
-  <picture>
-    <source
-      srcSet={require(`../../../static/images/${src}?webp`)}
-      type="image/webp"
-    />
-    <source
-      srcSet={require(`../../../static/images/${src}`)}
-      type={mime(src)}
-    />
-    <ModuleImageBase
-      src={require(`../../../static/images/${src}`)}
-      alt={alt}
+export const ModuleImage = ({ src, alt, ...props }: ImageProps) => (
+  <ModuleImageContainer>
+    <Image
+      src={staticSrc(src)}
+      alt={alt ?? "Module image"}
       loading="lazy"
+      style={{ objectFit: "contain" }}
+      {...(!props.width && !props.height && { fill: true })}
+      {...props}
     />
-  </picture>
+  </ModuleImageContainer>
 )
 
-const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
+export const ModuleDescriptionText = styled(
+  ({
+    variant = "subtitle1",
+    component = "h3",
+    ...props
+  }: TypographyProps & BoxProps) => (
+    <SubtitleNoBackground variant={variant} component={component} {...props} />
+  ),
+)`
   color: white;
   font-size: 28px;
   line-height: 47px;
@@ -95,29 +104,34 @@ const ModuleDescriptionTextBase = styled(SubtitleNoBackground)`
   }
 ` as typeof SubtitleNoBackground
 
-export const ModuleDescriptionText = ({
-  children,
-  ...props
-}: TypographyProps & BoxProps) => (
-  <ModuleDescriptionTextBase variant="subtitle1" component="h3" {...props}>
-    {children}
-  </ModuleDescriptionTextBase>
-)
+export const ModuleCardTitle = styled(
+  ({
+    variant = "h3",
+    component = "h3",
+    align = "center",
+    ...props
+  }: TypographyProps & BoxProps) => (
+    <CardTitle
+      variant={variant}
+      component={component}
+      align={align}
+      {...props}
+    />
+  ),
+)``
 
-export const ModuleCardTitle = ({
-  children,
-  ...props
-}: TypographyProps & BoxProps) => (
-  <CardTitle component="h3" align="center" variant="h3" {...props}>
-    {children}
-  </CardTitle>
-)
-
-export const ModuleCardText = ({
-  children,
-  ...props
-}: TypographyProps & BoxProps) => (
-  <CardText component="p" variant="body1" align="left" {...props}>
-    {children}
-  </CardText>
-)
+export const ModuleCardText = styled(
+  ({
+    variant = "body1",
+    component = "p",
+    align = "left",
+    ...props
+  }: TypographyProps & BoxProps) => (
+    <CardText
+      variant={variant}
+      component={component}
+      align={align}
+      {...props}
+    />
+  ),
+)``

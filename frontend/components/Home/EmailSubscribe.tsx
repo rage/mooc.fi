@@ -1,14 +1,16 @@
-import { createRef, useState } from "react"
+import { createRef, useCallback, useState } from "react"
 
 import Send from "@mui/icons-material/Send"
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
-import Button from "@mui/material/Button"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import FormControl from "@mui/material/FormControl"
+import {
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
 
 import HomeTranslations from "/translations/home"
 import { useTranslator } from "/util/useTranslator"
@@ -61,9 +63,12 @@ function EmailSubscribe() {
   const formRef = createRef<HTMLFormElement>()
   const t = useTranslator(HomeTranslations)
 
-  function handleSubmit() {
-    setSent(true)
-  }
+  const handleSubmit = useCallback(() => {
+    if (formRef?.current) {
+      formRef.current.submit()
+      setSent(true)
+    }
+  }, [formRef?.current])
 
   return (
     <MailingList>
@@ -100,12 +105,7 @@ function EmailSubscribe() {
                 <StyledButton
                   variant="contained"
                   color="primary"
-                  onClick={() => {
-                    if (formRef?.current) {
-                      formRef.current.submit()
-                      handleSubmit()
-                    }
-                  }}
+                  onClick={handleSubmit}
                 >
                   {t("emailButton")}
                   <Send />

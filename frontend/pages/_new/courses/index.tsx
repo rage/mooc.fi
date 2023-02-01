@@ -1,4 +1,4 @@
-import backgroundPattern from "static/images/backgroundPattern2.svg"
+import backgroundPattern from "public/images/backgroundPattern2.svg"
 
 import { styled } from "@mui/material/styles"
 
@@ -29,7 +29,7 @@ const Background = styled("div")`
   bottom: 0;
   z-index: -1;
   background: #f5f6f7;
-  background-image: url(${backgroundPattern});
+  background-image: url(${backgroundPattern.src});
 `
 
 function Courses() {

@@ -21,7 +21,8 @@ const RelevantDatesCardContent = styled(CardContent)`
   justify-content: space-between;
   gap: 2rem;
 `
-export default function RelevantDates({ data }: RelevantDatesProps) {
+
+function RelevantDates({ data }: RelevantDatesProps) {
   const t = useTranslator(ProfileTranslations)
 
   const startDate = data?.start_date
@@ -52,3 +53,5 @@ export default function RelevantDates({ data }: RelevantDatesProps) {
     </SummaryCard>
   )
 }
+
+export default RelevantDates

@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 
-export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
+export const ButtonWithPaddingAndMargin = styled(Button)`
   margin: 0.5rem;
   color: ${({ color }) =>
     color === "secondary"
@@ -11,4 +11,4 @@ export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
       : color ?? "#000000"};
   font-size: 18px;
   padding: 0.5em;
-`
+` as typeof Button

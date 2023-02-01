@@ -5,17 +5,20 @@ export const SectionTitle = styled((props: TypographyProps) => (
   <Typography variant="h1" {...props} />
 ))``
 
-export const SectionContainer = styled("section")`
+export const SectionContainer = styled("section")(
+  ({ theme }) => `
   display: flex;
   flex-direction: column;
   justify-items: center;
   align-items: center;
   padding-top: 2rem;
   margin: auto;
-  @media (max-width: 400px) {
+
+  ${theme.breakpoints.down("xs")} {
     margin: 0;
   }
-`
+`,
+)
 
 export const CorrectedAnchor = styled(
   (props: React.HTMLAttributes<HTMLDivElement>) => (

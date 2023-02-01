@@ -1,10 +1,10 @@
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { GraphQLUserInputError } from "../../lib/errors"
 
 export const StudyModuleMutations = extendType({
   type: "Mutation",
@@ -54,7 +54,7 @@ export const StudyModuleMutations = extendType({
         const { id, slug, new_slug, study_module_translations } = study_module
 
         if (!slug) {
-          throw new UserInputError("must provide slug")
+          throw new GraphQLUserInputError("must provide slug")
         }
 
         const existingTranslations = await ctx.prisma.studyModule
@@ -115,7 +115,7 @@ export const StudyModuleMutations = extendType({
       authorize: isAdmin,
       validate: (_, { id, slug }) => {
         if (!id && !slug) {
-          throw new UserInputError("must provide id or slug")
+          throw new GraphQLUserInputError("must provide id or slug")
         }
       },
       resolve: async (_, { id, slug }, ctx) => {

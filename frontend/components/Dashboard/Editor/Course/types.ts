@@ -69,7 +69,7 @@ export interface OpenUniversityRegistrationValues extends FormValues {
   course_code: string
   language: string
   course: string | undefined
-  link?: string | undefined
+  link?: string
 }
 
 export interface CourseVariantFormValues extends FormValues {

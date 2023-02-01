@@ -4,10 +4,10 @@ import { PrismaClient } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
+import { DatabaseInputError, TMCError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { DatabaseInputError, TMCError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const FETCH_USER_FIELD_VALUES_CONFIG_NAME = CONFIG_NAME ?? "userFieldValues"
 

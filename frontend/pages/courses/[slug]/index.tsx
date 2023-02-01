@@ -2,10 +2,9 @@ import { useState } from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
-import Link from "next/link"
 
 import { useApolloClient, useMutation, useQuery } from "@apollo/client"
-import { Button, Card, Paper, Typography } from "@mui/material"
+import { Button, Card, Link, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"

@@ -1,6 +1,16 @@
-process.on("unhandledRejection", (...args) => {
-  console.log(JSON.stringify(args, undefined, 2))
-})
+/*process.on("unhandledRejection", (reason, promise) => {
+  console.log(JSON.stringify(reason, undefined, 2))
+  if (promise) {
+    console.log("Unhandled rejection also emitted a promise", JSON.stringify(promise, undefined, 2))
+    promise
+      .then((value) => {
+        console.log("Promise resolved with value", JSON.stringify(value, undefined, 2))
+      })
+      .catch((e) => {
+        console.log("Promise rejected with value", JSON.stringify(e, undefined, 2))
+      })
+  }
+})*/
 
 const isProduction = process.env.NODE_ENV === "production"
 const express = require("express")
@@ -13,18 +23,16 @@ const compression = require("compression")
 const Redirects = require("./Redirects")
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const port = process.env.PORT || 3000
-const app = next({ dev: !isProduction })
+const app = next({ dev: !isProduction, quiet: false })
 const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
-
-const createMockBackend = require("./tests/mockBackend")
 
 const main = async () => {
   try {
     await app.prepare()
   } catch (e) {
-    console.error("Prepairing Next.js app failed", e)
+    console.error("Preparing Next.js app failed", e)
     throw e
   }
 

@@ -1,6 +1,5 @@
 import React from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import LanguageIcon from "@mui/icons-material/Language"
@@ -15,12 +14,14 @@ import { styled } from "@mui/material/styles"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
+const LanguageSwitchButton = (buttonProps: ButtonProps) => (
+  <Button component="div" {...buttonProps} tabIndex={-1} />
+)
+
 const LanguageSwitchContainer = styled(
   (props: ButtonGroupProps & ButtonProps) => (
     <ButtonGroup
-      component={(buttonProps) => (
-        <Button component="div" {...buttonProps} tabIndex={-1} />
-      )}
+      component={LanguageSwitchButton}
       disableRipple
       disableFocusRipple
       disableTouchRipple
@@ -34,8 +35,7 @@ const LanguageSwitchContainer = styled(
   },
 )`
   cursor: unset;
-  padding: 0.5rem;
-  max-height: 10vh;
+  max-height: 8vh;
 `
 
 const Language = styled(Button, {
@@ -59,15 +59,16 @@ const LanguageSwitch = () => {
     <LanguageSwitchContainer>
       <LanguageIcon />
       {locales?.map((locale) => (
-        <Link href={asPath} locale={locale} passHref key={`switch-${locale}`}>
-          <Language
-            active={currentLocale === locale}
-            title={t(locale as keyof (typeof CommonTranslations)[string])}
-            aria-label={t(locale as keyof (typeof CommonTranslations)[string])}
-          >
-            {locale}
-          </Language>
-        </Link>
+        <Language
+          key={`switch-${locale}`}
+          href={asPath}
+          locale={locale}
+          active={currentLocale === locale}
+          title={t(locale as keyof (typeof CommonTranslations)[string])}
+          aria-label={t(locale as keyof (typeof CommonTranslations)[string])}
+        >
+          {locale}
+        </Language>
       ))}
     </LanguageSwitchContainer>
   )

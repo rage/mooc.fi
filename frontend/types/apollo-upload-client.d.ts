@@ -1,1 +1,2 @@
-declare module "apollo-upload-client"
+// declare module "apollo-upload-client"
+export {}

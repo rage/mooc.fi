@@ -1,10 +1,9 @@
 import React from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import Warning from "@mui/icons-material/Warning"
-import { Typography } from "@mui/material"
+import { Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ProfileTranslations from "/translations/profile"
@@ -19,7 +18,7 @@ const ConsentNotificationWrapper = styled("div")`
   background-color: rgb(255, 244, 229);
 `
 
-export default function ConsentNotification() {
+function ConsentNotification() {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
 
@@ -28,9 +27,8 @@ export default function ConsentNotification() {
       <Warning />
       <Typography variant="h4" component="h2">
         {t("researchNotification1")}
-        <Link href="/profile?tab=settings" shallow passHref>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a>{t("researchNotificationLink")}</a>
+        <Link href="/profile?tab=settings" shallow>
+          {t("researchNotificationLink")}
         </Link>
         {locale !== "fi" && <span>&nbsp;</span>}
         {t("researchNotification2")}
@@ -38,3 +36,5 @@ export default function ConsentNotification() {
     </ConsentNotificationWrapper>
   )
 }
+
+export default ConsentNotification

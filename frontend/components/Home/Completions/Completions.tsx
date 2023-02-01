@@ -14,7 +14,7 @@ export interface CompletionsProps {
 }
 
 const Title = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
+  font-family: var(--header-font), sans-serif !important;
   margin-top: 7rem;
   margin-left: 2rem;
   margin-bottom: 1rem;

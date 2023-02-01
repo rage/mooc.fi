@@ -1,7 +1,6 @@
 import React, { useCallback, useContext } from "react"
 
 import range from "lodash/range"
-import Link from "next/link"
 
 import {
   Button,
@@ -103,7 +102,7 @@ const DataCard = ({ row }: DataCardProps) => {
   const t = useTranslator(UsersTranslations)
 
   const { email, upstream_id, first_name, last_name, student_number } =
-    row || {}
+    row ?? {}
 
   const fields = [
     {
@@ -168,12 +167,15 @@ const DataCard = ({ row }: DataCardProps) => {
       <CardActions style={{ justifyContent: "flex-end" }}>
         {row ? (
           <>
-            <Link href={`/users/${upstream_id}/summary`} passHref>
-              <Button variant="contained">{t("summary")}</Button>
-            </Link>
-            <Link href={`/users/${upstream_id}/completions`} passHref>
-              <Button variant="contained">{t("completions")}</Button>
-            </Link>
+            <Button href={`/users/${upstream_id}/summary`} variant="contained">
+              {t("summary")}
+            </Button>
+            <Button
+              href={`/users/${upstream_id}/completions`}
+              variant="contained"
+            >
+              {t("completions")}
+            </Button>
           </>
         ) : (
           <Skeleton />

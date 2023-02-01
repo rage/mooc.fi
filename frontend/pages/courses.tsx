@@ -69,7 +69,7 @@ function useCourseSearch() {
     error: editorError,
     data: editorData,
   } = useQuery(EditorCoursesDocument, {
-    variables: searchVariables || initialSearchVariables,
+    variables: searchVariables ?? initialSearchVariables,
   })
   const {
     loading: handlersLoading,

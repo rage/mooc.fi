@@ -98,10 +98,10 @@ interface UseCertificateOptions {
 export const useCertificate = ({
   course,
   completion,
-  onUpdateNameSuccess = () => void 0,
-  onUpdateNameError = () => void 0,
-  onReceiveGeneratedCertificateSuccess = () => void 0,
-  onReceiveGeneratedCertificateError = () => void 0,
+  onUpdateNameSuccess,
+  onUpdateNameError,
+  onReceiveGeneratedCertificateSuccess,
+  onReceiveGeneratedCertificateError,
 }: UseCertificateOptions) => {
   const initialState = useRef<CertificateState>({
     status: "IDLE",
@@ -162,11 +162,11 @@ export const useCertificate = ({
           },
           admin,
         })
-        onUpdateNameSuccess()
+        onUpdateNameSuccess?.()
         dispatch({ type: "UPDATED_NAME", payload: res })
       } catch (e) {
         dispatch({ type: "ERROR", payload: e })
-        onUpdateNameError()
+        onUpdateNameError?.()
         dispatch({ type: "RESET", payload: initialState })
         return
       }
@@ -176,14 +176,14 @@ export const useCertificate = ({
       dispatch({ type: "GENERATE_CERTIFICATE" })
       const res = await createCertificate(course.slug)
       dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
-      onReceiveGeneratedCertificateSuccess()
+      onReceiveGeneratedCertificateSuccess?.()
       initialState.current = {
         ...initialState.current,
         certificateId: res?.id ?? undefined,
       }
     } catch (e) {
       dispatch({ type: "ERROR", payload: e })
-      onReceiveGeneratedCertificateError()
+      onReceiveGeneratedCertificateError?.()
       dispatch({ type: "RESET", payload: initialState })
     }
   }

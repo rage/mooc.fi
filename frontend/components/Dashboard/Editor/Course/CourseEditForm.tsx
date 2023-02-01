@@ -7,11 +7,7 @@ import {
   useFormikContext,
   yupToFormErrors,
 } from "formik"
-import * as Yup from "yup"
-import { ObjectShape } from "yup/lib/object"
 
-import AdapterLuxon from "@mui/lab/AdapterLuxon"
-import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import {
   FormControl,
   FormControlLabel,
@@ -27,6 +23,8 @@ import {
   Tabs,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import CourseAliasEditForm from "./CourseAliasEditForm"
 import CourseImageInput from "./CourseImageInput"
@@ -34,7 +32,7 @@ import CourseLanguageSelector from "./CourseLanguageSelector"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import CourseVariantEditForm from "./CourseVariantEditForm"
 import DatePickerField from "./DatePickers"
-import { statuses as statusesT } from "./form-validation"
+import { CourseEditSchemaType, statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
 import {
   CheckboxField,
@@ -510,11 +508,11 @@ const CourseEditFormComponent = ({
   )
 }
 
-interface CourseEditFormProps<SchemaType extends ObjectShape> {
+interface CourseEditFormProps {
   course: CourseFormValues
-  studyModules?: StudyModuleDetailedFieldsFragment[] | null
-  courses?: EditorCourseOtherCoursesFieldsFragment[] | null
-  validationSchema: Yup.ObjectSchema<SchemaType>
+  studyModules?: StudyModuleDetailedFieldsFragment[]
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
+  validationSchema: CourseEditSchemaType
   onSubmit: (
     values: CourseFormValues,
     FormikHelpers: FormikHelpers<CourseFormValues>,
@@ -523,7 +521,7 @@ interface CourseEditFormProps<SchemaType extends ObjectShape> {
   onDelete: (values: CourseFormValues) => void
 }
 
-function CourseEditForm<SchemaType extends ObjectShape>({
+function CourseEditForm({
   course,
   studyModules,
   courses,
@@ -531,7 +529,7 @@ function CourseEditForm<SchemaType extends ObjectShape>({
   onSubmit,
   onCancel,
   onDelete,
-}: CourseEditFormProps<SchemaType>) {
+}: CourseEditFormProps) {
   const validate = useCallback(async (values: CourseFormValues) => {
     try {
       await validationSchema.validate(values, {

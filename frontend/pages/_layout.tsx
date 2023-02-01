@@ -10,6 +10,8 @@ import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
+import { fontVariableClass } from "/src/fonts"
+import { fontVariableClass as newThemeFontVariableClass } from "/src/newTheme/typography"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;
@@ -18,13 +20,28 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
-const Layout = ({ children }: PropsWithChildren) => {
+// when the footer is visible, it will overlap the content;
+// this empty div appears with the dynamic height of the toolbar to offset this
+const FooterUpPusher = styled("div")(
+  ({ theme }) => `
+  display: flex;
+  min-height: ${theme.mixins.toolbar.minHeight}px;
+
+  @media (min-width: 1050px) {
+    display: none;
+  }
+`,
+)
+
+const Layout = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
+  const isNew = router.pathname?.includes("_new")
+  const fontClass = isNew ? newThemeFontVariableClass : fontVariableClass
 
   return (
-    <div>
+    <div className={fontClass}>
       <SkipLink />
       <FooterDownPusherWrapper>
         <div>
@@ -36,6 +53,7 @@ const Layout = ({ children }: PropsWithChildren) => {
           </main>
         </div>
         <Footer />
+        <FooterUpPusher />
         <MobileBottomNavigation />
       </FooterDownPusherWrapper>
     </div>

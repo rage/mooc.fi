@@ -1,4 +1,4 @@
-import { Dispatch, useCallback, useContext, useEffect, useState } from "react"
+import { Dispatch, useCallback, useEffect, useState } from "react"
 
 import {
   FormikContextType,
@@ -20,7 +20,7 @@ import { styled } from "@mui/material/styles"
 
 import { FormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import AnchorContext from "/contexts/AnchorContext"
+import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
@@ -30,9 +30,14 @@ import { useTranslator } from "/util/useTranslator"
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
 
-const FormBackground = styled(Paper)`
+const FormBackground = styled(Paper)(
+  ({ theme }) => `
   padding: 2em;
-`
+  ${theme.breakpoints.down("md")} {
+    padding: 0;
+  }
+`,
+)
 
 const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<
   FormikContextType<unknown>["status"]
@@ -62,7 +67,7 @@ const FormWrapper = <T extends FormValues>(
   } = useFormikContext<T>()
   const { onCancel, onDelete, setTab = (_) => void 0, children } = props
   const t = useTranslator(CommonTranslations)
-  const { anchors } = useContext(AnchorContext)
+  const { anchors } = useAnchorContext()
   const confirm = useConfirm()
 
   const [deleteVisible, setDeleteVisible] = useState(false)
@@ -86,6 +91,7 @@ const FormWrapper = <T extends FormValues>(
       setTab(anchor?.tab ?? 0)
 
       setImmediate(() => {
+        // TODO: add a simple pulsating animation to the field for a while
         const element = document.getElementById(anchorLink)
         element?.scrollIntoView()
       })
@@ -100,6 +106,38 @@ const FormWrapper = <T extends FormValues>(
       setSubmitted(false)
     }
   }, [status])
+
+  const onCancelClick = useCallback(() => {
+    if (dirty) {
+      return confirm({
+        title: t("confirmationUnsavedChanges"),
+        description: t("confirmationLeaveWithoutSaving"),
+        confirmationText: t("confirmationYes"),
+        cancellationText: t("confirmationNo"),
+      })
+        .then(onCancel)
+        .catch(() => {
+          // ignore
+        })
+    }
+    return onCancel()
+  }, [dirty])
+
+  const onDeleteClick = useCallback(
+    () =>
+      confirm({
+        title: t("confirmationAboutToDelete"),
+        description: t("confirmationDelete"),
+        confirmationText: t("confirmationYes"),
+        cancellationText: t("confirmationNo"),
+      }).then(() => onDelete(values)),
+    [values],
+  )
+
+  const onToggleDeleteVisible = useCallback(
+    () => setDeleteVisible((value) => !value),
+    [],
+  )
 
   return (
     <Container maxWidth="md">
@@ -123,20 +161,7 @@ const FormWrapper = <T extends FormValues>(
               style={{ width: "100%" }}
               disabled={isSubmitting || submitted}
               variant="contained"
-              onClick={() =>
-                dirty
-                  ? confirm({
-                      title: t("confirmationUnsavedChanges"),
-                      description: t("confirmationLeaveWithoutSaving"),
-                      confirmationText: t("confirmationYes"),
-                      cancellationText: t("confirmationNo"),
-                    })
-                      .then(onCancel)
-                      .catch(() => {
-                        // ignore
-                      })
-                  : onCancel()
-              }
+              onClick={onCancelClick}
             >
               {t("cancel")}
             </StyledButton>
@@ -146,7 +171,7 @@ const FormWrapper = <T extends FormValues>(
               <Tooltip title={t("showDelete")}>
                 <MUICheckbox
                   checked={deleteVisible}
-                  onChange={() => setDeleteVisible(!deleteVisible)}
+                  onChange={onToggleDeleteVisible}
                 />
               </Tooltip>
             ) : null}
@@ -155,14 +180,7 @@ const FormWrapper = <T extends FormValues>(
                 variant="contained"
                 color="secondary"
                 disabled={isSubmitting || submitted}
-                onClick={() =>
-                  confirm({
-                    title: t("confirmationAboutToDelete"),
-                    description: t("confirmationDelete"),
-                    confirmationText: t("confirmationYes"),
-                    cancellationText: t("confirmationNo"),
-                  }).then(() => onDelete(values))
-                }
+                onClick={onDeleteClick}
               >
                 {t("delete")}
               </StyledButton>
@@ -181,8 +199,9 @@ const FormWrapper = <T extends FormValues>(
 }
 
 // need to pass type through
+// @ts-ignore: not used for now?
 const WrappedFormWrapper: <T extends FormValues>(
   props: React.PropsWithChildren<FormWrapperProps<T>>,
 ) => JSX.Element = withEnumeratingAnchors(FormWrapper)
 
-export default WrappedFormWrapper
+export default withEnumeratingAnchors(FormWrapper) // as typeof FormWrapper

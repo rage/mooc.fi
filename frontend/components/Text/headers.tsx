@@ -1,5 +1,6 @@
+import { BoxProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
+import Typography, { TypographyProps } from "@mui/material/Typography"
 
 export const H1NoBackground = styled(Typography)`
   padding-top: 0.7em;
@@ -41,17 +42,19 @@ export const H1Background = styled(Typography)`
 interface TitleProps {
   fontcolor: string
   titlebackground: string
-  component: string
 }
 
-export const H2Background = styled(Typography)<TitleProps>`
+export const H2Background = styled(Typography, {
+  shouldForwardProp: (prop) =>
+    prop !== "fontcolor" && prop !== "titlebackground",
+})<TitleProps & TypographyProps & BoxProps>`
   margin: 5rem auto 1rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 1rem;
   display: table;
-  font-family: Roboto;
+  font-family: var(--body-font);
   font-weight: 550;
 
   ${(props) =>
@@ -63,7 +66,7 @@ export const H2NoBackground = styled(Typography)`
   padding-left: 1rem;
   padding-right: 1rem;
   display: table;
-  font-family: Roboto;
+  font-family: var(--body-font);
   font-weight: 550;
   font-size: 37px;
   line-height: 58px;
@@ -71,15 +74,16 @@ export const H2NoBackground = styled(Typography)`
 
 interface SubTitleProps {
   fontcolor?: string
-  component: string
 }
 
-export const SubtitleBackground = styled(Typography)<SubTitleProps>`
+export const SubtitleBackground = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "fontcolor",
+})<SubTitleProps & TypographyProps & BoxProps>`
   margin: 0rem auto 3rem auto;
   padding: 1rem;
   display: table;
   background-color: white;
-  font-family: Roboto;
+  font-family: var(--body-font);
   font-weight: 450;
   ${(props) => `color: ${props.fontcolor ?? "black"};`}
 `

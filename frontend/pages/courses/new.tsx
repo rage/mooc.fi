@@ -59,8 +59,8 @@ const NewCourse = () => {
         ) : beta ? (
           <CourseEdit2
             {...(clonedCourse ? { course: clonedCourse } : {})}
-            courses={coursesData?.courses}
-            studyModules={studyModulesData?.study_modules}
+            courses={coursesData?.courses ?? []}
+            studyModules={studyModulesData?.study_modules ?? []}
           />
         ) : (
           <CourseEdit

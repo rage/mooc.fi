@@ -1,4 +1,4 @@
-import { createUploadLink } from "apollo-upload-client"
+import { createUploadLink } from "apollo-upload-client/public/index.mjs"
 import extractFiles from "extract-files/extractFiles.mjs"
 import isExtractableFile from "extract-files/isExtractableFile.mjs"
 import fetch from "isomorphic-unfetch"
@@ -38,10 +38,14 @@ function create(initialState: any, originalAccessToken?: string) {
     }
   })
 
-  const httpLinkOptions = {
+  const httpLinkOptions: Parameters<typeof createUploadLink>[0] &
+    BatchHttpLink.Options = {
     uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch,
+    headers: {
+      "apollo-require-preflight": "true",
+    },
   }
 
   // use BatchHttpLink if there are no uploaded files, otherwise use
@@ -109,7 +113,7 @@ function create(initialState: any, originalAccessToken?: string) {
     link: isBrowser
       ? ApolloLink.from([errorLink, authLink.concat(uploadAndBatchHTTPLink)])
       : authLink.concat(uploadAndBatchHTTPLink),
-    cache: cache.restore(initialState || {}),
+    cache: cache.restore(initialState ?? {}),
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {

@@ -1,17 +1,21 @@
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
-import { ApolloServer } from "apollo-server-express"
+import http from "http"
+
+import bodyParser from "body-parser"
 import cors from "cors"
-import express from "express"
+import express, { Express } from "express"
 import { graphqlUploadExpress } from "graphql-upload"
+import { frameguard } from "helmet"
 import morgan from "morgan"
+
+import { ApolloServer } from "@apollo/server"
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
+import { expressMiddleware } from "@apollo/server/express4"
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { ServerContext } from "./context"
 import createSchema from "./schema"
-
-const helmet = require("helmet")
-const bodyParser = require("body-parser")
 
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({
@@ -21,52 +25,70 @@ const createExpressAppWithContext = ({
 }: ServerContext) => {
   const app = express()
 
-  app.use(cors())
-  app.use(helmet.frameguard())
-  app.use(bodyParser.json())
+  app.use(
+    cors<cors.CorsRequest>(),
+    bodyParser.json(),
+    frameguard(),
+    graphqlUploadExpress(),
+  )
   if (!isTest) {
     app.use(morgan("combined"))
   }
-  app.use(graphqlUploadExpress())
-  app.use(express.json())
 
   app.use("/api", apiRouter({ prisma, knex, logger }))
 
   return app
 }
 
+const useExpressMiddleware = (
+  app: Express,
+  apolloServer: ApolloServer<ServerContext>,
+  serverContext: ServerContext,
+) => {
+  const { prisma, logger, knex, extraContext } = serverContext
+
+  app.use(
+    isProduction ? "/api" : "/",
+    expressMiddleware(apolloServer, {
+      context: async (ctx) => ({
+        ...ctx,
+        prisma,
+        logger,
+        knex,
+        ...extraContext,
+      }),
+    }),
+  )
+
+  return app
+}
+
 export default async (serverContext: ServerContext) => {
-  const { prisma, logger, knex, extraContext = {} } = serverContext
+  const app = createExpressAppWithContext(serverContext)
+  const httpServer = http.createServer(app)
   const schema = createSchema()
 
-  const apollo = new ApolloServer({
-    context: (ctx) => ({
-      ...ctx,
-      prisma,
-      logger,
-      knex,
-      ...extraContext,
-    }),
+  const apolloServer = new ApolloServer<ServerContext>({
     schema,
     plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageGraphQLPlayground({
         endpoint: isProduction ? "/api" : "/",
       }),
     ],
     introspection: true,
-    logger,
-    debug: DEBUG,
+    logger: serverContext.logger,
+    includeStacktraceInErrorResponses: DEBUG,
+    allowBatchedHttpRequests: true,
+    // cache: "bounded",
   })
-  await apollo.start()
+  await apolloServer.start()
 
-  const app = createExpressAppWithContext(serverContext)
-
-  apollo.applyMiddleware({ app, path: isProduction ? "/api" : "/" })
+  useExpressMiddleware(app, apolloServer, serverContext)
 
   return {
-    apollo,
+    apolloServer,
     app,
+    httpServer,
   }
 }
-
-// export default express

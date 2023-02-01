@@ -1,54 +1,60 @@
+import { useCallback } from "react"
+
 import {
-  Path,
+  ControllerRenderProps,
+  FieldValues,
   PathValue,
-  UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
 
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material"
 
-import { FormValues } from "../../types"
 import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
 
-interface ControlledRadioGroupProps extends ControlledFieldProps {
+interface ControlledRadioGroupProps<T extends FieldValues>
+  extends ControlledFieldProps<T> {
   options: Array<{ value: string; label: string }>
 }
 
-export function ControlledRadioGroup<T extends FormValues>(
-  props: ControlledRadioGroupProps,
+export function ControlledRadioGroup<T extends FieldValues>(
+  props: ControlledRadioGroupProps<T>,
 ) {
   const { label, options } = props
-  const name = props.name as Path<T>
+  const name = props.name
   const { setValue } = useFormContext<T>()
+
+  const onChange = useCallback(
+    (_: any, newValue: string) =>
+      setValue(name, newValue as PathValue<T, typeof name>, {
+        shouldDirty: true,
+      }),
+    [name, setValue],
+  )
+
+  const renderRadioGroup = useCallback(
+    ({ value }: ControllerRenderProps<T>) => (
+      <RadioGroup aria-label={label} value={value} onChange={onChange}>
+        {options.map((option) => (
+          <FormControlLabel
+            key={`${name}-${option.value}`}
+            value={option.value}
+            control={<Radio />}
+            label={option.label}
+          />
+        ))}
+      </RadioGroup>
+    ),
+    [name, label, options, onChange, setValue],
+  )
+
   return (
     <FieldController
       name={name}
       label={label}
-      renderComponent={({ value }) => (
-        <RadioGroup
-          aria-label={label}
-          value={value}
-          onChange={(_, newValue) =>
-            setValue(
-              name,
-              newValue as UnpackNestedValue<PathValue<T, Path<T>>>,
-              { shouldDirty: true },
-            )
-          }
-        >
-          {options.map((option) => (
-            <FormControlLabel
-              key={`${name}-${option.value}`}
-              value={option.value}
-              control={<Radio />}
-              label={option.label}
-            />
-          ))}
-        </RadioGroup>
-      )}
+      renderComponent={renderRadioGroup}
     />
   )
 }

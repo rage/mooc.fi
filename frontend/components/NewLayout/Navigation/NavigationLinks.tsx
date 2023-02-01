@@ -1,23 +1,30 @@
-import Link from "next/link"
-
-import { styled } from "@mui/material/styles"
+import { Link } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/NewLayout/Navigation"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const NavigationLink = styled("a", {
+const NavigationLink = styled(Link, {
   shouldForwardProp: (prop) => prop !== "active",
 })<React.ComponentProps<"a"> & { active: boolean }>`
   text-decoration: none;
   color: inherit;
-  font-weight: ${({ active }) => (active ? "600" : "inherit")};
-  font-size: clamp(14px, 1.5vw, 16px);
+  font-size: 1rem;
+  padding: 0.2rem;
+  ${({ active }) =>
+    active
+      ? css`
+          border-bottom: 2px solid rgba(200, 100, 0, 0.25);
+          font-weight: 600;
+        `
+      : css`
+          &:hover {
+            text-shadow: 0px 0px 1px black;
+          }
+        `}
 
-  &:hover {
-    font-weight: 600;
-  }
   transition: 0.1s;
 `
 
@@ -35,22 +42,25 @@ export const NavigationLinks = () => {
 
   return (
     <NavigationLinkContainer>
-      <Link href="/_new/courses" passHref>
-        <NavigationLink active={active === "courses"}>
-          {t("courses")}
-        </NavigationLink>
-      </Link>
+      <NavigationLink href="/_new/courses" active={active === "courses"}>
+        {t("courses")}
+      </NavigationLink>
 
-      <Link href="/_new/study-modules" passHref>
-        <NavigationLink active={active === "study-modules"}>
-          {t("modules")}
-        </NavigationLink>
-      </Link>
+      <NavigationLink
+        href="/_new/study-modules"
+        active={active === "study-modules"}
+      >
+        {t("modules")}
+      </NavigationLink>
 
       {admin && (
-        <Link href="/_new/admin" passHref prefetch={false}>
-          <NavigationLink active={active === "admin"}>Admin</NavigationLink>
-        </Link>
+        <NavigationLink
+          href="/_new/admin"
+          prefetch={false}
+          active={active === "admin"}
+        >
+          Admin
+        </NavigationLink>
       )}
     </NavigationLinkContainer>
   )

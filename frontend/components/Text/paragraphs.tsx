@@ -8,5 +8,5 @@ export const CardText = styled(Typography)`
 ` as typeof Typography
 
 export const CardCaption = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
+  font-family: var(--header-font) !important;
 ` as typeof Typography

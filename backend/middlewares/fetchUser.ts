@@ -1,8 +1,8 @@
-import { AuthenticationError } from "apollo-server-express"
 import { plugin } from "nexus"
 
 import { Role } from "../accessControl"
 import { Context } from "../context"
+import { GraphQLAuthenticationError } from "../lib/errors"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { UserInfo } from "/domain/UserInfo"
@@ -41,7 +41,7 @@ const setContextOrganization = async (
     where: { secret_key: secret },
   })
   if (!org) {
-    throw new AuthenticationError("Please log in.")
+    throw new GraphQLAuthenticationError("Please log in.")
   }
 
   ctx.organization = org
@@ -49,6 +49,7 @@ const setContextOrganization = async (
 }
 
 const setContextUser = async (ctx: Context, rawToken: string) => {
+  // TODO: provide mock for tests
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null

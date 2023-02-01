@@ -1,9 +1,9 @@
 import { AI_SLACK_URL } from "../config"
 import { languageInfo, LanguageInfo } from "../config/languageConfig"
+import sentryLogger from "../lib/logger"
+import SlackPoster from "../lib/slackPoster"
 import prisma from "../prisma"
 import Knex from "../services/knex"
-import sentryLogger from "./lib/logger"
-import SlackPoster from "./lib/slackPoster"
 
 const logger = sentryLogger({ service: "send-ai-statistics" })
 const slackPoster: SlackPoster = new SlackPoster(logger)

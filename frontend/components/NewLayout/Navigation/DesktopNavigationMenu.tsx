@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
@@ -16,17 +15,20 @@ import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const NavigationMenuContainer = styled("nav")`
+const NavigationMenuContainer = styled("nav")(
+  ({ theme }) => `
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  @media (max-width: 599px) {
+
+  ${theme.breakpoints.down("sm")} {
     display: none;
   }
-`
+`,
+)
 
 const NavigationRightContainer = styled("div")`
   display: flex;
@@ -36,19 +38,22 @@ const NavigationRightContainer = styled("div")`
   width: 100%;
 `
 
-const NavigationLinksWrapper = styled("div")`
+const NavigationLinksWrapper = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-shrink: 1;
-  @media (max-width: 799px) {
+  
+  ${theme.breakpoints.down("md")} {
     display: none;
   }
-`
+`,
+)
 
 const MenuButtonBase = styled(Button)`
   display: flex;
-  max-height: 10vh;
+  max-height: 8vh;
   white-space: nowrap;
-  font-size: clamp(12px, 1.5vw, 16px);
+  font-size: 1rem;
   gap: 0.5rem;
   max-width: 240px;
   overflow: hidden;
@@ -108,26 +113,30 @@ const UserOptionsMenu = () => {
   if (loggedIn) {
     return (
       <>
-        <Link href="/_new/profile" passHref>
-          <MenuButton Icon={User} narrow={isNarrow} title={t("myProfile")}>
-            {isNarrow ? null : userDisplayName}
-          </MenuButton>
-        </Link>
-        <Link href={pathname} passHref>
-          <MenuButton Icon={SignOut} onClick={onLogOut} title={t("logout")} />
-        </Link>
+        <MenuButton
+          href="/_new/profile"
+          Icon={User}
+          narrow={isNarrow}
+          title={t("myProfile")}
+        >
+          {isNarrow ? null : userDisplayName}
+        </MenuButton>
+        <MenuButton
+          href={pathname}
+          Icon={SignOut}
+          onClick={onLogOut}
+          title={t("logout")}
+        />
       </>
     )
   }
 
   return (
     <>
-      <Link href="/_new/sign-in" passHref>
-        <MenuButton>{t("loginShort")}</MenuButton>
-      </Link>
-      <Link href="/_new/sign-up" prefetch={false} passHref>
-        <MenuButton>{t("signUp")}</MenuButton>
-      </Link>
+      <MenuButton href="/_new/sign-in">{t("loginShort")}</MenuButton>
+      <MenuButton href="/_new/sign-up" prefetch={false}>
+        {t("signUp")}
+      </MenuButton>
     </>
   )
 }

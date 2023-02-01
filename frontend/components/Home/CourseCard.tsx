@@ -24,6 +24,10 @@ const Background = styled(ClickableButtonBase)`
 ` as typeof ClickableButtonBase
 
 const ResponsiveCourseImageBase = styled(CourseImageBase)`
+  position: relative;
+  width: 100%;
+  height: 230px;
+  min-height: 230px;
   @media (max-width: 430px) {
     height: 235px;
     width: 30%;
@@ -58,12 +62,6 @@ const TextArea = styled("div")`
   }
 `
 
-const ImageContainer = styled("div")`
-  width: 100%;
-  height: 100%;
-  position: relative;
-`
-
 const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
@@ -71,7 +69,7 @@ interface CourseCardProps {
   course?: CourseFieldsFragment
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+function CourseCard({ course }: CourseCardProps) {
   const t = useTranslator(HomeTranslations)
 
   return (
@@ -91,31 +89,29 @@ export default function CourseCard({ course }: CourseCardProps) {
           role="none"
         >
           <ResponsiveCourseImageBase>
-            <ImageContainer>
-              {course ? (
-                <CourseImage
-                  photo={course.photo}
-                  style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+            {course ? (
+              <CourseImage
+                photo={course.photo}
+                style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+              />
+            ) : (
+              <Skeleton variant="rectangular" height="100%" />
+            )}
+            {course?.link &&
+              course?.status === "Upcoming" &&
+              course?.upcoming_active_link && (
+                <Chip
+                  variant="outlined"
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "white",
+                  }}
+                  clickable
+                  label={t("coursePageAvailable")}
                 />
-              ) : (
-                <Skeleton variant="rectangular" height="100%" />
               )}
-              {course?.link &&
-                course?.status === "Upcoming" &&
-                course?.upcoming_active_link && (
-                  <Chip
-                    variant="outlined"
-                    style={{
-                      position: "absolute",
-                      top: "10px",
-                      right: "10px",
-                      backgroundColor: "white",
-                    }}
-                    clickable
-                    label={t("coursePageAvailable")}
-                  />
-                )}
-            </ImageContainer>
           </ResponsiveCourseImageBase>
           <TextArea>
             {course ? (
@@ -142,3 +138,5 @@ export default function CourseCard({ course }: CourseCardProps) {
     </Grid>
   )
 }
+
+export default CourseCard

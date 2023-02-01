@@ -1,8 +1,8 @@
 import { groupBy } from "lodash"
 
+import { DatabaseInputError } from "../../../../lib/errors"
 import { getTestContext } from "../../../../tests"
 import { seed } from "../../../../tests/data"
-import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../../common/kafkaContext"
 import { ExerciseData, Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"

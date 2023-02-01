@@ -1,8 +1,6 @@
 import DoneIcon from "@mui/icons-material/Done"
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
+import { Button, Grid, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import CompletionsTranslations from "/translations/completions"
@@ -85,7 +83,7 @@ function CompletedCourseCard(props: CourseCardProps) {
         </CardText>
         {isRegistered ? (
           registeredCompletions.map((r) => (
-            <RegistrationDetails>
+            <RegistrationDetails key={r.id}>
               <CardText>
                 {t("registeredDate")} {formatDateTime(r.created_at)}
               </CardText>

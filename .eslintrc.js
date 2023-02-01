@@ -6,7 +6,8 @@ const esLintConfig = {
     "@typescript-eslint",
     "eslint-custom-rules",
     "react-hooks",
-    "jsx-a11y",
+    // "jsx-a11y",
+    "styled-components-a11y",
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -14,7 +15,9 @@ const esLintConfig = {
     ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
-    project: "./tsconfig.json",
+    parser: "@typescript-eslint/parser",
+    project: ["./tsconfig.json"],
+    tsconfigRootDir: __dirname,
   },
   ignorePatterns: ["node_modules/", "generated/", "dist/", "sourcemap/"],
   rules: {
@@ -42,6 +45,13 @@ const esLintConfig = {
             message: "Don't use Grid from @mui/material",
           },
         ],
+        patterns: [
+          {
+            group: ["@mui/*/*/*"],
+            message:
+              "Don't use deep @mui imports - prevents module duplication",
+          },
+        ],
       },
     ],
     "eslint-custom-rules/no-emotion-styled-import": "error",
@@ -67,11 +77,12 @@ const esLintConfig = {
     complexity: "warn",
   },
   extends: [
+    // "plugin:jsx-a11y/recommended",
+    "plugin:@next/next/recommended",
+    "plugin:styled-components-a11y/recommended",
     "plugin:@typescript-eslint/recommended",
     // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now
-    "plugin:jsx-a11y/recommended",
     "prettier",
-    "plugin:@next/next/recommended",
     "plugin:@next/next/core-web-vitals",
   ],
   settings: {

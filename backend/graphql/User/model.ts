@@ -1,8 +1,8 @@
-import { UserInputError } from "apollo-server-express"
 import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
+import { UserInputError } from "../../lib/errors"
 import { getCourseOrAlias } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"

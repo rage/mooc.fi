@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
 import {
   Collapse,
@@ -49,13 +49,23 @@ const CollapseTableCell = styled(TableCell)`
   padding-bottom: 0;
 `
 
-export default function Completion({ completion, course }: CompletionProps) {
+function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
   const isOpen = useMemo(
     () => state[course?.id ?? "_"]?.completion ?? false,
     [state, course],
+  )
+
+  const onCollapseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.TOGGLE,
+        collapsable: CollapsablePart.COMPLETION,
+        course: course?.id ?? "_",
+      }),
+    [course],
   )
 
   if (!completion) {
@@ -89,13 +99,7 @@ export default function Completion({ completion, course }: CompletionProps) {
               <TableCell align="right">
                 <CollapseButton
                   open={isOpen}
-                  onClick={() =>
-                    dispatch({
-                      type: ActionType.TOGGLE,
-                      collapsable: CollapsablePart.COMPLETION,
-                      course: course?.id ?? "_",
-                    })
-                  }
+                  onClick={onCollapseClick}
                   tooltip={t("completionCollapseTooltip")}
                 />
               </TableCell>
@@ -118,3 +122,5 @@ export default function Completion({ completion, course }: CompletionProps) {
     </SummaryCard>
   )
 }
+
+export default Completion

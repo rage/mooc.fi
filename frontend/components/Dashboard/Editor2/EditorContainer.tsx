@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from "react"
+import React, { PropsWithChildren, useCallback, useState } from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import { Path, useFormContext } from "react-hook-form"
@@ -31,7 +31,7 @@ const Status = styled("p", { shouldForwardProp: (prop) => prop !== "error" })<{
   color: ${(props) => (props.error ? "#FF0000" : "default")};
 `
 
-function EditorContainer<T extends FormValues>({
+function EditorContainer<T extends FormValues = FormValues>({
   children,
 }: PropsWithChildren) {
   const t = useTranslator(CommonTranslations)
@@ -43,6 +43,52 @@ function EditorContainer<T extends FormValues>({
   const id = watch("id" as Path<T>)
 
   const { isSubmitting, isSubmitted, isDirty } = formState
+
+  const onSaveClick = useCallback(
+    () => handleSubmit(onSubmit, onError)(),
+    [handleSubmit, onSubmit, onError],
+  )
+
+  const onCancelClick = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      if (isDirty) {
+        return onCancel()
+      }
+      try {
+        confirm({
+          title: t("confirmationUnsavedChanges"),
+          description: t("confirmationLeaveWithoutSaving"),
+          confirmationText: t("confirmationYes"),
+          cancellationText: t("confirmationNo"),
+        })
+        return onCancel()
+      } catch {}
+    },
+    [isDirty, onCancel, confirm, t],
+  )
+
+  const onDeleteClick = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+
+      try {
+        await confirm({
+          title: t("confirmationAboutToDelete"),
+          description: t("confirmationDelete"),
+          confirmationText: t("confirmationYes"),
+          cancellationText: t("confirmationNo"),
+        })
+        return onDelete(id)
+      } catch {}
+    },
+    [id, onDelete, confirm, t],
+  )
+
+  const onDeleteVisibleClick = useCallback(
+    () => setDeleteVisible((value) => !value),
+    [setDeleteVisible],
+  )
 
   return (
     <Container maxWidth="md">
@@ -58,7 +104,7 @@ function EditorContainer<T extends FormValues>({
               <StyledButton
                 color="primary"
                 disabled={!isDirty || isSubmitting}
-                onClick={() => handleSubmit(onSubmit, onError)()}
+                onClick={onSaveClick}
                 style={{ width: "100%" }}
               >
                 {isSubmitting ? <CircularProgress size={20} /> : t("save")}
@@ -70,21 +116,7 @@ function EditorContainer<T extends FormValues>({
                 style={{ width: "100%" }}
                 disabled={isSubmitting || isSubmitted}
                 variant="contained"
-                onClick={(e) => {
-                  e.preventDefault()
-                  return isDirty
-                    ? confirm({
-                        title: t("confirmationUnsavedChanges"),
-                        description: t("confirmationLeaveWithoutSaving"),
-                        confirmationText: t("confirmationYes"),
-                        cancellationText: t("confirmationNo"),
-                      })
-                        .then(onCancel)
-                        .catch(() => {
-                          // ignore
-                        })
-                    : onCancel()
-                }}
+                onClick={onCancelClick}
               >
                 {t("cancel")}
               </StyledButton>
@@ -95,7 +127,7 @@ function EditorContainer<T extends FormValues>({
               <Tooltip title={t("showDelete")}>
                 <Checkbox
                   checked={deleteVisible}
-                  onChange={() => setDeleteVisible(!deleteVisible)}
+                  onChange={onDeleteVisibleClick}
                 />
               </Tooltip>
             ) : null}
@@ -104,20 +136,7 @@ function EditorContainer<T extends FormValues>({
                 variant="contained"
                 color="secondary"
                 disabled={isSubmitting || isSubmitted}
-                onClick={(e) => {
-                  e.preventDefault()
-
-                  return confirm({
-                    title: t("confirmationAboutToDelete"),
-                    description: t("confirmationDelete"),
-                    confirmationText: t("confirmationYes"),
-                    cancellationText: t("confirmationNo"),
-                  })
-                    .then(() => onDelete(id))
-                    .catch(() => {
-                      // ignore
-                    })
-                }}
+                onClick={onDeleteClick}
               >
                 {t("delete")}
               </StyledButton>

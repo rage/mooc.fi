@@ -11,8 +11,8 @@ import {
   KAFKA_HOST,
   KAFKA_TOP_OF_THE_QUEUE,
 } from "../../../config"
+import { KafkaError } from "../../../lib/errors"
 import { attachPrismaEvents } from "../../../util/prismaLogger"
-import { KafkaError } from "../../lib/errors"
 import checkConnectionInInterval from "./connectedChecker"
 
 const logCommit =
@@ -78,6 +78,7 @@ export const createKafkaConsumer = ({
     attachPrismaEvents({
       logger,
       prisma,
+      knex,
     })
   }
   return consumer

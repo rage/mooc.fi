@@ -1,8 +1,13 @@
+import { useCallback } from "react"
+
 import { useConfirm } from "material-ui-confirm"
 import {
+  FieldArray,
+  FieldArrayPath,
+  FieldArrayPathValue,
   FieldArrayWithId,
+  FieldValues,
   Path,
-  UnpackNestedValue,
   useFieldArray,
   useFormContext,
 } from "react-hook-form"
@@ -13,7 +18,7 @@ import { Button, FormGroup, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
-import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
+import { ControlledFieldArrayProps } from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
@@ -32,20 +37,30 @@ export const ArrayItem = styled("li")`
   align-items: stretch;
 `
 
-export const StyledButton = styled(Button)`
-  margin: 0.25rem;
-  height: 3rem;
-`
-interface ControlledFieldArrayListProps<T extends { _id?: string }>
-  extends ControlledFieldProps {
-  initialValues: Partial<UnpackNestedValue<FieldArrayWithId<T, any, "_id">>>
-  render: (
-    item: Partial<FieldArrayWithId<T, any, string>>,
-    index: number,
-  ) => JSX.Element
+type UnwrapArray<T> = T extends (infer U)[] ? U : T
+
+export type FieldArrayWithOptionalId<
+  TFieldValues extends FieldValues = FieldValues,
+  TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+  TKeyName extends string = "id",
+> = FieldArray<TFieldValues, TFieldArrayName> &
+  Partial<Record<TKeyName, string>>
+
+export interface ControlledFieldArrayListProps<
+  TFieldValues extends FieldValues,
+  TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+  TKeyName extends string = "_id",
+  TItem extends FieldArrayWithOptionalId<
+    TFieldValues,
+    TFieldArrayName,
+    TKeyName
+  > = FieldArrayWithOptionalId<TFieldValues, TFieldArrayName, TKeyName>,
+> extends ControlledFieldArrayProps<TFieldValues, TFieldArrayName> {
+  initialValues: UnwrapArray<FieldArrayPathValue<TFieldValues, TFieldArrayName>>
+  render: (item: TItem, index: number) => JSX.Element
   conditions: {
-    add: (item: Partial<T>[]) => boolean
-    remove: (item: Partial<FieldArrayWithId<T, any, string>>) => boolean
+    add: (item: Array<TItem>) => boolean
+    remove: (item: TItem) => boolean
   }
   texts: {
     title?: string
@@ -58,9 +73,15 @@ interface ControlledFieldArrayListProps<T extends { _id?: string }>
   }
 }
 
-export function ControlledFieldArrayList<T extends { _id?: string }>(
-  props: ControlledFieldArrayListProps<T>,
-) {
+export const StyledButton = styled(Button)`
+  margin: 0.25rem;
+  height: 3rem;
+`
+
+export function ControlledFieldArrayList<
+  TFieldValues extends Partial<FieldValues> & Partial<Record<"_id", string>>,
+  TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+>(props: ControlledFieldArrayListProps<TFieldValues, TFieldArrayName>) {
   const t = useTranslator(CoursesTranslations)
   const {
     render,
@@ -76,16 +97,53 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
       removeText = t("courseRemove"),
     },
   } = props
-  const name = props.name as Path<T>
-  const { control, formState, watch, trigger } = useFormContext<T>()
-  const { fields, append, remove } = useFieldArray<T, any, "_id">({
+  const name = props.name
+  const { control, formState, watch, trigger } = useFormContext<TFieldValues>()
+  const { fields, append, remove } = useFieldArray({
     name,
     control,
+    keyName: "_id",
   })
   const { isSubmitting } = formState
   const confirm = useConfirm()
 
-  const watchedFields = watch([name])
+  const watchedFields = watch([name as Path<TFieldValues>])
+
+  const onRemove = useCallback(
+    (
+        item: FieldArrayWithId<TFieldValues, TFieldArrayName, "_id">,
+        index: number,
+      ) =>
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (conditions.remove(item)) {
+          remove(index)
+        } else {
+          confirm({
+            title,
+            description,
+            confirmationText,
+            cancellationText,
+          })
+            .then(() => {
+              remove(index)
+            })
+            .catch(() => {
+              // ignore
+            })
+        }
+      },
+    [conditions, confirm, description, remove, title],
+  )
+
+  const onAdd = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      append({ ...initialValues })
+      trigger(name as Path<TFieldValues>)
+    },
+    [append, initialValues, name, trigger],
+  )
 
   return (
     <FormGroup>
@@ -98,25 +156,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
                 variant="contained"
                 disabled={isSubmitting}
                 color="secondary"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (conditions.remove(item)) {
-                    remove(index)
-                  } else {
-                    confirm({
-                      title,
-                      description,
-                      confirmationText,
-                      cancellationText,
-                    })
-                      .then(() => {
-                        remove(index)
-                      })
-                      .catch(() => {
-                        // ignore
-                      })
-                  }
-                }}
+                onClick={onRemove(item, index)}
                 endIcon={<RemoveIcon>{removeText}</RemoveIcon>}
               >
                 {removeText}
@@ -133,16 +173,12 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
             {noFields}
           </Typography>
         )}
-        {conditions.add(watchedFields as Partial<T>[]) ? (
+        {conditions.add(watchedFields) ? (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"
             disabled={isSubmitting}
-            onClick={(e) => {
-              e.preventDefault()
-              append({ ...initialValues })
-              trigger(name)
-            }}
+            onClick={onAdd}
             endIcon={<AddIcon>{addText}</AddIcon>}
             fullWidth
           >
