@@ -1,9 +1,9 @@
-import styles, { ForegroundColor } from "ansi-styles"
+// import styles, { ForegroundColor } from "ansi-styles"
 import { NextRequest, NextResponse } from "next/server"
 
 import { redirects_list } from "./Redirects"
 
-const responseStatus = [
+/*const responseStatus = [
   "success",
   "info",
   "warn",
@@ -35,7 +35,7 @@ const colors: Record<(typeof responseStatus)[number], keyof ForegroundColor> = {
 
 const responseStatusToColor = (status: number): keyof ForegroundColor => {
   return colors[statusToResponseStatus(status)]
-}
+}*/
 
 const ipHeaderCandidates = [
   "x-client-ip",
@@ -75,11 +75,12 @@ const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
   const httpVersion = "HTTP/1.1"
   const resContentLength = res.headers.get("content-length") || "-"
 
-  const color = styles[responseStatusToColor(status)]
-  const log = `${remoteAddress} ${remoteUser} [${date}] "${color.open}${method} ${url} ${httpVersion}${color.close}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
-
+  // const color = styles[responseStatusToColor(status)]
+  // const log = `${remoteAddress} ${remoteUser} [${date}] "${color.open}${method} ${url} ${httpVersion}${color.close}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
+  const message = `${remoteAddress} ${remoteUser} [${date}] "${method} ${url} ${httpVersion}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
   const logFunction = status >= 400 ? console.error : console.log
-  logFunction(log)
+  logFunction(message)
+
   // console.log(request.nextUrl)
   return res
 }
