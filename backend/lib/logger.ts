@@ -21,7 +21,7 @@ export default function logger({ service }: LoggerOptions) {
           service,
         },
         level: "error",
-        sentryClient: require("../../services/sentry").Sentry,
+        sentryClient: require("../services/sentry").Sentry,
         isClientInitialized: true,
         fingerprint: service,
       }),
