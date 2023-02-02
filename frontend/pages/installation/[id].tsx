@@ -263,6 +263,10 @@ interface CombinationOverride {
 const combinationOverrides: {
   [K in (typeof allowedPaths)[number]]?: CombinationOverride
 } = {
+  netbeans: {
+    languages: { fi: "fi", en: "en" },
+    allowedOS: ["Windows", "macOS", "Linux"],
+  },
   "tmc-cli": {
     languages: { fi: "en", en: "en" },
     allowedOS: ["Windows", "macOS", "Linux"],
