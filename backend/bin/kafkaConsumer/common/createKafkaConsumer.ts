@@ -78,7 +78,6 @@ export const createKafkaConsumer = ({
     attachPrismaEvents({
       logger,
       prisma,
-      knex,
     })
   }
   return consumer
