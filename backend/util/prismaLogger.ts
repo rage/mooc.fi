@@ -10,7 +10,9 @@ export const logDefinition: Prisma.LogDefinition[] = logLevel.map((level) => ({
   level,
 }))
 
-export const attachPrismaEvents = ({ logger, prisma }: ServerContext) => {
+type PrismaEventsContext = Pick<ServerContext, "logger" | "prisma">
+
+export const attachPrismaEvents = ({ logger, prisma }: PrismaEventsContext) => {
   logDefinition.forEach(({ level }) => {
     switch (level) {
       case "query":
