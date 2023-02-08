@@ -63,7 +63,7 @@ describe("Course", () => {
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
       tags: [
         {
-          id: "48100000-0000-0000-0000-000000000001",
+          tag_id: "48100000-0000-0000-0000-000000000001",
         },
       ],
     })
@@ -115,7 +115,7 @@ describe("Course", () => {
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
       tags: [
         {
-          id: "48100000-0000-0000-0000-000000000002",
+          tag_id: "48100000-0000-0000-0000-000000000002",
         },
       ],
     })

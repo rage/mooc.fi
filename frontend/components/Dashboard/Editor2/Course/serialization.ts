@@ -245,27 +245,9 @@ export const fromCourseForm = ({
     | CourseCreateArg["study_modules"]
     | CourseUpsertArg["study_modules"]
 
-  const course_tags = values?.tags?.map((tag) => {
-    return {
-      course_id: values.id,
-      tag_id: tag._id,
-      tag: {
-        ...omit(tag, ["__typename", "_id"]),
-        id: tag._id ?? undefined,
-        hidden: tag.hidden ?? false,
-        tag_translations: tag.tag_translations?.map((tagTranslation) => {
-          const [tag_id, language] = splitCompositeId(tagTranslation._id ?? "")
-
-          return {
-            ...omit(tagTranslation, ["__typename", "_id"]),
-            tag_id,
-            language,
-            description: tagTranslation.description ?? undefined,
-          }
-        }),
-      },
-    }
-  })
+  const tags = values?.tags?.map((tag) => ({
+    tag_id: tag._id,
+  }))
 
   const formValues = newCourse
     ? omit(values, [
@@ -332,14 +314,8 @@ export const fromCourseForm = ({
         : values.exercise_completions_needed,
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
-    course_tags,
+    tags,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
-}
-
-const splitCompositeId = (id: string) => {
-  const res = id.split(":")
-
-  return res.map((r) => (r === "" ? undefined : r))
 }
