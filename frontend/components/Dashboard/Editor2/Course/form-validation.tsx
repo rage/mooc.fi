@@ -169,7 +169,7 @@ const courseEditSchema = ({
         description: Yup.string().required(),
         link: Yup.string(),
         open_university_course_link: Yup.object().shape({
-          course_code: Yup.string().required(),
+          course_code: Yup.string().required(t("validationRequired")),
           link: Yup.string().url(t("validationValidUrl")).nullable(),
         }),
       }),

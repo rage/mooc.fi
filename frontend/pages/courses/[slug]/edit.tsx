@@ -34,7 +34,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
   const slug = useQueryParameter("slug") ?? ""
   const beta = useQueryParameter("beta", false)
 
-  const { loading, error, courseData, studyModulesData, coursesData } =
+  const { loading, error, courseData, studyModulesData, coursesData, tagsData } =
     useEditorCourses({
       slug,
     })
@@ -82,6 +82,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
   const listLink = "/courses"
 
+  console.log(tagsData)
   return (
     <>
       <NextSeo title={title} />
@@ -99,6 +100,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
                 course={courseData.course}
                 courses={coursesData?.courses ?? []}
                 studyModules={studyModulesData?.study_modules ?? []}
+                tags={tagsData?.tags ?? []}
               />
             ) : (
               <CourseEdit

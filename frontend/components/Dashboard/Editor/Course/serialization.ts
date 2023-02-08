@@ -198,7 +198,7 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 
-  const course_tags =
+  const tags =
     values.tags?.map((tag) => ({
       course_id: values.id,
       tag_id: tag.id,
@@ -275,7 +275,7 @@ export const fromCourseForm = ({
         : values.exercise_completions_needed,
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
-    course_tags,
+    tags,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)

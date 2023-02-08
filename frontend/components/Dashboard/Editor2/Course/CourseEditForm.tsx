@@ -39,7 +39,9 @@ import {
   EditorCourseDetailedFieldsFragment,
   EditorCourseOtherCoursesFieldsFragment,
   StudyModuleDetailedFieldsFragment,
+  TagCoreFieldsFragment,
 } from "/graphql/generated"
+import CourseTagsForm from "./CourseTagsForm"
 
 const SelectLanguageFirstCover = styled("div", {
   shouldForwardProp: (prop) => prop !== "covered",
@@ -51,12 +53,14 @@ interface CourseEditFormProps {
   course?: EditorCourseDetailedFieldsFragment
   courses?: EditorCourseOtherCoursesFieldsFragment[]
   studyModules?: StudyModuleDetailedFieldsFragment[]
+  tags?: TagCoreFieldsFragment[]
 }
 
 function CourseEditForm({
   course,
   courses,
   studyModules,
+  tags
 }: CourseEditFormProps) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
   const { tab, setTab, initialValues } = useEditorContext<CourseFormValues>()
@@ -108,6 +112,7 @@ function CourseEditForm({
           <CourseImageForm courses={courses} />
           <CourseInfoForm />
         </SelectLanguageFirstCover>
+        <CourseTagsForm tags={tags ?? []} />
       </TabSection>
 
       <TabSection currentTab={tab} tab={1} style={{ paddingTop: "0.5rem" }}>

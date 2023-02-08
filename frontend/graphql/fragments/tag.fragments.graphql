@@ -14,3 +14,7 @@ fragment TagTranslationFields on TagTranslation {
   description
   language
 }
+
+fragment TagTypeFields on TagType {
+  name
+}

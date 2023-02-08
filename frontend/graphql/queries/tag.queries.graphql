@@ -1,0 +1,17 @@
+query CourseEditorTags($language: String) {
+  tags(language: $language) {
+    ...TagCoreFields
+  }
+}
+
+query TagEditorTags {
+  tags {
+    ...TagCoreFields
+  }
+}
+
+query TagEditorTagTypes {
+  tagTypes {
+    ...TagTypeFields
+  }
+}

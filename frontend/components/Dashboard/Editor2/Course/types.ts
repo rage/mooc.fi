@@ -89,14 +89,12 @@ export interface UserCourseSettingsVisibilityFormValues extends FormValues {
 
 export interface CourseTagFormValues extends FormValues {
   _id?: string
-  course_id: string
-  tag_id: string
   tag: TagFormValues
 }
 
 export interface TagFormValues extends FormValues {
   _id?: string
-  hidden?: boolean
+  types?: string[]
   tag_translations?: TagTranslationFormValues[]
 }
 

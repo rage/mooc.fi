@@ -45,6 +45,7 @@
   "courseAddTranslation": "Add translation",
   "courseVariants": "Course variants",
   "courseAliases": "Course aliases",
+  "courseTags": "Course tags",
   "courseNoAliases": "No course aliases",
   "courseAliasCourseCode": "Course code",
   "confirmationRemoveVariant": "Do you want to remove this course variant?",

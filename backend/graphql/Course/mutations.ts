@@ -101,10 +101,7 @@ export const CourseMutations = extendType({
               ? { connect: { id: course_stats_email_id } }
               : undefined,
             course_tags: {
-              create: tags
-                ?.map((tag) => tag.id)
-                .filter(isNotNullOrUndefined)
-                .map((id) => ({ tag: { connect: { id } } })),
+              create: getIds(tags ?? []).map((id) => ({ tag: { connect: { id } } })),
             },
           },
         })

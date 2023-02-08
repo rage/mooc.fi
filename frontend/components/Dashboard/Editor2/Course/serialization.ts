@@ -82,7 +82,7 @@ export const toCourseForm = ({
             _id: open_university_course_link?.id ?? undefined,
             language: open_university_course_link?.language ?? undefined,
             link: open_university_course_link?.link ?? "",
-            course_code: open_university_course_link?.course_code ?? "",
+            course_code: open_university_course_link?.course_code || "",
           },
           instructions: course_translation.instructions ?? undefined,
         }
@@ -137,6 +137,7 @@ export const toCourseForm = ({
         ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
         _id: tag.id ?? undefined,
         hidden: tag.hidden ?? false,
+        types: tag.types ?? [],
         tag_translations: tag.tag_translations?.map((tagTranslation) => ({
           ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
           _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
@@ -159,7 +160,6 @@ export const fromCourseForm = ({
 }: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
-  console.log(values)
   const course_translations = (values?.course_translations ?? []).map(
     (course_translation: CourseTranslationFormValues) => ({
       ...omit(course_translation, ["open_university_course_link", "_id"]),
@@ -249,21 +249,6 @@ export const fromCourseForm = ({
     return {
       course_id: values.id,
       tag_id: tag._id,
-      tag: {
-        ...omit(tag, ["__typename", "_id"]),
-        id: tag._id ?? undefined,
-        hidden: tag.hidden ?? false,
-        tag_translations: tag.tag_translations?.map((tagTranslation) => {
-          const [tag_id, language] = splitCompositeId(tagTranslation._id ?? "")
-
-          return {
-            ...omit(tagTranslation, ["__typename", "_id"]),
-            tag_id,
-            language,
-            description: tagTranslation.description ?? undefined,
-          }
-        }),
-      },
     }
   })
 
