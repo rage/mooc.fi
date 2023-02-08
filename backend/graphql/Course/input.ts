@@ -52,7 +52,7 @@ export const CourseCreateArg = inputObjectType({
     t.int("points_needed")
     t.id("course_stats_email_id")
     t.list.nonNull.field("tags", {
-      type: nonNull("TagUpsertInput"),
+      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
     })
   },
 })
@@ -112,7 +112,7 @@ export const CourseUpsertArg = inputObjectType({
     t.int("points_needed")
     t.id("course_stats_email_id")
     t.list.nonNull.field("tags", {
-      type: nonNull("TagUpsertInput"),
+      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
     })
   },
 })

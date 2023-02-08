@@ -98,7 +98,7 @@ type CourseTranslationsEditSchemaFields = Pick<
   CourseTranslationFormValues,
   "name" | "language" | "description" | "link"
 > & {
-  open_university_course_link: Pick<
+  open_university_course_link?: Pick<
     OpenUniversityRegistrationValues,
     "course_code" | "link"
   >
@@ -168,10 +168,15 @@ const courseEditSchema = ({
           ),
         description: Yup.string().required(),
         link: Yup.string(),
-        open_university_course_link: Yup.object().shape({
-          course_code: Yup.string().required(),
-          link: Yup.string().url(t("validationValidUrl")).nullable(),
-        }),
+        open_university_course_link: Yup.object()
+          .shape({
+            course_code: Yup.string().defined().strict(true),
+            link: Yup.string()
+              .url(t("validationValidUrl"))
+              .nullable()
+              .default(null),
+          })
+          .default(undefined),
       }),
     ),
     course_variants: Yup.array().of(

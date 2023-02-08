@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-01-31T20:36:13+02:00
+// Generated on 2023-02-08T15:50:31+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -368,7 +368,7 @@ export type CourseCreateArg = {
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
   study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
-  tags?: InputMaybe<Array<TagUpsertInput>>
+  tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
@@ -656,7 +656,7 @@ export type CourseUpsertArg = {
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
   study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
-  tags?: InputMaybe<Array<TagUpsertInput>>
+  tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
