@@ -916,7 +916,7 @@ export const tagTypes: Prisma.TagTypeCreateInput[] = [
 
 export const tags: Prisma.TagCreateInput[] = [
   {
-    id: "48100000-0000-0000-0000-000000000001",
+    id: "tag1",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
     tag_types: { connect: { name: "type1" } },
@@ -940,7 +940,7 @@ export const tags: Prisma.TagCreateInput[] = [
     },
   },
   {
-    id: "48100000-0000-0000-0000-000000000002",
+    id: "tag2",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
     tag_types: { connect: [{ name: "type1" }, { name: "type2" }] },
@@ -964,7 +964,7 @@ export const tags: Prisma.TagCreateInput[] = [
     },
   },
   {
-    id: "48100000-0000-0000-0000-000000000003",
+    id: "tag3",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
     tag_types: { connect: [{ name: "type2" }] },
@@ -985,19 +985,19 @@ export const tags: Prisma.TagCreateInput[] = [
 
 export const courseTags: Prisma.CourseTagCreateInput[] = [
   {
-    tag: { connect: { id: "48100000-0000-0000-0000-000000000001" } }, // tag1
+    tag: { connect: { id: "tag1" } },
     course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
-    tag: { connect: { id: "48100000-0000-0000-0000-000000000002" } }, // tag2
+    tag: { connect: { id: "tag2" } },
     course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
-    tag: { connect: { id: "48100000-0000-0000-0000-000000000003" } }, // hidden tag3
+    tag: { connect: { id: "tag3" } },
     course: { connect: { id: "00000000000000000000000000000001" } }, // course2,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",

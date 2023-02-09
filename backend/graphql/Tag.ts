@@ -3,7 +3,6 @@ import {
   arg,
   booleanArg,
   extendType,
-  idArg,
   inputObjectType,
   list,
   nonNull,
@@ -85,7 +84,7 @@ export const Tag = objectType({
 export const TagCreateInput = inputObjectType({
   name: "TagCreateInput",
   definition(t) {
-    t.id("id")
+    t.nonNull.string("id")
     t.list.nonNull.field("tag_translations", {
       type: "TagTranslationCreateOrUpdateInput",
     })
@@ -127,19 +126,27 @@ export const TagQueries = extendType({
           return (
             await ctx.prisma.tag.findMany({
               where: {
-                tag_translations: {
-                  some: {
-                    ...(language ? { language } : {}),
-                    OR: [
-                      {
-                        name: { contains: search, mode: "insensitive" },
+                OR: [
+                  { id: { contains: search, mode: "insensitive" } },
+                  {
+                    tag_translations: {
+                      some: {
+                        ...(language ? { language } : {}),
+                        OR: [
+                          {
+                            name: { contains: search, mode: "insensitive" },
+                          },
+                          {
+                            description: {
+                              contains: search,
+                              mode: "insensitive",
+                            },
+                          },
+                        ],
                       },
-                      {
-                        description: { contains: search, mode: "insensitive" },
-                      },
-                    ],
+                    },
                   },
-                },
+                ],
               },
             })
           ).map(_wrapLanguage)
@@ -172,6 +179,7 @@ export const TagMutations = extendType({
     t.field("createTag", {
       type: "Tag",
       args: {
+        id: stringArg(),
         hidden: booleanArg(),
         types: list(nonNull(stringArg())),
         translations: list(
@@ -183,9 +191,18 @@ export const TagMutations = extendType({
         ),
       },
       authorize: isAdmin,
-      resolve: async (_, { hidden, types, translations }, ctx) => {
+      validate: (_, { id, translations }) => {
+        if (!id && !translations?.[0]?.name) {
+          throw new GraphQLUserInputError(
+            "id or some translation required to provide an unique ID",
+          )
+        }
+      },
+      resolve: async (_, { id, hidden, types, translations }, ctx) => {
+        const _id = id ?? translations?.[0].name ?? "" // should never be empty as it
         return ctx.prisma.tag.create({
           data: {
+            id: _id,
             hidden,
             ...(translations && {
               tag_translations: {
@@ -212,7 +229,7 @@ export const TagMutations = extendType({
     t.field("updateTag", {
       type: "Tag",
       args: {
-        id: nonNull(idArg()),
+        id: nonNull(stringArg()),
         hidden: booleanArg(),
         types: list(nonNull(stringArg())),
         translations: list(
@@ -294,7 +311,7 @@ export const TagMutations = extendType({
     t.field("deleteTag", {
       type: "Tag",
       args: {
-        id: nonNull(idArg()),
+        id: nonNull(stringArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {

@@ -42,7 +42,7 @@ export const CourseTagCreateOrUpsertInput = inputObjectType({
   name: "CourseTagCreateOrUpsertInput",
   definition(t) {
     t.nonNull.id("course_id")
-    t.nonNull.id("tag_id")
+    t.nonNull.string("tag_id")
     t.field("tag", {
       type: "TagUpsertInput",
     })
@@ -52,7 +52,7 @@ export const CourseTagCreateOrUpsertInput = inputObjectType({
 export const CourseTagCreateOrUpsertWithoutCourseIdInput = inputObjectType({
   name: "CourseTagCreateOrUpsertWithoutCourseIdInput",
   definition(t) {
-    t.nonNull.id("tag_id")
+    t.nonNull.string("tag_id")
     t.field("tag", {
       type: "TagUpsertInput",
     })
@@ -68,7 +68,7 @@ export const CourseTagQueries = extendType({
         course_id: idArg(),
         course_slug: stringArg(),
         tag_types: list(nonNull(stringArg())),
-        tag_id: idArg(),
+        tag_id: stringArg(),
         language: stringArg(),
         includeHidden: booleanArg(),
       },
@@ -147,7 +147,7 @@ export const CourseTagMutations = extendType({
       args: {
         course_id: idArg(),
         course_slug: stringArg(),
-        tag_id: idArg(),
+        tag_id: stringArg(),
         tag_name: stringArg(),
       },
       authorize: isAdmin,
@@ -211,7 +211,7 @@ export const CourseTagMutations = extendType({
       type: "CourseTag",
       args: {
         course_id: nonNull(idArg()),
-        tag_id: nonNull(idArg()),
+        tag_id: nonNull(stringArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { course_id, tag_id }, ctx) => {
