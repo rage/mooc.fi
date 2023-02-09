@@ -200,16 +200,7 @@ export const fromCourseForm = ({
 
   const tags =
     values.tags?.map((tag) => ({
-      course_id: values.id,
       tag_id: tag.id,
-      tag: {
-        ...omit(tag, ["__typename"]),
-        hidden: tag.hidden ?? false,
-        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
-          ...omit(tagTranslation, ["__typename"]),
-          description: tagTranslation.description ?? undefined,
-        })),
-      },
     })) ?? []
 
   const formValues = newCourse

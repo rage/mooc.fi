@@ -21,6 +21,7 @@ import { deleteImage, uploadImage } from "../Image"
 const nullToUndefined = <T>(value: T | null | undefined): T | undefined =>
   value ?? undefined
 
+// @ts-ignore: not used for now
 const hasId = <T>(value: any): value is T & { id: string } => Boolean(value?.id)
 
 export const CourseMutations = extendType({
@@ -101,7 +102,10 @@ export const CourseMutations = extendType({
               ? { connect: { id: course_stats_email_id } }
               : undefined,
             course_tags: {
-              create: getIds(tags ?? []).map((id) => ({ tag: { connect: { id } } })),
+              create: tags
+                ?.map((tag) => tag.tag_id)
+                .filter(isNotNullOrUndefined)
+                .map((id) => ({ tag: { connect: { id } } })),
             },
           },
         })
@@ -167,7 +171,7 @@ export const CourseMutations = extendType({
         }
 
         if (
-          existingCourse.status != status &&
+          existingCourse.status !== status &&
           status === "Ended" &&
           end_date !== ""
         ) {
@@ -339,15 +343,18 @@ function getCourseTagMutation<
 
   const removedTagIds =
     existingCourse.course_tags
-      ?.filter((course_tag) => !getIds(tags ?? []).includes(course_tag.tag_id))
+      ?.filter(
+        (course_tag) =>
+          !tags.map((tag) => tag.tag_id).includes(course_tag.tag_id),
+      )
       .map((course_tag) => ({
         course_id: existingCourse.id,
         tag_id: course_tag.tag_id,
       })) ?? []
-  const connectTags = (tags ?? []).filter(hasId).map((t) => ({
+  const connectTags = (tags ?? []).map((t) => ({
     course_id_tag_id: {
       course_id: existingCourse.id,
-      tag_id: t.id,
+      tag_id: t.tag_id,
     },
   }))
 
