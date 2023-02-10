@@ -148,9 +148,9 @@ describe("Course", () => {
             orderBy: { name: order },
           })
 
-          expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
-            `courses-order-${order}`,
-          )
+          expect(
+            res.courses?.map(applySortFns([sortStudyModules, sortTags])),
+          ).toMatchSnapshot(`courses-order-${order}`)
         }
       })
 
@@ -161,7 +161,7 @@ describe("Course", () => {
           })
 
           expect(
-            orderBy(res.courses?.map(sortStudyModules), ["id"]),
+            res.courses?.map(applySortFns([sortStudyModules, sortTags])),
           ).toMatchSnapshot(`courses-language-${language}`)
         }
       })
@@ -185,7 +185,8 @@ describe("Course", () => {
 
           const resultSlugs = res.courses?.map((c: Course) => c.slug).sort()
 
-          expect(resultSlugs).toEqual(expected.sort())
+          expected.sort()
+          expect(resultSlugs).toEqual(expected)
         }
       })
 
@@ -472,7 +473,7 @@ const sortExercises = sortArrayField("exercises")
 const sortTags = (course: any) =>
   sortArrayField("tags")({
     ...course,
-    tags: course?.tags.map((tag: any) => ({
+    tags: (course?.tags ?? []).map((tag: any) => ({
       ...tag,
       ...(tag.types && { types: orderBy(tag.types) }),
       ...(tag.tag_types && {

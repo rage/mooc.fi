@@ -210,7 +210,7 @@ describe("Course", () => {
             },
           )
 
-          const received = res.course?.tags?.sort()
+          const received = orderBy(res.course?.tags ?? [], "id")
 
           expect(received.length).toBe(2)
           expect(received[0].name).toBe("tag1 in english")
