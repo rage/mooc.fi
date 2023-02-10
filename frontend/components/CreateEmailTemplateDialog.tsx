@@ -118,6 +118,8 @@ const CreateEmailTemplateDialog = ({
                 "id",
                 "completion_email",
                 "course_stats_email",
+                "created_at",
+                "updated_at",
               ]),
               ...connectVariables,
             },
