@@ -10,14 +10,14 @@ declare module "@mui/material/styles" {
     yellow: React.CSSProperties["color"]
   }
   interface ThemeOptions {
-    blue: React.CSSProperties["color"]
-    clear: React.CSSProperties["color"]
-    crimson: React.CSSProperties["color"]
-    gray: React.CSSProperties["color"]
-    green: React.CSSProperties["color"]
-    purple: React.CSSProperties["color"]
-    red: React.CSSProperties["color"]
-    yellow: React.CSSProperties["color"]
+    blue?: React.CSSProperties["color"]
+    clear?: React.CSSProperties["color"]
+    crimson?: React.CSSProperties["color"]
+    gray?: React.CSSProperties["color"]
+    green?: React.CSSProperties["color"]
+    purple?: React.CSSProperties["color"]
+    red?: React.CSSProperties["color"]
+    yellow?: React.CSSProperties["color"]
   }
   interface Palette {
     blue: Palette["primary"]
