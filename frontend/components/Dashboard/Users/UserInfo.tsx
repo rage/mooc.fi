@@ -92,6 +92,7 @@ interface UserInfoProps {
 const fields: (keyof UserDetailedFieldsFragment)[] = [
   "upstream_id",
   "email",
+  "username",
   "real_student_number",
   "student_number",
   "id",
@@ -118,6 +119,7 @@ const availableFields: Partial<
   real_student_number: "Real student number",
   student_number: "Student number",
   id: "MOOC.fi internal id",
+  username: "Username",
   research_consent: {
     title: "Research consent",
     getValue: (data) => (data ? "Yes" : "No"),
@@ -139,7 +141,7 @@ const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
       if (!content || !title) {
         return null
       }
-      return <InfoRow title={title} content={content} />
+      return <InfoRow key={title} title={title} content={content} />
     })
     .filter(notEmpty)
 }
