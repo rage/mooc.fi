@@ -43,7 +43,12 @@ interface CourseEditProps {
   tags?: TagCoreFieldsFragment[]
 }
 
-function CourseEditor({ course, courses, studyModules, tags }: CourseEditProps) {
+function CourseEditor({
+  course,
+  courses,
+  studyModules,
+  tags,
+}: CourseEditProps) {
   const t = useTranslator(CoursesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const [tab, setTab] = useState(0)

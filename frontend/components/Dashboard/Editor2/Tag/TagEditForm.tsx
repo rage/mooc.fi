@@ -1,7 +1,14 @@
-import { omit } from "lodash"
 import { useCallback, useMemo, useRef } from "react"
+
+import { omit } from "lodash"
 import { FormProvider, useForm } from "react-hook-form"
-import { ControlledFieldArrayList, ControlledFieldArrayListProps, ControlledTextField } from "../Common/Fields"
+
+import {
+  ControlledFieldArrayList,
+  ControlledFieldArrayListProps,
+  ControlledTextField,
+} from "../Common/Fields"
+
 import { TagCoreFieldsFragment } from "/graphql/generated"
 
 interface TagEditorProps {
@@ -30,22 +37,22 @@ function toTagValues(tags: TagCoreFieldsFragment[]) {
     tag_translations: (tag.tag_translations ?? []).map((tt) => ({
       ...omit(tt, ["__typename"]),
       language: tt.language ?? undefined,
-      description: tt.description ?? undefined
-    }))
+      description: tt.description ?? undefined,
+    })),
   }))
 }
 
 const initialTagTranslation = {
   language: "",
   name: "",
-  description: ""
+  description: "",
 }
 
 function TagEditor({ tags }: TagEditorProps) {
   const initialValues = useRef(toTagValues(tags))
 
   const methods = useForm({
-    defaultValues: initialValues.current
+    defaultValues: initialValues.current,
   })
 
   const conditions: ControlledFieldArrayListProps<
@@ -60,32 +67,32 @@ function TagEditor({ tags }: TagEditorProps) {
   )
 
   const renderArrayListItem: ControlledFieldArrayListProps<
-  TagValues,
-  "tag_translations"
->["render"] = useCallback(
-  (item, index) => (
-    <>
-      <ControlledTextField
-        name={`tag_translations.${index}.language`}
-        label="language"
-        required
-        defaultValue={item.language}
-      />
-      <ControlledTextField
-        name={`tag_translations.${index}.name`}
-        label="name"
-        required
-        defaultValue={item.name}
-      />
-      <ControlledTextField
-        name={`tag_translations.${index}.description`}
-        label="description"
-        defaultValue={item.description}
-      />
-    </>
-  ),
-  [],
-)
+    TagValues,
+    "tag_translations"
+  >["render"] = useCallback(
+    (item, index) => (
+      <>
+        <ControlledTextField
+          name={`tag_translations.${index}.language`}
+          label="language"
+          required
+          defaultValue={item.language}
+        />
+        <ControlledTextField
+          name={`tag_translations.${index}.name`}
+          label="name"
+          required
+          defaultValue={item.name}
+        />
+        <ControlledTextField
+          name={`tag_translations.${index}.description`}
+          label="description"
+          defaultValue={item.description}
+        />
+      </>
+    ),
+    [],
+  )
 
   return (
     <FormProvider {...methods}>
@@ -95,11 +102,11 @@ function TagEditor({ tags }: TagEditorProps) {
         initialValues={initialTagTranslation}
         texts={{
           description: "description",
-          noFields: "no fields"
+          noFields: "no fields",
         }}
         conditions={conditions}
         render={renderArrayListItem}
-        />
+      />
     </FormProvider>
   )
 }

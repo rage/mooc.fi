@@ -1,5 +1,8 @@
-import { useQuery } from "@apollo/client"
 import { useRouter } from "next/router"
+
+import { useQuery } from "@apollo/client"
+
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import {
   CourseEditorDetailsDocument,
@@ -7,7 +10,6 @@ import {
   CourseEditorTagsDocument,
   EditorStudyModulesDocument,
 } from "/graphql/generated"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 interface UseEditorCoursesProps {
   slug?: string
@@ -39,15 +41,16 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
   const {
     data: tagsData,
     loading: tagsLoading,
-    error: tagsError
-  } = useQuery(CourseEditorTagsDocument, { variables: { language }})
+    error: tagsError,
+  } = useQuery(CourseEditorTagsDocument, { variables: { language } })
 
   return {
-    loading: courseLoading ?? studyModulesLoading ?? coursesLoading ?? tagsLoading,
+    loading:
+      courseLoading ?? studyModulesLoading ?? coursesLoading ?? tagsLoading,
     error: courseError ?? studyModulesError ?? coursesError ?? tagsError,
     courseData,
     studyModulesData,
     coursesData,
-    tagsData
+    tagsData,
   }
 }

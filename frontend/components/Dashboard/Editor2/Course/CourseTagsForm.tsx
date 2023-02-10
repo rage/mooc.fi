@@ -11,14 +11,13 @@ import {
   TextField,
 } from "@mui/material"
 
+import { FormFieldGroup } from "../Common"
 import { DefaultFieldRenderProps } from "../Common/Fields"
-import { TagFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import { TagCoreFieldsFragment } from "/graphql/generated"
-import { FormFieldGroup } from "../Common"
 
 interface CourseTagFormProps {
   tags: TagCoreFieldsFragment[]

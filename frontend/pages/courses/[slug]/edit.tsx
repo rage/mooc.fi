@@ -34,10 +34,16 @@ const EditCourse = ({ router }: EditCourseProps) => {
   const slug = useQueryParameter("slug") ?? ""
   const beta = useQueryParameter("beta", false)
 
-  const { loading, error, courseData, studyModulesData, coursesData, tagsData } =
-    useEditorCourses({
-      slug,
-    })
+  const {
+    loading,
+    error,
+    courseData,
+    studyModulesData,
+    coursesData,
+    tagsData,
+  } = useEditorCourses({
+    slug,
+  })
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null

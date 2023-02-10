@@ -1,21 +1,12 @@
-import { useEffect, useRef } from "react"
-import { useForm } from "react-hook-form"
-import { toTagForm } from "./serialization"
 import { TagCoreFieldsFragment } from "/graphql/generated"
 
 interface TagEditorProps {
   tags: TagCoreFieldsFragment[]
 }
 
+// @ts-ignore: still unused
 function TagEditor({ tags }: TagEditorProps) {
-  const defaultValues = useRef(
-    toTagForm(tags)
-  )  
-
-  const methods = useForm({
-    defaultValues: defaultValues.current,
-  })
+  return <div>TBD</div>
 }
-
 
 export default TagEditor

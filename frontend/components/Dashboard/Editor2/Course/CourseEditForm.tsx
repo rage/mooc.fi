@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles"
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
 import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTagsForm from "./CourseTagsForm"
 import CourseTranslationForm from "./CourseTranslationForm"
 import {
   FormFieldGroup,
@@ -41,7 +42,6 @@ import {
   StudyModuleDetailedFieldsFragment,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
-import CourseTagsForm from "./CourseTagsForm"
 
 const SelectLanguageFirstCover = styled("div", {
   shouldForwardProp: (prop) => prop !== "covered",
@@ -60,7 +60,7 @@ function CourseEditForm({
   course,
   courses,
   studyModules,
-  tags
+  tags,
 }: CourseEditFormProps) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
   const { tab, setTab, initialValues } = useEditorContext<CourseFormValues>()

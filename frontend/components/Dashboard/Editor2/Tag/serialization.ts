@@ -1,6 +1,8 @@
-import { omit } from "lodash";
-import { TagFormValues } from "./types";
-import { TagCoreFieldsFragment } from "/graphql/generated";
+import { omit } from "lodash"
+
+import { TagFormValues } from "./types"
+
+import { TagCoreFieldsFragment } from "/graphql/generated"
 
 export function toTagForm(tags: TagCoreFieldsFragment[]): Array<TagFormValues> {
   return tags.map((tag) => ({
@@ -11,8 +13,8 @@ export function toTagForm(tags: TagCoreFieldsFragment[]): Array<TagFormValues> {
     tag_translations: (tag.tag_translations ?? []).map((tt) => ({
       ...omit(tt, ["__typename"]),
       language: tt.language ?? undefined,
-      description: tt.description ?? undefined
-    }))
+      description: tt.description ?? undefined,
+    })),
   }))
 }
 
