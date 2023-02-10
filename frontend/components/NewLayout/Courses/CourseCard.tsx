@@ -7,6 +7,7 @@ import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
 import moocLogo from "/public/images/moocfi_white.svg"
 import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+import newTheme from "/src/newTheme"
 import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"
@@ -14,17 +15,19 @@ import { useTranslator } from "/util/useTranslator"
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes: Record<string, string> = {
-  "Cyber Security Base": "#215887",
-  Ohjelmointi: "#1F6964",
-  "Pilvipohjaiset websovellukset": "#822630",
-  "Tekoäly ja data": "#6245A9",
-  other: "#313947",
+  "Cyber Security Base": newTheme.palette.blue.dark2,
+  Ohjelmointi: newTheme.palette.green.dark2,
+  "Pilvipohjaiset websovellukset": newTheme.palette.crimson.dark2,
+  "Tekoäly ja data": newTheme.palette.purple.dark2,
+  other: newTheme.palette.gray.dark1,
+  difficulty: newTheme.palette.blue.dark1,
+  module: newTheme.palette.purple.dark1,
+  language: newTheme.palette.green.dark1,
 }
 
-/* Needed in a later PR for the custom tag colors per tag type
 const difficultyTags = ["beginner", "intermediate", "advanced"]
 const moduleTags = ["AI", "programming", "cloud", "cyber security"]
-const languageTags = ["fi", "en", "se"] */
+const languageTags = ["fi", "en", "se"]
 
 const ContainerBase = css`
   display: grid;
@@ -41,7 +44,7 @@ const Container = styled("li", {
 })<{ module?: string }>`
   ${ContainerBase};
   background-color: ${(props) =>
-    props.module ? colorSchemes[props.module] : "#313947"};
+    props.module ? colorSchemes[props.module] : colorSchemes["other"]};
 `
 
 const SkeletonContainer = styled("li")`
@@ -115,10 +118,18 @@ const Link = styled(OutboundLink)`
 
 const Tags = styled("div")``
 
-const Tag = styled(Button)`
+const Tag = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "tagType",
+})<{ tagType?: string }>`
   border-radius: 2rem;
-  background-color: #378170 !important;
-  border-color: #378170 !important;
+  background-color: ${(props) =>
+    props.tagType
+      ? colorSchemes[props.tagType]
+      : colorSchemes["other"]} !important;
+  border-color: ${(props) =>
+    props.tagType
+      ? colorSchemes[props.tagType]
+      : colorSchemes["other"]} !important;
   color: #fff !important;
   font-weight: bold;
   margin: 0 0.1rem;
@@ -140,15 +151,14 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
-/*  Coming in a later PR for the custom colors
-  const tagType = (tag: string) =>
+const tagType = (tag: string) =>
   difficultyTags.includes(tag)
     ? "difficulty"
     : moduleTags.includes(tag)
     ? "module"
     : languageTags.includes(tag)
     ? "language"
-    : "unknown" */
+    : "unknown"
 
 interface CourseCardProps {
   course: CourseFieldsFragment
@@ -219,23 +229,17 @@ function CourseCard({ course, tags }: CourseCardProps) {
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
         </SponsorContainer>
         <Tags>
-          {tags?.map((tag) => (
-            <Tag
-              size="small"
-              variant="contained"
-              disabled
-              /*  Coming in a later PR for the custom colors
-                color={
-                tagType(tag) == "difficulty"
-                  ? "spgray"
-                  : tagType(tag) == "module"
-                  ? "sppurple"
-                  : "spblue"
-              } */
-            >
-              {tag}
-            </Tag>
-          ))}
+          {tags &&
+            tags.map((tag) => (
+              <Tag
+                size="small"
+                variant="contained"
+                disabled
+                tagType={tagType(tag)}
+              >
+                {tag}
+              </Tag>
+            ))}
         </Tags>
         <Link eventLabel="to_course_material" to="https://www.mooc.fi">
           {t("showCourse")}
