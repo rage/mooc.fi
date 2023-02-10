@@ -30,14 +30,14 @@ declare module "@mui/material/styles" {
     yellow: Palette["primary"]
   }
   interface PaletteOptions {
-    blue: PaletteOptions["primary"]
-    clear: PaletteOptions["primary"]
-    crimson: PaletteOptions["primary"]
-    gray: PaletteOptions["primary"]
-    green: PaletteOptions["primary"]
-    purple: PaletteOptions["primary"]
-    red: PaletteOptions["primary"]
-    yellow: PaletteOptions["primary"]
+    blue?: PaletteOptions["primary"]
+    clear?: PaletteOptions["primary"]
+    crimson?: PaletteOptions["primary"]
+    gray?: PaletteOptions["primary"]
+    green?: PaletteOptions["primary"]
+    purple?: PaletteOptions["primary"]
+    red?: PaletteOptions["primary"]
+    yellow?: PaletteOptions["primary"]
   }
   interface PaletteColor {
     light1?: string
