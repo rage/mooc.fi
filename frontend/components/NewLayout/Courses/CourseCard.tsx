@@ -15,14 +15,14 @@ import { useTranslator } from "/util/useTranslator"
 import { CourseFieldsFragment } from "/graphql/generated"
 
 const colorSchemes: Record<string, string> = {
-  "Cyber Security Base": newTheme.palette.blue.dark2,
-  Ohjelmointi: newTheme.palette.green.dark2,
-  "Pilvipohjaiset websovellukset": newTheme.palette.crimson.dark2,
-  "Tekoäly ja data": newTheme.palette.purple.dark2,
-  other: newTheme.palette.gray.dark1,
-  difficulty: newTheme.palette.blue.dark1,
-  module: newTheme.palette.purple.dark1,
-  language: newTheme.palette.green.dark1,
+  "Cyber Security Base": newTheme.palette.blue.dark2!,
+  Ohjelmointi: newTheme.palette.green.dark2!,
+  "Pilvipohjaiset websovellukset": newTheme.palette.crimson.dark2!,
+  "Tekoäly ja data": newTheme.palette.purple.dark2!,
+  other: newTheme.palette.gray.dark1!,
+  difficulty: newTheme.palette.blue.dark1!,
+  module: newTheme.palette.purple.dark1!,
+  language: newTheme.palette.green.dark1!,
 }
 
 const difficultyTags = ["beginner", "intermediate", "advanced"]
