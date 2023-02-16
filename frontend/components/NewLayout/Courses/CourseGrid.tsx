@@ -181,7 +181,6 @@ function CourseGrid() {
     variables: { language },
   })
   const [searchString, setSearchString] = useState<string>("")
-  /* const [tags, setTags] = useState<string[]>([]) */
   const [languageTags, setLanguageTags] = useState<string[]>([])
   const [difficultyTags, setDifficultyTags] = useState<string[]>([])
   const [moduleTags, setModuleTags] = useState<string[]>([])
@@ -195,21 +194,7 @@ function CourseGrid() {
   ])
   const [courses, setCourses] = useState<CourseFieldsFragment[]>([])
 
-  // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
-
   useEffect(() => {
-    /* setTags([
-      "beginner",
-      "intermediate",
-      "pro",
-      "AI",
-      "programming",
-      "cloud",
-      "cyber security",
-      "fi",
-      "en",
-      "se",
-    ]) */
     setDifficultyTags(["beginner", "intermediate", "advanced"])
     setModuleTags(["AI", "programming", "cloud", "cyber security"])
     setLanguageTags(["fi", "en", "se"])
