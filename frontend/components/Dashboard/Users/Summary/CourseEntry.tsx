@@ -1,4 +1,4 @@
-import React, { Dispatch, useCallback, useMemo } from "react"
+import React, { Dispatch, useCallback, useMemo, useState } from "react"
 
 import { sortBy } from "lodash"
 
@@ -9,9 +9,11 @@ import {
   Collapse,
   Paper,
   Skeleton,
+  Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import InfoRow from "../InfoRow"
 import {
   ActionType,
   CollapsablePart,
@@ -24,6 +26,7 @@ import ProgressEntry from "./ProgressEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import RelevantDates from "/components/Dashboard/Users/Summary/RelevantDates"
 import { CardTitle } from "/components/Text/headers"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
@@ -42,10 +45,42 @@ const CourseEntryCard = styled(({ elevation = 4, ...props }: CardProps) => (
   padding: 0.5rem;
 `
 
-const CourseEntryCardTitle = styled(CardTitle)`
+const CourseEntryCardTitleWrapper = styled("div")`
   display: flex;
+  flex-direction: row;
+`
+const CourseEntryCardTitle = styled(CardTitle)``
+const CourseEntryCardTitleRow = styled("div")`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
   justify-content: space-between;
 `
+
+const CourseInfo = styled("div")`
+  display: flex;
+  flex-direction: column;
+`
+const CourseInfoRowContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+  justify-content: space-between;
+`
+
+interface CourseInfoRowProps {
+  title: string
+  content: string
+}
+
+const CourseInfoRow = ({ title, content }: CourseInfoRowProps) => (
+  <CourseInfoRowContainer>
+    <Typography variant="h4">{title}</Typography>
+    <Typography variant="h4">
+      <strong>{content}</strong>
+    </Typography>
+  </CourseInfoRowContainer>
+)
 
 const CourseEntryPartSkeleton = () => (
   <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
@@ -68,6 +103,8 @@ export const SkeletonCourseEntry = () => (
 
 function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
   const t = useTranslator(ProfileTranslations)
+  const { admin } = useLoginStateContext()
+  const [courseInfoOpen, setCourseInfoOpen] = useState(false)
 
   // TODO: subheaders for parts?
   const exercisesWithCompletions = useMemo(
@@ -94,20 +131,44 @@ function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
     [data?.course?.id, dispatch],
   )
 
+  const onCollapseCourseInfoClick = useCallback(
+    () => setCourseInfoOpen((value) => !value),
+    [],
+  )
+
   if (!data.course) {
     return null
   }
 
   return (
     <CourseEntryCard>
-      <CourseEntryCardTitle variant="h3">
-        {data?.course?.name}
+      <CourseEntryCardTitleRow>
+        <CourseEntryCardTitleWrapper>
+          <CourseEntryCardTitle variant="h3">
+            {data?.course?.name}
+          </CourseEntryCardTitle>
+          {admin && (
+            <CollapseButton
+              open={courseInfoOpen}
+              onClick={onCollapseCourseInfoClick}
+              tooltip={"show more info"}
+            />
+          )}
+        </CourseEntryCardTitleWrapper>
         <CollapseButton
           open={state?.open}
           onClick={onCollapseClick}
           tooltip={t("courseCollapseTooltip")}
         />
-      </CourseEntryCardTitle>
+      </CourseEntryCardTitleRow>
+      {admin && (
+        <Collapse in={courseInfoOpen} unmountOnExit>
+          <CourseInfo>
+            <InfoRow title="ID" content={data.course?.id} />
+            <InfoRow title="Slug" content={data.course?.slug} />
+          </CourseInfo>
+        </Collapse>
+      )}
       <Collapse in={state?.open} unmountOnExit>
         <CardContent>
           <RelevantDates data={data} />

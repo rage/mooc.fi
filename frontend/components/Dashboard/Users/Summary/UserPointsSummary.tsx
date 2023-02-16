@@ -38,14 +38,13 @@ function UserPointsSummary({ data, search }: UserPointsSummaryProps) {
     }
 
     return sortBy(
-      data?.filter(
-        (entry) =>
-          entry?.course?.name
-            .trim()
-            .toLocaleLowerCase()
-            .includes(search.toLocaleLowerCase()),
-        "course.name",
+      data?.filter((entry) =>
+        entry?.course?.name
+          .trim()
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase()),
       ),
+      "course.name",
     )
   }, [search, data])
 
