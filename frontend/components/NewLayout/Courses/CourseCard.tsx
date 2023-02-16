@@ -1,12 +1,14 @@
 import Image from "next/image"
 
+import CircleIcon from "@mui/icons-material/Circle"
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"
 import { Button, Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
 import moocLogo from "/public/images/moocfi_white.svg"
-import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+//import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import newTheme from "/src/newTheme"
 import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
@@ -65,11 +67,23 @@ const ContentContainer = styled("div")`
   display: grid;
   padding: 0.5rem 1.5rem 0.1rem 1.5rem;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: 5fr 3fr 2fr;
   background: rgba(255, 255, 255, 1);
   overflow: hidden;
   z-index: 1;
   border-radius: 0 0 0.5rem 0.5rem;
+`
+
+const LeftContentContainer = styled("div")`
+  display: grid;
+  grid-template-rows: 3fr 1fr 1fr;
+  justify-content: left;
+`
+
+const RightContentContainer = styled("div")`
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-gap: 1rem;
+  justify-content: right;
 `
 
 const Title = styled(CardTitle)`
@@ -81,22 +95,22 @@ const Title = styled(CardTitle)`
   width: 70%;
 ` as typeof CardTitle
 
-const SponsorContainer = styled("div")`
+/* const SponsorContainer = styled("div")`
   display: flex;
   justify-content: flex-end;
   position: relative;
   height: 100%;
   width: 100%;
-`
+` */
 
-const Sponsor = styled(Image)`
+/* const Sponsor = styled(Image)`
   object-fit: contain;
   max-width: 9rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 1);
   padding: 1rem;
   justify-self: right;
-`
+` */
 
 const Description = styled("div")`
   padding: 1rem 0;
@@ -118,21 +132,61 @@ const Link = styled(OutboundLink)`
 
 const Tags = styled("div")``
 
-const Tag = styled(Button, {
-  shouldForwardProp: (prop) => prop !== "tagType",
-})<{ tagType?: string }>`
+const LanguageTags = styled(Tags)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const DifficultyTags = styled(Tags)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const ModuleTags = styled(Tags)``
+
+const Tag = styled(Button)`
   border-radius: 2rem;
-  background-color: ${(props) =>
-    props.tagType
-      ? colorSchemes[props.tagType]
-      : colorSchemes["other"]} !important;
-  border-color: ${(props) =>
-    props.tagType
-      ? colorSchemes[props.tagType]
-      : colorSchemes["other"]} !important;
+  background-color: ${colorSchemes["other"]} !important;
+  border-color: ${colorSchemes["other"]} !important;
   color: #fff !important;
   font-weight: bold;
   margin: 0 0.1rem;
+`
+
+const LanguageTag = styled(Tag)`
+  background-color: ${colorSchemes["language"]} !important;
+  border-color: ${colorSchemes["language"]} !important;
+  border-radius: 3rem;
+  padding: 0.5rem;
+  min-width: 40px;
+  max-height: 40px;
+`
+
+const DifficultyTag = styled(Tag)`
+  background-color: ${colorSchemes["difficulty"]} !important;
+  border-color: ${colorSchemes["difficulty"]} !important;
+`
+
+const DifficultyTagContainer = styled("div")`
+  display: inline-block;
+  text-align: center;
+`
+
+const ModuleTag = styled(Tag)`
+  background-color: ${colorSchemes["module"]} !important;
+  border-color: ${colorSchemes["module"]} !important;
+`
+
+const CircleContainer = styled("div")``
+
+const StyledCircleIcon = styled(CircleIcon)`
+  max-width: 15px;
+`
+
+const StyledCircleOutlinedIcon = styled(CircleOutlinedIcon)`
+  max-width: 15px;
 `
 
 const CardHeaderImage = styled(Image)`
@@ -186,64 +240,103 @@ function CourseCard({ course, tags }: CourseCardProps) {
         />
       </TitleContainer>
       <ContentContainer>
-        <Description>
-          <Typography variant="body1">{course?.description}</Typography>
-        </Description>
-        <Details>
-          {course.ects && (
-            <Typography variant="subtitle2">
-              ~{parseInt(course.ects) * 27}h ({course.ects} ECTS)
-            </Typography>
-          )}
-          {/* TODO: add information regarding university/organization to course */}
-          <Typography variant="subtitle2">Helsingin yliopisto</Typography>
-        </Details>
-        <Schedule>
-          {course.status == "Upcoming" ? (
-            <p>
-              {t("Upcoming")}{" "}
-              {course.start_date && prettifyDate(course.start_date)}
-            </p>
-          ) : course?.status == "Ended" ? (
-            <p>
-              {t("Ended")}{" "}
-              {course.end_date &&
-                Date.parse(course.end_date) < Date.now() &&
-                formatDateTime(course.end_date)}
-            </p>
-          ) : (
-            <p>
-              {t("Active")}{" "}
-              {course.end_date ? (
-                <>
-                  {formatDateTime(course.start_date)} -{" "}
-                  {formatDateTime(course.end_date)}
-                </>
-              ) : (
-                <>— {t("unscheduled")}</>
-              )}
-            </p>
-          )}
-        </Schedule>
-        <SponsorContainer>
+        <LeftContentContainer>
+          <Description>
+            <Typography variant="body1">{course?.description}</Typography>
+          </Description>
+          <Schedule>
+            {course.status == "Upcoming" ? (
+              <p>
+                {t("Upcoming")}{" "}
+                {course.start_date && prettifyDate(course.start_date)}
+              </p>
+            ) : course?.status == "Ended" ? (
+              <p>
+                {t("Ended")}{" "}
+                {course.end_date &&
+                  Date.parse(course.end_date) < Date.now() &&
+                  formatDateTime(course.end_date)}
+              </p>
+            ) : (
+              <p>
+                {t("Active")}{" "}
+                {course.end_date ? (
+                  <>
+                    {formatDateTime(course.start_date)} -{" "}
+                    {formatDateTime(course.end_date)}
+                  </>
+                ) : (
+                  <>— {t("unscheduled")}</>
+                )}
+              </p>
+            )}
+          </Schedule>
+          <ModuleTags>
+            {tags
+              ?.filter((t) => tagType(t) === "module")
+              .map((tag) => (
+                <ModuleTag size="small" variant="contained" disabled>
+                  {tag}
+                </ModuleTag>
+              ))}
+          </ModuleTags>
+        </LeftContentContainer>
+        <RightContentContainer>
+          <Details>
+            {course.ects && (
+              <Typography variant="subtitle2">
+                ~{parseInt(course.ects) * 27}h ({course.ects} ECTS)
+              </Typography>
+            )}
+            {/* TODO: add information regarding university/organization to course */}
+            <Typography variant="subtitle2">Helsingin yliopisto</Typography>
+          </Details>
+          <LanguageTags>
+            {tags
+              ?.filter((t) => tagType(t) === "language")
+              .map((tag) => (
+                <LanguageTag size="small" variant="contained" disabled>
+                  {tag}
+                </LanguageTag>
+              ))}
+          </LanguageTags>
+          <DifficultyTags>
+            {tags
+              ?.filter((t) => tagType(t) === "difficulty")
+              .map((tag) => (
+                <DifficultyTagContainer>
+                  <DifficultyTag size="small" variant="contained" disabled>
+                    {tag}
+                  </DifficultyTag>
+                  {tag === "beginner" ? (
+                    <CircleContainer>
+                      <StyledCircleIcon />
+                      <StyledCircleOutlinedIcon />
+                      <StyledCircleOutlinedIcon />
+                    </CircleContainer>
+                  ) : tag === "intermediate" ? (
+                    <CircleContainer>
+                      <StyledCircleIcon />
+                      <StyledCircleIcon />
+                      <StyledCircleOutlinedIcon />
+                    </CircleContainer>
+                  ) : (
+                    <CircleContainer>
+                      <StyledCircleIcon />
+                      <StyledCircleIcon />
+                      <StyledCircleIcon />
+                    </CircleContainer>
+                  )}
+                </DifficultyTagContainer>
+              ))}
+          </DifficultyTags>
+          <Link eventLabel="to_course_material" to="https://www.mooc.fi">
+            {t("showCourse")}
+          </Link>
+        </RightContentContainer>
+        {/* <SponsorContainer>
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
-        </SponsorContainer>
-        <Tags>
-          {tags &&
-            tags.map((tag) => (
-              <Tag
-                size="small"
-                variant="contained"
-                disabled
-                tagType={tagType(tag)}
-              >
-                {tag}
-              </Tag>
-            ))}
-        </Tags>
-        <Link eventLabel="to_course_material" to="https://www.mooc.fi">
-          {t("showCourse")}
-        </Link>
+        </SponsorContainer> */}
       </ContentContainer>
     </Container>
   )
@@ -272,7 +365,7 @@ export const CourseCardSkeleton = () => (
       <Schedule>
         <Skeleton />
       </Schedule>
-      <SponsorContainer />
+      {/* <SponsorContainer /> */}
       <Tags />
       <Skeleton />
     </ContentContainer>
