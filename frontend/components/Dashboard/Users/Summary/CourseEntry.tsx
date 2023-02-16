@@ -9,7 +9,6 @@ import {
   Collapse,
   Paper,
   Skeleton,
-  Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -61,27 +60,6 @@ const CourseInfo = styled("div")`
   display: flex;
   flex-direction: column;
 `
-const CourseInfoRowContainer = styled("div")`
-  display: flex;
-  flex-direction: row;
-  width: 50%;
-  justify-content: space-between;
-`
-
-interface CourseInfoRowProps {
-  title: string
-  content: string
-}
-
-const CourseInfoRow = ({ title, content }: CourseInfoRowProps) => (
-  <CourseInfoRowContainer>
-    <Typography variant="h4">{title}</Typography>
-    <Typography variant="h4">
-      <strong>{content}</strong>
-    </Typography>
-  </CourseInfoRowContainer>
-)
-
 const CourseEntryPartSkeleton = () => (
   <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
     <Skeleton />
