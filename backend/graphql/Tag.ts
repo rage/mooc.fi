@@ -30,7 +30,7 @@ export const Tag = objectType({
     t.model.hidden()
     t.model.tag_types()
     t.model.tag_translations()
-    t.model.course_tags()
+    t.model.courses()
     t.model.created_at()
     t.model.updated_at()
 

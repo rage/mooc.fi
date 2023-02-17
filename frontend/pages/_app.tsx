@@ -139,8 +139,9 @@ MyApp.getInitialProps = async (props: AppContext) => {
   }
 }
 
+// @ts-ignore: silence for now
 export function reportWebVitals(metric: NextWebVitalsMetric) {
-  console.log(metric)
+  // console.log(metric)
 }
 
 export default withAppEmotionCache(withApolloClient(MyApp))

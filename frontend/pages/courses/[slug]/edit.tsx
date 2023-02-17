@@ -88,7 +88,6 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
   const listLink = "/courses"
 
-  console.log(tagsData)
   return (
     <>
       <NextSeo title={title} />

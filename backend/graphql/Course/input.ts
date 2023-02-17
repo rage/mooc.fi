@@ -1,4 +1,4 @@
-import { inputObjectType, nonNull } from "nexus"
+import { inputObjectType } from "nexus"
 
 export const CourseCreateArg = inputObjectType({
   name: "CourseCreateArg",
@@ -52,7 +52,7 @@ export const CourseCreateArg = inputObjectType({
     t.int("points_needed")
     t.id("course_stats_email_id")
     t.list.nonNull.field("tags", {
-      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
+      type: "TagCreateInput",
     })
   },
 })
@@ -112,7 +112,7 @@ export const CourseUpsertArg = inputObjectType({
     t.int("points_needed")
     t.id("course_stats_email_id")
     t.list.nonNull.field("tags", {
-      type: nonNull("CourseTagCreateOrUpsertWithoutCourseIdInput"),
+      type: "TagUpsertInput",
     })
   },
 })

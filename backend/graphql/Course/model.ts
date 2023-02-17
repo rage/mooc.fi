@@ -60,7 +60,6 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
-    // t.model.course_tags()
 
     t.string("description")
     t.string("instructions")
@@ -146,65 +145,48 @@ export const Course = objectType({
         { language, types, search, includeHidden },
         ctx,
       ) => {
-        const where = {} as Prisma.CourseTagWhereInput
+        const where = {} as Prisma.TagWhereInput
 
         if (language) {
-          where.tag = {
-            tag_translations: {
-              some: {
-                language,
-              },
+          where.tag_translations = {
+            some: {
+              language,
             },
-          } as Prisma.TagWhereInput
+          }
         }
         if (types) {
-          where.tag = {
-            ...where.tag,
-            tag_types: {
-              some: {
-                name: { in: types },
-              },
+          where.tag_types = {
+            some: {
+              name: { in: types },
             },
-          } as Prisma.TagWhereInput
+          }
         }
         if (search) {
-          where.tag = {
-            ...where.tag,
-            tag_translations: {
-              some: {
-                ...(language && { language }),
-                OR: [
-                  {
-                    name: { contains: search, mode: "insensitive" },
-                  },
-                  {
-                    description: { contains: search, mode: "insensitive" },
-                  },
-                ],
-              },
+          where.tag_translations = {
+            some: {
+              ...(language && { language }),
+              OR: [
+                {
+                  name: { contains: search, mode: "insensitive" },
+                },
+                {
+                  description: { contains: search, mode: "insensitive" },
+                },
+              ],
             },
-          } as Prisma.TagWhereInput
+          }
         }
         if (!includeHidden) {
-          where.tag = {
-            ...where.tag,
-            OR: [{ hidden: false }, { hidden: null }],
-          } as Prisma.TagWhereInput
+          where.OR = [{ hidden: false }, { hidden: null }]
         }
 
-        const res = await ctx.prisma.course.findUnique({
-          where: { id: parent.id },
-          select: {
-            course_tags: {
-              where,
-              include: {
-                tag: true,
-              },
-            },
-          },
-        })
+        const res = await ctx.prisma.course
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .tags({ where })
 
-        return (res?.course_tags ?? []).map((ct) => ({ ...ct.tag, language }))
+        return (res ?? []).map((t) => ({ ...t, language }))
       },
     })
   },

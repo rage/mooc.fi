@@ -30,12 +30,6 @@ fragment CourseTranslationDetailedFields on CourseTranslation {
   updated_at
 }
 
-fragment CourseTagFields on CourseTag {
-  tag {
-    ...TagCoreFields
-  }
-}
-
 fragment CourseFields on Course {
   ...CourseWithPhotoCoreFields
   description

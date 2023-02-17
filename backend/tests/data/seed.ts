@@ -8,7 +8,6 @@ import {
   courseAliases,
   courseOwnerships,
   courses,
-  courseTags,
   emailTemplateThresholds,
   exerciseCompletions,
   exercises,
@@ -41,6 +40,8 @@ export const seed = async (prisma: PrismaClient) => {
     return created
   }
 
+  const seededTagTypes = await create("tagType", tagTypes)
+  const seededTags = await create("tag", tags)
   const seededModules = await create("studyModule", study_modules)
   const seededCourses = await create("course", courses)
   const seededOrganizations = await create("organization", organizations)
@@ -84,9 +85,6 @@ export const seed = async (prisma: PrismaClient) => {
     "courseOwnership",
     courseOwnerships,
   )
-  const seededTagTypes = await create("tagType", tagTypes)
-  const seededTags = await create("tag", tags)
-  const seededCourseTags = await create("courseTag", courseTags)
 
   return {
     courses: seededCourses,
@@ -110,6 +108,5 @@ export const seed = async (prisma: PrismaClient) => {
     courseOwnerships: seededCourseOwnerships,
     tags: seededTags,
     tagTypes: seededTagTypes,
-    courseTags: seededCourseTags,
   }
 }

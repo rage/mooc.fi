@@ -9,13 +9,7 @@ import {
   stringArg,
 } from "nexus"
 
-import {
-  Course,
-  CourseTag,
-  CourseTranslation,
-  Prisma,
-  Tag,
-} from "@prisma/client"
+import { Course, CourseTranslation, Prisma, Tag } from "@prisma/client"
 
 import { isAdmin, isUser, or } from "../../accessControl"
 import { GraphQLUserInputError } from "../../lib/errors"
@@ -47,29 +41,20 @@ export const CourseQueries = extendType({
             id: id ?? undefined,
           },
           include: {
-            course_tags: {
-              include: {
-                tag: true,
-              },
-            },
+            tags: true,
             ...(language && {
               course_translations: {
                 where: {
                   language,
                 },
               },
-              course_tags: {
+              tags: {
                 where: {
-                  tag: {
-                    tag_translations: {
-                      some: {
-                        language,
-                      },
+                  tag_translations: {
+                    some: {
+                      language,
                     },
                   },
-                },
-                include: {
-                  tag: true,
                 },
               },
             }),
@@ -91,17 +76,15 @@ export const CourseQueries = extendType({
         }
 
         const returnedCourse = {
-          ...omit(course, "course_tags"),
+          ...course,
           description: "",
           link: "",
-          tags: (course.course_tags ?? []).map((ct) => ct.tag), // [] as Array<{ id: string; language?: string }>,
         }
 
         if (language) {
-          const { course_translations, course_tags } =
-            course as typeof course & {
-              course_translations?: Array<CourseTranslation>
-            }
+          const { course_translations } = course as typeof course & {
+            course_translations?: Array<CourseTranslation>
+          }
           const course_translation = course_translations?.[0]
 
           if (!course_translation) {
@@ -113,9 +96,6 @@ export const CourseQueries = extendType({
             returnedCourse.link = course_translation.link ?? ""
             returnedCourse.name = course_translation.name
           }
-
-          returnedCourse.tags =
-            course_tags?.map((course_tag) => course_tag.tag) ?? []
         }
 
         return returnedCourse
@@ -211,16 +191,12 @@ export const CourseQueries = extendType({
         // then we may need a raw query or just do that filtering in the frontend
         if (tags) {
           searchQuery.push({
-            course_tags: {
+            tags: {
               some: {
-                tag: {
-                  is: {
-                    tag_translations: {
-                      some: {
-                        language: language ?? undefined,
-                        name: { in: tags },
-                      },
-                    },
+                tag_translations: {
+                  some: {
+                    language: language ?? undefined,
+                    name: { in: tags },
                   },
                 },
               },
@@ -230,15 +206,11 @@ export const CourseQueries = extendType({
 
         if (tag_types) {
           searchQuery.push({
-            course_tags: {
+            tags: {
               some: {
-                tag: {
-                  is: {
-                    tag_types: {
-                      some: {
-                        name: { in: tag_types },
-                      },
-                    },
+                tag_types: {
+                  some: {
+                    name: { in: tag_types },
                   },
                 },
               },
@@ -249,7 +221,7 @@ export const CourseQueries = extendType({
         const courses: Array<
           Course & {
             course_translations?: Array<CourseTranslation>
-            course_tags?: Array<CourseTag & { tag?: Tag }>
+            tags?: Array<Tag>
           }
         > = await ctx.prisma.course.findMany({
           orderBy: filterNullRecursive(orderBy) ?? undefined,
@@ -257,11 +229,7 @@ export const CourseQueries = extendType({
             AND: searchQuery,
           },
           include: {
-            course_tags: {
-              include: {
-                tag: true,
-              },
-            },
+            tags: true,
           },
           ...(language
             ? {
@@ -271,19 +239,12 @@ export const CourseQueries = extendType({
                       language: { equals: language },
                     },
                   },
-                  course_tags: {
+                  tags: {
                     // TODO: is this needed?
                     where: {
-                      tag: {
-                        tag_translations: {
-                          some: {
-                            language,
-                          },
-                        },
+                      tag_translations: {
+                        some: { language },
                       },
-                    },
-                    include: {
-                      tag: true,
                     },
                   },
                 },
@@ -297,13 +258,10 @@ export const CourseQueries = extendType({
               return null
             }
             return {
-              ...omit(course, ["course_translations", "course_tags"]),
+              ...omit(course, ["course_translations", "tags"]),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
-              tags: (course.course_tags ?? []).map((course_tag) => ({
-                ...course_tag.tag,
-                language,
-              })),
+              tags: course?.tags?.map((tag) => ({ ...tag, language })),
             }
           })
           .filter(notEmpty)
@@ -313,7 +271,7 @@ export const CourseQueries = extendType({
           Course & {
             description: string
             link: string
-            tags?: Array<{ id: string; language?: string }>
+            tags?: Array<Tag & { language?: string }>
           }
         >
       },

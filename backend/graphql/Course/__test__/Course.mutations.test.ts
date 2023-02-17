@@ -63,7 +63,7 @@ describe("Course", () => {
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
       tags: [
         {
-          tag_id: "tag1",
+          id: "tag1",
         },
       ],
     })
@@ -115,7 +115,7 @@ describe("Course", () => {
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
       tags: [
         {
-          tag_id: "tag2",
+          id: "tag2",
         },
       ],
     })
@@ -232,16 +232,10 @@ describe("Course", () => {
               }),
             },
             {
-              idFields: [
-                "id",
-                "course_id",
-                /*"course_aliases.course_id",
-                "course_variants.course_id",
-                "course_tags.course_id",
-                "course_translations.course_id",*/
-                "photo_id",
-              ].filter((f) => !omitIdFields.includes(f)), //.filter(isNotNullOrUndefined),
-              excludePaths: ["course_tags.tag.id"],
+              idFields: ["id", "course_id", "photo_id"].filter(
+                (f) => !omitIdFields.includes(f),
+              ), //.filter(isNotNullOrUndefined),
+              excludePaths: ["tags.id"],
             },
           )
         },
@@ -312,7 +306,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules", "course_tags.tag.id"],
+            excludePaths: ["id", "study_modules", "tags.id"],
           },
         )
       })
@@ -355,7 +349,7 @@ describe("Course", () => {
             ),
           },
           {
-            excludePaths: ["course_tags.tag.id"],
+            excludePaths: ["tags.id"],
           },
         )
       })
@@ -383,7 +377,7 @@ describe("Course", () => {
         })
         expect(updatedCourse).toMatchStrippedSnapshot(
           {},
-          { excludePaths: ["course_tags.tag.id"] },
+          { excludePaths: ["tags.id"] },
         )
       })
 
