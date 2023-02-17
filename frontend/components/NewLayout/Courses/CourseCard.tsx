@@ -2,7 +2,8 @@ import Image from "next/image"
 
 import CircleIcon from "@mui/icons-material/Circle"
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"
-import { Button, Skeleton, Typography } from "@mui/material"
+import HelpIcon from "@mui/icons-material/Help"
+import { Button, Skeleton, Tooltip, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
@@ -82,7 +83,6 @@ const LeftContentContainer = styled("div")`
 const RightContentContainer = styled("div")`
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr;
-  grid-gap: 1rem;
   justify-content: right;
 `
 
@@ -123,6 +123,15 @@ const Details = styled("div")`
   flex-direction: column;
   align-items: flex-end;
   padding: 1rem;
+`
+
+const CourseLength = styled("div")`
+  display: flex;
+  align-items: center;
+`
+
+const StyledTooltip = styled(Tooltip)`
+  max-height: 1rem;
 `
 
 const Link = styled(OutboundLink)`
@@ -284,9 +293,20 @@ function CourseCard({ course, tags }: CourseCardProps) {
         <RightContentContainer>
           <Details>
             {course.ects && (
-              <Typography variant="subtitle2">
-                ~{parseInt(course.ects) * 27}h ({course.ects} ECTS)
-              </Typography>
+              <CourseLength>
+                <Typography variant="subtitle2">
+                  ~{Math.round((parseInt(course.ects) * 27) / 5) * 5}h
+                </Typography>
+                <StyledTooltip
+                  title={
+                    t("ectsHoursExplanation1") +
+                    ` ${course.ects} ` +
+                    t("ectsHoursExplanation2")
+                  }
+                >
+                  <HelpIcon />
+                </StyledTooltip>
+              </CourseLength>
             )}
             {/* TODO: add information regarding university/organization to course */}
             <Typography variant="subtitle2">Helsingin yliopisto</Typography>
