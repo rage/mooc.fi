@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-02-08T15:50:31+02:00
+// Generated on 2023-02-16T14:33:21+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -561,12 +561,12 @@ export type CourseTagCourse_idTag_idCompoundUniqueInput = {
 export type CourseTagCreateOrUpsertInput = {
   course_id: Scalars["ID"]
   tag?: InputMaybe<TagUpsertInput>
-  tag_id: Scalars["ID"]
+  tag_id: Scalars["String"]
 }
 
 export type CourseTagCreateOrUpsertWithoutCourseIdInput = {
   tag?: InputMaybe<TagUpsertInput>
-  tag_id: Scalars["ID"]
+  tag_id: Scalars["String"]
 }
 
 export type CourseTagOrderByRelationAggregateInput = {
@@ -1064,7 +1064,7 @@ export type MutationaddCourseOrganizationArgs = {
 export type MutationaddCourseTagArgs = {
   course_id?: InputMaybe<Scalars["ID"]>
   course_slug?: InputMaybe<Scalars["String"]>
-  tag_id?: InputMaybe<Scalars["ID"]>
+  tag_id?: InputMaybe<Scalars["String"]>
   tag_name?: InputMaybe<Scalars["String"]>
 }
 
@@ -1190,6 +1190,7 @@ export type MutationcreateRegistrationAttemptDateArgs = {
 
 export type MutationcreateTagArgs = {
   hidden?: InputMaybe<Scalars["Boolean"]>
+  id?: InputMaybe<Scalars["String"]>
   translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
   types?: InputMaybe<Array<Scalars["String"]>>
 }
@@ -1198,7 +1199,7 @@ export type MutationcreateTagTranslationArgs = {
   description?: InputMaybe<Scalars["String"]>
   language: Scalars["String"]
   name: Scalars["String"]
-  tag_id: Scalars["ID"]
+  tag_id: Scalars["String"]
 }
 
 export type MutationcreateTagTypeArgs = {
@@ -1220,7 +1221,7 @@ export type MutationdeleteCourseStatsSubscriptionArgs = {
 
 export type MutationdeleteCourseTagArgs = {
   course_id: Scalars["ID"]
-  tag_id: Scalars["ID"]
+  tag_id: Scalars["String"]
 }
 
 export type MutationdeleteCourseTranslationArgs = {
@@ -1249,12 +1250,12 @@ export type MutationdeleteStudyModuleTranslationArgs = {
 }
 
 export type MutationdeleteTagArgs = {
-  id: Scalars["ID"]
+  id: Scalars["String"]
 }
 
 export type MutationdeleteTagTranslationArgs = {
   language: Scalars["String"]
-  tag_id: Scalars["ID"]
+  tag_id: Scalars["String"]
 }
 
 export type MutationdeleteTagTypeArgs = {
@@ -1347,7 +1348,7 @@ export type MutationupdateStudyModuletranslationArgs = {
 
 export type MutationupdateTagArgs = {
   hidden?: InputMaybe<Scalars["Boolean"]>
-  id: Scalars["ID"]
+  id: Scalars["String"]
   translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
   types?: InputMaybe<Array<Scalars["String"]>>
 }
@@ -1356,7 +1357,7 @@ export type MutationupdateTagTranslationArgs = {
   description?: InputMaybe<Scalars["String"]>
   language: Scalars["String"]
   name: Scalars["String"]
-  tag_id: Scalars["ID"]
+  tag_id: Scalars["String"]
 }
 
 export type MutationupdateTagTypeArgs = {
@@ -1710,7 +1711,7 @@ export type QuerycourseTagsArgs = {
   course_slug?: InputMaybe<Scalars["String"]>
   includeHidden?: InputMaybe<Scalars["Boolean"]>
   language?: InputMaybe<Scalars["String"]>
-  tag_id?: InputMaybe<Scalars["ID"]>
+  tag_id?: InputMaybe<Scalars["String"]>
   tag_types?: InputMaybe<Array<Scalars["String"]>>
 }
 
@@ -2177,7 +2178,7 @@ export type Tagtag_typesArgs = {
 
 export type TagCreateInput = {
   hidden?: InputMaybe<Scalars["Boolean"]>
-  id?: InputMaybe<Scalars["ID"]>
+  id: Scalars["String"]
   tag_translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
   types?: InputMaybe<Array<Scalars["String"]>>
 }
@@ -2197,7 +2198,7 @@ export type TagTranslationCreateOrUpdateInput = {
   description?: InputMaybe<Scalars["String"]>
   language: Scalars["String"]
   name: Scalars["String"]
-  tag_id?: InputMaybe<Scalars["ID"]>
+  tag_id?: InputMaybe<Scalars["String"]>
 }
 
 export type TagTranslationNameLanguageCompoundUniqueInput = {
@@ -3549,6 +3550,8 @@ export type TagTranslationFieldsFragment = {
   description: string | null
   language: string
 }
+
+export type TagTypeFieldsFragment = { __typename?: "TagType"; name: string }
 
 export type UserCoreFieldsFragment = {
   __typename?: "User"
@@ -5510,6 +5513,77 @@ export type StudyModuleExistsQuery = {
   study_module_exists: boolean | null
 }
 
+export type CourseEditorTagsQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]>
+}>
+
+export type CourseEditorTagsQuery = {
+  __typename?: "Query"
+  tags: Array<{
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  }> | null
+}
+
+export type TagEditorTagsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TagEditorTagsQuery = {
+  __typename?: "Query"
+  tags: Array<{
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  }> | null
+}
+
+export type TagEditorTagTypesQueryVariables = Exact<{ [key: string]: never }>
+
+export type TagEditorTagTypesQuery = {
+  __typename?: "Query"
+  tagTypes: Array<{ __typename?: "TagType"; name: string }> | null
+}
+
+export type CourseCatalogueTagsQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]>
+}>
+
+export type CourseCatalogueTagsQuery = {
+  __typename?: "Query"
+  tags: Array<{
+    __typename?: "Tag"
+    id: string
+    hidden: boolean | null
+    types: Array<string> | null
+    name: string | null
+    tag_translations: Array<{
+      __typename?: "TagTranslation"
+      tag_id: string
+      name: string
+      description: string | null
+      language: string
+    }>
+  }> | null
+}
+
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
 
 export type CurrentUserQuery = {
@@ -7439,6 +7513,23 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<StudyModuleFieldsWithCoursesFragment, unknown>
+export const TagTypeFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagTypeFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TagType" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TagTypeFieldsFragment, unknown>
 export const UserCourseProgressCoreFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -10999,6 +11090,174 @@ export const StudyModuleExistsDocument = {
 } as unknown as DocumentNode<
   StudyModuleExistsQuery,
   StudyModuleExistsQueryVariables
+>
+export const CourseEditorTagsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "CourseEditorTags" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  CourseEditorTagsQuery,
+  CourseEditorTagsQueryVariables
+>
+export const TagEditorTagsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TagEditorTags" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<TagEditorTagsQuery, TagEditorTagsQueryVariables>
+export const TagEditorTagTypesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TagEditorTagTypes" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tagTypes" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagTypeFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...TagTypeFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  TagEditorTagTypesQuery,
+  TagEditorTagTypesQueryVariables
+>
+export const CourseCatalogueTagsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "CourseCatalogueTags" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    ...TagCoreFieldsFragmentDoc.definitions,
+    ...TagTranslationFieldsFragmentDoc.definitions,
+  ],
+} as unknown as DocumentNode<
+  CourseCatalogueTagsQuery,
+  CourseCatalogueTagsQueryVariables
 >
 export const CurrentUserDocument = {
   kind: "Document",

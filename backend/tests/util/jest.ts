@@ -431,7 +431,7 @@ declare global {
        * @template {T}
        * @param propertyMatchers
        * @param {StrippedSnapshotOptions<T>} options
-       * @param {ExcludeFieldsOptionType<T>} options.excludeFields - Fields to _not_ strip. Will match all fields with htis name, regardless of path.
+       * @param {ExcludeFieldsOptionType<T>} options.excludeFields - Fields to _not_ strip. Will match all fields with this name, regardless of path.
        * @param {ExcludePathsOptionType<T>} options.excludePaths - Paths to _not_ strip. Will match only fields that match exactly..
        * @param {Array<FieldOptionType<T>>} options.idFields - fields to consider as id fields
        */

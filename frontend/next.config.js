@@ -3,9 +3,6 @@
  * @typedef {import('next').NextConfig} NextConfig
  * @typedef {((config?: NextConfig) => NextConfig) | ((config: NextConfig) => NextConfig)} NextPlugin
  */
-/*const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-})*/
 /** @type {NextPlugin} */
 let withStatoscope
 
@@ -107,15 +104,6 @@ const nextConfiguration = {
     const found = config.module.rules?.findIndex((/** @type {any} */ rule) =>
       rule.test?.exec?.("u.svg"),
     )
-    /*const foundOneOf = config.module.rules?.findIndex((rule) => {
-      if (!rule.oneOf) {
-        return false
-      }
-
-      const hasOneOfRule = rule.oneOf.some((r) => r.test?.exec?.("u.svg"))
-
-      return hasOneOfRule
-    })*/
 
     let originalRule
     if (found >= 0) {
@@ -149,20 +137,6 @@ const nextConfiguration = {
         resourceQuery: { not: [/icon/] },
       })
     }
-
-    /*config.module.rules.push({
-      test: /\.svg/,
-      issuer: /\.[jt]sx?$/,
-      resourceQuery: /component/,
-      // include: [options.dir],
-      use: [
-        "next-swc-loader",
-        {
-          loader: "@svgr/webpack",
-          options: { babel: false },
-        },
-      ],
-    })*/
 
     return config
   },

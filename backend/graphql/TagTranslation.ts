@@ -1,6 +1,5 @@
 import {
   extendType,
-  idArg,
   inputObjectType,
   nonNull,
   objectType,
@@ -25,7 +24,7 @@ export const TagTranslation = objectType({
 export const TagTranslationCreateOrUpdateInput = inputObjectType({
   name: "TagTranslationCreateOrUpdateInput",
   definition(t) {
-    t.id("tag_id")
+    t.string("tag_id")
     t.nonNull.string("name")
     t.nonNull.string("language")
     t.string("description")
@@ -38,7 +37,7 @@ export const TagTranslationMutations = extendType({
     t.field("createTagTranslation", {
       type: "TagTranslation",
       args: {
-        tag_id: nonNull(idArg()),
+        tag_id: nonNull(stringArg()),
         language: nonNull(stringArg()),
         name: nonNull(stringArg()),
         description: stringArg(),
@@ -59,7 +58,7 @@ export const TagTranslationMutations = extendType({
     t.field("updateTagTranslation", {
       type: "TagTranslation",
       args: {
-        tag_id: nonNull(idArg()),
+        tag_id: nonNull(stringArg()),
         language: nonNull(stringArg()),
         name: nonNull(stringArg()),
         description: stringArg(),
@@ -84,7 +83,7 @@ export const TagTranslationMutations = extendType({
     t.field("deleteTagTranslation", {
       type: "TagTranslation",
       args: {
-        tag_id: nonNull(idArg()),
+        tag_id: nonNull(stringArg()),
         language: nonNull(stringArg()),
       },
       authorize: isAdmin,

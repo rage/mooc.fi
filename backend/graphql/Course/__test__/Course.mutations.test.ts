@@ -63,7 +63,7 @@ describe("Course", () => {
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
       tags: [
         {
-          tag_id: "48100000-0000-0000-0000-000000000001",
+          tag_id: "tag1",
         },
       ],
     })
@@ -115,7 +115,7 @@ describe("Course", () => {
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
       tags: [
         {
-          tag_id: "48100000-0000-0000-0000-000000000002",
+          tag_id: "tag2",
         },
       ],
     })
@@ -197,7 +197,9 @@ describe("Course", () => {
             course: data,
           })
 
-          expect(res.addCourse).toMatchStrippedSnapshot(expected)
+          expect(res.addCourse).toMatchStrippedSnapshot(expected, {
+            excludePaths: ["tags.id"],
+          })
 
           expect(KafkaProducer).toHaveBeenCalledTimes(1)
 
@@ -239,6 +241,7 @@ describe("Course", () => {
                 "course_translations.course_id",*/
                 "photo_id",
               ].filter((f) => !omitIdFields.includes(f)), //.filter(isNotNullOrUndefined),
+              excludePaths: ["course_tags.tag.id"],
             },
           )
         },
@@ -287,7 +290,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules"],
+            excludePaths: ["id", "study_modules", "tags.id"],
           },
         )
 
@@ -309,7 +312,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules"],
+            excludePaths: ["id", "study_modules", "course_tags.tag.id"],
           },
         )
       })
@@ -326,7 +329,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules"],
+            excludePaths: ["id", "study_modules", "tags.id"],
           },
         )
 
@@ -344,12 +347,17 @@ describe("Course", () => {
           where: { slug: "updated_course1" },
           include: courseInclude,
         })
-        expect(updatedCourse).toMatchStrippedSnapshot({
-          ...anyPhoto,
-          photo_id: expect.not.stringContaining(
-            "00000000000000000000000000001101",
-          ),
-        })
+        expect(updatedCourse).toMatchStrippedSnapshot(
+          {
+            ...anyPhoto,
+            photo_id: expect.not.stringContaining(
+              "00000000000000000000000000001101",
+            ),
+          },
+          {
+            excludePaths: ["course_tags.tag.id"],
+          },
+        )
       })
 
       it("deletes photo", async () => {
@@ -362,15 +370,21 @@ describe("Course", () => {
           },
         })
 
-        expect(res.updateCourse).toMatchStrippedSnapshot({
-          ...expectedUpdatedCourse,
-          photo: null,
-        })
+        expect(res.updateCourse).toMatchStrippedSnapshot(
+          {
+            ...expectedUpdatedCourse,
+            photo: null,
+          },
+          { excludePaths: ["tags.id"] },
+        )
         const updatedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "course1" },
           include: courseInclude,
         })
-        expect(updatedCourse).toMatchStrippedSnapshot()
+        expect(updatedCourse).toMatchStrippedSnapshot(
+          {},
+          { excludePaths: ["course_tags.tag.id"] },
+        )
       })
 
       it("errors with non-admin", async () => {

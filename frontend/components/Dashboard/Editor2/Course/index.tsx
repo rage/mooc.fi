@@ -32,6 +32,7 @@ import {
   EditorCourseOtherCoursesFieldsFragment,
   EditorCoursesDocument,
   StudyModuleDetailedFieldsFragment,
+  TagCoreFieldsFragment,
   UpdateCourseDocument,
 } from "/graphql/generated"
 
@@ -39,9 +40,15 @@ interface CourseEditProps {
   course?: EditorCourseDetailedFieldsFragment
   courses?: EditorCourseOtherCoursesFieldsFragment[]
   studyModules?: StudyModuleDetailedFieldsFragment[]
+  tags?: TagCoreFieldsFragment[]
 }
 
-function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
+function CourseEditor({
+  course,
+  courses,
+  studyModules,
+  tags,
+}: CourseEditProps) {
   const t = useTranslator(CoursesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const [tab, setTab] = useState(0)
@@ -172,6 +179,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditProps) {
           course={course}
           courses={courses}
           studyModules={studyModules}
+          tags={tags}
         />
       </EditorContext.Provider>
     </FormProvider>

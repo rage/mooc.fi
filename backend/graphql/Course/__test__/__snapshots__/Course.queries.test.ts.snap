@@ -80,7 +80,7 @@ exports[`Course queries course admin returns full course on id and slug 1`] = `
     {
       "description": null,
       "hidden": false,
-      "id": "48100000-0000-0000-0000-000000000001",
+      "id": "tag1",
       "name": null,
       "tag_translations": [
         {
@@ -106,7 +106,7 @@ exports[`Course queries course admin returns full course on id and slug 1`] = `
     {
       "description": null,
       "hidden": false,
-      "id": "48100000-0000-0000-0000-000000000002",
+      "id": "tag2",
       "name": null,
       "tag_translations": [
         {
@@ -222,7 +222,7 @@ exports[`Course queries course admin returns full course on id and slug 2`] = `
     {
       "description": null,
       "hidden": false,
-      "id": "48100000-0000-0000-0000-000000000001",
+      "id": "tag1",
       "name": null,
       "tag_translations": [
         {
@@ -248,7 +248,7 @@ exports[`Course queries course admin returns full course on id and slug 2`] = `
     {
       "description": null,
       "hidden": false,
-      "id": "48100000-0000-0000-0000-000000000002",
+      "id": "tag2",
       "name": null,
       "tag_translations": [
         {
@@ -369,7 +369,7 @@ exports[`Course queries course admin should include deleted exercises if specifi
     {
       "description": null,
       "hidden": false,
-      "id": "48100000-0000-0000-0000-000000000001",
+      "id": "tag1",
       "name": null,
       "tag_translations": [
         {
@@ -395,7 +395,7 @@ exports[`Course queries course admin should include deleted exercises if specifi
     {
       "description": null,
       "hidden": false,
-      "id": "48100000-0000-0000-0000-000000000002",
+      "id": "tag2",
       "name": null,
       "tag_translations": [
         {
@@ -572,7 +572,7 @@ exports[`Course queries courses returns courses 1`] = `
       {
         "description": null,
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000001",
+        "id": "tag1",
         "name": null,
         "types": [
           "type1",
@@ -581,7 +581,7 @@ exports[`Course queries courses returns courses 1`] = `
       {
         "description": null,
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000002",
+        "id": "tag2",
         "name": null,
         "types": [
           "type1",
@@ -703,7 +703,7 @@ exports[`Course queries courses returns courses filtered by language: courses-la
       {
         "description": "tag1 description",
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000001",
+        "id": "tag1",
         "name": "tag1 in english",
         "types": [
           "type1",
@@ -712,7 +712,7 @@ exports[`Course queries courses returns courses filtered by language: courses-la
       {
         "description": "tag2 description",
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000002",
+        "id": "tag2",
         "name": "tag2 in english",
         "types": [
           "type1",
@@ -728,37 +728,6 @@ exports[`Course queries courses returns courses filtered by language: courses-la
 
 exports[`Course queries courses returns courses filtered by language: courses-language-fi_FI 1`] = `
 [
-  {
-    "course_translations": [
-      {
-        "id": "00000000-0000-0000-0000-000000000022",
-        "language": "fi_FI",
-        "name": "course2_fi_FI",
-      },
-    ],
-    "description": "course2_description_fi_FI",
-    "hidden": null,
-    "id": "00000000-0000-0000-0000-000000000001",
-    "link": "",
-    "name": "course2",
-    "order": null,
-    "photo": null,
-    "promote": null,
-    "slug": "course2",
-    "start_point": null,
-    "status": "Upcoming",
-    "study_module_order": null,
-    "study_module_start_point": null,
-    "study_modules": [
-      {
-        "id": "00000000-0000-0000-0000-000000000102",
-        "slug": "module1",
-      },
-    ],
-    "tags": [],
-    "upcoming_active_link": false,
-    "user_course_settings_visibilities": [],
-  },
   {
     "course_translations": [
       {
@@ -803,7 +772,7 @@ exports[`Course queries courses returns courses filtered by language: courses-la
       {
         "description": "tag1 kuvaus",
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000001",
+        "id": "tag1",
         "name": "tag1 suomeksi",
         "types": [
           "type1",
@@ -812,7 +781,7 @@ exports[`Course queries courses returns courses filtered by language: courses-la
       {
         "description": "tag2 kuvaus ja jotain muuta",
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000002",
+        "id": "tag2",
         "name": "tag2 suomeksi",
         "types": [
           "type1",
@@ -820,6 +789,37 @@ exports[`Course queries courses returns courses filtered by language: courses-la
         ],
       },
     ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "course2_description_fi_FI",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "slug": "module1",
+      },
+    ],
+    "tags": [],
     "upcoming_active_link": false,
     "user_course_settings_visibilities": [],
   },
@@ -872,7 +872,7 @@ exports[`Course queries courses returns courses ordered: courses-order-asc 1`] =
       {
         "description": null,
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000001",
+        "id": "tag1",
         "name": null,
         "types": [
           "type1",
@@ -881,7 +881,7 @@ exports[`Course queries courses returns courses ordered: courses-order-asc 1`] =
       {
         "description": null,
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000002",
+        "id": "tag2",
         "name": null,
         "types": [
           "type1",
@@ -1123,7 +1123,7 @@ exports[`Course queries courses returns courses ordered: courses-order-desc 1`] 
       {
         "description": null,
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000001",
+        "id": "tag1",
         "name": null,
         "types": [
           "type1",
@@ -1132,7 +1132,7 @@ exports[`Course queries courses returns courses ordered: courses-order-desc 1`] 
       {
         "description": null,
         "hidden": false,
-        "id": "48100000-0000-0000-0000-000000000002",
+        "id": "tag2",
         "name": null,
         "types": [
           "type1",

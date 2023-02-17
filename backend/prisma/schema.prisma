@@ -567,7 +567,7 @@ model CourseStatsSubscription {
 model Tag {
   created_at                               DateTime?        @default(now())
   updated_at                               DateTime?        @updatedAt
-  id                                       String           @id @default(uuid())
+  id                                       String           @id
   hidden                                   Boolean?         @default(false) 
   tag_types                                TagType[]      
   tag_translations                         TagTranslation[]

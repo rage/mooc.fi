@@ -18,6 +18,7 @@ const esLintConfig = {
     parser: "@typescript-eslint/parser",
     project: ["./tsconfig.json"],
     tsconfigRootDir: __dirname,
+    root: true,
   },
   ignorePatterns: ["node_modules/", "generated/", "dist/", "sourcemap/"],
   rules: {

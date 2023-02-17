@@ -66,7 +66,7 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag1",
       "tag_translations": [
         {
           "description": "tag1 description",
@@ -149,19 +149,19 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag1",
         "tag_translations": [
           {
             "description": "tag1 description",
             "language": "en_US",
             "name": "tag1 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
           {
             "description": "tag1 kuvaus",
             "language": "fi_FI",
             "name": "tag1 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
         ],
         "tag_types": [
@@ -170,7 +170,7 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000001",
+      "tag_id": "tag1",
     },
   ],
   "course_translations": [
@@ -580,7 +580,7 @@ exports[`Course mutations addCourse creates a course with no course_translations
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag1",
       "tag_translations": [
         {
           "description": "tag1 description",
@@ -663,19 +663,19 @@ exports[`Course mutations addCourse creates a course with no course_translations
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag1",
         "tag_translations": [
           {
             "description": "tag1 description",
             "language": "en_US",
             "name": "tag1 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
           {
             "description": "tag1 kuvaus",
             "language": "fi_FI",
             "name": "tag1 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
         ],
         "tag_types": [
@@ -684,7 +684,7 @@ exports[`Course mutations addCourse creates a course with no course_translations
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000001",
+      "tag_id": "tag1",
     },
   ],
   "course_translations": [],
@@ -848,7 +848,7 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag1",
       "tag_translations": [
         {
           "description": "tag1 description",
@@ -931,19 +931,19 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag1",
         "tag_translations": [
           {
             "description": "tag1 description",
             "language": "en_US",
             "name": "tag1 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
           {
             "description": "tag1 kuvaus",
             "language": "fi_FI",
             "name": "tag1 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
         ],
         "tag_types": [
@@ -952,7 +952,7 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000001",
+      "tag_id": "tag1",
     },
   ],
   "course_translations": [
@@ -1118,7 +1118,7 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag1",
       "tag_translations": [
         {
           "description": "tag1 description",
@@ -1201,19 +1201,19 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag1",
         "tag_translations": [
           {
             "description": "tag1 description",
             "language": "en_US",
             "name": "tag1 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
           {
             "description": "tag1 kuvaus",
             "language": "fi_FI",
             "name": "tag1 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000001",
+            "tag_id": "tag1",
           },
         ],
         "tag_types": [
@@ -1222,7 +1222,7 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000001",
+      "tag_id": "tag1",
     },
   ],
   "course_translations": [
@@ -1409,7 +1409,7 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 1`
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag2",
       "tag_translations": [
         {
           "description": "tag2 description",
@@ -1493,19 +1493,19 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
       "course_id": "00000000-0000-0000-0000-000000000002",
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag2",
         "tag_translations": [
           {
             "description": "tag2 description",
             "language": "en_US",
             "name": "tag2 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000002",
+            "tag_id": "tag2",
           },
           {
             "description": "tag2 kuvaus ja jotain muuta",
             "language": "fi_FI",
             "name": "tag2 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000002",
+            "tag_id": "tag2",
           },
         ],
         "tag_types": [
@@ -1517,7 +1517,7 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000002",
+      "tag_id": "tag2",
     },
   ],
   "course_translations": [
@@ -1765,7 +1765,7 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 1
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag2",
       "tag_translations": [
         {
           "description": "tag2 description",
@@ -1849,19 +1849,19 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
       "course_id": "00000000-0000-0000-0000-000000000002",
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag2",
         "tag_translations": [
           {
             "description": "tag2 description",
             "language": "en_US",
             "name": "tag2 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000002",
+            "tag_id": "tag2",
           },
           {
             "description": "tag2 kuvaus ja jotain muuta",
             "language": "fi_FI",
             "name": "tag2 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000002",
+            "tag_id": "tag2",
           },
         ],
         "tag_types": [
@@ -1873,7 +1873,7 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000002",
+      "tag_id": "tag2",
     },
   ],
   "course_translations": [
@@ -2132,7 +2132,7 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 1`
   "tags": [
     {
       "hidden": false,
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": "tag2",
       "tag_translations": [
         {
           "description": "tag2 description",
@@ -2216,19 +2216,19 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 2`
       "course_id": "00000000-0000-0000-0000-000000000002",
       "tag": {
         "hidden": false,
-        "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+        "id": "tag2",
         "tag_translations": [
           {
             "description": "tag2 description",
             "language": "en_US",
             "name": "tag2 in english",
-            "tag_id": "48100000-0000-0000-0000-000000000002",
+            "tag_id": "tag2",
           },
           {
             "description": "tag2 kuvaus ja jotain muuta",
             "language": "fi_FI",
             "name": "tag2 suomeksi",
-            "tag_id": "48100000-0000-0000-0000-000000000002",
+            "tag_id": "tag2",
           },
         ],
         "tag_types": [
@@ -2240,7 +2240,7 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 2`
           },
         ],
       },
-      "tag_id": "48100000-0000-0000-0000-000000000002",
+      "tag_id": "tag2",
     },
   ],
   "course_translations": [

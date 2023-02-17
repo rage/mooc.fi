@@ -64,12 +64,12 @@ export function FieldController<T extends FieldValues>({
     (renderProps: FieldControllerRenderedElementProps<T>) => (
       <div {...props}>
         <EnumeratingAnchor id={name} />
-        {renderComponent({ ...renderProps.field, onChange })}
         <ErrorMessage
           errors={errors}
           name={name as any} // TODO/FIXME: annoying typing here
           render={ErrorMessageComponent}
         />
+        {renderComponent({ ...renderProps.field, onChange })}
       </div>
     ),
     [name, renderComponent, props, errors, onChange],
