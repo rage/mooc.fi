@@ -198,10 +198,7 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 
-  const tags =
-    values.tags?.map((tag) => ({
-      tag_id: tag.id,
-    })) ?? []
+  const tags = (values.tags ?? []).map((tag) => omit(tag, ["__typename"]))
 
   const formValues = newCourse
     ? omit(values, [

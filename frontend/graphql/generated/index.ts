@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-02-16T14:33:21+02:00
+// Generated on 2023-02-17T20:40:10+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -368,7 +368,7 @@ export type CourseCreateArg = {
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
   study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
-  tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
+  tags?: InputMaybe<Array<TagCreateInput>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
@@ -415,7 +415,6 @@ export type CourseOrderByWithRelationInput = {
   course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
   course_stats_email?: InputMaybe<EmailTemplateOrderByWithRelationInput>
   course_stats_email_id?: InputMaybe<SortOrder>
-  course_tags?: InputMaybe<CourseTagOrderByRelationAggregateInput>
   course_translations?: InputMaybe<CourseTranslationOrderByRelationAggregateInput>
   course_variants?: InputMaybe<CourseVariantOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
@@ -450,6 +449,7 @@ export type CourseOrderByWithRelationInput = {
   study_module_start_point?: InputMaybe<SortOrder>
   study_modules?: InputMaybe<StudyModuleOrderByRelationAggregateInput>
   support_email?: InputMaybe<SortOrder>
+  tags?: InputMaybe<TagOrderByRelationAggregateInput>
   teacher_in_charge_email?: InputMaybe<SortOrder>
   teacher_in_charge_name?: InputMaybe<SortOrder>
   tier?: InputMaybe<SortOrder>
@@ -542,42 +542,6 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
-export type CourseTag = {
-  __typename?: "CourseTag"
-  course: Course
-  course_id: Scalars["String"]
-  created_at: Maybe<Scalars["DateTime"]>
-  language: Maybe<Scalars["String"]>
-  tag: Maybe<Tag>
-  tag_id: Scalars["String"]
-  updated_at: Maybe<Scalars["DateTime"]>
-}
-
-export type CourseTagCourse_idTag_idCompoundUniqueInput = {
-  course_id: Scalars["String"]
-  tag_id: Scalars["String"]
-}
-
-export type CourseTagCreateOrUpsertInput = {
-  course_id: Scalars["ID"]
-  tag?: InputMaybe<TagUpsertInput>
-  tag_id: Scalars["String"]
-}
-
-export type CourseTagCreateOrUpsertWithoutCourseIdInput = {
-  tag?: InputMaybe<TagUpsertInput>
-  tag_id: Scalars["String"]
-}
-
-export type CourseTagOrderByRelationAggregateInput = {
-  _count?: InputMaybe<SortOrder>
-  count?: InputMaybe<SortOrder>
-}
-
-export type CourseTagWhereUniqueInput = {
-  course_id_tag_id?: InputMaybe<CourseTagCourse_idTag_idCompoundUniqueInput>
-}
-
 export type CourseTranslation = {
   __typename?: "CourseTranslation"
   course: Maybe<Course>
@@ -656,7 +620,7 @@ export type CourseUpsertArg = {
   study_module_start_point?: InputMaybe<Scalars["Boolean"]>
   study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]>
-  tags?: InputMaybe<Array<CourseTagCreateOrUpsertWithoutCourseIdInput>>
+  tags?: InputMaybe<Array<TagUpsertInput>>
   teacher_in_charge_email: Scalars["String"]
   teacher_in_charge_name: Scalars["String"]
   tier?: InputMaybe<Scalars["Int"]>
@@ -971,7 +935,6 @@ export type Mutation = {
   addCourse: Maybe<Course>
   addCourseAlias: Maybe<CourseAlias>
   addCourseOrganization: Maybe<CourseOrganization>
-  addCourseTag: CourseTag
   addCourseTranslation: Maybe<CourseTranslation>
   addCourseVariant: Maybe<CourseVariant>
   addEmailTemplate: Maybe<EmailTemplate>
@@ -997,7 +960,6 @@ export type Mutation = {
   deleteCourse: Maybe<Course>
   deleteCourseOrganization: Maybe<CourseOrganization>
   deleteCourseStatsSubscription: Maybe<CourseStatsSubscription>
-  deleteCourseTag: CourseTag
   deleteCourseTranslation: Maybe<CourseTranslation>
   deleteCourseVariant: Maybe<CourseVariant>
   deleteEmailTemplate: Maybe<EmailTemplate>
@@ -1059,13 +1021,6 @@ export type MutationaddCourseOrganizationArgs = {
   course_id: Scalars["ID"]
   creator?: InputMaybe<Scalars["Boolean"]>
   organization_id: Scalars["ID"]
-}
-
-export type MutationaddCourseTagArgs = {
-  course_id?: InputMaybe<Scalars["ID"]>
-  course_slug?: InputMaybe<Scalars["String"]>
-  tag_id?: InputMaybe<Scalars["String"]>
-  tag_name?: InputMaybe<Scalars["String"]>
 }
 
 export type MutationaddCourseTranslationArgs = {
@@ -1217,11 +1172,6 @@ export type MutationdeleteCourseOrganizationArgs = {
 
 export type MutationdeleteCourseStatsSubscriptionArgs = {
   id: Scalars["ID"]
-}
-
-export type MutationdeleteCourseTagArgs = {
-  course_id: Scalars["ID"]
-  tag_id: Scalars["String"]
 }
 
 export type MutationdeleteCourseTranslationArgs = {
@@ -1617,7 +1567,6 @@ export type Query = {
   course: Maybe<Course>
   courseAliases: Array<CourseAlias>
   courseOrganizations: Maybe<Array<CourseOrganization>>
-  courseTags: Maybe<Array<CourseTag>>
   courseTranslations: Maybe<Array<CourseTranslation>>
   courseVariant: Maybe<CourseVariant>
   courseVariants: Maybe<Array<CourseVariant>>
@@ -1704,15 +1653,6 @@ export type QuerycourseAliasesArgs = {
 export type QuerycourseOrganizationsArgs = {
   course_id?: InputMaybe<Scalars["ID"]>
   organization_id?: InputMaybe<Scalars["ID"]>
-}
-
-export type QuerycourseTagsArgs = {
-  course_id?: InputMaybe<Scalars["ID"]>
-  course_slug?: InputMaybe<Scalars["String"]>
-  includeHidden?: InputMaybe<Scalars["Boolean"]>
-  language?: InputMaybe<Scalars["String"]>
-  tag_id?: InputMaybe<Scalars["String"]>
-  tag_types?: InputMaybe<Array<Scalars["String"]>>
 }
 
 export type QuerycourseTranslationsArgs = {
@@ -2145,7 +2085,7 @@ export type StudyModuleWhereUniqueInput = {
 
 export type Tag = {
   __typename?: "Tag"
-  course_tags: Array<CourseTag>
+  courses: Array<Course>
   created_at: Maybe<Scalars["DateTime"]>
   description: Maybe<Scalars["String"]>
   hidden: Maybe<Scalars["Boolean"]>
@@ -2158,8 +2098,8 @@ export type Tag = {
   updated_at: Maybe<Scalars["DateTime"]>
 }
 
-export type Tagcourse_tagsArgs = {
-  cursor?: InputMaybe<CourseTagWhereUniqueInput>
+export type TagcoursesArgs = {
+  cursor?: InputMaybe<CourseWhereUniqueInput>
   skip?: InputMaybe<Scalars["Int"]>
   take?: InputMaybe<Scalars["Int"]>
 }
@@ -2181,6 +2121,11 @@ export type TagCreateInput = {
   id: Scalars["String"]
   tag_translations?: InputMaybe<Array<TagTranslationCreateOrUpdateInput>>
   types?: InputMaybe<Array<Scalars["String"]>>
+}
+
+export type TagOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+  count?: InputMaybe<SortOrder>
 }
 
 export type TagTranslation = {
@@ -2942,24 +2887,6 @@ export type CourseTranslationDetailedFieldsFragment = {
   id: string
   language: string
   name: string
-}
-
-export type CourseTagFieldsFragment = {
-  __typename?: "CourseTag"
-  tag: {
-    __typename?: "Tag"
-    id: string
-    hidden: boolean | null
-    types: Array<string> | null
-    name: string | null
-    tag_translations: Array<{
-      __typename?: "TagTranslation"
-      tag_id: string
-      name: string
-      description: string | null
-      language: string
-    }>
-  } | null
 }
 
 export type CourseFieldsFragment = {
@@ -6850,6 +6777,48 @@ export const CompletionsQueryConnectionFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CompletionsQueryConnectionFieldsFragment, unknown>
+export const CourseTranslationCoreFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CourseTranslationCoreFieldsFragment, unknown>
+export const StudyModuleCoreFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StudyModuleCoreFieldsFragment, unknown>
 export const TagTranslationFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -6907,79 +6876,6 @@ export const TagCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<TagCoreFieldsFragment, unknown>
-export const CourseTagFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTagFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTag" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tag" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CourseTagFieldsFragment, unknown>
-export const CourseTranslationCoreFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CourseTranslationCoreFieldsFragment, unknown>
-export const StudyModuleCoreFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "StudyModuleCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "StudyModule" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "slug" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<StudyModuleCoreFieldsFragment, unknown>
 export const CourseFieldsFragmentDoc = {
   kind: "Document",
   definitions: [

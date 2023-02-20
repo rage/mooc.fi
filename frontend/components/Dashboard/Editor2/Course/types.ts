@@ -1,7 +1,11 @@
 import { DateTime } from "luxon"
 import { FieldValues } from "react-hook-form"
 
-import { CourseStatus, ImageCoreFieldsFragment } from "/graphql/generated"
+import {
+  CourseStatus,
+  ImageCoreFieldsFragment,
+  TagCoreFieldsFragment,
+} from "/graphql/generated"
 
 interface FormValues extends FieldValues {
   id?: string | null
@@ -45,7 +49,7 @@ export interface CourseFormValues extends FormValues {
   automatic_completions_eligible_for_ects?: boolean
   exercise_completions_needed?: number
   points_needed?: number
-  tags: TagFormValues[]
+  tags: TagFormValue[]
 }
 
 export interface CourseTranslationFormValues extends FormValues {
@@ -87,15 +91,10 @@ export interface UserCourseSettingsVisibilityFormValues extends FormValues {
   course?: string
 }
 
-export interface CourseTagFormValues extends FormValues {
-  _id?: string
-  tag: TagFormValues
-}
-
-export interface TagFormValues extends FormValues {
+export interface TagFormValue extends FormValues {
   _id?: string
   types?: string[]
-  tag_translations?: TagTranslationFormValues[]
+  tag_translations: TagTranslationFormValues[]
 }
 
 export interface TagTranslationFormValues extends FormValues {
@@ -109,3 +108,8 @@ export interface TagTypeFormValues extends FormValues {
   _id?: string
   name: string
 }
+
+export type TagOptionValue = Omit<
+  TagCoreFieldsFragment,
+  "__typename" | "id"
+> & { _id: string }

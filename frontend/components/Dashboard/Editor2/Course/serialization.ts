@@ -12,13 +12,15 @@ import {
   CourseUpsertArg,
   EditorCourseDetailedFieldsFragment,
   StudyModuleDetailedFieldsFragment,
+  TagCoreFieldsFragment,
 } from "/graphql/generated"
 
 const isProduction = process.env.NODE_ENV === "production"
 
 interface ToCourseFormArgs {
   course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
+  modules?: Array<StudyModuleDetailedFieldsFragment>
+  tags?: Array<TagCoreFieldsFragment>
 }
 
 export const toCourseForm = ({
@@ -246,7 +248,8 @@ export const fromCourseForm = ({
     | CourseUpsertArg["study_modules"]
 
   const tags = values?.tags?.map((tag) => ({
-    tag_id: tag._id,
+    ...omit(tag, ["__typename", "_id", "name", "tag_translations"]),
+    id: tag._id,
   }))
 
   const formValues = newCourse

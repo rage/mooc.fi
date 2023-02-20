@@ -1,12 +1,8 @@
 export const courseInclude = {
-  course_tags: {
+  tags: {
     include: {
-      tag: {
-        include: {
-          tag_types: true,
-          tag_translations: true,
-        },
-      },
+      tag_types: true,
+      tag_translations: true,
     },
   },
   course_translations: true,

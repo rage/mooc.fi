@@ -144,35 +144,6 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "tag": {
-        "hidden": false,
-        "id": "tag1",
-        "tag_translations": [
-          {
-            "description": "tag1 description",
-            "language": "en_US",
-            "name": "tag1 in english",
-            "tag_id": "tag1",
-          },
-          {
-            "description": "tag1 kuvaus",
-            "language": "fi_FI",
-            "name": "tag1 suomeksi",
-            "tag_id": "tag1",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-        ],
-      },
-      "tag_id": "tag1",
-    },
-  ],
   "course_translations": [
     {
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
@@ -278,6 +249,31 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
     },
   ],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag1",
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+          "tag_id": "tag1",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+          "tag_id": "tag1",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "e@mail.com",
   "teacher_in_charge_name": "teacher",
   "tier": null,
@@ -409,7 +405,6 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [],
   "course_translations": [
     {
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
@@ -515,6 +510,7 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
     },
   ],
   "support_email": null,
+  "tags": [],
   "teacher_in_charge_email": "e@mail.com",
   "teacher_in_charge_name": "teacher",
   "tier": null,
@@ -658,35 +654,6 @@ exports[`Course mutations addCourse creates a course with no course_translations
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "tag": {
-        "hidden": false,
-        "id": "tag1",
-        "tag_translations": [
-          {
-            "description": "tag1 description",
-            "language": "en_US",
-            "name": "tag1 in english",
-            "tag_id": "tag1",
-          },
-          {
-            "description": "tag1 kuvaus",
-            "language": "fi_FI",
-            "name": "tag1 suomeksi",
-            "tag_id": "tag1",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-        ],
-      },
-      "tag_id": "tag1",
-    },
-  ],
   "course_translations": [],
   "course_variants": [
     {
@@ -782,6 +749,31 @@ exports[`Course mutations addCourse creates a course with no course_translations
     },
   ],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag1",
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+          "tag_id": "tag1",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+          "tag_id": "tag1",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "e@mail.com",
   "teacher_in_charge_name": "teacher",
   "tier": null,
@@ -926,35 +918,6 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "tag": {
-        "hidden": false,
-        "id": "tag1",
-        "tag_translations": [
-          {
-            "description": "tag1 description",
-            "language": "en_US",
-            "name": "tag1 in english",
-            "tag_id": "tag1",
-          },
-          {
-            "description": "tag1 kuvaus",
-            "language": "fi_FI",
-            "name": "tag1 suomeksi",
-            "tag_id": "tag1",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-        ],
-      },
-      "tag_id": "tag1",
-    },
-  ],
   "course_translations": [
     {
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
@@ -1049,6 +1012,31 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
     },
   ],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag1",
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+          "tag_id": "tag1",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+          "tag_id": "tag1",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "e@mail.com",
   "teacher_in_charge_name": "teacher",
   "tier": null,
@@ -1196,35 +1184,6 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "tag": {
-        "hidden": false,
-        "id": "tag1",
-        "tag_translations": [
-          {
-            "description": "tag1 description",
-            "language": "en_US",
-            "name": "tag1 in english",
-            "tag_id": "tag1",
-          },
-          {
-            "description": "tag1 kuvaus",
-            "language": "fi_FI",
-            "name": "tag1 suomeksi",
-            "tag_id": "tag1",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-        ],
-      },
-      "tag_id": "tag1",
-    },
-  ],
   "course_translations": [
     {
       "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
@@ -1313,6 +1272,31 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
   "study_module_start_point": null,
   "study_modules": [],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag1",
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+          "tag_id": "tag1",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+          "tag_id": "tag1",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "e@mail.com",
   "teacher_in_charge_name": "teacher",
   "tier": null,
@@ -1488,38 +1472,6 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
-      "tag": {
-        "hidden": false,
-        "id": "tag2",
-        "tag_translations": [
-          {
-            "description": "tag2 description",
-            "language": "en_US",
-            "name": "tag2 in english",
-            "tag_id": "tag2",
-          },
-          {
-            "description": "tag2 kuvaus ja jotain muuta",
-            "language": "fi_FI",
-            "name": "tag2 suomeksi",
-            "tag_id": "tag2",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-          {
-            "name": "type2",
-          },
-        ],
-      },
-      "tag_id": "tag2",
-    },
-  ],
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
@@ -1678,6 +1630,34 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
     },
   ],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag2",
+      "tag_translations": [
+        {
+          "description": "tag2 description",
+          "language": "en_US",
+          "name": "tag2 in english",
+          "tag_id": "tag2",
+        },
+        {
+          "description": "tag2 kuvaus ja jotain muuta",
+          "language": "fi_FI",
+          "name": "tag2 suomeksi",
+          "tag_id": "tag2",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+        {
+          "name": "type2",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "updated-e@mail.com",
   "teacher_in_charge_name": "updated teacher",
   "tier": null,
@@ -1844,38 +1824,6 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
-      "tag": {
-        "hidden": false,
-        "id": "tag2",
-        "tag_translations": [
-          {
-            "description": "tag2 description",
-            "language": "en_US",
-            "name": "tag2 in english",
-            "tag_id": "tag2",
-          },
-          {
-            "description": "tag2 kuvaus ja jotain muuta",
-            "language": "fi_FI",
-            "name": "tag2 suomeksi",
-            "tag_id": "tag2",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-          {
-            "name": "type2",
-          },
-        ],
-      },
-      "tag_id": "tag2",
-    },
-  ],
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
@@ -2045,6 +1993,34 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
     },
   ],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag2",
+      "tag_translations": [
+        {
+          "description": "tag2 description",
+          "language": "en_US",
+          "name": "tag2 in english",
+          "tag_id": "tag2",
+        },
+        {
+          "description": "tag2 kuvaus ja jotain muuta",
+          "language": "fi_FI",
+          "name": "tag2 suomeksi",
+          "tag_id": "tag2",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+        {
+          "name": "type2",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "updated-e@mail.com",
   "teacher_in_charge_name": "updated teacher",
   "tier": null,
@@ -2211,38 +2187,6 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 2`
   ],
   "course_stats_email": null,
   "course_stats_email_id": null,
-  "course_tags": [
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
-      "tag": {
-        "hidden": false,
-        "id": "tag2",
-        "tag_translations": [
-          {
-            "description": "tag2 description",
-            "language": "en_US",
-            "name": "tag2 in english",
-            "tag_id": "tag2",
-          },
-          {
-            "description": "tag2 kuvaus ja jotain muuta",
-            "language": "fi_FI",
-            "name": "tag2 suomeksi",
-            "tag_id": "tag2",
-          },
-        ],
-        "tag_types": [
-          {
-            "name": "type1",
-          },
-          {
-            "name": "type2",
-          },
-        ],
-      },
-      "tag_id": "tag2",
-    },
-  ],
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
@@ -2412,6 +2356,34 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 2`
     },
   ],
   "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag2",
+      "tag_translations": [
+        {
+          "description": "tag2 description",
+          "language": "en_US",
+          "name": "tag2 in english",
+          "tag_id": "tag2",
+        },
+        {
+          "description": "tag2 kuvaus ja jotain muuta",
+          "language": "fi_FI",
+          "name": "tag2 suomeksi",
+          "tag_id": "tag2",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+        {
+          "name": "type2",
+        },
+      ],
+    },
+  ],
   "teacher_in_charge_email": "updated-e@mail.com",
   "teacher_in_charge_name": "updated teacher",
   "tier": null,

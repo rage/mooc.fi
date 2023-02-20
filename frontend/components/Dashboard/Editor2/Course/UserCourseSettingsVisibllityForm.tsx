@@ -76,14 +76,10 @@ function UserCourseSettingsVisibilityForm() {
     ) => (
       <Autocomplete
         {...omit(renderProps, ["formState", "fieldState"])}
-        multiple={true}
-        freeSolo={true}
+        multiple
+        freeSolo
         options={[] as string[]}
-        value={
-          renderProps.field
-            ?.value /*?.map((f: UserCourseSettingsVisibilityFormValues) => f.language)*/ ??
-          []
-        }
+        value={renderProps.field?.value ?? []}
         onChange={onChange}
         renderTags={renderTags}
         renderInput={renderInput}

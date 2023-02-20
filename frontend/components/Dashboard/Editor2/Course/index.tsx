@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
+import { omit } from "lodash"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 import {
@@ -69,6 +70,19 @@ function CourseEditor({
         t,
       }),
     [course, client, t],
+  )
+  const tagOptions = useMemo(
+    () =>
+      (tags ?? []).map((tag) => ({
+        ...omit(tag, ["__typename", "id"]),
+        _id: tag.id,
+        types: tag.types ?? [],
+        tag_translations: (tag.tag_translations ?? []).map((translation) => ({
+          ...translation,
+          description: translation.description ?? undefined,
+        })),
+      })),
+    [tags],
   )
 
   const methods = useForm<CourseFormValues>({
@@ -179,7 +193,7 @@ function CourseEditor({
           course={course}
           courses={courses}
           studyModules={studyModules}
-          tags={tags}
+          tags={tagOptions}
         />
       </EditorContext.Provider>
     </FormProvider>

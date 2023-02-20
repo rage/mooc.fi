@@ -133,6 +133,9 @@ export const courses: Prisma.CourseCreateInput[] = [
     end_date: "12/31/2100",
     teacher_in_charge_email: "e@mail.com",
     teacher_in_charge_name: "teacher1",
+    tags: {
+      connect: [{ id: "tag1" }, { id: "tag2" }],
+    },
     course_translations: {
       create: [
         {
@@ -190,6 +193,9 @@ export const courses: Prisma.CourseCreateInput[] = [
     end_date: "12/31/2100",
     teacher_in_charge_email: "e@mail.com",
     teacher_in_charge_name: "teacher2",
+    tags: {
+      connect: { id: "tag3" },
+    },
     course_translations: {
       create: [
         {
@@ -980,26 +986,5 @@ export const tags: Prisma.TagCreateInput[] = [
         },
       ],
     },
-  },
-]
-
-export const courseTags: Prisma.CourseTagCreateInput[] = [
-  {
-    tag: { connect: { id: "tag1" } },
-    course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
-    created_at: "1900-01-01T10:00:00.00+02:00",
-    updated_at: "1900-01-01T10:00:00.00+02:00",
-  },
-  {
-    tag: { connect: { id: "tag2" } },
-    course: { connect: { id: "00000000000000000000000000000002" } }, // course1,
-    created_at: "1900-01-01T10:00:00.00+02:00",
-    updated_at: "1900-01-01T10:00:00.00+02:00",
-  },
-  {
-    tag: { connect: { id: "tag3" } },
-    course: { connect: { id: "00000000000000000000000000000001" } }, // course2,
-    created_at: "1900-01-01T10:00:00.00+02:00",
-    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]

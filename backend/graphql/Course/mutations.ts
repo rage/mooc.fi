@@ -3,7 +3,7 @@ import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { NexusGenInputs } from "nexus-typegen"
 
-import { Course, CourseTag, Prisma, StudyModule } from "@prisma/client"
+import { Course, Prisma, StudyModule, Tag } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
@@ -101,12 +101,7 @@ export const CourseMutations = extendType({
             course_stats_email: !!course_stats_email_id
               ? { connect: { id: course_stats_email_id } }
               : undefined,
-            course_tags: {
-              create: tags
-                ?.map((tag) => tag.tag_id)
-                .filter(isNotNullOrUndefined)
-                .map((id) => ({ tag: { connect: { id } } })),
-            },
+            tags: { connect: (tags ?? []).map((tag) => ({ id: tag.id })) },
           },
         })
 
@@ -162,7 +157,7 @@ export const CourseMutations = extendType({
             completions_handled_by: true,
             inherit_settings_from: true,
             user_course_settings_visibilities: true,
-            course_tags: true,
+            tags: true,
           },
         })
 
@@ -192,7 +187,6 @@ export const CourseMutations = extendType({
           "course_variants",
           "course_aliases",
           "user_course_settings_visibilities",
-          //{ name: "course_tags", id: "tag_id" },
         ])(course)
 
         for (const visibility of existingCourse.user_course_settings_visibilities ??
@@ -214,7 +208,7 @@ export const CourseMutations = extendType({
           completions_handled_by,
           existingCourse.completions_handled_by,
         )
-        const courseTagMutation = getCourseTagMutation(existingCourse, tags)
+        const tagsMutation = getTagMutation(existingCourse, tags)
 
         const updatedCourse = await ctx.prisma.course.update({
           where: {
@@ -247,7 +241,7 @@ export const CourseMutations = extendType({
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-            course_tags: courseTagMutation,
+            tags: tagsMutation,
           },
         })
 
@@ -275,20 +269,12 @@ export const CourseMutations = extendType({
           },
           include: {
             photo: true,
-            course_tags: true,
+            tags: true,
           },
         })
 
         if (existing?.photo) {
           await deleteImage({ ctx, id: existing?.photo.id })
-        }
-        if (existing?.course_tags?.length) {
-          // prisma won't allow cascade deletes until 2.26 and referentialActions
-          await ctx.prisma.courseTag.deleteMany({
-            where: {
-              course_id: existing.id,
-            },
-          })
         }
 
         const deletedCourse = await ctx.prisma.course.delete({
@@ -326,42 +312,33 @@ async function updatePossibleNewPhoto(
   return newImage.id
 }
 
-function getCourseTagMutation<
-  C extends Course & { course_tags: Array<CourseTag> },
->(
-  existingCourse: C,
+// TODO: these two following functions are similar
+function getTagMutation<C extends Course>(
+  existingCourse: C & { tags: Array<Tag> },
   tags?:
     | (
         | NexusGenInputs["CourseCreateArg"]
         | NexusGenInputs["CourseUpsertArg"]
       )["tags"]
     | null,
-): Prisma.CourseTagUpdateManyWithoutCourseInput | undefined {
+): Prisma.TagUpdateManyWithoutCoursesInput | undefined {
   if (!tags) {
     return
   }
 
   const removedTagIds =
-    existingCourse.course_tags
+    existingCourse.tags
       ?.filter(
-        (course_tag) =>
-          !tags.map((tag) => tag.tag_id).includes(course_tag.tag_id),
+        (existingTag) => !tags.map((tag) => tag.id).includes(existingTag.id),
       )
-      .map((course_tag) => ({
-        course_id: existingCourse.id,
-        tag_id: course_tag.tag_id,
+      .map((tag) => ({
+        id: tag.id,
       })) ?? []
-  const connectTags = (tags ?? []).map((t) => ({
-    course_id_tag_id: {
-      course_id: existingCourse.id,
-      tag_id: t.tag_id,
-    },
-  }))
+  const connectTags = (tags ?? []).map((t) => ({ id: t.id }))
 
   return {
     connect: connectTags.length ? connectTags : undefined,
-    deleteMany: removedTagIds.length ? removedTagIds : undefined,
-    // can't just disconnect as it would violate null constraint on course_id
+    disconnect: removedTagIds.length ? removedTagIds : undefined,
   }
 }
 

@@ -123,15 +123,15 @@ model Course {
   user_course_service_progresses                     UserCourseServiceProgress[]
   user_course_settings                               UserCourseSetting[]
   user_course_settings_visibilities                  UserCourseSettingsVisibility[]
-  services                                           Service[]                           @relation("course_to_service", references: [id])
-  study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
+  services                                           Service[]                           @relation("course_to_service")
+  study_modules                                      StudyModule[]                       @relation("study_module_to_course")
   upcoming_active_link                               Boolean?
   tier                                               Int?
   stored_data                                        StoredData[]                        
   ownerships                                         CourseOwnership[]
   course_stats_email_id                              String?
   course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
-  course_tags                                        CourseTag[]         
+  tags                                               Tag[]
 
   @@map("course")
 }
@@ -361,7 +361,7 @@ model Service {
   url                            String
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                       @relation("course_to_service", references: [id])
+  courses                        Course[]                       @relation("course_to_service")
 
   @@map("service")
 }
@@ -388,7 +388,7 @@ model StudyModule {
   slug                      String                     @unique
   updated_at                DateTime?                  @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                   @relation("study_module_to_course", references: [id])
+  courses                   Course[]                   @relation("study_module_to_course")
 
   @@map("study_module")
 }
@@ -571,7 +571,7 @@ model Tag {
   hidden                                   Boolean?         @default(false) 
   tag_types                                TagType[]      
   tag_translations                         TagTranslation[]
-  course_tags                              CourseTag[]         
+  courses                                  Course[]
 
   @@map("tag")
 }
@@ -597,18 +597,6 @@ model TagTranslation {
   @@id([tag_id, language])
   @@unique([name, language])
   @@map("tag_translation")
-}
-
-model CourseTag {
-  created_at                               DateTime?        @default(now())
-  updated_at                               DateTime?        @updatedAt
-  course_id                                String
-  tag_id                                   String
-  course                                   Course           @relation(fields: [course_id], references: [id]) 
-  tag                                      Tag              @relation(fields: [tag_id], references: [id])
-
-  @@id([course_id, tag_id])
-  @@map("course_tag")
 }
 
 enum CourseStatus {

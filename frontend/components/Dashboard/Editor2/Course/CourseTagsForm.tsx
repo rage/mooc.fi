@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 
-import { omit } from "lodash"
-import { Controller, FieldValues, useFormContext } from "react-hook-form"
+import { omit, orderBy } from "lodash"
+import { Controller, useFormContext } from "react-hook-form"
 
 import {
   Autocomplete,
@@ -13,14 +13,13 @@ import {
 
 import { FormFieldGroup } from "../Common"
 import { DefaultFieldRenderProps } from "../Common/Fields"
+import { FormValues } from "../types"
+import { TagFormValue } from "./types"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
-import { TagCoreFieldsFragment } from "/graphql/generated"
-
 interface CourseTagFormProps {
-  tags: TagCoreFieldsFragment[]
+  tags: TagFormValue[]
 }
 
 function CourseTagsForm({ tags }: CourseTagFormProps) {
@@ -28,13 +27,16 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
   const { control, setValue, getValues } = useFormContext()
 
   const options = useMemo(
-    () => tags?.map((tag) => tag.name).filter(notEmpty),
+    () =>
+      orderBy(tags ?? [], [
+        (tag) => tag.types,
+        (tag) => tag.name?.toLocaleLowerCase(),
+      ]),
     [tags],
   )
 
   const onChange = useCallback(
-    (_: any, newValue: string[]) => {
-      console.log("new value", newValue)
+    (_: any, newValue: Array<TagFormValue>) => {
       setValue("tags", newValue, { shouldDirty: true })
     },
     [setValue],
@@ -51,12 +53,12 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
   )
 
   const renderTags = useCallback(
-    (value: any[], getTagProps: AutocompleteRenderGetTagProps) =>
-      value.map((field: string, index) => (
+    (value: Array<TagFormValue>, getTagProps: AutocompleteRenderGetTagProps) =>
+      value.map((field, index) => (
         <Chip
           {...getTagProps({ index })}
           variant="outlined"
-          label={field ?? ""}
+          label={field.name ?? ""}
           onDelete={onDelete(index)}
         />
       )),
@@ -70,8 +72,15 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
     [],
   )
 
+  const renderOption = useCallback(
+    (props: React.HTMLAttributes<HTMLLIElement>, option: TagFormValue) => (
+      <li {...props}>{option.name}</li>
+    ),
+    [],
+  )
+
   const renderAutocomplete = useCallback(
-    (renderProps: DefaultFieldRenderProps<FieldValues, "tags">) => (
+    (renderProps: DefaultFieldRenderProps<FormValues, "tags">) => (
       <Autocomplete
         {...omit(renderProps, ["formState", "fieldState"])}
         multiple
@@ -80,6 +89,9 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
         onChange={onChange}
         renderTags={renderTags}
         renderInput={renderInput}
+        renderOption={renderOption}
+        getOptionLabel={(option) => option.name ?? ""}
+        isOptionEqualToValue={(option, value) => option._id === value._id}
       />
     ),
     [onChange, renderTags, renderInput],

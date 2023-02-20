@@ -25,7 +25,10 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
 import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
-import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
+import {
+  CourseFormValues,
+  TagFormValue,
+} from "/components/Dashboard/Editor2/Course/types"
 import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
 import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
@@ -40,7 +43,6 @@ import {
   EditorCourseDetailedFieldsFragment,
   EditorCourseOtherCoursesFieldsFragment,
   StudyModuleDetailedFieldsFragment,
-  TagCoreFieldsFragment,
 } from "/graphql/generated"
 
 const SelectLanguageFirstCover = styled("div", {
@@ -53,7 +55,7 @@ interface CourseEditFormProps {
   course?: EditorCourseDetailedFieldsFragment
   courses?: EditorCourseOtherCoursesFieldsFragment[]
   studyModules?: StudyModuleDetailedFieldsFragment[]
-  tags?: TagCoreFieldsFragment[]
+  tags?: TagFormValue[]
 }
 
 function CourseEditForm({
