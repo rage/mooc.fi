@@ -165,7 +165,7 @@ export function ListItem({
             <CenteredHeader variant="h3" component="h2">
               {module.name}
             </CenteredHeader>
-            <ModuleCardDescriptionText variant="subtitle1">
+            <ModuleCardDescriptionText variant="ingress">
               {module.description}
             </ModuleCardDescriptionText>
           </ModuleCardDescription>
