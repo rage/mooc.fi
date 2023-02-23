@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 
 import { omit } from "lodash"
+import { useRouter } from "next/router"
 import { useFormContext } from "react-hook-form"
 
 import { TextField, TextFieldProps } from "@mui/material"
@@ -13,6 +14,7 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 
 export function ControlledDatePicker(props: ControlledFieldProps) {
+  const { locale } = useRouter()
   const { watch, setValue, trigger } = useFormContext()
   const { name, label, validateOtherFields = [] } = props
 
@@ -34,21 +36,23 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
     [],
   )
 
+  const value = watch([name])
+
   const renderDatePickerComponent = useCallback(
     () => (
       <DatePicker
-        value={watch([name])}
+        value={value}
         onChange={onChange}
         onClose={onCloseDatePicker}
         label={label}
         renderInput={renderDatePickerInput}
       />
     ),
-    [name, label, onChange, watch, renderDatePickerInput, onCloseDatePicker],
+    [name, label, onChange, value, renderDatePickerInput, onCloseDatePicker],
   )
 
   return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
+    <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
       <FieldController
         {...omit(props, "validateOtherFields")}
         style={{ marginBottom: "1.5rem" }}

@@ -51,6 +51,7 @@ export const toCourseForm = ({
     ]),
     slug: course?.slug ?? "",
     name: course.name ?? "",
+    language: course.language ?? undefined,
     teacher_in_charge_name: course.teacher_in_charge_name ?? "",
     teacher_in_charge_email: course.teacher_in_charge_email ?? "",
     support_email: course.support_email ?? "",

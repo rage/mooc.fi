@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-02-17T20:40:10+02:00
+// Generated on 2023-02-22T10:30:29+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -205,6 +205,7 @@ export type Course = {
   inherit_settings_from: Maybe<Course>
   inherit_settings_from_id: Maybe<Scalars["String"]>
   instructions: Maybe<Scalars["String"]>
+  language: Maybe<Scalars["String"]>
   link: Maybe<Scalars["String"]>
   name: Scalars["String"]
   open_university_registration_links: Array<OpenUniversityRegistrationLink>
@@ -428,6 +429,7 @@ export type CourseOrderByWithRelationInput = {
   id?: InputMaybe<SortOrder>
   inherit_settings_from?: InputMaybe<CourseOrderByWithRelationInput>
   inherit_settings_from_id?: InputMaybe<SortOrder>
+  language?: InputMaybe<SortOrder>
   name?: InputMaybe<SortOrder>
   open_university_registration_links?: InputMaybe<OpenUniversityRegistrationLinkOrderByRelationAggregateInput>
   order?: InputMaybe<SortOrder>
@@ -2588,6 +2590,7 @@ export type CompletionCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   photo: {
@@ -2667,6 +2670,7 @@ export type CompletionDetailedFieldsWithCourseFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     photo: {
@@ -2741,6 +2745,7 @@ export type CompletionsQueryNodeFieldsFragment = {
     name: string
     slug: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -2803,6 +2808,7 @@ export type CompletionsQueryConnectionFieldsFragment = {
         name: string
         slug: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -2842,6 +2848,7 @@ export type CourseCoreFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
 }
@@ -2852,6 +2859,7 @@ export type CourseWithPhotoCoreFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   photo: {
@@ -2912,6 +2920,7 @@ export type CourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   course_translations: Array<{
@@ -2979,6 +2988,7 @@ export type EditorCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   completions_handled_by: {
@@ -2987,6 +2997,7 @@ export type EditorCourseFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3075,6 +3086,7 @@ export type EditorCourseDetailedFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   course_translations: Array<{
@@ -3103,6 +3115,7 @@ export type EditorCourseDetailedFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3163,6 +3176,7 @@ export type EditorCourseOtherCoursesFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   course_translations: Array<{
@@ -3293,6 +3307,7 @@ export type ProgressCoreFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3411,6 +3426,7 @@ export type StudyModuleFieldsWithCoursesFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -3533,6 +3549,7 @@ export type UserProgressesFieldsFragment = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -3576,6 +3593,7 @@ export type UserOverviewCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   photo: {
@@ -3632,6 +3650,7 @@ export type UserOverviewFieldsFragment = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
       photo: {
@@ -3754,6 +3773,7 @@ export type StudentProgressesQueryNodeFieldsFragment = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -3810,6 +3830,7 @@ export type UserProfileUserCourseSettingsQueryNodeFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3824,6 +3845,7 @@ export type UserCourseSummaryCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   exercises: Array<{
@@ -3864,6 +3886,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     exercises: Array<{
@@ -4101,6 +4124,7 @@ export type AddCourseMutation = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -4129,6 +4153,7 @@ export type AddCourseMutation = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4218,6 +4243,7 @@ export type UpdateCourseMutation = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completion_email: {
@@ -4270,6 +4296,7 @@ export type UpdateCourseMutation = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4337,6 +4364,7 @@ export type DeleteCourseMutation = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4637,6 +4665,7 @@ export type PaginatedCompletionsQuery = {
           name: string
           slug: string
           ects: string | null
+          language: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -4711,6 +4740,7 @@ export type PaginatedCompletionsPreviousPageQuery = {
           name: string
           slug: string
           ects: string | null
+          language: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -4757,6 +4787,7 @@ export type CoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -4834,6 +4865,7 @@ export type EditorCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completions_handled_by: {
@@ -4842,6 +4874,7 @@ export type EditorCoursesQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4922,6 +4955,7 @@ export type CourseFromSlugQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4939,6 +4973,7 @@ export type CourseEditorOtherCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -4973,6 +5008,7 @@ export type HandlerCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   }> | null
@@ -5012,6 +5048,7 @@ export type CourseEditorDetailsQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -5040,6 +5077,7 @@ export type CourseEditorDetailsQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -5110,6 +5148,7 @@ export type EmailTemplateEditorCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completion_email: {
@@ -5154,6 +5193,7 @@ export type CourseDashboardQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completion_email: {
@@ -5323,6 +5363,7 @@ export type StudyModulesWithCoursesQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
       course_translations: Array<{
@@ -5416,6 +5457,7 @@ export type EditorStudyModuleDetailsQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     }> | null
@@ -5605,6 +5647,7 @@ export type UserSummaryQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
         exercises: Array<{
@@ -5764,6 +5807,7 @@ export type CurrentUserOverviewQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
         photo: {
@@ -5848,6 +5892,7 @@ export type UserOverviewQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
         photo: {
@@ -5914,6 +5959,7 @@ export type CurrentUserProgressesQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -6163,6 +6209,7 @@ export type StudentProgressesQuery = {
               slug: string
               name: string
               ects: string | null
+              language: string | null
               created_at: any | null
               updated_at: any | null
             } | null
@@ -6236,6 +6283,7 @@ export type UserProfileUserCourseSettingsQuery = {
           slug: string
           name: string
           ects: string | null
+          language: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -6475,6 +6523,7 @@ export const CourseCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],

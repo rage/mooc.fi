@@ -224,6 +224,7 @@ export const courses: Prisma.CourseCreateInput[] = [
     teacher_in_charge_email: "t@mail.com",
     teacher_in_charge_name: "foo",
     hidden: false,
+    automatic_completions: true,
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
@@ -236,6 +237,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     teacher_in_charge_email: "t@mail.com",
     teacher_in_charge_name: "foo",
     hidden: true,
+    language: "fi",
+    points_needed: 0,
     completions_handled_by: {
       connect: { id: "00000000000000000000000000000666" },
     },

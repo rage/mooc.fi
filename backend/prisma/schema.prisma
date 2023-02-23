@@ -102,6 +102,7 @@ model Course {
   support_email                                      String?
   teacher_in_charge_email                            String
   teacher_in_charge_name                             String
+  language                                           String?
   updated_at                                         DateTime?                           @updatedAt
   completion_email                                   EmailTemplate?                      @relation("courseTocourse_completion_email", fields: [completion_email_id], references: [id])
   completions_handled_by                             Course?                             @relation("courseTocourse_completions_handled_by", fields: [completions_handled_by_id], references: [id])
