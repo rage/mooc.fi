@@ -63,9 +63,9 @@ interface StudyModuleEditSchemaArgs {
   t: Translator<StudyModules>
 }
 
-export type StudyModuleEditSchemaType = Yup.SchemaOf<
+export type StudyModuleEditSchemaType = Yup.ObjectSchema<
   Pick<StudyModuleFormValues, "new_slug" | "image" | "name" | "order"> & {
-    study_module_translations: Array<
+    study_module_translations?: Array<
       Pick<
         StudyModuleTranslationFormValues,
         "name" | "language" | "description"
