@@ -1,5 +1,6 @@
 import React from "react"
 
+import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
 import {
   FormFieldGroup,
   FormSubtitle,
@@ -34,13 +35,14 @@ function CourseInfoForm() {
           tip={t("helpSlug")}
         />
         <ControlledTextField name="ects" label={t("courseECTS")} />
+        <CourseInstanceLanguageSelector />
       </FormFieldGroup>
 
       <FormFieldGroup>
         <ControlledDatePicker
           name="start_date"
           label={t("courseStartDate")}
-          required={true}
+          required
         />
         <ControlledDatePicker
           name="end_date"
@@ -53,12 +55,12 @@ function CourseInfoForm() {
         <ControlledTextField
           name="teacher_in_charge_name"
           label={t("courseTeacherInChargeName")}
-          required={true}
+          required
         />
         <ControlledTextField
           name="teacher_in_charge_email"
           label={t("courseTeacherInChargeEmail")}
-          required={true}
+          required
         />
         <ControlledTextField
           name="support_email"

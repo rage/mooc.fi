@@ -45,6 +45,8 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
 ` as typeof TextField
 
+const convertName = (name: string) => name.replace(/\.(\d+)\./, "[$1].")
+
 export function ControlledTextField<T extends FieldValues>(
   props: ControlledTextFieldProps<T>,
 ) {
@@ -68,8 +70,10 @@ export function ControlledTextField<T extends FieldValues>(
     width,
   } = props
 
+  // TODO: hack to convert from formik compatible errors to this; when we get rid of formik,
+  // we can change this
   const error = useMemo(
-    () => Boolean(flattenKeys(errors)[name]),
+    () => Boolean(flattenKeys(errors)[convertName(name)]),
     [errors, name],
   )
 

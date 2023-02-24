@@ -1,11 +1,18 @@
 import { useCallback } from "react"
 
-import { omit } from "lodash"
 import { useRouter } from "next/router"
-import { useFormContext } from "react-hook-form"
+import {
+  ControllerRenderProps,
+  FieldValues,
+  useFormContext,
+} from "react-hook-form"
 
-import { TextField, TextFieldProps } from "@mui/material"
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { TextField, TextFieldProps, Theme, useMediaQuery } from "@mui/material"
+import {
+  DesktopDatePicker,
+  LocalizationProvider,
+  MobileDatePicker,
+} from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import {
@@ -14,15 +21,20 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 
 export function ControlledDatePicker(props: ControlledFieldProps) {
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+  const DatePicker = isMobile ? MobileDatePicker : DesktopDatePicker
   const { locale } = useRouter()
-  const { watch, setValue, trigger } = useFormContext()
+  const {
+    watch,
+    formState: { errors },
+    setValue,
+    trigger,
+  } = useFormContext()
   const { name, label, validateOtherFields = [] } = props
 
   const onChange = useCallback(
-    (date: any) => {
-      setValue(name, date, { shouldValidate: true, shouldDirty: true })
-      return { value: date }
-    },
+    (date: any) =>
+      setValue(name, date, { shouldValidate: true, shouldDirty: true }),
     [name, setValue],
   )
 
@@ -31,30 +43,37 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
     [name, trigger, validateOtherFields],
   )
 
-  const renderDatePickerInput = useCallback(
-    (props: TextFieldProps) => <TextField {...props} variant="outlined" />,
-    [],
-  )
-
-  const value = watch([name])
+  const renderDatePickerInput = useCallback((props: TextFieldProps) => {
+    return <TextField {...props} variant="outlined" />
+  }, [])
 
   const renderDatePickerComponent = useCallback(
-    () => (
+    ({ value, onChange }: ControllerRenderProps<FieldValues, string>) => (
       <DatePicker
         value={value}
         onChange={onChange}
         onClose={onCloseDatePicker}
         label={label}
         renderInput={renderDatePickerInput}
+        disableMaskedInput
       />
     ),
-    [name, label, onChange, value, renderDatePickerInput, onCloseDatePicker],
+    [
+      isMobile,
+      name,
+      label,
+      watch,
+      onChange,
+      renderDatePickerInput,
+      onCloseDatePicker,
+    ],
   )
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
       <FieldController
-        {...omit(props, "validateOtherFields")}
+        name={name}
+        label={label}
         style={{ marginBottom: "1.5rem" }}
         renderComponent={renderDatePickerComponent}
       />

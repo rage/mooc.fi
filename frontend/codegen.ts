@@ -12,9 +12,9 @@ const config: CodegenConfig = {
     nonOptionalTypeName: true,
     dedupeFragments: true,
   },
-  hooks: {
+  /*hooks: {
     afterAllFileWrite: ["prettier --write"],
-  },
+  },*/
   generates: {
     "./graphql/generated/index.ts": {
       config: {

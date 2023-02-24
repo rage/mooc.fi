@@ -7,7 +7,6 @@ import { styled } from "@mui/material/styles"
 
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
-import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
 import CourseLanguageSelector from "./CourseLanguageSelector"
 import CourseTagsForm from "./CourseTagsForm"
 import CourseTranslationForm from "./CourseTranslationForm"
@@ -111,7 +110,6 @@ function CourseEditForm({
           setSelectedLanguage={setSelectedLanguage}
         />
         <CourseTranslationForm />
-        <CourseInstanceLanguageSelector />
         <SelectLanguageFirstCover covered={selectedLanguage === ""}>
           <CourseImageForm courses={courses} />
           <CourseInfoForm />

@@ -31,7 +31,9 @@ interface ErrorMessageComponentProps {
 }
 
 const ErrorMessageComponent = ({ message }: ErrorMessageComponentProps) => (
-  <FormHelperText style={{ color: "#f44336" }}>{message}</FormHelperText>
+  <FormHelperText style={{ color: "#f44336", marginTop: "-1rem" }}>
+    {message}
+  </FormHelperText>
 )
 
 interface FieldControllerRenderedElementProps<T extends FieldValues> {
@@ -64,12 +66,12 @@ export function FieldController<T extends FieldValues>({
     (renderProps: FieldControllerRenderedElementProps<T>) => (
       <div {...props}>
         <EnumeratingAnchor id={name} />
+        {renderComponent({ ...renderProps.field, onChange })}
         <ErrorMessage
           errors={errors}
           name={name as any} // TODO/FIXME: annoying typing here
           render={ErrorMessageComponent}
         />
-        {renderComponent({ ...renderProps.field, onChange })}
       </div>
     ),
     [name, renderComponent, props, errors, onChange],
