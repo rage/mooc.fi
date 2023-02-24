@@ -305,7 +305,7 @@ function CourseCard({ course }: CourseCardProps) {
               ?.filter((t) => t.types?.includes("language"))
               .map((tag) => (
                 <LanguageTag size="small" variant="contained" disabled>
-                  {tag.id}
+                  {tag.id.split("_")[0].toUpperCase()}
                 </LanguageTag>
               ))}
           </LanguageTags>

@@ -68,7 +68,7 @@ const CardContainer = styled("ul")(
   grid-gap: 2rem;
   grid-template-columns: 1fr 1fr;
   margin-top: 0;
-  justify-items: center;
+  justify-self: center;
 
   ${theme.breakpoints.down("lg")} {
     grid-template-columns: 1fr;
@@ -116,6 +116,11 @@ const TagButton = styled(Button, {
   }
 `
 
+const SelectAllButton = styled(TagButton)`
+  margin: auto;
+  margin-right: 1rem;
+`
+
 const Statuses = styled("div")`
   justify-self: end;
 `
@@ -140,16 +145,12 @@ const ResetFiltersButton = styled(Button, {
 
 const TagsContainer = styled("div")`
   display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 70% 30%;
   grid-template-rows: repeat(3, 1fr);
-  grid-template-areas:
-    "difficultyTags difficultySelectAll"
-    "moduleTags moduleSelectAll"
-    "languageTags languageSelectAll";
   gap: 0.5rem;
-  justify-items: left;
-  align-items: center;
+`
+
+const TypedTagsContainer = styled("div")`
+  display: flex;
 `
 
 const courseHasTag = (
@@ -287,7 +288,7 @@ function CourseGrid() {
           <FilterLabel>{t("filter")}:</FilterLabel>
           <TagsContainer>
             {Object.keys(tags).map((category) => (
-              <div key={category}>
+              <TypedTagsContainer key={category}>
                 <div style={{ gridArea: `${category}Tags` }}>
                   {tags[category].map((tag) => (
                     <TagButton
@@ -303,7 +304,7 @@ function CourseGrid() {
                     </TagButton>
                   ))}
                 </div>
-                <TagButton
+                <SelectAllButton
                   id={`select-all-${category}-tags`}
                   variant={
                     tags[category].every((tag) => activeTags.includes(tag))
@@ -315,8 +316,8 @@ function CourseGrid() {
                   size="small"
                 >
                   {t("selectAll")}
-                </TagButton>
-              </div>
+                </SelectAllButton>
+              </TypedTagsContainer>
             ))}
           </TagsContainer>
           <Statuses>
