@@ -1,8 +1,8 @@
 import {
   Roboto,
   /*, Open_Sans*/
-} from "@next/font/google"
-import localFont from "@next/font/local"
+} from "next/font/google"
+import localFont from "next/font/local"
 
 // TODO/FIXME
 // These css variables don't work, find a way to make them or just use the font css
