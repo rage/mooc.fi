@@ -111,7 +111,7 @@ type CourseVariantEditSchemaFields = Pick<
   "slug" | "description"
 >
 
-export type CourseEditSchemaType = Yup.SchemaOf<
+export type CourseEditSchemaType = Yup.ObjectSchema<
   Pick<
     CourseFormValues,
     | "name"
@@ -127,9 +127,9 @@ export type CourseEditSchemaType = Yup.SchemaOf<
     | "points_needed"
     | "exercise_completions_needed"
   > & {
-    course_translations: Array<CourseTranslationsEditSchemaFields>
-    course_aliases: Array<CourseAliasEditSchemaFields>
-    course_variants: Array<CourseVariantEditSchemaFields>
+    course_translations?: Array<CourseTranslationsEditSchemaFields>
+    course_aliases?: Array<CourseAliasEditSchemaFields>
+    course_variants?: Array<CourseVariantEditSchemaFields>
   }
 >
 
@@ -149,8 +149,8 @@ const courseEditSchema = ({
         t("validationSlugInUse"),
         validateSlug({ client, initialSlug }),
       ),
-    status: Yup.mixed()
-      .oneOf(Object.keys(CourseStatus))
+    status: Yup.mixed<CourseStatus>()
+      .oneOf(Object.keys(CourseStatus) as CourseStatus[])
       .required(t("validationRequired")),
     course_translations: Yup.array().of(
       Yup.object().shape({

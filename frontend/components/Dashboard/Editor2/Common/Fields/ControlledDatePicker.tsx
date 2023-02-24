@@ -24,12 +24,7 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
   const DatePicker = isMobile ? MobileDatePicker : DesktopDatePicker
   const { locale } = useRouter()
-  const {
-    watch,
-    formState: { errors },
-    setValue,
-    trigger,
-  } = useFormContext()
+  const { watch, setValue, trigger } = useFormContext()
   const { name, label, validateOtherFields = [] } = props
 
   const onChange = useCallback(
