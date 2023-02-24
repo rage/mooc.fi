@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-02-24T10:48:58+02:00
+// Generated on 2023-02-24T17:55:37+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1766,7 +1766,9 @@ export type Querystudy_modulesArgs = {
 }
 
 export type QuerytagsArgs = {
+  excludeTagTypes?: InputMaybe<Array<Scalars["String"]>>
   includeHidden?: InputMaybe<Scalars["Boolean"]>
+  includeWithNoCourses?: InputMaybe<Scalars["Boolean"]>
   language?: InputMaybe<Scalars["String"]>
   search?: InputMaybe<Scalars["String"]>
 }
@@ -5486,6 +5488,8 @@ export type StudyModuleExistsQuery = {
 
 export type CourseEditorTagsQueryVariables = Exact<{
   language?: InputMaybe<Scalars["String"]>
+  excludeTagTypes?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>
+  includeWithNoCourses?: InputMaybe<Scalars["Boolean"]>
 }>
 
 export type CourseEditorTagsQuery = {
@@ -17956,6 +17960,31 @@ export const CourseEditorTagsDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "excludeTagTypes" },
+          },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: {
+                kind: "NamedType",
+                name: { kind: "Name", value: "String" },
+              },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeWithNoCourses" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -17970,6 +17999,22 @@ export const CourseEditorTagsDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "language" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "excludeTagTypes" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "excludeTagTypes" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeWithNoCourses" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "includeWithNoCourses" },
                 },
               },
             ],

@@ -43,7 +43,7 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
   }, [])
 
   const renderDatePickerComponent = useCallback(
-    ({ value, onChange }: ControllerRenderProps<FieldValues, string>) => (
+    ({ value }: ControllerRenderProps<FieldValues, string>) => (
       <DatePicker
         value={value}
         onChange={onChange}

@@ -31,10 +31,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
       const data = await downloadInChunks(slug, client, setInfotext)
       setInfotext("constructing csv")
       const objects = await flatten(data)
-      console.log(data)
-      console.log(objects)
       const sheet = utils.json_to_sheet(objects)
-      console.log("sheet", sheet)
       const workbook = {
         SheetNames: [],
         Sheets: {},

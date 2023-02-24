@@ -1,3 +1,4 @@
+import { uniqBy } from "lodash"
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
@@ -146,24 +147,24 @@ export const Course = objectType({
         { language, types, search, includeHidden },
         ctx,
       ) => {
-        const where = {} as Prisma.TagWhereInput
+        const tagsWhere = {} as Prisma.TagWhereInput
 
         if (language) {
-          where.tag_translations = {
+          tagsWhere.tag_translations = {
             some: {
               language,
             },
           }
         }
         if (types) {
-          where.tag_types = {
+          tagsWhere.tag_types = {
             some: {
               name: { in: types },
             },
           }
         }
         if (search) {
-          where.tag_translations = {
+          tagsWhere.tag_translations = {
             some: {
               ...(language && { language }),
               OR: [
@@ -178,16 +179,34 @@ export const Course = objectType({
           }
         }
         if (!includeHidden) {
-          where.OR = [{ hidden: false }, { hidden: null }]
+          tagsWhere.OR = [{ hidden: false }, { hidden: null }]
         }
 
-        const res = await ctx.prisma.course
-          .findUnique({
-            where: { id: parent.id },
-          })
-          .tags({ where })
+        const res = await ctx.prisma.course.findUnique({
+          where: { id: parent.id },
+          include: {
+            tags: { where: tagsWhere },
+            handles_completions_for: {
+              include: {
+                tags: {
+                  where: tagsWhere,
+                  include: {
+                    tag_translations: true,
+                  },
+                },
+              },
+            },
+          },
+        })
 
-        return (res ?? []).map((t) => ({ ...t, language }))
+        const tags = uniqBy(
+          (res?.tags ?? []).concat(
+            res?.handles_completions_for?.flatMap((c) => c.tags ?? []) ?? [],
+          ),
+          "id",
+        )
+
+        return tags.map((t) => ({ ...t, language }))
       },
     })
   },

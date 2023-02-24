@@ -32,6 +32,7 @@ export const seed = async (prisma: PrismaClient) => {
     data: T[],
   ) => {
     const created = []
+    // @ts-ignore: key
     for (const datum of data) {
       // @ts-ignore: key
       created.push(await prisma[key].create({ data: datum }))

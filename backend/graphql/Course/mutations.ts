@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { omit } from "lodash"
+import { omit, uniqBy } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { NexusGenInputs } from "nexus-typegen"
 
@@ -50,13 +50,18 @@ export const CourseMutations = extendType({
           user_course_settings_visibilities,
           completion_email_id,
           course_stats_email_id,
-          tags,
+          language,
         } = course
+        let tags = course.tags ?? []
 
         const photo = await updatePossibleNewPhoto(course, ctx)
 
         if (study_modules?.some((s) => !s?.id && !s?.slug)) {
           throw new GraphQLUserInputError("study modules must have id or slug")
+        }
+
+        if (language) {
+          tags = uniqBy((tags ?? []).concat({ id: language }), "id")
         }
 
         const newCourse = await ctx.prisma.course.create({
@@ -208,7 +213,7 @@ export const CourseMutations = extendType({
           completions_handled_by,
           existingCourse.completions_handled_by,
         )
-        const tagsMutation = getTagMutation(existingCourse, tags)
+        const tagsMutation = getTagMutation(course, existingCourse, tags)
 
         const updatedCourse = await ctx.prisma.course.update({
           where: {
@@ -312,8 +317,8 @@ async function updatePossibleNewPhoto(
   return newImage.id
 }
 
-// TODO: these two following functions are similar
 function getTagMutation<C extends Course>(
+  course: NexusGenInputs["CourseCreateArg"] | NexusGenInputs["CourseUpsertArg"],
   existingCourse: C & { tags: Array<Tag> },
   tags?:
     | (
@@ -322,6 +327,21 @@ function getTagMutation<C extends Course>(
       )["tags"]
     | null,
 ): Prisma.TagUpdateManyWithoutCoursesInput | undefined {
+  const languageTags = (tags ?? []).filter((tag) =>
+    tag.types?.includes("language"),
+  )
+  if (course.language) {
+    if (languageTags.every((tag) => tag.id !== course.language)) {
+      tags = [
+        ...(tags ?? []),
+        { id: course.language, hidden: false, types: ["language"] },
+      ]
+    }
+  }
+  if (existingCourse.language !== course.language) {
+    tags = tags?.filter((tag) => tag.id !== existingCourse.language)
+  }
+
   if (!tags) {
     return
   }
@@ -329,7 +349,8 @@ function getTagMutation<C extends Course>(
   const removedTagIds =
     existingCourse.tags
       ?.filter(
-        (existingTag) => !tags.map((tag) => tag.id).includes(existingTag.id),
+        (existingTag) =>
+          !(tags ?? []).map((tag) => tag.id).includes(existingTag.id),
       )
       .map((tag) => ({
         id: tag.id,

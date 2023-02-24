@@ -921,6 +921,11 @@ export const tagTypes: Prisma.TagTypeCreateInput[] = [
     updated_at: "1900-01-01T10:00:00.00+02:00",
     name: "type2",
   },
+  {
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    name: "language",
+  },
 ]
 
 export const tags: Prisma.TagCreateInput[] = [
@@ -986,6 +991,50 @@ export const tags: Prisma.TagCreateInput[] = [
           language: "fi_FI",
           name: "piilotettu tag3",
           description: "piilotettu tag3 kuvaus ja täts it",
+        },
+      ],
+    },
+  },
+  {
+    id: "fi",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    tag_types: { connect: [{ name: "language" }] },
+    tag_translations: {
+      create: [
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "en_US",
+          name: "Finnish",
+        },
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "fi_FI",
+          name: "suomi",
+        },
+      ],
+    },
+  },
+  {
+    id: "en",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    tag_types: { connect: [{ name: "language" }] },
+    tag_translations: {
+      create: [
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "en_US",
+          name: "English",
+        },
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "fi_FI",
+          name: "englanti",
         },
       ],
     },

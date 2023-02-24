@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles"
 
 import { DefaultFieldRenderProps } from "../Common/Fields"
 import { FormValues } from "../types"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
@@ -72,15 +73,20 @@ interface Option {
   name: string
 }
 
+const toOption = (value: string | undefined): Option => ({
+  value,
+  name: value ?? "",
+})
+
 function CourseInstanceLanguageSelector() {
-  const t = useTranslator(CoursesTranslations)
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
   const { control, setValue } = useFormContext()
 
   const options = useMemo(
-    () =>
-      languages
-        .map<Option>((e) => ({ value: e, name: e }))
-        .concat({ value: undefined, name: "" }),
+    () => [
+      { value: undefined, name: t("selectNoChoice") },
+      ...languages.map(toOption),
+    ],
     [],
   )
 
@@ -115,7 +121,7 @@ function CourseInstanceLanguageSelector() {
   const renderOption = useCallback(
     (props: React.HTMLAttributes<HTMLLIElement>, option: Option) => (
       <li {...props} key={option.name}>
-        {option.name}
+        {option.name ?? t("selectNoChoice")}
       </li>
     ),
     [],
@@ -123,18 +129,18 @@ function CourseInstanceLanguageSelector() {
 
   const renderAutocomplete = useCallback(
     (renderProps: DefaultFieldRenderProps<FormValues, "language">) => {
-      console.log(renderProps)
       return (
         <Autocomplete
           {...omit(renderProps, ["field", "formState", "fieldState"])}
           options={options}
           autoHighlight
+          value={toOption(renderProps.field.value)}
           getOptionLabel={(option) => option?.name ?? ""}
           renderInput={renderInput}
           renderOption={renderOption}
           onChange={onChange}
-          isOptionEqualToValue={(option, value) =>
-            option.value === value?.value
+          isOptionEqualToValue={(option, optionValue) =>
+            option.value === optionValue?.value
           }
         />
       )

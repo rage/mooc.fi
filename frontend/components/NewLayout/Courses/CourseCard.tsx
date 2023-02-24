@@ -272,8 +272,13 @@ function CourseCard({ course }: CourseCardProps) {
             {course?.tags
               ?.filter((t) => t.types?.includes("module"))
               .map((tag) => (
-                <ModuleTag size="small" variant="contained" disabled>
-                  {tag.id}
+                <ModuleTag
+                  key={`module-${tag.id}`}
+                  size="small"
+                  variant="contained"
+                  disabled
+                >
+                  {tag.name}
                 </ModuleTag>
               ))}
           </ModuleTags>
@@ -304,7 +309,12 @@ function CourseCard({ course }: CourseCardProps) {
             {course?.tags
               ?.filter((t) => t.types?.includes("language"))
               .map((tag) => (
-                <LanguageTag size="small" variant="contained" disabled>
+                <LanguageTag
+                  key={`language-${tag.id}`}
+                  size="small"
+                  variant="contained"
+                  disabled
+                >
                   {tag.id.split("_")[0].toUpperCase()}
                 </LanguageTag>
               ))}
@@ -313,7 +323,7 @@ function CourseCard({ course }: CourseCardProps) {
             {course?.tags
               ?.filter((t) => t.types?.includes("difficulty"))
               .map((tag) => (
-                <DifficultyTagContainer>
+                <DifficultyTagContainer key={`difficulty-${tag.id}`}>
                   <DifficultyTag size="small" variant="contained" disabled>
                     {tag.id}
                   </DifficultyTag>

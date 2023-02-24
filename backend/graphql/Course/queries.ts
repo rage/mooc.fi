@@ -1,4 +1,4 @@
-import { omit } from "lodash"
+import { omit, uniqBy } from "lodash"
 import {
   arg,
   booleanArg,
@@ -163,6 +163,7 @@ export const CourseQueries = extendType({
             ],
           })
         }
+
         if (!hidden) {
           // somehow NOT: { hidden: true } doesn't work
           // neither does { hidden: { not: true }}
@@ -191,30 +192,69 @@ export const CourseQueries = extendType({
         // then we may need a raw query or just do that filtering in the frontend
         if (tags) {
           searchQuery.push({
-            tags: {
-              some: {
-                tag_translations: {
+            OR: [
+              {
+                tags: {
                   some: {
-                    language: language ?? undefined,
-                    name: { in: tags },
+                    tag_translations: {
+                      some: {
+                        language: language ?? undefined,
+                        name: { in: tags },
+                      },
+                    },
                   },
                 },
               },
-            },
+              {
+                handles_completions_for: {
+                  some: {
+                    tags: {
+                      some: {
+                        tag_translations: {
+                          some: {
+                            language: language ?? undefined,
+                            name: { in: tags },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           })
         }
 
         if (tag_types) {
           searchQuery.push({
-            tags: {
-              some: {
-                tag_types: {
+            OR: [
+              {
+                tags: {
                   some: {
-                    name: { in: tag_types },
+                    tag_types: {
+                      some: {
+                        name: { in: tag_types },
+                      },
+                    },
                   },
                 },
               },
-            },
+              {
+                handles_completions_for: {
+                  some: {
+                    tags: {
+                      some: {
+                        tag_types: {
+                          some: {
+                            name: { in: tag_types },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           })
         }
 
@@ -222,6 +262,7 @@ export const CourseQueries = extendType({
           Course & {
             course_translations?: Array<CourseTranslation>
             tags?: Array<Tag>
+            handles_completions_for?: Array<Course & { tags: Array<Tag> }>
           }
         > = await ctx.prisma.course.findMany({
           orderBy: filterNullRecursive(orderBy) ?? undefined,
@@ -247,6 +288,17 @@ export const CourseQueries = extendType({
                       },
                     },
                   },
+                  handles_completions_for: {
+                    include: {
+                      tags: {
+                        where: {
+                          tag_translations: {
+                            some: { language },
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
               }
             : {}),
@@ -257,11 +309,23 @@ export const CourseQueries = extendType({
             if (language && !course.course_translations?.length) {
               return null
             }
+            const tags = uniqBy(
+              (course?.tags ?? []).concat(
+                course?.handles_completions_for?.flatMap((c) => c.tags ?? []) ??
+                  [],
+              ),
+              "id",
+            )
+
             return {
-              ...omit(course, ["course_translations", "tags"]),
+              ...omit(course, [
+                "course_translations",
+                "tags",
+                "handles_completions_for",
+              ]),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
-              tags: course?.tags?.map((tag) => ({ ...tag, language })),
+              tags: tags?.map((tag) => ({ ...tag, language })),
             }
           })
           .filter(notEmpty)
