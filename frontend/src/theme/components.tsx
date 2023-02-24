@@ -10,6 +10,7 @@ import { openSansCondensedDeclaration } from "/src/fonts"
 const LinkBehavior = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
   (props, ref) => {
     const { href, ...other } = props
+
     return <Link ref={ref} href={href} {...other} />
   },
 )
