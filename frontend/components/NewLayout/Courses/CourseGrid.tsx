@@ -16,7 +16,6 @@ import { styled } from "@mui/material/styles"
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import CommonTranslations from "/translations/common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -57,7 +56,7 @@ const CardContainer = styled.div`
 
 const Container = styled("div")`
   display: grid;
-  max-width: 1200px;
+  max-width: 1536px;
   padding: 1rem;
 `
 
@@ -69,8 +68,9 @@ const CardContainer = styled("ul")(
   grid-gap: 2rem;
   grid-template-columns: 1fr 1fr;
   margin-top: 0;
+  justify-items: center;
 
-  ${theme.breakpoints.up("md")} {
+  ${theme.breakpoints.down("lg")} {
     grid-template-columns: 1fr;
   }
 `,
@@ -354,15 +354,7 @@ function CourseGrid() {
       ) : (
         <CardContainer>
           {filteredCourses.map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              tags={
-                course.tags?.map((t) => t.name).filter(notEmpty) ?? [
-                  "undefined",
-                ]
-              }
-            />
+            <CourseCard key={course.id} course={course} />
           ))}
         </CardContainer>
       )}

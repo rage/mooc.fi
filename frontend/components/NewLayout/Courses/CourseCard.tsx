@@ -28,10 +28,6 @@ const colorSchemes: Record<string, string> = {
   language: newTheme.palette.green.dark1!,
 }
 
-const difficultyTags = ["beginner", "intermediate", "advanced"]
-const moduleTags = ["AI", "programming", "cloud", "cyber security"]
-const languageTags = ["fi", "en", "se"]
-
 const ContainerBase = css`
   display: grid;
   grid-template-rows: 1fr 4fr;
@@ -40,6 +36,7 @@ const ContainerBase = css`
   box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
   border-radius: 0.5rem;
   max-height: 400px;
+  max-width: 800px;
 `
 
 const Container = styled("li", {
@@ -214,21 +211,12 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
-const tagType = (tag: string) =>
-  difficultyTags.includes(tag)
-    ? "difficulty"
-    : moduleTags.includes(tag)
-    ? "module"
-    : languageTags.includes(tag)
-    ? "language"
-    : "unknown"
-
 interface CourseCardProps {
   course: CourseFieldsFragment
   tags?: string[]
 }
 
-function CourseCard({ course, tags }: CourseCardProps) {
+function CourseCard({ course }: CourseCardProps) {
   const t = useTranslator(CommonTranslations)
 
   return (
@@ -281,11 +269,11 @@ function CourseCard({ course, tags }: CourseCardProps) {
             )}
           </Schedule>
           <ModuleTags>
-            {tags
-              ?.filter((t) => tagType(t) === "module")
+            {course?.tags
+              ?.filter((t) => t.types?.includes("module"))
               .map((tag) => (
                 <ModuleTag size="small" variant="contained" disabled>
-                  {tag}
+                  {tag.id}
                 </ModuleTag>
               ))}
           </ModuleTags>
@@ -295,7 +283,8 @@ function CourseCard({ course, tags }: CourseCardProps) {
             {course.ects && (
               <CourseLength>
                 <Typography variant="subtitle2">
-                  ~{Math.round((parseInt(course.ects) * 27) / 5) * 5}h
+                  {course.ects} op | ~
+                  {Math.round((parseInt(course.ects) * 27) / 5) * 5}h
                 </Typography>
                 <StyledTooltip
                   title={
@@ -312,29 +301,29 @@ function CourseCard({ course, tags }: CourseCardProps) {
             <Typography variant="subtitle2">Helsingin yliopisto</Typography>
           </Details>
           <LanguageTags>
-            {tags
-              ?.filter((t) => tagType(t) === "language")
+            {course?.tags
+              ?.filter((t) => t.types?.includes("language"))
               .map((tag) => (
                 <LanguageTag size="small" variant="contained" disabled>
-                  {tag}
+                  {tag.id}
                 </LanguageTag>
               ))}
           </LanguageTags>
           <DifficultyTags>
-            {tags
-              ?.filter((t) => tagType(t) === "difficulty")
+            {course?.tags
+              ?.filter((t) => t.types?.includes("difficulty"))
               .map((tag) => (
                 <DifficultyTagContainer>
                   <DifficultyTag size="small" variant="contained" disabled>
-                    {tag}
+                    {tag.id}
                   </DifficultyTag>
-                  {tag === "beginner" ? (
+                  {tag.id === "beginner" ? (
                     <CircleContainer>
                       <StyledCircleIcon />
                       <StyledCircleOutlinedIcon />
                       <StyledCircleOutlinedIcon />
                     </CircleContainer>
-                  ) : tag === "intermediate" ? (
+                  ) : tag.id === "intermediate" ? (
                     <CircleContainer>
                       <StyledCircleIcon />
                       <StyledCircleIcon />
