@@ -9,3 +9,31 @@ fragment ProgressCoreFields on Progress {
     ...UserCourseServiceProgressCoreFields
   }
 }
+
+fragment ProgressExtraFields on ProgressExtra {
+  tiers {
+    ...TierInfoFields
+  }
+  exercises {
+    ...TierProgressFields
+  }
+  projectCompletion
+  highestTier
+  totalExerciseCompletions
+}
+
+fragment TierInfoFields on TierInfo {
+  tier
+  hasTier
+  missingFromTier
+  exerciseCompletions
+}
+
+fragment TierProgressFields on TierProgress {
+  exercise_number
+  tier
+  n_points
+  max_points
+  progress
+  custom_id
+}

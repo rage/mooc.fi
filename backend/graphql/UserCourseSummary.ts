@@ -1,6 +1,8 @@
 import { booleanArg, objectType } from "nexus"
 
 import { notEmpty } from "../util/notEmpty"
+import { ProgressExtra, TierInfo, TierProgressMap } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
+import { Prisma } from "@prisma/client"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
@@ -153,6 +155,49 @@ export const UserCourseSummary = objectType({
           })
 
         return userCourseSetting?.[0]?.created_at
+      },
+    })
+
+    t.field("extra", {
+      type: "ProgressExtra",
+      resolve: async (
+        { user_id, completions_handled_by_id },
+        _,
+        ctx,
+      ) => {
+        if (!completions_handled_by_id) {
+          return null
+        }
+
+        const progress = await ctx.prisma.userCourseProgress.findFirst({
+          where: {
+            user_id,
+            course_id: completions_handled_by_id,
+          },
+          orderBy: {
+            created_at: "asc",
+          },
+        })
+
+        if (!progress?.extra) {
+          return null
+        }
+
+        const extra = (progress.extra as unknown) as ProgressExtra
+        const tiers = Object.keys(extra.tiers).map((key) => ({
+          tier: Number(key),
+          ...extra.tiers[key]
+        }))
+        const exercises = Object.keys(extra.exercises).map((key) => ({
+          exercise_number: Number(key),
+          ...extra.exercises[key]
+        }))
+
+        return {
+          ...extra,
+          tiers,
+          exercises,
+        }
       },
     })
   },
