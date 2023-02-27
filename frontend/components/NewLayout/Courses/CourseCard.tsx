@@ -134,7 +134,7 @@ const StyledTooltip = styled(Tooltip)`
 const Link = styled(OutboundLink)`
   justify-self: right;
   margin: 1rem;
-`
+` as typeof OutboundLink
 
 const Tags = styled("div")``
 
@@ -339,9 +339,7 @@ function CourseCard({ course }: CourseCardProps) {
                 </DifficultyTagContainer>
               ))}
           </DifficultyTags>
-          <Link eventLabel="to_course_material" to="https://www.mooc.fi">
-            {t("showCourse")}
-          </Link>
+          <Link href="https://www.mooc.fi">{t("showCourse")}</Link>
         </RightContentContainer>
         {/* <SponsorContainer>
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />

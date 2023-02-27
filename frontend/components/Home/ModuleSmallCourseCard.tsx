@@ -1,5 +1,3 @@
-import ReactGA from "react-ga"
-
 import { Grid, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -110,42 +108,38 @@ function ModuleSmallCourseCard({
 
   return (
     <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
-      <Background focusRipple component="div" role="none">
-        {course ? (
-          <ReactGA.OutboundLink
-            eventLabel={`modulecoursesite: ${course ? course.name : ""}`}
-            to={course.link ?? ""}
-            target="_blank"
-            style={{ textDecoration: "none", width: "100%" }}
-            onClick={(e) => (course.link === "" ? e.preventDefault() : null)}
-            aria-label={`To the course homepage of ${course.name}`}
-          >
-            {showHeader &&
-              (course.study_module_start_point ||
-                course.status === CourseStatus.Upcoming) && (
-                <Header
-                  startPoint={course.study_module_start_point}
-                  upcoming={course.status === CourseStatus.Upcoming}
-                >
-                  <Typography variant="body1">
-                    {course.status === CourseStatus.Upcoming
-                      ? t("upcomingShort")
-                      : t("moduleCourseStartPoint")}
-                  </Typography>
-                </Header>
-              )}
-            <ContentArea>
-              <ModuleCardTitle>{course.name}</ModuleCardTitle>
-              <ModuleCardText>{course.description}</ModuleCardText>
-            </ContentArea>
-          </ReactGA.OutboundLink>
-        ) : (
-          <>
-            <SkeletonTitle />
-            <SkeletonText />
-          </>
-        )}
-      </Background>
+      {course ? (
+        <Background
+          focusRipple
+          href={course.link ?? ""}
+          target="_blank"
+          aria-label={`To the course homepage of ${course.name}`}
+        >
+          {showHeader &&
+            (course.study_module_start_point ||
+              course.status === CourseStatus.Upcoming) && (
+              <Header
+                startPoint={course.study_module_start_point}
+                upcoming={course.status === CourseStatus.Upcoming}
+              >
+                <Typography variant="body1">
+                  {course.status === CourseStatus.Upcoming
+                    ? t("upcomingShort")
+                    : t("moduleCourseStartPoint")}
+                </Typography>
+              </Header>
+            )}
+          <ContentArea>
+            <ModuleCardTitle>{course.name}</ModuleCardTitle>
+            <ModuleCardText>{course.description}</ModuleCardText>
+          </ContentArea>
+        </Background>
+      ) : (
+        <Background focusRipple component="div" role="none">
+          <SkeletonTitle />
+          <SkeletonText />
+        </Background>
+      )}
     </Grid>
   )
 }

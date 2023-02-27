@@ -1,5 +1,3 @@
-import ReactGA from "react-ga"
-
 import { Chip, Grid, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -62,9 +60,6 @@ const TextArea = styled("div")`
   }
 `
 
-const CardLinkWithGA = styled(ReactGA.OutboundLink)`
-  text-decoration: none;
-`
 interface CourseCardProps {
   course?: CourseFieldsFragment
 }
@@ -74,67 +69,63 @@ function CourseCard({ course }: CourseCardProps) {
 
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-      <CardLinkWithGA
-        eventLabel={`coursesite: ${course?.name ?? ""}`}
+      <Background
+        focusRipple
         to={course?.link ?? ""}
         target="_blank"
+        disabled={
+          !course?.link ||
+          (course?.status === "Upcoming" && !course?.upcoming_active_link)
+        }
+        component="div"
+        role="none"
       >
-        <Background
-          focusRipple
-          disabled={
-            !course?.link ||
-            (course?.status === "Upcoming" && !course?.upcoming_active_link)
-          }
-          component="div"
-          role="none"
-        >
-          <ResponsiveCourseImageBase>
-            {course ? (
-              <CourseImage
-                photo={course.photo}
-                style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+        <ResponsiveCourseImageBase>
+          {course ? (
+            <CourseImage
+              photo={course.photo}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+            />
+          ) : (
+            <Skeleton variant="rectangular" height="100%" />
+          )}
+          {course?.link &&
+            course?.status === "Upcoming" &&
+            course?.upcoming_active_link && (
+              <Chip
+                variant="outlined"
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  backgroundColor: "white",
+                }}
+                clickable
+                label={t("coursePageAvailable")}
               />
-            ) : (
-              <Skeleton variant="rectangular" height="100%" />
             )}
-            {course?.link &&
-              course?.status === "Upcoming" &&
-              course?.upcoming_active_link && (
-                <Chip
-                  variant="outlined"
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    backgroundColor: "white",
-                  }}
-                  clickable
-                  label={t("coursePageAvailable")}
-                />
-              )}
-          </ResponsiveCourseImageBase>
-          <TextArea>
-            {course ? (
-              <>
-                <CardTitle component="h3" variant="h3">
-                  {course.name}
-                </CardTitle>
-                <CardText component="p" variant="body1" paragraph align="left">
-                  {course.description}
-                </CardText>
-              </>
-            ) : (
-              <>
-                <h3>
-                  <Skeleton variant="text" width="100%" />
-                </h3>
+        </ResponsiveCourseImageBase>
+        <TextArea>
+          {course ? (
+            <>
+              <CardTitle component="h3" variant="h3">
+                {course.name}
+              </CardTitle>
+              <CardText component="p" variant="body1" paragraph align="left">
+                {course.description}
+              </CardText>
+            </>
+          ) : (
+            <>
+              <h3>
                 <Skeleton variant="text" width="100%" />
-                <Skeleton variant="text" width="100%" />
-              </>
-            )}
-          </TextArea>
-        </Background>
-      </CardLinkWithGA>
+              </h3>
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="text" width="100%" />
+            </>
+          )}
+        </TextArea>
+      </Background>
     </Grid>
   )
 }
