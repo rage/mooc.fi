@@ -220,6 +220,7 @@ export const TagQueries = extendType({
   },
 })
 
+// TODO: don't expect these to be used much, but these do not update the course instance language
 export const TagMutations = extendType({
   type: "Mutation",
   definition(t) {
