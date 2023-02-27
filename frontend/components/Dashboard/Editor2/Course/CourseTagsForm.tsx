@@ -10,6 +10,7 @@ import {
   Chip,
   TextField,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormFieldGroup } from "../Common"
 import { DefaultFieldRenderProps } from "../Common/Fields"
@@ -18,9 +19,17 @@ import { TagFormValue } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
+const TagTypeChip = styled(Chip)`
+  margin-right: 0.5rem;
+`
 interface CourseTagFormProps {
   tags: TagFormValue[]
 }
+
+const hasNoLanguageTag = (tag: TagFormValue) =>
+  !(tag.types ?? []).includes("language")
+const filterLanguageTags = (tags: TagFormValue[]) =>
+  tags.filter(hasNoLanguageTag)
 
 function CourseTagsForm({ tags }: CourseTagFormProps) {
   const t = useTranslator(CoursesTranslations)
@@ -31,7 +40,7 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
       orderBy(tags ?? [], [
         (tag) => tag.types,
         (tag) => tag.name?.toLocaleLowerCase(),
-      ]),
+      ]).filter(hasNoLanguageTag), // language tag should come from course instance language
     [tags],
   )
 
@@ -53,15 +62,21 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
   )
 
   const renderTags = useCallback(
-    (value: Array<TagFormValue>, getTagProps: AutocompleteRenderGetTagProps) =>
-      value.map((field, index) => (
-        <Chip
-          {...getTagProps({ index })}
-          variant="outlined"
-          label={field.name ?? ""}
-          onDelete={onDelete(index)}
-        />
-      )),
+    (tags: Array<TagFormValue>, getTagProps: AutocompleteRenderGetTagProps) => {
+      return tags.map((tag, index) => {
+        if (!hasNoLanguageTag(tag)) {
+          return null
+        }
+        return (
+          <Chip
+            {...getTagProps({ index })}
+            variant="outlined"
+            label={tag.name ?? ""}
+            onDelete={onDelete(index)}
+          />
+        )
+      })
+    },
     [setValue, getValues],
   )
 
@@ -74,7 +89,17 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
 
   const renderOption = useCallback(
     (props: React.HTMLAttributes<HTMLLIElement>, option: TagFormValue) => (
-      <li {...props}>{option.name}</li>
+      <li {...props}>
+        {option?.types?.map((type) => (
+          <TagTypeChip
+            variant="outlined"
+            label={type}
+            size="small"
+            key={type}
+          />
+        ))}
+        {option.name}
+      </li>
     ),
     [],
   )
@@ -84,8 +109,8 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
       <Autocomplete
         {...omit(renderProps, ["formState", "fieldState"])}
         multiple
+        value={filterLanguageTags(renderProps.field?.value ?? [])}
         options={options}
-        value={renderProps.field?.value ?? []}
         onChange={onChange}
         renderTags={renderTags}
         renderInput={renderInput}

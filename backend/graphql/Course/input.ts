@@ -54,6 +54,7 @@ export const CourseCreateArg = inputObjectType({
     t.list.nonNull.field("tags", {
       type: "TagCreateInput",
     })
+    t.string("language")
   },
 })
 
@@ -114,6 +115,7 @@ export const CourseUpsertArg = inputObjectType({
     t.list.nonNull.field("tags", {
       type: "TagUpsertInput",
     })
+    t.string("language")
   },
 })
 

@@ -52,10 +52,11 @@ export function ControlledSelect<
 
       setValue(
         name,
-        (e.target.value !== "_empty" ? e.target.value : "") as PathValue<
+        e.target.value as PathValue<T, typeof name>,
+        /*(e.target.value !== "_empty" ? e.target.value : "") as PathValue<
           T,
           typeof name
-        >,
+        >,*/
         {
           shouldDirty: true,
           shouldValidate: true,
@@ -72,12 +73,12 @@ export function ControlledSelect<
         select
         variant="outlined"
         label={label}
-        value={value !== "" ? value : "_empty"}
+        value={value /*  !== "" ? value : "_empty" */}
         error={Boolean(flattenKeys(errors as Record<string, any>)[name])}
         onChange={_onChange}
         style={{ marginTop: "1.5rem" }}
       >
-        <MenuItem key={`${name}-empty`} value="_empty">
+        <MenuItem key={`${name}-empty`} value="">
           {t("selectNoChoice")}
         </MenuItem>
         {items.map((item) => (
@@ -97,7 +98,7 @@ export function ControlledSelect<
     <FieldController
       name={name}
       label={label}
-      defaultValue={watch(name) ?? ("_empty" as PathValue<T, typeof name>)}
+      defaultValue={watch(name) ?? ("" as PathValue<T, typeof name>)}
       renderComponent={renderSelect}
     />
   )

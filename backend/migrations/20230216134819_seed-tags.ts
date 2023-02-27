@@ -1,6 +1,10 @@
 import { Knex } from "knex"
 
 export async function up(knex: Knex): Promise<void> {
+  if (process.env.NODE_ENV === "test") {
+    return
+  }
+
   try {
     await knex.transaction(async (trx) => {
       await trx.raw(`

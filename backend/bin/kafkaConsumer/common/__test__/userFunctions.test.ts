@@ -36,7 +36,7 @@ describe("createCompletion", () => {
   })
 
   describe("create new completion", () => {
-    it("create new one when no existing is found", async () => {
+    it("when no existing is found", async () => {
       const course = await ctx.prisma.course.findFirst({
         where: {
           slug: "course2",
@@ -72,6 +72,43 @@ describe("createCompletion", () => {
       expect(createdCompletion.tier).toEqual(1)
       expect(createdCompletion.completion_language).toEqual("en_US")
     })
+
+    it("with completion language from child course", async () => {
+      const course = await ctx.prisma.course.findFirst({
+        where: {
+          slug: "handled",
+        },
+        include: {
+          completions_handled_by: true,
+        },
+      })
+      const handler = course?.completions_handled_by
+
+      const user = await ctx.prisma.user.findFirst({
+        where: {
+          upstream_id: 2,
+        },
+      })
+
+      assert(user)
+      assert(course)
+
+      await createCompletion({
+        user,
+        course,
+        handler,
+        context,
+      })
+      const createdCompletion = await ctx.prisma.completion.findFirst({
+        where: {
+          course_id: course.completions_handled_by_id,
+          user_id: user.id,
+        },
+      })
+      assert(createdCompletion)
+      expect(createdCompletion).not.toBeNull()
+      expect(createdCompletion.completion_language).toEqual("fi_FI")
+    })
   })
 
   describe("update completion", () => {
@@ -100,7 +137,7 @@ describe("createCompletion", () => {
       })
     })
 
-    it("should update when no existing tier", async () => {
+    it("should update when no existing tier exists", async () => {
       assert(user)
       assert(course)
 
@@ -126,6 +163,7 @@ describe("createCompletion", () => {
           (existingCompletion?.updated_at ?? new Date(0)),
       ).toEqual(true)
     })
+
     it("should update when existing tier is not defined", async () => {
       assert(user)
 

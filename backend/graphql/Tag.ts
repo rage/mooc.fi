@@ -113,19 +113,50 @@ export const TagQueries = extendType({
       args: {
         language: stringArg(),
         search: stringArg(),
-        includeHidden: booleanArg(),
+        excludeTagTypes: list(nonNull(stringArg())),
+        includeHidden: booleanArg({ description: "Include hidden tags" }),
+        includeWithNoCourses: booleanArg({
+          description: "Include tags that are not attached to any course",
+        }),
       },
       validate: (_, { includeHidden }, ctx) => {
         if (includeHidden && ctx.role !== Role.ADMIN) {
           throw new GraphQLForbiddenError("admins only")
         }
       },
-      resolve: async (_, { language, search, includeHidden }, ctx) => {
+      resolve: async (
+        _,
+        {
+          language,
+          search,
+          includeHidden,
+          includeWithNoCourses,
+          excludeTagTypes,
+        },
+        ctx,
+      ) => {
         const _wrapLanguage = wrapLanguage(language)
+
         if (search) {
           return (
             await ctx.prisma.tag.findMany({
               where: {
+                ...(!includeWithNoCourses && {
+                  courses: {
+                    some: {},
+                  },
+                }),
+                ...((excludeTagTypes ?? []).length > 0
+                  ? {
+                      tag_types: {
+                        none: {
+                          name: {
+                            in: excludeTagTypes ?? [],
+                          },
+                        },
+                      },
+                    }
+                  : undefined),
                 OR: [
                   { id: { contains: search, mode: "insensitive" } },
                   {
@@ -157,6 +188,22 @@ export const TagQueries = extendType({
             ...(!includeHidden && {
               OR: [{ hidden: false }, { hidden: null }],
             }),
+            ...(!includeWithNoCourses && {
+              courses: {
+                some: {},
+              },
+            }),
+            ...((excludeTagTypes ?? []).length > 0
+              ? {
+                  tag_types: {
+                    none: {
+                      name: {
+                        in: excludeTagTypes ?? [],
+                      },
+                    },
+                  },
+                }
+              : undefined),
             ...(language
               ? {
                   tag_translations: {
@@ -173,6 +220,7 @@ export const TagQueries = extendType({
   },
 })
 
+// TODO: don't expect these to be used much, but these do not update the course instance language
 export const TagMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -200,6 +248,7 @@ export const TagMutations = extendType({
       },
       resolve: async (_, { id, hidden, types, translations }, ctx) => {
         const _id = id ?? translations?.[0].name ?? "" // should never be empty as it
+
         return ctx.prisma.tag.create({
           data: {
             id: _id,

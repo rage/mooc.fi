@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-02-23T14:34:29+02:00
+// Generated on 2023-02-24T17:55:37+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -205,6 +205,7 @@ export type Course = {
   inherit_settings_from: Maybe<Course>
   inherit_settings_from_id: Maybe<Scalars["String"]>
   instructions: Maybe<Scalars["String"]>
+  language: Maybe<Scalars["String"]>
   link: Maybe<Scalars["String"]>
   name: Scalars["String"]
   open_university_registration_links: Array<OpenUniversityRegistrationLink>
@@ -351,6 +352,7 @@ export type CourseCreateArg = {
   has_certificate?: InputMaybe<Scalars["Boolean"]>
   hidden?: InputMaybe<Scalars["Boolean"]>
   inherit_settings_from?: InputMaybe<Scalars["ID"]>
+  language?: InputMaybe<Scalars["String"]>
   name?: InputMaybe<Scalars["String"]>
   new_photo?: InputMaybe<Scalars["Upload"]>
   open_university_registration_links?: InputMaybe<
@@ -603,6 +605,7 @@ export type CourseUpsertArg = {
   hidden?: InputMaybe<Scalars["Boolean"]>
   id?: InputMaybe<Scalars["ID"]>
   inherit_settings_from?: InputMaybe<Scalars["ID"]>
+  language?: InputMaybe<Scalars["String"]>
   name: Scalars["String"]
   new_photo?: InputMaybe<Scalars["Upload"]>
   new_slug?: InputMaybe<Scalars["String"]>
@@ -1763,7 +1766,9 @@ export type Querystudy_modulesArgs = {
 }
 
 export type QuerytagsArgs = {
+  excludeTagTypes?: InputMaybe<Array<Scalars["String"]>>
   includeHidden?: InputMaybe<Scalars["Boolean"]>
+  includeWithNoCourses?: InputMaybe<Scalars["Boolean"]>
   language?: InputMaybe<Scalars["String"]>
   search?: InputMaybe<Scalars["String"]>
 }
@@ -2589,6 +2594,7 @@ export type CompletionCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   photo: {
@@ -2668,6 +2674,7 @@ export type CompletionDetailedFieldsWithCourseFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     photo: {
@@ -2742,6 +2749,7 @@ export type CompletionsQueryNodeFieldsFragment = {
     name: string
     slug: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -2804,6 +2812,7 @@ export type CompletionsQueryConnectionFieldsFragment = {
         name: string
         slug: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -2843,6 +2852,7 @@ export type CourseCoreFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
 }
@@ -2853,6 +2863,7 @@ export type CourseWithPhotoCoreFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   photo: {
@@ -2913,6 +2924,7 @@ export type CourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   course_translations: Array<{
@@ -2980,6 +2992,7 @@ export type EditorCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   completions_handled_by: {
@@ -2988,6 +3001,7 @@ export type EditorCourseFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3076,6 +3090,7 @@ export type EditorCourseDetailedFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   course_translations: Array<{
@@ -3104,6 +3119,7 @@ export type EditorCourseDetailedFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3164,6 +3180,7 @@ export type EditorCourseOtherCoursesFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   course_translations: Array<{
@@ -3294,6 +3311,7 @@ export type ProgressCoreFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3412,6 +3430,7 @@ export type StudyModuleFieldsWithCoursesFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -3534,6 +3553,7 @@ export type UserProgressesFieldsFragment = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -3577,6 +3597,7 @@ export type UserOverviewCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   photo: {
@@ -3633,6 +3654,7 @@ export type UserOverviewFieldsFragment = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
       photo: {
@@ -3755,6 +3777,7 @@ export type StudentProgressesQueryNodeFieldsFragment = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -3811,6 +3834,7 @@ export type UserProfileUserCourseSettingsQueryNodeFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -3825,6 +3849,7 @@ export type UserCourseSummaryCourseFieldsFragment = {
   slug: string
   name: string
   ects: string | null
+  language: string | null
   created_at: any | null
   updated_at: any | null
   exercises: Array<{
@@ -3865,6 +3890,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     exercises: Array<{
@@ -4102,6 +4128,7 @@ export type AddCourseMutation = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -4130,6 +4157,7 @@ export type AddCourseMutation = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4219,6 +4247,7 @@ export type UpdateCourseMutation = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completion_email: {
@@ -4271,6 +4300,7 @@ export type UpdateCourseMutation = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4338,6 +4368,7 @@ export type DeleteCourseMutation = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4638,6 +4669,7 @@ export type PaginatedCompletionsQuery = {
           name: string
           slug: string
           ects: string | null
+          language: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -4712,6 +4744,7 @@ export type PaginatedCompletionsPreviousPageQuery = {
           name: string
           slug: string
           ects: string | null
+          language: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -4758,6 +4791,7 @@ export type CoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -4835,6 +4869,7 @@ export type EditorCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completions_handled_by: {
@@ -4843,6 +4878,7 @@ export type EditorCoursesQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -4923,6 +4959,7 @@ export type CourseFromSlugQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   } | null
@@ -4940,6 +4977,7 @@ export type CourseEditorOtherCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -4974,6 +5012,7 @@ export type HandlerCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
   }> | null
@@ -5013,6 +5052,7 @@ export type CourseEditorDetailsQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     course_translations: Array<{
@@ -5041,6 +5081,7 @@ export type CourseEditorDetailsQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     } | null
@@ -5111,6 +5152,7 @@ export type EmailTemplateEditorCoursesQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completion_email: {
@@ -5155,6 +5197,7 @@ export type CourseDashboardQuery = {
     slug: string
     name: string
     ects: string | null
+    language: string | null
     created_at: any | null
     updated_at: any | null
     completion_email: {
@@ -5324,6 +5367,7 @@ export type StudyModulesWithCoursesQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
       course_translations: Array<{
@@ -5417,6 +5461,7 @@ export type EditorStudyModuleDetailsQuery = {
       slug: string
       name: string
       ects: string | null
+      language: string | null
       created_at: any | null
       updated_at: any | null
     }> | null
@@ -5443,6 +5488,8 @@ export type StudyModuleExistsQuery = {
 
 export type CourseEditorTagsQueryVariables = Exact<{
   language?: InputMaybe<Scalars["String"]>
+  excludeTagTypes?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>
+  includeWithNoCourses?: InputMaybe<Scalars["Boolean"]>
 }>
 
 export type CourseEditorTagsQuery = {
@@ -5606,6 +5653,7 @@ export type UserSummaryQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
         exercises: Array<{
@@ -5765,6 +5813,7 @@ export type CurrentUserOverviewQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
         photo: {
@@ -5849,6 +5898,7 @@ export type UserOverviewQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
         photo: {
@@ -5915,6 +5965,7 @@ export type CurrentUserProgressesQuery = {
         slug: string
         name: string
         ects: string | null
+        language: string | null
         created_at: any | null
         updated_at: any | null
       } | null
@@ -6164,6 +6215,7 @@ export type StudentProgressesQuery = {
               slug: string
               name: string
               ects: string | null
+              language: string | null
               created_at: any | null
               updated_at: any | null
             } | null
@@ -6237,6 +6289,7 @@ export type UserProfileUserCourseSettingsQuery = {
           slug: string
           name: string
           ects: string | null
+          language: string | null
           created_at: any | null
           updated_at: any | null
         } | null
@@ -6558,6 +6611,7 @@ export const CourseCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -6646,6 +6700,7 @@ export const CourseWithPhotoCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -6717,6 +6772,7 @@ export const CompletionCourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -6912,6 +6968,7 @@ export const CompletionDetailedFieldsWithCourseFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -7224,6 +7281,7 @@ export const CompletionsQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -7366,6 +7424,7 @@ export const CompletionsQueryConnectionFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -7660,6 +7719,7 @@ export const CourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -7904,6 +7964,7 @@ export const EditorCourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -8298,6 +8359,7 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -8700,6 +8762,7 @@ export const EditorCourseOtherCoursesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -9093,6 +9156,7 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -9506,6 +9570,7 @@ export const ProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -9632,6 +9697,7 @@ export const UserProgressesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -9879,6 +9945,7 @@ export const UserOverviewCourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -10117,6 +10184,7 @@ export const UserOverviewFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -10362,6 +10430,7 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -10678,6 +10747,7 @@ export const UserProfileUserCourseSettingsQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -10788,6 +10858,7 @@ export const UserCourseSummaryCourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -11022,6 +11093,7 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -11916,6 +11988,7 @@ export const AddCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -12444,6 +12517,7 @@ export const UpdateCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -12962,6 +13036,7 @@ export const DeleteCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -14518,6 +14593,7 @@ export const PaginatedCompletionsDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -14834,6 +14910,7 @@ export const PaginatedCompletionsPreviousPageDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -15041,6 +15118,7 @@ export const CoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -15419,6 +15497,7 @@ export const EditorCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -15802,6 +15881,7 @@ export const CourseFromSlugDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -15852,6 +15932,7 @@ export const CourseEditorOtherCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -16007,6 +16088,7 @@ export const HandlerCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -16071,6 +16153,7 @@ export const CourseEditorDetailsDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -16585,6 +16668,7 @@ export const EmailTemplateEditorCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -16724,6 +16808,7 @@ export const CourseDashboardDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -17277,6 +17362,7 @@ export const StudyModulesWithCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -17783,6 +17869,7 @@ export const EditorStudyModuleDetailsDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -17873,6 +17960,31 @@ export const CourseEditorTagsDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "excludeTagTypes" },
+          },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: {
+                kind: "NamedType",
+                name: { kind: "Name", value: "String" },
+              },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeWithNoCourses" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -17887,6 +17999,22 @@ export const CourseEditorTagsDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "language" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "excludeTagTypes" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "excludeTagTypes" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeWithNoCourses" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "includeWithNoCourses" },
                 },
               },
             ],
@@ -18500,6 +18628,7 @@ export const UserSummaryDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -19208,6 +19337,7 @@ export const CurrentUserOverviewDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -19578,6 +19708,7 @@ export const UserOverviewDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -19775,6 +19906,7 @@ export const CurrentUserProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -20718,6 +20850,7 @@ export const StudentProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
@@ -21053,6 +21186,7 @@ export const UserProfileUserCourseSettingsDocument = {
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],

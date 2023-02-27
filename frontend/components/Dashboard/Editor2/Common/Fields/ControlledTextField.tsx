@@ -10,7 +10,7 @@ import {
 
 import HelpIcon from "@mui/icons-material/Help"
 import HistoryIcon from "@mui/icons-material/History"
-import { IconButton, TextField, Tooltip } from "@mui/material"
+import { IconButton, Tooltip as MUITooltip, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -22,6 +22,17 @@ import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
 
+const Tooltip = styled(MUITooltip)`
+  :hover {
+    cursor: pointer;
+  }
+`
+
+const QuestionTooltip = styled(MUITooltip)`
+  :hover {
+    cursor: help;
+  }
+`
 export interface ControlledTextFieldProps<T extends FieldValues>
   extends ControlledFieldProps<T> {
   type?: string
@@ -33,6 +44,8 @@ export interface ControlledTextFieldProps<T extends FieldValues>
 const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
 ` as typeof TextField
+
+const convertName = (name: string) => name.replace(/\.(\d+)\./, "[$1].")
 
 export function ControlledTextField<T extends FieldValues>(
   props: ControlledTextFieldProps<T>,
@@ -57,8 +70,10 @@ export function ControlledTextField<T extends FieldValues>(
     width,
   } = props
 
+  // TODO: hack to convert from formik compatible errors to this; when we get rid of formik,
+  // we can change this
   const error = useMemo(
-    () => Boolean(flattenKeys(errors)[name]),
+    () => Boolean(flattenKeys(errors)[convertName(name)]),
     [errors, name],
   )
 
@@ -112,9 +127,9 @@ export function ControlledTextField<T extends FieldValues>(
                 </Tooltip>
               ) : null}
               {tip ? (
-                <Tooltip title={tip}>
+                <QuestionTooltip title={tip}>
                   <HelpIcon />
-                </Tooltip>
+                </QuestionTooltip>
               ) : null}
             </>
           ),

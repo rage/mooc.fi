@@ -1,5 +1,6 @@
+import { Lato, Raleway } from "next/font/google"
+
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles"
-import { Lato, Raleway } from "@next/font/google"
 
 export const headerFont = Raleway({
   weight: ["400", "600", "700"],

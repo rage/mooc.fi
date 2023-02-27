@@ -42,7 +42,12 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
     data: tagsData,
     loading: tagsLoading,
     error: tagsError,
-  } = useQuery(CourseEditorTagsDocument, { variables: { language } })
+  } = useQuery(CourseEditorTagsDocument, {
+    variables: {
+      language,
+      includeWithNoCourses: true,
+    },
+  })
 
   return {
     loading:

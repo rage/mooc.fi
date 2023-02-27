@@ -71,7 +71,7 @@
   "validationNumberRange": "must be a number or a range",
   "validationValidUrl": "must be a valid URL",
   "statusSaving": "Saving...",
-  "courseLanguageSelectTitle": "Which language version do you want the course to be visible in?",
+  "courseLanguageSelectTitle": "Which languages of MOOC.fi website do you want the course to be visible in?",
   "courseLanguageVersion": "Language version",
   "courseStartDateRequired": "You must provide start date",
   "courseStartDateLaterThanEndDate": "Start date must be same or earlier than end date",
@@ -82,6 +82,7 @@
   "courseDatePlaceholder": "yyyy-mm-dd",
   "courseStartDate": "Course start date",
   "courseEndDate": "Course end date",
+  "courseInstanceLanguage": "Course instance language",
   "courseTeacherInChargeName": "Teacher in charge - name",
   "courseTeacherInChargeEmail": "Teacher in charge - email",
   "courseSupportEmail": "Course support email",
@@ -109,5 +110,6 @@
   "helpExerciseCompletionsNeeded": "How many exercise completions are needed to pass the course?",
   "helpPointsNeeded": "How many points are needed to pass the course?",
   "helpAutomaticCompletions": "Does the course have automatic completions?",
-  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?"
+  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?",
+  "helpCourseInstanceLanguage": "Language (en, fi, en-ie etc.) of the course instance. This will be used in the course completion. If this is a handler course, ie. a parent course for specific instance courses, then this setting will not have any effect - the completion language will be taken from the specific instance (ie. language version)."
 }

@@ -1,5 +1,13 @@
-query CourseEditorTags($language: String) {
-  tags(language: $language) {
+query CourseEditorTags(
+  $language: String
+  $excludeTagTypes: [String!]
+  $includeWithNoCourses: Boolean
+) {
+  tags(
+    language: $language
+    excludeTagTypes: $excludeTagTypes
+    includeWithNoCourses: $includeWithNoCourses
+  ) {
     ...TagCoreFields
   }
 }

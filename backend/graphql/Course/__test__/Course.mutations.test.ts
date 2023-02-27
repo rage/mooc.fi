@@ -61,6 +61,7 @@ describe("Course", () => {
       completions_handled_by: "00000000000000000000000000000002",
       user_course_settings_visibilities: [{ language: "en_US" }],
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
+      language: "en",
       tags: [
         {
           id: "tag1",
@@ -113,6 +114,7 @@ describe("Course", () => {
       user_course_settings_visibilities: [{ language: "en_US" }],
       photo: "00000000000000000000000000001101",
       new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
+      language: "en",
       tags: [
         {
           id: "tag2",
@@ -295,6 +297,84 @@ describe("Course", () => {
         expect(oldCourse).toBeNull()
         const updatedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "updated_course1" },
+          include: courseInclude,
+        })
+        expect(updatedCourse).toMatchStrippedSnapshot(
+          {
+            ...anyPhoto,
+            photo: {
+              ...anyPhoto.photo,
+              original: expect.stringContaining("original.gif"),
+            },
+          },
+          {
+            excludePaths: ["id", "study_modules", "tags.id"],
+          },
+        )
+      })
+
+      it("updates language tag", async () => {
+        const res = await ctx.client.request(updateCourseMutation, {
+          course: {
+            ...getUpdateCourse(),
+            new_photo: undefined,
+            new_slug: "course1",
+            language: "fi",
+          },
+        })
+        expect(res.updateCourse).toMatchStrippedSnapshot(
+          {
+            ...expectedUpdatedCourse,
+            photo: {
+              ...anyPhoto.photo,
+              original: expect.stringContaining("original.gif"),
+            },
+          },
+          {
+            excludePaths: ["id", "study_modules", "tags.id"],
+          },
+        )
+        const updatedCourse = await ctx.prisma.course.findUnique({
+          where: { slug: "course1" },
+          include: courseInclude,
+        })
+        expect(updatedCourse).toMatchStrippedSnapshot(
+          {
+            ...anyPhoto,
+            photo: {
+              ...anyPhoto.photo,
+              original: expect.stringContaining("original.gif"),
+            },
+          },
+          {
+            excludePaths: ["id", "study_modules", "tags.id"],
+          },
+        )
+      })
+
+      it("removes language tag", async () => {
+        const res = await ctx.client.request(updateCourseMutation, {
+          course: {
+            ...getUpdateCourse(),
+            new_photo: undefined,
+            new_slug: "course1",
+            language: undefined,
+          },
+        })
+        expect(res.updateCourse).toMatchStrippedSnapshot(
+          {
+            ...expectedUpdatedCourse,
+            photo: {
+              ...anyPhoto.photo,
+              original: expect.stringContaining("original.gif"),
+            },
+          },
+          {
+            excludePaths: ["id", "study_modules", "tags.id"],
+          },
+        )
+        const updatedCourse = await ctx.prisma.course.findUnique({
+          where: { slug: "course1" },
           include: courseInclude,
         })
         expect(updatedCourse).toMatchStrippedSnapshot(
@@ -508,6 +588,7 @@ const createCourseMutation = gql`
       automatic_completions_eligible_for_ects
       exercise_completions_needed
       points_needed
+      language
       tags {
         id
         hidden
@@ -591,6 +672,7 @@ const updateCourseMutation = gql`
       automatic_completions_eligible_for_ects
       exercise_completions_needed
       points_needed
+      language
       tags {
         id
         hidden

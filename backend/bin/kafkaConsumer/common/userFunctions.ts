@@ -349,7 +349,8 @@ export const createCompletion = async ({
   if (completions.length < 1) {
     logger.info("No existing completion found, creating new...")
 
-    const { language } = userCourseSettings ?? {}
+    // take course instance language first; then from user course settings
+    const language = course?.language ?? userCourseSettings?.language
     const completion_language =
       completionLanguageMap[language as LanguageAbbreviation] ?? null
 

@@ -71,7 +71,7 @@
   "validationNumberRange": "vaaditaan numero tai arvoalue",
   "validationValidUrl": "tulee olla validi URL",
   "statusSaving": "Tallennetaan...",
-  "courseLanguageSelectTitle": "Missä kieliversiossa haluat kurssin näkyvän?",
+  "courseLanguageSelectTitle": "Missä MOOC.fi-sivun kieliversiossa haluat kurssin näkyvän?",
   "courseLanguageVersion": "Kieliversio",
   "courseStartDateRequired": "Kurssilla on oltava alkamispäivämäärä",
   "courseStartDateLaterThanEndDate": "Alkamispäivämäärän tulee olla loppupäivämäärää aiemmin",
@@ -82,6 +82,7 @@
   "courseDatePlaceholder": "vvvv-kk-pp",
   "courseStartDate": "Kurssin alkamispäivämäärä",
   "courseEndDate": "Kurssin loppumispäivämäärä",
+  "courseInstanceLanguage": "Kurssi-instanssin kieli",
   "courseTeacherInChargeName": "Vastuuhenkilön nimi",
   "courseTeacherInChargeEmail": "Vastuuhenkilön sähköpostiosoite",
   "courseSupportEmail": "Kurssin tukisähköpostiosoite",
@@ -109,5 +110,6 @@
   "helpExerciseCompletionsNeeded": "Kuinka monta tehtävää pitää olla suoritettuna läpipääsyyn?",
   "helpPointsNeeded": "Kuinka paljon pisteitä tarvitaan läpipääsyyn?",
   "helpAutomaticCompletions": "Merkitäänkö kurssisuoritus automaattisesti?",
-  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?"
+  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?",
+  "helpCourseInstanceLanguage": "Kurssi-instanssin kieli (fi, en, se, en-ie jne.). Tämä liitetään opiskelijan kurssisuoritukseen. Jos tämä kurssi on kattokurssi muille kursseille, tällä asetuksella ei ole vaikutusta, vaan kieli otetaan suoritetusta kurssi-instanssista."
 }

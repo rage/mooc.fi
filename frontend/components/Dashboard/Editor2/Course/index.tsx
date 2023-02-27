@@ -89,7 +89,7 @@ function CourseEditor({
     defaultValues: defaultValues.current,
     resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",
-    //reValidateMode: "onChange"
+    // reValidateMode: "onChange"
   })
   const { trigger } = methods
 

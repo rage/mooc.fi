@@ -3,6 +3,7 @@ fragment CourseCoreFields on Course {
   slug
   name
   ects
+  language
   created_at
   updated_at
 }

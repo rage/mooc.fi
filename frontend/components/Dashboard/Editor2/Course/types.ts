@@ -21,6 +21,7 @@ export interface CourseFormValues extends FormValues {
   end_date?: string | DateTime
   ects?: string
   photo?: string | ImageCoreFieldsFragment | null
+  language?: string
   start_point: boolean
   promote: boolean
   hidden: boolean
