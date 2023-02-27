@@ -90,7 +90,7 @@ function UkraineInfo() {
             <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
               {t("ukraineText")}
             </CardTitle>
-            <OutboundLink eventLabel="custom: ukraina" to={t("ukraineLink")}>
+            <OutboundLink href={t("ukraineLink")}>
               {t("ukraineLinkText")}
             </OutboundLink>
           </InfoContainer>
@@ -98,10 +98,7 @@ function UkraineInfo() {
             <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
               {t("ukraineHyText")}
             </CardTitle>
-            <OutboundLink
-              eventLabel="custom: ukrainaHy"
-              to={t("ukraineHyLink")}
-            >
+            <OutboundLink href={t("ukraineHyLink")}>
               {t("ukraineHyLinkText")}
             </OutboundLink>
           </InfoContainer>

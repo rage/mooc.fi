@@ -15,7 +15,6 @@ import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
 import { useScrollToHash } from "/hooks/useScrollToHash"
 import { isAdmin, isSignedIn } from "/lib/authentication"
-import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
 import newTheme from "/src/newTheme"
@@ -37,20 +36,11 @@ export function MyApp({ Component, pageProps }: AppProps) {
   const isNew = router.pathname?.includes("_new")
 
   useEffect(() => {
-    initGA()
-    logPageView()
-
-    router.events.on("routeChangeComplete", logPageView)
-
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-
-    return () => {
-      router.events.off("routeChangeComplete", logPageView)
-    }
-  }, [router])
+  }, [])
 
   useScrollToHash()
 

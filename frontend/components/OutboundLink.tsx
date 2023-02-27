@@ -1,15 +1,10 @@
 import React, { PropsWithChildren } from "react"
 
-import ReactGA from "react-ga"
-
 import upRightFromSquareSvg from "@fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg"
+import { Link, LinkProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-interface OutboundLinkProps {
-  label?: string
-}
-
-const StyledOutboundLink = styled(ReactGA.OutboundLink)`
+const StyledOutboundLink = styled(Link)`
   padding-right: 0.5rem;
   ::after {
     content: "";
@@ -20,17 +15,13 @@ const StyledOutboundLink = styled(ReactGA.OutboundLink)`
     height: 0.75rem;
     margin-left: 0.5rem;
   }
-` as React.FC<ReactGA.OutboundLinkProps & React.HTMLProps<HTMLAnchorElement>>
+` as Link
 
 function OutboundLink({
   label,
   children,
   ...props
-}: PropsWithChildren<
-  ReactGA.OutboundLinkProps &
-    React.HTMLProps<HTMLAnchorElement> &
-    OutboundLinkProps
->) {
+}: PropsWithChildren<LinkProps>) {
   return (
     <StyledOutboundLink target="_blank" aria-label={label} {...props}>
       {children}
