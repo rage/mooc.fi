@@ -1,4 +1,4 @@
-import { Link } from "@mui/material"
+import { EnhancedLink, Link } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/NewLayout/Navigation"
@@ -6,9 +6,13 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
+interface NavigationLinkProps {
+  active: boolean
+}
+
 const NavigationLink = styled(Link, {
   shouldForwardProp: (prop) => prop !== "active",
-})<React.ComponentProps<"a"> & { active: boolean }>`
+})<NavigationLinkProps>`
   text-decoration: none;
   color: inherit;
   font-size: 1rem;
@@ -26,7 +30,7 @@ const NavigationLink = styled(Link, {
         `}
 
   transition: 0.1s;
-`
+` as EnhancedLink<"a", NavigationLinkProps>
 
 const NavigationLinkContainer = styled("div")`
   display: flex;

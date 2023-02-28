@@ -160,7 +160,7 @@ export const ContainedImage = ({ src, alt, ...props }: any) => {
 
 const mdxComponents: MDXComponents = {
   // Image: ContainedImage,
-  a: Link,
+  a: Link as React.ElementType,
 }
 
 interface InstallationInstructionProps {

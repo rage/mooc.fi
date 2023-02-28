@@ -1,3 +1,4 @@
+import { EnhancedButton } from "@mui/material"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 
@@ -13,4 +14,4 @@ export const HeaderMenuButton = styled(Button)`
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
   }
-` as typeof Button
+` as EnhancedButton

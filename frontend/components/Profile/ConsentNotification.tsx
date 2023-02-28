@@ -3,7 +3,7 @@ import React from "react"
 import { useRouter } from "next/router"
 
 import Warning from "@mui/icons-material/Warning"
-import { Link, Typography } from "@mui/material"
+import { EnhancedLink, Link as MUILink, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ProfileTranslations from "/translations/profile"
@@ -17,6 +17,8 @@ const ConsentNotificationWrapper = styled("div")`
   letter-spacing: 0.01071em;
   background-color: rgb(255, 244, 229);
 `
+
+const Link = MUILink as EnhancedLink
 
 function ConsentNotification() {
   const t = useTranslator(ProfileTranslations)

@@ -2,7 +2,7 @@ import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 import Image from "next/image"
 
-import { Button, Grid, Link } from "@mui/material"
+import { Button, EnhancedLink, Grid, Link } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -23,7 +23,7 @@ const NaviItemBase = styled(ClickableDiv)`
 const StyledLink = styled(Link)`
   color: black;
   text-decoration: none;
-`
+` as EnhancedLink
 
 type NaviItem = {
   title?: string
