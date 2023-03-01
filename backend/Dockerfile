@@ -12,7 +12,6 @@ RUN wget https://github.com/edenhill/librdkafka/archive/v1.8.2.tar.gz  -O - | ta
 RUN mkdir -p /app && chown -R node /app
 
 USER node
-RUN npm i -g npm@9.5.1
 
 WORKDIR /app
 

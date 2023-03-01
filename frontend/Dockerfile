@@ -6,7 +6,6 @@ RUN apt-get update \
 RUN mkdir -p /app && chown -R node /app
 
 USER node
-RUN npm i -g npm@9.5.1
 
 WORKDIR /app
 
