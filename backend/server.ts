@@ -40,7 +40,7 @@ const createExpressAppWithContext = ({
   return app
 }
 
-const useExpressMiddleware = (
+const addExpressMiddleware = (
   app: Express,
   apolloServer: ApolloServer<ServerContext>,
   serverContext: ServerContext,
@@ -63,7 +63,7 @@ const useExpressMiddleware = (
   return app
 }
 
-export default async (serverContext: ServerContext) => {
+const server = async (serverContext: ServerContext) => {
   const app = createExpressAppWithContext(serverContext)
   const httpServer = http.createServer(app)
   const schema = createSchema()
@@ -84,7 +84,7 @@ export default async (serverContext: ServerContext) => {
   })
   await apolloServer.start()
 
-  useExpressMiddleware(app, apolloServer, serverContext)
+  addExpressMiddleware(app, apolloServer, serverContext)
 
   return {
     apolloServer,
@@ -92,3 +92,5 @@ export default async (serverContext: ServerContext) => {
     httpServer,
   }
 }
+
+export default server

@@ -8,6 +8,7 @@ const esLintConfig = {
     "react-hooks",
     // "jsx-a11y",
     "styled-components-a11y",
+    "eslint-plugin-import",
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -75,6 +76,23 @@ const esLintConfig = {
         "caughtErrorsIgnorePattern": "^_ "
       }
     ],*/
+    "import/no-anonymous-default-export": "error",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: [
+          "backend/**/__test__/*",
+          "backend/tests/**/*",
+          "backend/jest.config.ts",
+          "frontend/next.config.js",
+          "frontend/codegen.ts",
+        ],
+        optionalDependencies: false,
+        peerDependencies: ["eslint-custom-rules/*"],
+        includeInternal: true,
+        includeTypes: true,
+      },
+    ],
     complexity: "warn",
   },
   extends: [

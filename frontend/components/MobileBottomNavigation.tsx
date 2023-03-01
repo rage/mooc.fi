@@ -1,7 +1,7 @@
+import { BoxProps } from "@mui/material"
 import AppBar, { AppBarProps } from "@mui/material/AppBar"
 import { styled } from "@mui/material/styles"
 import Toolbar from "@mui/material/Toolbar"
-import { BoxProps } from "@mui/system"
 
 import LoggedInUserMenu from "./HeaderBar/LoggedInUserMenu"
 import { useLoginStateContext } from "/contexts/LoginStateContext"

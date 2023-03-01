@@ -1,4 +1,3 @@
-import { type MatcherContext } from "expect"
 import { toMatchSnapshot, type Context } from "jest-snapshot"
 import { omit } from "lodash"
 import { DateTime } from "luxon"
@@ -365,7 +364,7 @@ function toMatchStrippedSnapshot<
   U extends AnyOrArrayAnyObject<T> = AnyOrArrayAnyObject<T>,
   //R extends TypeOrArrayType<T> = TypeOrArrayType<T>,
 >(
-  this: MatcherContext,
+  this: jest.MatcherContext,
   actual: T,
   propertyMatchers: Partial<U> = {},
   _options: StrippedSnapshotOptions<T> = {} as StrippedSnapshotOptions<T>,

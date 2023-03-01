@@ -22,6 +22,7 @@
     "@apollo/client": "^3.7.9",
     "@date-io/core": "^2.16.0",
     "@date-io/luxon": "^2.16.1",
+    "@emotion/cache": "^11.10.5",
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.6",
@@ -74,6 +75,7 @@
     "yup": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.0",
     "@graphql-codegen/add": "^4.0.1",
     "@graphql-codegen/cli": "^3.2.1",
     "@graphql-codegen/fragment-matcher": "^4.0.1",
@@ -92,14 +94,14 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-fontawesome": "^1.6.5",
-    "@types/styled-jsx": "^3.4.4",
     "@types/uuid": "^9.0.1",
     "cors": "^2.8.5",
     "event-stream": "^4.0.1",
     "express-graphql": "^0.12.0",
     "next-statoscope": "^1.0.0",
     "source-map-support": "^0.5.21",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "webpack": "^5.75.0"
   },
   "overrides": {
     "graphql": "16.6.0"

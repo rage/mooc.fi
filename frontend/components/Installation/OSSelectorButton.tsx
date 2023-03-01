@@ -4,7 +4,6 @@ import { SvgIconProps } from "@mui/material"
 import ButtonBase from "@mui/material/ButtonBase"
 import { css, styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
-import { SerializedStyles } from "@mui/styled-engine"
 
 import UserOSContext from "/contexts/UserOSContext"
 import { UserOSType } from "/util/getUserOS"
@@ -36,7 +35,7 @@ const StyledTypography = styled(Typography)`
 
 interface OSSelectorButtonProps {
   OSName: UserOSType
-  Icon: React.FunctionComponent<SvgIconProps & { css?: SerializedStyles }>
+  Icon: React.FunctionComponent<SvgIconProps & { css?: typeof iconStyle }>
   active: boolean
 }
 

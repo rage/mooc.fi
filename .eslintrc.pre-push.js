@@ -7,6 +7,7 @@ const esLintConfig = {
     "eslint-custom-rules",
     "react-hooks",
     "jsx-a11y",
+    "eslint-plugin-import",
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
