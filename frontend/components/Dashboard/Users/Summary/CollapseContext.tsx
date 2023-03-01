@@ -173,26 +173,34 @@ export const collapseReducer = (
 
 export const createInitialState = (
   data?: UserCourseSummaryCoreFieldsFragment[],
-) =>
-  data?.reduce<CollapseState>(
-    (collapseState, courseEntry) => ({
-      ...collapseState,
-      [courseEntry?.course?.id ?? "_"]: {
-        open: true,
-        exercises:
-          courseEntry?.exercise_completions?.reduce<ExerciseState>(
-            (exerciseState, exerciseCompletion) => ({
-              ...exerciseState,
-              [exerciseCompletion?.id ?? "_"]: false,
-            }),
-            {},
-          ) ?? {},
-        completion: false,
-        points: false,
-      },
-    }),
-    {},
-  ) ?? {}
+) => {
+  const flattenedData = [
+    ...(data ?? []),
+    ...(data?.flatMap((d) => d?.tier_summaries ?? []) ?? []),
+  ]
+
+  return (
+    flattenedData?.reduce<CollapseState>(
+      (collapseState, courseEntry) => ({
+        ...collapseState,
+        [courseEntry?.course?.id ?? "_"]: {
+          open: true,
+          exercises:
+            courseEntry?.exercise_completions?.reduce<ExerciseState>(
+              (exerciseState, exerciseCompletion) => ({
+                ...exerciseState,
+                [exerciseCompletion?.id ?? "_"]: false,
+              }),
+              {},
+            ) ?? {},
+          completion: false,
+          points: false,
+        },
+      }),
+      {},
+    ) ?? {}
+  )
+}
 
 const CollapseContextImpl = createContext<CollapseContext>({
   state: {},

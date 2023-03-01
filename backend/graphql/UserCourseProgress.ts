@@ -13,6 +13,7 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
 import { GraphQLUserInputError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
 
@@ -39,7 +40,6 @@ export const UserCourseProgress = objectType({
     t.model.user_id()
     t.model.user()
     t.model.user_course_service_progresses()
-    t.model.extra()
 
     t.list.nonNull.field("progress", {
       type: "Json",
@@ -127,6 +127,37 @@ export const UserCourseProgress = objectType({
           exercises: exerciseProgress,
           exercise_count: exercises.length,
           exercises_completed_count: completedExerciseCount,
+        }
+      },
+    })
+
+    t.field("extra", {
+      type: "ProgressExtra",
+      resolve: async ({ id }, _, ctx) => {
+        const progress = await ctx.prisma.userCourseProgress.findUnique({
+          where: {
+            id,
+          },
+        })
+
+        if (!progress?.extra) {
+          return null
+        }
+
+        const extra = progress.extra as unknown as ProgressExtra
+        const tiers = Object.keys(extra.tiers).map((key) => ({
+          tier: Number(key),
+          ...extra.tiers[key],
+        }))
+        const exercises = Object.keys(extra.exercises).map((key) => ({
+          exercise_number: Number(key),
+          ...extra.exercises[key],
+        }))
+
+        return {
+          ...extra,
+          tiers,
+          exercises,
         }
       },
     })

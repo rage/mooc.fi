@@ -7,6 +7,13 @@ import { getCourseOrAlias } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
+interface SummaryCourseResult {
+  course_id: string
+  inherit_settings_from_id: string | null
+  completions_handled_by_id: string | null
+  tier: number | null
+}
+
 export const User = objectType({
   name: "User",
   definition(t) {
@@ -307,13 +314,9 @@ export const User = objectType({
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const startedCourses = await ctx.prisma.$queryRaw<
-          Array<{
-            course_id: string
-            inherit_settings_from_id: string | null
-            completions_handled_by_id: string | null
-          }>
+          Array<SummaryCourseResult>
         >(Prisma.sql`
-          select c.id as course_id, inherit_settings_from_id, completions_handled_by_id
+          select c.id as course_id, inherit_settings_from_id, completions_handled_by_id, tier
           from course c
           where c.id in (
               select distinct(e.course_id)
@@ -323,15 +326,48 @@ export const User = objectType({
           );
         `)
 
-        return startedCourses
-          .filter(({ course_id }) => notEmpty(course_id))
-          .map((course) => ({
-            ...course,
-            user_id: id,
-            include_deleted_exercises: includeDeletedExercises ?? false,
-            include_no_points_awarded_exercises:
-              includeNoPointsAwardedExercises ?? false,
-          }))
+        const handled = startedCourses.reduce((acc, curr) => {
+          if (
+            curr.completions_handled_by_id &&
+            curr.completions_handled_by_id !== curr.course_id
+          ) {
+            return {
+              ...acc,
+              [curr.completions_handled_by_id]: (
+                acc[curr.completions_handled_by_id] ?? []
+              ).concat(curr),
+            }
+          }
+          return {
+            ...acc,
+            [curr.course_id]: [curr],
+          }
+        }, {} as Record<string, Array<SummaryCourseResult>>)
+
+        const baseFields = {
+          user_id: id,
+          includeDeletedExercises: includeDeletedExercises ?? false,
+          includeNoPointsAwardedExercises:
+            includeNoPointsAwardedExercises ?? false,
+        }
+
+        return Object.entries(handled).map(([course_id, handled_courses]) => {
+          if (handled_courses.length > 1) {
+            return {
+              ...baseFields,
+              tier_summaries: handled_courses.map((course) => ({
+                ...course,
+                ...baseFields,
+              })),
+              course_id,
+            }
+          }
+          return {
+            ...baseFields,
+            ...handled_courses[0],
+            course_id,
+          }
+        })
       },
     })
   },

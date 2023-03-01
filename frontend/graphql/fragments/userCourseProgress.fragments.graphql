@@ -5,7 +5,9 @@ fragment UserCourseProgressCoreFields on UserCourseProgress {
   max_points
   n_points
   progress
-  extra
+  extra {
+    ...ProgressExtraFields
+  }
   exercise_progress {
     total
     exercises

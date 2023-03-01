@@ -26,10 +26,15 @@ import {
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
+import {
+  UserCourseSummaryCoreFieldsFragment,
+  UserTierCourseSummaryCoreFieldsFragment,
+} from "/graphql/generated"
 
 interface ProgressEntryProps {
-  data: UserCourseSummaryCoreFieldsFragment
+  data:
+    | UserCourseSummaryCoreFieldsFragment
+    | UserTierCourseSummaryCoreFieldsFragment
 }
 
 function ProgressEntry({ data }: ProgressEntryProps) {

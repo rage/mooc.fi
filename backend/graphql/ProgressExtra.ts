@@ -1,4 +1,4 @@
-import { objectType } from "nexus";
+import { objectType } from "nexus"
 
 export const ProgressExtra = objectType({
   name: "ProgressExtra",
@@ -8,17 +8,17 @@ export const ProgressExtra = objectType({
     t.nonNull.boolean("projectCompletion")
     t.int("highestTier")
     t.nonNull.int("totalExerciseCompletions")
-  }
+  },
 })
 
 export const TierInfo = objectType({
   name: "TierInfo",
   definition(t) {
-    t.nonNull.int("tier"),
+    t.nonNull.int("tier")
     t.boolean("hasTier")
     t.int("missingFromTier")
     t.int("exerciseCompletions")
-  }
+  },
 })
 
 export const TierProgress = objectType({
@@ -30,5 +30,5 @@ export const TierProgress = objectType({
     t.nonNull.int("max_points")
     t.nonNull.float("progress")
     t.string("custom_id")
-  }
+  },
 })

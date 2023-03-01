@@ -1,8 +1,7 @@
 import { booleanArg, objectType } from "nexus"
 
+// import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
 import { notEmpty } from "../util/notEmpty"
-import { ProgressExtra, TierInfo, TierProgressMap } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
-import { Prisma } from "@prisma/client"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
@@ -13,6 +12,11 @@ export const UserCourseSummary = objectType({
     t.id("completions_handled_by_id")
     t.boolean("include_no_points_awarded_exercises")
     t.boolean("include_deleted_exercises")
+    t.int("tier")
+
+    t.list.nonNull.field("tier_summaries", {
+      type: "UserCourseSummary",
+    })
 
     t.field("course", {
       type: "Course",
@@ -158,13 +162,10 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.field("extra", {
+    // TODO: not sure if needed, can be queried through each user_course_progress
+    /*t.field("extra", {
       type: "ProgressExtra",
-      resolve: async (
-        { user_id, completions_handled_by_id },
-        _,
-        ctx,
-      ) => {
+      resolve: async ({ user_id, completions_handled_by_id }, _, ctx) => {
         if (!completions_handled_by_id) {
           return null
         }
@@ -183,14 +184,14 @@ export const UserCourseSummary = objectType({
           return null
         }
 
-        const extra = (progress.extra as unknown) as ProgressExtra
+        const extra = progress.extra as unknown as ProgressExtra
         const tiers = Object.keys(extra.tiers).map((key) => ({
           tier: Number(key),
-          ...extra.tiers[key]
+          ...extra.tiers[key],
         }))
         const exercises = Object.keys(extra.exercises).map((key) => ({
           exercise_number: Number(key),
-          ...extra.exercises[key]
+          ...extra.exercises[key],
         }))
 
         return {
@@ -199,6 +200,6 @@ export const UserCourseSummary = objectType({
           exercises,
         }
       },
-    })
+    })*/
   },
 })

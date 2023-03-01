@@ -18,6 +18,7 @@ import {
   CollapsablePart,
   CollapseAction,
   CourseState,
+  useCollapseContext,
 } from "./CollapseContext"
 import Completion from "./Completion"
 import ExerciseList from "./ExerciseList"
@@ -29,13 +30,24 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
+import {
+  UserCourseSummaryCoreFieldsFragment,
+  UserTierCourseSummaryCoreFieldsFragment,
+} from "/graphql/generated"
 
-interface CourseEntryProps {
-  data: UserCourseSummaryCoreFieldsFragment
-  state: CourseState
-  dispatch: Dispatch<CollapseAction>
-}
+type CourseEntryProps =
+  | {
+      data: UserCourseSummaryCoreFieldsFragment
+      state: CourseState
+      dispatch: Dispatch<CollapseAction>
+      tierSummary?: false
+    }
+  | {
+      data: UserTierCourseSummaryCoreFieldsFragment
+      state: CourseState
+      dispatch: Dispatch<CollapseAction>
+      tierSummary: true
+    }
 
 const CourseEntryCard = styled(({ elevation = 4, ...props }: CardProps) => (
   <Card elevation={elevation} {...props} />
@@ -79,10 +91,13 @@ export const SkeletonCourseEntry = () => (
   </CourseEntryCard>
 )
 
-function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
+function CourseEntry({ data, state, dispatch, tierSummary }: CourseEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { admin } = useLoginStateContext()
   const [courseInfoOpen, setCourseInfoOpen] = useState(false)
+  const hasTierSummaries =
+    !tierSummary && (data.tier_summaries?.length ?? 0) > 0
+  const { state: collapseState } = useCollapseContext()
 
   // TODO: subheaders for parts?
   const exercisesWithCompletions = useMemo(
@@ -149,13 +164,35 @@ function CourseEntry({ data, state, dispatch }: CourseEntryProps) {
       )}
       <Collapse in={state?.open} unmountOnExit>
         <CardContent>
-          <RelevantDates data={data} />
-          <Completion
-            course={data.course}
-            completion={data.completion ?? undefined}
-          />
-          <ProgressEntry data={data} />
-          <ExerciseList exercises={exercisesWithCompletions} />
+          {!tierSummary && (
+            <>
+              <RelevantDates data={data} />
+              <Completion
+                course={data.course}
+                completion={data.completion ?? undefined}
+              />
+              {/* TODO here: add something to visualize the total progress from _extra_ */}
+              {hasTierSummaries ? (
+                (data.tier_summaries ?? []).map((tierEntry) => (
+                  <CourseEntry
+                    key={tierEntry.course?.id}
+                    data={tierEntry}
+                    state={collapseState[tierEntry.course?.id ?? ""]}
+                    dispatch={dispatch}
+                    tierSummary
+                  />
+                ))
+              ) : (
+                <ProgressEntry data={data} />
+              )}
+            </>
+          )}
+          {!hasTierSummaries && (
+            <>
+              <ProgressEntry data={data} />
+              <ExerciseList exercises={exercisesWithCompletions} />
+            </>
+          )}
         </CardContent>
       </Collapse>
     </CourseEntryCard>

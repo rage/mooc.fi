@@ -78,9 +78,7 @@ const esLintConfig = {
     complexity: "warn",
   },
   extends: [
-    // "plugin:jsx-a11y/recommended",
-    "plugin:@next/next/recommended",
-    "plugin:styled-components-a11y/recommended",
+    "plugin:styled-components-a11y/strict",
     "plugin:@typescript-eslint/recommended",
     // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now
     "prettier",

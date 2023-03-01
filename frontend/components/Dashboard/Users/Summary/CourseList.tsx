@@ -16,14 +16,26 @@ function CourseList({ data }: CourseListProps) {
 
   return (
     <>
-      {data.map((entry, index) => (
-        <CourseEntry
-          key={entry.course?.id ?? index}
-          data={entry}
-          state={state[entry.course?.id ?? ""]}
-          dispatch={dispatch}
-        />
-      ))}
+      {data.map((entry, index) => {
+        /*if ((entry.tier_summaries?.length ?? 0) > 0) {
+          return (
+            <HandlerCourseEntry
+              key={entry.course?.id ?? index}
+              data={entry}
+              state={state[entry.course?.id ?? ""]}
+              dispatch={dispatch}
+            />
+          )
+        }*/
+        return (
+          <CourseEntry
+            key={entry.course?.id ?? index}
+            data={entry}
+            state={state[entry.course?.id ?? ""]}
+            dispatch={dispatch}
+          />
+        )
+      })}
     </>
   )
 }
