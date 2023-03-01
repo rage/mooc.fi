@@ -1,3 +1,4 @@
+import { EnhancedButton } from "@mui/material"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 
@@ -11,4 +12,4 @@ export const ButtonWithPaddingAndMargin = styled(Button)`
       : color ?? "#000000"};
   font-size: 18px;
   padding: 0.5em;
-` as typeof Button
+` as EnhancedButton

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react"
 
 import upRightFromSquareSvg from "@fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg"
-import { Link, LinkProps } from "@mui/material"
+import { EnhancedLink, Link, LinkProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 const StyledOutboundLink = styled(Link)`
@@ -15,7 +15,7 @@ const StyledOutboundLink = styled(Link)`
     height: 0.75rem;
     margin-left: 0.5rem;
   }
-` as Link
+` as EnhancedLink
 
 function OutboundLink({
   label,

@@ -1,18 +1,7 @@
-import React from "react"
-
-import Link, { LinkProps as NextLinkProps } from "next/link"
-
-import { LinkProps } from "@mui/material"
 import { createTheme, Theme } from "@mui/material/styles"
 
 import { bodyFont } from "./typography"
-
-const LinkBehavior = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
-  (props, ref) => {
-    const { href, ...other } = props
-    return <Link ref={ref} href={href} {...other} />
-  },
-)
+import { LinkBehavior } from "/components/Link"
 
 export const withComponents = (theme: Theme) =>
   createTheme(theme, {
@@ -20,7 +9,7 @@ export const withComponents = (theme: Theme) =>
       MuiLink: {
         defaultProps: {
           component: LinkBehavior,
-        } as LinkProps,
+        },
       },
       MuiTextField: {
         defaultProps: {

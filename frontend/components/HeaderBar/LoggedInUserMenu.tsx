@@ -2,6 +2,7 @@ import ChalkboardTeacherIcon from "@fortawesome/fontawesome-free/svgs/solid/chal
 import EnvelopeIcon from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
 import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import SearchIcon from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
+import { EnhancedButton } from "@mui/material"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
@@ -11,9 +12,13 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
+interface StyledButtonProps {
+  active?: boolean
+}
+
 const StyledButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",
-})<{ active?: boolean }>`
+})<StyledButtonProps>`
   margin: 1rem;
   font-size: 22px;
   border-radius: 0px;
@@ -36,7 +41,7 @@ const StyledButton = styled(Button, {
   }
   color: ${(props) => (props.active ? "#378170" : "black")};
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
-`
+` as EnhancedButton<"button", StyledButtonProps>
 
 const ButtonLabel = styled(Typography)`
   font-family: var(--header-font) !important;
@@ -63,7 +68,7 @@ const UserMenu = () => {
             href="/courses"
             color="inherit"
             variant="text"
-            active={active == "courses" ? 1 : null}
+            active={active === "courses"}
             style={{ marginLeft: "1em" }}
           >
             <ChalkboardTeacherIcon />
@@ -74,7 +79,7 @@ const UserMenu = () => {
             href="/study-modules"
             color="inherit"
             variant="text"
-            active={active == "study-modules" ? 1 : null}
+            active={active === "study-modules"}
           >
             <ListIcon />
             <ButtonLabel>{t("modules")}</ButtonLabel>
@@ -83,7 +88,7 @@ const UserMenu = () => {
             href="/users/search"
             color="inherit"
             variant="text"
-            active={active == "users" ? 1 : null}
+            active={active === "users"}
           >
             <SearchIcon />
             <ButtonLabel>{t("userSearch")}</ButtonLabel>
@@ -92,7 +97,7 @@ const UserMenu = () => {
             href="/email-templates"
             color="inherit"
             variant="text"
-            active={active == "email-templates" ? 1 : null}
+            active={active === "email-templates"}
           >
             <EnvelopeIcon />
             <ButtonLabel>{t("emailTemplates")}</ButtonLabel>

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 
 import Language from "@mui/icons-material/Language"
-import { Link } from "@mui/material"
+import { EnhancedLink, Link } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 const SwitchLink = styled(Link)`
@@ -21,7 +21,7 @@ const SwitchLink = styled(Link)`
   @media (max-width: 400px) {
     font-size: 10px;
   }
-` as typeof Link
+` as EnhancedLink
 
 const LanguageIcon = styled(Language)`
   margin-right: 0.4rem;

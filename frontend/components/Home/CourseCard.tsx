@@ -71,14 +71,12 @@ function CourseCard({ course }: CourseCardProps) {
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <Background
         focusRipple
-        to={course?.link ?? ""}
+        href={course?.link ?? ""}
         target="_blank"
         disabled={
           !course?.link ||
           (course?.status === "Upcoming" && !course?.upcoming_active_link)
         }
-        component="div"
-        role="none"
       >
         <ResponsiveCourseImageBase>
           {course ? (

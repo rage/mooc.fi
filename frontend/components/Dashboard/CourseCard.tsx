@@ -63,7 +63,8 @@ const ImageContainer = styled("div")`
 const StyledLink = styled(Link)`
   text-decoration: none;
   margin-left: 0px;
-`
+` as typeof Link
+
 const CourseCardItem = styled("li")`
   display: flex;
   padding: 1rem;

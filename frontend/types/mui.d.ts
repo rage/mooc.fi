@@ -1,21 +1,84 @@
 import { LinkProps as NextLinkProps } from "next/link"
 
+import { Button as MUIButton } from "@mui/material"
+import {
+  ButtonProps,
+  ButtonTypeMap as MUIButtonTypeMap,
+} from "@mui/material/Button"
+import {
+  ButtonBaseProps,
+  ExtendButtonBase,
+  ExtendButtonBaseTypeMap,
+  ButtonBaseTypeMap as MUIButtonBaseTypeMap,
+} from "@mui/material/ButtonBase"
+import { LinkTypeMap as MUILinkTypeMap } from "@mui/material/Link"
+import { MenuItemTypeMap as MUIMenuItemTypeMap } from "@mui/material/MenuItem"
+import {
+  OverridableComponent,
+  OverridableTypeMap,
+  OverrideProps,
+} from "@mui/material/OverridableComponent"
+
+type LinkProps = Omit<
+  NextLinkProps,
+  {
+    [K in keyof NextLinkProps]: K extends `on${string}` ? K : never
+  }[keyof NextLinkProps]
+>
+
 declare module "@mui/material/Link" {
-  import * as base from "@mui/material/Link"
   export type LinkProps<
-    D extends React.ElementType = LinkTypeMap["defaultComponent"],
-    P = object,
-  > = OverrideProps<LinkTypeMap<P, D>, D> & NextLinkProps
-  export = base
+    D extends React.ElementType = MUILinkTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = OverrideProps<MUILinkTypeMap<P, D>, D> & LinkProps
+  declare const Link: OverridableComponent<MUILinkTypeMap<LinkProps, "a">>
+  export default Link
+}
+declare module "@mui/material/ButtonBase" {
+  export type ButtonBaseProps<
+    D extends React.ElementType = MUIButtonBaseTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = OverrideProps<MUIButtonBaseTypeMap<P, D>, D> & Partial<LinkProps>
+  declare const ButtonBase: ExtendButtonBase<
+    MUIButtonBaseTypeMap<Partial<LinkProps>, "button">
+  >
+  export default ButtonBase
 }
 
-declare module "@mui/material/ButtonBase" {
-  import * as base from "@mui/material/ButtonBase"
-  export type ButtonBaseProps<
-    D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
-    P = object,
-  > = OverrideProps<ButtonBaseTypeMap<P, D>, D> & NextLinkProps
-  export = base
+declare module "@mui/material/Button" {
+  export type ButtonProps<
+    D extends React.ElementType = MUIButtonTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = OverrideProps<MUIButtonTypeMap<P, D>, D> & Partial<LinkProps>
+  declare const Button: ExtendButtonBase<
+    MUIButtonTypeMap<Partial<LinkProps>, "button">
+  >
+  export default Button
+}
+declare module "@mui/material" {
+  export type EnhancedLink<
+    D extends React.ElementType = MUILinkTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = OverridableComponent<MUILinkTypeMap<P & LinkProps, D>>
+  export type EnhancedButtonBase<
+    D extends React.ElementType = MUIButtonBaseTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = ExtendButtonBase<MUIButtonBaseTypeMap<P & Partial<LinkProps>, D>>
+  export type EnhancedButton<
+    D extends React.ElementType = MUIButtonTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = ExtendButtonBase<MUIButtonTypeMap<P & Partial<LinkProps>, D>>
+  export type EnhancedMenuItem<
+    D extends React.ElementType = MUIMenuItemTypeMap["defaultComponent"],
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    P = {},
+  > = ExtendButtonBase<MUIMenuItemTypeMap<P & Partial<LinkProps>, D>>
 }
 
 declare module "@mui/material/Typography" {
