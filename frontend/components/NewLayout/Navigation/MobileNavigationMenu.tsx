@@ -19,11 +19,12 @@ import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
 import MenuIcon from "@mui/icons-material/Menu"
 import {
   Divider,
+  EnhancedMenuItem,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
+  MenuItem as MUIMenuItem,
   SvgIcon,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -51,6 +52,8 @@ interface MobileMenuItemProps {
   onClick?: React.MouseEventHandler<HTMLLIElement>
   [key: string]: any
 }
+
+const MenuItem = MUIMenuItem as EnhancedMenuItem
 
 // TODO: check if necessary and remove if it isn't
 const MobileMenuItemLink = forwardRef<HTMLLIElement, MobileMenuItemProps>(

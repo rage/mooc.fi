@@ -8,14 +8,15 @@ import {
   ButtonGroup,
   ButtonGroupProps,
   ButtonProps,
+  EnhancedButton,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-const LanguageSwitchButton = (buttonProps: ButtonProps) => (
-  <Button component="div" {...buttonProps} tabIndex={-1} />
+const LanguageSwitchButton = (buttonProps: ButtonProps<"div">) => (
+  <Button {...buttonProps} component="div" tabIndex={-1} />
 )
 
 const LanguageSwitchContainer = styled(
@@ -26,7 +27,7 @@ const LanguageSwitchContainer = styled(
       disableFocusRipple
       disableTouchRipple
       {...props}
-      tabIndex="-1"
+      tabIndex={-1}
     />
   ),
   {
@@ -38,9 +39,12 @@ const LanguageSwitchContainer = styled(
   max-height: 8vh;
 `
 
+interface LanguageButtonProps {
+  active: boolean
+}
 const Language = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",
-})<ButtonProps & { active: boolean }>`
+})<LanguageButtonProps>`
   border: 0;
   text-decoration: none;
   color: inherit;
@@ -49,7 +53,7 @@ const Language = styled(Button, {
   &:hover {
     border: 0;
   }
-`
+` as EnhancedButton<"button", LanguageButtonProps>
 
 const LanguageSwitch = () => {
   const t = useTranslator(CommonTranslations)

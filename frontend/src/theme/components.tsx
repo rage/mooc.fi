@@ -1,19 +1,8 @@
-import React from "react"
-
-import Link, { LinkProps as NextLinkProps } from "next/link"
-
-import { LinkProps } from "@mui/material"
+import { ButtonBaseProps, MenuItemProps } from "@mui/material"
 import { createTheme, Theme } from "@mui/material/styles"
 
+import { LinkBehavior } from "/components/Link"
 import { openSansCondensedDeclaration } from "/src/fonts"
-
-const LinkBehavior = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
-  (props, ref) => {
-    const { href, ...other } = props
-
-    return <Link ref={ref} href={href} {...other} />
-  },
-)
 
 export const withComponents = (theme: Theme) =>
   createTheme(theme, {
@@ -21,7 +10,7 @@ export const withComponents = (theme: Theme) =>
       MuiLink: {
         defaultProps: {
           component: LinkBehavior,
-        } as LinkProps,
+        },
       },
       MuiTextField: {
         defaultProps: {
@@ -44,12 +33,12 @@ export const withComponents = (theme: Theme) =>
         defaultProps: {
           LinkComponent: LinkBehavior,
         },
-      },
+      } as ButtonBaseProps,
       MuiMenuItem: {
         defaultProps: {
           LinkComponent: LinkBehavior,
         },
-      },
+      } as MenuItemProps,
       MuiButton: {
         defaultProps: {
           variant: "contained",

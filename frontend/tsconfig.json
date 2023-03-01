@@ -59,6 +59,7 @@
   ],
   "include": [
     "next-env.d.ts",
+    "types/mui.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"

@@ -5,7 +5,13 @@ import { useRouter } from "next/router"
 import { useApolloClient } from "@apollo/client"
 import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
 import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
-import { Button, ButtonProps, SvgIconProps, useMediaQuery } from "@mui/material"
+import {
+  Button,
+  ButtonProps,
+  EnhancedButton,
+  SvgIconProps,
+  useMediaQuery,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { NavigationLinks } from "./NavigationLinks"
@@ -59,7 +65,7 @@ const MenuButtonBase = styled(Button)`
   overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: normal;
-`
+` as EnhancedButton<"button", MenuButtonProps>
 
 interface MenuButtonProps {
   Icon?: React.FunctionComponent<SvgIconProps>

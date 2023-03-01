@@ -19,12 +19,13 @@ import MenuIcon from "@mui/icons-material/Menu"
 import {
   Button,
   Divider,
+  EnhancedMenuItem,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
   MenuItemProps,
+  MenuItem as MUIMenuItem,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -34,6 +35,8 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
+
+const MenuItem = MUIMenuItem as EnhancedMenuItem
 
 const NavigationMenuContainer = styled("nav")(
   ({ theme }) => `
@@ -150,7 +153,7 @@ const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
       </MenuItem>
     )
   },
-)
+) as EnhancedMenuItem<"li", MobileMenuItemProps>
 
 const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const [isOpen, setIsOpen] = useState(false)

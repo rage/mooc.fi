@@ -1,4 +1,4 @@
-import ButtonBase from "@mui/material/ButtonBase"
+import { ButtonBase, EnhancedButtonBase } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 export const ClickableButtonBase = styled(ButtonBase)`
@@ -11,7 +11,7 @@ export const ClickableButtonBase = styled(ButtonBase)`
     transition-duration: 0.4s;
     cursor: pointer;
   }
-` as typeof ButtonBase
+` as EnhancedButtonBase
 
 export const ShadowedDiv = styled("div")`
   position: relative;

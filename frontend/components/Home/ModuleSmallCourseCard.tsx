@@ -1,5 +1,5 @@
-import { Grid, Skeleton, Typography } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { EnhancedButtonBase, Grid, Skeleton, Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import {
   ModuleCardText,
@@ -21,7 +21,6 @@ const SkeletonText = styled(Skeleton)`
 
 interface BackgroundProps {
   upcoming?: boolean
-  component: string
 }
 
 const Background = styled(ClickableButtonBase)<BackgroundProps>`
@@ -34,29 +33,29 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
   width: 100%;
   ${({ upcoming }) =>
     upcoming
-      ? `
-    &:after {
-      border-left: 80px solid transparent;
-      border-right: 80px solid green;
-      border-top: 80px solid transparent;
-      height: 0;
-      width: 0;
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-      content: "";
-      z-index: 2;
-    }
-    &:after.span {
-      color: #ffffff;
-      font-family: sans-serif;
-      font-size: 1.005em;
-      right: 0px;
-      bottom: 83px;
-      position: absolute;
-      width: 60px;
-    }
-  `
+      ? css`
+          &:after {
+            border-left: 80px solid transparent;
+            border-right: 80px solid green;
+            border-top: 80px solid transparent;
+            height: 0;
+            width: 0;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            content: "";
+            z-index: 2;
+          }
+          &:after.span {
+            color: #ffffff;
+            font-family: sans-serif;
+            font-size: 1.005em;
+            right: 0px;
+            bottom: 83px;
+            position: absolute;
+            width: 60px;
+          }
+        `
       : undefined}
   @media (min-width: 960px) {
     min-height: 150px;
@@ -64,7 +63,7 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
   @media (min-width: 600px) and (max-width: 960px) {
     min-height: 250px;
   }
-`
+` as EnhancedButtonBase<"button", BackgroundProps>
 
 const ContentArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;

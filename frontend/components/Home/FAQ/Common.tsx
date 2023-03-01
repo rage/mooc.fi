@@ -5,7 +5,12 @@ import { MDXComponents } from "mdx/types"
 import dynamic from "next/dynamic"
 
 import { MDXProvider } from "@mdx-js/react"
-import { Link as MUILink, Skeleton, Typography } from "@mui/material"
+import {
+  EnhancedLink,
+  Link as MUILink,
+  Skeleton,
+  Typography,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ErrorMessage from "/components/ErrorMessage"
@@ -88,7 +93,7 @@ export const Note = styled("section")`
 
 export const Link = styled(MUILink)`
   color: default;
-`
+` as EnhancedLink
 
 const List = styled("ul")``
 const OrderedList = styled("ol")``
@@ -157,7 +162,7 @@ interface FAQPageProps {
 }
 
 const mdxComponents: MDXComponents = {
-  a: Link,
+  a: Link as React.ElementType,
   ul: List,
   ol: OrderedList,
   li: ListItem,
