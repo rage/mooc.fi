@@ -1,3 +1,6 @@
+import fs from "fs"
+import path from "path"
+
 import { Knex } from "knex"
 import { omit } from "lodash"
 
@@ -196,18 +199,19 @@ export const createExtensions = async (knex: Knex) => {
   /*if (CIRCLECI) {
     return
   }*/
+  const extensions = fs
+    .readFileSync(path.resolve(__dirname, "../db/extensions"))
+    .toString()
+    .split("\n")
+    .filter(Boolean)
 
   try {
     await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
-    await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${EXTENSION_PATH}";`,
-    )
-    await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA "${EXTENSION_PATH}";`,
-    )
-    await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "btree_gin" SCHEMA "${EXTENSION_PATH}";`,
-    )
+    for (const extension of extensions) {
+      await knex.raw(
+        `CREATE EXTENSION IF NOT EXISTS "${extension}" SCHEMA "${EXTENSION_PATH}";`,
+      )
+    }
   } catch (error) {
     console.warn(
       "Error creating extensions. Ignore if this didn't fall on next hurdle",
@@ -218,13 +222,11 @@ export const createExtensions = async (knex: Knex) => {
   try {
     // if extensions already exist, but in another schema
     await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
-    await knex.raw(
-      `ALTER EXTENSION "uuid-ossp" SET SCHEMA "${EXTENSION_PATH}";`,
-    )
-    await knex.raw(`ALTER EXTENSION "pg_trgm" SET SCHEMA "${EXTENSION_PATH}";`)
-    await knex.raw(
-      `ALTER EXTENSION "btree_gin" SET SCHEMA "${EXTENSION_PATH}";`,
-    )
+    for (const extension of extensions) {
+      await knex.raw(
+        `ALTER EXTENSION "${extension}" SET SCHEMA "${EXTENSION_PATH}";`,
+      )
+    }
   } catch {
     // we can probably ignore this
   }
