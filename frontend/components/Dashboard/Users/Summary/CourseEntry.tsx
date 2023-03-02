@@ -173,7 +173,10 @@ function CourseEntry({ data, state, dispatch, tierSummary }: CourseEntryProps) {
               />
               {/* TODO here: add something to visualize the total progress from _extra_ */}
               {hasTierSummaries ? (
-                (data.tier_summaries ?? []).map((tierEntry) => (
+                sortBy(
+                  data.tier_summaries ?? [],
+                  (tierEntry) => tierEntry.course?.tier,
+                ).map((tierEntry) => (
                   <CourseEntry
                     key={tierEntry.course?.id}
                     data={tierEntry}

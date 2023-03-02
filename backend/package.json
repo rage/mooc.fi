@@ -50,7 +50,6 @@
     "copy-env": "cp ./config/env.json ./dist/config/env.json",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
-    "create-test-db": "env PGPASSWORD=prisma createdb -h localhost -p 5678 -U prisma -w testing || true",
     "build-sourcemap": "tsc --noEmit false --sourceMap --outDir sourcemap",
     "typecheck": "tsc --noEmit"
   },
