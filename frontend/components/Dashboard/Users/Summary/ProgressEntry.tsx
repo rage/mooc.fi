@@ -27,25 +27,29 @@ import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
 import {
-  UserCourseSummaryCoreFieldsFragment,
-  UserTierCourseSummaryCoreFieldsFragment,
+  UserCourseProgressCoreFieldsFragment,
+  UserCourseServiceProgressCoreFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
 } from "/graphql/generated"
 
 interface ProgressEntryProps {
-  data:
-    | UserCourseSummaryCoreFieldsFragment
-    | UserTierCourseSummaryCoreFieldsFragment
+  course: UserCourseSummaryCourseFieldsFragment
+  userCourseProgress: UserCourseProgressCoreFieldsFragment | null
+  userCourseServiceProgresses: Array<UserCourseServiceProgressCoreFieldsFragment>
 }
 
-function ProgressEntry({ data }: ProgressEntryProps) {
+function ProgressEntry({
+  course,
+  userCourseProgress,
+  userCourseServiceProgresses,
+}: ProgressEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
-  const { course, user_course_progress, user_course_service_progresses } = data
-  const { exercise_progress } = user_course_progress ?? {}
+  const { exercise_progress } = userCourseProgress ?? {}
 
   const isOpen = useMemo(
-    () => state[course?.id ?? "_"]?.points ?? false,
+    () => state[course.id]?.points ?? false,
     [state, course],
   )
   const onCollapseClick = useCallback(
@@ -53,7 +57,7 @@ function ProgressEntry({ data }: ProgressEntryProps) {
       dispatch({
         type: ActionType.TOGGLE,
         collapsable: CollapsablePart.POINTS,
-        course: course?.id ?? "_",
+        course: course.id ?? "_",
       }),
     [dispatch, course],
   )
@@ -72,8 +76,8 @@ function ProgressEntry({ data }: ProgressEntryProps) {
                   percentage={(exercise_progress?.total ?? 0) * 100}
                   title={t("totalProgress")}
                   pointsTitle={t("points")}
-                  amount={user_course_progress?.n_points ?? 0}
-                  total={user_course_progress?.max_points ?? 0}
+                  amount={userCourseProgress?.n_points ?? 0}
+                  total={userCourseProgress?.max_points ?? 0}
                 />
               </TableCell>
               <TableCell>
@@ -97,8 +101,8 @@ function ProgressEntry({ data }: ProgressEntryProps) {
                 <Collapse in={isOpen} unmountOnExit>
                   <PointsListItemCard
                     course={course}
-                    userCourseProgress={user_course_progress}
-                    userCourseServiceProgresses={user_course_service_progresses}
+                    userCourseProgress={userCourseProgress}
+                    userCourseServiceProgresses={userCourseServiceProgresses}
                     showProgress={false}
                   />
                 </Collapse>

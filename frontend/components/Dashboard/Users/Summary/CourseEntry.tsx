@@ -16,13 +16,12 @@ import InfoRow from "../InfoRow"
 import {
   ActionType,
   CollapsablePart,
-  CollapseAction,
-  CourseState,
   useCollapseContext,
 } from "./CollapseContext"
 import Completion from "./Completion"
 import ExerciseList from "./ExerciseList"
 import ProgressEntry from "./ProgressEntry"
+import TotalProgressEntry from "./TotalProgressEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import RelevantDates from "/components/Dashboard/Users/Summary/RelevantDates"
 import { CardTitle } from "/components/Text/headers"
@@ -38,14 +37,10 @@ import {
 type CourseEntryProps =
   | {
       data: UserCourseSummaryCoreFieldsFragment
-      state: CourseState
-      dispatch: Dispatch<CollapseAction>
       tierSummary?: false
     }
   | {
       data: UserTierCourseSummaryCoreFieldsFragment
-      state: CourseState
-      dispatch: Dispatch<CollapseAction>
       tierSummary: true
     }
 
@@ -72,6 +67,7 @@ const CourseInfo = styled("div")`
   display: flex;
   flex-direction: column;
 `
+
 const CourseEntryPartSkeleton = () => (
   <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
     <Skeleton />
@@ -91,13 +87,15 @@ export const SkeletonCourseEntry = () => (
   </CourseEntryCard>
 )
 
-function CourseEntry({ data, state, dispatch, tierSummary }: CourseEntryProps) {
+function CourseEntry({ data, tierSummary }: CourseEntryProps) {
   const t = useTranslator(ProfileTranslations)
   const { admin } = useLoginStateContext()
   const [courseInfoOpen, setCourseInfoOpen] = useState(false)
-  const hasTierSummaries =
-    !tierSummary && (data.tier_summaries?.length ?? 0) > 0
-  const { state: collapseState } = useCollapseContext()
+  const hasTierSummaries = useMemo(
+    () => !tierSummary && (data.tier_summaries?.length ?? 0) > 0,
+    [data, tierSummary],
+  )
+  const { state, dispatch } = useCollapseContext()
 
   // TODO: subheaders for parts?
   const exercisesWithCompletions = useMemo(
@@ -133,6 +131,8 @@ function CourseEntry({ data, state, dispatch, tierSummary }: CourseEntryProps) {
     return null
   }
 
+  const courseState = state[data.course.id]
+
   return (
     <CourseEntryCard>
       <CourseEntryCardTitleRow>
@@ -149,7 +149,7 @@ function CourseEntry({ data, state, dispatch, tierSummary }: CourseEntryProps) {
           )}
         </CourseEntryCardTitleWrapper>
         <CollapseButton
-          open={state?.open}
+          open={courseState?.open}
           onClick={onCollapseClick}
           tooltip={t("courseCollapseTooltip")}
         />
@@ -157,42 +157,56 @@ function CourseEntry({ data, state, dispatch, tierSummary }: CourseEntryProps) {
       {admin && (
         <Collapse in={courseInfoOpen} unmountOnExit>
           <CourseInfo>
-            <InfoRow title="ID" content={data.course?.id} />
-            <InfoRow title="Slug" content={data.course?.slug} />
+            <InfoRow title="ID" content={data.course?.id} copyable />
+            <InfoRow title="Slug" content={data.course?.slug} copyable />
           </CourseInfo>
         </Collapse>
       )}
-      <Collapse in={state?.open} unmountOnExit>
+      <Collapse in={courseState?.open} unmountOnExit>
         <CardContent>
           {!tierSummary && (
             <>
               <RelevantDates data={data} />
-              <Completion
-                course={data.course}
-                completion={data.completion ?? undefined}
-              />
-              {/* TODO here: add something to visualize the total progress from _extra_ */}
+              <Completion course={data.course} completion={data.completion} />
+
               {hasTierSummaries ? (
-                sortBy(
-                  data.tier_summaries ?? [],
-                  (tierEntry) => tierEntry.course?.tier,
-                ).map((tierEntry) => (
-                  <CourseEntry
-                    key={tierEntry.course?.id}
-                    data={tierEntry}
-                    state={collapseState[tierEntry.course?.id ?? ""]}
-                    dispatch={dispatch}
-                    tierSummary
-                  />
-                ))
+                <>
+                  {data.user_course_progress?.extra && (
+                    <TotalProgressEntry
+                      data={data.user_course_progress.extra}
+                    />
+                  )}
+                  {sortBy(
+                    data.tier_summaries ?? [],
+                    (tierEntry) => tierEntry.course?.tier,
+                  ).map((tierEntry) => (
+                    <CourseEntry
+                      key={tierEntry.course?.id}
+                      data={tierEntry}
+                      tierSummary
+                    />
+                  ))}
+                </>
               ) : (
-                <ProgressEntry data={data} />
+                <ProgressEntry
+                  course={data.course}
+                  userCourseProgress={data.user_course_progress}
+                  userCourseServiceProgresses={
+                    data.user_course_service_progresses
+                  }
+                />
               )}
             </>
           )}
           {!hasTierSummaries && (
             <>
-              <ProgressEntry data={data} />
+              <ProgressEntry
+                course={data.course}
+                userCourseProgress={data.user_course_progress}
+                userCourseServiceProgresses={
+                  data.user_course_service_progresses
+                }
+              />
               <ExerciseList exercises={exercisesWithCompletions} />
             </>
           )}

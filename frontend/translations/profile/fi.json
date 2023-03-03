@@ -59,5 +59,14 @@
     "studentNumber": "Opiskelijanumero: ",
     "noPointsData": "Tietoja ei saatavilla",
     "noDetailsAvailable": "Lisätietoja ei saatavilla",
-    "total": "yhteensä"
+    "total": "yhteensä",
+    "totalCourseProgress": "Kurssin kokonaisedistyminen",
+    "highestCompletedTier": "Korkein suoritettu taso",
+    "noCompletedTiers": "ei suoritettuja tasoja",
+    "courseProject": "Kurssiprojekti",
+    "projectCompleted": "Projekti suoritettu",
+    "projectNotCompleted": "Projektia ei suoritettu",
+    "tierCompleted": "Taso suoritettu",
+    "tierNotCompleted": "Tasoa ei suoritettu",
+    "missingFromTier": "Tasosta puuttuvia tehtäväsuorituksia"
 }

@@ -59,5 +59,14 @@
     "studentNumber": "Student number: ",
     "noPointsData": "No points data available",
     "noDetailsAvailable": "No details available",
-    "total": "total"
+    "total": "total",
+    "totalCourseProgress": "Total course progress",
+    "highestCompletedTier": "Highest completed tier",
+    "noCompletedTiers": "no completed tiers",
+    "courseProject": "Course project",
+    "projectCompleted": "Project completed",
+    "projectNotCompleted": "Project not completed",
+    "tierCompleted": "Tier completed",
+    "tierNotCompleted": "Tier not completed",
+    "missingFromTier": "Missing exercise completions from tier"
 }

@@ -4,8 +4,8 @@ import { sortBy } from "lodash"
 
 import { styled } from "@mui/material/styles"
 
-import { SkeletonCourseEntry } from "./CourseEntry"
-import CourseList from "/components/Dashboard/Users/Summary/CourseList"
+import CourseEntry, { SkeletonCourseEntry } from "./CourseEntry"
+import { UserPointsSummaryProvider } from "./UserPointsSummaryContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
@@ -59,12 +59,14 @@ function UserPointsSummary({ data, search }: UserPointsSummaryProps) {
   }
 
   return (
-    <>
+    <UserPointsSummaryProvider value={filteredData}>
       {filteredData?.length === 0 && (
         <DataPlaceholder>{t("noResults")}</DataPlaceholder>
       )}
-      <CourseList data={filteredData} />
-    </>
+      {filteredData.map((entry, index) => (
+        <CourseEntry key={entry.course?.id ?? index} data={entry} />
+      ))}
+    </UserPointsSummaryProvider>
   )
 }
 

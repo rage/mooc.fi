@@ -7,7 +7,8 @@ import { css, styled } from "@mui/material/styles"
 
 interface InfoRowProps {
   title: string
-  content: string
+  content: string | JSX.Element
+  copyable?: boolean
 }
 
 const isClipboardSupported =
@@ -34,16 +35,26 @@ const InfoRowContent = styled(Typography)`
   font-weight: 600;
 `
 
+const InfoRowElementContent = styled("div")`
+  margin-left: auto;
+`
+
 const iconStyle = css`
   fill: #666;
   height: 1rem;
   transition: all 1s ease-ease-in-out;
 `
 
-const InfoRow = ({ title, content }: InfoRowProps) => {
-  const [isCopied, setIsCopied] = useState(false)
+const isElement = (content: string | JSX.Element): content is JSX.Element =>
+  typeof content !== "string"
 
+const InfoRow = ({ title, content, copyable }: InfoRowProps) => {
+  const [isCopied, setIsCopied] = useState(false)
+  const hasClipboard = isClipboardSupported && copyable && !isElement(content)
   const onCopyToClipboard = useCallback(() => {
+    if (isElement(content)) {
+      return
+    }
     navigator.clipboard.writeText(content).then(() => {
       setIsCopied(true)
       setTimeout(() => setIsCopied(false), 2000)
@@ -53,17 +64,23 @@ const InfoRow = ({ title, content }: InfoRowProps) => {
   return (
     <InfoRowContainer>
       <InfoRowTitle variant="h4">{title}</InfoRowTitle>
-      <InfoRowContent variant="h4">{content}</InfoRowContent>
-      {isClipboardSupported && (
-        <Tooltip title={isCopied ? "Copied!" : "Copy to clipboard"}>
-          <StyledIconButton onClick={onCopyToClipboard}>
-            {isCopied ? (
-              <CheckIcon css={iconStyle} />
-            ) : (
-              <ClipboardIcon css={iconStyle} />
-            )}
-          </StyledIconButton>
-        </Tooltip>
+      {isElement(content) ? (
+        <InfoRowElementContent>{content}</InfoRowElementContent>
+      ) : (
+        <>
+          <InfoRowContent variant="h4">{content}</InfoRowContent>
+          {hasClipboard && (
+            <Tooltip title={isCopied ? "Copied!" : "Copy to clipboard"}>
+              <StyledIconButton onClick={onCopyToClipboard}>
+                {isCopied ? (
+                  <CheckIcon css={iconStyle} />
+                ) : (
+                  <ClipboardIcon css={iconStyle} />
+                )}
+              </StyledIconButton>
+            </Tooltip>
+          )}
+        </>
       )}
     </InfoRowContainer>
   )

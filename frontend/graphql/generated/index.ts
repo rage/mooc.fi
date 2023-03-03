@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-01T16:41:57+02:00
+// Generated on 2023-03-03T18:47:49+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2217,8 +2217,8 @@ export type TierProgress = {
   __typename?: "TierProgress"
   custom_id: Maybe<Scalars["String"]>
   exercise_number: Scalars["Int"]
-  max_points: Scalars["Int"]
-  n_points: Scalars["Int"]
+  max_points: Scalars["Float"]
+  n_points: Scalars["Float"]
   progress: Scalars["Float"]
   tier: Scalars["Int"]
 }

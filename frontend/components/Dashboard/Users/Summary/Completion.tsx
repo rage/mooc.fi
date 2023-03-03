@@ -29,7 +29,7 @@ import {
 } from "/graphql/generated"
 
 interface CompletionProps {
-  completion?: CompletionDetailedFieldsFragment
+  completion?: CompletionDetailedFieldsFragment | null
   course: UserCourseSummaryCourseFieldsFragment
 }
 
