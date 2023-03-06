@@ -68,5 +68,13 @@
     "projectNotCompleted": "Project not completed",
     "tierCompleted": "Tier completed",
     "tierNotCompleted": "Tier not completed",
-    "missingFromTier": "Missing exercise completions from tier"
+    "missingFromTier": "Missing exercise completions from tier",
+    "courseSortOrder": "Order",
+    "courseSortOrder-course_name": "Course name",
+    "courseSortOrder-completion_date": "Completion date",
+    "courseSortOrder-activity_date": "Latest exercise completion",
+    "toggleOrder": "Toggle sort order",
+    "orderAscending": "Ascending",
+    "orderDescending": "Descending",
+    "pointsRequired": "required"
 }

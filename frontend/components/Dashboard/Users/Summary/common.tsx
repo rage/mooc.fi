@@ -2,7 +2,7 @@ import { Paper, PaperProps, TableCell, TableRow } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 export const SummaryCardContainer = styled((props: PaperProps) => (
-  <Paper component="article" elevation={4} {...props} />
+  <Paper component="article" elevation={2} {...props} />
 ))`
   margin-bottom: 1rem;
 `

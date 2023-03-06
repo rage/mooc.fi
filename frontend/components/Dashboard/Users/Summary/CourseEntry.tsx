@@ -1,4 +1,4 @@
-import React, { Dispatch, useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 
 import { sortBy } from "lodash"
 
@@ -131,7 +131,7 @@ function CourseEntry({ data, tierSummary }: CourseEntryProps) {
     return null
   }
 
-  const courseState = state[data.course.id]
+  const courseState = state.courses[data.course.id]
 
   return (
     <CourseEntryCard>

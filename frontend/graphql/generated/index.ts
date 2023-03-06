@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-03T18:47:49+02:00
+// Generated on 2023-03-06T17:19:05+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2208,14 +2208,17 @@ export type TagWhereUniqueInput = {
 export type TierInfo = {
   __typename?: "TierInfo"
   exerciseCompletions: Maybe<Scalars["Int"]>
+  exerciseCount: Maybe<Scalars["Int"]>
   hasTier: Maybe<Scalars["Boolean"]>
   missingFromTier: Maybe<Scalars["Int"]>
+  requiredByTier: Maybe<Scalars["Int"]>
   tier: Scalars["Int"]
 }
 
 export type TierProgress = {
   __typename?: "TierProgress"
   custom_id: Maybe<Scalars["String"]>
+  exercise: Maybe<Exercise>
   exercise_number: Scalars["Int"]
   max_points: Scalars["Float"]
   n_points: Scalars["Float"]
@@ -3364,7 +3367,9 @@ export type ProgressCoreFieldsFragment = {
         tier: number
         hasTier: boolean | null
         missingFromTier: number | null
+        requiredByTier: number | null
         exerciseCompletions: number | null
+        exerciseCount: number | null
       }>
       exercises: Array<{
         __typename?: "TierProgress"
@@ -3407,7 +3412,9 @@ export type ProgressExtraFieldsFragment = {
     tier: number
     hasTier: boolean | null
     missingFromTier: number | null
+    requiredByTier: number | null
     exerciseCompletions: number | null
+    exerciseCount: number | null
   }>
   exercises: Array<{
     __typename?: "TierProgress"
@@ -3425,7 +3432,9 @@ export type TierInfoFieldsFragment = {
   tier: number
   hasTier: boolean | null
   missingFromTier: number | null
+  requiredByTier: number | null
   exerciseCompletions: number | null
+  exerciseCount: number | null
 }
 
 export type TierProgressFieldsFragment = {
@@ -3668,7 +3677,9 @@ export type UserProgressesFieldsFragment = {
           tier: number
           hasTier: boolean | null
           missingFromTier: number | null
+          requiredByTier: number | null
           exerciseCompletions: number | null
+          exerciseCount: number | null
         }>
         exercises: Array<{
           __typename?: "TierProgress"
@@ -3825,7 +3836,9 @@ export type UserCourseProgressCoreFieldsFragment = {
       tier: number
       hasTier: boolean | null
       missingFromTier: number | null
+      requiredByTier: number | null
       exerciseCompletions: number | null
+      exerciseCount: number | null
     }>
     exercises: Array<{
       __typename?: "TierProgress"
@@ -3934,7 +3947,9 @@ export type StudentProgressesQueryNodeFieldsFragment = {
             tier: number
             hasTier: boolean | null
             missingFromTier: number | null
+            requiredByTier: number | null
             exerciseCompletions: number | null
+            exerciseCount: number | null
           }>
           exercises: Array<{
             __typename?: "TierProgress"
@@ -4112,7 +4127,9 @@ export type UserCourseSummaryCoreFieldsFragment = {
         tier: number
         hasTier: boolean | null
         missingFromTier: number | null
+        requiredByTier: number | null
         exerciseCompletions: number | null
+        exerciseCount: number | null
       }>
       exercises: Array<{
         __typename?: "TierProgress"
@@ -4259,7 +4276,9 @@ export type UserCourseSummaryCoreFieldsFragment = {
           tier: number
           hasTier: boolean | null
           missingFromTier: number | null
+          requiredByTier: number | null
           exerciseCompletions: number | null
+          exerciseCount: number | null
         }>
         exercises: Array<{
           __typename?: "TierProgress"
@@ -4372,7 +4391,9 @@ export type UserTierCourseSummaryCoreFieldsFragment = {
         tier: number
         hasTier: boolean | null
         missingFromTier: number | null
+        requiredByTier: number | null
         exerciseCompletions: number | null
+        exerciseCount: number | null
       }>
       exercises: Array<{
         __typename?: "TierProgress"
@@ -6120,7 +6141,9 @@ export type UserSummaryQuery = {
             tier: number
             hasTier: boolean | null
             missingFromTier: number | null
+            requiredByTier: number | null
             exerciseCompletions: number | null
+            exerciseCount: number | null
           }>
           exercises: Array<{
             __typename?: "TierProgress"
@@ -6267,7 +6290,9 @@ export type UserSummaryQuery = {
               tier: number
               hasTier: boolean | null
               missingFromTier: number | null
+              requiredByTier: number | null
               exerciseCompletions: number | null
+              exerciseCount: number | null
             }>
             exercises: Array<{
               __typename?: "TierProgress"
@@ -6522,7 +6547,9 @@ export type CurrentUserProgressesQuery = {
             tier: number
             hasTier: boolean | null
             missingFromTier: number | null
+            requiredByTier: number | null
             exerciseCompletions: number | null
+            exerciseCount: number | null
           }>
           exercises: Array<{
             __typename?: "TierProgress"
@@ -6793,7 +6820,9 @@ export type StudentProgressesQuery = {
                   tier: number
                   hasTier: boolean | null
                   missingFromTier: number | null
+                  requiredByTier: number | null
                   exerciseCompletions: number | null
+                  exerciseCount: number | null
                 }>
                 exercises: Array<{
                   __typename?: "TierProgress"
@@ -10004,10 +10033,12 @@ export const TierInfoFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -10098,10 +10129,12 @@ export const ProgressExtraFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -10195,10 +10228,12 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -10378,10 +10413,12 @@ export const ProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -10621,10 +10658,12 @@ export const UserProgressesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -11450,10 +11489,12 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -12277,10 +12318,12 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -12749,10 +12792,12 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -20551,10 +20596,12 @@ export const UserSummaryDocument = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -21836,10 +21883,12 @@ export const CurrentUserProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },
@@ -22876,10 +22925,12 @@ export const StudentProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
           },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
         ],
       },
     },

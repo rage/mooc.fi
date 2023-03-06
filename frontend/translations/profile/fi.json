@@ -68,5 +68,13 @@
     "projectNotCompleted": "Projektia ei suoritettu",
     "tierCompleted": "Taso suoritettu",
     "tierNotCompleted": "Tasoa ei suoritettu",
-    "missingFromTier": "Tasosta puuttuvia tehtäväsuorituksia"
+    "missingFromTier": "Tasosta puuttuvia tehtäväsuorituksia",
+    "courseSortOrder": "Järjestys",
+    "courseSortOrder-course_name": "Kurssin nimi",
+    "courseSortOrder-completion_date": "Suoritusaika",
+    "courseSortOrder-activity_date": "Viimeisin tehty tehtävä",
+    "toggleOrder": "Käännä suunta",
+    "orderAscending": "Nouseva",
+    "orderDescending": "Laskeva",
+    "pointsRequired": "vaaditaan"
 }

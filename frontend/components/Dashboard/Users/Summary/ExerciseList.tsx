@@ -36,7 +36,8 @@ function ExerciseList({ exercises }: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
   const courseId = useMemo(() => exercises?.[0]?.course_id ?? "_", [exercises])
   const isOpen = useMemo(
-    () => Object.values(state[courseId]?.exercises ?? {}).some((e) => e),
+    () =>
+      Object.values(state.courses[courseId]?.exercises ?? {}).some((e) => e),
     [courseId, state],
   )
   const onCollapseClick = useCallback(

@@ -49,7 +49,7 @@ function ProgressEntry({
   const { exercise_progress } = userCourseProgress ?? {}
 
   const isOpen = useMemo(
-    () => state[course.id]?.points ?? false,
+    () => state.courses[course.id]?.points ?? false,
     [state, course],
   )
   const onCollapseClick = useCallback(

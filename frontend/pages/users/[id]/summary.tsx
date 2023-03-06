@@ -12,8 +12,17 @@ import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
+import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
+import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
 import BuildIcon from "@mui/icons-material/Build"
-import { Button, Dialog, Paper, TextField } from "@mui/material"
+import {
+  Button,
+  Dialog,
+  IconButton,
+  MenuItem,
+  Paper,
+  TextField,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
@@ -22,9 +31,14 @@ import CollapseContext, {
   ActionType,
   CollapsablePart,
   collapseReducer,
-  createInitialState,
+  createCollapseState,
+  initialState,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
+import {
+  UserCourseSummaryEntryOrder,
+  userCourseSummaryEntryOrderOptions,
+} from "/components/Dashboard/Users/Summary/types"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
@@ -55,13 +69,17 @@ const SearchContainer = styled(Paper)`
 const ToolbarContainer = styled("div")`
   padding: 0.5rem 1rem 0.5rem 1rem;
   display: flex;
-  width: 100%;
   flex: 1;
   justify-content: space-between;
 `
 
 const HideOverflow = styled("div")`
   overflow-y: hidden;
+`
+
+const RightToolbarContainer = styled("div")`
+  display: flex;
+  gap: 1rem;
 `
 
 function UserSummaryView() {
@@ -96,20 +114,26 @@ function UserSummaryView() {
 
   const title = useSubtitle(data?.user?.full_name ?? undefined)
 
-  const [state, dispatch] = useReducer(collapseReducer, {})
+  const [state, dispatch] = useReducer(collapseReducer, initialState)
   const [searchVariables, setSearchVariables] =
     useState<EditorCoursesQueryVariables>({
       search: "",
     })
   const [rawViewOpen, setRawViewOpen] = useState(false)
+  const [sort, setSort] = useState<UserCourseSummaryEntryOrder>("course_name")
+  const [order, setOrder] = useState<"asc" | "desc">("asc")
   const userSearchInput = useRef<HTMLInputElement>()
 
   useEffect(() => {
+    console.log("dispatching init state")
+    if (loading) {
+      return
+    }
     dispatch({
       type: ActionType.INIT_STATE,
-      state: createInitialState(data?.user?.user_course_summary ?? []),
+      state: createCollapseState(data?.user?.user_course_summary ?? []),
     })
-  }, [data])
+  }, [data, loading])
 
   const onSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -123,7 +147,7 @@ function UserSummaryView() {
   const contextValue = useMemo(() => ({ state, dispatch }), [state])
 
   const allCoursesClosed = useMemo(
-    () => !Object.values(state).some((s) => s.open),
+    () => !Object.values(state.courses).some((s) => s.open),
     [state],
   )
 
@@ -134,6 +158,26 @@ function UserSummaryView() {
         collapsable: CollapsablePart.COURSE,
       }),
     [allCoursesClosed],
+  )
+
+  const onCourseSortChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSort(event.target.value as UserCourseSummaryEntryOrder)
+    },
+    [],
+  )
+
+  const onSortOrderToggle = useCallback(() => {
+    setOrder((v) => (v === "asc" ? "desc" : "asc"))
+  }, [])
+
+  const sortOptions = useMemo(
+    () =>
+      userCourseSummaryEntryOrderOptions.map((o) => ({
+        value: o,
+        label: t(`courseSortOrder-${o}`),
+      })),
+    [router.locale],
   )
 
   if (error) {
@@ -181,17 +225,42 @@ function UserSummaryView() {
               >
                 Raw view
               </Button>
-              <CollapseButton
-                onClick={onCollapseClick}
-                open={!allCoursesClosed}
-                label={allCoursesClosed ? t("showAll") : t("hideAll")}
-                tooltip={t("allCoursesCollapseTooltip")}
-              />
+              <RightToolbarContainer>
+                <TextField
+                  select
+                  variant="outlined"
+                  value={sort}
+                  label={t("courseSortOrder")}
+                  onChange={onCourseSortChange}
+                  fullWidth
+                >
+                  {sortOptions.map((o) => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <IconButton
+                  onClick={onSortOrderToggle}
+                  title={t("toggleOrder")}
+                >
+                  {order === "desc" ? <ReverseOrderIcon /> : <OrderIcon />}
+                </IconButton>
+                <CollapseButton
+                  onClick={onCollapseClick}
+                  open={!allCoursesClosed}
+                  label={allCoursesClosed ? t("showAll") : t("hideAll")}
+                  tooltip={t("allCoursesCollapseTooltip")}
+                />
+              </RightToolbarContainer>
             </ToolbarContainer>
           </SearchContainer>
           <UserPointsSummary
             data={data?.user?.user_course_summary}
+            loading={loading || state.loading}
             search={searchVariables.search}
+            sort={sort}
+            order={order}
           />
         </CollapseContext.Provider>
         <Dialog

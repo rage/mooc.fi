@@ -40,13 +40,14 @@ const InfoRowElementContent = styled("div")`
 `
 
 const iconStyle = css`
-  fill: #666;
   height: 1rem;
   transition: all 1s ease-ease-in-out;
 `
 
-const isElement = (content: string | JSX.Element): content is JSX.Element =>
-  typeof content !== "string"
+const isElement = (
+  content: string | number | JSX.Element,
+): content is JSX.Element =>
+  typeof content !== "string" && typeof content !== "number"
 
 const InfoRow = ({ title, content, copyable }: InfoRowProps) => {
   const [isCopied, setIsCopied] = useState(false)
@@ -73,7 +74,7 @@ const InfoRow = ({ title, content, copyable }: InfoRowProps) => {
             <Tooltip title={isCopied ? "Copied!" : "Copy to clipboard"}>
               <StyledIconButton onClick={onCopyToClipboard}>
                 {isCopied ? (
-                  <CheckIcon css={iconStyle} />
+                  <CheckIcon css={iconStyle} color="success" />
                 ) : (
                   <ClipboardIcon css={iconStyle} />
                 )}

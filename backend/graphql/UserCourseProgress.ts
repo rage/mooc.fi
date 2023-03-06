@@ -14,6 +14,11 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
 import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
+import {
+  BAIExerciseCount,
+  BAITierNameToId,
+  requiredByTier,
+} from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
 
@@ -146,7 +151,9 @@ export const UserCourseProgress = objectType({
 
         const extra = progress.extra as unknown as ProgressExtra
         const tiers = Object.keys(extra.tiers).map((key) => ({
-          tier: Number(key),
+          tier: BAITierNameToId[key] ?? 0,
+          requiredByTier: requiredByTier[BAITierNameToId[key] ?? 0] ?? 0,
+          exerciseCount: BAIExerciseCount,
           ...extra.tiers[key],
         }))
         const exercises = Object.keys(extra.exercises).map((key) => ({

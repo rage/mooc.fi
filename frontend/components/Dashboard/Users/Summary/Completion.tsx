@@ -54,7 +54,7 @@ function Completion({ completion, course }: CompletionProps) {
   const { state, dispatch } = useCollapseContext()
 
   const isOpen = useMemo(
-    () => state[course?.id ?? "_"]?.completion ?? false,
+    () => state.courses[course?.id ?? "_"]?.completion ?? false,
     [state, course],
   )
 

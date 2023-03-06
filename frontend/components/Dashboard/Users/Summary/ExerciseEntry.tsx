@@ -130,7 +130,7 @@ function ExerciseEntry({ exercise }: ExerciseEntryProps) {
   )
   const isOpen = useMemo(
     () =>
-      state[exercise.course_id ?? "_"]?.exercises[
+      state.courses[exercise.course_id ?? "_"]?.exercises[
         exerciseCompletion?.id ?? "_"
       ] ?? false,
     [exercise, exerciseCompletion, state],

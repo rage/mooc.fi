@@ -9,6 +9,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableRow,
   Typography,
 } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
@@ -29,7 +30,6 @@ interface TotalProgressEntryProps {
 }
 
 const iconStyle = css`
-  fill: #666;
   height: 1rem;
   transition: all 1s ease-ease-in-out;
 `
@@ -40,43 +40,68 @@ const CourseInfo = styled("div")`
 `
 
 interface TierInfoProps {
-  data: TierInfoFieldsFragment
+  tier: TierInfoFieldsFragment
 }
 
-function TierInfo({ data }: TierInfoProps) {
+function TierInfo({ tier }: TierInfoProps) {
   const t = useTranslator(ProfileTranslations)
 
   return (
-    <TableCell>
+    <>
+      <PointsProgress
+        percentage={Math.min(
+          ((tier.exerciseCompletions ?? 0) / (tier.exerciseCount ?? 1)) * 100,
+          100,
+        )}
+        requiredPercentage={Math.min(
+          ((tier.requiredByTier ?? 0) / (tier.exerciseCount ?? 1)) * 100,
+          100,
+        )}
+        title={t("totalProgress")}
+        pointsTitle={t("points")}
+        requiredTitle={t("pointsRequired")}
+        amount={tier.exerciseCompletions ?? 0}
+        total={tier.exerciseCount}
+        required={tier.requiredByTier}
+      />
+
       <InfoRow
-        title={t(`completionTier-${data.tier as 1 | 2 | 3}`)}
+        title={t(`completionTier-${tier.tier as 1 | 2 | 3}`)}
         content={
-          data.hasTier ? (
-            <CheckIcon css={iconStyle} titleAccess={t("tierCompleted")} />
+          tier.hasTier ? (
+            <CheckIcon
+              css={iconStyle}
+              color="success"
+              titleAccess={t("tierCompleted")}
+            />
           ) : (
-            <XMarkIcon css={iconStyle} titleAccess={t("tierNotCompleted")} />
+            <XMarkIcon
+              css={iconStyle}
+              color="warning"
+              titleAccess={t("tierNotCompleted")}
+            />
           )
         }
       />
-      {!data.hasTier && (
+      {!tier.hasTier && (
         <InfoRow
           title={t("missingFromTier")}
-          content={String(data.missingFromTier ?? 0)}
+          content={String(tier.missingFromTier ?? 0)}
         />
       )}
-    </TableCell>
+    </>
   )
 }
 
 interface TierInfoListProps {
-  data: Array<TierInfoFieldsFragment>
+  tiers: Array<TierInfoFieldsFragment>
 }
 
-function TierInfoList({ data }: TierInfoListProps) {
+function TierInfoList({ tiers }: TierInfoListProps) {
   return (
     <>
-      {sortBy(data, (t) => t.tier).map((tierInfo) => (
-        <TierInfo key={tierInfo.tier} data={tierInfo} />
+      {sortBy(tiers, (t) => t.tier).map((tierInfo) => (
+        <TierInfo key={tierInfo.tier} tier={tierInfo} />
       ))}
     </>
   )
@@ -97,34 +122,38 @@ function TotalProgressEntry({ data }: TotalProgressEntryProps) {
       <TableContainer>
         <Table>
           <TableBody>
-            <TableCell>
-              <Typography variant="h3">{t("totalCourseProgress")}</Typography>
-            </TableCell>
-            <TableCell>
-              <CourseInfo>
-                <InfoRow
-                  title={t("highestCompletedTier")}
-                  content={highestTier}
-                />
-                <TierInfoList data={data.tiers} />
-                <InfoRow
-                  title={t("courseProject")}
-                  content={
-                    data.projectCompletion ? (
-                      <CheckIcon
-                        css={iconStyle}
-                        titleAccess={t("projectCompleted")}
-                      />
-                    ) : (
-                      <XMarkIcon
-                        css={iconStyle}
-                        titleAccess={t("projectNotCompleted")}
-                      />
-                    )
-                  }
-                />
-              </CourseInfo>
-            </TableCell>
+            <TableRow>
+              <TableCell>
+                <Typography variant="h3">{t("totalCourseProgress")}</Typography>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                <CourseInfo>
+                  <InfoRow
+                    title={t("highestCompletedTier")}
+                    content={highestTier}
+                  />
+                  <TierInfoList tiers={data.tiers} />
+                  <InfoRow
+                    title={t("courseProject")}
+                    content={
+                      data.projectCompletion ? (
+                        <CheckIcon
+                          css={iconStyle}
+                          titleAccess={t("projectCompleted")}
+                        />
+                      ) : (
+                        <XMarkIcon
+                          css={iconStyle}
+                          titleAccess={t("projectNotCompleted")}
+                        />
+                      )
+                    }
+                  />
+                </CourseInfo>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

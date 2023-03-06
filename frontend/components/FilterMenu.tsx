@@ -189,7 +189,7 @@ function FilterMenu({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(e.target.value)
     },
-    [],
+    [setSearch],
   )
   const onSearchKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -197,7 +197,7 @@ function FilterMenu({
         onSubmit()
       }
     },
-    [],
+    [onSubmit],
   )
   const onSearchReset = useCallback(() => {
     setSearch("")

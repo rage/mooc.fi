@@ -11,7 +11,11 @@ export type CourseState = {
   completion: boolean
   points: boolean
 }
-export type CollapseState = Record<string, CourseState>
+
+export type CollapseState = {
+  courses: Record<string, CourseState>
+  loading: boolean
+}
 
 export enum ActionType {
   INIT_STATE,
@@ -84,19 +88,20 @@ export const collapseReducer = (
     switch (action.collapsable) {
       case CollapsablePart.COURSE:
         return produce(state, (draft) => {
-          draft[action.course].open = newValue
+          draft.courses[action.course].open = newValue
         })
       case CollapsablePart.EXERCISE:
         return produce(state, (draft) => {
-          draft[action.course].exercises[action.collapsableId] = newValue
+          draft.courses[action.course].exercises[action.collapsableId] =
+            newValue
         })
       case CollapsablePart.COMPLETION:
         return produce(state, (draft) => {
-          draft[action.course].completion = newValue
+          draft.courses[action.course].completion = newValue
         })
       case CollapsablePart.POINTS:
         return produce(state, (draft) => {
-          draft[action.course].points = newValue
+          draft.courses[action.course].points = newValue
         })
       default:
         return state
@@ -106,20 +111,22 @@ export const collapseReducer = (
     switch (action.collapsable) {
       case CollapsablePart.COURSE:
         return produce(state, (draft) => {
-          draft[action.course].open = !draft[action.course].open
+          draft.courses[action.course].open = !draft.courses[action.course].open
         })
       case CollapsablePart.EXERCISE:
         return produce(state, (draft) => {
-          draft[action.course].exercises[action.collapsableId] =
-            !draft[action.course].exercises[action.collapsableId]
+          draft.courses[action.course].exercises[action.collapsableId] =
+            !draft.courses[action.course].exercises[action.collapsableId]
         })
       case CollapsablePart.COMPLETION:
         return produce(state, (draft) => {
-          draft[action.course].completion = !draft[action.course].completion
+          draft.courses[action.course].completion =
+            !draft.courses[action.course].completion
         })
       case CollapsablePart.POINTS:
         return produce(state, (draft) => {
-          draft[action.course].points = !draft[action.course].points
+          draft.courses[action.course].points =
+            !draft.courses[action.course].points
         })
       default:
         return state
@@ -133,13 +140,13 @@ export const collapseReducer = (
     switch (action.collapsable) {
       case CollapsablePart.COURSE: {
         return produce(state, (draft) => {
-          Object.keys(state).forEach((c) => (draft[c].open = newValue))
+          Object.keys(state).forEach((c) => (draft.courses[c].open = newValue))
         })
       }
       case CollapsablePart.EXERCISE: {
         return produce(state, (draft) => {
-          Object.keys(draft[action.course].exercises).forEach(
-            (e) => (draft[action.course].exercises[e] = newValue),
+          Object.keys(draft.courses[action.course].exercises).forEach(
+            (e) => (draft.courses[action.course].exercises[e] = newValue),
           )
         })
       }
@@ -151,15 +158,17 @@ export const collapseReducer = (
     switch (action.collapsable) {
       case CollapsablePart.COURSE: {
         return produce(state, (draft) => {
-          Object.keys(state).forEach((c) => (draft[c].open = !draft[c].open))
+          Object.keys(state).forEach(
+            (c) => (draft.courses[c].open = !draft.courses[c].open),
+          )
         })
       }
       case CollapsablePart.EXERCISE: {
         return produce(state, (draft) => {
-          Object.keys(draft[action.course].exercises).forEach(
+          Object.keys(draft.courses[action.course].exercises).forEach(
             (e) =>
-              (draft[action.course].exercises[e] =
-                !draft[action.course].exercises[e]),
+              (draft.courses[action.course].exercises[e] =
+                !draft.courses[action.course].exercises[e]),
           )
         })
       }
@@ -171,7 +180,12 @@ export const collapseReducer = (
   return state
 }
 
-export const createInitialState = (
+export const initialState: CollapseState = {
+  courses: {},
+  loading: true,
+}
+
+export const createCollapseState = (
   data?: UserCourseSummaryCoreFieldsFragment[],
 ) => {
   const flattenedData = [
@@ -179,31 +193,33 @@ export const createInitialState = (
     ...(data?.flatMap((d) => d?.tier_summaries ?? []) ?? []),
   ]
 
-  return (
-    flattenedData?.reduce<CollapseState>(
-      (collapseState, courseEntry) => ({
-        ...collapseState,
-        [courseEntry?.course?.id ?? "_"]: {
-          open: true,
-          exercises:
-            courseEntry?.exercise_completions?.reduce<ExerciseState>(
-              (exerciseState, exerciseCompletion) => ({
-                ...exerciseState,
-                [exerciseCompletion?.id ?? "_"]: false,
-              }),
-              {},
-            ) ?? {},
-          completion: false,
-          points: false,
-        },
-      }),
-      {},
-    ) ?? {}
-  )
+  return {
+    courses:
+      flattenedData?.reduce<CollapseState["courses"]>(
+        (collapseState, courseEntry) => ({
+          ...collapseState,
+          [courseEntry?.course?.id ?? "_"]: {
+            open: true,
+            exercises:
+              courseEntry?.exercise_completions?.reduce<ExerciseState>(
+                (exerciseState, exerciseCompletion) => ({
+                  ...exerciseState,
+                  [exerciseCompletion?.id ?? "_"]: false,
+                }),
+                {},
+              ) ?? {},
+            completion: false,
+            points: false,
+          },
+        }),
+        {},
+      ) ?? {},
+    loading: false,
+  }
 }
 
 const CollapseContextImpl = createContext<CollapseContext>({
-  state: {},
+  state: { courses: {}, loading: true },
   dispatch: () => void 0,
 })
 
@@ -216,5 +232,5 @@ export function useCollapseContext() {
 export function useCollapseContextCourse(course_id: string) {
   const context = useContext(CollapseContextImpl)
 
-  return { state: context.state[course_id], dispatch: context.dispatch }
+  return { state: context.state.courses[course_id], dispatch: context.dispatch }
 }

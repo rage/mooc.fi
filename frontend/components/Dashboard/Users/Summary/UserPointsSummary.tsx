@@ -1,10 +1,11 @@
 import { useMemo } from "react"
 
-import { sortBy } from "lodash"
+import { orderBy } from "lodash"
 
 import { styled } from "@mui/material/styles"
 
 import CourseEntry, { SkeletonCourseEntry } from "./CourseEntry"
+import { UserCourseSummaryEntryOrder } from "./types"
 import { UserPointsSummaryProvider } from "./UserPointsSummaryContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
@@ -21,10 +22,23 @@ const DataPlaceholder = styled("div")`
 
 interface UserPointsSummaryProps {
   data?: UserCourseSummaryCoreFieldsFragment[] | null
+  loading?: boolean
   search?: EditorCoursesQueryVariables["search"]
+  sort?: UserCourseSummaryEntryOrder
+  order?: "asc" | "desc"
 }
 
-function UserPointsSummary({ data, search }: UserPointsSummaryProps) {
+function flipOrder(order: "asc" | "desc") {
+  return order === "asc" ? "desc" : "asc"
+}
+
+function UserPointsSummary({
+  data,
+  loading,
+  search,
+  sort,
+  order = "asc",
+}: UserPointsSummaryProps) {
   const t = useTranslator(CommonTranslations)
 
   // TODO: add search from other fields?
@@ -33,22 +47,49 @@ function UserPointsSummary({ data, search }: UserPointsSummaryProps) {
       return []
     }
 
-    if (!search) {
-      return sortBy(data, "course.name")
+    let sortedData = data
+
+    switch (sort) {
+      case "activity_date":
+        sortedData = orderBy(
+          data,
+          [
+            (entry) =>
+              orderBy(entry.exercise_completions ?? [], "updated_at")?.pop()
+                ?.updated_at ?? "2999-01-01",
+            "course.name",
+          ],
+          [flipOrder(order), order],
+        )
+        break
+      case "completion_date":
+        sortedData = orderBy(
+          data,
+          [
+            (entry) => entry.completion?.updated_at ?? "2999-01-01",
+            "course.name",
+          ],
+          [flipOrder(order), order],
+        )
+        break
+      default:
+        sortedData = orderBy(data, "course.name", order)
+        break
     }
 
-    return sortBy(
-      data?.filter((entry) =>
-        entry?.course?.name
-          .trim()
-          .toLocaleLowerCase()
-          .includes(search.toLocaleLowerCase()),
-      ),
-      "course.name",
-    )
-  }, [search, data])
+    if (!search) {
+      return sortedData
+    }
 
-  if (!data) {
+    return sortedData?.filter((entry) =>
+      entry?.course?.name
+        .trim()
+        .toLocaleLowerCase()
+        .includes(search.toLocaleLowerCase()),
+    )
+  }, [search, order, sort, data])
+
+  if (loading) {
     return (
       <>
         <SkeletonCourseEntry key="skeleton-course-1" />

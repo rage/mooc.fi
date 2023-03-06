@@ -26,7 +26,9 @@ fragment TierInfoFields on TierInfo {
   tier
   hasTier
   missingFromTier
+  requiredByTier
   exerciseCompletions
+  exerciseCount
 }
 
 fragment TierProgressFields on TierProgress {
