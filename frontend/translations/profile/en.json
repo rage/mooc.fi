@@ -40,6 +40,7 @@
     "grade": "grade:",
     "courseStartDate": "Course started: ",
     "firstExerciseDate": "First exercise: ",
+    "latestExerciseDate": "Latest exercise: ",
     "relevantDatesTooltip": "Course start date is the date when the user course settings are created. This may or may not reflect the actual first registration date or when user first logged into the course material.\nFirst exercise date is the date of the first exercise completion submitted.",
     "createdAt": "Created at: ",
     "timestamp": "Original timestamp: ",

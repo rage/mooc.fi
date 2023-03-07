@@ -140,7 +140,9 @@ export const collapseReducer = (
     switch (action.collapsable) {
       case CollapsablePart.COURSE: {
         return produce(state, (draft) => {
-          Object.keys(state).forEach((c) => (draft.courses[c].open = newValue))
+          Object.keys(state.courses).forEach(
+            (c) => (draft.courses[c].open = newValue),
+          )
         })
       }
       case CollapsablePart.EXERCISE: {
@@ -158,7 +160,7 @@ export const collapseReducer = (
     switch (action.collapsable) {
       case CollapsablePart.COURSE: {
         return produce(state, (draft) => {
-          Object.keys(state).forEach(
+          Object.keys(state.courses).forEach(
             (c) => (draft.courses[c].open = !draft.courses[c].open),
           )
         })

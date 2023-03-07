@@ -5,7 +5,7 @@ import { orderBy } from "lodash"
 import { styled } from "@mui/material/styles"
 
 import CourseEntry, { SkeletonCourseEntry } from "./CourseEntry"
-import { UserCourseSummaryEntryOrder } from "./types"
+import { SortOrder, UserCourseSummarySort } from "./types"
 import { UserPointsSummaryProvider } from "./UserPointsSummaryContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
@@ -24,11 +24,11 @@ interface UserPointsSummaryProps {
   data?: UserCourseSummaryCoreFieldsFragment[] | null
   loading?: boolean
   search?: EditorCoursesQueryVariables["search"]
-  sort?: UserCourseSummaryEntryOrder
-  order?: "asc" | "desc"
+  sort?: UserCourseSummarySort
+  order?: SortOrder
 }
 
-function flipOrder(order: "asc" | "desc") {
+function flipOrder(order: SortOrder) {
   return order === "asc" ? "desc" : "asc"
 }
 
@@ -47,7 +47,7 @@ function UserPointsSummary({
       return []
     }
 
-    let sortedData = data
+    let sortedData: typeof data
 
     switch (sort) {
       case "activity_date":

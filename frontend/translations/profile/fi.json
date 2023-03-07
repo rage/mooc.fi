@@ -40,6 +40,7 @@
     "grade": "arvosana:",
     "courseStartDate": "Kurssi aloitettu: ",
     "firstExerciseDate": "Ensimmäinen tehtävä: ",
+    "latestExerciseDate": "Viimeisin tehtävä: ",
     "relevantDatesTooltip": "Kurssin aloituspäivämäärä on käyttäjän kurssiasetusten luontipäivä. Tämä ei välttämättä ole juuri se päivä jolloin käyttäjä ensimmäisen kerran kirjautui kurssimateriaaliin.\nEnsimmäisen tehtävän päivämäärä on ensimmäisen kurssin tehtäväpalautuksen ajankohta.",
     "createdAt": "Luotu: ",
     "timestamp": "Aikaleima: ",

@@ -164,9 +164,9 @@ function CourseEntry({ data, tierSummary }: CourseEntryProps) {
       )}
       <Collapse in={courseState?.open} unmountOnExit>
         <CardContent>
+          <RelevantDates data={data} />
           {!tierSummary && (
             <>
-              <RelevantDates data={data} />
               <Completion course={data.course} completion={data.completion} />
 
               {hasTierSummaries ? (

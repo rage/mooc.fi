@@ -1,3 +1,4 @@
+import { groupBy, partition } from "lodash"
 import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
@@ -12,6 +13,10 @@ interface SummaryCourseResult {
   inherit_settings_from_id: string | null
   completions_handled_by_id: string | null
   tier: number | null
+}
+
+interface SummaryCourseGroupResult extends SummaryCourseResult {
+  group: "handled" | "not_handled" | "tiered"
 }
 
 export const User = objectType({
@@ -314,35 +319,43 @@ export const User = objectType({
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const startedCourses = await ctx.prisma.$queryRaw<
-          Array<SummaryCourseResult>
+          Array<SummaryCourseGroupResult>
         >(Prisma.sql`
-          select c.id as course_id, inherit_settings_from_id, completions_handled_by_id, tier
+          select
+            c.id as course_id,
+            inherit_settings_from_id,
+            completions_handled_by_id,
+            tier,
+            case
+              when completions_handled_by_id is null or completions_handled_by_id = c.id then 'not_handled'
+              when tier is null or tier < 1 THEN 'handled'
+              else 'tiered'
+            end as group
           from course c
           where c.id in (
               select distinct(e.course_id)
                   from exercise_completion ec
                   join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${id}
-          );
+          )
         `)
 
-        const handled = startedCourses.reduce((acc, curr) => {
-          if (
-            curr.completions_handled_by_id &&
-            curr.completions_handled_by_id !== curr.course_id
-          ) {
-            return {
-              ...acc,
-              [curr.completions_handled_by_id]: (
-                acc[curr.completions_handled_by_id] ?? []
-              ).concat(curr),
-            }
-          }
-          return {
-            ...acc,
-            [curr.course_id]: [curr],
-          }
-        }, {} as Record<string, Array<SummaryCourseResult>>)
+        // divide courses into three groups:
+        // - not handled
+        // - handled -- no tier set
+        // - tiered -- handled and tier set
+        // tiered courses should be under their parent course in tier_summaries
+        // instead of having their own separate entries
+
+        const [tiered, nonTiered] = partition(
+          startedCourses,
+          (c) => c.group === "tiered",
+        )
+        const tierCourseMap = groupBy(
+          tiered,
+          (c) => c.completions_handled_by_id,
+        )
+        // convert this to SQL
 
         const baseFields = {
           user_id: id,
@@ -351,23 +364,30 @@ export const User = objectType({
             includeNoPointsAwardedExercises ?? false,
         }
 
-        return Object.entries(handled).map(([course_id, handled_courses]) => {
-          if (handled_courses.length > 1) {
-            return {
-              ...baseFields,
-              tier_summaries: handled_courses.map((course) => ({
-                ...course,
-                ...baseFields,
-              })),
-              course_id,
-            }
-          }
-          return {
+        const result = []
+
+        for (const course of nonTiered) {
+          result.push({
             ...baseFields,
-            ...handled_courses[0],
+            ...course,
+            course_id: course.course_id,
+          })
+        }
+
+        for (const [course_id, handledCourses] of Object.entries(
+          tierCourseMap,
+        )) {
+          result.push({
+            ...baseFields,
+            tier_summaries: handledCourses.map((course) => ({
+              ...course,
+              ...baseFields,
+            })),
             course_id,
-          }
-        })
+          })
+        }
+
+        return result
       },
     })
   },

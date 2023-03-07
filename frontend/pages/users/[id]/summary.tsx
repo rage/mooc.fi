@@ -36,8 +36,10 @@ import CollapseContext, {
 } from "/components/Dashboard/Users/Summary/CollapseContext"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import {
-  UserCourseSummaryEntryOrder,
-  userCourseSummaryEntryOrderOptions,
+  SortOrder,
+  sortOrderOptions,
+  UserCourseSummarySort,
+  userCourseSummarySortOptions,
 } from "/components/Dashboard/Users/Summary/types"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
@@ -82,6 +84,9 @@ const RightToolbarContainer = styled("div")`
   gap: 1rem;
 `
 
+const defaultSort = "course_name"
+const defaultOrder = "asc"
+
 function UserSummaryView() {
   const t = useTranslator(
     UsersTranslations,
@@ -90,6 +95,8 @@ function UserSummaryView() {
   )
   const router = useRouter()
   const id = useQueryParameter("id")
+  const _sort = useQueryParameter("sort", false)
+  const _order = useQueryParameter("order", false)
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: {
       upstream_id: Number(id),
@@ -120,12 +127,22 @@ function UserSummaryView() {
       search: "",
     })
   const [rawViewOpen, setRawViewOpen] = useState(false)
-  const [sort, setSort] = useState<UserCourseSummaryEntryOrder>("course_name")
-  const [order, setOrder] = useState<"asc" | "desc">("asc")
+  const [sort, setSort] = useState<UserCourseSummarySort>(() => {
+    if (userCourseSummarySortOptions.includes(_sort as UserCourseSummarySort)) {
+      return _sort as UserCourseSummarySort
+    }
+    return defaultSort
+  })
+  const [order, setOrder] = useState<SortOrder>(() => {
+    if (sortOrderOptions.includes(_order as SortOrder)) {
+      return _order as SortOrder
+    }
+    return defaultOrder
+  })
+
   const userSearchInput = useRef<HTMLInputElement>()
 
   useEffect(() => {
-    console.log("dispatching init state")
     if (loading) {
       return
     }
@@ -162,7 +179,7 @@ function UserSummaryView() {
 
   const onCourseSortChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSort(event.target.value as UserCourseSummaryEntryOrder)
+      setSort(event.target.value as UserCourseSummarySort)
     },
     [],
   )
@@ -173,12 +190,26 @@ function UserSummaryView() {
 
   const sortOptions = useMemo(
     () =>
-      userCourseSummaryEntryOrderOptions.map((o) => ({
+      userCourseSummarySortOptions.map((o) => ({
         value: o,
         label: t(`courseSortOrder-${o}`),
       })),
     [router.locale],
   )
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams()
+    if (sort && sort !== defaultSort) {
+      queryParams.append("sort", sort)
+    }
+    if (order && order !== defaultOrder) {
+      queryParams.append("order", order)
+    }
+    const href =
+      router.asPath.split("?")[0] +
+      (queryParams.toString().length > 0 ? "?" + queryParams : "")
+    router.replace(href, undefined, { shallow: true })
+  }, [sort, order])
 
   if (error) {
     return (
