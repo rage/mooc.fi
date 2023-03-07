@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  # Run at 1:00 AM on the first day of May
-  schedule: "0 0 1 5 *"
+  # Run at 10:00 AM on 13th of March
+  schedule: "0 10 13 3 *"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
