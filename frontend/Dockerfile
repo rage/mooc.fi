@@ -1,4 +1,4 @@
-FROM node:14-buster
+FROM node:16.16.0-buster
 
 RUN apt-get update \
   && apt-get install -y build-essential libgl1-mesa-glx \

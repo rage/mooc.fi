@@ -101,8 +101,11 @@ const nextConfiguration = {
       test: /\.(png|jpg|gif|webp)$/,
       exclude: ["/public/images/originals/", "/public/images/courseimages/"],
     })*/
-    const found = config.module.rules?.findIndex((/** @type {any} */ rule) =>
-      rule.test?.exec?.("u.svg"),
+    if ((config.module.rules ?? []).length === 0) {
+      config.module.rules = []
+    }
+    const found = config.module.rules.findIndex(
+      (/** @type {any} */ rule) => rule.test?.exec?.("u.svg") ?? false,
     )
 
     let originalRule
@@ -130,7 +133,7 @@ const nextConfiguration = {
       ],
     })
     if (originalRule) {
-      // insert it back
+      // insert it back, but for only svgs without ?icon
       config.module.rules.push({
         ...originalRule,
         test: /\.svg$/,

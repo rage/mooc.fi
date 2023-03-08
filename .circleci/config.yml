@@ -3,13 +3,13 @@ orbs:
   helm: circleci/helm@2.0.1
   docker: circleci/docker@1.7.0
   jq: circleci/jq@2.2.0
-  node: circleci/node@5.0.3
+  node: circleci/node@5.1.0
 #  codecov: codecov/codecov@3.2.4
 executors:
   backend_test:
     docker:
-      - image: cimg/node:14.18.3
-      - image: cimg/postgres:11.13
+      - image: cimg/node:16.16.0
+      - image: cimg/postgres:14.6
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
@@ -21,7 +21,7 @@ executors:
 jobs:
   code_style:
     docker:
-      - image: cimg/node:14.18.3
+      - image: cimg/node:16.16.0
     steps:
       - checkout
       - node/install-packages

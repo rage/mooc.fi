@@ -212,7 +212,7 @@ function FilterMenu({
       handledBy: null,
       status: [CourseStatus.Active, CourseStatus.Upcoming],
     })
-  }, [])
+  }, [setHidden, setHandledBy, setStatus, setSearchVariables])
 
   return (
     <Container>
@@ -232,7 +232,7 @@ function FilterMenu({
                   onClick={onSearchReset}
                   disabled={search === ""}
                   edge="end"
-                  aria-label="clear search"
+                  title={t("reset")}
                   size="large"
                 >
                   <Clear />
@@ -315,14 +315,18 @@ function FilterMenu({
         >
           {t("search")}
         </MarginButton>
-        <Button
-          disabled={loading}
-          color="secondary"
-          variant="contained"
-          onClick={onFormReset}
-        >
-          {t("reset")}
-        </Button>
+        {showHidden ||
+          showHandler ||
+          (showStatus && (
+            <Button
+              disabled={loading}
+              color="secondary"
+              variant="contained"
+              onClick={onFormReset}
+            >
+              {t("reset")}
+            </Button>
+          ))}
       </ActionRow>
     </Container>
   )

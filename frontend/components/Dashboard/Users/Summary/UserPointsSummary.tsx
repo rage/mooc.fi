@@ -81,12 +81,14 @@ function UserPointsSummary({
       return sortedData
     }
 
-    return sortedData?.filter((entry) =>
+    const searchData = sortedData.filter((entry) =>
       entry?.course?.name
         .trim()
         .toLocaleLowerCase()
         .includes(search.toLocaleLowerCase()),
     )
+
+    return searchData
   }, [search, order, sort, data])
 
   if (loading) {
