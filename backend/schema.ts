@@ -10,6 +10,7 @@ import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
 import * as types from "./graphql"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
+import { localePlugin } from "./middlewares/locale"
 import { loggerPlugin } from "./middlewares/logger"
 import { validateArgsPlugin } from "./middlewares/validate"
 
@@ -48,6 +49,7 @@ const createPlugins = () => {
     loggerPlugin(),
     cachePlugin(),
     moocfiAuthPlugin(),
+    localePlugin(),
     fieldAuthorizePlugin(),
     validateArgsPlugin(),
   ]

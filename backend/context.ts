@@ -19,9 +19,10 @@ export interface Context extends BaseContext {
   user?: User
   organization?: Organization
   disableRelations: boolean
-  role?: Role | undefined
-  userDetails?: UserInfo | undefined
-  tmcClient: TmcClient | undefined
+  role?: Role
+  userDetails?: UserInfo
+  tmcClient: TmcClient
+  locale?: string
   req: IncomingMessage
 }
 
