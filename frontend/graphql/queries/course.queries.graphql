@@ -9,6 +9,7 @@ query EditorCourses(
   $hidden: Boolean
   $handledBy: String
   $status: [CourseStatus!]
+  $language: String
 ) {
   courses(
     orderBy: { name: asc }
@@ -16,6 +17,7 @@ query EditorCourses(
     hidden: $hidden
     handledBy: $handledBy
     status: $status
+    language: $language
   ) {
     ...EditorCourseFields
   }
@@ -26,8 +28,8 @@ query EditorCourses(
   }
 }
 
-query CourseFromSlug($slug: String!) {
-  course(slug: $slug) {
+query CourseFromSlug($slug: String!, $language: String) {
+  course(slug: $slug, language: $language) {
     ...CourseCoreFields
     description
     instructions
@@ -66,8 +68,8 @@ query EmailTemplateEditorCourses {
   }
 }
 
-query CourseDashboard($slug: String!) {
-  course(slug: $slug) {
+query CourseDashboard($slug: String!, $language: String) {
+  course(slug: $slug, language: $language) {
     ...CourseCoreFields
     teacher_in_charge_name
     teacher_in_charge_email

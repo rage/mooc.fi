@@ -81,9 +81,6 @@ fragment EditorCourseFields on Course {
     id
     language
   }
-  tags {
-    ...TagCoreFields
-  }
 }
 
 fragment EditorCourseDetailedFields on Course {

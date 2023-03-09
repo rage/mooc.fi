@@ -52,6 +52,7 @@ const addExpressMiddleware = (
     expressMiddleware(apolloServer, {
       context: async (ctx) => ({
         ...ctx,
+        locale: ctx.req?.headers?.["accept-language"],
         prisma,
         logger,
         knex,
