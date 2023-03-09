@@ -15,6 +15,7 @@ import { Prisma, Tag as TypeofTag } from "@prisma/client"
 import { isAdmin, Role } from "../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { isNotNullOrUndefined } from "../util/isNullOrUndefined"
+import { localeToLanguage } from "../util/locale"
 
 const wrapLanguage =
   (language?: null | string) =>
@@ -37,16 +38,15 @@ export const Tag = objectType({
     t.string("language") // passed down
     t.string("name", {
       // @ts-ignore: language exists
-      resolve: async ({ id, language }, _args, ctx) => {
-        if (!language) {
-          return null
-        }
+      resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
         const name = await ctx.prisma.tag
           .findUnique({
             where: { id },
           })
           .tag_translations({
-            where: { language },
+            where: {
+              language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
+            },
           })
 
         return name[0]?.name ?? null
@@ -54,16 +54,15 @@ export const Tag = objectType({
     })
     t.string("description", {
       // @ts-ignore: language exists
-      resolve: async ({ id, language }, _args, ctx) => {
-        if (!language) {
-          return null
-        }
+      resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
         const name = await ctx.prisma.tag
           .findUnique({
             where: { id },
           })
           .tag_translations({
-            where: { language },
+            where: {
+              language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
+            },
           })
 
         return name[0]?.description ?? null

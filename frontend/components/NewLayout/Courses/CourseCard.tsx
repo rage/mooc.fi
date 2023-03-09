@@ -315,7 +315,7 @@ function CourseCard({ course }: CourseCardProps) {
                   variant="contained"
                   disabled
                 >
-                  {tag.id.split("_")[0].toUpperCase()}
+                  {tag.name?.toUpperCase()}
                 </LanguageTag>
               ))}
           </LanguageTags>
@@ -325,7 +325,7 @@ function CourseCard({ course }: CourseCardProps) {
               .map((tag) => (
                 <DifficultyTagContainer key={`difficulty-${tag.id}`}>
                   <DifficultyTag size="small" variant="contained" disabled>
-                    {tag.id}
+                    {tag.name}
                   </DifficultyTag>
                   {tag.id === "beginner" ? (
                     <CircleContainer>

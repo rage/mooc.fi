@@ -66,6 +66,8 @@ const languages = [
   "ga",
   "el-cy",
   "en",
+  "hu",
+  "fr-lu",
 ]
 
 interface Option {

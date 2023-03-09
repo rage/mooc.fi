@@ -20,7 +20,11 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 const production = process.env.NODE_ENV === "production"
 const isBrowser = typeof window !== "undefined"
 
-function create(initialState: any, originalAccessToken?: string) {
+function create(
+  initialState: any,
+  originalAccessToken?: string,
+  locale?: string,
+) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]
@@ -33,6 +37,16 @@ function create(initialState: any, originalAccessToken?: string) {
       headersCopy.authorization = `Bearer ${accessToken}`
     }
 
+    return {
+      headers: headersCopy,
+    }
+  })
+
+  const localeLink = setContext((_, { headers }) => {
+    const headersCopy = { ...headers }
+    if (locale) {
+      headersCopy["accept-language"] = locale
+    }
     return {
       headers: headersCopy,
     }
@@ -111,8 +125,13 @@ function create(initialState: any, originalAccessToken?: string) {
 
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser
-      ? ApolloLink.from([errorLink, authLink.concat(uploadAndBatchHTTPLink)])
-      : authLink.concat(uploadAndBatchHTTPLink),
+      ? ApolloLink.from([
+          errorLink,
+          authLink,
+          localeLink,
+          uploadAndBatchHTTPLink,
+        ])
+      : ApolloLink.from([authLink, localeLink, uploadAndBatchHTTPLink]),
     cache: cache.restore(initialState ?? {}),
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
@@ -131,18 +150,22 @@ function create(initialState: any, originalAccessToken?: string) {
 
 let previousAccessToken: string | undefined = undefined
 
-export default function getApollo(initialState: any, accessToken?: string) {
+export default function getApollo(
+  initialState: any,
+  accessToken?: string,
+  locale?: string,
+) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (typeof window === "undefined") {
-    return create(initialState, accessToken)
+    return create(initialState, accessToken, locale)
   }
 
   // Reuse client on the client-side
   // Also force new client if access token has changed because we don't want to risk accidentally
   // serving cached data from the previous user.
   if (!apolloClient || accessToken !== previousAccessToken) {
-    apolloClient = create(initialState, accessToken)
+    apolloClient = create(initialState, accessToken, locale)
   }
 
   previousAccessToken = accessToken
@@ -150,7 +173,7 @@ export default function getApollo(initialState: any, accessToken?: string) {
   return apolloClient
 }
 
-export function initNewApollo(accessToken?: string) {
-  apolloClient = create(undefined, accessToken)
+export function initNewApollo(accessToken?: string, locale?: string) {
+  apolloClient = create(undefined, accessToken, locale)
   return apolloClient
 }

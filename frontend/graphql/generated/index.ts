@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-02-24T17:55:37+02:00
+// Generated on 2023-03-09T23:07:00+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -3021,6 +3021,18 @@ export type EditorCourseFieldsFragment = {
     id: string
     language: string
   }>
+  course_translations: Array<{
+    __typename?: "CourseTranslation"
+    id: string
+    language: string
+    name: string
+  }>
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    id: string
+    slug: string
+    name: string
+  }>
   tags: Array<{
     __typename?: "Tag"
     id: string
@@ -3034,18 +3046,6 @@ export type EditorCourseFieldsFragment = {
       description: string | null
       language: string
     }>
-  }>
-  course_translations: Array<{
-    __typename?: "CourseTranslation"
-    id: string
-    language: string
-    name: string
-  }>
-  study_modules: Array<{
-    __typename?: "StudyModule"
-    id: string
-    slug: string
-    name: string
   }>
   photo: {
     __typename?: "Image"
@@ -3139,6 +3139,12 @@ export type EditorCourseDetailedFieldsFragment = {
     id: string
     language: string
   }>
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    id: string
+    slug: string
+    name: string
+  }>
   tags: Array<{
     __typename?: "Tag"
     id: string
@@ -3152,12 +3158,6 @@ export type EditorCourseDetailedFieldsFragment = {
       description: string | null
       language: string
     }>
-  }>
-  study_modules: Array<{
-    __typename?: "StudyModule"
-    id: string
-    slug: string
-    name: string
   }>
   photo: {
     __typename?: "Image"
@@ -4177,6 +4177,12 @@ export type AddCourseMutation = {
       id: string
       language: string
     }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
+    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -4190,12 +4196,6 @@ export type AddCourseMutation = {
         description: string | null
         language: string
       }>
-    }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4320,6 +4320,12 @@ export type UpdateCourseMutation = {
       id: string
       language: string
     }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
+    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -4333,12 +4339,6 @@ export type UpdateCourseMutation = {
         description: string | null
         language: string
       }>
-    }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4841,6 +4841,7 @@ export type EditorCoursesQueryVariables = Exact<{
   hidden?: InputMaybe<Scalars["Boolean"]>
   handledBy?: InputMaybe<Scalars["String"]>
   status?: InputMaybe<Array<CourseStatus> | CourseStatus>
+  language?: InputMaybe<Scalars["String"]>
 }>
 
 export type EditorCoursesQuery = {
@@ -4898,6 +4899,18 @@ export type EditorCoursesQuery = {
       id: string
       language: string
     }>
+    course_translations: Array<{
+      __typename?: "CourseTranslation"
+      id: string
+      language: string
+      name: string
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
+    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -4911,18 +4924,6 @@ export type EditorCoursesQuery = {
         description: string | null
         language: string
       }>
-    }>
-    course_translations: Array<{
-      __typename?: "CourseTranslation"
-      id: string
-      language: string
-      name: string
-    }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4947,6 +4948,7 @@ export type EditorCoursesQuery = {
 
 export type CourseFromSlugQueryVariables = Exact<{
   slug: Scalars["String"]
+  language?: InputMaybe<Scalars["String"]>
 }>
 
 export type CourseFromSlugQuery = {
@@ -5101,6 +5103,12 @@ export type CourseEditorDetailsQuery = {
       id: string
       language: string
     }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
+    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -5114,12 +5122,6 @@ export type CourseEditorDetailsQuery = {
         description: string | null
         language: string
       }>
-    }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -5184,6 +5186,7 @@ export type EmailTemplateEditorCoursesQuery = {
 
 export type CourseDashboardQueryVariables = Exact<{
   slug: Scalars["String"]
+  language?: InputMaybe<Scalars["String"]>
 }>
 
 export type CourseDashboardQuery = {
@@ -7934,19 +7937,6 @@ export const EditorCourseFieldsFragmentDoc = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
-              ],
-            },
-          },
         ],
       },
     },
@@ -8654,19 +8644,6 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "language" } },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
               ],
             },
           },
@@ -12286,19 +12263,6 @@ export const AddCourseDocument = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
-              ],
-            },
-          },
         ],
       },
     },
@@ -12812,19 +12776,6 @@ export const UpdateCourseDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "language" } },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
               ],
             },
           },
@@ -15401,6 +15352,14 @@ export const EditorCoursesDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -15453,6 +15412,14 @@ export const EditorCoursesDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "status" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
                 },
               },
             ],
@@ -15795,19 +15762,6 @@ export const EditorCoursesDocument = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
-              ],
-            },
-          },
         ],
       },
     },
@@ -15832,6 +15786,14 @@ export const CourseFromSlugDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -15846,6 +15808,14 @@ export const CourseFromSlugDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "slug" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
                 },
               },
             ],
@@ -16451,19 +16421,6 @@ export const CourseEditorDetailsDocument = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
-                },
-              ],
-            },
-          },
         ],
       },
     },
@@ -16723,6 +16680,14 @@ export const CourseDashboardDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -16737,6 +16702,14 @@ export const CourseDashboardDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "slug" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
                 },
               },
             ],
