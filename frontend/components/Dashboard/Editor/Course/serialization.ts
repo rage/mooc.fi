@@ -126,15 +126,19 @@ export const toCourseForm = ({
   }
 }
 
-interface FromCourseFormArgs {
-  values: CourseFormValues
-  initialValues: CourseFormValues
+type FromCourseFormReturn<Values extends CourseFormValues> = Values extends {
+  id: null | undefined
 }
+  ? CourseCreateArg
+  : CourseUpsertArg
 
-export const fromCourseForm = ({
+export function fromCourseForm<Values extends CourseFormValues>({
   values,
   initialValues,
-}: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
+}: {
+  values: Values
+  initialValues: CourseFormValues
+}): FromCourseFormReturn<Values> {
   const newCourse = !values.id
 
   const course_translations =
@@ -150,7 +154,8 @@ export const fromCourseForm = ({
     ) ?? []
 
   const course_variants = (values?.course_variants ?? []).map(
-    (course_variant) => omit(course_variant, ["__typename"]),
+    (course_variant) =>
+      omit(course_variant, ["__typename"]) as Values["course_variants"][number],
   )
 
   const course_aliases = (values?.course_aliases ?? []).map((course_alias) => ({
@@ -160,7 +165,12 @@ export const fromCourseForm = ({
 
   const user_course_settings_visibilities = (
     values?.user_course_settings_visibilities ?? []
-  ).map((visibility) => omit(visibility, ["__typename"]))
+  ).map(
+    (visibility) =>
+      omit(visibility, [
+        "__typename",
+      ]) as Values["user_course_settings_visibilities"][number],
+  )
 
   const open_university_registration_links = values?.course_translations
     ?.map((course_translation: CourseTranslationFormValues) => {
@@ -199,20 +209,32 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key])
     .map((id) => ({ id }))
 
-  const tags = (values.tags ?? []).map((tag) => omit(tag, ["__typename"]))
+  const tags = values?.tags?.map(
+    (tag) =>
+      omit(tag, [
+        "__typename",
+        "name",
+        "tag_translations",
+      ]) as Values["tags"][number],
+  )
 
   const formValues = newCourse
-    ? omit(values, [
+    ? (omit(values, [
         "id",
         "new_slug",
         "thumbnail",
         "import_photo",
         "delete_photo",
-      ])
-    : {
+      ]) as Omit<
+        Values,
+        "id" | "new_slug" | "thumbnail" | "import_photo" | "delete_photo"
+      >)
+    : ({
         ...omit(values, ["id", "thumbnail", "import_photo"]),
         new_slug: values.new_slug.trim(),
-      }
+      } as Omit<Values, "id" | "thumbnail" | "import_photo"> & {
+        new_slug: string
+      })
 
   const status =
     values.status === "Active"
@@ -223,7 +245,7 @@ export const fromCourseForm = ({
       ? CourseStatus.Upcoming
       : undefined
 
-  const c = {
+  const c: FromCourseFormReturn<Values> = {
     ...formValues,
     name: values.name ?? "",
     slug: !newCourse ? values.slug : values.new_slug.trim(),
@@ -267,5 +289,5 @@ export const fromCourseForm = ({
     tags,
   }
 
-  return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
+  return c
 }
