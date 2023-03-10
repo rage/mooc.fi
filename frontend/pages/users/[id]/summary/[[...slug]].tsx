@@ -290,12 +290,9 @@ function UserSummaryView() {
     if (order && order !== defaultOrder) {
       queryParams.append("order", order)
     }
-    let basePath = router.asPath.split("?")[0]
-    if (selected && basePath.split("summary")[1]) {
-      basePath = basePath.split("summary")[0] + "summary/" + selected
-    }
     const href =
-      basePath + (queryParams.toString().length > 0 ? "?" + queryParams : "")
+      router.asPath.split("?")[0] +
+      (queryParams.toString().length > 0 ? "?" + queryParams : "")
     router.replace(href, undefined, { shallow: true })
   }, [sort, order, selected])
 
@@ -374,13 +371,12 @@ function UserSummaryView() {
                   title={t("toggleOrder")}
                 >
                   {order === "desc" ? <ReverseOrderIcon /> : <OrderIcon />}
-                  </IconButton>*/}
+                  </IconButton>
                     <CollapseButton
                       onClick={onCollapseClick}
                       open={!allCoursesClosed}
-                      label={allCoursesClosed ? t("showAll") : t("hideAll")}
                       tooltip={t("allCoursesCollapseTooltip")}
-                    />
+                  />*/}
                   </RightToolbarContainer>
                 </ToolbarContainer>
               </SearchContainer>

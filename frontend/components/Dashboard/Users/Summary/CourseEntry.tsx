@@ -1,7 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react"
 
 import { sortBy } from "lodash"
+import { useRouter } from "next/router"
 
+import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
 import {
   Card,
   CardContent,
@@ -10,7 +12,7 @@ import {
   Paper,
   Skeleton,
 } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
 
 import InfoRow from "../InfoRow"
 import {
@@ -23,6 +25,7 @@ import ExerciseList from "./ExerciseList"
 import ProgressEntry from "./ProgressEntry"
 import TotalProgressEntry from "./TotalProgressEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
+import ClipboardButton from "/components/ClipboardButton"
 import RelevantDates from "/components/Dashboard/Users/Summary/RelevantDates"
 import { CardTitle } from "/components/Text/headers"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -42,6 +45,11 @@ type CourseEntryProps =
       tierSummary: true
     }
 
+const iconStyle = css`
+  height: 1rem;
+  transition: all 1s ease-ease-in-out;
+`
+
 const CourseEntryCard = styled((props: CardProps) => (
   <Card elevation={4} {...props} />
 ))`
@@ -51,6 +59,7 @@ const CourseEntryCard = styled((props: CardProps) => (
 `
 
 const CourseEntryCardTitleWrapper = styled("div")`
+  margin: 0 1rem;
   display: flex;
   flex-direction: row;
 `
@@ -78,6 +87,12 @@ export const SkeletonCourseEntry = () => (
   </CourseEntryCard>
 )
 
+const Spacer = styled("div")`
+  flex-grow: 1;
+`
+
+const LinkIconComponent = () => <LinkIcon css={iconStyle} />
+
 function CourseEntry({ data, tierSummary }: CourseEntryProps) {
   const { admin } = useLoginStateContext()
   const [courseInfoOpen, setCourseInfoOpen] = useState(false)
@@ -86,6 +101,20 @@ function CourseEntry({ data, tierSummary }: CourseEntryProps) {
     [data, tierSummary],
   )
   const { dispatch } = useCollapseContext()
+  const router = useRouter()
+
+  const permanentURL = useMemo(() => {
+    if (!data.course) {
+      return undefined
+    }
+
+    const basePath = router.asPath.split("?")[0].split("summary")[0]
+    const origin =
+      typeof window !== "undefined" && window.location.origin
+        ? window.location.origin
+        : ""
+    return `${origin}${basePath}summary/${data.course.slug}/`
+  }, [data, router])
 
   // TODO: subheaders for parts?
 
@@ -203,6 +232,13 @@ function CourseEntry({ data, tierSummary }: CourseEntryProps) {
             tooltip={"show more info"}
           />
         )}
+        <Spacer />
+        <ClipboardButton
+          content={permanentURL}
+          tooltipText="Copy permanent URL"
+          disabled={!permanentURL}
+          Icon={LinkIconComponent}
+        />
       </CourseEntryCardTitleWrapper>
       {admin && (
         <Collapse in={courseInfoOpen} unmountOnExit>
