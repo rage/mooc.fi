@@ -77,5 +77,6 @@
     "toggleOrder": "Käännä suunta",
     "orderAscending": "Nouseva",
     "orderDescending": "Laskeva",
-    "pointsRequired": "vaaditaan"
+    "pointsRequired": "vaaditaan",
+    "selectedCourse": "Valittu kurssi"
 }

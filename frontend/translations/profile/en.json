@@ -77,5 +77,6 @@
     "toggleOrder": "Toggle sort order",
     "orderAscending": "Ascending",
     "orderDescending": "Descending",
-    "pointsRequired": "required"
+    "pointsRequired": "required",
+    "selectedCourse": "Selected course"
 }

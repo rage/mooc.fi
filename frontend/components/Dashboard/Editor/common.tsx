@@ -1,6 +1,12 @@
 import React from "react"
 
-import { FastField, Field, FieldAttributes, useFormikContext } from "formik"
+import {
+  FastField,
+  FastFieldProps,
+  Field,
+  FieldAttributes,
+  useFormikContext,
+} from "formik"
 import { TextField } from "formik-mui"
 
 import {
@@ -20,7 +26,7 @@ import { useAnchorContext } from "/contexts/AnchorContext"
 const BaseStyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
   background-color: white;
-`
+` as typeof TextField
 
 export const StyledTextField = React.memo(BaseStyledTextField)
 
@@ -67,7 +73,7 @@ const BaseStyledField = styled(FastField)`
   .input-required {
     color: #df7a46;
   }
-`
+` as typeof FastField
 
 export const StyledField = React.memo(BaseStyledField)
 
@@ -139,7 +145,7 @@ export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({
   return <AdjustingAnchorLink id={id} />
 }
 
-interface StyledFieldWithAnchorProps {
+interface StyledFieldWithAnchorProps extends FastFieldProps {
   id?: string
   name: string
   tab?: number
@@ -148,7 +154,7 @@ interface StyledFieldWithAnchorProps {
 
 export const StyledFieldWithAnchor = React.forwardRef<
   typeof StyledField,
-  StyledFieldWithAnchorProps & FieldAttributes<any> //& PropsOf<typeof StyledField>
+  StyledFieldWithAnchorProps & FieldAttributes<any>
 >((props, ref) => {
   const { id, name, tab = 0, error, ...rest } = props
   const { addAnchor } = useAnchorContext()

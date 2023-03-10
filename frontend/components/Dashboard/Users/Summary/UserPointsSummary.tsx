@@ -1,95 +1,43 @@
 import { useMemo } from "react"
 
-import { orderBy } from "lodash"
-
+import { useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseEntry, { SkeletonCourseEntry } from "./CourseEntry"
-import { SortOrder, UserCourseSummarySort } from "./types"
-import { UserPointsSummaryProvider } from "./UserPointsSummaryContext"
+import CourseSelectList from "./CourseSelectList"
+import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
+import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-
-import {
-  EditorCoursesQueryVariables,
-  UserCourseSummaryCoreFieldsFragment,
-} from "/graphql/generated"
 
 const DataPlaceholder = styled("div")`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 `
 
+const UserPointsSummaryContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+`
 interface UserPointsSummaryProps {
-  data?: UserCourseSummaryCoreFieldsFragment[] | null
   loading?: boolean
-  search?: EditorCoursesQueryVariables["search"]
-  sort?: UserCourseSummarySort
-  order?: SortOrder
 }
 
-function flipOrder(order: SortOrder) {
-  return order === "asc" ? "desc" : "asc"
-}
+function UserPointsSummary({ loading }: UserPointsSummaryProps) {
+  const data = useUserPointsSummaryContext()
+  const { selected } = useUserPointsSummarySelectedCourseContext()
 
-function UserPointsSummary({
-  data,
-  loading,
-  search,
-  sort,
-  order = "asc",
-}: UserPointsSummaryProps) {
+  const isNarrow = useMediaQuery("(max-width: 800px)")
   const t = useTranslator(CommonTranslations)
 
-  // TODO: add search from other fields?
-  const filteredData = useMemo(() => {
-    if (!data) {
-      return []
-    }
-
-    let sortedData: typeof data
-
-    switch (sort) {
-      case "activity_date":
-        sortedData = orderBy(
-          data,
-          [
-            (entry) =>
-              orderBy(entry.exercise_completions ?? [], "updated_at")?.pop()
-                ?.updated_at ?? "2999-01-01",
-            "course.name",
-          ],
-          [flipOrder(order), order],
-        )
-        break
-      case "completion_date":
-        sortedData = orderBy(
-          data,
-          [
-            (entry) => entry.completion?.updated_at ?? "2999-01-01",
-            "course.name",
-          ],
-          [flipOrder(order), order],
-        )
-        break
-      default:
-        sortedData = orderBy(data, "course.name", order)
-        break
-    }
-
-    if (!search) {
-      return sortedData
-    }
-
-    const searchData = sortedData.filter((entry) =>
-      entry?.course?.name
-        .trim()
-        .toLocaleLowerCase()
-        .includes(search.toLocaleLowerCase()),
-    )
-
-    return searchData
-  }, [search, order, sort, data])
+  const selectedCourseData = useMemo(
+    () =>
+      selected
+        ? data?.find((entry) => entry.course?.slug === selected)
+        : data?.[0],
+    [data, selected],
+  )
 
   if (loading) {
     return (
@@ -102,14 +50,21 @@ function UserPointsSummary({
   }
 
   return (
-    <UserPointsSummaryProvider value={filteredData}>
-      {filteredData?.length === 0 && (
+    <UserPointsSummaryContainer>
+      {!isNarrow && (
+        <CourseSelectList
+          selected={selectedCourseData?.course?.slug}
+          loading={loading}
+        />
+      )}
+      {data?.length === 0 && (
         <DataPlaceholder>{t("noResults")}</DataPlaceholder>
       )}
-      {filteredData.map((entry, index) => (
-        <CourseEntry key={entry.course?.id ?? index} data={entry} />
-      ))}
-    </UserPointsSummaryProvider>
+      {selectedCourseData && <CourseEntry data={selectedCourseData} />}
+      {/*filteredData.map((entry, index) => (
+            <CourseEntry key={entry.course?.id ?? index} data={entry} />
+          ))*/}
+    </UserPointsSummaryContainer>
   )
 }
 

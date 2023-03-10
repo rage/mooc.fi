@@ -7,7 +7,7 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import { TextField, TextFieldProps, Theme, useMediaQuery } from "@mui/material"
+import { Theme, useMediaQuery } from "@mui/material"
 import {
   DesktopDatePicker,
   LocalizationProvider,
@@ -38,10 +38,6 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
     [name, trigger, validateOtherFields],
   )
 
-  const renderDatePickerInput = useCallback((props: TextFieldProps) => {
-    return <TextField {...props} variant="outlined" />
-  }, [])
-
   const renderDatePickerComponent = useCallback(
     ({ value }: ControllerRenderProps<FieldValues, string>) => (
       <DatePicker
@@ -49,19 +45,9 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
         onChange={onChange}
         onClose={onCloseDatePicker}
         label={label}
-        renderInput={renderDatePickerInput}
-        disableMaskedInput
       />
     ),
-    [
-      isMobile,
-      name,
-      label,
-      watch,
-      onChange,
-      renderDatePickerInput,
-      onCloseDatePicker,
-    ],
+    [isMobile, name, label, watch, onChange, onCloseDatePicker],
   )
 
   return (

@@ -7,22 +7,15 @@ import React, {
   useState,
 } from "react"
 
-import { omit } from "lodash"
+import { omit, orderBy } from "lodash"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
-import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
+// import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
+// import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
 import BuildIcon from "@mui/icons-material/Build"
-import {
-  Button,
-  Dialog,
-  IconButton,
-  MenuItem,
-  Paper,
-  TextField,
-} from "@mui/material"
+import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
@@ -34,6 +27,7 @@ import CollapseContext, {
   createCollapseState,
   initialState,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
+import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import {
   SortOrder,
@@ -42,6 +36,8 @@ import {
   userCourseSummarySortOptions,
 } from "/components/Dashboard/Users/Summary/types"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
+import UserPointsSummaryContext from "/components/Dashboard/Users/Summary/UserPointsSummaryContext"
+import UserPointsSummarySelectedCourseContext from "/components/Dashboard/Users/Summary/UserPointsSummarySelectedCourseContext"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
@@ -56,6 +52,8 @@ import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCoursesQueryVariables,
+  UserCourseSummaryCoreFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
   UserSummaryDocument,
 } from "/graphql/generated"
 
@@ -71,6 +69,7 @@ const SearchContainer = styled(Paper)`
 const ToolbarContainer = styled("div")`
   padding: 0.5rem 1rem 0.5rem 1rem;
   display: flex;
+  gap: 0.5rem;
   flex: 1;
   justify-content: space-between;
 `
@@ -87,7 +86,14 @@ const RightToolbarContainer = styled("div")`
 const defaultSort = "course_name"
 const defaultOrder = "asc"
 
+function flipOrder(order: SortOrder) {
+  return order === "asc" ? "desc" : "asc"
+}
+
 function UserSummaryView() {
+  const isNarrow = useMediaQuery("(max-width: 800px)")
+  const slug = useQueryParameter("slug", false)
+
   const t = useTranslator(
     UsersTranslations,
     ProfileTranslations,
@@ -139,6 +145,9 @@ function UserSummaryView() {
     }
     return defaultOrder
   })
+  const [selected, setSelected] = useState<
+    UserCourseSummaryCourseFieldsFragment["slug"]
+  >(slug ?? "")
 
   const userSearchInput = useRef<HTMLInputElement>()
 
@@ -161,7 +170,7 @@ function UserSummaryView() {
     }
   }, [])
 
-  const contextValue = useMemo(() => ({ state, dispatch }), [state])
+  const collapseContextValue = useMemo(() => ({ state, dispatch }), [state])
 
   const allCoursesClosed = useMemo(
     () => !Object.values(state.courses).some((s) => s.open),
@@ -177,6 +186,7 @@ function UserSummaryView() {
     [allCoursesClosed],
   )
 
+  // @ts-ignore: not used
   const onCourseSortChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSort(event.target.value as UserCourseSummarySort)
@@ -184,10 +194,12 @@ function UserSummaryView() {
     [],
   )
 
+  // @ts-ignore: not used
   const onSortOrderToggle = useCallback(() => {
-    setOrder((v) => (v === "asc" ? "desc" : "asc"))
-  }, [])
+    setOrder((v) => flipOrder(v))
+  }, [setOrder])
 
+  // @ts-ignore: not used
   const sortOptions = useMemo(
     () =>
       userCourseSummarySortOptions.map((o) => ({
@@ -197,6 +209,79 @@ function UserSummaryView() {
     [router.locale],
   )
 
+  const selectedCourseContextValue = useMemo(
+    () => ({
+      selected,
+      setSelected,
+    }),
+    [selected, setSelected],
+  )
+
+  const filteredData = useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    const { search } = searchVariables
+
+    let sortedData: Array<UserCourseSummaryCoreFieldsFragment>
+
+    switch (sort) {
+      case "activity_date":
+        sortedData = orderBy(
+          data.user?.user_course_summary,
+          [
+            (entry) => {
+              const combinedExerciseCompletions = (
+                entry.exercise_completions ?? []
+              ).concat(
+                (entry.tier_summaries ?? []).flatMap(
+                  (t) => t.exercise_completions ?? [],
+                ),
+              )
+              return (
+                orderBy(combinedExerciseCompletions, "created_at")?.pop()
+                  ?.updated_at ?? "2999-01-01"
+              )
+            },
+            "course.name",
+          ],
+          [flipOrder(order), order],
+        )
+        break
+      case "completion_date":
+        sortedData = orderBy(
+          data.user?.user_course_summary,
+          [
+            (entry) => entry.completion?.updated_at ?? "2999-01-01",
+            "course.name",
+          ],
+          [flipOrder(order), order],
+        )
+        break
+      default:
+        sortedData = orderBy(
+          data.user?.user_course_summary,
+          "course.name",
+          order,
+        )
+        break
+    }
+
+    if (!search) {
+      return sortedData
+    }
+
+    const searchData = sortedData.filter((entry) =>
+      entry?.course?.name
+        .trim()
+        .toLocaleLowerCase()
+        .includes(search.toLocaleLowerCase()),
+    )
+
+    return searchData
+  }, [searchVariables.search, order, sort, data])
+
   useEffect(() => {
     const queryParams = new URLSearchParams()
     if (sort && sort !== defaultSort) {
@@ -205,11 +290,14 @@ function UserSummaryView() {
     if (order && order !== defaultOrder) {
       queryParams.append("order", order)
     }
+    let basePath = router.asPath.split("?")[0]
+    if (selected && basePath.split("summary")[1]) {
+      basePath = basePath.split("summary")[0] + "summary/" + selected
+    }
     const href =
-      router.asPath.split("?")[0] +
-      (queryParams.toString().length > 0 ? "?" + queryParams : "")
+      basePath + (queryParams.toString().length > 0 ? "?" + queryParams : "")
     router.replace(href, undefined, { shallow: true })
-  }, [sort, order])
+  }, [sort, order, selected])
 
   if (error) {
     return (
@@ -234,30 +322,40 @@ function UserSummaryView() {
             inputRef={userSearchInput}
           />
         </StyledForm>
-        <CollapseContext.Provider value={contextValue}>
-          <UserInfo data={omit(data?.user, "user_course_summary")} />
-          <SearchContainer>
-            <FilterMenu
-              searchVariables={searchVariables}
-              setSearchVariables={setSearchVariables}
-              loading={loading}
-              label={t("searchInCourses")}
-              fields={{
-                hidden: false,
-                status: false,
-                handler: false,
-              }}
-            />
-            <ToolbarContainer>
-              <Button
-                variant="outlined"
-                startIcon={<BuildIcon />}
-                onClick={() => setRawViewOpen(!rawViewOpen)}
-              >
-                Raw view
-              </Button>
-              <RightToolbarContainer>
-                <TextField
+        <CollapseContext.Provider value={collapseContextValue}>
+          <UserPointsSummaryContext.Provider value={filteredData}>
+            <UserPointsSummarySelectedCourseContext.Provider
+              value={selectedCourseContextValue}
+            >
+              <UserInfo data={omit(data?.user, "user_course_summary")} />
+              <SearchContainer>
+                <FilterMenu
+                  searchVariables={searchVariables}
+                  setSearchVariables={setSearchVariables}
+                  loading={loading}
+                  label={t("searchInCourses")}
+                  fields={{
+                    hidden: false,
+                    status: false,
+                    handler: false,
+                  }}
+                />
+                <ToolbarContainer>
+                  <Button
+                    variant="outlined"
+                    startIcon={<BuildIcon />}
+                    onClick={() => setRawViewOpen(!rawViewOpen)}
+                  >
+                    Raw view
+                  </Button>
+                  {isNarrow && (
+                    <CourseSelectDropdown
+                      selected={selected}
+                      loading={loading}
+                    />
+                  )}
+                  <RightToolbarContainer>
+                    {/*<TextField
                   select
                   variant="outlined"
                   value={sort}
@@ -270,29 +368,25 @@ function UserSummaryView() {
                       {o.label}
                     </MenuItem>
                   ))}
-                </TextField>
+                  </TextField>
                 <IconButton
                   onClick={onSortOrderToggle}
                   title={t("toggleOrder")}
                 >
                   {order === "desc" ? <ReverseOrderIcon /> : <OrderIcon />}
-                </IconButton>
-                <CollapseButton
-                  onClick={onCollapseClick}
-                  open={!allCoursesClosed}
-                  label={allCoursesClosed ? t("showAll") : t("hideAll")}
-                  tooltip={t("allCoursesCollapseTooltip")}
-                />
-              </RightToolbarContainer>
-            </ToolbarContainer>
-          </SearchContainer>
-          <UserPointsSummary
-            data={data?.user?.user_course_summary}
-            loading={loading || state.loading}
-            search={searchVariables.search}
-            sort={sort}
-            order={order}
-          />
+                  </IconButton>*/}
+                    <CollapseButton
+                      onClick={onCollapseClick}
+                      open={!allCoursesClosed}
+                      label={allCoursesClosed ? t("showAll") : t("hideAll")}
+                      tooltip={t("allCoursesCollapseTooltip")}
+                    />
+                  </RightToolbarContainer>
+                </ToolbarContainer>
+              </SearchContainer>
+              <UserPointsSummary loading={loading || state.loading} />
+            </UserPointsSummarySelectedCourseContext.Provider>
+          </UserPointsSummaryContext.Provider>
         </CollapseContext.Provider>
         <Dialog
           fullWidth

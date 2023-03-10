@@ -115,7 +115,6 @@ export async function redisify<T>(
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
       try {
-        console.log("----RES---- trying to parse", res)
         return JSON.parse(res)
       } catch (e) {
         logger.warn(`Cache hit but failed to parse result: ${prefix}`)

@@ -1,4 +1,6 @@
-import { LinearProgress } from "@mui/material"
+import { PropsWithChildren } from "react"
+
+import { LinearProgress, Typography } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
 
 import { CardSubtitle } from "/components/Text/headers"
@@ -29,6 +31,8 @@ const ProgressItem = styled("div")`
   display: flex;
   align-items: flex-end;
   padding: 0.5rem;
+  position: relative;
+  flex-direction: column;
 `
 const ProgressBar = styled("div")`
   width: 100%;
@@ -51,6 +55,52 @@ const Progress = styled("div", {
   background: ${(props) => props.color ?? "#3066c0"};
 `
 
+const BottomCaptionArrow = styled("div", {
+  shouldForwardProp: (prop) => prop !== "percentage",
+})<{ percentage: number }>`
+  &:after {
+    content: "";
+    position: absolute;
+    border: solid #ddd;
+    border-width: 0 2px 2px 0;
+    width: calc(${(props) => props.percentage}% - 0.5rem);
+    height: 1rem;
+    left: 0.5rem;
+    top: -0.25rem;
+    z-index: 0;
+  }
+`
+
+const BottomCaptionContainer = styled("div")`
+  position: relative;
+  width: 100%;
+  margin-top: 0.5rem;
+`
+
+const BottomCaptionArrowContainer = styled("div")`
+  position: relative;
+  width: 100%;
+  z-index: 1;
+`
+
+const BottomCaptionChildrenContainer = styled("span")`
+  position: relative;
+  z-index: 1;
+  padding-right: 0.5rem;
+  background-color: #ffffff;
+`
+
+const BottomCaption = ({
+  percentage,
+  children,
+}: PropsWithChildren<{ percentage: number }>) => (
+  <BottomCaptionContainer>
+    <BottomCaptionArrowContainer>
+      <BottomCaptionArrow percentage={percentage} />
+    </BottomCaptionArrowContainer>
+    <BottomCaptionChildrenContainer>{children}</BottomCaptionChildrenContainer>
+  </BottomCaptionContainer>
+)
 /* marker on hover
 
   &:before {
@@ -143,7 +193,7 @@ const PointsProgress = ({
             {notEmpty(requiredPercentage) && (
               <Progress
                 percentage={requiredPercentage}
-                color={theme.palette.secondary.light}
+                color={theme.palette.grey[400]}
                 title={`${Math.round(requiredPercentage)}% ${
                   notEmpty(required) && notEmpty(total)
                     ? `(${required}/${total}) `
@@ -161,6 +211,11 @@ const PointsProgress = ({
               }
             />
           </ProgressBar>
+          {notEmpty(requiredPercentage) && (
+            <BottomCaption percentage={requiredPercentage}>
+              <Typography variant="caption">Required</Typography>
+            </BottomCaption>
+          )}
         </ProgressItem>
         {/*<ColoredProgressBar
         variant={barVariant}

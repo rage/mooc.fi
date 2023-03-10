@@ -13,7 +13,6 @@ import {
   Button,
   Container,
   TextField,
-  TextFieldProps,
   Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -234,12 +233,9 @@ const ManualCompletions = () => {
         </Typography>
         <LocalizationProvider dateAdapter={AdapterLuxon}>
           <DatePicker
-            inputFormat="yyyy-MM-dd"
+            format="yyyy-MM-dd"
             onChange={setCompletionDate}
             value={completionDate}
-            renderInput={(props: TextFieldProps) => (
-              <TextField {...props} variant="outlined" />
-            )}
           />
         </LocalizationProvider>
         <Typography>

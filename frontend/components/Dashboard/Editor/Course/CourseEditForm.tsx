@@ -102,6 +102,17 @@ interface RenderProps {
   setTab: React.Dispatch<React.SetStateAction<number>>
 }
 
+const DatePickerComponent = (props: any) => (
+  <DatePickerField
+    {...props}
+    slotProps={{
+      textField: {
+        InputLabelProps: inputLabelProps,
+      },
+    }}
+  />
+)
+
 const CourseEditFormComponent = ({
   courses,
   studyModules,
@@ -188,16 +199,16 @@ const CourseEditFormComponent = ({
               id="start-date"
               name="start_date"
               label={t("courseStartDate")}
-              as={DatePickerField}
-              required
+              as={DatePickerComponent}
               InputLabelProps={inputLabelProps}
+              required
               placeholder={t("courseDatePlaceholder")}
             />
             <StyledFieldWithAnchor
               id="end-date"
               name="end_date"
               label={t("courseEndDate")}
-              as={DatePickerField}
+              as={DatePickerComponent}
               InputLabelProps={inputLabelProps}
               placeholder={t("courseDatePlaceholder")}
             />

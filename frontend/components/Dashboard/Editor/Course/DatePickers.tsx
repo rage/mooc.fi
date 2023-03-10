@@ -1,3 +1,5 @@
+import { useCallback } from "react"
+
 import { ErrorMessage, useField } from "formik"
 
 import { TextField } from "@mui/material"
@@ -14,29 +16,40 @@ const StyledErrorMessage = styled("p")`
   line-height: 1.66;
 `
 
-const DatePickerField = ({ ...props }: any) => {
-  const [field, { error }, { setValue, setTouched }] = useField(props)
+const StyledTextField = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error?: boolean }>`
+  margin-bottom: ${(props) => (props.error ? "0rem" : "1.5rem")};
+  width: 70%;
+`
+
+function DatePickerField(props: any) {
+  const [fieldInputProps, { error }, { setValue, setTouched }] = useField(props)
+
+  const TextFieldComponent = useCallback(
+    (props: any) => <StyledTextField error={error} {...props} />,
+    [error],
+  )
+
+  const onChange = useCallback((value: any) => setValue(value), [setValue])
+  const onClose = useCallback(() => setTouched(true), [setTouched])
 
   return (
     <>
       <DatePicker
-        {...field}
+        {...fieldInputProps}
         {...props}
         format="yyyy-MM-dd"
-        mask="____-__-__"
-        onChange={setValue}
-        onClose={setTouched}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            style={{
-              marginBottom: error ? "0rem" : "1.5rem",
-              width: "70%",
-            }}
-          />
-        )}
+        onChange={onChange}
+        onClose={onClose}
+        slots={{
+          textField: TextFieldComponent,
+        }}
       />
-      <ErrorMessage component={StyledErrorMessage} name={field.name} />
+      <ErrorMessage
+        component={StyledErrorMessage}
+        name={fieldInputProps.name}
+      />
     </>
   )
 }

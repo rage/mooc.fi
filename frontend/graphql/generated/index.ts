@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-09T23:18:59+02:00
+// Generated on 2023-03-10T14:13:52+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2488,7 +2488,7 @@ export type UserCourseSummary = {
   __typename?: "UserCourseSummary"
   completion: Maybe<Completion>
   completions_handled_by_id: Maybe<Scalars["ID"]>
-  course: Maybe<Course>
+  course: Course
   course_id: Scalars["ID"]
   exercise_completions: Maybe<Array<ExerciseCompletion>>
   include_deleted_exercises: Maybe<Scalars["Boolean"]>
@@ -4088,7 +4088,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null
+  }
   exercise_completions: Array<{
     __typename?: "ExerciseCompletion"
     id: string
@@ -4237,7 +4237,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
         created_at: any | null
         updated_at: any | null
       } | null
-    } | null
+    }
     exercise_completions: Array<{
       __typename?: "ExerciseCompletion"
       id: string
@@ -4352,7 +4352,7 @@ export type UserTierCourseSummaryCoreFieldsFragment = {
       created_at: any | null
       updated_at: any | null
     } | null
-  } | null
+  }
   exercise_completions: Array<{
     __typename?: "ExerciseCompletion"
     id: string
@@ -6105,7 +6105,7 @@ export type UserSummaryQuery = {
           created_at: any | null
           updated_at: any | null
         } | null
-      } | null
+      }
       exercise_completions: Array<{
         __typename?: "ExerciseCompletion"
         id: string
@@ -6254,7 +6254,7 @@ export type UserSummaryQuery = {
             created_at: any | null
             updated_at: any | null
           } | null
-        } | null
+        }
         exercise_completions: Array<{
           __typename?: "ExerciseCompletion"
           id: string

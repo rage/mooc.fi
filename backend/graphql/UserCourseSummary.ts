@@ -18,11 +18,12 @@ export const UserCourseSummary = objectType({
       type: "UserCourseSummary",
     })
 
-    t.field("course", {
+    t.nonNull.field("course", {
       type: "Course",
       resolve: async ({ course_id }, _, ctx) => {
         return ctx.prisma.course.findUnique({
           where: { id: course_id },
+          rejectOnNotFound: true,
         })
       },
     })

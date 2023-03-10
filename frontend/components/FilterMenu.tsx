@@ -315,18 +315,14 @@ function FilterMenu({
         >
           {t("search")}
         </MarginButton>
-        {showHidden ||
-          showHandler ||
-          (showStatus && (
-            <Button
-              disabled={loading}
-              color="secondary"
-              variant="contained"
-              onClick={onFormReset}
-            >
-              {t("reset")}
-            </Button>
-          ))}
+        <Button
+          disabled={loading}
+          color="secondary"
+          variant="contained"
+          onClick={onFormReset}
+        >
+          {t("reset")}
+        </Button>
       </ActionRow>
     </Container>
   )
