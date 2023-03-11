@@ -28,6 +28,7 @@ import CollapseContext, {
   initialState,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
+import useSortOrder from "/components/Dashboard/Users/Summary/hooks/useSortOrder"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import {
   SortOrder,
@@ -41,6 +42,7 @@ import UserPointsSummarySelectedCourseContext from "/components/Dashboard/Users/
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
+import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
@@ -92,7 +94,6 @@ function flipOrder(order: SortOrder) {
 
 function UserSummaryView() {
   const isNarrow = useMediaQuery("(max-width: 800px)")
-  const slug = useQueryParameter("slug", false)
 
   const t = useTranslator(
     UsersTranslations,
@@ -101,6 +102,7 @@ function UserSummaryView() {
   )
   const router = useRouter()
   const id = useQueryParameter("id")
+  const slug = useQueryParameter("slug", false)
   const _sort = useQueryParameter("sort", false)
   const _order = useQueryParameter("order", false)
   const { loading, error, data } = useQuery(UserSummaryDocument, {
@@ -112,18 +114,36 @@ function UserSummaryView() {
     ssr: false,
   })
 
-  useBreadcrumbs([
-    {
-      translation: "users",
-    },
-    {
-      label: id,
-    },
-    {
-      translation: "userSummary",
-      href: `/users/${id}/summary`,
-    },
-  ])
+  const breadcrumbs = useMemo(() => {
+    const crumbs: Array<Breadcrumb> = [
+      {
+        translation: "users",
+      },
+      {
+        label: id,
+      },
+      {
+        translation: "userSummary",
+        href: `/users/${id}/summary`,
+      },
+    ]
+
+    if (slug) {
+      const entry = data?.user?.user_course_summary?.find(
+        ({ course }) => course.slug === slug,
+      )
+      const isInvalid = !loading && data && !entry
+      if (!isInvalid) {
+        crumbs.push({
+          label: entry?.course.name,
+          href: `/users/${id}/summary/${slug}`,
+        })
+      }
+    }
+    return crumbs
+  }, [data, slug])
+
+  useBreadcrumbs(breadcrumbs)
 
   const title = useSubtitle(data?.user?.full_name ?? undefined)
 
@@ -133,18 +153,6 @@ function UserSummaryView() {
       search: "",
     })
   const [rawViewOpen, setRawViewOpen] = useState(false)
-  const [sort, setSort] = useState<UserCourseSummarySort>(() => {
-    if (userCourseSummarySortOptions.includes(_sort as UserCourseSummarySort)) {
-      return _sort as UserCourseSummarySort
-    }
-    return defaultSort
-  })
-  const [order, setOrder] = useState<SortOrder>(() => {
-    if (sortOrderOptions.includes(_order as SortOrder)) {
-      return _order as SortOrder
-    }
-    return defaultOrder
-  })
   const [selected, setSelected] = useState<
     UserCourseSummaryCourseFieldsFragment["slug"]
   >(slug ?? "")
@@ -177,6 +185,7 @@ function UserSummaryView() {
     [state],
   )
 
+  // @ts-ignore: not used
   const onCollapseClick = useCallback(
     () =>
       dispatch({
@@ -184,29 +193,6 @@ function UserSummaryView() {
         collapsable: CollapsablePart.COURSE,
       }),
     [allCoursesClosed],
-  )
-
-  // @ts-ignore: not used
-  const onCourseSortChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSort(event.target.value as UserCourseSummarySort)
-    },
-    [],
-  )
-
-  // @ts-ignore: not used
-  const onSortOrderToggle = useCallback(() => {
-    setOrder((v) => flipOrder(v))
-  }, [setOrder])
-
-  // @ts-ignore: not used
-  const sortOptions = useMemo(
-    () =>
-      userCourseSummarySortOptions.map((o) => ({
-        value: o,
-        label: t(`courseSortOrder-${o}`),
-      })),
-    [router.locale],
   )
 
   const selectedCourseContextValue = useMemo(
@@ -217,84 +203,12 @@ function UserSummaryView() {
     [selected, setSelected],
   )
 
-  const filteredData = useMemo(() => {
-    if (!data) {
-      return []
-    }
-
-    const { search } = searchVariables
-
-    let sortedData: Array<UserCourseSummaryCoreFieldsFragment>
-
-    switch (sort) {
-      case "activity_date":
-        sortedData = orderBy(
-          data.user?.user_course_summary,
-          [
-            (entry) => {
-              const combinedExerciseCompletions = (
-                entry.exercise_completions ?? []
-              ).concat(
-                (entry.tier_summaries ?? []).flatMap(
-                  (t) => t.exercise_completions ?? [],
-                ),
-              )
-              return (
-                orderBy(combinedExerciseCompletions, "created_at")?.pop()
-                  ?.updated_at ?? "2999-01-01"
-              )
-            },
-            "course.name",
-          ],
-          [flipOrder(order), order],
-        )
-        break
-      case "completion_date":
-        sortedData = orderBy(
-          data.user?.user_course_summary,
-          [
-            (entry) => entry.completion?.updated_at ?? "2999-01-01",
-            "course.name",
-          ],
-          [flipOrder(order), order],
-        )
-        break
-      default:
-        sortedData = orderBy(
-          data.user?.user_course_summary,
-          "course.name",
-          order,
-        )
-        break
-    }
-
-    if (!search) {
-      return sortedData
-    }
-
-    const searchData = sortedData.filter((entry) =>
-      entry?.course?.name
-        .trim()
-        .toLocaleLowerCase()
-        .includes(search.toLocaleLowerCase()),
-    )
-
-    return searchData
-  }, [searchVariables.search, order, sort, data])
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams()
-    if (sort && sort !== defaultSort) {
-      queryParams.append("sort", sort)
-    }
-    if (order && order !== defaultOrder) {
-      queryParams.append("order", order)
-    }
-    const href =
-      router.asPath.split("?")[0] +
-      (queryParams.toString().length > 0 ? "?" + queryParams : "")
-    router.replace(href, undefined, { shallow: true })
-  }, [sort, order, selected])
+  const userPointsSummaryContextValue = useSortOrder({
+    initialData: data?.user?.user_course_summary,
+    initialSort: _sort,
+    initialOrder: _order,
+    search: searchVariables.search,
+  })
 
   if (error) {
     return (
@@ -320,7 +234,9 @@ function UserSummaryView() {
           />
         </StyledForm>
         <CollapseContext.Provider value={collapseContextValue}>
-          <UserPointsSummaryContext.Provider value={filteredData}>
+          <UserPointsSummaryContext.Provider
+            value={userPointsSummaryContextValue}
+          >
             <UserPointsSummarySelectedCourseContext.Provider
               value={selectedCourseContextValue}
             >

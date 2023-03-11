@@ -1,11 +1,22 @@
 import { useCallback } from "react"
 
-import { ListItemText, Skeleton, Typography } from "@mui/material"
+import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
+import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
+import {
+  IconButton,
+  ListItemText,
+  MenuItem,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { List, ListItemButton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 
@@ -59,10 +70,23 @@ const CourseSelectListItemText = styled(ListItemText)`
     border-color: transparent;
   }
 `
-/*
- */
+
+const ListToolbar = styled("div")`
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem;
+`
+
 const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
-  const data = useUserPointsSummaryContext()
+  const t = useTranslator(ProfileTranslations)
+  const {
+    data,
+    sort,
+    order,
+    onCourseSortChange,
+    onSortOrderToggle,
+    sortOptions,
+  } = useUserPointsSummaryContext()
   const { setSelected } = useUserPointsSummarySelectedCourseContext()
 
   const handleListItemClick = useCallback(
@@ -74,6 +98,32 @@ const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
 
   return (
     <Container>
+      <ListToolbar>
+        <TextField
+          select
+          variant="outlined"
+          value={sort}
+          label={t("courseSortOrder")}
+          onChange={onCourseSortChange}
+          size="small"
+        >
+          {sortOptions.map((o) => (
+            <MenuItem key={o.value} value={o.value}>
+              <small>{o.label}</small>
+            </MenuItem>
+          ))}
+        </TextField>
+        <IconButton
+          onClick={onSortOrderToggle}
+          title={order === "asc" ? t("orderAscending") : t("orderDescending")}
+        >
+          {order === "desc" ? (
+            <ReverseOrderIcon fontSize="small" />
+          ) : (
+            <OrderIcon fontSize="small" />
+          )}
+        </IconButton>
+      </ListToolbar>
       <List component="nav">
         {loading && (
           <>

@@ -179,6 +179,8 @@ const PointsProgress = ({
 }: PointsProgressProps) => {
   const theme = useTheme()
 
+  const hasRequiredPercentage = notEmpty(requiredPercentage)
+
   return (
     <>
       <PointsProgressTitle component="h3" variant="body1">
@@ -190,7 +192,7 @@ const PointsProgress = ({
         </CardSubtitle>
         <ProgressItem>
           <ProgressBar>
-            {notEmpty(requiredPercentage) && (
+            {hasRequiredPercentage && (
               <Progress
                 percentage={requiredPercentage}
                 color={theme.palette.grey[400]}
@@ -211,7 +213,7 @@ const PointsProgress = ({
               }
             />
           </ProgressBar>
-          {notEmpty(requiredPercentage) && (
+          {hasRequiredPercentage && (
             <BottomCaption percentage={requiredPercentage}>
               <Typography variant="caption">Required</Typography>
             </BottomCaption>

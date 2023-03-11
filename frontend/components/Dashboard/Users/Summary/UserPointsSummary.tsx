@@ -25,7 +25,7 @@ interface UserPointsSummaryProps {
 }
 
 function UserPointsSummary({ loading }: UserPointsSummaryProps) {
-  const data = useUserPointsSummaryContext()
+  const { data } = useUserPointsSummaryContext()
   const { selected } = useUserPointsSummarySelectedCourseContext()
 
   const isNarrow = useMediaQuery("(max-width: 800px)")
@@ -34,7 +34,7 @@ function UserPointsSummary({ loading }: UserPointsSummaryProps) {
   const selectedCourseData = useMemo(
     () =>
       selected
-        ? data?.find((entry) => entry.course?.slug === selected)
+        ? data?.find((entry) => entry.course?.slug === selected) ?? data?.[0]
         : data?.[0],
     [data, selected],
   )
