@@ -1,5 +1,11 @@
+import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
 import { Paper, PaperProps, TableCell, TableRow } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
+
+const iconStyle = css`
+  height: 1rem;
+  transition: all 1s ease-ease-in-out;
+`
 
 export const SummaryCardContainer = styled((props: PaperProps) => (
   <Paper component="article" elevation={2} {...props} />
@@ -21,3 +27,9 @@ export const CollapseTableRow = styled(TableRow)`
     border-bottom: unset;
   }
 `
+
+export const Spacer = styled("div")`
+  flex-grow: 1;
+`
+
+export const LinkIconComponent = () => <LinkIcon css={iconStyle} />

@@ -130,6 +130,9 @@ const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
             <CourseSelectListItemSkeleton />
             <CourseSelectListItemSkeleton />
             <CourseSelectListItemSkeleton />
+            <CourseSelectListItemSkeleton />
+            <CourseSelectListItemSkeleton />
+            <CourseSelectListItemSkeleton />
           </>
         )}
         {data?.map(({ course, tier_summaries }) => (

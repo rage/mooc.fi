@@ -7,18 +7,15 @@ import React, {
   useState,
 } from "react"
 
-import { omit, orderBy } from "lodash"
+import { omit } from "lodash"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-// import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
-// import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import CollapseButton from "/components/Buttons/CollapseButton"
 import Container from "/components/Container"
 import CollapseContext, {
   ActionType,
@@ -30,12 +27,6 @@ import CollapseContext, {
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
 import useSortOrder from "/components/Dashboard/Users/Summary/hooks/useSortOrder"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
-import {
-  SortOrder,
-  sortOrderOptions,
-  UserCourseSummarySort,
-  userCourseSummarySortOptions,
-} from "/components/Dashboard/Users/Summary/types"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import UserPointsSummaryContext from "/components/Dashboard/Users/Summary/UserPointsSummaryContext"
 import UserPointsSummarySelectedCourseContext from "/components/Dashboard/Users/Summary/UserPointsSummarySelectedCourseContext"
@@ -54,7 +45,6 @@ import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCoursesQueryVariables,
-  UserCourseSummaryCoreFieldsFragment,
   UserCourseSummaryCourseFieldsFragment,
   UserSummaryDocument,
 } from "/graphql/generated"
@@ -84,13 +74,6 @@ const RightToolbarContainer = styled("div")`
   display: flex;
   gap: 1rem;
 `
-
-const defaultSort = "course_name"
-const defaultOrder = "asc"
-
-function flipOrder(order: SortOrder) {
-  return order === "asc" ? "desc" : "asc"
-}
 
 function UserSummaryView() {
   const isNarrow = useMediaQuery("(max-width: 800px)")
@@ -157,6 +140,13 @@ function UserSummaryView() {
     UserCourseSummaryCourseFieldsFragment["slug"]
   >(slug ?? "")
 
+  const userPointsSummaryContextValue = useSortOrder({
+    initialData: data?.user?.user_course_summary,
+    initialSort: _sort,
+    initialOrder: _order,
+    search: searchVariables.search,
+  })
+
   const userSearchInput = useRef<HTMLInputElement>()
 
   useEffect(() => {
@@ -202,13 +192,6 @@ function UserSummaryView() {
     }),
     [selected, setSelected],
   )
-
-  const userPointsSummaryContextValue = useSortOrder({
-    initialData: data?.user?.user_course_summary,
-    initialSort: _sort,
-    initialOrder: _order,
-    search: searchVariables.search,
-  })
 
   if (error) {
     return (
@@ -268,27 +251,7 @@ function UserSummaryView() {
                     />
                   )}
                   <RightToolbarContainer>
-                    {/*<TextField
-                  select
-                  variant="outlined"
-                  value={sort}
-                  label={t("courseSortOrder")}
-                  onChange={onCourseSortChange}
-                  fullWidth
-                >
-                  {sortOptions.map((o) => (
-                    <MenuItem key={o.value} value={o.value}>
-                      {o.label}
-                    </MenuItem>
-                  ))}
-                  </TextField>
-                <IconButton
-                  onClick={onSortOrderToggle}
-                  title={t("toggleOrder")}
-                >
-                  {order === "desc" ? <ReverseOrderIcon /> : <OrderIcon />}
-                  </IconButton>
-                    <CollapseButton
+                    {/*<CollapseButton
                       onClick={onCollapseClick}
                       open={!allCoursesClosed}
                       tooltip={t("allCoursesCollapseTooltip")}

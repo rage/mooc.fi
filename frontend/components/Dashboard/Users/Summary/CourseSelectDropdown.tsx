@@ -19,7 +19,7 @@ const CourseSelectDropdown = ({
   loading,
 }: CourseSelectDropdownProps) => {
   const t = useTranslator(ProfileTranslations)
-  const data = useUserPointsSummaryContext()
+  const { data } = useUserPointsSummaryContext()
   const { setSelected } = useUserPointsSummarySelectedCourseContext()
 
   const handleListItemClick = useCallback(

@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import CourseEntry, { SkeletonCourseEntry } from "./CourseEntry"
+import { CourseEntry, SkeletonCourseEntry } from "./Course"
 import CourseSelectList from "./CourseSelectList"
 import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
@@ -39,16 +39,6 @@ function UserPointsSummary({ loading }: UserPointsSummaryProps) {
     [data, selected],
   )
 
-  if (loading) {
-    return (
-      <>
-        <SkeletonCourseEntry key="skeleton-course-1" />
-        <SkeletonCourseEntry key="skeleton-course-2" />
-        <SkeletonCourseEntry key="skeleton-course-3" />
-      </>
-    )
-  }
-
   return (
     <UserPointsSummaryContainer>
       {!isNarrow && (
@@ -57,10 +47,14 @@ function UserPointsSummary({ loading }: UserPointsSummaryProps) {
           loading={loading}
         />
       )}
-      {data?.length === 0 && (
+      {!loading && data?.length === 0 && (
         <DataPlaceholder>{t("noResults")}</DataPlaceholder>
       )}
-      {selectedCourseData && <CourseEntry data={selectedCourseData} />}
+      {loading ? (
+        <SkeletonCourseEntry />
+      ) : (
+        selectedCourseData && <CourseEntry data={selectedCourseData} />
+      )}
       {/*filteredData.map((entry, index) => (
             <CourseEntry key={entry.course?.id ?? index} data={entry} />
           ))*/}
