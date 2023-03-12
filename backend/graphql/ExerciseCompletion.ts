@@ -25,6 +25,35 @@ export const ExerciseCompletion = objectType({
     t.model.user()
     t.model.exercise_completion_required_actions()
     t.model.attempted()
+
+    t.field("tier", {
+      type: "Int",
+      resolve: async ({ exercise_id }, _, ctx) => {
+        if (!exercise_id) {
+          return null
+        }
+        const exercise = await ctx.prisma.exercise.findUnique({
+          where: { id: exercise_id },
+          include: { course: true },
+        })
+
+        return exercise?.course?.tier ?? null
+      },
+    })
+
+    t.field("max_points", {
+      type: "Int",
+      resolve: async ({ exercise_id }, _, ctx) => {
+        if (!exercise_id) {
+          return null
+        }
+        const exercise = await ctx.prisma.exercise.findUnique({
+          where: { id: exercise_id },
+        })
+
+        return exercise?.max_points ?? null
+      },
+    })
   },
 })
 

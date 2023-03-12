@@ -13,6 +13,7 @@ import Completion from "../Completion"
 import ExerciseList from "../ExerciseList"
 import ProgressEntry from "../ProgressEntry"
 import RelevantDates from "../RelevantDates"
+import TierExerciseList from "../TierExerciseList"
 import TotalProgressEntry from "../TotalProgressEntry"
 import { CourseEntryCard, CourseEntryCardBase } from "./common"
 import { CourseTierEntry } from "./CourseTierEntry"
@@ -90,10 +91,15 @@ export function CourseEntry({ data }: CourseEntryProps) {
       {hasTierSummaries ? (
         <>
           {data.user_course_progress?.extra && (
-            <TotalProgressEntry
-              key={`${data.course.id}-total-progress`}
-              data={data.user_course_progress.extra}
-            />
+            <>
+              <TotalProgressEntry
+                key={`${data.course.id}-total-progress`}
+                data={data.user_course_progress.extra}
+              />
+              <TierExerciseList
+                data={data.user_course_progress?.extra.exercises}
+              />
+            </>
           )}
           {sortBy(
             data.tier_summaries ?? [],

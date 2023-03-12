@@ -1,5 +1,7 @@
 import { objectType } from "nexus"
 
+import { BAIexercises } from "../config/courseConfig"
+
 export const ProgressExtra = objectType({
   name: "ProgressExtra",
   definition(t) {
@@ -32,6 +34,55 @@ export const TierProgress = objectType({
     t.nonNull.float("max_points")
     t.nonNull.float("progress")
     t.string("custom_id")
+    t.nonNull.string("user_id")
+
+    t.field("name", {
+      type: "String",
+      resolve: async ({ custom_id }) => {
+        if (!custom_id) {
+          return null
+        }
+        return BAIexercises[custom_id]?.title ?? null
+      },
+    })
+
+    t.list.nonNull.field("exercise_completions", {
+      type: "ExerciseCompletion",
+      resolve: async ({ custom_id, user_id }, _, ctx) => {
+        if (!custom_id || !user_id) {
+          return null
+        }
+
+        const baiExercise = BAIexercises[custom_id]
+
+        if (!baiExercise) {
+          return null
+        }
+
+        const exerciseCustomIds = Object.entries(BAIexercises)
+          .filter(([_, exercise]) => exercise.exercise === baiExercise.exercise)
+          .map(([id, _]) => id)
+
+        if (exerciseCustomIds.length === 0) {
+          return null
+        }
+
+        const completions = await ctx.prisma.exerciseCompletion.findMany({
+          where: {
+            exercise: { custom_id: { in: exerciseCustomIds } },
+            user_id,
+          },
+          orderBy: [
+            {
+              timestamp: "desc",
+            },
+            { updated_at: "desc" },
+          ],
+        })
+
+        return completions
+      },
+    })
 
     t.field("exercise", {
       type: "Exercise",

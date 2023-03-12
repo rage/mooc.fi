@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-10T14:13:52+02:00
+// Generated on 2023-03-12T01:27:15+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -792,7 +792,9 @@ export type ExerciseCompletion = {
   exercise_completion_required_actions: Array<ExerciseCompletionRequiredAction>
   exercise_id: Maybe<Scalars["String"]>
   id: Scalars["String"]
+  max_points: Maybe<Scalars["Int"]>
   n_points: Maybe<Scalars["Float"]>
+  tier: Maybe<Scalars["Int"]>
   timestamp: Scalars["DateTime"]
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
@@ -2219,11 +2221,14 @@ export type TierProgress = {
   __typename?: "TierProgress"
   custom_id: Maybe<Scalars["String"]>
   exercise: Maybe<Exercise>
+  exercise_completions: Maybe<Array<ExerciseCompletion>>
   exercise_number: Scalars["Int"]
   max_points: Scalars["Float"]
   n_points: Scalars["Float"]
+  name: Maybe<Scalars["String"]>
   progress: Scalars["Float"]
   tier: Scalars["Int"]
+  user_id: Scalars["String"]
 }
 
 export type User = {
@@ -3378,7 +3383,28 @@ export type ProgressCoreFieldsFragment = {
         n_points: number
         max_points: number
         progress: number
+        name: string | null
         custom_id: string | null
+        exercise_completions: Array<{
+          __typename?: "ExerciseCompletion"
+          tier: number | null
+          max_points: number | null
+          id: string
+          exercise_id: string | null
+          user_id: string | null
+          created_at: any | null
+          updated_at: any | null
+          attempted: boolean | null
+          completed: boolean | null
+          timestamp: any
+          n_points: number | null
+          exercise_completion_required_actions: Array<{
+            __typename?: "ExerciseCompletionRequiredAction"
+            id: string
+            exercise_completion_id: string | null
+            value: string
+          }>
+        }> | null
       }>
     } | null
     exercise_progress: {
@@ -3423,7 +3449,28 @@ export type ProgressExtraFieldsFragment = {
     n_points: number
     max_points: number
     progress: number
+    name: string | null
     custom_id: string | null
+    exercise_completions: Array<{
+      __typename?: "ExerciseCompletion"
+      tier: number | null
+      max_points: number | null
+      id: string
+      exercise_id: string | null
+      user_id: string | null
+      created_at: any | null
+      updated_at: any | null
+      attempted: boolean | null
+      completed: boolean | null
+      timestamp: any
+      n_points: number | null
+      exercise_completion_required_actions: Array<{
+        __typename?: "ExerciseCompletionRequiredAction"
+        id: string
+        exercise_completion_id: string | null
+        value: string
+      }>
+    }> | null
   }>
 }
 
@@ -3444,7 +3491,49 @@ export type TierProgressFieldsFragment = {
   n_points: number
   max_points: number
   progress: number
+  name: string | null
   custom_id: string | null
+  exercise_completions: Array<{
+    __typename?: "ExerciseCompletion"
+    tier: number | null
+    max_points: number | null
+    id: string
+    exercise_id: string | null
+    user_id: string | null
+    created_at: any | null
+    updated_at: any | null
+    attempted: boolean | null
+    completed: boolean | null
+    timestamp: any
+    n_points: number | null
+    exercise_completion_required_actions: Array<{
+      __typename?: "ExerciseCompletionRequiredAction"
+      id: string
+      exercise_completion_id: string | null
+      value: string
+    }>
+  }> | null
+}
+
+export type TierProgressExerciseCompletionFieldsFragment = {
+  __typename?: "ExerciseCompletion"
+  tier: number | null
+  max_points: number | null
+  id: string
+  exercise_id: string | null
+  user_id: string | null
+  created_at: any | null
+  updated_at: any | null
+  attempted: boolean | null
+  completed: boolean | null
+  timestamp: any
+  n_points: number | null
+  exercise_completion_required_actions: Array<{
+    __typename?: "ExerciseCompletionRequiredAction"
+    id: string
+    exercise_completion_id: string | null
+    value: string
+  }>
 }
 
 export type StudyModuleCoreFieldsFragment = {
@@ -3688,7 +3777,28 @@ export type UserProgressesFieldsFragment = {
           n_points: number
           max_points: number
           progress: number
+          name: string | null
           custom_id: string | null
+          exercise_completions: Array<{
+            __typename?: "ExerciseCompletion"
+            tier: number | null
+            max_points: number | null
+            id: string
+            exercise_id: string | null
+            user_id: string | null
+            created_at: any | null
+            updated_at: any | null
+            attempted: boolean | null
+            completed: boolean | null
+            timestamp: any
+            n_points: number | null
+            exercise_completion_required_actions: Array<{
+              __typename?: "ExerciseCompletionRequiredAction"
+              id: string
+              exercise_completion_id: string | null
+              value: string
+            }>
+          }> | null
         }>
       } | null
       exercise_progress: {
@@ -3847,7 +3957,28 @@ export type UserCourseProgressCoreFieldsFragment = {
       n_points: number
       max_points: number
       progress: number
+      name: string | null
       custom_id: string | null
+      exercise_completions: Array<{
+        __typename?: "ExerciseCompletion"
+        tier: number | null
+        max_points: number | null
+        id: string
+        exercise_id: string | null
+        user_id: string | null
+        created_at: any | null
+        updated_at: any | null
+        attempted: boolean | null
+        completed: boolean | null
+        timestamp: any
+        n_points: number | null
+        exercise_completion_required_actions: Array<{
+          __typename?: "ExerciseCompletionRequiredAction"
+          id: string
+          exercise_completion_id: string | null
+          value: string
+        }>
+      }> | null
     }>
   } | null
   exercise_progress: {
@@ -3958,7 +4089,28 @@ export type StudentProgressesQueryNodeFieldsFragment = {
             n_points: number
             max_points: number
             progress: number
+            name: string | null
             custom_id: string | null
+            exercise_completions: Array<{
+              __typename?: "ExerciseCompletion"
+              tier: number | null
+              max_points: number | null
+              id: string
+              exercise_id: string | null
+              user_id: string | null
+              created_at: any | null
+              updated_at: any | null
+              attempted: boolean | null
+              completed: boolean | null
+              timestamp: any
+              n_points: number | null
+              exercise_completion_required_actions: Array<{
+                __typename?: "ExerciseCompletionRequiredAction"
+                id: string
+                exercise_completion_id: string | null
+                value: string
+              }>
+            }> | null
           }>
         } | null
         exercise_progress: {
@@ -4138,7 +4290,28 @@ export type UserCourseSummaryCoreFieldsFragment = {
         n_points: number
         max_points: number
         progress: number
+        name: string | null
         custom_id: string | null
+        exercise_completions: Array<{
+          __typename?: "ExerciseCompletion"
+          tier: number | null
+          max_points: number | null
+          id: string
+          exercise_id: string | null
+          user_id: string | null
+          created_at: any | null
+          updated_at: any | null
+          attempted: boolean | null
+          completed: boolean | null
+          timestamp: any
+          n_points: number | null
+          exercise_completion_required_actions: Array<{
+            __typename?: "ExerciseCompletionRequiredAction"
+            id: string
+            exercise_completion_id: string | null
+            value: string
+          }>
+        }> | null
       }>
     } | null
     exercise_progress: {
@@ -4287,7 +4460,28 @@ export type UserCourseSummaryCoreFieldsFragment = {
           n_points: number
           max_points: number
           progress: number
+          name: string | null
           custom_id: string | null
+          exercise_completions: Array<{
+            __typename?: "ExerciseCompletion"
+            tier: number | null
+            max_points: number | null
+            id: string
+            exercise_id: string | null
+            user_id: string | null
+            created_at: any | null
+            updated_at: any | null
+            attempted: boolean | null
+            completed: boolean | null
+            timestamp: any
+            n_points: number | null
+            exercise_completion_required_actions: Array<{
+              __typename?: "ExerciseCompletionRequiredAction"
+              id: string
+              exercise_completion_id: string | null
+              value: string
+            }>
+          }> | null
         }>
       } | null
       exercise_progress: {
@@ -4402,7 +4596,28 @@ export type UserTierCourseSummaryCoreFieldsFragment = {
         n_points: number
         max_points: number
         progress: number
+        name: string | null
         custom_id: string | null
+        exercise_completions: Array<{
+          __typename?: "ExerciseCompletion"
+          tier: number | null
+          max_points: number | null
+          id: string
+          exercise_id: string | null
+          user_id: string | null
+          created_at: any | null
+          updated_at: any | null
+          attempted: boolean | null
+          completed: boolean | null
+          timestamp: any
+          n_points: number | null
+          exercise_completion_required_actions: Array<{
+            __typename?: "ExerciseCompletionRequiredAction"
+            id: string
+            exercise_completion_id: string | null
+            value: string
+          }>
+        }> | null
       }>
     } | null
     exercise_progress: {
@@ -6155,7 +6370,28 @@ export type UserSummaryQuery = {
             n_points: number
             max_points: number
             progress: number
+            name: string | null
             custom_id: string | null
+            exercise_completions: Array<{
+              __typename?: "ExerciseCompletion"
+              tier: number | null
+              max_points: number | null
+              id: string
+              exercise_id: string | null
+              user_id: string | null
+              created_at: any | null
+              updated_at: any | null
+              attempted: boolean | null
+              completed: boolean | null
+              timestamp: any
+              n_points: number | null
+              exercise_completion_required_actions: Array<{
+                __typename?: "ExerciseCompletionRequiredAction"
+                id: string
+                exercise_completion_id: string | null
+                value: string
+              }>
+            }> | null
           }>
         } | null
         exercise_progress: {
@@ -6304,7 +6540,28 @@ export type UserSummaryQuery = {
               n_points: number
               max_points: number
               progress: number
+              name: string | null
               custom_id: string | null
+              exercise_completions: Array<{
+                __typename?: "ExerciseCompletion"
+                tier: number | null
+                max_points: number | null
+                id: string
+                exercise_id: string | null
+                user_id: string | null
+                created_at: any | null
+                updated_at: any | null
+                attempted: boolean | null
+                completed: boolean | null
+                timestamp: any
+                n_points: number | null
+                exercise_completion_required_actions: Array<{
+                  __typename?: "ExerciseCompletionRequiredAction"
+                  id: string
+                  exercise_completion_id: string | null
+                  value: string
+                }>
+              }> | null
             }>
           } | null
           exercise_progress: {
@@ -6561,7 +6818,28 @@ export type CurrentUserProgressesQuery = {
             n_points: number
             max_points: number
             progress: number
+            name: string | null
             custom_id: string | null
+            exercise_completions: Array<{
+              __typename?: "ExerciseCompletion"
+              tier: number | null
+              max_points: number | null
+              id: string
+              exercise_id: string | null
+              user_id: string | null
+              created_at: any | null
+              updated_at: any | null
+              attempted: boolean | null
+              completed: boolean | null
+              timestamp: any
+              n_points: number | null
+              exercise_completion_required_actions: Array<{
+                __typename?: "ExerciseCompletionRequiredAction"
+                id: string
+                exercise_completion_id: string | null
+                value: string
+              }>
+            }> | null
           }>
         } | null
         exercise_progress: {
@@ -6834,7 +7112,28 @@ export type StudentProgressesQuery = {
                   n_points: number
                   max_points: number
                   progress: number
+                  name: string | null
                   custom_id: string | null
+                  exercise_completions: Array<{
+                    __typename?: "ExerciseCompletion"
+                    tier: number | null
+                    max_points: number | null
+                    id: string
+                    exercise_id: string | null
+                    user_id: string | null
+                    created_at: any | null
+                    updated_at: any | null
+                    attempted: boolean | null
+                    completed: boolean | null
+                    timestamp: any
+                    n_points: number | null
+                    exercise_completion_required_actions: Array<{
+                      __typename?: "ExerciseCompletionRequiredAction"
+                      id: string
+                      exercise_completion_id: string | null
+                      value: string
+                    }>
+                  }> | null
                 }>
               } | null
               exercise_progress: {
@@ -10021,6 +10320,118 @@ export const TierInfoFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<TierInfoFieldsFragment, unknown>
+export const ExerciseCompletionCoreFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ExerciseCompletionCoreFieldsFragment, unknown>
+export const TierProgressExerciseCompletionFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  TierProgressExerciseCompletionFieldsFragment,
+  unknown
+>
 export const TierProgressFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -10039,7 +10450,83 @@ export const TierProgressFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
         ],
       },
     },
@@ -10095,6 +10582,65 @@ export const ProgressExtraFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -10130,7 +10676,24 @@ export const ProgressExtraFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -10216,6 +10779,65 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -10229,7 +10851,24 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -10401,6 +11040,65 @@ export const ProgressCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -10414,7 +11112,24 @@ export const ProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -10646,6 +11361,65 @@ export const UserProgressesFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -10659,7 +11433,24 @@ export const UserProgressesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -11477,6 +12268,65 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -11490,7 +12340,24 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -12062,51 +12929,6 @@ export const UserCourseSummaryCourseFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserCourseSummaryCourseFieldsFragment, unknown>
-export const ExerciseCompletionCoreFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "ExerciseCompletion" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
-          { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "created_at" } },
-          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
-          { kind: "Field", name: { kind: "Name", value: "attempted" } },
-          { kind: "Field", name: { kind: "Name", value: "completed" } },
-          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
-          { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          {
-            kind: "Field",
-            name: {
-              kind: "Name",
-              value: "exercise_completion_required_actions",
-            },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "exercise_completion_id" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "value" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ExerciseCompletionCoreFieldsFragment, unknown>
 export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -12306,6 +13128,65 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -12319,7 +13200,24 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -12420,46 +13318,6 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "ExerciseCoreFields" },
                 },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "ExerciseCompletion" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
-          { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "created_at" } },
-          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
-          { kind: "Field", name: { kind: "Name", value: "attempted" } },
-          { kind: "Field", name: { kind: "Name", value: "completed" } },
-          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
-          { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          {
-            kind: "Field",
-            name: {
-              kind: "Name",
-              value: "exercise_completion_required_actions",
-            },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "exercise_completion_id" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "value" } },
               ],
             },
           },
@@ -12780,6 +13638,65 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -12793,7 +13710,24 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -12976,46 +13910,6 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "ExerciseCoreFields" },
                 },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "ExerciseCompletion" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
-          { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "created_at" } },
-          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
-          { kind: "Field", name: { kind: "Name", value: "attempted" } },
-          { kind: "Field", name: { kind: "Name", value: "completed" } },
-          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
-          { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          {
-            kind: "Field",
-            name: {
-              kind: "Name",
-              value: "exercise_completion_required_actions",
-            },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "exercise_completion_id" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "value" } },
               ],
             },
           },
@@ -20580,6 +21474,25 @@ export const UserSummaryDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -20593,7 +21506,24 @@ export const UserSummaryDocument = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -21867,6 +22797,65 @@ export const CurrentUserProgressesDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -21880,7 +22869,24 @@ export const CurrentUserProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -22909,6 +23915,65 @@ export const StudentProgressesDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierProgressFields" },
       typeCondition: {
         kind: "NamedType",
@@ -22922,7 +23987,24 @@ export const StudentProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },

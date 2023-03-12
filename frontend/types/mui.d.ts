@@ -159,4 +159,59 @@ declare module "@mui/material/styles" {
     dark2?: string
     dark3?: string
   }
+
+  //
+
+  interface ComponentNameToClassKey {
+    MUIDataTableHeadCell:
+      | "root"
+      | "contentWrapper"
+      | "data"
+      | "dragCursor"
+      | "fixedHeader"
+      | "hintIconAlone"
+      | "hintIconWithSortIcon"
+      | "mypopper"
+      | "sortAction"
+      | "sortActive"
+      | "sortLabelRoot"
+      | "toolButton"
+      | "tooltip"
+    MUIDataTable:
+      | "root"
+      | "caption"
+      | "liveAnnounce"
+      | "paper"
+      | "responsiveScroll"
+      | "tableRoot"
+      | "responsiveBase" // not sure it's there
+
+    MUIDataTableToolbar:
+      | "root"
+      | "actions"
+      | "filterCloseIcon"
+      | "filterPaper"
+      | "fullWidthActions"
+      | "fullWidthLeft"
+      | "fullWidthRoot"
+      | "fullWidthTitleText"
+      | "icon"
+      | "iconActive"
+      | "left"
+      | "searchIcon"
+      | "titleRoot"
+      | "titleText"
+  }
+
+  interface Components<Theme = unknown> {
+    MUIDataTableHeadCell?: {
+      styleOverrides?: ComponentsOverrides<Theme>["MUIDataTableHeadCell"]
+    }
+    MUIDataTable?: {
+      styleOverrides?: ComponentsOverrides<Theme>["MUIDataTable"]
+    }
+    MUIDataTableToolbar?: {
+      styleOverrides?: ComponentsOverrides<Theme>["MUIDataTableToolbar"]
+    }
+  }
 }

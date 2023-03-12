@@ -138,14 +138,14 @@ export const UserCourseProgress = objectType({
 
     t.field("extra", {
       type: "ProgressExtra",
-      resolve: async ({ id }, _, ctx) => {
+      resolve: async ({ id, user_id }, _, ctx) => {
         const progress = await ctx.prisma.userCourseProgress.findUnique({
           where: {
             id,
           },
         })
 
-        if (!progress?.extra) {
+        if (!progress?.extra || !user_id) {
           return null
         }
 
@@ -158,6 +158,7 @@ export const UserCourseProgress = objectType({
         }))
         const exercises = Object.keys(extra.exercises).map((key) => ({
           exercise_number: Number(key),
+          user_id,
           ...extra.exercises[key],
         }))
 

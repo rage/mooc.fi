@@ -37,5 +37,15 @@ fragment TierProgressFields on TierProgress {
   n_points
   max_points
   progress
+  name
   custom_id
+  exercise_completions {
+    ...TierProgressExerciseCompletionFields
+  } 
+}
+
+fragment TierProgressExerciseCompletionFields on ExerciseCompletion {
+  ...ExerciseCompletionCoreFields
+  tier
+  max_points
 }

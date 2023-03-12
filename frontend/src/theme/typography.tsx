@@ -54,6 +54,13 @@ export const withTypography = (theme: Theme) =>
           fontSize: 16,
         },
       },
+      h6: {
+        ...openSansCondensedDeclaration,
+        fontSize: 10,
+        "@media (min-width: 600px)": {
+          fontSize: 12,
+        },
+      },
       subtitle1: {
         ...openSansCondensedDeclaration,
         fontSize: 18,
