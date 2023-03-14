@@ -40,8 +40,8 @@ By default, `node-rdkafka` builds `librdkafka` from the source. This can take mi
 Do this in some other directory than the project one:
 
 ```bash
-wget https://github.com/edenhill/librdkafka/archive/v1.8.2.tar.gz  -O - | tar -xz
-cd librdkafka-1.8.2
+wget https://github.com/edenhill/librdkafka/archive/v2.0.2.tar.gz  -O - | tar -xz
+cd librdkafka-2.0.2
 ./configure --prefix=/usr
 make && make install
 ```
