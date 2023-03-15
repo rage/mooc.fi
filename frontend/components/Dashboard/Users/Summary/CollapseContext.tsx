@@ -2,7 +2,10 @@ import { createContext, Dispatch, useContext } from "react"
 
 import { produce } from "immer"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
+import {
+  UserCourseSummaryCoreFieldsFragment,
+  UserTierCourseSummaryCoreFieldsFragment,
+} from "/graphql/generated"
 
 export type ExerciseState = Record<string, boolean>
 export type CourseState = {
@@ -187,38 +190,45 @@ export const initialState: CollapseState = {
   loading: true,
 }
 
+const createCoursesState = (
+  data: Array<
+    | UserCourseSummaryCoreFieldsFragment
+    | UserTierCourseSummaryCoreFieldsFragment
+  >,
+  open = true,
+) =>
+  data?.reduce<CollapseState["courses"]>(
+    (collapseState, courseEntry) => ({
+      ...collapseState,
+      [courseEntry?.course?.id ?? "_"]: {
+        open,
+        exercises:
+          courseEntry?.exercise_completions?.reduce<ExerciseState>(
+            (exerciseState, exerciseCompletion) => ({
+              ...exerciseState,
+              [exerciseCompletion?.id ?? "_"]: false,
+            }),
+            {},
+          ) ?? {},
+        completion: false,
+        points: false,
+      },
+    }),
+    {},
+  ) ?? {}
+
 export const createCollapseState = (
   data?: UserCourseSummaryCoreFieldsFragment[],
-) => {
-  const flattenedData = [
-    ...(data ?? []),
-    ...(data?.flatMap((d) => d?.tier_summaries ?? []) ?? []),
-  ]
-
-  return {
-    courses:
-      flattenedData?.reduce<CollapseState["courses"]>(
-        (collapseState, courseEntry) => ({
-          ...collapseState,
-          [courseEntry?.course?.id ?? "_"]: {
-            open: true,
-            exercises:
-              courseEntry?.exercise_completions?.reduce<ExerciseState>(
-                (exerciseState, exerciseCompletion) => ({
-                  ...exerciseState,
-                  [exerciseCompletion?.id ?? "_"]: false,
-                }),
-                {},
-              ) ?? {},
-            completion: false,
-            points: false,
-          },
-        }),
-        {},
-      ) ?? {},
-    loading: false,
-  }
-}
+) => ({
+  courses: {
+    ...createCoursesState(data ?? []),
+    ...createCoursesState(
+      data?.flatMap((d) => d?.tier_summaries ?? []) ?? [],
+      false,
+    ),
+  },
+  loading: false,
+})
 
 const CollapseContextImpl = createContext<CollapseContext>({
   state: { courses: {}, loading: true },
