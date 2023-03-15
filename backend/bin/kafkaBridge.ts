@@ -83,16 +83,18 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
 
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
-    return flushProducer(1000)
+    flushProducer(1000)
+    /*return flushProducer(1000)
       .then(() => res.json({ msg: "Thanks!" }).send())
       .catch((err) => {
         logger.warn(new KafkaError("Flushing the producer failed", err))
         return res.status(500).json({ error: err.toString() }).send()
-      })
+      })*/
   } catch (e: any) {
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
   }
+  return res.json({ msg: "Thanks!" }).send()
 })
 
 app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
