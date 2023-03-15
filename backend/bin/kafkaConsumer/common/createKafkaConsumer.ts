@@ -47,7 +47,7 @@ export const createKafkaConsumer = ({
     "metadata.broker.list": KAFKA_HOST,
     offset_commit_cb: logCommit(logger),
     "enable.auto.commit": false,
-    "partition.assignment.strategy": "roundrobin",
+    "partition.assignment.strategy": "cooperative-sticky",
   }
   if (KAFKA_DEBUG_CONTEXTS) {
     globalConfig["debug"] = KAFKA_DEBUG_CONTEXTS
