@@ -14,6 +14,7 @@ import {
 } from "../config"
 import { KafkaError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
+import { KafkaPartitionAssigner } from "./kafkaPartitionAssigner"
 
 const logger = sentryLogger({ service: "kafka-bridge" })
 
@@ -26,7 +27,9 @@ const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
   "metadata.broker.list": KAFKA_HOST,
   dr_cb: true,
+  "statistics.interval.ms": 60000, // 1 minute
 })
+const kafkaPartitionAssigner = new KafkaPartitionAssigner(logger)
 
 const flushProducer = promisify(producer.flush.bind(producer))
 
@@ -51,6 +54,8 @@ producer.on("delivery-report", function (err, report) {
   }
   logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
+
+producer.on("event.stats", kafkaPartitionAssigner.handleEventStatsData)
 
 const app = express()
 
@@ -83,7 +88,8 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
   try {
-    producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
+    const partition = kafkaPartitionAssigner.getRecommendedPartition(topic)
+    producer.produce(topic, partition, Buffer.from(JSON.stringify(payload)))
   } catch (e: any) {
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
