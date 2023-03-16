@@ -27,7 +27,7 @@ const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
   "metadata.broker.list": KAFKA_HOST,
   dr_cb: true,
-  "statistics.interval.ms": 60000, // 1 minute
+  // "statistics.interval.ms": 60000, // 1 minute
 })
 let kafkaPartitionAssigner: KafkaPartitionAssigner | undefined
 
@@ -44,7 +44,15 @@ producer.connect(undefined, (err, data) => {
     return
   }
   logger.info("Connected to producer", data)
-  kafkaPartitionAssigner = new KafkaPartitionAssigner(logger)
+  kafkaPartitionAssigner = new KafkaPartitionAssigner(producer, logger)
+
+  const updatePartitionData = async () => {
+    await kafkaPartitionAssigner?.refreshMetadata()
+    await kafkaPartitionAssigner?.updateConsumerLags()
+
+    setTimeout(updatePartitionData, 60000)
+  }
+  updatePartitionData()
 })
 
 producer.setPollInterval(100)
@@ -54,14 +62,15 @@ producer.on("delivery-report", function (err, report) {
     logger.error(new KafkaError("Delivery report error", err))
   }
   logger.info(`Delivery report ${JSON.stringify(report)}`)
+  kafkaPartitionAssigner?.updateTopicPartitionOffset(report)
 })
 
-producer.on("event.stats", (eventData: any) => {
+/*producer.on("event.stats", (eventData: any) => {
   if (!kafkaPartitionAssigner) {
     return
   }
   return kafkaPartitionAssigner.handleEventStatsData(eventData)
-})
+})*/
 
 const app = express()
 
