@@ -91,6 +91,7 @@ export class KafkaPartitionAssigner {
 
   async refreshMetadata() {
     let metadata: Kafka.Metadata
+    this.logger.info("Refreshing metadata")
     try {
       metadata = await this.getMetadata({ timeout: 5000 })
     } catch (e: any) {
@@ -98,6 +99,7 @@ export class KafkaPartitionAssigner {
       return
     }
 
+    this.logger.info("Metadata: " + JSON.stringify(metadata))
     this.metadata = metadata
   }
 
@@ -105,6 +107,11 @@ export class KafkaPartitionAssigner {
     const topic = topicMetadata.name
     const partitions = topicMetadata.partitions.filter((p) => p.id >= 0)
 
+    if (partitions.length < 2) {
+      delete this.topicMedianConsumerLag[topic]
+      delete this.recommendedPartitions[topic]
+      return
+    }
     let partitionOffsets: Array<Kafka.WatermarkOffsets>
 
     // this.logger.info("Getting consumer lag for topic " + topic)
@@ -148,7 +155,8 @@ export class KafkaPartitionAssigner {
     this.topicPartitionConsumerLags[topic] = newConsumerLags
     const positiveLags = Object.values(newConsumerLags).filter((n) => n >= 0)
     if (positiveLags.length === 0) {
-      this.topicMedianConsumerLag[topic] = -1
+      delete this.topicMedianConsumerLag[topic]
+      delete this.recommendedPartitions[topic]
     } else {
       this.topicMedianConsumerLag[topic] = median(positiveLags)
     }
@@ -175,11 +183,13 @@ export class KafkaPartitionAssigner {
     for (const topic in this.topicPartitionConsumerLags) {
       const lag = this.topicPartitionConsumerLags[topic]
       const medianLag = this.topicMedianConsumerLag[topic]
-      this.logger.info(
-        `Consumer lag for partitions in topic ${topic} is ${JSON.stringify(
-          lag,
-        )} (median: ${medianLag})`,
-      )
+      if (Object.keys(lag).length > 1) {
+        this.logger.info(
+          `Consumer lag for partitions in topic ${topic} is ${JSON.stringify(
+            lag,
+          )} (median: ${medianLag})`,
+        )
+      }
     }
   }
 
@@ -191,7 +201,7 @@ export class KafkaPartitionAssigner {
       const recommendedPartitions: Array<number> = []
 
       for (const [partition, lag] of Object.entries(partitionLag)) {
-        if (lag >= 0 && lag <= medianConsumerLag) {
+        if (lag < medianConsumerLag) {
           recommendedPartitions.push(Number(partition))
         }
       }
