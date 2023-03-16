@@ -31,6 +31,8 @@ export class KafkaPartitionAssigner {
     this.topicMedianConsumerLag = {}
     this.recommendedPartitions = {}
     this.topicCounter = {}
+
+    logger.info("KafkaPartitionAssigner initialized")
   }
 
   handleEventStatsData(data: EventStatsData) {

@@ -36,7 +36,6 @@ const flushProducer = promisify(producer.flush.bind(producer))
 let producerReady = false
 producer.on("ready", () => {
   producerReady = true
-  kafkaPartitionAssigner = new KafkaPartitionAssigner(logger)
 })
 
 producer.connect(undefined, (err, data) => {
@@ -45,6 +44,7 @@ producer.connect(undefined, (err, data) => {
     return
   }
   logger.info("Connected to producer", data)
+  kafkaPartitionAssigner = new KafkaPartitionAssigner(logger)
 })
 
 producer.setPollInterval(100)
@@ -56,13 +56,12 @@ producer.on("delivery-report", function (err, report) {
   logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
 
-producer.on(
-  "event.stats",
-  kafkaPartitionAssigner?.handleEventStatsData ??
-    (() => {
-      return
-    }),
-)
+producer.on("event.stats", (eventData: any) => {
+  if (!kafkaPartitionAssigner) {
+    return
+  }
+  return kafkaPartitionAssigner.handleEventStatsData(eventData)
+})
 
 const app = express()
 
