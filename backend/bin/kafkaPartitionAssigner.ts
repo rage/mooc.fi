@@ -79,7 +79,14 @@ export class KafkaPartitionAssigner {
     if (!this.topicPartitionOffsets[topic]) {
       this.topicPartitionOffsets[topic] = {}
     }
-    this.topicPartitionOffsets[topic][partition] = offset
+    const offsetNumber = Number(offset)
+    if (offsetNumber < 0 || Number.isNaN(offsetNumber)) {
+      delete this.topicPartitionOffsets[topic][partition]
+
+      return
+    }
+
+    this.topicPartitionOffsets[topic][partition] = offsetNumber
   }
 
   async refreshMetadata() {
@@ -87,7 +94,7 @@ export class KafkaPartitionAssigner {
     try {
       metadata = await this.getMetadata({ timeout: 5000 })
     } catch (e: any) {
-      this.logger.info("Could not get metadata from Kafka: " + e.message)
+      this.logger.warn("Could not get metadata from Kafka: " + e.message)
       return
     }
 
@@ -100,7 +107,7 @@ export class KafkaPartitionAssigner {
 
     let partitionOffsets: Array<Kafka.WatermarkOffsets>
 
-    this.logger.info("Getting consumer lag for topic " + topic)
+    // this.logger.info("Getting consumer lag for topic " + topic)
     try {
       partitionOffsets = await Promise.all(
         partitions.map((p) =>
@@ -123,22 +130,28 @@ export class KafkaPartitionAssigner {
     for (let i = 0; i < partitions.length; i++) {
       const partition = partitions[i]
       const partitionOffset = partitionOffsets[i]
-      if (
-        !this.topicPartitionOffsets[topic][partition.id] ||
-        !partitionOffset.highOffset
-      ) {
+      if (!this.topicPartitionOffsets[topic][partition.id]) {
         newConsumerLags[partition.id] = -1
         continue
       }
-      const lag =
-        partitionOffset.highOffset -
-        this.topicPartitionOffsets[topic][partition.id]
+
+      const highOffset = Number(partitionOffset.highOffset)
+      if (Number.isNaN(highOffset) || highOffset < 0) {
+        newConsumerLags[partition.id] = -1
+
+        continue
+      }
+
+      const lag = highOffset - this.topicPartitionOffsets[topic][partition.id]
       newConsumerLags[partition.id] = lag
     }
     this.topicPartitionConsumerLags[topic] = newConsumerLags
-    this.topicMedianConsumerLag[topic] = median(
-      Object.values(newConsumerLags).filter((n) => n >= 0),
-    )
+    const positiveLags = Object.values(newConsumerLags).filter((n) => n >= 0)
+    if (positiveLags.length === 0) {
+      this.topicMedianConsumerLag[topic] = -1
+    } else {
+      this.topicMedianConsumerLag[topic] = median(positiveLags)
+    }
   }
 
   async updateConsumerLags() {
@@ -149,6 +162,9 @@ export class KafkaPartitionAssigner {
     }
 
     for (const topicMetadata of this.metadata.topics) {
+      if (topicMetadata.name.startsWith("__")) {
+        continue
+      }
       await this.getConsumerLag(topicMetadata)
     }
     this.logConsumerLag()
@@ -160,7 +176,9 @@ export class KafkaPartitionAssigner {
       const lag = this.topicPartitionConsumerLags[topic]
       const medianLag = this.topicMedianConsumerLag[topic]
       this.logger.info(
-        `Consumer lag for partitions in topic ${topic} is ${lag} (median: ${medianLag})`,
+        `Consumer lag for partitions in topic ${topic} is ${JSON.stringify(
+          lag,
+        )} (median: ${medianLag})`,
       )
     }
   }
