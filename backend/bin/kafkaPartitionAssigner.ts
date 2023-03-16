@@ -1,16 +1,16 @@
 import * as winston from "winston"
 
-type EventStatsData = {
+type StatsEventMessage = {
   name: string
-  topics: { [key in string]: EventStatsTopic }
+  topics: { [key in string]: Topic }
 }
 
-type EventStatsTopic = {
+type Topic = {
   topic: string
-  partitions: { [key in string]: EventStatsPartition }
+  partitions: { [key in string]: Partition }
 }
 
-type EventStatsPartition = {
+type Partition = {
   partition: number
   broker: number
   leader: number
@@ -18,8 +18,12 @@ type EventStatsPartition = {
   consumer_lag_stored: number
 }
 
+type StatsEvent = {
+  message: StatsEventMessage
+}
+
 export class KafkaPartitionAssigner {
-  topicPartitionStats: { [key in string]: Array<EventStatsPartition> }
+  topicPartitionStats: { [key in string]: Array<Partition> }
   topicMedianConsumerLag: { [key in string]: number }
   private recommendedPartitions: { [key in string]: Array<number> }
   private topicCounter: { [key in string]: number }
@@ -35,12 +39,18 @@ export class KafkaPartitionAssigner {
     logger.info("KafkaPartitionAssigner initialized")
   }
 
-  handleEventStatsData(data: EventStatsData) {
-    const { topics } = data
+  handleEventStatsData(event: StatsEvent) {
+    const { message } = event
+    if (!message) {
+      this.logger.warn("Received stats event but no message")
+      return
+    }
 
     this.logger.info(
-      `Received internal metrics report: ${JSON.stringify(data)}`,
+      `Received internal metrics report: ${JSON.stringify(message)}`,
     )
+
+    const { topics } = message
 
     if (!topics) {
       return
@@ -48,7 +58,7 @@ export class KafkaPartitionAssigner {
 
     for (const topic in topics) {
       const { partitions } = topics[topic]
-      const newTopicPartitions: Array<EventStatsPartition> = []
+      const newTopicPartitions: Array<Partition> = []
 
       for (const partition in partitions) {
         if (Number(partition) < 0) {

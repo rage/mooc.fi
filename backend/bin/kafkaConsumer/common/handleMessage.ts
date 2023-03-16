@@ -119,7 +119,7 @@ const reportQueueLength = (
     5000,
     (err, offsets) => {
       if (err) {
-        ctx.logger.error(
+        ctx.logger.warn(
           `Could not get offsets for topic ${ctx.topic_name} partition ${partition_id}`,
         )
         return
