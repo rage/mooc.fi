@@ -29,13 +29,14 @@ const producer = new Kafka.Producer({
   dr_cb: true,
   "statistics.interval.ms": 60000, // 1 minute
 })
-const kafkaPartitionAssigner = new KafkaPartitionAssigner(logger)
+let kafkaPartitionAssigner: KafkaPartitionAssigner | undefined
 
 const flushProducer = promisify(producer.flush.bind(producer))
 
 let producerReady = false
 producer.on("ready", () => {
   producerReady = true
+  kafkaPartitionAssigner = new KafkaPartitionAssigner(logger)
 })
 
 producer.connect(undefined, (err, data) => {
@@ -55,7 +56,13 @@ producer.on("delivery-report", function (err, report) {
   logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
 
-producer.on("event.stats", kafkaPartitionAssigner.handleEventStatsData)
+producer.on(
+  "event.stats",
+  kafkaPartitionAssigner?.handleEventStatsData ??
+    (() => {
+      return
+    }),
+)
 
 const app = express()
 
@@ -88,7 +95,8 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
   try {
-    const partition = kafkaPartitionAssigner.getRecommendedPartition(topic)
+    const partition =
+      kafkaPartitionAssigner?.getRecommendedPartition(topic) ?? null
     producer.produce(topic, partition, Buffer.from(JSON.stringify(payload)))
   } catch (e: any) {
     logger.error(new KafkaError("Producing to kafka failed", e))

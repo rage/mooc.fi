@@ -23,8 +23,10 @@ export class KafkaPartitionAssigner {
   topicMedianConsumerLag: { [key in string]: number }
   private recommendedPartitions: { [key in string]: Array<number> }
   private topicCounter: { [key in string]: number }
+  private logger: winston.Logger
 
-  constructor(private logger: winston.Logger) {
+  constructor(logger: winston.Logger) {
+    this.logger = logger
     this.topicPartitionStats = {}
     this.topicMedianConsumerLag = {}
     this.recommendedPartitions = {}
