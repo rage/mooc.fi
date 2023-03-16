@@ -5,6 +5,7 @@ import {
   Exercise,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
+  Prisma,
   User,
 } from "@prisma/client"
 
@@ -201,7 +202,7 @@ export const saveToDatabase = async (
       }
     }
 
-    const data = {
+    const data: Prisma.ExerciseCompletionCreateInput = {
       exercise: {
         connect: { id: exercise.id },
       },
@@ -227,6 +228,8 @@ export const saveToDatabase = async (
         logger.warn(
           `Inserting exercise completion failed ${e.name}: ${e.message}`,
         )
+      } else {
+        logger.warn(`Inserting exercise completion failed: ${String(e)}`)
       }
     }
   } else {

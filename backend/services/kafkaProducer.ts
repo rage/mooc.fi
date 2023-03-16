@@ -51,7 +51,7 @@ export default class KafkaProducer {
             message.topic,
             message.partition,
             Buffer.from(message.message),
-            "", // TODO/FIXME: message key missing?
+            null,
             Date.now(),
           )
         } catch (err) {
