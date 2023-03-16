@@ -25,6 +25,7 @@ if (!KAFKA_BRIDGE_SECRET) {
 const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
   "metadata.broker.list": KAFKA_HOST,
+  dr_cb: true,
 })
 
 const flushProducer = promisify(producer.flush.bind(producer))
