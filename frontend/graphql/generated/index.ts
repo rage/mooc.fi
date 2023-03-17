@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-09T23:07:00+02:00
+// Generated on 2023-03-17T15:10:36+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1558,9 +1558,11 @@ export type PointsByGroup = {
 export type Progress = {
   __typename?: "Progress"
   course: Maybe<Course>
+  course_id: Maybe<Scalars["ID"]>
   user: Maybe<User>
   user_course_progress: Maybe<UserCourseProgress>
   user_course_service_progresses: Maybe<Array<UserCourseServiceProgress>>
+  user_id: Maybe<Scalars["ID"]>
 }
 
 export type Query = {
@@ -1787,7 +1789,7 @@ export type QueryuserCourseProgressArgs = {
 export type QueryuserCourseProgressesArgs = {
   course_id?: InputMaybe<Scalars["ID"]>
   course_slug?: InputMaybe<Scalars["String"]>
-  cursor?: InputMaybe<UserCourseProgressWhereUniqueInput>
+  cursor?: InputMaybe<UserCourseProgressCursorInput>
   skip?: InputMaybe<Scalars["Int"]>
   take?: InputMaybe<Scalars["Int"]>
   user_id?: InputMaybe<Scalars["ID"]>
@@ -2355,13 +2357,13 @@ export type UserCourseProgressuser_course_service_progressesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type UserCourseProgressCursorInput = {
+  id: Scalars["ID"]
+}
+
 export type UserCourseProgressOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
   count?: InputMaybe<SortOrder>
-}
-
-export type UserCourseProgressWhereUniqueInput = {
-  id?: InputMaybe<Scalars["String"]>
 }
 
 export type UserCourseServiceProgress = {
