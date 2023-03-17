@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-17T15:10:36+02:00
+// Generated on 2023-03-17T22:44:43+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1065,11 +1065,11 @@ export type MutationaddExerciseArgs = {
 }
 
 export type MutationaddExerciseCompletionArgs = {
-  exercise?: InputMaybe<Scalars["ID"]>
+  exercise_id?: InputMaybe<Scalars["ID"]>
   n_points?: InputMaybe<Scalars["Int"]>
   original_submission_date?: InputMaybe<Scalars["DateTime"]>
   timestamp?: InputMaybe<Scalars["DateTime"]>
-  user?: InputMaybe<Scalars["ID"]>
+  user_id?: InputMaybe<Scalars["ID"]>
 }
 
 export type MutationaddImageArgs = {
@@ -2269,6 +2269,7 @@ export type Useremail_deliveriesArgs = {
 }
 
 export type Userexercise_completionsArgs = {
+  course_id?: InputMaybe<Scalars["ID"]>
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
 }
 

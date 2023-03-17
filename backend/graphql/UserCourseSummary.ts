@@ -112,7 +112,34 @@ export const UserCourseSummary = objectType({
           ? includeNoPointsAwarded
           : include_no_points_awarded_exercises
 
-        return ctx.prisma.user
+        const data = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .exercises({
+            where: {
+              ...(!noPoints && {
+                max_points: { gt: 0 },
+              }),
+              ...(!deleted && {
+                // same here: { deleted: { not: true } } will skip null
+                OR: [{ deleted: false }, { deleted: null }],
+              }),
+            },
+            select: {
+              exercise_completions: {
+                where: {
+                  user_id,
+                },
+                orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+                take: 1,
+              },
+            },
+          })
+
+        return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
+        // TODO/FIXME: testing if this actually reomves any extra joins
+        /*return ctx.prisma.user
           .findUnique({
             where: { id: user_id },
           })
@@ -131,7 +158,7 @@ export const UserCourseSummary = objectType({
             },
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
             distinct: "exercise_id",
-          })
+          })*/
       },
     })
 

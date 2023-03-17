@@ -1,7 +1,7 @@
 import * as faker from "faker"
 import { sample } from "lodash"
 
-import { Exercise } from "@prisma/client"
+import { Exercise, Prisma } from "@prisma/client"
 
 import prisma from "../prisma"
 
@@ -53,7 +53,7 @@ const addExerciseCompletions = async () => {
         if (!exercise) {
           return
         }
-        const data = {
+        const data: Prisma.ExerciseCompletionCreateInput = {
           ...createExerciseCompletion(exercise),
           user: { connect: { id: user.id } },
           exercise: { connect: { id: exercise.id } },

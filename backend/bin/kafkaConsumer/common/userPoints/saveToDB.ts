@@ -132,9 +132,7 @@ const getExerciseAndCompletions = async (
     })
     .exercise_completions({
       where: {
-        exercise: {
-          id: exercise.id,
-        },
+        exercise_id: exercise.id,
       },
       orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
       include: {

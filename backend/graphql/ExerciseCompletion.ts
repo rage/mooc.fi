@@ -92,17 +92,17 @@ export const ExerciseCompletionMutations = extendType({
       type: "ExerciseCompletion",
       args: {
         n_points: intArg(),
-        exercise: idArg(),
-        user: idArg(),
+        exercise_id: idArg(),
+        user_id: idArg(),
         timestamp: arg({ type: "DateTime" }),
         original_submission_date: arg({ type: "DateTime" }),
       },
       authorize: isAdmin,
-      resolve: (_, args, ctx) => {
+      resolve: async (_, args, ctx) => {
         const {
           n_points,
-          exercise,
-          user,
+          exercise_id,
+          user_id,
           timestamp,
           original_submission_date,
         } = args
@@ -110,8 +110,10 @@ export const ExerciseCompletionMutations = extendType({
         return ctx.prisma.exerciseCompletion.create({
           data: {
             n_points,
-            exercise: exercise ? { connect: { id: exercise } } : undefined,
-            user: user ? { connect: { id: user } } : undefined,
+            exercise: exercise_id
+              ? { connect: { id: exercise_id } }
+              : undefined,
+            user: user_id ? { connect: { id: user_id } } : undefined,
             timestamp,
             original_submission_date,
           },
