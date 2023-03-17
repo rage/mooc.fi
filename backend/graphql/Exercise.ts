@@ -84,6 +84,14 @@ export const ExerciseQueries = extendType({
     t.crud.exercises({
       authorize: isAdmin,
     })
+
+    /*t.list.field("exercises", {
+      type: "exercise",
+      resolve: (_, __, ctx) => {
+        checkAccess(ctx)
+        return ctx.prisma.exercise.findMany()
+      },
+    })*/
   },
 })
 

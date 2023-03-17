@@ -136,14 +136,10 @@ export const CompletionQueries = extendType({
             )*/
 
             return (
-              await ctx.prisma.course
-                .findUnique({
-                  where: { id: course.completions_handled_by_id ?? course.id },
-                })
-                .completions({
-                  ...baseArgs,
-                  select: { id: true },
-                })
+              await ctx.prisma.completion.findMany({
+                ...baseArgs,
+                select: { id: true },
+              })
             ).length
           },
           { first, last, before, after },
