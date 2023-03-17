@@ -90,7 +90,7 @@ export const Completion = objectType({
     t.nonNull.field("project_completion", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        if (!parent.course_id) {
+        if (!parent.course_id || !parent.user_id) {
           return false
         }
 
@@ -102,14 +102,17 @@ export const Completion = objectType({
           return false
         }
 
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            course_id: { in: [BAIParentCourse, ...BAITierCourses] },
-            user_id: parent.user_id,
-          },
-          distinct: ["user_id", "course_id"],
-          orderBy: { created_at: "asc" },
-        })
+        const progresses = await ctx.prisma.user
+          .findUnique({
+            where: { id: parent.user_id },
+          })
+          .user_course_progresses({
+            where: {
+              course_id: { in: [BAIParentCourse, ...BAITierCourses] },
+            },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
+          })
 
         return (
           progresses?.some(
