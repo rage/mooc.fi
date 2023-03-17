@@ -3,7 +3,6 @@ import {
   extendType,
   floatArg,
   idArg,
-  inputObjectType,
   intArg,
   list,
   nonNull,
@@ -60,8 +59,8 @@ export const UserCourseProgress = objectType({
     t.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
-        if (!parent.course_id || !parent.user_id) {
-          throw new Error("progress not connected to course or user")
+        if (!parent.course_id) {
+          throw new Error("progress not connected to course")
         }
 
         const course = await ctx.prisma.course.findUnique({
@@ -72,10 +71,11 @@ export const UserCourseProgress = objectType({
           throw new Error("course not found")
         }
 
-        const settings = await ctx.prisma.user
+        const settings = await ctx.prisma.userCourseProgress
           .findUnique({
-            where: { id: parent.user_id },
+            where: { id: parent.id },
           })
+          .user()
           .user_course_settings({
             where: { course_id: course.inherit_settings_from_id ?? course.id },
             orderBy: {
@@ -145,19 +145,13 @@ export const UserCourseProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
-        const result = (
-          await ctx.prisma.course
-            .findUnique({
-              where: { id: course_id },
-            })
-            .user_course_progresses({
-              where: {
-                user_id,
-              },
-              orderBy: { created_at: "asc" },
-              take: 1,
-            })
-        )?.[0]
+        const result = await ctx.prisma.userCourseProgress.findFirst({
+          where: {
+            user_id,
+            course_id,
+          },
+          orderBy: { created_at: "asc" },
+        })
 
         if (!result) throw new GraphQLUserInputError("Not found")
 
@@ -174,7 +168,7 @@ export const UserCourseProgressQueries = extendType({
         course_id: idArg(),
         skip: intArg(),
         take: intArg(),
-        cursor: arg({ type: "UserCourseProgressCursorInput" }), // was: "UserCourseProgressWhereUniqueInput" but that broke for some reason
+        cursor: arg({ type: "UserCourseProgressWhereUniqueInput" }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -258,12 +252,5 @@ export const UserCourseProgressMutations = extendType({
         })
       },
     })
-  },
-})
-
-export const UserCourseProgressCursorInput = inputObjectType({
-  name: "UserCourseProgressCursorInput",
-  definition(t) {
-    t.nonNull.id("id")
   },
 })

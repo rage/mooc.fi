@@ -107,6 +107,41 @@ export const UserCourseServiceProgressQueries = extendType({
         )
       },
     })
+    /*t.list.field("UserCourseServiceProgresses", {
+      type: "user_course_service_progress",
+      args: {
+        user_id: schema.idArg(),
+        course_id: schema.idArg(),
+        service_id: schema.idArg(),
+        first: schema.intArg(),
+        after: schema.idArg(),
+        last: schema.intArg(),
+        before: schema.idArg(),
+      },
+      resolve: (_, args, ctx) => {
+        checkAccess(ctx)
+        const {
+          user_id,
+          course_id,
+          service_id,
+          first,
+          last,
+          before,
+          after,
+        } = args
+        return ctx.prisma.user_course_service_progress.findMany({
+          where: {
+            user: user_id,
+            course: course_id,
+            service: service_id,
+          },
+          first,
+          last,
+          before: { id: before },
+          after: { id: after },
+        })
+      },
+    })*/
   },
 })
 
