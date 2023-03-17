@@ -126,7 +126,7 @@ export class KafkaPartitionAssigner {
       this.topicPartitionOffsets.set(topic, new Map())
     }
 
-    for (const [partition, partitionOffset] of partitionOffsets) {
+    for (const [partition, partitionOffset] of partitionOffsets.entries()) {
       if (!this.topicPartitionOffsets.get(topic)?.has(partition)) {
         newConsumerLags.set(partition, -1)
         continue
@@ -234,7 +234,7 @@ export class KafkaPartitionAssigner {
   }
 
   private calculateRecommendedPartitions() {
-    for (const topic in this.topicMedianConsumerLag) {
+    for (const topic in this.topicMedianConsumerLag.keys()) {
       const medianConsumerLag = this.topicMedianConsumerLag.get(topic)
       const partitionLag = this.topicPartitionConsumerLags.get(topic)
       if (!medianConsumerLag || !partitionLag) {
