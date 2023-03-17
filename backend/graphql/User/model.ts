@@ -24,10 +24,10 @@ export const User = objectType({
     // t.model.completions()
     // t.model.completions_registered()
     t.model.email_deliveries()
-    t.model.exercise_completions()
+    // t.model.exercise_completions()
     t.model.organizations()
-    t.model.user_course_progresses()
-    t.model.user_course_service_progresses()
+    // t.model.user_course_progresses()
+    // t.model.user_course_service_progresses()
     t.model.user_course_settings()
     t.model.user_organizations()
     t.model.verified_users()
@@ -185,9 +185,9 @@ export const User = objectType({
         })
 
         return {
-          course,
-          user: parent,
-        } as any
+          course_id: course?.id,
+          user_id: parent.id,
+        }
       },
     })
 
