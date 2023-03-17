@@ -25,6 +25,8 @@ type StatsEvent = {
   message: StatsEventMessage
 }
 
+const DEBUG = false
+
 export class KafkaPartitionAssigner {
   private topicPartitionOffsets: Map<string, Map<number, number>>
   private topicPartitionConsumerLags: Map<string, Map<number, number>>
@@ -82,9 +84,10 @@ export class KafkaPartitionAssigner {
       return
     }
 
-    this.logger.info(
-      `DEBUG: Updated topic ${topic} partition ${partition} offset to ${offsetNumber}`,
-    )
+    DEBUG &&
+      this.logger.info(
+        `DEBUG: Updated topic ${topic} partition ${partition} offset to ${offsetNumber}`,
+      )
     this.topicPartitionOffsets.get(topic)?.set(partition, offsetNumber)
   }
 
@@ -114,11 +117,12 @@ export class KafkaPartitionAssigner {
     if (!partitionOffsets) {
       return
     }
-    this.logger.info(
-      `DEBUG: Partition offsets for ${topic}: ${stringifyMap(
-        partitionOffsets,
-      )}`,
-    )
+    DEBUG &&
+      this.logger.info(
+        `DEBUG: Partition offsets for ${topic}: ${stringifyMap(
+          partitionOffsets,
+        )}`,
+      )
 
     const newConsumerLags = new Map<number, number>()
 
