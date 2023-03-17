@@ -53,6 +53,8 @@ producer.connect(undefined, (err, data) => {
     setTimeout(updatePartitionData, 60000)
   }
   updatePartitionData()
+  // TODO: events start rolling in slowly, so it would be better to wait a bit
+  //setTimeout(updatePartitionData, 60000 * 2)
 })
 
 producer.setPollInterval(100)
