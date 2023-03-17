@@ -267,9 +267,36 @@ export const User = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
+        course_id: idArg(),
         includeDeleted: booleanArg(),
       },
-      resolve: async (parent, { includeDeleted = false }, ctx) => {
+      resolve: async (parent, { course_id, includeDeleted = false }, ctx) => {
+        if (course_id) {
+          const data = await ctx.prisma.course
+            .findUnique({
+              where: { id: course_id },
+            })
+            .exercises({
+              ...(!includeDeleted && {
+                where: {
+                  // same here: { deleted: { not: true } } will skip null
+                  OR: [{ deleted: false }, { deleted: null }],
+                },
+              }),
+              select: {
+                exercise_completions: {
+                  where: {
+                    user_id: parent.id,
+                  },
+                  orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+                  take: 1,
+                },
+              },
+            })
+          return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
+        }
+
+        // TODO/FIXME: testing if ^ removes some joins; need to update queries that use it
         return ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
