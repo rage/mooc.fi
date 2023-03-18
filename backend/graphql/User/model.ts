@@ -1,8 +1,9 @@
+import { omit } from "lodash"
 import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
-import { UserInputError } from "../../lib/errors"
+import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
 import { getCourseOrAlias } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
@@ -243,6 +244,7 @@ export const User = objectType({
     // TODO/FIXME: is this used anywhere? if is, find better name
     t.field("user_course_progressess", {
       type: "UserCourseProgress",
+      deprecation: "Use user_course_progresses instead",
       args: {
         course_id: idArg(),
       },
@@ -325,14 +327,54 @@ export const User = objectType({
           description:
             "Include deleted exercises. Only affects the exercise completion results; can be overridden later.",
         }),
+        course_id: idArg({
+          description:
+            "If specified, only return the summary for the given course. Otherwise, return the summary for all courses with at least one exercise completion.",
+        }),
+        course_slug: stringArg({
+          description:
+            "If specified, only return the summary for the given course. Otherwise, return the summary for all courses with at least one exercise completion.",
+        }),
       },
       resolve: async (
         { id },
-        { includeNoPointsAwardedExercises, includeDeletedExercises },
+        {
+          course_id,
+          course_slug,
+          includeNoPointsAwardedExercises,
+          includeDeletedExercises,
+        },
         ctx,
       ) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
+        if (course_id || course_slug) {
+          const course = await ctx.prisma.course.findUnique({
+            where: course_id
+              ? { id: course_id ?? undefined }
+              : { slug: course_slug ?? undefined },
+            select: {
+              id: true,
+              inherit_settings_from_id: true,
+              completions_handled_by_id: true,
+            },
+          })
+
+          if (!course) {
+            throw new GraphQLUserInputError("Course not found")
+          }
+          return [
+            {
+              ...omit(course, "id"),
+              course_id: course.id,
+              user_id: id,
+              include_deleted_exercises: includeDeletedExercises ?? false,
+              include_no_points_awarded_exercises:
+                includeNoPointsAwardedExercises ?? false,
+            },
+          ]
+        }
+
         const startedCourses = await ctx.prisma.$queryRaw<
           Array<{
             course_id: string
