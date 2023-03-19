@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-12T01:27:15+02:00
+// Generated on 2023-03-19T17:27:35+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1067,11 +1067,11 @@ export type MutationaddExerciseArgs = {
 }
 
 export type MutationaddExerciseCompletionArgs = {
-  exercise?: InputMaybe<Scalars["ID"]>
+  exercise_id?: InputMaybe<Scalars["ID"]>
   n_points?: InputMaybe<Scalars["Int"]>
   original_submission_date?: InputMaybe<Scalars["DateTime"]>
   timestamp?: InputMaybe<Scalars["DateTime"]>
-  user?: InputMaybe<Scalars["ID"]>
+  user_id?: InputMaybe<Scalars["ID"]>
 }
 
 export type MutationaddImageArgs = {
@@ -1560,9 +1560,11 @@ export type PointsByGroup = {
 export type Progress = {
   __typename?: "Progress"
   course: Maybe<Course>
+  course_id: Maybe<Scalars["ID"]>
   user: Maybe<User>
   user_course_progress: Maybe<UserCourseProgress>
   user_course_service_progresses: Maybe<Array<UserCourseServiceProgress>>
+  user_id: Maybe<Scalars["ID"]>
 }
 
 export type ProgressExtra = {
@@ -1798,7 +1800,7 @@ export type QueryuserCourseProgressArgs = {
 export type QueryuserCourseProgressesArgs = {
   course_id?: InputMaybe<Scalars["ID"]>
   course_slug?: InputMaybe<Scalars["String"]>
-  cursor?: InputMaybe<UserCourseProgressWhereUniqueInput>
+  cursor?: InputMaybe<UserCourseProgressCursorInput>
   skip?: InputMaybe<Scalars["Int"]>
   take?: InputMaybe<Scalars["Int"]>
   user_id?: InputMaybe<Scalars["ID"]>
@@ -2257,6 +2259,7 @@ export type User = {
   updated_at: Maybe<Scalars["DateTime"]>
   upstream_id: Scalars["Int"]
   user_course_progresses: Maybe<Array<UserCourseProgress>>
+  /** @deprecated Use user_course_progresses instead */
   user_course_progressess: Maybe<UserCourseProgress>
   user_course_service_progresses: Maybe<Array<UserCourseServiceProgress>>
   user_course_settings: Array<UserCourseSetting>
@@ -2302,6 +2305,7 @@ export type Useremail_deliveriesArgs = {
 }
 
 export type Userexercise_completionsArgs = {
+  course_id?: InputMaybe<Scalars["ID"]>
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
 }
 
@@ -2332,6 +2336,8 @@ export type Useruser_course_settingsArgs = {
 }
 
 export type Useruser_course_summaryArgs = {
+  course_id?: InputMaybe<Scalars["ID"]>
+  course_slug?: InputMaybe<Scalars["String"]>
   includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
   includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
 }
@@ -2390,13 +2396,13 @@ export type UserCourseProgressuser_course_service_progressesArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
+export type UserCourseProgressCursorInput = {
+  id: Scalars["ID"]
+}
+
 export type UserCourseProgressOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
   count?: InputMaybe<SortOrder>
-}
-
-export type UserCourseProgressWhereUniqueInput = {
-  id?: InputMaybe<Scalars["String"]>
 }
 
 export type UserCourseServiceProgress = {
@@ -2496,6 +2502,7 @@ export type UserCourseSummary = {
   course: Course
   course_id: Scalars["ID"]
   exercise_completions: Maybe<Array<ExerciseCompletion>>
+  exercises: Array<Exercise>
   include_deleted_exercises: Maybe<Scalars["Boolean"]>
   include_no_points_awarded_exercises: Maybe<Scalars["Boolean"]>
   inherit_settings_from_id: Maybe<Scalars["ID"]>
@@ -2508,6 +2515,11 @@ export type UserCourseSummary = {
 }
 
 export type UserCourseSummaryexercise_completionsArgs = {
+  includeDeleted?: InputMaybe<Scalars["Boolean"]>
+  includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
+}
+
+export type UserCourseSummaryexercisesArgs = {
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
   includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
 }

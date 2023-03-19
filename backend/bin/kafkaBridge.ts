@@ -14,6 +14,7 @@ import {
 } from "../config"
 import { KafkaError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
+import { KafkaPartitionAssigner } from "./kafkaPartitionAssigner"
 
 const logger = sentryLogger({ service: "kafka-bridge" })
 
@@ -25,7 +26,10 @@ if (!KAFKA_BRIDGE_SECRET) {
 const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
   "metadata.broker.list": KAFKA_HOST,
+  dr_cb: true,
+  // "statistics.interval.ms": 60000, // 1 minute
 })
+let kafkaPartitionAssigner: KafkaPartitionAssigner | undefined
 
 const flushProducer = promisify(producer.flush.bind(producer))
 
@@ -40,6 +44,17 @@ producer.connect(undefined, (err, data) => {
     return
   }
   logger.info("Connected to producer", data)
+  kafkaPartitionAssigner = new KafkaPartitionAssigner(producer, logger)
+
+  const updatePartitionData = async () => {
+    await kafkaPartitionAssigner?.refreshMetadata()
+    await kafkaPartitionAssigner?.updateConsumerLags()
+
+    setTimeout(updatePartitionData, 60000)
+  }
+  updatePartitionData()
+  // TODO: events start rolling in slowly, so it would be better to wait a bit
+  //setTimeout(updatePartitionData, 60000 * 2)
 })
 
 producer.setPollInterval(100)
@@ -49,7 +64,15 @@ producer.on("delivery-report", function (err, report) {
     logger.error(new KafkaError("Delivery report error", err))
   }
   logger.info(`Delivery report ${JSON.stringify(report)}`)
+  kafkaPartitionAssigner?.updateTopicPartitionOffset(report)
 })
+
+/*producer.on("event.stats", (eventData: any) => {
+  if (!kafkaPartitionAssigner) {
+    return
+  }
+  return kafkaPartitionAssigner.handleEventStatsData(eventData)
+})*/
 
 const app = express()
 
@@ -82,17 +105,20 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
   try {
-    producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
-    return flushProducer(1000)
-      .then(() => res.json({ msg: "Thanks!" }).send())
-      .catch((err) => {
-        logger.warn(new KafkaError("Flushing the producer failed", err))
-        return res.status(500).json({ error: err.toString() }).send()
-      })
+    const partition =
+      kafkaPartitionAssigner?.getRecommendedPartition(topic) ?? null
+    producer.produce(topic, partition, Buffer.from(JSON.stringify(payload)))
   } catch (e: any) {
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
   }
+
+  return flushProducer(1000)
+    .then(() => res.json({ msg: "Thanks!" }).send())
+    .catch((e: any) => {
+      logger.error(new KafkaError("Flushing the producer failed", e))
+      return res.status(500).json({ error: e.toString() }).send()
+    })
 })
 
 app.get("/kafka-bridge/api/v0/healthz", (_, res) => {

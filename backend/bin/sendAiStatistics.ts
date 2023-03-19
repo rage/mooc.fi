@@ -11,7 +11,7 @@ const slackPoster: SlackPoster = new SlackPoster(logger)
 const url: string | undefined = AI_SLACK_URL
 
 if (!url) {
-  throw "no AI_SLACK_URL env variable"
+  throw new Error("no AI_SLACK_URL env variable")
 }
 
 const data = { text: "" }
@@ -21,28 +21,37 @@ const data = { text: "" }
 const getDataByLanguage = async (langInfo: LanguageInfo) => {
   const { language, completion_language, country, langName } = langInfo
 
-  const totalByLang = await prisma.userCourseSetting.findMany({
-    where: {
-      language: language,
-      course: { slug: "elements-of-ai" },
-    },
-    distinct: ["user_id"],
-  })
-  const completionsByLang = await prisma.completion.findMany({
-    where: {
-      course: { slug: "elements-of-ai" },
-      completion_language,
-    },
-    distinct: ["user_id"],
-  })
-  const englishInLang = await prisma.userCourseSetting.findMany({
-    where: {
-      country,
-      course: { slug: "elements-of-ai" },
-      language: "en",
-    },
-    distinct: ["user_id"],
-  })
+  const totalByLang = await prisma.course
+    .findUnique({
+      where: { slug: "elements-of-ai" },
+    })
+    .user_course_settings({
+      where: {
+        language: language,
+      },
+      distinct: ["user_id"],
+    })
+  const completionsByLang = await prisma.course
+    .findUnique({
+      where: { slug: "elements-of-ai" },
+    })
+    .completions({
+      where: {
+        completion_language,
+      },
+      distinct: ["user_id"],
+    })
+  const englishInLang = await prisma.course
+    .findUnique({
+      where: { slug: "elements-of-ai" },
+    })
+    .user_course_settings({
+      where: {
+        country,
+        language: "en",
+      },
+      distinct: ["user_id"],
+    })
 
   const now = new Date()
   return `\`\`\`Stats ${now.getDate()}.${

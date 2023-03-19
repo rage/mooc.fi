@@ -1,9 +1,9 @@
-import { groupBy, partition } from "lodash"
+import { groupBy, omit, partition } from "lodash"
 import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
-import { UserInputError } from "../../lib/errors"
+import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
 import { getCourseOrAlias } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
@@ -36,10 +36,10 @@ export const User = objectType({
     // t.model.completions()
     // t.model.completions_registered()
     t.model.email_deliveries()
-    t.model.exercise_completions()
+    // t.model.exercise_completions()
     t.model.organizations()
-    t.model.user_course_progresses()
-    t.model.user_course_service_progresses()
+    // t.model.user_course_progresses()
+    // t.model.user_course_service_progresses()
     t.model.user_course_settings()
     t.model.user_organizations()
     t.model.verified_users()
@@ -197,9 +197,9 @@ export const User = objectType({
         })
 
         return {
-          course,
-          user: parent,
-        } as any
+          course_id: course?.id,
+          user_id: parent.id,
+        }
       },
     })
 
@@ -255,6 +255,7 @@ export const User = objectType({
     // TODO/FIXME: is this used anywhere? if is, find better name
     t.field("user_course_progressess", {
       type: "UserCourseProgress",
+      deprecation: "Use user_course_progresses instead",
       args: {
         course_id: idArg(),
       },
@@ -279,9 +280,36 @@ export const User = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
+        course_id: idArg(),
         includeDeleted: booleanArg(),
       },
-      resolve: async (parent, { includeDeleted = false }, ctx) => {
+      resolve: async (parent, { course_id, includeDeleted = false }, ctx) => {
+        if (course_id) {
+          const data = await ctx.prisma.course
+            .findUnique({
+              where: { id: course_id },
+            })
+            .exercises({
+              ...(!includeDeleted && {
+                where: {
+                  // same here: { deleted: { not: true } } will skip null
+                  OR: [{ deleted: false }, { deleted: null }],
+                },
+              }),
+              select: {
+                exercise_completions: {
+                  where: {
+                    user_id: parent.id,
+                  },
+                  orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+                  take: 1,
+                },
+              },
+            })
+          return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
+        }
+
+        // TODO/FIXME: testing if ^ removes some joins; need to update queries that use it
         return ctx.prisma.user
           .findUnique({
             where: { id: parent.id },
@@ -310,14 +338,54 @@ export const User = objectType({
           description:
             "Include deleted exercises. Only affects the exercise completion results; can be overridden later.",
         }),
+        course_id: idArg({
+          description:
+            "If specified, only return the summary for the given course. Otherwise, return the summary for all courses with at least one exercise completion.",
+        }),
+        course_slug: stringArg({
+          description:
+            "If specified, only return the summary for the given course. Otherwise, return the summary for all courses with at least one exercise completion.",
+        }),
       },
       resolve: async (
         { id },
-        { includeNoPointsAwardedExercises, includeDeletedExercises },
+        {
+          course_id,
+          course_slug,
+          includeNoPointsAwardedExercises,
+          includeDeletedExercises,
+        },
         ctx,
       ) => {
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected
+        if (course_id || course_slug) {
+          const course = await ctx.prisma.course.findUnique({
+            where: course_id
+              ? { id: course_id ?? undefined }
+              : { slug: course_slug ?? undefined },
+            select: {
+              id: true,
+              inherit_settings_from_id: true,
+              completions_handled_by_id: true,
+            },
+          })
+
+          if (!course) {
+            throw new GraphQLUserInputError("Course not found")
+          }
+          return [
+            {
+              ...omit(course, "id"),
+              course_id: course.id,
+              user_id: id,
+              include_deleted_exercises: includeDeletedExercises ?? false,
+              include_no_points_awarded_exercises:
+                includeNoPointsAwardedExercises ?? false,
+            },
+          ]
+        }
+
         const startedCourses = await ctx.prisma.$queryRaw<
           Array<SummaryCourseGroupResult>
         >(Prisma.sql`

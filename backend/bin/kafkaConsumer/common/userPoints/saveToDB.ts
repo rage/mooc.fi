@@ -5,6 +5,7 @@ import {
   Exercise,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
+  Prisma,
   User,
 } from "@prisma/client"
 
@@ -131,9 +132,7 @@ const getExerciseAndCompletions = async (
     })
     .exercise_completions({
       where: {
-        exercise: {
-          id: exercise.id,
-        },
+        exercise_id: exercise.id,
       },
       orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
       include: {
@@ -201,7 +200,7 @@ export const saveToDatabase = async (
       }
     }
 
-    const data = {
+    const data: Prisma.ExerciseCompletionCreateInput = {
       exercise: {
         connect: { id: exercise.id },
       },
@@ -227,6 +226,8 @@ export const saveToDatabase = async (
         logger.warn(
           `Inserting exercise completion failed ${e.name}: ${e.message}`,
         )
+      } else {
+        logger.warn(`Inserting exercise completion failed: ${String(e)}`)
       }
     }
   } else {

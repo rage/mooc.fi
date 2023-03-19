@@ -156,8 +156,9 @@ export class ProgressController extends Controller {
     const exercise_completions_map: Record<string, ExerciseCompletionResult> =
       {}
 
-    for (const completion of exercise_completions) {
-      exercise_completions_map[completion.exercise_id] = completion
+    for (const exerciseCompletion of exercise_completions) {
+      exercise_completions_map[exerciseCompletion.exercise_id] =
+        exerciseCompletion
     }
 
     res.json({
