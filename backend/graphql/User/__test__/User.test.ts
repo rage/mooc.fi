@@ -106,7 +106,7 @@ describe("User", () => {
       it("shows null when not logged in", async () => {
         ctx.client.setHeader("Authorization", "")
 
-        const res = await ctx.client.request(`
+        const res = await ctx.client.request<any>(`
       query {
         currentUser {
           id
@@ -132,7 +132,7 @@ describe("User", () => {
       it("returns courses with completions", async () => {
         ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx.client.request(`
+        const res = await ctx.client.request<any>(`
           query {
             currentUser {
               id
@@ -263,9 +263,12 @@ describe("User", () => {
       it("updates correctly", async () => {
         ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx.client.request(updateReseachConsentMutation, {
-          value: true,
-        })
+        const res = await ctx.client.request<any>(
+          updateReseachConsentMutation,
+          {
+            value: true,
+          },
+        )
 
         expect(res.updateResearchConsent).toMatchSnapshot({
           id: expect.stringMatching(ID_REGEX),
@@ -300,7 +303,7 @@ describe("User", () => {
       it("updates correctly", async () => {
         ctx.client.setHeader("Authorization", "Bearer normal")
 
-        const res = await ctx.client.request(updateUserNameMutation, {
+        const res = await ctx.client.request<any>(updateUserNameMutation, {
           first_name: "updated first",
           last_name: "updated last",
         })

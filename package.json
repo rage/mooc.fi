@@ -4,13 +4,13 @@
   "description": "",
   "private": true,
   "devDependencies": {
-    "@next/eslint-plugin-next": "^13.2.3",
+    "@next/eslint-plugin-next": "^13.2.4",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^18.14.2",
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "@typescript-eslint/parser": "^5.54.0",
-    "eslint": "^8.35.0",
-    "eslint-config-prettier": "^8.6.0",
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-eslint-custom-rules": "file:eslint-custom-rules",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
@@ -19,7 +19,7 @@
     "eslint-plugin-styled-components-a11y": "^1.0.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   },
   "dependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^3.7.1",

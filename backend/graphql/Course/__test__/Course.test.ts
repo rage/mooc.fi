@@ -120,7 +120,7 @@ describe("Course", () => {
       })
 
       it("works with user_id", async () => {
-        const res = await ctx.client.request(
+        const res = await ctx.client.request<any>(
           courseCompletionsQuery,
           {
             slug: "course1",
@@ -138,7 +138,7 @@ describe("Course", () => {
       })
 
       it("works with user_upstream_id", async () => {
-        const res = await ctx.client.request(
+        const res = await ctx.client.request<any>(
           courseCompletionsQuery,
           {
             slug: "course1",
@@ -156,7 +156,7 @@ describe("Course", () => {
       })
 
       it("shouldn't return anything with non-existent user", async () => {
-        const res = await ctx.client.request(
+        const res = await ctx.client.request<any>(
           courseCompletionsQuery,
           {
             slug: "course1",
@@ -199,7 +199,7 @@ describe("Course", () => {
         })
 
         it("should return name and description in root when language provided", async () => {
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             courseTagsQuery,
             {
               slug: "course1",
@@ -225,7 +225,7 @@ describe("Course", () => {
         })
 
         it("should not return hidden tags", async () => {
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             courseTagsQuery,
             {
               slug: "course2",
@@ -240,7 +240,7 @@ describe("Course", () => {
         })
 
         it("should only return search matches", async () => {
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             courseTagsQuery,
             {
               slug: "course1",
@@ -257,7 +257,7 @@ describe("Course", () => {
         })
 
         it("should only return chosen types", async () => {
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             courseTagsQuery,
             {
               slug: "course1",
@@ -276,7 +276,7 @@ describe("Course", () => {
 
       describe("admin", () => {
         it("should return hidden tags", async () => {
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             courseTagsQuery,
             {
               slug: "course2",

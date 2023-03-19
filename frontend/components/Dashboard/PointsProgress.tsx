@@ -1,6 +1,14 @@
-import { PropsWithChildren } from "react"
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
-import { LinearProgress, Typography } from "@mui/material"
+import { orderBy } from "lodash"
+
+import { LinearProgress, Typography, useMediaQuery } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
 
 import { CardSubtitle } from "/components/Text/headers"
@@ -55,52 +63,140 @@ const Progress = styled("div", {
   background: ${(props) => props.color ?? "#3066c0"};
 `
 
-const BottomCaptionArrow = styled("div", {
-  shouldForwardProp: (prop) => prop !== "percentage",
-})<{ percentage: number }>`
-  &:after {
-    content: "";
-    position: absolute;
-    border: solid #ddd;
-    border-width: 0 2px 2px 0;
-    width: calc(${(props) => props.percentage}% - 0.5rem);
-    height: 1rem;
-    left: 0.5rem;
-    top: -0.25rem;
-    z-index: 0;
-  }
-`
-
-const BottomCaptionContainer = styled("div")`
+const ProgressLegendContainer = styled("div")`
   position: relative;
   width: 100%;
   margin-top: 0.5rem;
+  margin-bottom: 1rem;
 `
 
-const BottomCaptionArrowContainer = styled("div")`
-  position: relative;
-  width: 100%;
-  z-index: 1;
+const ArrowComponent = styled("div", {
+  shouldForwardProp: (prop) =>
+    prop !== "percentage" &&
+    prop !== "order" &&
+    prop !== "reversed" &&
+    prop !== "maxPercentage",
+})<{
+  order: number
+  percentage: number
+  maxPercentage: number
+  reversed: boolean
+}>`
+  position: absolute;
+  width: ${(props) =>
+    props.reversed
+      ? `calc(${props.maxPercentage - props.percentage}% - 0.5rem)`
+      : `${props.percentage}%`};
+  margin-left: 0.5rem;
+  border: solid #ddd;
+  border-width: ${(props) => (props.reversed ? "0 0 2px 2px" : "0 2px 2px 0")};
+  height: ${(props) => 1 + props.order}rem;
+  z-index: 0;
+  top: -0.25rem;
+  left: ${(props) =>
+    props.reversed ? `calc(${props.percentage}% - 0.5rem)` : "-0.5rem"};
 `
 
-const BottomCaptionChildrenContainer = styled("span")`
-  position: relative;
-  z-index: 1;
-  padding-right: 0.5rem;
+const Caption = styled("span", {
+  shouldForwardProp: (prop) => prop !== "order" && prop !== "reversed",
+})<{ order: number; reversed: boolean }>`
+  position: absolute;
+  z-index: ${(props) => 1 + props.order};
+  ${(props) => (props.reversed ? "padding-left" : "padding-right")}: 0.5rem;
   background-color: #ffffff;
+  top: ${(props) => 0.125 + props.order * 1.125}rem;
+  ${(props) => (props.reversed ? "right: 0" : "left: 0")};
 `
+type ArrowProps = {
+  percentage: number
+  maxPercentage?: number
+  order: number
+  caption?: string
+}
 
-const BottomCaption = ({
+const ProgressLegendComponent = ({
   percentage,
-  children,
-}: PropsWithChildren<{ percentage: number }>) => (
-  <BottomCaptionContainer>
-    <BottomCaptionArrowContainer>
-      <BottomCaptionArrow percentage={percentage} />
-    </BottomCaptionArrowContainer>
-    <BottomCaptionChildrenContainer>{children}</BottomCaptionChildrenContainer>
-  </BottomCaptionContainer>
-)
+  maxPercentage = 100,
+  order,
+  caption,
+}: PropsWithChildren<ArrowProps>) => {
+  const captionRef = useRef<HTMLSpanElement | null>(null)
+  const arrowRef = useRef<HTMLDivElement | null>(null)
+  const reversed = useRef(false)
+
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+  })
+
+  const handleResize = useCallback(() => {
+    if (!captionRef.current || !arrowRef.current) return false
+
+    const captionWidth = captionRef.current.getBoundingClientRect().width
+    const rem = parseFloat(getComputedStyle(arrowRef.current).fontSize)
+    const arrowWidth =
+      (arrowRef.current.getBoundingClientRect().width ?? 0) - rem * 0.5
+
+    reversed.current = captionWidth > arrowWidth
+  }, [rendered, captionRef.current, arrowRef.current])
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize)
+
+    handleResize()
+
+    return () => window.removeEventListener("resize", handleResize)
+  }, [handleResize])
+
+  return (
+    <ArrowComponent
+      ref={(el) => (arrowRef.current = el)}
+      key={`arrow-${percentage}-${reversed.current}`}
+      percentage={percentage}
+      maxPercentage={maxPercentage}
+      order={order}
+      reversed={reversed.current}
+    >
+      {caption && (
+        <Caption
+          key={`caption-${percentage}-${reversed.current}`}
+          order={order}
+          ref={(el) => (captionRef.current = el)}
+          reversed={reversed.current}
+        >
+          <Typography variant="caption">{caption}</Typography>
+        </Caption>
+      )}
+    </ArrowComponent>
+  )
+}
+
+type PercentageData = {
+  caption?: string
+  percentage: number
+}
+
+const ProgressLegend = ({
+  data,
+}: PropsWithChildren<{ data: Array<PercentageData> }>) => {
+  const maxPercentage = Math.max(...data.map((d) => d.percentage))
+  const isNarrow = useMediaQuery("(max-width: 800px)", { noSsr: true }) // need to retrigger another render after resize
+
+  return (
+    <ProgressLegendContainer>
+      {orderBy(data, "percentage").map((p, index) => (
+        <ProgressLegendComponent
+          key={`legend-${p.percentage}-${p.caption}-${isNarrow}`}
+          order={index}
+          percentage={p.percentage}
+          maxPercentage={maxPercentage}
+          caption={p.caption}
+        />
+      ))}
+    </ProgressLegendContainer>
+  )
+}
 /* marker on hover
 
   &:before {
@@ -214,9 +310,18 @@ const PointsProgress = ({
             />
           </ProgressBar>
           {hasRequiredPercentage && (
-            <BottomCaption percentage={requiredPercentage}>
-              <Typography variant="caption">Required</Typography>
-            </BottomCaption>
+            <ProgressLegend
+              data={[
+                {
+                  caption: "Progress",
+                  percentage,
+                },
+                {
+                  caption: "Required",
+                  percentage: requiredPercentage,
+                },
+              ]}
+            />
           )}
         </ProgressItem>
         {/*<ColoredProgressBar

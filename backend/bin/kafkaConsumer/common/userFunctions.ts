@@ -86,7 +86,10 @@ export const checkRequiredExerciseCompletions = async ({
       .andWhereNot("exercise.deleted", true)
       .andWhereNot("exercise.max_points", 0)
 
-    return exercise_completions[0].count >= course.exercise_completions_needed
+    return (
+      Number(exercise_completions[0].count) >=
+      course.exercise_completions_needed
+    )
   }
   return true
 }

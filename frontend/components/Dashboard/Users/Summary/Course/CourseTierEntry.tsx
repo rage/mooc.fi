@@ -32,7 +32,7 @@ export function CourseTierEntry({ data }: CourseTierEntryProps) {
   }
 
   return (
-    <CourseEntryCard course={data.course}>
+    <CourseEntryCard course={data.course} hasCollapseButton>
       <ProgressEntry
         key={`${data.course.id}-progress`}
         course={data.course}

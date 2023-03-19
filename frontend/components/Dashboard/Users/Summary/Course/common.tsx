@@ -13,6 +13,11 @@ import {
 import { styled } from "@mui/material/styles"
 
 import InfoRow from "../../InfoRow"
+import {
+  ActionType,
+  CollapsablePart,
+  useCollapseContextCourse,
+} from "../CollapseContext"
 import { LinkIconComponent, Spacer } from "../common"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import ClipboardButton from "/components/ClipboardButton"
@@ -50,19 +55,31 @@ export const CourseEntryPartSkeleton = () => (
 interface CourseEntryCardProps {
   course: UserCourseSummaryCourseFieldsFragment
   hasCopyButton?: boolean
+  hasCollapseButton?: boolean
 }
 
 export const CourseEntryCard = ({
   course,
   hasCopyButton,
+  hasCollapseButton,
   children,
 }: PropsWithChildren<CourseEntryCardProps>) => {
   const router = useRouter()
   const { admin } = useLoginStateContext()
+  const { state, dispatch } = useCollapseContextCourse(course.id)
   const [courseInfoOpen, setCourseInfoOpen] = useState(false)
   const onCollapseCourseInfoClick = useCallback(
     () => setCourseInfoOpen((value) => !value),
     [],
+  )
+  const onCollapseCourseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.TOGGLE,
+        collapsable: CollapsablePart.COURSE,
+        course: course.id,
+      }),
+    [course.id, dispatch],
   )
   const permanentURL = useMemo(() => {
     const basePath = router.asPath.split("?")[0].split("summary")[0]
@@ -93,6 +110,13 @@ export const CourseEntryCard = ({
             Icon={LinkIconComponent}
           />
         )}
+        {hasCollapseButton && (
+          <CollapseButton
+            open={state.open}
+            onClick={onCollapseCourseClick}
+            tooltip={"show course details"}
+          />
+        )}
       </CourseEntryCardTitleWrapper>
       {admin && (
         <Collapse in={courseInfoOpen} unmountOnExit>
@@ -102,7 +126,9 @@ export const CourseEntryCard = ({
           </CourseInfo>
         </Collapse>
       )}
-      <CardContent>{children}</CardContent>
+      <Collapse in={state.open}>
+        <CardContent>{children}</CardContent>
+      </Collapse>
     </CourseEntryCardBase>
   )
 }

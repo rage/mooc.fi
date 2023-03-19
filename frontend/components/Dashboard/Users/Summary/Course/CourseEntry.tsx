@@ -1,14 +1,9 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useMemo } from "react"
 
 import { sortBy } from "lodash"
 
 import { CardContent, Paper, Skeleton } from "@mui/material"
 
-import {
-  ActionType,
-  CollapsablePart,
-  useCollapseContext,
-} from "../CollapseContext"
 import Completion from "../Completion"
 import ExerciseList from "../ExerciseList"
 import ProgressEntry from "../ProgressEntry"
@@ -47,21 +42,8 @@ export function CourseEntry({ data }: CourseEntryProps) {
     () => (data.tier_summaries?.length ?? 0) > 0,
     [data],
   )
-  const { dispatch } = useCollapseContext()
 
   // TODO: subheaders for parts?
-
-  // @ts-ignore: not used for now
-  const onCollapseClick = useCallback(
-    () =>
-      dispatch({
-        type: ActionType.TOGGLE,
-        collapsable: CollapsablePart.COURSE,
-        course: data?.course?.id ?? "_",
-      }),
-    [data?.course?.id, dispatch],
-  )
-
   const exercisesWithCompletions = useMemo(
     () =>
       sortBy(
@@ -92,10 +74,7 @@ export function CourseEntry({ data }: CourseEntryProps) {
         <>
           {data.user_course_progress?.extra && (
             <>
-              <TotalProgressEntry
-                key={`${data.course.id}-total-progress`}
-                data={data.user_course_progress.extra}
-              />
+              <TotalProgressEntry data={data.user_course_progress.extra} />
               <TierExerciseList
                 data={data.user_course_progress?.extra.exercises}
               />

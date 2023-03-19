@@ -35,8 +35,8 @@
     "@monaco-editor/react": "^4.4.6",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.87",
-    "@mui/material": "^5.11.12",
-    "@mui/x-date-pickers": "^6.0.1",
+    "@mui/material": "^5.11.13",
+    "@mui/x-date-pickers": "^6.0.2",
     "@next/bundle-analyzer": "^13.2.4",
     "@next/env": "^13.2.4",
     "@next/mdx": "^13.2.4",
@@ -54,7 +54,7 @@
     "lodash": "^4.17.21",
     "lqip-loader": "^2.2.1",
     "luxon": "^3.3.0",
-    "material-ui-confirm": "^3.0.8",
+    "material-ui-confirm": "^3.0.9",
     "module-resolver": "^1.0.0",
     "monaco-editor": "^0.36.1",
     "morgan": "^1.10.0",
@@ -66,7 +66,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
-    "react-hook-form": "^7.43.5",
+    "react-hook-form": "^7.43.7",
     "sharp": "^0.31.3",
     "styled-jsx": "^5.1.2",
     "tmc-client-js": "^0.0.9",
@@ -76,7 +76,7 @@
     "yup": "^1.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.3",
     "@graphql-codegen/add": "^4.0.1",
     "@graphql-codegen/cli": "^3.2.2",
     "@graphql-codegen/fragment-matcher": "^4.0.1",
@@ -92,7 +92,7 @@
     "@types/mdx-js__react": "^1.5.5",
     "@types/mime-types": "^2.1.1",
     "@types/mui-datatables": "^4.3.3",
-    "@types/node": "^18.15.0",
+    "@types/node": "^18.15.3",
     "@types/papaparse": "^5.3.7",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
@@ -103,8 +103,8 @@
     "express-graphql": "^0.12.0",
     "next-statoscope": "^1.0.0",
     "source-map-support": "^0.5.21",
-    "typescript": "^4.9.5",
-    "webpack": "^5.76.0"
+    "typescript": "^5.0.2",
+    "webpack": "^5.76.2"
   },
   "overrides": {
     "graphql": "16.6.0"
