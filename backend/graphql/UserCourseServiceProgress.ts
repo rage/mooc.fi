@@ -20,8 +20,21 @@ export const UserCourseServiceProgress = objectType({
     t.model.course_id()
     t.model.course()
 
+    // compatibility for older queries
     t.nonNull.list.nonNull.field("progress", {
       type: "Json",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.prisma.userCourseServiceProgress.findUnique({
+          where: { id: parent.id },
+          select: { progress: true },
+        })
+
+        return (res?.progress as any) ?? [] // errors without any typing - JSON value thing
+      },
+    })
+
+    t.nonNull.list.nonNull.field("points_by_group", {
+      type: "PointsByGroup",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseServiceProgress.findUnique({
           where: { id: parent.id },
@@ -118,7 +131,7 @@ export const UserCourseServiceProgressMutations = extendType({
     t.field("addUserCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        progress: nonNull(arg({ type: "PointsByGroup" })),
+        progress: nonNull(arg({ type: "PointsByGroupInput" })),
         service_id: nonNull(idArg()),
         user_course_progress_id: nonNull(idArg()),
       },

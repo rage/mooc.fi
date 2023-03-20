@@ -1,5 +1,5 @@
 import { toMatchSnapshot, type Context } from "jest-snapshot"
-import { omit } from "lodash"
+import { find, omit } from "lodash"
 import { DateTime } from "luxon"
 
 import { isNullOrUndefined } from "../../util/isNullOrUndefined"
@@ -237,7 +237,7 @@ const getIdField = <T>(
   idFields: Array<FieldWithMatch<Path<T> | Field<T>>>,
   key: Path<T> | Field<T>,
 ) => {
-  return idFields.find((idField) => idField.field === key)
+  return find(idFields, (idField) => idField.field === key)
 }
 
 export function idsToExpect<

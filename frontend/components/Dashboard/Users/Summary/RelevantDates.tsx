@@ -22,10 +22,22 @@ type RelevantDatesProps = {
 }
 
 const RelevantDatesCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: row;
+  display: grid;
   justify-content: space-between;
   gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  width: 100%;
+`
+
+const TooltipWrapper = styled("div")`
+  margin-left: auto;
+  padding-right: 1rem;
+`
+
+const RelevantDatesCard = styled(SummaryCard)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `
 
 const hasCompletion = (
@@ -58,8 +70,8 @@ function RelevantDates({ data }: RelevantDatesProps) {
     : undefined
 
   return (
-    <SummaryCard>
-      <RelevantDatesCardContent>
+    <RelevantDatesCard>
+      <RelevantDatesCardContent sx={{ width: "100%" }}>
         {(isRootCourse || isTieredCourse) && !hasTier && (
           <Typography variant="h4">
             {t("courseStartDate")}
@@ -80,11 +92,13 @@ function RelevantDates({ data }: RelevantDatesProps) {
             <strong>{formatDateTime(completionDate)}</strong>
           </Typography>
         )}
+      </RelevantDatesCardContent>
+      <TooltipWrapper>
         <Tooltip title={t("relevantDatesTooltip")}>
           <HelpIcon />
         </Tooltip>
-      </RelevantDatesCardContent>
-    </SummaryCard>
+      </TooltipWrapper>
+    </RelevantDatesCard>
   )
 }
 

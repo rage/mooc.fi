@@ -74,6 +74,14 @@ export function CourseEntry({ data }: CourseEntryProps) {
         <>
           {data.user_course_progress?.extra && (
             <>
+              <ProgressEntry
+                key={`${data.course.id}-progress`}
+                course={data.course}
+                userCourseProgress={data.user_course_progress}
+                userCourseServiceProgresses={
+                  data.user_course_service_progresses
+                }
+              />
               <TotalProgressEntry data={data.user_course_progress.extra} />
               <TierExerciseList
                 data={data.user_course_progress?.extra.exercises}

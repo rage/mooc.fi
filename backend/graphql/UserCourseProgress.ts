@@ -17,8 +17,10 @@ import { isAdmin } from "../accessControl"
 import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
 import {
   BAIExerciseCount,
+  pointsNeeded as BAIPointsNeeded,
+  requiredByTier as BAIRequiredByTier,
   BAITierNameToId,
-  requiredByTier,
+  exerciseCompletionsNeeded,
 } from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
@@ -26,10 +28,15 @@ import { getCourseOrAlias } from "../util/db-functions"
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
   data?: T | T[],
-): T[] =>
-  (data ? (Array.isArray(data) ? data : [data]) : []).filter((p) =>
+): T[] => {
+  if (!data) {
+    return []
+  }
+
+  return (Array.isArray(data) ? data : [data]).filter((p) =>
     p?.hasOwnProperty("progress"),
   )
+}
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -47,7 +54,8 @@ export const UserCourseProgress = objectType({
     t.model.user()
     t.model.user_course_service_progresses()
 
-    t.list.nonNull.field("progress", {
+    // compatibility for older queries
+    t.nonNull.list.nonNull.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseProgress.findUnique({
@@ -57,6 +65,19 @@ export const UserCourseProgress = objectType({
 
         // TODO/FIXME: do we want to return progresses that might not have "progress" field?
         return normalizeProgress(res?.progress)
+      },
+    })
+
+    t.nonNull.list.nonNull.field("points_by_group", {
+      type: "PointsByGroup",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.prisma.userCourseProgress.findUnique({
+          where: { id: parent.id },
+          select: { progress: true },
+        })
+
+        // TODO/FIXME: do we want to return progresses that might not have "progress" field?
+        return normalizeProgress(res?.progress as any)
       },
     })
 
@@ -150,20 +171,51 @@ export const UserCourseProgress = objectType({
         }
 
         const extra = progress.extra as unknown as ProgressExtra
-        const tiers = Object.keys(extra.tiers).map((key) => ({
-          tier: BAITierNameToId[key] ?? 0,
-          requiredByTier: requiredByTier[BAITierNameToId[key] ?? 0] ?? 0,
-          exerciseCount: BAIExerciseCount,
-          ...extra.tiers[key],
-        }))
+        const tiers = Object.keys(extra.tiers).map((key) => {
+          const requiredByTier =
+            BAIRequiredByTier[BAITierNameToId[key] ?? 0] ?? 0
+          const { exerciseCompletions } = extra.tiers[key]
+          const exercisesNeededPercentage =
+            requiredByTier > 0
+              ? Math.min((exerciseCompletions ?? 0) / requiredByTier, 1)
+              : 1
+          const exercisePercentage = exerciseCompletions / BAIExerciseCount
+
+          return {
+            tier: BAITierNameToId[key] ?? 0,
+            requiredByTier,
+            exerciseCount: BAIExerciseCount,
+            exercisePercentage,
+            exercisesNeededPercentage,
+            ...extra.tiers[key],
+          }
+        })
         const exercises = Object.keys(extra.exercises).map((key) => ({
           exercise_number: Number(key),
           user_id,
           ...extra.exercises[key],
         }))
+        const n_points = exercises.reduce((acc, curr) => acc + curr.n_points, 0)
+        const max_points = BAIExerciseCount
+        const exercisePercentage = exercises.length / BAIExerciseCount
+        const pointsPercentage = n_points / max_points
+        const pointsNeededPercentage = Math.min(n_points / BAIPointsNeeded, 1)
+        const exercisesNeededPercentage = Math.min(
+          exercises.length / exerciseCompletionsNeeded,
+          1,
+        )
 
         return {
           ...extra,
+          n_points,
+          max_points,
+          pointsNeeded: BAIPointsNeeded,
+          exercisePercentage,
+          pointsPercentage,
+          pointsNeededPercentage,
+          exercisesNeededPercentage,
+          totalExerciseCount: BAIExerciseCount,
+          totalExerciseCompletionsNeeded: exerciseCompletionsNeeded,
           tiers,
           exercises,
         }
@@ -270,7 +322,7 @@ export const UserCourseProgressMutations = extendType({
         progress: list(
           nonNull(
             arg({
-              type: "PointsByGroup",
+              type: "PointsByGroupInput",
             }),
           ),
         ),

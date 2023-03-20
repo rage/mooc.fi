@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback, useMemo, useState } from "react"
+import { PropsWithChildren, useCallback, useMemo } from "react"
 
 import { useRouter } from "next/router"
 
@@ -42,8 +42,11 @@ export const CourseEntryCardTitleWrapper = styled("div")`
 export const CourseEntryCardTitle = styled(CardTitle)``
 
 export const CourseInfo = styled("div")`
+  padding: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
+  background-color: #eee;
 `
 
 export const CourseEntryPartSkeleton = () => (
@@ -67,11 +70,7 @@ export const CourseEntryCard = ({
   const router = useRouter()
   const { admin } = useLoginStateContext()
   const { state, dispatch } = useCollapseContextCourse(course.id)
-  const [courseInfoOpen, setCourseInfoOpen] = useState(false)
-  const onCollapseCourseInfoClick = useCallback(
-    () => setCourseInfoOpen((value) => !value),
-    [],
-  )
+
   const onCollapseCourseClick = useCallback(
     () =>
       dispatch({
@@ -94,13 +93,6 @@ export const CourseEntryCard = ({
     <CourseEntryCardBase>
       <CourseEntryCardTitleWrapper>
         <CourseEntryCardTitle variant="h3">{course.name}</CourseEntryCardTitle>
-        {admin && (
-          <CollapseButton
-            open={courseInfoOpen}
-            onClick={onCollapseCourseInfoClick}
-            tooltip={"show more info"}
-          />
-        )}
         <Spacer />
         {hasCopyButton && (
           <ClipboardButton
@@ -118,16 +110,29 @@ export const CourseEntryCard = ({
           />
         )}
       </CourseEntryCardTitleWrapper>
-      {admin && (
-        <Collapse in={courseInfoOpen} unmountOnExit>
-          <CourseInfo>
-            <InfoRow title="ID" content={course.id} copyable />
-            <InfoRow title="Slug" content={course.slug} copyable />
-          </CourseInfo>
-        </Collapse>
-      )}
       <Collapse in={state.open}>
-        <CardContent>{children}</CardContent>
+        <CardContent>
+          {admin && (
+            <CourseInfo>
+              <InfoRow
+                title="Id"
+                fullWidth
+                content={course.id}
+                variant="caption"
+                copyable
+              />
+              <InfoRow
+                title="Slug"
+                fullWidth
+                content={course.slug}
+                variant="caption"
+                copyable
+              />
+            </CourseInfo>
+          )}
+
+          {children}
+        </CardContent>
       </Collapse>
     </CourseEntryCardBase>
   )

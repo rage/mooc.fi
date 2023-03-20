@@ -9,7 +9,16 @@ export const ProgressExtra = objectType({
     t.nonNull.list.nonNull.field("exercises", { type: "TierProgress" })
     t.nonNull.boolean("projectCompletion")
     t.int("highestTier")
+    t.nonNull.float("n_points")
+    t.nonNull.float("max_points")
+    t.nonNull.float("pointsPercentage")
+    t.nonNull.float("pointsNeededPercentage")
+    t.nonNull.float("exercisePercentage")
+    t.nonNull.float("exercisesNeededPercentage")
+    t.nonNull.float("pointsNeeded")
+    t.nonNull.int("totalExerciseCount")
     t.nonNull.int("totalExerciseCompletions")
+    t.nonNull.int("totalExerciseCompletionsNeeded")
   },
 })
 
@@ -17,11 +26,13 @@ export const TierInfo = objectType({
   name: "TierInfo",
   definition(t) {
     t.nonNull.int("tier")
-    t.boolean("hasTier")
-    t.int("requiredByTier")
-    t.int("missingFromTier")
-    t.int("exerciseCompletions")
-    t.int("exerciseCount")
+    t.nonNull.boolean("hasTier")
+    t.nonNull.int("requiredByTier")
+    t.nonNull.int("missingFromTier")
+    t.nonNull.float("exercisePercentage")
+    t.nonNull.float("exercisesNeededPercentage")
+    t.nonNull.int("exerciseCompletions")
+    t.nonNull.int("exerciseCount")
   },
 })
 

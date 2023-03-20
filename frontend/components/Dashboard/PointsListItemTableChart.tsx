@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles"
 
 import ProfileTranslations from "/translations/profile"
 import { FormattedGroupPoints } from "/util/formatPointsData"
+import round from "/util/round"
 import { useTranslator } from "/util/useTranslator"
 
 const ChartContainer = styled("div")`
@@ -52,7 +53,7 @@ function PointsListItemTableChart(props: Props) {
           {t(title as any)}
         </CardSubtitle>
         <CardSubtitle align="right">
-          {points.courseProgress.n_points.toFixed(2)} /{" "}
+          {round(points.courseProgress.n_points)} /{" "}
           {points.courseProgress.max_points}
         </CardSubtitle>
         <ColoredProgressBar

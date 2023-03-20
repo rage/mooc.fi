@@ -77,8 +77,18 @@ function PointsListItemCard(props: PointsListItemCardProps) {
         userCourseProgress,
         userCourseServiceProgresses,
       }),
-    [userCourseProgress, userCourseServiceProgresses],
+    [formatPointsData, userCourseProgress, userCourseServiceProgresses],
   )
+
+  const hasDetailedData = useMemo(() => {
+    if (Object.keys(formattedPointsData?.groups ?? {}).length === 0) {
+      return false
+    }
+
+    return Object.values(formattedPointsData.groups).some(
+      (group) => (group.service_progresses ?? []).length > 0,
+    )
+  }, [formattedPointsData])
 
   const onShowDetailsClick = useCallback(
     () => setShowDetails((prev) => !prev),
@@ -106,6 +116,9 @@ function PointsListItemCard(props: PointsListItemCardProps) {
           />
         </>
       )}
+      <CardSubtitle component="h3" variant="body1">
+        {t("partProgress")}
+      </CardSubtitle>
       {Object.keys(formattedPointsData?.groups ?? {}).length > 0 ? (
         <>
           <PointsItemTable
@@ -113,13 +126,15 @@ function PointsListItemCard(props: PointsListItemCardProps) {
             showDetailedBreakdown={showDetails}
             cutterValue={cutterValue}
           />
-          <FormSubmitButton
-            variant="text"
-            onClick={onShowDetailsClick}
-            fullWidth
-          >
-            {showDetails ? t("showLess") : t("showDetailedBreakdown")}
-          </FormSubmitButton>
+          {hasDetailedData && (
+            <FormSubmitButton
+              variant="text"
+              onClick={onShowDetailsClick}
+              fullWidth
+            >
+              {showDetails ? t("showLess") : t("showDetailedBreakdown")}
+            </FormSubmitButton>
+          )}
         </>
       ) : (
         <p>{t("noPointsData")}</p>

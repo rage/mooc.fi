@@ -19,7 +19,16 @@ fragment ProgressExtraFields on ProgressExtra {
   }
   projectCompletion
   highestTier
+  n_points
+  max_points
+  pointsNeeded
+  pointsPercentage
+  pointsNeededPercentage
+  exercisePercentage
+  exercisesNeededPercentage
+  totalExerciseCount
   totalExerciseCompletions
+  totalExerciseCompletionsNeeded
 }
 
 fragment TierInfoFields on TierInfo {
@@ -27,6 +36,8 @@ fragment TierInfoFields on TierInfo {
   hasTier
   missingFromTier
   requiredByTier
+  exercisePercentage
+  exercisesNeededPercentage
   exerciseCompletions
   exerciseCount
 }
@@ -48,4 +59,11 @@ fragment TierProgressExerciseCompletionFields on ExerciseCompletion {
   ...ExerciseCompletionCoreFields
   tier
   max_points
+}
+
+fragment PointsByGroupFields on PointsByGroup {
+  group
+  n_points
+  max_points
+  progress
 }

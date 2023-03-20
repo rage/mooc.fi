@@ -36,6 +36,7 @@
     "no": "ei",
     "progress": "Edistyminen",
     "totalProgress": "Kokonaisedistyminen",
+    "partProgress": "Edistyminen osioittain",
     "exercisesCompleted": "Tehtyjä tehtäviä",
     "grade": "arvosana:",
     "courseStartDate": "Kurssi aloitettu: ",

@@ -37,6 +37,7 @@
     "progress": "Progress",
     "totalProgress": "Total progress",
     "exercisesCompleted": "Exercises completed",
+    "partProgress": "Progress by part",
     "grade": "grade:",
     "courseStartDate": "Course started: ",
     "firstExerciseDate": "First exercise: ",

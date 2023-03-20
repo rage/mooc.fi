@@ -8,37 +8,24 @@ import React, {
 
 import { orderBy } from "lodash"
 
-import { LinearProgress, Typography, useMediaQuery } from "@mui/material"
+import { Typography, useMediaQuery } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
 
 import { CardSubtitle } from "/components/Text/headers"
 import { CardCaption } from "/components/Text/paragraphs"
+import CommonTranslations from "/translations/common"
 import notEmpty from "/util/notEmpty"
+import round from "/util/round"
+import { useTranslator } from "/util/useTranslator"
 
-// @ts-ignore: not used
-const ColoredProgressBar = styled(LinearProgress)`
-  margin-top: 0.7rem;
-  margin-left: 0.5rem;
-  background-color: #f5f5f5;
-  padding: 0.5rem;
-  flex: 1;
-  & .MuiLinearProgress-barColorPrimary {
-    background-color: #3066c0;
-  }
-  & .MuiLinearProgress-barColorSecondary {
-    background-color: #789fff;
-  }
-  & .MuiLinearProgress-dashed {
-    background-image: none;
-    animation: none;
-  }
-`
+const PointsProgressContainer = styled("div")``
 
 const ProgressItem = styled("div")`
   width: 100%;
   display: flex;
   align-items: flex-end;
   padding: 0.5rem;
+  padding-top: 2rem;
   position: relative;
   flex-direction: column;
 `
@@ -63,83 +50,73 @@ const Progress = styled("div", {
   background: ${(props) => props.color ?? "#3066c0"};
 `
 
-const ProgressLegendContainer = styled("div")`
-  position: relative;
-  width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-`
-
-const ArrowComponent = styled("div", {
-  shouldForwardProp: (prop) =>
-    prop !== "percentage" &&
-    prop !== "order" &&
-    prop !== "reversed" &&
-    prop !== "maxPercentage",
-})<{
-  order: number
-  percentage: number
-  maxPercentage: number
-  reversed: boolean
-}>`
-  position: absolute;
-  width: ${(props) =>
-    props.reversed
-      ? `calc(${props.maxPercentage - props.percentage}% - 0.5rem)`
-      : `${props.percentage}%`};
-  margin-left: 0.5rem;
-  border: solid #ddd;
-  border-width: ${(props) => (props.reversed ? "0 0 2px 2px" : "0 2px 2px 0")};
-  height: ${(props) => 1 + props.order}rem;
-  z-index: 0;
-  top: -0.25rem;
-  left: ${(props) =>
-    props.reversed ? `calc(${props.percentage}% - 0.5rem)` : "-0.5rem"};
-`
-
-const Caption = styled("span", {
-  shouldForwardProp: (prop) => prop !== "order" && prop !== "reversed",
-})<{ order: number; reversed: boolean }>`
-  position: absolute;
-  z-index: ${(props) => 1 + props.order};
-  ${(props) => (props.reversed ? "padding-left" : "padding-right")}: 0.5rem;
-  background-color: #ffffff;
-  top: ${(props) => 0.125 + props.order * 1.125}rem;
-  ${(props) => (props.reversed ? "right: 0" : "left: 0")};
-`
-type ArrowProps = {
+type ProgressLegendProps = {
   percentage: number
   maxPercentage?: number
   order: number
   caption?: string
+  valueCaption?: string
+  color?: string
 }
 
-const ProgressLegendComponent = ({
+const Marker = styled("div", {
+  shouldForwardProp: (prop) => prop !== "percentage" && prop !== "color",
+})<{ percentage: number }>`
+  position: absolute;
+  width: 0.125rem;
+  height: 2.5rem;
+  top: -2.5rem;
+  border-radius: 0.125rem;
+  background-color: ${(props) => props.color ?? "#3066c0"};
+  left: calc(${(props) => props.percentage}% - 0.0625rem);
+`
+
+const Caption = styled("div", {
+  shouldForwardProp: (prop) => prop !== "percentage" && prop !== "reversed",
+})<{ percentage: number; reversed?: boolean }>`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+  z-index: 1;
+  top: -3.5rem;
+  ${(props) =>
+    props.reversed
+      ? `right: calc(${100 - props.percentage}% + 0.5rem)`
+      : `left: calc(${props.percentage}%)`};
+  white-space: nowrap;
+`
+
+const ProgressLegendMarker = ({
   percentage,
-  maxPercentage = 100,
-  order,
   caption,
-}: PropsWithChildren<ArrowProps>) => {
-  const captionRef = useRef<HTMLSpanElement | null>(null)
-  const arrowRef = useRef<HTMLDivElement | null>(null)
-  const reversed = useRef(false)
+  valueCaption,
+  color,
+}: ProgressLegendProps) => {
+  const markerRef = useRef<HTMLDivElement | null>(null)
+  const captionRef = useRef<HTMLDivElement | null>(null)
+
+  const isOverflowingRight = useRef(false)
 
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
     setRendered(true)
-  })
+  }, [])
 
   const handleResize = useCallback(() => {
-    if (!captionRef.current || !arrowRef.current) return false
+    if (!captionRef.current || !markerRef.current) return false
+
+    const rem = parseFloat(getComputedStyle(captionRef.current).fontSize)
 
     const captionWidth = captionRef.current.getBoundingClientRect().width
-    const rem = parseFloat(getComputedStyle(arrowRef.current).fontSize)
-    const arrowWidth =
-      (arrowRef.current.getBoundingClientRect().width ?? 0) - rem * 0.5
+    const markerRightX = markerRef.current.getBoundingClientRect().right ?? 0
+    const containerRightX =
+      captionRef.current.parentElement?.getBoundingClientRect().right ?? 0
 
-    reversed.current = captionWidth > arrowWidth
-  }, [rendered, captionRef.current, arrowRef.current])
+    isOverflowingRight.current =
+      markerRightX + 0.5 * rem + captionWidth > containerRightX
+  }, [rendered, markerRef.current, captionRef.current])
 
   useEffect(() => {
     window.addEventListener("resize", handleResize)
@@ -147,54 +124,59 @@ const ProgressLegendComponent = ({
     handleResize()
 
     return () => window.removeEventListener("resize", handleResize)
-  }, [handleResize])
+  })
 
   return (
-    <ArrowComponent
-      ref={(el) => (arrowRef.current = el)}
-      key={`arrow-${percentage}-${reversed.current}`}
-      percentage={percentage}
-      maxPercentage={maxPercentage}
-      order={order}
-      reversed={reversed.current}
-    >
-      {caption && (
+    <>
+      <Marker
+        key={`marker-${percentage}-${caption}-${isOverflowingRight.current}`}
+        percentage={percentage}
+        color={color}
+        ref={(el: HTMLDivElement | null) => (markerRef.current = el)}
+      />
+      {(caption || valueCaption) && (
         <Caption
-          key={`caption-${percentage}-${reversed.current}`}
-          order={order}
-          ref={(el) => (captionRef.current = el)}
-          reversed={reversed.current}
+          key={`caption-${percentage}-${caption}-${isOverflowingRight.current}`}
+          percentage={percentage}
+          reversed={isOverflowingRight.current}
+          ref={(el: HTMLDivElement | null) => (captionRef.current = el)}
         >
-          <Typography variant="caption">{caption}</Typography>
+          {caption && <Typography variant="caption">{caption}</Typography>}
+          {valueCaption && (
+            <Typography variant="caption">{valueCaption}</Typography>
+          )}
         </Caption>
       )}
-    </ArrowComponent>
+    </>
   )
 }
-
-type PercentageData = {
+type ProgressLegendData = {
   caption?: string
+  valueCaption?: string
   percentage: number
+  color?: string
 }
+
+const ProgressLegendMarkerContainer = styled("div")`
+  width: 100%;
+  position: relative;
+`
 
 const ProgressLegend = ({
   data,
-}: PropsWithChildren<{ data: Array<PercentageData> }>) => {
-  const maxPercentage = Math.max(...data.map((d) => d.percentage))
+}: PropsWithChildren<{ data: Array<ProgressLegendData> }>) => {
   const isNarrow = useMediaQuery("(max-width: 800px)", { noSsr: true }) // need to retrigger another render after resize
 
   return (
-    <ProgressLegendContainer>
+    <ProgressLegendMarkerContainer>
       {orderBy(data, "percentage").map((p, index) => (
-        <ProgressLegendComponent
+        <ProgressLegendMarker
           key={`legend-${p.percentage}-${p.caption}-${isNarrow}`}
           order={index}
-          percentage={p.percentage}
-          maxPercentage={maxPercentage}
-          caption={p.caption}
+          {...p}
         />
       ))}
-    </ProgressLegendContainer>
+    </ProgressLegendMarkerContainer>
   )
 }
 /* marker on hover
@@ -250,15 +232,24 @@ const PointsProgressTitle = styled(CardSubtitle)`
   margin-right: 1rem;
 ` as typeof CardSubtitle
 
-interface PointsProgressProps {
+const ProgressPercentage = styled(CardSubtitle)`
+  align: right;
+  padding-top: 1.25rem;
+  font-weight: 700;
+`
+
+export type PointsProgressData = {
   percentage: number
+  amount?: number | null
+  total?: number | null
+  required?: number | null
+  requiredPercentage?: number
+}
+
+interface PointsProgressProps extends PointsProgressData {
   title: string
   pointsTitle?: string
   requiredTitle?: string
-  amount?: number | null
-  required?: number | null
-  requiredPercentage?: number
-  total?: number | null
   success?: boolean
 }
 
@@ -273,23 +264,23 @@ const PointsProgress = ({
   required,
   success,
 }: PointsProgressProps) => {
+  const t = useTranslator(CommonTranslations)
   const theme = useTheme()
 
   const hasRequiredPercentage = notEmpty(requiredPercentage)
 
   return (
-    <>
+    <PointsProgressContainer>
       <PointsProgressTitle component="h3" variant="body1">
         {title}
       </PointsProgressTitle>
       <ChartContainer>
-        <CardSubtitle align="right">
-          <strong>{Math.floor(percentage)}%</strong>
-        </CardSubtitle>
+        <ProgressPercentage>{Math.floor(percentage)}%</ProgressPercentage>
         <ProgressItem>
           <ProgressBar>
             {hasRequiredPercentage && (
               <Progress
+                key={`${title}-required-${requiredPercentage}`}
                 percentage={requiredPercentage}
                 color={theme.palette.grey[400]}
                 title={`${Math.round(requiredPercentage)}% ${
@@ -300,6 +291,7 @@ const PointsProgress = ({
               />
             )}
             <Progress
+              key={`${title}-progress-${percentage}`}
               percentage={percentage}
               title={`${Math.round(percentage)}%`}
               color={
@@ -309,27 +301,23 @@ const PointsProgress = ({
               }
             />
           </ProgressBar>
-          {hasRequiredPercentage && (
+          {hasRequiredPercentage && !success && (
             <ProgressLegend
               data={[
                 {
-                  caption: "Progress",
-                  percentage,
-                },
-                {
-                  caption: "Required",
+                  caption: t("required"),
+                  valueCaption:
+                    `${Math.round(requiredPercentage)}%` +
+                    (notEmpty(required) && notEmpty(total)
+                      ? ` (${round(required)}/${total})`
+                      : ""),
                   percentage: requiredPercentage,
+                  color: theme.palette.grey[400],
                 },
               ]}
             />
           )}
         </ProgressItem>
-        {/*<ColoredProgressBar
-        variant={barVariant}
-        value={percentage}
-        {...notEmpty(requiredPercentage) && ({ valueBuffer: requiredPercentage })}
-        color="primary"
-          />*/}
       </ChartContainer>
       {notEmpty(amount) && notEmpty(total) && (
         <CardCaption component="h4" variant="caption">
@@ -337,7 +325,7 @@ const PointsProgress = ({
             {pointsTitle ?? ""}
             {pointsTitle ? " " : ""}
             <strong>
-              {amount} / {total}
+              {round(amount)} / {round(total)}
             </strong>
             {notEmpty(required) && (
               <>
@@ -349,7 +337,7 @@ const PointsProgress = ({
           </>
         </CardCaption>
       )}
-    </>
+    </PointsProgressContainer>
   )
 }
 

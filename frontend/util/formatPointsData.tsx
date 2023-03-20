@@ -45,8 +45,8 @@ function formatPointsData({
     }
   }
 
-  const courseProgressesByGroup: _.Dictionary<GroupPoints[]> = groupBy(
-    userCourseProgress.progress,
+  const courseProgressesByGroup = groupBy(
+    userCourseProgress.points_by_group,
     "group",
   )
   const courseProgressByGroup = mapValues(courseProgressesByGroup, (o) => o[0])
@@ -54,7 +54,7 @@ function formatPointsData({
   const serviceProgressesArray = flatten(
     userCourseServiceProgresses?.map(
       (o) =>
-        o?.progress?.map((o2: GroupPoints) => {
+        o?.points_by_group?.map((o2: GroupPoints) => {
           return {
             service: o?.service?.name,
             group: o2.group,

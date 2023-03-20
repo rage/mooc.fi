@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-19T17:27:35+02:00
+// Generated on 2023-03-20T17:28:24+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1121,12 +1121,12 @@ export type MutationaddUserCourseProgressArgs = {
   extra?: InputMaybe<Scalars["Json"]>
   max_points?: InputMaybe<Scalars["Float"]>
   n_points?: InputMaybe<Scalars["Float"]>
-  progress?: InputMaybe<Array<PointsByGroup>>
+  progress?: InputMaybe<Array<PointsByGroupInput>>
   user_id: Scalars["ID"]
 }
 
 export type MutationaddUserCourseServiceProgressArgs = {
-  progress: PointsByGroup
+  progress: PointsByGroupInput
   service_id: Scalars["ID"]
   user_course_progress_id: Scalars["ID"]
 }
@@ -1551,6 +1551,14 @@ export type PageInfo = {
 }
 
 export type PointsByGroup = {
+  __typename?: "PointsByGroup"
+  group: Scalars["String"]
+  max_points: Scalars["Int"]
+  n_points: Scalars["Int"]
+  progress: Scalars["Float"]
+}
+
+export type PointsByGroupInput = {
   group: Scalars["String"]
   max_points: Scalars["Int"]
   n_points: Scalars["Int"]
@@ -1569,11 +1577,20 @@ export type Progress = {
 
 export type ProgressExtra = {
   __typename?: "ProgressExtra"
+  exercisePercentage: Scalars["Float"]
   exercises: Array<TierProgress>
+  exercisesNeededPercentage: Scalars["Float"]
   highestTier: Maybe<Scalars["Int"]>
+  max_points: Scalars["Float"]
+  n_points: Scalars["Float"]
+  pointsNeeded: Scalars["Float"]
+  pointsNeededPercentage: Scalars["Float"]
+  pointsPercentage: Scalars["Float"]
   projectCompletion: Scalars["Boolean"]
   tiers: Array<TierInfo>
   totalExerciseCompletions: Scalars["Int"]
+  totalExerciseCompletionsNeeded: Scalars["Int"]
+  totalExerciseCount: Scalars["Int"]
 }
 
 export type Query = {
@@ -2211,11 +2228,13 @@ export type TagWhereUniqueInput = {
 
 export type TierInfo = {
   __typename?: "TierInfo"
-  exerciseCompletions: Maybe<Scalars["Int"]>
-  exerciseCount: Maybe<Scalars["Int"]>
-  hasTier: Maybe<Scalars["Boolean"]>
-  missingFromTier: Maybe<Scalars["Int"]>
-  requiredByTier: Maybe<Scalars["Int"]>
+  exerciseCompletions: Scalars["Int"]
+  exerciseCount: Scalars["Int"]
+  exercisePercentage: Scalars["Float"]
+  exercisesNeededPercentage: Scalars["Float"]
+  hasTier: Scalars["Boolean"]
+  missingFromTier: Scalars["Int"]
+  requiredByTier: Scalars["Int"]
   tier: Scalars["Int"]
 }
 
@@ -2382,7 +2401,8 @@ export type UserCourseProgress = {
   id: Scalars["String"]
   max_points: Maybe<Scalars["Float"]>
   n_points: Maybe<Scalars["Float"]>
-  progress: Maybe<Array<Scalars["Json"]>>
+  points_by_group: Array<PointsByGroup>
+  progress: Array<Scalars["Json"]>
   updated_at: Maybe<Scalars["DateTime"]>
   user: Maybe<User>
   user_course_service_progresses: Array<UserCourseServiceProgress>
@@ -2411,6 +2431,7 @@ export type UserCourseServiceProgress = {
   course_id: Maybe<Scalars["String"]>
   created_at: Maybe<Scalars["DateTime"]>
   id: Scalars["String"]
+  points_by_group: Array<PointsByGroup>
   progress: Array<Scalars["Json"]>
   service: Maybe<Service>
   service_id: Maybe<Scalars["String"]>
@@ -3371,22 +3392,39 @@ export type ProgressCoreFieldsFragment = {
     user_id: string | null
     max_points: number | null
     n_points: number | null
-    progress: Array<any> | null
     created_at: any | null
     updated_at: any | null
+    points_by_group: Array<{
+      __typename?: "PointsByGroup"
+      group: string
+      n_points: number
+      max_points: number
+      progress: number
+    }>
     extra: {
       __typename?: "ProgressExtra"
       projectCompletion: boolean
       highestTier: number | null
+      n_points: number
+      max_points: number
+      pointsNeeded: number
+      pointsPercentage: number
+      pointsNeededPercentage: number
+      exercisePercentage: number
+      exercisesNeededPercentage: number
+      totalExerciseCount: number
       totalExerciseCompletions: number
+      totalExerciseCompletionsNeeded: number
       tiers: Array<{
         __typename?: "TierInfo"
         tier: number
-        hasTier: boolean | null
-        missingFromTier: number | null
-        requiredByTier: number | null
-        exerciseCompletions: number | null
-        exerciseCount: number | null
+        hasTier: boolean
+        missingFromTier: number
+        requiredByTier: number
+        exercisePercentage: number
+        exercisesNeededPercentage: number
+        exerciseCompletions: number
+        exerciseCount: number
       }>
       exercises: Array<{
         __typename?: "TierProgress"
@@ -3433,9 +3471,15 @@ export type ProgressCoreFieldsFragment = {
     course_id: string | null
     service_id: string | null
     user_id: string | null
-    progress: Array<any>
     created_at: any | null
     updated_at: any | null
+    points_by_group: Array<{
+      __typename?: "PointsByGroup"
+      group: string
+      n_points: number
+      max_points: number
+      progress: number
+    }>
     service: { __typename?: "Service"; name: string; id: string } | null
   }> | null
 }
@@ -3444,15 +3488,26 @@ export type ProgressExtraFieldsFragment = {
   __typename?: "ProgressExtra"
   projectCompletion: boolean
   highestTier: number | null
+  n_points: number
+  max_points: number
+  pointsNeeded: number
+  pointsPercentage: number
+  pointsNeededPercentage: number
+  exercisePercentage: number
+  exercisesNeededPercentage: number
+  totalExerciseCount: number
   totalExerciseCompletions: number
+  totalExerciseCompletionsNeeded: number
   tiers: Array<{
     __typename?: "TierInfo"
     tier: number
-    hasTier: boolean | null
-    missingFromTier: number | null
-    requiredByTier: number | null
-    exerciseCompletions: number | null
-    exerciseCount: number | null
+    hasTier: boolean
+    missingFromTier: number
+    requiredByTier: number
+    exercisePercentage: number
+    exercisesNeededPercentage: number
+    exerciseCompletions: number
+    exerciseCount: number
   }>
   exercises: Array<{
     __typename?: "TierProgress"
@@ -3489,11 +3544,13 @@ export type ProgressExtraFieldsFragment = {
 export type TierInfoFieldsFragment = {
   __typename?: "TierInfo"
   tier: number
-  hasTier: boolean | null
-  missingFromTier: number | null
-  requiredByTier: number | null
-  exerciseCompletions: number | null
-  exerciseCount: number | null
+  hasTier: boolean
+  missingFromTier: number
+  requiredByTier: number
+  exercisePercentage: number
+  exercisesNeededPercentage: number
+  exerciseCompletions: number
+  exerciseCount: number
 }
 
 export type TierProgressFieldsFragment = {
@@ -3546,6 +3603,14 @@ export type TierProgressExerciseCompletionFieldsFragment = {
     exercise_completion_id: string | null
     value: string
   }>
+}
+
+export type PointsByGroupFieldsFragment = {
+  __typename?: "PointsByGroup"
+  group: string
+  n_points: number
+  max_points: number
+  progress: number
 }
 
 export type StudyModuleCoreFieldsFragment = {
@@ -3765,22 +3830,39 @@ export type UserProgressesFieldsFragment = {
       user_id: string | null
       max_points: number | null
       n_points: number | null
-      progress: Array<any> | null
       created_at: any | null
       updated_at: any | null
+      points_by_group: Array<{
+        __typename?: "PointsByGroup"
+        group: string
+        n_points: number
+        max_points: number
+        progress: number
+      }>
       extra: {
         __typename?: "ProgressExtra"
         projectCompletion: boolean
         highestTier: number | null
+        n_points: number
+        max_points: number
+        pointsNeeded: number
+        pointsPercentage: number
+        pointsNeededPercentage: number
+        exercisePercentage: number
+        exercisesNeededPercentage: number
+        totalExerciseCount: number
         totalExerciseCompletions: number
+        totalExerciseCompletionsNeeded: number
         tiers: Array<{
           __typename?: "TierInfo"
           tier: number
-          hasTier: boolean | null
-          missingFromTier: number | null
-          requiredByTier: number | null
-          exerciseCompletions: number | null
-          exerciseCount: number | null
+          hasTier: boolean
+          missingFromTier: number
+          requiredByTier: number
+          exercisePercentage: number
+          exercisesNeededPercentage: number
+          exerciseCompletions: number
+          exerciseCount: number
         }>
         exercises: Array<{
           __typename?: "TierProgress"
@@ -3827,9 +3909,15 @@ export type UserProgressesFieldsFragment = {
       course_id: string | null
       service_id: string | null
       user_id: string | null
-      progress: Array<any>
       created_at: any | null
       updated_at: any | null
+      points_by_group: Array<{
+        __typename?: "PointsByGroup"
+        group: string
+        n_points: number
+        max_points: number
+        progress: number
+      }>
       service: { __typename?: "Service"; name: string; id: string } | null
     }> | null
   }> | null
@@ -3945,22 +4033,39 @@ export type UserCourseProgressCoreFieldsFragment = {
   user_id: string | null
   max_points: number | null
   n_points: number | null
-  progress: Array<any> | null
   created_at: any | null
   updated_at: any | null
+  points_by_group: Array<{
+    __typename?: "PointsByGroup"
+    group: string
+    n_points: number
+    max_points: number
+    progress: number
+  }>
   extra: {
     __typename?: "ProgressExtra"
     projectCompletion: boolean
     highestTier: number | null
+    n_points: number
+    max_points: number
+    pointsNeeded: number
+    pointsPercentage: number
+    pointsNeededPercentage: number
+    exercisePercentage: number
+    exercisesNeededPercentage: number
+    totalExerciseCount: number
     totalExerciseCompletions: number
+    totalExerciseCompletionsNeeded: number
     tiers: Array<{
       __typename?: "TierInfo"
       tier: number
-      hasTier: boolean | null
-      missingFromTier: number | null
-      requiredByTier: number | null
-      exerciseCompletions: number | null
-      exerciseCount: number | null
+      hasTier: boolean
+      missingFromTier: number
+      requiredByTier: number
+      exercisePercentage: number
+      exercisesNeededPercentage: number
+      exerciseCompletions: number
+      exerciseCount: number
     }>
     exercises: Array<{
       __typename?: "TierProgress"
@@ -4008,9 +4113,15 @@ export type UserCourseServiceProgressCoreFieldsFragment = {
   course_id: string | null
   service_id: string | null
   user_id: string | null
-  progress: Array<any>
   created_at: any | null
   updated_at: any | null
+  points_by_group: Array<{
+    __typename?: "PointsByGroup"
+    group: string
+    n_points: number
+    max_points: number
+    progress: number
+  }>
   service: { __typename?: "Service"; name: string; id: string } | null
 }
 
@@ -4077,22 +4188,39 @@ export type StudentProgressesQueryNodeFieldsFragment = {
         user_id: string | null
         max_points: number | null
         n_points: number | null
-        progress: Array<any> | null
         created_at: any | null
         updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
         extra: {
           __typename?: "ProgressExtra"
           projectCompletion: boolean
           highestTier: number | null
+          n_points: number
+          max_points: number
+          pointsNeeded: number
+          pointsPercentage: number
+          pointsNeededPercentage: number
+          exercisePercentage: number
+          exercisesNeededPercentage: number
+          totalExerciseCount: number
           totalExerciseCompletions: number
+          totalExerciseCompletionsNeeded: number
           tiers: Array<{
             __typename?: "TierInfo"
             tier: number
-            hasTier: boolean | null
-            missingFromTier: number | null
-            requiredByTier: number | null
-            exerciseCompletions: number | null
-            exerciseCount: number | null
+            hasTier: boolean
+            missingFromTier: number
+            requiredByTier: number
+            exercisePercentage: number
+            exercisesNeededPercentage: number
+            exerciseCompletions: number
+            exerciseCount: number
           }>
           exercises: Array<{
             __typename?: "TierProgress"
@@ -4139,9 +4267,15 @@ export type StudentProgressesQueryNodeFieldsFragment = {
         course_id: string | null
         service_id: string | null
         user_id: string | null
-        progress: Array<any>
         created_at: any | null
         updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
         service: { __typename?: "Service"; name: string; id: string } | null
       }> | null
     }
@@ -4278,22 +4412,39 @@ export type UserCourseSummaryCoreFieldsFragment = {
     user_id: string | null
     max_points: number | null
     n_points: number | null
-    progress: Array<any> | null
     created_at: any | null
     updated_at: any | null
+    points_by_group: Array<{
+      __typename?: "PointsByGroup"
+      group: string
+      n_points: number
+      max_points: number
+      progress: number
+    }>
     extra: {
       __typename?: "ProgressExtra"
       projectCompletion: boolean
       highestTier: number | null
+      n_points: number
+      max_points: number
+      pointsNeeded: number
+      pointsPercentage: number
+      pointsNeededPercentage: number
+      exercisePercentage: number
+      exercisesNeededPercentage: number
+      totalExerciseCount: number
       totalExerciseCompletions: number
+      totalExerciseCompletionsNeeded: number
       tiers: Array<{
         __typename?: "TierInfo"
         tier: number
-        hasTier: boolean | null
-        missingFromTier: number | null
-        requiredByTier: number | null
-        exerciseCompletions: number | null
-        exerciseCount: number | null
+        hasTier: boolean
+        missingFromTier: number
+        requiredByTier: number
+        exercisePercentage: number
+        exercisesNeededPercentage: number
+        exerciseCompletions: number
+        exerciseCount: number
       }>
       exercises: Array<{
         __typename?: "TierProgress"
@@ -4340,9 +4491,15 @@ export type UserCourseSummaryCoreFieldsFragment = {
     course_id: string | null
     service_id: string | null
     user_id: string | null
-    progress: Array<any>
     created_at: any | null
     updated_at: any | null
+    points_by_group: Array<{
+      __typename?: "PointsByGroup"
+      group: string
+      n_points: number
+      max_points: number
+      progress: number
+    }>
     service: { __typename?: "Service"; name: string; id: string } | null
   }>
   completion: {
@@ -4448,22 +4605,39 @@ export type UserCourseSummaryCoreFieldsFragment = {
       user_id: string | null
       max_points: number | null
       n_points: number | null
-      progress: Array<any> | null
       created_at: any | null
       updated_at: any | null
+      points_by_group: Array<{
+        __typename?: "PointsByGroup"
+        group: string
+        n_points: number
+        max_points: number
+        progress: number
+      }>
       extra: {
         __typename?: "ProgressExtra"
         projectCompletion: boolean
         highestTier: number | null
+        n_points: number
+        max_points: number
+        pointsNeeded: number
+        pointsPercentage: number
+        pointsNeededPercentage: number
+        exercisePercentage: number
+        exercisesNeededPercentage: number
+        totalExerciseCount: number
         totalExerciseCompletions: number
+        totalExerciseCompletionsNeeded: number
         tiers: Array<{
           __typename?: "TierInfo"
           tier: number
-          hasTier: boolean | null
-          missingFromTier: number | null
-          requiredByTier: number | null
-          exerciseCompletions: number | null
-          exerciseCount: number | null
+          hasTier: boolean
+          missingFromTier: number
+          requiredByTier: number
+          exercisePercentage: number
+          exercisesNeededPercentage: number
+          exerciseCompletions: number
+          exerciseCount: number
         }>
         exercises: Array<{
           __typename?: "TierProgress"
@@ -4510,9 +4684,15 @@ export type UserCourseSummaryCoreFieldsFragment = {
       course_id: string | null
       service_id: string | null
       user_id: string | null
-      progress: Array<any>
       created_at: any | null
       updated_at: any | null
+      points_by_group: Array<{
+        __typename?: "PointsByGroup"
+        group: string
+        n_points: number
+        max_points: number
+        progress: number
+      }>
       service: { __typename?: "Service"; name: string; id: string } | null
     }>
   }> | null
@@ -4584,22 +4764,39 @@ export type UserTierCourseSummaryCoreFieldsFragment = {
     user_id: string | null
     max_points: number | null
     n_points: number | null
-    progress: Array<any> | null
     created_at: any | null
     updated_at: any | null
+    points_by_group: Array<{
+      __typename?: "PointsByGroup"
+      group: string
+      n_points: number
+      max_points: number
+      progress: number
+    }>
     extra: {
       __typename?: "ProgressExtra"
       projectCompletion: boolean
       highestTier: number | null
+      n_points: number
+      max_points: number
+      pointsNeeded: number
+      pointsPercentage: number
+      pointsNeededPercentage: number
+      exercisePercentage: number
+      exercisesNeededPercentage: number
+      totalExerciseCount: number
       totalExerciseCompletions: number
+      totalExerciseCompletionsNeeded: number
       tiers: Array<{
         __typename?: "TierInfo"
         tier: number
-        hasTier: boolean | null
-        missingFromTier: number | null
-        requiredByTier: number | null
-        exerciseCompletions: number | null
-        exerciseCount: number | null
+        hasTier: boolean
+        missingFromTier: number
+        requiredByTier: number
+        exercisePercentage: number
+        exercisesNeededPercentage: number
+        exerciseCompletions: number
+        exerciseCount: number
       }>
       exercises: Array<{
         __typename?: "TierProgress"
@@ -4646,9 +4843,15 @@ export type UserTierCourseSummaryCoreFieldsFragment = {
     course_id: string | null
     service_id: string | null
     user_id: string | null
-    progress: Array<any>
     created_at: any | null
     updated_at: any | null
+    points_by_group: Array<{
+      __typename?: "PointsByGroup"
+      group: string
+      n_points: number
+      max_points: number
+      progress: number
+    }>
     service: { __typename?: "Service"; name: string; id: string } | null
   }>
 }
@@ -6358,22 +6561,39 @@ export type UserSummaryQuery = {
         user_id: string | null
         max_points: number | null
         n_points: number | null
-        progress: Array<any> | null
         created_at: any | null
         updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
         extra: {
           __typename?: "ProgressExtra"
           projectCompletion: boolean
           highestTier: number | null
+          n_points: number
+          max_points: number
+          pointsNeeded: number
+          pointsPercentage: number
+          pointsNeededPercentage: number
+          exercisePercentage: number
+          exercisesNeededPercentage: number
+          totalExerciseCount: number
           totalExerciseCompletions: number
+          totalExerciseCompletionsNeeded: number
           tiers: Array<{
             __typename?: "TierInfo"
             tier: number
-            hasTier: boolean | null
-            missingFromTier: number | null
-            requiredByTier: number | null
-            exerciseCompletions: number | null
-            exerciseCount: number | null
+            hasTier: boolean
+            missingFromTier: number
+            requiredByTier: number
+            exercisePercentage: number
+            exercisesNeededPercentage: number
+            exerciseCompletions: number
+            exerciseCount: number
           }>
           exercises: Array<{
             __typename?: "TierProgress"
@@ -6420,9 +6640,15 @@ export type UserSummaryQuery = {
         course_id: string | null
         service_id: string | null
         user_id: string | null
-        progress: Array<any>
         created_at: any | null
         updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
         service: { __typename?: "Service"; name: string; id: string } | null
       }>
       completion: {
@@ -6528,22 +6754,39 @@ export type UserSummaryQuery = {
           user_id: string | null
           max_points: number | null
           n_points: number | null
-          progress: Array<any> | null
           created_at: any | null
           updated_at: any | null
+          points_by_group: Array<{
+            __typename?: "PointsByGroup"
+            group: string
+            n_points: number
+            max_points: number
+            progress: number
+          }>
           extra: {
             __typename?: "ProgressExtra"
             projectCompletion: boolean
             highestTier: number | null
+            n_points: number
+            max_points: number
+            pointsNeeded: number
+            pointsPercentage: number
+            pointsNeededPercentage: number
+            exercisePercentage: number
+            exercisesNeededPercentage: number
+            totalExerciseCount: number
             totalExerciseCompletions: number
+            totalExerciseCompletionsNeeded: number
             tiers: Array<{
               __typename?: "TierInfo"
               tier: number
-              hasTier: boolean | null
-              missingFromTier: number | null
-              requiredByTier: number | null
-              exerciseCompletions: number | null
-              exerciseCount: number | null
+              hasTier: boolean
+              missingFromTier: number
+              requiredByTier: number
+              exercisePercentage: number
+              exercisesNeededPercentage: number
+              exerciseCompletions: number
+              exerciseCount: number
             }>
             exercises: Array<{
               __typename?: "TierProgress"
@@ -6590,9 +6833,15 @@ export type UserSummaryQuery = {
           course_id: string | null
           service_id: string | null
           user_id: string | null
-          progress: Array<any>
           created_at: any | null
           updated_at: any | null
+          points_by_group: Array<{
+            __typename?: "PointsByGroup"
+            group: string
+            n_points: number
+            max_points: number
+            progress: number
+          }>
           service: { __typename?: "Service"; name: string; id: string } | null
         }>
       }> | null
@@ -6806,22 +7055,39 @@ export type CurrentUserProgressesQuery = {
         user_id: string | null
         max_points: number | null
         n_points: number | null
-        progress: Array<any> | null
         created_at: any | null
         updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
         extra: {
           __typename?: "ProgressExtra"
           projectCompletion: boolean
           highestTier: number | null
+          n_points: number
+          max_points: number
+          pointsNeeded: number
+          pointsPercentage: number
+          pointsNeededPercentage: number
+          exercisePercentage: number
+          exercisesNeededPercentage: number
+          totalExerciseCount: number
           totalExerciseCompletions: number
+          totalExerciseCompletionsNeeded: number
           tiers: Array<{
             __typename?: "TierInfo"
             tier: number
-            hasTier: boolean | null
-            missingFromTier: number | null
-            requiredByTier: number | null
-            exerciseCompletions: number | null
-            exerciseCount: number | null
+            hasTier: boolean
+            missingFromTier: number
+            requiredByTier: number
+            exercisePercentage: number
+            exercisesNeededPercentage: number
+            exerciseCompletions: number
+            exerciseCount: number
           }>
           exercises: Array<{
             __typename?: "TierProgress"
@@ -6868,9 +7134,15 @@ export type CurrentUserProgressesQuery = {
         course_id: string | null
         service_id: string | null
         user_id: string | null
-        progress: Array<any>
         created_at: any | null
         updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
         service: { __typename?: "Service"; name: string; id: string } | null
       }> | null
     }> | null
@@ -7018,7 +7290,7 @@ export type ExportUserCourseProgressesQuery = {
   userCourseProgresses: Array<{
     __typename?: "UserCourseProgress"
     id: string
-    progress: Array<any> | null
+    progress: Array<any>
     user: {
       __typename?: "User"
       id: string
@@ -7100,22 +7372,39 @@ export type StudentProgressesQuery = {
               user_id: string | null
               max_points: number | null
               n_points: number | null
-              progress: Array<any> | null
               created_at: any | null
               updated_at: any | null
+              points_by_group: Array<{
+                __typename?: "PointsByGroup"
+                group: string
+                n_points: number
+                max_points: number
+                progress: number
+              }>
               extra: {
                 __typename?: "ProgressExtra"
                 projectCompletion: boolean
                 highestTier: number | null
+                n_points: number
+                max_points: number
+                pointsNeeded: number
+                pointsPercentage: number
+                pointsNeededPercentage: number
+                exercisePercentage: number
+                exercisesNeededPercentage: number
+                totalExerciseCount: number
                 totalExerciseCompletions: number
+                totalExerciseCompletionsNeeded: number
                 tiers: Array<{
                   __typename?: "TierInfo"
                   tier: number
-                  hasTier: boolean | null
-                  missingFromTier: number | null
-                  requiredByTier: number | null
-                  exerciseCompletions: number | null
-                  exerciseCount: number | null
+                  hasTier: boolean
+                  missingFromTier: number
+                  requiredByTier: number
+                  exercisePercentage: number
+                  exercisesNeededPercentage: number
+                  exerciseCompletions: number
+                  exerciseCount: number
                 }>
                 exercises: Array<{
                   __typename?: "TierProgress"
@@ -7162,9 +7451,15 @@ export type StudentProgressesQuery = {
               course_id: string | null
               service_id: string | null
               user_id: string | null
-              progress: Array<any>
               created_at: any | null
               updated_at: any | null
+              points_by_group: Array<{
+                __typename?: "PointsByGroup"
+                group: string
+                n_points: number
+                max_points: number
+                progress: number
+              }>
               service: {
                 __typename?: "Service"
                 name: string
@@ -10305,6 +10600,28 @@ export const TagTypeFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<TagTypeFieldsFragment, unknown>
+export const PointsByGroupFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PointsByGroupFieldsFragment, unknown>
 export const TierInfoFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -10322,6 +10639,14 @@ export const TierInfoFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -10585,9 +10910,33 @@ export const ProgressExtraFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -10665,6 +11014,14 @@ export const ProgressExtraFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -10729,7 +11086,19 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -10781,6 +11150,14 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -10886,6 +11263,23 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "ProgressExtraFields" },
       typeCondition: {
         kind: "NamedType",
@@ -10922,9 +11316,33 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -10948,7 +11366,19 @@ export const UserCourseServiceProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -10962,6 +11392,23 @@ export const UserCourseServiceProgressCoreFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
         ],
       },
     },
@@ -11030,6 +11477,23 @@ export const ProgressCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -11042,6 +11506,14 @@ export const ProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -11183,9 +11655,33 @@ export const ProgressCoreFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -11225,7 +11721,19 @@ export const ProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -11277,7 +11785,19 @@ export const ProgressCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -11351,6 +11871,23 @@ export const UserProgressesFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -11363,6 +11900,14 @@ export const UserProgressesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -11504,9 +12049,33 @@ export const UserProgressesFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -11526,7 +12095,19 @@ export const UserProgressesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -11578,7 +12159,19 @@ export const UserProgressesFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -12258,6 +12851,23 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -12270,6 +12880,14 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -12411,9 +13029,33 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -12433,7 +13075,19 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -12485,7 +13139,19 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -13118,6 +13784,23 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -13130,6 +13813,14 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -13271,9 +13962,33 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -13351,7 +14066,19 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -13403,7 +14130,19 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -13628,6 +14367,23 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -13640,6 +14396,14 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -13781,9 +14545,33 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -13943,7 +14731,19 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -13995,7 +14795,19 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -21464,6 +22276,23 @@ export const UserSummaryDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -21476,6 +22305,14 @@ export const UserSummaryDocument = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -21577,9 +22414,33 @@ export const UserSummaryDocument = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -21599,7 +22460,19 @@ export const UserSummaryDocument = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -21651,7 +22524,19 @@ export const UserSummaryDocument = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -22787,6 +23672,23 @@ export const CurrentUserProgressesDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -22799,6 +23701,14 @@ export const CurrentUserProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -22940,9 +23850,33 @@ export const CurrentUserProgressesDocument = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -22962,7 +23896,19 @@ export const CurrentUserProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -23014,7 +23960,19 @@ export const CurrentUserProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
@@ -23905,6 +24863,23 @@ export const StudentProgressesDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TierInfoFields" },
       typeCondition: {
         kind: "NamedType",
@@ -23917,6 +24892,14 @@ export const StudentProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
           { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "exerciseCompletions" },
@@ -24058,9 +25041,33 @@ export const StudentProgressesDocument = {
           },
           { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
           { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
           },
         ],
       },
@@ -24080,7 +25087,19 @@ export const StudentProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
           { kind: "Field", name: { kind: "Name", value: "max_points" } },
           { kind: "Field", name: { kind: "Name", value: "n_points" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "extra" },
@@ -24132,7 +25151,19 @@ export const StudentProgressesDocument = {
           { kind: "Field", name: { kind: "Name", value: "course_id" } },
           { kind: "Field", name: { kind: "Name", value: "service_id" } },
           { kind: "Field", name: { kind: "Name", value: "user_id" } },
-          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "service" },
