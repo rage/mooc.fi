@@ -209,7 +209,7 @@ export const User = objectType({
         return progressCourses
           .map((pr) => pr.course)
           .filter(notEmpty)
-          .map((course) => ({ course, user: parent }))
+          .map((course) => ({ course_id: course?.id, user_id: parent.id }))
       },
     })
 
