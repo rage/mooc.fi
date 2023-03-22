@@ -38,11 +38,11 @@ spec:
               containerPort: 3003
           resources:
             limits:
-              memory: 1000Mi
-              cpu: 50m
+              memory: 800Mi
+              cpu: 100m
             requests:
-              memory: 256Mi
-              cpu: 10m
+              memory: 200Mi
+              cpu: 30m
           envFrom:
           - secretRef:
               name: backend-secret
