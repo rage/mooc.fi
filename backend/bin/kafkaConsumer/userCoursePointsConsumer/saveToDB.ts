@@ -1,14 +1,14 @@
-import { ok } from "../../../../util/result"
-import { KafkaContext } from "../kafkaContext"
-import { checkCompletion } from "../userFunctions"
+import { ok } from "../../../util/result"
+import { KafkaContext } from "../common/kafkaContext"
+import { checkCompletion } from "../common/userFunctions"
 import {
   createExerciseCompletion,
-  getExerciseAndCompletions,
+  getCreatedAndUpdatedExerciseCompletions,
   pruneExerciseCompletions,
   updateExerciseCompletion,
-} from "./exerciseCompletionFunctions"
+} from "../common/userPoints/exerciseCompletionFunctions"
+import { getCourse, getTimestamp, getUser } from "../common/userPoints/util"
 import { Message } from "./interfaces"
-import { getCourse, getTimestamp, getUser } from "./util"
 
 export const saveToDatabase = async (
   context: KafkaContext,
@@ -20,10 +20,8 @@ export const saveToDatabase = async (
   const maybeTimestamp = getTimestamp(context, message)
   const maybeUser = await getUser(context, message)
   const maybeCourse = await getCourse(context, message)
-  const maybeExerciseAndCompletions = await getExerciseAndCompletions(
-    context,
-    message,
-  )
+  const maybeCreatedAndUpdatedExerciseCompletions =
+    await getCreatedAndUpdatedExerciseCompletions(context, message)
 
   if (maybeTimestamp.isErr()) {
     return maybeTimestamp
@@ -34,41 +32,45 @@ export const saveToDatabase = async (
   if (maybeCourse.isErr()) {
     return maybeCourse
   }
-  if (maybeExerciseAndCompletions.isErr()) {
-    return maybeExerciseAndCompletions
+  if (maybeCreatedAndUpdatedExerciseCompletions.isErr()) {
+    return maybeCreatedAndUpdatedExerciseCompletions
   }
   const timestamp = maybeTimestamp.value
   const user = maybeUser.value
   const course = maybeCourse.value
-  const [exercise, exerciseCompletions] = maybeExerciseAndCompletions.value
+  const [created, updated] = maybeCreatedAndUpdatedExerciseCompletions.value
 
-  if (exerciseCompletions.length === 0) {
+  for (const { message: exerciseMessage, exercise_id } of created) {
     const exerciseCompletionCreateResult = await createExerciseCompletion(
       context,
-      message,
+      exerciseMessage,
       {
         timestamp,
-        exercise_id: exercise.id,
+        exercise_id,
       },
     )
     if (exerciseCompletionCreateResult.isErr()) {
       return exerciseCompletionCreateResult
     }
-  } else {
+  }
+
+  for (const { message: exerciseMessage, exerciseCompletions } of updated) {
     const exerciseCompletionUpdateResult = await updateExerciseCompletion(
       context,
-      message,
+      exerciseMessage,
       {
         timestamp,
         exerciseCompletions,
       },
     )
 
-    if (
-      exerciseCompletionUpdateResult.isErr() ||
-      exerciseCompletionUpdateResult.isWarning()
-    ) {
+    if (exerciseCompletionUpdateResult.isErr()) {
       return exerciseCompletionUpdateResult
+    }
+    if (exerciseCompletionUpdateResult.isWarning()) {
+      logger.warn(exerciseCompletionUpdateResult.value.message)
+
+      continue
     }
     const pruneExerciseCompletionsResult = await pruneExerciseCompletions(
       context,

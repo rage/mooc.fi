@@ -7,8 +7,13 @@ import {
   Prisma,
 } from "@prisma/client"
 
-import { DatabaseInputError, TimestampWarning } from "../../../../lib/errors"
-import { err, ok } from "../../../../util/result"
+import {
+  DatabaseInputError,
+  TimestampWarning,
+  ValidationError,
+} from "../../../../lib/errors"
+import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
+import { err, ok, Result } from "../../../../util/result"
 import { parseTimestamp } from "../../util"
 import { KafkaContext } from "../kafkaContext"
 import { Message } from "./interfaces"
@@ -23,16 +28,159 @@ interface ExerciseCompletionData {
   >
 }
 
+export const getExerciseAndCompletions = async <
+  M extends { exercise_id: string; user_id: number },
+>(
+  { logger, prisma }: KafkaContext,
+  message: M,
+): Promise<
+  Result<
+    readonly [
+      Exercise,
+      Array<
+        ExerciseCompletion & {
+          exercise_completion_required_actions: Array<ExerciseCompletionRequiredAction>
+        }
+      >,
+    ],
+    Error
+  >
+> => {
+  logger.info("Getting the exercise")
+  if (!message.exercise_id) {
+    return err(
+      new ValidationError("Message doesn't contain an exercise id", message),
+    )
+  }
+
+  const exercise = await prisma.exercise.findFirst({
+    where: {
+      custom_id: message.exercise_id.toString(),
+    },
+  })
+  if (!exercise) {
+    return err(new DatabaseInputError(`Given exercise does not exist`, message))
+  }
+
+  logger.info("Getting the exercise completion")
+  const exerciseCompletions = await prisma.user
+    .findUnique({
+      where: {
+        upstream_id: Number(message.user_id),
+      },
+    })
+    .exercise_completions({
+      where: {
+        exercise_id: exercise.id,
+      },
+      orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+      include: {
+        exercise_completion_required_actions: true,
+      },
+    })
+
+  return ok([exercise, exerciseCompletions] as const)
+}
+
+export const getCreatedAndUpdatedExerciseCompletions = async <
+  M extends { user_id: number; exercises: Array<Message> },
+>(
+  { logger, prisma }: KafkaContext,
+  message: M,
+) => {
+  const { exercises } = message
+  logger.info("Getting the exercises")
+
+  const messagesWithoutExerciseId = exercises.filter((m) =>
+    isNullOrUndefined(m.exercise_id),
+  )
+  if (messagesWithoutExerciseId.length > 0) {
+    return err(
+      new ValidationError(
+        "Messages do not contain an exercise id",
+        messagesWithoutExerciseId,
+      ),
+    )
+  }
+
+  const messageIds = exercises.map((m) => m.exercise_id)
+  const existingExercises = await prisma.exercise.findMany({
+    where: {
+      custom_id: { in: messageIds },
+    },
+  })
+  const exerciseCustomIdToId = existingExercises.reduce(
+    (acc, curr) => ({ ...acc, [curr.custom_id]: curr.id }),
+    {} as Record<string, string>,
+  )
+  const missingExerciseIds = messageIds.filter(
+    (id) => !(id in exerciseCustomIdToId),
+  )
+
+  if (missingExerciseIds.length > 0) {
+    return err(
+      new DatabaseInputError(
+        `Given exercises do not exist`,
+        missingExerciseIds,
+      ),
+    )
+  }
+
+  const exerciseIds = existingExercises.map((e) => e.id)
+
+  logger.info("Getting the exercise completions")
+  const exerciseCompletions = await prisma.user
+    .findUnique({
+      where: {
+        upstream_id: Number(message.user_id),
+      },
+    })
+    .exercise_completions({
+      where: {
+        exercise_id: { in: exerciseIds },
+      },
+      distinct: ["exercise_id"],
+      orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+      include: {
+        exercise_completion_required_actions: true,
+      },
+    })
+
+  const existingCompletedExercises = exerciseCompletions.map(
+    (ec) => ec.exercise_id,
+  )
+  const createdExercises = existingExercises.filter(
+    (e) => !existingCompletedExercises.includes(e.id),
+  )
+  const createdExerciseCustomIds = createdExercises.map((e) => e.custom_id)
+  const created = exercises
+    .filter((e) => createdExerciseCustomIds.includes(e.exercise_id))
+    .map((e) => ({
+      message: e,
+      exercise_id: exerciseCustomIdToId[e.exercise_id],
+    }))
+  const updated = exercises
+    .filter((e) => !createdExerciseCustomIds.includes(e.exercise_id))
+    .map((e) => ({
+      message: e,
+      exerciseCompletions: exerciseCompletions.filter(
+        (ec) => ec.exercise_id === exerciseCustomIdToId[e.exercise_id],
+      ),
+    }))
+
+  return ok([created, updated] as const)
+}
+
 export const createExerciseCompletion = async (
   context: KafkaContext,
   message: Message,
   data: {
     timestamp: DateTime
-    exercise: Exercise
+    exercise_id: string
   },
 ) => {
   const { logger, prisma } = context
-  const { timestamp, exercise } = data
+  const { timestamp, exercise_id } = data
   const required_actions = message.completed ? [] : message.required_actions
 
   logger.info("No previous exercise completion, creating a new one")
@@ -57,7 +205,7 @@ export const createExerciseCompletion = async (
   const exerciseCompletionCreateInputData: Prisma.ExerciseCompletionCreateInput =
     {
       exercise: {
-        connect: { id: exercise.id },
+        connect: { id: exercise_id },
       },
       user: {
         connect: { upstream_id: Number(message.user_id) },

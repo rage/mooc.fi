@@ -14,5 +14,8 @@ export default {
   user_course_progress_realtime_consumer: {
     topic_name: "user-course-progress-realtime",
   },
+  user_course_points_consumer: {
+    topic_name: "user-course-points-batch",
+  },
   commit_interval: 50,
 }
