@@ -83,7 +83,7 @@ export const getExerciseAndCompletions = async <
 }
 
 export const getCreatedAndUpdatedExerciseCompletions = async <
-  M extends { user_id: number; exercises: Array<Message> },
+  M extends { course_id: string; user_id: number; exercises: Array<Message> },
 >(
   { logger, prisma }: KafkaContext,
   message: M,
@@ -122,6 +122,19 @@ export const getCreatedAndUpdatedExerciseCompletions = async <
       new DatabaseInputError(
         `Given exercises do not exist`,
         missingExerciseIds,
+      ),
+    )
+  }
+
+  const wrongCourseIds = existingExercises
+    .filter((e) => e.course_id !== message.course_id)
+    .map((e) => e.custom_id)
+
+  if (wrongCourseIds.length > 0) {
+    return err(
+      new DatabaseInputError(
+        `Given exercises do not belong to the given course`,
+        wrongCourseIds,
       ),
     )
   }
