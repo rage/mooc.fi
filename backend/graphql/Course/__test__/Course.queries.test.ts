@@ -40,10 +40,10 @@ describe("Course", () => {
         })
 
         it("returns course on id and slug", async () => {
-          const resId = await ctx.client.request(courseQuery, {
+          const resId = await ctx.client.request<any>(courseQuery, {
             id: createdCourses?.[0].id,
           })
-          const resSlug = await ctx.client.request(courseQuery, {
+          const resSlug = await ctx.client.request<any>(courseQuery, {
             slug: "course1",
           })
 
@@ -56,7 +56,7 @@ describe("Course", () => {
         })
 
         it("returns correct language", async () => {
-          const res = await ctx.client.request(courseQuery, {
+          const res = await ctx.client.request<any>(courseQuery, {
             slug: "course1",
             language: "en_US",
           })
@@ -68,7 +68,7 @@ describe("Course", () => {
         })
 
         it("should return null on non-existent language", async () => {
-          const res = await ctx.client.request(courseQuery, {
+          const res = await ctx.client.request<any>(courseQuery, {
             slug: "course1",
             language: "sv_SE",
           })
@@ -96,10 +96,10 @@ describe("Course", () => {
         beforeEach(() => ctx.client.setHeader("Authorization", "Bearer admin"))
 
         it("returns full course on id and slug", async () => {
-          const resId = await ctx.client.request(fullCourseQuery, {
+          const resId = await ctx.client.request<any>(fullCourseQuery, {
             id: createdCourses?.[0].id,
           })
-          const resSlug = await ctx.client.request(fullCourseQuery, {
+          const resSlug = await ctx.client.request<any>(fullCourseQuery, {
             slug: "course1",
           })
 
@@ -115,7 +115,7 @@ describe("Course", () => {
         })
 
         it("should include deleted exercises if specified", async () => {
-          const res = await ctx.client.request(fullCourseQuery, {
+          const res = await ctx.client.request<any>(fullCourseQuery, {
             slug: "course1",
             includeDeletedExercises: true,
           })
@@ -135,7 +135,7 @@ describe("Course", () => {
       })
 
       it("returns courses", async () => {
-        const res = await ctx.client.request(coursesQuery)
+        const res = await ctx.client.request<any>(coursesQuery)
 
         expect(
           orderBy(res.courses.map(sortStudyModules), ["id"]),
@@ -144,7 +144,7 @@ describe("Course", () => {
 
       it("returns courses ordered", async () => {
         for (const order of ["asc", "desc"]) {
-          const res = await ctx.client.request(coursesQuery, {
+          const res = await ctx.client.request<any>(coursesQuery, {
             orderBy: { name: order },
           })
 
@@ -156,7 +156,7 @@ describe("Course", () => {
 
       it("returns courses filtered by language", async () => {
         for (const language of ["fi_FI", "en_US", "bogus"]) {
-          const res = await ctx.client.request(coursesQuery, {
+          const res = await ctx.client.request<any>(coursesQuery, {
             language,
           })
 
@@ -179,7 +179,7 @@ describe("Course", () => {
 
       it("returns search results", async () => {
         for (const [search, expected] of searchTest) {
-          const res = await ctx.client.request(coursesQuery, {
+          const res = await ctx.client.request<any>(coursesQuery, {
             search,
           })
 
@@ -192,7 +192,7 @@ describe("Course", () => {
 
       it("filters hidden", async () => {
         for (const hidden of [true, false, null]) {
-          const res = await ctx.client.request(coursesQuery, {
+          const res = await ctx.client.request<any>(coursesQuery, {
             hidden,
           })
 
@@ -204,7 +204,7 @@ describe("Course", () => {
 
       it("filters handledBy", async () => {
         for (const handledBy of ["handler", "foo"]) {
-          const res = await ctx.client.request(coursesQuery, {
+          const res = await ctx.client.request<any>(coursesQuery, {
             handledBy,
           })
 
@@ -244,7 +244,7 @@ describe("Course", () => {
       })
 
       it("returns correctly", async () => {
-        const res = await ctx.client.request(
+        const res = await ctx.client.request<any>(
           handlerCoursesQuery,
           {},
           {

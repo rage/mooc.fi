@@ -195,7 +195,7 @@ describe("Course", () => {
       test.each(cases)(
         "creates a course %s",
         async (_, { data, expected, omitIdFields = [] }) => {
-          const res = await ctx.client.request(createCourseMutation, {
+          const res = await ctx.client.request<any>(createCourseMutation, {
             course: data,
           })
 
@@ -270,7 +270,7 @@ describe("Course", () => {
       })
 
       it("updates course", async () => {
-        const res = await ctx.client.request(updateCourseMutation, {
+        const res = await ctx.client.request<any>(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -314,7 +314,7 @@ describe("Course", () => {
       })
 
       it("updates language tag", async () => {
-        const res = await ctx.client.request(updateCourseMutation, {
+        const res = await ctx.client.request<any>(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -353,7 +353,7 @@ describe("Course", () => {
       })
 
       it("removes language tag", async () => {
-        const res = await ctx.client.request(updateCourseMutation, {
+        const res = await ctx.client.request<any>(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,
@@ -392,7 +392,7 @@ describe("Course", () => {
       })
 
       it("updates photo", async () => {
-        const res = await ctx.client.request(updateCourseMutation, {
+        const res = await ctx.client.request<any>(updateCourseMutation, {
           course: getUpdateCourse(),
         })
 
@@ -435,7 +435,7 @@ describe("Course", () => {
       })
 
       it("deletes photo", async () => {
-        const res = await ctx.client.request(updateCourseMutation, {
+        const res = await ctx.client.request<any>(updateCourseMutation, {
           course: {
             ...getUpdateCourse(),
             new_photo: undefined,

@@ -5,7 +5,6 @@ import {
   Exercise,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
-  Prisma,
   User,
 } from "@prisma/client"
 
@@ -19,6 +18,11 @@ import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { checkCompletion } from "../userFunctions"
+import {
+  createExerciseCompletion,
+  pruneExerciseCompletions,
+  updateExerciseCompletion,
+} from "./exerciseCompletionFunctions"
 import { Message } from "./interfaces"
 
 const getTimestamp = (
@@ -147,7 +151,7 @@ export const saveToDatabase = async (
   context: KafkaContext,
   message: Message,
 ) => {
-  const { logger, prisma } = context
+  const { logger } = context
 
   logger.info("Handling message: " + JSON.stringify(message))
   const maybeTimestamp = getTimestamp(context, message)
@@ -175,141 +179,41 @@ export const saveToDatabase = async (
   const course = maybeCourse.value
   const [exercise, exerciseCompletions] = maybeExerciseAndCompletions.value
 
-  // @ts-ignore: value not used
-  let savedExerciseCompletion: ExerciseCompletion
-
-  const required_actions = message.completed ? [] : message.required_actions
-
   if (exerciseCompletions.length === 0) {
-    logger.info("No previous exercise completion, creating a new one")
-    let originalSubmissionDate: DateTime | null = null
-
-    if (message.original_submission_date) {
-      try {
-        originalSubmissionDate = parseTimestamp(
-          message.original_submission_date,
-        )
-      } catch (e) {
-        return err(
-          new DatabaseInputError(
-            "Invalid original submission date",
-            message,
-            e instanceof Error ? e : new Error(e as string),
-          ),
-        )
-      }
-    }
-
-    const data: Prisma.ExerciseCompletionCreateInput = {
-      exercise: {
-        connect: { id: exercise.id },
+    const exerciseCompletionCreateResult = await createExerciseCompletion(
+      context,
+      message,
+      {
+        timestamp,
+        exercise,
       },
-      user: {
-        connect: { upstream_id: Number(message.user_id) },
-      },
-      n_points: Number(message.n_points),
-      completed: message.completed,
-      attempted: message.attempted !== null ? message.attempted : undefined,
-      exercise_completion_required_actions: {
-        create: required_actions.map((value) => ({ value })),
-      },
-      timestamp: timestamp.toJSDate(),
-      original_submission_date: originalSubmissionDate?.toJSDate(),
-    }
-    logger.info(`Inserting ${JSON.stringify(data)}`)
-    try {
-      savedExerciseCompletion = await prisma.exerciseCompletion.create({
-        data,
-      })
-    } catch (e) {
-      if (e instanceof Error) {
-        logger.warn(
-          `Inserting exercise completion failed ${e.name}: ${e.message}`,
-        )
-      } else {
-        logger.warn(`Inserting exercise completion failed: ${String(e)}`)
-      }
+    )
+    if (exerciseCompletionCreateResult.isErr()) {
+      return exerciseCompletionCreateResult
     }
   } else {
-    const exerciseCompleted = exerciseCompletions[0]
-    const existingActionsOnNewestExerciseCompletion =
-      exerciseCompleted.exercise_completion_required_actions
-
-    logger.info("Updating previous exercise completion")
-    const oldTimestamp = DateTime.fromISO(
-      exerciseCompleted?.timestamp?.toISOString() ?? "",
-    )
-
-    // TODO: should we remove the actions if the timestamp is older?
-    if (timestamp <= oldTimestamp) {
-      return ok("Timestamp older than in DB, aborting")
-    }
-
-    const existingActionValues =
-      existingActionsOnNewestExerciseCompletion?.map((ea) => ea.value) ?? []
-    const createActions = required_actions
-      .filter((ra) => !existingActionValues.includes(ra))
-      .map((value) => ({ value }))
-    const deletedActions = existingActionsOnNewestExerciseCompletion.filter(
-      (ea) => !required_actions.includes(ea.value),
-    )
-
-    savedExerciseCompletion = await prisma.exerciseCompletion.update({
-      where: { id: exerciseCompleted.id },
-      data: {
-        n_points: Number(message.n_points),
-        completed: { set: message.completed },
-        attempted: {
-          set: message.attempted !== null ? message.attempted : undefined,
-        },
-        exercise_completion_required_actions: {
-          create: createActions,
-          deleteMany: deletedActions.map((da) => ({ id: da.id })),
-        },
-        timestamp: { set: timestamp.toJSDate() },
-        original_submission_date: {
-          set: message.original_submission_date
-            ? DateTime.fromISO(message.original_submission_date).toJSDate()
-            : null,
-        },
+    const exerciseCompletionUpdateResult = await updateExerciseCompletion(
+      context,
+      message,
+      {
+        timestamp,
+        exerciseCompletions,
       },
-    })
+    )
 
-    // TODO/FIXME: we could prune all the duplicate actions for this user/exercise combination?
-    const exerciseCompletionsWithSameTimestamp = exerciseCompletions
-      .filter((ec) => ec.id !== exerciseCompleted.id)
-      .filter(
-        (ec) =>
-          ec.timestamp.toISOString() ===
-          exerciseCompleted.timestamp.toISOString(),
-      )
-      .filter(
-        (ec) =>
-          (ec?.updated_at ?? new Date(0)) <=
-          (exerciseCompleted?.updated_at ?? new Date(0)),
-      )
+    if (
+      exerciseCompletionUpdateResult.isErr() ||
+      exerciseCompletionUpdateResult.isWarning()
+    ) {
+      return exerciseCompletionUpdateResult
+    }
+    const pruneExerciseCompletionsResult = await pruneExerciseCompletions(
+      context,
+      exerciseCompletions,
+    )
 
-    if (exerciseCompletionsWithSameTimestamp.length > 0) {
-      logger.info(
-        "Pruning duplicate exercise completions with same timestamp as the newest one",
-      )
-      const prunedActions =
-        await prisma.exerciseCompletionRequiredAction.deleteMany({
-          where: {
-            exercise_completion_id: {
-              in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id),
-            },
-          },
-        })
-
-      const pruned = await prisma.exerciseCompletion.deleteMany({
-        where: {
-          id: { in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id) },
-        },
-      })
-      logger.info(
-        `Pruned ${pruned.count} exercise completions and ${prunedActions.count} related required actions`,
-      )
+    if (pruneExerciseCompletionsResult.isErr()) {
+      // we do nothing as it isn't critical
     }
   }
 

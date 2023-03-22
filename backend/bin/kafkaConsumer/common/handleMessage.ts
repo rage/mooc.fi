@@ -5,6 +5,7 @@ import {
   DatabaseInputError,
   KafkaMessageError,
   ValidationError,
+  Warning,
 } from "../../../lib/errors"
 import { Result } from "../../../util/result"
 import config from "../kafkaConfig"
@@ -22,7 +23,7 @@ interface HandleMessageArgs<Message extends { timestamp: string }> {
   saveToDatabase: (
     context: KafkaContext,
     message: Message,
-  ) => Promise<Result<string, Error>>
+  ) => Promise<Result<string | Warning, Error>>
 }
 
 export const handleMessage = async <Message extends { timestamp: string }>({
@@ -70,9 +71,17 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     const saveResult = await saveToDatabase(context, message)
 
     if (saveResult.isOk()) {
-      if (saveResult.hasValue()) logger.info(saveResult.value)
+      if (saveResult.hasValue()) {
+        logger.info(saveResult.value)
+      }
+    } else if (saveResult.isWarning()) {
+      if (saveResult.hasValue()) {
+        logger.warn(saveResult.value.message)
+      }
     } else {
-      if (saveResult.hasError()) logger.error(saveResult.error)
+      if (saveResult.hasError()) {
+        logger.error(saveResult.error)
+      }
     }
   } catch (error: any) {
     logger.error(
