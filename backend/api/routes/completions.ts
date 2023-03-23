@@ -195,7 +195,7 @@ export class CompletionController extends Controller {
       },
       any,
       {
-        user_upstream_id: number
+        user_upstream_id: number | string
         certificate_id: string
       }
     >,
@@ -213,7 +213,7 @@ export class CompletionController extends Controller {
 
     const user = await prisma.user.findUnique({
       where: {
-        upstream_id: user_upstream_id,
+        upstream_id: Number(user_upstream_id),
       },
     })
 
