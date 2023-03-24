@@ -1,16 +1,15 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 
 import { NextSeo } from "next-seo"
+import dynamic from "next/dynamic"
 import { SingletonRouter, withRouter } from "next/router"
 
 import { Link, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import FormSkeleton from "../../../components/Dashboard/EditorLegacy/FormSkeleton"
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import CourseEdit2 from "/components/Dashboard/Editor2/Course"
-import CourseEdit from "/components/Dashboard/Editor/Course"
-import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -25,14 +24,26 @@ const ErrorContainer = styled(Paper)`
   padding: 1em;
 `
 
+const ContainerBackground = styled("section")`
+  background-color: #e9fef8;
+`
 interface EditCourseProps {
   router: SingletonRouter
 }
 
+const CourseEdit = dynamic(
+  () => import("../../../components/Dashboard/Editor/Course"),
+  { loading: () => <FormSkeleton /> },
+)
+const LegacyCourseEdit = dynamic(
+  () => import("../../../components/Dashboard/EditorLegacy/Course"),
+  { loading: () => <FormSkeleton /> },
+)
+
 const EditCourse = ({ router }: EditCourseProps) => {
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
-  const beta = useQueryParameter("beta", false)
+  const legacy = useQueryParameter("legacy", false)
 
   const {
     loading,
@@ -72,7 +83,10 @@ const EditCourse = ({ router }: EditCourseProps) => {
       href: `/courses`,
     },
     {
-      label: courseData?.course?.name,
+      label:
+        error || (!loading && !courseData?.course)
+          ? slug
+          : courseData?.course?.name,
       href: `/courses/${slug}`,
     },
     {
@@ -80,7 +94,35 @@ const EditCourse = ({ router }: EditCourseProps) => {
       href: `/courses/${slug}/edit`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+
+  const title = useSubtitle(
+    !loading && !courseData?.course ? slug : courseData?.course?.name,
+  )
+
+  const EditorComponent = useCallback(() => {
+    if (!courseData?.course) {
+      return null
+    }
+
+    if (legacy) {
+      return (
+        <LegacyCourseEdit
+          course={courseData.course}
+          courses={coursesData?.courses ?? []}
+          modules={studyModulesData?.study_modules ?? []}
+        />
+      )
+    }
+
+    return (
+      <CourseEdit
+        course={courseData.course}
+        courses={coursesData?.courses ?? []}
+        studyModules={studyModulesData?.study_modules ?? []}
+        tags={tagsData?.tags ?? []}
+      />
+    )
+  }, [courseData, coursesData, studyModulesData, tagsData, legacy])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
@@ -91,30 +133,22 @@ const EditCourse = ({ router }: EditCourseProps) => {
   return (
     <>
       <NextSeo title={title} />
-      <section style={{ backgroundColor: "#E9FEF8" }}>
+      <ContainerBackground>
         <DashboardTabBar slug={slug} selectedValue={3} />
         <WideContainer>
           <H1Background component="h1" variant="h1" align="center">
             {t("editCourse")}
           </H1Background>
-          {loading ? (
-            <FormSkeleton />
-          ) : courseData?.course ? (
-            beta ? (
-              <CourseEdit2
-                course={courseData.course}
-                courses={coursesData?.courses ?? []}
-                studyModules={studyModulesData?.study_modules ?? []}
-                tags={tagsData?.tags ?? []}
-              />
-            ) : (
-              <CourseEdit
-                course={courseData.course}
-                courses={coursesData?.courses ?? []}
-                modules={studyModulesData?.study_modules ?? []}
-              />
-            )
-          ) : (
+          {loading && <FormSkeleton />}
+          {courseData?.course && (
+            <CourseEdit
+              course={courseData.course}
+              courses={coursesData?.courses ?? []}
+              studyModules={studyModulesData?.study_modules ?? []}
+              tags={tagsData?.tags ?? []}
+            />
+          )}
+          {!loading && !courseData?.course && (
             <ErrorContainer elevation={2}>
               <Typography
                 variant="body1"
@@ -130,7 +164,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
             </ErrorContainer>
           )}
         </WideContainer>
-      </section>
+      </ContainerBackground>
     </>
   )
 }

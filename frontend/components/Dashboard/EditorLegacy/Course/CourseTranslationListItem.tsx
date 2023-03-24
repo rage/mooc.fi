@@ -3,10 +3,7 @@ import { getIn, useFormikContext } from "formik"
 import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-import {
-  StyledFieldWithAnchor,
-  StyledTextField,
-} from "../common"
+import { StyledFieldWithAnchor, StyledTextField } from "../common"
 import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { mapLangToLanguage } from "/util/dataFormatFunctions"

@@ -10,10 +10,10 @@ import { useRouter } from "next/router"
 
 import { Button, FormControl } from "@mui/material"
 
-import { FormFieldGroup } from "./CourseEditForm"
-import { CourseFormValues } from "./types"
 import { FormSubtitle } from "../common"
+import { FormFieldGroup } from "./CourseEditForm"
 import ImportPhotoDialog from "./ImportPhotoDialog"
+import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
 import CoursesTranslations from "/translations/courses"

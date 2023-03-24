@@ -26,14 +26,6 @@ import { styled } from "@mui/material/styles"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
-import CourseAliasEditForm from "./CourseAliasEditForm"
-import CourseImageInput from "./CourseImageInput"
-import CourseLanguageSelector from "./CourseLanguageSelector"
-import CourseTranslationEditForm from "./CourseTranslationEditForm"
-import CourseVariantEditForm from "./CourseVariantEditForm"
-import DatePickerField from "./DatePickers"
-import { CourseEditSchemaType, statuses as statusesT } from "./form-validation"
-import { CourseFormValues } from "./types"
 import {
   CheckboxField,
   EnumeratingAnchor,
@@ -43,8 +35,16 @@ import {
   StyledTextField,
   TabSection,
 } from "../common"
-import UserCourseSettingsVisibilityEditForm from "./UserCourseSettingsVisibilityEditForm"
 import FormWrapper from "../FormWrapper"
+import CourseAliasEditForm from "./CourseAliasEditForm"
+import CourseImageInput from "./CourseImageInput"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTranslationEditForm from "./CourseTranslationEditForm"
+import CourseVariantEditForm from "./CourseVariantEditForm"
+import DatePickerField from "./DatePickers"
+import { CourseEditSchemaType, statuses as statusesT } from "./form-validation"
+import { CourseFormValues } from "./types"
+import UserCourseSettingsVisibilityEditForm from "./UserCourseSettingsVisibilityEditForm"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"

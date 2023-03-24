@@ -10,7 +10,7 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withSignedIn from "/lib/with-signed-in"
-import SignupTranslations from "/translations/sign-up"
+import SignUpTranslations from "/translations/sign-up"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -39,7 +39,7 @@ const InfoBox = styled("div")`
 `
 
 function useResearchConsent() {
-  const t = useTranslator(SignupTranslations)
+  const t = useTranslator(SignUpTranslations)
 
   useBreadcrumbs([
     {
@@ -96,7 +96,7 @@ function useResearchConsent() {
 }
 
 const ResearchConsentPage = () => {
-  const t = useTranslator(SignupTranslations)
+  const t = useTranslator(SignUpTranslations)
 
   const { loading, research, handleInput, onSubmit, formError, submitting } =
     useResearchConsent()

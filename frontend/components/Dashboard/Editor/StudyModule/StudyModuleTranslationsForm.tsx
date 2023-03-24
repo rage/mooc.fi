@@ -7,10 +7,7 @@ import {
   ControlledSelect,
   ControlledTextField,
 } from "../Common/Fields"
-import {
-  initialTranslation,
-  languages,
-} from "./form-validation"
+import { initialTranslation, languages } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"

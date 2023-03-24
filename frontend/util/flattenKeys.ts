@@ -30,6 +30,9 @@ const flattenKeys = <
   output: TOut = {} as TOut,
   prefix = "",
 ) => {
+  if (!object) {
+    return output
+  }
   Object.keys(object).forEach((key) => {
     const path: T[keyof T] = object[key]
     if (Array.isArray(path)) {

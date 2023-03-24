@@ -3,6 +3,7 @@ import * as Yup from "yup"
 
 import { ApolloClient } from "@apollo/client"
 
+import { testUnique } from "../Common"
 import {
   CourseAliasFormValues,
   CourseFormValues,
@@ -11,7 +12,6 @@ import {
   OpenUniversityRegistrationValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { testUnique } from "../Common"
 import { Translator } from "/translations"
 import { Courses } from "/translations/courses"
 
@@ -61,7 +61,7 @@ export const initialValues: CourseFormValues = {
   hidden: false,
   study_module_start_point: false,
   status: CourseStatus.Upcoming,
-  study_modules: {},
+  study_modules: [],
   course_translations: [],
   open_university_registration_links: [],
   order: undefined,

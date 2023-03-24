@@ -1,16 +1,22 @@
+import { styled } from "@mui/material/styles"
+
+import StudyModuleEdit2 from "../../components/Dashboard/Editor/StudyModule"
+import StudyModuleEdit from "../../components/Dashboard/EditorLegacy/StudyModule"
 import { WideContainer } from "/components/Container"
-import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
-import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
-import StudyModuleTranslations from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
+const ContainerBackground = styled("section")`
+  background-color: #e9fef8;
+`
+
 const NewStudyModule = () => {
-  const t = useTranslator(StudyModuleTranslations)
-  const beta = useQueryParameter("beta", false)
+  const t = useTranslator(StudyModulesTranslations)
+  const legacy = useQueryParameter("legacy", false)
 
   useBreadcrumbs([
     {
@@ -24,14 +30,14 @@ const NewStudyModule = () => {
   ])
 
   return (
-    <section>
+    <ContainerBackground>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("newStudyModule")}
         </H1NoBackground>
-        {beta ? <StudyModuleEdit2 /> : <StudyModuleEdit />}
+        {legacy ? <StudyModuleEdit /> : <StudyModuleEdit2 />}
       </WideContainer>
-    </section>
+    </ContainerBackground>
   )
 }
 

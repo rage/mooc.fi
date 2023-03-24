@@ -1,20 +1,8 @@
-import { useCallback } from "react"
-
-import {
-  ControllerRenderProps,
-  FieldPath,
-  FieldValues,
-  PathValue,
-  useController,
-  useFormContext,
-} from "react-hook-form"
+import { FieldPath, FieldValues, useController } from "react-hook-form"
 
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material"
 
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "."
+import { ControlledFieldProps } from "."
 
 interface ControlledRadioGroupProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -27,20 +15,13 @@ export function ControlledRadioGroup<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(props: ControlledRadioGroupProps<TFieldValues, TName>) {
-  const { label, options, name } = props
+  const { label, options, name, required } = props
 
   const { field } = useController<TFieldValues>({
     name,
-    rules: { required: props.required },
+    rules: { required },
   })
 
-  /*return (
-    <FieldController
-      name={name}
-      label={label}
-      renderComponent={renderRadioGroup}
-    />
-  )*/
   return (
     <RadioGroup
       aria-label={label}

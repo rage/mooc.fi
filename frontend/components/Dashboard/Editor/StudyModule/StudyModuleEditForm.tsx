@@ -6,13 +6,10 @@ import { useFormContext } from "react-hook-form"
 import { CircularProgress, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { FormSubtitle } from "../Common"
+import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
 import EditorContainer from "../EditorContainer"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
-import { FormSubtitle } from "../Common"
-import {
-  ControlledHiddenField,
-  ControlledTextField,
-} from "../Common/Fields"
 import { StudyModuleFormValues } from "./types"
 import StudyModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"

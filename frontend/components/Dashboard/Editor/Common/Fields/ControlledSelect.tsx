@@ -13,11 +13,8 @@ import {
 
 import { MenuItem, TextField } from "@mui/material"
 
+import { ControlledFieldProps, FieldController } from "."
 import { FormValues } from "../../types"
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "."
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
@@ -40,11 +37,19 @@ export function ControlledSelect<
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(props: ControlledSelectProps<TFieldValues, TName>) {
   const t = useTranslator(CommonTranslations)
-  const { label, items, keyField = "id", nameField = "name", name } = props
+  const {
+    label,
+    items,
+    required,
+    keyField = "id",
+    nameField = "name",
+    name,
+  } = props
   const { formState } = useFormContext<TFieldValues>()
   const { errors } = formState
   const { field } = useController<TFieldValues>({
     name,
+    rules: { required },
   })
 
   /*return (

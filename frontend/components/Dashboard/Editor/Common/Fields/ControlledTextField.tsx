@@ -10,15 +10,19 @@ import {
   useFormContext,
 } from "react-hook-form"
 
+import { ErrorMessage } from "@hookform/error-message"
 import HelpIcon from "@mui/icons-material/Help"
 import HistoryIcon from "@mui/icons-material/History"
-import { IconButton, Tooltip as MUITooltip, TextField } from "@mui/material"
+import {
+  IconButton,
+  Tooltip as MUITooltip,
+  TextField,
+  TextFieldProps,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "."
+import { ControlledFieldProps, FieldController } from "."
+import { ErrorMessageComponent } from ".."
 import { useEditorContext } from "../../EditorContext"
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
@@ -35,19 +39,27 @@ const QuestionTooltip = styled(MUITooltip)`
     cursor: help;
   }
 `
+const TextFieldContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+`
+
 export interface ControlledTextFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  ContainerType = HTMLDivElement,
+  ContainerPropType = React.HTMLAttributes<ContainerType>,
 > extends ControlledFieldProps<TFieldValues, TName> {
   type?: string
   disabled?: boolean
   rows?: number
   width?: string
+  Container?: (props: ContainerPropType) => JSX.Element
+  containerProps?: ContainerPropType
 }
 
-const StyledTextField = styled(TextField, { shouldForwardProp: (prop) => prop !== "width"})<{ width?: string }>`
+const StyledTextField = styled(TextField)<{ width?: string }>`
   margin-bottom: 1.5rem;
-  ${({ width }) => width && `width: ${width};`}
 `
 
 const convertName = (name: string) => name.replace(/\.(\d+)\./, "[$1].")
@@ -55,7 +67,7 @@ const convertName = (name: string) => name.replace(/\.(\d+)\./, "[$1].")
 function ControlledTextFieldComponent<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
->(props: ControlledTextFieldProps<TFieldValues, TName>) {
+>(props: ControlledTextFieldProps<TFieldValues, TName> & TextFieldProps) {
   const t = useTranslator(CommonTranslations)
   const {
     formState, //: { errors },
@@ -72,6 +84,9 @@ function ControlledTextFieldComponent<
     revertable,
     rows,
     width,
+    Container = TextFieldContainer,
+    containerProps,
+    ...textFieldProps
   } = props
   const initialValue = get(initialValues, name)
 
@@ -81,10 +96,7 @@ function ControlledTextFieldComponent<
   })
   // TODO: hack to convert from formik compatible errors to this; when we get rid of formik,
   // we can change this
-  const error = useMemo(
-    () => Boolean(flattenKeys(formState.errors)[convertName(name)]),
-    [formState.errors, name],
-  )
+  const error = Boolean(flattenKeys(formState.errors)[convertName(name)])
 
   /*const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,10 +107,7 @@ function ControlledTextFieldComponent<
     [name, setValue],
   )*/
 
-  const onRevert = useCallback(
-    () => resetField(name),
-    [resetField, name],
-  )
+  const onRevert = useCallback(() => resetField(name), [resetField, name])
 
   const InputProps = useMemo(
     () => ({
@@ -138,23 +147,30 @@ function ControlledTextFieldComponent<
     />
   )*/
   return (
-    <StyledTextField
-      width={width}
-      onChange={field.onChange}
-      onBlur={field.onBlur}
-      value={field.value}
-      name={field.name}
-      inputRef={field.ref}
-      label={label}
-      required={required}
-      variant="outlined"
-      error={error}
-      type={type}
-      disabled={disabled}
-      rows={rows}
-      multiline={(rows && rows > 0) || false}
-      InputProps={InputProps}
-    />
+    <Container {...containerProps}>
+      <StyledTextField
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        value={field.value}
+        name={field.name}
+        inputRef={field.ref}
+        label={label}
+        required={required}
+        variant="outlined"
+        error={error}
+        type={type}
+        disabled={disabled}
+        rows={rows}
+        multiline={(rows && rows > 0) || false}
+        InputProps={InputProps}
+        {...textFieldProps}
+      />
+      <ErrorMessage
+        errors={formState?.errors}
+        name={name as any} // TODO/FIXME: annoying typing here
+        render={ErrorMessageComponent}
+      />
+    </Container>
   )
 }
 

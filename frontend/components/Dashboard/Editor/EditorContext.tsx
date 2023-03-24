@@ -16,7 +16,7 @@ export interface EditorContext<T extends FormValues> {
   initialValues: T
 }
 
-export const EditorContext = createContext<EditorContext<any>>({
+const EditorContextImpl = createContext<EditorContext<any>>({
   status: { message: null },
   setStatus: (_) => void 0,
   tab: 0,
@@ -29,5 +29,7 @@ export const EditorContext = createContext<EditorContext<any>>({
 })
 
 export function useEditorContext<T extends FormValues>() {
-  return useContext<EditorContext<T>>(EditorContext)
+  return useContext<EditorContext<T>>(EditorContextImpl)
 }
+
+export default EditorContextImpl

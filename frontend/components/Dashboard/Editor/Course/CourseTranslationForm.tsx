@@ -3,10 +3,7 @@ import { useFormContext } from "react-hook-form"
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import {
-  ControlledHiddenField,
-  ControlledTextField,
-} from "../Common/Fields"
+import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
 import { CourseTranslationFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import CoursesTranslations from "/translations/courses"

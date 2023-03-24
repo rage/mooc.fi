@@ -25,14 +25,6 @@ import {
 import { styled } from "@mui/material/styles"
 
 import {
-  initialTranslation,
-  languages,
-  StudyModuleEditSchemaType,
-} from "./form-validation"
-import { StudyModuleFormValues } from "./types"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
-import {
   FormSubtitle,
   OutlinedFormControl,
   OutlinedFormGroup,
@@ -42,6 +34,14 @@ import {
   StyledTextField,
 } from "../common"
 import FormWrapper from "../FormWrapper"
+import {
+  initialTranslation,
+  languages,
+  StudyModuleEditSchemaType,
+} from "./form-validation"
+import { StudyModuleFormValues } from "./types"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import StudyModulesTranslations from "/translations/study-modules"

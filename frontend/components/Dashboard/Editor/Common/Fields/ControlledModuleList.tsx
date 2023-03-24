@@ -1,12 +1,6 @@
 import { useCallback } from "react"
 
-import {
-  ControllerRenderProps,
-  FieldPath,
-  PathValue,
-  useController,
-  useFormContext,
-} from "react-hook-form"
+import { FieldPath, useController } from "react-hook-form"
 
 import {
   Checkbox,
@@ -19,11 +13,8 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { ControlledFieldProps } from "."
 import { FormValues } from "../../types"
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "."
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
@@ -47,23 +38,25 @@ export function ControlledModuleList<
   TFieldValues extends FormValues = FormValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(props: ControlledModuleListProps<TFieldValues, TName>) {
-  const { modules, label } = props
+  const { modules, label, required } = props
   const name = props.name
-  const { setValue, getValues } = useFormContext<TFieldValues>()
   const { field } = useController<TFieldValues>({
     name,
+    rules: { required },
   })
-  const setCourseModule = useCallback(
-    (event: React.SyntheticEvent<Element, Event>, checked: boolean) =>
-      setValue(
-        name,
-        {
-          ...getValues(name),
-          [(event.target as HTMLInputElement).id]: checked,
-        } as PathValue<TFieldValues, TName>,
-        { shouldDirty: true },
-      ),
-    [],
+
+  const onChange = useCallback(
+    (id: string) => (_: any, checked: boolean) => {
+      if (!checked) {
+        return field.onChange(
+          field.value.filter((value: string) => value !== id),
+        )
+      }
+      if (!field.value.includes(id)) {
+        return field.onChange([...field.value, id])
+      }
+    },
+    [field],
   )
 
   return (
@@ -71,14 +64,15 @@ export function ControlledModuleList<
       {label && <FormLabel>{label}</FormLabel>}
       <FormGroup>
         <ModuleList>
-          {modules?.map((studyModule) => (
+          {modules?.map((studyModule, index) => (
             <ModuleListItem key={studyModule.id}>
               <FormControlLabel
-                key={`module-${studyModule.id}`}
-                checked={field.value[studyModule.id] ?? false}
-                onChange={setCourseModule}
-                onBlur={field.onBlur}
-                control={<Checkbox id={studyModule.id} />}
+                onChange={onChange(studyModule.id)}
+                value={studyModule.id}
+                checked={field.value.includes(studyModule.id)}
+                control={
+                  <Checkbox id={studyModule.id} name={field.name[index]} />
+                }
                 label={studyModule.name}
               />
             </ModuleListItem>

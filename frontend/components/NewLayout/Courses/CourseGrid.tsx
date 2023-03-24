@@ -321,9 +321,9 @@ function CourseGrid() {
             ))}
           </TagsContainer>
           <Statuses>
-            {["Active", "Upcoming", "Ended"].map((status) => (
+            {(["Active", "Upcoming", "Ended"] as const).map((status) => (
               <FormControlLabel
-                label={t(status as any)}
+                label={t(status)}
                 key={status}
                 control={
                   <Checkbox

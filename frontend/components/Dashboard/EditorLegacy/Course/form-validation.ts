@@ -3,6 +3,7 @@ import * as Yup from "yup"
 
 import { ApolloClient } from "@apollo/client"
 
+import { FormValues } from "../types"
 import {
   CourseAliasFormValues,
   CourseFormValues,
@@ -10,7 +11,6 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { FormValues } from "../types"
 import { Translator } from "/translations"
 import { Courses } from "/translations/courses"
 

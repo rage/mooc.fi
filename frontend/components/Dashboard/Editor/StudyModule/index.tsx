@@ -9,13 +9,13 @@ import {
   type PureQueryOptions,
 } from "@apollo/client"
 
-import { EditorContext } from "../EditorContext"
+import { useCustomValidationResolver } from "../Common"
+import EditorContext from "../EditorContext"
+import { FormStatus } from "../types"
 import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { useCustomValidationResolver } from "../Common"
-import { FormStatus } from "../types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import StudyModulesTranslations from "/translations/study-modules"

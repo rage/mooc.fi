@@ -10,10 +10,7 @@ import {
 import HelpIcon from "@mui/icons-material/Help"
 import { Checkbox, FormControlLabel, Tooltip } from "@mui/material"
 
-import {
-  ControlledFieldProps,
-  FieldController,
-} from "."
+import { ControlledFieldProps, FieldController } from "."
 
 export function ControlledCheckbox<T extends FieldValues>(
   props: ControlledFieldProps<T>,

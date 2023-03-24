@@ -13,9 +13,6 @@ import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const FullWidthControlledTextField = styled(ControlledTextField)`
-  width: 100%;
-`
 function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)
 
@@ -23,16 +20,17 @@ function CourseAliasForm() {
     CourseFormValues,
     "course_aliases"
   >["render"] = useCallback(
-    (item, index) => (
+    ({ item, index }) => (
       <>
         <ControlledHiddenField
           name={`course_aliases.${index}._id`}
           defaultValue={item._id}
         />
-        <FullWidthControlledTextField
+        <ControlledTextField
           name={`course_aliases.${index}.course_code`}
           label={t("courseAliasCourseCode")}
           defaultValue={item.course_code}
+          containerProps={{ style: { minWidth: "300px", flexGrow: 1 } }}
         />
       </>
     ),

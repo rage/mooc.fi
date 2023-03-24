@@ -20,8 +20,10 @@ import { FieldProps, LabeledFieldProps, RequiredFieldProps } from "."
 import { EnumeratingAnchor } from ".."
 import notEmpty from "/util/notEmpty"
 
-export interface FieldControllerProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>
-  extends FieldProps<TFieldValues, TName>,
+export interface FieldControllerProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends FieldProps<TFieldValues, TName>,
     LabeledFieldProps,
     RequiredFieldProps {
   renderComponent: (
@@ -42,22 +44,29 @@ const ErrorMessageComponent = ({ message }: ErrorMessageComponentProps) => (
   </FormHelperText>
 )
 
-interface FieldControllerRenderedElementProps<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> {
+interface FieldControllerRenderedElementProps<
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> {
   field: ControllerRenderProps<TFieldValues, TName>
 }
 
-const FieldControllerComponent = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
-    name,
-    label,
-    required = false,
-    defaultValue,
-    renderComponent,
-    formState,
-    ...props
-  }: FieldControllerProps<TFieldValues, TName> & React.HTMLProps<HTMLDivElement>) => {
-    // const { control, setValue } = useFormContext<TFieldValues>()
+const FieldControllerComponent = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  name,
+  label,
+  required = false,
+  defaultValue,
+  renderComponent,
+  formState,
+  ...props
+}: FieldControllerProps<TFieldValues, TName> &
+  React.HTMLProps<HTMLDivElement>) => {
+  // const { control, setValue } = useFormContext<TFieldValues>()
 
-    /*const onChange = useCallback(
+  /*const onChange = useCallback(
     ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setValue(name, target.value as PathValue<T, typeof name>, {
         shouldValidate: true,
@@ -65,32 +74,28 @@ const FieldControllerComponent = <TFieldValues extends FieldValues = FieldValues
     [name],
   )*/
 
-    const renderElement = useCallback(
-      (renderProps: FieldControllerRenderedElementProps<TFieldValues, TName>) => (
-        <div>
-          <EnumeratingAnchor id={name} />
-          {renderComponent({ ...renderProps.field })}
-          {/*<ErrorMessage
+  const renderElement = useCallback(
+    (renderProps: FieldControllerRenderedElementProps<TFieldValues, TName>) => (
+      <div>
+        <EnumeratingAnchor id={name} />
+        {renderComponent({ ...renderProps.field })}
+        {/*<ErrorMessage
             errors={formState?.errors}
             name={(name as any)} // TODO/FIXME: annoying typing here
             render={ErrorMessageComponent}
       />*/}
-        </div>
-      ),
-      [name, renderComponent, /*props,*/ formState],
-    )
+      </div>
+    ),
+    [name, renderComponent, /*props,*/ formState],
+  )
 
-    const { field } = useController({
-      name,
-      defaultValue,
-      rules: { required }
-    })
-    return (
-      <>
-        {renderComponent({ ...field })}
-      </>
-    )
-    /*return (
+  const { field } = useController({
+    name,
+    defaultValue,
+    rules: { required },
+  })
+  return <>{renderComponent({ ...field })}</>
+  /*return (
       <Controller<TFieldValues, TName>
         name={name}
         control={control}
@@ -99,7 +104,7 @@ const FieldControllerComponent = <TFieldValues extends FieldValues = FieldValues
         render={renderElement}
       />
     )*/
-  }
+}
 
 export const FieldController = React.memo(
   FieldControllerComponent,

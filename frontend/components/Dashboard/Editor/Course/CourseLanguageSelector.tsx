@@ -5,8 +5,8 @@ import { useFieldArray, useFormContext } from "react-hook-form"
 import { Button, ButtonGroup } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { initialTranslation } from "./form-validation"
 import { FormSubtitle } from "../../EditorLegacy/common"
+import { initialTranslation } from "./form-validation"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

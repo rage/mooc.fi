@@ -1,9 +1,11 @@
 import { useMemo } from "react"
 
+import { styled } from "@mui/material/styles"
+
+import CourseEdit2 from "../../components/Dashboard/Editor/Course"
+import CourseEdit from "../../components/Dashboard/EditorLegacy/Course"
+import FormSkeleton from "../../components/Dashboard/EditorLegacy/FormSkeleton"
 import { WideContainer } from "/components/Container"
-import CourseEdit2 from "/components/Dashboard/Editor2/Course"
-import CourseEdit from "/components/Dashboard/Editor/Course"
-import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -14,11 +16,15 @@ import { stripId } from "/util/stripId"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 
+const ContainerBackground = styled("section")`
+  background-color: #e9fef8;
+`
+
 const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
 
   const clone = useQueryParameter("clone", false)
-  const beta = useQueryParameter("beta", false)
+  const legacy = useQueryParameter("legacy", false)
 
   const { loading, error, coursesData, studyModulesData, courseData } =
     useEditorCourses({
@@ -49,28 +55,28 @@ const NewCourse = () => {
   }
 
   return (
-    <section>
+    <ContainerBackground>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("createCourse")}
         </H1NoBackground>
         {loading ? (
           <FormSkeleton />
-        ) : beta ? (
-          <CourseEdit2
-            {...(clonedCourse ? { course: clonedCourse } : {})}
-            courses={coursesData?.courses ?? []}
-            studyModules={studyModulesData?.study_modules ?? []}
-          />
-        ) : (
+        ) : legacy ? (
           <CourseEdit
             {...(clonedCourse ? { course: clonedCourse } : {})}
             modules={studyModulesData?.study_modules}
             courses={coursesData?.courses}
           />
+        ) : (
+          <CourseEdit2
+            {...(clonedCourse ? { course: clonedCourse } : {})}
+            courses={coursesData?.courses ?? []}
+            studyModules={studyModulesData?.study_modules ?? []}
+          />
         )}
       </WideContainer>
-    </section>
+    </ContainerBackground>
   )
 }
 

@@ -4,12 +4,9 @@ import dynamic from "next/dynamic"
 
 import { Skeleton } from "@mui/material"
 
-import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
-import {
-  FormFieldGroup,
-  FormSubtitle,
-} from "../Common"
+import { FormFieldGroup, FormSubtitle } from "../Common"
 import { ControlledTextField } from "../Common/Fields"
+import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

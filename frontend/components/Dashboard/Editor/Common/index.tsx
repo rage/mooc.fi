@@ -7,15 +7,21 @@ import {
 } from "react"
 
 import { omit } from "lodash"
-import { FieldValues, Resolver, ResolverOptions } from "react-hook-form"
+import {
+  FieldValues,
+  Message,
+  MultipleFieldErrors,
+  Resolver,
+  ResolverOptions,
+} from "react-hook-form"
 import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Typography } from "@mui/material"
+import { FormHelperText, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormValues } from "../types"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { useAnchorContext } from "/contexts/AnchorContext"
 
 export const FormSubtitle = styled(Typography)`
@@ -142,3 +148,21 @@ export const testUnique = <Root extends FormValues, Child extends FormValues>(
 
     return otherValues.indexOf(value) === -1
   }
+
+interface ErrorMessageComponentProps {
+  message: Message
+  messages?: MultipleFieldErrors
+}
+
+const ErrorMessage = styled(FormHelperText)`
+  color: #f44336;
+  margin-top: -1rem;
+  margin-bottom: 0.5rem;
+`
+export const ErrorMessageComponent = ({
+  message,
+}: ErrorMessageComponentProps) => (
+  <ErrorMessage style={{ color: "#f44336", marginTop: "-1rem" }}>
+    {message}
+  </ErrorMessage>
+)

@@ -5,16 +5,7 @@ import { useFormContext } from "react-hook-form"
 import { FormControl, FormGroup, FormLabel, Tab, Tabs } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import CourseImageForm from "./CourseImageForm"
-import CourseInfoForm from "./CourseInfoForm"
-import CourseLanguageSelector from "./CourseLanguageSelector"
-import CourseTagsForm from "./CourseTagsForm"
-import CourseTranslationForm from "./CourseTranslationForm"
-import {
-  FormFieldGroup,
-  FormSubtitle,
-  TabSection,
-} from "../Common"
+import { FormFieldGroup, FormSubtitle, TabSection } from "../Common"
 import {
   ControlledCheckbox,
   ControlledHiddenField,
@@ -24,14 +15,16 @@ import {
   ControlledTextField,
 } from "../Common/Fields"
 import CourseAliasForm from "./CourseAliasForm"
+import CourseImageForm from "./CourseImageForm"
+import CourseInfoForm from "./CourseInfoForm"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseTagsForm from "./CourseTagsForm"
+import CourseTranslationForm from "./CourseTranslationForm"
 import CourseVariantForm from "./CourseVariantForm"
-import {
-  CourseFormValues,
-  TagFormValue,
-} from "./types"
+import { CourseFormValues, TagFormValue } from "./types"
 import UserCourseSettingsVisibilityForm from "./UserCourseSettingsVisibllityForm"
-import EditorContainer from "../EditorContainer"
-import { useEditorContext } from "../EditorContext"
+import EditorContainer from "/components/Dashboard/Editor/EditorContainer"
+import { useEditorContext } from "/components/Dashboard/Editor/EditorContext"
 import DisableAutoComplete from "/components/DisableAutoComplete"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"

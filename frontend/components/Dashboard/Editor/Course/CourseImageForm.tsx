@@ -5,17 +5,11 @@ import { useFormContext } from "react-hook-form"
 
 import { Button } from "@mui/material"
 
-import ImportPhotoDialog from "./ImportPhotoDialog"
-import {
-  FormFieldGroup,
-  FormSubtitle,
-} from "../Common"
-import {
-  ControlledHiddenField,
-  ControlledImageInput,
-} from "../Common/Fields"
-import { CourseFormValues } from "./types"
+import { FormFieldGroup, FormSubtitle } from "../Common"
+import { ControlledHiddenField, ControlledImageInput } from "../Common/Fields"
 import { useEditorContext } from "../EditorContext"
+import ImportPhotoDialog from "./ImportPhotoDialog"
+import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"

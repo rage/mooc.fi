@@ -24,7 +24,6 @@ const Home = () => {
       <Hype />
       <SelectedCourses />
       <ModuleNavigation />
-      <EmailSubscribe />
     </HomeContainer>
   )
 }

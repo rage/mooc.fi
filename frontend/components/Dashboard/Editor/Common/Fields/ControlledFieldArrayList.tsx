@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import {
@@ -17,8 +17,8 @@ import RemoveIcon from "@mui/icons-material/Remove"
 import { Button, FormGroup, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { ButtonWithWhiteText } from ".."
 import { ControlledFieldArrayProps } from "."
+import { ButtonWithWhiteText } from ".."
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
@@ -27,6 +27,7 @@ export const ArrayList = styled("ul")`
   margin-block-start: 0;
   padding-inline-start: 0;
   align-content: center;
+  width: 100%;
 `
 
 export const ArrayItem = styled("li")`
@@ -35,6 +36,7 @@ export const ArrayItem = styled("li")`
   margin-bottom: 1.5rem;
   width: 100%;
   align-items: stretch;
+  gap: 1rem;
 `
 
 type UnwrapArray<T> = T extends (infer U)[] ? U : T
@@ -46,6 +48,11 @@ export type FieldArrayWithOptionalId<
 > = FieldArray<TFieldValues, TFieldArrayName> &
   Partial<Record<TKeyName, string>>
 
+export interface RenderItemProps<TItem> {
+  item: TItem
+  index: number
+  children?: React.ReactNode
+}
 export interface ControlledFieldArrayListProps<
   TFieldValues extends FieldValues,
   TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
@@ -57,7 +64,7 @@ export interface ControlledFieldArrayListProps<
   > = FieldArrayWithOptionalId<TFieldValues, TFieldArrayName, TKeyName>,
 > extends ControlledFieldArrayProps<TFieldValues, TFieldArrayName> {
   initialValues: UnwrapArray<FieldArrayPathValue<TFieldValues, TFieldArrayName>>
-  render: (item: TItem, index: number) => JSX.Element
+  render: (props: RenderItemProps<TItem>) => JSX.Element
   conditions: {
     add: (item: Array<TItem>) => boolean
     remove: (item: TItem) => boolean
@@ -96,8 +103,8 @@ export function ControlledFieldArrayList<
       addText = t("courseAdd"),
       removeText = t("courseRemove"),
     },
+    name,
   } = props
-  const name = props.name
   const { control, formState, watch, trigger } = useFormContext<TFieldValues>()
   const { fields, append, remove } = useFieldArray({
     name,
@@ -145,13 +152,18 @@ export function ControlledFieldArrayList<
     [append, initialValues, name, trigger],
   )
 
+  const canAddField = useMemo(
+    () => conditions.add(watchedFields),
+    [conditions, watchedFields],
+  )
+
   return (
     <FormGroup>
       <ArrayList>
         {fields.length ? (
           fields.map((item, index) => (
             <ArrayItem key={`${name}-${item._id ?? index}`}>
-              {render(item, index)}
+              {render({ item, index })}
               <StyledButton
                 variant="contained"
                 disabled={isSubmitting}
@@ -173,7 +185,7 @@ export function ControlledFieldArrayList<
             {noFields}
           </Typography>
         )}
-        {conditions.add(watchedFields) ? (
+        {canAddField && (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"
@@ -184,7 +196,7 @@ export function ControlledFieldArrayList<
           >
             {addText}
           </ButtonWithWhiteText>
-        ) : null}
+        )}
       </ArrayList>
     </FormGroup>
   )

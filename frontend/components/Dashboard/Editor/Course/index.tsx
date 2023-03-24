@@ -9,13 +9,13 @@ import {
   type PureQueryOptions,
 } from "@apollo/client"
 
-import { EditorContext } from "../EditorContext"
+import { useCustomValidationResolver } from "../Common"
+import { FormStatus } from "../types"
 import CourseEditForm from "./CourseEditForm"
+import courseEditSchema from "./form-validation"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import { useCustomValidationResolver } from "../Common"
-import courseEditSchema from "./form-validation"
-import { FormStatus } from "../types"
+import EditorContext from "/components/Dashboard/Editor/EditorContext"
 import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CoursesTranslations from "/translations/courses"
@@ -89,13 +89,23 @@ function CourseEditor({
     defaultValues: defaultValues.current,
     resolver: useCustomValidationResolver(validationSchema),
     mode: "onBlur",
+    reValidateMode: "onBlur",
     // reValidateMode: "onChange"
   })
-  const { trigger } = methods
+  const { trigger, reset } = methods
 
   useEffect(() => {
     // validate on load
     trigger()
+    reset(
+      {},
+      {
+        keepValues: true,
+        keepErrors: true,
+        keepDirty: false,
+        keepDefaultValues: true,
+      },
+    )
   }, [])
 
   const [addCourse] = useMutation(AddCourseDocument)

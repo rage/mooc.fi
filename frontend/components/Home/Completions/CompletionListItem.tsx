@@ -117,8 +117,7 @@ export const CompletionListItem = ({
               {notEmpty(completion.tier) && (
                 <CardSubtitle>
                   {`${t("completionTier")} ${t(
-                    // @ts-ignore: tier
-                    `completionTier-${completion.tier}`,
+                    `completionTier-${completion.tier as 1 | 2 | 3}`,
                   )}`}
                 </CardSubtitle>
               )}

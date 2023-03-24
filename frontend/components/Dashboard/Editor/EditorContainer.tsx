@@ -14,8 +14,8 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { useEditorContext } from "./EditorContext"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormStatus, FormValues } from "./types"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
@@ -42,6 +42,7 @@ function EditorContainer<T extends FormValues = FormValues>({
   const { handleSubmit, formState, watch } = useFormContext<T>()
   const id = watch("id" as Path<T>)
 
+  console.log("formState", formState)
   const { isSubmitting, isSubmitted, isDirty } = formState
 
   const onSaveClick = useCallback(

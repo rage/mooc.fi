@@ -1,19 +1,20 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react"
 
 import { DropzoneState, FileRejection, useDropzone } from "react-dropzone"
+import { RefCallBack } from "react-hook-form"
 
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
-import { RefCallBack } from "react-hook-form"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
-const isChrome = typeof window !== "undefined"
-  ? !!(window as any).chrome &&
-    (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
-  : false
+const isChrome =
+  typeof window !== "undefined"
+    ? !!(window as any).chrome &&
+      (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
+    : false
 
 const DropzoneContainer = styled("div", {
   shouldForwardProp: (prop) =>
@@ -69,22 +70,25 @@ const ImageDropzoneInput = ({
     message: t("imageDropMessage"),
   })
 
-  const onDrop = useCallback((accepted: File[], rejected: FileRejection[]) => {
-    const reader = new FileReader()
+  const onDrop = useCallback(
+    (accepted: File[], rejected: FileRejection[]) => {
+      const reader = new FileReader()
 
-    reader.onload = () => onImageLoad(reader.result)
+      reader.onload = () => onImageLoad(reader.result)
 
-    if (accepted.length) {
-      console.log("accepted", accepted[0])
-      onImageAccepted(accepted[0])
-      reader.readAsDataURL(accepted[0])
-    }
+      if (accepted.length) {
+        console.log("accepted", accepted[0])
+        onImageAccepted(accepted[0])
+        reader.readAsDataURL(accepted[0])
+      }
 
-    if (rejected.length) {
-      setStatus({ message: t("imageNotAnImage"), error: true })
-      setTimeout(() => setStatus({ message: t("imageDropMessage") }), 2000)
-    }
-  }, [setStatus])
+      if (rejected.length) {
+        setStatus({ message: t("imageNotAnImage"), error: true })
+        setTimeout(() => setStatus({ message: t("imageDropMessage") }), 2000)
+      }
+    },
+    [setStatus],
+  )
 
   const {
     getRootProps,
@@ -92,7 +96,7 @@ const ImageDropzoneInput = ({
     isDragActive,
     isDragAccept,
     isDragReject,
-    rootRef
+    rootRef,
   } = useDropzone({
     onDrop,
     accept: {

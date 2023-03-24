@@ -31,14 +31,9 @@ export const toCourseForm = ({
     return initialValues
   }
 
-  const courseStudyModules =
+  console.log("course", course)
+  const study_modules =
     course?.study_modules?.map((studyModule) => studyModule.id) ?? []
-
-  const study_modules: Record<string, boolean> = {}
-
-  for (const studyModule of modules ?? []) {
-    study_modules[studyModule.id] = courseStudyModules.includes(studyModule.id)
-  }
 
   return {
     ...omit(course, [
@@ -242,8 +237,8 @@ export const fromCourseForm = ({
     | CourseCreateArg["open_university_registration_links"]
     | CourseUpsertArg["open_university_registration_links"]
 
-  const study_modules = Object.keys(values.study_modules ?? {})
-    .filter((key) => values?.study_modules?.[key])
+  const study_modules = (values.study_modules ?? [])
+    .filter(notEmpty)
     .map((id) => ({ id })) as
     | CourseCreateArg["study_modules"]
     | CourseUpsertArg["study_modules"]

@@ -29,7 +29,7 @@ export interface CourseFormValues extends FormValues {
   status: CourseStatus
   course_translations: CourseTranslationFormValues[]
   open_university_registration_links?: OpenUniversityRegistrationValues[] | null
-  study_modules?: { [key: string]: boolean } | null
+  study_modules?: Array<string>
   course_variants: CourseVariantFormValues[]
   course_aliases: CourseAliasFormValues[]
   thumbnail?: string | null

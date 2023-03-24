@@ -2,11 +2,11 @@ import * as Yup from "yup"
 
 import { ApolloClient } from "@apollo/client"
 
+import { testUnique } from "../Common"
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { testUnique } from "../Common"
 import { Translator } from "/translations"
 import { StudyModules } from "/translations/study-modules"
 

@@ -5,7 +5,7 @@
     "profile": "Din profil",
     "logout": "Logga ut",
     "forgottenpw": "Glömt ditt lösenord?",
-    "error": "Inloggning misslyckades. Felaktigt lösenord eller e-post/användarnamn",
+    "loginFailedError": "Inloggning misslyckades. Felaktigt lösenord eller e-post/användarnamn",
     "password": "Lösenord",
     "username": "E-post eller användarnamn",
     "skiplink": "till huvudinnehållet",

@@ -6,14 +6,14 @@ import RemoveIcon from "@mui/icons-material/Remove"
 import { Button, FormControl, FormGroup, Grid, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { initialVariant } from "./form-validation"
-import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import {
   inputLabelProps,
   StyledFieldWithAnchor,
   StyledTextField,
 } from "../common"
+import { initialVariant } from "./form-validation"
 import { CourseFormValues } from "./types"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

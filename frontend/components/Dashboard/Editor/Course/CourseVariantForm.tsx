@@ -13,8 +13,12 @@ import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
-const FullWidthControlledTextField = styled(ControlledTextField)`
+const CourseVariantEntryContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   width: 100%;
+  gap: 1rem;
 `
 
 function CourseVariantForm() {
@@ -24,8 +28,8 @@ function CourseVariantForm() {
     CourseFormValues,
     "course_variants"
   >["render"] = useCallback(
-    (item, index) => (
-      <>
+    ({ item, index }) => (
+      <CourseVariantEntryContainer>
         <ControlledHiddenField
           name={`course_variants.${index}._id`}
           defaultValue={item._id}
@@ -33,12 +37,14 @@ function CourseVariantForm() {
         <ControlledTextField
           name={`course_variants.${index}.slug`}
           label={t("courseSlug")}
+          containerProps={{ style: { flexGrow: 1, minWidth: "100px" } }}
         />
-        <FullWidthControlledTextField
+        <ControlledTextField
           name={`course_variants.${index}.description`}
           label={t("courseDescription")}
+          containerProps={{ style: { minWidth: "300px", flexGrow: 1 } }}
         />
-      </>
+      </CourseVariantEntryContainer>
     ),
     [],
   )
