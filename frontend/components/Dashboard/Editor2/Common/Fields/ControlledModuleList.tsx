@@ -2,7 +2,9 @@ import { useCallback } from "react"
 
 import {
   ControllerRenderProps,
+  FieldPath,
   PathValue,
+  useController,
   useFormContext,
 } from "react-hook-form"
 
@@ -21,7 +23,7 @@ import { FormValues } from "../../types"
 import {
   ControlledFieldProps,
   FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
+} from "."
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
@@ -34,18 +36,23 @@ const ModuleListItem = styled(ListItem)`
   padding: 0px;
 `
 
-interface ControlledModuleListProps<T extends FormValues>
-  extends ControlledFieldProps<T> {
+interface ControlledModuleListProps<
+  TFieldValues extends FormValues = FormValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends ControlledFieldProps<TFieldValues, TName> {
   modules?: StudyModuleDetailedFieldsFragment[]
 }
 
-export function ControlledModuleList<T extends FormValues>(
-  props: ControlledModuleListProps<T>,
-) {
+export function ControlledModuleList<
+  TFieldValues extends FormValues = FormValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>(props: ControlledModuleListProps<TFieldValues, TName>) {
   const { modules, label } = props
   const name = props.name
-  const { setValue, getValues } = useFormContext<T>()
-
+  const { setValue, getValues } = useFormContext<TFieldValues>()
+  const { field } = useController<TFieldValues>({
+    name,
+  })
   const setCourseModule = useCallback(
     (event: React.SyntheticEvent<Element, Event>, checked: boolean) =>
       setValue(
@@ -53,31 +60,10 @@ export function ControlledModuleList<T extends FormValues>(
         {
           ...getValues(name),
           [(event.target as HTMLInputElement).id]: checked,
-        } as PathValue<T, typeof name>,
+        } as PathValue<TFieldValues, TName>,
         { shouldDirty: true },
       ),
     [],
-  )
-
-  const renderModuleList = useCallback(
-    ({ value }: ControllerRenderProps<T>) => (
-      <>
-        {modules?.map((studyModule) => (
-          <ModuleListItem key={studyModule.id}>
-            <FormControlLabel
-              key={`module-${studyModule.id}`}
-              checked={
-                (value as Record<string, boolean>)[studyModule.id] ?? false
-              }
-              onChange={setCourseModule}
-              control={<Checkbox id={studyModule.id} />}
-              label={studyModule.name}
-            />
-          </ModuleListItem>
-        ))}
-      </>
-    ),
-    [modules, setCourseModule],
   )
 
   return (
@@ -85,11 +71,18 @@ export function ControlledModuleList<T extends FormValues>(
       {label && <FormLabel>{label}</FormLabel>}
       <FormGroup>
         <ModuleList>
-          <FieldController
-            name={name}
-            label={label}
-            renderComponent={renderModuleList}
-          />
+          {modules?.map((studyModule) => (
+            <ModuleListItem key={studyModule.id}>
+              <FormControlLabel
+                key={`module-${studyModule.id}`}
+                checked={field.value[studyModule.id] ?? false}
+                onChange={setCourseModule}
+                onBlur={field.onBlur}
+                control={<Checkbox id={studyModule.id} />}
+                label={studyModule.name}
+              />
+            </ModuleListItem>
+          ))}{" "}
         </ModuleList>
       </FormGroup>
     </FormControl>

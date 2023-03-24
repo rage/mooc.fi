@@ -6,8 +6,8 @@ import { styled } from "@mui/material/styles"
 import {
   ControlledHiddenField,
   ControlledTextField,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
+} from "../Common/Fields"
+import { CourseTranslationFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import CoursesTranslations from "/translations/courses"
 import { mapLangToLanguage } from "/util/dataFormatFunctions"

@@ -18,7 +18,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import {
   ControlledFieldProps,
   FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
+} from "."
 
 export function ControlledDatePicker(props: ControlledFieldProps) {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))

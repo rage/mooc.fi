@@ -12,8 +12,8 @@ import {
   inputLabelProps,
   StyledFieldWithAnchor,
   StyledTextField,
-} from "/components/Dashboard/Editor/common"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+} from "../common"
+import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

@@ -6,19 +6,19 @@ import {
   ControlledHiddenField,
   ControlledSelect,
   ControlledTextField,
-} from "/components/Dashboard/Editor2/Common/Fields"
+} from "../Common/Fields"
 import {
   initialTranslation,
   languages,
-} from "/components/Dashboard/Editor2/StudyModule/form-validation"
-import { StudyModuleFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
+} from "./form-validation"
+import { StudyModuleFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
-import StudyModuleTranslations from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 
 function StudyModuleTranslationsForm() {
-  const t = useTranslator(StudyModuleTranslations)
+  const t = useTranslator(StudyModulesTranslations)
   const _languages = languages(t)
 
   const renderArrayListItem: ControlledFieldArrayListProps<

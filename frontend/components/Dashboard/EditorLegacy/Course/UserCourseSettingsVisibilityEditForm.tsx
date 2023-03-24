@@ -11,7 +11,7 @@ import {
 import {
   CourseFormValues,
   UserCourseSettingsVisibilityFormValues,
-} from "/components/Dashboard/Editor/Course/types"
+} from "./types"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,

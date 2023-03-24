@@ -14,11 +14,11 @@ import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { useCustomValidationResolver } from "/components/Dashboard/Editor2/Common"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
+import { useCustomValidationResolver } from "../Common"
+import { FormStatus } from "../types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
-import ModulesTranslations from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
 
@@ -38,7 +38,7 @@ interface StudyModuleEditProps {
 }
 
 const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
-  const t = useTranslator(ModulesTranslations)
+  const t = useTranslator(StudyModulesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const client = useApolloClient()
   const { anchors } = useAnchorContext()

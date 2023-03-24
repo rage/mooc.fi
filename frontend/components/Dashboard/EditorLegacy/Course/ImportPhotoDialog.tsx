@@ -14,8 +14,8 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { StyledTextField } from "/components/Dashboard/Editor/common"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { StyledTextField } from "../common"
+import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"

@@ -8,8 +8,8 @@ import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
 import {
   FormFieldGroup,
   FormSubtitle,
-} from "/components/Dashboard/Editor2/Common"
-import { ControlledTextField } from "/components/Dashboard/Editor2/Common/Fields"
+} from "../Common"
+import { ControlledTextField } from "../Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

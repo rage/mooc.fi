@@ -11,7 +11,7 @@ import {
   OpenUniversityRegistrationValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { testUnique } from "/components/Dashboard/Editor2/Common"
+import { testUnique } from "../Common"
 import { Translator } from "/translations"
 import { Courses } from "/translations/courses"
 

@@ -1,4 +1,4 @@
-import { FormValues } from "/components/Dashboard/Editor/types"
+import { FormValues } from "../types"
 
 export interface StudyModuleFormValues extends FormValues {
   id?: string | null

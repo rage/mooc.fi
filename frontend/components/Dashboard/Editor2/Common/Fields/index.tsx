@@ -6,8 +6,7 @@ import {
   FieldPath,
   FieldPathValue,
   FieldValues,
-  Path,
-  UseFormStateReturn,
+  FormState,
 } from "react-hook-form"
 
 export * from "./ControlledCheckbox"
@@ -30,50 +29,42 @@ export interface RequiredFieldProps {
 }
 
 export interface FieldProps<
-  T extends FieldValues = FieldValues,
-  TPath extends Path<T> = Path<T>,
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > {
-  name: TPath
-  defaultValue?: FieldPathValue<T, TPath>
+  name: TName
+  defaultValue?: FieldPathValue<TFieldValues, TName>
 }
 
 export interface FieldArrayProps<
-  T extends FieldValues = FieldValues,
-  TPath extends FieldArrayPath<T> = FieldArrayPath<T>,
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
 > {
-  name: TPath
-  defaultValue?: FieldArrayPathValue<T, TPath>
+  name: TName
+  defaultValue?: FieldArrayPathValue<TFieldValues, TName>
 }
 
 interface BaseControlledFieldProps {
   tip?: string
   revertable?: boolean
 }
+
 export interface ControlledFieldProps<
-  T extends FieldValues = FieldValues,
-  TPath extends Path<T> = Path<T>,
-> extends FieldProps<T, TPath>,
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends FieldProps<TFieldValues, TName>,
     BaseControlledFieldProps,
     LabeledFieldProps,
     RequiredFieldProps {
-  validateOtherFields?: Array<TPath>
+  validateOtherFields?: Array<TName>
 }
 
 export interface ControlledFieldArrayProps<
-  T extends FieldValues = FieldValues,
-  TPath extends FieldArrayPath<T> = FieldArrayPath<T>,
-> extends FieldArrayProps<T, TPath>,
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+> extends FieldArrayProps<TFieldValues, TName>,
     BaseControlledFieldProps,
     LabeledFieldProps,
     RequiredFieldProps {
-  validateOtherFields?: Array<TPath>
-}
-
-export interface DefaultFieldRenderProps<
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-> {
-  field: ControllerRenderProps<TFieldValues, TName>
-  fieldState: ControllerFieldState
-  formState: UseFormStateReturn<TFieldValues>
+  validateOtherFields?: Array<TName>
 }

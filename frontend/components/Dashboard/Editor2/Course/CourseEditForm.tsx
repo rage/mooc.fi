@@ -14,7 +14,7 @@ import {
   FormFieldGroup,
   FormSubtitle,
   TabSection,
-} from "/components/Dashboard/Editor2/Common"
+} from "../Common"
 import {
   ControlledCheckbox,
   ControlledHiddenField,
@@ -22,16 +22,16 @@ import {
   ControlledRadioGroup,
   ControlledSelect,
   ControlledTextField,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
-import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
+} from "../Common/Fields"
+import CourseAliasForm from "./CourseAliasForm"
+import CourseVariantForm from "./CourseVariantForm"
 import {
   CourseFormValues,
   TagFormValue,
-} from "/components/Dashboard/Editor2/Course/types"
-import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
-import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+} from "./types"
+import UserCourseSettingsVisibilityForm from "./UserCourseSettingsVisibllityForm"
+import EditorContainer from "../EditorContainer"
+import { useEditorContext } from "../EditorContext"
 import DisableAutoComplete from "/components/DisableAutoComplete"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -69,7 +69,7 @@ function CourseEditForm({
   const { watch } = useFormContext()
   const statuses = Object.keys(CourseStatus).map((value) => ({
     value,
-    label: t(`course${value.toString()}` as any),
+    label: t(`course${value.toString()}` as CourseStatus),
   }))
 
   const enableSuperSecret = useQueryParameter("secret", false)

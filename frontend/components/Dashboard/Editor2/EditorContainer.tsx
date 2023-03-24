@@ -15,7 +15,7 @@ import { styled } from "@mui/material/styles"
 
 import { useEditorContext } from "./EditorContext"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { FormStatus, FormValues } from "/components/Dashboard/Editor2/types"
+import { FormStatus, FormValues } from "./types"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 

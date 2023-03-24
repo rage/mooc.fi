@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 
 import { omit, orderBy } from "lodash"
-import { Controller, useFormContext } from "react-hook-form"
+import { Controller, useFormContext, UseControllerReturn } from "react-hook-form"
 
 import {
   Autocomplete,
@@ -13,7 +13,6 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { FormFieldGroup } from "../Common"
-import { DefaultFieldRenderProps } from "../Common/Fields"
 import { FormValues } from "../types"
 import { TagFormValue } from "./types"
 import CoursesTranslations from "/translations/courses"
@@ -105,7 +104,7 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
   )
 
   const renderAutocomplete = useCallback(
-    (renderProps: DefaultFieldRenderProps<FormValues, "tags">) => (
+    (renderProps: UseControllerReturn<FormValues, "tags">) => (
       <Autocomplete
         {...omit(renderProps, ["formState", "fieldState"])}
         multiple

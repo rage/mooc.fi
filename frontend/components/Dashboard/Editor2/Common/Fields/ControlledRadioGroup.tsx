@@ -2,8 +2,10 @@ import { useCallback } from "react"
 
 import {
   ControllerRenderProps,
+  FieldPath,
   FieldValues,
   PathValue,
+  useController,
   useFormContext,
 } from "react-hook-form"
 
@@ -12,49 +14,48 @@ import { FormControlLabel, Radio, RadioGroup } from "@mui/material"
 import {
   ControlledFieldProps,
   FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
+} from "."
 
-interface ControlledRadioGroupProps<T extends FieldValues>
-  extends ControlledFieldProps<T> {
+interface ControlledRadioGroupProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends ControlledFieldProps<TFieldValues, TName> {
   options: Array<{ value: string; label: string }>
 }
 
-export function ControlledRadioGroup<T extends FieldValues>(
-  props: ControlledRadioGroupProps<T>,
-) {
-  const { label, options } = props
-  const name = props.name
-  const { setValue } = useFormContext<T>()
+export function ControlledRadioGroup<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>(props: ControlledRadioGroupProps<TFieldValues, TName>) {
+  const { label, options, name } = props
 
-  const onChange = useCallback(
-    (_: any, newValue: string) =>
-      setValue(name, newValue as PathValue<T, typeof name>, {
-        shouldDirty: true,
-      }),
-    [name, setValue],
-  )
+  const { field } = useController<TFieldValues>({
+    name,
+    rules: { required: props.required },
+  })
 
-  const renderRadioGroup = useCallback(
-    ({ value }: ControllerRenderProps<T>) => (
-      <RadioGroup aria-label={label} value={value} onChange={onChange}>
-        {options.map((option) => (
-          <FormControlLabel
-            key={`${name}-${option.value}`}
-            value={option.value}
-            control={<Radio />}
-            label={option.label}
-          />
-        ))}
-      </RadioGroup>
-    ),
-    [name, label, options, onChange, setValue],
-  )
-
-  return (
+  /*return (
     <FieldController
       name={name}
       label={label}
       renderComponent={renderRadioGroup}
     />
+  )*/
+  return (
+    <RadioGroup
+      aria-label={label}
+      value={field.value}
+      onChange={field.onChange}
+      onBlur={field.onBlur}
+    >
+      {options.map((option) => (
+        <FormControlLabel
+          key={`${name}-${option.value}`}
+          value={option.value}
+          control={<Radio />}
+          label={option.label}
+        />
+      ))}
+    </RadioGroup>
   )
 }

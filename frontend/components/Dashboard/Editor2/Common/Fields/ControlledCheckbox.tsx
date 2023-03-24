@@ -13,7 +13,7 @@ import { Checkbox, FormControlLabel, Tooltip } from "@mui/material"
 import {
   ControlledFieldProps,
   FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
+} from "."
 
 export function ControlledCheckbox<T extends FieldValues>(
   props: ControlledFieldProps<T>,

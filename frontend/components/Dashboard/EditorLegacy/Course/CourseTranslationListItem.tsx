@@ -6,8 +6,8 @@ import Typography from "@mui/material/Typography"
 import {
   StyledFieldWithAnchor,
   StyledTextField,
-} from "/components/Dashboard/Editor/common"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+} from "../common"
+import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { mapLangToLanguage } from "/util/dataFormatFunctions"
 import { useTranslator } from "/util/useTranslator"

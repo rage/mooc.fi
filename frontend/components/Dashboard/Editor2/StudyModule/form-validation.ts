@@ -6,7 +6,7 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { testUnique } from "/components/Dashboard/Editor2/Common"
+import { testUnique } from "../Common"
 import { Translator } from "/translations"
 import { StudyModules } from "/translations/study-modules"
 

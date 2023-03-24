@@ -42,9 +42,9 @@ import {
   StyledFieldWithAnchor,
   StyledTextField,
   TabSection,
-} from "/components/Dashboard/Editor/common"
-import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+} from "../common"
+import UserCourseSettingsVisibilityEditForm from "./UserCourseSettingsVisibilityEditForm"
+import FormWrapper from "../FormWrapper"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"

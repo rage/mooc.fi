@@ -13,7 +13,7 @@ import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import ModulesTranslations from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 
 import {
@@ -32,7 +32,7 @@ interface StudyModuleEditProps {
 }
 
 const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
-  const t = useTranslator(ModulesTranslations)
+  const t = useTranslator(StudyModulesTranslations)
 
   const [addStudyModule] = useMutation(AddStudyModuleDocument)
   const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)

@@ -2,7 +2,7 @@ import { createContext, Dispatch, SetStateAction, useContext } from "react"
 
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form"
 
-import { FormStatus, FormValues } from "/components/Dashboard/Editor2/types"
+import { FormStatus, FormValues } from "./types"
 
 export interface EditorContext<T extends FormValues> {
   status: FormStatus

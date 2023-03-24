@@ -40,11 +40,11 @@ import {
   StyledField,
   StyledFieldWithAnchor,
   StyledTextField,
-} from "/components/Dashboard/Editor/common"
-import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+} from "../common"
+import FormWrapper from "../FormWrapper"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
-import ModulesTranslations from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
 import useDebounce from "/util/useDebounce"
 import { useTranslator } from "/util/useTranslator"
 
@@ -77,7 +77,7 @@ const StudyModuleFormComponent = () => {
   const { errors, values, isSubmitting } =
     useFormikContext<StudyModuleFormValues>()
 
-  const t = useTranslator(ModulesTranslations)
+  const t = useTranslator(StudyModulesTranslations)
   const confirm = useConfirm()
 
   const [imageError, setImageError] = useState("")

@@ -13,7 +13,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
+import { ControlledSelect } from "../Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"

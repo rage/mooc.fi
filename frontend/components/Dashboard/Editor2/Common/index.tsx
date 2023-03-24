@@ -15,7 +15,7 @@ import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { FormValues } from "/components/Dashboard/Editor2/types"
+import { FormValues } from "../types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 
 export const FormSubtitle = styled(Typography)`

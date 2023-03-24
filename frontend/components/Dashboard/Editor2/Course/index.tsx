@@ -13,9 +13,9 @@ import { EditorContext } from "../EditorContext"
 import CourseEditForm from "./CourseEditForm"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import { useCustomValidationResolver } from "/components/Dashboard/Editor2/Common"
-import courseEditSchema from "/components/Dashboard/Editor2/Course/form-validation"
-import { FormStatus } from "/components/Dashboard/Editor2/types"
+import { useCustomValidationResolver } from "../Common"
+import courseEditSchema from "./form-validation"
+import { FormStatus } from "../types"
 import { useAnchorContext } from "/contexts/AnchorContext"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CoursesTranslations from "/translations/courses"
@@ -134,7 +134,6 @@ function CourseEditor({
     try {
       setStatus({ message: t("statusSaving") })
 
-      console.log("trying to save")
       if (isNewCourse) {
         await addCourse({
           variables: { course: mutationVariables },

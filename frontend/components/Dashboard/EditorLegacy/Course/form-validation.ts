@@ -10,7 +10,7 @@ import {
   CourseVariantFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { FormValues } from "/components/Dashboard/Editor/types"
+import { FormValues } from "../types"
 import { Translator } from "/translations"
 import { Courses } from "/translations/courses"
 

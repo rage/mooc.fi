@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
 import { omit } from "lodash"
-import { Controller, FieldValues, useFormContext } from "react-hook-form"
+import { Controller, FieldValues, useFormContext, UseControllerReturn } from "react-hook-form"
 
 import {
   Autocomplete,
@@ -11,8 +11,7 @@ import {
   TextField,
 } from "@mui/material"
 
-import { DefaultFieldRenderProps } from "../Common/Fields"
-import { UserCourseSettingsVisibilityFormValues } from "/components/Dashboard/Editor2/Course/types"
+import { UserCourseSettingsVisibilityFormValues } from "./types"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,
@@ -69,7 +68,7 @@ function UserCourseSettingsVisibilityForm() {
 
   const renderAutocomplete = useCallback(
     (
-      renderProps: DefaultFieldRenderProps<
+      renderProps: UseControllerReturn<
         FieldValues,
         "user_course_settings_visibilities"
       >,

@@ -1,10 +1,12 @@
-import { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
 import { get, omit, set } from "lodash"
 import {
   ControllerRenderProps,
+  FieldPath,
   FieldValues,
   PathValue,
+  useController,
   useFormContext,
 } from "react-hook-form"
 
@@ -16,8 +18,8 @@ import { styled } from "@mui/material/styles"
 import {
   ControlledFieldProps,
   FieldController,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+} from "."
+import { useEditorContext } from "../../EditorContext"
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
@@ -33,30 +35,32 @@ const QuestionTooltip = styled(MUITooltip)`
     cursor: help;
   }
 `
-export interface ControlledTextFieldProps<T extends FieldValues>
-  extends ControlledFieldProps<T> {
+export interface ControlledTextFieldProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends ControlledFieldProps<TFieldValues, TName> {
   type?: string
   disabled?: boolean
   rows?: number
   width?: string
 }
 
-const StyledTextField = styled(TextField)`
+const StyledTextField = styled(TextField, { shouldForwardProp: (prop) => prop !== "width"})<{ width?: string }>`
   margin-bottom: 1.5rem;
-` as typeof TextField
+  ${({ width }) => width && `width: ${width};`}
+`
 
 const convertName = (name: string) => name.replace(/\.(\d+)\./, "[$1].")
 
-export function ControlledTextField<T extends FieldValues>(
-  props: ControlledTextFieldProps<T>,
-) {
+function ControlledTextFieldComponent<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>(props: ControlledTextFieldProps<TFieldValues, TName>) {
   const t = useTranslator(CommonTranslations)
   const {
-    formState: { errors },
-    reset,
-    setValue,
-    getValues,
-  } = useFormContext()
+    formState, //: { errors },
+    resetField,
+  } = useFormContext<TFieldValues>()
   const { initialValues } = useEditorContext()
   const {
     label,
@@ -69,96 +73,91 @@ export function ControlledTextField<T extends FieldValues>(
     rows,
     width,
   } = props
+  const initialValue = get(initialValues, name)
 
+  const { field } = useController<TFieldValues>({
+    name,
+    rules: { required },
+  })
   // TODO: hack to convert from formik compatible errors to this; when we get rid of formik,
   // we can change this
   const error = useMemo(
-    () => Boolean(flattenKeys(errors)[convertName(name)]),
-    [errors, name],
+    () => Boolean(flattenKeys(formState.errors)[convertName(name)]),
+    [formState.errors, name],
   )
 
-  const onChange = useCallback(
+  /*const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setValue(name, e.target.value as PathValue<T, typeof name> & string, {
         shouldDirty: true,
       })
     },
     [name, setValue],
-  )
-
-  const initialValue = get(initialValues, name)
+  )*/
 
   const onRevert = useCallback(
-    () => reset(set(getValues(), name, initialValue)),
-    [reset, set, getValues, name, initialValue],
+    () => resetField(name),
+    [resetField, name],
   )
 
-  const renderTextField = useCallback(
-    ({ onBlur, value }: ControllerRenderProps<T>) => (
-      <StyledTextField
-        {...(width ? { style: { width } } : {})}
-        onChange={onChange}
-        onBlur={onBlur}
-        value={value}
-        label={label}
-        required={required}
-        variant="outlined"
-        error={error}
-        type={type}
-        disabled={disabled}
-        rows={rows}
-        multiline={(rows && rows > 0) || false}
-        InputProps={{
-          autoComplete: "none",
-          endAdornment: (
-            <>
-              {revertable ? (
-                <Tooltip title={t("editorRevert")}>
-                  <span>
-                    <IconButton
-                      aria-label={t("editorRevert")}
-                      disabled={getValues(name) === initialValue}
-                      onClick={onRevert}
-                      size="large"
-                    >
-                      <HistoryIcon />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              ) : null}
-              {tip ? (
-                <QuestionTooltip title={tip}>
-                  <HelpIcon />
-                </QuestionTooltip>
-              ) : null}
-            </>
-          ),
-        }}
-      />
-    ),
-    [
-      width,
-      onChange,
-      label,
-      required,
-      error,
-      type,
-      disabled,
-      rows,
-      initialValue,
-      revertable,
-      tip,
-      t,
-      getValues,
-      name,
-      onRevert,
-    ],
+  const InputProps = useMemo(
+    () => ({
+      autoComplete: "none",
+      endAdornment: (
+        <>
+          {revertable ? (
+            <Tooltip title={t("editorRevert")}>
+              <span>
+                <IconButton
+                  aria-label={t("editorRevert")}
+                  disabled={field.value === initialValue}
+                  onClick={onRevert}
+                  size="large"
+                >
+                  <HistoryIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          ) : null}
+          {tip ? (
+            <QuestionTooltip title={tip}>
+              <HelpIcon />
+            </QuestionTooltip>
+          ) : null}
+        </>
+      ),
+    }),
+    [revertable, field, tip, initialValue, onRevert],
   )
 
-  return (
+  /*return (
     <FieldController
       {...omit(props, ["revertable", "validateOtherFields"])}
+      formState={formState}
       renderComponent={renderTextField}
+    />
+  )*/
+  return (
+    <StyledTextField
+      width={width}
+      onChange={field.onChange}
+      onBlur={field.onBlur}
+      value={field.value}
+      name={field.name}
+      inputRef={field.ref}
+      label={label}
+      required={required}
+      variant="outlined"
+      error={error}
+      type={type}
+      disabled={disabled}
+      rows={rows}
+      multiline={(rows && rows > 0) || false}
+      InputProps={InputProps}
     />
   )
 }
+
+export const ControlledTextField = React.memo(
+  ControlledTextFieldComponent,
+) as typeof ControlledTextFieldComponent

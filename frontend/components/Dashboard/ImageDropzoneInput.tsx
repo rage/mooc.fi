@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from "react"
+import { PropsWithChildren, useCallback, useEffect, useState } from "react"
 
 import { DropzoneState, FileRejection, useDropzone } from "react-dropzone"
 
@@ -7,9 +7,10 @@ import { styled } from "@mui/material/styles"
 
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
+import { RefCallBack } from "react-hook-form"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
-const isChrome = process.browser
+const isChrome = typeof window !== "undefined"
   ? !!(window as any).chrome &&
     (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
   : false
@@ -52,26 +53,29 @@ interface MessageProps {
 }
 
 interface DropzoneProps {
+  inputRef?: RefCallBack
   onImageLoad: (result: string | ArrayBuffer | null) => void
   onImageAccepted: (field: File) => void
 }
 
 const ImageDropzoneInput = ({
+  inputRef,
+  onImageAccepted,
   onImageLoad,
   children,
-  onImageAccepted,
 }: PropsWithChildren<DropzoneProps>) => {
   const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({
     message: t("imageDropMessage"),
   })
 
-  const onDrop = (accepted: File[], rejected: FileRejection[]) => {
+  const onDrop = useCallback((accepted: File[], rejected: FileRejection[]) => {
     const reader = new FileReader()
 
     reader.onload = () => onImageLoad(reader.result)
 
     if (accepted.length) {
+      console.log("accepted", accepted[0])
       onImageAccepted(accepted[0])
       reader.readAsDataURL(accepted[0])
     }
@@ -80,7 +84,7 @@ const ImageDropzoneInput = ({
       setStatus({ message: t("imageNotAnImage"), error: true })
       setTimeout(() => setStatus({ message: t("imageDropMessage") }), 2000)
     }
-  }
+  }, [setStatus])
 
   const {
     getRootProps,
@@ -88,6 +92,7 @@ const ImageDropzoneInput = ({
     isDragActive,
     isDragAccept,
     isDragReject,
+    rootRef
   } = useDropzone({
     onDrop,
     accept: {
@@ -97,6 +102,9 @@ const ImageDropzoneInput = ({
     preventDropOnDocument: true,
   })
 
+  inputRef?.(rootRef.current)
+
+  console.log(status)
   useEffect(() => {
     if (isDragActive && isDragReject && !isChrome) {
       setStatus({ message: t("imageNotAcceptableFormat"), error: true })

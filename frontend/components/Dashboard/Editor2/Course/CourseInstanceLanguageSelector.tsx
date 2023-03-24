@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 
 import { omit } from "lodash"
-import { Controller, useFormContext } from "react-hook-form"
+import { Controller, useFormContext, UseControllerReturn } from "react-hook-form"
 
 import HelpIcon from "@mui/icons-material/Help"
 import {
@@ -12,7 +12,6 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { DefaultFieldRenderProps } from "../Common/Fields"
 import { FormValues } from "../types"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -130,7 +129,7 @@ function CourseInstanceLanguageSelector() {
   )
 
   const renderAutocomplete = useCallback(
-    (renderProps: DefaultFieldRenderProps<FormValues, "language">) => {
+    (renderProps: UseControllerReturn<FormValues, "language">) => {
       return (
         <Autocomplete
           {...omit(renderProps, ["field", "formState", "fieldState"])}

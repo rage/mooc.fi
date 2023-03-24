@@ -9,13 +9,13 @@ import ImportPhotoDialog from "./ImportPhotoDialog"
 import {
   FormFieldGroup,
   FormSubtitle,
-} from "/components/Dashboard/Editor2/Common"
+} from "../Common"
 import {
   ControlledHiddenField,
   ControlledImageInput,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+} from "../Common/Fields"
+import { CourseFormValues } from "./types"
+import { useEditorContext } from "../EditorContext"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 import { useTranslator } from "/util/useTranslator"
@@ -29,10 +29,11 @@ interface CourseImageFormProps {
 function CourseImageForm({ courses }: CourseImageFormProps) {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
-  const { watch, setValue } = useFormContext()
+  const { getValues, watch, setValue } = useFormContext()
   const { initialValues } = useEditorContext<CourseFormValues>()
   const [dialogOpen, setDialogOpen] = useState(false)
 
+  console.log(getValues())
   const onImageLoad = useCallback(
     (value: string | ArrayBuffer | null) => setValue("thumbnail", value),
     [setValue],
@@ -42,7 +43,7 @@ function CourseImageForm({ courses }: CourseImageFormProps) {
     [setValue],
   )
 
-  const onClose = useCallback(
+  const onImageRemove = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
       e.stopPropagation()
       e.nativeEvent.stopImmediatePropagation()
@@ -107,7 +108,7 @@ function CourseImageForm({ courses }: CourseImageFormProps) {
         label={t("courseNewPhoto")}
         onImageLoad={onImageLoad}
         onImageAccepted={onImageAccepted}
-        onClose={onClose}
+        onImageRemove={onImageRemove}
         thumbnail={addDomain(watch("thumbnail"))}
       />
       <Button

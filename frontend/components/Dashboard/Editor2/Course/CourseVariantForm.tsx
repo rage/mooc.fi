@@ -7,9 +7,9 @@ import {
   ControlledFieldArrayListProps,
   ControlledHiddenField,
   ControlledTextField,
-} from "/components/Dashboard/Editor2/Common/Fields"
-import { initialVariant } from "/components/Dashboard/Editor2/Course/form-validation"
-import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
+} from "../Common/Fields"
+import { initialVariant } from "./form-validation"
+import { CourseFormValues } from "./types"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

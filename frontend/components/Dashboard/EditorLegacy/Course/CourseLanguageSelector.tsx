@@ -4,7 +4,7 @@ import { Button, ButtonGroup } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { initialTranslation } from "./form-validation"
-import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import { FormSubtitle } from "../common"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

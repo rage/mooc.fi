@@ -17,8 +17,8 @@ import RemoveIcon from "@mui/icons-material/Remove"
 import { Button, FormGroup, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
-import { ControlledFieldArrayProps } from "/components/Dashboard/Editor2/Common/Fields"
+import { ButtonWithWhiteText } from ".."
+import { ControlledFieldArrayProps } from "."
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 
