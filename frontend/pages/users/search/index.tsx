@@ -9,9 +9,9 @@ import SearchForm from "/components/Dashboard/Users/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   UserDetailsContainsDocument,

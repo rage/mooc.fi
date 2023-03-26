@@ -1,12 +1,6 @@
 import { useCallback } from "react"
 
-import { omit } from "lodash"
-import {
-  Controller,
-  FieldValues,
-  UseControllerReturn,
-  useFormContext,
-} from "react-hook-form"
+import { useController, useFormContext } from "react-hook-form"
 
 import {
   Autocomplete,
@@ -15,24 +9,41 @@ import {
   Chip,
   TextField,
 } from "@mui/material"
+import { useEventCallback } from "@mui/material/utils"
 
-import { UserCourseSettingsVisibilityFormValues } from "./types"
+import { FormSubtitleWithMargin } from "../Common"
+import { useAnchor } from "../EditorContext"
+import {
+  CourseFormValues,
+  UserCourseSettingsVisibilityFormValues,
+} from "./types"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,
 ): value is string => typeof value === "string"
 
-function UserCourseSettingsVisibilityForm() {
-  const { control, setValue, getValues } = useFormContext()
+const options: readonly UserCourseSettingsVisibilityFormValues[] = []
 
-  const onChange = useCallback(
+function UserCourseSettingsVisibilityForm() {
+  const t = useTranslator(CoursesTranslations)
+  const { setValue, getValues } = useFormContext()
+  const { field } = useController<
+    CourseFormValues,
+    "user_course_settings_visibilities"
+  >({
+    name: "user_course_settings_visibilities",
+  })
+  const anchor = useAnchor("user_course_settings_visibilities")
+
+  const onChange = useEventCallback(
     (_: any, newValue: (string | UserCourseSettingsVisibilityFormValues)[]) =>
       setValue(
         "user_course_settings_visibilities",
         newValue.map((v: any) => (isString(v) ? { language: v } : v)),
         { shouldDirty: true },
       ),
-    [setValue],
   )
 
   const onDelete = useCallback(
@@ -48,8 +59,11 @@ function UserCourseSettingsVisibilityForm() {
   )
 
   const renderTags = useCallback(
-    (value: any[], getTagProps: AutocompleteRenderGetTagProps) =>
-      value.map((field: UserCourseSettingsVisibilityFormValues, index) => (
+    (
+      value: UserCourseSettingsVisibilityFormValues[],
+      getTagProps: AutocompleteRenderGetTagProps,
+    ) =>
+      value.map((field, index) => (
         <Chip
           {...getTagProps({ index })}
           variant="outlined"
@@ -64,40 +78,31 @@ function UserCourseSettingsVisibilityForm() {
     (params: AutocompleteRenderInputParams) => (
       <TextField
         {...params}
+        inputRef={field.ref}
         variant="outlined"
         label="languages where user count is visible"
       />
     ),
-    [],
+    [field],
   )
 
-  const renderAutocomplete = useCallback(
-    (
-      renderProps: UseControllerReturn<
-        FieldValues,
-        "user_course_settings_visibilities"
-      >,
-    ) => (
+  return (
+    <>
+      <FormSubtitleWithMargin variant="h6" component="h3" align="center">
+        {t("courseUserCourseSettingsVisibility")}
+      </FormSubtitleWithMargin>
+
       <Autocomplete
-        {...omit(renderProps, ["formState", "fieldState"])}
         multiple
         freeSolo
-        options={[] as string[]}
-        value={renderProps.field?.value ?? []}
+        ref={anchor.ref}
+        options={options}
+        value={field.value ?? []}
         onChange={onChange}
         renderTags={renderTags}
         renderInput={renderInput}
       />
-    ),
-    [onChange, renderTags, renderInput],
-  )
-
-  return (
-    <Controller
-      name="user_course_settings_visibilities"
-      control={control}
-      render={renderAutocomplete}
-    />
+    </>
   )
 }
 

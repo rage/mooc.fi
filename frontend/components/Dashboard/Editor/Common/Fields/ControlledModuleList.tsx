@@ -1,6 +1,6 @@
-import { useCallback } from "react"
+import React, { useCallback } from "react"
 
-import { FieldPath, useController } from "react-hook-form"
+import { FieldPath, useController, useFormContext } from "react-hook-form"
 
 import {
   Checkbox,
@@ -15,6 +15,7 @@ import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
 import { FormValues } from "../../types"
+import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
@@ -34,12 +35,13 @@ interface ControlledModuleListProps<
   modules?: StudyModuleDetailedFieldsFragment[]
 }
 
-export function ControlledModuleList<
+function ControlledModuleListImpl<
   TFieldValues extends FormValues = FormValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(props: ControlledModuleListProps<TFieldValues, TName>) {
-  const { modules, label, required } = props
-  const name = props.name
+  const { modules, label, required, name } = props
+  const anchor = useAnchor(name)
+  const { setValue } = useFormContext<TFieldValues>()
   const { field } = useController<TFieldValues>({
     name,
     rules: { required },
@@ -48,31 +50,35 @@ export function ControlledModuleList<
   const onChange = useCallback(
     (id: string) => (_: any, checked: boolean) => {
       if (!checked) {
-        return field.onChange(
+        return setValue(
+          name,
           field.value.filter((value: string) => value !== id),
         )
       }
       if (!field.value.includes(id)) {
-        return field.onChange([...field.value, id])
+        return setValue(name, [...field.value, id] as typeof field.value)
       }
     },
-    [field],
+    [field, setValue, name],
   )
 
   return (
-    <FormControl>
-      {label && <FormLabel>{label}</FormLabel>}
+    <FormControl component="fieldset">
+      {label && <FormLabel component="legend">{label}</FormLabel>}
       <FormGroup>
-        <ModuleList>
-          {modules?.map((studyModule, index) => (
+        <ModuleList
+          ref={(el) => {
+            field.ref(el)
+            anchor.ref(el)
+          }}
+        >
+          {modules?.map((studyModule) => (
             <ModuleListItem key={studyModule.id}>
               <FormControlLabel
                 onChange={onChange(studyModule.id)}
                 value={studyModule.id}
                 checked={field.value.includes(studyModule.id)}
-                control={
-                  <Checkbox id={studyModule.id} name={field.name[index]} />
-                }
+                control={<Checkbox />}
                 label={studyModule.name}
               />
             </ModuleListItem>
@@ -82,3 +88,7 @@ export function ControlledModuleList<
     </FormControl>
   )
 }
+
+export const ControlledModuleList = React.memo(
+  ControlledModuleListImpl,
+) as typeof ControlledModuleListImpl

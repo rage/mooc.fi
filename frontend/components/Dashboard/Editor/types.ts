@@ -1,6 +1,8 @@
+import { AlertColor } from "@mui/material"
+
 export interface FormStatus {
   message: string | null
-  error?: boolean
+  severity?: AlertColor
 }
 
 export interface FormValues {

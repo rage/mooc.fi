@@ -45,9 +45,9 @@ import DatePickerField from "./DatePickers"
 import { CourseEditSchemaType, statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
 import UserCourseSettingsVisibilityEditForm from "./UserCourseSettingsVisibilityEditForm"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCourseOtherCoursesFieldsFragment,

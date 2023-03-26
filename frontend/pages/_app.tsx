@@ -6,21 +6,23 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 
 import { CssBaseline } from "@mui/material"
-import { ThemeProvider } from "@mui/material/styles"
+import { fiFI } from "@mui/material/locale"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 
 import OriginalLayout from "./_layout"
 import NewLayout from "./_new/_layout"
 import { AlertProvider } from "/contexts/AlertContext"
 import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
+import { SnackbarProvider } from "/contexts/SnackbarContext"
 import { useScrollToHash } from "/hooks/useScrollToHash"
+import { useTranslator } from "/hooks/useTranslator"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 import PagesTranslations from "/translations/pages"
-import { useTranslator } from "/util/useTranslator"
 
 const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
   createEmotionSsr({
@@ -50,6 +52,11 @@ export function MyApp({ Component, pageProps }: AppProps) {
 
   const Layout = isNew ? NewLayout : OriginalLayout
   const theme = isNew ? newTheme : originalTheme
+  const { locale = "fi" } = router
+  const themeWithLocale = useMemo(
+    () => (locale === "fi" ? createTheme(theme, fiFI) : theme),
+    [theme, locale],
+  )
 
   const loginStateContextValue = useMemo(
     () => ({
@@ -77,15 +84,17 @@ export function MyApp({ Component, pageProps }: AppProps) {
         <link rel="alternate" {...alternateLanguage} />
         <title>{title}</title>
       </Head>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
         <LoginStateProvider value={loginStateContextValue}>
           <ConfirmProvider>
             <BreadcrumbProvider>
               <AlertProvider>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
+                <SnackbarProvider>
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </SnackbarProvider>
               </AlertProvider>
             </BreadcrumbProvider>
           </ConfirmProvider>

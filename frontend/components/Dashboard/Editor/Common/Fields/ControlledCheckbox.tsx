@@ -1,55 +1,59 @@
-import { useCallback } from "react"
+import React from "react"
 
-import {
-  ControllerRenderProps,
-  FieldValues,
-  PathValue,
-  useFormContext,
-} from "react-hook-form"
+import { FieldValues, useController } from "react-hook-form"
 
 import HelpIcon from "@mui/icons-material/Help"
 import { Checkbox, FormControlLabel, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { ControlledFieldProps, FieldController } from "."
+import { ControlledFieldProps } from "."
+import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 
-export function ControlledCheckbox<T extends FieldValues>(
-  props: ControlledFieldProps<T>,
+const AlignedTooltip = styled(Tooltip)`
+  vertical-align: middle;
+`
+interface ControlledCheckboxProps<
+  TFieldValues extends FieldValues = FieldValues,
+> extends ControlledFieldProps<TFieldValues> {
+  onChange?: (e: React.SyntheticEvent<Element, Event>, checked: boolean) => void
+}
+
+function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
+  props: ControlledCheckboxProps<TFieldValues>,
 ) {
-  const { name, label, tip } = props
-  const { setValue } = useFormContext<T>()
-
-  const onChange = useCallback(
-    (_: any, checked: boolean) =>
-      setValue(name, checked as PathValue<T, typeof name>),
-    [name, setValue],
-  )
-
-  const renderCheckboxComponent = useCallback(
-    ({ value }: ControllerRenderProps<T>) => (
-      <div>
-        <FormControlLabel
-          key={name}
-          label={label}
-          value={value}
-          checked={Boolean(value)}
-          onChange={onChange}
-          control={<Checkbox />}
-        />
-        {tip ? (
-          <Tooltip title={tip} style={{ verticalAlign: "middle" }}>
-            <HelpIcon />
-          </Tooltip>
-        ) : null}
-      </div>
-    ),
-    [name, label, tip, onChange],
-  )
+  const { name, label, tip, required, onChange } = props
+  useWhyDidYouUpdate(`ControlledCheckbox ${name}`, props)
+  const anchor = useAnchor(name)
+  const { field } = useController({
+    name,
+    rules: { required },
+  })
+  const _onChange = onChange ?? field.onChange
 
   return (
-    <FieldController
-      name={name}
-      label={label}
-      renderComponent={renderCheckboxComponent}
-    />
+    <div>
+      <FormControlLabel
+        key={name}
+        label={label}
+        value={field.value}
+        checked={Boolean(field.value)}
+        onChange={_onChange}
+        control={<Checkbox />}
+        inputRef={(el) => {
+          field.ref(el)
+          anchor.ref(el)
+        }}
+      />
+      {tip ? (
+        <AlignedTooltip title={tip}>
+          <HelpIcon />
+        </AlignedTooltip>
+      ) : null}
+    </div>
   )
 }
+
+export const ControlledCheckbox = React.memo(
+  ControlledCheckboxImpl,
+) as typeof ControlledCheckboxImpl

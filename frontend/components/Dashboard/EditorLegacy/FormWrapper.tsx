@@ -21,11 +21,11 @@ import { styled } from "@mui/material/styles"
 import { FormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { useAnchorContext } from "/contexts/AnchorContext"
+import { getFirstErrorAnchor } from "/hooks/useEnumeratingAnchors"
+import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { useTranslator } from "/util/useTranslator"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"

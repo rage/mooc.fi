@@ -2,8 +2,8 @@ import { Button, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 const HeroContainer = styled("section")`
   display: flex;

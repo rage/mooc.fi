@@ -1,14 +1,15 @@
-import { useRouter } from "next/router"
-
-import { useQuery } from "@apollo/client"
-
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import { useMutation, useQuery } from "@apollo/client"
 
 import {
+  AddCourseDocument,
   CourseEditorDetailsDocument,
   CourseEditorOtherCoursesDocument,
   CourseEditorTagsDocument,
+  CoursesDocument,
+  DeleteCourseDocument,
+  EditorCoursesDocument,
   EditorStudyModulesDocument,
+  UpdateCourseDocument,
 } from "/graphql/generated"
 
 interface UseEditorCoursesProps {
@@ -16,9 +17,6 @@ interface UseEditorCoursesProps {
 }
 
 export function useEditorCourses({ slug }: UseEditorCoursesProps) {
-  const { locale } = useRouter()
-  const language = mapNextLanguageToLocaleCode(locale ?? "fi")
-
   const {
     data: courseData,
     loading: courseLoading,
@@ -44,15 +42,36 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
     error: tagsError,
   } = useQuery(CourseEditorTagsDocument, {
     variables: {
-      language,
       includeWithNoCourses: true,
     },
+  })
+  const [addCourse, { loading: addCourseLoading, error: addCourseError }] =
+    useMutation(AddCourseDocument)
+  const [
+    updateCourse,
+    { loading: updateCourseLoading, error: updateCourseError },
+  ] = useMutation(UpdateCourseDocument)
+  const [
+    deleteCourse,
+    { loading: deleteCourseLoading, error: deleteCourseError },
+  ] = useMutation(DeleteCourseDocument, {
+    refetchQueries: [
+      { query: CoursesDocument },
+      { query: EditorCoursesDocument },
+      { query: CourseEditorOtherCoursesDocument },
+    ],
   })
 
   return {
     loading:
-      courseLoading ?? studyModulesLoading ?? coursesLoading ?? tagsLoading,
+      courseLoading || studyModulesLoading || coursesLoading || tagsLoading,
     error: courseError ?? studyModulesError ?? coursesError ?? tagsError,
+    addCourse,
+    updateCourse,
+    deleteCourse,
+    mutationLoading:
+      addCourseLoading || updateCourseLoading || deleteCourseLoading,
+    mutationError: addCourseError ?? updateCourseError ?? deleteCourseError,
     courseData,
     studyModulesData,
     coursesData,

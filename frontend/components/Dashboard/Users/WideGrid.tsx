@@ -17,8 +17,8 @@ import { styled } from "@mui/material/styles"
 
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
+import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
-import { useTranslator } from "/util/useTranslator"
 
 const TableWrapper = styled("div")`
   overflow-x: auto;

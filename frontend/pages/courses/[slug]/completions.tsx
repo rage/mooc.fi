@@ -16,15 +16,15 @@ import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import useSubtitle from "/hooks/useSubtitle"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFromSlugDocument } from "/graphql/generated"
 
-// import useDebounce from "/util/useDebounce"
+// import useDebounce from "/hooks/useDebounce"
 
 const ContentArea = styled("div")`
   max-width: 39em;

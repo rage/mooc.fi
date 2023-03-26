@@ -8,9 +8,9 @@ import CourseHighlights from "./CourseHighlights"
 import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CoursesDocument,

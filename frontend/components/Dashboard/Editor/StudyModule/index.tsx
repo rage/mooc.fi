@@ -10,17 +10,17 @@ import {
 } from "@apollo/client"
 
 import { useCustomValidationResolver } from "../Common"
-import EditorContext from "../EditorContext"
+import { EditorContext } from "../EditorContext"
 import { FormStatus } from "../types"
 import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import { useAnchorContext } from "/contexts/AnchorContext"
+import { getFirstErrorAnchor } from "/hooks/useEnumeratingAnchors"
+import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import StudyModulesTranslations from "/translations/study-modules"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddStudyModuleDocument,
@@ -109,7 +109,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
           shallow: true,
         })
       } catch (err: any) {
-        setStatus({ message: err.message, error: true })
+        setStatus({ message: err.message, severity: "error" })
         console.error(err)
         // setSubmitting(false)
       }

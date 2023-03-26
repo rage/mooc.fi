@@ -24,11 +24,11 @@ import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useDebounce from "/hooks/useDebounce"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddUserOrganizationDocument,

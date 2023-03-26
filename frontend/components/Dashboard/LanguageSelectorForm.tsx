@@ -1,4 +1,9 @@
 import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material"
+import { styled } from "@mui/material/styles"
+
+const LanguageSelectorFormControl = styled(FormControl)`
+  margin: auto auto auto 1rem;
+` as typeof FormControl
 
 interface LanguageSelectorProps {
   handleLanguageChange: React.ChangeEventHandler<HTMLInputElement>
@@ -9,7 +14,7 @@ function LanguageSelectorForm(props: LanguageSelectorProps) {
   const { handleLanguageChange, languageValue } = props
 
   return (
-    <FormControl component="fieldset" style={{ margin: "auto auto auto 1rem" }}>
+    <LanguageSelectorFormControl component="fieldset">
       <RadioGroup
         aria-label="course language"
         name="courselanguage"
@@ -22,7 +27,7 @@ function LanguageSelectorForm(props: LanguageSelectorProps) {
         <FormControlLabel value="se_SE" control={<Radio />} label="SE" />
         <FormControlLabel value="" control={<Radio />} label="ALL" />
       </RadioGroup>
-    </FormControl>
+    </LanguageSelectorFormControl>
   )
 }
 

@@ -1,58 +1,60 @@
 import { useCallback, useMemo } from "react"
 
-import { omit, orderBy } from "lodash"
-import {
-  Controller,
-  UseControllerReturn,
-  useFormContext,
-} from "react-hook-form"
+import { orderBy } from "lodash"
+import { useController, useFormContext } from "react-hook-form"
 
 import {
   Autocomplete,
   AutocompleteRenderGetTagProps,
+  AutocompleteRenderGroupParams,
   AutocompleteRenderInputParams,
   Chip,
   TextField,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { FormFieldGroup } from "../Common"
-import { FormValues } from "../types"
-import { TagFormValue } from "./types"
+import { useAnchor, useEditorData } from "../EditorContext"
+import { CourseFormValues, TagFormValue } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const TagTypeChip = styled(Chip)`
   margin-right: 0.5rem;
 `
-interface CourseTagFormProps {
-  tags: TagFormValue[]
-}
+
+const GroupHeader = styled("div")`
+  padding: 0.5rem;
+  background-color: #eee;
+`
+const GroupItems = styled("ul")`
+  padding: 0;
+`
 
 const hasNoLanguageTag = (tag: TagFormValue) =>
   !(tag.types ?? []).includes("language")
 const filterLanguageTags = (tags: TagFormValue[]) =>
   tags.filter(hasNoLanguageTag)
 
-function CourseTagsForm({ tags }: CourseTagFormProps) {
+function CourseTagsForm() {
+  const { tagOptions } = useEditorData()
   const t = useTranslator(CoursesTranslations)
-  const { control, setValue, getValues } = useFormContext()
+  const { setValue, getValues } = useFormContext()
+  const { field } = useController<CourseFormValues, "tags">({ name: "tags" })
+  const anchor = useAnchor("tags")
 
   const options = useMemo(
     () =>
-      orderBy(tags ?? [], [
-        (tag) => tag.types,
-        (tag) => tag.name?.toLocaleLowerCase(),
-      ]).filter(hasNoLanguageTag), // language tag should come from course instance language
-    [tags],
+      orderBy(tagOptions ?? [], (tag) => tag.name?.toLocaleLowerCase()).filter(
+        hasNoLanguageTag,
+      ), // language tag should come from course instance language
+    [tagOptions],
   )
 
-  const onChange = useCallback(
-    (_: any, newValue: Array<TagFormValue>) => {
-      setValue("tags", newValue, { shouldDirty: true })
-    },
-    [setValue],
-  )
+  const onChange = useEventCallback((_: any, newValue: Array<TagFormValue>) => {
+    setValue("tags", newValue, { shouldDirty: true })
+  })
 
   const onDelete = useCallback(
     (index: number) => () =>
@@ -85,51 +87,67 @@ function CourseTagsForm({ tags }: CourseTagFormProps) {
 
   const renderInput = useCallback(
     (params: AutocompleteRenderInputParams) => (
-      <TextField {...params} variant="outlined" label={t("courseTags")} />
+      <TextField
+        {...params}
+        inputRef={field.ref}
+        variant="outlined"
+        label={t("courseTags")}
+      />
     ),
-    [],
+    [field],
   )
 
   const renderOption = useCallback(
     (props: React.HTMLAttributes<HTMLLIElement>, option: TagFormValue) => (
-      <li {...props}>
-        {option?.types?.map((type) => (
-          <TagTypeChip
-            variant="outlined"
-            label={type}
-            size="small"
-            key={type}
-          />
-        ))}
-        {option.name}
+      <li {...props}>{option.name}</li>
+    ),
+    [],
+  )
+
+  const renderGroup = useCallback(
+    (params: AutocompleteRenderGroupParams) => (
+      <li key={params.key}>
+        <GroupHeader>
+          {params.group?.split(", ").map((type) => (
+            <TagTypeChip
+              key={`${params.key}-${type}`}
+              variant="outlined"
+              label={type}
+              size="small"
+            />
+          ))}
+        </GroupHeader>
+        <GroupItems>{params.children}</GroupItems>
       </li>
     ),
     [],
   )
 
-  const renderAutocomplete = useCallback(
-    (renderProps: UseControllerReturn<FormValues, "tags">) => (
-      <Autocomplete
-        {...omit(renderProps, ["formState", "fieldState"])}
-        multiple
-        value={filterLanguageTags(renderProps.field?.value ?? [])}
-        options={options}
-        onChange={onChange}
-        renderTags={renderTags}
-        renderInput={renderInput}
-        renderOption={renderOption}
-        getOptionLabel={(option) => option.name ?? ""}
-        isOptionEqualToValue={(option, value) => option._id === value._id}
-      />
-    ),
-    [onChange, renderTags, renderInput],
-  )
+  const value = useMemo(() => filterLanguageTags(field.value ?? []), [field])
 
   return (
     <FormFieldGroup>
-      <Controller name="tags" control={control} render={renderAutocomplete} />
+      <Autocomplete
+        multiple
+        ref={anchor.ref}
+        value={value}
+        options={options}
+        onChange={onChange}
+        groupBy={(option) => option.types?.join(", ") ?? "(no type)"}
+        renderTags={renderTags}
+        renderInput={renderInput}
+        renderOption={renderOption}
+        renderGroup={renderGroup}
+        getOptionLabel={(option) => option.name ?? ""}
+        isOptionEqualToValue={(option, value) => option._id === value._id}
+      />
     </FormFieldGroup>
   )
+  /*return (
+    <FormFieldGroup>
+      <Controller name="tags" control={control} render={renderAutocomplete} />
+    </FormFieldGroup>
+  )*/
 }
 
 export default CourseTagsForm

@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   PropsWithChildren,
   useCallback,
@@ -6,23 +6,28 @@ import {
   useMemo,
 } from "react"
 
-import { omit } from "lodash"
 import {
+  FieldArrayPath,
+  FieldPath,
   FieldValues,
   Message,
   MultipleFieldErrors,
   Resolver,
-  ResolverOptions,
+  useFormState,
 } from "react-hook-form"
 import * as Yup from "yup"
 
+import { ErrorMessage } from "@hookform/error-message"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { FormHelperText, Typography } from "@mui/material"
+import { FormGroup, FormHelperText, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useEditorContext } from "../EditorContext"
 import { FormValues } from "../types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { useAnchorContext } from "/contexts/AnchorContext"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
+import { convertDotNotation } from "/util/convertDotNotation"
+import flattenKeys from "/util/flattenKeys"
 
 export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
@@ -30,14 +35,16 @@ export const FormSubtitle = styled(Typography)`
   font-size: 2em;
 ` as typeof Typography
 
-export const FormFieldGroup = styled("div")`
-  display: flex;
-  flex-direction: column;
+export const FormFieldGroup = styled(FormGroup)`
   padding: 0.5rem;
   width: 90%;
   margin: 1rem auto 3rem auto;
   border-bottom: 4px dotted #98b0a9;
 `
+
+export const FormSubtitleWithMargin = styled(FormSubtitle)`
+  margin-top: 3rem;
+` as typeof FormSubtitle
 
 export const AdjustingAnchorLink = styled("div")<{ id: string }>`
   display: block;
@@ -52,65 +59,71 @@ export const ButtonWithWhiteText = styled(StyledButton)`
 
 export const Anchor = styled("div")``
 
-interface EnumeratingAnchorProps {
-  id: string
-}
-
-export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({ id }) => {
-  const { addAnchor } = useAnchorContext()
-  const { tab } = useTabContext()
-
-  addAnchor(id, tab)
-
-  return <AdjustingAnchorLink id={id} />
-}
-
 export const TabContext = createContext<{ tab: number }>({ tab: -1 })
 
 interface TabSectionProps {
-  currentTab: number
+  name?: string
+  currentTab?: number
   tab: number
 }
 
-export const TabSection = ({
-  currentTab,
-  tab,
-  children,
-  ...props
-}: PropsWithChildren<TabSectionProps> &
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) => {
+const TabSectionComponent = styled("section", {
+  shouldForwardProp: (prop) => prop !== "isActive",
+})<{ isActive?: boolean }>`
+  display: ${(props) => (props.isActive ? "block" : "none")};
+`
+
+const TabSectionImpl = (
+  props: PropsWithChildren<TabSectionProps> &
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>,
+) => {
+  useWhyDidYouUpdate(`TabSection ${props.tab}`, props)
+  const { currentTab, tab, name, children, ...sectionProps } = props
+  const { tab: contextTab } = useEditorContext()
   const contextValue = useMemo(() => ({ tab }), [tab])
 
+  const _currentTab = contextTab ?? currentTab
+
   return (
-    <section
-      style={{
-        ...(currentTab === tab ? {} : { display: "none" }),
-        ...(props as any)?.style,
-      }}
-      {...omit(props, "style")}
-    >
-      <TabContext.Provider value={contextValue}>{children}</TabContext.Provider>
-    </section>
+    <TabContext.Provider value={contextValue}>
+      <TabSectionComponent
+        role="tabpanel"
+        isActive={_currentTab === tab}
+        {...(name ? { id: `${name}-${tab}` } : {})}
+        {...sectionProps}
+      >
+        {children}
+      </TabSectionComponent>
+    </TabContext.Provider>
   )
 }
+
+export const TabSection = TabSectionImpl /*React.memo(
+  TabSectionImpl,
+  /*(prevProps, nextProps) => {
+    // console.log("prev", JSON.stringify(omit(prevProps, ["children"])), "next", JSON.stringify(omit(nextProps, ["children"])))
+
+    return JSON.stringify(omit(prevProps, ["children"])) ===
+    JSON.stringify(omit(nextProps, ["children"]))
+  },
+) as typeof TabSectionImpl*/
 
 export const useTabContext = () => {
   return useContext(TabContext)
 }
 
 export function useCustomValidationResolver<
-  TFieldValues extends FieldValues,
-  TSchema extends Yup.ObjectSchema<any> = Yup.ObjectSchema<
-    Partial<FieldValues>
-  >,
+  TFieldValues extends FieldValues = FieldValues,
   TContext = any,
+  TSchema extends Yup.ObjectSchema<TFieldValues> = Yup.ObjectSchema<TFieldValues>,
 >(schema: TSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
-    async (
-      values: TFieldValues,
-      context: TContext | undefined,
-      options: ResolverOptions<TFieldValues>,
-    ) => yupResolver(schema)(values, { ...context, values }, options),
+    (values, context, options) =>
+      yupResolver(schema as Yup.ObjectSchema<any>)(
+        values,
+        { ...context, values },
+        options,
+      ),
     [schema],
   )
 }
@@ -154,15 +167,51 @@ interface ErrorMessageComponentProps {
   messages?: MultipleFieldErrors
 }
 
-const ErrorMessage = styled(FormHelperText)`
+const ErrorMessageText = styled(FormHelperText)`
   color: #f44336;
   margin-top: -1rem;
   margin-bottom: 0.5rem;
 `
+
 export const ErrorMessageComponent = ({
   message,
-}: ErrorMessageComponentProps) => (
-  <ErrorMessage style={{ color: "#f44336", marginTop: "-1rem" }}>
-    {message}
-  </ErrorMessage>
-)
+}: ErrorMessageComponentProps) => <ErrorMessageText>{message}</ErrorMessageText>
+
+type UseErrorMessageReturn<TFieldValues extends FieldValues> = {
+  ErrorMessage: () => ReturnType<typeof ErrorMessage<TFieldValues>> | null
+  hasError: boolean
+  error?: string
+}
+
+export function useErrorMessage<
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues> | FieldArrayPath<TFieldValues>,
+>(name: TName): UseErrorMessageReturn<TFieldValues> {
+  const formState = useFormState()
+  const error: string | undefined = useMemo(
+    () =>
+      flattenKeys(formState.errors)[convertDotNotation(name) as TName]?.message,
+    [formState.isValid, formState.isValidating, name],
+  )
+  const hasError = useMemo(() => Boolean(error), [error])
+
+  const component = useCallback(() => {
+    if (!hasError) {
+      return null
+    }
+
+    return (
+      <ErrorMessage
+        errors={formState?.errors}
+        name={name}
+        render={ErrorMessageComponent}
+      />
+    )
+  }, [hasError])
+
+  return {
+    error,
+    hasError,
+    ErrorMessage: component,
+  }
+}

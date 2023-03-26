@@ -8,8 +8,8 @@ import {
   ErrorMessageBackground as StyledCard,
   ErrorMessageContentArea as StyledCardContent,
 } from "/components/Surfaces/ErrorMessageBackground"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(Report)`
   height: 35%;

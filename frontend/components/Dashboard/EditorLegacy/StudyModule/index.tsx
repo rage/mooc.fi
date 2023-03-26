@@ -13,8 +13,8 @@ import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddStudyModuleDocument,

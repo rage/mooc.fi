@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 
+import { omit } from "lodash"
 import { NextSeo } from "next-seo"
 import dynamic from "next/dynamic"
-import { SingletonRouter, withRouter } from "next/router"
+import { useRouter } from "next/router"
 
 import { Link, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -10,15 +11,18 @@ import { styled } from "@mui/material/styles"
 import FormSkeleton from "../../../components/Dashboard/EditorLegacy/FormSkeleton"
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
+import { toCourseForm } from "/components/Dashboard/Editor/Course/serialization"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { EditorDataProvider } from "/components/Dashboard/Editor/EditorContext"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useEditorCourses } from "/hooks/useEditorCourses"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import useSubtitle from "/hooks/useSubtitle"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -27,10 +31,6 @@ const ErrorContainer = styled(Paper)`
 const ContainerBackground = styled("section")`
   background-color: #e9fef8;
 `
-interface EditCourseProps {
-  router: SingletonRouter
-}
-
 const CourseEdit = dynamic(
   () => import("../../../components/Dashboard/Editor/Course"),
   { loading: () => <FormSkeleton /> },
@@ -40,11 +40,11 @@ const LegacyCourseEdit = dynamic(
   { loading: () => <FormSkeleton /> },
 )
 
-const EditCourse = ({ router }: EditCourseProps) => {
+const EditCourse = () => {
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
   const legacy = useQueryParameter("legacy", false)
-
+  const router = useRouter()
   const {
     loading,
     error,
@@ -65,7 +65,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
     if (!loading && !courseData?.course) {
       redirectTimeout = setTimeout(
-        () => router.push(listLink, undefined, { shallow: true }),
+        () => router.push("/courses", undefined, { shallow: true }),
         5000,
       )
     }
@@ -114,21 +114,43 @@ const EditCourse = ({ router }: EditCourseProps) => {
       )
     }
 
-    return (
-      <CourseEdit
-        course={courseData.course}
-        courses={coursesData?.courses ?? []}
-        studyModules={studyModulesData?.study_modules ?? []}
-        tags={tagsData?.tags ?? []}
-      />
-    )
+    return <CourseEdit />
   }, [courseData, coursesData, studyModulesData, tagsData, legacy])
+
+  const editorDataContextValue = useMemo(() => {
+    const course = courseData?.course ?? undefined
+    const courses = coursesData?.courses ?? []
+    const studyModules = studyModulesData?.study_modules ?? []
+    const tags = tagsData?.tags ?? []
+    const defaultValues = course
+      ? toCourseForm({
+          course,
+          modules: studyModules,
+        })
+      : ({} as CourseFormValues)
+    const tagOptions = tags.map((tag) => ({
+      ...omit(tag, ["__typename", "id"]),
+      _id: tag.id,
+      types: tag.types ?? [],
+      tag_translations: (tag.tag_translations ?? []).map((translation) => ({
+        ...translation,
+        description: translation.description ?? undefined,
+      })),
+    }))
+
+    return {
+      course,
+      courses,
+      studyModules,
+      tags,
+      tagOptions,
+      defaultValues,
+    }
+  }, [courseData, coursesData, studyModulesData, tagsData])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
-
-  const listLink = "/courses"
 
   return (
     <>
@@ -140,22 +162,14 @@ const EditCourse = ({ router }: EditCourseProps) => {
             {t("editCourse")}
           </H1Background>
           {loading && <FormSkeleton />}
-          {courseData?.course && (
-            <CourseEdit
-              course={courseData.course}
-              courses={coursesData?.courses ?? []}
-              studyModules={studyModulesData?.study_modules ?? []}
-              tags={tagsData?.tags ?? []}
-            />
-          )}
+          <EditorDataProvider value={editorDataContextValue}>
+            <EditorComponent />
+          </EditorDataProvider>
           {!loading && !courseData?.course && (
             <ErrorContainer elevation={2}>
-              <Typography
-                variant="body1"
-                dangerouslySetInnerHTML={{
-                  __html: t("courseWithIdNotFound", { slug }),
-                }}
-              />
+              <Typography variant="body1">
+                {t("courseWithIdNotFound", { slug })}
+              </Typography>
               <Typography variant="body2">
                 {t("redirectMessagePre")}
                 <Link href="/courses">{t("redirectLinkText")}</Link>
@@ -169,4 +183,4 @@ const EditCourse = ({ router }: EditCourseProps) => {
   )
 }
 
-export default withRouter(withAdmin(EditCourse) as any)
+export default withAdmin(EditCourse)

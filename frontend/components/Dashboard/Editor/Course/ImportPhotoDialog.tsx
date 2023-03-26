@@ -14,9 +14,9 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { ControlledSelect } from "../Common/Fields"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCourseOtherCoursesFieldsFragment,

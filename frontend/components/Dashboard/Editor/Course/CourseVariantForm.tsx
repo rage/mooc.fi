@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react"
 
 import { styled } from "@mui/material/styles"
 
+import { FormSubtitleWithMargin } from "../Common"
 import {
   ControlledFieldArrayList,
   ControlledFieldArrayListProps,
@@ -10,8 +11,8 @@ import {
 } from "../Common/Fields"
 import { initialVariant } from "./form-validation"
 import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const CourseVariantEntryContainer = styled("div")`
   display: flex;
@@ -20,6 +21,19 @@ const CourseVariantEntryContainer = styled("div")`
   width: 100%;
   gap: 1rem;
 `
+
+const slugContainerProps = {
+  style: {
+    flexGrow: 1,
+    minWidth: "100px",
+  },
+}
+const descriptionContainerProps = {
+  style: {
+    minWidth: "300px",
+    flexGrow: 1,
+  },
+}
 
 function CourseVariantForm() {
   const t = useTranslator(CoursesTranslations)
@@ -37,12 +51,13 @@ function CourseVariantForm() {
         <ControlledTextField
           name={`course_variants.${index}.slug`}
           label={t("courseSlug")}
-          containerProps={{ style: { flexGrow: 1, minWidth: "100px" } }}
+          required
+          containerProps={slugContainerProps}
         />
         <ControlledTextField
           name={`course_variants.${index}.description`}
           label={t("courseDescription")}
-          containerProps={{ style: { minWidth: "300px", flexGrow: 1 } }}
+          containerProps={descriptionContainerProps}
         />
       </CourseVariantEntryContainer>
     ),
@@ -61,17 +76,22 @@ function CourseVariantForm() {
   )
 
   return (
-    <ControlledFieldArrayList<CourseFormValues, "course_variants">
-      name="course_variants"
-      label={t("courseVariants")}
-      initialValues={initialVariant}
-      texts={{
-        description: t("confirmationRemoveVariant"),
-        noFields: t("courseNoVariants"),
-      }}
-      conditions={conditions}
-      render={renderArrayListItem}
-    />
+    <>
+      <FormSubtitleWithMargin variant="h6" component="h3" align="center">
+        {t("courseVariantsTitle")}
+      </FormSubtitleWithMargin>
+      <ControlledFieldArrayList<CourseFormValues, "course_variants">
+        name="course_variants"
+        label={t("courseVariants")}
+        initialValues={initialVariant}
+        texts={{
+          description: t("confirmationRemoveVariant"),
+          noFields: t("courseNoVariants"),
+        }}
+        conditions={conditions}
+        render={renderArrayListItem}
+      />
+    </>
   )
 }
 

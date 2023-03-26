@@ -7,9 +7,9 @@ import { Link, Skeleton } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
+import { useTranslator } from "/hooks/useTranslator"
 import { isTranslationKey } from "/translations"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
-import { useTranslator } from "/util/useTranslator"
 
 const BreadcrumbList = styled("ul")`
   list-style: none;

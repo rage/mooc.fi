@@ -71,10 +71,13 @@
   "validationNumberRange": "vaaditaan numero tai arvoalue",
   "validationValidUrl": "tulee olla validi URL",
   "statusSaving": "Tallennetaan...",
+  "statusSavingSuccess": "Tallennus onnistui",
+  "statusSavingError": "Virhe tallentaessa",
+  "statusValidationErrors": "Lomakkeessa on virheitä",
   "courseLanguageSelectTitle": "Missä MOOC.fi-sivun kieliversiossa haluat kurssin näkyvän?",
   "courseLanguageVersion": "Kieliversio",
   "courseStartDateRequired": "Kurssilla on oltava alkamispäivämäärä",
-  "courseStartDateLaterThanEndDate": "Alkamispäivämäärän tulee olla loppupäivämäärää aiemmin",
+  "courseStartDateLaterThanEndDate": "Alkamispäivämäärän tulee olla loppupäivämäärää aiemmin tai sama",
   "courseTeacherNameRequired": "Anna kurssin vastuuhenkilön nimi",
   "courseTeacherEmailRequired": "Anna kurssin vastuuhenkilön sähköpostiosoite",
   "courseEmailInvalid": "Varmista että annettu sähköpostiosoite on oikein",
@@ -102,6 +105,7 @@
   "courseExerciseCompletionsNeeded": "Exercise completions needed",
   "courseNewCourse": "Uusi kurssi",
   "helpSlug": "Slug on kurssin uniikki tunniste, esim. elements-of-ai, ohpe.",
+  "helpName": "Kurssin nimi -- yleensä käyttäjälle näkyvä nimi tulee käännöksistä, mutta tämänkin on hyvä olla kuvaava.",
   "helpStartPoint": "\"Aloita tästä\"-merkki etusivun kurssikortissa.",
   "helpHasCertificate": "Myönnetäänkö kurssilta sertifikaatti?",
   "helpUpcomingActiveLink": "Oletuksena etusivun tulevien kurssien linkki materiaaliin ei toimi. Valitse tämä halutessasi linkin toimivaksi.",
@@ -111,5 +115,9 @@
   "helpPointsNeeded": "Kuinka paljon pisteitä tarvitaan läpipääsyyn?",
   "helpAutomaticCompletions": "Merkitäänkö kurssisuoritus automaattisesti?",
   "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?",
-  "helpCourseInstanceLanguage": "Kurssi-instanssin kieli (fi, en, se, en-ie jne.). Tämä liitetään opiskelijan kurssisuoritukseen. Jos tämä kurssi on kattokurssi muille kursseille, tällä asetuksella ei ole vaikutusta, vaan kieli otetaan suoritetusta kurssi-instanssista."
+  "helpCourseInstanceLanguage": "Kurssi-instanssin kieli (fi, en, se, en-ie jne.). Tämä liitetään opiskelijan kurssisuoritukseen. Jos tämä kurssi on kattokurssi muille kursseille, tällä asetuksella ei ole vaikutusta, vaan kieli otetaan suoritetusta kurssi-instanssista.",
+  "invalidDate": "Virhe päiväyksessä tai päiväys puuttuu",
+  "tabCourseInfo": "Perustiedot",
+  "tabCourseStatus": "Kurssin tila",
+  "tabCourseAdvanced": "Edistyneet"
 }

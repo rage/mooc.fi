@@ -5,9 +5,9 @@ import Typography from "@mui/material/Typography"
 
 import { StyledFieldWithAnchor, StyledTextField } from "../common"
 import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { mapLangToLanguage } from "/util/dataFormatFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionContainer = styled("div")`
   padding-top: 1rem;

@@ -4,9 +4,9 @@ import Container from "/components/Container"
 import { H1NoBackground } from "/components/Text/headers"
 import PointsList from "/components/User/Points/PointsList"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 import { CurrentUserProgressesDocument } from "/graphql/generated"
 

@@ -3,8 +3,8 @@ import { css, styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/NewLayout/Navigation"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 interface NavigationLinkProps {
   active: boolean

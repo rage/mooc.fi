@@ -1,23 +1,19 @@
-import { useCallback } from "react"
-
-import {
-  ControllerRenderProps,
-  FieldPath,
-  FieldPathValue,
-  FieldValue,
-  Path,
-  PathValue,
-  useController,
-  useFormContext,
-} from "react-hook-form"
+import { FieldPath, PathValue, useController } from "react-hook-form"
 
 import { MenuItem, TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { ControlledFieldProps, FieldController } from "."
+import { ControlledFieldProps } from "."
+import { useErrorMessage } from ".."
 import { FormValues } from "../../types"
+import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
+import { useTranslator } from "/hooks/useTranslator"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CommonTranslations from "/translations/common"
-import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/util/useTranslator"
+
+const StyledTextField = styled(TextField)`
+  margin-top: 1.5rem;
+`
 
 interface ControlledSelectProps<
   TFieldValues extends FormValues = FormValues,
@@ -45,33 +41,29 @@ export function ControlledSelect<
     nameField = "name",
     name,
   } = props
-  const { formState } = useFormContext<TFieldValues>()
-  const { errors } = formState
+  useWhyDidYouUpdate(`ControlledSelect ${name}`, props)
+  const anchor = useAnchor(name)
   const { field } = useController<TFieldValues>({
     name,
     rules: { required },
   })
 
-  /*return (
-    <FieldController
-      name={name}
-      label={label}
-      defaultValue={watch(name) ?? ("" as PathValue<TFieldValues, TName>)}
-      renderComponent={renderSelect}
-      formState={formState}
-    />
-  )*/
+  const { error, hasError } = useErrorMessage(name)
+
   return (
-    <TextField
+    <StyledTextField
       select
       variant="outlined"
       label={label}
       value={field.value}
       onChange={field.onChange}
       onBlur={field.onBlur}
-      inputRef={field.ref}
-      error={Boolean(flattenKeys(errors as Record<string, any>)[name])}
-      style={{ marginTop: "1.5rem" }}
+      inputRef={(el) => {
+        field.ref(el)
+        anchor.ref(el)
+      }}
+      error={hasError}
+      helperText={error}
     >
       <MenuItem key={`${name}-empty`} value="">
         {t("selectNoChoice")}
@@ -81,6 +73,6 @@ export function ControlledSelect<
           {item[nameField]}
         </MenuItem>
       ))}
-    </TextField>
+    </StyledTextField>
   )
 }

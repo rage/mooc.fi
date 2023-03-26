@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-import { omit } from "lodash"
+import { useRouter } from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 import {
@@ -8,19 +8,21 @@ import {
   useMutation,
   type PureQueryOptions,
 } from "@apollo/client"
+import { yupResolver } from "@hookform/resolvers/yup"
 
-import { useCustomValidationResolver } from "../Common"
-import { FormStatus } from "../types"
+import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
 import courseEditSchema from "./form-validation"
-import { fromCourseForm, toCourseForm } from "./serialization"
+import { fromCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import EditorContext from "/components/Dashboard/Editor/EditorContext"
-import { useAnchorContext } from "/contexts/AnchorContext"
-import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import {
+  EditorContextProvider,
+  useAnchors,
+  useEditorData,
+} from "/components/Dashboard/Editor/EditorContext"
+import { useSnackbarMethods } from "/contexts/SnackbarContext"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddCourseDocument,
@@ -29,39 +31,26 @@ import {
   CoursesDocument,
   CourseUpsertArg,
   DeleteCourseDocument,
-  EditorCourseDetailedFieldsFragment,
-  EditorCourseOtherCoursesFieldsFragment,
   EditorCoursesDocument,
-  StudyModuleDetailedFieldsFragment,
-  TagCoreFieldsFragment,
   UpdateCourseDocument,
 } from "/graphql/generated"
 
-interface CourseEditProps {
-  course?: EditorCourseDetailedFieldsFragment
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  studyModules?: StudyModuleDetailedFieldsFragment[]
-  tags?: TagCoreFieldsFragment[]
-}
+const anchors = {}
 
-function CourseEditor({
-  course,
-  courses,
-  studyModules,
-  tags,
-}: CourseEditProps) {
+function CourseEditor() {
+  const render = useRef(0)
+  const { course, defaultValues } = useEditorData()
   const t = useTranslator(CoursesTranslations)
-  const [status, setStatus] = useState<FormStatus>({ message: null })
   const [tab, setTab] = useState(0)
-  const { anchors } = useAnchorContext()
+  const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
   const client = useApolloClient()
+  const { locale } = useRouter()
 
-  const defaultValues = useRef(
-    toCourseForm({
-      course,
-      modules: studyModules,
-    }),
-  )
+  const { addSnackbar } = useSnackbarMethods()
+
+  useEffect(() => {
+    render.current++
+  })
   const validationSchema = useMemo(
     () =>
       courseEditSchema({
@@ -69,35 +58,23 @@ function CourseEditor({
         initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
         t,
       }),
-    [course, client, t],
+    [course, client, t, locale],
   )
-  const tagOptions = useMemo(
-    () =>
-      (tags ?? []).map((tag) => ({
-        ...omit(tag, ["__typename", "id"]),
-        _id: tag.id,
-        types: tag.types ?? [],
-        tag_translations: (tag.tag_translations ?? []).map((translation) => ({
-          ...translation,
-          description: translation.description ?? undefined,
-        })),
-      })),
-    [tags],
-  )
-
-  const methods = useForm<CourseFormValues>({
-    defaultValues: defaultValues.current,
-    resolver: useCustomValidationResolver(validationSchema),
+  const methods = useForm({
+    defaultValues,
+    resolver: yupResolver(validationSchema), //useCustomValidationResolver(validationSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
+    shouldFocusError: false,
+    shouldUnregister: false,
     // reValidateMode: "onChange"
   })
-  const { trigger, reset } = methods
+  const { trigger } = methods
 
   useEffect(() => {
     // validate on load
     trigger()
-    reset(
+    /*reset(
       {},
       {
         keepValues: true,
@@ -105,7 +82,7 @@ function CourseEditor({
         keepDirty: false,
         keepDefaultValues: true,
       },
-    )
+    )*/
   }, [])
 
   const [addCourse] = useMutation(AddCourseDocument)
@@ -123,7 +100,7 @@ function CourseEditor({
 
     const mutationVariables = fromCourseForm({
       values,
-      initialValues: defaultValues.current,
+      initialValues: defaultValues,
     })
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
@@ -140,14 +117,19 @@ function CourseEditor({
       })
     }
 
-    console.log("would mutate", mutationVariables)
     try {
-      setStatus({ message: t("statusSaving") })
+      addSnackbar({ message: t("statusSaving") })
 
       if (isNewCourse) {
         await addCourse({
           variables: { course: mutationVariables },
           refetchQueries: () => refetchQueries,
+          onCompleted: () => {
+            addSnackbar({
+              message: t("statusSavingSuccess"),
+              severity: "success",
+            })
+          },
         })
       } else {
         await updateCourse({
@@ -155,58 +137,58 @@ function CourseEditor({
           refetchQueries: () => refetchQueries,
         })
       }
-      setStatus({ message: null })
+      console.log("setting save success")
+      addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
     } catch (err: any) {
-      setStatus({ message: err.message, error: true })
+      console.error("error saving", JSON.stringify(err.message, null, 2))
+      addSnackbar({ message: t("statusSavingError"), severity: "error" })
     }
   }, [])
 
-  const onError: SubmitErrorHandler<CourseFormValues> = useCallback(
-    (errors: Record<string, any>) => {
-      const { anchor, anchorLink } = getFirstErrorAnchor(anchors, errors)
-
-      setTab(anchor?.tab ?? 0)
-
-      setTimeout(() => {
-        const element = document.getElementById(anchorLink)
-        element?.scrollIntoView()
-      }, 100)
-    },
-    [],
-  )
+  const onError: SubmitErrorHandler<CourseFormValues> = (errors) => {
+    addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
+    scrollFirstErrorIntoView(errors, tab, setTab)
+  }
 
   const onCancel = useCallback(() => console.log("cancelled"), [])
   const onDelete = useCallback(async (id: string) => {
     await deleteCourse({ variables: { id } })
   }, [])
 
-  const contextValue = useMemo(
+  const editorContextValue = useMemo(
     () => ({
-      status,
       tab,
-      initialValues: defaultValues.current,
-      setStatus,
+      initialValues: defaultValues,
+      anchors,
+    }),
+    [tab, defaultValues],
+  )
+  const editorMethodContextValue = useMemo(
+    () => ({
       setTab,
       onSubmit,
       onError,
       onCancel,
       onDelete,
+      addAnchor,
+      scrollFirstErrorIntoView,
     }),
-    [status, tab, defaultValues],
+    [],
   )
 
   return (
     <FormProvider {...methods}>
-      <EditorContext.Provider value={contextValue}>
-        <CourseEditForm
-          course={course}
-          courses={courses}
-          studyModules={studyModules}
-          tags={tagOptions}
-        />
-      </EditorContext.Provider>
+      <EditorContextProvider
+        value={editorContextValue}
+        methods={editorMethodContextValue}
+      >
+        <p>{render.current}</p>
+        <EditorContainer<CourseFormValues>>
+          <CourseEditForm />
+        </EditorContainer>
+      </EditorContextProvider>
     </FormProvider>
   )
 }
 
-export default withEnumeratingAnchors(CourseEditor)
+export default CourseEditor

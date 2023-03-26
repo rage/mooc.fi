@@ -1,11 +1,6 @@
 import { useCallback, useMemo } from "react"
 
-import { omit } from "lodash"
-import {
-  Controller,
-  UseControllerReturn,
-  useFormContext,
-} from "react-hook-form"
+import { useController, useFormContext } from "react-hook-form"
 
 import HelpIcon from "@mui/icons-material/Help"
 import {
@@ -15,11 +10,13 @@ import {
   Tooltip,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
-import { FormValues } from "../types"
+import { useAnchor } from "../EditorContext"
+import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const QuestionTooltip = styled(Tooltip)`
   :hover {
@@ -37,15 +34,16 @@ const InputContainer = styled("div")`
 const isString = (value: any): value is string => typeof value === "string"
 
 const languages = [
+  "en",
+  "fi",
   "se",
   /*  'sv',   */
-  "fi",
-  "ee",
   "de",
+  "fr",
   "no",
+  "ee",
   "lv",
   "lt",
-  "fr",
   "fr-be",
   "nl-be",
   "mt",
@@ -68,7 +66,6 @@ const languages = [
   "is",
   "ga",
   "el-cy",
-  "en",
   "hu",
   "fr-lu",
 ]
@@ -85,26 +82,30 @@ const toOption = (value: string | undefined): Option => ({
 
 function CourseInstanceLanguageSelector() {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
-  const { control, setValue } = useFormContext()
+  const { setValue } = useFormContext()
+
+  const anchor = useAnchor("language")
+  const { field } = useController<CourseFormValues, "language">({
+    name: "language",
+  })
 
   const options = useMemo(
     () => [
-      { value: undefined, name: t("selectNoChoice") },
+      { value: "", name: t("selectNoChoice") },
       ...languages.map(toOption),
     ],
     [],
   )
 
-  const onChange = useCallback(
+  const onChange = useEventCallback(
     (_: any, option: string | Option | null) => {
       const newValue = isString(option)
         ? languages.includes(option)
           ? option
-          : undefined
-        : option?.value ?? undefined
+          : ""
+        : option?.value ?? ""
       setValue("language", newValue, { shouldDirty: true })
     },
-    [setValue],
   )
 
   const renderInput = useCallback(
@@ -112,15 +113,17 @@ function CourseInstanceLanguageSelector() {
       <InputContainer>
         <TextField
           {...params}
+          inputRef={field.ref}
           variant="outlined"
           label={t("courseInstanceLanguage")}
+          defaultValue=""
         />
         <QuestionTooltip title={t("helpCourseInstanceLanguage")}>
           <HelpIcon />
         </QuestionTooltip>
       </InputContainer>
     ),
-    [],
+    [field],
   )
 
   const renderOption = useCallback(
@@ -132,30 +135,26 @@ function CourseInstanceLanguageSelector() {
     [],
   )
 
-  const renderAutocomplete = useCallback(
-    (renderProps: UseControllerReturn<FormValues, "language">) => {
-      return (
-        <Autocomplete
-          {...omit(renderProps, ["field", "formState", "fieldState"])}
-          options={options}
-          autoHighlight
-          value={toOption(renderProps.field.value)}
-          getOptionLabel={(option) => option?.name ?? ""}
-          renderInput={renderInput}
-          renderOption={renderOption}
-          onChange={onChange}
-          isOptionEqualToValue={(option, optionValue) =>
-            option.value === optionValue?.value
-          }
-        />
-      )
-    },
-    [onChange],
-  )
+  const value = useMemo(() => toOption(field.value), [field.value])
 
   return (
-    <Controller name="language" control={control} render={renderAutocomplete} />
+    <Autocomplete
+      ref={anchor.ref}
+      options={options}
+      autoHighlight
+      value={value}
+      getOptionLabel={(option) => option?.name ?? ""}
+      renderInput={renderInput}
+      renderOption={renderOption}
+      onChange={onChange}
+      isOptionEqualToValue={(option, optionValue) =>
+        option.value === optionValue?.value
+      }
+    />
   )
+  /*return (
+    <Controller name="language" control={control} render={renderAutocomplete} />
+  )*/
 }
 
 export default CourseInstanceLanguageSelector

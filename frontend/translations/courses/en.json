@@ -71,6 +71,9 @@
   "validationNumberRange": "must be a number or a range",
   "validationValidUrl": "must be a valid URL",
   "statusSaving": "Saving...",
+  "statusSavingSuccess": "Saved successfully",
+  "statusSavingError": "Error while saving",
+  "statusValidationErrors": "There are errors in the form",
   "courseLanguageSelectTitle": "Which languages of MOOC.fi website do you want the course to be visible in?",
   "courseLanguageVersion": "Language version",
   "courseStartDateRequired": "You must provide start date",
@@ -102,6 +105,7 @@
   "courseExerciseCompletionsNeeded": "Exercise completions needed",
   "courseNewCourse": "New course",
   "helpSlug": "A slug is a unique identifier for a course, ie. elements-of-ai, ohpe.",
+  "helpName": "Course name -- usually the course name visible to the user comes from the translation, but keep this descriptive as well.",
   "helpStartPoint": "\"Start with these\" tag for course in front page.",
   "helpHasCertificate": "Does the course have a certificate?",
   "helpUpcomingActiveLink": "By default, the upcoming courses in the front page have a disabled link to course page. Check this to enable.",
@@ -111,5 +115,9 @@
   "helpPointsNeeded": "How many points are needed to pass the course?",
   "helpAutomaticCompletions": "Does the course have automatic completions?",
   "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?",
-  "helpCourseInstanceLanguage": "Language (en, fi, en-ie etc.) of the course instance. This will be used in the course completion. If this is a handler course, ie. a parent course for specific instance courses, then this setting will not have any effect - the completion language will be taken from the specific instance (ie. language version)."
+  "helpCourseInstanceLanguage": "Language (en, fi, en-ie etc.) of the course instance. This will be used in the course completion. If this is a handler course, ie. a parent course for specific instance courses, then this setting will not have any effect - the completion language will be taken from the specific instance (ie. language version).",
+  "invalidDate": "Invalid date format or date missing",
+  "tabCourseInfo": "Course info",
+  "tabCourseStatus": "Course status",
+  "tabCourseAdvanced": "Advanced"
 }

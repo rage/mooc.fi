@@ -14,8 +14,8 @@ import {
 import { initialVariant } from "./form-validation"
 import { CourseFormValues } from "./types"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const ButtonWithWhiteText = styled(ButtonWithPaddingAndMargin)`
   color: white;

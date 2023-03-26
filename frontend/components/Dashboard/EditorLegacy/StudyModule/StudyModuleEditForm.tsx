@@ -44,9 +44,9 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import useDebounce from "/hooks/useDebounce"
+import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
-import useDebounce from "/util/useDebounce"
-import { useTranslator } from "/util/useTranslator"
 
 const FormContainer = styled("div")`
   background-color: white;

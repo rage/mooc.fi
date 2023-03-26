@@ -1,14 +1,16 @@
 import { useCallback } from "react"
 
-import { useFieldArray, useFormContext } from "react-hook-form"
+import { useFieldArray } from "react-hook-form"
 
 import { Button, ButtonGroup } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { FormSubtitle } from "../../EditorLegacy/common"
 import { initialTranslation } from "./form-validation"
+import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;
@@ -18,10 +20,7 @@ const ButtonGroupContainer = styled(ButtonGroup)`
   margin-top: 1 rem;
   justify-content: space-around;
 `
-interface ButtonProps {
-  selected: boolean
-}
-const StyledLanguageButton = styled(Button)<ButtonProps>`
+const StyledLanguageButton = styled(Button)`
   width: 33%;
   background-color: #378170;
   margin: 0.5rem;
@@ -44,10 +43,15 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
   }
   &:disabled {
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
-    background-color: #354b45;
     color: white;
     border: 1px solid #354b45;
-    ${(props) => `text-decoration: ${props.selected ? `underline` : `none`};`}
+  }
+  &:disabled[data-selected="true"] {
+    background-color: #519b8a;
+  }
+  &:disabled[data-selected="false"] {
+    background-color: #354b45;
+    color: gray;
   }
 `
 interface LanguageSelectorProps {
@@ -56,12 +60,10 @@ interface LanguageSelectorProps {
 }
 
 function CourseLanguageSelector(props: LanguageSelectorProps) {
+  useWhyDidYouUpdate("CourseLanguageSelector", props)
   const { selectedLanguage, setSelectedLanguage } = props
 
-  const { control } = useFormContext()
-
-  const { append } = useFieldArray({
-    control,
+  const { append } = useFieldArray<CourseFormValues, "course_translations">({
     name: "course_translations",
   })
 
@@ -113,7 +115,7 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
           disabled={
             selectedLanguage === "fi_FI" || selectedLanguage === "en_US"
           }
-          selected={selectedLanguage === "fi_FI"}
+          data-selected={selectedLanguage === "fi_FI"}
         >
           {t("courseFinnish")}
         </StyledLanguageButton>
@@ -121,13 +123,13 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
           disabled={
             selectedLanguage === "en_US" || selectedLanguage === "fi_FI"
           }
-          selected={selectedLanguage === "en_US"}
+          data-selected={selectedLanguage === "en_US"}
           onClick={onSelectEnglish}
         >
           {t("courseEnglish")}
         </StyledLanguageButton>
         <StyledLanguageButton
-          selected={selectedLanguage === "both"}
+          data-selected={selectedLanguage === "both"}
           onClick={onSelectBoth}
         >
           {t("courseBoth")}

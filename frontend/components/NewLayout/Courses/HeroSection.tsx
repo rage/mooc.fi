@@ -3,8 +3,8 @@ import Image from "next/image"
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/_new/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const Container = styled("header")`
   display: grid;

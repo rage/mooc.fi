@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import {
@@ -19,8 +19,9 @@ import { styled } from "@mui/material/styles"
 
 import { ControlledFieldArrayProps } from "."
 import { ButtonWithWhiteText } from ".."
+import { useTranslator } from "/hooks/useTranslator"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 export const ArrayList = styled("ul")`
   list-style: none;
@@ -85,7 +86,7 @@ export const StyledButton = styled(Button)`
   height: 3rem;
 `
 
-export function ControlledFieldArrayList<
+function ControlledFieldArrayListImpl<
   TFieldValues extends Partial<FieldValues> & Partial<Record<"_id", string>>,
   TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
 >(props: ControlledFieldArrayListProps<TFieldValues, TFieldArrayName>) {
@@ -105,6 +106,7 @@ export function ControlledFieldArrayList<
     },
     name,
   } = props
+  useWhyDidYouUpdate(`ControlledFieldArrayList ${name}`, props)
   const { control, formState, watch, trigger } = useFormContext<TFieldValues>()
   const { fields, append, remove } = useFieldArray({
     name,
@@ -158,7 +160,7 @@ export function ControlledFieldArrayList<
   )
 
   return (
-    <FormGroup>
+    <FormGroup key={name}>
       <ArrayList>
         {fields.length ? (
           fields.map((item, index) => (
@@ -201,3 +203,7 @@ export function ControlledFieldArrayList<
     </FormGroup>
   )
 }
+
+export const ControlledFieldArrayList = React.memo(
+  ControlledFieldArrayListImpl,
+) as typeof ControlledFieldArrayListImpl

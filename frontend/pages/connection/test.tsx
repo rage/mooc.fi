@@ -7,8 +7,8 @@ import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 import Spinner from "/components/Spinner"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withSignedIn from "/lib/with-signed-in"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import { ConnectionTestDocument } from "/graphql/generated"
 

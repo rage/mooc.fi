@@ -5,8 +5,8 @@ import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useFAQPage } from "/hooks/useFAQPage"
 import useSubtitle from "/hooks/useSubtitle"
+import { useTranslator } from "/hooks/useTranslator"
 import FAQTranslations from "/translations/faq"
-import { useTranslator } from "/util/useTranslator"
 
 interface FAQTopicProps {
   topic: string

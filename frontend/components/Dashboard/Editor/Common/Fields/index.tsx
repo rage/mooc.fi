@@ -1,12 +1,9 @@
 import {
-  ControllerFieldState,
-  ControllerRenderProps,
   FieldArrayPath,
   FieldArrayPathValue,
   FieldPath,
   FieldPathValue,
   FieldValues,
-  FormState,
 } from "react-hook-form"
 
 export * from "./ControlledCheckbox"
@@ -18,7 +15,6 @@ export * from "./ControlledModuleList"
 export * from "./ControlledRadioGroup"
 export * from "./ControlledSelect"
 export * from "./ControlledTextField"
-export * from "./FieldController"
 
 export interface LabeledFieldProps {
   label: string
@@ -56,7 +52,7 @@ export interface ControlledFieldProps<
     BaseControlledFieldProps,
     LabeledFieldProps,
     RequiredFieldProps {
-  validateOtherFields?: Array<TName>
+  validateOtherFields?: readonly FieldPath<TFieldValues>[]
 }
 
 export interface ControlledFieldArrayProps<
@@ -66,5 +62,5 @@ export interface ControlledFieldArrayProps<
     BaseControlledFieldProps,
     LabeledFieldProps,
     RequiredFieldProps {
-  validateOtherFields?: Array<TName>
+  validateOtherFields?: readonly FieldPath<TFieldValues>[]
 }

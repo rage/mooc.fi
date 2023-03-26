@@ -9,9 +9,9 @@ import { styled } from "@mui/material/styles"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import SignUpTranslations from "/translations/sign-up"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CurrentUserDetailedDocument,

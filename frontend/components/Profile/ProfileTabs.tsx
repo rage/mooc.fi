@@ -2,8 +2,8 @@ import { PropsWithChildren, SyntheticEvent } from "react"
 
 import { Tab, Tabs } from "@mui/material"
 
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 interface ProfileTabsProps {
   selected: number

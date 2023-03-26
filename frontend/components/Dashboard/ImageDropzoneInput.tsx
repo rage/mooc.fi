@@ -1,13 +1,13 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react"
+import React from "react"
 
 import { DropzoneState, FileRejection, useDropzone } from "react-dropzone"
-import { RefCallBack } from "react-hook-form"
 
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
 const isChrome =
@@ -48,13 +48,18 @@ const DropzoneContainer = styled("div", {
   position: relative;
 `
 
+const ErrorMessage = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error: MessageProps["error"] }>`
+  color: ${({ error }) => (error ? "#FF0000" : "#000000")};
+`
 interface MessageProps {
   message: string
   error?: boolean
 }
 
 interface DropzoneProps {
-  inputRef?: RefCallBack
+  inputRef?: React.RefCallback<HTMLDivElement>
   onImageLoad: (result: string | ArrayBuffer | null) => void
   onImageAccepted: (field: File) => void
 }
@@ -96,7 +101,7 @@ const ImageDropzoneInput = ({
     isDragActive,
     isDragAccept,
     isDragReject,
-    rootRef,
+    inputRef: dropzoneInputRef,
   } = useDropzone({
     onDrop,
     accept: {
@@ -106,9 +111,8 @@ const ImageDropzoneInput = ({
     preventDropOnDocument: true,
   })
 
-  inputRef?.(rootRef.current)
+  inputRef?.(dropzoneInputRef.current)
 
-  console.log(status)
   useEffect(() => {
     if (isDragActive && isDragReject && !isChrome) {
       setStatus({ message: t("imageNotAcceptableFormat"), error: true })
@@ -128,13 +132,9 @@ const ImageDropzoneInput = ({
     >
       {children}
       <input {...getInputProps()} />
-      <Typography
-        variant="body1"
-        align="center"
-        style={{ color: status.error ? "#FF0000" : "#000000" }}
-      >
+      <ErrorMessage variant="body1" align="center" error={status.error}>
         {status.message}
-      </Typography>
+      </ErrorMessage>
     </DropzoneContainer>
   )
 }

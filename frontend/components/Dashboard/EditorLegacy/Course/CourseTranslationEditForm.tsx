@@ -7,8 +7,8 @@ import CourseTranslationListItem from "./CourseTranslationListItem"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const AddTranslationNotice = styled(EntryContainer)`
   margin-bottom: 1rem;

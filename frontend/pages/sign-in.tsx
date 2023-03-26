@@ -5,9 +5,9 @@ import Typography from "@mui/material/Typography"
 import Container from "/components/Container"
 import SignInForm from "/components/SignInForm"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedOut from "/lib/with-signed-out"
 import SignInTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledPaper = styled(Paper)`
   display: flex;

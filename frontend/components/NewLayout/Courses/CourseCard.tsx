@@ -8,12 +8,12 @@ import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
+import { useTranslator } from "/hooks/useTranslator"
 import moocLogo from "/public/images/moocfi_white.svg"
 //import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import newTheme from "/src/newTheme"
 import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment } from "/graphql/generated"
 

@@ -8,8 +8,8 @@ import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import { H1NoBackground } from "/components/Text/headers"
 import UserSearchContext from "/contexts/UserSearchContext"
+import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled("form")`
   display: flex;

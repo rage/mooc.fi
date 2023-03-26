@@ -1,27 +1,12 @@
 import React from "react"
 
-import dynamic from "next/dynamic"
-
-import { Skeleton } from "@mui/material"
-
 import { FormFieldGroup, FormSubtitle } from "../Common"
-import { ControlledTextField } from "../Common/Fields"
+import { ControlledDatePicker, ControlledTextField } from "../Common/Fields"
 import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
-const DynamicControlledDatePicker = dynamic(
-  () =>
-    import("../Common/Fields/ControlledDatePicker").then(
-      (c) => c.ControlledDatePicker,
-    ),
-  {
-    ssr: false,
-    loading: () => {
-      return <Skeleton variant="rectangular" />
-    },
-  },
-)
+const validateOtherFields = ["start_date"] as const
 
 function CourseInfoForm() {
   const t = useTranslator(CoursesTranslations)
@@ -35,6 +20,7 @@ function CourseInfoForm() {
         <ControlledTextField
           name="name"
           label={t("courseName")}
+          tip={t("helpName")}
           required
           revertable
         />
@@ -50,15 +36,15 @@ function CourseInfoForm() {
       </FormFieldGroup>
 
       <FormFieldGroup>
-        <DynamicControlledDatePicker
+        <ControlledDatePicker
           name="start_date"
           label={t("courseStartDate")}
           required
         />
-        <DynamicControlledDatePicker
+        <ControlledDatePicker
           name="end_date"
           label={t("courseEndDate")}
-          validateOtherFields={["start_date"]}
+          validateOtherFields={validateOtherFields}
         />
       </FormFieldGroup>
 

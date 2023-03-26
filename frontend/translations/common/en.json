@@ -1,10 +1,12 @@
 {
     "login": "Log in with your MOOC.fi account",
     "loginShort": "Log in",
+    "loginDetails": "Already registered for a course? Login with the details you used to register for a course.",
     "signUp":"Sign up",
     "logout": "Log out",
     "profile": "My profile",
     "forgottenpw": "Forgot your password?",
+    "loginFailedError": "Login failed. Wrong password or email address/username",
     "password": "Password",
     "username": "Email or username",
     "skiplink": "To main content",

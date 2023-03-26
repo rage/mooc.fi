@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react"
 
-import { styled } from "@mui/material/styles"
-
+import { FormSubtitleWithMargin } from "../Common"
 import {
   ControlledFieldArrayList,
   ControlledFieldArrayListProps,
@@ -10,8 +9,15 @@ import {
 } from "../Common/Fields"
 import { initialAlias } from "./form-validation"
 import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
+
+const courseCodeContainerProps = {
+  style: {
+    minWidth: "300px",
+    flexGrow: 1,
+  },
+}
 
 function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)
@@ -29,8 +35,9 @@ function CourseAliasForm() {
         <ControlledTextField
           name={`course_aliases.${index}.course_code`}
           label={t("courseAliasCourseCode")}
+          required
           defaultValue={item.course_code}
-          containerProps={{ style: { minWidth: "300px", flexGrow: 1 } }}
+          containerProps={courseCodeContainerProps}
         />
       </>
     ),
@@ -49,17 +56,23 @@ function CourseAliasForm() {
   )
 
   return (
-    <ControlledFieldArrayList<CourseFormValues, "course_aliases">
-      name="course_aliases"
-      label={t("courseAliases")}
-      initialValues={initialAlias}
-      texts={{
-        description: t("confirmationRemoveAlias"),
-        noFields: t("courseNoAliases"),
-      }}
-      conditions={conditions}
-      render={renderArrayListItem}
-    />
+    <>
+      <FormSubtitleWithMargin variant="h6" component="h3" align="center">
+        {t("courseAliasesTitle")}
+      </FormSubtitleWithMargin>
+
+      <ControlledFieldArrayList
+        name="course_aliases"
+        label={t("courseAliases")}
+        initialValues={initialAlias}
+        texts={{
+          description: t("confirmationRemoveAlias"),
+          noFields: t("courseNoAliases"),
+        }}
+        conditions={conditions}
+        render={renderArrayListItem}
+      />
+    </>
   )
 }
 

@@ -16,9 +16,9 @@ import ImportPhotoDialog from "./ImportPhotoDialog"
 import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
-import { useTranslator } from "/util/useTranslator"
 
 import { EditorCourseOtherCoursesFieldsFragment } from "/graphql/generated"
 

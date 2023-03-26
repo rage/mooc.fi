@@ -8,8 +8,8 @@ import {
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
+import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
-import { useTranslator } from "/util/useTranslator"
 
 type NaviItem = {
   title: string

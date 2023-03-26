@@ -54,7 +54,7 @@ export function useTranslator<
       (router?.locale ?? "fi") as LanguageKey,
       router,
     ),
-    [dicts, router?.locale],
+    [combinedDict, router?.locale],
   )
 
   return translator

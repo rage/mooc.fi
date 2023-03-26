@@ -11,9 +11,9 @@ import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import { isSignedIn, signIn } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled("form")`
   padding: 1em;
@@ -79,7 +79,9 @@ function SignIn() {
             setError(false)
           }}
         />
-        <FormHelperText error={error}>{error && t("error")}</FormHelperText>
+        <FormHelperText error={error}>
+          {error && t("loginFailedError")}
+        </FormHelperText>
       </FormControl>
 
       <SubmitButton

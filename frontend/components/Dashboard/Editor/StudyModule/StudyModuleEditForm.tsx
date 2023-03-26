@@ -11,9 +11,9 @@ import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
 import EditorContainer from "../EditorContainer"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
 import { StudyModuleFormValues } from "./types"
+import useDebounce from "/hooks/useDebounce"
+import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
-import useDebounce from "/util/useDebounce"
-import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled("div")`
   position: relative;

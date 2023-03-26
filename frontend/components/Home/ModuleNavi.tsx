@@ -3,8 +3,8 @@ import { styled } from "@mui/material/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
 import { H2Background } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 

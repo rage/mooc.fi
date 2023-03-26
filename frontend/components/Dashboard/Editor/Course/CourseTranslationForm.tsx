@@ -1,14 +1,14 @@
-import { useFormContext } from "react-hook-form"
+import { useFieldArray } from "react-hook-form"
 
-import { Typography } from "@mui/material"
+import { FormControl, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
-import { CourseTranslationFormValues } from "./types"
+import { CourseFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { mapLangToLanguage } from "/util/dataFormatFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
@@ -40,11 +40,12 @@ const CourseTranslationItem = styled("li")`
 function CourseTranslationForm() {
   const t = useTranslator(CoursesTranslations)
 
-  const { watch } = useFormContext()
-  const fields: CourseTranslationFormValues[] = watch("course_translations")
+  const { fields } = useFieldArray<CourseFormValues, "course_translations">({
+    name: "course_translations",
+  })
 
   return (
-    <section>
+    <FormControl component="fieldset">
       <CourseTranslationList>
         {fields.length ? (
           fields.map((item, index) => (
@@ -121,7 +122,7 @@ function CourseTranslationForm() {
           </AddTranslationNotice>
         )}
       </CourseTranslationList>
-    </section>
+    </FormControl>
   )
 }
 

@@ -23,10 +23,10 @@ import {
   CollapseTableCell,
   CollapseTableRow,
 } from "/components/Dashboard/Users/Summary/common"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   ExerciseCompletionCoreFieldsFragment,

@@ -13,8 +13,8 @@ import CourseEditForm from "./CourseEditForm"
 import courseEditSchema from "./form-validation"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddCourseDocument,

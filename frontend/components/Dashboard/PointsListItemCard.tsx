@@ -7,9 +7,9 @@ import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import formatPointsData from "/util/formatPointsData"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseCoreFieldsFragment,

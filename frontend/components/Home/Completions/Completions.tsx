@@ -3,9 +3,9 @@ import { styled } from "@mui/material/styles"
 
 import { RegularContainer as Container } from "/components/Container"
 import { CompletionListItem } from "/components/Home/Completions"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { completionHasCourse } from "/util/guards"
-import { useTranslator } from "/util/useTranslator"
 
 import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
 

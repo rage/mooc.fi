@@ -3,8 +3,8 @@ import { styled } from "@mui/material/styles"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useActiveTab } from "/components/HeaderBar/Header"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledButton = styled(HeaderMenuButton, {
   shouldForwardProp: (prop) => prop !== "active",

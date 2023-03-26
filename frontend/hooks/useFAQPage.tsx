@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { FAQComponent } from "/components/Home/FAQ/Common"
+import { useTranslator } from "/hooks/useTranslator"
 import FAQTranslations from "/translations/faq"
-import { useTranslator } from "/util/useTranslator"
 
 type MDXComponent<T> = {
   meta?: {

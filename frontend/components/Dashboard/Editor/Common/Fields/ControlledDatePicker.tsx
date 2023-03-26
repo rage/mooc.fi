@@ -1,74 +1,78 @@
 import { useCallback } from "react"
+import React from "react"
 
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
-import {
-  ControllerRenderProps,
-  FieldValues,
-  useFormContext,
-} from "react-hook-form"
+import { FieldValues, useController, useFormContext } from "react-hook-form"
 
-import { TextField, TextFieldProps, Theme, useMediaQuery } from "@mui/material"
-import {
-  DesktopDatePicker,
-  LocalizationProvider,
-  MobileDatePicker,
-} from "@mui/x-date-pickers"
+import { Skeleton, TextField, TextFieldProps } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
-import { ControlledFieldProps, FieldController } from "."
+import { ControlledFieldProps } from "."
+import { useErrorMessage } from ".."
+import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
 
-export function ControlledDatePicker(props: ControlledFieldProps) {
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
-  const DatePicker = isMobile ? MobileDatePicker : DesktopDatePicker
+const StyledTextField = styled(TextField)`
+  margin-bottom: 1rem;
+`
+
+const DatePickerTextField = (props: TextFieldProps) => (
+  <StyledTextField {...props} variant="outlined" />
+)
+
+const DynamicDatePicker = dynamic(
+  () => import("@mui/x-date-pickers").then((mod) => mod.DatePicker),
+  { ssr: false, loading: () => <Skeleton variant="rectangular" /> },
+)
+
+function ControlledDatePickerImpl<
+  TFieldValues extends FieldValues = FieldValues,
+>(props: ControlledFieldProps<TFieldValues>) {
   const { locale } = useRouter()
-  const { watch, setValue, trigger } = useFormContext()
-  const { name, label, validateOtherFields = [] } = props
-
-  const onChange = useCallback(
-    (date: any) =>
-      setValue(name, date, { shouldValidate: true, shouldDirty: true }),
-    [name, setValue],
-  )
+  const { trigger } = useFormContext<TFieldValues>()
+  const { name, label, required, validateOtherFields = [] } = props
+  const anchor = useAnchor(name)
 
   const onCloseDatePicker = useCallback(
     () => trigger([name, ...validateOtherFields]),
     [name, trigger, validateOtherFields],
   )
 
-  const renderDatePickerInput = useCallback((props: TextFieldProps) => {
-    return <TextField {...props} variant="outlined" />
-  }, [])
-
-  const renderDatePickerComponent = useCallback(
-    ({ value }: ControllerRenderProps<FieldValues, string>) => (
-      <DatePicker
-        value={value}
-        onChange={onChange}
-        onClose={onCloseDatePicker}
-        label={label}
-        renderInput={renderDatePickerInput}
-        disableMaskedInput
-      />
-    ),
-    [
-      isMobile,
-      name,
-      label,
-      watch,
-      onChange,
-      renderDatePickerInput,
-      onCloseDatePicker,
-    ],
-  )
+  const { field } = useController<TFieldValues>({
+    name,
+    rules: { required },
+  })
+  const { hasError, error } = useErrorMessage(name)
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
-      <FieldController
-        name={name}
+      <DynamicDatePicker
+        value={field.value}
+        onChange={field.onChange}
+        onClose={onCloseDatePicker}
         label={label}
-        style={{ marginBottom: "1.5rem" }}
-        renderComponent={renderDatePickerComponent}
+        slotProps={{
+          textField: {
+            inputRef: (el) => {
+              field.ref(el)
+              anchor.ref(el)
+            }, //field.ref,
+            error: hasError,
+            onBlur: onCloseDatePicker,
+            helperText: error,
+            required: required,
+          },
+        }}
+        slots={{
+          textField: DatePickerTextField,
+        }}
       />
     </LocalizationProvider>
   )
 }
+
+export const ControlledDatePicker = React.memo(
+  ControlledDatePickerImpl,
+) as typeof ControlledDatePickerImpl

@@ -30,13 +30,13 @@ import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import useSubtitle from "/hooks/useSubtitle"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"
 import UsersTranslations from "/translations/users"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCoursesQueryVariables,

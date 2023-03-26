@@ -17,8 +17,8 @@ import {
 import { styled, useTheme } from "@mui/material/styles"
 
 import UserSearchContext from "/contexts/UserSearchContext"
+import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledFooter = styled("footer")`
   flex-shrink: 0;

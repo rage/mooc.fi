@@ -13,8 +13,8 @@ import Typography from "@mui/material/Typography"
 
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import TeachersTranslations from "/translations/teachers"
-import { useTranslator } from "/util/useTranslator"
 
 const ContentBlock = styled("article")`
   padding: 5rem 1rem;

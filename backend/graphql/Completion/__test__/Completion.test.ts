@@ -91,7 +91,7 @@ describe("Completion", () => {
             "create",
           )
 
-          const res = await ctx.client.request(recheckMutation, {
+          const res = await ctx.client.request<any>(recheckMutation, {
             course_id: "00000000000000000000000000000002",
           })
 
@@ -150,7 +150,7 @@ describe("Completion", () => {
             },
           })
 
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000102",
@@ -187,7 +187,7 @@ describe("Completion", () => {
             },
           })
 
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000103",
@@ -223,7 +223,7 @@ describe("Completion", () => {
             },
           })
 
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000102",

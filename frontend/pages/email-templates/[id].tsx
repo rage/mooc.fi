@@ -21,9 +21,9 @@ import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { CardTitle, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   DeleteEmailTemplateDocument,

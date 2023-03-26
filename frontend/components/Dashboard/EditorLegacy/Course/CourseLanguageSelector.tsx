@@ -5,8 +5,8 @@ import { styled } from "@mui/material/styles"
 
 import { FormSubtitle } from "../common"
 import { initialTranslation } from "./form-validation"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;

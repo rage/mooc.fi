@@ -11,8 +11,8 @@ import { initialTranslation, languages } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
 
 function StudyModuleTranslationsForm() {
   const t = useTranslator(StudyModulesTranslations)

@@ -1,8 +1,10 @@
+import React from "react"
+
 import { FieldPath, FieldValues, useController } from "react-hook-form"
 
 import { FieldProps } from "."
 
-export const ControlledHiddenField = <
+const ControlledHiddenFieldImpl = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
@@ -23,3 +25,7 @@ export const ControlledHiddenField = <
     />
   )
 }
+
+export const ControlledHiddenField = React.memo(
+  ControlledHiddenFieldImpl,
+) as typeof ControlledHiddenFieldImpl

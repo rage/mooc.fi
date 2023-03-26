@@ -25,13 +25,12 @@ interface ToCourseFormArgs {
 
 export const toCourseForm = ({
   course,
-  modules,
 }: ToCourseFormArgs): CourseFormValues => {
+  console.log("toCourseForm: course", course)
   if (!course) {
     return initialValues
   }
 
-  console.log("course", course)
   const study_modules =
     course?.study_modules?.map((studyModule) => studyModule.id) ?? []
 
@@ -44,14 +43,10 @@ export const toCourseForm = ({
       "created_at",
       "updated_at",
     ]),
-    slug: course?.slug ?? "",
-    name: course.name ?? "",
-    language: course.language ?? undefined,
-    teacher_in_charge_name: course.teacher_in_charge_name ?? "",
-    teacher_in_charge_email: course.teacher_in_charge_email ?? "",
+    language: course.language ?? "",
     support_email: course.support_email ?? "",
     start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
-    end_date: course.end_date ? DateTime.fromISO(course.end_date) : undefined,
+    end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
     start_point: course.start_point ?? false,
     promote: course.promote ?? false,
     hidden: course.hidden ?? false,
@@ -77,10 +72,10 @@ export const toCourseForm = ({
           _id: course_translation.id ?? undefined,
           link: course_translation.link ?? "",
           open_university_course_link: {
-            _id: open_university_course_link?.id ?? undefined,
-            language: open_university_course_link?.language ?? undefined,
+            ...omit(open_university_course_link, ["__typename", "id"]),
+            _id: open_university_course_link?.id,
             link: open_university_course_link?.link ?? "",
-            course_code: open_university_course_link?.course_code || "",
+            course_code: open_university_course_link?.course_code ?? "",
           },
           instructions: course_translation.instructions ?? undefined,
         }
@@ -90,15 +85,13 @@ export const toCourseForm = ({
     course_variants:
       course?.course_variants?.map((course_variant) => ({
         ...omit(course_variant, ["__typename", "id"]),
-        _id: course_variant.id ?? undefined,
-        slug: course_variant.slug ?? undefined,
+        _id: course_variant.id,
         description: course_variant.description ?? undefined,
       })) ?? [],
     course_aliases:
       course?.course_aliases?.map((course_alias) => ({
         ...omit(course_alias, ["__typename", "id"]),
-        _id: course_alias.id ?? undefined,
-        course_code: course_alias.course_code ?? undefined,
+        _id: course_alias.id,
       })) ?? [],
     new_slug: course.slug,
     thumbnail: course?.photo?.compressed,
@@ -111,7 +104,6 @@ export const toCourseForm = ({
       course?.user_course_settings_visibilities?.map((visibility) => ({
         ...omit(visibility, ["__typename", "id"]),
         _id: visibility.id ?? undefined,
-        language: visibility.language ?? undefined,
       })) ?? [],
     upcoming_active_link: course?.upcoming_active_link ?? false,
     tier: course?.tier ?? undefined,
@@ -128,12 +120,11 @@ export const toCourseForm = ({
       course?.open_university_registration_links?.map((link) => ({
         ...omit(link, ["__typename", "id"]),
         _id: link.id ?? undefined,
-        course_code: link.course_code ?? undefined,
       })) ?? [],
     tags:
       course?.tags?.map((tag) => ({
         ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
-        _id: tag.id ?? undefined,
+        _id: tag.id,
         hidden: tag.hidden ?? false,
         types: tag.types ?? [],
         tag_translations: tag.tag_translations?.map((tagTranslation) => ({
@@ -272,6 +263,8 @@ export const fromCourseForm = ({
 
   const c = {
     ...formValues,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    language: values.language || null,
     name: values.name ?? "",
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,

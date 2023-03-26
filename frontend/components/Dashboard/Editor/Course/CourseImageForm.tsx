@@ -4,40 +4,49 @@ import { useRouter } from "next/router"
 import { useFormContext } from "react-hook-form"
 
 import { Button } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { FormFieldGroup, FormSubtitle } from "../Common"
 import { ControlledHiddenField, ControlledImageInput } from "../Common/Fields"
 import { useEditorContext } from "../EditorContext"
 import ImportPhotoDialog from "./ImportPhotoDialog"
 import { CourseFormValues } from "./types"
+import { useTranslator } from "/hooks/useTranslator"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
-import { useTranslator } from "/util/useTranslator"
 
 import { EditorCourseOtherCoursesFieldsFragment } from "/graphql/generated"
+
+const ImportButton = styled(Button)`
+  margin-top: 0.5rem;
+  width: 100%;
+`
 
 interface CourseImageFormProps {
   courses?: EditorCourseOtherCoursesFieldsFragment[]
 }
 
-function CourseImageForm({ courses }: CourseImageFormProps) {
+function CourseImageForm(props: CourseImageFormProps) {
+  useWhyDidYouUpdate("CourseImageForm", props)
+  const { courses } = props
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
-  const { getValues, watch, setValue } = useFormContext()
+  const { watch, setValue } = useFormContext()
   const { initialValues } = useEditorContext<CourseFormValues>()
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  console.log(getValues())
   const onImageLoad = useCallback(
     (value: string | ArrayBuffer | null) => setValue("thumbnail", value),
-    [setValue],
+    [],
   )
   const onImageAccepted = useCallback(
     (value: File) => setValue("new_photo", value, { shouldDirty: true }),
-    [setValue],
+    [],
   )
 
-  const onImageRemove = useCallback(
+  const onImageRemove = useEventCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
       e.stopPropagation()
       e.nativeEvent.stopImmediatePropagation()
@@ -49,7 +58,6 @@ function CourseImageForm({ courses }: CourseImageFormProps) {
         setValue("delete_photo", true)
       }
     },
-    [setValue, initialValues],
   )
 
   const slug = watch("slug")
@@ -105,13 +113,9 @@ function CourseImageForm({ courses }: CourseImageFormProps) {
         onImageRemove={onImageRemove}
         thumbnail={addDomain(watch("thumbnail"))}
       />
-      <Button
-        color="primary"
-        style={{ marginTop: "0.5rem", width: "100%" }}
-        onClick={onImportPhotoDialogOpen}
-      >
+      <ImportButton color="primary" onClick={onImportPhotoDialogOpen}>
         {t("importPhotoButton")}
-      </Button>
+      </ImportButton>
       <ImportPhotoDialog
         open={dialogOpen}
         onClose={onImportPhotoDialogClose}
