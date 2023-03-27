@@ -1,11 +1,12 @@
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
+
+import dynamic from "next/dynamic"
 
 import { styled } from "@mui/material/styles"
 
-import CourseEdit2 from "../../components/Dashboard/Editor/Course"
-import CourseEdit from "../../components/Dashboard/EditorLegacy/Course"
 import FormSkeleton from "../../components/Dashboard/EditorLegacy/FormSkeleton"
 import { WideContainer } from "/components/Container"
+import { CourseEditorDataProvider } from "/components/Dashboard/Editor/Course/CourseEditorDataContext"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -20,16 +21,25 @@ const ContainerBackground = styled("section")`
   background-color: #e9fef8;
 `
 
+const CourseEdit = dynamic(
+  () => import("../../components/Dashboard/Editor/Course"),
+  { loading: () => <FormSkeleton /> },
+)
+const LegacyCourseEdit = dynamic(
+  () => import("../../components/Dashboard/EditorLegacy/Course"),
+  { loading: () => <FormSkeleton /> },
+)
+
 const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
 
   const clone = useQueryParameter("clone", false)
   const legacy = useQueryParameter("legacy", false)
 
-  const { loading, error, coursesData, studyModulesData, courseData } =
-    useEditorCourses({
-      slug: clone,
-    })
+  const { loading, error, data } = useEditorCourses({
+    slug: clone,
+  })
+  const { course, studyModules, courses, tags } = data ?? {}
 
   useBreadcrumbs([
     {
@@ -43,12 +53,26 @@ const NewCourse = () => {
   ])
 
   const clonedCourse = useMemo(() => {
-    if (!courseData?.course) {
+    if (!course) {
       return undefined
     }
 
-    return { ...stripId(courseData.course), slug: "" }
-  }, [courseData])
+    return { ...stripId(course), slug: "" }
+  }, [course])
+
+  const EditorComponent = useCallback(() => {
+    if (legacy) {
+      return (
+        <LegacyCourseEdit
+          {...(clonedCourse ? { course: clonedCourse } : {})}
+          courses={courses}
+          modules={studyModules}
+        />
+      )
+    }
+
+    return <CourseEdit />
+  }, [clonedCourse, courses, studyModules, tags, legacy])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
@@ -60,21 +84,10 @@ const NewCourse = () => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("createCourse")}
         </H1NoBackground>
-        {loading ? (
-          <FormSkeleton />
-        ) : legacy ? (
-          <CourseEdit
-            {...(clonedCourse ? { course: clonedCourse } : {})}
-            modules={studyModulesData?.study_modules}
-            courses={coursesData?.courses}
-          />
-        ) : (
-          <CourseEdit2
-            {...(clonedCourse ? { course: clonedCourse } : {})}
-            courses={coursesData?.courses ?? []}
-            studyModules={studyModulesData?.study_modules ?? []}
-          />
-        )}
+        {loading && <FormSkeleton />}
+        <CourseEditorDataProvider value={data}>
+          {!loading && <EditorComponent />}
+        </CourseEditorDataProvider>
       </WideContainer>
     </ContainerBackground>
   )

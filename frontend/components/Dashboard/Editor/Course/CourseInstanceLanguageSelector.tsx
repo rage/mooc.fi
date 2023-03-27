@@ -1,19 +1,21 @@
-import { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
 import { useController, useFormContext } from "react-hook-form"
 
-import HelpIcon from "@mui/icons-material/Help"
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
+  InputAdornment,
   TextField,
-  Tooltip,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
 import { useAnchor } from "../EditorContext"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import { CourseFormValues } from "./types"
+import RevertButton from "/components/RevertButton"
+import Tooltip, { InfoTooltipWithLabel } from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -80,9 +82,13 @@ const toOption = (value: string | undefined): Option => ({
   name: value ?? "",
 })
 
-function CourseInstanceLanguageSelector() {
+function CourseInstanceLanguageSelector(
+  props: Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue">,
+) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
-  const { setValue } = useFormContext()
+  const { defaultValues } = useCourseEditorData()
+
+  const { setValue, resetField } = useFormContext()
 
   const anchor = useAnchor("language")
   const { field } = useController<CourseFormValues, "language">({
@@ -108,6 +114,8 @@ function CourseInstanceLanguageSelector() {
     },
   )
 
+  const onRevert = useCallback(() => resetField("language"), [resetField])
+
   const renderInput = useCallback(
     (params: AutocompleteRenderInputParams) => (
       <InputContainer>
@@ -116,11 +124,31 @@ function CourseInstanceLanguageSelector() {
           inputRef={field.ref}
           variant="outlined"
           label={t("courseInstanceLanguage")}
-          defaultValue=""
+          InputProps={{
+            ...params?.InputProps,
+            endAdornment: (
+              <>
+                <InputAdornment
+                  position="end"
+                  className="MuiAutocomplete-endAdornment"
+                >
+                  <InfoTooltipWithLabel
+                    label={t("courseInstanceLanguage")}
+                    title={t("helpCourseInstanceLanguage")}
+                  />
+                  <RevertButton
+                    disabled={
+                      !defaultValues["language"] ||
+                      field.value === defaultValues["language"]
+                    }
+                    onRevert={onRevert}
+                  />
+                  {params?.InputProps?.endAdornment}
+                </InputAdornment>
+              </>
+            ),
+          }}
         />
-        <QuestionTooltip title={t("helpCourseInstanceLanguage")}>
-          <HelpIcon />
-        </QuestionTooltip>
       </InputContainer>
     ),
     [field],
@@ -139,10 +167,13 @@ function CourseInstanceLanguageSelector() {
 
   return (
     <Autocomplete
+      {...props}
       ref={anchor.ref}
       options={options}
       autoHighlight
       value={value}
+      selectOnFocus
+      clearOnBlur
       getOptionLabel={(option) => option?.name ?? ""}
       renderInput={renderInput}
       renderOption={renderOption}

@@ -15,7 +15,8 @@ import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
 import { FormFieldGroup } from "../Common"
-import { useAnchor, useEditorData } from "../EditorContext"
+import { useAnchor } from "../EditorContext"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import { CourseFormValues, TagFormValue } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
@@ -38,7 +39,7 @@ const filterLanguageTags = (tags: TagFormValue[]) =>
   tags.filter(hasNoLanguageTag)
 
 function CourseTagsForm() {
-  const { tagOptions } = useEditorData()
+  const { tagOptions } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations)
   const { setValue, getValues } = useFormContext()
   const { field } = useController<CourseFormValues, "tags">({ name: "tags" })

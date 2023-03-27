@@ -8,9 +8,8 @@ import { styled } from "@mui/material/styles"
 
 import { FormSubtitle } from "../Common"
 import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
-import EditorContainer from "../EditorContainer"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
-import { StudyModuleFormValues } from "./types"
+import DisableAutoComplete from "/components/DisableAutoComplete"
 import useDebounce from "/hooks/useDebounce"
 import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
@@ -28,6 +27,15 @@ const ModuleImage = styled(Image, {
 })<{ error?: boolean; isLoading?: boolean }>`
   object-fit: cover;
   display: ${(props) => (props.error || props.isLoading ? "none" : "")};
+`
+
+const ContainedCircularProgress = styled(CircularProgress)`
+  object-fit: contain;
+  object-position: 50% 50%;
+`
+
+const ImageError = styled(Typography)`
+  color: red;
 `
 
 const pixel =
@@ -72,36 +80,43 @@ function StudyModuleEditForm() {
   }, [])
 
   return (
-    <EditorContainer<StudyModuleFormValues>>
+    <>
+      <DisableAutoComplete key="disableautocomplete" />
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("moduleDetailsTitle")}
       </FormSubtitle>
       <ControlledHiddenField name="slug" defaultValue={watch("slug")} />
-      <ControlledTextField name="name" label={t("moduleName")} revertable />
+      <ControlledTextField
+        name="name"
+        label={t("moduleName")}
+        required
+        revertable
+      />
       <ControlledTextField
         name="order"
         label={t("moduleOrder")}
         type="number"
         revertable
       />
-      <ControlledTextField name="new_slug" label={t("moduleSlug")} revertable />
+      <ControlledTextField
+        name="new_slug"
+        label={t("moduleSlug")}
+        required
+        revertable
+      />
       <ControlledTextField name="id" label={t("moduleID")} disabled />
       <ControlledTextField
         name="image"
         label={t("moduleImageName")}
         tip={t("moduleImageTooltip")}
+        required
         revertable
       />
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("modulePhotoTitle")}
       </FormSubtitle>
       <ImageContainer>
-        {imageLoading && (
-          <CircularProgress
-            size={100}
-            style={{ objectFit: "contain", objectPosition: "50% 50%" }}
-          />
-        )}
+        {imageLoading && <ContainedCircularProgress size={100} />}
         <ModuleImage
           src={imageFilename ? imageFilename + "?v=" + Date.now() : pixel}
           alt={!imageError ? `Image preview of ${image}` : ``}
@@ -113,16 +128,11 @@ function StudyModuleEditForm() {
           onLoadingComplete={onImageLoadingComplete}
         />
         {!imageLoading && !!imageError ? (
-          <Typography variant="body2" style={{ color: "red" }}>
-            {imageError}
-          </Typography>
+          <ImageError variant="body2">{imageError}</ImageError>
         ) : null}
       </ImageContainer>
-      <FormSubtitle variant="h6" component="h3" align="center">
-        {t("moduleTranslationsTitle")}
-      </FormSubtitle>
       <StudyModuleTranslationsForm />
-    </EditorContainer>
+    </>
   )
 }
 

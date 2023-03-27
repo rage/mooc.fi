@@ -14,6 +14,7 @@ import courseEditSchema from "./form-validation"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 
 import {
@@ -38,7 +39,7 @@ interface CourseEditProps {
 }
 
 const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
-  const t = useTranslator(CoursesTranslations)
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
 
   const [addCourse] = useMutation(AddCourseDocument)
   const [updateCourse] = useMutation(UpdateCourseDocument)

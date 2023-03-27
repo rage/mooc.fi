@@ -21,6 +21,7 @@ import { ControlledFieldArrayProps } from "."
 import { ButtonWithWhiteText } from ".."
 import { useTranslator } from "/hooks/useTranslator"
 import useWhyDidYouUpdate from "/lib/why-did-you-update"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 
 export const ArrayList = styled("ul")`
@@ -90,19 +91,19 @@ function ControlledFieldArrayListImpl<
   TFieldValues extends Partial<FieldValues> & Partial<Record<"_id", string>>,
   TFieldArrayName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
 >(props: ControlledFieldArrayListProps<TFieldValues, TFieldArrayName>) {
-  const t = useTranslator(CoursesTranslations)
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
   const {
     render,
     initialValues,
     conditions,
     texts: {
       title = t("confirmationAreYouSure"),
-      description = "default description",
+      description,
       confirmationText = t("confirmationYes"),
       cancellationText = t("confirmationNo"),
-      noFields = "no fields",
-      addText = t("courseAdd"),
-      removeText = t("courseRemove"),
+      noFields = t("noFields"),
+      addText = t("add"),
+      removeText = t("remove"),
     },
     name,
   } = props

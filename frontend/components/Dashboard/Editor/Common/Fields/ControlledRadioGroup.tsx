@@ -70,6 +70,4 @@ function ControlledRadioGroupImpl<
   )
 }
 
-export const ControlledRadioGroup = React.memo(
-  ControlledRadioGroupImpl,
-) as typeof ControlledRadioGroupImpl
+export const ControlledRadioGroup = ControlledRadioGroupImpl

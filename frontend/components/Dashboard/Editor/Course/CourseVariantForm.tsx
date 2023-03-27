@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from "react"
 
+import { useRouter } from "next/router"
+
 import { styled } from "@mui/material/styles"
 
 import { FormSubtitleWithMargin } from "../Common"
@@ -37,6 +39,7 @@ const descriptionContainerProps = {
 
 function CourseVariantForm() {
   const t = useTranslator(CoursesTranslations)
+  const { locale } = useRouter()
 
   const renderArrayListItem: ControlledFieldArrayListProps<
     CourseFormValues,
@@ -75,6 +78,14 @@ function CourseVariantForm() {
     [],
   )
 
+  const texts = useMemo(
+    () => ({
+      description: t("confirmationRemoveVariant"),
+      noFields: t("courseNoVariants"),
+    }),
+    [t, locale],
+  )
+
   return (
     <>
       <FormSubtitleWithMargin variant="h6" component="h3" align="center">
@@ -84,10 +95,7 @@ function CourseVariantForm() {
         name="course_variants"
         label={t("courseVariants")}
         initialValues={initialVariant}
-        texts={{
-          description: t("confirmationRemoveVariant"),
-          noFields: t("courseNoVariants"),
-        }}
+        texts={texts}
         conditions={conditions}
         render={renderArrayListItem}
       />

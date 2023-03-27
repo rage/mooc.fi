@@ -1,17 +1,19 @@
-import React from "react"
+import React, { useCallback } from "react"
 
 import { FieldValues, useController } from "react-hook-form"
 
-import HelpIcon from "@mui/icons-material/Help"
-import { Checkbox, FormControlLabel, Tooltip } from "@mui/material"
+import { Checkbox, FormControlLabel } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
 import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
+import { InfoTooltipWithLabel } from "/components/Tooltip"
 import useWhyDidYouUpdate from "/lib/why-did-you-update"
 
-const AlignedTooltip = styled(Tooltip)`
-  vertical-align: middle;
+const AlignedSpan = styled("span")`
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
 `
 interface ControlledCheckboxProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -31,11 +33,21 @@ function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
   })
   const _onChange = onChange ?? field.onChange
 
+  const Label = useCallback(
+    () => (
+      <AlignedSpan>
+        {label}
+        {tip && <InfoTooltipWithLabel label={label} title={tip} />}
+      </AlignedSpan>
+    ),
+    [label, tip],
+  )
+
   return (
     <div>
       <FormControlLabel
         key={name}
-        label={label}
+        label={<Label />}
         value={field.value}
         checked={Boolean(field.value)}
         onChange={_onChange}
@@ -45,11 +57,6 @@ function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
           anchor.ref(el)
         }}
       />
-      {tip ? (
-        <AlignedTooltip title={tip}>
-          <HelpIcon />
-        </AlignedTooltip>
-      ) : null}
     </div>
   )
 }

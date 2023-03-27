@@ -80,10 +80,10 @@ function UserCourseSettingsVisibilityForm() {
         {...params}
         inputRef={field.ref}
         variant="outlined"
-        label="languages where user count is visible"
+        label={t("courseUserCourseSettingsVisibilityLabel")}
       />
     ),
-    [field],
+    [field, t],
   )
 
   return (

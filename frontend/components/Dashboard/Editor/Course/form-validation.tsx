@@ -43,6 +43,7 @@ export const initialValues: CourseFormValues = {
   slug: "",
   new_slug: "",
   ects: "",
+  language: "",
   teacher_in_charge_name: "",
   teacher_in_charge_email: "",
   start_date: "",
@@ -62,6 +63,8 @@ export const initialValues: CourseFormValues = {
   user_course_settings_visibilities: [],
   upcoming_active_link: false,
   tags: [],
+  completions_handled_by: "",
+  inherit_settings_from: "",
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {

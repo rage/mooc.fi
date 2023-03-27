@@ -7,6 +7,7 @@ import { TabSection } from "../Common"
 import { ControlledHiddenField } from "../Common/Fields"
 import CourseAdvancedOptionsForm from "./CourseAdvancedOptionsForm"
 import CourseAliasForm from "./CourseAliasForm"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
 import CourseLanguageSelector from "./CourseLanguageSelector"
@@ -14,11 +15,9 @@ import CourseStatusForm from "./CourseStatusForm"
 import CourseTagsForm from "./CourseTagsForm"
 import CourseTranslationForm from "./CourseTranslationForm"
 import CourseVariantForm from "./CourseVariantForm"
-import { CourseFormValues } from "./types"
 import UserCourseSettingsVisibilityForm from "./UserCourseSettingsVisibllityForm"
 import {
   useEditorContext,
-  useEditorData,
   useEditorMethods,
 } from "/components/Dashboard/Editor/EditorContext"
 import DisableAutoComplete from "/components/DisableAutoComplete"
@@ -36,17 +35,17 @@ const StyledTabSection = styled(TabSection)`
 ` as typeof TabSection
 
 function CourseEditForm() {
-  const { courses } = useEditorData()
+  const { courses, defaultValues } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations, CommonTranslations)
-  const { tab, initialValues } = useEditorContext<CourseFormValues>()
+  const { tab } = useEditorContext()
   const { setTab } = useEditorMethods()
 
   const [selectedLanguage, setSelectedLanguage] = useState(
-    initialValues?.course_translations.length === 0
+    defaultValues?.course_translations.length === 0
       ? ""
-      : initialValues?.course_translations.length == 2
+      : defaultValues?.course_translations.length == 2
       ? "both"
-      : initialValues?.course_translations[0].language,
+      : defaultValues?.course_translations[0].language,
   )
 
   const onChangeTab = useCallback(
@@ -88,7 +87,7 @@ function CourseEditForm() {
           selectedLanguage={selectedLanguage}
           setSelectedLanguage={setSelectedLanguage}
         />
-        <CourseTranslationForm />
+        <CourseTranslationForm key={selectedLanguage} />
         <SelectLanguageFirstCover covered={selectedLanguage === ""}>
           <CourseInfoForm />
           <CourseImageForm courses={courses} />

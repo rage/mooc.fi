@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 
 import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
@@ -8,18 +8,19 @@ import {
   useMutation,
   type PureQueryOptions,
 } from "@apollo/client"
+import { yupResolver } from "@hookform/resolvers/yup"
 
-import { useCustomValidationResolver } from "../Common"
-import { EditorContext } from "../EditorContext"
-import { FormStatus } from "../types"
+import EditorContainer from "../EditorContainer"
+import { EditorContextProvider, useAnchors } from "../EditorContext"
 import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { useAnchorContext } from "/contexts/AnchorContext"
+import { useSnackbarMethods } from "/contexts/SnackbarContext"
 import { getFirstErrorAnchor } from "/hooks/useEnumeratingAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import CommonTranslations from "/translations/common"
 import StudyModulesTranslations from "/translations/study-modules"
 
 import {
@@ -37,11 +38,13 @@ interface StudyModuleEditProps {
   module?: StudyModuleDetailedFieldsFragment
 }
 
+const anchors = {}
+
 const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
-  const t = useTranslator(StudyModulesTranslations)
-  const [status, setStatus] = useState<FormStatus>({ message: null })
+  const t = useTranslator(StudyModulesTranslations, CommonTranslations)
   const client = useApolloClient()
-  const { anchors } = useAnchorContext()
+  const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
+  const { addSnackbar } = useSnackbarMethods()
 
   const defaultValues = useRef(toStudyModuleForm({ module }))
   const validationSchema = useMemo(
@@ -56,7 +59,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
   const methods = useForm<StudyModuleFormValues>({
     defaultValues: defaultValues.current,
-    resolver: useCustomValidationResolver(validationSchema),
+    resolver: yupResolver(validationSchema), // useCustomValidationResolver(validationSchema),
     mode: "onBlur",
   })
   const { trigger } = methods
@@ -97,21 +100,19 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
         : updateStudyModule
 
       try {
-        setStatus({ message: "Saving..." })
+        addSnackbar({ message: t("statusSaving") })
         // TODO/FIXME: return value?
         await moduleMutation({
           variables: { study_module: mutationVariables },
           refetchQueries: () => refetchQueries,
         })
-
-        setStatus({ message: null })
-        Router.push(`/study-modules`, undefined, {
+        addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
+        /*Router.push(`/study-modules`, undefined, {
           shallow: true,
-        })
+        })*/
       } catch (err: any) {
-        setStatus({ message: err.message, severity: "error" })
-        console.error(err)
-        // setSubmitting(false)
+        console.error("error saving", JSON.stringify(err.message, null, 2))
+        addSnackbar({ message: t("statusSavingError"), severity: "error" })
       }
     },
     [],
@@ -131,9 +132,9 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
   const onDelete = useCallback(async (id: string) => {
     await deleteStudyModule({ variables: { id } })
-    Router.push(`/study-modules`, undefined, {
+    /*Router.push(`/study-modules`, undefined, {
       shallow: true,
-    })
+    })*/
   }, [])
 
   const onCancel = useCallback(
@@ -144,26 +145,36 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     [],
   )
 
-  const contextValue = useMemo(
+  const editorContextValue = useMemo(
     () => ({
-      status,
       tab: 0,
-      initialValues: defaultValues.current,
-      setStatus,
+      anchors,
+    }),
+    [anchors],
+  )
+  const editorMethodContextValue = useMemo(
+    () => ({
       setTab: () => void 0,
       onSubmit,
       onError,
       onCancel,
       onDelete,
+      addAnchor,
+      scrollFirstErrorIntoView,
     }),
-    [status, defaultValues],
+    [],
   )
 
   return (
     <FormProvider {...methods}>
-      <EditorContext.Provider value={contextValue}>
-        <StudyModuleEditForm />
-      </EditorContext.Provider>
+      <EditorContextProvider
+        value={editorContextValue}
+        methods={editorMethodContextValue}
+      >
+        <EditorContainer<StudyModuleFormValues>>
+          <StudyModuleEditForm />
+        </EditorContainer>
+      </EditorContextProvider>
     </FormProvider>
   )
 }

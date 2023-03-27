@@ -16,18 +16,10 @@ import {
   SubmitHandler,
 } from "react-hook-form"
 
-import { CourseFormValues, TagFormValue } from "./Course/types"
 import { FormValues } from "./types"
 import { convertDotNotation } from "/util/convertDotNotation"
 import flattenKeys from "/util/flattenKeys"
 import notEmpty from "/util/notEmpty"
-
-import {
-  EditorCourseDetailedFieldsFragment,
-  EditorCourseOtherCoursesFieldsFragment,
-  StudyModuleDetailedFieldsFragment,
-  TagCoreFieldsFragment,
-} from "/graphql/generated"
 
 export type Anchor<ElemType extends HTMLElement = HTMLElement> = {
   id: number
@@ -37,9 +29,8 @@ export type Anchor<ElemType extends HTMLElement = HTMLElement> = {
   tab?: number
 }
 
-export interface EditorContext<T extends FormValues> {
+export interface EditorContext {
   tab: number
-  initialValues: T
   anchors: Record<string, Anchor>
 }
 
@@ -61,18 +52,8 @@ export interface EditorMethodContext<T extends FormValues> {
   ) => void
 }
 
-export interface EditorDataContext {
-  course?: EditorCourseDetailedFieldsFragment
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  studyModules?: StudyModuleDetailedFieldsFragment[]
-  tags?: TagCoreFieldsFragment[]
-  tagOptions?: TagFormValue[]
-  defaultValues: CourseFormValues
-}
-
-const EditorContextImpl = createContext<EditorContext<any>>({
+const EditorContextImpl = createContext<EditorContext>({
   tab: 0,
-  initialValues: {},
   anchors: {},
 })
 
@@ -86,25 +67,17 @@ const EditorMethodContextImpl = createContext<EditorMethodContext<any>>({
   scrollFirstErrorIntoView: () => void 0,
 })
 
-const EditorDataContextImpl = createContext<EditorDataContext>({
-  defaultValues: {} as CourseFormValues,
-})
-
-export function useEditorContext<T extends FormValues>() {
-  return useContext<EditorContext<T>>(EditorContextImpl)
+export function useEditorContext() {
+  return useContext<EditorContext>(EditorContextImpl)
 }
 
 export function useEditorMethods<T extends FormValues>() {
   return useContext<EditorMethodContext<T>>(EditorMethodContextImpl)
 }
 
-export function useEditorData() {
-  return useContext<EditorDataContext>(EditorDataContextImpl)
-}
-
 export function EditorContextProvider<T extends FormValues>(
   props: React.PropsWithChildren<{
-    value: EditorContext<T>
+    value: EditorContext
     methods: EditorMethodContext<T>
   }>,
 ) {
@@ -119,22 +92,9 @@ export function EditorContextProvider<T extends FormValues>(
   )
 }
 
-export function EditorDataProvider(
-  props: React.PropsWithChildren<{ value: EditorDataContext }>,
-) {
-  const { children, value } = props
-
-  return (
-    <EditorDataContextImpl.Provider value={value}>
-      {children}
-    </EditorDataContextImpl.Provider>
-  )
-}
-
 export {
   EditorContextImpl as EditorContext,
   EditorMethodContextImpl as EditorMethodContext,
-  EditorDataContextImpl as EditorDataContext,
 }
 
 export function useAnchors(initialAnchors?: Record<string, Anchor>) {
@@ -174,7 +134,6 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
       setTab?: Dispatch<SetStateAction<number>>,
       retry?: boolean,
     ) => {
-      console.log("inside scrollfirsterrorintoview fn", anchors, tab)
       const flattenedErrors = flattenKeys(errors)
       const errorAnchors = Object.values(anchors).filter((anchor) =>
         Object.keys(flattenedErrors).includes(convertDotNotation(anchor.name)),

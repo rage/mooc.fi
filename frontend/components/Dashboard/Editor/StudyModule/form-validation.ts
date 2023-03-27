@@ -63,22 +63,11 @@ interface StudyModuleEditSchemaArgs {
   t: Translator<StudyModules>
 }
 
-export type StudyModuleEditSchemaType = Yup.ObjectSchema<
-  Pick<StudyModuleFormValues, "new_slug" | "image" | "name" | "order"> & {
-    study_module_translations?: Array<
-      Pick<
-        StudyModuleTranslationFormValues,
-        "name" | "language" | "description"
-      >
-    >
-  }
->
-
 const studyModuleEditSchema = ({
   client,
   initialSlug,
   t,
-}: StudyModuleEditSchemaArgs): StudyModuleEditSchemaType =>
+}: StudyModuleEditSchemaArgs) =>
   Yup.object().shape({
     new_slug: Yup.string()
       .required(t("validationRequired"))
@@ -90,7 +79,7 @@ const studyModuleEditSchema = ({
         validateSlug({ client, initialSlug }),
       ),
     image: Yup.string()
-      .required()
+      .required(t("validationRequired"))
       .test("exists", t("moduleImageError"), validateImage),
     name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
@@ -118,6 +107,10 @@ const studyModuleEditSchema = ({
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
       .integer(t("validationInteger")),
   })
+
+export type StudyModuleEditSchemaType = Yup.InferType<
+  ReturnType<typeof studyModuleEditSchema>
+>
 
 interface ValidateSlugArgs {
   client: ApolloClient<object>

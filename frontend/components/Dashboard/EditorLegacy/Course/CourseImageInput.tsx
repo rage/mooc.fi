@@ -49,7 +49,7 @@ const ImageDropzoneField = (props: FieldInputProps<CourseFormValues>) => {
     [setFieldValue],
   )
 
-  const onClose = useCallback(
+  const onImageRemove = useCallback(
     (e: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.stopPropagation()
       e.nativeEvent.stopImmediatePropagation()
@@ -66,10 +66,11 @@ const ImageDropzoneField = (props: FieldInputProps<CourseFormValues>) => {
       onImageLoad={onImageLoad}
       onImageAccepted={onImageAccepted}
     >
-      <ImagePreview file={imagePreviewFile} onClose={onClose} />
+      <ImagePreview file={imagePreviewFile} onImageRemove={onImageRemove} />
     </ImageDropzoneInput>
   )
 }
+
 const CourseImageInput = ({ courses }: ImageInputProps) => {
   const { values } = useFormikContext<CourseFormValues>()
   const { locale = "fi" } = useRouter()

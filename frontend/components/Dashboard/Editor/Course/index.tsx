@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useRouter } from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
@@ -12,16 +12,17 @@ import { yupResolver } from "@hookform/resolvers/yup"
 
 import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import courseEditSchema from "./form-validation"
 import { fromCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
 import {
   EditorContextProvider,
   useAnchors,
-  useEditorData,
 } from "/components/Dashboard/Editor/EditorContext"
 import { useSnackbarMethods } from "/contexts/SnackbarContext"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 
 import {
@@ -38,9 +39,8 @@ import {
 const anchors = {}
 
 function CourseEditor() {
-  const render = useRef(0)
-  const { course, defaultValues } = useEditorData()
-  const t = useTranslator(CoursesTranslations)
+  const { course, defaultValues } = useCourseEditorData()
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
   const [tab, setTab] = useState(0)
   const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
   const client = useApolloClient()
@@ -48,9 +48,6 @@ function CourseEditor() {
 
   const { addSnackbar } = useSnackbarMethods()
 
-  useEffect(() => {
-    render.current++
-  })
   const validationSchema = useMemo(
     () =>
       courseEditSchema({
@@ -100,7 +97,7 @@ function CourseEditor() {
 
     const mutationVariables = fromCourseForm({
       values,
-      initialValues: defaultValues,
+      defaultValues,
     })
     // - if we create a new course, we refetch all courses so the new one is on the list
     // - if we update, we also need to refetch that course with a potentially updated slug
@@ -124,12 +121,6 @@ function CourseEditor() {
         await addCourse({
           variables: { course: mutationVariables },
           refetchQueries: () => refetchQueries,
-          onCompleted: () => {
-            addSnackbar({
-              message: t("statusSavingSuccess"),
-              severity: "success",
-            })
-          },
         })
       } else {
         await updateCourse({
@@ -137,7 +128,6 @@ function CourseEditor() {
           refetchQueries: () => refetchQueries,
         })
       }
-      console.log("setting save success")
       addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
     } catch (err: any) {
       console.error("error saving", JSON.stringify(err.message, null, 2))
@@ -158,10 +148,9 @@ function CourseEditor() {
   const editorContextValue = useMemo(
     () => ({
       tab,
-      initialValues: defaultValues,
       anchors,
     }),
-    [tab, defaultValues],
+    [tab, anchors],
   )
   const editorMethodContextValue = useMemo(
     () => ({
@@ -182,7 +171,6 @@ function CourseEditor() {
         value={editorContextValue}
         methods={editorMethodContextValue}
       >
-        <p>{render.current}</p>
         <EditorContainer<CourseFormValues>>
           <CourseEditForm />
         </EditorContainer>

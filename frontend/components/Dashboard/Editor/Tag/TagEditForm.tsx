@@ -70,7 +70,7 @@ function TagEditor({ tags }: TagEditorProps) {
     TagValues,
     "tag_translations"
   >["render"] = useCallback(
-    (item, index) => (
+    ({ item, index }) => (
       <>
         <ControlledTextField
           name={`tag_translations.${index}.language`}

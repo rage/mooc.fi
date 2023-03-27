@@ -37,9 +37,9 @@ const CourseTranslationItem = styled("li")`
   margin: auto;
 `
 
-function CourseTranslationForm() {
+// require key to ensure re-render on selected language change
+function CourseTranslationForm(_: { key: React.Key }) {
   const t = useTranslator(CoursesTranslations)
-
   const { fields } = useFieldArray<CourseFormValues, "course_translations">({
     name: "course_translations",
   })
@@ -76,6 +76,7 @@ function CourseTranslationForm() {
                 name={`course_translations.${index}.description`}
                 label={t("courseDescription")}
                 defaultValue={item.description}
+                required
                 type="textarea"
                 rows={5}
                 revertable

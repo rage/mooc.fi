@@ -163,4 +163,4 @@ function EditorContainer<T extends FormValues = FormValues>(
   )
 }
 
-export default React.memo(EditorContainer, () => true) as typeof EditorContainer
+export default EditorContainer

@@ -11,7 +11,7 @@ import {
   ControlledRadioGroup,
   ControlledTextField,
 } from "../Common/Fields"
-import { useEditorData } from "../EditorContext"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -19,7 +19,7 @@ import CoursesTranslations from "/translations/courses"
 import { CourseStatus } from "/graphql/generated"
 
 function CourseStatusForm() {
-  const { studyModules } = useEditorData()
+  const { studyModules } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations, CommonTranslations)
   const { locale } = useRouter()
 

@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo } from "react"
 
+import { Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
+
+import { FormSubtitle } from "../Common"
 import {
   ControlledFieldArrayList,
   ControlledFieldArrayListProps,
@@ -9,10 +13,15 @@ import {
 } from "../Common/Fields"
 import { initialTranslation, languages } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
-import { EntryContainer } from "/components/Surfaces/EntryContainer"
-import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
+
+const ItemContainer = styled("div")`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`
 
 function StudyModuleTranslationsForm() {
   const t = useTranslator(StudyModulesTranslations)
@@ -22,31 +31,34 @@ function StudyModuleTranslationsForm() {
     StudyModuleFormValues,
     "study_module_translations"
   >["render"] = useCallback(
-    (item, index) => (
-      <LanguageEntry item>
-        <EntryContainer elevation={2}>
-          <ControlledHiddenField name="_id" defaultValue={item._id} />
-          <ControlledSelect
-            name={`study_module_translations.${index}.language`}
-            label={t("moduleLanguage")}
-            items={_languages}
-            keyField="value"
-            nameField="label"
-          />
-          <ControlledTextField
-            name={`study_module_translations.${index}.name`}
-            label={t("moduleName")}
-            revertable
-          />
-          <ControlledTextField
-            name={`study_module_translations.${index}.description`}
-            label={t("moduleDescription")}
-            type="textarea"
-            rows={5}
-            revertable
-          />
-        </EntryContainer>
-      </LanguageEntry>
+    ({ item, index }) => (
+      <ItemContainer>
+        <ControlledHiddenField name="_id" defaultValue={item._id} />
+        <ControlledSelect<StudyModuleFormValues>
+          name={`study_module_translations.${index}.language`}
+          label={t("moduleLanguage")}
+          items={_languages}
+          keyField="value"
+          nameField="label"
+          required
+        />
+        <ControlledTextField
+          name={`study_module_translations.${index}.name`}
+          label={t("moduleName")}
+          defaultValue={item.name}
+          required
+          revertable
+        />
+        <ControlledTextField
+          name={`study_module_translations.${index}.description`}
+          label={t("moduleDescription")}
+          type="textarea"
+          defaultValue={item.description}
+          required
+          rows={5}
+          revertable
+        />
+      </ItemContainer>
     ),
     [],
   )
@@ -62,23 +74,32 @@ function StudyModuleTranslationsForm() {
     [_languages],
   )
 
+  const texts = useMemo(
+    () => ({
+      description: t("moduleConfirmationContent"),
+      noFields: t("moduleAtLeastOneTranslation"),
+    }),
+    [t],
+  )
+
   return (
-    <section>
+    <>
+      <FormSubtitle variant="h6" component="h3" align="center">
+        {t("moduleTranslationsTitle")}
+      </FormSubtitle>
+
       <ControlledFieldArrayList<
         StudyModuleFormValues,
         "study_module_translations"
       >
         name="study_module_translations"
-        label={""}
+        label={t("moduleTranslations")}
         initialValues={initialTranslation}
-        texts={{
-          description: t("moduleConfirmationContent"),
-          noFields: t("moduleAtLeastOneTranslation"),
-        }}
+        texts={texts}
         conditions={conditions}
         render={renderArrayListItem}
       />
-    </section>
+    </>
   )
 }
 

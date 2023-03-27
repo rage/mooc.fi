@@ -1,15 +1,14 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 
 import { NextSeo } from "next-seo"
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import { Link, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import StudyModuleEdit2 from "../../../components/Dashboard/Editor/StudyModule"
 import FormSkeleton from "../../../components/Dashboard/EditorLegacy/FormSkeleton"
-import StudyModuleEdit from "../../../components/Dashboard/EditorLegacy/StudyModule"
 import { WideContainer } from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
@@ -29,6 +28,15 @@ const ErrorContainer = styled(Paper)`
 const ContainerBackground = styled("section")`
   background-color: #e9fef8;
 `
+
+const StudyModuleEdit = dynamic(
+  () => import("../../../components/Dashboard/Editor/StudyModule"),
+  { loading: () => <FormSkeleton /> },
+)
+const LegacyStudyModuleEdit = dynamic(
+  () => import("../../../components/Dashboard/EditorLegacy/StudyModule"),
+  { loading: () => <FormSkeleton /> },
+)
 
 const EditStudyModule = () => {
   const router = useRouter()
@@ -77,6 +85,18 @@ const EditStudyModule = () => {
     }
   }, [loading, data])
 
+  const EditorComponent = useCallback(() => {
+    if (!data?.study_module) {
+      return null
+    }
+
+    if (legacy) {
+      return <LegacyStudyModuleEdit module={data.study_module} />
+    }
+
+    return <StudyModuleEdit module={data.study_module} />
+  }, [data, legacy])
+
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
@@ -90,13 +110,7 @@ const EditStudyModule = () => {
             {t("editStudyModule")}
           </H1NoBackground>
           {loading && <FormSkeleton />}
-          {!loading &&
-            data?.study_module &&
-            (legacy ? (
-              <StudyModuleEdit module={data.study_module} />
-            ) : (
-              <StudyModuleEdit2 module={data.study_module} />
-            ))}
+          {!loading && data?.study_module && <EditorComponent />}
           {!loading && !data?.study_module && (
             <ErrorContainer elevation={2}>
               <Typography

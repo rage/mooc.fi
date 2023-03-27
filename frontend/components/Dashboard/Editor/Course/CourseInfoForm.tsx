@@ -1,5 +1,7 @@
 import React from "react"
 
+import { styled } from "@mui/material/styles"
+
 import { FormFieldGroup, FormSubtitle } from "../Common"
 import { ControlledDatePicker, ControlledTextField } from "../Common/Fields"
 import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
@@ -8,6 +10,14 @@ import CoursesTranslations from "/translations/courses"
 
 const validateOtherFields = ["start_date"] as const
 
+const Row = styled("div")`
+  display: grid;
+  width: 100%;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-auto-flow: row;
+  grid-auto-columns: minmax(200px, 1fr);
+`
 function CourseInfoForm() {
   const t = useTranslator(CoursesTranslations)
 
@@ -31,8 +41,15 @@ function CourseInfoForm() {
           revertable
           tip={t("helpSlug")}
         />
-        <ControlledTextField name="ects" label={t("courseECTS")} />
-        <CourseInstanceLanguageSelector />
+        <Row>
+          <ControlledTextField
+            name="ects"
+            label={t("courseECTS")}
+            fullWidth
+            revertable
+          />
+          <CourseInstanceLanguageSelector />
+        </Row>
       </FormFieldGroup>
 
       <FormFieldGroup>

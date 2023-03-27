@@ -26,7 +26,6 @@ interface ToCourseFormArgs {
 export const toCourseForm = ({
   course,
 }: ToCourseFormArgs): CourseFormValues => {
-  console.log("toCourseForm: course", course)
   if (!course) {
     return initialValues
   }
@@ -97,8 +96,8 @@ export const toCourseForm = ({
     thumbnail: course?.photo?.compressed,
     ects: course.ects ?? undefined,
     import_photo: "",
-    inherit_settings_from: course.inherit_settings_from?.id,
-    completions_handled_by: course.completions_handled_by?.id,
+    inherit_settings_from: course.inherit_settings_from?.id ?? "",
+    completions_handled_by: course.completions_handled_by?.id ?? "",
     has_certificate: course?.has_certificate ?? false,
     user_course_settings_visibilities:
       course?.user_course_settings_visibilities?.map((visibility) => ({
@@ -140,12 +139,12 @@ export const toCourseForm = ({
 
 interface FromCourseFormArgs {
   values: CourseFormValues
-  initialValues: CourseFormValues
+  defaultValues: CourseFormValues
 }
 
 export const fromCourseForm = ({
   values,
-  initialValues,
+  defaultValues,
 }: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
@@ -200,7 +199,7 @@ export const fromCourseForm = ({
         return
       }
 
-      const prevLink = initialValues?.open_university_registration_links?.find(
+      const prevLink = defaultValues?.open_university_registration_links?.find(
         (link) => link.language === course_translation.language,
       )
 
@@ -290,8 +289,8 @@ export const fromCourseForm = ({
       values.end_date instanceof DateTime
         ? values.end_date.toISO()
         : values.end_date,
-    inherit_settings_from: values.inherit_settings_from,
-    completions_handled_by: values.completions_handled_by,
+    inherit_settings_from: values.inherit_settings_from ?? null,
+    completions_handled_by: values.completions_handled_by ?? null,
     user_course_settings_visibilities,
     teacher_in_charge_email: values.teacher_in_charge_email ?? "",
     teacher_in_charge_name: values.teacher_in_charge_name ?? "",

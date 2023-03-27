@@ -8,13 +8,13 @@ import {
   ControlledSelect,
   ControlledTextField,
 } from "../Common/Fields"
-import { useEditorData } from "../EditorContext"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 
 function CourseAdvancedOptionsForm() {
-  const { course, courses } = useEditorData()
+  const { course, courses } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations)
   const enableSuperSecret = useQueryParameter("secret", false)
 
@@ -63,14 +63,21 @@ function CourseAdvancedOptionsForm() {
             <FormGroup>
               <ControlledSelect
                 name="completions_handled_by"
-                label="completions handled by"
+                label={t("courseCompletionsHandledBy")}
                 items={sortedCourses}
+                revertable
               />
-              <ControlledTextField name="tier" label="tier" type="number" />
+              <ControlledTextField
+                name="tier"
+                label={t("courseTier")}
+                type="number"
+                revertable
+              />
               <ControlledSelect
                 name="inherit_settings_from"
-                label="inherit settings from"
+                label={t("courseInheritSettingsFrom")}
                 items={sortedCourses}
+                revertable
               />
             </FormGroup>
           </FormFieldGroup>

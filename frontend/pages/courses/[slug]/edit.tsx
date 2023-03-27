@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect } from "react"
 
-import { omit } from "lodash"
 import { NextSeo } from "next-seo"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
@@ -11,9 +10,7 @@ import { styled } from "@mui/material/styles"
 import FormSkeleton from "../../../components/Dashboard/EditorLegacy/FormSkeleton"
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import { toCourseForm } from "/components/Dashboard/Editor/Course/serialization"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { EditorDataProvider } from "/components/Dashboard/Editor/EditorContext"
+import { CourseEditorDataProvider } from "/components/Dashboard/Editor/Course/CourseEditorDataContext"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -45,16 +42,10 @@ const EditCourse = () => {
   const slug = useQueryParameter("slug") ?? ""
   const legacy = useQueryParameter("legacy", false)
   const router = useRouter()
-  const {
-    loading,
-    error,
-    courseData,
-    studyModulesData,
-    coursesData,
-    tagsData,
-  } = useEditorCourses({
+  const { loading, error, data } = useEditorCourses({
     slug,
   })
+  const { course, studyModules, courses, tags } = data ?? {}
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null
@@ -63,7 +54,7 @@ const EditCourse = () => {
       return
     }
 
-    if (!loading && !courseData?.course) {
+    if (!loading && !course) {
       redirectTimeout = setTimeout(
         () => router.push("/courses", undefined, { shallow: true }),
         5000,
@@ -75,7 +66,7 @@ const EditCourse = () => {
         clearTimeout(redirectTimeout)
       }
     }
-  }, [loading, courseData])
+  }, [loading, course])
 
   useBreadcrumbs([
     {
@@ -83,10 +74,7 @@ const EditCourse = () => {
       href: `/courses`,
     },
     {
-      label:
-        error || (!loading && !courseData?.course)
-          ? slug
-          : courseData?.course?.name,
+      label: error || (!loading && !course) ? slug : course?.name,
       href: `/courses/${slug}`,
     },
     {
@@ -95,58 +83,25 @@ const EditCourse = () => {
     },
   ])
 
-  const title = useSubtitle(
-    !loading && !courseData?.course ? slug : courseData?.course?.name,
-  )
+  const title = useSubtitle(!loading && !course ? slug : course?.name)
 
   const EditorComponent = useCallback(() => {
-    if (!courseData?.course) {
+    if (!course) {
       return null
     }
 
     if (legacy) {
       return (
         <LegacyCourseEdit
-          course={courseData.course}
-          courses={coursesData?.courses ?? []}
-          modules={studyModulesData?.study_modules ?? []}
+          course={course}
+          courses={courses}
+          modules={studyModules}
         />
       )
     }
 
     return <CourseEdit />
-  }, [courseData, coursesData, studyModulesData, tagsData, legacy])
-
-  const editorDataContextValue = useMemo(() => {
-    const course = courseData?.course ?? undefined
-    const courses = coursesData?.courses ?? []
-    const studyModules = studyModulesData?.study_modules ?? []
-    const tags = tagsData?.tags ?? []
-    const defaultValues = course
-      ? toCourseForm({
-          course,
-          modules: studyModules,
-        })
-      : ({} as CourseFormValues)
-    const tagOptions = tags.map((tag) => ({
-      ...omit(tag, ["__typename", "id"]),
-      _id: tag.id,
-      types: tag.types ?? [],
-      tag_translations: (tag.tag_translations ?? []).map((translation) => ({
-        ...translation,
-        description: translation.description ?? undefined,
-      })),
-    }))
-
-    return {
-      course,
-      courses,
-      studyModules,
-      tags,
-      tagOptions,
-      defaultValues,
-    }
-  }, [courseData, coursesData, studyModulesData, tagsData])
+  }, [course, courses, studyModules, tags, legacy])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
@@ -162,10 +117,10 @@ const EditCourse = () => {
             {t("editCourse")}
           </H1Background>
           {loading && <FormSkeleton />}
-          <EditorDataProvider value={editorDataContextValue}>
-            <EditorComponent />
-          </EditorDataProvider>
-          {!loading && !courseData?.course && (
+          <CourseEditorDataProvider value={data}>
+            {!loading && course && <EditorComponent />}
+          </CourseEditorDataProvider>
+          {!loading && !course && (
             <ErrorContainer elevation={2}>
               <Typography variant="body1">
                 {t("courseWithIdNotFound", { slug })}

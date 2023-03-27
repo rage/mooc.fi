@@ -8,35 +8,17 @@ import {
   useFormContext,
 } from "react-hook-form"
 
-import HelpIcon from "@mui/icons-material/Help"
-import HistoryIcon from "@mui/icons-material/History"
-import {
-  IconButton,
-  Tooltip as MUITooltip,
-  TextField,
-  TextFieldProps,
-} from "@mui/material"
+import { InputAdornment, TextField, TextFieldProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
 import { useErrorMessage } from ".."
-import { useEditorContext } from "../../EditorContext"
+import { useCourseEditorData } from "../../Course/CourseEditorDataContext"
 import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
-import { useTranslator } from "/hooks/useTranslator"
+import RevertButton from "/components/RevertButton"
+import { InfoTooltipWithLabel } from "/components/Tooltip"
 import useWhyDidYouUpdate from "/lib/why-did-you-update"
-import CommonTranslations from "/translations/common"
 
-const Tooltip = styled(MUITooltip)`
-  :hover {
-    cursor: pointer;
-  }
-`
-
-const QuestionTooltip = styled(MUITooltip)`
-  :hover {
-    cursor: help;
-  }
-`
 const TextFieldContainer = styled("div")`
   display: flex;
   flex-direction: column;
@@ -52,6 +34,7 @@ export interface ControlledTextFieldProps<
   disabled?: boolean
   rows?: number
   width?: string
+  unit?: string
   Container?: (props: ContainerPropType) => JSX.Element
   containerProps?: ContainerPropType
 }
@@ -64,9 +47,8 @@ function ControlledTextFieldComponent<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(props: ControlledTextFieldProps<TFieldValues, TName> & TextFieldProps) {
-  const t = useTranslator(CommonTranslations)
   const { resetField } = useFormContext<TFieldValues>()
-  const { initialValues } = useEditorContext()
+  const { defaultValues } = useCourseEditorData()
   const {
     label,
     required,
@@ -77,13 +59,14 @@ function ControlledTextFieldComponent<
     revertable,
     rows,
     width,
+    unit,
     Container = TextFieldContainer,
     containerProps,
     ...textFieldProps
   } = props
   useWhyDidYouUpdate(`ControlledTextField ${name}`, props)
   const anchor = useAnchor(name)
-  const initialValue = get(initialValues, name)
+  const defaultValue = get(defaultValues, name)
 
   const { field } = useController<TFieldValues>({
     name,
@@ -95,31 +78,21 @@ function ControlledTextFieldComponent<
   const InputProps = useMemo(
     () => ({
       autoComplete: "none",
-      endAdornment: (
-        <>
-          {revertable ? (
-            <Tooltip title={t("editorRevert")}>
-              <span>
-                <IconButton
-                  aria-label={t("editorRevert")}
-                  disabled={field.value === initialValue}
-                  onClick={onRevert}
-                  size="large"
-                >
-                  <HistoryIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-          ) : null}
-          {tip ? (
-            <QuestionTooltip title={tip}>
-              <HelpIcon />
-            </QuestionTooltip>
-          ) : null}
-        </>
-      ),
+      endAdornment:
+        revertable || tip || unit ? (
+          <InputAdornment position="end">
+            {unit && <span>{unit}</span>}
+            {revertable && (
+              <RevertButton
+                disabled={field.value === defaultValue}
+                onRevert={onRevert}
+              />
+            )}
+            {tip && <InfoTooltipWithLabel label={label} title={tip} />}
+          </InputAdornment>
+        ) : null,
     }),
-    [revertable, field, tip, initialValue, onRevert],
+    [revertable, field, tip, unit, defaultValue, onRevert],
   )
 
   const { error, hasError } = useErrorMessage(name)

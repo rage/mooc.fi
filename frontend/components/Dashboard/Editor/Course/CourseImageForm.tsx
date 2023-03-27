@@ -5,13 +5,11 @@ import { useFormContext } from "react-hook-form"
 
 import { Button } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { useEventCallback } from "@mui/material/utils"
 
 import { FormFieldGroup, FormSubtitle } from "../Common"
 import { ControlledHiddenField, ControlledImageInput } from "../Common/Fields"
-import { useEditorContext } from "../EditorContext"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import ImportPhotoDialog from "./ImportPhotoDialog"
-import { CourseFormValues } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
 import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CoursesTranslations from "/translations/courses"
@@ -34,7 +32,7 @@ function CourseImageForm(props: CourseImageFormProps) {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
   const { watch, setValue } = useFormContext()
-  const { initialValues } = useEditorContext<CourseFormValues>()
+  const { defaultValues } = useCourseEditorData()
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const onImageLoad = useCallback(
@@ -46,18 +44,19 @@ function CourseImageForm(props: CourseImageFormProps) {
     [],
   )
 
-  const onImageRemove = useEventCallback(
+  const onImageRemove = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
       e.stopPropagation()
       e.nativeEvent.stopImmediatePropagation()
       setValue("thumbnail", "")
       setValue("new_photo", null, { shouldDirty: true })
 
-      if (initialValues.photo) {
+      if (defaultValues.photo) {
         // TODO: not dirtying the form
         setValue("delete_photo", true)
       }
     },
+    [defaultValues],
   )
 
   const slug = watch("slug")
