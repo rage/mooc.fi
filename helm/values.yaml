@@ -22,6 +22,8 @@ kafkaConsumer:
     replicaCount: 10
   userPointsRealtime:
     replicaCount: 1
+  userCoursePoints:
+    replicaCount: 2
 
 email:
   # controls whether the background email service should be running

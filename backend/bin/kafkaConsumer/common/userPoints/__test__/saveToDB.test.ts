@@ -176,18 +176,18 @@ describe("userPoints/saveToDatabase", () => {
         ...message,
         timestamp: "1900-01-01T10:00:00.00+02:00",
       })
-      if (!ret.isOk()) {
+      if (!ret.isWarning()) {
         fail()
       }
-      expect(ret.value).toContain("Timestamp older")
+      expect(ret.value.message).toContain("Timestamp older")
     })
 
     it("aborts on equal timestamp", async () => {
       const ret = await saveToDatabase(kafkaContext, message)
-      if (!ret.isOk()) {
+      if (!ret.isWarning()) {
         fail()
       }
-      expect(ret.value).toContain("Timestamp older")
+      expect(ret.value.message).toContain("Timestamp older")
     })
 
     it("updates actions when not completed", async () => {

@@ -9,15 +9,15 @@ import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
 import { KafkaContext } from "../common/kafkaContext"
 import { handledRecently, setHandledRecently } from "../common/messageHashCache"
-import { saveToDatabase } from "../common/userPoints/saveToDB"
-import { MessageYupSchema } from "../common/userPoints/validate"
 import config from "../kafkaConfig"
+import { saveToDatabase } from "./saveToDB"
+import { MessageYupSchema } from "./validate"
 
-const TOPIC_NAME = [config.user_points_consumer.topic_name]
+const TOPIC_NAME = [config.user_course_points_consumer.topic_name]
 
 const mutex = new Mutex()
 
-const logger = sentryLogger({ service: "kafka-consumer-user-points" })
+const logger = sentryLogger({ service: "kafka-consumer-user-course-points" })
 const consumer = createKafkaConsumer({ logger, prisma })
 
 consumer.connect()
