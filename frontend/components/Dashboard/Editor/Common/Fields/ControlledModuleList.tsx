@@ -15,7 +15,7 @@ import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
 import { FormValues } from "../../types"
-import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
+import { useAnchor } from "/hooks/useAnchors"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 

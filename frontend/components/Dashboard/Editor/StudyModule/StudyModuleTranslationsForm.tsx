@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from "react"
 
-import { Paper } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { FormSubtitle } from "../Common"

@@ -1,5 +1,4 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from "react"
-import React from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { DropzoneState, FileRejection, useDropzone } from "react-dropzone"
 
@@ -69,7 +68,7 @@ const ImageDropzoneInput = ({
   onImageAccepted,
   onImageLoad,
   children,
-}: PropsWithChildren<DropzoneProps>) => {
+}: React.PropsWithChildren<DropzoneProps>) => {
   const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({
     message: t("imageDropMessage"),
@@ -82,7 +81,6 @@ const ImageDropzoneInput = ({
       reader.onload = () => onImageLoad(reader.result)
 
       if (accepted.length) {
-        console.log("accepted", accepted[0])
         onImageAccepted(accepted[0])
         reader.readAsDataURL(accepted[0])
       }

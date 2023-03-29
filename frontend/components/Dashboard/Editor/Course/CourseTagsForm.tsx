@@ -15,9 +15,9 @@ import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
 import { FormFieldGroup } from "../Common"
-import { useAnchor } from "../EditorContext"
 import { useCourseEditorData } from "./CourseEditorDataContext"
 import { CourseFormValues, TagFormValue } from "./types"
+import { useAnchor } from "/hooks/useAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 

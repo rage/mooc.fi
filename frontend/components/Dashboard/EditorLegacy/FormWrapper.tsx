@@ -18,9 +18,9 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useLegacyAnchorContext } from "./LegacyAnchorContext"
 import { FormValues } from "./types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { useAnchorContext } from "/contexts/AnchorContext"
 import { getFirstErrorAnchor } from "/hooks/useEnumeratingAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
@@ -67,24 +67,24 @@ const FormWrapper = <T extends FormValues>(
   } = useFormikContext<T>()
   const { onCancel, onDelete, setTab = (_) => void 0, children } = props
   const t = useTranslator(CommonTranslations)
-  const { anchors } = useAnchorContext()
+  const { anchors } = useLegacyAnchorContext()
   const confirm = useConfirm()
 
   const [deleteVisible, setDeleteVisible] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
   const errorsToTouched = useCallback(
-    (i: FormikErrors<T>): FormikTouched<T> =>
+    (errs: FormikErrors<T>): FormikTouched<T> =>
       Object.assign(
         {},
-        ...Object.keys(flattenKeys(i)).map((k) => ({ [k]: true })),
+        ...Object.keys(flattenKeys(errs)).map((k) => ({ [k]: true })),
       ),
     [],
   )
 
   const onSubmit = useCallback(() => {
     if (Object.keys(errors).length) {
-      setTouched(errorsToTouched(errors) as FormikTouched<T>)
+      setTouched(errorsToTouched(errors))
 
       const { anchor, anchorLink } = getFirstErrorAnchor(anchors, errors)
 

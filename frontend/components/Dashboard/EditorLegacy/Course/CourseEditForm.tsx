@@ -156,7 +156,7 @@ const CourseEditFormComponent = ({
               variant="outlined"
               InputLabelProps={inputLabelProps}
               component={StyledTextField}
-              required={true}
+              required
             />
             <StyledFieldWithAnchor
               id="input-course-slug"
@@ -168,7 +168,7 @@ const CourseEditFormComponent = ({
               variant="outlined"
               autoComplete="off"
               component={StyledTextField}
-              required={true}
+              required
               helperText={t("courseSlugHelper")}
             />
             <StyledFieldWithAnchor
@@ -215,7 +215,7 @@ const CourseEditFormComponent = ({
               autoComplete="off"
               variant="outlined"
               component={StyledTextField}
-              required={true}
+              required
             />
             <StyledFieldWithAnchor
               id="input-teacher-in-charge-email"
@@ -228,7 +228,7 @@ const CourseEditFormComponent = ({
               autoComplete="off"
               variant="outlined"
               component={StyledTextField}
-              required={true}
+              required
             />
             <StyledFieldWithAnchor
               id="support-email"

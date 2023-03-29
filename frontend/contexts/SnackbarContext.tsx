@@ -79,7 +79,6 @@ export const SnackbarProvider = ({ children }: React.PropsWithChildren) => {
 
   const addSnackbar = useCallback(
     ({ message, severity }: AddSnackbarArgs) => {
-      console.log("adding snackbar", message, severity)
       setSnackbars((prev) => [
         ...prev,
         { key: new Date().getTime(), message, severity, open: true },

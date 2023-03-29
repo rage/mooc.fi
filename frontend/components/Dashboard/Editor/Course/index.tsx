@@ -16,11 +16,9 @@ import { useCourseEditorData } from "./CourseEditorDataContext"
 import courseEditSchema from "./form-validation"
 import { fromCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
-import {
-  EditorContextProvider,
-  useAnchors,
-} from "/components/Dashboard/Editor/EditorContext"
+import { EditorContextProvider } from "/components/Dashboard/Editor/EditorContext"
 import { useSnackbarMethods } from "/contexts/SnackbarContext"
+import { useAnchors } from "/hooks/useAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -44,7 +42,8 @@ function CourseEditor() {
   const [tab, setTab] = useState(0)
   const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
   const client = useApolloClient()
-  const { locale } = useRouter()
+  const router = useRouter()
+  const { locale } = router
 
   const { addSnackbar } = useSnackbarMethods()
 
@@ -64,7 +63,6 @@ function CourseEditor() {
     reValidateMode: "onBlur",
     shouldFocusError: false,
     shouldUnregister: false,
-    // reValidateMode: "onChange"
   })
   const { trigger } = methods
 
@@ -92,55 +90,61 @@ function CourseEditor() {
     ],
   })
 
-  const onSubmit = useCallback(async (values: CourseFormValues) => {
-    const isNewCourse = !values.id
+  const onSubmit = useCallback(
+    async (values: CourseFormValues) => {
+      const isNewCourse = !values.id
 
-    const mutationVariables = fromCourseForm({
-      values,
-      defaultValues,
-    })
-    // - if we create a new course, we refetch all courses so the new one is on the list
-    // - if we update, we also need to refetch that course with a potentially updated slug
-    const refetchQueries: PureQueryOptions[] = [
-      { query: CoursesDocument },
-      { query: EditorCoursesDocument },
-      { query: CourseEditorOtherCoursesDocument },
-    ]
-
-    if (!isNewCourse) {
-      refetchQueries.push({
-        query: CourseFromSlugDocument,
-        variables: { slug: values.new_slug },
+      const mutationVariables = fromCourseForm({
+        values,
+        defaultValues,
       })
-    }
+      // - if we create a new course, we refetch all courses so the new one is on the list
+      // - if we update, we also need to refetch that course with a potentially updated slug
+      const refetchQueries: PureQueryOptions[] = [
+        { query: CoursesDocument },
+        { query: EditorCoursesDocument },
+        { query: CourseEditorOtherCoursesDocument },
+      ]
 
-    try {
-      addSnackbar({ message: t("statusSaving") })
-
-      if (isNewCourse) {
-        await addCourse({
-          variables: { course: mutationVariables },
-          refetchQueries: () => refetchQueries,
-        })
-      } else {
-        await updateCourse({
-          variables: { course: mutationVariables as CourseUpsertArg },
-          refetchQueries: () => refetchQueries,
+      if (!isNewCourse) {
+        refetchQueries.push({
+          query: CourseFromSlugDocument,
+          variables: { slug: values.new_slug },
         })
       }
-      addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
-    } catch (err: any) {
-      console.error("error saving", JSON.stringify(err.message, null, 2))
-      addSnackbar({ message: t("statusSavingError"), severity: "error" })
-    }
-  }, [])
+
+      try {
+        addSnackbar({ message: t("statusSaving") })
+
+        if (isNewCourse) {
+          await addCourse({
+            variables: { course: mutationVariables },
+            refetchQueries: () => refetchQueries,
+          })
+        } else {
+          await updateCourse({
+            variables: { course: mutationVariables as CourseUpsertArg },
+            refetchQueries: () => refetchQueries,
+          })
+        }
+        addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
+      } catch (err: any) {
+        console.error("error saving", JSON.stringify(err.message, null, 2))
+        addSnackbar({ message: t("statusSavingError"), severity: "error" })
+      }
+    },
+    [t],
+  )
 
   const onError: SubmitErrorHandler<CourseFormValues> = (errors) => {
     addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
     scrollFirstErrorIntoView(errors, tab, setTab)
   }
 
-  const onCancel = useCallback(() => console.log("cancelled"), [])
+  const onCancel = useCallback(() => {
+    router.push("/courses", undefined, { shallow: true })
+  }, [router])
+
   const onDelete = useCallback(async (id: string) => {
     await deleteCourse({ variables: { id } })
   }, [])

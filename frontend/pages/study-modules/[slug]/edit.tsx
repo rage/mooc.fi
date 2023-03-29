@@ -14,7 +14,6 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
-import useSubtitle from "/hooks/useSubtitle"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
@@ -62,7 +61,7 @@ const EditStudyModule = () => {
       href: `/study-modules/${slug}/edit`,
     },
   ])
-  const title = useSubtitle(data?.study_module?.name)
+  const title = data?.study_module?.name ?? "..."
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null

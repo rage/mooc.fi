@@ -42,6 +42,7 @@ export function useTranslator<
       ]
 ) {
   const router = useRouter()
+  const { locale } = router ?? {}
 
   const combinedDict = combineDictionaries(dicts)
   /*[
@@ -50,11 +51,8 @@ export function useTranslator<
     dicts[2] ?? {},
   ])*/
   const translator = useCallback(
-    getTranslator(combinedDict)(
-      (router?.locale ?? "fi") as LanguageKey,
-      router,
-    ),
-    [combinedDict, router?.locale],
+    getTranslator(combinedDict)((locale ?? "fi") as LanguageKey, router),
+    [combinedDict, locale],
   )
 
   return translator

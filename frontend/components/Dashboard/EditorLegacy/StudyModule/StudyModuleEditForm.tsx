@@ -144,6 +144,7 @@ const StudyModuleFormComponent = () => {
               label={t("moduleName")}
               error={errors.name}
               fullWidth
+              required
               autoComplete="off"
               variant="outlined"
               component={StyledTextField}
@@ -168,6 +169,7 @@ const StudyModuleFormComponent = () => {
           label={t("moduleSlug")}
           error={errors.new_slug}
           fullWidth
+          required
           variant="outlined"
           autoComplete="off"
           component={StyledTextField}
@@ -187,6 +189,7 @@ const StudyModuleFormComponent = () => {
           type="text"
           label={t("moduleImageName")}
           fullWidth
+          required
           variant="outlined"
           autoComplete="off"
           component={StyledTextField}
@@ -261,15 +264,14 @@ const StudyModuleFormComponent = () => {
                           name={`study_module_translations[${index}].language`}
                           type="select"
                           label={t("moduleLanguage")}
-                          error={[
-                            getIn(
-                              errors,
-                              `study_module_translations[${index}].language`,
-                            ),
-                          ]}
+                          error={getIn(
+                            errors,
+                            `study_module_translations[${index}].language`,
+                          )}
                           fullWidth
                           variant="outlined"
                           select
+                          required
                           autoComplete="off"
                           component={StyledTextField}
                         >
@@ -288,6 +290,7 @@ const StudyModuleFormComponent = () => {
                             `study_module_translations[${index}].name`,
                           )}
                           fullWidth
+                          reuqired
                           autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
@@ -303,6 +306,7 @@ const StudyModuleFormComponent = () => {
                           fullWidth
                           multiline
                           rows={5}
+                          required
                           autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}

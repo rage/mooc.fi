@@ -11,20 +11,14 @@ import {
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
-import { useAnchor } from "../EditorContext"
 import { useCourseEditorData } from "./CourseEditorDataContext"
 import { CourseFormValues } from "./types"
 import RevertButton from "/components/RevertButton"
-import Tooltip, { InfoTooltipWithLabel } from "/components/Tooltip"
+import { InfoTooltipWithLabel } from "/components/Tooltip"
+import { useAnchor } from "/hooks/useAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
-
-const QuestionTooltip = styled(Tooltip)`
-  :hover {
-    cursor: help;
-  }
-`
 
 const InputContainer = styled("div")`
   display: inline-flex;
@@ -105,11 +99,13 @@ function CourseInstanceLanguageSelector(
 
   const onChange = useEventCallback(
     (_: any, option: string | Option | null) => {
-      const newValue = isString(option)
-        ? languages.includes(option)
-          ? option
-          : ""
-        : option?.value ?? ""
+      let newValue = ""
+
+      if (isString(option)) {
+        newValue = languages.includes(option) ? option : ""
+      } else if (option?.value) {
+        newValue = option?.value
+      }
       setValue("language", newValue, { shouldDirty: true })
     },
   )
@@ -183,9 +179,6 @@ function CourseInstanceLanguageSelector(
       }
     />
   )
-  /*return (
-    <Controller name="language" control={control} render={renderAutocomplete} />
-  )*/
 }
 
 export default CourseInstanceLanguageSelector

@@ -119,6 +119,10 @@
   "helpCourseInstanceLanguage": "Kurssi-instanssin kieli (fi, en, se, en-ie jne.). Tämä liitetään opiskelijan kurssisuoritukseen. Jos tämä kurssi on kattokurssi muille kursseille, tällä asetuksella ei ole vaikutusta, vaan kieli otetaan suoritetusta kurssi-instanssista.",
   "invalidDate": "Virhe päiväyksessä tai päiväys puuttuu",
   "tabCourseInfo": "Perustiedot",
-  "tabCourseStatus": "Kurssin tila",
-  "tabCourseAdvanced": "Edistyneet"
+  "tabCourseSettings": "Asetukset",
+  "tabCourseAdvanced": "Edistyneet",
+  "tabCourseInfoTitle": "Kurssin perustiedot",
+  "tabCourseSettingsTitle": "Kurssin asetukset",
+  "tabCourseAdvancedTitle": "Kurssin edistyneet asetukset",
+  "tabHasErrors": "(sisältää virheitä tai pakollisia kenttiä)"
 }

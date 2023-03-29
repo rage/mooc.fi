@@ -6,18 +6,15 @@ import React, {
   useMemo,
 } from "react"
 
+import { isEqual } from "lodash"
 import {
-  FieldArrayPath,
-  FieldPath,
   FieldValues,
   Message,
   MultipleFieldErrors,
   Resolver,
-  useFormState,
 } from "react-hook-form"
 import * as Yup from "yup"
 
-import { ErrorMessage } from "@hookform/error-message"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { FormGroup, FormHelperText, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -25,9 +22,6 @@ import { styled } from "@mui/material/styles"
 import { useEditorContext } from "../EditorContext"
 import { FormValues } from "../types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
-import { convertDotNotation } from "/util/convertDotNotation"
-import flattenKeys from "/util/flattenKeys"
 
 export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;
@@ -77,7 +71,6 @@ const TabSectionImpl = (
   props: PropsWithChildren<TabSectionProps> &
     React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>,
 ) => {
-  useWhyDidYouUpdate(`TabSection ${props.tab}`, props)
   const { currentTab, tab, name, children, ...sectionProps } = props
   const { tab: contextTab } = useEditorContext()
   const contextValue = useMemo(() => ({ tab }), [tab])
@@ -98,15 +91,10 @@ const TabSectionImpl = (
   )
 }
 
-export const TabSection = TabSectionImpl /*React.memo(
-  TabSectionImpl,
-  /*(prevProps, nextProps) => {
-    // console.log("prev", JSON.stringify(omit(prevProps, ["children"])), "next", JSON.stringify(omit(nextProps, ["children"])))
-
-    return JSON.stringify(omit(prevProps, ["children"])) ===
-    JSON.stringify(omit(nextProps, ["children"]))
-  },
-) as typeof TabSectionImpl*/
+// would otherwise render all tabsections again a bit too often
+export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
+  return isEqual(prevProps, nextProps)
+}) as typeof TabSectionImpl
 
 export const useTabContext = () => {
   return useContext(TabContext)
@@ -176,42 +164,3 @@ const ErrorMessageText = styled(FormHelperText)`
 export const ErrorMessageComponent = ({
   message,
 }: ErrorMessageComponentProps) => <ErrorMessageText>{message}</ErrorMessageText>
-
-type UseErrorMessageReturn<TFieldValues extends FieldValues> = {
-  ErrorMessage: () => ReturnType<typeof ErrorMessage<TFieldValues>> | null
-  hasError: boolean
-  error?: string
-}
-
-export function useErrorMessage<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues> | FieldArrayPath<TFieldValues>,
->(name: TName): UseErrorMessageReturn<TFieldValues> {
-  const formState = useFormState()
-  const error: string | undefined = useMemo(
-    () =>
-      flattenKeys(formState.errors)[convertDotNotation(name) as TName]?.message,
-    [formState.isValid, formState.isValidating, name],
-  )
-  const hasError = useMemo(() => Boolean(error), [error])
-
-  const component = useCallback(() => {
-    if (!hasError) {
-      return null
-    }
-
-    return (
-      <ErrorMessage
-        errors={formState?.errors}
-        name={name}
-        render={ErrorMessageComponent}
-      />
-    )
-  }, [hasError])
-
-  return {
-    error,
-    hasError,
-    ErrorMessage: component,
-  }
-}

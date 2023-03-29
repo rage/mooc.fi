@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from "react"
+import React, { useState } from "react"
 
-import { Tab, Tabs } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { TabSection } from "../Common"
@@ -8,6 +7,7 @@ import { ControlledHiddenField } from "../Common/Fields"
 import CourseAdvancedOptionsForm from "./CourseAdvancedOptionsForm"
 import CourseAliasForm from "./CourseAliasForm"
 import { useCourseEditorData } from "./CourseEditorDataContext"
+import CourseEditorTabs from "./CourseEditorTabs"
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
 import CourseLanguageSelector from "./CourseLanguageSelector"
@@ -15,15 +15,8 @@ import CourseStatusForm from "./CourseStatusForm"
 import CourseTagsForm from "./CourseTagsForm"
 import CourseTranslationForm from "./CourseTranslationForm"
 import CourseVariantForm from "./CourseVariantForm"
-import UserCourseSettingsVisibilityForm from "./UserCourseSettingsVisibllityForm"
-import {
-  useEditorContext,
-  useEditorMethods,
-} from "/components/Dashboard/Editor/EditorContext"
+import UserCourseSettingsVisibilityForm from "./UserCourseSettingsVisibilityForm"
 import DisableAutoComplete from "/components/DisableAutoComplete"
-import { useTranslator } from "/hooks/useTranslator"
-import CommonTranslations from "/translations/common"
-import CoursesTranslations from "/translations/courses"
 
 const SelectLanguageFirstCover = styled("div", {
   shouldForwardProp: (prop) => prop !== "covered",
@@ -36,46 +29,21 @@ const StyledTabSection = styled(TabSection)`
 
 function CourseEditForm() {
   const { courses, defaultValues } = useCourseEditorData()
-  const t = useTranslator(CoursesTranslations, CommonTranslations)
-  const { tab } = useEditorContext()
-  const { setTab } = useEditorMethods()
 
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    defaultValues?.course_translations.length === 0
-      ? ""
-      : defaultValues?.course_translations.length == 2
-      ? "both"
-      : defaultValues?.course_translations[0].language,
-  )
-
-  const onChangeTab = useCallback(
-    (_: any, newTab: any) => setTab(newTab),
-    [setTab],
-  )
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    if (defaultValues?.course_translations.length === 0) {
+      return ""
+    }
+    if (defaultValues?.course_translations.length === 2) {
+      return "both"
+    }
+    return defaultValues?.course_translations[0].language
+  })
 
   return (
     <>
       <DisableAutoComplete key="disableautocomplete" />
-      <Tabs key="tabs" variant="fullWidth" value={tab} onChange={onChangeTab}>
-        <Tab
-          label={t("tabCourseInfo")}
-          value={0}
-          id="editor-tab-0"
-          aria-controls="editor-tabpanel-0"
-        />
-        <Tab
-          label={t("tabCourseStatus")}
-          value={1}
-          id="editor-tab-1"
-          aria-controls="editor-tabpanel-1"
-        />
-        <Tab
-          label={t("tabCourseAdvanced")}
-          value={2}
-          id="editor-tab-2"
-          aria-controls="editor-tabpanel-2"
-        />
-      </Tabs>
+      <CourseEditorTabs />
       <StyledTabSection
         tab={0}
         name="editor-tabpanel-0"

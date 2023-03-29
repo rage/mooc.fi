@@ -1,14 +1,14 @@
 import { useRef } from "react"
 
-import { Anchor } from "../contexts/AnchorContext"
+import { LegacyAnchor } from "/components/Dashboard/EditorLegacy/LegacyAnchorContext"
 import flattenKeys from "/util/flattenKeys"
 
 export function useEnumeratingAnchors(): [
-  Record<string, Anchor>,
+  Record<string, LegacyAnchor>,
   (_: string, __: number) => void,
 ] {
   const anchorId = useRef(0)
-  const anchors = useRef<Record<string, Anchor>>({})
+  const anchors = useRef<Record<string, LegacyAnchor>>({})
   const addAnchor = (anchor: string, tab: number) =>
     (anchors.current[anchor] = {
       id: anchorId.current++,
@@ -19,7 +19,7 @@ export function useEnumeratingAnchors(): [
 }
 
 export function getFirstErrorAnchor(
-  anchors: Record<string, Anchor>,
+  anchors: Record<string, LegacyAnchor>,
   errors: Record<string, any>,
 ) {
   const flattenedErrors = flattenKeys(errors)

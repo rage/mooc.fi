@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
 import { Grid } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -80,9 +81,8 @@ function PointsListItemCard(props: PointsListItemCardProps) {
     [userCourseProgress, userCourseServiceProgresses],
   )
 
-  const onShowDetailsClick = useCallback(
-    () => setShowDetails((prev) => !prev),
-    [setShowDetails],
+  const onShowDetailsClick = useEventCallback(() =>
+    setShowDetails((prev) => !prev),
   )
 
   return (

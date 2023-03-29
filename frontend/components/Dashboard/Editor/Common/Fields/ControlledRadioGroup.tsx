@@ -12,8 +12,7 @@ import {
 } from "@mui/material"
 
 import { ControlledFieldProps } from "."
-import { useErrorMessage } from ".."
-import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
+import { useAnchor } from "/hooks/useAnchors"
 
 interface ControlledRadioGroupProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -29,24 +28,22 @@ function ControlledRadioGroupImpl<
   const { label, options, name, required } = props
   const anchor = useAnchor(name)
 
-  const { field } = useController<TFieldValues>({
+  const { field, fieldState } = useController<TFieldValues>({
     name,
     rules: { required },
   })
 
-  const { error, hasError } = useErrorMessage(name)
-
   return (
     <FormControl
       required={required}
-      error={hasError}
+      error={fieldState.invalid}
       component="fieldset"
       ref={(el) => {
         field.ref(el)
         anchor.ref(el)
       }}
     >
-      <FormLabel id={name} component="legend" error={hasError}>
+      <FormLabel id={name} component="legend" error={fieldState.invalid}>
         {label}
       </FormLabel>
       <RadioGroup
@@ -65,7 +62,9 @@ function ControlledRadioGroupImpl<
           />
         ))}
       </RadioGroup>
-      <FormHelperText>{error}</FormHelperText>
+      <FormHelperText error={fieldState.invalid}>
+        {fieldState.error?.message}
+      </FormHelperText>
     </FormControl>
   )
 }

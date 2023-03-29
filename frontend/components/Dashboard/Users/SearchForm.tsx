@@ -2,6 +2,7 @@ import { useCallback, useContext } from "react"
 
 import { TextField, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
@@ -36,9 +37,9 @@ const SearchForm = () => {
     }
   }, [search, page, rowsPerPage])
 
-  const onTextBoxChange = (event: any) => {
+  const onTextBoxChange = useEventCallback((event: any) => {
     setSearch(event.target.value as string)
-  }
+  })
 
   const isMobile = useMediaQuery("(max-width:900px)", { noSsr: true })
   const GridComponent = isMobile ? MobileGrid : WideGrid

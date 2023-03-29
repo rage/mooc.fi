@@ -12,13 +12,11 @@ import { InputAdornment, MenuItem, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
-import { useErrorMessage } from ".."
 import { useCourseEditorData } from "../../Course/CourseEditorDataContext"
 import { FormValues } from "../../types"
-import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
 import RevertButton from "/components/RevertButton"
+import { useAnchor } from "/hooks/useAnchors"
 import { useTranslator } from "/hooks/useTranslator"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CommonTranslations from "/translations/common"
 
 const StyledTextField = styled(TextField)`
@@ -61,14 +59,11 @@ export function ControlledSelect<
     name,
     revertable,
   } = props
-  useWhyDidYouUpdate(`ControlledSelect ${name}`, props)
   const anchor = useAnchor(name)
-  const { field } = useController<TFieldValues>({
+  const { field, fieldState } = useController<TFieldValues>({
     name,
     rules: { required },
   })
-
-  const { error, hasError } = useErrorMessage(name)
 
   const onRevert = useCallback(() => resetField(name), [name])
 
@@ -85,8 +80,8 @@ export function ControlledSelect<
         field.ref(el)
         anchor.ref(el)
       }}
-      error={hasError}
-      helperText={error}
+      error={fieldState.invalid}
+      helperText={fieldState.error?.message}
       required={required}
       InputLabelProps={{
         shrink: Boolean(field.value),

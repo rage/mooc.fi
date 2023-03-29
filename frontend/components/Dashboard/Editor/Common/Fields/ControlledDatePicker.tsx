@@ -1,5 +1,4 @@
-import { useCallback } from "react"
-import React from "react"
+import React, { useCallback } from "react"
 
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
@@ -11,8 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import { ControlledFieldProps } from "."
-import { useErrorMessage } from ".."
-import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
+import { useAnchor } from "/hooks/useAnchors"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -40,11 +38,10 @@ function ControlledDatePickerImpl<
     [name, trigger, validateOtherFields],
   )
 
-  const { field } = useController<TFieldValues>({
+  const { field, fieldState } = useController<TFieldValues>({
     name,
     rules: { required },
   })
-  const { hasError, error } = useErrorMessage(name)
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
@@ -59,9 +56,9 @@ function ControlledDatePickerImpl<
               field.ref(el)
               anchor.ref(el)
             }, //field.ref,
-            error: hasError,
+            error: fieldState.invalid,
             onBlur: onCloseDatePicker,
-            helperText: error,
+            helperText: fieldState.error?.message,
             required: required,
           },
         }}

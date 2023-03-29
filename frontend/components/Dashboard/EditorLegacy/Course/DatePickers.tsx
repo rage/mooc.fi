@@ -14,6 +14,13 @@ const StyledErrorMessage = styled("p")`
   line-height: 1.66;
 `
 
+const DatePickerTextField = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== "hasError",
+})<{ hasError?: boolean }>`
+  width: 70%;
+  margin-bottom: ${(props) => (props.hasError ? "0rem" : "1.5rem")};
+`
+
 const DatePickerField = ({ ...props }: any) => {
   const [field, { error }, { setValue, setTouched }] = useField(props)
 
@@ -26,15 +33,14 @@ const DatePickerField = ({ ...props }: any) => {
         mask="____-__-__"
         onChange={setValue}
         onClose={setTouched}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            style={{
-              marginBottom: error ? "0rem" : "1.5rem",
-              width: "70%",
-            }}
-          />
-        )}
+        slotProps={{
+          textField: {
+            hasError: Boolean(error),
+          },
+        }}
+        slots={{
+          textField: DatePickerTextField,
+        }}
       />
       <ErrorMessage component={StyledErrorMessage} name={field.name} />
     </>

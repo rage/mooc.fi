@@ -31,7 +31,6 @@ import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
-import useSubtitle from "/hooks/useSubtitle"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
@@ -94,7 +93,7 @@ function UserSummaryView() {
     },
   ])
 
-  const title = useSubtitle(data?.user?.full_name ?? undefined)
+  const title = data?.user?.full_name ?? undefined
 
   const [state, dispatch] = useReducer(collapseReducer, {})
   const [searchVariables, setSearchVariables] =

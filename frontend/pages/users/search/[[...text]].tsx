@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 
+import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useLazyQuery } from "@apollo/client"
@@ -103,6 +104,7 @@ const UserSearch = () => {
 
   return (
     <>
+      <NextSeo title={textParam} />
       <Container>
         <UserSearchContext.Provider value={value}>
           <SearchForm />

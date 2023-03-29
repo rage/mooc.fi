@@ -12,7 +12,6 @@ import {
   Button,
   Container,
   TextField,
-  TextFieldProps,
   Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -21,7 +20,6 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
-import useSubtitle from "/hooks/useSubtitle"
 import withAdmin from "/lib/with-admin"
 
 import {
@@ -81,7 +79,7 @@ const ManualCompletions = () => {
       href: `/courses/${slug}/manual-completions`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+  const title = courseData?.course?.name ?? "..."
 
   const onSubmit = () => {
     setSubmitting(true)
@@ -232,12 +230,14 @@ const ManualCompletions = () => {
         </Typography>
         <LocalizationProvider dateAdapter={AdapterLuxon}>
           <DatePicker
-            inputFormat="yyyy-MM-dd"
+            format="yyyy-MM-dd"
             onChange={setCompletionDate}
             value={completionDate}
-            renderInput={(props: TextFieldProps) => (
-              <TextField {...props} variant="outlined" />
-            )}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+              },
+            }}
           />
         </LocalizationProvider>
         <Typography>

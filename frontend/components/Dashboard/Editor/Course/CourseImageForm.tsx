@@ -5,13 +5,13 @@ import { useFormContext } from "react-hook-form"
 
 import { Button } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { FormFieldGroup, FormSubtitle } from "../Common"
 import { ControlledHiddenField, ControlledImageInput } from "../Common/Fields"
 import { useCourseEditorData } from "./CourseEditorDataContext"
 import ImportPhotoDialog from "./ImportPhotoDialog"
 import { useTranslator } from "/hooks/useTranslator"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
 
@@ -27,7 +27,6 @@ interface CourseImageFormProps {
 }
 
 function CourseImageForm(props: CourseImageFormProps) {
-  useWhyDidYouUpdate("CourseImageForm", props)
   const { courses } = props
   const { locale = "fi" } = useRouter()
   const t = useTranslator(CoursesTranslations)
@@ -52,8 +51,7 @@ function CourseImageForm(props: CourseImageFormProps) {
       setValue("new_photo", null, { shouldDirty: true })
 
       if (defaultValues.photo) {
-        // TODO: not dirtying the form
-        setValue("delete_photo", true)
+        setValue("delete_photo", true, { shouldDirty: true })
       }
     },
     [defaultValues],
@@ -81,14 +79,8 @@ function CourseImageForm(props: CourseImageFormProps) {
     [courses, t, locale, slug],
   )
 
-  const onImportPhotoDialogOpen = useCallback(
-    () => setDialogOpen(true),
-    [setDialogOpen],
-  )
-  const onImportPhotoDialogClose = useCallback(
-    () => setDialogOpen(false),
-    [setDialogOpen],
-  )
+  const onImportPhotoDialogOpen = useEventCallback(() => setDialogOpen(true))
+  const onImportPhotoDialogClose = useEventCallback(() => setDialogOpen(false))
 
   return (
     <FormFieldGroup>

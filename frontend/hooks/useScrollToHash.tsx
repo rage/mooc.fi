@@ -1,35 +1,43 @@
 import { useEffect } from "react"
 
-import { useRouter } from "next/router"
+import Router from "next/router"
+
+let scrollTimeouts: Array<NodeJS.Timeout> = []
+
+const onHashChange = (url: string) => {
+  const hash = url.split("#")[1]
+
+  if (!hash) {
+    return
+  }
+
+  scrollTimeouts.forEach(clearTimeout)
+
+  scrollTimeouts = [100, 500, 1000, 2000].map((ms) =>
+    setTimeout(() => {
+      try {
+        document
+          ?.querySelector?.("#" + hash)
+          ?.scrollIntoView({ block: "start" })
+        scrollTimeouts.forEach(clearTimeout)
+      } catch {}
+    }, ms),
+  )
+}
+
+const onWindowHashChange = () => onHashChange(window?.location.href)
 
 export const useScrollToHash = () => {
-  const router = useRouter()
-  let scrollTimeouts: Array<NodeJS.Timeout> = []
-
   useEffect(() => {
-    const onHashChange = (url: string) => {
-      const hash = url.split("#")[1]
+    Router.events.on("hashChangeStart", onHashChange)
+    window?.addEventListener("hashChange", onWindowHashChange)
+    window?.addEventListener("load", onWindowHashChange)
 
-      if (!hash) {
-        return
-      }
-
-      scrollTimeouts.forEach(clearTimeout)
-
-      scrollTimeouts = [100, 500, 1000, 2000].map((ms) =>
-        setTimeout(() => {
-          try {
-            document?.querySelector?.("#" + hash)?.scrollIntoView()
-            scrollTimeouts.forEach(clearTimeout)
-          } catch {}
-        }, ms),
-      )
-    }
-
-    router.events.on("hashChangeStart", onHashChange)
     return () => {
       scrollTimeouts.forEach(clearTimeout)
-      router.events.off("hashChangeStart", onHashChange)
+      Router.events.off("hashChangeStart", onHashChange)
+      window?.removeEventListener("hashChange", onWindowHashChange)
+      window?.removeEventListener("load", onWindowHashChange)
     }
-  }, [router.asPath])
+  }, [])
 }

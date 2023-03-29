@@ -74,6 +74,7 @@ const CourseTranslationListItem = (props: Props) => {
         rows={5}
         autoComplete="off"
         variant="outlined"
+        required
         component={StyledTextField}
       />
       <StyledFieldWithAnchor

@@ -9,7 +9,6 @@ import { FormSubtitle } from "../../EditorLegacy/common"
 import { initialTranslation } from "./form-validation"
 import { CourseFormValues } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CoursesTranslations from "/translations/courses"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
@@ -60,7 +59,6 @@ interface LanguageSelectorProps {
 }
 
 function CourseLanguageSelector(props: LanguageSelectorProps) {
-  useWhyDidYouUpdate("CourseLanguageSelector", props)
   const { selectedLanguage, setSelectedLanguage } = props
 
   const { append } = useFieldArray<CourseFormValues, "course_translations">({
@@ -101,7 +99,7 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
 
   return (
     <>
-      <FormSubtitle variant="h6" component="h3" align="center">
+      <FormSubtitle variant="h3" component="h3" align="center">
         {t("courseLanguageSelectTitle")}
       </FormSubtitle>
       <ButtonGroupContainer

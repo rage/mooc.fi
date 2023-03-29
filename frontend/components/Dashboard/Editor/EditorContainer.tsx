@@ -8,6 +8,7 @@ import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined"
 import { LoadingButton } from "@mui/lab"
 import { Checkbox, Container, Paper, PaperProps, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useEditorMethods } from "./EditorContext"
 import { FormValues } from "./types"
@@ -47,7 +48,6 @@ function EditorContainer<T extends FormValues = FormValues>(
   props: PropsWithChildren,
 ) {
   const { children } = props
-  // useWhyDidYouUpdate("EditorContainer", props)
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
@@ -57,15 +57,12 @@ function EditorContainer<T extends FormValues = FormValues>(
 
   const { isSubmitting, isSubmitted, isDirty, isValid } = formState
 
-  const onSaveClick = useCallback(
-    () => handleSubmit(onSubmit, onError)(),
-    [handleSubmit, onSubmit, onError],
-  )
+  const onSaveClick = useEventCallback(() => handleSubmit(onSubmit, onError)())
 
   const onCancelClick = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      if (isDirty) {
+      if (!isDirty) {
         return onCancel()
       }
       try {
@@ -98,9 +95,8 @@ function EditorContainer<T extends FormValues = FormValues>(
     [id, onDelete, confirm, t],
   )
 
-  const onDeleteVisibleClick = useCallback(
-    () => setDeleteVisible((value) => !value),
-    [setDeleteVisible],
+  const onDeleteVisibleClick = useEventCallback(() =>
+    setDeleteVisible((value) => !value),
   )
 
   return (

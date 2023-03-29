@@ -15,7 +15,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { useAnchorContext } from "/contexts/AnchorContext"
+import { useLegacyAnchorContext } from "./LegacyAnchorContext"
 
 const BaseStyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
@@ -133,7 +133,7 @@ export const EnumeratingAnchor: React.FC<EnumeratingAnchorProps> = ({
   id,
   tab = 0,
 }) => {
-  const { addAnchor } = useAnchorContext()
+  const { addAnchor } = useLegacyAnchorContext()
   addAnchor(id, tab)
 
   return <AdjustingAnchorLink id={id} />
@@ -151,7 +151,7 @@ export const StyledFieldWithAnchor = React.forwardRef<
   StyledFieldWithAnchorProps & FieldAttributes<any> //& PropsOf<typeof StyledField>
 >((props, ref) => {
   const { id, name, tab = 0, error, ...rest } = props
-  const { addAnchor } = useAnchorContext()
+  const { addAnchor } = useLegacyAnchorContext()
   addAnchor(id ?? name, tab)
 
   return (

@@ -22,7 +22,6 @@ import {
   CourseEditorOtherCoursesDocument,
   CourseFromSlugDocument,
   CoursesDocument,
-  CourseUpsertArg,
   DeleteCourseDocument,
   EditorCourseDetailedFieldsFragment,
   EditorCourseOtherCoursesFieldsFragment,
@@ -105,7 +104,7 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
         } else {
           await updateCourse({
             variables: {
-              course: mutationVariables as CourseUpsertArg,
+              course: mutationVariables,
             },
             refetchQueries: () => refetchQueries,
           })

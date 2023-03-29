@@ -11,7 +11,6 @@ import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
-import useSubtitle from "/hooks/useSubtitle"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
@@ -41,7 +40,7 @@ const Points = () => {
       href: `/courses/${slug}/points`,
     },
   ])
-  const title = useSubtitle(data?.course?.name)
+  const title = data?.course?.name ?? "..."
 
   if (loading || !data) {
     return <Spinner />

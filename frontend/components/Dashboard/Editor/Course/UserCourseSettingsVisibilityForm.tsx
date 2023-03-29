@@ -1,5 +1,6 @@
 import { useCallback } from "react"
 
+import { isString } from "lodash"
 import { useController, useFormContext } from "react-hook-form"
 
 import {
@@ -12,17 +13,13 @@ import {
 import { useEventCallback } from "@mui/material/utils"
 
 import { FormSubtitleWithMargin } from "../Common"
-import { useAnchor } from "../EditorContext"
 import {
   CourseFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
+import { useAnchor } from "/hooks/useAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-
-const isString = (
-  value: UserCourseSettingsVisibilityFormValues | string,
-): value is string => typeof value === "string"
 
 const options: readonly UserCourseSettingsVisibilityFormValues[] = []
 

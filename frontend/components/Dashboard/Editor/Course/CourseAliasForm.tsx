@@ -44,7 +44,7 @@ function CourseAliasForm() {
         />
       </>
     ),
-    [],
+    [t],
   )
 
   const conditions: ControlledFieldArrayListProps<

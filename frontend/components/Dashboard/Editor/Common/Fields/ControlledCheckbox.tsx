@@ -6,9 +6,8 @@ import { Checkbox, FormControlLabel } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
-import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
 import { InfoTooltipWithLabel } from "/components/Tooltip"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
+import { useAnchor } from "/hooks/useAnchors"
 
 const AlignedSpan = styled("span")`
   display: flex;
@@ -25,7 +24,6 @@ function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
   props: ControlledCheckboxProps<TFieldValues>,
 ) {
   const { name, label, tip, required, onChange } = props
-  useWhyDidYouUpdate(`ControlledCheckbox ${name}`, props)
   const anchor = useAnchor(name)
   const { field } = useController({
     name,

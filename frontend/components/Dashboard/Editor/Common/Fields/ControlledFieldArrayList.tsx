@@ -20,7 +20,6 @@ import { styled } from "@mui/material/styles"
 import { ControlledFieldArrayProps } from "."
 import { ButtonWithWhiteText } from ".."
 import { useTranslator } from "/hooks/useTranslator"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 
@@ -107,7 +106,6 @@ function ControlledFieldArrayListImpl<
     },
     name,
   } = props
-  useWhyDidYouUpdate(`ControlledFieldArrayList ${name}`, props)
   const { control, formState, watch, trigger } = useFormContext<TFieldValues>()
   const { fields, append, remove } = useFieldArray({
     name,

@@ -12,12 +12,10 @@ import { InputAdornment, TextField, TextFieldProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
-import { useErrorMessage } from ".."
 import { useCourseEditorData } from "../../Course/CourseEditorDataContext"
-import { useAnchor } from "/components/Dashboard/Editor/EditorContext"
 import RevertButton from "/components/RevertButton"
 import { InfoTooltipWithLabel } from "/components/Tooltip"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
+import { useAnchor } from "/hooks/useAnchors"
 
 const TextFieldContainer = styled("div")`
   display: flex;
@@ -64,11 +62,10 @@ function ControlledTextFieldComponent<
     containerProps,
     ...textFieldProps
   } = props
-  useWhyDidYouUpdate(`ControlledTextField ${name}`, props)
   const anchor = useAnchor(name)
   const defaultValue = get(defaultValues, name)
 
-  const { field } = useController<TFieldValues>({
+  const { field, fieldState } = useController<TFieldValues>({
     name,
     rules: { required },
   })
@@ -95,8 +92,6 @@ function ControlledTextFieldComponent<
     [revertable, field, tip, unit, defaultValue, onRevert],
   )
 
-  const { error, hasError } = useErrorMessage(name)
-
   return (
     <Container {...containerProps}>
       <StyledTextField
@@ -107,7 +102,7 @@ function ControlledTextFieldComponent<
         label={label}
         required={required}
         variant="outlined"
-        error={hasError}
+        error={fieldState.invalid}
         type={type}
         disabled={disabled}
         rows={rows}
@@ -118,7 +113,7 @@ function ControlledTextFieldComponent<
           field.ref(el)
           anchor.ref(el)
         }}
-        helperText={error}
+        helperText={fieldState.error?.message}
       />
     </Container>
   )

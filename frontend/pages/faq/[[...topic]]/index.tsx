@@ -4,7 +4,6 @@ import { NextSeo } from "next-seo"
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useFAQPage } from "/hooks/useFAQPage"
-import useSubtitle from "/hooks/useSubtitle"
 import { useTranslator } from "/hooks/useTranslator"
 import FAQTranslations from "/translations/faq"
 
@@ -15,8 +14,9 @@ interface FAQTopicProps {
 function FAQTopic({ topic }: FAQTopicProps) {
   const t = useTranslator(FAQTranslations)
 
-  const { Component, title, ingress, breadcrumb, error, render } =
-    useFAQPage(topic)
+  const { Component, meta, error, render } = useFAQPage(topic)
+
+  const { title, breadcrumb } = meta ?? {}
 
   useBreadcrumbs([
     {
@@ -24,29 +24,24 @@ function FAQTopic({ topic }: FAQTopicProps) {
       href: `/faq`,
     },
     {
-      label: breadcrumb,
+      label: error ? topic : breadcrumb,
       href: `/faq/${topic}`,
     },
   ])
 
-  const pageTitle = useSubtitle(title)
-
-  return FAQPage({
-    title,
-    ingress,
-    error,
-    content: (
-      <>
-        <NextSeo title={pageTitle} />
-        {render && !error ? <Component /> : null}
+  return (
+    <>
+      <NextSeo title={title ?? "..."} />
+      <FAQPage meta={meta} error={error}>
+        {render && <Component />}
         {error ? (
           <ContentBox>
             <SectionBox>{t("unknownTopic", { topic })}</SectionBox>
           </ContentBox>
         ) : null}
-      </>
-    ),
-  })
+      </FAQPage>
+    </>
+  )
 }
 
 export async function getServerSideProps({
@@ -54,7 +49,7 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext) {
   return {
     props: {
-      topic: params?.topic,
+      topic: params?.topic?.[0] ?? "toc_faq",
     },
   }
 }
