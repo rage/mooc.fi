@@ -16,6 +16,7 @@ export interface CourseEditorDataContext {
   tags?: TagCoreFieldsFragment[]
   tagOptions?: TagFormValue[]
   defaultValues: CourseFormValues
+  isClone?: boolean
 }
 
 const CourseEditorDataContextImpl = createContext<CourseEditorDataContext>({
@@ -27,14 +28,7 @@ export function useCourseEditorData() {
 }
 
 interface CourseEditorDataProviderProps {
-  value: {
-    course?: EditorCourseDetailedFieldsFragment
-    courses?: EditorCourseOtherCoursesFieldsFragment[]
-    studyModules?: StudyModuleDetailedFieldsFragment[]
-    tags?: TagCoreFieldsFragment[]
-    tagOptions?: TagFormValue[]
-    defaultValues: CourseFormValues
-  }
+  value: CourseEditorDataContext
 }
 
 export function CourseEditorDataProvider(

@@ -13,6 +13,7 @@ import {
   CourseEditorTagsDocument,
   CoursesDocument,
   DeleteCourseDocument,
+  EditorCourseDetailedFieldsFragment,
   EditorCoursesDocument,
   EditorStudyModulesDocument,
   UpdateCourseDocument,
@@ -20,9 +21,10 @@ import {
 
 interface UseEditorCoursesProps {
   slug?: string
+  isClone?: boolean
 }
 
-export function useEditorCourses({ slug }: UseEditorCoursesProps) {
+export function useEditorCourses({ slug, isClone }: UseEditorCoursesProps) {
   const {
     data: courseData,
     loading: courseLoading,
@@ -69,10 +71,40 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
   })
 
   const data = useMemo(() => {
-    const course = courseData?.course ?? undefined
+    let course = courseData?.course ?? undefined
     const courses = coursesData?.courses ?? []
     const studyModules = studyModulesData?.study_modules ?? []
     const tags = tagsData?.tags ?? []
+
+    if (isClone && course) {
+      course = {
+        ...course,
+        id: "",
+        slug: "",
+        photo: {
+          ...course.photo,
+          id: null,
+        },
+        course_translations: course.course_translations.map((translation) => ({
+          ...translation,
+          id: null,
+          course_id: null,
+        })),
+        course_variants: course.course_variants.map((variant) => ({
+          ...variant,
+          id: null,
+        })),
+        course_aliases: course.course_aliases.map((alias) => ({
+          ...alias,
+          id: null,
+        })),
+        user_course_settings_visibilities:
+          course.user_course_settings_visibilities.map((visibility) => ({
+            ...visibility,
+            id: null,
+          })),
+      } as unknown as EditorCourseDetailedFieldsFragment
+    }
 
     const defaultValues = toCourseForm({
       course,
@@ -87,8 +119,16 @@ export function useEditorCourses({ slug }: UseEditorCoursesProps) {
         description: translation.description ?? undefined,
       })),
     }))
-    return { course, courses, studyModules, tags, defaultValues, tagOptions }
-  }, [courseData, coursesData, studyModulesData, tagsData])
+    return {
+      course,
+      courses,
+      studyModules,
+      tags,
+      defaultValues,
+      tagOptions,
+      isClone,
+    }
+  }, [isClone, courseData, coursesData, studyModulesData, tagsData])
 
   return {
     loading:

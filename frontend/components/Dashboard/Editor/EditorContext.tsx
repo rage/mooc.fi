@@ -8,6 +8,7 @@ import { Anchor } from "/hooks/useAnchors"
 export interface EditorContext {
   tab: number
   anchors: Record<string, Anchor>
+  isClone?: boolean
 }
 
 export interface EditorMethodContext<T extends FormValues> {

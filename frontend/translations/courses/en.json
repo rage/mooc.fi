@@ -108,7 +108,7 @@
   "helpSlug": "A slug is a unique identifier for a course, ie. elements-of-ai, ohpe.",
   "helpName": "Course name -- usually the course name visible to the user comes from the translation, but keep this descriptive as well.",
   "helpStartPoint": "\"Start with these\" tag for course in front page.",
-  "helpHasCertificate": "Does the course have a certificate?",
+  "helpHasCertificate": "Does the course have a certificate? If so, note that the certificates service should have a working certificate with the same slug.",
   "helpUpcomingActiveLink": "By default, the upcoming courses in the front page have a disabled link to course page. Check this to enable.",
   "helpOrder": "This determines the order of the courses in front page lists outside of study modules. Better not to use small values, as it's not easy to insert new ones -- 100, 200, 300 etc. are good.",
   "helpModuleOrder": "This determines the order of the courses in front page study module lists.",

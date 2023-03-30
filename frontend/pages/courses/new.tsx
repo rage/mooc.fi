@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback } from "react"
 
 import dynamic from "next/dynamic"
 
@@ -15,7 +15,6 @@ import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { stripId } from "/util/stripId"
 
 const ContainerBackground = styled("section")`
   background-color: #e9fef8;
@@ -38,6 +37,7 @@ const NewCourse = () => {
 
   const { loading, error, data } = useEditorCourses({
     slug: clone,
+    isClone: Boolean(clone),
   })
   const { course, studyModules, courses, tags } = data ?? {}
 
@@ -52,19 +52,11 @@ const NewCourse = () => {
     },
   ])
 
-  const clonedCourse = useMemo(() => {
-    if (!course) {
-      return undefined
-    }
-
-    return { ...stripId(course), slug: "" }
-  }, [course])
-
   const EditorComponent = useCallback(() => {
     if (legacy) {
       return (
         <LegacyCourseEdit
-          {...(clonedCourse ? { course: clonedCourse } : {})}
+          {...(Boolean(clone) && course ? { course } : {})}
           courses={courses}
           modules={studyModules}
         />
@@ -72,7 +64,7 @@ const NewCourse = () => {
     }
 
     return <CourseEdit />
-  }, [clonedCourse, courses, studyModules, tags, legacy])
+  }, [course, courses, studyModules, tags, legacy])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />

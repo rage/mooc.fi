@@ -63,19 +63,16 @@ function CourseTranslationForm(_: { key: React.Key }) {
               />
               <ControlledHiddenField
                 name={`course_translations.${index}.language`}
-                defaultValue={item.language}
               />
               <ControlledTextField
                 name={`course_translations.${index}.name`}
                 label={t("courseName")}
                 required
-                defaultValue={item.name}
                 revertable
               />
               <ControlledTextField
                 name={`course_translations.${index}.description`}
                 label={t("courseDescription")}
-                defaultValue={item.description}
                 required
                 type="textarea"
                 rows={5}
@@ -84,7 +81,6 @@ function CourseTranslationForm(_: { key: React.Key }) {
               <ControlledTextField
                 name={`course_translations.${index}.instructions`}
                 label={t("courseInstructions")}
-                defaultValue={item.instructions}
                 type="textarea"
                 rows={5}
                 revertable
@@ -92,7 +88,6 @@ function CourseTranslationForm(_: { key: React.Key }) {
               <ControlledTextField
                 name={`course_translations.${index}.link`}
                 label={t("courseLink")}
-                defaultValue={item.link}
                 revertable
               />
               <ControlledHiddenField
@@ -102,15 +97,11 @@ function CourseTranslationForm(_: { key: React.Key }) {
               <ControlledTextField
                 name={`course_translations.${index}.open_university_course_link.course_code`}
                 label={t("courseOpenCode")}
-                defaultValue={
-                  item.open_university_course_link?.course_code ?? ""
-                }
                 revertable
               />
               <ControlledTextField
                 name={`course_translations.${index}.open_university_course_link.link`}
                 label={t("courseOpenLink")}
-                defaultValue={item.open_university_course_link?.link ?? ""}
                 revertable
               />
             </CourseTranslationItem>

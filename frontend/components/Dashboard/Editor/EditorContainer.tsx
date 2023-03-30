@@ -1,4 +1,9 @@
-import React, { PropsWithChildren, useCallback, useState } from "react"
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import { Path, useFormContext } from "react-hook-form"
@@ -10,8 +15,9 @@ import { Checkbox, Container, Paper, PaperProps, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
-import { useEditorMethods } from "./EditorContext"
+import { useEditorContext, useEditorMethods } from "./EditorContext"
 import { FormValues } from "./types"
+import useExitConfirmation from "/hooks/useExitConfirmation"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 
@@ -51,11 +57,22 @@ function EditorContainer<T extends FormValues = FormValues>(
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
+  const { isClone } = useEditorContext()
   const { onSubmit, onError, onCancel, onDelete } = useEditorMethods<T>()
-  const { handleSubmit, formState, watch } = useFormContext<T>()
+  const { handleSubmit, formState, watch, setValue } = useFormContext<T>()
   const id = watch("id" as Path<T>)
 
   const { isSubmitting, isSubmitted, isDirty, isValid } = formState
+
+  useExitConfirmation({
+    enabled: isDirty,
+  })
+  useEffect(() => {
+    // for unsaved changes; let's not do this for just new courses
+    if (isClone) {
+      setValue("id" as Path<T>, id, { shouldDirty: true })
+    }
+  }, [])
 
   const onSaveClick = useEventCallback(() => handleSubmit(onSubmit, onError)())
 
@@ -66,7 +83,7 @@ function EditorContainer<T extends FormValues = FormValues>(
         return onCancel()
       }
       try {
-        confirm({
+        await confirm({
           title: t("confirmationUnsavedChanges"),
           description: t("confirmationLeaveWithoutSaving"),
           confirmationText: t("confirmationYes"),

@@ -76,7 +76,8 @@ export const toCourseForm = ({
             link: open_university_course_link?.link ?? "",
             course_code: open_university_course_link?.course_code ?? "",
           },
-          instructions: course_translation.instructions ?? undefined,
+          description: course_translation.description ?? "",
+          instructions: course_translation.instructions ?? "",
         }
       },
     ),
@@ -155,6 +156,7 @@ export const fromCourseForm = ({
       name: course_translation.name,
       link: course_translation.link ?? "",
       description: course_translation.description ?? "",
+      instructions: course_translation.instructions ?? null,
       id:
         !course_translation._id || course_translation._id === ""
           ? undefined
@@ -251,15 +253,6 @@ export const fromCourseForm = ({
         new_slug: values.new_slug.trim(),
       }
 
-  const status =
-    values.status === "Active"
-      ? CourseStatus.Active
-      : values.status === "Ended"
-      ? CourseStatus.Ended
-      : values.status === "Upcoming"
-      ? CourseStatus.Upcoming
-      : undefined
-
   const c = {
     ...formValues,
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -294,7 +287,7 @@ export const fromCourseForm = ({
     user_course_settings_visibilities,
     teacher_in_charge_email: values.teacher_in_charge_email ?? "",
     teacher_in_charge_name: values.teacher_in_charge_name ?? "",
-    status, //values.status as CourseStatus
+    status: values.status,
     upcoming_active_link: values.upcoming_active_link ?? false,
     automatic_completions: values.automatic_completions ?? false,
     automatic_completions_eligible_for_ects:

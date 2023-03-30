@@ -37,7 +37,7 @@ import {
 const anchors = {}
 
 function CourseEditor() {
-  const { course, defaultValues } = useCourseEditorData()
+  const { course, defaultValues, isClone } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations, CommonTranslations)
   const [tab, setTab] = useState(0)
   const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
@@ -153,8 +153,9 @@ function CourseEditor() {
     () => ({
       tab,
       anchors,
+      isClone,
     }),
-    [tab, anchors],
+    [tab, anchors, isClone],
   )
   const editorMethodContextValue = useMemo(
     () => ({
