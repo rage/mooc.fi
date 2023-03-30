@@ -47,6 +47,9 @@ const UserSearch = () => {
   const { rowsPerPage, page } = userSearch
 
   useEffect(() => {
+    if ((searchVariables.search ?? "").trim().length === 0) {
+      return
+    }
     const searchParams = new URLSearchParams()
     if (rowsPerPage !== 10) {
       searchParams.append("rowsPerPage", rowsPerPage.toString())
@@ -61,11 +64,9 @@ const UserSearch = () => {
         ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
         : `/users/search${query}`
 
-    if (router?.pathname !== "/users/search") {
-      loadData({
-        variables: searchVariables,
-      })
-    }
+    loadData({
+      variables: searchVariables,
+    })
 
     if (router?.asPath !== href) {
       // the history is still a bit wonky - how should it work?
