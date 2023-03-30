@@ -28,10 +28,10 @@ spec:
           resources:
             limits:
               memory: 1500Mi
-              cpu: 500m
+              cpu: 400m
             requests:
               memory: 800Mi
-              cpu: 200m
+              cpu: 150m
           envFrom:
           - secretRef:
               name: backend-secret
