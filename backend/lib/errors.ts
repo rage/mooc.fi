@@ -10,6 +10,14 @@ class CustomError extends Error {
   }
 }
 
+export abstract class Warning extends Error {
+  constructor(message: string) {
+    super(message)
+
+    this.name = this.constructor.name
+  }
+}
+
 class CustomGraphQLError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, options)
@@ -182,6 +190,14 @@ export class CourseStatsEmailerError extends CustomError {
   override name = "CourseStatsEmailerError"
 
   constructor(message: string, readonly Erorr?: Error) {
+    super(message)
+  }
+}
+
+export class TimestampWarning extends Warning {
+  override name = "TimestampWarning"
+
+  constructor(message: string) {
     super(message)
   }
 }

@@ -68,7 +68,7 @@ describe("Course", () => {
         })
 
         it("should return null on non-existent language", async () => {
-          const res = await ctx.client.request(courseQuery, {
+          const res = await ctx.client.request<any>(courseQuery, {
             slug: "course1",
             language: "sv_SE",
           })
