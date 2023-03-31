@@ -407,7 +407,7 @@ export class CompletionController extends Controller {
 
     const { completions } = req.body ?? {}
 
-    if (!completions) {
+    if (!completions || !(completions instanceof Array)) {
       return res
         .status(400)
         .json({ message: "must provide completions in post message body" })
