@@ -68,7 +68,9 @@ function RegisterCompletionPage() {
   const [instructions, setInstructions] = useState("")
   const [tiers, setTiers] = useState([])
 
-  const courseSlug = (useQueryParameter("slug") ?? "").replace(/\./g, "")
+  const courseSlug = encodeURIComponent(
+    useQueryParameter("slug") ?? "",
+  ).replace(/\./g, "")
 
   const t = useTranslator(RegisterCompletionTranslations)
   const {

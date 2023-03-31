@@ -75,7 +75,7 @@ const handler = async (req: Request, res: Response) => {
   const { schacpersonaluniquecode, displayname } = headers
 
   const { access_token: accessToken } = res.locals.cookie
-  const language = req.query.language ?? "en"
+  const language = encodeURIComponent(req.query.language ?? "en")
 
   console.log(accessToken)
   console.log(JSON.stringify(req.headers, null, 2))

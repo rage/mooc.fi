@@ -2,32 +2,23 @@ import { omit } from "lodash"
 
 import {
   createRequestHelpers,
-  fakeTMCCurrent,
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   RequestGet,
   RequestPost,
+  setupTMCWithDefaultFakeUsers,
 } from "../../../tests"
-import {
-  adminUserDetails,
-  normalUserDetails,
-  seed,
-  thirdUserDetails,
-} from "../../../tests/data"
+import { seed } from "../../../tests/data"
 
 const ctx = getTestContext()
 
 describe("API", () => {
   describe("/api/user-course-settings", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer admin": [200, adminUserDetails],
-      "Bearer third": [200, thirdUserDetails],
-    })
+    setupTMCWithDefaultFakeUsers()
 
     describe("GET", () => {
-      beforeAll(() => tmc.setup())
-      afterAll(() => tmc.teardown())
-
       let getSettings: (slug: string) => RequestGet
 
       beforeEach(async () => {
@@ -55,7 +46,7 @@ describe("API", () => {
 
       it("returns null with user with no settings", async () => {
         return getSettings("course1")({
-          headers: { Authorization: "Bearer third" },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
         }).then((res) => {
           expect(res.data).toBeNull()
         })
@@ -63,7 +54,7 @@ describe("API", () => {
 
       it("returns null with course with no settings", async () => {
         return getSettings("handler")({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         }).then((res) => {
           expect(res.data).toBeNull()
         })
@@ -71,7 +62,7 @@ describe("API", () => {
 
       it("warns on key clashes", async () => {
         return getSettings("course2")({
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         }).then(async (_) => {
           // @ts-ignore: mock
           expect(ctx.logger.warn.mock.calls.length).toBeGreaterThan(0)
@@ -84,7 +75,7 @@ describe("API", () => {
 
       it("returns settings correctly", async () => {
         return getSettings("course1")({
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         }).then(async (res) => {
           const settings = await ctx.prisma.userCourseSetting.findFirst({
             where: {
@@ -102,7 +93,7 @@ describe("API", () => {
 
       it("returns inherited settings correctly", async () => {
         return getSettings("inherits")({
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         }).then(async (res) => {
           const settings = await ctx.prisma.userCourseSetting.findFirst({
             where: {
@@ -120,9 +111,6 @@ describe("API", () => {
     })
 
     describe("POST", () => {
-      beforeAll(() => tmc.setup())
-      afterAll(() => tmc.teardown())
-
       let postSettings: (slug: string) => RequestPost
       beforeEach(async () => {
         await seed(ctx.prisma)
@@ -154,7 +142,7 @@ describe("API", () => {
       it("errors on non-existing course", async () => {
         return postSettings("foooo")({
           data: { foo: 1 },
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         })
           .then(() => fail())
           .catch(({ response }) => {
@@ -166,7 +154,7 @@ describe("API", () => {
       it("errors without given values", async () => {
         return postSettings("course1")({
           data: {},
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         })
           .then(() => fail())
           .catch(({ response }) => {
@@ -185,7 +173,7 @@ describe("API", () => {
             isCat: true,
             sound: "meow",
           },
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(res.data.message).toContain("settings created")
@@ -228,7 +216,7 @@ describe("API", () => {
             isCat: true,
             sound: "meow",
           },
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(res.data.message).toContain("settings updated")
@@ -277,7 +265,7 @@ describe("API", () => {
             isCat: true,
             sound: "meow",
           },
-          headers: { Authorization: "Bearer admin" },
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         })
         expect(res.data.message).toContain("settings updated")
         expect(res.status).toBe(200)

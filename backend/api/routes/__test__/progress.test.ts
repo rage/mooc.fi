@@ -1,22 +1,18 @@
 import {
   createRequestHelpers,
-  fakeTMCCurrent,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   RequestGet,
+  setupTMCWithDefaultFakeUsers,
 } from "../../../tests"
-import { normalUserDetails, seed } from "../../../tests/data"
+import { seed } from "../../../tests/data"
 
 const ctx = getTestContext()
 
 describe("API", () => {
   describe("/api/user-course-progress", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
-    })
-
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     let getUserCourseProgress: (slug: string) => RequestGet
     beforeEach(async () => {
@@ -36,9 +32,7 @@ describe("API", () => {
 
     it("returns data", async () => {
       const ucpResponse = await getUserCourseProgress("course1")({
-        headers: {
-          Authorization: "Bearer normal",
-        },
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(ucpResponse.status).toBe(200)
@@ -51,9 +45,7 @@ describe("API", () => {
 
     it("returns only the oldest instance", async () => {
       const ucpResponse = await getUserCourseProgress("course1")({
-        headers: {
-          Authorization: "Bearer third",
-        },
+        headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(ucpResponse.status).toBe(200)
@@ -69,13 +61,7 @@ describe("API", () => {
   })
 
   describe("/api/progressv2", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
-    })
-
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     let getProgressv2: (idOrSlug: string, deleted?: boolean) => RequestGet
 
@@ -96,7 +82,7 @@ describe("API", () => {
 
     it("errors on no course found", async () => {
       return getProgressv2("foo")({
-        headers: { Authorization: "Bearer normal" },
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -125,7 +111,7 @@ describe("API", () => {
           param,
           deleted,
         )({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(res.data).toMatchSnapshot()

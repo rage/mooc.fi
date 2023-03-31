@@ -1,8 +1,33 @@
 import nock from "nock"
 
 import { TMC_HOST } from "../../config"
+import { adminUserDetails, normalUserDetails, thirdUserDetails } from "../data"
 
 type FakeTMCRecord = Record<string, [number, object]>
+
+export const FAKE_ADMIN_USER_AUTHORIZATION_HEADERS = {
+  Authorization: "Bearer admin",
+}
+export const FAKE_NORMAL_USER_AUTHORIZATION_HEADERS = {
+  Authorization: "Bearer normal",
+}
+export const FAKE_THIRD_USER_AUTHORIZATION_HEADERS = {
+  Authorization: "Bearer third",
+}
+
+export function setupTMCWithDefaultFakeUsers(
+  additionalUsers: FakeTMCRecord = {},
+) {
+  const tmc = fakeTMCCurrent({
+    "Bearer normal": [200, normalUserDetails],
+    "Bearer admin": [200, adminUserDetails],
+    "Bearer third": [200, thirdUserDetails],
+    ...additionalUsers,
+  })
+
+  beforeAll(() => tmc.setup())
+  afterAll(() => tmc.teardown())
+}
 
 export function fakeTMCCurrent(
   users: FakeTMCRecord,

@@ -1,13 +1,13 @@
 import { gql } from "graphql-request"
 import { orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
 import {
-  adminUserDetails,
-  normalUser,
-  normalUserDetails,
-  seed,
-} from "../../../tests/data"
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  getTestContext,
+  ID_REGEX,
+  setupTMCWithDefaultFakeUsers,
+} from "../../../tests"
+import { normalUser, seed } from "../../../tests/data"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
@@ -43,10 +43,6 @@ const updateUserNameMutation = gql`
 `
 
 const ctx = getTestContext()
-const tmc = fakeTMCCurrent({
-  "Bearer normal": [200, normalUserDetails],
-  "Bearer admin": [200, adminUserDetails],
-})
 
 // @ts-ignore: not used
 const sortByExercise = (data: any) => {
@@ -66,11 +62,7 @@ const sortByExercise = (data: any) => {
 
 describe("User", () => {
   describe("queries", () => {
-    beforeEach(() => {
-      tmc.setup()
-    })
-
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     describe("currentUser", () => {
       beforeEach(async () => {
@@ -78,9 +70,8 @@ describe("User", () => {
       })
 
       it("shows current user when logged in", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
-
-        const res = await ctx.client.request(`
+        const res = await ctx.client.request(
+          `
       query {
         currentUser {
           id
@@ -92,7 +83,10 @@ describe("User", () => {
           upstream_id
         }
       }
-    `)
+    `,
+          {},
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res).toMatchSnapshot({
           currentUser: {
@@ -104,8 +98,6 @@ describe("User", () => {
       })
 
       it("shows null when not logged in", async () => {
-        ctx.client.setHeader("Authorization", "")
-
         const res = await ctx.client.request<any>(`
       query {
         currentUser {
@@ -130,9 +122,8 @@ describe("User", () => {
       })
 
       it("returns courses with completions", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
-
-        const res = await ctx.client.request<any>(`
+        const res = await ctx.client.request<any>(
+          `
           query {
             currentUser {
               id
@@ -166,7 +157,10 @@ describe("User", () => {
               }
             }
           }
-        `)
+        `,
+          {},
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
 
         const sortedRes = {
           currentUser: {
@@ -196,19 +190,13 @@ describe("User", () => {
   })
 
   describe("mutations", () => {
-    beforeAll(() => {
-      tmc.setup()
-    })
-
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     beforeEach(async () => {
       await ctx.prisma.user.deleteMany({ where: {} })
     })
 
     describe("addUser", () => {
-      beforeAll(() => ctx.client.setHeader("Authorization", ""))
-
       it("creates user correctly", async () => {
         const res = await ctx.client.request(addUserMutation, {
           user: {
@@ -261,13 +249,12 @@ describe("User", () => {
       })
 
       it("updates correctly", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
-
         const res = await ctx.client.request<any>(
           updateReseachConsentMutation,
           {
             value: true,
           },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         )
 
         expect(res.updateResearchConsent).toMatchSnapshot({
@@ -282,8 +269,6 @@ describe("User", () => {
       })
 
       it("won't update research consent without auth", async () => {
-        ctx.client.setHeader("Authorization", "")
-
         try {
           await ctx.client.request(updateReseachConsentMutation, {
             value: true,
@@ -301,12 +286,14 @@ describe("User", () => {
       })
 
       it("updates correctly", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
-
-        const res = await ctx.client.request<any>(updateUserNameMutation, {
-          first_name: "updated first",
-          last_name: "updated last",
-        })
+        const res = await ctx.client.request<any>(
+          updateUserNameMutation,
+          {
+            first_name: "updated first",
+            last_name: "updated last",
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res.updateUserName).toMatchObject({
           first_name: "updated first",
@@ -315,7 +302,6 @@ describe("User", () => {
       })
 
       it("errors without auth", async () => {
-        ctx.client.setHeader("Authorization", "")
         try {
           await ctx.client.request(updateUserNameMutation, {})
           fail()

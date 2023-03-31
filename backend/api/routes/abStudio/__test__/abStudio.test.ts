@@ -1,26 +1,18 @@
 import {
   createRequestHelpers,
-  fakeTMCCurrent,
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   RequestGet,
+  setupTMCWithDefaultFakeUsers,
 } from "../../../../tests"
-import {
-  adminUserDetails,
-  normalUserDetails,
-  seed,
-} from "../../../../tests/data"
+import { seed } from "../../../../tests/data"
 
 const ctx = getTestContext()
 
 describe("API", () => {
   describe("/api/ab-studies", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer admin": [200, adminUserDetails],
-    })
-
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     let getStudy: (id?: string) => RequestGet
     beforeEach(async () => {
@@ -43,9 +35,7 @@ describe("API", () => {
 
     it("errors on non-admin", async () => {
       return getStudy(okStudyId)({
-        headers: {
-          Authorization: "Bearer normal",
-        },
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -55,9 +45,7 @@ describe("API", () => {
 
     it("returns empty on non-existent study", async () => {
       const response = await getStudy(fakeStudyId)({
-        headers: {
-          Authorization: "Bearer admin",
-        },
+        headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(response.status).toBe(200)
@@ -66,9 +54,7 @@ describe("API", () => {
 
     it("returns existing study", async () => {
       const response = await getStudy(okStudyId)({
-        headers: {
-          Authorization: "Bearer admin",
-        },
+        headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(response.status).toBe(200)
@@ -77,9 +63,7 @@ describe("API", () => {
 
     it("returns all studies on no id given", async () => {
       const response = await getStudy()({
-        headers: {
-          Authorization: "Bearer admin",
-        },
+        headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(response.status).toBe(200)
@@ -93,13 +77,7 @@ describe("API", () => {
   })
 
   describe("/api/ab-enrollments", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer admin": [200, adminUserDetails],
-    })
-
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     let getEnrollment: (id: string) => RequestGet
     beforeEach(async () => {
@@ -122,9 +100,7 @@ describe("API", () => {
 
     it("errors on non-existent ab_study_id", async () => {
       return getEnrollment(fakeStudyId)({
-        headers: {
-          Authorization: "Bearer normal",
-        },
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -137,9 +113,7 @@ describe("API", () => {
       const countBefore = await ctx.knex.count("*").from("ab_enrollment")
 
       const existingEnrollmentResponse = await getEnrollment(okStudyId2)({
-        headers: {
-          Authorization: "Bearer admin",
-        },
+        headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
       })
 
       const countAfter = await ctx.knex.count("*").from("ab_enrollment")
@@ -151,9 +125,7 @@ describe("API", () => {
 
     it("creates enrollment and returns the created one on future calls", async () => {
       const createdEnrollmentResponse = await getEnrollment(okStudyId)({
-        headers: {
-          Authorization: "Bearer normal",
-        },
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(createdEnrollmentResponse.status).toBe(200)
@@ -161,9 +133,7 @@ describe("API", () => {
 
       for (let i = 0; i < 10; i++) {
         const enrollmentResponse = await getEnrollment(okStudyId)({
-          headers: {
-            Authorization: "Bearer normal",
-          },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(enrollmentResponse.data).toEqual(createdEnrollmentResponse.data)
