@@ -10,11 +10,10 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFromSlugDocument } from "/graphql/generated"
 
@@ -41,7 +40,7 @@ const Points = () => {
       href: `/courses/${slug}/points`,
     },
   ])
-  const title = useSubtitle(data?.course?.name)
+  const title = data?.course?.name ?? "..."
 
   if (loading || !data) {
     return <Spinner />

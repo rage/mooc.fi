@@ -5,9 +5,9 @@ import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/util/useTranslator"
 
 import { EditorStudyModulesDocument } from "/graphql/generated"
 

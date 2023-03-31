@@ -15,12 +15,11 @@ import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import { getAccessToken } from "/lib/authentication"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseFromSlugDocument,
@@ -150,7 +149,7 @@ function RegisterCompletionPage() {
       href: `/register-completion/${courseSlug}`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+  const title = courseData?.course?.name ?? "..."
 
   if (courseLoading || userLoading) {
     return <Spinner />

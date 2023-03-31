@@ -6,8 +6,8 @@ import {
   ModuleCardTitle,
 } from "/components/Home/ModuleDisplay/Common"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 

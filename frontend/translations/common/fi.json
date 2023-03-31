@@ -1,12 +1,12 @@
 {
-    "login": "Kirjaudu sisään mooc.fi käyttäjätunnuksillasi",
+    "login": "Kirjaudu sisään MOOC.fi-käyttäjätunnuksillasi",
     "loginShort": "Kirjaudu sisään",
     "loginDetails": "Kirjaudu sisään samoilla käyttäjätunnuksilla, joilla olet rekisteröitynyt kurssille.",
     "signUp":"Luo uusi tunnus",
     "profile": "Oma profiili",
     "logout": "Kirjaudu ulos",
     "forgottenpw": "Unohditko salasanasi?",
-    "error": "Kirjautuminen epäonnistui. Virheellinen salasana tai sähköpostiosoite/käyttäjänimi",
+    "loginFailedError": "Kirjautuminen epäonnistui. Virheellinen salasana tai sähköpostiosoite/käyttäjänimi",
     "password": "Salasana",
     "username": "Sähköpostiosoite tai käyttäjänimi",
     "skiplink": "pääsisältöön",
@@ -71,6 +71,13 @@
     "showCourse": "Näytä kurssi",
     "ectsHoursExplanation1": "Kurssin arvoitu työmäärä, joka on arvioitu kurssista saatavien opintopisteiden perusteella. Kurssista saa ",
     "ectsHoursExplanation2": "opintopistettä. Helsingin yliopistolla yksi opintopiste vaatii noin 27 tunnin työmäärää.",
-    "noResults": "Ei tuloksia"
+    "noResults": "Ei tuloksia",
+    "noFields": "Ei tietoja",
+    "add": "Lisää",
+    "remove": "Poista",
+    "statusSaving": "Tallennetaan...",
+    "statusSavingSuccess": "Tallennus onnistui",
+    "statusSavingError": "Virhe tallentaessa",
+    "statusValidationErrors": "Lomakkeessa on virheitä"  
 }
 

@@ -4,8 +4,8 @@ import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import { CurrentUserProgressesDocument } from "/graphql/generated"
 

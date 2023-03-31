@@ -9,8 +9,8 @@ import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 interface StyledButtonProps {
   active?: boolean

@@ -14,7 +14,7 @@
     "formInfoText":"Here you can create a new account which works on most mooc.fi courses and services. If you have participated in mooc.fi courses before, you can use your existing account on login page.",
     "error": "Error: ",
     "signIn": "Already have an account? Log in.",
-    "confirmEmailTitle": "Your Mooc.fi account has been created.",
+    "confirmEmailTitle": "Your MOOC.fi account has been created.",
     "confirmEmailInfo": "We have sent an confirmation e-mail to your e-mail address. Please check your e-mail and confirm the address.",
     "submit": "Submit",
     "errorResearchSubmit": "There was an error saving your answer. You can change it in your profile later."

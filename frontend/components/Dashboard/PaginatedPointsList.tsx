@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
-import useDebounce from "/util/useDebounce"
+import useDebounce from "/hooks/useDebounce"
 
 import { StudentProgressesDocument } from "/graphql/generated"
 

@@ -14,9 +14,9 @@ import {
 import { styled } from "@mui/material/styles"
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseCatalogueTagsDocument,
@@ -321,9 +321,9 @@ function CourseGrid() {
             ))}
           </TagsContainer>
           <Statuses>
-            {["Active", "Upcoming", "Ended"].map((status) => (
+            {(["Active", "Upcoming", "Ended"] as const).map((status) => (
               <FormControlLabel
-                label={t(status as any)}
+                label={t(status)}
                 key={status}
                 control={
                   <Checkbox

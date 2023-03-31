@@ -26,8 +26,8 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import RelevantDates from "/components/Dashboard/Users/Summary/RelevantDates"
 import { CardTitle } from "/components/Text/headers"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 

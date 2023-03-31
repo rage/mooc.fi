@@ -5,9 +5,9 @@ import { CardContent, Tooltip, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 

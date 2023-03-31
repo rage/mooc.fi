@@ -35,5 +35,6 @@
   "moduleAddTranslation": "Add translation",
   "moduleDetailsTitle":"Study module details",
   "moduleTranslationsTitle":"Language versions",
+  "moduleTranslations": "Translations",
   "modulePhotoTitle": "Photo"
 }

@@ -30,13 +30,12 @@ import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"
 import UsersTranslations from "/translations/users"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCoursesQueryVariables,
@@ -94,7 +93,7 @@ function UserSummaryView() {
     },
   ])
 
-  const title = useSubtitle(data?.user?.full_name ?? undefined)
+  const title = data?.user?.full_name ?? undefined
 
   const [state, dispatch] = useReducer(collapseReducer, {})
   const [searchVariables, setSearchVariables] =

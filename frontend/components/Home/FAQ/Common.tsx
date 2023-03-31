@@ -13,8 +13,6 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import ErrorMessage from "/components/ErrorMessage"
-
 export const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
@@ -82,6 +80,11 @@ export const TitleBackground = styled("div")`
   margin-bottom: 1em;
 `
 
+export const IngressBackground = styled(TitleBackground)`
+  margin-bottom: 4em;
+  width: 45%;
+`
+
 export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
@@ -99,25 +102,6 @@ const List = styled("ul")``
 const OrderedList = styled("ol")``
 const ListItem = styled("li")``
 
-export const Loader = () => (
-  <Background>
-    <TitleBackground>
-      <Title component="h1" variant="h1" align="center">
-        <Skeleton variant="text" width="100%" />
-      </Title>
-    </TitleBackground>
-    <Content>
-      <ContentBox>
-        <SectionBox>
-          {range(20).map((i) => (
-            <Skeleton key={`content-skeleton-${i}`} />
-          ))}
-        </SectionBox>
-      </ContentBox>
-    </Content>
-  </Background>
-)
-
 type DynamicImportType = <T>() => Promise<React.ComponentType<T>>
 
 interface FAQComponentProps {
@@ -128,8 +112,12 @@ interface FAQComponentProps {
   ) => React.ComponentType<C> | null
 }
 
+function DummyPromiseComponent() {
+  return Promise.resolve(() => <React.Fragment />)
+}
+
 export function FAQComponent({
-  mdxImport = () => Promise.resolve(() => <React.Fragment />),
+  mdxImport = DummyPromiseComponent,
   onSuccess,
   onError,
 }: FAQComponentProps) {
@@ -138,15 +126,15 @@ export function FAQComponent({
       return mdxImport()
         .then(onSuccess)
         .catch((error: unknown) => {
-          console.log(error)
+          console.error("Error importing MDX component", error)
           onError()
-          return () => <ErrorMessage />
+          return () => null //<ErrorMessage />
         })
     },
     {
       loading: ({ error }) => {
         if (error) {
-          return <ErrorMessage />
+          return null // <ErrorMessage />
         }
         return <Loader />
       },
@@ -156,9 +144,10 @@ export function FAQComponent({
 
 interface FAQPageProps {
   error: boolean
-  title: string
-  ingress: string
-  content: JSX.Element
+  meta?: {
+    title?: JSX.Element | string
+    ingress?: JSX.Element | string
+  }
 }
 
 const mdxComponents: MDXComponents = {
@@ -168,7 +157,13 @@ const mdxComponents: MDXComponents = {
   li: ListItem,
 }
 
-export function FAQPage({ error, title, ingress, content }: FAQPageProps) {
+export function FAQPage({
+  error,
+  meta = {},
+  children,
+}: React.PropsWithChildren<FAQPageProps>) {
+  const { title, ingress } = meta
+
   return (
     <Background>
       <MDXProvider components={mdxComponents}>
@@ -180,16 +175,34 @@ export function FAQPage({ error, title, ingress, content }: FAQPageProps) {
               </Title>
             </TitleBackground>
             {ingress && (
-              <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
+              <IngressBackground>
                 <Title component="p" variant="subtitle1" align="center">
                   {ingress}
                 </Title>
-              </TitleBackground>
+              </IngressBackground>
             )}
           </>
         )}
-        <Content>{content}</Content>
+        <Content>{children}</Content>
       </MDXProvider>
     </Background>
   )
 }
+
+export const Loader = () => (
+  <FAQPage
+    error={false}
+    meta={{
+      title: <Skeleton variant="text" width="100%" />,
+      ingress: <Skeleton variant="text" width="100%" />,
+    }}
+  >
+    <ContentBox>
+      <SectionBox>
+        {range(20).map((i) => (
+          <Skeleton key={`content-skeleton-${i}`} />
+        ))}
+      </SectionBox>
+    </ContentBox>
+  </FAQPage>
+)

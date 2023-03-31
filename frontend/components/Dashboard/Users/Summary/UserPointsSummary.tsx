@@ -6,8 +6,8 @@ import { styled } from "@mui/material/styles"
 
 import { SkeletonCourseEntry } from "./CourseEntry"
 import CourseList from "/components/Dashboard/Users/Summary/CourseList"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCoursesQueryVariables,

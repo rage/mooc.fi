@@ -14,9 +14,9 @@ import OSSelector from "/components/Installation/OSSelector"
 import Spinner from "/components/Spinner"
 import UserOSContext from "/contexts/UserOSContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import InstallationTranslations from "/translations/installation"
 import getUserOS, { UserOSType } from "/util/getUserOS"
-import { useTranslator } from "/util/useTranslator"
 
 const Background = styled("section")`
   padding-top: 2em;

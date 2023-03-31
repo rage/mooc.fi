@@ -5,9 +5,9 @@ import CreateAccountForm from "/components/CreateAccountForm"
 import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedOut from "/lib/with-signed-out"
 import SignUpTranslations from "/translations/sign-up"
-import { useTranslator } from "/util/useTranslator"
 
 const SignUpPage = () => {
   const t = useTranslator(SignUpTranslations)

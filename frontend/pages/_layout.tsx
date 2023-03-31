@@ -10,6 +10,7 @@ import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
+import Snackbars from "/components/Snackbars"
 import { fontVariableClass } from "/src/fonts"
 import { fontVariableClass as newThemeFontVariableClass } from "/src/newTheme/typography"
 
@@ -51,6 +52,7 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
             <Alerts />
             {children}
           </main>
+          <Snackbars />
         </div>
         <Footer />
         <FooterUpPusher />

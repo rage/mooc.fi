@@ -5,8 +5,8 @@ import Container from "/components/Container"
 import UkraineInfo from "/components/Home/UkraineInfo"
 import WideNaviCard from "/components/Home/WideNaviCard"
 import PartnerDivider from "/components/PartnerDivider"
+import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
-import { useTranslator } from "/util/useTranslator"
 
 type NaviItem = {
   title: string

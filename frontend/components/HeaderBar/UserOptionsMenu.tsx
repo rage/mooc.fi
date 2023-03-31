@@ -7,9 +7,9 @@ import { useApolloClient } from "@apollo/client"
 import ProfileButton from "./ProfileButton"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const UserOptionsMenu = () => {
   const client = useApolloClient()

@@ -1,16 +1,16 @@
 {
-    "login": "Log in with your mooc.fi account",
+    "login": "Log in with your MOOC.fi account",
     "loginShort": "Log in",
+    "loginDetails": "Already registered for a course? Login with the details you used to register for a course.",
     "signUp":"Sign up",
     "logout": "Log out",
-    "loginDetails": "Already registered for a course? Login with the details you used to register for a course.",
     "profile": "My profile",
     "forgottenpw": "Forgot your password?",
-    "error": "Login failed. Wrong password or email address/username",
+    "loginFailedError": "Login failed. Wrong password or email address/username",
     "password": "Password",
     "username": "Email or username",
     "skiplink": "To main content",
-    "errorTitle": "An error has occured",
+    "errorTitle": "An error has occurred",
     "loadMore": "Load more",
     "confirmationUnsavedChanges": "You have unsaved changes",
     "confirmationLeaveWithoutSaving": "Are you sure you want to leave without saving?",
@@ -71,5 +71,12 @@
     "showCourse": "Show course",
     "ectsHoursExplanation1": "The estimated workload of the course, which is estimated based on the ECTS received from the course. The course awards",
     "ectsHoursExplanation2": "ECTS. At the University of Helsinki, one ECTS requires approximately 27 hours of work.",
-    "noResults": "No results"
-}
+    "noResults": "No results",
+    "noFields": "No fields",
+    "add": "Add",
+    "remove": "Remove",
+    "statusSaving": "Saving...",
+    "statusSavingSuccess": "Saved successfully",
+    "statusSavingError": "Error while saving",
+    "statusValidationErrors": "There are errors in the form"
+} 

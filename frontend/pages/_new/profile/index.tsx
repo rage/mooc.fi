@@ -14,8 +14,8 @@ import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withSignedIn from "/lib/with-signed-in"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import { CurrentUserOverviewDocument } from "/graphql/generated"
 

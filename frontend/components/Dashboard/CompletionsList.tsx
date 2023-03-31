@@ -6,7 +6,7 @@ import { CircularProgress } from "@mui/material"
 import CompletionsListWithData from "./CompletionsListWithData"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
-import { useQueryParameter } from "/util/useQueryParameter"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 
 import {
   PaginatedCompletionsDocument,

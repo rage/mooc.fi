@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import SignUpTranslations from "/translations/sign-up"
-import { useTranslator } from "/util/useTranslator"
 
 const InfoBox = styled("div")`
   margin-bottom: 2rem;

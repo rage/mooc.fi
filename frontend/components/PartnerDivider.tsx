@@ -1,8 +1,8 @@
 import { Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const PartnerDividerText = styled((props: Partial<TypographyProps>) => (
   <Typography variant="h4" {...props} />

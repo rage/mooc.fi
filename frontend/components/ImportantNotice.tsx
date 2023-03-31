@@ -1,8 +1,8 @@
 import { Paper, SvgIcon, SvgIconProps, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { useTranslator } from "/util/useTranslator"
 
 const ImportantNoticeContainer = styled(Paper)`
   padding: 1em;

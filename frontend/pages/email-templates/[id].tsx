@@ -21,9 +21,8 @@ import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { CardTitle, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   DeleteEmailTemplateDocument,
@@ -141,7 +140,7 @@ const EmailTemplateView = () => {
       href: `/email-templates/${id}`,
     },
   ])
-  const pageTitle = useSubtitle(data?.email_template?.name ?? "")
+  const pageTitle = data?.email_template?.name ?? ""
 
   if (loading) {
     return <Spinner />

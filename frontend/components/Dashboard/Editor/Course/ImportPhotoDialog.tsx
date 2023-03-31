@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useMemo } from "react"
 
-import { Field, useFormikContext } from "formik"
 import Image from "next/image"
+import { useFormContext } from "react-hook-form"
 
 import {
   Button,
@@ -10,15 +10,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  MenuItem,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { StyledTextField } from "/components/Dashboard/Editor/common"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { ControlledSelect } from "../Common/Fields"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   EditorCourseOtherCoursesFieldsFragment,
@@ -44,104 +42,95 @@ const ImagePlaceholder = styled("div")`
 `
 
 interface ImportPhotoDialogProps {
+  courses?: EditorCourseOtherCoursesFieldsFragment[]
   open: boolean
   onClose: () => void
-  courses: EditorCourseOtherCoursesFieldsFragment[]
 }
 
-const ImportPhotoDialog = ({
+function ImportPhotoDialog({
   open,
   onClose,
-  courses,
-}: ImportPhotoDialogProps) => {
-  const { values, setFieldValue } = useFormikContext<CourseFormValues>()
-  const [selectedCourse, setSelectedCourse] = useState(
-    courses?.find((course) => course.id === values.import_photo) ?? {
-      photo: undefined,
-    },
-  )
+  courses = [],
+}: ImportPhotoDialogProps) {
+  const { setValue, getValues, watch } = useFormContext()
   const t = useTranslator(CoursesTranslations)
 
-  useEffect(() => {
-    setSelectedCourse(
-      courses?.find((course) => course.id === values.import_photo) ?? {
-        photo: undefined,
-      },
-    )
-  }, [values.import_photo])
+  const fetchBase64 = useCallback(
+    (photo: ImageCoreFieldsFragment, filename: string) => {
+      fetch(filename, {
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: { Origin: "https://www.mooc.fi" },
+      })
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], photo?.name ?? "", {
+            type: photo?.original_mimetype ?? "image/png",
+          })
+          setValue("new_photo", file)
+        })
+    },
+    [setValue],
+  )
 
-  const fetchBase64 = (photo: ImageCoreFieldsFragment, filename: string) => {
-    fetch(filename, {
-      mode: "no-cors",
-      cache: "no-cache",
-      headers: { Origin: "https://www.mooc.fi" },
-    })
-      .then((res) => res.blob())
-      .then((blob) => {
-        const file = new File([blob], photo?.name ?? "", {
+  const fetchURL = useCallback(
+    (photo: ImageCoreFieldsFragment, filename: string) => {
+      const req = new XMLHttpRequest()
+      req.open("GET", filename, true)
+      req.responseType = "blob"
+      req.onload = () => {
+        const file = new File([req.response], photo?.name ?? "", {
           type: photo?.original_mimetype ?? "image/png",
         })
-        setFieldValue("new_photo", file)
-      })
-  }
+        setValue("new_photo", file)
+      }
+      req.send()
+    },
+    [setValue],
+  )
 
-  const fetchURL = (photo: ImageCoreFieldsFragment, filename: string) => {
-    const req = new XMLHttpRequest()
-    req.open("GET", filename, true)
-    req.responseType = "blob"
-    req.onload = () => {
-      const file = new File([req.response], photo?.name ?? "", {
-        type: photo?.original_mimetype ?? "image/png",
-      })
-      setFieldValue("new_photo", file)
-    }
-    req.send()
-  }
+  const photo = watch("import_photo")
 
-  const handleSelection = () => {
-    const { photo } = selectedCourse
+  const handleSelection = useCallback(() => {
+    const selectedPhoto = courses?.find((course) => course.id === photo)?.photo
 
-    if (!photo) {
+    if (!selectedPhoto) {
       return
     }
 
-    const base64 = photo?.original?.startsWith("data") ?? false
-    setFieldValue("thumbnail", photo?.compressed)
+    const base64 = selectedPhoto?.original?.startsWith("data") ?? false
+    setValue("thumbnail", selectedPhoto?.compressed)
     const filename =
-      (base64 ? photo?.original : addDomain(photo?.original)) ?? ""
+      (base64 ? selectedPhoto?.original : addDomain(selectedPhoto?.original)) ??
+      ""
     if (base64) {
-      fetchBase64(photo, filename)
+      fetchBase64(selectedPhoto, filename)
     } else {
-      fetchURL(photo, filename)
+      fetchURL(selectedPhoto, filename)
     }
     onClose()
-  }
+  }, [photo, courses, getValues, onClose, setValue, watch])
+
+  const selected = useMemo(
+    () => courses?.find((course) => course.id === photo) ?? null,
+    [courses, photo],
+  )
 
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{t("importPhotoDialogTitle")}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t("importPhotoDialogContent")}</DialogContentText>
-        <Field
+        <ControlledSelect
           name="import_photo"
-          type="select"
           label={t("importPhotoLabel")}
-          variant="outlined"
-          select
-          autoComplete="off"
-          component={StyledTextField}
-        >
-          {courses?.map((course) => (
-            <MenuItem key={course.slug} value={course.id ?? ""}>
-              {course.name}
-            </MenuItem>
-          ))}
-        </Field>
+          items={courses}
+        />
         <ImageContainer>
-          {values.import_photo ? (
+          {selected ? (
             <Image
-              src={addDomain(selectedCourse?.photo?.compressed)}
-              alt={selectedCourse?.photo?.name ?? "image from other course"}
+              src={addDomain(selected.photo?.compressed)}
+              alt={selected.photo?.name ?? "selected image"}
               style={{ objectFit: "contain" }}
               fill
             />

@@ -32,9 +32,9 @@ import { styled } from "@mui/material/styles"
 import { NavigationLinks } from "./NavigationLinks"
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const MenuItem = MUIMenuItem as EnhancedMenuItem
 

@@ -4,8 +4,8 @@ import { Button, Grid } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 

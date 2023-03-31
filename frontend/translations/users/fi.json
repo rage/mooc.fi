@@ -10,8 +10,6 @@
   "summary": "Yhteenveto",
   "rowsPerPage": "Rivejä sivulla:",
   "displayedRowsOf": "/",
-  "nextPage": "Seuraava sivu",
-  "previousPage": "Edellinen sivu",
   "searchByString": "Etsi merkkijonolla",
   "searchInCourses": "Etsi kursseista",
   "searchUser": "Etsi toista käyttäjää..."
