@@ -5,18 +5,19 @@ import { mocked } from "jest-mock"
 import { omit } from "lodash"
 
 import KafkaProducer from "../../../services/kafkaProducer"
-import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
+import {
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  getTestContext,
+  ID_REGEX,
+  setupTMCWithDefaultFakeUsers,
+} from "../../../tests"
 import { seed } from "../../../tests/data/seed"
 import { courseInclude } from "./util"
 
 jest.mock("../../../services/kafkaProducer")
 
 const ctx = getTestContext()
-const tmc = fakeTMCCurrent({
-  "Bearer normal": [200, normalUserDetails],
-  "Bearer admin": [200, adminUserDetails],
-})
 
 const anyPhoto = {
   photo_id: expect.stringMatching(ID_REGEX),
@@ -29,8 +30,7 @@ const anyPhoto = {
 
 describe("Course", () => {
   describe("mutations", () => {
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     const getNewCourse = () => ({
       name: "new1",
@@ -149,7 +149,6 @@ describe("Course", () => {
     describe("addCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx.client.setHeader("Authorization", "Bearer admin")
         mocked(KafkaProducer).mockClear()
       })
 
@@ -195,9 +194,13 @@ describe("Course", () => {
       test.each(cases)(
         "creates a course %s",
         async (_, { data, expected, omitIdFields = [] }) => {
-          const res = await ctx.client.request<any>(createCourseMutation, {
-            course: data,
-          })
+          const res = await ctx.client.request<any>(
+            createCourseMutation,
+            {
+              course: data,
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
 
           expect(res.addCourse).toMatchStrippedSnapshot(expected, {
             excludePaths: ["tags.id"],
@@ -244,11 +247,14 @@ describe("Course", () => {
       )
 
       it("errors with non-admin", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx.client.request(createCourseMutation, {
-            course: getNewCourse(),
-          })
+          await ctx.client.request(
+            createCourseMutation,
+            {
+              course: getNewCourse(),
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
           fail()
         } catch {}
       })
@@ -257,25 +263,32 @@ describe("Course", () => {
     describe("updateCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("errors on no slug given", async () => {
         try {
-          await ctx.client.request(updateCourseMutation, {
-            course: omit(getUpdateCourse(), "slug"),
-          })
+          await ctx.client.request(
+            updateCourseMutation,
+            {
+              course: omit(getUpdateCourse(), "slug"),
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
           fail()
         } catch {}
       })
 
       it("updates course", async () => {
-        const res = await ctx.client.request<any>(updateCourseMutation, {
-          course: {
-            ...getUpdateCourse(),
-            new_photo: undefined,
+        const res = await ctx.client.request<any>(
+          updateCourseMutation,
+          {
+            course: {
+              ...getUpdateCourse(),
+              new_photo: undefined,
+            },
           },
-        })
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res.updateCourse).toMatchStrippedSnapshot(
           {
@@ -314,14 +327,18 @@ describe("Course", () => {
       })
 
       it("updates language tag", async () => {
-        const res = await ctx.client.request<any>(updateCourseMutation, {
-          course: {
-            ...getUpdateCourse(),
-            new_photo: undefined,
-            new_slug: "course1",
-            language: "fi",
+        const res = await ctx.client.request<any>(
+          updateCourseMutation,
+          {
+            course: {
+              ...getUpdateCourse(),
+              new_photo: undefined,
+              new_slug: "course1",
+              language: "fi",
+            },
           },
-        })
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
         expect(res.updateCourse).toMatchStrippedSnapshot(
           {
             ...expectedUpdatedCourse,
@@ -353,14 +370,18 @@ describe("Course", () => {
       })
 
       it("removes language tag", async () => {
-        const res = await ctx.client.request<any>(updateCourseMutation, {
-          course: {
-            ...getUpdateCourse(),
-            new_photo: undefined,
-            new_slug: "course1",
-            language: undefined,
+        const res = await ctx.client.request<any>(
+          updateCourseMutation,
+          {
+            course: {
+              ...getUpdateCourse(),
+              new_photo: undefined,
+              new_slug: "course1",
+              language: undefined,
+            },
           },
-        })
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
         expect(res.updateCourse).toMatchStrippedSnapshot(
           {
             ...expectedUpdatedCourse,
@@ -392,9 +413,13 @@ describe("Course", () => {
       })
 
       it("updates photo", async () => {
-        const res = await ctx.client.request<any>(updateCourseMutation, {
-          course: getUpdateCourse(),
-        })
+        const res = await ctx.client.request<any>(
+          updateCourseMutation,
+          {
+            course: getUpdateCourse(),
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res.updateCourse).toMatchStrippedSnapshot(
           {
@@ -435,14 +460,18 @@ describe("Course", () => {
       })
 
       it("deletes photo", async () => {
-        const res = await ctx.client.request<any>(updateCourseMutation, {
-          course: {
-            ...getUpdateCourse(),
-            new_photo: undefined,
-            new_slug: undefined,
-            delete_photo: true,
+        const res = await ctx.client.request<any>(
+          updateCourseMutation,
+          {
+            course: {
+              ...getUpdateCourse(),
+              new_photo: undefined,
+              new_slug: undefined,
+              delete_photo: true,
+            },
           },
-        })
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res.updateCourse).toMatchStrippedSnapshot(
           {
@@ -462,11 +491,14 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx.client.request(updateCourseMutation, {
-            course: getUpdateCourse(),
-          })
+          await ctx.client.request(
+            updateCourseMutation,
+            {
+              course: getUpdateCourse(),
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
           fail()
         } catch {}
       })
@@ -475,13 +507,16 @@ describe("Course", () => {
     describe("deleteCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx.client.setHeader("Authorization", "Bearer admin")
       })
 
       it("deletes course on id", async () => {
-        const res = await ctx.client.request(deleteCourseMutation, {
-          id: "00000000000000000000000000000002",
-        })
+        const res = await ctx.client.request(
+          deleteCourseMutation,
+          {
+            id: "00000000000000000000000000000002",
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res).toMatchSnapshot()
         const deletedCourse = await ctx.prisma.course.findUnique({
@@ -495,9 +530,13 @@ describe("Course", () => {
       })
 
       it("deletes course on slug", async () => {
-        const res = await ctx.client.request(deleteCourseMutation, {
-          slug: "course1",
-        })
+        const res = await ctx.client.request(
+          deleteCourseMutation,
+          {
+            slug: "course1",
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res).toMatchSnapshot()
         const deletedCourse = await ctx.prisma.course.findUnique({
@@ -507,11 +546,14 @@ describe("Course", () => {
       })
 
       it("errors with non-admin", async () => {
-        ctx.client.setHeader("Authorization", "Bearer normal")
         try {
-          await ctx.client.request(deleteCourseMutation, {
-            slug: "course1",
-          })
+          await ctx.client.request(
+            deleteCourseMutation,
+            {
+              slug: "course1",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
           fail()
         } catch {}
       })

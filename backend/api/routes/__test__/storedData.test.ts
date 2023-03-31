@@ -1,23 +1,18 @@
 import {
   createRequestHelpers,
-  fakeTMCCurrent,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   RequestGet,
   RequestPost,
+  setupTMCWithDefaultFakeUsers,
 } from "../../../tests"
-import { normalUserDetails, seed } from "../../../tests/data"
+import { seed } from "../../../tests/data"
 
 const ctx = getTestContext()
 
 describe("API", () => {
   describe("/api/temporary-stored-data", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer third": [200, { ...normalUserDetails, id: 3 }],
-    })
-
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     let getStoredData: (slug: string) => RequestGet
     let postStoredData: (slug: string) => RequestPost
@@ -44,7 +39,7 @@ describe("API", () => {
 
       it("errors on no data", async () => {
         return postStoredData("course1")({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
           .then(() => fail())
           .catch(({ response }) => {
@@ -54,7 +49,7 @@ describe("API", () => {
 
       it("errors on invalid slug", async () => {
         return postStoredData("foobarbaz")({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           data: { data: "foo" },
         })
           .then(() => fail())
@@ -78,7 +73,7 @@ describe("API", () => {
 
         const res = await postStoredData("course1")({
           data: { data: "foo foo" },
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(res.status).toBe(200)
@@ -106,7 +101,7 @@ describe("API", () => {
 
         const res = await postStoredData("course2")({
           data: { data: "foo foo" },
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(res.status).toBe(200)
@@ -134,7 +129,7 @@ describe("API", () => {
 
       it("errors on invalid slug", async () => {
         return getStoredData("foobarbaz")({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
           .then(() => fail())
           .catch(({ response }) => {
@@ -145,7 +140,7 @@ describe("API", () => {
 
       it("errors on non-owned course", async () => {
         return getStoredData("course1")({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
           .then(() => fail())
           .catch(({ response }) => {
@@ -156,7 +151,7 @@ describe("API", () => {
 
       it("returns stored data from owned course", async () => {
         const res = await getStoredData("course2")({
-          headers: { Authorization: "Bearer normal" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         })
 
         expect(res.data).toMatchSnapshot()
