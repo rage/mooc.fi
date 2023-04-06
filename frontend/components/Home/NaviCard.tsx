@@ -70,7 +70,8 @@ function NaviCard(props: NaviCardProps) {
           {item.img ? (
             <BackgroundImage
               src={`/images/${item.img}`}
-              loading="lazy"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               alt=""
               fill
             />
@@ -85,8 +86,10 @@ function NaviCard(props: NaviCardProps) {
               {item.titleImg ? (
                 <Image
                   src={`/images/${item.titleImg}`}
-                  alt=""
+                  priority
+                  alt={item.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ width: "70%" }}
                 />
               ) : (

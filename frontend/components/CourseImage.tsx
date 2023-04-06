@@ -1,11 +1,11 @@
 import React from "react"
 
-import Image from "next/image"
+import { ImageProps } from "next/image"
 
 import { Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
-import { addDomain } from "/util/imageUtils"
+import LoaderImage from "./LoaderImage"
 
 import { ImageCoreFieldsFragment } from "/graphql/generated"
 
@@ -15,10 +15,6 @@ const ImageComponentBase = css`
   object-fit: cover;
 `
 
-const ImageComponent = styled(Image)`
-  ${ImageComponentBase}
-`
-
 const PlaceholderComponent = styled("div")`
   ${ImageComponentBase}
   background-color: #F0F0F0;
@@ -26,9 +22,9 @@ const PlaceholderComponent = styled("div")`
   justify-content: center;
   align-items: center;
 `
-interface CourseImageProps {
+interface CourseImageProps extends Omit<ImageProps, "src"> {
   photo?: ImageCoreFieldsFragment | null
-  [k: string]: any
+  src?: ImageProps["src"]
 }
 
 const CourseImage = React.memo((props: CourseImageProps) => {
@@ -37,10 +33,9 @@ const CourseImage = React.memo((props: CourseImageProps) => {
   return (
     <>
       {photo ? (
-        <ImageComponent
-          src={addDomain(photo.uncompressed)}
-          loading="lazy"
-          alt=""
+        <LoaderImage
+          image={photo}
+          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
           fill
           {...rest}
         />

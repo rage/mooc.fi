@@ -73,7 +73,8 @@ function WideNaviCard(props: NaviCardProps) {
           {item.img && (
             <BackgroundImage
               src={`/images/${item.img}`}
-              loading="lazy"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               alt=""
               aria-hidden
               {...(item.imgDimensions ?? { fill: true })}
@@ -85,6 +86,7 @@ function WideNaviCard(props: NaviCardProps) {
                 <TitleImage
                   src={`/images/${item.titleImg}`}
                   alt={item.title ?? ""}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ objectFit: "contain" }}
                   {...(item.titleImgDimensions ?? { fill: true })}
                 />

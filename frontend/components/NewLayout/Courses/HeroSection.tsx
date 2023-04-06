@@ -34,6 +34,7 @@ function HeroSection() {
           <Image
             src="/images/new/components/courses/herosection_icon1.png"
             alt="Not Found"
+            priority
             className="group-3487"
             width="150"
             height="150"
@@ -44,6 +45,7 @@ function HeroSection() {
           <Image
             src="/images/new/components/courses/herosection_transition_icon.png"
             alt="Not Found"
+            priority
             className="group-3487"
             width="25"
             height="50"
@@ -53,6 +55,7 @@ function HeroSection() {
           <Image
             src="/images/new/components/courses/herosection_icon2.png"
             alt="Not Found"
+            priority
             className="group-3487"
             width="150"
             height="150"
@@ -63,6 +66,7 @@ function HeroSection() {
           <Image
             src="/images/new/components/courses/herosection_transition_icon.png"
             alt="Not Found"
+            priority
             className="group-3487"
             width="25"
             height="50"
@@ -72,6 +76,7 @@ function HeroSection() {
           <Image
             src="/images/new/components/courses/herosection_icon3.png"
             alt="Not Found"
+            priority
             className="group-3487"
             width="150"
             height="150"

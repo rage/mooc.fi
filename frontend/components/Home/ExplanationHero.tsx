@@ -17,6 +17,7 @@ function ExplanationHero() {
       <BackgroundImage
         src="/images/homeBackground.webp"
         alt=""
+        priority
         aria-hidden={true}
         fill
       />

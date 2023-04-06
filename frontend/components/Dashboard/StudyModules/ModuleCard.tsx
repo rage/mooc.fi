@@ -1,5 +1,3 @@
-import Image from "next/image"
-
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import EditIcon from "@mui/icons-material/Edit"
@@ -13,6 +11,7 @@ import {
 import { css, styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import LoaderImage from "/components/LoaderImage"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
@@ -36,7 +35,7 @@ const ImageBackgroundBase = css`
   background-position: center 40%;
 `
 
-const ImageBackground = styled(Image)`
+const ImageBackground = styled(LoaderImage)`
   ${ImageBackgroundBase};
   object-fit: cover;
 `
@@ -119,7 +118,13 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
           </ImageBackgroundSkeleton>
         )}
         {moduleFound && (
-          <ImageBackground src={imageUrl} alt="" aria-hidden="true" fill />
+          <ImageBackground
+            src={imageUrl}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            alt=""
+            aria-hidden="true"
+            fill
+          />
         )}
         {moduleNotFound && (
           <IconBackground>

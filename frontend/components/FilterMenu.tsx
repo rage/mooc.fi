@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback } from "react"
 
 import { Clear, Search } from "@mui/icons-material"
 import {
@@ -23,7 +23,6 @@ import CommonTranslations from "/translations/common"
 import {
   CourseCoreFieldsFragment,
   CourseStatus,
-  EditorCoursesQueryVariables,
 } from "/graphql/generated"
 
 const Container = styled("div")`
@@ -91,12 +90,17 @@ interface FilterFields {
   status: boolean
   handler: boolean
 }
+
+export interface SearchVariables {
+  search: string | undefined
+  hidden?: boolean
+  handledBy?: string | null
+  status?: CourseStatus[]
+}
 interface FilterProps {
-  searchVariables: EditorCoursesQueryVariables
-  setSearchVariables: React.Dispatch<EditorCoursesQueryVariables>
+  searchVariables: SearchVariables
+  setSearchVariables: React.Dispatch<React.SetStateAction<SearchVariables>>
   handlerCourses?: CourseCoreFieldsFragment[]
-  status?: string[]
-  setStatus?: React.Dispatch<React.SetStateAction<CourseStatus[]>>
   loading: boolean
   fields?: FilterFields
   label?: string
@@ -107,8 +111,6 @@ function FilterMenu({
   setSearchVariables,
   loading,
   handlerCourses = [],
-  status = [],
-  setStatus = () => void 0,
   fields,
   label,
 }: FilterProps) {
@@ -120,15 +122,12 @@ function FilterMenu({
   } = fields ?? {}
   const {
     search: initialSearch,
-    hidden: initialHidden,
-    handledBy: initialHandledBy,
+    hidden,
+    handledBy,
+    status
   } = searchVariables
 
   const { search, setSearch } = useSearch({ search: initialSearch ?? "" })
-  const [hidden, setHidden] = useState(
-    initialHidden === null ? true : initialHidden,
-  )
-  const [handledBy, setHandledBy] = useState(initialHandledBy ?? "")
 
   /*const inputLabel = useRef<any>(null)
   const [labelWidth, setLabelWidth] = useState(0)
@@ -136,13 +135,11 @@ function FilterMenu({
   useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])*/
 
   const onSubmit = useCallback(() => {
-    setSearchVariables({
-      ...searchVariables,
+    setSearchVariables((previousSearchVariables) => ({
+      ...previousSearchVariables,
       search,
-      hidden,
-      handledBy,
-    })
-  }, [searchVariables, search, hidden, handledBy])
+    }))
+  }, [searchVariables, search])
 
   const handleStatusChange = useCallback(
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,33 +151,30 @@ function FilterMenu({
             ) ?? []
       ) as CourseStatus[]
 
-      setStatus(newStatus)
-      setSearchVariables({
-        ...searchVariables,
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
         status: newStatus,
-      })
+      }))
     },
     [searchVariables],
   )
 
   const handleHiddenChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setHidden(e.target.checked)
-      setSearchVariables({
-        ...searchVariables,
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
         hidden: e.target.checked,
-      })
+      }))
     },
     [searchVariables],
   )
 
   const handleHandledByChange = useCallback(
     (e: SelectChangeEvent<string>) => {
-      setHandledBy(e.target.value)
-      setSearchVariables({
-        ...searchVariables,
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
         handledBy: e.target.value,
-      })
+      }))
     },
     [searchVariables],
   )
@@ -189,7 +183,7 @@ function FilterMenu({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(e.target.value)
     },
-    [],
+    [setSearch],
   )
   const onSearchKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -197,15 +191,12 @@ function FilterMenu({
         onSubmit()
       }
     },
-    [],
+    [onSubmit],
   )
   const onSearchReset = useCallback(() => {
     setSearch("")
   }, [])
   const onFormReset = useCallback(() => {
-    setHidden(true)
-    setHandledBy("")
-    setStatus([CourseStatus.Active, CourseStatus.Upcoming])
     setSearchVariables({
       search: "",
       hidden: true,
@@ -251,7 +242,7 @@ function FilterMenu({
                 control={
                   <Checkbox
                     id="hidden"
-                    checked={hidden}
+                    checked={hidden || false}
                     onChange={handleHiddenChange}
                   />
                 }
@@ -268,7 +259,7 @@ function FilterMenu({
                     control={
                       <Checkbox
                         id={value}
-                        checked={status.includes(value)}
+                        checked={(status ?? []).includes(value as CourseStatus)}
                         onChange={handleStatusChange(value)}
                       />
                     }
@@ -280,7 +271,7 @@ function FilterMenu({
           {showHandler ? (
             <HandledByFormControl disabled={loading}>
               <Select
-                value={loading ? "" : handledBy}
+                value={loading ? "" : handledBy ?? ""}
                 variant="outlined"
                 onChange={handleHandledByChange}
                 label={t("handledBy")}

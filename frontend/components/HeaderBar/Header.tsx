@@ -2,7 +2,7 @@ import { ReactElement } from "react"
 
 import { useRouter } from "next/router"
 
-import { AppBar, Toolbar } from "@mui/material"
+import { AppBar, Skeleton, Toolbar } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import Slide from "@mui/material/Slide"
 import { styled } from "@mui/material/styles"
@@ -55,7 +55,7 @@ export function useActiveTab() {
 }
 
 function Header() {
-  const { loggedIn } = useLoginStateContext()
+  const { loggedIn, loading } = useLoginStateContext()
 
   return (
     <>
@@ -66,6 +66,7 @@ function Header() {
             <MoocLogo />
             <MenuContainer>
               <HiddenMenuContainer>
+                {loading && <Skeleton height="100%" />}
                 {loggedIn && <LoggedInUserMenu />}
               </HiddenMenuContainer>
             </MenuContainer>

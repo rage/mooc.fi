@@ -78,8 +78,8 @@ export const ModuleImage = ({ src, alt, ...props }: ImageProps) => (
     <Image
       src={staticSrc(src)}
       alt={alt ?? "Module image"}
-      loading="lazy"
       style={{ objectFit: "contain" }}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       {...(!props.width && !props.height && { fill: true })}
       {...props}
     />

@@ -57,6 +57,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
         src={`/images/${headerImage}`}
         alt=""
         fill
+        loading="lazy"
         aria-hidden
         hueRotateAngle={hueRotateAngle}
         brightness={brightness}
