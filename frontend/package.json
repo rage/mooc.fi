@@ -48,6 +48,7 @@
     "formik-mui": "^5.0.0-alpha.0",
     "formik-mui-x-date-pickers": "^0.0.1",
     "graphql": "16.6.0",
+    "graphql-ws": "^5.12.1",
     "immer": "^9.0.19",
     "isomorphic-unfetch": "^4.0.2",
     "lodash": "^4.17.21",

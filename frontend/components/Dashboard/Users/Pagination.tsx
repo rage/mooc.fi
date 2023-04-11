@@ -46,9 +46,9 @@ const TablePaginationActions: React.FC = () => {
     setSearchVariables,
   } = useContext(UserSearchContext)
 
-  const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
-  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
-  const count = data?.userDetailsContains?.count ?? 0
+  // const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
+  //  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
+  const count = data?.count ?? 0
 
   const handleFirstPageButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -65,8 +65,8 @@ const TablePaginationActions: React.FC = () => {
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
-        last: rowsPerPage,
-        before: startCursor,
+        //last: rowsPerPage,
+        //before: startCursor,
       })
       setPage(page - 1)
     },
@@ -77,9 +77,9 @@ const TablePaginationActions: React.FC = () => {
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
-        first: rowsPerPage,
-        after: endCursor,
-        skip: 1,
+        //first: rowsPerPage,
+        //after: endCursor,
+        //skip: 1,
       })
       setPage(page + 1)
     },
@@ -90,7 +90,7 @@ const TablePaginationActions: React.FC = () => {
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
-        last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
+        //last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
       })
       setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
     },
@@ -183,7 +183,7 @@ const Pagination: React.FC = () => {
     <StyledTablePagination
       rowsPerPageOptions={[10, 20, 50]}
       colSpan={5}
-      count={data?.userDetailsContains?.count ?? 0}
+      count={data?.count ?? 0}
       rowsPerPage={rowsPerPage}
       page={page}
       SelectProps={{

@@ -1035,6 +1035,13 @@ export type StudyModuleTranslationFieldPolicy = {
   study_module_id?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 }
+export type SubscriptionKeySpecifier = (
+  | "userSearch"
+  | SubscriptionKeySpecifier
+)[]
+export type SubscriptionFieldPolicy = {
+  userSearch?: FieldPolicy<any> | FieldReadFunction<any>
+}
 export type TagKeySpecifier = (
   | "courses"
   | "created_at"
@@ -1356,6 +1363,23 @@ export type UserOrganizationFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
 }
+export type UserSearchKeySpecifier = (
+  | "count"
+  | "field"
+  | "fieldCount"
+  | "fieldIndex"
+  | "matches"
+  | "search"
+  | UserSearchKeySpecifier
+)[]
+export type UserSearchFieldPolicy = {
+  count?: FieldPolicy<any> | FieldReadFunction<any>
+  field?: FieldPolicy<any> | FieldReadFunction<any>
+  fieldCount?: FieldPolicy<any> | FieldReadFunction<any>
+  fieldIndex?: FieldPolicy<any> | FieldReadFunction<any>
+  matches?: FieldPolicy<any> | FieldReadFunction<any>
+  search?: FieldPolicy<any> | FieldReadFunction<any>
+}
 export type VerifiedUserKeySpecifier = (
   | "created_at"
   | "display_name"
@@ -1632,6 +1656,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | StudyModuleTranslationKeySpecifier)
     fields?: StudyModuleTranslationFieldPolicy
   }
+  Subscription?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | SubscriptionKeySpecifier
+      | (() => undefined | SubscriptionKeySpecifier)
+    fields?: SubscriptionFieldPolicy
+  }
   Tag?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | TagKeySpecifier | (() => undefined | TagKeySpecifier)
     fields?: TagFieldPolicy
@@ -1716,6 +1747,13 @@ export type StrictTypedTypePolicies = {
       | UserOrganizationKeySpecifier
       | (() => undefined | UserOrganizationKeySpecifier)
     fields?: UserOrganizationFieldPolicy
+  }
+  UserSearch?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | UserSearchKeySpecifier
+      | (() => undefined | UserSearchKeySpecifier)
+    fields?: UserSearchFieldPolicy
   }
   VerifiedUser?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

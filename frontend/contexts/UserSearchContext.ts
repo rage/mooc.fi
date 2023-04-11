@@ -1,12 +1,12 @@
 import { createContext } from "react"
 
 import {
-  UserDetailsContainsQuery,
+  UserCoreFieldsFragment,
   UserDetailsContainsQueryVariables,
 } from "/graphql/generated"
 
 interface UserSearchContext {
-  data?: UserDetailsContainsQuery
+  data?: { count?: number; matches: Array<UserCoreFieldsFragment> }
   loading: boolean
   page: number
   rowsPerPage: number
@@ -18,10 +18,11 @@ interface UserSearchContext {
   >
   setRowsPerPage: React.Dispatch<React.SetStateAction<number>>
   setSearch: React.Dispatch<React.SetStateAction<string>>
+  resetResults: () => void
 }
 
 export default createContext<UserSearchContext>({
-  data: {} as UserDetailsContainsQuery,
+  data: { matches: [] as Array<UserCoreFieldsFragment> },
   loading: false,
   page: 0,
   rowsPerPage: 10,
@@ -33,4 +34,5 @@ export default createContext<UserSearchContext>({
   setSearchVariables: () => void 0,
   setRowsPerPage: () => void 0,
   setSearch: () => void 0,
+  resetResults: () => void 0,
 })

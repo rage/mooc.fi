@@ -63,7 +63,9 @@ const WideGrid = () => {
       <TableWrapper>
         <Table>
           <TableHead>
-            {rowsPerPage >= 50 && data?.userDetailsContains?.edges?.length ? (
+            {rowsPerPage >= 50 &&
+            data?.matches.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+              ?.length ? (
               <PaginationComponent />
             ) : null}
             <TableRow>
@@ -93,9 +95,9 @@ const WideGrid = () => {
 
 const RenderResults = () => {
   const t = useTranslator(UsersTranslations)
-  const { data, loading } = useContext(UserSearchContext)
+  const { data, loading, rowsPerPage, page } = useContext(UserSearchContext)
 
-  const results = data?.userDetailsContains?.edges ?? []
+  const results = data?.matches ?? []
 
   if (loading) {
     return (
@@ -122,37 +124,39 @@ const RenderResults = () => {
 
   return (
     <TableBody>
-      {results.map((row) => {
-        const { upstream_id, email, first_name, last_name, student_number } =
-          row?.node ?? {}
+      {results
+        .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+        .map((row) => {
+          const { upstream_id, email, first_name, last_name, student_number } =
+            row ?? {}
 
-        return (
-          <TableRow key={upstream_id}>
-            <TableCell component="th" scope="row">
-              {email}
-            </TableCell>
-            <TableCell align="right">{first_name}</TableCell>
-            <TableCell align="right">{last_name}</TableCell>
-            <TableCell align="right">{student_number}</TableCell>
-            <TableCell align="right">
-              <ButtonContainer>
-                <Button
-                  href={`/users/${upstream_id}/summary`}
-                  variant="contained"
-                >
-                  {t("summary")}
-                </Button>
-                <Button
-                  href={`/users/${upstream_id}/completions`}
-                  variant="contained"
-                >
-                  {t("completions")}
-                </Button>
-              </ButtonContainer>
-            </TableCell>
-          </TableRow>
-        )
-      })}
+          return (
+            <TableRow key={upstream_id}>
+              <TableCell component="th" scope="row">
+                {email}
+              </TableCell>
+              <TableCell align="right">{first_name}</TableCell>
+              <TableCell align="right">{last_name}</TableCell>
+              <TableCell align="right">{student_number}</TableCell>
+              <TableCell align="right">
+                <ButtonContainer>
+                  <Button
+                    href={`/users/${upstream_id}/summary`}
+                    variant="contained"
+                  >
+                    {t("summary")}
+                  </Button>
+                  <Button
+                    href={`/users/${upstream_id}/completions`}
+                    variant="contained"
+                  >
+                    {t("completions")}
+                  </Button>
+                </ButtonContainer>
+              </TableCell>
+            </TableRow>
+          )
+        })}
     </TableBody>
   )
 }

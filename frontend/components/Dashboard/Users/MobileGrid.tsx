@@ -58,7 +58,7 @@ const MobileGrid: React.FC = () => {
 
   return (
     <>
-      {loading || data?.userDetailsContains?.edges?.length ? (
+      {loading || data?.count ? (
         <PaginationComponent />
       ) : (
         <Typography>{t("noResults")}</Typography>
@@ -70,7 +70,7 @@ const MobileGrid: React.FC = () => {
 }
 
 const RenderCards: React.FC = () => {
-  const { data, loading } = useContext(UserSearchContext)
+  const { data, loading, page, rowsPerPage } = useContext(UserSearchContext)
 
   if (loading) {
     return (
@@ -84,12 +84,11 @@ const RenderCards: React.FC = () => {
 
   return (
     <>
-      {data?.userDetailsContains?.edges?.map((row, index) => (
-        <DataCard
-          key={row?.node?.upstream_id ?? index}
-          row={row?.node ?? undefined}
-        />
-      ))}
+      {data?.matches
+        .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+        .map((row, index) => (
+          <DataCard key={row?.upstream_id ?? index} row={row} />
+        ))}
     </>
   )
 }

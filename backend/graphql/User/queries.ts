@@ -1,4 +1,13 @@
-import { extendType, idArg, intArg, stringArg } from "nexus"
+import {
+  extendType,
+  idArg,
+  intArg,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus"
+
+import { Prisma, User } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { ForbiddenError, UserInputError } from "../../lib/errors"
@@ -84,6 +93,64 @@ export const UserQueries = extendType({
         // FIXME: why don't we search anything? where's this come from?
         // const { search } = args
         return ctx.user ?? null
+      },
+    })
+  },
+})
+
+export const UserSearch = objectType({
+  name: "UserSearch",
+  definition(t) {
+    t.string("search")
+    t.string("field")
+    t.nonNull.list.nonNull.field("matches", { type: "User" })
+    t.nonNull.int("count")
+    t.nonNull.int("fieldIndex")
+    t.nonNull.int("fieldCount")
+  },
+})
+
+export const UserSubscriptions = extendType({
+  type: "Subscription",
+  definition(t) {
+    t.nonNull.field("userSearch", {
+      type: "UserSearch",
+      args: {
+        search: nonNull(stringArg()),
+      },
+      // authorize: isAdmin,
+      subscribe(_, { search }, ctx) {
+        const queries =
+          (buildUserSearch(search).OR as Array<Prisma.UserWhereInput>) ?? []
+        const fieldCount = queries.length
+        let users: Array<User> = []
+
+        return (async function* () {
+          let fieldIndex = 0
+          for (const query of queries) {
+            const field = Object.keys(query).join(", ")
+            const res = await ctx.prisma.user.findMany({
+              where: query,
+            })
+            const newUsers = res.filter(
+              (u) => !users.find((u2) => u2.id === u.id),
+            )
+            users = users.concat(newUsers)
+
+            yield {
+              field,
+              search,
+              count: users.length,
+              fieldIndex,
+              fieldCount,
+              matches: newUsers,
+            }
+            fieldIndex++
+          }
+        })()
+      },
+      resolve(eventData) {
+        return eventData
       },
     })
   },

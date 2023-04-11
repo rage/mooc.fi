@@ -22,8 +22,15 @@ const StyledButton = styled(ButtonWithPaddingAndMargin)`
 `
 
 const SearchForm = () => {
-  const { page, search, setSearch, rowsPerPage, setPage, setSearchVariables } =
-    useContext(UserSearchContext)
+  const {
+    page,
+    search,
+    setSearch,
+    rowsPerPage,
+    setPage,
+    setSearchVariables,
+    resetResults,
+  } = useContext(UserSearchContext)
   const t = useTranslator(UsersTranslations)
 
   const handleSubmit = useCallback(() => {
@@ -34,6 +41,7 @@ const SearchForm = () => {
         skip: 0,
       })
       setPage(0)
+      resetResults()
     }
   }, [search, page, rowsPerPage])
 

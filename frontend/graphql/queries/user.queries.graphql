@@ -128,3 +128,16 @@ fragment VerifiedUserFields on VerifiedUser {
   personal_unique_code
   display_name
 }
+
+subscription UserSearch($search: String!) {
+  userSearch(search: $search) {
+    field
+    search
+    count
+    fieldIndex
+    fieldCount
+    matches {
+      ...UserCoreFields
+    }
+  }
+}

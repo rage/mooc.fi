@@ -42,16 +42,16 @@ export const buildUserSearch = (
 
   const userSearchQuery: Prisma.UserWhereInput["OR"] = [
     {
-      first_name: { contains: search, mode: "insensitive" },
+      email: { contains: search, mode: "insensitive" },
     },
     {
       last_name: { contains: search, mode: "insensitive" },
     },
     {
-      username: { contains: search, mode: "insensitive" },
+      first_name: { contains: search, mode: "insensitive" },
     },
     {
-      email: { contains: search, mode: "insensitive" },
+      username: { contains: search, mode: "insensitive" },
     },
     {
       student_number: { contains: search },

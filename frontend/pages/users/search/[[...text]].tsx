@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useLazyQuery } from "@apollo/client"
+import { useSubscription } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
@@ -15,8 +15,9 @@ import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
 
 import {
-  UserDetailsContainsDocument,
+  UserCoreFieldsFragment,
   UserDetailsContainsQueryVariables,
+  UserSearchDocument,
 } from "/graphql/generated"
 
 const UserSearch = () => {
@@ -24,6 +25,8 @@ const UserSearch = () => {
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
+
+  const [results, setResults] = useState<Array<UserCoreFieldsFragment>>([])
 
   const userSearch = useSearch({
     page: pageParam,
@@ -37,12 +40,20 @@ const UserSearch = () => {
       skip: pageParam > 0 ? pageParam * rowsParam : undefined,
     })
 
-  const [loadData, { data, loading }] = useLazyQuery(
-    UserDetailsContainsDocument,
-    {
-      ssr: false,
+  const resetResults = useCallback(() => setResults([]), [setResults])
+
+  const { data, loading } = useSubscription(UserSearchDocument, {
+    variables: { search: searchVariables.search },
+    onData: ({ data }) => {
+      console.log("onData", data)
+      if (data.data) {
+        setResults((prev) => [
+          ...prev.concat(data.data?.userSearch.matches ?? []),
+        ])
+      }
     },
-  )
+    skip: !searchVariables.search,
+  })
 
   const { rowsPerPage, page } = userSearch
 
@@ -63,10 +74,6 @@ const UserSearch = () => {
       searchVariables.search !== ""
         ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
         : `/users/search${query}`
-
-    loadData({
-      variables: searchVariables,
-    })
 
     if (router?.asPath !== href) {
       // the history is still a bit wonky - how should it work?
@@ -95,12 +102,13 @@ const UserSearch = () => {
   const value = useMemo(
     () => ({
       ...userSearch,
-      data,
+      data: { count: data?.userSearch.count, matches: results },
       loading,
       searchVariables,
       setSearchVariables,
+      resetResults,
     }),
-    [data, loading, userSearch, searchVariables],
+    [results, loading, userSearch, searchVariables, resetResults],
   )
 
   return (
