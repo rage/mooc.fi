@@ -1,6 +1,15 @@
 query Courses($language: String) {
-  courses(orderBy: { order: asc }, language: $language) {
+  courses(orderBy: { order: asc }, language: $language, hidden: false) {
     ...CourseFields
+  }
+}
+
+query FrontpageCoursesModules($language: String) {
+  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+    ...CourseFields
+  }
+  study_modules(orderBy: { id: asc }, language: $language) {
+    ...StudyModuleFields
   }
 }
 
@@ -41,6 +50,7 @@ query CourseEditorOtherCourses {
     ...EditorCourseOtherCoursesFields
   }
 }
+
 query HandlerCourses {
   handlerCourses {
     ...CourseCoreFields

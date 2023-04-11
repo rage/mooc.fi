@@ -27,6 +27,11 @@ const config: CodegenConfig = {
           ],
         },
       },
+      /*preset: "client",
+      presetConfig: {
+        gqlTagName: "gql",
+        fragmentMasking: false,
+      },*/
       plugins: [
         {
           add: {
@@ -45,6 +50,9 @@ const config: CodegenConfig = {
         "fragment-matcher",
         "typed-document-node",
       ],
+    },
+    "./graphql/generated/apollo-helpers.ts": {
+      plugins: ["typescript-apollo-client-helpers"],
     },
   },
 }

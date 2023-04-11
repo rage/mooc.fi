@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-03-17T22:44:43+02:00
+// Generated on 2023-04-11T18:26:52+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2224,6 +2224,7 @@ export type User = {
   updated_at: Maybe<Scalars["DateTime"]>
   upstream_id: Scalars["Int"]
   user_course_progresses: Maybe<Array<UserCourseProgress>>
+  /** @deprecated Use user_course_progresses instead */
   user_course_progressess: Maybe<UserCourseProgress>
   user_course_service_progresses: Maybe<Array<UserCourseServiceProgress>>
   user_course_settings: Array<UserCourseSetting>
@@ -2300,6 +2301,8 @@ export type Useruser_course_settingsArgs = {
 }
 
 export type Useruser_course_summaryArgs = {
+  course_id?: InputMaybe<Scalars["ID"]>
+  course_slug?: InputMaybe<Scalars["String"]>
   includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
   includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
 }
@@ -2464,6 +2467,7 @@ export type UserCourseSummary = {
   course: Maybe<Course>
   course_id: Scalars["ID"]
   exercise_completions: Maybe<Array<ExerciseCompletion>>
+  exercises: Array<Exercise>
   include_deleted_exercises: Maybe<Scalars["Boolean"]>
   include_no_points_awarded_exercises: Maybe<Scalars["Boolean"]>
   inherit_settings_from_id: Maybe<Scalars["ID"]>
@@ -2474,6 +2478,11 @@ export type UserCourseSummary = {
 }
 
 export type UserCourseSummaryexercise_completionsArgs = {
+  includeDeleted?: InputMaybe<Scalars["Boolean"]>
+  includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
+}
+
+export type UserCourseSummaryexercisesArgs = {
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
   includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
 }
@@ -4836,6 +4845,91 @@ export type CoursesQuery = {
       created_at: any | null
       updated_at: any | null
     } | null
+  }> | null
+}
+
+export type FrontpageCoursesModulesQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]>
+}>
+
+export type FrontpageCoursesModulesQuery = {
+  __typename?: "Query"
+  courses: Array<{
+    __typename?: "Course"
+    description: string | null
+    link: string | null
+    order: number | null
+    study_module_order: number | null
+    promote: boolean | null
+    status: CourseStatus | null
+    start_point: boolean | null
+    study_module_start_point: boolean | null
+    hidden: boolean | null
+    upcoming_active_link: boolean | null
+    tier: number | null
+    support_email: string | null
+    teacher_in_charge_email: string
+    teacher_in_charge_name: string
+    start_date: string
+    end_date: string | null
+    has_certificate: boolean | null
+    id: string
+    slug: string
+    name: string
+    ects: string | null
+    language: string | null
+    created_at: any | null
+    updated_at: any | null
+    course_translations: Array<{
+      __typename?: "CourseTranslation"
+      id: string
+      language: string
+      name: string
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
+    }>
+    tags: Array<{
+      __typename?: "Tag"
+      id: string
+      hidden: boolean | null
+      types: Array<string> | null
+      name: string | null
+      tag_translations: Array<{
+        __typename?: "TagTranslation"
+        tag_id: string
+        name: string
+        description: string | null
+        language: string
+      }>
+    }>
+    photo: {
+      __typename?: "Image"
+      id: string
+      name: string | null
+      original: string
+      original_mimetype: string
+      compressed: string | null
+      compressed_mimetype: string | null
+      uncompressed: string
+      uncompressed_mimetype: string
+      created_at: any | null
+      updated_at: any | null
+    } | null
+  }> | null
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    description: string | null
+    image: string | null
+    order: number | null
+    created_at: any | null
+    updated_at: any | null
+    id: string
+    slug: string
+    name: string
   }> | null
 }
 
@@ -15044,6 +15138,11 @@ export const CoursesDocument = {
                   name: { kind: "Name", value: "language" },
                 },
               },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "hidden" },
+                value: { kind: "BooleanValue", value: false },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -15306,6 +15405,381 @@ export const CoursesDocument = {
     },
   ],
 } as unknown as DocumentNode<CoursesQuery, CoursesQueryVariables>
+export const FrontpageCoursesModulesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "FrontpageCoursesModules" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "courses" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "orderBy" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "order" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "hidden" },
+                value: { kind: "BooleanValue", value: false },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "CourseFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "orderBy" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagTranslationFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TagTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Tag" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "types" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tag_translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagTranslationFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "CourseTranslationCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "StudyModuleCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "image" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  FrontpageCoursesModulesQuery,
+  FrontpageCoursesModulesQueryVariables
+>
 export const EditorCoursesDocument = {
   kind: "Document",
   definitions: [

@@ -85,8 +85,6 @@ const Header = styled("div", {
   border-top-right-radius: 5px;
   padding-bottom: 0.5rem;
   justify-content: center;
-  top: 0;
-  left: 0;
   color: #ffffff;
   background-color: ${({ startPoint, upcoming }) =>
     upcoming ? "#378170" : startPoint ? "#005A84" : "#158278"};
