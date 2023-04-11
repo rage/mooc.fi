@@ -1567,18 +1567,18 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 1`
   ],
   "course_translations": [
     {
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -1728,21 +1728,21 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "instructions": null,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "instructions": "course1_instructions_en_US",
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "course_id": "00000000-0000-0000-0000-000000000002",
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -1958,18 +1958,18 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
   ],
   "course_translations": [
     {
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -2107,21 +2107,21 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "instructions": null,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "instructions": "course1_instructions_en_US",
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "course_id": "00000000-0000-0000-0000-000000000002",
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -2325,18 +2325,18 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 1
   ],
   "course_translations": [
     {
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -2493,21 +2493,21 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "instructions": null,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "instructions": "course1_instructions_en_US",
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "course_id": "00000000-0000-0000-0000-000000000002",
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -2734,18 +2734,18 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
   ],
   "course_translations": [
     {
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -2902,21 +2902,21 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "instructions": null,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "instructions": "course1_instructions_en_US",
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "course_id": "00000000-0000-0000-0000-000000000002",
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -3143,18 +3143,18 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 1`
   ],
   "course_translations": [
     {
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [
@@ -3311,21 +3311,21 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 2`
   "course_translations": [
     {
       "course_id": "00000000-0000-0000-0000-000000000002",
-      "description": "course1_added_description_se_SE",
-      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
-      "instructions": null,
-      "language": "se_SE",
-      "link": "http:/link.se.com",
-      "name": "course1_se_SE",
-    },
-    {
-      "course_id": "00000000-0000-0000-0000-000000000002",
       "description": "course1_updated_description_en_US",
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
       "instructions": "course1_instructions_en_US",
       "language": "en_US",
       "link": "http://link.com",
       "name": "course1_en_US",
+    },
+    {
+      "course_id": "00000000-0000-0000-0000-000000000002",
+      "description": "course1_added_description_se_SE",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "language": "se_SE",
+      "link": "http:/link.se.com",
+      "name": "course1_se_SE",
     },
   ],
   "course_variants": [

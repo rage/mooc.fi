@@ -6,19 +6,66 @@ import nookies from "nookies"
 
 import {
   ApolloClient,
-  ApolloLink,
-  defaultDataIdFromObject,
+  ApolloLink, // defaultDataIdFromObject,
   InMemoryCache,
   NormalizedCacheObject,
+  Observable,
 } from "@apollo/client"
 import { BatchHttpLink } from "@apollo/client/link/batch-http"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
 
+import notEmpty from "/util/notEmpty"
+
+import { StrictTypedTypePolicies } from "/graphql/generated/apollo-helpers"
+
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
+const development = !production && process.env.NODE_ENV !== "test"
 const isBrowser = typeof window !== "undefined"
+
+// these cache settings are mainly for the breadcrumbs
+const typePolicies: StrictTypedTypePolicies = {
+  Course: {
+    keyFields: ["slug", "id", "name"],
+  },
+  StudyModule: {
+    keyFields: ["slug", "id", "name"],
+  },
+  Query: {
+    fields: {
+      userCourseSettings: {
+        // for "fetch more" type querying of user points
+        keyArgs: false,
+        merge: (existing, incoming) => {
+          const existingEdges = existing?.edges ?? []
+          const incomingEdges = incoming?.edges ?? []
+          const pageInfo = incoming?.pageInfo ?? {
+            hasNextPage: false,
+            endCursor: null,
+            __typename: "PageInfo",
+          }
+
+          const edges = [...existingEdges, ...incomingEdges]
+
+          return {
+            pageInfo,
+            edges,
+            totalCount: incoming?.totalCount ?? null,
+          }
+        },
+      },
+    },
+  },
+}
+
+const createCache = () =>
+  new InMemoryCache({
+    typePolicies,
+  })
+
+let cache = createCache()
 
 function create(
   initialState: any,
@@ -70,6 +117,29 @@ function create(
     new BatchHttpLink(httpLinkOptions),
   )
 
+  const metricsLink = new ApolloLink((operation, forward) => {
+    const { operationName } = operation
+    const startTime = new Date().getTime()
+    const observable = forward(operation)
+
+    // Return a new observable so no other links can call .subscribe on the
+    // the one that we were passed.
+    return new Observable((observer) => {
+      observable.subscribe({
+        complete: () => {
+          const elapsed = new Date().getTime() - startTime
+          console.warn(`[METRICS][${operationName}] (${elapsed}) complete`)
+          observer.complete()
+        },
+        next: observer.next.bind(observer),
+        error: (error) => {
+          // ...
+          observer.error(error)
+        },
+      })
+    })
+  })
+
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
@@ -82,47 +152,6 @@ function create(
     if (networkError) console.log(`[Network error]: ${networkError}`)
   })
 
-  // these cache settings are mainly for the breadcrumbs
-  const cache: InMemoryCache = new InMemoryCache({
-    dataIdFromObject: (object: any) => {
-      switch (object.__typename) {
-        case "Course":
-          return `Course:${object.slug}:${object.id}`
-        case "StudyModule":
-          return `StudyModule:${object.slug}:${object.id}`
-        default:
-          return defaultDataIdFromObject(object)
-      }
-    },
-    typePolicies: {
-      Query: {
-        fields: {
-          userCourseSettings: {
-            // for "fetch more" type querying of user points
-            keyArgs: false,
-            merge: (existing, incoming) => {
-              const existingEdges = existing?.edges ?? []
-              const incomingEdges = incoming?.edges ?? []
-              const pageInfo = incoming?.pageInfo ?? {
-                hasNextPage: false,
-                endCursor: null,
-                __typename: "PageInfo",
-              }
-
-              const edges = [...existingEdges, ...incomingEdges]
-
-              return {
-                pageInfo,
-                edges,
-                totalCount: incoming?.totalCount ?? null,
-              }
-            },
-          },
-        },
-      },
-    },
-  })
-
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser
       ? ApolloLink.from([
@@ -131,8 +160,15 @@ function create(
           localeLink,
           uploadAndBatchHTTPLink,
         ])
-      : ApolloLink.from([authLink, localeLink, uploadAndBatchHTTPLink]),
-    cache: cache.restore(initialState ?? {}),
+      : ApolloLink.from(
+          [
+            development ? metricsLink : undefined,
+            authLink,
+            localeLink,
+            uploadAndBatchHTTPLink,
+          ].filter(notEmpty),
+        ),
+    cache: isBrowser ? cache.restore(initialState ?? {}) : createCache(),
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {
@@ -149,26 +185,32 @@ function create(
 }
 
 let previousAccessToken: string | undefined = undefined
+let previousLocale: string | undefined = undefined
 
 export default function getApollo(
   initialState: any,
   accessToken?: string,
   locale?: string,
 ) {
+  const userChanged = accessToken !== previousAccessToken
+  const localeChanged = locale !== previousLocale
+
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
-  if (typeof window === "undefined") {
+  if (!isBrowser) {
     return create(initialState, accessToken, locale)
   }
 
   // Reuse client on the client-side
   // Also force new client if access token has changed because we don't want to risk accidentally
   // serving cached data from the previous user.
-  if (!apolloClient || accessToken !== previousAccessToken) {
+  if (!apolloClient || userChanged || localeChanged) {
+    cache = createCache()
     apolloClient = create(initialState, accessToken, locale)
   }
 
   previousAccessToken = accessToken
+  previousLocale = locale
 
   return apolloClient
 }
