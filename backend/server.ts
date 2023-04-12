@@ -110,7 +110,6 @@ export default async (serverContext: ServerContext) => {
       ApolloServerPluginDrainHttpServer({ httpServer }),
       isProduction
         ? ApolloServerPluginLandingPageProductionDefault({
-            graphRef: "foo@mooc",
             embed: true,
           } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),

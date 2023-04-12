@@ -124,7 +124,7 @@ function create(
   const wsLink = isBrowser
     ? new GraphQLWsLink(
         createClient({
-          url: production ? "wss://www.mooc.fi/api/" : "ws://localhost:4000",
+          url: production ? "wss://www.mooc.fi/api" : "ws://localhost:4000",
         }),
       )
     : null
