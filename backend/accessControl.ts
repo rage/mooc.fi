@@ -1,10 +1,10 @@
 import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
 export enum Role {
-  USER,
-  ADMIN,
-  ORGANIZATION, //for automated scripts, not for accounts
-  VISITOR,
+  VISITOR = 0,
+  USER = 1,
+  ADMIN = 2,
+  ORGANIZATION = 3, //for automated scripts, not for accounts
 }
 
 type AuthorizeFunction = <TypeName extends string, FieldName extends string>(

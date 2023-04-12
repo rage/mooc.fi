@@ -1,4 +1,5 @@
 import { plugin } from "nexus"
+import { MiddlewareFn } from "nexus/dist/plugin"
 
 import { Role } from "../accessControl"
 import { Context } from "../context"
@@ -7,29 +8,43 @@ import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { UserInfo } from "/domain/UserInfo"
 
+const authMiddlewareFn: MiddlewareFn = async (
+  root,
+  args,
+  ctx: Context,
+  info,
+  next,
+) => {
+  if (ctx.userDetails || ctx.organization) {
+    return next(root, args, ctx, info)
+  }
+
+  const rawToken =
+    ctx.req?.headers?.authorization ??
+    (ctx.req?.headers?.["Authorization"] as string) ??
+    ctx.connectionParams?.authorization ??
+    ctx.connectionParams?.["Authorization"] // graphql websocket
+  // connection?
+
+  if (!rawToken) {
+    ctx.role = Role.VISITOR
+  } else if (rawToken.startsWith("Basic")) {
+    await setContextOrganization(ctx, rawToken)
+  } else {
+    await setContextUser(ctx, rawToken)
+  }
+
+  return next(root, args, ctx, info)
+}
+
 export const moocfiAuthPlugin = () =>
   plugin({
     name: "moocfiAuthPlugin",
     onCreateFieldResolver() {
-      return async (root, args, ctx: Context, info, next) => {
-        if (ctx.userDetails || ctx.organization) {
-          return next(root, args, ctx, info)
-        }
-
-        const rawToken =
-          ctx.req?.headers?.authorization ??
-          (ctx.req?.headers?.["Authorization"] as string) // connection?
-
-        if (!rawToken) {
-          ctx.role = Role.VISITOR
-        } else if (rawToken.startsWith("Basic")) {
-          await setContextOrganization(ctx, rawToken)
-        } else {
-          await setContextUser(ctx, rawToken)
-        }
-
-        return next(root, args, ctx, info)
-      }
+      return authMiddlewareFn
+    },
+    onCreateFieldSubscribe() {
+      return authMiddlewareFn
     },
   })
 
@@ -67,7 +82,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
       ctx,
     )
   } catch (e) {
-    // console.log("error", e)
+    console.log("error", e)
   }
 
   ctx.tmcClient = client
