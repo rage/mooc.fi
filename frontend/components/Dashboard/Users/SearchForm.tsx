@@ -1,4 +1,10 @@
-import { SyntheticEvent, useCallback, useContext, useState } from "react"
+import {
+  SyntheticEvent,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from "react"
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
@@ -106,6 +112,7 @@ const SearchForm = () => {
   const t = useTranslator(UsersTranslations)
   const isMobile = useMediaQuery("(max-width:900px)")
   const GridComponent = isMobile ? MobileGrid : WideGrid
+  const prevSearch = useRef(search)
   const [metaVisible, setMetaVisible] = useState(false)
 
   const handleSubmit = useCallback(() => {
@@ -116,9 +123,12 @@ const SearchForm = () => {
         skip: 0,
       })
       setPage(0)
-      resetResults()
+      if (search !== prevSearch.current) {
+        resetResults()
+      }
+      prevSearch.current = search
     }
-  }, [search, page, rowsPerPage])
+  }, [prevSearch.current, search, page, rowsPerPage])
 
   const onSubmit = useCallback(
     <T extends Element>(event: SyntheticEvent<T>) => {

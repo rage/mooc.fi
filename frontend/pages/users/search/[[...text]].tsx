@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+import { useSubscription } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
@@ -36,11 +36,11 @@ const emptyResults: UserSearchResults = {
 
 const UserSearch = () => {
   const router = useRouter()
-  const client = useApolloClient()
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
   const isSearching = useRef(false)
+  const prevSearch = useRef("")
   const [results, setResults] = useState<UserSearchResults>(emptyResults)
 
   const userSearch = useSearch({
@@ -56,6 +56,68 @@ const UserSearch = () => {
       skip: pageParam > 0 ? pageParam * rowsParam : undefined,
     })
 
+  useSubscription(UserSearchDocument, {
+    variables: { search: searchVariables.search },
+    shouldResubscribe: true,
+    fetchPolicy: "cache-first",
+    skip: !searchVariables.search,
+    onData({ data }) {
+      if (!data.data) {
+        return
+      }
+
+      if (notEmpty(data.data.userSearch)) {
+        setResults((prev) => {
+          const {
+            matches,
+            field,
+            fieldValue,
+            count,
+            fieldIndex,
+            fieldCount,
+            fieldResultCount,
+            fieldUniqueResultCount,
+            finished,
+          } = data.data?.userSearch ?? {}
+          const meta = {
+            field: field ?? "",
+            fieldValue: fieldValue ?? "",
+            search: searchVariables.search,
+            count: count ?? 0,
+            fieldIndex: fieldIndex ?? 0,
+            fieldCount: fieldCount ?? 0,
+            fieldResultCount: fieldResultCount ?? 0,
+            fieldUniqueResultCount: fieldUniqueResultCount ?? 0,
+            finished: finished ?? false,
+          }
+
+          return {
+            meta,
+            totalMeta: [...prev.totalMeta, meta],
+            data: [...prev.data.concat(matches ?? [])],
+          }
+        })
+        if (data.data?.userSearch?.finished) {
+          isSearching.current = false
+          // subscription.unsubscribe()
+        }
+      }
+    },
+    onError(_error) {
+      setResults((prev) => ({
+        ...prev,
+        meta: {
+          ...prev.meta,
+          finished: true,
+        },
+      }))
+      isSearching.current = false
+    },
+    onComplete() {
+      isSearching.current = false
+    },
+  })
+
   const resetResults = useCallback(() => {
     setResults({ ...emptyResults })
   }, [setResults])
@@ -66,69 +128,11 @@ const UserSearch = () => {
     if ((searchVariables.search ?? "").trim().length === 0) {
       return
     }
-
-    if (!isSearching.current) {
-      const observer = client.subscribe({
-        query: UserSearchDocument,
-        variables: { search: searchVariables.search },
-      })
-      const subscription = observer.subscribe(
-        ({ data }) => {
-          if (notEmpty(data?.userSearch)) {
-            setResults((prev) => {
-              const {
-                matches,
-                field,
-                fieldValue,
-                count,
-                fieldIndex,
-                fieldCount,
-                fieldResultCount,
-                fieldUniqueResultCount,
-                finished,
-              } = data?.userSearch ?? {}
-              const meta = {
-                field: field ?? "",
-                fieldValue: fieldValue ?? "",
-                search: searchVariables.search,
-                count: count ?? 0,
-                fieldIndex: fieldIndex ?? 0,
-                fieldCount: fieldCount ?? 0,
-                fieldResultCount: fieldResultCount ?? 0,
-                fieldUniqueResultCount: fieldUniqueResultCount ?? 0,
-                finished: finished ?? false,
-              }
-
-              return {
-                meta,
-                totalMeta: [...prev.totalMeta, meta],
-                data: [...prev.data.concat(matches ?? [])],
-              }
-            })
-            if (data?.userSearch?.finished) {
-              isSearching.current = false
-              // subscription.unsubscribe()
-            }
-          }
-        },
-        (_error) => {
-          setResults((prev) => ({
-            ...prev,
-            meta: {
-              ...prev.meta,
-              finished: true,
-            },
-          }))
-          isSearching.current = false
-          subscription.unsubscribe()
-        },
-        () => {
-          subscription.unsubscribe()
-          isSearching.current = false
-        },
-      )
-      isSearching.current = true
+    if (prevSearch.current === searchVariables.search) {
+      return
     }
+    prevSearch.current = searchVariables.search
+    isSearching.current = true
   }, [searchVariables.search])
 
   useEffect(() => {
