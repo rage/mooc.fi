@@ -125,6 +125,13 @@ function create(
     ? new GraphQLWsLink(
         createClient({
           url: production ? "wss://www.mooc.fi/api" : "ws://localhost:4000",
+          connectionParams: () => {
+            const accessToken = nookies.get()["access_token"]
+            if (accessToken) {
+              return { authorization: `Bearer ${accessToken}` }
+            }
+            return {}
+          },
         }),
       )
     : null
@@ -162,7 +169,7 @@ function create(
         error: (error) => {
           // ...
           console.log("error", error)
-          // observer.error(error)
+          observer.error(error)
         },
       })
     })

@@ -51,7 +51,7 @@ const StyledTableContainer = styled(TableContainer)`
   width: max-content;
 `
 const StyledFormHelperText = styled(FormHelperText)`
-  margin: 8px 0;
+  margin: 8px 0 9px 0;
 `
 
 const ResultMeta = ({
@@ -139,7 +139,9 @@ const SearchForm = () => {
 
     if (meta.finished) {
       return (
-        <FormHelperText>
+        <StyledFormHelperText
+          style={{ margin: meta.count > 0 ? "3px 0" : undefined }}
+        >
           {t("searchFinished")}
 
           {meta.count > 0 && (
@@ -156,7 +158,7 @@ const SearchForm = () => {
               </IconButton>
             </Tooltip>
           )}
-        </FormHelperText>
+        </StyledFormHelperText>
       )
     }
 

@@ -24,6 +24,7 @@ export interface Context extends BaseContext {
   tmcClient: TmcClient
   locale?: string
   req: IncomingMessage
+  connectionParams?: Record<string, any>
 }
 
 export interface ServerContext extends BaseContext {

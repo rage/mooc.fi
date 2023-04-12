@@ -1,0 +1,29 @@
+diff --git a/node_modules/nexus/dist/builder.js b/node_modules/nexus/dist/builder.js
+index 656750b..ed7f817 100644
+--- a/node_modules/nexus/dist/builder.js
++++ b/node_modules/nexus/dist/builder.js
+@@ -807,8 +807,15 @@ class SchemaBuilder {
+                 parentTypeConfig: typeConfig,
+                 schemaConfig: this.config,
+                 schemaExtension: this.schemaExtension,
+-            }, fieldConfig.resolve), subscribe: fieldConfig.subscribe }, builderFieldConfig);
++            }, fieldConfig.resolve), subscribe: this.makeFinalResolver({
++                builder: this.builderLens,
++                fieldConfig: builderFieldConfig,
++                parentTypeConfig: typeConfig,
++                schemaConfig: this.config,
++                schemaExtension: this.schemaExtension,
++            }, fieldConfig.subscribe) }, builderFieldConfig);
+     }
++    
+     makeFinalResolver(info, resolver) {
+         const resolveFn = resolver || graphql_1.defaultFieldResolver;
+         if (this.onCreateResolverFns.length) {
+@@ -819,6 +826,7 @@ class SchemaBuilder {
+         }
+         return resolveFn;
+     }
++
+     buildInputObjectField(fieldConfig, typeConfig) {
+         var _a, _b, _c, _d;
+         const nonNullDefault = this.getNonNullDefault((_b = (_a = typeConfig.extensions) === null || _a === void 0 ? void 0 : _a.nexus) === null || _b === void 0 ? void 0 : _b.config, 'input');

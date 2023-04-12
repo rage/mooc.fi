@@ -76,34 +76,6 @@ export default async (serverContext: ServerContext) => {
   const httpServer = http.createServer(app)
   const schema = createSchema()
 
-  const wsServer = new WebSocketServer({
-    server: httpServer,
-    path: isProduction ? "/api" : "/",
-  })
-
-  const serverCleanup = useServer(
-    {
-      schema,
-      context: (ctx) => {
-        const { prisma, logger, knex, extraContext } = serverContext
-
-        return {
-          ...ctx,
-          req: {
-            headers: {
-              ...ctx.connectionParams, // compatibility with middleware
-            },
-          },
-          prisma,
-          logger,
-          knex,
-          ...extraContext,
-        }
-      },
-    },
-    wsServer,
-  )
-
   const apolloServer = new ApolloServer<ServerContext>({
     schema,
     plugins: [
@@ -133,6 +105,29 @@ export default async (serverContext: ServerContext) => {
     // cache: "bounded",
   })
   await apolloServer.start()
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: isProduction ? "/api" : "/",
+  })
+
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: (ctx) => {
+        const { prisma, logger, knex, extraContext } = serverContext
+
+        return {
+          ...ctx,
+          prisma,
+          logger,
+          knex,
+          ...extraContext,
+        }
+      },
+    },
+    wsServer,
+  )
 
   useExpressMiddleware(app, apolloServer, serverContext)
 

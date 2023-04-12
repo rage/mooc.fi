@@ -97,9 +97,10 @@ const WideGrid = () => {
 
 const RenderResults = () => {
   const t = useTranslator(UsersTranslations)
-  const { data, loading } = useContext(UserSearchContext)
+  const { data, loading, meta } = useContext(UserSearchContext)
   const isVeryWide = useMediaQuery("(min-width: 1200px)")
   const colSpan = 5 + (isVeryWide ? 1 : 0)
+
   if (loading) {
     return (
       <TableBody>
@@ -114,14 +115,21 @@ const RenderResults = () => {
     )
   }
 
-  if (data.length < 1)
+  if (data.length < 1) {
+    if (!meta.finished) {
+      return null
+    }
+
     return (
       <TableBody>
         <TableRow>
-          <TableCell colSpan={colSpan}>{t("noResults")}</TableCell>
+          <TableCell component="th" scope="row" colSpan={colSpan}>
+            {t("noResults")}
+          </TableCell>
         </TableRow>
       </TableBody>
     )
+  }
 
   return (
     <TableBody>

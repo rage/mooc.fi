@@ -19,11 +19,14 @@ kafkaConsumer:
   userCourseProgressRealtime:
     replicaCount: 1
   userPoints:
-    replicaCount: 10
+    replicaCount: 4
   userPointsRealtime:
     replicaCount: 1
   userCoursePoints:
     replicaCount: 2
+
+shibboTest:
+  replicaCount: 0
 
 email:
   # controls whether the background email service should be running
