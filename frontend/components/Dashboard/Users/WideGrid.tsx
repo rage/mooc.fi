@@ -101,7 +101,7 @@ const RenderResults = () => {
   const isVeryWide = useMediaQuery("(min-width: 1200px)")
   const colSpan = 5 + (isVeryWide ? 1 : 0)
 
-  if (loading) {
+  if (loading && data.length < 1) {
     return (
       <TableBody>
         {range(5).map((n) => (

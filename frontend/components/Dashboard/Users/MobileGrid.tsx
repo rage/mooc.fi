@@ -72,7 +72,7 @@ const MobileGrid: React.FC = () => {
 const RenderCards: React.FC = () => {
   const { data, loading } = useContext(UserSearchContext)
 
-  if (loading) {
+  if (loading && data.length < 1) {
     return (
       <>
         {range(5).map((n) => (
