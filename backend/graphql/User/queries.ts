@@ -9,7 +9,7 @@ import {
 
 import { User } from "@prisma/client"
 
-import { isAdmin } from "../../accessControl"
+import { isAdmin, Role } from "../../accessControl"
 import { ForbiddenError, UserInputError } from "../../lib/errors"
 import { buildUserSearch, convertPagination } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
@@ -137,14 +137,20 @@ export const UserSubscriptions = extendType({
       args: {
         search: nonNull(stringArg()),
       },
-      // authorize: isAdmin,
+      authorize: isAdmin,
       subscribe(_, { search }, ctx) {
+        if (ctx.role !== Role.ADMIN) {
+          throw new ForbiddenError("Not authorized")
+        }
+
         const queries = buildUserSearch(search) ?? []
         const fieldCount = queries.length
+
         let users: Array<User> = []
 
         return (async function* () {
           let fieldIndex = 1
+
           for (const query of queries) {
             const field = Object.keys(query).join(", ")
             const fieldValue = Object.values(query)
