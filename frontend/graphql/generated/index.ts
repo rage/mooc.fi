@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-11T23:25:59+03:00
+// Generated on 2023-04-12T15:38:55+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2556,10 +2556,21 @@ export type UserOrganizationWhereUniqueInput = {
 
 export type UserSearch = {
   __typename?: "UserSearch"
+  /** total count of matches so far */
   count: Scalars["Int"]
+  /** current search condition field(s) */
   field: Maybe<Scalars["String"]>
+  /** total number of search fields */
   fieldCount: Scalars["Int"]
+  /** index of current search field */
   fieldIndex: Scalars["Int"]
+  /** total number of matches for current search field */
+  fieldResultCount: Scalars["Int"]
+  /** total number of unique matches for current search field */
+  fieldUniqueResultCount: Scalars["Int"]
+  /** values used for current search condition field(s) */
+  fieldValue: Maybe<Scalars["String"]>
+  finished: Scalars["Boolean"]
   matches: Array<User>
   search: Maybe<Scalars["String"]>
 }
@@ -6261,10 +6272,14 @@ export type UserSearchSubscription = {
   userSearch: {
     __typename?: "UserSearch"
     field: string | null
+    fieldValue: string | null
     search: string | null
     count: number
     fieldIndex: number
     fieldCount: number
+    fieldResultCount: number
+    fieldUniqueResultCount: number
+    finished: boolean
     matches: Array<{
       __typename?: "User"
       id: string
@@ -6280,6 +6295,19 @@ export type UserSearchSubscription = {
       updated_at: any | null
     }>
   }
+}
+
+export type UserSearchMetaFieldsFragment = {
+  __typename?: "UserSearch"
+  field: string | null
+  fieldValue: string | null
+  search: string | null
+  count: number
+  fieldIndex: number
+  fieldCount: number
+  fieldResultCount: number
+  fieldUniqueResultCount: number
+  finished: boolean
 }
 
 export type ExportUserCourseProgressesQueryVariables = Exact<{
@@ -11764,6 +11792,36 @@ export const VerifiedUserFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<VerifiedUserFieldsFragment, unknown>
+export const UserSearchMetaFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserSearchMetaFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserSearch" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "field" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldValue" } },
+          { kind: "Field", name: { kind: "Name", value: "search" } },
+          { kind: "Field", name: { kind: "Name", value: "count" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldCount" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldResultCount" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "fieldUniqueResultCount" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "finished" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserSearchMetaFieldsFragment, unknown>
 export const CreateRegistrationAttemptDateDocument = {
   kind: "Document",
   definitions: [
@@ -21052,11 +21110,10 @@ export const UserSearchDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "field" } },
-                { kind: "Field", name: { kind: "Name", value: "search" } },
-                { kind: "Field", name: { kind: "Name", value: "count" } },
-                { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
-                { kind: "Field", name: { kind: "Name", value: "fieldCount" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserSearchMetaFields" },
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "matches" },
@@ -21073,6 +21130,31 @@ export const UserSearchDocument = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserSearchMetaFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserSearch" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "field" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldValue" } },
+          { kind: "Field", name: { kind: "Name", value: "search" } },
+          { kind: "Field", name: { kind: "Name", value: "count" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldCount" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldResultCount" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "fieldUniqueResultCount" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "finished" } },
         ],
       },
     },

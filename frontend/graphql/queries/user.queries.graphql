@@ -131,13 +131,21 @@ fragment VerifiedUserFields on VerifiedUser {
 
 subscription UserSearch($search: String!) {
   userSearch(search: $search) {
-    field
-    search
-    count
-    fieldIndex
-    fieldCount
+    ...UserSearchMetaFields
     matches {
       ...UserCoreFields
     }
   }
+}
+
+fragment UserSearchMetaFields on UserSearch {
+  field
+  fieldValue
+  search
+  count
+  fieldIndex
+  fieldCount
+  fieldResultCount
+  fieldUniqueResultCount
+  finished
 }

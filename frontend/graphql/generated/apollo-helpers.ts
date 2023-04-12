@@ -1368,6 +1368,10 @@ export type UserSearchKeySpecifier = (
   | "field"
   | "fieldCount"
   | "fieldIndex"
+  | "fieldResultCount"
+  | "fieldUniqueResultCount"
+  | "fieldValue"
+  | "finished"
   | "matches"
   | "search"
   | UserSearchKeySpecifier
@@ -1377,6 +1381,10 @@ export type UserSearchFieldPolicy = {
   field?: FieldPolicy<any> | FieldReadFunction<any>
   fieldCount?: FieldPolicy<any> | FieldReadFunction<any>
   fieldIndex?: FieldPolicy<any> | FieldReadFunction<any>
+  fieldResultCount?: FieldPolicy<any> | FieldReadFunction<any>
+  fieldUniqueResultCount?: FieldPolicy<any> | FieldReadFunction<any>
+  fieldValue?: FieldPolicy<any> | FieldReadFunction<any>
+  finished?: FieldPolicy<any> | FieldReadFunction<any>
   matches?: FieldPolicy<any> | FieldReadFunction<any>
   search?: FieldPolicy<any> | FieldReadFunction<any>
 }

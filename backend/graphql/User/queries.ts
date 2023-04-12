@@ -7,11 +7,12 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma, User } from "@prisma/client"
+import { User } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { ForbiddenError, UserInputError } from "../../lib/errors"
 import { buildUserSearch, convertPagination } from "../../util/db-functions"
+import { notEmpty } from "../../util/notEmpty"
 
 export const UserQueries = extendType({
   type: "Query",
@@ -39,7 +40,7 @@ export const UserQueries = extendType({
       resolve: async (_, { id, search, upstream_id }, ctx) => {
         const user = await ctx.prisma.user.findFirst({
           where: {
-            ...buildUserSearch(search),
+            ...(search ? { OR: buildUserSearch(search) } : {}),
             id: id ?? undefined,
             upstream_id: upstream_id ?? undefined,
           },
@@ -69,7 +70,9 @@ export const UserQueries = extendType({
 
         return ctx.prisma.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),
-          where: buildUserSearch(search),
+          where: {
+            OR: buildUserSearch(search),
+          },
         })
       },
       extendConnection(t) {
@@ -79,7 +82,9 @@ export const UserQueries = extendType({
           },
           resolve: async (_, { search }, ctx) => {
             return ctx.prisma.user.count({
-              where: buildUserSearch(search),
+              where: {
+                OR: buildUserSearch(search),
+              },
             })
           },
         })
@@ -102,11 +107,25 @@ export const UserSearch = objectType({
   name: "UserSearch",
   definition(t) {
     t.string("search")
-    t.string("field")
+    t.string("field", { description: "current search condition field(s)" })
+    t.string("fieldValue", {
+      description: "values used for current search condition field(s)",
+    })
     t.nonNull.list.nonNull.field("matches", { type: "User" })
-    t.nonNull.int("count")
-    t.nonNull.int("fieldIndex")
-    t.nonNull.int("fieldCount")
+    t.nonNull.int("count", { description: "total count of matches so far" })
+    t.nonNull.int("fieldIndex", {
+      description: "index of current search field",
+    })
+    t.nonNull.int("fieldCount", {
+      description: "total number of search fields",
+    })
+    t.nonNull.int("fieldResultCount", {
+      description: "total number of matches for current search field",
+    })
+    t.nonNull.int("fieldUniqueResultCount", {
+      description: "total number of unique matches for current search field",
+    })
+    t.nonNull.boolean("finished")
   },
 })
 
@@ -120,15 +139,22 @@ export const UserSubscriptions = extendType({
       },
       // authorize: isAdmin,
       subscribe(_, { search }, ctx) {
-        const queries =
-          (buildUserSearch(search).OR as Array<Prisma.UserWhereInput>) ?? []
+        const queries = buildUserSearch(search) ?? []
         const fieldCount = queries.length
         let users: Array<User> = []
 
         return (async function* () {
-          let fieldIndex = 0
+          let fieldIndex = 1
           for (const query of queries) {
             const field = Object.keys(query).join(", ")
+            const fieldValue = Object.values(query)
+              .map((q) =>
+                q !== null && typeof q === "object" && "contains" in q
+                  ? q.contains
+                  : q,
+              )
+              .filter(notEmpty)
+              .join(", ")
             const res = await ctx.prisma.user.findMany({
               where: query,
             })
@@ -139,11 +165,15 @@ export const UserSubscriptions = extendType({
 
             yield {
               field,
+              fieldValue,
               search,
               count: users.length,
               fieldIndex,
               fieldCount,
+              fieldResultCount: res.length,
+              fieldUniqueResultCount: newUsers.length,
               matches: newUsers,
+              finished: fieldIndex === fieldCount,
             }
             fieldIndex++
           }

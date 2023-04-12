@@ -3,10 +3,13 @@ import { createContext } from "react"
 import {
   UserCoreFieldsFragment,
   UserDetailsContainsQueryVariables,
+  UserSearchMetaFieldsFragment,
 } from "/graphql/generated"
 
 interface UserSearchContext {
-  data?: { count?: number; matches: Array<UserCoreFieldsFragment> }
+  data: Array<UserCoreFieldsFragment>
+  meta: UserSearchMetaFieldsFragment
+  totalMeta: Array<UserSearchMetaFieldsFragment>
   loading: boolean
   page: number
   rowsPerPage: number
@@ -22,7 +25,9 @@ interface UserSearchContext {
 }
 
 export default createContext<UserSearchContext>({
-  data: { matches: [] as Array<UserCoreFieldsFragment> },
+  data: [] as Array<UserCoreFieldsFragment>,
+  meta: {} as UserSearchMetaFieldsFragment,
+  totalMeta: [] as Array<UserSearchMetaFieldsFragment>,
   loading: false,
   page: 0,
   rowsPerPage: 10,

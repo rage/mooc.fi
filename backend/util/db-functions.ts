@@ -33,41 +33,14 @@ const getNameCombinations = (search: string) => {
 
 export const buildUserSearch = (
   search?: string | null,
-): Prisma.UserWhereInput => {
+): Array<Prisma.UserWhereInput> => {
   if (isNullOrUndefined(search)) {
-    return {}
+    return []
   }
 
   const possibleNameCombinations = getNameCombinations(search)
 
-  const userSearchQuery: Prisma.UserWhereInput["OR"] = [
-    {
-      email: { contains: search, mode: "insensitive" },
-    },
-    {
-      last_name: { contains: search, mode: "insensitive" },
-    },
-    {
-      first_name: { contains: search, mode: "insensitive" },
-    },
-    {
-      username: { contains: search, mode: "insensitive" },
-    },
-    {
-      student_number: { contains: search },
-    },
-    {
-      real_student_number: { contains: search },
-    },
-  ]
-
-  const searchAsNumber = parseInt(search)
-
-  if (!isNaN(searchAsNumber)) {
-    userSearchQuery.push({
-      upstream_id: searchAsNumber,
-    })
-  }
+  const userSearchQuery: Array<Prisma.UserWhereInput> = []
 
   if (possibleNameCombinations.length) {
     possibleNameCombinations.forEach(({ first_name, last_name }) => {
@@ -78,9 +51,38 @@ export const buildUserSearch = (
     })
   }
 
-  return {
-    OR: userSearchQuery,
+  userSearchQuery.push(
+    ...([
+      {
+        email: { contains: search, mode: "insensitive" },
+      },
+      {
+        last_name: { contains: search, mode: "insensitive" },
+      },
+      {
+        first_name: { contains: search, mode: "insensitive" },
+      },
+      {
+        username: { contains: search, mode: "insensitive" },
+      },
+      {
+        student_number: { contains: search },
+      },
+      {
+        real_student_number: { contains: search },
+      },
+    ] as Array<Prisma.UserWhereInput>),
+  )
+
+  const searchAsNumber = parseInt(search)
+
+  if (!isNaN(searchAsNumber)) {
+    userSearchQuery.push({
+      upstream_id: searchAsNumber,
+    })
   }
+
+  return userSearchQuery
 }
 
 export const buildSearch = (fields: string[], search?: string) =>

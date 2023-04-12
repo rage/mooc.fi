@@ -37,8 +37,9 @@ const StyledTablePagination = styled(TablePagination)`
 
 const TablePaginationActions: React.FC = () => {
   const theme = useTheme()
+
   const {
-    data,
+    meta,
     page,
     rowsPerPage,
     setPage,
@@ -48,7 +49,7 @@ const TablePaginationActions: React.FC = () => {
 
   // const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
   //  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
-  const count = data?.count ?? 0
+  const { count } = meta
 
   const handleFirstPageButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -146,7 +147,7 @@ const TablePaginationActions: React.FC = () => {
 const Pagination: React.FC = () => {
   const t = useTranslator(UsersTranslations)
   const {
-    data,
+    meta,
     rowsPerPage,
     page,
     setPage,
@@ -170,10 +171,14 @@ const Pagination: React.FC = () => {
   )
 
   const labelDisplayedRows = useCallback(
-    ({ from, to, count }: LabelDisplayedRowsArgs) =>
-      count > 0
-        ? `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
-        : "",
+    ({ from, to, count }: LabelDisplayedRowsArgs) => {
+      if (count === 0) {
+        return ""
+      }
+      const toOrCount = to === -1 ? count : to
+
+      return `${from}-${toOrCount}${t("displayedRowsOf")}${count}`
+    },
     [],
   )
 
@@ -183,7 +188,7 @@ const Pagination: React.FC = () => {
     <StyledTablePagination
       rowsPerPageOptions={[10, 20, 50]}
       colSpan={5}
-      count={data?.count ?? 0}
+      count={meta.count ?? 0}
       rowsPerPage={rowsPerPage}
       page={page}
       SelectProps={{
