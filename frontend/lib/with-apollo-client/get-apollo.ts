@@ -1,6 +1,7 @@
 import { createUploadLink } from "apollo-upload-client/public/index.mjs"
 import extractFiles from "extract-files/extractFiles.mjs"
 import isExtractableFile from "extract-files/isExtractableFile.mjs"
+import { createClient } from "graphql-ws"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
 
@@ -10,10 +11,13 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
   Observable,
+  split,
 } from "@apollo/client"
 import { BatchHttpLink } from "@apollo/client/link/batch-http"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
+import { getMainDefinition } from "@apollo/client/utilities"
 
 import notEmpty from "/util/notEmpty"
 
@@ -111,11 +115,34 @@ function create(
 
   // use BatchHttpLink if there are no uploaded files, otherwise use
   // uploadLink that uses simple HttpLink
-  const uploadAndBatchHTTPLink = ApolloLink.split(
+  const uploadAndBatchHTTPLink = split(
     (operation) => extractFiles(operation, isExtractableFile).files.size > 0,
     createUploadLink(httpLinkOptions),
     new BatchHttpLink(httpLinkOptions),
   )
+
+  const wsLink = isBrowser
+    ? new GraphQLWsLink(
+        createClient({
+          url: production ? "wss://www.mooc.fi/api/" : "ws://localhost:4000",
+        }),
+      )
+    : null
+
+  const wsAndUploadAndBatchHTTPLink =
+    isBrowser && wsLink
+      ? split(
+          ({ query }) => {
+            const definition = getMainDefinition(query)
+            return (
+              definition.kind === "OperationDefinition" &&
+              definition.operation === "subscription"
+            )
+          },
+          wsLink,
+          uploadAndBatchHTTPLink,
+        )
+      : null
 
   const metricsLink = new ApolloLink((operation, forward) => {
     const { operationName } = operation
@@ -134,32 +161,35 @@ function create(
         next: observer.next.bind(observer),
         error: (error) => {
           // ...
-          observer.error(error)
+          console.log("error", error)
+          // observer.error(error)
         },
       })
     })
   })
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors)
-      graphQLErrors.forEach(({ message, locations, path }) =>
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
-            locations,
-          )}, Path: ${path}`,
-        ),
-      )
-    if (networkError) console.log(`[Network error]: ${networkError}`)
-  })
+  const errorLink = onError(
+    ({ graphQLErrors, networkError, forward, operation }) => {
+      if (graphQLErrors)
+        graphQLErrors.forEach(({ message, locations, path }) =>
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+              locations,
+            )}, Path: ${path}`,
+          ),
+        )
+      if (networkError) console.log(`[Network error]: ${networkError}`)
+      forward(operation)
+    },
+  )
 
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser
-      ? ApolloLink.from([
-          errorLink,
-          authLink,
-          localeLink,
-          uploadAndBatchHTTPLink,
-        ])
+      ? ApolloLink.from(
+          [authLink, errorLink, localeLink, wsAndUploadAndBatchHTTPLink].filter(
+            notEmpty,
+          ),
+        )
       : ApolloLink.from(
           [
             development ? metricsLink : undefined,

@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-11T18:26:52+03:00
+// Generated on 2023-04-12T15:38:55+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2091,6 +2091,15 @@ export type StudyModuleWhereUniqueInput = {
   slug?: InputMaybe<Scalars["String"]>
 }
 
+export type Subscription = {
+  __typename?: "Subscription"
+  userSearch: UserSearch
+}
+
+export type SubscriptionuserSearchArgs = {
+  search: Scalars["String"]
+}
+
 export type Tag = {
   __typename?: "Tag"
   courses: Array<Course>
@@ -2543,6 +2552,27 @@ export type UserOrganizationOrderByRelationAggregateInput = {
 
 export type UserOrganizationWhereUniqueInput = {
   id?: InputMaybe<Scalars["String"]>
+}
+
+export type UserSearch = {
+  __typename?: "UserSearch"
+  /** total count of matches so far */
+  count: Scalars["Int"]
+  /** current search condition field(s) */
+  field: Maybe<Scalars["String"]>
+  /** total number of search fields */
+  fieldCount: Scalars["Int"]
+  /** index of current search field */
+  fieldIndex: Scalars["Int"]
+  /** total number of matches for current search field */
+  fieldResultCount: Scalars["Int"]
+  /** total number of unique matches for current search field */
+  fieldUniqueResultCount: Scalars["Int"]
+  /** values used for current search condition field(s) */
+  fieldValue: Maybe<Scalars["String"]>
+  finished: Scalars["Boolean"]
+  matches: Array<User>
+  search: Maybe<Scalars["String"]>
 }
 
 export type UserWhereUniqueInput = {
@@ -6231,6 +6261,53 @@ export type VerifiedUserFieldsFragment = {
       name: string
     }>
   } | null
+}
+
+export type UserSearchSubscriptionVariables = Exact<{
+  search: Scalars["String"]
+}>
+
+export type UserSearchSubscription = {
+  __typename?: "Subscription"
+  userSearch: {
+    __typename?: "UserSearch"
+    field: string | null
+    fieldValue: string | null
+    search: string | null
+    count: number
+    fieldIndex: number
+    fieldCount: number
+    fieldResultCount: number
+    fieldUniqueResultCount: number
+    finished: boolean
+    matches: Array<{
+      __typename?: "User"
+      id: string
+      upstream_id: number
+      first_name: string | null
+      last_name: string | null
+      full_name: string | null
+      username: string
+      email: string
+      student_number: string | null
+      real_student_number: string | null
+      created_at: any | null
+      updated_at: any | null
+    }>
+  }
+}
+
+export type UserSearchMetaFieldsFragment = {
+  __typename?: "UserSearch"
+  field: string | null
+  fieldValue: string | null
+  search: string | null
+  count: number
+  fieldIndex: number
+  fieldCount: number
+  fieldResultCount: number
+  fieldUniqueResultCount: number
+  finished: boolean
 }
 
 export type ExportUserCourseProgressesQueryVariables = Exact<{
@@ -11715,6 +11792,36 @@ export const VerifiedUserFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<VerifiedUserFieldsFragment, unknown>
+export const UserSearchMetaFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserSearchMetaFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserSearch" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "field" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldValue" } },
+          { kind: "Field", name: { kind: "Name", value: "search" } },
+          { kind: "Field", name: { kind: "Name", value: "count" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldCount" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldResultCount" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "fieldUniqueResultCount" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "finished" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserSearchMetaFieldsFragment, unknown>
 export const CreateRegistrationAttemptDateDocument = {
   kind: "Document",
   definitions: [
@@ -20961,6 +21068,128 @@ export const ConnectionTestDocument = {
     },
   ],
 } as unknown as DocumentNode<ConnectionTestQuery, ConnectionTestQueryVariables>
+export const UserSearchDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "subscription",
+      name: { kind: "Name", value: "UserSearch" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "search" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "userSearch" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "search" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "search" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserSearchMetaFields" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "matches" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "UserCoreFields" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserSearchMetaFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserSearch" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "field" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldValue" } },
+          { kind: "Field", name: { kind: "Name", value: "search" } },
+          { kind: "Field", name: { kind: "Name", value: "count" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldCount" } },
+          { kind: "Field", name: { kind: "Name", value: "fieldResultCount" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "fieldUniqueResultCount" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "finished" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "User" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "upstream_id" } },
+          { kind: "Field", name: { kind: "Name", value: "first_name" } },
+          { kind: "Field", name: { kind: "Name", value: "last_name" } },
+          { kind: "Field", name: { kind: "Name", value: "full_name" } },
+          { kind: "Field", name: { kind: "Name", value: "username" } },
+          { kind: "Field", name: { kind: "Name", value: "email" } },
+          { kind: "Field", name: { kind: "Name", value: "student_number" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "real_student_number" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UserSearchSubscription,
+  UserSearchSubscriptionVariables
+>
 export const ExportUserCourseProgressesDocument = {
   kind: "Document",
   definitions: [

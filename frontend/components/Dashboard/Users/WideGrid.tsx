@@ -12,6 +12,7 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  useMediaQuery,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -36,19 +37,21 @@ const StyledPaper = styled(Paper)`
 
 const ButtonContainer = styled("div")`
   display: flex;
+  justify-content: flex-end;
   gap: 0.5rem;
 `
 
 const WideGrid = () => {
   const t = useTranslator(UsersTranslations)
+  const isVeryWide = useMediaQuery("(min-width: 1200px)")
   const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
 
   const PaginationComponent = useCallback(
     () => (
       <TableRow>
         {loading ? (
-          <TableCell>
-            <Skeleton />
+          <TableCell colSpan={5}>
+            <Skeleton width="400px" style={{ margin: "auto" }} />
           </TableCell>
         ) : (
           <Pagination />
@@ -63,9 +66,7 @@ const WideGrid = () => {
       <TableWrapper>
         <Table>
           <TableHead>
-            {rowsPerPage >= 50 && data?.userDetailsContains?.edges?.length ? (
-              <PaginationComponent />
-            ) : null}
+            {rowsPerPage >= 50 ? <PaginationComponent /> : null}
             <TableRow>
               <StyledTableCell>{t("userEmail")}</StyledTableCell>
               {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
@@ -75,9 +76,12 @@ const WideGrid = () => {
               <StyledTableCell align="right">
                 {t("userLastName")}
               </StyledTableCell>
-              <StyledTableCell align="right">
-                {t("userStudentNumber")}
-              </StyledTableCell>
+              <StyledTableCell align="right">{t("userTMCid")}</StyledTableCell>
+              {isVeryWide && (
+                <StyledTableCell align="right">
+                  {t("userStudentNumber")}
+                </StyledTableCell>
+              )}
               <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
@@ -94,15 +98,14 @@ const WideGrid = () => {
 const RenderResults = () => {
   const t = useTranslator(UsersTranslations)
   const { data, loading } = useContext(UserSearchContext)
-
-  const results = data?.userDetailsContains?.edges ?? []
-
+  const isVeryWide = useMediaQuery("(min-width: 1200px)")
+  const colSpan = 5 + (isVeryWide ? 1 : 0)
   if (loading) {
     return (
       <TableBody>
         {range(5).map((n) => (
           <TableRow key={`skeleton-${n}`}>
-            <TableCell colSpan={5}>
+            <TableCell colSpan={colSpan}>
               <Skeleton />
             </TableCell>
           </TableRow>
@@ -111,20 +114,20 @@ const RenderResults = () => {
     )
   }
 
-  if (results.length < 1)
+  if (data.length < 1)
     return (
       <TableBody>
         <TableRow>
-          <TableCell colSpan={5}>{t("noResults")}</TableCell>
+          <TableCell colSpan={colSpan}>{t("noResults")}</TableCell>
         </TableRow>
       </TableBody>
     )
 
   return (
     <TableBody>
-      {results.map((row) => {
+      {data.map((row) => {
         const { upstream_id, email, first_name, last_name, student_number } =
-          row?.node ?? {}
+          row ?? {}
 
         return (
           <TableRow key={upstream_id}>
@@ -133,7 +136,10 @@ const RenderResults = () => {
             </TableCell>
             <TableCell align="right">{first_name}</TableCell>
             <TableCell align="right">{last_name}</TableCell>
-            <TableCell align="right">{student_number}</TableCell>
+            <TableCell align="right">{upstream_id}</TableCell>
+            {isVeryWide && (
+              <TableCell align="right">{student_number}</TableCell>
+            )}
             <TableCell align="right">
               <ButtonContainer>
                 <Button

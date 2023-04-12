@@ -4,11 +4,13 @@ import bodyParser from "body-parser"
 import cors from "cors"
 import express, { Express } from "express"
 import { graphqlUploadExpress } from "graphql-upload"
+import { useServer } from "graphql-ws/lib/use/ws"
 import { frameguard } from "helmet"
 import morgan from "morgan"
+import { WebSocketServer } from "ws"
 
 import { ApolloServer } from "@apollo/server"
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
+// import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
 import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 
@@ -69,13 +71,34 @@ export default async (serverContext: ServerContext) => {
   const httpServer = http.createServer(app)
   const schema = createSchema()
 
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: isProduction ? "/api" : "/",
+  })
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: serverContext,
+    },
+    wsServer,
+  )
+
   const apolloServer = new ApolloServer<ServerContext>({
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      ApolloServerPluginLandingPageGraphQLPlayground({
-        endpoint: isProduction ? "/api" : "/",
-      }),
+      /*ApolloServerPluginLandingPageGraphQLPlayground({
+        endpoint: isProduction ? "/api" : "/graphql",
+      }),*/
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            },
+          }
+        },
+      },
     ],
     introspection: true,
     logger: serverContext.logger,
@@ -91,5 +114,6 @@ export default async (serverContext: ServerContext) => {
     apolloServer,
     app,
     httpServer,
+    wsServer,
   }
 }

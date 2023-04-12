@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback, useContext, useMemo } from "react"
 
 import range from "lodash/range"
 
@@ -32,7 +32,8 @@ const UserCard = styled(Card)`
 `
 
 const MobileGrid: React.FC = () => {
-  const { data, page, rowsPerPage, loading } = useContext(UserSearchContext)
+  const { data, meta, page, rowsPerPage, loading } =
+    useContext(UserSearchContext)
   const t = useTranslator(UsersTranslations)
 
   const PaginationComponent = useCallback(
@@ -58,11 +59,10 @@ const MobileGrid: React.FC = () => {
 
   return (
     <>
-      {loading || data?.userDetailsContains?.edges?.length ? (
-        <PaginationComponent />
-      ) : (
+      {loading || meta.count ? <PaginationComponent /> : null}
+      {!loading && meta.finished && meta.count === 0 ? (
         <Typography>{t("noResults")}</Typography>
-      )}
+      ) : null}
       <RenderCards />
       <PaginationComponent />
     </>
@@ -84,11 +84,8 @@ const RenderCards: React.FC = () => {
 
   return (
     <>
-      {data?.userDetailsContains?.edges?.map((row, index) => (
-        <DataCard
-          key={row?.node?.upstream_id ?? index}
-          row={row?.node ?? undefined}
-        />
+      {data.map((row, index) => (
+        <DataCard key={row?.upstream_id ?? index} row={row} />
       ))}
     </>
   )
@@ -101,28 +98,35 @@ interface DataCardProps {
 const DataCard = ({ row }: DataCardProps) => {
   const t = useTranslator(UsersTranslations)
 
-  const { email, upstream_id, first_name, last_name, student_number } =
-    row ?? {}
+  const { upstream_id } = row ?? {}
 
-  const fields = [
-    {
-      text: t("userEmail"),
-      value: email,
-      title: true,
-    },
-    {
-      text: t("userFirstName"),
-      value: first_name,
-    },
-    {
-      text: t("userLastName"),
-      value: last_name,
-    },
-    {
-      text: t("userStudentNumber"),
-      value: student_number,
-    },
-  ]
+  const fields = useMemo(() => {
+    const { email, first_name, last_name, student_number } = row ?? {}
+
+    return [
+      {
+        text: t("userEmail"),
+        value: email,
+        title: true,
+      },
+      {
+        text: t("userFirstName"),
+        value: first_name,
+      },
+      {
+        text: t("userLastName"),
+        value: last_name,
+      },
+      {
+        text: t("userStudentNumber"),
+        value: student_number,
+      },
+      {
+        text: t("userTMCid"),
+        value: upstream_id,
+      },
+    ]
+  }, [t, row])
 
   return (
     <UserCard>

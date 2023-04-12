@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useLazyQuery } from "@apollo/client"
+import { useApolloClient } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
@@ -13,19 +13,38 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
+import notEmpty from "/util/notEmpty"
 
 import {
-  UserDetailsContainsDocument,
+  UserCoreFieldsFragment,
   UserDetailsContainsQueryVariables,
+  UserSearchDocument,
+  UserSearchMetaFieldsFragment,
 } from "/graphql/generated"
+
+interface UserSearchResults {
+  data: Array<UserCoreFieldsFragment>
+  meta: UserSearchMetaFieldsFragment
+  totalMeta: Array<UserSearchMetaFieldsFragment>
+}
+
+const emptyResults: UserSearchResults = {
+  data: [],
+  meta: {} as UserSearchMetaFieldsFragment,
+  totalMeta: [],
+}
 
 const UserSearch = () => {
   const router = useRouter()
+  const client = useApolloClient()
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
+  const isSearching = useRef(false)
+  const [results, setResults] = useState<UserSearchResults>(emptyResults)
 
   const userSearch = useSearch({
+    search: textParam,
     page: pageParam,
     rowsPerPage: rowsParam,
   })
@@ -37,12 +56,9 @@ const UserSearch = () => {
       skip: pageParam > 0 ? pageParam * rowsParam : undefined,
     })
 
-  const [loadData, { data, loading }] = useLazyQuery(
-    UserDetailsContainsDocument,
-    {
-      ssr: false,
-    },
-  )
+  const resetResults = useCallback(() => {
+    setResults({ ...emptyResults })
+  }, [setResults])
 
   const { rowsPerPage, page } = userSearch
 
@@ -50,6 +66,72 @@ const UserSearch = () => {
     if ((searchVariables.search ?? "").trim().length === 0) {
       return
     }
+
+    if (!isSearching.current) {
+      const observer = client.subscribe({
+        query: UserSearchDocument,
+        variables: { search: searchVariables.search },
+      })
+      const subscription = observer.subscribe(
+        ({ data }) => {
+          if (notEmpty(data?.userSearch)) {
+            setResults((prev) => {
+              const {
+                matches,
+                field,
+                fieldValue,
+                count,
+                fieldIndex,
+                fieldCount,
+                fieldResultCount,
+                fieldUniqueResultCount,
+                finished,
+              } = data?.userSearch ?? {}
+              const meta = {
+                field: field ?? "",
+                fieldValue: fieldValue ?? "",
+                search: searchVariables.search,
+                count: count ?? 0,
+                fieldIndex: fieldIndex ?? 0,
+                fieldCount: fieldCount ?? 0,
+                fieldResultCount: fieldResultCount ?? 0,
+                fieldUniqueResultCount: fieldUniqueResultCount ?? 0,
+                finished: finished ?? false,
+              }
+
+              return {
+                meta,
+                totalMeta: [...prev.totalMeta, meta],
+                data: [...prev.data.concat(matches ?? [])],
+              }
+            })
+            if (data?.userSearch?.finished) {
+              isSearching.current = false
+              // subscription.unsubscribe()
+            }
+          }
+        },
+        (_error) => {
+          setResults((prev) => ({
+            ...prev,
+            meta: {
+              ...prev.meta,
+              finished: true,
+            },
+          }))
+          isSearching.current = false
+          subscription.unsubscribe()
+        },
+        () => {
+          subscription.unsubscribe()
+          isSearching.current = false
+        },
+      )
+      isSearching.current = true
+    }
+  }, [searchVariables.search])
+
+  useEffect(() => {
     const searchParams = new URLSearchParams()
     if (rowsPerPage !== 10) {
       searchParams.append("rowsPerPage", rowsPerPage.toString())
@@ -63,16 +145,11 @@ const UserSearch = () => {
       searchVariables.search !== ""
         ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
         : `/users/search${query}`
-
-    loadData({
-      variables: searchVariables,
-    })
-
     if (router?.asPath !== href) {
       // the history is still a bit wonky - how should it work?
       router.push(href, undefined, { shallow: true })
     }
-  }, [searchVariables, rowsPerPage, page])
+  }, [rowsPerPage, page, searchVariables])
 
   const crumbs: Breadcrumb[] = [
     {
@@ -95,12 +172,22 @@ const UserSearch = () => {
   const value = useMemo(
     () => ({
       ...userSearch,
-      data,
-      loading,
+      meta: results.meta,
+      totalMeta: results.totalMeta,
+      data: results.data.slice(page * rowsPerPage, (page + 1) * rowsPerPage),
+      loading: isSearching.current,
       searchVariables,
       setSearchVariables,
+      resetResults,
     }),
-    [data, loading, userSearch, searchVariables],
+    [
+      results.meta,
+      results.data,
+      isSearching.current,
+      userSearch,
+      searchVariables,
+      resetResults,
+    ],
   )
 
   return (
