@@ -16,7 +16,9 @@ export const moocfiAuthPlugin = () =>
           return next(root, args, ctx, info)
         }
 
-        const rawToken = ctx.req?.headers?.authorization // connection?
+        const rawToken =
+          ctx.req?.headers?.authorization ??
+          (ctx.req?.headers?.["Authorization"] as string) // connection?
 
         if (!rawToken) {
           ctx.role = Role.VISITOR

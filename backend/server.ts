@@ -10,9 +10,14 @@ import morgan from "morgan"
 import { WebSocketServer } from "ws"
 
 import { ApolloServer } from "@apollo/server"
-// import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
+import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
 import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
+// import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default"
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
@@ -75,10 +80,26 @@ export default async (serverContext: ServerContext) => {
     server: httpServer,
     path: isProduction ? "/api" : "/",
   })
+
   const serverCleanup = useServer(
     {
       schema,
-      context: serverContext,
+      context: (ctx) => {
+        const { prisma, logger, knex, extraContext } = serverContext
+
+        return {
+          ...ctx,
+          req: {
+            headers: {
+              ...ctx.connectionParams, // compatibility with middleware
+            },
+          },
+          prisma,
+          logger,
+          knex,
+          ...extraContext,
+        }
+      },
     },
     wsServer,
   )
@@ -87,6 +108,12 @@ export default async (serverContext: ServerContext) => {
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      isProduction
+        ? ApolloServerPluginLandingPageProductionDefault({
+            graphRef: "foo@mooc",
+            embed: true,
+          } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
+        : ApolloServerPluginLandingPageLocalDefault(),
       /*ApolloServerPluginLandingPageGraphQLPlayground({
         endpoint: isProduction ? "/api" : "/graphql",
       }),*/
