@@ -66,7 +66,10 @@ const UserSearch = () => {
         return
       }
 
-      if (notEmpty(data.data.userSearch)) {
+      if (
+        notEmpty(data.data.userSearch) &&
+        data.data.userSearch.search === searchVariables.search
+      ) {
         setResults((prev) => {
           const {
             matches,
