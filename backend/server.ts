@@ -13,7 +13,6 @@ import { ApolloServer } from "@apollo/server"
 import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
 import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
-// import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
@@ -85,9 +84,6 @@ export default async (serverContext: ServerContext) => {
             embed: true,
           } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),
-      /*ApolloServerPluginLandingPageGraphQLPlayground({
-        endpoint: isProduction ? "/api" : "/graphql",
-      }),*/
       {
         async serverWillStart() {
           return {
