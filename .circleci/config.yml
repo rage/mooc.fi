@@ -44,7 +44,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - restore_cache:
-          keys: 
+          keys:
           - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
           - dependency-cache-{{ checksum "frontend/package.json" }}
       - run:
@@ -67,7 +67,21 @@ jobs:
       - checkout:
           path: ~/project
       - jq/install
-      - node/install-packages
+      - run:
+          name: patch-package hash
+          command: md5sum patches/* > patches.hash
+      - restore_cache:
+          keys:
+          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
+          - dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: "Install dependencies"
+          command: npm ci
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          paths:
+            - ~/.npm
       - run:
           name: "Set environment"
           command: |
@@ -178,8 +192,20 @@ jobs:
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
       - run:
+          name: patch-package hash
+          command: md5sum backend/patches/* > backend/patches.hash
+      - restore_cache:
+          keys:
+          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
+          - dependency-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
+      - save_cache:
+          key: dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          paths:
+            - ~/.npm
       - run:
           name: "Persist image"
           command: |
