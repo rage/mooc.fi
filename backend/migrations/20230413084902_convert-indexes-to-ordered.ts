@@ -38,19 +38,19 @@ export async function down(knex: Knex): Promise<void> {
     DROP INDEX IF EXISTS "completion.user_id_course_id_ordered_index";
   `)
   await knex.raw(`
-    CREATE INDEX "completion.course_id_user_id" ON "completion" (course_id, user_id);
+    CREATE INDEX IF NOT EXISTS "completion.course_id_user_id" ON "completion" (course_id, user_id);
   `)
   await knex.raw(`
     DROP INDEX IF EXISTS "completion.course_id_user_id_ordered_index";
   `)
   await knex.raw(`
-    CREATE INDEX "user_course_setting.course_id" ON "user_course_setting" (course_id);
+    CREATE INDEX IF NOT EXISTS "user_course_setting.course_id" ON "user_course_setting" (course_id);
   `)
   await knex.raw(`
     DROP INDEX IF EXISTS "user_course_setting.course_id_ordered_index";
   `)
   await knex.raw(`
-    CREATE INDEX "exercise_completion.user_id_exercise_id_index" ON "exercise_completion" (user_id, exercise_id);
+    CREATE INDEX IF NOT EXISTS "exercise_completion.user_id_exercise_id_index" ON "exercise_completion" (user_id, exercise_id);
   `)
   await knex.raw(`
     DROP INDEX IF EXISTS "exercise_completion.user_id_exercise_id_ordered_index";
