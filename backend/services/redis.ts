@@ -138,10 +138,11 @@ export async function redisify<T>(
     try {
       if (!resolveSuccess && retry) {
         value = await resolveValue()
-
-        return value
       }
-      throw e1 instanceof Error ? e1 : new Error(String(e1))
+      if (throwOnError && !value) {
+        throw e1 instanceof Error ? e1 : new Error(String(e1))
+      }
+      return value
     } catch (e2) {
       logger.warn(
         `Could not resolve value for ${prefixedKey}; error: `,
