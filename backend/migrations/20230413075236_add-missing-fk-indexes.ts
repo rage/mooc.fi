@@ -25,7 +25,7 @@ export async function up(knex: Knex): Promise<void> {
     CREATE INDEX IF NOT EXISTS "organization.creator_id_index" ON "organization" (creator_id);
   `)
   await knex.raw(`
-    CREATE INDEX IF NOT EXISTS "email_template.triggered_automatically_by_course_template_type_index"
+    CREATE INDEX IF NOT EXISTS "email_template.triggered_automatically_template_type_index"
       ON "email_template" (triggered_automatically_by_course_id, template_type);
   `)
   await knex.raw(`
@@ -61,7 +61,7 @@ export async function down(knex: Knex): Promise<void> {
     DROP INDEX IF EXISTS "organization.creator_id_index";
   `)
   await knex.raw(`
-    DROP INDEX IF EXISTS "email_template.triggered_automatically_by_course_template_type_index";
+    DROP INDEX IF EXISTS "email_template.triggered_automatically_template_type_index";
   `)
   await knex.raw(`
     DROP INDEX IF EXISTS "course.completion_email_id_index";
