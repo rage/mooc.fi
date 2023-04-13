@@ -36,7 +36,7 @@ export async function up(knex: Knex): Promise<void> {
       ON "exercise" (course_id, service_id, custom_id);
   `)
   await knex.raw(`
-    DROP INDEX IF EXISTS "exercise.course_idx";
+    DROP INDEX IF EXISTS "exercise_course_idx";
   `)
   await knex.raw(`
     CREATE INDEX IF NOT EXISTS "organization_translation.organization_id_index"
@@ -67,7 +67,7 @@ export async function down(knex: Knex): Promise<void> {
     DROP INDEX IF EXISTS "course.completion_email_id_index";
   `)
   await knex.raw(`
-    CREATE INDEX IF NOT EXISTS "exercise.course_idx" ON "exercise" (course_id);
+    CREATE INDEX IF NOT EXISTS "exercise_course_idx" ON "exercise" (course_id);
   `)
   await knex.raw(`
     DROP INDEX IF EXISTS "exercise.course_id_service_id_custom_id_index";
