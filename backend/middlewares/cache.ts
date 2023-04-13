@@ -43,7 +43,7 @@ export const cachePlugin = () =>
       return async (root, args, ctx, info, next) => {
         const key = `${info.fieldName}-${JSON.stringify(
           info.fieldNodes,
-        )}-${JSON.stringify(args)}`
+        )}-${JSON.stringify(args)}-${ctx.role}`
 
         const hash = createHash("sha512").update(key).digest("hex")
 
@@ -69,6 +69,8 @@ export const cachePlugin = () =>
             prefix: "graphql-subscription",
             expireTime: 60,
             key: hash,
+            retry: false,
+            throwOnError: true,
           },
           {
             logger: ctx.logger,
