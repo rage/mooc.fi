@@ -102,7 +102,7 @@ export const StudyModuleQueries = extendType({
                 include: {
                   study_module_translations: {
                     where: {
-                      language: { equals: language },
+                      language,
                     },
                   },
                 },

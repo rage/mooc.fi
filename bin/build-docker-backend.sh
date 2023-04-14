@@ -31,11 +31,12 @@ docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile
 
 echo "Successfully built image: $TAG"
 
-echo "Copying sourcemap from container to host"
+echo "Copying sourcemap and npm cache from container to host"
 docker create -ti --name tmpcontainer "$TAG" sh
 docker cp tmpcontainer:/app/sourcemap sourcemap
+docker cp tmpcontainer:/home/node/.npm ~/.npm
 docker rm -f tmpcontainer
-echo "Sourcemap copied from container!"
+echo "Sourcemap and npm cache copied from container!"
 
 cd ..
 

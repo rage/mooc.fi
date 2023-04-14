@@ -6,7 +6,7 @@ orbs:
   node: circleci/node@5.1.0
 #  codecov: codecov/codecov@3.2.4
 executors:
-  backend_test:
+  node_postgres:
     docker:
       - image: cimg/node:16.16.0
       - image: cimg/postgres:14.6
@@ -14,9 +14,12 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
-  backend_build:
+  cloudsdk_node:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+  cloudsdk:
+    docker:
+      - image: google/cloud-sdk:latest
 
 jobs:
   code_style:
@@ -38,13 +41,13 @@ jobs:
           command: "bin/helm.sh"
 
   build_frontend:
-    docker:
-      - image: google/cloud-sdk:latest
+    executor: cloudsdk
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - restore_cache:
-          keys: 
+          keys:
           - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
           - dependency-cache-{{ checksum "frontend/package.json" }}
       - run:
@@ -61,13 +64,27 @@ jobs:
     resource_class: large
 
   prepare_backend_test:
-    executor: backend_test
+    executor: node_postgres
     working_directory: ~/project/backend
     steps:
       - checkout:
           path: ~/project
       - jq/install
-      - node/install-packages
+      - run:
+          name: patch-package hash
+          command: md5sum patches/* > patches.hash
+      - restore_cache:
+          keys:
+          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
+          - dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: "Install dependencies"
+          command: npm ci
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          paths:
+            - ~/.npm
       - run:
           name: "Set environment"
           command: |
@@ -84,7 +101,7 @@ jobs:
     resource_class: large
 
   test_backend:
-    executor: backend_test
+    executor: node_postgres
     environment:
       DATABASE_URL: postgres://root@localhost/circle_test
       DB_HOST: localhost
@@ -169,17 +186,30 @@ jobs:
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
   build_backend:
-    executor: backend_build
+    executor: cloudsdk_node
     steps:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
+          docker_layer_caching: true
       - jq/install
       - docker/install-docker-tools:
           docker-compose-version: 1.29.2
       - run:
+          name: patch-package hash
+          command: md5sum backend/patches/* > backend/patches.hash
+      - restore_cache:
+          keys:
+          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
+          - dependency-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
+      - save_cache:
+          key: dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          paths:
+            - ~/.npm
       - run:
           name: "Persist image"
           command: |
@@ -195,12 +225,13 @@ jobs:
     resource_class: large
 
   push_backend:
-    executor: backend_build
+    executor: cloudsdk_node
     steps:
       - attach_workspace:
           at: ~/project
       - setup_remote_docker:
           version: 19.03.13
+          docker_layer_caching: true
       - run:
           name: "Restore image"
           command: |
@@ -249,11 +280,11 @@ jobs:
   #         name: "Push image if on master"
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
-    docker:
-      - image: google/cloud-sdk:latest
+    executor: cloudsdk
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - helm/install-helm-client:
           version: v3.4.2
       - run:

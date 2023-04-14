@@ -1,4 +1,4 @@
-import { omit, uniqBy } from "lodash"
+import { omit } from "lodash"
 import {
   arg,
   booleanArg,
@@ -9,7 +9,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { Course, CourseTranslation, Prisma, Tag } from "@prisma/client"
+import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or } from "../../accessControl"
 import { GraphQLUserInputError } from "../../lib/errors"
@@ -261,42 +261,22 @@ export const CourseQueries = extendType({
         const courses: Array<
           Course & {
             course_translations?: Array<CourseTranslation>
-            tags?: Array<Tag>
-            handles_completions_for?: Array<Course & { tags: Array<Tag> }>
           }
         > = await ctx.prisma.course.findMany({
           orderBy: filterNullRecursive(orderBy) ?? undefined,
-          where: {
-            AND: searchQuery,
-          },
-          include: {
-            tags: true,
-          },
+          ...(searchQuery.length > 0
+            ? {
+                where: {
+                  AND: searchQuery,
+                },
+              }
+            : {}),
           ...(language
             ? {
                 include: {
                   course_translations: {
                     where: {
-                      language: { equals: language },
-                    },
-                  },
-                  tags: {
-                    // TODO: is this needed?
-                    where: {
-                      tag_translations: {
-                        some: { language },
-                      },
-                    },
-                  },
-                  handles_completions_for: {
-                    include: {
-                      tags: {
-                        where: {
-                          tag_translations: {
-                            some: { language },
-                          },
-                        },
-                      },
+                      language,
                     },
                   },
                 },
@@ -309,13 +289,6 @@ export const CourseQueries = extendType({
             if (language && !course.course_translations?.length) {
               return null
             }
-            const tags = uniqBy(
-              (course?.tags ?? []).concat(
-                course?.handles_completions_for?.flatMap((c) => c.tags ?? []) ??
-                  [],
-              ),
-              "id",
-            )
 
             return {
               ...omit(course, [
@@ -325,7 +298,10 @@ export const CourseQueries = extendType({
               ]),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
-              tags: tags?.map((tag) => ({ ...tag, language })),
+              name:
+                (language
+                  ? course?.course_translations?.[0]?.name
+                  : course?.name) ?? "",
             }
           })
           .filter(notEmpty)
@@ -335,7 +311,6 @@ export const CourseQueries = extendType({
           Course & {
             description: string
             link: string
-            tags?: Array<Tag & { language?: string }>
           }
         >
       },

@@ -41,7 +41,7 @@ export const StudyModule = objectType({
                   include: {
                     course_translations: {
                       where: {
-                        language: { equals: language },
+                        language,
                       },
                     },
                   },

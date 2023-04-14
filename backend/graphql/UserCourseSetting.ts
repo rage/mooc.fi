@@ -380,7 +380,8 @@ const getUserCourseSettingSearch = ({
   user_id,
   user_upstream_id,
 }: GetUserCourseSettingSearchArgs) => {
-  const userSearch = search && search !== "" ? buildUserSearch(search) : null
+  const userSearch =
+    search && search !== "" ? { OR: buildUserSearch(search) } : null
 
   const userConditions = [
     user_id || user_upstream_id

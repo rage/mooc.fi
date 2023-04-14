@@ -64,8 +64,8 @@ export const saveToDatabase = async (
   const userCourseProgresses = await knex<any, UserCourseProgress[]>(
     "user_course_progress",
   )
-    .where("user_id", user.id)
     .where("course_id", message.course_id)
+    .andWhere("user_id", user.id)
     .orderBy("created_at", "asc")
 
   let userCourseProgress = userCourseProgresses[0]
@@ -92,9 +92,9 @@ export const saveToDatabase = async (
     any,
     UserCourseServiceProgress[]
   >("user_course_service_progress")
-    .where("user_id", user.id)
-    .where("course_id", message.course_id)
     .where("service_id", message.service_id)
+    .andWhere("course_id", message.course_id)
+    .andWhere("user_id", user.id)
     .orderBy("created_at", "asc")
 
   const userCourseServiceProgress = userCourseServiceProgresses[0]

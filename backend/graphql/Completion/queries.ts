@@ -90,7 +90,9 @@ export const CompletionQueries = extendType({
             completion_language,
             ...(search
               ? {
-                  user: buildUserSearch(search),
+                  user: {
+                    OR: buildUserSearch(search),
+                  },
                 }
               : {}),
           },

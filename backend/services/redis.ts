@@ -78,6 +78,8 @@ interface RedisifyOptions {
   key: string
   params?: any
   disableResolveError?: boolean
+  retry?: boolean
+  throwOnError?: boolean
 }
 
 type RedisifyContext = Partial<BaseContext> & { client?: typeof redisClient }
@@ -87,7 +89,14 @@ export async function redisify<T>(
   options: RedisifyOptions,
   ctx: RedisifyContext = {},
 ) {
-  const { prefix, expireTime, key, params } = options
+  const {
+    prefix,
+    expireTime,
+    key,
+    params,
+    retry = true,
+    throwOnError = false,
+  } = options
   const { logger = _logger, client = redisClient } = ctx
 
   const resolveValue = async () => {
@@ -127,8 +136,11 @@ export async function redisify<T>(
     return value
   } catch (e1) {
     try {
-      if (!resolveSuccess) {
+      if (!resolveSuccess && retry) {
         value = await resolveValue()
+      }
+      if (throwOnError && !value) {
+        throw e1 instanceof Error ? e1 : new Error(String(e1))
       }
       return value
     } catch (e2) {
@@ -136,6 +148,9 @@ export async function redisify<T>(
         `Could not resolve value for ${prefixedKey}; error: `,
         e2 instanceof Error ? e2.message : e2,
       )
+      if (throwOnError) {
+        throw e2 instanceof Error ? e2 : new Error(String(e2))
+      }
     }
   }
 }

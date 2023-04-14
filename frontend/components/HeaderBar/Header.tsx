@@ -1,5 +1,6 @@
 import { ReactElement } from "react"
 
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
 import { AppBar, Skeleton, Toolbar } from "@mui/material"
@@ -9,7 +10,6 @@ import { styled } from "@mui/material/styles"
 import useScrollTrigger from "@mui/material/useScrollTrigger"
 
 import LanguageSwitch from "./LanguageSwitch"
-import LoggedInUserMenu from "./LoggedInUserMenu"
 import MoocLogo from "./MoocLogo"
 import UserOptionsMenu from "./UserOptionsMenu"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -18,6 +18,10 @@ interface Props {
   window?: () => Window
   children: ReactElement
 }
+
+const LoggedInUserMenu = dynamic(() => import("./LoggedInUserMenu"), {
+  loading: () => null,
+})
 
 function HideOnScroll(props: Props) {
   const { children, window } = props

@@ -4,13 +4,19 @@ import bodyParser from "body-parser"
 import cors from "cors"
 import express, { Express } from "express"
 import { graphqlUploadExpress } from "graphql-upload"
+import { useServer } from "graphql-ws/lib/use/ws"
 import { frameguard } from "helmet"
 import morgan from "morgan"
+import { WebSocketServer } from "ws"
 
 import { ApolloServer } from "@apollo/server"
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground"
+import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
 import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default"
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
@@ -73,9 +79,20 @@ export default async (serverContext: ServerContext) => {
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      ApolloServerPluginLandingPageGraphQLPlayground({
-        endpoint: isProduction ? "/api" : "/",
-      }),
+      isProduction
+        ? ApolloServerPluginLandingPageProductionDefault({
+            embed: true,
+          } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
+        : ApolloServerPluginLandingPageLocalDefault(),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            },
+          }
+        },
+      },
     ],
     introspection: true,
     logger: serverContext.logger,
@@ -85,11 +102,35 @@ export default async (serverContext: ServerContext) => {
   })
   await apolloServer.start()
 
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: isProduction ? "/api" : "/",
+  })
+
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: (ctx) => {
+        const { prisma, logger, knex, extraContext } = serverContext
+
+        return {
+          ...ctx,
+          prisma,
+          logger,
+          knex,
+          ...extraContext,
+        }
+      },
+    },
+    wsServer,
+  )
+
   useExpressMiddleware(app, apolloServer, serverContext)
 
   return {
     apolloServer,
     app,
     httpServer,
+    wsServer,
   }
 }

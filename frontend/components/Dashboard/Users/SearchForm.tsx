@@ -1,6 +1,27 @@
-import { useCallback, useContext } from "react"
+import {
+  SyntheticEvent,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from "react"
 
-import { TextField, useMediaQuery } from "@mui/material"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
+import {
+  Collapse,
+  FormHelperText,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
+  useMediaQuery,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
@@ -11,9 +32,20 @@ import { H1NoBackground } from "/components/Text/headers"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
+import notEmpty from "/util/notEmpty"
+
+import { UserSearchMetaFieldsFragment } from "/graphql/generated"
 
 const StyledForm = styled("form")`
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+`
+
+const Row = styled("div")`
+  display: flex;
+  flex-direction: row;
   width: 100%;
 `
 
@@ -21,10 +53,67 @@ const StyledButton = styled(ButtonWithPaddingAndMargin)`
   color: white;
 `
 
-const SearchForm = () => {
-  const { page, search, setSearch, rowsPerPage, setPage, setSearchVariables } =
-    useContext(UserSearchContext)
+const StyledTableContainer = styled(TableContainer)`
+  width: max-content;
+`
+const StyledFormHelperText = styled(FormHelperText)`
+  margin: 8px 0 9px 0;
+`
+
+const ResultMeta = ({
+  meta,
+}: {
+  meta: Array<UserSearchMetaFieldsFragment>
+}) => {
   const t = useTranslator(UsersTranslations)
+
+  return (
+    <StyledTableContainer>
+      <Table size="small" style={{ tableLayout: "auto" }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>{t("searchField")}</TableCell>
+            <TableCell>{t("searchFieldValue")}</TableCell>
+            <TableCell>{t("searchFieldResultCount")}</TableCell>
+            <TableCell>{t("searchFieldUniqueResultCount")}</TableCell>
+            <TableCell>{t("searchCount")}</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {meta.map((m) => (
+            <TableRow key={m.field}>
+              <TableCell>{m.field}</TableCell>
+              <TableCell>{m.fieldValue}</TableCell>
+              <TableCell>{m.fieldResultCount}</TableCell>
+              <TableCell>{m.fieldUniqueResultCount}</TableCell>
+              <TableCell>{m.count}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </StyledTableContainer>
+  )
+}
+
+const SearchForm = () => {
+  const {
+    loading,
+    page,
+    meta,
+    totalMeta,
+    search,
+    setSearch,
+    rowsPerPage,
+    searchVariables,
+    setPage,
+    setSearchVariables,
+    resetResults,
+  } = useContext(UserSearchContext)
+  const t = useTranslator(UsersTranslations)
+  const isMobile = useMediaQuery("(max-width:900px)")
+  const GridComponent = isMobile ? MobileGrid : WideGrid
+  const prevSearch = useRef(search)
+  const [metaVisible, setMetaVisible] = useState(false)
 
   const handleSubmit = useCallback(() => {
     if (search !== "") {
@@ -34,28 +123,72 @@ const SearchForm = () => {
         skip: 0,
       })
       setPage(0)
+      if (search !== prevSearch.current) {
+        resetResults()
+      }
+      prevSearch.current = search
     }
-  }, [search, page, rowsPerPage])
+  }, [prevSearch.current, search, page, rowsPerPage])
+
+  const onSubmit = useCallback(
+    <T extends Element>(event: SyntheticEvent<T>) => {
+      event.preventDefault()
+      handleSubmit()
+    },
+    [handleSubmit],
+  )
 
   const onTextBoxChange = useEventCallback((event: any) => {
     setSearch(event.target.value as string)
   })
 
-  const isMobile = useMediaQuery("(max-width:900px)", { noSsr: true })
-  const GridComponent = isMobile ? MobileGrid : WideGrid
+  const HelperText = useCallback(() => {
+    if (!searchVariables.search) {
+      return <StyledFormHelperText />
+    }
+
+    if (meta.finished) {
+      return (
+        <StyledFormHelperText
+          style={{ margin: meta.count > 0 ? "3px 0" : undefined }}
+        >
+          {t("searchFinished")}
+
+          {meta.count > 0 && (
+            <Tooltip title={t("searchResultMeta")}>
+              <IconButton
+                size="small"
+                onClick={() => setMetaVisible((prev) => !prev)}
+              >
+                {metaVisible ? (
+                  <KeyboardArrowUpIcon fontSize="small" />
+                ) : (
+                  <KeyboardArrowDownIcon fontSize="small" />
+                )}
+              </IconButton>
+            </Tooltip>
+          )}
+        </StyledFormHelperText>
+      )
+    }
+
+    return (
+      <StyledFormHelperText>
+        {t("searchInProgress")}
+        {notEmpty(meta.fieldIndex)
+          ? `: ${t("searchCondition")} ${meta.fieldIndex}/${meta.fieldCount}`
+          : null}
+      </StyledFormHelperText>
+    )
+  }, [searchVariables.search, metaVisible, loading, meta])
 
   return (
     <>
       <H1NoBackground component="h1" variant="h1" align="center">
         {t("userSearch")}
       </H1NoBackground>
-      <div>
-        <StyledForm
-          onSubmit={async (event: any) => {
-            event.preventDefault()
-            handleSubmit()
-          }}
-        >
+      <StyledForm onSubmit={onSubmit}>
+        <Row>
           <TextField
             id="standard-search"
             label={t("searchByString")}
@@ -65,20 +198,22 @@ const SearchForm = () => {
             value={search}
             onChange={onTextBoxChange}
           />
-
           <StyledButton
             variant="contained"
             disabled={search === ""}
-            onClick={async (event: any) => {
-              event.preventDefault()
-              handleSubmit()
-            }}
+            onClick={onSubmit}
           >
             {t("search")}
           </StyledButton>
-        </StyledForm>
-        <GridComponent />
-      </div>
+        </Row>
+        <HelperText />
+        {!loading && meta.finished && (
+          <Collapse in={metaVisible} unmountOnExit>
+            <ResultMeta meta={totalMeta} />
+          </Collapse>
+        )}
+      </StyledForm>
+      <GridComponent />
     </>
   )
 }

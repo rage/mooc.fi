@@ -6,7 +6,10 @@ import React, {
   useReducer,
 } from "react"
 
-import { CurrentUserQuery } from "/graphql/generated"
+import {
+  CurrentUserQuery,
+  UserDetailedFieldsFragment,
+} from "/graphql/generated"
 
 type UpdateUserPayload = {
   user: CurrentUserQuery["currentUser"]
@@ -17,7 +20,7 @@ export interface LoginState {
   loggedIn: boolean
   logInOrOut: () => void
   admin: boolean
-  currentUser?: CurrentUserQuery["currentUser"]
+  currentUser?: UserDetailedFieldsFragment
   updateUser: (user: UpdateUserPayload) => void
 }
 
