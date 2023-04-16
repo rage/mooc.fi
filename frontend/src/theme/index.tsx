@@ -1,24 +1,16 @@
 import { withComponents } from "./components"
+import { withPalette } from "./palette"
 import { withTypography } from "./typography"
 
 import type {} from "@mui/x-date-pickers/themeAugmentation"
 
 import { flow } from "lodash"
 
-import { amber } from "@mui/material/colors"
 import { createTheme } from "@mui/material/styles"
 
-let theme = createTheme({
-  palette: {
-    primary: {
-      main: "#378170",
-    },
-    secondary: {
-      main: amber[500],
-    },
-  },
-})
+let theme = createTheme({})
 
-theme = flow(withTypography, withComponents)(theme)
+theme = flow(withPalette, withTypography, withComponents)(theme)
 
+export { fontVariableClass } from "./typography"
 export default theme

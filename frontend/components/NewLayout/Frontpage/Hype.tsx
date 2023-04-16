@@ -82,7 +82,7 @@ function Hype() {
     <SectionContainer>
       <HypeGrid count={items.length}>
         {items.map((item) => (
-          <HypeCard key={`hype-${item.title}`} item={item} />
+          <HypeCard key={item.title ?? item.text} item={item} />
         ))}
       </HypeGrid>
     </SectionContainer>

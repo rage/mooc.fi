@@ -3,7 +3,9 @@ import { useState } from "react"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
-import * as Papa from "papaparse"
+import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
+import { parse } from "papaparse"
 
 import { useMutation, useQuery } from "@apollo/client"
 import {
@@ -11,12 +13,14 @@ import {
   AlertTitle,
   Button,
   Container,
+  Skeleton,
   TextField,
   Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { type DatePickerProps } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
@@ -31,6 +35,11 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
+const DynamicDatePicker = dynamic<DatePickerProps<Date | null>>(
+  () => import("@mui/x-date-pickers").then((mod) => mod.DatePicker),
+  { ssr: false, loading: () => <Skeleton variant="rectangular" /> },
+)
+
 interface CompletionData {
   user_id: string
   grade?: string
@@ -38,6 +47,7 @@ interface CompletionData {
 }
 
 const ManualCompletions = () => {
+  const { locale } = useRouter()
   const confirm = useConfirm()
   const [submitting, setSubmitting] = useState(false)
   const [input, setInput] = useState("")
@@ -46,7 +56,7 @@ const ManualCompletions = () => {
   const [messageSeverity, setMessageSeverity] = useState<
     "info" | "error" | "success" | "warning" | undefined
   >("info")
-  const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
+  const [completionDate, setCompletionDate] = useState<Date | null>(null)
   const [addCompletions, { loading: mutationLoading, error: mutationError }] =
     useMutation(AddManualCompletionDocument, {
       onCompleted: () => {
@@ -81,11 +91,11 @@ const ManualCompletions = () => {
   ])
   const title = courseData?.course?.name ?? "..."
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setSubmitting(true)
     setMessage(null)
     setMessageSeverity("info")
-    const parsed = Papa.parse<CompletionData>(input, { header: true })
+    const parsed = parse<CompletionData>(input, { header: true })
     if (parsed.errors.length > 0) {
       setMessage(JSON.stringify(parsed.errors, undefined, 2))
       setMessageSeverity("error")
@@ -228,9 +238,8 @@ const ManualCompletions = () => {
           Completion date (optional) - if provided, will be default for every
           completion with no date set
         </Typography>
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <DatePicker
-            format="yyyy-MM-dd"
+        <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
+          <DynamicDatePicker
             onChange={setCompletionDate}
             value={completionDate}
             slotProps={{

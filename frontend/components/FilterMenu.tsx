@@ -20,10 +20,7 @@ import { useSearch } from "/hooks/useSearch"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 
-import {
-  CourseCoreFieldsFragment,
-  CourseStatus,
-} from "/graphql/generated"
+import { CourseCoreFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const Container = styled("div")`
   background-color: white;
@@ -97,6 +94,7 @@ export interface SearchVariables {
   handledBy?: string | null
   status?: CourseStatus[]
 }
+
 interface FilterProps {
   searchVariables: SearchVariables
   setSearchVariables: React.Dispatch<React.SetStateAction<SearchVariables>>
@@ -120,12 +118,7 @@ function FilterMenu({
     status: showStatus = true,
     handler: showHandler = true,
   } = fields ?? {}
-  const {
-    search: initialSearch,
-    hidden,
-    handledBy,
-    status
-  } = searchVariables
+  const { search: initialSearch, hidden, handledBy, status } = searchVariables
 
   const { search, setSearch } = useSearch({ search: initialSearch ?? "" })
 
@@ -287,7 +280,7 @@ function FilterMenu({
                   &nbsp;
                 </MenuItem>
                 {handlerCourses?.map((course) => (
-                  <MenuItem key={`handled-${course.id}`} value={course.slug}>
+                  <MenuItem key={course.id} value={course.slug}>
                     {course.name}
                   </MenuItem>
                 ))}

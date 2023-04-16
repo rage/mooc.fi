@@ -13,7 +13,7 @@ import {
 } from "/components/NewLayout/Common/Card"
 import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
-import moocLogo from "/public/images/moocfi-transparent.svg"
+import moocLogo from "/public/images/new/logos/moocfi-transparent.svg"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
@@ -58,7 +58,7 @@ const CourseCard = ({
         <CardTitle variant="h4">{name}</CardTitle>
         <CardHeaderImage
           alt="MOOC logo"
-          src={moocLogo.src}
+          src={moocLogo}
           width={200}
           height={200}
         />
@@ -107,10 +107,7 @@ function SelectedCourses() {
           data.courses
             .slice(0, 3)
             .map((course) => (
-              <CommonCourseCard
-                key={`selected-course-${course.id}`}
-                course={course}
-              />
+              <CommonCourseCard key={course.id} course={course} />
             ))}
       </CoursesGrid>
       <Button href="/_new/courses">Näytä kaikki kurssit</Button>

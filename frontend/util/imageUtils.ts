@@ -1,12 +1,39 @@
-import { ImageLoader } from "next/image"
+import {
+  imageConfigDefault,
+  ImageLoaderPropsWithConfig,
+} from "next/dist/shared/lib/image-config"
+import defaultLoader from "next/dist/shared/lib/image-loader"
+import { ImageLoader, ImageProps } from "next/image"
 
 import { ImageCoreFieldsFragment } from "/graphql/generated"
+
+export function isStaticRequire(src?: ImageProps["src"]) {
+  return (src as any)?.default !== undefined
+}
+export function isStaticImageData(src?: ImageProps["src"]) {
+  return (src as any)?.src !== undefined
+}
+
+export function isStaticImport(
+  src?: ImageProps["src"],
+): src is Exclude<ImageProps["src"], string> {
+  return (
+    typeof src === "object" && (isStaticRequire(src) || isStaticImageData(src))
+  )
+}
+
+export const isBase64 = (src?: ImageProps["src"]): boolean => {
+  if (isStaticImport(src)) {
+    return false
+  }
+  return (src ?? "").indexOf("base64") >= 0
+}
 
 export const addDomain = (file?: string | null): string => {
   if (!file) {
     return ""
   }
-  if (file.indexOf("base64") < 0) {
+  if (!isBase64(file)) {
     return `https://images.mooc.fi/${file}`
   }
   return file
@@ -26,28 +53,43 @@ export const mime = (filename?: string): string => {
   return mimetypes[type] ?? mimetypes.jpg
 }
 
-export const imageLoader = (image?: ImageCoreFieldsFragment): ImageLoader => {
+export const imageLoader = (
+  image?: ImageCoreFieldsFragment,
+): ImageLoader | undefined => {
   if (!image) {
-    return ({ src, width, quality }) => `${src}?w=${width}&q=${quality ?? 75}`
+    return
   }
 
   const { original_mimetype, original } = image
+  const isSvg = original_mimetype === mimetypes["svg"]
+  const isWebp = original_mimetype === mimetypes["webp"]
+  const isBase64 = original.startsWith("base64")
+  if (isBase64 || isSvg || isWebp) {
+    return ((props: ImageLoaderPropsWithConfig) => {
+      if (isSvg || isBase64) {
+        return addDomain(image.original)
+      }
 
-  if (
-    original.startsWith("base64") ||
-    [mimetypes["svg"], mimetypes["webp"]].includes(original_mimetype)
-  ) {
-    return ({ width, quality }) =>
-      `${addDomain(image.original)}?w=${width}&q=${quality ?? 75}`
+      return defaultLoader({
+        ...props,
+        config: props.config || imageConfigDefault,
+        src: addDomain(image.original),
+      })
+    }) as ImageLoader
   }
 
-  return ({ width, quality }) => {
-    let src = addDomain(image.uncompressed)
-    if ((quality ?? 0) > 90) {
-      src = addDomain(image.original)
+  return ((props: ImageLoaderPropsWithConfig) => {
+    const { quality, width } = props
+    let _src = addDomain(image.uncompressed)
+    if ((quality ?? 75) > 75) {
+      _src = addDomain(image.original)
     } else if (width <= 250) {
-      src = addDomain(image.compressed)
+      _src = addDomain(image.compressed)
     }
-    return `${src}?w=${width}&q=${quality ?? 75}`
-  }
+    return defaultLoader({
+      ...props,
+      config: props.config || imageConfigDefault,
+      src: _src,
+    })
+  }) as ImageLoader
 }

@@ -307,7 +307,7 @@ function CourseGrid() {
                   {tags[category].map((tag) => (
                     <TagButton
                       id={`tag-${category}-${tag.id}`}
-                      key={`tag-${category}-${tag.id}`}
+                      key={tag.id}
                       variant={
                         activeTags.includes(tag) ? "contained" : "outlined"
                       }

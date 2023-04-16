@@ -113,6 +113,7 @@ declare module "@mui/material/styles" {
     red: React.CSSProperties["color"]
     yellow: React.CSSProperties["color"]
   }
+
   interface ThemeOptions {
     blue?: React.CSSProperties["color"]
     clear?: React.CSSProperties["color"]

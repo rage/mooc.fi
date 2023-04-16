@@ -10,11 +10,10 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
-import { Skeleton } from "@mui/material"
 
 const UserOptionsMenu = () => {
   const client = useApolloClient()
-  const { loggedIn, logInOrOut, loading } = useLoginStateContext()
+  const { loggedIn, logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
 
   const onLogoutClick = useCallback(
@@ -26,10 +25,6 @@ const UserOptionsMenu = () => {
     [],
   )
 
-  if (loading) {
-    return <Skeleton />
-  }
-  
   if (loggedIn) {
     return (
       <>

@@ -65,11 +65,12 @@ function NaviCard(props: NaviCardProps) {
 
   return (
     <Grid item {...gridProps}>
-      <StyledLink href={item.link} prefetch={false} aria-label={item.linkText}>
+      <StyledLink href={item.link} aria-label={item.linkText}>
         <NaviItemBase>
           {item.img ? (
             <BackgroundImage
-              src={`/images/${item.img}`}
+              src={require(`/public/images/navi/${item.img}`)}
+              placeholder="blur"
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               alt=""
@@ -85,7 +86,8 @@ function NaviCard(props: NaviCardProps) {
             >
               {item.titleImg ? (
                 <Image
-                  src={`/images/${item.titleImg}`}
+                  src={require(`/public/images/navi/${item.titleImg}`)}
+                  placeholder="blur"
                   priority
                   alt={item.title}
                   fill

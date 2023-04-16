@@ -1,4 +1,4 @@
-import memoize from "lodash/memoize"
+import { memoize } from "lodash"
 import { NextRouter } from "next/router"
 
 import notEmpty from "/util/notEmpty"

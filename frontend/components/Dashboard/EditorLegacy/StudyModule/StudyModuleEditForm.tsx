@@ -255,9 +255,7 @@ const StudyModuleFormComponent = () => {
                   (translation, index: number) => (
                     <LanguageEntry
                       item
-                      key={`translation-${
-                        translation.id ?? translation.language
-                      }`}
+                      key={translation.id ?? translation.language}
                     >
                       <EntryContainer elevation={2}>
                         <StyledFieldWithAnchor

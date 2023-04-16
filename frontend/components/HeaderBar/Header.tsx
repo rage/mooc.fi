@@ -3,11 +3,14 @@ import { ReactElement } from "react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
-import { AppBar, Skeleton, Toolbar } from "@mui/material"
-import CssBaseline from "@mui/material/CssBaseline"
-import Slide from "@mui/material/Slide"
+import {
+  AppBar,
+  CssBaseline,
+  Slide,
+  Toolbar,
+  useScrollTrigger,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
-import useScrollTrigger from "@mui/material/useScrollTrigger"
 
 import LanguageSwitch from "./LanguageSwitch"
 import MoocLogo from "./MoocLogo"
@@ -48,6 +51,15 @@ const HiddenMenuContainer = styled("div")`
 
 const MenuContainer = styled("div")`
   flex: 1;
+  height: 95px;
+`
+
+const OptionsContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 5rem;
 `
 
 export function useActiveTab() {
@@ -59,7 +71,7 @@ export function useActiveTab() {
 }
 
 function Header() {
-  const { loggedIn, loading } = useLoginStateContext()
+  const { loggedIn } = useLoginStateContext()
 
   return (
     <>
@@ -70,12 +82,13 @@ function Header() {
             <MoocLogo />
             <MenuContainer>
               <HiddenMenuContainer>
-                {loading && <Skeleton height="100%" />}
                 {loggedIn && <LoggedInUserMenu />}
               </HiddenMenuContainer>
             </MenuContainer>
-            <UserOptionsMenu />
-            <LanguageSwitch />
+            <OptionsContainer>
+              <UserOptionsMenu />
+              <LanguageSwitch />
+            </OptionsContainer>
           </StyledToolbar>
         </AppBar>
       </HideOnScroll>

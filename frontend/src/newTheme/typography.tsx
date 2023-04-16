@@ -1,26 +1,9 @@
-import { Lato, Raleway } from "next/font/google"
-
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles"
 
-export const headerFont = Raleway({
-  weight: ["400", "600", "700"],
-  style: ["normal", "italic"],
-  fallback: ["system-ui", "Cantarell", "Ubuntu", "roboto", "sans-serif"],
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--header-font",
-})
-
-export const bodyFont = Lato({
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  fallback: ["system-ui", "Cantarell", "Ubuntu", "roboto", "sans-serif"],
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--body-font",
-})
+import { bodyFont, headerFont } from "./fonts"
 
 export const fontVariableClass = `${headerFont.variable} ${bodyFont.variable}`
+export const bodyFontDeclaration = bodyFont.style
 
 export const withTypography = (theme: Theme) => {
   const typography: Theme["typography"] = {
@@ -94,7 +77,7 @@ export const withTypography = (theme: Theme) => {
     },
   }
 
-  let newTheme = createTheme(theme, { typography })
+  let newTheme = createTheme({ ...theme, typography })
 
   newTheme = responsiveFontSizes(newTheme)
 

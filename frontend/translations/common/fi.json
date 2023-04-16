@@ -78,6 +78,7 @@
     "statusSaving": "Tallennetaan...",
     "statusSavingSuccess": "Tallennus onnistui",
     "statusSavingError": "Virhe tallentaessa",
-    "statusValidationErrors": "Lomakkeessa on virheitä"  
+    "statusValidationErrors": "Lomakkeessa on virheitä",
+    "close": "Sulje"
 }
 

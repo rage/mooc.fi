@@ -28,7 +28,7 @@ import RawView from "/components/Dashboard/Users/Summary/RawView"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
-import FilterMenu from "/components/FilterMenu"
+import FilterMenu, { SearchVariables } from "/components/FilterMenu"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
@@ -37,10 +37,7 @@ import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"
 import UsersTranslations from "/translations/users"
 
-import {
-  EditorCoursesQueryVariables,
-  UserSummaryDocument,
-} from "/graphql/generated"
+import { UserSummaryDocument } from "/graphql/generated"
 
 const StyledForm = styled("form")`
   display: flex;
@@ -77,7 +74,6 @@ function UserSummaryView() {
       includeNoPointsAwardedExercises: false,
       includeDeletedExercises: false,
     },
-    ssr: false,
   })
 
   useBreadcrumbs([
@@ -96,10 +92,11 @@ function UserSummaryView() {
   const title = data?.user?.full_name ?? undefined
 
   const [state, dispatch] = useReducer(collapseReducer, {})
-  const [searchVariables, setSearchVariables] =
-    useState<EditorCoursesQueryVariables>({
-      search: "",
-    })
+  const [searchVariables, setSearchVariables] = useState<
+    Pick<SearchVariables, "search">
+  >({
+    search: "",
+  })
   const [rawViewOpen, setRawViewOpen] = useState(false)
   const userSearchInput = useRef<HTMLInputElement>()
 

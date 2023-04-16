@@ -69,7 +69,7 @@ export function StudyModuleList() {
       <ModuleList>
         {data?.study_modules?.map((studyModule, index) => (
           <ListItem
-            module={studyModule}
+            studyModule={studyModule}
             key={studyModule.id}
             backgroundColor={Object.values(colorSchemes)[index]}
           />

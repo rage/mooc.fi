@@ -78,5 +78,6 @@
     "statusSaving": "Saving...",
     "statusSavingSuccess": "Saved successfully",
     "statusSavingError": "Error while saving",
-    "statusValidationErrors": "There are errors in the form"
+    "statusValidationErrors": "There are errors in the form",
+    "close": "Close"
 } 

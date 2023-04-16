@@ -1,7 +1,7 @@
 import { Avatar, Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import moocLogo from "/public/images/moocfi.svg"
+import moocLogo from "/public/images/new/logos/moocfi.svg"
 
 const MoocLogoText = styled(Typography)(
   ({ theme }) => `

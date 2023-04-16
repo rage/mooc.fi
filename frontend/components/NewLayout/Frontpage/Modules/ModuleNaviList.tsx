@@ -56,7 +56,7 @@ function ModuleNaviList({
         )}
         {modules?.map((studyModule) => (
           <ModuleCard
-            key={`module-${studyModule.id}`}
+            key={studyModule.id}
             module={studyModule}
             variant={variant}
           />

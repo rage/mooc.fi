@@ -9,7 +9,7 @@ import {
   SubtitleNoBackground,
 } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { staticSrc } from "/util/staticSrc"
+import { isStaticImport } from "/util/imageUtils"
 
 export const CenteredContent = styled("div")`
   width: 80%;
@@ -73,19 +73,25 @@ const ModuleImageContainer = styled("div")`
   height: 100%;
 `
 
-export const ModuleImage = ({ src, alt, ...props }: ImageProps) => (
-  <ModuleImageContainer>
-    <Image
-      src={staticSrc(src)}
-      alt={alt ?? "Module image"}
-      style={{ objectFit: "contain" }}
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      {...(!props.width && !props.height && { fill: true })}
-      {...props}
-    />
-  </ModuleImageContainer>
-)
+export const ModuleImage = ({ src, alt, ...props }: ImageProps) => {
+  const isStatic = isStaticImport(src)
 
+  const imgSrc = isStatic ? src : require(`/public/images/modules/${src}`)
+
+  return (
+    <ModuleImageContainer>
+      <Image
+        src={imgSrc}
+        placeholder="blur"
+        alt={alt ?? "Module image"}
+        style={{ objectFit: "contain" }}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        {...(!props.width && !props.height && { fill: true })}
+        {...props}
+      />
+    </ModuleImageContainer>
+  )
+}
 export const ModuleDescriptionText = styled(
   ({
     variant = "subtitle1",

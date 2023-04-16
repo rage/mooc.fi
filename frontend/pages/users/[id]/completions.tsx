@@ -47,9 +47,7 @@ function CompletionsPage() {
   return (
     <>
       <Container>
-        <div>
-          <Completions completions={completions} />
-        </div>
+        <Completions completions={completions} />
       </Container>
     </>
   )

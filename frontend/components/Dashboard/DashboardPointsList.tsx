@@ -13,25 +13,23 @@ const PointsList = (props: PointsListProps) => {
   const { data, cutterValue } = props
 
   return (
-    <section>
-      <Grid container>
-        {data.map((p) =>
-          p?.user?.progress ? (
-            <PointsListItemCard
-              course={p.user.progress.course}
-              userCourseProgress={p.user.progress.user_course_progress}
-              userCourseServiceProgresses={
-                p.user.progress.user_course_service_progresses
-              }
-              cutterValue={cutterValue}
-              showPersonalDetails={true}
-              user={p.user}
-              key={`pointslistitemcard_${p.id}`}
-            />
-          ) : null,
-        )}
-      </Grid>
-    </section>
+    <Grid container component="section">
+      {data.map((p) =>
+        p?.user?.progress ? (
+          <PointsListItemCard
+            key={p.id}
+            course={p.user.progress.course}
+            userCourseProgress={p.user.progress.user_course_progress}
+            userCourseServiceProgresses={
+              p.user.progress.user_course_service_progresses
+            }
+            cutterValue={cutterValue}
+            showPersonalDetails={true}
+            user={p.user}
+          />
+        ) : null,
+      )}
+    </Grid>
   )
 }
 

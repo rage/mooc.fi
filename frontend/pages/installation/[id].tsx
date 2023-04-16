@@ -3,12 +3,12 @@ import { useEffect, useMemo, useState } from "react"
 import { MDXComponents } from "mdx/types"
 import { GetServerSidePropsContext } from "next"
 import dynamic from "next/dynamic"
-import Image from "next/image"
 
 import { MDXProvider } from "@mdx-js/react"
 import { Link as MUILink, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ModalImage from "/components/Images/ModalImage"
 // import NoOsMessage from "/components/Installation/NoOsMessage"
 import OSSelector from "/components/Installation/OSSelector"
 import Spinner from "/components/Spinner"
@@ -116,51 +116,14 @@ export const Note = styled("section")`
 
 export const Link = styled(MUILink)``
 
-// Not used now; tested what to do if we ever ditch using img in mdx
-const ImageContainer = styled("div", {
-  shouldForwardProp: (prop) => prop !== "width" && prop !== "height",
-})<{ width: string; height: string }>`
-  position: relative;
-  width: ${(props) => props.width};
-  height: ${(props) => props.height};
-
-  @supports not (aspect-ratio: 16 / 9) {
-    ::before {
-      content: "";
-      float: left;
-      padding-top: 56.25%;
-    }
-
-    ::after {
-      clear: left;
-      content: "";
-      display: block;
-    }
-  }
-
-  @supports (aspect-ratio: 16 / 9) {
-    aspect-ratio: 16 / 9;
-  }
-`
-
-// Same as above
-export const ContainedImage = ({ src, alt, ...props }: any) => {
-  return (
-    <ImageContainer {...props}>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-      />
-    </ImageContainer>
-  )
-}
-
 const mdxComponents: MDXComponents = {
-  // Image: ContainedImage,
   a: Link as React.ElementType,
+  img: ({ src, ...props }: any) => (
+    <ModalImage
+      src={require(`/public/images/installation/${src}`)}
+      {...props}
+    />
+  ),
 }
 
 interface InstallationInstructionProps {
@@ -198,7 +161,7 @@ const InstallationInstructions = ({
 
   const Component = dynamic(
     async () => {
-      return import(`../../public/md_pages/${paths?.[userOS]}`)
+      return import(`../../public/md_pages/installation/${paths?.[userOS]}`)
         .then((mdx) => mdx)
         .catch(() => {
           return Spinner

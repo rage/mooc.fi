@@ -1,5 +1,4 @@
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
+import { Card, CardContent } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 export const ErrorMessageBackground = styled(Card)`

@@ -1,5 +1,7 @@
 import React from "react"
 
+import { useRouter } from "next/router"
+
 import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
@@ -8,6 +10,7 @@ import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/NewLayout/Header/Header"
 import { BottomNavigation } from "/components/NewLayout/Navigation/BottomNavigation"
 import SkipLink from "/components/SkipLink"
+import PageLoadingIndicators from "/components/PageLoadingIndicators"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;
@@ -23,20 +26,25 @@ const MainContent = styled("main")`
 const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
   children,
 }) => {
+  const router = useRouter()
+
+  const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/_new\/?$/)
+
   return (
-    <div>
+    <>
+      <PageLoadingIndicators />
       <SkipLink />
       <FooterDownPusherWrapper>
         <Header />
         <MainContent id="main">
-          <Breadcrumbs />
+          {!isHomePage && <Breadcrumbs />}
           <Alerts />
           {children}
         </MainContent>
         <Footer />
         <BottomNavigation />
       </FooterDownPusherWrapper>
-    </div>
+    </>
   )
 }
 

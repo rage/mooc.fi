@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from "react"
 
 import { useRouter } from "next/router"
@@ -21,6 +20,7 @@ import {
   Divider,
   EnhancedMenuItem,
   IconButton,
+  LinkProps,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -55,48 +55,24 @@ interface MobileMenuItemProps {
 
 const MenuItem = MUIMenuItem as EnhancedMenuItem
 
-// TODO: check if necessary and remove if it isn't
-const MobileMenuItemLink = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  (
-    {
-      href,
-      children,
-      onClick,
-      ...props
-    }: React.PropsWithChildren<MobileMenuItemProps>,
-    ref,
-  ) => {
-    if (href) {
-      return (
-        <MenuItem href={href} onClick={onClick} ref={ref} {...props}>
-          {children}
-        </MenuItem>
-      )
-    }
-    return (
-      <MenuItem onClick={onClick} ref={ref} {...props}>
-        {children}
-      </MenuItem>
-    )
-  },
-)
-
-const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  ({ Icon, text, ...props }, ref) => {
-    return (
-      <MobileMenuItemLink ref={ref} {...props}>
-        <ListItemIcon>
-          <Icon />
-        </ListItemIcon>
-        <ListItemText>{text}</ListItemText>
-      </MobileMenuItemLink>
-    )
-  },
-)
+const MobileMenuItem = forwardRef<
+  HTMLAnchorElement,
+  MobileMenuItemProps & LinkProps
+>(({ Icon, text, ...props }, ref) => {
+  console.log("props", props)
+  return (
+    <MenuItem component="a" {...props} ref={ref}>
+      <ListItemIcon>
+        <Icon />
+      </ListItemIcon>
+      <ListItemText>{text}</ListItemText>
+    </MenuItem>
+  )
+})
 
 const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
-  const [isOpen, setIsOpen] = useState(false)
   const anchor = useRef<(EventTarget & HTMLButtonElement) | null>(null)
+  const open = Boolean(anchor.current)
 
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
@@ -104,18 +80,16 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const { locale } = useRouter()
 
   const onClick: MouseEventHandler<HTMLButtonElement> = useCallback((event) => {
-    setIsOpen((value) => !value)
     anchor.current = event.currentTarget
   }, [])
 
-  const onClose = useCallback(() => {
-    setIsOpen(false)
+  const onClose: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
     anchor.current = null
   }, [])
 
   useEffect(() => {
     const resizeListener = () => {
-      setIsOpen(false)
+      anchor.current = null
     }
     window?.addEventListener("resize", resizeListener)
 
@@ -193,42 +167,36 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
       )
     } else {
       items.push(
-        <>
-          <MenuItem
-            href="/_new/sign-in"
-            key="menu-login"
-            onClick={onClose}
-            title={t("loginShort")}
-          >
-            {t("loginShort")}
-          </MenuItem>
-          <MenuItem
-            href="/_new/sign-up"
-            key="menu-signup"
-            onClick={onClose}
-            title={t("signUp")}
-          >
-            {t("signUp")}
-          </MenuItem>
-        </>,
+        <MobileMenuItem
+          href="/_new/sign-in"
+          key="menu-login"
+          Icon={User} // TODO: add icon
+          onClick={onClose}
+          title={t("loginShort")}
+        >
+          {t("loginShort")}
+        </MobileMenuItem>,
+        <MobileMenuItem
+          href="/_new/sign-up"
+          key="menu-signup"
+          Icon={User} // TODO: add icon
+          onClick={onClose}
+          title={t("signUp")}
+        >
+          {t("signUp")}
+        </MobileMenuItem>,
       )
     }
 
     return items
-  }, [loggedIn, admin])
+  }, [loggedIn, onClose, t, admin, MobileMenuItem])
 
   return (
     <MobileMenuContainer>
       <IconButton onClick={onClick} aria-hidden={true}>
         <MenuIcon />
       </IconButton>
-      <Menu
-        open={isOpen}
-        keepMounted={false}
-        onClose={onClose}
-        anchorEl={anchor.current}
-        ref={ref}
-      >
+      <Menu open={open} onClose={onClose} anchorEl={anchor.current} ref={ref}>
         {menuItems}
       </Menu>
     </MobileMenuContainer>

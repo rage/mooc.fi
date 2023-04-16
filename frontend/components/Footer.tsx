@@ -8,6 +8,7 @@ import { Link } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
+import uhLogo from "/public/images/logos/uh-logo.webp"
 import HomeTranslations from "/translations/home"
 
 const IconBaseStyle = css`
@@ -78,8 +79,9 @@ const PolicyContainer = styled("div")`
 function UniversityLogo() {
   return (
     <Image
-      src="/images/uh-logo.webp"
+      src={uhLogo}
       alt="Logo of the University of Helsinki"
+      placeholder="blur"
       width={188}
       height={75}
     />

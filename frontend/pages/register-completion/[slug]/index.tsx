@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import axios from "axios"
+import fetch from "isomorphic-unfetch"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
@@ -17,9 +17,9 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
-import { getAccessToken } from "/lib/authentication"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
+import { getCookie } from "/util/cookie"
 
 import {
   CourseFromSlugDocument,
@@ -62,7 +62,7 @@ const StyledText = styled(Typography)`
 ` as typeof Typography
 
 function RegisterCompletionPage() {
-  const accessToken = getAccessToken(undefined)
+  const accessToken = getCookie("access_token")
   const { currentUser } = useLoginStateContext()
   const [instructions, setInstructions] = useState("")
   const [tiers, setTiers] = useState([])
@@ -113,28 +113,49 @@ function RegisterCompletionPage() {
 
   useEffect(() => {
     if (locale) {
-      axios
-        .get(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`)
-        .then((res) => res.data)
+      const controller = new AbortController()
+      fetch(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`, {
+        signal: controller?.signal,
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json()
+          }
+          return Promise.reject(res)
+        })
         .then((json) => {
           setInstructions(json)
         })
-        .catch((error) => {
-          setInstructions(error.response.data)
+        .catch((res) => {
+          if (controller?.signal.aborted) {
+            return
+          }
+          res.json().then((json: any) => setInstructions(json))
         })
 
-      axios({
-        method: "GET",
-        url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
+      fetch(`${BASE_URL}/api/completionTiers/${courseSlug}/${locale}`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
+        signal: controller?.signal,
       })
-        .then((res) => res.data)
-        .then((json: any) => {
+        .then((res) => {
+          if (res.ok) {
+            return res.json()
+          }
+          return Promise.reject(res)
+        })
+        .then((json) => {
           setTiers(json.tierData)
         })
+        .catch(() => {
+          /* Do nothing */
+        })
+
+      return () => {
+        controller?.abort()
+      }
     }
   }, [locale])
 

@@ -1,4 +1,4 @@
-import axios from "axios"
+import fetch from "isomorphic-unfetch"
 
 import { getAccessToken } from "./authentication"
 
@@ -7,7 +7,7 @@ const SERVICE_URL = "https://certificates.mooc.fi"
 export const checkCertificate = async (courseSlug: string) => {
   const accessToken = getAccessToken(undefined)
 
-  const res = await axios.get(
+  const res = await fetch(
     `${SERVICE_URL}/certificate-availability/${courseSlug}`,
     {
       headers: {
@@ -17,24 +17,28 @@ export const checkCertificate = async (courseSlug: string) => {
     },
   )
 
-  return res?.data
+  if (res.ok) {
+    return res.json()
+  }
 }
 
 export const createCertificate = async (courseSlug: string) => {
   const accessToken = getAccessToken(undefined)
 
   try {
-    const res = await axios.post(
-      `${SERVICE_URL}/create/${courseSlug}`,
-      undefined,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+    const res = await fetch(`${SERVICE_URL}/create/${courseSlug}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
-    )
-    return res?.data
+    })
+    if (res.ok) {
+      return res.json()
+    }
+    const e = await res.json()
+    console.log(e)
+    return null
   } catch (e) {
     console.log(e)
     return null

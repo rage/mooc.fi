@@ -2,6 +2,7 @@ import { styled } from "@mui/material/styles"
 
 import Explanation from "./Explanation"
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
+import homeBackground from "/public/images/hero/homeBackground.webp"
 
 const ExplanationRoot = styled("section")`
   display: flex;
@@ -15,8 +16,9 @@ function ExplanationHero() {
     <ExplanationRoot>
       <Explanation />
       <BackgroundImage
-        src="/images/homeBackground.webp"
+        src={homeBackground}
         alt=""
+        placeholder="blur"
         priority
         aria-hidden={true}
         fill

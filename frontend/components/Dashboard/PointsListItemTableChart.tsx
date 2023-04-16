@@ -1,6 +1,6 @@
 import { CardSubtitle } from "components/Text/headers"
 
-import LinearProgress from "@mui/material/LinearProgress"
+import { LinearProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"

@@ -1,14 +1,16 @@
 import { Avatar, Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import moocLogo from "/public/images/moocfi.svg"
+import moocLogo from "/public/images/logos/moocfi.svg"
 
 const MoocLogoText = styled(Typography)`
   font-family: var(--header-font);
   font-size: 1.75rem !important;
+  font-stretch: condensed;
   font-weight: lighter;
   @media (max-width: 425px) {
     font-size: 1.5rem !important;
+    font-stretch: condensed;
   }
   @media (max-width: 375px) {
     display: none !important;

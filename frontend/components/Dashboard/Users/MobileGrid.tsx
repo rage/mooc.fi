@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo } from "react"
 
-import range from "lodash/range"
+import { range } from "lodash"
 
 import {
   Button,
@@ -135,7 +135,7 @@ const DataCard = ({ row }: DataCardProps) => {
           {fields.map((field) => {
             if (field.title) {
               return (
-                <Grid container key={`${field.text}-${upstream_id}`}>
+                <Grid container key={field.text}>
                   <Grid item xs={12}>
                     {row ? (
                       <Typography variant="h5">{field.value}</Typography>
@@ -148,7 +148,7 @@ const DataCard = ({ row }: DataCardProps) => {
             }
 
             return (
-              <Grid container key={`${field.text}-${upstream_id}`}>
+              <Grid container key={field.text}>
                 {row ? (
                   <>
                     <Grid item xs={3}>

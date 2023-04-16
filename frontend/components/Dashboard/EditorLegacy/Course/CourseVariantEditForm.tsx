@@ -47,7 +47,11 @@ const CourseVariantEditForm = () => {
                 <>
                   {values.length ? (
                     values.map((variant, index: number) => (
-                      <Grid container spacing={2} key={`variant-${index}`}>
+                      <Grid
+                        container
+                        spacing={2}
+                        key={variant.id ?? variant.slug}
+                      >
                         <Grid item xs={2}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].slug`}

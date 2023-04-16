@@ -69,8 +69,11 @@ const ModuleNavi = ({ modules, loading }: ModuleNaviProps) => {
               <ModuleNaviCard key="skeletonnavicard2" />
             </>
           ) : (
-            modules?.map((module) => (
-              <ModuleNaviCard key={`module-${module.name}`} module={module} />
+            modules?.map((studyModule) => (
+              <ModuleNaviCard
+                key={studyModule.id ?? studyModule.slug}
+                studyModule={studyModule}
+              />
             ))
           )}
         </Grid>

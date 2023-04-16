@@ -1,6 +1,5 @@
+import { SvgIcon, SvgIconProps, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon"
-import Typography from "@mui/material/Typography"
 
 const InfoBoxIcon = (props: SvgIconProps) => {
   return (

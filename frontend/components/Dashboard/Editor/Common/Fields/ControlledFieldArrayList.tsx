@@ -163,7 +163,7 @@ function ControlledFieldArrayListImpl<
       <ArrayList>
         {fields.length ? (
           fields.map((item, index) => (
-            <ArrayItem key={`${name}-${item._id ?? index}`}>
+            <ArrayItem key={item._id ?? index}>
               {render({ item, index })}
               <StyledButton
                 variant="contained"

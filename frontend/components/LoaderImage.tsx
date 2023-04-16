@@ -2,7 +2,8 @@ import Image, { ImageProps } from "next/image"
 
 import { styled } from "@mui/material/styles"
 
-import { addDomain, imageLoader } from "/util/imageUtils"
+import { isNullOrUndefined } from "/util/guards"
+import { addDomain, isBase64 } from "/util/imageUtils"
 
 import { ImageCoreFieldsFragment } from "/graphql/generated"
 
@@ -23,10 +24,14 @@ const ImageBase = styled(Image)`
 `
 
 export default function LoaderImage({ src, image, ...rest }: LoaderImageProps) {
+  if (isNullOrUndefined(src) && isNullOrUndefined(image)) {
+    throw new Error("LoaderImage: src or image must be provided")
+  }
+  const _src = src ?? addDomain(image?.original)
   return (
     <ImageBase
-      {...(src ? { src } : { src: addDomain(image?.uncompressed) })}
-      {...(image && { loader: imageLoader(image) })}
+      src={src ?? addDomain(image?.original)}
+      {...(isBase64(_src) && { unoptimized: true })}
       {...rest}
     />
   )

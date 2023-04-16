@@ -1,10 +1,10 @@
 import { CardSubtitle, CardTitle } from "components/Text/headers"
+import dynamic from "next/dynamic"
 
 import DoneIcon from "@mui/icons-material/Done"
-import { Avatar, Button, Paper } from "@mui/material"
+import { Avatar, Button, Paper, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import CertificateButton from "/components/CertificateButton"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
@@ -21,9 +21,10 @@ const StyledButton = styled(Button)`
   color: black;
 `
 
-/*const StyledLink = styled(Link)`
-  margin: auto;
-`*/
+const CertificateButton = dynamic(() => import("../../CertificateButton"), {
+  ssr: false,
+  loading: () => <Skeleton />,
+})
 
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
@@ -142,7 +143,7 @@ export const CompletionListItem = ({
         <RegistrationColumn>
           {isRegistered && completion.completions_registered
             ? completion.completions_registered?.map((r) => (
-                <Row key={`registration-${r.id}`}>
+                <Row key={r.id}>
                   <Column>
                     <CardSubtitle>
                       <strong>

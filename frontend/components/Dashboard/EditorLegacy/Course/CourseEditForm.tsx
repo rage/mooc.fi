@@ -7,6 +7,7 @@ import {
   useFormikContext,
   yupToFormErrors,
 } from "formik"
+import { useRouter } from "next/router"
 
 import {
   FormControl,
@@ -23,8 +24,8 @@ import {
   Tabs,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import {
   CheckboxField,
@@ -108,7 +109,7 @@ const CourseEditFormComponent = ({
   tab,
   setTab,
 }: RenderFormProps & RenderProps) => {
-  //({ tab, setTab }: RenderProps) => {
+  const { locale } = useRouter()
   const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
   const secret = useQueryParameter("secret", false)
   const t = useTranslator(CoursesTranslations)
@@ -131,7 +132,7 @@ const CourseEditFormComponent = ({
   )
 
   return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
+    <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
       <Form style={{ backgroundColor: "white", padding: "2rem" }}>
         {}
         <CourseLanguageSelector
@@ -268,7 +269,7 @@ const CourseEditFormComponent = ({
                 >
                   {statuses.map((option: { value: string; label: string }) => (
                     <FormControlLabel
-                      key={`status-${option.value}`}
+                      key={option.value}
                       value={option.value}
                       control={<Radio />}
                       label={option.label}
@@ -284,12 +285,14 @@ const CourseEditFormComponent = ({
                 <FormGroup>
                   <ModuleList>
                     <EnumeratingAnchor id="study_modules" />
-                    {studyModules?.map((module) => (
-                      <ModuleListItem key={module.id}>
+                    {studyModules?.map((studyModule) => (
+                      <ModuleListItem key={studyModule.id}>
                         <CheckboxField
-                          id={`study_modules[${module.id}]`}
-                          label={module.name}
-                          checked={values?.study_modules?.[module.id] ?? false}
+                          id={`study_modules[${studyModule.id}]`}
+                          label={studyModule.name}
+                          checked={
+                            values?.study_modules?.[studyModule.id] ?? false
+                          }
                         />
                       </ModuleListItem>
                     ))}

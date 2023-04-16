@@ -28,14 +28,14 @@ function NaviCardList() {
         <UkraineInfo />
         {items.map((item) => (
           <NaviCard
-            key={`navi-${item.title}`}
+            key={item.title ?? item.text}
             item={item}
             count={items.length}
           />
         ))}
         {customItems.length ? <PartnerDivider /> : null}
         {customItems.map((item) => (
-          <WideNaviCard key={`navi-${item.title}`} item={item} />
+          <WideNaviCard key={item.title ?? item.text} item={item} />
         ))}
       </Grid>
     </Container>

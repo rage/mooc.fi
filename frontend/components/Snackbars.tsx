@@ -1,16 +1,20 @@
+import dynamic from "next/dynamic"
+
 import { Alert, Slide, SlideProps } from "@mui/material"
-import MUISnackbar from "@mui/material/Snackbar"
 import { styled } from "@mui/material/styles"
-import { TransitionProps } from "@mui/material/transitions"
 
 import {
   useSnackbarContext,
   useSnackbarMethods,
 } from "/contexts/SnackbarContext"
 
-const StyledSnackbar = styled(MUISnackbar, {
+const DynamicSnackbar = dynamic(() => import("@mui/material/Snackbar"), {
+  loading: () => null,
+})
+
+const StyledSnackbar = styled(DynamicSnackbar, {
   shouldForwardProp: (prop) => prop !== "indexFromBottom",
-})<{ indexFromBottom?: number } & TransitionProps>(
+})<{ indexFromBottom?: number }>(
   ({ theme, indexFromBottom = 1 }) => `
   transform: translateY(-${indexFromBottom * 50}px) !important;
   transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
