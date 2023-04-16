@@ -60,7 +60,6 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
   value,
   children,
 }: React.PropsWithChildren<ProviderProps>) {
-  console.log("LoginStateProvider", value)
   const { loggedIn, admin, currentUser } = value
   const logInOrOut = () => dispatch({ type: "logInOrOut" })
 

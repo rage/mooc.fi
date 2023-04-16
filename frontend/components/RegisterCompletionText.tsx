@@ -105,7 +105,7 @@ function RegisterCompletionText({
         {t("grades")}
       </Typography>
       {tiers.length > 0 ? (
-        tiers.map((tier: any, i: number) => (
+        tiers.map((tier: any) => (
           <RegistrationButtons key={tier.name}>
             <Typography variant="body1" paragraph align="center">
               {tier.name}

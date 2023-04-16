@@ -9,10 +9,10 @@ import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
+import PageLoadingIndicators from "/components/PageLoadingIndicators"
 import SkipLink from "/components/SkipLink"
 import Snackbars from "/components/Snackbars"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
-import PageLoadingIndicators from "/components/PageLoadingIndicators"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;

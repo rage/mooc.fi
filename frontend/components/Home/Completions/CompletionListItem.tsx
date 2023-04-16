@@ -1,5 +1,6 @@
 import { CardSubtitle, CardTitle } from "components/Text/headers"
 import dynamic from "next/dynamic"
+import Image from "next/image"
 
 import DoneIcon from "@mui/icons-material/Done"
 import { Avatar, Button, Paper, Skeleton } from "@mui/material"
@@ -21,6 +22,13 @@ const StyledButton = styled(Button)`
   color: black;
 `
 
+const CourseAvatar = styled(Avatar)`
+  margin: 10px;
+  width: 60px;
+  height: 60px;
+  grid-area: avatar;
+`
+
 const CertificateButton = dynamic(() => import("../../CertificateButton"), {
   ssr: false,
   loading: () => <Skeleton />,
@@ -29,21 +37,6 @@ const CertificateButton = dynamic(() => import("../../CertificateButton"), {
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
   course: UserOverviewCourseFieldsFragment // actually also UserCourseSummaryCourseFieldsFragment, but they are kind of compatible
-}
-
-interface CourseAvatarProps {
-  course: CompletionListItemProps["course"]
-}
-
-const CourseAvatar = ({ course }: CourseAvatarProps) => {
-  return (
-    <Avatar
-      style={{ margin: "10px", width: 60, height: 60, gridArea: "avatar" }}
-      src={course?.photo ? addDomain(course.photo.uncompressed) : undefined}
-    >
-      {!course?.photo ? "M" : undefined}
-    </Avatar>
-  )
 }
 
 const ListItemContainer = styled(Paper)`
@@ -99,7 +92,17 @@ export const CompletionListItem = ({
         <CompletionColumn>
           <Row>
             <Column>
-              <CourseAvatar course={course} />
+              <CourseAvatar>
+                {course?.photo ? (
+                  <Image
+                    src={addDomain(course.photo.uncompressed)}
+                    alt={course.name}
+                    fill
+                  />
+                ) : (
+                  course.name.toUpperCase().charAt(0)
+                )}
+              </CourseAvatar>
             </Column>
             <Column>
               <CardSubtitle>

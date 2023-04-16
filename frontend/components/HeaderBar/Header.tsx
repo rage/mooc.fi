@@ -59,7 +59,7 @@ const OptionsContainer = styled("div")`
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 5rem;
+  overflow: hidden;
 `
 
 export function useActiveTab() {

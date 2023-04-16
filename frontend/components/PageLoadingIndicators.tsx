@@ -1,5 +1,6 @@
 import { CircularProgress, LinearProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
+
 import usePageLoadProgress from "/hooks/usePageLoadProgress"
 
 const FixedLinearProgress = styled(LinearProgress)`

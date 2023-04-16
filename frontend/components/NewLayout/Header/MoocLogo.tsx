@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 import { Avatar, Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -44,7 +46,9 @@ const MoocLogoLink = styled(Link)`
 `
 const MoocLogo = () => (
   <MoocLogoLink href="/_new" aria-label="MOOC.fi homepage">
-    <MoocLogoAvatar alt="MOOC logo" src={moocLogo.src} />
+    <MoocLogoAvatar>
+      <Image src={moocLogo} alt="MOOC.fi logo" priority fill />
+    </MoocLogoAvatar>
     <MoocLogoText>MOOC.fi</MoocLogoText>
   </MoocLogoLink>
 )

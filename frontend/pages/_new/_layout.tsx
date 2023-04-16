@@ -9,8 +9,8 @@ import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/NewLayout/Header/Header"
 import { BottomNavigation } from "/components/NewLayout/Navigation/BottomNavigation"
-import SkipLink from "/components/SkipLink"
 import PageLoadingIndicators from "/components/PageLoadingIndicators"
+import SkipLink from "/components/SkipLink"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;

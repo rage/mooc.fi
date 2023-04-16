@@ -16,14 +16,12 @@ const SwitchButton = styled(HeaderMenuButton)`
   color: black;
   justify-content: center;
   align-items: baseline;
+  margin-right: 0.5rem;
   &:visited {
     color: black;
   }
   &:focus {
     color: black;
-  }
-  @media (max-width: 400px) {
-    font-size: 12px;
   }
 ` as typeof HeaderMenuButton
 

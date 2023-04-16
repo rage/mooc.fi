@@ -7,7 +7,9 @@ import Head from "next/head"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
+import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
+import { LoginStateProvider } from "/contexts/LoginStateContext"
 import useAlternateLanguage from "/hooks/useAlternateLanguage"
 import { useScrollToHash } from "/hooks/useScrollToHash"
 import useSeoConfig from "/hooks/useSeoConfig"
@@ -15,8 +17,7 @@ import useThemeWithLocale from "/hooks/useThemeWithLocale"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
-import DynamicLayout from "/components/DynamicLayout"
-import { LoginStateProvider } from "/contexts/LoginStateContext"
+
 import { UserDetailedFieldsFragment } from "/graphql/generated"
 
 const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
@@ -26,12 +27,14 @@ const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
 
 export { augmentDocumentWithEmotionCache }
 
-export function MyApp({ Component, pageProps, ...props }: AppProps<{
+export function MyApp({
+  Component,
+  pageProps,
+}: AppProps<{
   signedIn?: boolean
   admin?: boolean
   currentUser?: UserDetailedFieldsFragment
 }>) {
-  console.log("got props", pageProps, props)
   useEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
@@ -54,7 +57,6 @@ export function MyApp({ Component, pageProps, ...props }: AppProps<{
     [pageProps?.signedIn, pageProps?.admin, pageProps?.currentUser],
   )
 
-  console.log("loginStateContextValue", loginStateContextValue)
   return (
     <>
       <Head>
