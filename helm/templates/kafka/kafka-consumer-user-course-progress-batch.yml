@@ -26,11 +26,11 @@ spec:
               containerPort: 4000
           resources:
             limits:
-              memory: 256Mi
-              cpu: 100m
+              memory: 600Mi
+              cpu: 60m
             requests:
-              memory: 100Mi
-              cpu: 30m
+              memory: 200Mi
+              cpu: 20m
           envFrom:
           - secretRef:
               name: backend-secret

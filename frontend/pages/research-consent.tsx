@@ -9,9 +9,9 @@ import { styled } from "@mui/material/styles"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
-import SignupTranslations from "/translations/sign-up"
-import { useTranslator } from "/util/useTranslator"
+import SignUpTranslations from "/translations/sign-up"
 
 import {
   CurrentUserDetailedDocument,
@@ -39,7 +39,7 @@ const InfoBox = styled("div")`
 `
 
 function useResearchConsent() {
-  const t = useTranslator(SignupTranslations)
+  const t = useTranslator(SignUpTranslations)
 
   useBreadcrumbs([
     {
@@ -96,7 +96,7 @@ function useResearchConsent() {
 }
 
 const ResearchConsentPage = () => {
-  const t = useTranslator(SignupTranslations)
+  const t = useTranslator(SignUpTranslations)
 
   const { loading, research, handleInput, onSubmit, formError, submitting } =
     useResearchConsent()

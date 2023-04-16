@@ -79,6 +79,8 @@ interface RedisifyOptions {
   key: string
   params?: any
   disableResolveError?: boolean
+  retry?: boolean
+  throwOnError?: boolean
 }
 
 type RedisifyContext = Partial<BaseContext> & { client?: typeof redisClient }
@@ -88,7 +90,14 @@ export async function redisify<T>(
   options: RedisifyOptions,
   ctx: RedisifyContext = {},
 ) {
-  const { prefix, expireTime, key, params } = options
+  const {
+    prefix,
+    expireTime,
+    key,
+    params,
+    retry = true,
+    throwOnError = false,
+  } = options
   const { logger = _logger, client = redisClient } = ctx
 
   const resolveValue = async () => {
@@ -118,7 +127,7 @@ export async function redisify<T>(
         return JSON.parse(res)
       } catch (e) {
         logger.warn(`Cache hit but failed to parse result: ${prefix}`)
-        throw e
+        throw convertError(e)
       }
     }
     logger.info(`Cache miss: ${prefix}`)
@@ -129,19 +138,26 @@ export async function redisify<T>(
     logger.warn(
       attachError(`Cache miss but failed to resolve value: ${prefix}`, e),
     )
-  }
 
-  if (!resolveSuccess) {
-    try {
-      value = await resolveValue()
-    } catch (e) {
-      logger.warn(
-        attachError(
-          `Cache miss but failed to resolve value twice, giving up: ${prefix}`,
-          e,
-        ),
-      )
-      return
+    if (!resolveSuccess) {
+      if (retry) {
+        try {
+          value = await resolveValue()
+        } catch (e2) {
+          if (throwOnError && !value) {
+            throw convertError(e2)
+          }
+          logger.warn(
+            attachError(
+              `Cache miss but failed to resolve value twice, giving up: ${prefix}`,
+              e2,
+            ),
+          )
+          return
+        }
+      } else {
+        throw convertError(e)
+      }
     }
   }
 

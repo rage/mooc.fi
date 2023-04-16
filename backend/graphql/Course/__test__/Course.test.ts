@@ -1,17 +1,17 @@
 import { gql } from "graphql-request"
 import { orderBy } from "lodash"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
+import {
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  getTestContext,
+  setupTMCWithDefaultFakeUsers,
+} from "../../../tests"
 import { seed } from "../../../tests/data/seed"
 
 jest.mock("../../../services/kafkaProducer")
 
 const ctx = getTestContext()
-const tmc = fakeTMCCurrent({
-  "Bearer normal": [200, normalUserDetails],
-  "Bearer admin": [200, adminUserDetails],
-})
 
 const courseCompletionsQuery = gql`
   query courseCompletions(
@@ -70,8 +70,7 @@ describe("Course", () => {
   afterAll(() => jest.clearAllMocks())
 
   describe("model", () => {
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     describe("completions", () => {
       beforeEach(async () => {
@@ -86,9 +85,7 @@ describe("Course", () => {
               slug: "course1",
               user_upstream_id: 1,
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
           .then(() => fail())
           .catch(({ response }) => {
@@ -105,9 +102,7 @@ describe("Course", () => {
             {
               slug: "course1",
             },
-            {
-              Authorization: "Bearer admin",
-            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
           )
           .then(() => fail())
           .catch(({ response }) => {
@@ -126,9 +121,7 @@ describe("Course", () => {
             slug: "course1",
             user_id: "20000000000000000000000000000103",
           },
-          {
-            Authorization: "Bearer admin",
-          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         )
 
         expect({
@@ -144,9 +137,7 @@ describe("Course", () => {
             slug: "course1",
             user_upstream_id: 1,
           },
-          {
-            Authorization: "Bearer admin",
-          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         )
 
         expect({
@@ -162,9 +153,7 @@ describe("Course", () => {
             slug: "course1",
             user_upstream_id: 4939298,
           },
-          {
-            Authorization: "Bearer admin",
-          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         )
 
         expect({
@@ -188,9 +177,7 @@ describe("Course", () => {
                 slug: "course1",
                 includeHidden: true,
               },
-              {
-                Authorization: "Bearer normal",
-              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             )
             fail()
           } catch (e: any) {
@@ -205,9 +192,7 @@ describe("Course", () => {
               slug: "course1",
               language: "en_US",
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
           const received = orderBy(res.course?.tags ?? [], "id")
@@ -231,9 +216,7 @@ describe("Course", () => {
               slug: "course2",
               language: "fi_FI",
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(res.course?.tags?.length).toBe(0)
@@ -247,9 +230,7 @@ describe("Course", () => {
               language: "fi_FI",
               search: "mUuTa",
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(res.course?.tags?.length).toBe(1)
@@ -264,9 +245,7 @@ describe("Course", () => {
               language: "fi_FI",
               types: ["type2"],
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(res.course?.tags?.length).toBe(1)
@@ -283,9 +262,7 @@ describe("Course", () => {
               language: "fi_FI",
               includeHidden: true,
             },
-            {
-              Authorization: "Bearer admin",
-            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(res.course?.tags?.length).toBe(1)

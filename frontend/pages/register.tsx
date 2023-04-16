@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { range } from "lodash"
 
 import { useMutation, useQuery } from "@apollo/client"
-import CancelIcon from "@mui/icons-material/Cancel"
 import {
   Button,
   Card,
@@ -12,8 +11,6 @@ import {
   ContainerProps,
   Grid,
   GridProps,
-  IconButton,
-  InputAdornment,
   Skeleton,
   TextField,
   Typography,
@@ -24,11 +21,11 @@ import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useDebounce from "/hooks/useDebounce"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddUserOrganizationDocument,
@@ -312,28 +309,13 @@ const Register = () => {
         <TextField
           style={{ marginBottom: "0.5rem" }}
           name="search"
-          type="text"
+          type="search"
           variant="outlined"
           value={searchBox}
           autoComplete="off"
           onChange={(e) => setSearchBox(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && cancelFilterDebounce()}
           placeholder={t("search")}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => {
-                    cancelFilterDebounce("")
-                    setSearchBox("")
-                  }}
-                  size="large"
-                >
-                  <CancelIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
         />
         <OrganizationItems />
       </FormContainer>

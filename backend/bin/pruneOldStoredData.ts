@@ -1,5 +1,3 @@
-import { StoredData } from "@prisma/client"
-
 import { PruneOldStoredDataError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import Knex from "../services/knex"
@@ -9,13 +7,17 @@ const logger = sentryLogger({ service: "prune-old-stored-data" })
 const pruneOldStoredData = async () => {
   logger.info("Pruning old stored data")
   try {
-    const deletedStoredData = await Knex.raw<Array<StoredData>>(`
-      DELETE
-      FROM stored_data
-      WHERE created_at < NOW() - INTERVAL '3 months'
-      RETURNING *
+    const deletedStoredDataCount = await Knex.raw(`
+      WITH cte AS (
+        DELETE
+        FROM stored_data
+        WHERE created_at < NOW() - INTERVAL '3 months'
+        RETURNING *
+      ) SELECT count(*) FROM cte;
     `)
-    logger.info(`Pruned ${deletedStoredData.length} rows from stored_data`)
+    logger.info(
+      `Pruned ${deletedStoredDataCount.rows[0].count} rows from stored_data`,
+    )
   } catch (e) {
     logger.error(
       new PruneOldStoredDataError(

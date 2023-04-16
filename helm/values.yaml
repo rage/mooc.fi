@@ -3,13 +3,13 @@
 # Declare variables to be passed into your templates.
 
 backend:
-  replicaCount: 3
+  replicaCount: 2
 
 frontend:
-  replicaCount: 3
+  replicaCount: 2
 
 kafkaBridge:
-  replicaCount: 3
+  replicaCount: 2
 
 kafkaConsumer:
   exercises:
@@ -19,9 +19,14 @@ kafkaConsumer:
   userCourseProgressRealtime:
     replicaCount: 1
   userPoints:
-    replicaCount: 10
+    replicaCount: 4
   userPointsRealtime:
     replicaCount: 1
+  userCoursePoints:
+    replicaCount: 2
+
+shibboTest:
+  replicaCount: 0
 
 email:
   # controls whether the background email service should be running

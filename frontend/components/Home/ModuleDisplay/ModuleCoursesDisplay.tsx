@@ -4,8 +4,8 @@ import ModuleCoursesListing, {
   ThreeOrLessCoursesListing,
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"
 import { H2Background } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 

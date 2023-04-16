@@ -2,6 +2,7 @@ import * as Yup from "yup"
 
 import { ApolloClient } from "@apollo/client"
 
+import { testUnique } from "../Common"
 import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
@@ -12,7 +13,7 @@ import { StudyModules } from "/translations/study-modules"
 import { StudyModuleExistsDocument } from "/graphql/generated"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
-  id: undefined,
+  _id: undefined,
   language: "",
   name: "",
   description: "",
@@ -42,28 +43,31 @@ export const languages = (t: Translator<StudyModules>) => [
   },
 ]
 
+function validateImage(this: Yup.TestContext, _value?: any): boolean {
+  const { image } = this.parent
+
+  if (image === "") return true
+
+  try {
+    require(`../../../../public/images/modules/${image}`)
+  } catch (e) {
+    return false
+  }
+
+  return true
+}
+
 interface StudyModuleEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
   t: Translator<StudyModules>
 }
 
-export type StudyModuleEditSchemaType = Yup.ObjectSchema<
-  Pick<StudyModuleFormValues, "new_slug" | "name" | "order"> & {
-    study_module_translations?: Array<
-      Pick<
-        StudyModuleTranslationFormValues,
-        "name" | "language" | "description"
-      >
-    >
-  }
->
-
 const studyModuleEditSchema = ({
   client,
   initialSlug,
   t,
-}: StudyModuleEditSchemaArgs): StudyModuleEditSchemaType =>
+}: StudyModuleEditSchemaArgs) =>
   Yup.object().shape({
     new_slug: Yup.string()
       .required(t("validationRequired"))
@@ -74,11 +78,15 @@ const studyModuleEditSchema = ({
         t("validationSlugInUse"),
         validateSlug({ client, initialSlug }),
       ),
+    image: Yup.string()
+      .required(t("validationRequired"))
+      .test("exists", t("moduleImageError"), validateImage),
     name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
+          .matches(/^((?!_empty).*)/, t("validationRequired"))
           .required(t("validationRequired"))
           .oneOf(
             languages(t).map((l) => l.value),
@@ -87,36 +95,10 @@ const studyModuleEditSchema = ({
           .test(
             "unique",
             t("validationOneTranslation"),
-            function (this: Yup.TestContext, value?: any): boolean {
-              const {
-                context,
-                path,
-              }: { context?: any; path?: string | undefined } = this.options
-              if (!context) {
-                return true
-              }
-
-              const {
-                values: { study_module_translations },
-              } = context
-
-              if (!value) {
-                return true // previous should have caught the empty
-              }
-
-              const currentIndexMatch =
-                (path ?? "").match(/^.*\[(\d+)\].*$/) ?? []
-              const currentIndex =
-                currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-              const otherTranslationLanguages = study_module_translations
-                .filter(
-                  (c: StudyModuleTranslationFormValues, index: number) =>
-                    c.language !== "" && index !== currentIndex,
-                )
-                .map((c: StudyModuleTranslationFormValues) => c.language)
-
-              return otherTranslationLanguages.indexOf(value) === -1
-            },
+            testUnique<StudyModuleFormValues, StudyModuleTranslationFormValues>(
+              "study_module_translations",
+              (v) => v.language,
+            ),
           ),
         description: Yup.string().required(t("validationRequired")),
       }),
@@ -125,6 +107,10 @@ const studyModuleEditSchema = ({
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
       .integer(t("validationInteger")),
   })
+
+export type StudyModuleEditSchemaType = Yup.InferType<
+  ReturnType<typeof studyModuleEditSchema>
+>
 
 interface ValidateSlugArgs {
   client: ApolloClient<object>
@@ -136,7 +122,7 @@ const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
     this: Yup.TestContext,
     value?: string | null,
   ): Promise<boolean> {
-    if (!value) {
+    if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
 

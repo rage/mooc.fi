@@ -2,8 +2,8 @@ import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseGrid from "./CourseGrid"
+import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/_new/courses"
-import { useTranslator } from "/util/useTranslator"
 
 const Container = styled("section")`
   display: grid;

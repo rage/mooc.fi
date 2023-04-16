@@ -17,8 +17,8 @@ import {
 import ExerciseEntry from "./ExerciseEntry"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   ExerciseCompletionCoreFieldsFragment,

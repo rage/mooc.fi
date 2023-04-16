@@ -8,14 +8,13 @@ import CourseHighlights from "./CourseHighlights"
 import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
-  CoursesDocument,
   CourseStatus,
-  StudyModulesDocument,
+  FrontpageCoursesModulesDocument,
 } from "/graphql/generated"
 
 const CourseAndModuleList = () => {
@@ -24,21 +23,15 @@ const CourseAndModuleList = () => {
   const language = mapNextLanguageToLocaleCode(locale)
 
   // TODO: do this in one query; get module courses already in backend
-  const {
-    loading: coursesLoading,
-    error: coursesError,
-    data: coursesData,
-  } = useQuery(CoursesDocument, { variables: { language } })
-  const {
-    loading: modulesLoading,
-    error: modulesError,
-    data: modulesData,
-  } = useQuery(StudyModulesDocument, { variables: { language } })
+  const { loading, error, data } = useQuery(FrontpageCoursesModulesDocument, {
+    variables: { language },
+  })
 
-  const courses = coursesData?.courses ?? []
+  const courses = data?.courses ?? []
+  const study_modules = data?.study_modules ?? []
 
   const { studyModules, modulesWithCourses } = useMemo(() => {
-    let studyModules = modulesData?.study_modules ?? []
+    let studyModules = study_modules ?? []
     const modulesWithCourses = studyModules
       .map((module) => {
         const moduleCourses = (courses ?? []).filter(
@@ -57,7 +50,7 @@ const CourseAndModuleList = () => {
     )
 
     return { studyModules, modulesWithCourses }
-  }, [modulesData?.study_modules, courses])
+  }, [study_modules, courses])
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
@@ -72,14 +65,10 @@ const CourseAndModuleList = () => {
     [activeCourses],
   )
 
-  if (coursesError || modulesError) {
+  if (error) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(
-          coursesError ?? modulesError,
-          undefined,
-          2,
-        )}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }
@@ -89,7 +78,7 @@ const CourseAndModuleList = () => {
       <section id="courses">
         <CourseHighlights
           courses={promotedCourses}
-          loading={coursesLoading}
+          loading={loading}
           title={t("highlightTitle")}
           headerImage="backgroundPattern.svg"
           subtitle={t("highlightSubtitle")}
@@ -101,7 +90,7 @@ const CourseAndModuleList = () => {
         />
         <CourseHighlights
           courses={activeCourses}
-          loading={coursesLoading}
+          loading={loading}
           title={t("allCoursesTitle")}
           headerImage="backgroundPattern.svg"
           backgroundColor="#ffffff"
@@ -112,7 +101,7 @@ const CourseAndModuleList = () => {
         />
         <CourseHighlights
           courses={upcomingCourses}
-          loading={coursesLoading}
+          loading={loading}
           title={t("upcomingCoursesTitle")}
           headerImage="backgroundPattern.svg"
           backgroundColor="#007DC8"
@@ -124,13 +113,13 @@ const CourseAndModuleList = () => {
       </section>
       {language === "fi_FI" && (
         <section id="modules">
-          <ModuleNavi modules={studyModules} loading={modulesLoading} />
-          <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
+          <ModuleNavi modules={studyModules} loading={loading} />
+          <ModuleList modules={modulesWithCourses} loading={loading} />
         </section>
       )}
       <CourseHighlights
         courses={endedCourses}
-        loading={coursesLoading}
+        loading={loading}
         title={t("endedCoursesTitle")}
         headerImage="backgroundPattern.svg"
         backgroundColor="#ffffff"

@@ -13,10 +13,10 @@ import { styled, useTheme } from "@mui/material/styles"
 
 import { CardSubtitle } from "/components/Text/headers"
 import { CardCaption } from "/components/Text/paragraphs"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import notEmpty from "/util/notEmpty"
 import round from "/util/round"
-import { useTranslator } from "/util/useTranslator"
 
 const PointsProgressContainer = styled("div")``
 

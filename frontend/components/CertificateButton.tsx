@@ -18,8 +18,8 @@ import { styled } from "@mui/material/styles"
 import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useCertificate } from "/hooks/useCertificate"
+import { useTranslator } from "/hooks/useTranslator"
 import CompletionsTranslations from "/translations/completions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CompletionDetailedFieldsFragment,

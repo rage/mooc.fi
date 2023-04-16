@@ -16,15 +16,14 @@ import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFromSlugDocument } from "/graphql/generated"
 
-// import useDebounce from "/util/useDebounce"
+// import useDebounce from "/hooks/useDebounce"
 
 const ContentArea = styled("div")`
   max-width: 39em;
@@ -40,15 +39,16 @@ const Completions = () => {
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
 
-  const handleLanguageChange = useCallback((e: ChangeEvent<unknown>) => {
-    // prevents reloading page, URL changes
+  const handleLanguageChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      // prevents reloading page, URL changes
 
-    const href = `/courses/${slug}/completions?language=${
-      (e.target as HTMLInputElement).value
-    }`
-    changeLng((e.target as HTMLInputElement).value as string)
-    router.replace(router.pathname, href, { shallow: true })
-  }, [])
+      const href = `/courses/${slug}/completions?language=${e.target.value}`
+      changeLng(e.target.value)
+      router.replace(router.pathname, href, { shallow: true })
+    },
+    [],
+  )
 
   const handleSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setSearchString(e.target.value)
@@ -80,7 +80,7 @@ const Completions = () => {
       href: `/courses/${slug}/completions`,
     },
   ])
-  const title = useSubtitle(data?.course?.name)
+  const title = data?.course?.name ?? "..."
 
   if (loading || !data) {
     return <Spinner />

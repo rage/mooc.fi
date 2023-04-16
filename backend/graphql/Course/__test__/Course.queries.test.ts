@@ -1,24 +1,25 @@
 import { gql } from "graphql-request"
-import { get, orderBy } from "lodash"
+import { orderBy } from "lodash"
 
 import { Course } from "@prisma/client"
 
-import { fakeTMCCurrent, getTestContext, ID_REGEX } from "../../../tests"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
+import {
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  getTestContext,
+  ID_REGEX,
+  setupTMCWithDefaultFakeUsers,
+} from "../../../tests"
 import { seed } from "../../../tests/data/seed"
+import { applySortFns, sortExercises, sortStudyModules, sortTags } from "./util"
 
 jest.mock("../../../services/kafkaProducer")
 
 const ctx = getTestContext()
-const tmc = fakeTMCCurrent({
-  "Bearer normal": [200, normalUserDetails],
-  "Bearer admin": [200, adminUserDetails],
-})
 
 describe("Course", () => {
   describe("queries", () => {
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     describe("course", () => {
       let createdCourses: Course[] | null = null
@@ -30,22 +31,32 @@ describe("Course", () => {
       afterEach(() => (createdCourses = null))
 
       describe("normal user", () => {
-        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer normal"))
-
         it("should error on no parameters", async () => {
           try {
-            await ctx.client.request(courseQuery)
+            await ctx.client.request(
+              courseQuery,
+              {},
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
             fail()
           } catch {}
         })
 
         it("returns course on id and slug", async () => {
-          const resId = await ctx.client.request(courseQuery, {
-            id: createdCourses?.[0].id,
-          })
-          const resSlug = await ctx.client.request(courseQuery, {
-            slug: "course1",
-          })
+          const resId = await ctx.client.request<any>(
+            courseQuery,
+            {
+              id: createdCourses?.[0].id,
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+          const resSlug = await ctx.client.request<any>(
+            courseQuery,
+            {
+              slug: "course1",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
 
           ;[resId, resSlug].forEach((res: any) =>
             // had sortStudyModules
@@ -56,10 +67,14 @@ describe("Course", () => {
         })
 
         it("returns correct language", async () => {
-          const res = await ctx.client.request<any>(courseQuery, {
-            slug: "course1",
-            language: "en_US",
-          })
+          const res = await ctx.client.request<any>(
+            courseQuery,
+            {
+              slug: "course1",
+              language: "en_US",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
 
           // had sortStudyModules
           expect(res.course).toMatchSnapshot({
@@ -68,40 +83,58 @@ describe("Course", () => {
         })
 
         it("should return null on non-existent language", async () => {
-          const res = await ctx.client.request(courseQuery, {
-            slug: "course1",
-            language: "sv_SE",
-          })
+          const res = await ctx.client.request<any>(
+            courseQuery,
+            {
+              slug: "course1",
+              language: "sv_SE",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
 
           expect(res).toEqual({ course: null })
         })
 
         it("should error on invalid id and slug", async () => {
           try {
-            await ctx.client.request(courseQuery, {
-              id: new Array(33).join("1"),
-            })
+            await ctx.client.request(
+              courseQuery,
+              {
+                id: new Array(33).join("1"),
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
             fail()
           } catch {}
           try {
-            await ctx.client.request(courseQuery, {
-              slug: "invalid",
-            })
+            await ctx.client.request(
+              courseQuery,
+              {
+                slug: "invalid",
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
             fail()
           } catch {}
         })
       })
 
       describe("admin", () => {
-        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer admin"))
-
         it("returns full course on id and slug", async () => {
-          const resId = await ctx.client.request(fullCourseQuery, {
-            id: createdCourses?.[0].id,
-          })
-          const resSlug = await ctx.client.request(fullCourseQuery, {
-            slug: "course1",
-          })
+          const resId = await ctx.client.request<any>(
+            fullCourseQuery,
+            {
+              id: createdCourses?.[0].id,
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
+          const resSlug = await ctx.client.request<any>(
+            fullCourseQuery,
+            {
+              slug: "course1",
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
 
           ;[resId, resSlug].forEach((res: any) =>
             expect(
@@ -115,10 +148,14 @@ describe("Course", () => {
         })
 
         it("should include deleted exercises if specified", async () => {
-          const res = await ctx.client.request<any>(fullCourseQuery, {
-            slug: "course1",
-            includeDeletedExercises: true,
-          })
+          const res = await ctx.client.request<any>(
+            fullCourseQuery,
+            {
+              slug: "course1",
+              includeDeletedExercises: true,
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
 
           expect(
             applySortFns([sortExercises, sortStudyModules, sortTags])(
@@ -218,21 +255,28 @@ describe("Course", () => {
     describe("course_exists", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        ctx.client.setHeader("Authorization", "Bearer normal")
       })
 
       it("returns true on existing course", async () => {
-        const res = await ctx.client.request(courseExistsQuery, {
-          slug: "course1",
-        })
+        const res = await ctx.client.request(
+          courseExistsQuery,
+          {
+            slug: "course1",
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res).toEqual({ course_exists: true })
       })
 
       it("returns false on non-existing course", async () => {
-        const res = await ctx.client.request(courseExistsQuery, {
-          slug: "bogus",
-        })
+        const res = await ctx.client.request(
+          courseExistsQuery,
+          {
+            slug: "bogus",
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res).toEqual({ course_exists: false })
       })
@@ -247,9 +291,7 @@ describe("Course", () => {
         const res = await ctx.client.request<any>(
           handlerCoursesQuery,
           {},
-          {
-            Authorization: "Bearer admin",
-          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
         )
 
         expect(res.handlerCourses).toMatchSnapshot()
@@ -260,9 +302,7 @@ describe("Course", () => {
           await ctx.client.request(
             handlerCoursesQuery,
             {},
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
           fail()
         } catch {}
@@ -453,42 +493,3 @@ const handlerCoursesQuery = gql`
     }
   }
 `
-
-const sortArrayField =
-  (field: string, id: Array<string> = ["id"]) =>
-  (object: any) => {
-    if (!get(object, field)) {
-      return object
-    }
-
-    return {
-      ...object,
-      [field]: orderBy(get(object, field), id, ["asc"]),
-    }
-  }
-// study_modules may be returned in any order, let's just sort them so snapshots are equal
-
-const sortStudyModules = sortArrayField("study_modules")
-const sortExercises = sortArrayField("exercises")
-const sortTags = (course: any) =>
-  sortArrayField("tags")({
-    ...course,
-    tags: (course?.tags ?? []).map((tag: any) => ({
-      ...tag,
-      ...(tag.types && { types: orderBy(tag.types) }),
-      ...(tag.tag_types && {
-        tag_types: sortArrayField("tag_types", ["name"])(tag).tag_types,
-      }),
-      ...(tag.tag_translations && {
-        tag_translations: sortArrayField("tag_translations", [
-          "language",
-          "name",
-          "description",
-        ])(tag).tag_translations,
-      }),
-    })),
-  })
-
-const applySortFns = (sortFns: Array<<T>(course: T) => T>) => (course: any) => {
-  return sortFns.reduce((course, fn) => fn(course), course)
-}

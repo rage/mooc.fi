@@ -12,8 +12,8 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 const MailingList = styled("div")`
   height: 20rem;

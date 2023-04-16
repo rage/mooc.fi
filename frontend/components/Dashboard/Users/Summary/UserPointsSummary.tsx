@@ -7,8 +7,8 @@ import { CourseEntry, SkeletonCourseEntry } from "./Course"
 import CourseSelectList from "./CourseSelectList"
 import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const DataPlaceholder = styled("div")`
   margin-bottom: 0.5rem;

@@ -5,8 +5,8 @@ import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import { UserOverviewDocument } from "/graphql/generated"
 

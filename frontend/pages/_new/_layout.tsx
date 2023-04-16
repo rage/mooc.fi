@@ -1,7 +1,5 @@
 import React from "react"
 
-import backgroundPattern from "public/images/backgroundPattern2.svg"
-
 import { styled } from "@mui/material/styles"
 
 import { Breadcrumbs } from "/components/Breadcrumbs"
@@ -16,18 +14,6 @@ const FooterDownPusherWrapper = styled("div")`
   min-height: 100vh;
   flex-direction: column;
   justify-content: space-between;
-`
-
-// @ts-ignore: disabled
-const Background = styled("div")`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: -10;
-  background: #fefefe;
-  background-image: url(${backgroundPattern.src});
 `
 
 const MainContent = styled("main")`

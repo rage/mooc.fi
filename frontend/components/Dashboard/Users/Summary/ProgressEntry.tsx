@@ -12,8 +12,8 @@ import CollapseButton from "/components/Buttons/CollapseButton"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   UserCourseProgressCoreFieldsFragment,
@@ -50,6 +50,7 @@ function ProgressEntry({
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
+  // TODO: extract hook
   const totalProgress = useMemo(() => {
     const { exercise_progress, extra } = userCourseProgress ?? {}
 

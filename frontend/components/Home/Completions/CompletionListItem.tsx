@@ -5,11 +5,11 @@ import { Avatar, Button, Paper } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CertificateButton from "/components/CertificateButton"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
 import { addDomain } from "/util/imageUtils"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CompletionDetailedFieldsFragment,
@@ -117,8 +117,7 @@ export const CompletionListItem = ({
               {notEmpty(completion.tier) && (
                 <CardSubtitle>
                   {`${t("completionTier")} ${t(
-                    // @ts-ignore: tier
-                    `completionTier-${completion.tier}`,
+                    `completionTier-${completion.tier as 1 | 2 | 3}`,
                   )}`}
                 </CardSubtitle>
               )}

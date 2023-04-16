@@ -4,19 +4,20 @@ import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-dow
 import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
 import {
   IconButton,
+  List,
+  ListItemButton,
   ListItemText,
   MenuItem,
   Skeleton,
   TextField,
   Typography,
 } from "@mui/material"
-import { List, ListItemButton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 
@@ -29,7 +30,7 @@ const Container = styled("div")`
   width: 30vw;
 `
 
-const CourseSelectListItemTextNested = styled("div")`
+const CourseSelectListItemTextNested = styled("span")`
   display: block;
   position: relative;
   padding-left: calc(2 * 1.5rem - 2px);
@@ -147,15 +148,11 @@ const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
                   {course.name}
                 </Typography>
               }
-              secondary={
-                tier_summaries
-                  ? tier_summaries.map(({ course: tierCourse }) => (
-                      <CourseSelectListItemTextNested key={tierCourse.id}>
-                        {tierCourse.name}
-                      </CourseSelectListItemTextNested>
-                    ))
-                  : null
-              }
+              secondary={tier_summaries?.map(({ course: tierCourse }) => (
+                <CourseSelectListItemTextNested key={tierCourse.id}>
+                  {tierCourse.name}
+                </CourseSelectListItemTextNested>
+              ))}
             />
           </ListItemButton>
         ))}

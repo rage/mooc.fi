@@ -1,15 +1,16 @@
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
 import { Grid } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import PointsItemTable from "./PointsItemTable"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardSubtitle, CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import formatPointsData from "/util/formatPointsData"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseCoreFieldsFragment,
@@ -90,9 +91,8 @@ function PointsListItemCard(props: PointsListItemCardProps) {
     )
   }, [formattedPointsData])
 
-  const onShowDetailsClick = useCallback(
-    () => setShowDetails((prev) => !prev),
-    [setShowDetails],
+  const onShowDetailsClick = useEventCallback(() =>
+    setShowDetails((prev) => !prev),
   )
 
   return (

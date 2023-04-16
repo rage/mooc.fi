@@ -3,10 +3,10 @@ import { CardSubtitle } from "components/Text/headers"
 import LinearProgress from "@mui/material/LinearProgress"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { FormattedGroupPoints } from "/util/formatPointsData"
 import round from "/util/round"
-import { useTranslator } from "/util/useTranslator"
 
 const ChartContainer = styled("div")`
   display: flex;

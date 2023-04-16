@@ -17,8 +17,8 @@ import {
 import { styled, useTheme } from "@mui/material/styles"
 
 import UserSearchContext from "/contexts/UserSearchContext"
+import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
-import { useTranslator } from "/util/useTranslator"
 
 const StyledFooter = styled("footer")`
   flex-shrink: 0;
@@ -37,8 +37,9 @@ const StyledTablePagination = styled(TablePagination)`
 
 const TablePaginationActions: React.FC = () => {
   const theme = useTheme()
+
   const {
-    data,
+    meta,
     page,
     rowsPerPage,
     setPage,
@@ -46,9 +47,9 @@ const TablePaginationActions: React.FC = () => {
     setSearchVariables,
   } = useContext(UserSearchContext)
 
-  const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
-  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
-  const count = data?.userDetailsContains?.count ?? 0
+  // const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
+  //  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
+  const { count } = meta
 
   const handleFirstPageButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -65,8 +66,8 @@ const TablePaginationActions: React.FC = () => {
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
-        last: rowsPerPage,
-        before: startCursor,
+        //last: rowsPerPage,
+        //before: startCursor,
       })
       setPage(page - 1)
     },
@@ -77,9 +78,9 @@ const TablePaginationActions: React.FC = () => {
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
-        first: rowsPerPage,
-        after: endCursor,
-        skip: 1,
+        //first: rowsPerPage,
+        //after: endCursor,
+        //skip: 1,
       })
       setPage(page + 1)
     },
@@ -90,7 +91,7 @@ const TablePaginationActions: React.FC = () => {
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
-        last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
+        //last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
       })
       setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
     },
@@ -146,7 +147,7 @@ const TablePaginationActions: React.FC = () => {
 const Pagination: React.FC = () => {
   const t = useTranslator(UsersTranslations)
   const {
-    data,
+    meta,
     rowsPerPage,
     page,
     setPage,
@@ -170,10 +171,14 @@ const Pagination: React.FC = () => {
   )
 
   const labelDisplayedRows = useCallback(
-    ({ from, to, count }: LabelDisplayedRowsArgs) =>
-      count > 0
-        ? `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
-        : "",
+    ({ from, to, count }: LabelDisplayedRowsArgs) => {
+      if (count === 0) {
+        return ""
+      }
+      const toOrCount = to === -1 ? count : to
+
+      return `${from}-${toOrCount}${t("displayedRowsOf")}${count}`
+    },
     [],
   )
 
@@ -183,7 +188,7 @@ const Pagination: React.FC = () => {
     <StyledTablePagination
       rowsPerPageOptions={[10, 20, 50]}
       colSpan={5}
-      count={data?.userDetailsContains?.count ?? 0}
+      count={meta.count ?? 0}
       rowsPerPage={rowsPerPage}
       page={page}
       SelectProps={{

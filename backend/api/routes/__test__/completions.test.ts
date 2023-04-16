@@ -2,25 +2,21 @@ import { orderBy } from "lodash"
 
 import {
   createRequestHelpers,
-  fakeTMCCurrent,
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   ID_REGEX,
   RequestGet,
   RequestPost,
+  setupTMCWithDefaultFakeUsers,
 } from "../../../tests"
-import { adminUserDetails, normalUserDetails, seed } from "../../../tests/data"
+import { seed } from "../../../tests/data"
 
 const ctx = getTestContext()
 
 describe("API", () => {
   describe("/api/completions", () => {
-    const tmc = fakeTMCCurrent({
-      "Bearer normal": [200, normalUserDetails],
-      "Bearer admin": [200, adminUserDetails],
-    })
-
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     let getCompletions: (slug: string, registered?: boolean) => RequestGet
     let getCompletionInstructions: RequestGet
@@ -63,7 +59,7 @@ describe("API", () => {
 
     it("errors on non-basic authorization", async () => {
       return getCompletions("course1")({
-        headers: { Authorization: "Bearer admin" },
+        headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -140,7 +136,7 @@ describe("API", () => {
 
     it("returns course with multiple tiered registration links", async () => {
       const res = await getCompletionTiers({
-        headers: { Authorization: "Bearer normal" },
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       })
 
       expect(res.status).toBe(200)

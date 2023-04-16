@@ -9,7 +9,6 @@ import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
 import { KafkaContext } from "../common/kafkaContext"
 import { handledRecently, setHandledRecently } from "../common/messageHashCache"
-import { Message } from "../common/userPoints/interfaces"
 import { saveToDatabase } from "../common/userPoints/saveToDB"
 import { MessageYupSchema } from "../common/userPoints/validate"
 import config from "../kafkaConfig"
@@ -44,10 +43,11 @@ consumer.on("ready", () => {
       logger.error(new KafkaError("Error while consuming", error))
       process.exit(-1)
     }
+
     if (messages.length > 0) {
       const messageString = messages[0]?.value?.toString("utf8") ?? ""
       if (!handledRecently(messageString)) {
-        await handleMessage<Message>({
+        await handleMessage({
           context,
           kafkaMessage: messages[0],
           MessageYupSchema,

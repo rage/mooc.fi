@@ -17,8 +17,8 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { useSearch } from "/hooks/useSearch"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseCoreFieldsFragment,

@@ -2,14 +2,16 @@ import React, { useMemo } from "react"
 
 import { PropsOf } from "@emotion/react"
 
-import AnchorContext, { Anchor } from "/contexts/AnchorContext"
+import LegacyAnchorContext, {
+  LegacyAnchor,
+} from "/components/Dashboard/EditorLegacy/LegacyAnchorContext"
 
 const withEnumeratingAnchors = <C extends React.ElementType = any>(
   Component: C,
 ): C =>
   ((props: PropsOf<C>) => {
     let anchorId = 0
-    const anchors: Record<string, Anchor> = {}
+    const anchors: Record<string, LegacyAnchor> = {}
     const addAnchor = (anchor: string, tab = 0) => {
       if (!anchors[anchor]) {
         anchors[anchor] = {
@@ -22,9 +24,9 @@ const withEnumeratingAnchors = <C extends React.ElementType = any>(
     const contextValue = useMemo(() => ({ anchors, addAnchor }), [anchors])
 
     return (
-      <AnchorContext.Provider value={contextValue}>
+      <LegacyAnchorContext.Provider value={contextValue}>
         <Component {...props} />
-      </AnchorContext.Provider>
+      </LegacyAnchorContext.Provider>
     )
   }) as C
 

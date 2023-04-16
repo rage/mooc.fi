@@ -260,7 +260,7 @@ export const CompletionMutations = extendType({
         const existing = await ctx.prisma.completion.findFirst({
           where: {
             id,
-            ...(ctx.role !== Role.ADMIN && { user_id: ctx.user?.id }),
+            ...(ctx.role !== Role.ADMIN ? { user_id: ctx.user?.id } : {}),
           },
         })
 

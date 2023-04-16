@@ -47,7 +47,7 @@ interface ImagePreviewProps
     HTMLDivElement
   > {
   file: string | undefined
-  onClose:
+  onImageRemove:
     | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
     | null
   height?: number
@@ -55,7 +55,7 @@ interface ImagePreviewProps
 
 const ImagePreview = ({
   file,
-  onClose = null,
+  onImageRemove = null,
   height,
   ...rest
 }: ImagePreviewProps) => {
@@ -71,9 +71,9 @@ const ImagePreview = ({
         fill
         style={{ objectFit: "contain" }}
       />
-      {onClose && (
+      {onImageRemove && (
         <Tooltip title="Remove picture">
-          <CloseButton onClick={onClose}>&times;</CloseButton>
+          <CloseButton onClick={onImageRemove}>&times;</CloseButton>
         </Tooltip>
       )}
     </ImagePreviewContainer>

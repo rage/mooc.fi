@@ -7,8 +7,8 @@ import Youtube from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
 import { Link } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 const IconBaseStyle = css`
   fill: white;

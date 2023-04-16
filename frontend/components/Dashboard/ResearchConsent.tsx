@@ -1,10 +1,16 @@
 import { ChangeEvent } from "react"
 
-import { FormControlLabel, Link, Radio, RadioGroup } from "@mui/material"
+import {
+  FormControl,
+  FormControlLabel,
+  Link,
+  Radio,
+  RadioGroup,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const Row = styled("div")`
   margin-bottom: 1.5rem;
@@ -53,7 +59,7 @@ const ResearchConsent = ({
       <p>{t("research7")}</p>
 
       <Row>
-        <>
+        <FormControl component="fieldset">
           <RadioGroup
             aria-label={t("researchAgree")}
             name="research"
@@ -71,7 +77,7 @@ const ResearchConsent = ({
               label={t("researchNo")}
             />
           </RadioGroup>
-        </>
+        </FormControl>
       </Row>
     </>
   )

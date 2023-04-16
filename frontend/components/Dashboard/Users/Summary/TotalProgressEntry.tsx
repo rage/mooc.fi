@@ -17,8 +17,8 @@ import { css, styled } from "@mui/material/styles"
 import InfoRow from "../InfoRow"
 import { SummaryCard } from "./common"
 import PointsProgress from "/components/Dashboard/PointsProgress"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   ProgressExtraFieldsFragment,

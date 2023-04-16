@@ -1,16 +1,34 @@
+import { useCallback } from "react"
+
+import dynamic from "next/dynamic"
+
+import { styled } from "@mui/material/styles"
+
 import { WideContainer } from "/components/Container"
-import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
-import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
+import FormSkeleton from "/components/Dashboard/EditorLegacy/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
-import StudyModuleTranslations from "/translations/study-modules"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
+import StudyModulesTranslations from "/translations/study-modules"
+
+const ContainerBackground = styled("section")`
+  background-color: #e9fef8;
+`
+
+const StudyModuleEdit = dynamic(
+  () => import("../../components/Dashboard/Editor/StudyModule"),
+  { loading: () => <FormSkeleton /> },
+)
+const LegacyStudyModuleEdit = dynamic(
+  () => import("../../components/Dashboard/EditorLegacy/StudyModule"),
+  { loading: () => <FormSkeleton /> },
+)
 
 const NewStudyModule = () => {
-  const t = useTranslator(StudyModuleTranslations)
-  const beta = useQueryParameter("beta", false)
+  const t = useTranslator(StudyModulesTranslations)
+  const legacy = useQueryParameter("legacy", false)
 
   useBreadcrumbs([
     {
@@ -23,15 +41,22 @@ const NewStudyModule = () => {
     },
   ])
 
+  const EditorComponent = useCallback(() => {
+    if (legacy) {
+      return <LegacyStudyModuleEdit />
+    }
+    return <StudyModuleEdit />
+  }, [legacy])
+
   return (
-    <section>
+    <ContainerBackground>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("newStudyModule")}
         </H1NoBackground>
-        {beta ? <StudyModuleEdit2 /> : <StudyModuleEdit />}
+        <EditorComponent />
       </WideContainer>
-    </section>
+    </ContainerBackground>
   )
 }
 

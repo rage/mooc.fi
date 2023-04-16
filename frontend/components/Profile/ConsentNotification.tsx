@@ -6,8 +6,8 @@ import Warning from "@mui/icons-material/Warning"
 import { EnhancedLink, Link as MUILink, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 const ConsentNotificationWrapper = styled("div")`
   display: flex;

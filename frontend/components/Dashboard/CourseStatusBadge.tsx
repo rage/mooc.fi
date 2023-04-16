@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React from "react"
 
 import AlarmOff from "@mui/icons-material/AlarmOff"
 import CheckCircle from "@mui/icons-material/CheckCircle"
@@ -32,15 +32,10 @@ function CourseStatusBadge({
   status,
   ...props
 }: ChipProps & { status?: CourseStatus | null }) {
-  const Icon = useCallback(
-    () => courseStatusIcon[status as CourseStatus] ?? <Error />,
-    [status],
-  )
-
   return (
     <StatusBadge
       {...props}
-      icon={<Icon />}
+      icon={courseStatusIcon[status as CourseStatus] ?? <Error />}
       status={status}
       color={status !== CourseStatus.Upcoming ? "primary" : undefined}
       size="small"

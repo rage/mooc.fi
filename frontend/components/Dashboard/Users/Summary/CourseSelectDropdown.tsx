@@ -4,8 +4,8 @@ import { MenuItem, TextField } from "@mui/material"
 
 import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 

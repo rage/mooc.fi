@@ -5,8 +5,8 @@ import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCo
 import OutboundLink from "/components/OutboundLink"
 import { ShadowedDiv } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const NaviItemBase = styled(ShadowedDiv)`
   width: 100%;

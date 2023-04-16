@@ -3,7 +3,6 @@ import { useState } from "react"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
-import { withRouter } from "next/router"
 import * as Papa from "papaparse"
 
 import { useMutation, useQuery } from "@apollo/client"
@@ -20,9 +19,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   AddManualCompletionDocument,
@@ -41,7 +39,6 @@ interface CompletionData {
 
 const ManualCompletions = () => {
   const confirm = useConfirm()
-
   const [submitting, setSubmitting] = useState(false)
   const [input, setInput] = useState("")
   const [message, setMessage] = useState<string | null>(null)
@@ -82,7 +79,7 @@ const ManualCompletions = () => {
       href: `/courses/${slug}/manual-completions`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+  const title = courseData?.course?.name ?? "..."
 
   const onSubmit = () => {
     setSubmitting(true)
@@ -236,6 +233,11 @@ const ManualCompletions = () => {
             format="yyyy-MM-dd"
             onChange={setCompletionDate}
             value={completionDate}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+              },
+            }}
           />
         </LocalizationProvider>
         <Typography>
@@ -261,4 +263,4 @@ const ManualCompletions = () => {
   )
 }
 
-export default withRouter(withAdmin(ManualCompletions) as any)
+export default withAdmin(ManualCompletions)

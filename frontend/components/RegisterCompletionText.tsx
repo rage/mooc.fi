@@ -1,8 +1,8 @@
 import { Button, Paper, Tooltip, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { useTranslator } from "/util/useTranslator"
 
 const LinkTooltip = styled(Tooltip)`
   background-color: white;

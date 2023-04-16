@@ -143,6 +143,14 @@ const nextConfiguration = {
 
     return config
   },
+  /*experimental: {
+    swcPlugins: [
+      [
+        "@graphql-codegen/client-preset-swc-plugin",
+        { artifactDirectory: "./graphql/generated", gqlTagName: "gql" },
+      ],
+    ],
+  },*/
   // swcMinify: false
 }
 

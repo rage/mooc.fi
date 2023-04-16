@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react"
 
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
 import { styled } from "@mui/material/styles"
@@ -8,8 +9,9 @@ import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
-import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import SkipLink from "/components/SkipLink"
+import Snackbars from "/components/Snackbars"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { fontVariableClass } from "/src/fonts"
 import { fontVariableClass as newThemeFontVariableClass } from "/src/newTheme/typography"
 
@@ -33,8 +35,16 @@ const FooterUpPusher = styled("div")(
 `,
 )
 
+const MobileBottomNavigation = dynamic(
+  () => import("../components/MobileBottomNavigation"),
+  {
+    loading: () => null,
+  },
+)
+
 const Layout = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter()
+  const { loggedIn, admin } = useLoginStateContext()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
   const isNew = router.pathname?.includes("_new")
@@ -51,10 +61,11 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
             <Alerts />
             {children}
           </main>
+          <Snackbars />
         </div>
         <Footer />
         <FooterUpPusher />
-        <MobileBottomNavigation />
+        {loggedIn && admin ? <MobileBottomNavigation /> : null}
       </FooterDownPusherWrapper>
     </div>
   )

@@ -3,10 +3,10 @@ import { Button, Grid, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+import { useTranslator } from "/hooks/useTranslator"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CompletionDetailedFieldsFragment,

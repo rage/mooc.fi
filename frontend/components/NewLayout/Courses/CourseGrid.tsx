@@ -14,9 +14,9 @@ import {
 import { styled } from "@mui/material/styles"
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseCatalogueTagsDocument,
@@ -253,21 +253,35 @@ function CourseGrid() {
 
   const filteredCourses = useMemo(
     () =>
-      (coursesData?.courses ?? []).filter(
-        (course) =>
-          !course.hidden &&
-          course.course_translations.length > 0 &&
-          (course?.name.toLowerCase().includes(searchString.toLowerCase()) ||
-            course?.description
-              ?.toLowerCase()
-              .includes(searchString.toLowerCase())) &&
-          (activeTags.length > 0
-            ? activeTags.every((tag) => courseHasTag(course, tag))
-            : true) &&
-          (filteredStatuses.length > 0 && course.status
-            ? filteredStatuses.includes(CourseStatus[course.status])
-            : true),
-      ),
+      (coursesData?.courses ?? []).filter((course) => {
+        if (course.hidden) {
+          return false
+        }
+        if (course.course_translations.length === 0) {
+          return false
+        }
+        if (
+          !course.name
+            .toLocaleLowerCase(locale)
+            .includes(searchString.toLocaleLowerCase(locale)) ||
+          !course.description
+            ?.toLocaleLowerCase(locale)
+            .includes(searchString.toLocaleLowerCase(locale))
+        ) {
+          return false
+        }
+        if (activeTags.length > 0) {
+          if (!activeTags.every((tag) => courseHasTag(course, tag))) {
+            return false
+          }
+        }
+        if (filteredStatuses.length > 0 && course.status) {
+          if (!filteredStatuses.includes(CourseStatus[course.status])) {
+            return false
+          }
+        }
+        return true
+      }),
     [coursesData, searchString, activeTags, filteredStatuses],
   )
 
@@ -321,9 +335,9 @@ function CourseGrid() {
             ))}
           </TagsContainer>
           <Statuses>
-            {["Active", "Upcoming", "Ended"].map((status) => (
+            {(["Active", "Upcoming", "Ended"] as const).map((status) => (
               <FormControlLabel
-                label={t(status as any)}
+                label={t(status)}
                 key={status}
                 control={
                   <Checkbox

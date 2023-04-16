@@ -1,18 +1,19 @@
-import { PropsWithChildren, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { DropzoneState, FileRejection, useDropzone } from "react-dropzone"
 
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
-const isChrome = process.browser
-  ? !!(window as any).chrome &&
-    (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
-  : false
+const isChrome =
+  typeof window !== "undefined"
+    ? !!(window as any).chrome &&
+      (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
+    : false
 
 const DropzoneContainer = styled("div", {
   shouldForwardProp: (prop) =>
@@ -46,41 +47,51 @@ const DropzoneContainer = styled("div", {
   position: relative;
 `
 
+const ErrorMessage = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "error",
+})<{ error: MessageProps["error"] }>`
+  color: ${({ error }) => (error ? "#FF0000" : "#000000")};
+`
 interface MessageProps {
   message: string
   error?: boolean
 }
 
 interface DropzoneProps {
+  inputRef?: React.RefCallback<HTMLDivElement>
   onImageLoad: (result: string | ArrayBuffer | null) => void
   onImageAccepted: (field: File) => void
 }
 
 const ImageDropzoneInput = ({
+  inputRef,
+  onImageAccepted,
   onImageLoad,
   children,
-  onImageAccepted,
-}: PropsWithChildren<DropzoneProps>) => {
+}: React.PropsWithChildren<DropzoneProps>) => {
   const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({
     message: t("imageDropMessage"),
   })
 
-  const onDrop = (accepted: File[], rejected: FileRejection[]) => {
-    const reader = new FileReader()
+  const onDrop = useCallback(
+    (accepted: File[], rejected: FileRejection[]) => {
+      const reader = new FileReader()
 
-    reader.onload = () => onImageLoad(reader.result)
+      reader.onload = () => onImageLoad(reader.result)
 
-    if (accepted.length) {
-      onImageAccepted(accepted[0])
-      reader.readAsDataURL(accepted[0])
-    }
+      if (accepted.length) {
+        onImageAccepted(accepted[0])
+        reader.readAsDataURL(accepted[0])
+      }
 
-    if (rejected.length) {
-      setStatus({ message: t("imageNotAnImage"), error: true })
-      setTimeout(() => setStatus({ message: t("imageDropMessage") }), 2000)
-    }
-  }
+      if (rejected.length) {
+        setStatus({ message: t("imageNotAnImage"), error: true })
+        setTimeout(() => setStatus({ message: t("imageDropMessage") }), 2000)
+      }
+    },
+    [setStatus],
+  )
 
   const {
     getRootProps,
@@ -88,6 +99,7 @@ const ImageDropzoneInput = ({
     isDragActive,
     isDragAccept,
     isDragReject,
+    inputRef: dropzoneInputRef,
   } = useDropzone({
     onDrop,
     accept: {
@@ -96,6 +108,8 @@ const ImageDropzoneInput = ({
     multiple: false,
     preventDropOnDocument: true,
   })
+
+  inputRef?.(dropzoneInputRef.current)
 
   useEffect(() => {
     if (isDragActive && isDragReject && !isChrome) {
@@ -116,13 +130,9 @@ const ImageDropzoneInput = ({
     >
       {children}
       <input {...getInputProps()} />
-      <Typography
-        variant="body1"
-        align="center"
-        style={{ color: status.error ? "#FF0000" : "#000000" }}
-      >
+      <ErrorMessage variant="body1" align="center" error={status.error}>
         {status.message}
-      </Typography>
+      </ErrorMessage>
     </DropzoneContainer>
   )
 }
