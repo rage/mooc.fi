@@ -55,7 +55,7 @@ function ControlledRadioGroupImpl<
       >
         {options.map((option) => (
           <FormControlLabel
-            key={`${name}-${option.value}`}
+            key={option.value}
             value={option.value}
             control={<Radio />}
             label={option.label}

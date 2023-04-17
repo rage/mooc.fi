@@ -20,10 +20,18 @@ const ModuleGrid = ({ modules, loading }: ModuleGridProps) => (
         ))
       ) : (
         <>
-          {modules?.map((module) => (
-            <ModuleCard key={module.slug} module={module} />
+          {modules?.map((studyModule) => (
+            <ModuleCard
+              key={studyModule.slug}
+              image={
+                studyModule.image
+                  ? require(`/public/images/modules/${studyModule.image}`)
+                  : require(`/public/images/modules/${studyModule.slug}.jpg`)
+              }
+              studyModule={studyModule}
+            />
           ))}
-          <ModuleCard key={"newmodule"} />
+          <ModuleCard key="newmodule" />
         </>
       )}
     </Grid>

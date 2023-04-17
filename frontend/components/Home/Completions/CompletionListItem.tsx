@@ -1,10 +1,11 @@
 import { CardSubtitle, CardTitle } from "components/Text/headers"
+import dynamic from "next/dynamic"
+import Image from "next/image"
 
 import DoneIcon from "@mui/icons-material/Done"
-import { Avatar, Button, Paper } from "@mui/material"
+import { Avatar, Button, Paper, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import CertificateButton from "/components/CertificateButton"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
@@ -21,28 +22,21 @@ const StyledButton = styled(Button)`
   color: black;
 `
 
-/*const StyledLink = styled(Link)`
-  margin: auto;
-`*/
+const CourseAvatar = styled(Avatar)`
+  margin: 10px;
+  width: 60px;
+  height: 60px;
+  grid-area: avatar;
+`
+
+const CertificateButton = dynamic(() => import("../../CertificateButton"), {
+  ssr: false,
+  loading: () => <Skeleton />,
+})
 
 interface CompletionListItemProps {
   completion: CompletionDetailedFieldsFragment
   course: UserOverviewCourseFieldsFragment // actually also UserCourseSummaryCourseFieldsFragment, but they are kind of compatible
-}
-
-interface CourseAvatarProps {
-  course: CompletionListItemProps["course"]
-}
-
-const CourseAvatar = ({ course }: CourseAvatarProps) => {
-  return (
-    <Avatar
-      style={{ margin: "10px", width: 60, height: 60, gridArea: "avatar" }}
-      src={course?.photo ? addDomain(course.photo.uncompressed) : undefined}
-    >
-      {!course?.photo ? "M" : undefined}
-    </Avatar>
-  )
 }
 
 const ListItemContainer = styled(Paper)`
@@ -98,7 +92,17 @@ export const CompletionListItem = ({
         <CompletionColumn>
           <Row>
             <Column>
-              <CourseAvatar course={course} />
+              <CourseAvatar>
+                {course?.photo ? (
+                  <Image
+                    src={addDomain(course.photo.uncompressed)}
+                    alt={course.name}
+                    fill
+                  />
+                ) : (
+                  course.name.toUpperCase().charAt(0)
+                )}
+              </CourseAvatar>
             </Column>
             <Column>
               <CardSubtitle>
@@ -142,7 +146,7 @@ export const CompletionListItem = ({
         <RegistrationColumn>
           {isRegistered && completion.completions_registered
             ? completion.completions_registered?.map((r) => (
-                <Row key={`registration-${r.id}`}>
+                <Row key={r.id}>
                   <Column>
                     <CardSubtitle>
                       <strong>

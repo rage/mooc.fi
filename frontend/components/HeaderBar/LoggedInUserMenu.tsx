@@ -2,10 +2,8 @@ import ChalkboardTeacherIcon from "@fortawesome/fontawesome-free/svgs/solid/chal
 import EnvelopeIcon from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
 import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import SearchIcon from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
-import { EnhancedButton } from "@mui/material"
-import Button from "@mui/material/Button"
+import { Button, EnhancedButton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -19,8 +17,8 @@ interface StyledButtonProps {
 const StyledButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",
 })<StyledButtonProps>`
-  margin: 1rem;
-  font-size: 22px;
+  margin: 0.5rem 1rem;
+  font-size: 20px;
   border-radius: 0px;
   display: inline-flex;
   flex-direction: column;
@@ -28,15 +26,15 @@ const StyledButton = styled(Button, {
   gap: 0.5rem;
 
   @media (max-width: 510px) {
-    font-size: 20px;
+    font-size: 18px;
     margin: 0.75rem;
   }
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0.5rem;
   }
   @media (max-width: 450px) {
-    font-size: 12px;
+    font-size: 10px;
     margin: 0.2rem;
   }
   color: ${(props) => (props.active ? "#378170" : "black")};
@@ -45,6 +43,7 @@ const StyledButton = styled(Button, {
 
 const ButtonLabel = styled(Typography)`
   font-family: var(--header-font) !important;
+  font-weight: 200;
   font-size: 18px;
   @media (max-width: 600px) {
     font-size: 14px;
@@ -88,6 +87,7 @@ const UserMenu = () => {
             href="/users/search"
             color="inherit"
             variant="text"
+            prefetch={false}
             active={active === "users"}
           >
             <SearchIcon />

@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo } from "react"
 
-import { DateTime } from "luxon"
-
 import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
 import {
   Chip,
@@ -69,19 +67,19 @@ const ExerciseInfo = ({ exercise }: ExerciseInfoProps) => {
       <Typography variant="h4">
         {t("createdAt")}
         <strong>
-          {formatDateTime(
-            exerciseCompletion.created_at,
-            DateTime.DATETIME_SHORT,
-          )}
+          {formatDateTime(exerciseCompletion.created_at, {
+            dateStyle: "short",
+            timeStyle: "short",
+          })}
         </strong>
       </Typography>
       <Typography variant="h4">
         {t("timestamp")}
         <strong>
-          {formatDateTime(
-            exerciseCompletion.timestamp,
-            DateTime.DATETIME_SHORT,
-          )}
+          {formatDateTime(exerciseCompletion.timestamp, {
+            dateStyle: "short",
+            timeStyle: "short",
+          })}
         </strong>
       </Typography>
       <Tooltip title={t("exerciseInfoTooltip")}>

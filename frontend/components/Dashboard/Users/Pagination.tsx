@@ -16,13 +16,14 @@ import {
 } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
 
+// import usePagination from "@mui/material/usePagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
 
 const StyledFooter = styled("footer")`
   flex-shrink: 0;
-  margin-left: 2.5;
+  margin-left: 2.5rem;
 `
 
 const StyledTablePagination = styled(TablePagination)`
@@ -33,7 +34,7 @@ const StyledTablePagination = styled(TablePagination)`
   .MuiTablePagination-spacer {
     flex: 0 !important;
   }
-`
+` as typeof TablePagination
 
 const TablePaginationActions: React.FC = () => {
   const theme = useTheme()
@@ -156,6 +157,8 @@ const Pagination: React.FC = () => {
     setSearchVariables,
   } = useContext(UserSearchContext)
 
+  // TODO: make it responsive with this
+  // const {} = usePagination({})
   const handleChangeRowsPerPage = useCallback(
     async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newRowsPerPage = parseInt(e.target.value, 10)

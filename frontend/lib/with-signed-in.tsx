@@ -1,6 +1,6 @@
 import { PropsWithChildren, Component as ReactComponent } from "react"
 
-import { NextPageContext as NextContext } from "next"
+import { NextComponentType, NextPageContext as NextContext } from "next"
 
 import { LoginStateContext } from "/contexts/LoginStateContext"
 import { isSignedIn } from "/lib/authentication"
@@ -9,7 +9,9 @@ import redirect from "/lib/redirect"
 let prevContext: NextContext | null = null
 
 // TODO: might need to wrap in function to give redirect parameters (= shallow?)
-export default function withSignedIn(Component: any) {
+export default function withSignedIn(
+  Component: NextComponentType<any, any, { signedIn: boolean }>,
+) {
   return class WithSignedIn extends ReactComponent<
     PropsWithChildren<{ signedIn: boolean }>
   > {

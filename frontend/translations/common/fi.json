@@ -79,6 +79,7 @@
     "statusSavingSuccess": "Tallennus onnistui",
     "statusSavingError": "Virhe tallentaessa",
     "statusValidationErrors": "Lomakkeessa on virheitä",
-    "required": "vaaditaan"
+    "required": "vaaditaan",
+    "close": "Sulje"
 }
 

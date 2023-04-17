@@ -3,15 +3,15 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
-import backgroundPattern from "../../../public/images/backgroundPattern.svg"
 import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
+import backgroundPattern from "/public/images/new/background/backgroundPattern.svg"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 
 interface StudyModuleListItemProps {
-  module: StudyModuleFieldsWithCoursesFragment
+  studyModule: StudyModuleFieldsWithCoursesFragment
   backgroundColor: string
 }
 
@@ -38,10 +38,10 @@ const ModuleCardWrapper = styled(CardWrapper, {
   position: relative;
   z-index: -8;
   background-color: #fefefe;
-  background-image: linear-gradient(to left, rgba(255,0,0,0) ,${backgroundColor} 55%);
+  background-image: linear-gradient(to left, rgba(255,0,0,0), ${backgroundColor} 55%);
 
   ${theme.breakpoints.down("lg")} {
-    background-image: linear-gradient(to top, rgba(255,0,0,0) ,${backgroundColor} 55%);
+    background-image: linear-gradient(to top, rgba(255,0,0,0), ${backgroundColor} 55%);
   }
 `,
 )
@@ -117,13 +117,13 @@ const CenteredHeader = styled(Typography)`
 const ModuleCourseCard = styled(CourseCard)``
 
 export function ListItem({
-  module,
+  studyModule,
   backgroundColor,
 }: StudyModuleListItemProps) {
   const descriptionRef = useRef<HTMLElement | null>()
   const courses = useMemo(
-    () => module.courses?.filter((course) => course.description) ?? [],
-    [module],
+    () => studyModule.courses?.filter((course) => course.description) ?? [],
+    [studyModule],
   )
 
   const setDescriptionHeight = useCallback(() => {
@@ -152,21 +152,21 @@ export function ListItem({
       window.removeEventListener("resize", setDescriptionHeight)
     }
   })
-  useEffect(setDescriptionHeight, [module.description])
+  useEffect(setDescriptionHeight, [studyModule.description])
 
   // TODO: the anchor link may have to be shifted by the amount of the header again
   return (
     <ModuleCardWrapper as="section" backgroundColor={backgroundColor}>
-      <CorrectedAnchor id={module.slug} />
-      <ImageBackground src={backgroundPattern.src} />
+      <CorrectedAnchor id={studyModule.slug} />
+      <ImageBackground src={backgroundPattern.src} />*
       <ModuleCardBody>
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>
             <CenteredHeader variant="h3" component="h2">
-              {module.name}
+              {studyModule.name}
             </CenteredHeader>
             <ModuleCardDescriptionText variant="ingress">
-              {module.description}
+              {studyModule.description}
             </ModuleCardDescriptionText>
           </ModuleCardDescription>
         </HeroContainer>

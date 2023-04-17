@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid"
+import { Grid } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 export const LanguageEntry = styled(Grid)`

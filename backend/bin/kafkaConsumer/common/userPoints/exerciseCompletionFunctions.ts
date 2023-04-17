@@ -225,7 +225,7 @@ export const createExerciseCompletion = async (
       },
       n_points: Number(message.n_points),
       completed: message.completed,
-      attempted: message.attempted !== null ? message.attempted : undefined,
+      attempted: message.attempted !== null ? message.attempted : false,
       exercise_completion_required_actions: {
         create: required_actions.map((value) => ({ value })),
       },
@@ -299,7 +299,7 @@ export const updateExerciseCompletion = async (
         n_points: Number(message.n_points),
         completed: { set: message.completed },
         attempted: {
-          set: message.attempted !== null ? message.attempted : undefined,
+          set: message.attempted !== null ? message.attempted : false,
         },
         exercise_completion_required_actions: {
           create: createActions,

@@ -1,9 +1,7 @@
 import React, { useCallback, useContext } from "react"
 
-import { SvgIconProps } from "@mui/material"
-import ButtonBase from "@mui/material/ButtonBase"
+import { ButtonBase, Typography, type SvgIconProps } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import UserOSContext from "/contexts/UserOSContext"
 import { UserOSType } from "/util/getUserOS"

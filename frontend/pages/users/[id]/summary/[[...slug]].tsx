@@ -32,7 +32,7 @@ import UserPointsSummaryContext from "/components/Dashboard/Users/Summary/UserPo
 import UserPointsSummarySelectedCourseContext from "/components/Dashboard/Users/Summary/UserPointsSummarySelectedCourseContext"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
-import FilterMenu from "/components/FilterMenu"
+import FilterMenu, { type SearchVariables } from "/components/FilterMenu"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
@@ -44,7 +44,6 @@ import ProfileTranslations from "/translations/profile"
 import UsersTranslations from "/translations/users"
 
 import {
-  EditorCoursesQueryVariables,
   UserCourseSummaryCourseFieldsFragment,
   UserSummaryDocument,
 } from "/graphql/generated"
@@ -131,10 +130,9 @@ function UserSummaryView() {
   const title = useSubtitle(data?.user?.full_name ?? undefined)
 
   const [state, dispatch] = useReducer(collapseReducer, initialState)
-  const [searchVariables, setSearchVariables] =
-    useState<EditorCoursesQueryVariables>({
-      search: "",
-    })
+  const [searchVariables, setSearchVariables] = useState<SearchVariables>({
+    search: "",
+  })
   const [rawViewOpen, setRawViewOpen] = useState(false)
   const [selected, setSelected] = useState<
     UserCourseSummaryCourseFieldsFragment["slug"]

@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
-import FilterMenu from "/components/FilterMenu"
+import FilterMenu, { SearchVariables } from "/components/FilterMenu"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -20,7 +20,6 @@ import notEmpty from "/util/notEmpty"
 import {
   CourseStatus,
   EditorCoursesDocument,
-  EditorCoursesQueryVariables,
   HandlerCoursesDocument,
 } from "/graphql/generated"
 
@@ -43,26 +42,16 @@ function useCourseSearch() {
     },
   ])
 
-  const statusParam = (decodeURIComponent(useQueryParameter("status", false))
-    ?.split(",")
-    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
+  const initialSearchVariables = createInitialSearchVariables({
+    search: useQueryParameter("search", false),
+    hidden: useQueryParameter("hidden", false),
+    handledBy: useQueryParameter("handledBy", false),
+    status: useQueryParameter("status", false),
+  })
 
-  const initialSearchVariables: EditorCoursesQueryVariables = {
-    search: useQueryParameter("search", false) ?? "",
-    hidden:
-      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ??
-      true,
-    handledBy: useQueryParameter("handledBy", false) || null,
-    status: statusParam.length
-      ? statusParam
-      : [CourseStatus.Active, CourseStatus.Upcoming],
-  }
-
-  const [searchVariables, setSearchVariables] =
-    useState<EditorCoursesQueryVariables>(initialSearchVariables)
-  const [status, setStatus] = useState<CourseStatus[]>(
-    (initialSearchVariables.status ?? []) as CourseStatus[],
-  )
+  const [searchVariables, setSearchVariables] = useState<
+    typeof initialSearchVariables
+  >(initialSearchVariables)
 
   const {
     loading: editorLoading,
@@ -119,16 +108,19 @@ function useCourseSearch() {
     if (router?.asPath !== href) {
       router.push(href, undefined, { shallow: true })
     }
-  }, [searchVariables])
+  }, [
+    searchVariables.search,
+    searchVariables.handledBy,
+    searchVariables.status,
+  ])
 
   const onClickStatus =
     (value: CourseStatus | null) =>
     (_: React.MouseEvent<Element, MouseEvent>) => {
-      setStatus(value ? [value] : [])
-      setSearchVariables({
-        ...searchVariables,
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
         status: value ? [value] : [],
-      })
+      }))
     }
 
   return {
@@ -136,8 +128,6 @@ function useCourseSearch() {
     error: editorError ?? handlersError,
     handlersData,
     editorData,
-    status,
-    setStatus,
     onClickStatus,
     searchVariables,
     setSearchVariables,
@@ -151,8 +141,6 @@ function Courses() {
     error,
     handlersData,
     editorData,
-    status,
-    setStatus,
     onClickStatus,
     searchVariables,
     setSearchVariables,
@@ -175,8 +163,6 @@ function Courses() {
         <FilterMenu
           searchVariables={searchVariables}
           setSearchVariables={setSearchVariables}
-          status={status}
-          setStatus={setStatus}
           handlerCourses={handlersData?.handlerCourses ?? []}
           loading={loading}
         />
@@ -188,6 +174,33 @@ function Courses() {
       </WideContainer>
     </Background>
   )
+}
+
+const createInitialSearchVariables = ({
+  search,
+  handledBy,
+  hidden,
+  status,
+}: {
+  search?: string
+  handledBy?: string
+  hidden?: string
+  status?: string
+}) => {
+  const statusParam = (decodeURIComponent(status ?? "")
+    ?.split(",")
+    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
+
+  const initialSearchVariables: SearchVariables = {
+    search,
+    hidden: (hidden ?? "").toLowerCase() !== "false" ?? true,
+    handledBy: handledBy ?? null,
+    status: statusParam.length
+      ? statusParam.filter(notEmptyOrEmptyString)
+      : [CourseStatus.Active, CourseStatus.Upcoming],
+  }
+
+  return initialSearchVariables
 }
 
 export default withAdmin(Courses)

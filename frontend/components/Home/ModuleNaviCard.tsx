@@ -43,21 +43,21 @@ const GridItem = styled("div")`
 `
 
 interface ModuleNaviCardProps {
-  module?: StudyModuleFieldsFragment
+  studyModule?: StudyModuleFieldsFragment
 }
 
-const ModuleNaviCard = ({ module }: ModuleNaviCardProps) => (
+const ModuleNaviCard = ({ studyModule }: ModuleNaviCardProps) => (
   <GridItem>
-    <ClickableContainer href={`#${module?.slug ?? ""}`}>
-      {module ? (
+    <ClickableContainer href={`#${studyModule?.slug ?? ""}`}>
+      {studyModule ? (
         <>
-          <ModuleImage module={module} />
+          <ModuleImage image={studyModule.image} slug={studyModule.slug} />
           <TextBackground>
             <CardTitle variant="h3" component="h3" align="left">
-              {module.name}
+              {studyModule.name}
             </CardTitle>
             <CardText component="p" variant="body1" align="left">
-              {module.description}
+              {studyModule.description}
             </CardText>
           </TextBackground>
         </>

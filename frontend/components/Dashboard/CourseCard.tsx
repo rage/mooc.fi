@@ -143,6 +143,14 @@ const CourseInfoValue = styled("div")`
   justify-content: flex-end;
 `
 
+const CreateCourseIconContainer = styled("div")`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border: 1px solid #e0e0e0;
+`
+
 interface CourseInfoProps {
   field?: string | JSX.Element
   value?: string | JSX.Element
@@ -172,7 +180,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
   const courseNotFound = !course && !loading
 
   return (
-    <CourseCardItem key={`course-card-${course?.id ?? "new"}`}>
+    <CourseCardItem key={course?.id ?? "new-course"}>
       <CardBase
         style={{ gridColumn: "span 1" }}
         isHidden={course?.hidden ? 1 : undefined}
@@ -184,17 +192,9 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
           )}
           {courseNotFound && (
             <StyledLink href={`/courses/new`} aria-label={`Create new course`}>
-              <div
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  display: "flex",
-                  border: "2px solid #E0E0E0",
-                }}
-              >
+              <CreateCourseIconContainer>
                 <AddCircleIcon fontSize="large" />
-              </div>
+              </CreateCourseIconContainer>
             </StyledLink>
           )}
         </CourseCardImageContainer>

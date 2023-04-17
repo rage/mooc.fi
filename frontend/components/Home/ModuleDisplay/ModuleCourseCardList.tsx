@@ -19,7 +19,7 @@ export const ThreeOrLessCoursesListing = (props: CourseListProps) => {
     <Grid container spacing={3}>
       {courses.map((course) => (
         <ModuleSmallCourseCard
-          key={`module-course-${course.id}`}
+          key={course.id}
           course={course}
           showHeader={true}
         />

@@ -1,6 +1,6 @@
 import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
-import LUT from "/public/md_pages/lut_module.mdx"
+import LUT from "/public/md_pages/modules/lut_module.mdx"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
 
@@ -78,27 +78,21 @@ const ModuleList = ({ modules, loading }: ModuleListProps) => {
         if (component.type === "module") {
           return (
             <Module
-              key={`module-list-module-${component.module.id}`}
-              module={component.module}
+              key={component.module.id}
+              studyModule={component.module}
               {...moduleColors[idx % moduleColors.length]}
             />
           )
         }
         if (component.type === "divider") {
           return (
-            <PartnerDivider
-              key={`divider-${idx}`}
-              style={{ padding: "0 0.5rem" }}
-            />
+            <PartnerDivider key="divider" style={{ padding: "0 0.5rem" }} />
           )
         }
 
         if (component.type === "custom-module") {
           return component.id ? (
-            <section
-              id={component.id}
-              key={`module-list-module-${component.id}`}
-            >
+            <section id={component.id} key={component.id}>
               {component.module}
             </section>
           ) : (

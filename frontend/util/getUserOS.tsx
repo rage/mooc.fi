@@ -6,7 +6,9 @@ function getUserOS(req?: GetServerSidePropsContext["req"]): UserOSType {
   let OSName: UserOSType = "OS"
   const detectString =
     req?.headers["user-agent"] ?? typeof window !== "undefined"
-      ? window.navigator.appVersion
+      ? window.navigator.userAgentData?.platform ?? // all but firefox
+        window.navigator.userAgent ?? // old
+        window.navigator.oscpu // firefox
       : ""
   if (detectString.indexOf("Win") != -1) OSName = "Windows"
   if (detectString.indexOf("Mac") != -1) OSName = "macOS"

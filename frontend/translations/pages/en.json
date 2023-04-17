@@ -86,5 +86,9 @@
     "/installation/netbeans": "Netbeans",
     "/faq/registering_completions": "Registering completions",
     "/faq/suoritusten_rekisterointi": "Registering completions"
+  },
+  "alternate": {
+    "/faq/registering_completions/": "/faq/suoritusten_rekisterointi",
+    "/faq/suoritusten_rekisterointi/": "/faq/suoritusten_rekisterointi"
   }
 }

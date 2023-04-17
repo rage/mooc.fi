@@ -1,21 +1,31 @@
 import { createTheme, Theme } from "@mui/material/styles"
 
-import { openSansCondensedDeclaration, roboto } from "/src/fonts"
+import { bodyFont, headerFont } from "./fonts"
+
+export const headerFontDeclaration = {
+  ...headerFont.style,
+  fontFamily: headerFont.style.fontFamily,
+  fontStretch: "condensed",
+  fontWeight: "300",
+}
+
+export const fontVariableClass = `${headerFont.variable} ${bodyFont.variable}`
 
 export const withTypography = (theme: Theme) =>
-  createTheme(theme, {
+  createTheme({
+    ...theme,
     typography: {
-      fontFamily: roboto.style.fontFamily,
+      fontFamily: bodyFont.style.fontFamily,
       button: {
         label: {
           textTransform: "none",
-          ...openSansCondensedDeclaration,
+          ...headerFontDeclaration,
         },
       },
       h1: {
         paddingBottom: "1rem",
         fontSize: 32,
-        ...openSansCondensedDeclaration,
+        ...headerFontDeclaration,
         "@media (min-width: 600px)": {
           fontSize: 42,
         },
@@ -29,7 +39,7 @@ export const withTypography = (theme: Theme) =>
       },
       h2: {
         paddingBottom: "1rem",
-        ...openSansCondensedDeclaration,
+        ...headerFontDeclaration,
         fontSize: 46,
         "@media (min-width: 600px)": {
           fontSize: 56,
@@ -41,28 +51,28 @@ export const withTypography = (theme: Theme) =>
       h3: {
         paddingBottom: "0.5rem",
         paddingTop: "0.7rem",
-        ...openSansCondensedDeclaration,
+        ...headerFontDeclaration,
         fontSize: 16,
         "@media (min-width: 600px)": {
           fontSize: 20,
         },
       },
       h4: {
-        ...openSansCondensedDeclaration,
+        ...headerFontDeclaration,
         fontSize: 14,
         "@media (min-width: 600px)": {
           fontSize: 16,
         },
       },
       h6: {
-        ...openSansCondensedDeclaration,
+        ...headerFontDeclaration,
         fontSize: 10,
         "@media (min-width: 600px)": {
           fontSize: 12,
         },
       },
       subtitle1: {
-        ...openSansCondensedDeclaration,
+        ...headerFontDeclaration,
         fontSize: 18,
         "@media (min-width: 600px)": {
           fontSize: 22,

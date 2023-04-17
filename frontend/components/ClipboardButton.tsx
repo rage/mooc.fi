@@ -35,14 +35,10 @@ const ClipboardButton = ({
 }: ClipboardProps) => {
   const { hasClipboard, isCopied, onCopyToClipboard } = useClipboard(content)
 
-  if (!hasClipboard) {
-    return null
-  }
-
   return (
     <Tooltip title={isCopied ? tooltipCopiedText : tooltipText}>
       <StyledIconButton onClick={onCopyToClipboard} {...props}>
-        {isCopied ? <SuccessIcon /> : <Icon />}
+        {isCopied && hasClipboard ? <SuccessIcon /> : <Icon />}
       </StyledIconButton>
     </Tooltip>
   )

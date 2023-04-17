@@ -4,10 +4,11 @@ import { useRouter } from "next/router"
 import Facebook from "@fortawesome/fontawesome-free/svgs/brands/facebook.svg?icon"
 import Twitter from "@fortawesome/fontawesome-free/svgs/brands/twitter.svg?icon"
 import Youtube from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
-import { Link } from "@mui/material"
+import { Link as MUILink, type EnhancedLink } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
+import uhLogo from "/public/images/logos/uh-logo.webp"
 import HomeTranslations from "/translations/home"
 
 const IconBaseStyle = css`
@@ -71,15 +72,14 @@ const PolicyContainer = styled("div")`
   }
 `
 
-/*const LogoImage = styled.img`
-  height: 75;
-`*/
+const Link = MUILink as EnhancedLink
 
 function UniversityLogo() {
   return (
     <Image
-      src="/images/uh-logo.webp"
+      src={uhLogo}
       alt="Logo of the University of Helsinki"
+      placeholder="blur"
       width={188}
       height={75}
     />
@@ -135,7 +135,9 @@ function Footer() {
         </MaintainedContainer>
         {locale === "fi" && (
           <PolicyContainer>
-            <Link href={t("privacyPolicyLink")}>{t("privacyPolicy")}</Link>
+            <Link href={t("privacyPolicyLink")} prefetch={false}>
+              {t("privacyPolicy")}
+            </Link>
           </PolicyContainer>
         )}
       </BottomRowContainer>

@@ -1,4 +1,4 @@
-import backgroundPattern from "public/images/backgroundPattern2.svg"
+import backgroundPattern from "public/images/new/background/backgroundPattern2.svg"
 
 import { styled } from "@mui/material/styles"
 

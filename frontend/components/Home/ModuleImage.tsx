@@ -3,19 +3,23 @@ import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 interface ModuleImageProps {
-  module: StudyModuleFieldsFragment
+  image: StudyModuleFieldsFragment["image"]
+  slug: StudyModuleFieldsFragment["slug"]
 }
-const ModuleImage = ({ module }: ModuleImageProps) => {
-  const imageUrl = module?.image ?? (module ? `${module.slug}.jpg` : "")
-
+const ModuleImage = ({ image, slug }: ModuleImageProps) => {
   try {
+    const imageSrc = image
+      ? require(`/public/images/modules/${image}`)
+      : require(`/public/images/modules/${slug}.jpg`)
+
     return (
       <BackgroundImage
-        src={`/images/modules/${imageUrl}`}
-        loading="lazy"
+        src={imageSrc}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         alt=""
+        {...(imageSrc && { placeholder: "blur" })}
         fill
-        aria-hidden={true}
+        aria-hidden
       />
     )
   } catch (e) {

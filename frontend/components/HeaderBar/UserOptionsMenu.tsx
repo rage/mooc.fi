@@ -21,7 +21,7 @@ const UserOptionsMenu = () => {
     [client, logInOrOut],
   )
   const onLoginClick = useCallback(
-    () => nookies.destroy({}, "redirect-back"),
+    () => nookies.destroy(undefined, "redirect-back"),
     [],
   )
 
