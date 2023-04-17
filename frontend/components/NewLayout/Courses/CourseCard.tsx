@@ -9,7 +9,7 @@ import { css, styled } from "@mui/material/styles"
 import { CardTitle } from "../Common/Card"
 import OutboundLink from "/components/OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
-import moocLogo from "/public/images/moocfi_white.svg"
+import moocLogo from "/public/images/new/logos/moocfi_white.svg"
 //import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import newTheme from "/src/newTheme"
 import CommonTranslations from "/translations/common"
@@ -229,12 +229,7 @@ function CourseCard({ course }: CourseCardProps) {
     >
       <TitleContainer>
         <Title variant="h6">{course?.name}</Title>
-        <MoocfiLogo
-          alt="MOOC logo"
-          src={moocLogo.src}
-          width={105}
-          height={95}
-        />
+        <MoocfiLogo alt="MOOC logo" src={moocLogo} width={105} height={95} />
       </TitleContainer>
       <ContentContainer>
         <LeftContentContainer>
@@ -273,7 +268,7 @@ function CourseCard({ course }: CourseCardProps) {
               ?.filter((t) => t.types?.includes("module"))
               .map((tag) => (
                 <ModuleTag
-                  key={`module-${tag.id}`}
+                  key={tag.id}
                   size="small"
                   variant="contained"
                   disabled
@@ -310,7 +305,7 @@ function CourseCard({ course }: CourseCardProps) {
               ?.filter((t) => t.types?.includes("language"))
               .map((tag) => (
                 <LanguageTag
-                  key={`language-${tag.id}`}
+                  key={tag.id}
                   size="small"
                   variant="contained"
                   disabled
@@ -323,7 +318,7 @@ function CourseCard({ course }: CourseCardProps) {
             {course?.tags
               ?.filter((t) => t.types?.includes("difficulty"))
               .map((tag) => (
-                <DifficultyTagContainer key={`difficulty-${tag.id}`}>
+                <DifficultyTagContainer key={tag.id}>
                   <DifficultyTag size="small" variant="contained" disabled>
                     {tag.name}
                   </DifficultyTag>

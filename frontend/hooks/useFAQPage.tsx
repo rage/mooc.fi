@@ -32,7 +32,7 @@ export function useFAQPage(topic?: string) {
     () =>
       FAQComponent({
         mdxImport: () =>
-          import(`../public/md_pages/${sanitizedTopic}_${locale}.mdx`),
+          import(`../public/md_pages/faq/${sanitizedTopic}_${locale}.mdx`),
         onSuccess: (mdx: MDXComponent<any>) => {
           setError(false)
           setMeta({

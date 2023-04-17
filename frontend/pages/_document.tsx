@@ -2,24 +2,32 @@ import React from "react"
 
 import Document, { Head, Html, Main, NextScript } from "next/document"
 
-//  DocumentContext,
-//import createEmotionServer from "@emotion/server/create-instance"
-//import { css } from "@emotion/react"
-//import createEmotionCache from "../src/createEmotionCache"
-import theme from "../src/theme"
 import { augmentDocumentWithEmotionCache } from "./_app"
+import newTheme, {
+  fontVariableClass as newFontVariableClass,
+} from "/src/newTheme"
+import originalTheme, {
+  fontVariableClass as originalFontVariableClass,
+} from "/src/theme"
 
 class CustomDocument extends Document {
   render() {
+    const isNew = this.props.__NEXT_DATA__.page.includes("_new")
+    const theme = isNew ? newTheme : originalTheme
+    const fontVariableClass = isNew
+      ? newFontVariableClass
+      : originalFontVariableClass
+
     return (
-      <Html dir="ltr">
+      <Html
+        lang={this.props.locale ?? "fi"}
+        dir="ltr"
+        className={fontVariableClass}
+      >
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-          <meta name="emotion-insertion-point" content="" />
-          {/*{(this.props as any).emotionStyleTags}
-          {(this.props as any).fontVariables}*/}
         </Head>
         <body>
           <Main />

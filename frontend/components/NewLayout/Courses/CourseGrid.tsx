@@ -234,7 +234,7 @@ function CourseGrid() {
   }
 
   // TODO: need some preset order for tag categories
-  /*const compareCourses = (
+  const compareCourses = (
     course1: CourseFieldsFragment,
     course2: CourseFieldsFragment,
   ) => {
@@ -249,7 +249,7 @@ function CourseGrid() {
     } else {
       return 0
     }
-  }*/
+  }
 
   const filteredCourses = useMemo(
     () =>
@@ -307,7 +307,7 @@ function CourseGrid() {
                   {tags[category].map((tag) => (
                     <TagButton
                       id={`tag-${category}-${tag.id}`}
-                      key={`tag-${category}-${tag.id}`}
+                      key={tag.id}
                       variant={
                         activeTags.includes(tag) ? "contained" : "outlined"
                       }
@@ -368,7 +368,7 @@ function CourseGrid() {
         </CardContainer>
       ) : (
         <CardContainer>
-          {filteredCourses.map((course) => (
+          {filteredCourses.sort(compareCourses).map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </CardContainer>

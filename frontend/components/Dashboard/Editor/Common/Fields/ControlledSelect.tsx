@@ -99,11 +99,11 @@ export function ControlledSelect<
         },
       })}
     >
-      <MenuItem key={`${name}-empty`} value="">
+      <MenuItem key="empty" value="">
         {t("selectNoChoice")}
       </MenuItem>
       {items.map((item) => (
-        <MenuItem key={`${name}-${item[keyField]}`} value={item[keyField]}>
+        <MenuItem key={item[keyField]} value={item[keyField]}>
           {item[nameField]}
         </MenuItem>
       ))}

@@ -1,6 +1,5 @@
-import { BoxProps } from "@mui/material"
+import { BoxProps, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography, { TypographyProps } from "@mui/material/Typography"
 
 export const H1NoBackground = styled(Typography)`
   padding-top: 0.7em;

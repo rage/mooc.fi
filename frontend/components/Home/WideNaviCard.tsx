@@ -72,8 +72,9 @@ function WideNaviCard(props: NaviCardProps) {
         <NaviItemBase>
           {item.img && (
             <BackgroundImage
-              src={`/images/${item.img}`}
-              loading="lazy"
+              src={require(`/public/images/navi/${item.img}`)}
+              placeholder="blur"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               alt=""
               aria-hidden
               {...(item.imgDimensions ?? { fill: true })}
@@ -83,8 +84,10 @@ function WideNaviCard(props: NaviCardProps) {
             {item.titleImg ? (
               <TitleImageContainer style={{ gridArea: "title" }}>
                 <TitleImage
-                  src={`/images/${item.titleImg}`}
+                  src={require(`/public/images/navi/${item.titleImg}`)}
+                  placeholder="blur"
                   alt={item.title ?? ""}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ objectFit: "contain" }}
                   {...(item.titleImgDimensions ?? { fill: true })}
                 />

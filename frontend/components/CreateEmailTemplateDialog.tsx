@@ -61,26 +61,17 @@ const CreateEmailTemplateDialog = ({
       return []
     }
 
+    let courseData = data.courses?.filter(notEmpty) ?? []
+
     if (templateType === "completion") {
-      return (
-        data.courses
-          ?.filter(notEmpty)
-          ?.filter((c) => c?.completion_email === null)
-          .map((c, i) => (
-            <option key={`course-option-${c.id}`} value={i}>
-              {c?.name}
-            </option>
-          )) ?? []
-      )
+      courseData = courseData.filter((c) => c.completion_email == null)
     }
 
-    return (
-      data.courses?.filter(notEmpty)?.map((c, i) => (
-        <option key={`course-option-${c.id}`} value={i}>
-          {c?.name}
-        </option>
-      )) ?? []
-    )
+    return courseData.map((c, i) => (
+      <option key={c.id} value={i}>
+        {c?.name}
+      </option>
+    ))
   }, [templateType, data])
 
   const handleCreate = async () => {

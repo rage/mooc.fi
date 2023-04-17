@@ -64,7 +64,7 @@ const LanguageSwitch = () => {
       <LanguageIcon />
       {locales?.map((locale) => (
         <Language
-          key={`switch-${locale}`}
+          key={locale}
           href={asPath}
           locale={locale}
           active={currentLocale === locale}

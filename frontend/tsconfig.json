@@ -13,7 +13,13 @@
       ],
       "@components/*": [
         "./components/*"
-      ]
+      ],
+      "@mui/material": [
+        "node_modules/@mui/material",
+        "node_modules/@mui/material/styles",
+        "node_modules/@mui/system",
+        "node_modules/@mui/styled-engine",
+      ],
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

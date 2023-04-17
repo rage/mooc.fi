@@ -2,6 +2,8 @@ import { useMemo } from "react"
 
 import { orderBy } from "lodash"
 
+import { styled } from "@mui/material/styles"
+
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
 import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
@@ -12,19 +14,23 @@ import {
 } from "/graphql/generated"
 
 interface ModuleProps {
-  module?: StudyModuleFieldsWithCoursesFragment
+  studyModule?: StudyModuleFieldsWithCoursesFragment
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
 }
 
+const ModuleContainer = styled("section")`
+  margin-bottom: 3em;
+`
+
 function Module(props: ModuleProps) {
-  const { module, hueRotateAngle, brightness, backgroundColor } = props
+  const { studyModule, hueRotateAngle, brightness, backgroundColor } = props
 
   const orderedCourses = useMemo(
     () =>
       orderBy(
-        module?.courses ?? [],
+        studyModule?.courses ?? [],
         [
           (course) => course.study_module_order,
           (course) => course.study_module_start_point === true,
@@ -33,34 +39,43 @@ function Module(props: ModuleProps) {
         ],
         ["desc", "desc", "desc"],
       ),
-    [module?.courses],
+    [studyModule?.courses],
   )
 
-  if (!module) {
-    return null
+  if (!studyModule) {
+    return <ModuleSkeleton {...props} />
   }
 
   return (
-    <section
-      id={module ? module.slug : "module-skeleton"}
-      style={{ marginBottom: "3em" }}
-    >
+    <ModuleContainer id={studyModule.slug}>
       <ModuleDisplayBackground
         backgroundColor={backgroundColor}
         hueRotateAngle={hueRotateAngle}
         brightness={brightness}
       >
-        {module ? (
-          <ModuleDisplayContent
-            name={module.name}
-            description={module.description ?? ""}
-            orderedCourses={orderedCourses}
-          />
-        ) : (
-          <ModuleDisplaySkeleton />
-        )}
+        <ModuleDisplayContent
+          name={studyModule.name}
+          description={studyModule.description ?? ""}
+          orderedCourses={orderedCourses}
+        />
       </ModuleDisplayBackground>
-    </section>
+    </ModuleContainer>
+  )
+}
+
+function ModuleSkeleton(props: ModuleProps) {
+  const { hueRotateAngle, brightness, backgroundColor } = props
+
+  return (
+    <ModuleContainer>
+      <ModuleDisplayBackground
+        backgroundColor={backgroundColor}
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
+      >
+        <ModuleDisplaySkeleton />
+      </ModuleDisplayBackground>
+    </ModuleContainer>
   )
 }
 

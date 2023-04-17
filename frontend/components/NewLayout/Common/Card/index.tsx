@@ -1,7 +1,8 @@
 import Image from "next/image"
 
-import { css, styled } from "@mui/material/styles"
-import Typography, { TypographyProps } from "@mui/material/Typography"
+import { Typography, TypographyProps } from "@mui/material"
+import { css } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 
 export const CardWrapper = styled("div")`
   border-radius: 4px;
@@ -74,27 +75,56 @@ const CommonHeaderBackground = css`
   bottom: 0;
 `
 
+interface CardHeaderBackgroundProps {
+  image?: string
+  color?: string
+  hue?: number
+  brightness?: number
+}
+
 export const CardHeaderBackground = styled("span", {
   shouldForwardProp: (prop) =>
     typeof prop !== "string" ||
     !["color", "image", "hue", "brightness"].includes(prop),
-})<{
-  image: string
-  color?: string
-  hue?: number
-  brightness?: number
-}>`
+})<CardHeaderBackgroundProps>`
   ${CommonHeaderBackground};
   background-size: cover;
-  ${({ color, image }) => `background-image: ${
-    color ? `linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%), ` : ""
-  }
-    url(${image});`}
+  ${({ color, image }) => {
+    if (!color && !image) {
+      return ""
+    }
+    let style = `background-image: `
+    if (color) {
+      style += `linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%)`
+    }
+    if (image) {
+      style += (color ? ", " : "") + `url(${image})`
+    }
+    return style
+  }}
 `
 //   /*filter: hue-rotate(${props.hue ?? 0}deg)
 // brightness(${props.brightness} ?? 1});*/
 
 CardHeaderBackground.defaultProps = {
+  "aria-hidden": true,
+}
+
+export const CardImageHeaderBackground = styled(Image, {
+  shouldForwardProp: (prop) =>
+    typeof prop !== "string" || !["color", "hue", "brightness"].includes(prop),
+})<Omit<CardHeaderBackgroundProps, "image">>`
+  ${CommonHeaderBackground};
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  ${({ color }) =>
+    color
+      ? `background-image: linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%)`
+      : ""}
+`
+
+CardImageHeaderBackground.defaultProps = {
   "aria-hidden": true,
 }
 

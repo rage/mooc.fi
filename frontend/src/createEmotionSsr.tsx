@@ -3,13 +3,14 @@ import React, { type ReactNode } from "react"
 
 import type { NextComponentType } from "next"
 // eslint-disable-next-line
-import DefaultDocument, { type DocumentContext } from "next/document"
+import { type DocumentContext } from "next/document"
 
 import createCache, {
   type EmotionCache,
   type Options as OptionsOfCreateCache,
 } from "@emotion/cache"
 import { CacheProvider as DefaultCacheProvider } from "@emotion/react"
+import type CreateEmotionServerType from "@emotion/server/create-instance"
 
 // import createEmotionServer from "@emotion/server/create-instance"
 
@@ -36,17 +37,30 @@ export function createEmotionSsr(
   function augmentDocumentWithEmotionCache(
     Document: NextComponentType<any, any, any>,
   ): void {
-    const super_getInitialProps =
-      Document.getInitialProps?.bind(Document) ??
-      DefaultDocument.getInitialProps.bind(DefaultDocument)
+    let super_getInitialProps = Document.getInitialProps?.bind(Document)
 
+    if (super_getInitialProps === undefined) {
+      import("next/document").then(
+        ({ default: DefaultDocument }) =>
+          (super_getInitialProps =
+            DefaultDocument.getInitialProps.bind(DefaultDocument)),
+      )
+    }
+
+    let createEmotionServer: typeof CreateEmotionServerType | undefined =
+      undefined
+
+    import("@emotion/server/create-instance").then(
+      (m) => (createEmotionServer = m.default),
+    )
     ;(Document as any).getInitialProps = async (
       documentContext: DocumentContext,
     ) => {
-      const createEmotionServer = (
-        await import("@emotion/server/create-instance")
-      ).default
       const cache = createCache(optionsWithoutPrependProp)
+
+      if (!createEmotionServer) {
+        return
+      }
 
       const emotionServer = createEmotionServer(cache)
 
@@ -64,13 +78,18 @@ export function createEmotionSsr(
           },
         })
 
+      if (!super_getInitialProps) {
+        return
+      }
       const initialProps = await super_getInitialProps(documentContext)
+      const { extractCriticalToChunks } = emotionServer
+
+      const chunks = extractCriticalToChunks(initialProps.html)
 
       const emotionStyles = [
-        <meta key={insertionPointId} name={insertionPointId} content="" />,
-        ...emotionServer
-          .extractCriticalToChunks(initialProps.html)
-          .styles.filter(({ css }) => css !== "")
+        <style id={insertionPointId} key={insertionPointId} />,
+        ...chunks.styles
+          .filter(({ css }) => css !== "")
           .map((style) => (
             <style
               data-emotion={`${style.key} ${style.ids.join(" ")}`}
@@ -115,9 +134,7 @@ export function createEmotionSsr(
               return undefined
             }
 
-            const htmlElement = document.getElementById(
-              `meta[name="${insertionPointId}"]`,
-            )
+            const htmlElement = document.getElementById(insertionPointId)
 
             if (htmlElement === null) {
               return undefined

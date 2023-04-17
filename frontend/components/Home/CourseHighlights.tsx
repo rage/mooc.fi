@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid"
+import { Grid, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseCard from "./CourseCard"
@@ -24,6 +24,10 @@ const Root = styled("div", {
   ${(props) => `background-color: ${props.backgroundColor};`}
 `
 
+const TitleContainer = styled("div")`
+  z-index: 20;
+`
+
 interface CourseHighlightsProps {
   courses?: CourseFieldsFragment[]
   loading: boolean
@@ -38,6 +42,8 @@ interface CourseHighlightsProps {
 }
 
 const CourseHighlights = (props: CourseHighlightsProps) => {
+  // @ts-ignore: not used
+  const isMobile = useMediaQuery("(max-width: 600px)", { noSsr: true })
   const {
     courses,
     loading,
@@ -54,15 +60,12 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
   return (
     <Root backgroundColor={backgroundColor}>
       <BackgroundImage
-        src={`/images/${headerImage}`}
-        alt=""
-        fill
+        src={headerImage.src}
         aria-hidden
         hueRotateAngle={hueRotateAngle}
         brightness={brightness}
       />
-
-      <div style={{ zIndex: 20 }}>
+      <TitleContainer>
         <H2Background
           component="h2"
           variant="h2"
@@ -80,7 +83,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
             {subtitle}
           </SubtitleBackground>
         )}
-      </div>
+      </TitleContainer>
       <Container>
         <Grid container spacing={3}>
           {loading ? (
@@ -90,7 +93,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
             </>
           ) : (
             courses?.map((course) => (
-              <CourseCard key={`course-${course.id}`} course={course} />
+              <CourseCard key={course.id} course={course} />
             ))
           )}
         </Grid>

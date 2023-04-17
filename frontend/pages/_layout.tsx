@@ -9,11 +9,10 @@ import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/HeaderBar/Header"
+import PageLoadingIndicators from "/components/PageLoadingIndicators"
 import SkipLink from "/components/SkipLink"
 import Snackbars from "/components/Snackbars"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
-import { fontVariableClass } from "/src/fonts"
-import { fontVariableClass as newThemeFontVariableClass } from "/src/newTheme/typography"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;
@@ -47,11 +46,10 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
   const { loggedIn, admin } = useLoginStateContext()
 
   const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
-  const isNew = router.pathname?.includes("_new")
-  const fontClass = isNew ? newThemeFontVariableClass : fontVariableClass
 
   return (
-    <div className={fontClass}>
+    <>
+      <PageLoadingIndicators />
       <SkipLink />
       <FooterDownPusherWrapper>
         <div>
@@ -67,7 +65,7 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
         <FooterUpPusher />
         {loggedIn && admin ? <MobileBottomNavigation /> : null}
       </FooterDownPusherWrapper>
-    </div>
+    </>
   )
 }
 

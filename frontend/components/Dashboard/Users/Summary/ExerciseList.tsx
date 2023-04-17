@@ -71,10 +71,7 @@ function ExerciseList({ exercises }: ExerciseListProps) {
           </TableHead>
           <TableBody>
             {exercises.map((exercise) => (
-              <ExerciseEntry
-                key={`exercise-${exercise.id}`}
-                exercise={exercise}
-              />
+              <ExerciseEntry key={exercise.id} exercise={exercise} />
             ))}
           </TableBody>
         </Table>

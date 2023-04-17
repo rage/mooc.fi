@@ -7,9 +7,8 @@ import GraduationCapIcon from "@fortawesome/fontawesome-free/svgs/solid/graduati
 import LaptopIcon from "@fortawesome/fontawesome-free/svgs/solid/laptop.svg?icon"
 import PlusSquareIcon from "@fortawesome/fontawesome-free/svgs/solid/square-plus.svg?icon"
 import UserFriendsIcon from "@fortawesome/fontawesome-free/svgs/solid/user-group.svg?icon"
-import Button from "@mui/material/Button"
+import { Button, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"

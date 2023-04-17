@@ -1,0 +1,111 @@
+import {ContentBox, CodeBox} from "/pages/installation/[id]"
+import StartingProgrammingGuide from "/public/md_pages/installation/ohjelmoinnin_aloittaminen_vscode_en.mdx"
+import TableOfContents from "/public/md_pages/installation/sisallysluettelo_vscode_en.mdx"
+
+<ContentBox>
+
+## Installing to Linux
+
+---
+
+<TableOfContents />
+
+</ContentBox>
+
+
+<ContentBox>
+Follow the instructions below to download Visual Studio Code (VS Code) and TestMyCode (TMC) extension for VS Code. 
+
+You need to have administrator priviledges on your computer to install the necessary programs.  
+If you are using a computer provided by the computer science department you can skip directly to [Installing TestMyCode extension](#installing-tmc) section.
+
+###  Installing Visual Studio Code <a name="installing-vscode"></a>
+
+You can install Visual Studio Code with the following terminal command (works for Ubuntu):
+
+> `sudo apt-get install code`
+
+If this doesn't work, please consult the Visual Studio Code installation instructions at [https://code.visualstudio.com/docs/setup/linux](https://code.visualstudio.com/docs/setup/linux)
+
+### Installing TestMyCode Extension for VS Code <a name="installing-tmc"></a>
+
+1. Open Visual Studio Code by typing `code` in the terminal.
+2. At the left you can see icons, choose the Extension view (see picture point 1).  
+3. Type **TestMyCode** in the search field (see picture point 2).  
+4. Press the search result **TestMyCode**.
+5. Press "Install" (see picture point 3).  
+
+The first initilization of the extension will download some necessary components (this will take a while).
+![Installing the TMC extension for VS Code](vscode/download_extension.webp)
+
+</ContentBox>
+
+<ContentBox>
+
+### Installing Python environment <a name="installing-python"></a>
+
+For courses using Python you will need Python and Python Extension for VS Code to run your source code.  
+Please install Python following the instructions below.
+
+#### Installing Python <a name="python3"></a>
+
+You can install Python3 by opening a terminal an typing the following command (Ubuntu):
+
+> `sudo apt-get install python3`
+
+#### Installing Python Extension for VS Code <a name="python-extension"></a>
+
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Python` and select the extension by Microsoft (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+![Installing Python extension for VS Code](vscode/vscode_python_extension.webp)
+
+</ContentBox>
+
+<ContentBox>
+
+### Installing Java environment <a name="java-environment"></a>
+
+For courses using Java you will need Java Development kit & Runtime Environment, Java Extension Pack for Visual Studio Code and Maven to build and run your source code.  
+Please install Java following the instructions below.
+
+#### Installing Java <a name="adopt-open-jdk"></a>
+
+##### 1. Install OpenJDK-package.
+
+You can install OpenJDK with the following terminal command (works for Ubuntu):
+
+> `sudo apt-get install openjdk-11-jdk`
+
+##### 2. Switch the active version of Java
+
+Use the command:
+
+> `sudo update-alternatives --config java`
+
+Type the number of the option, which says Java 11 (for example on this computer "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), and press enter.
+
+If there are multiple options with Java 11, both with status "auto mode" and "manual mode", select "manual mode".
+
+#### Java Extension Pack for VS Code <a name="java-extension"></a>
+
+You will need Java Extension Pack for Visual Studio Code to compile and run your Java code.
+
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Java Extension Pack` (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+![Installing Java extension pack for VS Code](vscode/vscode_java_extension_pack.webp)
+
+
+#### Installing Maven and configuring settings <a name="maven-configuring"></a>
+
+You can install Maven with the following terminal command (works for Ubuntu):
+> `sudo apt-get install maven`
+
+</ContentBox>
+
+<StartingProgrammingGuide />

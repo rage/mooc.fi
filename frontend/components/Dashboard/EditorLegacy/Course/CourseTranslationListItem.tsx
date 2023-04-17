@@ -1,7 +1,7 @@
 import { getIn, useFormikContext } from "formik"
 
+import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { StyledFieldWithAnchor, StyledTextField } from "../common"
 import { CourseFormValues } from "./types"

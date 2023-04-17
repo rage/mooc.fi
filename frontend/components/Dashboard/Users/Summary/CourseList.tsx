@@ -18,7 +18,7 @@ function CourseList({ data }: CourseListProps) {
     <>
       {data.map((entry, index) => (
         <CourseEntry
-          key={entry.course?.id ?? index}
+          key={entry.course?.id ?? entry.course?.slug ?? index}
           data={entry}
           state={state[entry.course?.id ?? ""]}
           dispatch={dispatch}

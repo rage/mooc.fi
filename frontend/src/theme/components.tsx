@@ -1,8 +1,8 @@
 import { ButtonBaseProps, MenuItemProps } from "@mui/material"
 import { createTheme, Theme } from "@mui/material/styles"
 
+import { headerFontDeclaration } from "./typography"
 import { LinkBehavior } from "/components/Link"
-import { openSansCondensedDeclaration } from "/src/fonts"
 
 export const withComponents = (theme: Theme) =>
   createTheme(theme, {
@@ -47,7 +47,8 @@ export const withComponents = (theme: Theme) =>
         styleOverrides: {
           root: {
             textTransform: "none",
-            ...openSansCondensedDeclaration,
+            ...headerFontDeclaration,
+            fontWeight: 100,
           },
         },
       },

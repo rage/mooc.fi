@@ -111,7 +111,7 @@ function CourseTagsForm() {
         <GroupHeader>
           {params.group?.split(", ").map((type) => (
             <TagTypeChip
-              key={`${params.key}-${type}`}
+              key={type}
               variant="outlined"
               label={type}
               size="small"

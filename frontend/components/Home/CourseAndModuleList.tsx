@@ -9,6 +9,7 @@ import ModuleList from "./ModuleList"
 import ModuleNavi from "./ModuleNavi"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useTranslator } from "/hooks/useTranslator"
+import backgroundPattern from "/public/images/background/backgroundPattern.svg"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
@@ -80,7 +81,7 @@ const CourseAndModuleList = () => {
           courses={promotedCourses}
           loading={loading}
           title={t("highlightTitle")}
-          headerImage="backgroundPattern.svg"
+          headerImage={backgroundPattern}
           subtitle={t("highlightSubtitle")}
           backgroundColor="#4D78A3"
           hueRotateAngle={177}
@@ -92,7 +93,7 @@ const CourseAndModuleList = () => {
           courses={activeCourses}
           loading={loading}
           title={t("allCoursesTitle")}
-          headerImage="backgroundPattern.svg"
+          headerImage={backgroundPattern}
           backgroundColor="#ffffff"
           hueRotateAngle={34}
           brightness={1}
@@ -103,7 +104,7 @@ const CourseAndModuleList = () => {
           courses={upcomingCourses}
           loading={loading}
           title={t("upcomingCoursesTitle")}
-          headerImage="backgroundPattern.svg"
+          headerImage={backgroundPattern}
           backgroundColor="#007DC8"
           hueRotateAngle={0}
           brightness={5.5}
@@ -121,7 +122,7 @@ const CourseAndModuleList = () => {
         courses={endedCourses}
         loading={loading}
         title={t("endedCoursesTitle")}
-        headerImage="backgroundPattern.svg"
+        headerImage={backgroundPattern}
         backgroundColor="#ffffff"
         hueRotateAngle={58}
         brightness={1}

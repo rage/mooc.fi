@@ -20,7 +20,7 @@ const Alerts = () => {
         .filter((alert) => !alert.ignorePages?.includes(router.pathname))
         .map((alert) => (
           <Alert
-            key={`alert-${alert.id}`}
+            key={alert.id}
             onClose={onRemoveAlert(alert)}
             severity={alert.severity ?? "info"}
           >

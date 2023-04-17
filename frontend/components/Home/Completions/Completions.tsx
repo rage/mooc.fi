@@ -39,15 +39,18 @@ export const Completions = ({ completions }: CompletionsProps) => {
       </Title>
 
       <Container style={{ maxWidth: 900 }}>
-        {completions
-          ?.filter(completionHasCourse)
-          .map((completion) => (
-            <CompletionListItem
-              key={`completion-${completion.id}`}
-              course={completion.course}
-              completion={completion}
-            />
-          )) ?? <Typography>{t("nocompletionsText")}</Typography>}
+        {completions?.filter(completionHasCourse).map((completion) => (
+          <CompletionListItem
+            key={completion.id}
+            course={completion.course}
+            completion={completion}
+          />
+        ))}
+        {!(completions?.length ?? 0) && (
+          <Typography style={{ textAlign: "center" }} variant="body2">
+            {t("nocompletionsText")}
+          </Typography>
+        )}
       </Container>
     </section>
   )

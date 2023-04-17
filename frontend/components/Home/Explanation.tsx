@@ -1,6 +1,5 @@
-import Button from "@mui/material/Button"
+import { Button, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
 
 import { H1NoBackground } from "/components/Text/headers"
 import { useTranslator } from "/hooks/useTranslator"

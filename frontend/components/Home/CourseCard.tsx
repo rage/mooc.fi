@@ -16,7 +16,7 @@ const Background = styled(ClickableButtonBase)`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  @media (max-width: 959px) {
+  @media (min-width: 430px) and (max-width: 959px) {
     flex-direction: row;
   }
 ` as typeof ClickableButtonBase
@@ -26,17 +26,13 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
   width: 100%;
   height: 230px;
   min-height: 230px;
-  @media (max-width: 430px) {
-    height: 235px;
-    width: 30%;
-  }
   @media (min-width: 430px) and (max-width: 600px) {
     width: 45%;
-    height: 235px;
+    height: 100%;
   }
   @media (min-width: 600px) and (max-width: 959px) {
     width: 40%;
-    height: 240px;
+    height: 100%;
   }
 `
 
@@ -46,10 +42,6 @@ const TextArea = styled("div")`
   color: black;
   width: 100%;
   min-height: 230px;
-  @media (max-width: 430px) {
-    width: 70%;
-    text-align: left;
-  }
   @media (min-width: 430px) and (max-width: 600px) {
     text-align: left;
     width: 65%;
@@ -82,6 +74,7 @@ function CourseCard({ course }: CourseCardProps) {
           {course ? (
             <CourseImage
               photo={course.photo}
+              alt={course.name}
               style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
             />
           ) : (

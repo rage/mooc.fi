@@ -1,6 +1,6 @@
 import { createTheme, Theme } from "@mui/material/styles"
 
-import { bodyFont } from "./typography"
+import { bodyFontDeclaration } from "./typography"
 import { LinkBehavior } from "/components/Link"
 
 export const withComponents = (theme: Theme) =>
@@ -45,8 +45,8 @@ export const withComponents = (theme: Theme) =>
         },
         styleOverrides: {
           root: {
+            ...bodyFontDeclaration,
             textTransform: "uppercase",
-            fontFamily: bodyFont.style.fontFamily,
             borderRadius: "20px",
           },
         },

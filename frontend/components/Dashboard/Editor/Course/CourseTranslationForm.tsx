@@ -49,9 +49,7 @@ function CourseTranslationForm(_: { key: React.Key }) {
       <CourseTranslationList>
         {fields.length ? (
           fields.map((item, index) => (
-            <CourseTranslationItem
-              key={`translation-${item.language ?? index}`}
-            >
+            <CourseTranslationItem key={item._id ?? item.language}>
               <LanguageVersionTitle component="h2" variant="h3" align="left">
                 {`${t("courseLanguageVersion")}: ${
                   mapLangToLanguage[item.language ?? ""]

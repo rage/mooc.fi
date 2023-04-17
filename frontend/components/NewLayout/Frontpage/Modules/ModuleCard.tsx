@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardHeaderBackground,
   CardHeaderBackgroundSkeleton,
+  CardImageHeaderBackground,
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
@@ -39,7 +40,15 @@ export const ModuleCard = ({
         <CardTitle variant="h3" component="h2">
           {name}
         </CardTitle>
-        <CardHeaderBackground image={image ? `/images/modules/${image}` : ""} />
+        {image ? (
+          <CardImageHeaderBackground
+            src={require(`/public/images/modules/${image}`)}
+            alt=""
+            placeholder="blur"
+          />
+        ) : (
+          <CardHeaderBackground />
+        )}
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>

@@ -29,7 +29,7 @@ const CourseGrid = ({ courses, loading, onClickStatus }: CourseGridProps) => (
           <CourseCard key="newcourse" />
           {courses?.map((course) => (
             <CourseCard
-              key={`${course.id}-${course.status}`}
+              key={course.id}
               course={course}
               onClickStatus={onClickStatus}
             />

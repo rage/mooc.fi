@@ -286,7 +286,7 @@ const OrganizationItems = () => {
     <>
       {Object.entries(filteredOrganizations).map(([id, organization]) => (
         <OrganizationCard
-          key={`card-${id}`}
+          key={id}
           name={organization.organization_translations![0].name}
           isMember={memberships.includes(id)}
           onToggle={toggleMembership(id)}

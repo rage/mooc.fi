@@ -1,4 +1,4 @@
-import Image from "next/image"
+import { ImageProps } from "next/image"
 
 import AddIcon from "@mui/icons-material/Add"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
@@ -13,6 +13,7 @@ import {
 import { css, styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import LoaderImage from "/components/LoaderImage"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
@@ -36,7 +37,7 @@ const ImageBackgroundBase = css`
   background-position: center 40%;
 `
 
-const ImageBackground = styled(Image)`
+const ImageBackground = styled(LoaderImage)`
   ${ImageBackgroundBase};
   object-fit: cover;
 `
@@ -97,18 +98,14 @@ const NaviCardTitle = styled(Typography)<TypographyProps & BoxProps>`
 `
 
 interface ModuleCardProps {
-  module?: StudyModuleDetailedFieldsFragment
+  studyModule?: StudyModuleDetailedFieldsFragment
+  image?: Exclude<ImageProps["src"], string>
   loading?: boolean
 }
 
-function ModuleCard({ module, loading }: ModuleCardProps) {
-  const imageUrl = module
-    ? module.image
-      ? `/images/modules/${module.image}`
-      : `/images/modules/${module.slug}.jpg`
-    : "" // TODO: placeholder
-  const moduleFound = !loading && module
-  const moduleNotFound = !loading && !module
+function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
+  const moduleFound = !loading && studyModule
+  const moduleNotFound = !loading && !studyModule
 
   return (
     <Grid item xs={12} sm={6} lg={6}>
@@ -119,7 +116,14 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
           </ImageBackgroundSkeleton>
         )}
         {moduleFound && (
-          <ImageBackground src={imageUrl} alt="" aria-hidden="true" fill />
+          <ImageBackground
+            src={image}
+            placeholder="blur"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            alt=""
+            aria-hidden="true"
+            fill
+          />
         )}
         {moduleNotFound && (
           <IconBackground>
@@ -140,7 +144,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </NaviCardTitle>
           ) : (
             <NaviCardTitle align="left">
-              {module ? module.name : "New module"}
+              {studyModule ? studyModule.name : "New module"}
             </NaviCardTitle>
           )}
 
@@ -155,8 +159,8 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
           )}
           {moduleFound && (
             <ButtonWithPaddingAndMargin
-              href={`/study-modules/${module.slug}/edit`}
-              aria-label={`Edit study module ${module.name}`}
+              href={`/study-modules/${studyModule.slug}/edit`}
+              aria-label={`Edit study module ${studyModule.name}`}
               variant="text"
               color="secondary"
               style={{ width: "68%" }}
