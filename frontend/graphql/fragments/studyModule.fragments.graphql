@@ -1,7 +1,11 @@
-fragment StudyModuleCoreFields on StudyModule {
+fragment StudyModuleKeyFields on StudyModule {
   id
   slug
   name
+}
+
+fragment StudyModuleCoreFields on StudyModule {
+  ...StudyModuleKeyFields
 }
 
 fragment StudyModuleFields on StudyModule {

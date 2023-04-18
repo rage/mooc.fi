@@ -604,6 +604,8 @@ const createCourseMutation = gql`
       }
       study_modules {
         id
+        slug
+        name
       }
       course_variants {
         id
@@ -616,9 +618,13 @@ const createCourseMutation = gql`
       }
       inherit_settings_from {
         id
+        slug
+        name
       }
       completions_handled_by {
         id
+        slug
+        name
       }
       has_certificate
       user_course_settings_visibilities {
@@ -688,6 +694,8 @@ const updateCourseMutation = gql`
       }
       study_modules {
         id
+        slug
+        name
       }
       course_variants {
         id
@@ -700,9 +708,13 @@ const updateCourseMutation = gql`
       }
       inherit_settings_from {
         id
+        slug
+        name
       }
       completions_handled_by {
         id
+        slug
+        name
       }
       has_certificate
       user_course_settings_visibilities {
@@ -733,6 +745,8 @@ const deleteCourseMutation = gql`
   mutation deleteCourse($id: ID, $slug: String) {
     deleteCourse(id: $id, slug: $slug) {
       id
+      slug
+      name
     }
   }
 `

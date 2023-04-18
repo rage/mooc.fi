@@ -6,6 +6,8 @@ exports[`Course model completions shouldn't return anything with non-existent us
   "course": {
     "completions": [],
     "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
   },
 }
 `;
@@ -27,6 +29,8 @@ exports[`Course model completions works with user_id 1`] = `
       },
     ],
     "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
   },
 }
 `;
@@ -48,6 +52,8 @@ exports[`Course model completions works with user_upstream_id 1`] = `
       },
     ],
     "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
   },
 }
 `;
