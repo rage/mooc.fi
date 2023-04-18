@@ -4,9 +4,9 @@ import { styled } from "@mui/material/styles"
 import ClipboardButton from "/components/ClipboardButton"
 import { useClipboard } from "/hooks/useClipboard"
 
-interface InfoRowProps {
+type InfoRowProps = {
   title: string
-  content: string | JSX.Element
+  data: JSX.Element | string
   fullWidth?: boolean
   copyable?: boolean
 }
@@ -20,63 +20,66 @@ const Row = styled("div")`
 
 export const InfoRowContainer = styled("div", {
   shouldForwardProp: (prop) => prop !== "fullWidth",
-})<{ fullWidth?: boolean }>`
+})<{ fullWidth?: boolean }>(
+  ({ theme, fullWidth }) => `
   display: flex;
   flex-direction: row;
   align-items: center;
   align-content: baseline;
-  width: ${(props) => (props.fullWidth ? "100" : "80")}%;
+  width: ${fullWidth ? "100" : "80"}%;
 
-  @media (max-width: 600px) {
+  ${theme.breakpoints.down("sm")} {
     flex-direction: column;
     align-items: flex-start;
   }
-`
+`,
+)
 
 const InfoRowTitle = styled(Typography)`
   color: #666;
 `
 
-const InfoRowContent = styled(Typography)`
+const InfoRowContent = styled(Typography)(
+  ({ theme }) => `
   margin-left: auto;
   font-weight: 600;
   text-align: right;
-  @media (max-width: 600px) {
+
+  ${theme.breakpoints.down("sm")} {
     margin-left: 0;
   }
-`
+`,
+)
 
 const InfoRowElementContent = styled("div")`
   margin-left: auto;
 `
 
-const isElement = (
-  content: string | number | JSX.Element,
-): content is JSX.Element =>
-  typeof content !== "string" && typeof content !== "number"
+const isElement = (data: string | number | JSX.Element): data is JSX.Element =>
+  typeof data !== "string" && typeof data !== "number"
 
 const InfoRow = ({
   title,
-  content,
+  data,
   copyable,
   fullWidth = false,
   ...typographyProps
 }: InfoRowProps & TypographyProps) => {
-  const { hasClipboard } = useClipboard(content)
+  const { hasClipboard } = useClipboard(data)
 
   return (
     <InfoRowContainer fullWidth={fullWidth}>
       <InfoRowTitle variant="h4" {...typographyProps}>
         {title}
       </InfoRowTitle>
-      {isElement(content) ? (
-        <InfoRowElementContent>{content}</InfoRowElementContent>
+      {isElement(data) ? (
+        <InfoRowElementContent>{data}</InfoRowElementContent>
       ) : (
         <Row>
           <InfoRowContent variant="h4" {...typographyProps}>
-            {content}
+            {data}
           </InfoRowContent>
-          {hasClipboard && copyable && <ClipboardButton content={content} />}
+          {hasClipboard && copyable && <ClipboardButton data={data} />}
         </Row>
       )}
     </InfoRowContainer>

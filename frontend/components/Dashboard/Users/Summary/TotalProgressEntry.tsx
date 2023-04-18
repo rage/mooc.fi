@@ -67,7 +67,7 @@ function TierInfo({ tier }: TierInfoProps) {
 
       <InfoRow
         title={t(`completionTier-${tier.tier as 1 | 2 | 3}`)}
-        content={
+        data={
           tier.hasTier ? (
             <CheckIcon
               css={iconStyle}
@@ -86,7 +86,7 @@ function TierInfo({ tier }: TierInfoProps) {
       {!tier.hasTier && (
         <InfoRow
           title={t("missingFromTier")}
-          content={String(tier.missingFromTier ?? 0)}
+          data={String(tier.missingFromTier ?? 0)}
         />
       )}
     </>
@@ -132,12 +132,12 @@ function TotalProgressEntry({ data }: TotalProgressEntryProps) {
                 <CourseInfo>
                   <InfoRow
                     title={t("highestCompletedTier")}
-                    content={highestTier}
+                    data={highestTier}
                   />
                   <TierInfoList tiers={data.tiers} />
                   <InfoRow
                     title={t("courseProject")}
-                    content={
+                    data={
                       data.projectCompletion ? (
                         <CheckIcon
                           css={iconStyle}

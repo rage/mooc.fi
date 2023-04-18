@@ -12,13 +12,6 @@ import { GraphQLUserInputError } from "../lib/errors"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
 
-const flatten = <T>(arr: T[]) =>
-  arr.reduce<T[]>((acc, val) => acc.concat(val), [])
-const titleCase = (s?: string) =>
-  s && s.length > 0
-    ? s.toLowerCase()[0].toUpperCase() + s.toLowerCase().slice(1)
-    : undefined
-
 const getNameCombinations = (search: string) => {
   const parts = search.match(/[^\s\n]+/g) ?? []
   const combinations = []
@@ -31,70 +24,64 @@ const getNameCombinations = (search: string) => {
   return combinations
 }
 
+const defaultFields: Array<keyof Prisma.UserWhereInput | "full_name"> = [
+  "full_name",
+  "upstream_id",
+  "email",
+  "last_name",
+  "first_name",
+  "username",
+  "student_number",
+  "real_student_number",
+]
+
 export const buildUserSearch = (
   search?: string | null,
+  fields: Array<keyof Prisma.UserWhereInput | "full_name"> = defaultFields,
 ): Array<Prisma.UserWhereInput> => {
   if (isNullOrUndefined(search)) {
     return []
   }
 
-  const possibleNameCombinations = getNameCombinations(search)
-
   const userSearchQuery: Array<Prisma.UserWhereInput> = []
 
-  if (possibleNameCombinations.length) {
-    possibleNameCombinations.forEach(({ first_name, last_name }) => {
-      userSearchQuery.push({
-        first_name: { contains: first_name, mode: "insensitive" },
-        last_name: { contains: last_name, mode: "insensitive" },
-      })
-    })
+  if (fields && fields.length === 0) {
+    fields = defaultFields
   }
 
-  userSearchQuery.push(
-    ...([
-      {
-        email: { contains: search, mode: "insensitive" },
-      },
-      {
-        last_name: { contains: search, mode: "insensitive" },
-      },
-      {
-        first_name: { contains: search, mode: "insensitive" },
-      },
-      {
-        username: { contains: search, mode: "insensitive" },
-      },
-      {
-        student_number: { contains: search },
-      },
-      {
-        real_student_number: { contains: search },
-      },
-    ] as Array<Prisma.UserWhereInput>),
-  )
+  for (const field of fields) {
+    if (field === "full_name") {
+      const possibleNameCombinations = getNameCombinations(search)
 
-  const searchAsNumber = parseInt(search)
+      if (possibleNameCombinations.length) {
+        possibleNameCombinations.forEach(({ first_name, last_name }) => {
+          userSearchQuery.push({
+            first_name: { contains: first_name, mode: "insensitive" },
+            last_name: { contains: last_name, mode: "insensitive" },
+          })
+        })
+      }
+    } else if (field === "upstream_id") {
+      const searchAsNumber = parseInt(search)
 
-  if (!isNaN(searchAsNumber)) {
-    userSearchQuery.push({
-      upstream_id: searchAsNumber,
-    })
+      if (!isNaN(searchAsNumber)) {
+        userSearchQuery.push({
+          upstream_id: searchAsNumber,
+        })
+      }
+    } else if (["student_number", "real_student_number"].includes(field)) {
+      userSearchQuery.push({
+        [field]: { contains: search },
+      })
+    } else {
+      userSearchQuery.push({
+        [field]: { contains: search, mode: "insensitive" },
+      })
+    }
   }
 
   return userSearchQuery
 }
-
-export const buildSearch = (fields: string[], search?: string) =>
-  search
-    ? flatten(
-        fields.map((f) => [
-          { [f]: { contains: search } },
-          { [f]: { contains: titleCase(search) } },
-          { [f]: { contains: search.toLowerCase() } },
-        ]),
-      )
-    : undefined
 
 interface ConvertPaginationInput {
   first?: number | null

@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-16T22:59:58+03:00
+// Generated on 2023-04-18T16:14:17+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2125,6 +2125,7 @@ export type Subscription = {
 }
 
 export type SubscriptionuserSearchArgs = {
+  fields?: InputMaybe<Array<UserSearchField>>
   search: Scalars["String"]
 }
 
@@ -2614,10 +2615,11 @@ export type UserOrganizationWhereUniqueInput = {
 
 export type UserSearch = {
   __typename?: "UserSearch"
+  allMatchIds: Array<Scalars["String"]>
   /** total count of matches so far */
   count: Scalars["Int"]
   /** current search condition field(s) */
-  field: Maybe<Scalars["String"]>
+  field: UserSearchField
   /** total number of search fields */
   fieldCount: Scalars["Int"]
   /** index of current search field */
@@ -2631,6 +2633,17 @@ export type UserSearch = {
   finished: Scalars["Boolean"]
   matches: Array<User>
   search: Maybe<Scalars["String"]>
+}
+
+export enum UserSearchField {
+  email = "email",
+  first_name = "first_name",
+  full_name = "full_name",
+  last_name = "last_name",
+  real_student_number = "real_student_number",
+  student_number = "student_number",
+  upstream_id = "upstream_id",
+  username = "username",
 }
 
 export type UserWhereUniqueInput = {
@@ -7396,15 +7409,17 @@ export type VerifiedUserFieldsFragment = {
 
 export type UserSearchSubscriptionVariables = Exact<{
   search: Scalars["String"]
+  fields?: InputMaybe<Array<UserSearchField> | UserSearchField>
 }>
 
 export type UserSearchSubscription = {
   __typename?: "Subscription"
   userSearch: {
     __typename?: "UserSearch"
-    field: string | null
+    field: UserSearchField
     fieldValue: string | null
     search: string | null
+    allMatchIds: Array<string>
     count: number
     fieldIndex: number
     fieldCount: number
@@ -7430,9 +7445,10 @@ export type UserSearchSubscription = {
 
 export type UserSearchMetaFieldsFragment = {
   __typename?: "UserSearch"
-  field: string | null
+  field: UserSearchField
   fieldValue: string | null
   search: string | null
+  allMatchIds: Array<string>
   count: number
   fieldIndex: number
   fieldCount: number
@@ -15285,6 +15301,7 @@ export const UserSearchMetaFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "field" } },
           { kind: "Field", name: { kind: "Name", value: "fieldValue" } },
           { kind: "Field", name: { kind: "Name", value: "search" } },
+          { kind: "Field", name: { kind: "Name", value: "allMatchIds" } },
           { kind: "Field", name: { kind: "Name", value: "count" } },
           { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
           { kind: "Field", name: { kind: "Name", value: "fieldCount" } },
@@ -25110,6 +25127,23 @@ export const UserSearchDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "fields" },
+          },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: {
+                kind: "NamedType",
+                name: { kind: "Name", value: "UserSearchField" },
+              },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -25124,6 +25158,14 @@ export const UserSearchDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "search" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "fields" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "fields" },
                 },
               },
             ],
@@ -25166,6 +25208,7 @@ export const UserSearchDocument = {
           { kind: "Field", name: { kind: "Name", value: "field" } },
           { kind: "Field", name: { kind: "Name", value: "fieldValue" } },
           { kind: "Field", name: { kind: "Name", value: "search" } },
+          { kind: "Field", name: { kind: "Name", value: "allMatchIds" } },
           { kind: "Field", name: { kind: "Name", value: "count" } },
           { kind: "Field", name: { kind: "Name", value: "fieldIndex" } },
           { kind: "Field", name: { kind: "Name", value: "fieldCount" } },

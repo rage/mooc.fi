@@ -22,5 +22,22 @@
   "searchFieldResultCount": "osumia",
   "searchFieldUniqueResultCount": "uniikkeja",
   "searchCount": "yhteensä",
-  "searchResultMeta": "Näytä lisätietoja hausta"
+  "searchResultMeta": "Näytä lisätietoja hausta",
+  "searchTooShort": "Vähintään 3 merkkiä vaaditaan",
+  "searchOptions": "Hakuasetukset",
+  "showSearchOptions": "Näytä hakuasetukset",
+  "hideSearchOptions": "Piilota hakuasetukset",
+  "selectAll": "Valitse kaikki",
+  "clearAll": "Poista kaikki",
+  "first_name": "Etunimi",
+  "last_name": "Sukunimi",
+  "first_name, last_name": "Koko nimi",
+  "full_name": "Koko nimi",
+  "username": "Käyttäjänimi",
+  "student_number": "Opiskelijanumero",
+  "real_student_number": "Oikea opiskelijanumero",
+  "email": "Sähköposti",
+  "id": "MOOC.fi-tietokanta-id",
+  "upstream_id": "TMC id",
+  "total": "Yhteensä"
 }

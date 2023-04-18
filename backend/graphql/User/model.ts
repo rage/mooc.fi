@@ -1,4 +1,4 @@
-import { groupBy, omit, partition } from "lodash"
+import { groupBy, omit, orderBy, partition } from "lodash"
 import { booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
@@ -447,7 +447,7 @@ export const User = objectType({
         )) {
           result.push({
             ...baseFields,
-            tier_summaries: handledCourses.map((course) => ({
+            tier_summaries: orderBy(handledCourses, "tier").map((course) => ({
               ...course,
               ...baseFields,
             })),

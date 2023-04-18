@@ -15,7 +15,7 @@ const iconStyle = css`
 `
 
 interface ClipboardProps extends IconButtonProps {
-  content: unknown
+  data: unknown
   tooltipText?: string
   tooltipCopiedText?: string
   SuccessIcon?: () => JSX.Element
@@ -26,14 +26,14 @@ const DefaultSuccessIcon = () => <CheckIcon css={iconStyle} color="success" />
 const DefaultIcon = () => <ClipboardIcon css={iconStyle} />
 
 const ClipboardButton = ({
-  content,
+  data,
   tooltipText = "Copy to clipboard",
   tooltipCopiedText = "Copied!",
   SuccessIcon = DefaultSuccessIcon,
   Icon = DefaultIcon,
   ...props
 }: ClipboardProps) => {
-  const { hasClipboard, isCopied, onCopyToClipboard } = useClipboard(content)
+  const { hasClipboard, isCopied, onCopyToClipboard } = useClipboard(data)
 
   return (
     <Tooltip title={isCopied ? tooltipCopiedText : tooltipText}>

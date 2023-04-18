@@ -15,14 +15,7 @@ function ExplanationHero() {
   return (
     <ExplanationRoot>
       <Explanation />
-      <BackgroundImage
-        src={homeBackground}
-        alt=""
-        placeholder="blur"
-        priority
-        aria-hidden={true}
-        fill
-      />
+      <BackgroundImage src={homeBackground} alt="" priority aria-hidden fill />
     </ExplanationRoot>
   )
 }

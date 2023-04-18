@@ -87,9 +87,12 @@ function WideNaviCard(props: NaviCardProps) {
                   src={require(`/public/images/navi/${item.titleImg}`)}
                   placeholder="blur"
                   alt={item.title ?? ""}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ objectFit: "contain" }}
-                  {...(item.titleImgDimensions ?? { fill: true })}
+                  {...(item.titleImgDimensions ?? {
+                    sizes:
+                      "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+                    fill: true,
+                  })}
                 />
               </TitleImageContainer>
             ) : (

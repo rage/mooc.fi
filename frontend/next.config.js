@@ -207,6 +207,7 @@ const nextConfiguration = (_phase) => ({
     ],
   },*/
   // swcMinify: false
+  productionBrowserSourceMaps: true,
 })
 
 /**

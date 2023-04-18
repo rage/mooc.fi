@@ -30,7 +30,7 @@ const withApolloClient = (App: any) => {
   }: Props) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { locale } = useRouter()
-    const apolloClient = apollo ?? getApollo(apolloState, accessToken, locale)
+    const apolloClient = getApollo(apolloState, accessToken, locale)
     return (
       <ApolloProvider client={apolloClient}>
         <App {...pageProps} />

@@ -4,7 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
+  useState,
 } from "react"
 
 import { useRouter } from "next/router"
@@ -14,6 +14,8 @@ import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboa
 import Dashboard from "@fortawesome/fontawesome-free/svgs/solid/gauge-high.svg?icon"
 import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
+import SignIn from "@fortawesome/fontawesome-free/svgs/solid/right-to-bracket.svg?icon"
+import Register from "@fortawesome/fontawesome-free/svgs/solid/user-plus.svg?icon"
 import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
 import MenuIcon from "@mui/icons-material/Menu"
 import {
@@ -59,7 +61,6 @@ const MobileMenuItem = forwardRef<
   HTMLAnchorElement,
   MobileMenuItemProps & LinkProps
 >(({ Icon, text, ...props }, ref) => {
-  console.log("props", props)
   return (
     <MenuItem component="a" {...props} ref={ref}>
       <ListItemIcon>
@@ -71,8 +72,10 @@ const MobileMenuItem = forwardRef<
 })
 
 const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
-  const anchor = useRef<(EventTarget & HTMLButtonElement) | null>(null)
-  const open = Boolean(anchor.current)
+  const [anchor, setAnchor] = useState<
+    (EventTarget & HTMLButtonElement) | null
+  >(null)
+  const open = Boolean(anchor)
 
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
@@ -80,16 +83,16 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const { locale } = useRouter()
 
   const onClick: MouseEventHandler<HTMLButtonElement> = useCallback((event) => {
-    anchor.current = event.currentTarget
+    setAnchor(event.currentTarget)
   }, [])
 
   const onClose: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
-    anchor.current = null
+    setAnchor(null)
   }, [])
 
   useEffect(() => {
     const resizeListener = () => {
-      anchor.current = null
+      setAnchor(null)
     }
     window?.addEventListener("resize", resizeListener)
 
@@ -97,6 +100,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   }, [])
 
   const onSignOut = useCallback(() => {
+    setAnchor(null)
     signOut(client, logInOrOut)
   }, [signOut, client, logInOrOut])
 
@@ -170,8 +174,9 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         <MobileMenuItem
           href="/_new/sign-in"
           key="menu-login"
-          Icon={User} // TODO: add icon
+          Icon={SignIn}
           onClick={onClose}
+          text={t("loginShort")}
           title={t("loginShort")}
         >
           {t("loginShort")}
@@ -179,8 +184,9 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         <MobileMenuItem
           href="/_new/sign-up"
           key="menu-signup"
-          Icon={User} // TODO: add icon
+          Icon={Register}
           onClick={onClose}
+          text={t("signUp")}
           title={t("signUp")}
         >
           {t("signUp")}
@@ -193,10 +199,10 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
 
   return (
     <MobileMenuContainer>
-      <IconButton onClick={onClick} aria-hidden={true}>
+      <IconButton onClick={onClick} aria-hidden>
         <MenuIcon />
       </IconButton>
-      <Menu open={open} onClose={onClose} anchorEl={anchor.current} ref={ref}>
+      <Menu open={open} onClose={onClose} anchorEl={anchor} ref={ref}>
         {menuItems}
       </Menu>
     </MobileMenuContainer>

@@ -3,6 +3,7 @@ import { withPalette } from "./palette"
 import { withTypography } from "./typography"
 
 import type {} from "@mui/x-date-pickers/themeAugmentation"
+import type {} from "@mui/lab/themeAugmentation"
 
 import { flow } from "lodash"
 

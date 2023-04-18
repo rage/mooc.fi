@@ -1,11 +1,8 @@
 import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { DesktopNavigationMenu, MobileNavigationMenu } from "../Navigation"
 import MoocLogo from "./MoocLogo"
-import {
-  DesktopNavigationMenu,
-  MobileNavigationMenu,
-} from "/components/NewLayout/Navigation"
 
 interface HideOnScrollProps {
   window?: () => Window
@@ -38,19 +35,17 @@ const MenuContainer = styled("div")`
 
 function Header() {
   return (
-    <>
-      <HideOnScroll>
-        <AppBar color="inherit" position="sticky" aria-label="user toolbar">
-          <StyledToolbar>
-            <MoocLogo />
-            <MenuContainer>
-              <DesktopNavigationMenu />
-              <MobileNavigationMenu />
-            </MenuContainer>
-          </StyledToolbar>
-        </AppBar>
-      </HideOnScroll>
-    </>
+    <HideOnScroll>
+      <AppBar color="inherit" position="sticky" aria-label="user toolbar">
+        <StyledToolbar>
+          <MoocLogo />
+          <MenuContainer>
+            <DesktopNavigationMenu />
+            <MobileNavigationMenu />
+          </MenuContainer>
+        </StyledToolbar>
+      </AppBar>
+    </HideOnScroll>
   )
 }
 

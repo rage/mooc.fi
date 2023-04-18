@@ -96,7 +96,7 @@ export const CourseEntryCard = ({
         <Spacer />
         {hasCopyButton && (
           <ClipboardButton
-            content={permanentURL}
+            data={permanentURL}
             tooltipText="Copy permanent URL"
             disabled={!permanentURL}
             Icon={LinkIconComponent}
@@ -117,14 +117,14 @@ export const CourseEntryCard = ({
               <InfoRow
                 title="Id"
                 fullWidth
-                content={course.id}
+                data={course.id}
                 variant="caption"
                 copyable
               />
               <InfoRow
                 title="Slug"
                 fullWidth
-                content={course.slug}
+                data={course.slug}
                 variant="caption"
                 copyable
               />

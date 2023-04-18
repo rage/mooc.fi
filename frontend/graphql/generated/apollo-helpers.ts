@@ -1468,6 +1468,7 @@ export type UserOrganizationFieldPolicy = {
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type UserSearchKeySpecifier = (
+  | "allMatchIds"
   | "count"
   | "field"
   | "fieldCount"
@@ -1481,6 +1482,7 @@ export type UserSearchKeySpecifier = (
   | UserSearchKeySpecifier
 )[]
 export type UserSearchFieldPolicy = {
+  allMatchIds?: FieldPolicy<any> | FieldReadFunction<any>
   count?: FieldPolicy<any> | FieldReadFunction<any>
   field?: FieldPolicy<any> | FieldReadFunction<any>
   fieldCount?: FieldPolicy<any> | FieldReadFunction<any>

@@ -2,8 +2,9 @@ import { createContext } from "react"
 
 import {
   UserCoreFieldsFragment,
-  UserDetailsContainsQueryVariables,
+  UserSearchField,
   UserSearchMetaFieldsFragment,
+  UserSearchSubscriptionVariables,
 } from "/graphql/generated"
 
 interface UserSearchContext {
@@ -14,14 +15,23 @@ interface UserSearchContext {
   page: number
   rowsPerPage: number
   search: string
-  searchVariables: UserDetailsContainsQueryVariables
+  fields?: UserSearchField[]
+  setFields: React.Dispatch<React.SetStateAction<UserSearchField[] | undefined>>
+  searchVariables: UserSearchSubscriptionVariables
   setPage: React.Dispatch<React.SetStateAction<number>>
   setSearchVariables: React.Dispatch<
-    React.SetStateAction<UserDetailsContainsQueryVariables>
+    React.SetStateAction<UserSearchSubscriptionVariables>
   >
   setRowsPerPage: React.Dispatch<React.SetStateAction<number>>
   setSearch: React.Dispatch<React.SetStateAction<string>>
   resetResults: () => void
+  setResults: React.Dispatch<React.SetStateAction<UserSearchResults>>
+}
+
+export interface UserSearchResults {
+  data: Array<UserCoreFieldsFragment>
+  meta: UserSearchMetaFieldsFragment
+  totalMeta: Array<UserSearchMetaFieldsFragment>
 }
 
 export default createContext<UserSearchContext>({
@@ -39,5 +49,7 @@ export default createContext<UserSearchContext>({
   setSearchVariables: () => void 0,
   setRowsPerPage: () => void 0,
   setSearch: () => void 0,
+  setFields: () => void 0,
   resetResults: () => void 0,
+  setResults: () => void 0,
 })

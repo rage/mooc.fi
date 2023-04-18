@@ -4,6 +4,7 @@ import React, { type ReactNode } from "react"
 import type { NextComponentType } from "next"
 // eslint-disable-next-line
 import { type DocumentContext } from "next/document"
+import parser from "ua-parser-js"
 
 import createCache, {
   type EmotionCache,
@@ -12,6 +13,7 @@ import createCache, {
 import { CacheProvider as DefaultCacheProvider } from "@emotion/react"
 import type CreateEmotionServerType from "@emotion/server/create-instance"
 
+//import { ComponentsEnhancer } from "next/dist/shared/lib/utils"
 // import createEmotionServer from "@emotion/server/create-instance"
 
 /**
@@ -57,6 +59,9 @@ export function createEmotionSsr(
       documentContext: DocumentContext,
     ) => {
       const cache = createCache(optionsWithoutPrependProp)
+      const deviceType =
+        parser(documentContext.req?.headers["user-agent"] ?? "").device.type ||
+        "desktop"
 
       if (!createEmotionServer) {
         return
@@ -73,7 +78,11 @@ export function createEmotionSsr(
             const EnhancedApp = enhanceApp?.(App) ?? App
 
             return function EnhanceApp(props) {
-              return <EnhancedApp {...{ ...props, [appPropName]: cache }} />
+              return (
+                <EnhancedApp
+                  {...{ ...props, deviceType, [appPropName]: cache }}
+                />
+              )
             }
           },
         })

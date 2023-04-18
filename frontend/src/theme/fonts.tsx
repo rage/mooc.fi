@@ -10,7 +10,6 @@ export const bodyFont = Roboto({
 
 export const headerFont = Open_Sans({
   subsets: ["latin"],
-  // weight: ["300", "400", "500", "700", "800"], // ["300", "700"], // "variable", // ["300", "700"],
   style: ["italic", "normal"],
   axes: ["wdth"],
   fallback: ["Impact", "Franklin Gothic Bold", "sans-serif"],

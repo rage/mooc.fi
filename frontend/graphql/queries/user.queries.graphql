@@ -129,8 +129,8 @@ fragment VerifiedUserFields on VerifiedUser {
   display_name
 }
 
-subscription UserSearch($search: String!) {
-  userSearch(search: $search) {
+subscription UserSearch($search: String!, $fields: [UserSearchField!]) {
+  userSearch(search: $search, fields: $fields) {
     ...UserSearchMetaFields
     matches {
       ...UserCoreFields
@@ -142,6 +142,7 @@ fragment UserSearchMetaFields on UserSearch {
   field
   fieldValue
   search
+  allMatchIds
   count
   fieldIndex
   fieldCount
