@@ -1,6 +1,11 @@
-fragment CourseCoreFields on Course {
+fragment CourseKeyFields on Course {
   id
   slug
+  name
+}
+
+fragment CourseCoreFields on Course {
+  ...CourseKeyFields
   name
   ects
   language
@@ -92,7 +97,7 @@ fragment EditorCourseDetailedFields on Course {
     ...OpenUniversityRegistrationLinkCoreFields
   }
   inherit_settings_from {
-    id
+    ...CourseKeyFields
   }
   automatic_completions
   automatic_completions_eligible_for_ects

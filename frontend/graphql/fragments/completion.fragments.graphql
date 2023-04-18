@@ -45,8 +45,6 @@ fragment CompletionsQueryNodeFields on Completion {
   }
   course {
     ...CourseCoreFields
-    id
-    name
   }
   completions_registered {
     id

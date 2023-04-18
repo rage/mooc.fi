@@ -6,6 +6,8 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "course_aliases": [
     {
@@ -37,6 +39,8 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "language": "en",
   "name": "new1",
@@ -61,6 +65,8 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
   "study_modules": [
     {
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -333,6 +339,8 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "course_aliases": [
     {
@@ -364,6 +372,8 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "language": "en",
   "name": "new1",
@@ -388,6 +398,8 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
   "study_modules": [
     {
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -618,6 +630,8 @@ exports[`Course mutations addCourse creates a course with no course_translations
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "course_aliases": [
     {
@@ -641,6 +655,8 @@ exports[`Course mutations addCourse creates a course with no course_translations
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "language": "en",
   "name": "new1",
@@ -665,6 +681,8 @@ exports[`Course mutations addCourse creates a course with no course_translations
   "study_modules": [
     {
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -927,6 +945,8 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "course_aliases": [
     {
@@ -958,6 +978,8 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "language": "en",
   "name": "new1",
@@ -975,6 +997,8 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
   "study_modules": [
     {
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -1236,6 +1260,8 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "course_aliases": [
     {
@@ -1267,6 +1293,8 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
   },
   "language": "en",
   "name": "new1",
@@ -1540,6 +1568,8 @@ exports[`Course mutations deleteCourse deletes course on id 1`] = `
 {
   "deleteCourse": {
     "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
   },
 }
 `;
@@ -1548,6 +1578,8 @@ exports[`Course mutations deleteCourse deletes course on slug 1`] = `
 {
   "deleteCourse": {
     "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
   },
 }
 `;
@@ -1558,6 +1590,8 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 1`
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "course_aliases": [
     {
@@ -1596,6 +1630,8 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 1`
   "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "language": "en",
   "name": "updated course1",
@@ -1620,6 +1656,8 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 1`
   "study_modules": [
     {
       "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -1949,6 +1987,8 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "course_aliases": [
     {
@@ -1987,6 +2027,8 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
   "id": "00000000-0000-0000-0000-000000000002",
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "language": null,
   "name": "updated course1",
@@ -2018,6 +2060,8 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -2316,6 +2360,8 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 1
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "course_aliases": [
     {
@@ -2354,6 +2400,8 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 1
   "id": "00000000-0000-0000-0000-000000000002",
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "language": "en",
   "name": "updated course1",
@@ -2385,6 +2433,8 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 1
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -2725,6 +2775,8 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "course_aliases": [
     {
@@ -2763,6 +2815,8 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
   "id": "00000000-0000-0000-0000-000000000002",
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "language": "fi",
   "name": "updated course1",
@@ -2794,6 +2848,8 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,
@@ -3134,6 +3190,8 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 1`
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "course_aliases": [
     {
@@ -3172,6 +3230,8 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 1`
   "id": "00000000-0000-0000-0000-000000000002",
   "inherit_settings_from": {
     "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course2",
+    "slug": "course2",
   },
   "language": "en",
   "name": "updated course1",
@@ -3203,6 +3263,8 @@ exports[`Course mutations updateCourse updates photo: toMatchStrippedSnapshot 1`
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
   ],
   "support_email": null,

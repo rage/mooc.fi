@@ -70,9 +70,13 @@ exports[`Course queries course admin returns full course on id and slug 1`] = `
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
     {
       "id": "00000000-0000-0000-0000-000000000102",
+      "name": "module1",
+      "slug": "module1",
     },
   ],
   "support_email": null,
@@ -212,9 +216,13 @@ exports[`Course queries course admin returns full course on id and slug 2`] = `
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
     {
       "id": "00000000-0000-0000-0000-000000000102",
+      "name": "module1",
+      "slug": "module1",
     },
   ],
   "support_email": null,
@@ -359,9 +367,13 @@ exports[`Course queries course admin should include deleted exercises if specifi
   "study_modules": [
     {
       "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
     },
     {
       "id": "00000000-0000-0000-0000-000000000102",
+      "name": "module1",
+      "slug": "module1",
     },
   ],
   "support_email": null,
@@ -521,6 +533,7 @@ exports[`Course queries courses returns courses 1`] = `
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -561,10 +574,12 @@ exports[`Course queries courses returns courses 1`] = `
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
         "slug": "module2",
       },
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -692,10 +707,12 @@ exports[`Course queries courses returns courses filtered by language: courses-la
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
         "slug": "module2",
       },
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -761,10 +778,12 @@ exports[`Course queries courses returns courses filtered by language: courses-la
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
         "slug": "module2",
       },
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -816,6 +835,7 @@ exports[`Course queries courses returns courses filtered by language: courses-la
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -861,10 +881,12 @@ exports[`Course queries courses returns courses ordered: courses-order-asc 1`] =
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
         "slug": "module2",
       },
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -916,6 +938,7 @@ exports[`Course queries courses returns courses ordered: courses-order-asc 1`] =
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -1072,6 +1095,7 @@ exports[`Course queries courses returns courses ordered: courses-order-desc 1`] 
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -1112,10 +1136,12 @@ exports[`Course queries courses returns courses ordered: courses-order-desc 1`] 
     "study_modules": [
       {
         "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
         "slug": "module2",
       },
       {
         "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
         "slug": "module1",
       },
     ],
@@ -1152,9 +1178,13 @@ exports[`Course queries handlerCourses returns correctly 1`] = `
     "handles_completions_for": [
       {
         "id": "00000000-0000-0000-0000-000000000667",
+        "name": "handled",
+        "slug": "handled",
       },
     ],
     "id": "00000000-0000-0000-0000-000000000666",
+    "name": "handler",
+    "slug": "handler",
   },
 ]
 `;

@@ -21,6 +21,8 @@ const courseCompletionsQuery = gql`
   ) {
     course(slug: $slug) {
       id
+      slug
+      name
       completions(user_id: $user_id, user_upstream_id: $user_upstream_id) {
         id
         user {
@@ -45,6 +47,8 @@ const courseTagsQuery = gql`
   ) {
     course(slug: $slug, language: $language) {
       id
+      slug
+      name
       tags(
         language: $language
         types: $types
