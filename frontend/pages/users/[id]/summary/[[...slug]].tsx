@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
-  useRef,
   useState,
 } from "react"
 
@@ -137,6 +136,7 @@ function UserSummaryView() {
   const [selected, setSelected] = useState<
     UserCourseSummaryCourseFieldsFragment["slug"]
   >(slug ?? "")
+  const [userSearch, setUserSearch] = useState("")
 
   const userPointsSummaryContextValue = useSortOrder({
     initialData: data?.user?.user_course_summary,
@@ -144,8 +144,6 @@ function UserSummaryView() {
     initialOrder: _order,
     search: searchVariables.search,
   })
-
-  const userSearchInput = useRef<HTMLInputElement>()
 
   useEffect(() => {
     if (loading) {
@@ -157,14 +155,15 @@ function UserSummaryView() {
     })
   }, [data, loading])
 
-  const onSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const userSearch = userSearchInput.current?.value
-
-    if (userSearch) {
-      router.push(`/users/search/${encodeURIComponent(userSearch)}`)
-    }
-  }, [])
+  const onSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      if (userSearch && userSearch.length >= 3) {
+        router.push(`/users/search/${encodeURIComponent(userSearch)}`)
+      }
+    },
+    [userSearch],
+  )
 
   const collapseContextValue = useMemo(() => ({ state, dispatch }), [state])
 
@@ -191,6 +190,13 @@ function UserSummaryView() {
     [selected, setSelected],
   )
 
+  const onUserSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setUserSearch(event.target.value)
+    },
+    [],
+  )
+
   if (error) {
     return (
       <Container>
@@ -211,7 +217,11 @@ function UserSummaryView() {
             margin="normal"
             autoComplete="off"
             size="small"
-            inputRef={userSearchInput}
+            value={userSearch}
+            onChange={onUserSearchChange}
+            helperText={
+              userSearch && userSearch.length < 3 ? t("searchTooShort") : " "
+            }
           />
         </StyledForm>
         <CollapseContext.Provider value={collapseContextValue}>

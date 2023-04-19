@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react"
 
-import { DateTime } from "luxon"
 import {
   type MUIDataTableColumn,
   type MUIDataTableExpandButton,
@@ -10,6 +9,7 @@ import {
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
+import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import {
   Skeleton,
   Table,
@@ -19,7 +19,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { css } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
+import { Translator } from "/translations"
+import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import notEmpty from "/util/notEmpty"
 
@@ -32,6 +36,10 @@ interface TierExerciseListProps {
   data?: Array<TierProgressFieldsFragment>
   loading?: boolean
 }
+
+const iconStyle = css`
+  height: 1rem;
+`
 
 const MUIDataTable = dynamic(
   () => import("mui-datatables").then((mod) => mod.default),
@@ -75,6 +83,7 @@ type Row = TierProgressFieldsFragment & {
   tier: number
   points: string
   exercise_completions: Array<ExerciseCompletionRow>
+  completed: boolean
 }
 
 const mapExerciseToRow = (exercise: TierProgressFieldsFragment): Row => ({
@@ -92,6 +101,7 @@ const mapExerciseToRow = (exercise: TierProgressFieldsFragment): Row => ({
     exercise_completion_required_actions:
       ec.exercise_completion_required_actions ?? [],
   })),
+  completed: true, //exercise.exercise_completions?.some((e) => e.completed) ?? false,
 })
 
 interface TierExerciseCompletionProps {
@@ -120,7 +130,10 @@ const TierExerciseCompletions = ({
         {data.map((ec) => (
           <TableRow key={ec.id}>
             <TableCell>
-              {formatDateTime(ec.timestamp, DateTime.DATETIME_SHORT)}
+              {formatDateTime(ec.timestamp, {
+                dateStyle: "short",
+                timeStyle: "short",
+              })}
             </TableCell>
             <TableCell
               style={{
@@ -148,8 +161,14 @@ const TierExerciseCompletions = ({
   )
 }
 
+const renderCompleted = (t: Translator<any>) => (value: boolean) =>
+  value && (
+    <CheckIcon css={iconStyle} color="success" titleAccess={t("completed")} />
+  )
+
 const TierExerciseList = ({ data }: TierExerciseListProps) => {
   const { locale } = useRouter()
+  const t = useTranslator(ProfileTranslations)
 
   const columns: Array<MUIDataTableColumn> = useMemo(
     () => [
@@ -171,8 +190,16 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
         name: "points",
         label: "Points",
       },
+      {
+        name: "completed",
+        label: "Completed",
+        width: 25,
+        options: {
+          customBodyRender: renderCompleted(t),
+        },
+      },
     ],
-    [locale],
+    [locale, t],
   )
 
   const rows = useMemo(() => (data ?? []).map(mapExerciseToRow), [data])

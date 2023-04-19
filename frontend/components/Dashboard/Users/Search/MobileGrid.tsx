@@ -3,12 +3,11 @@ import React, { useCallback, useContext, useMemo } from "react"
 import { range } from "lodash"
 
 import {
-  Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
-  Grid,
+  EnhancedButton,
+  Button as MUIButton,
   Paper,
   Skeleton,
   Table,
@@ -19,16 +18,23 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import Pagination from "/components/Dashboard/Users/Pagination"
+import InfoRow from "../InfoRow"
+import Pagination from "./Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
 
 import { UserCoreFieldsFragment } from "/graphql/generated"
 
+const Button = MUIButton as EnhancedButton
+
 const UserCard = styled(Card)`
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 `
 
 const MobileGrid: React.FC = () => {
@@ -101,21 +107,17 @@ const DataCard = ({ row }: DataCardProps) => {
   const { upstream_id } = row ?? {}
 
   const fields = useMemo(() => {
-    const { email, first_name, last_name, student_number } = row ?? {}
+    const { email, full_name, student_number } = row ?? {}
 
     return [
       {
-        text: t("userEmail"),
-        value: email,
+        text: t("userFullName"),
+        value: full_name,
         title: true,
       },
       {
-        text: t("userFirstName"),
-        value: first_name,
-      },
-      {
-        text: t("userLastName"),
-        value: last_name,
+        text: t("userEmail"),
+        value: email,
       },
       {
         text: t("userStudentNumber"),
@@ -130,53 +132,51 @@ const DataCard = ({ row }: DataCardProps) => {
 
   return (
     <UserCard>
-      <CardActionArea>
-        <CardContent>
-          {fields.map((field) => {
-            if (field.title) {
-              return (
-                <Grid container key={field.text}>
-                  <Grid item xs={12}>
-                    {row ? (
-                      <Typography variant="h5">{field.value}</Typography>
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </Grid>
-                </Grid>
-              )
-            }
-
-            return (
-              <Grid container key={field.text}>
-                {row ? (
-                  <>
-                    <Grid item xs={3}>
-                      <Typography variant="body2">{field.text}</Typography>
-                    </Grid>
-                    <Grid item xs={9}>
-                      <Typography variant="body2">{field.value}</Typography>
-                    </Grid>
-                  </>
-                ) : (
-                  <Grid item xs={12}>
-                    <Skeleton height={10} />
-                  </Grid>
-                )}
-              </Grid>
+      <CardContent style={{ minWidth: "fit-content", flex: 1 }}>
+        {fields.map((field) => {
+          if (field.title) {
+            return field.value ? (
+              <InfoRow
+                key={field.text}
+                title={field.value}
+                variant="h3"
+                copyable
+                fullWidth
+              />
+            ) : (
+              <Skeleton />
             )
-          })}
-        </CardContent>
-      </CardActionArea>
-      <CardActions style={{ justifyContent: "flex-end" }}>
+          }
+
+          return row ? (
+            Boolean(field.value) && (
+              <InfoRow
+                key={field.text}
+                title={field.text}
+                data={field.value ?? ""}
+                copyable
+                fullWidth
+              />
+            )
+          ) : (
+            <Skeleton />
+          )
+        })}
+      </CardContent>
+      <CardActions style={{ marginLeft: "auto", justifyContent: "flex-end" }}>
         {row ? (
           <>
-            <Button href={`/users/${upstream_id}/summary`} variant="contained">
+            <Button
+              href={`/users/${upstream_id}/summary`}
+              prefetch={false}
+              variant="contained"
+            >
               {t("summary")}
             </Button>
             <Button
               href={`/users/${upstream_id}/completions`}
               variant="contained"
+              prefetch={false}
             >
               {t("completions")}
             </Button>

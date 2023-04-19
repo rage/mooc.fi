@@ -58,11 +58,11 @@ const CourseSelectListItemTextNested = styled("span")`
     height: 2.5rem;
     border-left: solid 2px #ddd;
   }
-  &:first-child:after {
+  &:first-of-type:after {
     top: calc((1.5rem / -2) + 0.5rem);
     height: 2rem;
   }
-  &:last-child:after {
+  &:last-of-type:after {
     height: 0.5rem;
   }
 `

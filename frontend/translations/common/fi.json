@@ -80,6 +80,10 @@
     "statusSavingError": "Virhe tallentaessa",
     "statusValidationErrors": "Lomakkeessa on virheitä",
     "required": "vaaditaan",
-    "close": "Sulje"
+    "close": "Sulje",
+    "firstPage": "ensimmäinen sivu",
+    "lastPage": "viimeinen sivu",
+    "previousPage": "edellinen sivu",
+    "nextPage": "seuraava sivu"
 }
 

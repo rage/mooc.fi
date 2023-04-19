@@ -16,48 +16,41 @@ import {
 } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
 
-// import usePagination from "@mui/material/usePagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import UsersTranslations from "/translations/users"
 
-const StyledFooter = styled("footer")`
-  flex-shrink: 0;
-  margin-left: 2.5rem;
-`
+const PaginationActionsContainer = styled("div")``
 
 const StyledTablePagination = styled(TablePagination)`
-  .MuiToolbar-root {
+  .MuiTablePagination-toolbar {
+    padding: 0.5rem;
     justify-content: center !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
-
+  .MuiTablePagination-selectRoot {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
   .MuiTablePagination-spacer {
     flex: 0 !important;
   }
 ` as typeof TablePagination
 
 const TablePaginationActions: React.FC = () => {
+  const t = useTranslator(CommonTranslations)
   const theme = useTheme()
 
-  const {
-    meta,
-    page,
-    rowsPerPage,
-    setPage,
-    searchVariables,
-    setSearchVariables,
-  } = useContext(UserSearchContext)
+  const { meta, page, rowsPerPage, setPage } = useContext(UserSearchContext)
 
-  // const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
-  //  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
   const { count } = meta
 
   const handleFirstPageButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
-      setSearchVariables({
-        search: searchVariables.search,
-        first: rowsPerPage,
-      })
       setPage(0)
     },
     [],
@@ -65,46 +58,31 @@ const TablePaginationActions: React.FC = () => {
 
   const handleBackButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
-      setSearchVariables({
-        search: searchVariables.search,
-        //last: rowsPerPage,
-        //before: startCursor,
-      })
-      setPage(page - 1)
+      setPage((p) => p - 1)
     },
     [],
   )
 
   const handleNextButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
-      setSearchVariables({
-        search: searchVariables.search,
-        //first: rowsPerPage,
-        //after: endCursor,
-        //skip: 1,
-      })
-      setPage(page + 1)
+      setPage((p) => p + 1)
     },
     [],
   )
 
   const handleLastPageButtonClick = useCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
-      setSearchVariables({
-        search: searchVariables.search,
-        //last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
-      })
       setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
     },
-    [],
+    [count, rowsPerPage],
   )
 
   return (
-    <StyledFooter>
+    <PaginationActionsContainer>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
-        aria-label="first page"
+        aria-label={t("firstPage")}
         size="large"
       >
         {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
@@ -112,7 +90,7 @@ const TablePaginationActions: React.FC = () => {
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
-        aria-label="previous page"
+        aria-label={t("previousPage")}
         size="large"
       >
         {theme.direction === "rtl" ? (
@@ -123,8 +101,8 @@ const TablePaginationActions: React.FC = () => {
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
+        disabled={!count || page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label={t("nextPage")}
         size="large"
       >
         {theme.direction === "rtl" ? (
@@ -135,38 +113,25 @@ const TablePaginationActions: React.FC = () => {
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
+        disabled={!count || page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label={t("lastPage")}
         size="large"
       >
         {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
-    </StyledFooter>
+    </PaginationActionsContainer>
   )
 }
 
 const Pagination: React.FC = () => {
   const t = useTranslator(UsersTranslations)
-  const {
-    meta,
-    rowsPerPage,
-    page,
-    setPage,
-    setRowsPerPage,
-    searchVariables,
-    setSearchVariables,
-  } = useContext(UserSearchContext)
+  const { meta, rowsPerPage, page, setPage, setRowsPerPage, searchVariables } =
+    useContext(UserSearchContext)
 
-  // TODO: make it responsive with this
-  // const {} = usePagination({})
   const handleChangeRowsPerPage = useCallback(
     async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newRowsPerPage = parseInt(e.target.value, 10)
 
-      setSearchVariables({
-        search: searchVariables.search,
-        first: newRowsPerPage,
-      })
       setPage(0)
       setRowsPerPage(newRowsPerPage)
     },
@@ -182,7 +147,7 @@ const Pagination: React.FC = () => {
 
       return `${from}-${toOrCount}${t("displayedRowsOf")}${count}`
     },
-    [],
+    [t],
   )
 
   const onPageChange = useCallback(() => null, [])
@@ -190,13 +155,11 @@ const Pagination: React.FC = () => {
   return (
     <StyledTablePagination
       rowsPerPageOptions={[10, 20, 50]}
-      colSpan={5}
       count={meta.count ?? 0}
       rowsPerPage={rowsPerPage}
       page={page}
       SelectProps={{
         inputProps: { "aria-label": t("rowsPerPage") },
-        native: true,
       }}
       labelRowsPerPage={t("rowsPerPage")}
       labelDisplayedRows={labelDisplayedRows}

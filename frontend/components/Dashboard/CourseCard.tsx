@@ -100,7 +100,7 @@ const CourseCardContent = styled("div")`
   padding-bottom: 0;
 `
 
-const CourseCardActionArea = styled(CardActions)`
+const CourseCardActions = styled(CardActions)`
   justify-content: flex-end;
   display: flex;
   margin-top: auto;
@@ -243,7 +243,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
               <CourseInfo field="Slug:" value={course?.slug ?? "-"} />
             </CourseInfoList>
           )}
-          <CourseCardActionArea>
+          <CourseCardActions>
             {loading && <Skeleton variant="rectangular" width="100%" />}
             {courseFound && (
               <>
@@ -286,7 +286,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                 Create
               </StyledButton>
             )}
-          </CourseCardActionArea>
+          </CourseCardActions>
         </CourseCardContent>
       </CardBase>
     </CourseCardItem>

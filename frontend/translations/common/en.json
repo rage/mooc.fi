@@ -80,5 +80,9 @@
     "statusSavingError": "Error while saving",
     "statusValidationErrors": "There are errors in the form",
     "required": "required",
-    "close": "Close"
+    "close": "Close",
+    "firstPage": "first page",
+    "lastPage": "last page",
+    "previousPage": "previous page",
+    "nextPage": "next page"
 } 

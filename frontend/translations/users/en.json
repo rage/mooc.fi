@@ -5,6 +5,7 @@
   "userEmail": "Email",
   "userFirstName": "First name",
   "userLastName": "Last name",
+  "userFullName": "Name",
   "userStudentNumber": "Student number",
   "userTMCid": "TMC ID",
   "completions": "Completions",

@@ -6,7 +6,7 @@ import { useRouter } from "next/router"
 import { useSubscription } from "@apollo/client"
 
 import Container from "/components/Container"
-import SearchForm from "/components/Dashboard/Users/SearchForm"
+import SearchForm from "/components/Dashboard/Users/Search/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import UserSearchContext, {
   UserSearchResults,

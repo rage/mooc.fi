@@ -16,7 +16,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import Pagination from "/components/Dashboard/Users/Pagination"
+import Pagination from "./Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
@@ -29,6 +29,8 @@ const StyledTableCell = styled(TableCell)`
   background-color: black;
   color: white;
 `
+
+const PaginationTableRow = styled(TableRow)``
 
 const StyledPaper = styled(Paper)`
   width: 100%;
@@ -48,7 +50,7 @@ const WideGrid = () => {
 
   const PaginationComponent = useCallback(
     () => (
-      <TableRow>
+      <PaginationTableRow>
         {loading ? (
           <TableCell colSpan={5}>
             <Skeleton width="400px" style={{ margin: "auto" }} />
@@ -56,7 +58,7 @@ const WideGrid = () => {
         ) : (
           <Pagination />
         )}
-      </TableRow>
+      </PaginationTableRow>
     ),
     [data, rowsPerPage, page, loading],
   )
@@ -68,14 +70,10 @@ const WideGrid = () => {
           <TableHead>
             {rowsPerPage >= 50 ? <PaginationComponent /> : null}
             <TableRow>
-              <StyledTableCell>{t("userEmail")}</StyledTableCell>
-              {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
-              <StyledTableCell align="right">
-                {t("userFirstName")}
+              <StyledTableCell component="th" scope="row">
+                {t("userFullName")}
               </StyledTableCell>
-              <StyledTableCell align="right">
-                {t("userLastName")}
-              </StyledTableCell>
+              <StyledTableCell align="right">{t("userEmail")}</StyledTableCell>
               <StyledTableCell align="right">{t("userTMCid")}</StyledTableCell>
               {isVeryWide && (
                 <StyledTableCell align="right">
@@ -134,16 +132,14 @@ const RenderResults = () => {
   return (
     <TableBody>
       {data.map((row) => {
-        const { upstream_id, email, first_name, last_name, student_number } =
-          row ?? {}
+        const { upstream_id, email, full_name, student_number } = row ?? {}
 
         return (
           <TableRow key={upstream_id}>
             <TableCell component="th" scope="row">
-              {email}
+              <strong>{full_name}</strong>
             </TableCell>
-            <TableCell align="right">{first_name}</TableCell>
-            <TableCell align="right">{last_name}</TableCell>
+            <TableCell align="right">{email}</TableCell>
             <TableCell align="right">{upstream_id}</TableCell>
             {isVeryWide && (
               <TableCell align="right">{student_number}</TableCell>

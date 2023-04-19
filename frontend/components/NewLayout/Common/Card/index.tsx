@@ -53,7 +53,7 @@ export const CardDescription = styled("p")`
   height: 100%;
 `
 
-export const CardActionArea = styled("div")`
+export const CardActions = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;

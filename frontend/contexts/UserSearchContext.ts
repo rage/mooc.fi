@@ -7,7 +7,7 @@ import {
   UserSearchSubscriptionVariables,
 } from "/graphql/generated"
 
-interface UserSearchContext {
+export interface UserSearchContext {
   data: Array<UserCoreFieldsFragment>
   meta: UserSearchMetaFieldsFragment
   totalMeta: Array<UserSearchMetaFieldsFragment>

@@ -34,6 +34,8 @@
     "no": "no",
     "progress": "Progress",
     "totalProgress": "Total progress",
+    "tierProgress": "Progress on tier",
+    "progressByTier": "Progress by tier",
     "exercisesCompleted": "Exercises completed",
     "partProgress": "Progress by part",
     "grade": "grade:",

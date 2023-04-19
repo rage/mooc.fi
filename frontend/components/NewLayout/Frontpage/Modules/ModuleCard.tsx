@@ -26,7 +26,7 @@ const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
     brightness(${(props) => props.brightness ?? 1});*/
 `
 
-const CardActionArea = styled("div")`
+const CardActions = styled("div")`
   display: flex;
   justify-content: flex-end;
 `
@@ -52,11 +52,11 @@ export const ModuleCard = ({
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
-        <CardActionArea>
+        <CardActions>
           <ModuleButton href={`/_new/study-modules/#${slug}`}>
             Kokonaisuuden tiedot
           </ModuleButton>
-        </CardActionArea>
+        </CardActions>
       </CardBody>
     </CardWrapper>
   )
@@ -75,11 +75,11 @@ export const ModuleCardSkeleton = () => {
           <Skeleton />
           <Skeleton width="30%" />
         </CardDescription>
-        <CardActionArea>
+        <CardActions>
           <ModuleButton disabled={true} style={{ width: "40%" }}>
             <Skeleton width="100%" />
           </ModuleButton>
-        </CardActionArea>
+        </CardActions>
       </CardBody>
     </CardWrapper>
   )

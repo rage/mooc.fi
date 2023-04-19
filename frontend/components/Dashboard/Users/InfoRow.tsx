@@ -1,3 +1,5 @@
+import { useCallback } from "react"
+
 import { Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -6,43 +8,38 @@ import { useClipboard } from "/hooks/useClipboard"
 
 type InfoRowProps = {
   title: string
-  data: JSX.Element | string
+  data?: JSX.Element | string | number
   fullWidth?: boolean
   copyable?: boolean
 }
 
-const Row = styled("div")`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-`
-
 export const InfoRowContainer = styled("div", {
   shouldForwardProp: (prop) => prop !== "fullWidth",
 })<{ fullWidth?: boolean }>(
-  ({ theme, fullWidth }) => `
+  ({ fullWidth }) => `
   display: flex;
   flex-direction: row;
-  align-items: center;
-  align-content: baseline;
+  align-items: baseline;
+  align-content: center;
   width: ${fullWidth ? "100" : "80"}%;
-
-  ${theme.breakpoints.down("sm")} {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  flex-wrap: wrap;
+  justify-content: space-between;
 `,
 )
 
+/*  ${theme.breakpoints.down("sm")} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+*/
 const InfoRowTitle = styled(Typography)`
   color: #666;
+  font-weight: 600;
+  padding-right: 0.5rem;
 `
 
 const InfoRowContent = styled(Typography)(
   ({ theme }) => `
-  margin-left: auto;
-  font-weight: 600;
   text-align: right;
 
   ${theme.breakpoints.down("sm")} {
@@ -52,7 +49,7 @@ const InfoRowContent = styled(Typography)(
 )
 
 const InfoRowElementContent = styled("div")`
-  margin-left: auto;
+  justify-content: flex-end;
 `
 
 const isElement = (data: string | number | JSX.Element): data is JSX.Element =>
@@ -67,21 +64,30 @@ const InfoRow = ({
 }: InfoRowProps & TypographyProps) => {
   const { hasClipboard } = useClipboard(data)
 
+  const Content = useCallback(() => {
+    if (!data) {
+      return null
+    }
+
+    if (isElement(data)) {
+      return <InfoRowElementContent>{data}</InfoRowElementContent>
+    }
+
+    return (
+      <InfoRowContent variant="h4" {...typographyProps}>
+        {data}
+        {hasClipboard && copyable && <ClipboardButton data={data} />}
+      </InfoRowContent>
+    )
+  }, [data, hasClipboard, copyable, typographyProps])
+
   return (
     <InfoRowContainer fullWidth={fullWidth}>
       <InfoRowTitle variant="h4" {...typographyProps}>
         {title}
+        {!data && hasClipboard && copyable && <ClipboardButton data={title} />}
       </InfoRowTitle>
-      {isElement(data) ? (
-        <InfoRowElementContent>{data}</InfoRowElementContent>
-      ) : (
-        <Row>
-          <InfoRowContent variant="h4" {...typographyProps}>
-            {data}
-          </InfoRowContent>
-          {hasClipboard && copyable && <ClipboardButton data={data} />}
-        </Row>
-      )}
+      <Content />
     </InfoRowContainer>
   )
 }

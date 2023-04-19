@@ -29,7 +29,7 @@ const CardHeader = styled("div")`
   overflow: hidden;
 `
 
-const CardActionArea = styled("div")`
+const CardActions = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -65,10 +65,10 @@ const CourseCard = ({
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
-        <CardActionArea>
+        <CardActions>
           <Date>{date}</Date>
           <Button>Kurssin tiedot</Button>
-        </CardActionArea>
+        </CardActions>
       </CardBody>
     </CardWrapper>
   )

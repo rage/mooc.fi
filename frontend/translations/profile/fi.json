@@ -34,6 +34,8 @@
     "no": "ei",
     "progress": "Edistyminen",
     "totalProgress": "Kokonaisedistyminen",
+    "tierProgress": "Edistyminen tasolla",
+    "progressByTier": "Edistyminen tasoittain",
     "partProgress": "Edistyminen osioittain",
     "exercisesCompleted": "Tehtyjä tehtäviä",
     "grade": "arvosana:",

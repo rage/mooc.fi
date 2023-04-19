@@ -30,6 +30,7 @@ interface ProgressEntryProps {
 const ProgressEntryCard = styled(SummaryCard)`
   padding: 1rem;
 `
+
 const ProgressContainer = styled("div")`
   width: 100%;
   display: grid;

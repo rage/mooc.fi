@@ -5,6 +5,7 @@
   "userEmail": "Sähköposti",
   "userFirstName": "Etunimi",
   "userLastName": "Sukunimi",
+  "userFullName": "Nimi",
   "userStudentNumber": "Opiskelijanumero",
   "userTMCid": "TMC ID",
   "completions": "Suoritukset",
