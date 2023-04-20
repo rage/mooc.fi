@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-18T16:14:17+03:00
+// Generated on 2023-04-20T16:22:02+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1404,6 +1404,7 @@ export type Organization = {
   logo_file_name: Maybe<Scalars["String"]>
   logo_file_size: Maybe<Scalars["Int"]>
   logo_updated_at: Maybe<Scalars["DateTime"]>
+  name: Maybe<Scalars["String"]>
   organization_translations: Array<OrganizationTranslation>
   phone: Maybe<Scalars["String"]>
   pinned: Maybe<Scalars["Boolean"]>
@@ -2753,6 +2754,7 @@ export type CompletionDetailedFieldsFragment = {
       __typename?: "Organization"
       id: string
       slug: string
+      name: string | null
     } | null
   }>
   certificate_availability: {
@@ -2815,6 +2817,7 @@ export type CompletionDetailedFieldsWithCourseFragment = {
       __typename?: "Organization"
       id: string
       slug: string
+      name: string | null
     } | null
   }>
   certificate_availability: {
@@ -2956,7 +2959,12 @@ export type CompletionRegisteredCoreFieldsFragment = {
   organization_id: string | null
   created_at: any | null
   updated_at: any | null
-  organization: { __typename?: "Organization"; id: string; slug: string } | null
+  organization: {
+    __typename?: "Organization"
+    id: string
+    slug: string
+    name: string | null
+  } | null
 }
 
 export type CourseCoreFieldsFragment = {
@@ -4058,6 +4066,7 @@ export type UserOverviewFieldsFragment = {
         __typename?: "Organization"
         id: string
         slug: string
+        name: string | null
       } | null
     }>
     certificate_availability: {
@@ -4573,6 +4582,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
         __typename?: "Organization"
         id: string
         slug: string
+        name: string | null
       } | null
     }>
     certificate_availability: {
@@ -6284,10 +6294,7 @@ export type OrganizationByIdQuery = {
   organization: {
     __typename?: "Organization"
     hidden: boolean | null
-    organization_translations: Array<{
-      __typename?: "OrganizationTranslation"
-      name: string
-    }>
+    name: string | null
   } | null
 }
 
@@ -6807,6 +6814,7 @@ export type UserSummaryQuery = {
             __typename?: "Organization"
             id: string
             slug: string
+            name: string | null
           } | null
         }>
         certificate_availability: {
@@ -7048,6 +7056,7 @@ export type CurrentUserOverviewQuery = {
           __typename?: "Organization"
           id: string
           slug: string
+          name: string | null
         } | null
       }>
       certificate_availability: {
@@ -7133,6 +7142,7 @@ export type UserOverviewQuery = {
           __typename?: "Organization"
           id: string
           slug: string
+          name: string | null
         } | null
       }>
       certificate_availability: {
@@ -7815,6 +7825,7 @@ export const CompletionRegisteredCoreFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -7956,6 +7967,7 @@ export const CompletionDetailedFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -8318,6 +8330,7 @@ export const CompletionDetailedFieldsWithCourseFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -12734,6 +12747,7 @@ export const UserOverviewFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -14809,6 +14823,7 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -21179,16 +21194,7 @@ export const OrganizationByIdDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "hidden" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "organization_translations" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -23197,6 +23203,7 @@ export const UserSummaryDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -23594,6 +23601,7 @@ export const CurrentUserOverviewDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -23965,6 +23973,7 @@ export const UserOverviewDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },

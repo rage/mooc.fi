@@ -733,6 +733,7 @@ export type OrganizationKeySpecifier = (
   | "logo_file_name"
   | "logo_file_size"
   | "logo_updated_at"
+  | "name"
   | "organization_translations"
   | "phone"
   | "pinned"
@@ -763,6 +764,7 @@ export type OrganizationFieldPolicy = {
   logo_file_name?: FieldPolicy<any> | FieldReadFunction<any>
   logo_file_size?: FieldPolicy<any> | FieldReadFunction<any>
   logo_updated_at?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
   organization_translations?: FieldPolicy<any> | FieldReadFunction<any>
   phone?: FieldPolicy<any> | FieldReadFunction<any>
   pinned?: FieldPolicy<any> | FieldReadFunction<any>

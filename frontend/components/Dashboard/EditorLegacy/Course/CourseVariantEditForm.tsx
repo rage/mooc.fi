@@ -136,7 +136,7 @@ const CourseVariantEditForm = () => {
                       variant="h3"
                       component="p"
                       align="center"
-                      gutterBottom={true}
+                      gutterBottom
                     >
                       {t("courseNoVariants")}
                     </Typography>

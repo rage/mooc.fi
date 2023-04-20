@@ -76,7 +76,7 @@ export const ModuleCardSkeleton = () => {
           <Skeleton width="30%" />
         </CardDescription>
         <CardActions>
-          <ModuleButton disabled={true} style={{ width: "40%" }}>
+          <ModuleButton disabled style={{ width: "40%" }}>
             <Skeleton width="100%" />
           </ModuleButton>
         </CardActions>

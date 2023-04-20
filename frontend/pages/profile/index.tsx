@@ -53,11 +53,8 @@ function Profile() {
   const handleTabChange = useCallback(
     (_: SyntheticEvent<Element, Event>, newValue: number) => {
       setTab(newValue)
-      router.replace(
-        router.pathname,
-        `/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`,
-        { shallow: true },
-      )
+      const query = newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""
+      router.replace(router.pathname, `/profile${query}`, { shallow: true })
     },
     [],
   )

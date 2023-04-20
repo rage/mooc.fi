@@ -36,7 +36,7 @@ const SignInPage = () => {
     <>
       <Container style={{ width: "90%", maxWidth: 900 }}>
         <StyledPaper>
-          <Header component="h1" variant="h4" gutterBottom={true}>
+          <Header component="h1" variant="h4" gutterBottom>
             {t("login")}
           </Header>
           <Typography component="p" paragraph>

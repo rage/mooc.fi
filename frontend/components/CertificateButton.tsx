@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react"
 
+import { LinkProps } from "next/link"
+
 import WarningIcon from "@mui/icons-material/Warning"
 import {
   Button,
@@ -29,8 +31,9 @@ import {
 const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const StyledButton = styled(Button)`
-  margin: auto;
   background-color: #005361;
+  text-align: center;
+  max-width: 20vw;
 `
 
 const StyledDialog = styled(Dialog)`
@@ -54,7 +57,11 @@ interface CertificateProps {
   completion: CompletionDetailedFieldsFragment
 }
 
-const CertificateButton = ({ course, completion }: CertificateProps) => {
+const CertificateButton = ({
+  course,
+  completion,
+  ...buttonProps
+}: CertificateProps & ButtonProps & LinkProps) => {
   const t = useTranslator(CompletionsTranslations)
   const { currentUser } = useLoginStateContext()
   const { addAlert } = useAlertContext()
@@ -116,7 +123,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
 
   if (state.certificateId) {
     return (
-      <StyledButton onClick={onShowCertificate}>
+      <StyledButton onClick={onShowCertificate} {...buttonProps}>
         {t("showCertificate")}
       </StyledButton>
     )
@@ -142,7 +149,11 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
 
   return (
     <>
-      <StyledButton disabled={state.status !== "IDLE"} onClick={onDialogOpen}>
+      <StyledButton
+        disabled={state.status !== "IDLE"}
+        onClick={onDialogOpen}
+        {...buttonProps}
+      >
         {state.status !== "IDLE" ? (
           <CircularProgress size={24} color="secondary" />
         ) : (

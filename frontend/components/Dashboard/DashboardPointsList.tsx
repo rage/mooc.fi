@@ -24,7 +24,7 @@ const PointsList = (props: PointsListProps) => {
               p.user.progress.user_course_service_progresses
             }
             cutterValue={cutterValue}
-            showPersonalDetails={true}
+            showPersonalDetails
             user={p.user}
           />
         ) : null,

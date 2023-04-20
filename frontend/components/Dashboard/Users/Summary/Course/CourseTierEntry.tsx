@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { sortBy } from "lodash"
 
-import ExerciseList from "../ExerciseList"
+import ExerciseList from "../Exercise/ExerciseList"
 import ProgressEntry from "../ProgressEntry"
 import { CourseEntryCard } from "./common"
 

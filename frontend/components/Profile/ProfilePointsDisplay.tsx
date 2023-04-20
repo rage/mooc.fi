@@ -27,7 +27,7 @@ const ProfilePointsDisplay = () => {
 
   return (
     <>
-      <PointsListGrid data={data} showOnlyTen={true} />
+      <PointsListGrid data={data} showOnlyTen />
       <FormSubmitButton href={`/profile/points`} variant="text" fullWidth>
         {t("seePoints")}
       </FormSubmitButton>

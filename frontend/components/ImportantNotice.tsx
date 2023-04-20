@@ -39,9 +39,11 @@ function ImportantNotice(props: RegProps) {
   return (
     <ImportantNoticeContainer>
       <AlertIcon />
-      <Typography>
-        {t("Instructions1")} {props.email}
-      </Typography>
+      <Typography
+        dangerouslySetInnerHTML={{
+          __html: t("InstructionsEmail", { email: props.email }),
+        }}
+      />
     </ImportantNoticeContainer>
   )
 }

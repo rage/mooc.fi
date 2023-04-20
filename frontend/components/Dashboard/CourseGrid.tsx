@@ -23,7 +23,7 @@ const CourseGrid = ({ courses, loading, onClickStatus }: CourseGridProps) => (
   <section>
     <CourseList>
       {loading ? (
-        range(6).map((i) => <CourseCard key={`skeleton-${i}`} loading={true} />)
+        range(6).map((i) => <CourseCard key={`skeleton-${i}`} loading />)
       ) : (
         <>
           <CourseCard key="newcourse" />

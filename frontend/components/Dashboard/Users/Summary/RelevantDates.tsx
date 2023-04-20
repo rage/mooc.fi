@@ -43,6 +43,7 @@ const RelevantDatesCard = styled(SummaryCard)`
 const hasCompletion = (
   data: RelevantDatesProps["data"],
 ): data is UserCourseSummaryCoreFieldsFragment => "completion" in data
+
 const hasTierSummaries = (
   data: RelevantDatesProps["data"],
 ): data is UserCourseSummaryCoreFieldsFragment =>
@@ -53,7 +54,7 @@ function RelevantDates({ data }: RelevantDatesProps) {
   const isTieredCourse = hasTierSummaries(data)
   const isRootCourse = hasCompletion(data)
   const hasTier = (data?.course?.tier ?? 0) > 0
-  const startDate = data?.start_date
+  const startDate = data?.start_date ?? ""
   const exerciseCompletions = isTieredCourse
     ? data?.tier_summaries
         ?.flatMap((ts) => ts.exercise_completions)
@@ -65,33 +66,32 @@ function RelevantDates({ data }: RelevantDatesProps) {
   const latestExerciseDate = max(
     exerciseCompletions?.map((ec) => ec.created_at).filter(notEmpty),
   )
-  const completionDate = isRootCourse
+  /*const completionDate = isRootCourse
     ? data?.completion?.completion_date
-    : undefined
+    : undefined*/
 
   return (
     <RelevantDatesCard>
       <RelevantDatesCardContent sx={{ width: "100%" }}>
         {(isRootCourse || isTieredCourse) && !hasTier && (
           <Typography variant="h4">
-            {t("courseStartDate")}
-            <strong>{formatDateTime(startDate)}</strong>
+            {t("courseStartDate")} <strong>{formatDateTime(startDate)}</strong>
           </Typography>
         )}
         <Typography variant="h4">
-          {t("firstExerciseDate")}
+          {t("firstExerciseDate")}{" "}
           <strong>{formatDateTime(firstExerciseDate)}</strong>
         </Typography>
         <Typography variant="h4">
-          {t("latestExerciseDate")}
+          {t("latestExerciseDate")}{" "}
           <strong>{formatDateTime(latestExerciseDate)}</strong>
         </Typography>
-        {isRootCourse && (
+        {/*isRootCourse && (
           <Typography variant="h4">
             {t("completedDate")}
             <strong>{formatDateTime(completionDate)}</strong>
           </Typography>
-        )}
+        )*/}
       </RelevantDatesCardContent>
       <TooltipWrapper>
         <Tooltip title={t("relevantDatesTooltip")}>

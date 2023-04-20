@@ -80,14 +80,14 @@ function Completion({ completion, course }: CompletionProps) {
             <CollapseTableRow>
               <TableCell>
                 <Typography variant="h3">
-                  {t("completedDate")}
+                  {t("completedDate")}{" "}
                   <strong>{formatDateTime(completion?.completion_date)}</strong>
                 </Typography>
               </TableCell>
               <TableCell align="right">
                 {completion?.completions_registered?.length > 0 && (
                   <Typography variant="h3">
-                    {t("registeredDate")}
+                    {t("registeredDate")}{" "}
                     <strong>
                       {completion?.completions_registered
                         ?.map((cr) => formatDateTime(cr.created_at))
@@ -111,6 +111,8 @@ function Completion({ completion, course }: CompletionProps) {
                     <CompletionListItem
                       course={course}
                       completion={completion}
+                      elevation={0}
+                      sx={{ padding: "0" }}
                     />
                   </CompletionListItemContainer>
                 </Collapse>

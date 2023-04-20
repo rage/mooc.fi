@@ -223,7 +223,7 @@ const EmailTemplateView = () => {
                 label="Email HTML Body (disabled)"
                 multiline
                 rows="4"
-                disabled={true}
+                disabled
                 value={htmlBody ?? ""}
                 variant="outlined"
                 onChange={(e) => {

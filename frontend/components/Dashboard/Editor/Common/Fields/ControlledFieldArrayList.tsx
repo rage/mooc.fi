@@ -177,12 +177,7 @@ function ControlledFieldArrayListImpl<
             </ArrayItem>
           ))
         ) : (
-          <Typography
-            variant="h3"
-            component="p"
-            align="center"
-            gutterBottom={true}
-          >
+          <Typography variant="h3" component="p" align="center" gutterBottom>
             {noFields}
           </Typography>
         )}

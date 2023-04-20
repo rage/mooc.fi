@@ -233,7 +233,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
 
     return (
       <StyledPaper>
-        <Header component="h1" variant="h4" gutterBottom={true} align="center">
+        <Header component="h1" variant="h4" gutterBottom align="center">
           {t("signupTitle")}
         </Header>
         <Form onChange={this.validate}>

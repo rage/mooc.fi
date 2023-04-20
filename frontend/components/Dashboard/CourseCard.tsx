@@ -225,7 +225,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
                 {formatDateTime(course?.start_date)} to{" "}
-                {formatDateTime(course?.end_date ?? "")}
+                {formatDateTime(course?.end_date)}
               </CourseInfo>
 
               <CourseInfo

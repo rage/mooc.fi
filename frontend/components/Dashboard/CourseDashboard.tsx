@@ -9,7 +9,7 @@ const Title = styled(Typography)`
 
 const CourseDashboard = () => (
   <section>
-    <Title variant="h3" component="h2" align="center" gutterBottom={true}>
+    <Title variant="h3" component="h2" align="center" gutterBottom>
       Dashboard
     </Title>
     <Card />

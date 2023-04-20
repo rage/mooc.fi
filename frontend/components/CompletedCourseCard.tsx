@@ -71,7 +71,7 @@ function CompletedCourseCard(props: CourseCardProps) {
   return (
     <Grid item xs={12}>
       <Background>
-        <CourseTitle component="h3" variant="h6" gutterBottom={true}>
+        <CourseTitle component="h3" variant="h6" gutterBottom>
           {completion.course?.name}
         </CourseTitle>
         <CardText>

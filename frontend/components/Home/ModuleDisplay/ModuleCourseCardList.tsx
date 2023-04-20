@@ -18,11 +18,7 @@ export const ThreeOrLessCoursesListing = (props: CourseListProps) => {
   return (
     <Grid container spacing={3}>
       {courses.map((course) => (
-        <ModuleSmallCourseCard
-          key={course.id}
-          course={course}
-          showHeader={true}
-        />
+        <ModuleSmallCourseCard key={course.id} course={course} showHeader />
       ))}
     </Grid>
   )
@@ -52,7 +48,7 @@ const ModuleCoursesListing = (props: CourseListProps) => {
       )}
       {activeCourses.length ? (
         <ShowMoreButton
-          fullWidth={true}
+          fullWidth
           variant="contained"
           onClick={() => setShowAll(!showAll)}
         >

@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+
 import { useRouter } from "next/router"
 
 export const mapLangToLanguage: Record<string, string> = {
@@ -9,14 +11,48 @@ export const mapLangToLanguage: Record<string, string> = {
 const defaultDateTimeOptions: Intl.DateTimeFormatOptions = {
   dateStyle: "short",
 }
-export function formatDateTime(date: string): string
-export function formatDateTime(date: string, overrideLocale?: string): string
+
+type Optional<T> = T | undefined | null
+type DateType = Optional<string | number | Date>
+
+const createFormatDateTime = (locale?: string) => {
+  return function formatDateTime(
+    date: DateType,
+    optionsOrOverrideLocale?: Intl.DateTimeFormatOptions | string,
+    overrideLocale?: string,
+  ) {
+    const options =
+      typeof optionsOrOverrideLocale === "object"
+        ? optionsOrOverrideLocale
+        : undefined
+    const _overrideLocale =
+      typeof optionsOrOverrideLocale === "string"
+        ? optionsOrOverrideLocale
+        : overrideLocale
+    const _locale = _overrideLocale ?? locale ?? "fi"
+
+    const dt = new Date(date ?? "")
+
+    if (isNaN(dt.getTime())) {
+      return "-"
+    } else {
+      return dt.toLocaleString(_locale, {
+        ...defaultDateTimeOptions,
+        ...(options ?? {}),
+      })
+    }
+  }
+}
+
+export const formatDateTime = createFormatDateTime()
+/* export function formatDateTime(date: DateType): string
+export function formatDateTime(date: DateType, overrideLocale?: string): string
 export function formatDateTime(
-  date: string,
+  date: DateType,
   options?: Intl.DateTimeFormatOptions,
 ): string
 export function formatDateTime(
-  date: string,
+  date: DateType,
   optionsOrOverrideLocale?: string | Intl.DateTimeFormatOptions,
   overrideLocale?: string,
 ) {
@@ -30,9 +66,10 @@ export function formatDateTime(
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { locale: routerLocale } = useRouter()
+
   const locale = overrideLocale ?? routerLocale ?? "fi"
 
-  const dt = new Date(date)
+  const dt = new Date(date ?? "")
 
   if (isNaN(dt.getTime())) {
     return "-"
@@ -42,4 +79,12 @@ export function formatDateTime(
       ...(datetimeOptions ?? {}),
     })
   }
+} */
+
+export const useFormatDateTime = () => {
+  const { locale } = useRouter()
+
+  return useMemo(() => createFormatDateTime(locale), [locale])
 }
+
+export default formatDateTime

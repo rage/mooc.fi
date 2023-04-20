@@ -25,7 +25,7 @@ const EditorContainer = ({
   <>
     <section>
       <ResponsiveContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <Header component="h1" variant="h2" gutterBottom align="center">
           {title}
         </Header>
         {children}

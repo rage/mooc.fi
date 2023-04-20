@@ -38,6 +38,7 @@ const ExerciseInfoContent = styled("div")`
   padding: 1rem;
   gap: 2rem;
 `
+
 interface ExerciseEntryProps {
   exercise: ExerciseCoreFieldsFragment & {
     exercise_completions: ExerciseCompletionCoreFieldsFragment[]

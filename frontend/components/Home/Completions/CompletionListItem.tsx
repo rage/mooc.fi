@@ -3,7 +3,7 @@ import dynamic from "next/dynamic"
 import Image from "next/image"
 
 import DoneIcon from "@mui/icons-material/Done"
-import { Avatar, Button, Paper, Skeleton } from "@mui/material"
+import { Avatar, Button, Paper, PaperProps, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
@@ -18,8 +18,9 @@ import {
 } from "/graphql/generated"
 
 const StyledButton = styled(Button)`
-  //height: 50%;
   color: black;
+  text-align: center;
+  max-width: 20vw;
 `
 
 const CourseAvatar = styled(Avatar)`
@@ -45,9 +46,11 @@ const ListItemContainer = styled(Paper)`
   width: 100%;
   align-items: center;
   padding: 0.5rem;
-`
+  display: flex;
+  flex-direction: column;
+` as typeof Paper
 
-const Row = styled("section")`
+const Row = styled("div")`
   display: flex;
   grid-gap: 0.5rem;
   margin: 0.5rem;
@@ -63,15 +66,18 @@ const Column = styled("div")`
   display: flex;
   flex-direction: column;
 `
+
 const CompletionColumn = styled(Column)``
-const RegistrationColumn = styled(Column)`
-  width: 40%;
-`
+
 const ButtonColumn = styled(Column)`
-  margin-top: 1rem;
-  margin-right: 1.5rem;
   gap: 0.5rem;
+  margin-left: 1rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: fit-content;
+  justify-items: center;
   @media (max-width: 860px) {
+    flex: 1;
     flex-direction: row;
     justify-content: flex-end;
   }
@@ -80,100 +86,89 @@ const ButtonColumn = styled(Column)`
 export const CompletionListItem = ({
   completion,
   course,
-}: CompletionListItemProps) => {
+  ...paperProps
+}: CompletionListItemProps & PaperProps) => {
   const isRegistered = (completion?.completions_registered ?? []).length > 0
   const t = useTranslator(ProfileTranslations)
 
   const hasCertificate = course?.has_certificate
 
   return (
-    <ListItemContainer>
+    <ListItemContainer {...paperProps}>
       <Row>
-        <CompletionColumn>
+        <CardTitle component="h2" variant="h3" sx={{ paddingRight: "0.5rem" }}>
+          {course?.name}
+        </CardTitle>
+      </Row>
+      <Row>
+        <Column>
           <Row>
-            <Column>
-              <CourseAvatar>
-                {course?.photo ? (
-                  <Image
-                    src={addDomain(course.photo.uncompressed)}
-                    alt={course.name}
-                    fill
-                  />
-                ) : (
-                  course.name.toUpperCase().charAt(0)
-                )}
-              </CourseAvatar>
-            </Column>
-            <Column>
-              <CardSubtitle>
-                <strong>{`${t("completedDate")}${formatDateTime(
-                  completion.completion_date,
-                )}`}</strong>
-              </CardSubtitle>
-              {completion.completion_language ? (
-                <CardSubtitle>
-                  {`${t("completionLanguage")} ${
-                    mapLangToLanguage[completion?.completion_language ?? ""] ??
-                    completion.completion_language
-                  }`}
-                </CardSubtitle>
-              ) : null}
-              {notEmpty(completion.tier) && (
-                <CardSubtitle>
-                  {`${t("completionTier")} ${t(
-                    `completionTier-${completion.tier as 1 | 2 | 3}`,
-                  )}`}
-                </CardSubtitle>
-              )}
-              {notEmpty(completion?.grade) && (
-                <CardSubtitle>
-                  {t("grade")} <strong>{completion.grade}</strong>
-                </CardSubtitle>
-              )}
-            </Column>
-          </Row>
-          <Row>
-            <CardTitle
-              component="h2"
-              variant="h3"
-              style={{ paddingRight: "0.5rem", gridArea: "title" }}
-            >
-              {course?.name}
-            </CardTitle>
-          </Row>
-        </CompletionColumn>
-
-        <RegistrationColumn>
-          {isRegistered && completion.completions_registered
-            ? completion.completions_registered?.map((r) => (
-                <Row key={r.id}>
-                  <Column>
+            <CompletionColumn>
+              <Row>
+                <Column>
+                  <CourseAvatar>
+                    {course?.photo ? (
+                      <Image
+                        src={addDomain(course.photo.uncompressed)}
+                        alt={course.name}
+                        fill
+                      />
+                    ) : (
+                      course.name.toUpperCase().charAt(0)
+                    )}
+                  </CourseAvatar>
+                </Column>
+                <Column>
+                  <CardSubtitle>
+                    <strong>{`${t("completedDate")} ${formatDateTime(
+                      completion.completion_date,
+                    )}`}</strong>
+                  </CardSubtitle>
+                  {completion.completion_language ? (
                     <CardSubtitle>
-                      <strong>
-                        {t("registeredDate")}
-                        {formatDateTime(r.created_at)}
-                      </strong>
+                      {`${t("completionLanguage")} ${
+                        mapLangToLanguage[
+                          completion?.completion_language ?? ""
+                        ] ?? completion.completion_language
+                      }`}
                     </CardSubtitle>
-                    {r.organization ? (
-                      <CardSubtitle>
-                        {t("organization")}
-                        {r.organization.slug}
-                      </CardSubtitle>
-                    ) : null}
-                  </Column>
-                  <div
-                    style={{
-                      margin: "auto auto auto 0",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <DoneIcon style={{ color: "green" }} />
-                  </div>
-                </Row>
-              ))
-            : null}
-        </RegistrationColumn>
+                  ) : null}
+                  {notEmpty(completion.tier) && (
+                    <CardSubtitle>
+                      {`${t("completionTier")} ${t(
+                        `completionTier-${completion.tier as 1 | 2 | 3}`,
+                      )}`}
+                    </CardSubtitle>
+                  )}
+                  {notEmpty(completion?.grade) && (
+                    <CardSubtitle>
+                      {t("grade")} <strong>{completion.grade}</strong>
+                    </CardSubtitle>
+                  )}
+                  {isRegistered && completion.completions_registered
+                    ? completion.completions_registered?.map((r) => (
+                        <Column id={r.id}>
+                          <CardSubtitle display="flex" alignItems="flex-end">
+                            <strong>
+                              {t("registeredDate")}{" "}
+                              {formatDateTime(r.created_at)}
+                            </strong>
+                            <DoneIcon style={{ color: "green" }} />
+                          </CardSubtitle>
+                          {r.organization ? (
+                            <CardSubtitle>
+                              {r.organization.name ??
+                                `${t("organization")} ${r.organization.slug}`}
+                            </CardSubtitle>
+                          ) : null}
+                        </Column>
+                      ))
+                    : null}
+                </Column>
+              </Row>
+            </CompletionColumn>
+          </Row>
+        </Column>
         <ButtonColumn>
           {!isRegistered && completion.eligible_for_ects ? (
             <StyledButton
@@ -184,7 +179,11 @@ export const CompletionListItem = ({
             </StyledButton>
           ) : null}
           {hasCertificate && course ? (
-            <CertificateButton course={course} completion={completion} />
+            <CertificateButton
+              course={course}
+              completion={completion}
+              sx={{ width: "100%" }}
+            />
           ) : null}
         </ButtonColumn>
       </Row>

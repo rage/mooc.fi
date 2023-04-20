@@ -8,15 +8,10 @@ function AdminError() {
 
   return (
     <section>
-      <Typography
-        component="h1"
-        variant="h2"
-        gutterBottom={true}
-        align="center"
-      >
+      <Typography component="h1" variant="h2" gutterBottom align="center">
         {t("adminSorry")}
       </Typography>
-      <Typography variant="body1" gutterBottom={true} align="center">
+      <Typography variant="body1" gutterBottom align="center">
         {t("adminError")}
       </Typography>
     </section>

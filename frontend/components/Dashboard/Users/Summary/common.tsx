@@ -1,5 +1,8 @@
+import dynamic from "next/dist/shared/lib/dynamic"
+
+import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
-import { Paper, PaperProps, TableCell, TableRow } from "@mui/material"
+import { Paper, PaperProps, Skeleton, TableCell, TableRow } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 const iconStyle = css`
@@ -33,3 +36,35 @@ export const Spacer = styled("div")`
 `
 
 export const LinkIconComponent = () => <LinkIcon css={iconStyle} />
+
+export const MUIDataTable = dynamic(
+  () => import("mui-datatables").then((mod) => mod.default),
+  {
+    ssr: false,
+    loading: () => (
+      <>
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </>
+    ),
+  },
+)
+
+export const ExpandButton = dynamic(
+  () => import("mui-datatables").then((mod) => mod.ExpandButton),
+  {
+    loading: () => (
+      <div style={{ width: "24px" }}>
+        <Skeleton />
+      </div>
+    ),
+  },
+)
+
+export const ExpandButtonPlaceholder = styled("div")`
+  width: 24px;
+`
+
+export const renderCheck = (title: string) => (value: boolean) =>
+  value && <CheckIcon css={iconStyle} color="success" titleAccess={title} />

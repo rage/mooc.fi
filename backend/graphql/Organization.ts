@@ -50,6 +50,19 @@ export const Organization = objectType({
     t.model.organization_translations()
     t.model.user_organizations()
     t.model.verified_users()
+
+    t.field("name", {
+      type: "String",
+      resolve: async (organization, _, ctx) => {
+        const translation = await ctx.prisma.organizationTranslation.findFirst({
+          where: {
+            organization_id: organization.id,
+          },
+        })
+
+        return translation?.name ?? null
+      },
+    })
   },
 })
 

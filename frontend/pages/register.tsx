@@ -302,7 +302,7 @@ const Register = () => {
 
   return (
     <WideContainer>
-      <Header component="h1" variant="h2" gutterBottom={true} align="center">
+      <Header component="h1" variant="h2" gutterBottom align="center">
         {t("title")}
       </Header>
       <FormContainer maxWidth="md">
