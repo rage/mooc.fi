@@ -32,6 +32,8 @@
     "points": "Points",
     "completed": "Completed",
     "attempted": "Attempted",
+    "notCompleted": "Not completed",
+    "notAttempted": "Not attempted",
     "requiredActions": "Required actions",
     "submissionDate": "Submission date",
     "tier": "Tier",

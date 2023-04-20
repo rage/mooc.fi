@@ -55,6 +55,7 @@
     "lodash": "^4.17.21",
     "lqip-loader": "^2.2.1",
     "luxon": "^3.3.0",
+    "material-react-table": "^1.10.0",
     "material-ui-confirm": "^3.0.9",
     "module-resolver": "^1.0.0",
     "monaco-editor": "^0.37.1",

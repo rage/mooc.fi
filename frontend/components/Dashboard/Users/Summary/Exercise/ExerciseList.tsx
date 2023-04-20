@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react"
 
+import type { MRT_ColumnDef } from "material-react-table"
 import type {
   MUIDataTableColumn,
   MUIDataTableExpandButton,
@@ -8,15 +9,27 @@ import type {
 } from "mui-datatables"
 import { useRouter } from "next/router"
 
-import { TableCell, TableRow, Typography } from "@mui/material"
+import {
+  TableCell,
+  TableRow,
+  Theme,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
 
-import { ExerciseRow, renderRequiredActions } from "./common"
+import {
+  ExerciseRow,
+  renderCheck,
+  renderMobileCell,
+  renderMobileCheck,
+  renderMobileRequiredActions,
+  renderRequiredActions,
+} from "./common"
 import ExerciseInfo from "./ExerciseInfo"
 import {
   ExpandButton,
   ExpandButtonPlaceholder,
-  MUIDataTable,
-  renderCheck,
+  MaterialReactTable,
   SummaryCard,
 } from "/components/Dashboard/Users/Summary/common"
 import { useTranslator } from "/hooks/useTranslator"
@@ -72,82 +85,85 @@ const mapExerciseToRow =
 function ExerciseList({ exercises }: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
-  const columns = useMemo(
-    (): Array<MUIDataTableColumn> => [
-      {
-        name: "part",
-        label: t("part"),
-        options: {
-          display: false,
+  const columns = useMemo((): Array<MRT_ColumnDef<Partial<ExerciseRow>>> => {
+    if (!isMobile) {
+      return [
+        {
+          accessorKey: "partSection",
+          header: "#",
+          size: 30,
         },
-      },
-      {
-        name: "section",
-        label: t("section"),
-        options: {
-          display: false,
+        {
+          accessorKey: "name",
+          header: t("exercise"),
+          size: 160,
         },
-      },
-      {
-        name: "partSection",
-        label: t("partSection"),
-      },
-      {
-        name: "name",
-        label: t("exercise"),
-        options: {
-          setCellHeaderProps: () => ({ sx: { width: "15em" } }),
+        {
+          accessorKey: "points",
+          header: t("points"),
+          size: 50,
         },
-      },
-      {
-        name: "points",
-        label: t("points"),
-      },
-      {
-        name: "completed",
-        label: t("completed"),
-        options: {
-          customBodyRender: renderCheck(t("completed")),
-          setCellHeaderProps: () => ({ sx: { width: "4em" } }),
+        {
+          accessorKey: "completed",
+          header: t("completed"),
+          size: 40,
+          Cell: renderCheck(t("completed")),
         },
+        {
+          accessorKey: "attempted",
+          header: t("attempted"),
+          size: 40,
+          Cell: renderCheck(t("attempted")),
+        },
+        {
+          accessorKey: "exercise_completion_required_actions",
+          header: t("requiredActions"),
+          size: 100,
+          Cell: renderRequiredActions(t),
+        },
+      ]
+    }
+
+    console.log("isMobile", isMobile)
+    return [
+      {
+        accessorKey: "partSection",
+        header: t("partSection"),
+        Cell: renderMobileCell,
       },
       {
-        name: "attempted",
-        label: t("attempted"),
-        options: {
-          customBodyRender: renderCheck(t("attempted")),
-          setCellHeaderProps: () => ({ sx: { width: "4em" } }),
-        },
+        accessorKey: "name",
+        header: t("exercise"),
+        Cell: renderMobileCell,
       },
       {
-        name: "exercise_completion_required_actions",
-        label: t("requiredActions"),
-        options: {
-          customBodyRender: renderRequiredActions(t),
-        },
+        accessorKey: "points",
+        header: t("points"),
+        Cell: renderMobileCell,
       },
       {
-        name: "created_at",
-        label: t("createdAt"),
-        options: {
-          display: false,
-        },
+        accessorKey: "completed",
+        header: t("completed"),
+        Cell: renderMobileCheck(t("completed"), t("notCompleted")),
       },
       {
-        name: "timestamp",
-        label: t("timestamp"),
-        options: {
-          display: false,
-        },
+        accessorKey: "attempted",
+        header: t("attempted"),
+        Cell: renderMobileCheck(t("attempted"), t("notAttempted")),
       },
-    ],
-    [locale, t],
-  )
+      {
+        accessorKey: "exercise_completion_required_actions",
+        header: t("requiredActions"),
+        Cell: renderMobileRequiredActions(t),
+      },
+    ]
+  }, [locale, t, isMobile])
 
   const rows = useMemo(
     () => exercises.map(mapExerciseToRow(locale)),
-    [locale, exercises],
+    [locale, exercises, isMobile],
   )
 
   const options = useMemo(
@@ -198,12 +214,41 @@ function ExerciseList({ exercises }: ExerciseListProps) {
 
   return (
     <SummaryCard>
-      <MUIDataTable
-        title={<Typography variant="h3">{t("exercises")}</Typography>}
+      <MaterialReactTable
         data={rows}
         columns={columns}
-        options={options}
-        components={components}
+        layoutMode="grid"
+        enablePagination={false}
+        enableColumnActions={false}
+        muiTableProps={{
+          sx: {
+            tableLayout: "fixed",
+          },
+        }}
+        muiTableHeadProps={{
+          sx: {
+            ...(isMobile && { display: "none" }),
+          },
+        }}
+        muiTableBodyRowProps={{
+          sx: {
+            ...(isMobile && {
+              margin: "0.5rem",
+              flexDirection: "column",
+              border: "1px solid rgba(224, 224, 244, 1)",
+              borderRadius: "4px",
+            }),
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            ...(isMobile && {
+              width: "100%",
+              borderBottom: "none",
+              padding: "0.5rem",
+            }),
+          },
+        }}
       />
     </SummaryCard>
   )

@@ -1,11 +1,11 @@
+import { MRT_ColumnDef } from "material-react-table"
 import dynamic from "next/dist/shared/lib/dynamic"
 
-import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
 import { Paper, PaperProps, Skeleton, TableCell, TableRow } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
-const iconStyle = css`
+export const iconStyle = css`
   height: 1rem;
   transition: all 1s ease-ease-in-out;
 `
@@ -37,8 +37,19 @@ export const Spacer = styled("div")`
 
 export const LinkIconComponent = () => <LinkIcon css={iconStyle} />
 
-export const MUIDataTable = dynamic(
-  () => import("mui-datatables").then((mod) => mod.default),
+export const MUIDataTable = dynamic(() => import("mui-datatables"), {
+  ssr: false,
+  loading: () => (
+    <>
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </>
+  ),
+})
+
+export const MaterialReactTable = dynamic(
+  () => import("material-react-table"),
   {
     ssr: false,
     loading: () => (
@@ -50,7 +61,6 @@ export const MUIDataTable = dynamic(
     ),
   },
 )
-
 export const ExpandButton = dynamic(
   () => import("mui-datatables").then((mod) => mod.ExpandButton),
   {
@@ -65,6 +75,3 @@ export const ExpandButton = dynamic(
 export const ExpandButtonPlaceholder = styled("div")`
   width: 24px;
 `
-
-export const renderCheck = (title: string) => (value: boolean) =>
-  value && <CheckIcon css={iconStyle} color="success" titleAccess={title} />

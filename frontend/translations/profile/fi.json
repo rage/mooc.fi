@@ -32,6 +32,8 @@
     "points": "Pisteet",
     "completed": "Suoritettu",
     "attempted": "Yritetty",
+    "notCompleted": "Ei suoritettu",
+    "notAttempted": "Ei yritetty",
     "requiredActions": "Vaaditut toimenpiteet",
     "submissionDate": "Palautuksen pvm",
     "tier": "Taso",
