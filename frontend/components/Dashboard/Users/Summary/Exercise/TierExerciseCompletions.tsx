@@ -1,16 +1,11 @@
-import {
-  Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material"
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 
 import "mui-datatables"
 
-import { renderCheck } from "../common"
-import { renderRequiredActions, TierExerciseCompletionRow } from "./common"
+import {
+  /*renderCheck, renderRequiredActions, */
+  TierExerciseCompletionRow,
+} from "./common"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
@@ -60,12 +55,12 @@ const TierExerciseCompletions = ({
               {ec.points}
             </TableCell>
             <TableCell>
-              {renderCheck(t("completed"))(ec.completed ?? false)}
+              {/*renderCheck(t("completed"))(ec.completed ?? false)*/}
             </TableCell>
             <TableCell>
-              {renderRequiredActions(t)(
+              {/*renderRequiredActions(t)(
                 ec.exercise_completion_required_actions,
-              )}
+              )*/}
             </TableCell>
           </TableRow>
         ))}

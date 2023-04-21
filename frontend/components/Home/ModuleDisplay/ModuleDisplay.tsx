@@ -10,11 +10,16 @@ import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplayS
 
 import {
   CourseStatus,
-  StudyModuleFieldsWithCoursesFragment,
+  FrontpageCourseFieldsFragment,
+  StudyModuleFieldsFragment,
 } from "/graphql/generated"
 
+type StudyModuleWithFrontpageCourse = StudyModuleFieldsFragment & {
+  courses: Array<FrontpageCourseFieldsFragment>
+}
+
 interface ModuleProps {
-  studyModule?: StudyModuleFieldsWithCoursesFragment
+  studyModule?: StudyModuleWithFrontpageCourse
   hueRotateAngle: number
   brightness: number
   backgroundColor: string

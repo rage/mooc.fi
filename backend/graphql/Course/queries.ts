@@ -48,15 +48,6 @@ export const CourseQueries = extendType({
                   language,
                 },
               },
-              tags: {
-                where: {
-                  tag_translations: {
-                    some: {
-                      language,
-                    },
-                  },
-                },
-              },
             }),
           },
         }

@@ -178,31 +178,37 @@ function RegisterCompletionPage() {
           res.json().then((json: any) => setInstructions(json))
         })
 
-      fetch(`${BASE_URL}/api/completionTiers/${courseSlug}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        signal: controller?.signal,
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json()
-          }
-          return Promise.reject(res)
-        })
-        .then((json) => {
-          setTiers(json.tierData)
-        })
-        .catch(() => {
-          /* Do nothing */
-        })
-
-      return () => {
-        controller?.abort()
-      }
+      return () => controller.abort()
     }
-  }, [locale])
+  }, [courseSlug, locale])
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    fetch(`${BASE_URL}/api/completionTiers/${courseSlug}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      signal: controller?.signal,
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+        return Promise.reject(res)
+      })
+      .then((json) => {
+        setTiers(json.tierData)
+      })
+      .catch(() => {
+        /* Do nothing */
+      })
+
+    return () => {
+      controller?.abort()
+    }
+  }, [courseSlug])
 
   useBreadcrumbs([
     {

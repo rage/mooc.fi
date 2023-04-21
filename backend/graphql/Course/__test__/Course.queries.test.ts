@@ -370,6 +370,8 @@ const fullCourseQuery = gql`
       }
       study_modules {
         id
+        slug
+        name
       }
       course_variants {
         id
@@ -382,9 +384,13 @@ const fullCourseQuery = gql`
       }
       inherit_settings_from {
         id
+        slug
+        name
       }
       completions_handled_by {
         id
+        slug
+        name
       }
       has_certificate
       user_course_settings_visibilities {
@@ -456,6 +462,7 @@ const coursesQuery = gql`
       study_modules {
         id
         slug
+        name
       }
       course_translations {
         id
@@ -487,8 +494,12 @@ const handlerCoursesQuery = gql`
   query handlerCourses {
     handlerCourses {
       id
+      slug
+      name
       handles_completions_for {
         id
+        slug
+        name
       }
     }
   }

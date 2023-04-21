@@ -282,20 +282,34 @@ export const User = objectType({
       args: {
         course_id: idArg(),
         includeDeleted: booleanArg(),
+        completed: booleanArg(),
       },
-      resolve: async (parent, { course_id, includeDeleted = false }, ctx) => {
+      resolve: async (
+        parent,
+        { course_id, includeDeleted = false, completed },
+        ctx,
+      ) => {
+        let exerciseWhere: Prisma.ExerciseWhereInput | undefined
+
+        if (!includeDeleted || completed) {
+          exerciseWhere = {
+            ...(!includeDeleted && {
+              // same here: { deleted: { not: true } } will skip null
+              OR: [{ deleted: false }, { deleted: null }],
+            }),
+            ...(completed && {
+              completed: true,
+            }),
+          }
+        }
+
         if (course_id) {
           const data = await ctx.prisma.course
             .findUnique({
               where: { id: course_id },
             })
             .exercises({
-              ...(!includeDeleted && {
-                where: {
-                  // same here: { deleted: { not: true } } will skip null
-                  OR: [{ deleted: false }, { deleted: null }],
-                },
-              }),
+              where: exerciseWhere,
               select: {
                 exercise_completions: {
                   where: {
@@ -316,9 +330,8 @@ export const User = objectType({
           })
           .exercise_completions({
             where: {
-              ...(!includeDeleted && {
-                // same here: { deleted: { not: true } } will skip null
-                exercise: { OR: [{ deleted: false }, { deleted: null }] },
+              ...(exerciseWhere && {
+                exercise: exerciseWhere,
               }),
             },
             distinct: "exercise_id",
@@ -405,7 +418,8 @@ export const User = objectType({
                   from exercise_completion ec
                   join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${id}
-          )
+              and ec.attempted = true
+          );
         `)
 
         // divide courses into three groups:

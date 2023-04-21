@@ -1,21 +1,9 @@
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 
 import type { MRT_ColumnDef } from "material-react-table"
-import type {
-  MUIDataTableColumn,
-  MUIDataTableExpandButton,
-  MUIDataTableOptions,
-  MUIDataTableProps,
-} from "mui-datatables"
 import { useRouter } from "next/router"
 
-import {
-  TableCell,
-  TableRow,
-  Theme,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Theme, useMediaQuery } from "@mui/material"
 
 import {
   ExerciseRow,
@@ -25,18 +13,13 @@ import {
   renderMobileRequiredActions,
   renderRequiredActions,
 } from "./common"
-import ExerciseInfo from "./ExerciseInfo"
 import {
-  ExpandButton,
-  ExpandButtonPlaceholder,
   MaterialReactTable,
   SummaryCard,
 } from "/components/Dashboard/Users/Summary/common"
 import { useTranslator } from "/hooks/useTranslator"
-import { Translator } from "/translations"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
-import notEmpty from "/util/notEmpty"
 
 import {
   ExerciseCompletionCoreFieldsFragment,
@@ -166,7 +149,7 @@ function ExerciseList({ exercises }: ExerciseListProps) {
     [locale, exercises, isMobile],
   )
 
-  const options = useMemo(
+  /*const options = useMemo(
     (): MUIDataTableOptions => ({
       expandableRows: true,
       pagination: false,
@@ -190,9 +173,9 @@ function ExerciseList({ exercises }: ExerciseListProps) {
       },
     }),
     [rows],
-  )
+  )*/
 
-  const ConditionalExpandButton = useCallback(
+  /*const ConditionalExpandButton = useCallback(
     (props: MUIDataTableExpandButton) => {
       if (
         !notEmpty(props.dataIndex) ||
@@ -210,7 +193,7 @@ function ExerciseList({ exercises }: ExerciseListProps) {
       ExpandButton: ConditionalExpandButton,
     }),
     [ConditionalExpandButton],
-  )
+  )*/
 
   return (
     <SummaryCard>

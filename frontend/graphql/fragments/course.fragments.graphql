@@ -1,6 +1,11 @@
-fragment CourseCoreFields on Course {
+fragment CourseKeyFields on Course {
   id
   slug
+  name
+}
+
+fragment CourseCoreFields on Course {
+  ...CourseKeyFields
   name
   ects
   language
@@ -31,7 +36,7 @@ fragment CourseTranslationDetailedFields on CourseTranslation {
   updated_at
 }
 
-fragment CourseFields on Course {
+fragment FrontpageCourseFields on Course {
   ...CourseWithPhotoCoreFields
   description
   link
@@ -50,11 +55,15 @@ fragment CourseFields on Course {
   start_date
   end_date
   has_certificate
-  course_translations {
-    ...CourseTranslationCoreFields
-  }
   study_modules {
     ...StudyModuleCoreFields
+  }
+}
+
+fragment CourseFields on Course {
+  ...FrontpageCourseFields
+  course_translations {
+    ...CourseTranslationCoreFields
   }
   tags {
     ...TagCoreFields
@@ -92,7 +101,7 @@ fragment EditorCourseDetailedFields on Course {
     ...OpenUniversityRegistrationLinkCoreFields
   }
   inherit_settings_from {
-    id
+    ...CourseKeyFields
   }
   automatic_completions
   automatic_completions_eligible_for_ects

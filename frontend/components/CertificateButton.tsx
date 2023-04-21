@@ -5,6 +5,7 @@ import { LinkProps } from "next/link"
 import WarningIcon from "@mui/icons-material/Warning"
 import {
   Button,
+  ButtonProps,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -34,7 +35,7 @@ const StyledButton = styled(Button)`
   background-color: #005361;
   text-align: center;
   max-width: 20vw;
-`
+` as typeof Button
 
 const StyledDialog = styled(Dialog)`
   padding: 1rem;

@@ -124,7 +124,8 @@ export class AtLeastOneExerciseCount extends Template {
               COUNT(DISTINCT user_id)
             FROM exercise_completion ec
             JOIN exercise e ON ec.exercise_id = e.id
-            WHERE course_id = ${course.id};
+            WHERE course_id = ${course.id}
+            AND attempted = true;
           `
         )?.[0]?.count
 
@@ -187,6 +188,8 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
               JOIN "user" u ON ec.user_id = u.id
               WHERE 
                 e.course_id = ${course.id} 
+              AND
+                ec.attempted = true
               AND
                 u.id NOT IN (
                   SELECT DISTINCT(user_id)

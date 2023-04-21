@@ -1,4 +1,3 @@
-import { MRT_ColumnDef } from "material-react-table"
 import dynamic from "next/dist/shared/lib/dynamic"
 
 import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
