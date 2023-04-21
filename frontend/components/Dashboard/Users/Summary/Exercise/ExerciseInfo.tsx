@@ -17,6 +17,7 @@ const ExerciseInfoContent = styled("div")`
   justify-content: space-between;
   padding: 1rem;
   gap: 2rem;
+  margin: auto;
 `
 
 const ExerciseInfo = ({ exercise }: ExerciseInfoProps) => {

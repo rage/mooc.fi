@@ -13,7 +13,7 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { styled, Theme } from "@mui/material/styles"
 
 import Container from "/components/Container"
 import CollapseContext, {
@@ -74,7 +74,7 @@ const RightToolbarContainer = styled("div")`
 `
 
 function UserSummaryView() {
-  const isNarrow = useMediaQuery("(max-width: 800px)")
+  const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
   const t = useTranslator(
     UsersTranslations,
@@ -111,12 +111,12 @@ function UserSummaryView() {
 
     if (slug) {
       const entry = data?.user?.user_course_summary?.find(
-        ({ course }) => course.slug === slug,
+        ({ course }) => course?.slug === slug,
       )
       const isInvalid = !loading && data && !entry
       if (!isInvalid) {
         crumbs.push({
-          label: entry?.course.name,
+          label: entry?.course?.name,
           href: `/users/${id}/summary/${slug}`,
         })
       }
@@ -143,17 +143,28 @@ function UserSummaryView() {
     initialSort: _sort,
     initialOrder: _order,
     search: searchVariables.search,
+    loading,
+    error,
   })
 
   useEffect(() => {
-    if (loading) {
-      return
-    }
     dispatch({
       type: ActionType.INIT_STATE,
-      state: createCollapseState(data?.user?.user_course_summary ?? []),
+      state: createCollapseState(
+        data?.user?.user_course_summary ?? [],
+        loading,
+      ),
     })
   }, [data, loading])
+
+  const selectedData = useMemo(() => {
+    if (selected) {
+      return userPointsSummaryContextValue?.data.find(
+        (entry) => entry.course?.slug === selected,
+      ) // ?? userPointsSummaryContextValue?.data?.[0]
+    }
+    return userPointsSummaryContextValue?.data?.[0]
+  }, [userPointsSummaryContextValue, selected])
 
   const onSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -186,8 +197,9 @@ function UserSummaryView() {
     () => ({
       selected,
       setSelected,
+      selectedData,
     }),
-    [selected, setSelected],
+    [selected, setSelected, selectedData],
   )
 
   const onUserSearchChange = useCallback(
@@ -267,7 +279,7 @@ function UserSummaryView() {
                   </RightToolbarContainer>
                 </ToolbarContainer>
               </SearchContainer>
-              <UserPointsSummary loading={loading || state.loading} />
+              <UserPointsSummary />
             </UserPointsSummarySelectedCourseContext.Provider>
           </UserPointsSummaryContext.Provider>
         </CollapseContext.Provider>

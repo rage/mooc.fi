@@ -1,18 +1,33 @@
-import { useMemo } from "react"
+import { ReactNode, useCallback, useMemo } from "react"
 
-import type { MRT_ColumnDef } from "material-react-table"
+import { sortBy } from "lodash"
+import type {
+  MaterialReactTableProps,
+  MRT_ColumnDef,
+  MRT_Row,
+  MRT_TableInstance,
+} from "material-react-table"
 import { useRouter } from "next/router"
 
-import { Theme, useMediaQuery } from "@mui/material"
+import {
+  IconButtonProps,
+  Theme,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
 
+import { useUserPointsSummaryContext } from "../UserPointsSummaryContext"
+import { useUserPointsSummarySelectedCourseContext } from "../UserPointsSummarySelectedCourseContext"
 import {
   ExerciseRow,
   renderCheck,
-  renderMobileCell,
-  renderMobileCheck,
-  renderMobileRequiredActions,
+  renderNarrowCell,
+  renderNarrowCheck,
+  renderNarrowRequiredActions,
   renderRequiredActions,
+  useExerciseListProps,
 } from "./common"
+import ExerciseInfo from "./ExerciseInfo"
 import {
   MaterialReactTable,
   SummaryCard,
@@ -65,13 +80,29 @@ const mapExerciseToRow =
     }
   }
 
-function ExerciseList({ exercises }: ExerciseListProps) {
+function ExerciseList() {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+  const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+  const { selectedData: data } = useUserPointsSummarySelectedCourseContext()
+  const { loading } = useUserPointsSummaryContext()
 
-  const columns = useMemo((): Array<MRT_ColumnDef<Partial<ExerciseRow>>> => {
-    if (!isMobile) {
+  const exercises = useMemo(
+    () =>
+      sortBy(
+        (data?.course?.exercises ?? []).map((exercise) => ({
+          ...exercise,
+          exercise_completions: (data?.exercise_completions ?? []).filter(
+            (ec) => ec?.exercise_id === exercise.id,
+          ),
+        })),
+        ["part", "section", "name"],
+      ),
+    [data],
+  )
+
+  const columns = useMemo((): Array<MRT_ColumnDef<ExerciseRow>> => {
+    if (!isNarrow) {
       return [
         {
           accessorKey: "partSection",
@@ -89,64 +120,71 @@ function ExerciseList({ exercises }: ExerciseListProps) {
           size: 50,
         },
         {
+          id: "status",
           accessorKey: "completed",
-          header: t("completed"),
-          size: 40,
+          header: "kissa",
           Cell: renderCheck(t("completed")),
-        },
-        {
-          accessorKey: "attempted",
-          header: t("attempted"),
-          size: 40,
-          Cell: renderCheck(t("attempted")),
-        },
-        {
-          accessorKey: "exercise_completion_required_actions",
-          header: t("requiredActions"),
-          size: 100,
-          Cell: renderRequiredActions(t),
+          columns: [
+            {
+              accessorKey: "completed",
+              header: t("completed"),
+              size: 40,
+              Cell: renderCheck(t("completed")),
+            },
+            {
+              accessorKey: "attempted",
+              header: t("attempted"),
+              size: 40,
+              Cell: renderCheck(t("attempted")),
+            },
+            {
+              accessorKey: "exercise_completion_required_actions",
+              header: t("requiredActions"),
+              size: 100,
+              Cell: renderRequiredActions(t),
+            },
+          ],
         },
       ]
     }
 
-    console.log("isMobile", isMobile)
     return [
       {
         accessorKey: "partSection",
         header: t("partSection"),
-        Cell: renderMobileCell,
+        Cell: renderNarrowCell,
       },
       {
         accessorKey: "name",
         header: t("exercise"),
-        Cell: renderMobileCell,
+        Cell: renderNarrowCell,
       },
       {
         accessorKey: "points",
         header: t("points"),
-        Cell: renderMobileCell,
+        Cell: renderNarrowCell,
       },
       {
         accessorKey: "completed",
         header: t("completed"),
-        Cell: renderMobileCheck(t("completed"), t("notCompleted")),
+        Cell: renderNarrowCheck(t("completed"), t("notCompleted")),
       },
       {
         accessorKey: "attempted",
         header: t("attempted"),
-        Cell: renderMobileCheck(t("attempted"), t("notAttempted")),
+        Cell: renderNarrowCheck(t("attempted"), t("notAttempted")),
       },
       {
         accessorKey: "exercise_completion_required_actions",
         header: t("requiredActions"),
-        Cell: renderMobileRequiredActions(t),
+        Cell: renderNarrowRequiredActions(t),
       },
     ]
-  }, [locale, t, isMobile])
+  }, [locale, t, isNarrow])
 
-  const rows = useMemo(
+  const rows: Array<ExerciseRow> = useMemo(
     () => exercises.map(mapExerciseToRow(locale)),
-    [locale, exercises, isMobile],
+    [locale, exercises, isNarrow],
   )
 
   /*const options = useMemo(
@@ -195,42 +233,42 @@ function ExerciseList({ exercises }: ExerciseListProps) {
     [ConditionalExpandButton],
   )*/
 
+  const getExpandButtonProps = useCallback(
+    ({ row }: { row: MRT_Row<ExerciseRow> }) =>
+      isNarrow || (row.original.exercise_completions ?? []).length === 0
+        ? {
+            sx: {
+              display: "none",
+            },
+          }
+        : {},
+    [isNarrow],
+  )
+
+  const renderExerciseInfo = useCallback(
+    ({ row }: { row: MRT_Row<ExerciseRow> }) =>
+      !isNarrow ? <ExerciseInfo exercise={row.original} /> : undefined,
+    [isNarrow],
+  )
+
+  const title = useCallback(
+    () => <Typography variant="h3">{t("exercises")}</Typography>,
+    [t],
+  )
+
+  const tableProps = useExerciseListProps<ExerciseRow>()
+
   return (
-    <SummaryCard>
-      <MaterialReactTable
+    <SummaryCard sx={{ padding: "0.5rem" }}>
+      <MaterialReactTable<ExerciseRow>
+        {...tableProps}
         data={rows}
         columns={columns}
-        layoutMode="grid"
-        enablePagination={false}
-        enableColumnActions={false}
-        muiTableProps={{
-          sx: {
-            tableLayout: "fixed",
-          },
-        }}
-        muiTableHeadProps={{
-          sx: {
-            ...(isMobile && { display: "none" }),
-          },
-        }}
-        muiTableBodyRowProps={{
-          sx: {
-            ...(isMobile && {
-              margin: "0.5rem",
-              flexDirection: "column",
-              border: "1px solid rgba(224, 224, 244, 1)",
-              borderRadius: "4px",
-            }),
-          },
-        }}
-        muiTableBodyCellProps={{
-          sx: {
-            ...(isMobile && {
-              width: "100%",
-              borderBottom: "none",
-              padding: "0.5rem",
-            }),
-          },
+        renderTopToolbarCustomActions={title}
+        muiExpandButtonProps={getExpandButtonProps}
+        renderDetailPanel={renderExerciseInfo}
+        state={{
+          isLoading: loading,
         }}
       />
     </SummaryCard>

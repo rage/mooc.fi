@@ -1,10 +1,14 @@
 import { createContext, useContext } from "react"
 
-import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
+import {
+  UserCourseSummaryCoreFieldsFragment,
+  UserCourseSummaryCourseFieldsFragment,
+} from "/graphql/generated"
 
 interface UserPointsSummarySelectedCourseContext {
-  selected: UserCourseSummaryCourseFieldsFragment["id"]
-  setSelected: (id: UserCourseSummaryCourseFieldsFragment["slug"]) => void
+  selected: UserCourseSummaryCourseFieldsFragment["slug"]
+  setSelected: (slug: UserCourseSummaryCourseFieldsFragment["slug"]) => void
+  selectedData?: UserCourseSummaryCoreFieldsFragment
 }
 
 const UserPointsSummarySelectedCourseContextImpl =

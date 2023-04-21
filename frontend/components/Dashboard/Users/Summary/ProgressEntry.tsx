@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react"
+import React, { PropsWithChildren, useCallback, useMemo } from "react"
 
-import { Collapse, Typography } from "@mui/material"
+import { Collapse, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -10,7 +10,9 @@ import {
 } from "./CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
-import PointsProgress from "/components/Dashboard/PointsProgress"
+import PointsProgress, {
+  PointsProgressSkeleton,
+} from "/components/Dashboard/PointsProgress"
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -42,6 +44,16 @@ const TitleContainer = styled("div")`
   display: flex;
   justify-content: space-between;
 `
+
+const ProgressEntryTitle = ({ children }: PropsWithChildren) => {
+  const t = useTranslator(ProfileTranslations)
+  return (
+    <TitleContainer>
+      <Typography variant="h3">{t("progress")}</Typography>
+      {children}
+    </TitleContainer>
+  )
+}
 
 function ProgressEntry({
   course,
@@ -143,14 +155,13 @@ function ProgressEntry({
 
   return (
     <ProgressEntryCard>
-      <TitleContainer>
-        <Typography variant="h3">{t("progress")}</Typography>
+      <ProgressEntryTitle>
         <CollapseButton
           open={isOpen}
           onClick={onCollapseClick}
           tooltip={t("progressCollapseTooltip")}
         />
-      </TitleContainer>
+      </ProgressEntryTitle>
       <ProgressContainer>
         <PointsProgress
           {...totalProgress}
@@ -183,5 +194,15 @@ function ProgressEntry({
     </ProgressEntryCard>
   )
 }
+
+export const ProgressEntrySkeleton = () => (
+  <ProgressEntryCard>
+    <ProgressEntryTitle />
+    <ProgressContainer>
+      <PointsProgressSkeleton />
+      <PointsProgressSkeleton />
+    </ProgressContainer>
+  </ProgressEntryCard>
+)
 
 export default ProgressEntry

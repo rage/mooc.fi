@@ -8,7 +8,7 @@ import React, {
 
 import { orderBy } from "lodash"
 
-import { Typography, useMediaQuery } from "@mui/material"
+import { Skeleton, Typography, useMediaQuery } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
 
 import { CardSubtitle } from "/components/Text/headers"
@@ -340,5 +340,16 @@ const PointsProgress = ({
     </PointsProgressContainer>
   )
 }
+
+export const PointsProgressSkeleton = () => (
+  <PointsProgressContainer>
+    <PointsProgressTitle component="h3" variant="body1">
+      <Skeleton variant="text" width="100px" />
+    </PointsProgressTitle>
+    <ChartContainer>
+      <Skeleton width="85%" height="4rem" />
+    </ChartContainer>
+  </PointsProgressContainer>
+)
 
 export default PointsProgress

@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 
 import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
 import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
@@ -18,13 +18,9 @@ import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
+import notEmpty from "/util/notEmpty"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
-
-interface CourseSelectListProps {
-  loading?: boolean
-  selected?: UserCourseSummaryCourseFieldsFragment["slug"]
-}
 
 const Container = styled("div")`
   width: 30vw;
@@ -78,7 +74,7 @@ const ListToolbar = styled("div")`
   padding: 0.5rem;
 `
 
-const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
+const CourseSelectList = () => {
   const t = useTranslator(ProfileTranslations)
   const {
     data,
@@ -87,8 +83,9 @@ const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
     onCourseSortChange,
     onSortOrderToggle,
     sortOptions,
+    loading,
   } = useUserPointsSummaryContext()
-  const { setSelected } = useUserPointsSummarySelectedCourseContext()
+  const { selected, setSelected } = useUserPointsSummarySelectedCourseContext()
 
   const handleListItemClick = useCallback(
     (slug: UserCourseSummaryCourseFieldsFragment["slug"]) => () => {
@@ -107,6 +104,7 @@ const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
           label={t("courseSortOrder")}
           onChange={onCourseSortChange}
           size="small"
+          disabled={!loading && data?.length === 0}
         >
           {sortOptions.map((o) => (
             <MenuItem key={o.value} value={o.value}>
@@ -117,6 +115,7 @@ const CourseSelectList = ({ selected, loading }: CourseSelectListProps) => {
         <IconButton
           onClick={onSortOrderToggle}
           title={order === "asc" ? t("orderAscending") : t("orderDescending")}
+          disabled={!loading && data?.length === 0}
         >
           {order === "desc" ? (
             <ReverseOrderIcon fontSize="small" />

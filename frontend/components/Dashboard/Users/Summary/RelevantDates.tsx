@@ -1,7 +1,7 @@
 import { max, min } from "lodash"
 
 import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
-import { CardContent, Tooltip, Typography } from "@mui/material"
+import { CardContent, Skeleton, Tooltip, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
@@ -72,7 +72,7 @@ function RelevantDates({ data }: RelevantDatesProps) {
 
   return (
     <RelevantDatesCard>
-      <RelevantDatesCardContent sx={{ width: "100%" }}>
+      <RelevantDatesCardContent>
         {(isRootCourse || isTieredCourse) && !hasTier && (
           <Typography variant="h4">
             {t("courseStartDate")} <strong>{formatDateTime(startDate)}</strong>
@@ -101,5 +101,21 @@ function RelevantDates({ data }: RelevantDatesProps) {
     </RelevantDatesCard>
   )
 }
+
+export const RelevantDatesSkeleton = () => (
+  <RelevantDatesCard>
+    <RelevantDatesCardContent>
+      <Typography variant="h4">
+        <Skeleton variant="text" width="120px" />
+      </Typography>
+      <Typography variant="h4">
+        <Skeleton variant="text" width="110px" />
+      </Typography>
+      <Typography variant="h4">
+        <Skeleton variant="text" width="130px" />
+      </Typography>
+    </RelevantDatesCardContent>
+  </RelevantDatesCard>
+)
 
 export default RelevantDates

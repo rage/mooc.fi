@@ -85,5 +85,6 @@
     "orderAscending": "Ascending",
     "orderDescending": "Descending",
     "pointsRequired": "required",
-    "selectedCourse": "Selected course"
+    "selectedCourse": "Selected course",
+    "noCourseFound": "No course found. Are you sure you have the right link?"
 }

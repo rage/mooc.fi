@@ -1,9 +1,10 @@
 import { useMemo } from "react"
 
-import { useMediaQuery } from "@mui/material"
+import { Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { CourseEntry, SkeletonCourseEntry } from "./Course"
+import { useCollapseContext } from "./CollapseContext"
+import { CourseEntry, CourseEntrySkeleton } from "./Course"
 import CourseSelectList from "./CourseSelectList"
 import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
 import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
@@ -20,40 +21,24 @@ const UserPointsSummaryContainer = styled("div")`
   flex-direction: row;
   gap: 1rem;
 `
-interface UserPointsSummaryProps {
-  loading?: boolean
-}
 
-function UserPointsSummary({ loading }: UserPointsSummaryProps) {
-  const { data } = useUserPointsSummaryContext()
-  const { selected } = useUserPointsSummarySelectedCourseContext()
-
+function UserPointsSummary() {
+  const { data, loading } = useUserPointsSummaryContext()
+  const { state } = useCollapseContext()
   const isNarrow = useMediaQuery("(max-width: 800px)")
   const t = useTranslator(CommonTranslations)
 
-  const selectedCourseData = useMemo(
-    () =>
-      selected
-        ? data?.find((entry) => entry.course?.slug === selected) ?? data?.[0]
-        : data?.[0],
-    [data, selected],
-  )
-
   return (
     <UserPointsSummaryContainer>
-      {!isNarrow && (
-        <CourseSelectList
-          selected={selectedCourseData?.course?.slug}
-          loading={loading}
-        />
-      )}
-      {!loading && data?.length === 0 && (
-        <DataPlaceholder>{t("noResults")}</DataPlaceholder>
-      )}
-      {loading ? (
-        <SkeletonCourseEntry />
+      {!isNarrow && <CourseSelectList />}
+      {loading || state.loading ? (
+        <CourseEntrySkeleton />
+      ) : data?.length === 0 ? (
+        <Typography variant="h3" margin="0.5rem" p="0.5rem">
+          {t("noResults")}
+        </Typography>
       ) : (
-        selectedCourseData && <CourseEntry data={selectedCourseData} />
+        <CourseEntry />
       )}
       {/*filteredData.map((entry, index) => (
             <CourseEntry key={entry.course?.id ?? index} data={entry} />

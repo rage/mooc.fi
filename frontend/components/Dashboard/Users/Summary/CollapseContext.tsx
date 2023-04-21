@@ -195,13 +195,13 @@ const createCoursesState = (
     | UserCourseSummaryCoreFieldsFragment
     | UserTierCourseSummaryCoreFieldsFragment
   >,
-  open = true,
+  options?: { open?: boolean },
 ) =>
   data?.reduce<CollapseState["courses"]>(
     (collapseState, courseEntry) => ({
       ...collapseState,
       [courseEntry?.course?.id ?? "_"]: {
-        open,
+        open: options?.open ?? true,
         exercises:
           courseEntry?.exercise_completions?.reduce<ExerciseState>(
             (exerciseState, exerciseCompletion) => ({
@@ -219,15 +219,15 @@ const createCoursesState = (
 
 export const createCollapseState = (
   data?: UserCourseSummaryCoreFieldsFragment[],
+  loading?: boolean,
 ) => ({
   courses: {
     ...createCoursesState(data ?? []),
-    ...createCoursesState(
-      data?.flatMap((d) => d?.tier_summaries ?? []) ?? [],
-      false,
-    ),
+    ...createCoursesState(data?.flatMap((d) => d?.tier_summaries ?? []) ?? [], {
+      open: false,
+    }),
   },
-  loading: false,
+  loading: loading ?? true,
 })
 
 const CollapseContextImpl = createContext<CollapseContext>({

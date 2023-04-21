@@ -19,6 +19,7 @@ const createExerciseCompletion = (exercise: Exercise) => ({
   n_points: Math.round(Math.random() * (exercise.max_points ?? 0)),
   timestamp: new Date(),
   completed: Math.random() * 5 < 2 ? false : true,
+  attempted: true,
 })
 
 const addExercises = async () => {

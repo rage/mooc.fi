@@ -2,64 +2,57 @@ import React, { useMemo } from "react"
 
 import { sortBy } from "lodash"
 
-import { CardContent, Paper, Skeleton } from "@mui/material"
+import { CardContent, Paper, Skeleton, Typography } from "@mui/material"
 
-import Completion from "../Completion"
+import Completion, { CompletionSkeleton } from "../Completion"
 import ExerciseList from "../Exercise/ExerciseList"
 import TierExerciseList from "../Exercise/TierExerciseList"
-import ProgressEntry from "../ProgressEntry"
-import RelevantDates from "../RelevantDates"
+import ProgressEntry, { ProgressEntrySkeleton } from "../ProgressEntry"
+import RelevantDates, { RelevantDatesSkeleton } from "../RelevantDates"
 import TotalProgressEntry from "../TotalProgressEntry"
-import { CourseEntryCard, CourseEntryCardBase } from "./common"
+import { useUserPointsSummarySelectedCourseContext } from "../UserPointsSummarySelectedCourseContext"
+import {
+  CourseEntryCard,
+  CourseEntryCardBase,
+  CourseEntryCardTitle,
+  CourseEntryCardTitleWrapper,
+} from "./common"
 import { CourseTierEntry } from "./CourseTierEntry"
-import { CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
+import ProfileTranslations from "/translations/profile"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
-
-interface CourseEntryProps {
-  data: UserCourseSummaryCoreFieldsFragment
-}
-
-const CourseEntryPartSkeleton = () => (
-  <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
-    <Skeleton />
-  </Paper>
-)
-
-export const SkeletonCourseEntry = () => (
+export const CourseEntrySkeleton = () => (
   <CourseEntryCardBase>
-    <CardTitle>
-      <Skeleton />
-    </CardTitle>
+    <CourseEntryCardTitleWrapper>
+      <CourseEntryCardTitle variant="h3">
+        <Skeleton variant="text" width="200px" />
+      </CourseEntryCardTitle>
+    </CourseEntryCardTitleWrapper>
     <CardContent>
-      <CourseEntryPartSkeleton />
+      <RelevantDatesSkeleton />
+      <ProgressEntrySkeleton />
+      <ExerciseList />
     </CardContent>
   </CourseEntryCardBase>
 )
 
-export function CourseEntry({ data }: CourseEntryProps) {
+export function CourseEntry() {
+  const t = useTranslator(ProfileTranslations)
+  const { selectedData: data } = useUserPointsSummarySelectedCourseContext()
+
   const hasTierSummaries = useMemo(
-    () => (data.tier_summaries?.length ?? 0) > 0,
+    () => (data?.tier_summaries?.length ?? 0) > 0,
     [data],
   )
 
-  // TODO: subheaders for parts?
-  const exercisesWithCompletions = useMemo(
-    () =>
-      sortBy(
-        (data?.course.exercises ?? []).map((exercise) => ({
-          ...exercise,
-          exercise_completions: (data?.exercise_completions ?? []).filter(
-            (ec) => ec?.exercise_id === exercise.id,
-          ),
-        })),
-        ["part", "section", "name"],
-      ),
-    [data],
-  )
-
-  if (!data.course) {
-    return null
+  if (!data?.course) {
+    return (
+      <CourseEntryCardBase elevation={0}>
+        <Typography variant="subtitle1" p="0.5rem">
+          {t("noCourseFound")}
+        </Typography>
+      </CourseEntryCardBase>
+    )
   }
 
   return (
@@ -103,10 +96,7 @@ export function CourseEntry({ data }: CourseEntryProps) {
             userCourseProgress={data.user_course_progress}
             userCourseServiceProgresses={data.user_course_service_progresses}
           />
-          <ExerciseList
-            key={`${data.course.id}-exercise-list`}
-            exercises={exercisesWithCompletions}
-          />
+          <ExerciseList key={`${data.course.id}-exercise-list`} />
         </>
       )}
     </CourseEntryCard>

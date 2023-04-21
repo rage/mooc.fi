@@ -1,4 +1,6 @@
-import { createContext, useContext } from "react"
+import { createContext, useContext, useMemo } from "react"
+
+import { ApolloError } from "@apollo/client"
 
 import { SortOrder, UserCourseSummarySort } from "./types"
 
@@ -11,6 +13,8 @@ export interface UserPointsSummaryContext {
   onSortOrderToggle: () => void
   onCourseSortChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   sortOptions: Array<{ value: UserCourseSummarySort; label: string }>
+  loading?: boolean
+  error?: ApolloError
 }
 
 const UserPointsSummaryContextImpl = createContext<UserPointsSummaryContext>({
@@ -32,8 +36,20 @@ export function useUserPointsSummaryContext() {
   return useContext(UserPointsSummaryContextImpl)
 }
 
-export function useUserPointsSummaryContextCourse(courseId: string) {
+export function useUserPointsSummaryContextCourseById(courseId: string) {
   const { data } = useUserPointsSummaryContext()
 
-  return data.find((course) => course.course?.id === courseId)!
+  return useMemo(
+    () => data.find((course) => course.course?.id === courseId)!,
+    [data, courseId],
+  )
+}
+
+export function useUserPointsSummaryContextCourseBySlug(courseSlug: string) {
+  const { data } = useUserPointsSummaryContext()
+
+  return useMemo(
+    () => data.find((course) => course.course?.slug === courseSlug)!,
+    [data, courseSlug],
+  )
 }

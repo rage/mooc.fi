@@ -1,10 +1,10 @@
-import { DetailedHTMLProps, PropsWithChildren } from "react"
+import { DetailedHTMLProps, PropsWithChildren, useMemo } from "react"
 
-import { MRT_ColumnDef } from "material-react-table"
+import { MaterialReactTableProps, MRT_ColumnDef } from "material-react-table"
 
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
-import { Chip, Typography } from "@mui/material"
+import { Chip, Theme, Typography, useMediaQuery } from "@mui/material"
 
 import { iconStyle } from "../common"
 import { Translator } from "/translations"
@@ -56,16 +56,16 @@ export type TierExerciseRow = TierProgressFieldsFragment & {
   completed: boolean
 }
 
-interface MobileCellProps {
+interface NarrowCellProps {
   header: string
 }
 
-const MobileCell = ({
+const NarrowCell = ({
   header,
   children,
   ...props
 }: PropsWithChildren<
-  MobileCellProps &
+  NarrowCellProps &
     DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 >) => (
   <div
@@ -108,15 +108,15 @@ export const renderRequiredActions =
       </div>
     )
 
-export const renderMobileRequiredActions =
+export const renderNarrowRequiredActions =
   <T extends Record<string, any>>(
     t: Translator<any>,
   ): MRT_ColumnDef<T>["Cell"] =>
   (props) =>
     (
-      <MobileCell header={props.column.columnDef.header}>
+      <NarrowCell header={props.column.columnDef.header}>
         {renderRequiredActions<T>(t)(props)}
-      </MobileCell>
+      </NarrowCell>
     )
 
 export const renderCheck =
@@ -139,23 +139,105 @@ export const renderCheck =
     return <CheckIcon css={iconStyle} color="success" titleAccess={title} />
   }
 
-export const renderMobileCheck =
+export const renderNarrowCheck =
   <T extends Record<string, any>>(
     title: string,
     failureTitle: string,
   ): MRT_ColumnDef<T>["Cell"] =>
   (props) =>
     (
-      <MobileCell header={props.column.columnDef.header}>
+      <NarrowCell header={props.column.columnDef.header}>
         {renderCheck<T>(title, failureTitle)(props)}
-      </MobileCell>
+      </NarrowCell>
     )
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const renderMobileCell: <T extends Record<string, any> = {}>(
+export const renderNarrowCell: <T extends Record<string, any> = {}>(
   props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
 ) => ReturnType<NonNullable<MRT_ColumnDef<T>["Cell"]>> = ({ cell, column }) => (
-  <MobileCell header={column.columnDef.header}>
-    <Typography variant="body2">{cell.getValue<any>()}</Typography>
-  </MobileCell>
+  <NarrowCell header={column.columnDef.header}>
+    <Typography variant="body2" textAlign="right">
+      {cell.getValue<any>()}
+    </Typography>
+  </NarrowCell>
 )
+
+export const useExerciseListProps = <T extends Record<string, any>>() => {
+  const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+
+  const props = useMemo(
+    (): Omit<MaterialReactTableProps<T>, "columns" | "data"> => ({
+      layoutMode: "grid",
+      enablePagination: false,
+      enableColumnActions: false,
+      displayColumnDefOptions: !isNarrow
+        ? { "mrt-row-expand": { size: 25 } }
+        : {},
+      muiTablePaperProps: {
+        elevation: 0,
+      },
+      muiTableProps: {
+        sx: {
+          tableLayout: "fixed",
+        },
+      },
+      muiTableDetailPanelProps: {
+        sx: {
+          display: isNarrow ? "none" : "table-cell",
+          width: "100%",
+        },
+      },
+      muiTableContainerProps: {
+        sx: {
+          width: "100%",
+        },
+      },
+      muiTableBodyProps: {
+        sx: {
+          ...(isNarrow && {
+            "& .Mui-TableBodyCell-DetailPanel": {
+              display: "none",
+            },
+          }),
+        },
+      },
+      muiTableHeadProps: {
+        sx: {
+          ...(isNarrow && { display: "none" }),
+        },
+      },
+      muiTableHeadCellProps: {
+        sx: {
+          overflow: "unset",
+          "& .Mui-TableHeadCell-Content-Wrapper": {
+            overflow: "unset",
+            textOverflow: "unset",
+          },
+        },
+      },
+      muiTableBodyRowProps: {
+        sx: {
+          ...(isNarrow && {
+            margin: "0.5rem",
+            width: "unset",
+            flexDirection: "column",
+            border: "1px solid rgba(224, 224, 244, 1)",
+            borderRadius: "4px",
+            padding: "0.5rem",
+          }),
+        },
+      },
+      muiTableBodyCellProps: {
+        sx: {
+          ...(isNarrow && {
+            borderBottom: "1px solid rgba(224, 224, 244, 1)",
+            width: "100%",
+          }),
+        },
+      },
+    }),
+    [isNarrow],
+  )
+
+  return props
+}

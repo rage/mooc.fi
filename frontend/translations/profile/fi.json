@@ -85,5 +85,6 @@
     "orderAscending": "Nouseva",
     "orderDescending": "Laskeva",
     "pointsRequired": "vaaditaan",
-    "selectedCourse": "Valittu kurssi"
+    "selectedCourse": "Valittu kurssi",
+    "noCourseFound": "Kurssia ei löydy. Oletko varmasti oikeassa osoitteessa?"
 }

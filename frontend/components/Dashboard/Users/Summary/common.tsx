@@ -1,3 +1,4 @@
+import { MaterialReactTableProps } from "material-react-table"
 import dynamic from "next/dist/shared/lib/dynamic"
 
 import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
@@ -22,6 +23,7 @@ export function SummaryCard({ children, ...props }: PaperProps) {
 export const CollapseTableCell = styled(TableCell)`
   padding-top: 0;
   padding-bottom: 0;
+  border-bottom: unset;
 `
 
 export const CollapseTableRow = styled(TableRow)`
@@ -59,7 +61,11 @@ export const MaterialReactTable = dynamic(
       </>
     ),
   },
-)
+  // eslint-disable-next-line @typescript-eslint/ban-types
+) as <TData extends Record<string, any> = {}>(
+  props: MaterialReactTableProps<TData>,
+) => JSX.Element
+
 export const ExpandButton = dynamic(
   () => import("mui-datatables").then((mod) => mod.ExpandButton),
   {

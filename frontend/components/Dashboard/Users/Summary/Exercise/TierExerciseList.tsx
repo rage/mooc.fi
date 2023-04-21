@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react"
 
+import { MRT_ColumnDef } from "material-react-table"
 import type {
   MUIDataTableColumn,
   MUIDataTableExpandButton,
@@ -8,16 +9,28 @@ import type {
 } from "mui-datatables"
 import { useRouter } from "next/router"
 
-import { TableCell, TableRow, Typography } from "@mui/material"
+import {
+  TableCell,
+  TableRow,
+  Theme,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
 
 import {
   ExpandButton,
   ExpandButtonPlaceholder,
+  MaterialReactTable,
   MUIDataTable,
-  renderCheck,
   SummaryCard,
 } from "../common"
-import { TierExerciseRow } from "./common"
+import {
+  renderCheck,
+  renderNarrowCell,
+  renderNarrowCheck,
+  TierExerciseRow,
+  useExerciseListProps,
+} from "./common"
 import TierExerciseCompletions from "./TierExerciseCompletions"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -51,42 +64,75 @@ const mapExerciseToRow = (
 const TierExerciseList = ({ data }: TierExerciseListProps) => {
   const { locale } = useRouter()
   const t = useTranslator(ProfileTranslations)
+  const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
-  const columns: Array<MUIDataTableColumn> = useMemo(
-    () => [
-      {
-        name: "exercise_number",
-        label: "#",
-      },
-      {
-        name: "name",
-        label: t("exercise"),
-        width: 300,
-      },
-      {
-        name: "tier",
-        label: t("tier"),
-        width: 25,
-      },
-      {
-        name: "points",
-        label: t("points"),
-      },
-      {
-        name: "completed",
-        label: t("completed"),
-        width: 25,
-        options: {
-          customBodyRender: renderCheck(t("completed")),
+  const columns = useMemo((): Array<
+    MRT_ColumnDef<Partial<TierExerciseRow>>
+  > => {
+    if (!isNarrow) {
+      return [
+        {
+          accessorKey: "exercise_number",
+          header: "#",
+          size: 20,
         },
+        {
+          accessorKey: "name",
+          header: t("exercise"),
+          size: 160,
+        },
+        {
+          accessorKey: "tier",
+          header: t("tier"),
+          size: 40,
+        },
+        {
+          accessorKey: "points",
+          header: t("points"),
+          size: 50,
+        },
+        {
+          accessorKey: "completed",
+          header: t("completed"),
+          size: 40,
+          Cell: renderCheck(t("completed")),
+        },
+      ]
+    }
+
+    return [
+      {
+        accessorKey: "exercise_number",
+        header: "#",
+        Cell: renderNarrowCell,
       },
-    ],
-    [locale, t],
-  )
+      {
+        accessorKey: "name",
+        header: t("exercise"),
+        Cell: renderNarrowCell,
+      },
+      {
+        accessorKey: "tier",
+        header: t("tier"),
+        Cell: renderNarrowCell,
+      },
+      {
+        accessorKey: "points",
+        header: t("points"),
+        Cell: renderNarrowCell,
+      },
+      {
+        accessorKey: "completed",
+        header: t("completed"),
+        size: 40,
+        Cell: renderNarrowCheck(t("completed"), t("notCompleted")),
+      },
+    ]
+  }, [locale, t, isNarrow])
 
   const rows = useMemo(() => (data ?? []).map(mapExerciseToRow), [data])
 
-  const createOptions = useCallback(
+  /*const createOptions = useCallback(
     (dataRows: typeof rows): MUIDataTableOptions => ({
       expandableRows: true,
       pagination: false,
@@ -129,16 +175,25 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
       ExpandButton: ConditionalExpandButton,
     }),
     [ConditionalExpandButton],
+  )*/
+
+  const title = useCallback(
+    () => <Typography variant="h3">{t("exercises")}</Typography>,
+    [t],
   )
+
+  const tableProps = useExerciseListProps()
 
   return (
     <SummaryCard>
-      <MUIDataTable
-        title={<Typography variant="h3">{t("exercises")}</Typography>}
+      <MaterialReactTable
         data={rows}
         columns={columns}
-        options={createOptions(rows)}
-        components={components}
+        layoutMode="grid"
+        enablePagination={false}
+        enableColumnActions={false}
+        renderTopToolbarCustomActions={title}
+        {...tableProps}
       />
     </SummaryCard>
   )

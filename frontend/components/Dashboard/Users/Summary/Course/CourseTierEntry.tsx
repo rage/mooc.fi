@@ -13,20 +13,6 @@ interface CourseTierEntryProps {
 }
 
 export function CourseTierEntry({ data }: CourseTierEntryProps) {
-  const exercisesWithCompletions = useMemo(
-    () =>
-      sortBy(
-        (data?.course.exercises ?? []).map((exercise) => ({
-          ...exercise,
-          exercise_completions: (data?.exercise_completions ?? []).filter(
-            (ec) => ec?.exercise_id === exercise.id,
-          ),
-        })),
-        ["part", "section", "name"],
-      ),
-    [data],
-  )
-
   if (!data?.course) {
     return null
   }
@@ -39,10 +25,7 @@ export function CourseTierEntry({ data }: CourseTierEntryProps) {
         userCourseProgress={data.user_course_progress}
         userCourseServiceProgresses={data.user_course_service_progresses}
       />
-      <ExerciseList
-        key={`${data.course.id}-exercise-list`}
-        exercises={exercisesWithCompletions}
-      />
+      <ExerciseList key={`${data.course.id}-exercise-list`} />
     </CourseEntryCard>
   )
 }

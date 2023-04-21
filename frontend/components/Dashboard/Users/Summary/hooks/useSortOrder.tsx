@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { orderBy } from "lodash"
 import { useRouter } from "next/router"
 
+import { ApolloError } from "@apollo/client"
+
 import {
   SortOrder,
   sortOrderOptions,
@@ -20,6 +22,8 @@ interface UseSortOrderArgs {
   initialSort?: string
   initialOrder?: string
   search?: string | null
+  loading?: boolean
+  error?: ApolloError
 }
 
 function flipOrder(order: SortOrder) {
@@ -34,6 +38,8 @@ const useSortOrder = ({
   initialSort,
   initialOrder,
   search,
+  loading,
+  error,
 }: UseSortOrderArgs) => {
   const router = useRouter()
 
@@ -157,8 +163,10 @@ const useSortOrder = ({
       onCourseSortChange,
       onSortOrderToggle,
       sortOptions,
+      loading,
+      error,
     }),
-    [data, sort, order],
+    [data, sort, order, loading, error],
   )
 
   return value
