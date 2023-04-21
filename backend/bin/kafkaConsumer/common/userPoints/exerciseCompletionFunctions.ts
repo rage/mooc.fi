@@ -18,14 +18,18 @@ import { parseTimestamp } from "../../util"
 import { KafkaContext } from "../kafkaContext"
 import { Message } from "./interfaces"
 
+type ExerciseCompletionWithActions = ExerciseCompletion & {
+  exercise_completion_required_actions: Array<ExerciseCompletionRequiredAction>
+}
+
+type ExerciseAndExerciseCompletionsTuple = readonly [
+  Exercise,
+  Array<ExerciseCompletionWithActions>,
+]
 interface ExerciseCompletionData {
   timestamp: DateTime
   exercise: Exercise
-  exerciseCompletions: Array<
-    ExerciseCompletion & {
-      exercise_completion_required_actions: Array<ExerciseCompletionRequiredAction>
-    }
-  >
+  exerciseCompletions: Array<ExerciseCompletionWithActions>
 }
 
 export const getExerciseAndCompletions = async <
@@ -33,19 +37,7 @@ export const getExerciseAndCompletions = async <
 >(
   { logger, prisma }: KafkaContext,
   message: M,
-): Promise<
-  Result<
-    readonly [
-      Exercise,
-      Array<
-        ExerciseCompletion & {
-          exercise_completion_required_actions: Array<ExerciseCompletionRequiredAction>
-        }
-      >,
-    ],
-    Error
-  >
-> => {
+): Promise<Result<ExerciseAndExerciseCompletionsTuple, Error>> => {
   logger.info("Getting the exercise")
   if (!message.exercise_id) {
     return err(
@@ -256,11 +248,7 @@ export const updateExerciseCompletion = async (
   message: Message,
   data: {
     timestamp: DateTime
-    exerciseCompletions: Array<
-      ExerciseCompletion & {
-        exercise_completion_required_actions: Array<ExerciseCompletionRequiredAction>
-      }
-    >
+    exerciseCompletions: Array<ExerciseCompletionWithActions>
   },
 ) => {
   const { logger, prisma } = context

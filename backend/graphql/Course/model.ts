@@ -190,9 +190,6 @@ export const Course = objectType({
               include: {
                 tags: {
                   where: tagsWhere,
-                  include: {
-                    tag_translations: true,
-                  },
                 },
               },
             },

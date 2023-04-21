@@ -23,6 +23,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
     "course_id": "00000000-0000-0000-0000-000000000001",
     "exercise_completions": {
       "50000000-0000-0000-0000-000000000001": {
+        "attempted": false,
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -33,6 +34,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
       "50000000-0000-0000-0000-000000000002": {
+        "attempted": false,
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -71,6 +73,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
     "course_id": "00000000-0000-0000-0000-000000000001",
     "exercise_completions": {
       "50000000-0000-0000-0000-000000000001": {
+        "attempted": false,
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -81,6 +84,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
       "50000000-0000-0000-0000-000000000002": {
+        "attempted": false,
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -91,6 +95,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
       "50000000-0000-0000-0000-000000000005": {
+        "attempted": true,
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000005",
         "max_points": null,
@@ -129,6 +134,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
     "course_id": "00000000-0000-0000-0000-000000000001",
     "exercise_completions": {
       "50000000-0000-0000-0000-000000000001": {
+        "attempted": false,
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -139,6 +145,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
       "50000000-0000-0000-0000-000000000002": {
+        "attempted": false,
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -177,6 +184,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
     "course_id": "00000000-0000-0000-0000-000000000001",
     "exercise_completions": {
       "50000000-0000-0000-0000-000000000001": {
+        "attempted": false,
         "completed": true,
         "exercise_id": "50000000-0000-0000-0000-000000000001",
         "max_points": 2,
@@ -187,6 +195,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
       "50000000-0000-0000-0000-000000000002": {
+        "attempted": false,
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000002",
         "max_points": 3,
@@ -197,6 +206,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
       "50000000-0000-0000-0000-000000000005": {
+        "attempted": true,
         "completed": false,
         "exercise_id": "50000000-0000-0000-0000-000000000005",
         "max_points": null,

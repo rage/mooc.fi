@@ -7,7 +7,7 @@ import { H2Background } from "/components/Text/headers"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 
-import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus, FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 const CoursesListContainer = styled("div")`
   margin: 2rem 2em 2em 2rem;
@@ -20,7 +20,7 @@ const CoursesListTitle = styled(H2Background)`
   margin-bottom: 3rem;
 `
 interface ModuleCoursesProps {
-  courses: CourseFieldsFragment[]
+  courses: FrontpageCourseFieldsFragment[]
 }
 
 const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {

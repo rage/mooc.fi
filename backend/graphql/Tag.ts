@@ -39,33 +39,31 @@ export const Tag = objectType({
     t.string("name", {
       // @ts-ignore: language exists
       resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
-        const name = await ctx.prisma.tag
-          .findUnique({
-            where: { id },
-          })
-          .tag_translations({
-            where: {
+        const translation = await ctx.prisma.tagTranslation.findUnique({
+          where: {
+            tag_id_language: {
+              tag_id: id,
               language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
             },
-          })
+          },
+        })
 
-        return name[0]?.name ?? null
+        return translation?.name ?? null
       },
     })
     t.string("description", {
       // @ts-ignore: language exists
       resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
-        const name = await ctx.prisma.tag
-          .findUnique({
-            where: { id },
-          })
-          .tag_translations({
-            where: {
+        const translation = await ctx.prisma.tagTranslation.findUnique({
+          where: {
+            tag_id_language: {
+              tag_id: id,
               language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
             },
-          })
+          },
+        })
 
-        return name[0]?.description ?? null
+        return translation?.description ?? null
       },
     })
     t.list.nonNull.string("types", {

@@ -2,7 +2,14 @@ import Module from "./ModuleDisplay/ModuleDisplay"
 import PartnerDivider from "/components/PartnerDivider"
 import LUT from "/public/md_pages/modules/lut_module.mdx"
 
-import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
+import {
+  FrontpageCourseFieldsFragment,
+  StudyModuleFieldsFragment,
+} from "/graphql/generated"
+
+type StudyModuleWithFrontpageCourse = StudyModuleFieldsFragment & {
+  courses: Array<FrontpageCourseFieldsFragment>
+}
 
 const moduleColors: Array<{
   backgroundColor: string
@@ -34,12 +41,12 @@ const moduleColors: Array<{
 type ModuleComponent =
   | {
       type: "module"
-      module: StudyModuleFieldsWithCoursesFragment
+      studyModule: StudyModuleWithFrontpageCourse
     }
   | {
       type: "custom-module"
       id?: string
-      module: JSX.Element
+      studyModule: JSX.Element
     }
   | {
       type: "divider"
@@ -52,23 +59,26 @@ const customModuleComponents: Array<ModuleComponent> = [
   {
     type: "custom-module",
     id: "lut",
-    module: <LUT />,
+    studyModule: <LUT />,
   },
 ]
 
 interface ModuleListProps {
-  modules: StudyModuleFieldsWithCoursesFragment[]
+  studyModules: Array<StudyModuleWithFrontpageCourse>
   loading: boolean
 }
-const ModuleList = ({ modules, loading }: ModuleListProps) => {
+
+const ModuleList = ({ studyModules, loading }: ModuleListProps) => {
   if (loading) {
     return <Module key="skeletonmodule" {...moduleColors[0]} />
   }
 
-  let moduleComponentList: Array<ModuleComponent> = modules.map((module) => ({
-    type: "module",
-    module,
-  }))
+  let moduleComponentList: Array<ModuleComponent> = studyModules.map(
+    (studyModule) => ({
+      type: "module",
+      studyModule,
+    }),
+  )
 
   moduleComponentList = moduleComponentList.concat(customModuleComponents)
 
@@ -78,8 +88,8 @@ const ModuleList = ({ modules, loading }: ModuleListProps) => {
         if (component.type === "module") {
           return (
             <Module
-              key={component.module.id}
-              studyModule={component.module}
+              key={component.studyModule.id}
+              studyModule={component.studyModule}
               {...moduleColors[idx % moduleColors.length]}
             />
           )
@@ -93,10 +103,10 @@ const ModuleList = ({ modules, loading }: ModuleListProps) => {
         if (component.type === "custom-module") {
           return component.id ? (
             <section id={component.id} key={component.id}>
-              {component.module}
+              {component.studyModule}
             </section>
           ) : (
-            component.module
+            component.studyModule
           )
         }
       })}

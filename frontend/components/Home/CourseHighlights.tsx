@@ -6,7 +6,7 @@ import Container from "/components/Container"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
 
-import { CourseFieldsFragment } from "/graphql/generated"
+import { FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 interface RootProps {
   backgroundColor: string
@@ -29,7 +29,7 @@ const TitleContainer = styled("div")`
 `
 
 interface CourseHighlightsProps {
-  courses?: CourseFieldsFragment[]
+  courses?: FrontpageCourseFieldsFragment[]
   loading: boolean
   title: string
   headerImage: any
