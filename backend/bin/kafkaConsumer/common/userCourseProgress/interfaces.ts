@@ -43,6 +43,7 @@ export interface TotalProgress {
 export type TierProgressMap = {
   [Tier in string]: TierProgress
 }
+
 export interface ExerciseCompletionPart {
   course_id: string
   exercise_id: string

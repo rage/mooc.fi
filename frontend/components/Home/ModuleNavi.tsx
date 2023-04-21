@@ -43,11 +43,11 @@ const Grid = styled("div")`
 `
 
 interface ModuleNaviProps {
-  modules?: StudyModuleFieldsFragment[]
+  studyModules?: StudyModuleFieldsFragment[]
   loading: boolean
 }
 
-const ModuleNavi = ({ modules, loading }: ModuleNaviProps) => {
+const ModuleNavi = ({ studyModules, loading }: ModuleNaviProps) => {
   const t = useTranslator(HomeTranslations)
 
   return (
@@ -69,7 +69,7 @@ const ModuleNavi = ({ modules, loading }: ModuleNaviProps) => {
               <ModuleNaviCard key="skeletonnavicard2" />
             </>
           ) : (
-            modules?.map((studyModule) => (
+            studyModules?.map((studyModule) => (
               <ModuleNaviCard
                 key={studyModule.id ?? studyModule.slug}
                 studyModule={studyModule}

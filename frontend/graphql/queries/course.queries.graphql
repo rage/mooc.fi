@@ -6,7 +6,7 @@ query Courses($language: String) {
 
 query FrontpageCoursesModules($language: String) {
   courses(orderBy: { order: asc }, language: $language, hidden: false) {
-    ...CourseFields
+    ...FrontpageCourseFields
   }
   study_modules(orderBy: { id: asc }, language: $language) {
     ...StudyModuleFields

@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-18T20:14:22+03:00
+// Generated on 2023-04-21T13:18:34+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -779,6 +779,7 @@ export type Exercise = {
 }
 
 export type Exerciseexercise_completionsArgs = {
+  completed?: InputMaybe<Scalars["Boolean"]>
   orderBy?: InputMaybe<ExerciseCompletionOrderByWithRelationInput>
   user_id?: InputMaybe<Scalars["ID"]>
 }
@@ -2279,6 +2280,7 @@ export type Useremail_deliveriesArgs = {
 }
 
 export type Userexercise_completionsArgs = {
+  completed?: InputMaybe<Scalars["Boolean"]>
   course_id?: InputMaybe<Scalars["ID"]>
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
 }
@@ -2950,6 +2952,53 @@ export type CourseTranslationDetailedFieldsFragment = {
   name: string
 }
 
+export type FrontpageCourseFieldsFragment = {
+  __typename?: "Course"
+  description: string | null
+  link: string | null
+  order: number | null
+  study_module_order: number | null
+  promote: boolean | null
+  status: CourseStatus | null
+  start_point: boolean | null
+  study_module_start_point: boolean | null
+  hidden: boolean | null
+  upcoming_active_link: boolean | null
+  tier: number | null
+  support_email: string | null
+  teacher_in_charge_email: string
+  teacher_in_charge_name: string
+  start_date: string
+  end_date: string | null
+  has_certificate: boolean | null
+  name: string
+  ects: string | null
+  language: string | null
+  created_at: any | null
+  updated_at: any | null
+  id: string
+  slug: string
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    id: string
+    slug: string
+    name: string
+  }>
+  photo: {
+    __typename?: "Image"
+    id: string
+    name: string | null
+    original: string
+    original_mimetype: string
+    compressed: string | null
+    compressed_mimetype: string | null
+    uncompressed: string
+    uncompressed_mimetype: string
+    created_at: any | null
+    updated_at: any | null
+  } | null
+}
+
 export type CourseFieldsFragment = {
   __typename?: "Course"
   description: string | null
@@ -2982,12 +3031,6 @@ export type CourseFieldsFragment = {
     language: string
     name: string
   }>
-  study_modules: Array<{
-    __typename?: "StudyModule"
-    id: string
-    slug: string
-    name: string
-  }>
   tags: Array<{
     __typename?: "Tag"
     id: string
@@ -3001,6 +3044,12 @@ export type CourseFieldsFragment = {
       description: string | null
       language: string
     }>
+  }>
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    id: string
+    slug: string
+    name: string
   }>
   photo: {
     __typename?: "Image"
@@ -3076,12 +3125,6 @@ export type EditorCourseFieldsFragment = {
     language: string
     name: string
   }>
-  study_modules: Array<{
-    __typename?: "StudyModule"
-    id: string
-    slug: string
-    name: string
-  }>
   tags: Array<{
     __typename?: "Tag"
     id: string
@@ -3095,6 +3138,12 @@ export type EditorCourseFieldsFragment = {
       description: string | null
       language: string
     }>
+  }>
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    id: string
+    slug: string
+    name: string
   }>
   photo: {
     __typename?: "Image"
@@ -3193,12 +3242,6 @@ export type EditorCourseDetailedFieldsFragment = {
     id: string
     language: string
   }>
-  study_modules: Array<{
-    __typename?: "StudyModule"
-    id: string
-    slug: string
-    name: string
-  }>
   tags: Array<{
     __typename?: "Tag"
     id: string
@@ -3212,6 +3255,12 @@ export type EditorCourseDetailedFieldsFragment = {
       description: string | null
       language: string
     }>
+  }>
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    id: string
+    slug: string
+    name: string
   }>
   photo: {
     __typename?: "Image"
@@ -3500,12 +3549,6 @@ export type StudyModuleFieldsWithCoursesFragment = {
       language: string
       name: string
     }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
-    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -3519,6 +3562,12 @@ export type StudyModuleFieldsWithCoursesFragment = {
         description: string | null
         language: string
       }>
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4243,12 +4292,6 @@ export type AddCourseMutation = {
       id: string
       language: string
     }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
-    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -4262,6 +4305,12 @@ export type AddCourseMutation = {
         description: string | null
         language: string
       }>
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4391,12 +4440,6 @@ export type UpdateCourseMutation = {
       id: string
       language: string
     }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
-    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -4410,6 +4453,12 @@ export type UpdateCourseMutation = {
         description: string | null
         language: string
       }>
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4871,12 +4920,6 @@ export type CoursesQuery = {
       language: string
       name: string
     }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
-    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -4890,6 +4933,12 @@ export type CoursesQuery = {
         description: string | null
         language: string
       }>
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -4939,31 +4988,11 @@ export type FrontpageCoursesModulesQuery = {
     updated_at: any | null
     id: string
     slug: string
-    course_translations: Array<{
-      __typename?: "CourseTranslation"
-      id: string
-      language: string
-      name: string
-    }>
     study_modules: Array<{
       __typename?: "StudyModule"
       id: string
       slug: string
       name: string
-    }>
-    tags: Array<{
-      __typename?: "Tag"
-      id: string
-      hidden: boolean | null
-      types: Array<string> | null
-      name: string | null
-      tag_translations: Array<{
-        __typename?: "TagTranslation"
-        tag_id: string
-        name: string
-        description: string | null
-        language: string
-      }>
     }>
     photo: {
       __typename?: "Image"
@@ -5061,12 +5090,6 @@ export type EditorCoursesQuery = {
       language: string
       name: string
     }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
-    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -5080,6 +5103,12 @@ export type EditorCoursesQuery = {
         description: string | null
         language: string
       }>
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -5264,12 +5293,6 @@ export type CourseEditorDetailsQuery = {
       id: string
       language: string
     }>
-    study_modules: Array<{
-      __typename?: "StudyModule"
-      id: string
-      slug: string
-      name: string
-    }>
     tags: Array<{
       __typename?: "Tag"
       id: string
@@ -5283,6 +5306,12 @@ export type CourseEditorDetailsQuery = {
         description: string | null
         language: string
       }>
+    }>
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
     }>
     photo: {
       __typename?: "Image"
@@ -5540,12 +5569,6 @@ export type StudyModulesWithCoursesQuery = {
         language: string
         name: string
       }>
-      study_modules: Array<{
-        __typename?: "StudyModule"
-        id: string
-        slug: string
-        name: string
-      }>
       tags: Array<{
         __typename?: "Tag"
         id: string
@@ -5559,6 +5582,12 @@ export type StudyModulesWithCoursesQuery = {
           description: string | null
           language: string
         }>
+      }>
+      study_modules: Array<{
+        __typename?: "StudyModule"
+        id: string
+        slug: string
+        name: string
       }>
       photo: {
         __typename?: "Image"
@@ -7834,27 +7863,6 @@ export const CompletionsQueryConnectionFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CompletionsQueryConnectionFieldsFragment, unknown>
-export const CourseTranslationCoreFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CourseTranslationCoreFieldsFragment, unknown>
 export const StudyModuleKeyFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -7914,86 +7922,12 @@ export const StudyModuleCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<StudyModuleCoreFieldsFragment, unknown>
-export const TagTranslationFieldsFragmentDoc = {
+export const FrontpageCourseFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "TagTranslationFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "TagTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<TagTranslationFieldsFragment, unknown>
-export const TagCoreFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "TagCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "Tag" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          { kind: "Field", name: { kind: "Name", value: "types" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tag_translations" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagTranslationFields" },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "TagTranslationFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "TagTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<TagCoreFieldsFragment, unknown>
-export const CourseFieldsFragmentDoc = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseFields" },
+      name: { kind: "Name", value: "FrontpageCourseFields" },
       typeCondition: {
         kind: "NamedType",
         name: { kind: "Name", value: "Course" },
@@ -8039,19 +7973,6 @@ export const CourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
-            name: { kind: "Name", value: "course_translations" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
             name: { kind: "Name", value: "study_modules" },
             selectionSet: {
               kind: "SelectionSet",
@@ -8059,19 +7980,6 @@ export const CourseFieldsFragmentDoc = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "StudyModuleCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
                 },
               ],
             },
@@ -8164,6 +8072,79 @@ export const CourseFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "StudyModuleKeyFields" },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FrontpageCourseFieldsFragment, unknown>
+export const CourseTranslationCoreFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CourseTranslationCoreFieldsFragment, unknown>
+export const TagTranslationFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "TagTranslationFields" },
       typeCondition: {
         kind: "NamedType",
@@ -8176,6 +8157,173 @@ export const CourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TagTranslationFieldsFragment, unknown>
+export const TagCoreFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Tag" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "types" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tag_translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagTranslationFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagTranslationFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TagTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TagCoreFieldsFragment, unknown>
+export const CourseFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "FrontpageCourseFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "CourseTranslationCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tags" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TagCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
         ],
       },
     },
@@ -8211,16 +8359,16 @@ export const CourseFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
+        name: { kind: "Name", value: "StudyModule" },
       },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
@@ -8239,6 +8387,101 @@ export const CourseFieldsFragmentDoc = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TagTranslationFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TagTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -8445,22 +8688,6 @@ export const EditorCourseFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -8489,6 +8716,84 @@ export const EditorCourseFieldsFragmentDoc = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -8551,40 +8856,8 @@ export const EditorCourseFieldsFragmentDoc = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -8594,19 +8867,6 @@ export const EditorCourseFieldsFragmentDoc = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -8878,22 +9138,6 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -8922,6 +9166,84 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -8984,40 +9306,8 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -9027,19 +9317,6 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -9766,6 +10043,68 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "CourseTranslationCoreFields" },
       typeCondition: {
         kind: "NamedType",
@@ -9861,40 +10200,8 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -9904,19 +10211,6 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -12790,22 +13084,6 @@ export const AddCourseDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -12834,6 +13112,84 @@ export const AddCourseDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -12896,40 +13252,8 @@ export const AddCourseDocument = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -12939,19 +13263,6 @@ export const AddCourseDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -13344,22 +13655,6 @@ export const UpdateCourseDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -13388,6 +13683,84 @@ export const UpdateCourseDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -13450,40 +13823,8 @@ export const UpdateCourseDocument = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -13493,19 +13834,6 @@ export const UpdateCourseDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -16076,22 +16404,6 @@ export const CoursesDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -16120,6 +16432,84 @@ export const CoursesDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -16182,40 +16572,8 @@ export const CoursesDocument = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -16225,19 +16583,6 @@ export const CoursesDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -16317,7 +16662,7 @@ export const FrontpageCoursesModulesDocument = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "CourseFields" },
+                  name: { kind: "Name", value: "FrontpageCourseFields" },
                 },
               ],
             },
@@ -16461,22 +16806,6 @@ export const FrontpageCoursesModulesDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -16510,54 +16839,7 @@ export const FrontpageCoursesModulesDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "TagTranslationFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "TagTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "tag_id" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "TagCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "Tag" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          { kind: "Field", name: { kind: "Name", value: "types" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tag_translations" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagTranslationFields" },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseFields" },
+      name: { kind: "Name", value: "FrontpageCourseFields" },
       typeCondition: {
         kind: "NamedType",
         name: { kind: "Name", value: "Course" },
@@ -16603,19 +16885,6 @@ export const FrontpageCoursesModulesDocument = {
           { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
-            name: { kind: "Name", value: "course_translations" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
             name: { kind: "Name", value: "study_modules" },
             selectionSet: {
               kind: "SelectionSet",
@@ -16623,19 +16892,6 @@ export const FrontpageCoursesModulesDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "StudyModuleCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "tags" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "TagCoreFields" },
                 },
               ],
             },
@@ -16916,22 +17172,6 @@ export const EditorCoursesDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -16960,6 +17200,84 @@ export const EditorCoursesDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -17022,40 +17340,8 @@ export const EditorCoursesDocument = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -17065,19 +17351,6 @@ export const EditorCoursesDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -17664,22 +17937,6 @@ export const CourseEditorDetailsDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "CourseTranslationCoreFields" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "CourseTranslation" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "language" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "StudyModuleKeyFields" },
       typeCondition: {
         kind: "NamedType",
@@ -17708,6 +17965,84 @@ export const CourseEditorDetailsDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "StudyModuleKeyFields" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseTranslationCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CourseTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
         ],
       },
     },
@@ -17770,40 +18105,8 @@ export const CourseEditorDetailsDocument = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -17813,19 +18116,6 @@ export const CourseEditorDetailsDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },
@@ -18984,6 +19274,68 @@ export const StudyModulesWithCoursesDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "CourseTranslationCoreFields" },
       typeCondition: {
         kind: "NamedType",
@@ -19079,40 +19431,8 @@ export const StudyModulesWithCoursesDocument = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+            name: { kind: "Name", value: "FrontpageCourseFields" },
           },
-          { kind: "Field", name: { kind: "Name", value: "description" } },
-          { kind: "Field", name: { kind: "Name", value: "link" } },
-          { kind: "Field", name: { kind: "Name", value: "order" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_order" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "promote" } },
-          { kind: "Field", name: { kind: "Name", value: "status" } },
-          { kind: "Field", name: { kind: "Name", value: "start_point" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_module_start_point" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "hidden" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "upcoming_active_link" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "tier" } },
-          { kind: "Field", name: { kind: "Name", value: "support_email" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_email" },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "teacher_in_charge_name" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "start_date" } },
-          { kind: "Field", name: { kind: "Name", value: "end_date" } },
-          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "course_translations" },
@@ -19122,19 +19442,6 @@ export const StudyModulesWithCoursesDocument = {
                 {
                   kind: "FragmentSpread",
                   name: { kind: "Name", value: "CourseTranslationCoreFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "study_modules" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "StudyModuleCoreFields" },
                 },
               ],
             },

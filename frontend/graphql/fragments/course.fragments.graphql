@@ -36,7 +36,7 @@ fragment CourseTranslationDetailedFields on CourseTranslation {
   updated_at
 }
 
-fragment CourseFields on Course {
+fragment FrontpageCourseFields on Course {
   ...CourseWithPhotoCoreFields
   description
   link
@@ -55,11 +55,15 @@ fragment CourseFields on Course {
   start_date
   end_date
   has_certificate
-  course_translations {
-    ...CourseTranslationCoreFields
-  }
   study_modules {
     ...StudyModuleCoreFields
+  }
+}
+
+fragment CourseFields on Course {
+  ...FrontpageCourseFields
+  course_translations {
+    ...CourseTranslationCoreFields
   }
   tags {
     ...TagCoreFields

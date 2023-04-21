@@ -9,7 +9,7 @@ import { CardText } from "/components/Text/paragraphs"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 
-import { CourseFieldsFragment } from "/graphql/generated"
+import { FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 const Background = styled(ClickableButtonBase)`
   display: flex;
@@ -53,7 +53,7 @@ const TextArea = styled("div")`
 `
 
 interface CourseCardProps {
-  course?: CourseFieldsFragment
+  course?: FrontpageCourseFieldsFragment
 }
 
 function CourseCard({ course }: CourseCardProps) {

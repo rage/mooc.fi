@@ -16,6 +16,7 @@ interface ExerciseCompletionResult {
   section: number
   max_points: number
   completed: boolean
+  attempted: boolean
   quizzes_id: string
 }
 
@@ -65,6 +66,7 @@ export class ProgressController extends Controller {
         "section",
         "max_points",
         "completed",
+        "attempted",
         "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
@@ -129,6 +131,7 @@ export class ProgressController extends Controller {
         "section",
         "max_points",
         "completed",
+        "attempted",
         "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
@@ -518,7 +521,7 @@ export class ProgressController extends Controller {
       },
     }
 
-    logger.info(`Done! Result: ${JSON.stringify(result, null, 2)}`)
+    logger.info(`Done!`)
 
     return res.status(200).json({
       message: "ok",
