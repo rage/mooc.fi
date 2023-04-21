@@ -131,7 +131,7 @@ export class ProgressController extends Controller {
         "section",
         "max_points",
         "completed",
-        "attempted",
+        knex.raw("coalesce(attempted, false) as attempted"),
         "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
