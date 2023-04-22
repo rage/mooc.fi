@@ -1,16 +1,15 @@
-import React, { useMemo } from "react"
+import React, { PropsWithChildren, useMemo } from "react"
 
 import { sortBy } from "lodash"
 
-import { CardContent, Paper, Skeleton, Typography } from "@mui/material"
+import { CardContent, Skeleton, Typography } from "@mui/material"
 
-import Completion, { CompletionSkeleton } from "../Completion"
+import { useUserPointsSummarySelectedCourseContext } from "../contexts"
 import ExerciseList from "../Exercise/ExerciseList"
 import TierExerciseList from "../Exercise/TierExerciseList"
+import Milestones, { MilestonesSkeleton } from "../Milestones"
 import ProgressEntry, { ProgressEntrySkeleton } from "../ProgressEntry"
-import RelevantDates, { RelevantDatesSkeleton } from "../RelevantDates"
 import TotalProgressEntry from "../TotalProgressEntry"
-import { useUserPointsSummarySelectedCourseContext } from "../UserPointsSummarySelectedCourseContext"
 import {
   CourseEntryCard,
   CourseEntryCardBase,
@@ -29,14 +28,14 @@ export const CourseEntrySkeleton = () => (
       </CourseEntryCardTitle>
     </CourseEntryCardTitleWrapper>
     <CardContent>
-      <RelevantDatesSkeleton />
+      <MilestonesSkeleton />
       <ProgressEntrySkeleton />
       <ExerciseList />
     </CardContent>
   </CourseEntryCardBase>
 )
 
-export function CourseEntry() {
+export function CourseEntry({ children }: PropsWithChildren) {
   const t = useTranslator(ProfileTranslations)
   const { selectedData: data } = useUserPointsSummarySelectedCourseContext()
 
@@ -57,24 +56,13 @@ export function CourseEntry() {
 
   return (
     <CourseEntryCard course={data?.course} hasCopyButton>
-      <RelevantDates data={data} />
-      <Completion
-        key={`${data.course.id}-completion`}
-        course={data.course}
-        completion={data.completion}
-      />
+      {children}
+      <Milestones data={data} />
       {hasTierSummaries ? (
         <>
           {data.user_course_progress?.extra && (
             <>
-              <ProgressEntry
-                key={`${data.course.id}-progress`}
-                course={data.course}
-                userCourseProgress={data.user_course_progress}
-                userCourseServiceProgresses={
-                  data.user_course_service_progresses
-                }
-              />
+              <ProgressEntry key={`${data.course.id}-progress`} data={data} />
               <TotalProgressEntry data={data.user_course_progress.extra} />
               <TierExerciseList
                 data={data.user_course_progress?.extra.exercises}
@@ -90,13 +78,8 @@ export function CourseEntry() {
         </>
       ) : (
         <>
-          <ProgressEntry
-            key={`${data.course.id}-progress`}
-            course={data.course}
-            userCourseProgress={data.user_course_progress}
-            userCourseServiceProgresses={data.user_course_service_progresses}
-          />
-          <ExerciseList key={`${data.course.id}-exercise-list`} />
+          <ProgressEntry key={`${data.course.id}-progress`} data={data} />
+          <ExerciseList key={`${data.course.id}-exercise-list`} data={data} />
         </>
       )}
     </CourseEntryCard>

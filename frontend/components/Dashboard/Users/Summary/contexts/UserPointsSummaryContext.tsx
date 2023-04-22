@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo } from "react"
 
 import { ApolloError } from "@apollo/client"
 
-import { SortOrder, UserCourseSummarySort } from "./types"
+import { SortOrder, UserCourseSummarySort } from "../types"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 

@@ -1,9 +1,13 @@
+import { useMemo } from "react"
+
 import { MaterialReactTableProps } from "material-react-table"
-import dynamic from "next/dist/shared/lib/dynamic"
+import dynamic from "next/dynamic"
 
 import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
 import { Paper, PaperProps, Skeleton, TableCell, TableRow } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
+
+import { MRT_Localization_FI } from "/lib/locale"
 
 export const iconStyle = css`
   height: 1rem;
@@ -38,17 +42,6 @@ export const Spacer = styled("div")`
 
 export const LinkIconComponent = () => <LinkIcon css={iconStyle} />
 
-export const MUIDataTable = dynamic(() => import("mui-datatables"), {
-  ssr: false,
-  loading: () => (
-    <>
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-    </>
-  ),
-})
-
 export const MaterialReactTable = dynamic(
   () => import("material-react-table"),
   {
@@ -66,17 +59,12 @@ export const MaterialReactTable = dynamic(
   props: MaterialReactTableProps<TData>,
 ) => JSX.Element
 
-export const ExpandButton = dynamic(
-  () => import("mui-datatables").then((mod) => mod.ExpandButton),
-  {
-    loading: () => (
-      <div style={{ width: "24px" }}>
-        <Skeleton />
-      </div>
-    ),
-  },
-)
+export const useMaterialReactTableLocalization = (locale?: string) => {
+  return useMemo(() => {
+    if (locale === "fi") {
+      return MRT_Localization_FI
+    }
 
-export const ExpandButtonPlaceholder = styled("div")`
-  width: 24px;
-`
+    return
+  }, [locale])
+}

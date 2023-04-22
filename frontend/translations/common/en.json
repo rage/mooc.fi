@@ -84,5 +84,7 @@
     "firstPage": "first page",
     "lastPage": "last page",
     "previousPage": "previous page",
-    "nextPage": "next page"
+    "nextPage": "next page",
+    "copyToClipboard": "Copy to clipboard",
+    "copiedToClipboard": "Copied!"
 } 

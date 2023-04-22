@@ -4,6 +4,8 @@ import { IconButton, IconButtonProps, Tooltip } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { useClipboard } from "/hooks/useClipboard"
+import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 
 const StyledIconButton = styled(IconButton)`
   transition: all 1s ease-ease-in-out;
@@ -27,12 +29,17 @@ const DefaultIcon = () => <ClipboardIcon css={iconStyle} />
 
 const ClipboardButton = ({
   data,
-  tooltipText = "Copy to clipboard",
-  tooltipCopiedText = "Copied!",
+  tooltipText,
+  tooltipCopiedText,
   SuccessIcon = DefaultSuccessIcon,
   Icon = DefaultIcon,
   ...props
 }: ClipboardProps) => {
+  const t = useTranslator(CommonTranslations)
+
+  tooltipText ??= t("copyToClipboard")
+  tooltipCopiedText ??= t("copiedToClipboard")
+
   const { hasClipboard, isCopied, onCopyToClipboard } = useClipboard(data)
 
   return (

@@ -62,7 +62,7 @@ const CertificateButton = ({
   course,
   completion,
   ...buttonProps
-}: CertificateProps & ButtonProps & LinkProps) => {
+}: CertificateProps & Partial<ButtonProps> & Partial<LinkProps>) => {
   const t = useTranslator(CompletionsTranslations)
   const { currentUser } = useLoginStateContext()
   const { addAlert } = useAlertContext()

@@ -1,7 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 
-import "mui-datatables"
-
 import {
   /*renderCheck, renderRequiredActions, */
   TierExerciseCompletionRow,

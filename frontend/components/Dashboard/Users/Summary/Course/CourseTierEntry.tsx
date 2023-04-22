@@ -1,7 +1,3 @@
-import { useMemo } from "react"
-
-import { sortBy } from "lodash"
-
 import ExerciseList from "../Exercise/ExerciseList"
 import ProgressEntry from "../ProgressEntry"
 import { CourseEntryCard } from "./common"
@@ -19,13 +15,8 @@ export function CourseTierEntry({ data }: CourseTierEntryProps) {
 
   return (
     <CourseEntryCard course={data.course} hasCollapseButton>
-      <ProgressEntry
-        key={`${data.course.id}-progress`}
-        course={data.course}
-        userCourseProgress={data.user_course_progress}
-        userCourseServiceProgresses={data.user_course_service_progresses}
-      />
-      <ExerciseList key={`${data.course.id}-exercise-list`} />
+      <ProgressEntry key={`${data.course.id}-progress`} data={data} />
+      <ExerciseList key={`${data.course.id}-exercise-list`} data={data} />
     </CourseEntryCard>
   )
 }

@@ -16,19 +16,22 @@ import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
 import { styled, Theme } from "@mui/material/styles"
 
 import Container from "/components/Container"
-import CollapseContext, {
+import {
+  CollapseContext,
+  UserPointsSummaryContext,
+  UserPointsSummarySelectedCourseContext,
+} from "/components/Dashboard/Users/Summary/contexts"
+import {
   ActionType,
   CollapsablePart,
   collapseReducer,
   createCollapseState,
   initialState,
-} from "/components/Dashboard/Users/Summary/CollapseContext"
+} from "/components/Dashboard/Users/Summary/contexts/CollapseContext"
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
-import useSortOrder from "/components/Dashboard/Users/Summary/hooks/useSortOrder"
+import useSummaryData from "/components/Dashboard/Users/Summary/hooks/useSummaryData"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
-import UserPointsSummaryContext from "/components/Dashboard/Users/Summary/UserPointsSummaryContext"
-import UserPointsSummarySelectedCourseContext from "/components/Dashboard/Users/Summary/UserPointsSummarySelectedCourseContext"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu, { type SearchVariables } from "/components/FilterMenu"
@@ -84,8 +87,8 @@ function UserSummaryView() {
   const router = useRouter()
   const id = useQueryParameter("id")
   const slug = useQueryParameter("slug", false)
-  const _sort = useQueryParameter("sort", false)
-  const _order = useQueryParameter("order", false)
+  const sort = useQueryParameter("sort", false)
+  const order = useQueryParameter("order", false)
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: {
       upstream_id: Number(id),
@@ -122,7 +125,7 @@ function UserSummaryView() {
       }
     }
     return crumbs
-  }, [data, slug])
+  }, [loading, data, slug])
 
   useBreadcrumbs(breadcrumbs)
 
@@ -138,10 +141,10 @@ function UserSummaryView() {
   >(slug ?? "")
   const [userSearch, setUserSearch] = useState("")
 
-  const userPointsSummaryContextValue = useSortOrder({
-    initialData: data?.user?.user_course_summary,
-    initialSort: _sort,
-    initialOrder: _order,
+  const userPointsSummaryContextValue = useSummaryData({
+    data: data?.user?.user_course_summary,
+    sort,
+    order,
     search: searchVariables.search,
     loading,
     error,
@@ -165,6 +168,13 @@ function UserSummaryView() {
     }
     return userPointsSummaryContextValue?.data?.[0]
   }, [userPointsSummaryContextValue, selected])
+
+  useEffect(() => {
+    if (selected || userPointsSummaryContextValue?.data?.length === 0) {
+      return
+    }
+    setSelected(userPointsSummaryContextValue?.data?.[0]?.course?.slug ?? "")
+  }, [userPointsSummaryContextValue])
 
   const onSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {

@@ -25,6 +25,8 @@
     "REJECTED": "Rejected",
     "GIVE_PEER_REVIEW": "Too few peer reviews given",
     "PENDING_PEER_REVIEW": "Waiting for peer reviews",
+    "moocfiId": "MOOC.fi id",
+    "slug": "Slug",
     "part": "Part",
     "section": "Section",
     "partSection": "Part/section",
@@ -50,7 +52,7 @@
     "courseStartDate": "Course started",
     "firstExerciseDate": "First exercise",
     "latestExerciseDate": "Latest exercise",
-    "relevantDatesTooltip": "Course start date is the date when the user course settings are created. This may or may not reflect the actual first registration date or when user first logged into the course material.\nFirst exercise date is the date of the first exercise completion submitted.",
+    "milestonesTooltip": "Course start date is the date when the user course settings are created. This may or may not reflect the actual first registration date or when user first logged into the course material.\nFirst exercise date is the date of the first exercise completion submitted.",
     "createdAt": "Created at",
     "timestamp": "Original timestamp",
     "exerciseInfoTooltip": "Created at is the date the exercise completion has been synced in MOOC.fi.\nTimestamp is the original submission date.",
@@ -86,5 +88,7 @@
     "orderDescending": "Descending",
     "pointsRequired": "required",
     "selectedCourse": "Selected course",
-    "noCourseFound": "No course found. Are you sure you have the right link?"
+    "noCourseFound": "No course found. Are you sure you have the right link?",
+    "showCourseDetails": "Show course details",
+    "copyCourseLink": "Copy permanent link"
 }

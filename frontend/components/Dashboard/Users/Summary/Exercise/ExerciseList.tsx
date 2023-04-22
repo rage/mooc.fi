@@ -1,23 +1,12 @@
-import { ReactNode, useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 
 import { sortBy } from "lodash"
-import type {
-  MaterialReactTableProps,
-  MRT_ColumnDef,
-  MRT_Row,
-  MRT_TableInstance,
-} from "material-react-table"
+import type { MRT_ColumnDef, MRT_Row } from "material-react-table"
 import { useRouter } from "next/router"
 
-import {
-  IconButtonProps,
-  Theme,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Theme, Typography, useMediaQuery } from "@mui/material"
 
-import { useUserPointsSummaryContext } from "../UserPointsSummaryContext"
-import { useUserPointsSummarySelectedCourseContext } from "../UserPointsSummarySelectedCourseContext"
+import { useUserPointsSummaryContext } from "../contexts"
 import {
   ExerciseRow,
   renderCheck,
@@ -31,6 +20,7 @@ import ExerciseInfo from "./ExerciseInfo"
 import {
   MaterialReactTable,
   SummaryCard,
+  useMaterialReactTableLocalization,
 } from "/components/Dashboard/Users/Summary/common"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -39,15 +29,13 @@ import { formatDateTime } from "/util/dataFormatFunctions"
 import {
   ExerciseCompletionCoreFieldsFragment,
   ExerciseCoreFieldsFragment,
+  UserCourseSummaryCoreFieldsFragment,
+  UserTierCourseSummaryCoreFieldsFragment,
 } from "/graphql/generated"
 
 type ExerciseWithCompletions = ExerciseCoreFieldsFragment & {
   exercise_completions: ExerciseCompletionCoreFieldsFragment[]
 }
-interface ExerciseListProps {
-  exercises: Array<ExerciseWithCompletions>
-}
-
 const mapExerciseToRow =
   (locale?: string) =>
   (exercise: ExerciseWithCompletions): ExerciseRow => {
@@ -80,11 +68,17 @@ const mapExerciseToRow =
     }
   }
 
-function ExerciseList() {
+interface ExerciseListProps {
+  data?:
+    | UserCourseSummaryCoreFieldsFragment
+    | UserTierCourseSummaryCoreFieldsFragment
+  loading?: boolean
+}
+
+function ExerciseList({ data }: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
-  const { selectedData: data } = useUserPointsSummarySelectedCourseContext()
   const { loading } = useUserPointsSummaryContext()
 
   const exercises = useMemo(
@@ -179,59 +173,18 @@ function ExerciseList() {
         header: t("requiredActions"),
         Cell: renderNarrowRequiredActions(t),
       },
+      // TODO: add conditional date rows = ExerciseInfo
     ]
   }, [locale, t, isNarrow])
 
+  const localeMapExerciseToRow = useMemo(
+    () => mapExerciseToRow(locale),
+    [locale],
+  )
   const rows: Array<ExerciseRow> = useMemo(
-    () => exercises.map(mapExerciseToRow(locale)),
-    [locale, exercises, isNarrow],
+    () => exercises.map(localeMapExerciseToRow),
+    [localeMapExerciseToRow, exercises, isNarrow],
   )
-
-  /*const options = useMemo(
-    (): MUIDataTableOptions => ({
-      expandableRows: true,
-      pagination: false,
-      selectableRows: "none",
-      setTableProps: () => ({
-        style: {
-          tableLayout: "fixed",
-        },
-      }),
-      isRowExpandable: (dataIndex) => {
-        return (rows[dataIndex]?.exercise_completions ?? []).length > 0
-      },
-      renderExpandableRow: (rowData, { rowIndex }) => {
-        return (
-          <TableRow>
-            <TableCell colSpan={rowData.length + 1}>
-              <ExerciseInfo exercise={rows[rowIndex]} />
-            </TableCell>
-          </TableRow>
-        )
-      },
-    }),
-    [rows],
-  )*/
-
-  /*const ConditionalExpandButton = useCallback(
-    (props: MUIDataTableExpandButton) => {
-      if (
-        !notEmpty(props.dataIndex) ||
-        (rows[props.dataIndex]?.exercise_completions ?? []).length == 0
-      ) {
-        return <ExpandButtonPlaceholder />
-      }
-      return <ExpandButton {...props} />
-    },
-    [rows],
-  )
-
-  const components: MUIDataTableProps["components"] = useMemo(
-    () => ({
-      ExpandButton: ConditionalExpandButton,
-    }),
-    [ConditionalExpandButton],
-  )*/
 
   const getExpandButtonProps = useCallback(
     ({ row }: { row: MRT_Row<ExerciseRow> }) =>
@@ -245,6 +198,7 @@ function ExerciseList() {
     [isNarrow],
   )
 
+  // TODO: use mrt here as well?
   const renderExerciseInfo = useCallback(
     ({ row }: { row: MRT_Row<ExerciseRow> }) =>
       !isNarrow ? <ExerciseInfo exercise={row.original} /> : undefined,
@@ -257,6 +211,7 @@ function ExerciseList() {
   )
 
   const tableProps = useExerciseListProps<ExerciseRow>()
+  const localization = useMaterialReactTableLocalization(locale)
 
   return (
     <SummaryCard sx={{ padding: "0.5rem" }}>
@@ -267,6 +222,7 @@ function ExerciseList() {
         renderTopToolbarCustomActions={title}
         muiExpandButtonProps={getExpandButtonProps}
         renderDetailPanel={renderExerciseInfo}
+        localization={localization}
         state={{
           isLoading: loading,
         }}

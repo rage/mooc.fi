@@ -5,22 +5,22 @@ import { useRouter } from "next/router"
 
 import { ApolloError } from "@apollo/client"
 
+import { type UserPointsSummaryContext } from "../contexts/UserPointsSummaryContext"
 import {
   SortOrder,
   sortOrderOptions,
   UserCourseSummarySort,
   userCourseSummarySortOptions,
 } from "../types"
-import { UserPointsSummaryContext } from "../UserPointsSummaryContext"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
 interface UseSortOrderArgs {
-  initialData?: Array<UserCourseSummaryCoreFieldsFragment> | null
-  initialSort?: string
-  initialOrder?: string
+  data?: Array<UserCourseSummaryCoreFieldsFragment> | null
+  sort?: string
+  order?: string
   search?: string | null
   loading?: boolean
   error?: ApolloError
@@ -33,10 +33,10 @@ function flipOrder(order: SortOrder) {
 const defaultSort = "course_name"
 const defaultOrder = "asc"
 
-const useSortOrder = ({
-  initialData,
-  initialSort,
-  initialOrder,
+const useSummaryContext = ({
+  data: initialData,
+  sort: initialSort,
+  order: initialOrder,
   search,
   loading,
   error,
@@ -172,4 +172,4 @@ const useSortOrder = ({
   return value
 }
 
-export default useSortOrder
+export default useSummaryContext

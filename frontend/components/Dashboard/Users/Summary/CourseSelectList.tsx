@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback } from "react"
 
 import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
 import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
@@ -14,11 +14,12 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
-import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
+import {
+  useUserPointsSummaryContext,
+  useUserPointsSummarySelectedCourseContext,
+} from "./contexts"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import notEmpty from "/util/notEmpty"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 

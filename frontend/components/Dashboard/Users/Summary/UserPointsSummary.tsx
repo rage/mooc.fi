@@ -1,20 +1,12 @@
-import { useMemo } from "react"
-
 import { Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { useCollapseContext } from "./CollapseContext"
+import { useCollapseContext } from "./contexts/CollapseContext"
+import { useUserPointsSummaryContext } from "./contexts/UserPointsSummaryContext"
 import { CourseEntry, CourseEntrySkeleton } from "./Course"
 import CourseSelectList from "./CourseSelectList"
-import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
-import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-
-const DataPlaceholder = styled("div")`
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-`
 
 const UserPointsSummaryContainer = styled("div")`
   display: flex;

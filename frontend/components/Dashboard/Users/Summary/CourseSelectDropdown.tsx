@@ -2,8 +2,10 @@ import { useCallback } from "react"
 
 import { MenuItem, TextField } from "@mui/material"
 
-import { useUserPointsSummaryContext } from "./UserPointsSummaryContext"
-import { useUserPointsSummarySelectedCourseContext } from "./UserPointsSummarySelectedCourseContext"
+import {
+  useUserPointsSummaryContext,
+  useUserPointsSummarySelectedCourseContext,
+} from "./contexts"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 

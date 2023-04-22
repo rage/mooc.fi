@@ -25,6 +25,8 @@
     "REJECTED": "Hylätty",
     "GIVE_PEER_REVIEW": "Liian vähän vertaisarvioita annettu",
     "PENDING_PEER_REVIEW": "Odottaa vertaisarvioita",
+    "moocfiId": "MOOC.fi id",
+    "slug": "Slug",
     "part": "Osa",
     "section": "Luku",
     "partSection": "Osa/luku",
@@ -50,7 +52,7 @@
     "courseStartDate": "Kurssi aloitettu",
     "firstExerciseDate": "Ensimmäinen tehtävä",
     "latestExerciseDate": "Viimeisin tehtävä",
-    "relevantDatesTooltip": "Kurssin aloituspäivämäärä on käyttäjän kurssiasetusten luontipäivä. Tämä ei välttämättä ole juuri se päivä jolloin käyttäjä ensimmäisen kerran kirjautui kurssimateriaaliin.\nEnsimmäisen tehtävän päivämäärä on ensimmäisen kurssin tehtäväpalautuksen ajankohta.",
+    "milestonesTooltip": "Kurssin aloituspäivämäärä on käyttäjän kurssiasetusten luontipäivä. Tämä ei välttämättä ole juuri se päivä jolloin käyttäjä ensimmäisen kerran kirjautui kurssimateriaaliin.\nEnsimmäisen tehtävän päivämäärä on ensimmäisen kurssin tehtäväpalautuksen ajankohta.",
     "createdAt": "Luotu",
     "timestamp": "Aikaleima",
     "exerciseInfoTooltip": "Luontipäivämäärä tarkoittaa päivää jolloin tehtäväpalautus on synkronisoitu MOOC.fi-palveluun.\nAikaleima on alkuperäisen tehtäväpalautuksen päivämäärä.",
@@ -86,5 +88,7 @@
     "orderDescending": "Laskeva",
     "pointsRequired": "vaaditaan",
     "selectedCourse": "Valittu kurssi",
-    "noCourseFound": "Kurssia ei löydy. Oletko varmasti oikeassa osoitteessa?"
+    "noCourseFound": "Kurssia ei löydy. Oletko varmasti oikeassa osoitteessa?",
+    "showCourseDetails": "Näytä kurssin tiedot",
+    "copyCourseLink": "Kopioi linkki"
 }

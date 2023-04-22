@@ -1,28 +1,14 @@
 import { useCallback, useMemo } from "react"
 
-import { MRT_ColumnDef } from "material-react-table"
-import type {
-  MUIDataTableColumn,
-  MUIDataTableExpandButton,
-  MUIDataTableOptions,
-  MUIDataTableProps,
-} from "mui-datatables"
+import { MRT_ColumnDef, MRT_Row } from "material-react-table"
 import { useRouter } from "next/router"
 
-import {
-  TableCell,
-  TableRow,
-  Theme,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Theme, Typography, useMediaQuery } from "@mui/material"
 
 import {
-  ExpandButton,
-  ExpandButtonPlaceholder,
   MaterialReactTable,
-  MUIDataTable,
   SummaryCard,
+  useMaterialReactTableLocalization,
 } from "../common"
 import {
   renderCheck,
@@ -34,7 +20,6 @@ import {
 import TierExerciseCompletions from "./TierExerciseCompletions"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import notEmpty from "/util/notEmpty"
 
 import { TierProgressFieldsFragment } from "/graphql/generated"
 
@@ -66,9 +51,7 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
   const t = useTranslator(ProfileTranslations)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
-  const columns = useMemo((): Array<
-    MRT_ColumnDef<Partial<TierExerciseRow>>
-  > => {
+  const columns = useMemo((): Array<MRT_ColumnDef<TierExerciseRow>> => {
     if (!isNarrow) {
       return [
         {
@@ -124,76 +107,63 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
       {
         accessorKey: "completed",
         header: t("completed"),
-        size: 40,
         Cell: renderNarrowCheck(t("completed"), t("notCompleted")),
       },
+      // TODO: add conditional exercise completion rows = renderDetailPanel
     ]
   }, [locale, t, isNarrow])
 
-  const rows = useMemo(() => (data ?? []).map(mapExerciseToRow), [data])
-
-  /*const createOptions = useCallback(
-    (dataRows: typeof rows): MUIDataTableOptions => ({
-      expandableRows: true,
-      pagination: false,
-      selectableRows: "none",
-      isRowExpandable: (dataIndex) => {
-        return (dataRows[dataIndex]?.exercise_completions ?? []).length > 0
-      },
-      renderExpandableRow: (rowData, { rowIndex }) => {
-        return (
-          <TableRow>
-            <TableCell colSpan={rowData.length + 1}>
-              <TierExerciseCompletions
-                data={dataRows[rowIndex].exercise_completions}
-                highestTier={dataRows[rowIndex].tier}
-                points={dataRows[rowIndex].n_points}
-              />
-            </TableCell>
-          </TableRow>
-        )
-      },
-    }),
-    [rows],
+  const rows: Array<TierExerciseRow> = useMemo(
+    () => (data ?? []).map(mapExerciseToRow),
+    [data],
   )
 
-  const ConditionalExpandButton = useCallback(
-    (props: MUIDataTableExpandButton) => {
-      if (
-        !notEmpty(props.dataIndex) ||
-        (rows[props.dataIndex]?.exercise_completions ?? []).length == 0
-      ) {
-        return <ExpandButtonPlaceholder />
-      }
-      return <ExpandButton {...props} />
-    },
-    [rows],
+  const getExpandButtonProps = useCallback(
+    ({ row }: { row: MRT_Row<TierExerciseRow> }) =>
+      isNarrow || (row.original.exercise_completions ?? []).length === 0
+        ? {
+            sx: {
+              display: "none",
+            },
+          }
+        : {},
+    [isNarrow],
   )
 
-  const components: MUIDataTableProps["components"] = useMemo(
-    () => ({
-      ExpandButton: ConditionalExpandButton,
-    }),
-    [ConditionalExpandButton],
-  )*/
+  // TODO: use mrt here as well?
+  const renderTierExerciseCompletions = useCallback(
+    ({ row }: { row: MRT_Row<TierExerciseRow> }) =>
+      !isNarrow ? (
+        <TierExerciseCompletions
+          data={row.original.exercise_completions}
+          highestTier={row.original.tier}
+          points={row.original.n_points}
+        />
+      ) : undefined,
+    [isNarrow],
+  )
 
   const title = useCallback(
     () => <Typography variant="h3">{t("exercises")}</Typography>,
     [t],
   )
 
-  const tableProps = useExerciseListProps()
+  const tableProps = useExerciseListProps<TierExerciseRow>()
+  const localization = useMaterialReactTableLocalization(locale)
 
   return (
     <SummaryCard>
-      <MaterialReactTable
+      <MaterialReactTable<TierExerciseRow>
+        {...tableProps}
         data={rows}
         columns={columns}
         layoutMode="grid"
         enablePagination={false}
         enableColumnActions={false}
         renderTopToolbarCustomActions={title}
-        {...tableProps}
+        muiExpandButtonProps={getExpandButtonProps}
+        renderDetailPanel={renderTierExerciseCompletions}
+        localization={localization}
       />
     </SummaryCard>
   )

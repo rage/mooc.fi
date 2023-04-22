@@ -84,6 +84,8 @@
     "firstPage": "ensimmäinen sivu",
     "lastPage": "viimeinen sivu",
     "previousPage": "edellinen sivu",
-    "nextPage": "seuraava sivu"
+    "nextPage": "seuraava sivu",
+    "copyToClipboard": "Kopioi leikepöydälle",
+    "copiedToClipboard": "Kopioitu!"
 }
 

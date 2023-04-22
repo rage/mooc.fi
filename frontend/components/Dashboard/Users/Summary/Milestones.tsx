@@ -4,6 +4,7 @@ import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
 import { CardContent, Skeleton, Tooltip, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import Completion from "./Completion"
 import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -15,13 +16,25 @@ import {
   UserTierCourseSummaryCoreFieldsFragment,
 } from "/graphql/generated"
 
-type RelevantDatesProps = {
+type MilestonesProps = {
   data:
     | UserCourseSummaryCoreFieldsFragment
     | UserTierCourseSummaryCoreFieldsFragment
 }
 
-const RelevantDatesCardContent = styled(CardContent)`
+const MilestonesCardContent = styled(CardContent)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+
+const Row = styled("div")`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+`
+
+const DatesContainer = styled("div")`
   display: grid;
   justify-content: space-between;
   gap: 2rem;
@@ -31,25 +44,25 @@ const RelevantDatesCardContent = styled(CardContent)`
 
 const TooltipWrapper = styled("div")`
   margin-left: auto;
-  padding-right: 1rem;
+  padding: 0 0.5rem;
 `
 
-const RelevantDatesCard = styled(SummaryCard)`
+const MilestonesCard = styled(SummaryCard)`
   display: flex;
   flex-direction: row;
   align-items: center;
 `
 
 const hasCompletion = (
-  data: RelevantDatesProps["data"],
+  data: MilestonesProps["data"],
 ): data is UserCourseSummaryCoreFieldsFragment => "completion" in data
 
 const hasTierSummaries = (
-  data: RelevantDatesProps["data"],
+  data: MilestonesProps["data"],
 ): data is UserCourseSummaryCoreFieldsFragment =>
   ((data as any).tier_summaries?.length ?? 0) > 0
 
-function RelevantDates({ data }: RelevantDatesProps) {
+function Milestones({ data }: MilestonesProps) {
   const t = useTranslator(ProfileTranslations)
   const isTieredCourse = hasTierSummaries(data)
   const isRootCourse = hasCompletion(data)
@@ -71,40 +84,52 @@ function RelevantDates({ data }: RelevantDatesProps) {
     : undefined*/
 
   return (
-    <RelevantDatesCard>
-      <RelevantDatesCardContent>
-        {(isRootCourse || isTieredCourse) && !hasTier && (
-          <Typography variant="h4">
-            {t("courseStartDate")} <strong>{formatDateTime(startDate)}</strong>
-          </Typography>
-        )}
-        <Typography variant="h4">
-          {t("firstExerciseDate")}{" "}
-          <strong>{formatDateTime(firstExerciseDate)}</strong>
-        </Typography>
-        <Typography variant="h4">
-          {t("latestExerciseDate")}{" "}
-          <strong>{formatDateTime(latestExerciseDate)}</strong>
-        </Typography>
-        {/*isRootCourse && (
+    <MilestonesCard>
+      <MilestonesCardContent>
+        <Row>
+          <DatesContainer>
+            {(isRootCourse || isTieredCourse) && !hasTier && (
+              <Typography variant="h4">
+                {t("courseStartDate")}{" "}
+                <strong>{formatDateTime(startDate)}</strong>
+              </Typography>
+            )}
+            <Typography variant="h4">
+              {t("firstExerciseDate")}{" "}
+              <strong>{formatDateTime(firstExerciseDate)}</strong>
+            </Typography>
+            <Typography variant="h4">
+              {t("latestExerciseDate")}{" "}
+              <strong>{formatDateTime(latestExerciseDate)}</strong>
+            </Typography>
+            {/*isRootCourse && (
           <Typography variant="h4">
             {t("completedDate")}
             <strong>{formatDateTime(completionDate)}</strong>
           </Typography>
         )*/}
-      </RelevantDatesCardContent>
-      <TooltipWrapper>
-        <Tooltip title={t("relevantDatesTooltip")}>
-          <HelpIcon />
-        </Tooltip>
-      </TooltipWrapper>
-    </RelevantDatesCard>
+          </DatesContainer>
+          <TooltipWrapper>
+            <Tooltip title={t("milestonesTooltip")}>
+              <HelpIcon />
+            </Tooltip>
+          </TooltipWrapper>
+        </Row>
+        {isRootCourse && (
+          <Completion
+            key={`${data.course.id}-completion`}
+            course={data.course}
+            completion={data.completion}
+          />
+        )}
+      </MilestonesCardContent>
+    </MilestonesCard>
   )
 }
 
-export const RelevantDatesSkeleton = () => (
-  <RelevantDatesCard>
-    <RelevantDatesCardContent>
+export const MilestonesSkeleton = () => (
+  <MilestonesCard>
+    <MilestonesCardContent>
       <Typography variant="h4">
         <Skeleton variant="text" width="120px" />
       </Typography>
@@ -114,8 +139,8 @@ export const RelevantDatesSkeleton = () => (
       <Typography variant="h4">
         <Skeleton variant="text" width="130px" />
       </Typography>
-    </RelevantDatesCardContent>
-  </RelevantDatesCard>
+    </MilestonesCardContent>
+  </MilestonesCard>
 )
 
-export default RelevantDates
+export default Milestones

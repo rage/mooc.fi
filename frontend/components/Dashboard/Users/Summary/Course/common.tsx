@@ -13,16 +13,15 @@ import {
 import { styled } from "@mui/material/styles"
 
 import InfoRow from "../../InfoRow"
-import {
-  ActionType,
-  CollapsablePart,
-  useCollapseContextCourse,
-} from "../CollapseContext"
 import { LinkIconComponent, Spacer } from "../common"
+import { useCollapseContextCourse } from "../contexts"
+import { ActionType, CollapsablePart } from "../contexts/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import ClipboardButton from "/components/ClipboardButton"
 import { CardTitle } from "/components/Text/headers"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
+import ProfileTranslations from "/translations/profile"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 
@@ -56,10 +55,21 @@ export const CourseEntryPartSkeleton = () => (
 )
 
 interface CourseEntryCardProps {
-  course: UserCourseSummaryCourseFieldsFragment
+  course?: UserCourseSummaryCourseFieldsFragment | null
   hasCopyButton?: boolean
   hasCollapseButton?: boolean
 }
+
+const CourseEntryCardSkeleton = ({ children }: PropsWithChildren) => (
+  <CourseEntryCardBase>
+    <CourseEntryCardTitleWrapper>
+      <CourseEntryCardTitle variant="h3">
+        <Skeleton variant="text" width="200px" />
+      </CourseEntryCardTitle>
+    </CourseEntryCardTitleWrapper>
+    <CardContent>{children}</CardContent>
+  </CourseEntryCardBase>
+)
 
 export const CourseEntryCard = ({
   course,
@@ -67,20 +77,25 @@ export const CourseEntryCard = ({
   hasCollapseButton,
   children,
 }: PropsWithChildren<CourseEntryCardProps>) => {
+  const t = useTranslator(ProfileTranslations)
   const router = useRouter()
   const { admin } = useLoginStateContext()
-  const { state, dispatch } = useCollapseContextCourse(course.id)
+  const { state, dispatch } = useCollapseContextCourse(course?.id ?? "_")
 
-  const onCollapseCourseClick = useCallback(
-    () =>
-      dispatch({
-        type: ActionType.TOGGLE,
-        collapsable: CollapsablePart.COURSE,
-        course: course.id,
-      }),
-    [course.id, dispatch],
-  )
+  const onCollapseCourseClick = useCallback(() => {
+    if (!course) {
+      return
+    }
+    dispatch({
+      type: ActionType.TOGGLE,
+      collapsable: CollapsablePart.COURSE,
+      course: course?.id,
+    })
+  }, [course, dispatch])
   const permanentURL = useMemo(() => {
+    if (!course) {
+      return
+    }
     const basePath = router.asPath.split("?")[0].split("summary")[0]
     const origin =
       typeof window !== "undefined" && window.location.origin
@@ -88,6 +103,10 @@ export const CourseEntryCard = ({
         : ""
     return `${origin}${basePath}summary/${course.slug}/`
   }, [course, router])
+
+  if (!course) {
+    return <CourseEntryCardSkeleton>{children}</CourseEntryCardSkeleton>
+  }
 
   return (
     <CourseEntryCardBase>
@@ -97,7 +116,7 @@ export const CourseEntryCard = ({
         {hasCopyButton && (
           <ClipboardButton
             data={permanentURL}
-            tooltipText="Copy permanent URL"
+            tooltipText={t("copyCourseLink")}
             disabled={!permanentURL}
             Icon={LinkIconComponent}
           />
@@ -106,7 +125,7 @@ export const CourseEntryCard = ({
           <CollapseButton
             open={state.open}
             onClick={onCollapseCourseClick}
-            tooltip={"show course details"}
+            tooltip={t("showCourseDetails")}
           />
         )}
       </CourseEntryCardTitleWrapper>
@@ -115,14 +134,14 @@ export const CourseEntryCard = ({
           {admin && (
             <CourseInfo>
               <InfoRow
-                title="Id"
+                title={t("moocfiId")}
                 fullWidth
                 data={course.id}
                 variant="caption"
                 copyable
               />
               <InfoRow
-                title="Slug"
+                title={t("slug")}
                 fullWidth
                 data={course.slug}
                 variant="caption"

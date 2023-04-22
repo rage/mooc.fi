@@ -12,13 +12,9 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import {
-  ActionType,
-  CollapsablePart,
-  useCollapseContext,
-} from "./CollapseContext"
+import { useCollapseContext } from "./contexts"
+import { ActionType, CollapsablePart } from "./contexts/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
-import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { CompletionListItem } from "/components/Home/Completions"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -42,6 +38,7 @@ const CompletionListItemContainer = styled("div")`
 const CollapseTableRow = styled(TableRow)`
   & > td {
     border-bottom: unset;
+    padding: 1rem 0 0 0;
   }
 `
 
@@ -52,13 +49,11 @@ const CollapseTableCell = styled(TableCell)`
 
 function CompletionBase({ children }: PropsWithChildren) {
   return (
-    <SummaryCard>
-      <TableContainer>
-        <Table>
-          <TableBody>{children}</TableBody>
-        </Table>
-      </TableContainer>
-    </SummaryCard>
+    <TableContainer>
+      <Table>
+        <TableBody>{children}</TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 
