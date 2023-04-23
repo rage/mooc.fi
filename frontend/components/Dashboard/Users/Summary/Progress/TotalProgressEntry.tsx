@@ -4,11 +4,14 @@ import { sortBy } from "lodash"
 
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
-import { Box, Typography } from "@mui/material"
+import { Box, Button, Link, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
-import InfoRow from "../InfoRow"
-import { SummaryCard } from "./common"
+import InfoRow from "../../InfoRow"
+import { SummaryCard } from "../common"
+import { useCollapseContext } from "../contexts"
+import { ActionType, CollapsablePart } from "../contexts/CollapseContext"
+import BorderedSection from "/components/BorderedSection"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 import { CardCaption } from "/components/Text/paragraphs"
 import { useTranslator } from "/hooks/useTranslator"
@@ -48,28 +51,32 @@ interface TierInfoProps {
 
 function TierInfo({ tier }: TierInfoProps) {
   const t = useTranslator(ProfileTranslations)
+  const { dispatch } = useCollapseContext()
 
   return (
-    <>
-      <Typography
-        variant="h4"
-        style={{ display: "inline-flex", alignItems: "center" }}
-      >
-        {capitalizeFirstLetter(t(`completionTier-${tier.tier as 1 | 2 | 3}`))}
-        {tier.hasTier ? (
-          <CheckIcon
-            css={iconStyle}
-            color="success"
-            titleAccess={t("tierCompleted")}
-          />
-        ) : (
-          <XMarkIcon
-            css={iconStyle}
-            color="warning"
-            titleAccess={t("tierNotCompleted")}
-          />
-        )}
-      </Typography>
+    <BorderedSection
+      title={
+        <Typography
+          variant="h4"
+          style={{ display: "inline-flex", alignItems: "center" }}
+        >
+          {capitalizeFirstLetter(t(`completionTier-${tier.tier as 1 | 2 | 3}`))}
+          {tier.hasTier ? (
+            <CheckIcon
+              css={iconStyle}
+              color="success"
+              titleAccess={t("tierCompleted")}
+            />
+          ) : (
+            <XMarkIcon
+              css={iconStyle}
+              color="warning"
+              titleAccess={t("tierNotCompleted")}
+            />
+          )}
+        </Typography>
+      }
+    >
       <Box style={{ padding: "0.5rem" }}>
         <PointsProgress
           percentage={Math.min(
@@ -92,8 +99,22 @@ function TierInfo({ tier }: TierInfoProps) {
             {t("missingFromTier")} <strong>{tier.missingFromTier ?? 0}</strong>
           </CardCaption>
         )}
+        <Link
+          onClick={() =>
+            dispatch({
+              type: ActionType.OPEN,
+              course: tier.id,
+              collapsable: CollapsablePart.COURSE,
+            })
+          }
+          href={`#${tier.name}`}
+          underline="hover"
+          variant="caption"
+        >
+          {t("showTierCourse")}
+        </Link>
       </Box>
-    </>
+    </BorderedSection>
   )
 }
 

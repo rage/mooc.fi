@@ -6,8 +6,8 @@ export {
 export {
   default as UserPointsSummaryContext,
   useUserPointsSummaryContext,
-  useUserPointsSummaryContextCourseById,
-  useUserPointsSummaryContextCourseBySlug,
+  useUserPointsSummaryContextByCourseId,
+  useUserPointsSummaryContextByCourseSlug,
 } from "./UserPointsSummaryContext"
 export {
   default as UserPointsSummarySelectedCourseContext,

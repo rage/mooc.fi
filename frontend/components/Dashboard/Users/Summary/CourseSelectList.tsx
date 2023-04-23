@@ -14,10 +14,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import {
-  useUserPointsSummaryContext,
-  useUserPointsSummarySelectedCourseContext,
-} from "./contexts"
+import { useUserPointsSummarySelectedCourseContext } from "./contexts"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 
@@ -78,15 +75,16 @@ const ListToolbar = styled("div")`
 const CourseSelectList = () => {
   const t = useTranslator(ProfileTranslations)
   const {
-    data,
+    courses,
     sort,
     order,
     onCourseSortChange,
     onSortOrderToggle,
     sortOptions,
     loading,
-  } = useUserPointsSummaryContext()
-  const { selected, setSelected } = useUserPointsSummarySelectedCourseContext()
+    selected,
+    setSelected,
+  } = useUserPointsSummarySelectedCourseContext()
 
   const handleListItemClick = useCallback(
     (slug: UserCourseSummaryCourseFieldsFragment["slug"]) => () => {
@@ -105,7 +103,7 @@ const CourseSelectList = () => {
           label={t("courseSortOrder")}
           onChange={onCourseSortChange}
           size="small"
-          disabled={!loading && data?.length === 0}
+          disabled={!loading && courses?.length === 0}
         >
           {sortOptions.map((o) => (
             <MenuItem key={o.value} value={o.value}>
@@ -116,7 +114,7 @@ const CourseSelectList = () => {
         <IconButton
           onClick={onSortOrderToggle}
           title={order === "asc" ? t("orderAscending") : t("orderDescending")}
-          disabled={!loading && data?.length === 0}
+          disabled={!loading && courses?.length === 0}
         >
           {order === "desc" ? (
             <ReverseOrderIcon fontSize="small" />
@@ -136,7 +134,7 @@ const CourseSelectList = () => {
             <CourseSelectListItemSkeleton />
           </>
         )}
-        {data?.map(({ course, tier_summaries }) => (
+        {courses?.map((course) => (
           <ListItemButton
             key={course.id}
             selected={selected === course.slug}
@@ -148,7 +146,7 @@ const CourseSelectList = () => {
                   {course.name}
                 </Typography>
               }
-              secondary={tier_summaries?.map(({ course: tierCourse }) => (
+              secondary={course.tiers?.map((tierCourse) => (
                 <CourseSelectListItemTextNested key={tierCourse.id}>
                   {tierCourse.name}
                 </CourseSelectListItemTextNested>

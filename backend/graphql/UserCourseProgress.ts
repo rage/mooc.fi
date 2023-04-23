@@ -20,6 +20,7 @@ import {
   pointsNeeded as BAIPointsNeeded,
   requiredByTier as BAIRequiredByTier,
   BAITierNameToId,
+  BAItiers,
   exerciseCompletionsNeeded,
 } from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
@@ -172,8 +173,8 @@ export const UserCourseProgress = objectType({
 
         const extra = progress.extra as unknown as ProgressExtra
         const tiers = Object.keys(extra.tiers).map((key) => {
-          const requiredByTier =
-            BAIRequiredByTier[BAITierNameToId[key] ?? 0] ?? 0
+          const tier = BAITierNameToId[key] ?? 0
+          const requiredByTier = BAIRequiredByTier[tier] ?? 0
           const { exerciseCompletions } = extra.tiers[key]
           const exercisesNeededPercentage =
             requiredByTier > 0
@@ -182,7 +183,9 @@ export const UserCourseProgress = objectType({
           const exercisePercentage = exerciseCompletions / BAIExerciseCount
 
           return {
-            tier: BAITierNameToId[key] ?? 0,
+            id: BAItiers[tier],
+            name: key,
+            tier,
             requiredByTier,
             exerciseCount: BAIExerciseCount,
             exercisePercentage,

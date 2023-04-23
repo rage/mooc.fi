@@ -4,7 +4,17 @@ import { MaterialReactTableProps } from "material-react-table"
 import dynamic from "next/dynamic"
 
 import LinkIcon from "@fortawesome/fontawesome-free/svgs/solid/link.svg?icon"
-import { Paper, PaperProps, Skeleton, TableCell, TableRow } from "@mui/material"
+import {
+  NoSsr,
+  Paper,
+  PaperProps,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { MRT_Localization_FI } from "/lib/locale"
@@ -47,11 +57,30 @@ export const MaterialReactTable = dynamic(
   {
     ssr: false,
     loading: () => (
-      <>
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
-      </>
+      <NoSsr>
+        <TableContainer>
+          <Table key="loading">
+            <TableBody>
+              {[...Array(10)].map((i) => (
+                <TableRow key={i}>
+                  <TableCell width={20}>
+                    <Skeleton animation="wave" height={20} width={20} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton animation="wave" height={20} width="100%" />
+                  </TableCell>
+                  <TableCell width={20}>
+                    <Skeleton animation="wave" height={20} width={20} />
+                  </TableCell>
+                  <TableCell width={20}>
+                    <Skeleton animation="wave" height={20} width={20} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </NoSsr>
     ),
   },
   // eslint-disable-next-line @typescript-eslint/ban-types

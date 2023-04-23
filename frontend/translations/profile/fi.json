@@ -47,6 +47,7 @@
     "progressByTier": "Edistyminen tasoittain",
     "partProgress": "Edistyminen osioittain",
     "exercises": "Tehtävät",
+    "combinedExercises": "Yhdistetyt tehtävät",
     "exercisesCompleted": "Tehtyjä tehtäviä",
     "grade": "arvosana",
     "courseStartDate": "Kurssi aloitettu",
@@ -90,5 +91,6 @@
     "selectedCourse": "Valittu kurssi",
     "noCourseFound": "Kurssia ei löydy. Oletko varmasti oikeassa osoitteessa?",
     "showCourseDetails": "Näytä kurssin tiedot",
-    "copyCourseLink": "Kopioi linkki"
+    "copyCourseLink": "Kopioi linkki",
+    "showTierCourse": "Näytä tasokurssi"
 }

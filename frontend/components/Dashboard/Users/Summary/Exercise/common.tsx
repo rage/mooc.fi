@@ -5,6 +5,7 @@ import { MaterialReactTableProps, MRT_ColumnDef } from "material-react-table"
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
 import { Chip, Theme, Typography, useMediaQuery } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { iconStyle } from "../common"
 import { Translator } from "/translations"
@@ -84,28 +85,35 @@ const NarrowCell = ({
   </div>
 )
 
+const RequiredActionsContainer = styled("div")`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+`
+
+export const renderRequiredActionsBase =
+  (t: Translator<any>) =>
+  (
+    values: ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"],
+  ) =>
+    (
+      <RequiredActionsContainer>
+        {values.map((action) => (
+          <Chip key={action.id} label={t(action.value)} size="small" />
+        ))}
+      </RequiredActionsContainer>
+    )
+
 export const renderRequiredActions =
   <T extends Record<string, any>>(
     t: Translator<any>,
   ): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
   ({ cell }) =>
-    (
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "flex-end",
-          gap: "0.5rem",
-        }}
-      >
-        {cell
-          .getValue<
-            ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"]
-          >()
-          .map((action) => (
-            <Chip key={action.id} label={t(action.value)} size="small" />
-          ))}
-      </div>
+    renderRequiredActionsBase(t)(
+      cell.getValue<
+        ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"]
+      >(),
     )
 
 export const renderNarrowRequiredActions =
@@ -119,6 +127,23 @@ export const renderNarrowRequiredActions =
       </NarrowCell>
     )
 
+export const renderCheckBase = (
+  value: boolean,
+  title: string,
+  failureTitle?: string,
+) => {
+  if (!value) {
+    if (!failureTitle) {
+      return
+    }
+    return (
+      <XMarkIcon css={iconStyle} color="warning" titleAccess={failureTitle} />
+    )
+  }
+
+  return <CheckIcon css={iconStyle} color="success" titleAccess={title} />
+}
+
 export const renderCheck =
   <T extends Record<string, any>>(
     title: string,
@@ -127,16 +152,7 @@ export const renderCheck =
   ({ cell }) => {
     const value = cell.getValue<boolean>()
 
-    if (!value) {
-      if (!failureTitle) {
-        return
-      }
-      return (
-        <XMarkIcon css={iconStyle} color="warning" titleAccess={failureTitle} />
-      )
-    }
-
-    return <CheckIcon css={iconStyle} color="success" titleAccess={title} />
+    return renderCheckBase(value, title, failureTitle)
   }
 
 export const renderNarrowCheck =
@@ -168,11 +184,42 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
   const props = useMemo(
     (): Omit<MaterialReactTableProps<T>, "columns" | "data"> => ({
       layoutMode: "grid",
-      enablePagination: false,
       enableColumnActions: false,
       displayColumnDefOptions: !isNarrow
-        ? { "mrt-row-expand": { size: 25 } }
+        ? { "mrt-row-expand": { size: 15 } }
         : {},
+      muiTablePaginationProps: {
+        rowsPerPageOptions: [10, 30, 50, 100],
+        sx: {
+          ".MuiTablePagination-toolbar": {
+            padding: "0.5rem",
+            justifyContent: "center !important",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+          },
+          ".MuiTablePagination-selectRoot": {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+          },
+          ".MuiTablePagination-spacer": {
+            flex: "0 !important",
+          },
+        },
+      },
+      muiBottomToolbarProps: {
+        sx: {
+          padding: "0.5rem",
+          justifyContent: "center !important",
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          "& div": {
+            justifyContent: "center",
+          },
+        },
+      },
       muiTablePaperProps: {
         elevation: 0,
       },

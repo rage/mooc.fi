@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-22T00:24:44+03:00
+// Generated on 2023-04-23T22:08:50+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1555,15 +1555,15 @@ export type PageInfo = {
 export type PointsByGroup = {
   __typename?: "PointsByGroup"
   group: Scalars["String"]
-  max_points: Scalars["Int"]
-  n_points: Scalars["Int"]
+  max_points: Scalars["Float"]
+  n_points: Scalars["Float"]
   progress: Scalars["Float"]
 }
 
 export type PointsByGroupInput = {
   group: Scalars["String"]
-  max_points: Scalars["Int"]
-  n_points: Scalars["Int"]
+  max_points: Scalars["Float"]
+  n_points: Scalars["Float"]
   progress: Scalars["Float"]
 }
 
@@ -2245,7 +2245,9 @@ export type TierInfo = {
   exercisePercentage: Scalars["Float"]
   exercisesNeededPercentage: Scalars["Float"]
   hasTier: Scalars["Boolean"]
+  id: Scalars["ID"]
   missingFromTier: Scalars["Int"]
+  name: Scalars["String"]
   requiredByTier: Scalars["Int"]
   tier: Scalars["Int"]
 }
@@ -3529,6 +3531,8 @@ export type ProgressCoreFieldsFragment = {
       totalExerciseCompletionsNeeded: number
       tiers: Array<{
         __typename?: "TierInfo"
+        id: string
+        name: string
         tier: number
         hasTier: boolean
         missingFromTier: number
@@ -3612,6 +3616,8 @@ export type ProgressExtraFieldsFragment = {
   totalExerciseCompletionsNeeded: number
   tiers: Array<{
     __typename?: "TierInfo"
+    id: string
+    name: string
     tier: number
     hasTier: boolean
     missingFromTier: number
@@ -3655,6 +3661,8 @@ export type ProgressExtraFieldsFragment = {
 
 export type TierInfoFieldsFragment = {
   __typename?: "TierInfo"
+  id: string
+  name: string
   tier: number
   hasTier: boolean
   missingFromTier: number
@@ -3974,6 +3982,8 @@ export type UserProgressesFieldsFragment = {
         totalExerciseCompletionsNeeded: number
         tiers: Array<{
           __typename?: "TierInfo"
+          id: string
+          name: string
           tier: number
           hasTier: boolean
           missingFromTier: number
@@ -4178,6 +4188,8 @@ export type UserCourseProgressCoreFieldsFragment = {
     totalExerciseCompletionsNeeded: number
     tiers: Array<{
       __typename?: "TierInfo"
+      id: string
+      name: string
       tier: number
       hasTier: boolean
       missingFromTier: number
@@ -4333,6 +4345,8 @@ export type StudentProgressesQueryNodeFieldsFragment = {
           totalExerciseCompletionsNeeded: number
           tiers: Array<{
             __typename?: "TierInfo"
+            id: string
+            name: string
             tier: number
             hasTier: boolean
             missingFromTier: number
@@ -4557,6 +4571,8 @@ export type UserCourseSummaryCoreFieldsFragment = {
       totalExerciseCompletionsNeeded: number
       tiers: Array<{
         __typename?: "TierInfo"
+        id: string
+        name: string
         tier: number
         hasTier: boolean
         missingFromTier: number
@@ -4751,6 +4767,8 @@ export type UserCourseSummaryCoreFieldsFragment = {
         totalExerciseCompletionsNeeded: number
         tiers: Array<{
           __typename?: "TierInfo"
+          id: string
+          name: string
           tier: number
           hasTier: boolean
           missingFromTier: number
@@ -4910,6 +4928,8 @@ export type UserTierCourseSummaryCoreFieldsFragment = {
       totalExerciseCompletionsNeeded: number
       tiers: Array<{
         __typename?: "TierInfo"
+        id: string
+        name: string
         tier: number
         hasTier: boolean
         missingFromTier: number
@@ -6784,6 +6804,8 @@ export type UserSummaryQuery = {
           totalExerciseCompletionsNeeded: number
           tiers: Array<{
             __typename?: "TierInfo"
+            id: string
+            name: string
             tier: number
             hasTier: boolean
             missingFromTier: number
@@ -6978,6 +7000,8 @@ export type UserSummaryQuery = {
             totalExerciseCompletionsNeeded: number
             tiers: Array<{
               __typename?: "TierInfo"
+              id: string
+              name: string
               tier: number
               hasTier: boolean
               missingFromTier: number
@@ -7281,6 +7305,8 @@ export type CurrentUserProgressesQuery = {
           totalExerciseCompletionsNeeded: number
           tiers: Array<{
             __typename?: "TierInfo"
+            id: string
+            name: string
             tier: number
             hasTier: boolean
             missingFromTier: number
@@ -7648,6 +7674,8 @@ export type StudentProgressesQuery = {
                 totalExerciseCompletionsNeeded: number
                 tiers: Array<{
                   __typename?: "TierInfo"
+                  id: string
+                  name: string
                   tier: number
                   hasTier: boolean
                   missingFromTier: number
@@ -11512,6 +11540,8 @@ export const TierInfoFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -11887,6 +11917,8 @@ export const ProgressExtraFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -12023,6 +12055,8 @@ export const UserCourseProgressCoreFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -12395,6 +12429,8 @@ export const ProgressCoreFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -12809,6 +12845,8 @@ export const UserProgressesFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -13844,6 +13882,8 @@ export const StudentProgressesQueryNodeFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -14831,6 +14871,8 @@ export const UserTierCourseSummaryCoreFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -15432,6 +15474,8 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -24289,6 +24333,8 @@ export const UserSummaryDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -25742,6 +25788,8 @@ export const CurrentUserProgressesDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
@@ -27099,6 +27147,8 @@ export const StudentProgressesDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "tier" } },
           { kind: "Field", name: { kind: "Name", value: "hasTier" } },
           { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },

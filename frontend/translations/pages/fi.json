@@ -16,7 +16,7 @@
     "/study-modules/new": "Uusi opintokokonaisuus",
     "/users/[id]": "Käyttäjä - {{title}}",
     "/users/[id]/completions": "Suoritukset - {{title}}",
-    "/users/[id]/summary": "Yhteenveto - {{title}}",
+    "/users/[id]/summary/[[...slug]]": "Yhteenveto - {{title}}",
     "/users/search": "Hae käyttäjiä",
     "/users/search/[text]": "Hae käyttäjiä - [[text]]",
     "/users": "Käyttäjät",

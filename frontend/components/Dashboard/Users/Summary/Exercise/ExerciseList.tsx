@@ -1,12 +1,20 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { sortBy } from "lodash"
-import type { MRT_ColumnDef, MRT_Row } from "material-react-table"
+import type {
+  MRT_ColumnDef,
+  MRT_Row,
+  MRT_TableInstance,
+} from "material-react-table"
 import { useRouter } from "next/router"
 
-import { Theme, Typography, useMediaQuery } from "@mui/material"
+import { TableCellProps, Theme, Typography, useMediaQuery } from "@mui/material"
 
-import { useUserPointsSummaryContext } from "../contexts"
+import {
+  useUserPointsSummaryContext,
+  useUserPointsSummaryContextByCourseId,
+} from "../contexts"
+import { UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment } from "../types"
 import {
   ExerciseRow,
   renderCheck,
@@ -34,7 +42,7 @@ import {
 } from "/graphql/generated"
 
 type ExerciseWithCompletions = ExerciseCoreFieldsFragment & {
-  exercise_completions: ExerciseCompletionCoreFieldsFragment[]
+  exercise_completions: ExerciseCompletionCoreFieldsFragment[] | null
 }
 const mapExerciseToRow =
   (locale?: string) =>
@@ -64,37 +72,32 @@ const mapExerciseToRow =
         exerciseCompletion?.exercise_completion_required_actions ?? [],
       created_at,
       timestamp,
-      exercise_completions: exercise.exercise_completions,
+      exercise_completions: exercise.exercise_completions ?? [],
     }
   }
 
 interface ExerciseListProps {
-  data?:
-    | UserCourseSummaryCoreFieldsFragment
-    | UserTierCourseSummaryCoreFieldsFragment
+  data?: Array<ExerciseWithCompletions>
   loading?: boolean
 }
 
-function ExerciseList({ data }: ExerciseListProps) {
+const hideCellIfNoExerciseCompletions = ({
+  row,
+}: {
+  row: MRT_Row<ExerciseRow>
+}): TableCellProps =>
+  row.original.exercise_completions?.length > 0
+    ? {}
+    : { sx: { display: "none" } }
+
+function ExerciseList({ data, loading }: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
+  const tableInstanceRef = useRef<MRT_TableInstance<ExerciseRow>>(null)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
-  const { loading } = useUserPointsSummaryContext()
-
-  const exercises = useMemo(
-    () =>
-      sortBy(
-        (data?.course?.exercises ?? []).map((exercise) => ({
-          ...exercise,
-          exercise_completions: (data?.exercise_completions ?? []).filter(
-            (ec) => ec?.exercise_id === exercise.id,
-          ),
-        })),
-        ["part", "section", "name"],
-      ),
-    [data],
-  )
-
+  // const { loading } = useUserPointsSummaryContext()
+  const render = useRef(false)
+  // const data = useUserPointsSummaryContextByCourseId(courseId, tierCourseId)
   const columns = useMemo((): Array<MRT_ColumnDef<ExerciseRow>> => {
     if (!isNarrow) {
       return [
@@ -173,7 +176,24 @@ function ExerciseList({ data }: ExerciseListProps) {
         header: t("requiredActions"),
         Cell: renderNarrowRequiredActions(t),
       },
-      // TODO: add conditional date rows = ExerciseInfo
+      {
+        accessorKey: "created_at",
+        header: t("createdAt"),
+        Cell: (props) =>
+          props.row.original.exercise_completions.length
+            ? renderNarrowCell(props)
+            : undefined,
+        muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
+      },
+      {
+        accessorKey: "timestamp",
+        header: t("timestamp"),
+        Cell: (props) =>
+          props.row.original.exercise_completions.length
+            ? renderNarrowCell(props)
+            : undefined,
+        muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
+      },
     ]
   }, [locale, t, isNarrow])
 
@@ -181,9 +201,9 @@ function ExerciseList({ data }: ExerciseListProps) {
     () => mapExerciseToRow(locale),
     [locale],
   )
-  const rows: Array<ExerciseRow> = useMemo(
-    () => exercises.map(localeMapExerciseToRow),
-    [localeMapExerciseToRow, exercises, isNarrow],
+  const rows = useMemo(
+    () => (data ?? []).map(localeMapExerciseToRow),
+    [localeMapExerciseToRow, data],
   )
 
   const getExpandButtonProps = useCallback(
@@ -223,8 +243,20 @@ function ExerciseList({ data }: ExerciseListProps) {
         muiExpandButtonProps={getExpandButtonProps}
         renderDetailPanel={renderExerciseInfo}
         localization={localization}
+        initialState={{
+          isLoading: true,
+          pagination: { pageIndex: 0, pageSize: 30 },
+        }}
+        tableInstanceRef={tableInstanceRef}
+        positionPagination={
+          (tableInstanceRef?.current?.getState()?.pagination?.pageSize ?? 30) >
+          10
+            ? "both"
+            : "bottom"
+        }
         state={{
-          isLoading: loading,
+          isLoading: loading || (!loading && !data?.length),
+          // TODO: will this show loading on no data, or do we not render exerciselist at all then?
         }}
       />
     </SummaryCard>

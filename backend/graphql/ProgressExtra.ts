@@ -25,6 +25,8 @@ export const ProgressExtra = objectType({
 export const TierInfo = objectType({
   name: "TierInfo",
   definition(t) {
+    t.nonNull.id("id")
+    t.nonNull.string("name")
     t.nonNull.int("tier")
     t.nonNull.boolean("hasTier")
     t.nonNull.int("requiredByTier")

@@ -1,175 +1,108 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
-import { orderBy } from "lodash"
-import { useRouter } from "next/router"
-
-import { ApolloError } from "@apollo/client"
+import { sortBy } from "lodash"
 
 import { type UserPointsSummaryContext } from "../contexts/UserPointsSummaryContext"
-import {
-  SortOrder,
-  sortOrderOptions,
-  UserCourseSummarySort,
-  userCourseSummarySortOptions,
-} from "../types"
-import { useTranslator } from "/hooks/useTranslator"
-import ProfileTranslations from "/translations/profile"
+import { UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment } from "../types"
 
 import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
 
-interface UseSortOrderArgs {
+interface UseSummaryDataArgs {
+  slug?: string
   data?: Array<UserCourseSummaryCoreFieldsFragment> | null
-  sort?: string
-  order?: string
+  loading: boolean
   search?: string | null
-  loading?: boolean
-  error?: ApolloError
 }
 
-function flipOrder(order: SortOrder) {
-  return order === "asc" ? "desc" : "asc"
+function mapExerciseCompletionsToExercise(
+  data: UserCourseSummaryCoreFieldsFragment,
+): UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment {
+  return {
+    ...data,
+    course: {
+      ...data?.course,
+      exercises: sortBy(
+        (data?.course?.exercises ?? []).map((exercise) => ({
+          ...exercise,
+          exercise_completions: (data?.exercise_completions ?? []).filter(
+            (ec) => ec?.exercise_id === exercise.id,
+          ),
+        })),
+        ["part", "section", "name"],
+      ),
+    },
+    tier_summaries:
+      data?.tier_summaries?.map((tierEntry) => ({
+        ...tierEntry,
+        course: {
+          ...tierEntry?.course,
+          exercises: sortBy(
+            (tierEntry?.course?.exercises ?? []).map((exercise) => ({
+              ...exercise,
+              exercise_completions: (
+                tierEntry?.exercise_completions ?? []
+              ).filter((ec) => ec?.exercise_id === exercise.id),
+            })),
+            ["part", "section", "name"],
+          ),
+        },
+      })) ?? null,
+  }
 }
 
-const defaultSort = "course_name"
-const defaultOrder = "asc"
+const useSummaryData = ({ data, loading, search }: UseSummaryDataArgs) => {
+  /*const [selectedData, setSelectedData] = useState<
+    UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment | undefined
+  >(() => {
+    const initialSelected = data?.find(
+      ({ course }) => course?.slug === slug,
+    )
 
-const useSummaryContext = ({
-  data: initialData,
-  sort: initialSort,
-  order: initialOrder,
-  search,
-  loading,
-  error,
-}: UseSortOrderArgs) => {
-  const router = useRouter()
-
-  const t = useTranslator(ProfileTranslations)
-
-  const [sort, setSort] = useState<UserCourseSummarySort>(() => {
-    if (
-      userCourseSummarySortOptions.includes(
-        initialSort as UserCourseSummarySort,
-      )
-    ) {
-      return initialSort as UserCourseSummarySort
+    if (!initialSelected) {
+      return undefined
     }
-    return defaultSort
-  })
-  const [order, setOrder] = useState<SortOrder>(() => {
-    if (sortOrderOptions.includes(initialOrder as SortOrder)) {
-      return initialOrder as SortOrder
-    }
-    return defaultOrder
-  })
 
-  const data = useMemo(() => {
-    if (!initialData) {
+    return mapExerciseCompletionsToExercise(initialSelected)
+  })*/
+
+  const processedData = useMemo(() => {
+    if (!data) {
       return []
     }
 
-    let sortedData: Array<UserCourseSummaryCoreFieldsFragment>
+    const mappedData = data?.map(mapExerciseCompletionsToExercise) ?? []
 
-    switch (sort) {
-      case "activity_date":
-        sortedData = orderBy(
-          initialData,
-          [
-            (entry) => {
-              const combinedExerciseCompletions = (
-                entry.exercise_completions ?? []
-              ).concat(
-                (entry.tier_summaries ?? []).flatMap(
-                  (t) => t.exercise_completions ?? [],
-                ),
-              )
-              return (
-                orderBy(combinedExerciseCompletions, "created_at")?.pop()
-                  ?.updated_at ?? "2999-01-01"
-              )
-            },
-            "course.name",
-          ],
-          [flipOrder(order), order],
-        )
-        break
-      case "completion_date":
-        sortedData = orderBy(
-          initialData,
-          [
-            (entry) => entry.completion?.updated_at ?? "2999-01-01",
-            "course.name",
-          ],
-          [flipOrder(order), order],
-        )
-        break
-      default:
-        sortedData = orderBy(initialData, "course.name", order)
-        break
+    if (search) {
+      return mappedData.filter((entry) =>
+        entry?.course?.name
+          .trim()
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase()),
+      )
     }
 
-    if (!search) {
-      return sortedData
-    }
+    return mappedData
+  }, [search, data])
 
-    const searchData = sortedData.filter((entry) =>
-      entry?.course?.name
-        .trim()
-        .toLocaleLowerCase()
-        .includes(search.toLocaleLowerCase()),
-    )
-
-    return searchData
-  }, [search, order, sort, initialData])
-
-  const onCourseSortChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSort(event.target.value as UserCourseSummarySort)
+  /*const setSelected = useCallback(
+    (slug: string) => {
+      setSelectedInternal(slug)
+      setSelectedData(
+        processedData?.find(({ course }) => course?.slug === slug) ?? undefined,
+      )
     },
-    [],
-  )
-
-  const onSortOrderToggle = useCallback(() => {
-    setOrder((v) => flipOrder(v))
-  }, [setOrder])
-
-  const sortOptions = useMemo(
-    () =>
-      userCourseSummarySortOptions.map((o) => ({
-        value: o,
-        label: t(`courseSortOrder-${o}`),
-      })),
-    [router.locale],
-  )
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams()
-    if (sort && sort !== defaultSort) {
-      queryParams.append("sort", sort)
-    }
-    if (order && order !== defaultOrder) {
-      queryParams.append("order", order)
-    }
-    const href =
-      router.asPath.split("?")[0] +
-      (queryParams.toString().length > 0 ? "?" + queryParams : "")
-    router.replace(href, undefined, { shallow: true })
-  }, [sort, order])
+    [processedData],
+  )*/
 
   const value: UserPointsSummaryContext = useMemo(
     () => ({
-      data,
-      sort,
-      order,
-      onCourseSortChange,
-      onSortOrderToggle,
-      sortOptions,
+      data: processedData,
       loading,
-      error,
     }),
-    [data, sort, order, loading, error],
+    [processedData, loading],
   )
 
   return value
 }
 
-export default useSummaryContext
+export default useSummaryData

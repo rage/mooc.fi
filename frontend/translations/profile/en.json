@@ -46,6 +46,7 @@
     "tierProgress": "Progress on tier",
     "progressByTier": "Progress by tier",
     "exercises": "Exercises",
+    "combinedExercises": "Combined exercises",
     "exercisesCompleted": "Exercises completed",
     "partProgress": "Progress by part",
     "grade": "grade",
@@ -90,5 +91,6 @@
     "selectedCourse": "Selected course",
     "noCourseFound": "No course found. Are you sure you have the right link?",
     "showCourseDetails": "Show course details",
-    "copyCourseLink": "Copy permanent link"
+    "copyCourseLink": "Copy permanent link",
+    "showTierCourse": "Show tier course"
 }

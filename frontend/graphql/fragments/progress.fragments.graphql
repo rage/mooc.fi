@@ -32,6 +32,8 @@ fragment ProgressExtraFields on ProgressExtra {
 }
 
 fragment TierInfoFields on TierInfo {
+  id
+  name
   tier
   hasTier
   missingFromTier

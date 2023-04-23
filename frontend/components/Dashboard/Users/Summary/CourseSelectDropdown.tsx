@@ -2,27 +2,16 @@ import { useCallback } from "react"
 
 import { MenuItem, TextField } from "@mui/material"
 
-import {
-  useUserPointsSummaryContext,
-  useUserPointsSummarySelectedCourseContext,
-} from "./contexts"
+import { useUserPointsSummarySelectedCourseContext } from "./contexts"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 
-interface CourseSelectDropdownProps {
-  loading?: boolean
-  selected?: UserCourseSummaryCourseFieldsFragment["slug"]
-}
-
-const CourseSelectDropdown = ({
-  selected,
-  loading,
-}: CourseSelectDropdownProps) => {
+const CourseSelectDropdown = () => {
   const t = useTranslator(ProfileTranslations)
-  const { data } = useUserPointsSummaryContext()
-  const { setSelected } = useUserPointsSummarySelectedCourseContext()
+  const { courses, loading, selected, setSelected } =
+    useUserPointsSummarySelectedCourseContext()
 
   const handleListItemClick = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +30,7 @@ const CourseSelectDropdown = ({
       label={t("selectedCourse")}
       disabled={loading}
     >
-      {data?.map(({ course }) => (
+      {courses?.map((course) => (
         <MenuItem key={course.id} value={course.slug}>
           {course.name}
         </MenuItem>

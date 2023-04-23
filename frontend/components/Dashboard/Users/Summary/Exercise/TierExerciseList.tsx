@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react"
 import { MRT_ColumnDef, MRT_Row } from "material-react-table"
 import { useRouter } from "next/router"
 
-import { Theme, Typography, useMediaQuery } from "@mui/material"
+import { TableCellProps, Theme, Typography, useMediaQuery } from "@mui/material"
 
 import {
   MaterialReactTable,
@@ -45,6 +45,28 @@ const mapExerciseToRow = (
   })),
   completed: exercise.exercise_completions?.some((e) => e.completed) ?? false,
 })
+
+const conditionallyRenderTierExerciseCompletions = ({
+  row,
+}: {
+  row: MRT_Row<TierExerciseRow>
+}) =>
+  (row.original.exercise_completions ?? []).length > 0 ? (
+    <TierExerciseCompletions
+      data={row.original.exercise_completions}
+      highestTier={row.original.tier}
+      points={row.original.n_points}
+    />
+  ) : undefined
+
+const hideCellIfNoExerciseCompletions = ({
+  row,
+}: {
+  row: MRT_Row<TierExerciseRow>
+}): TableCellProps =>
+  row.original.exercise_completions?.length > 0
+    ? {}
+    : { sx: { display: "none" } }
 
 const TierExerciseList = ({ data }: TierExerciseListProps) => {
   const { locale } = useRouter()
@@ -109,7 +131,13 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
         header: t("completed"),
         Cell: renderNarrowCheck(t("completed"), t("notCompleted")),
       },
-      // TODO: add conditional exercise completion rows = renderDetailPanel
+      {
+        accessorKey: "exercise_completions",
+        header: "asdf",
+        Cell: conditionallyRenderTierExerciseCompletions,
+        muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
+        // TODO: create narrow version
+      },
     ]
   }, [locale, t, isNarrow])
 
@@ -130,21 +158,21 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
     [isNarrow],
   )
 
-  // TODO: use mrt here as well?
   const renderTierExerciseCompletions = useCallback(
-    ({ row }: { row: MRT_Row<TierExerciseRow> }) =>
-      !isNarrow ? (
-        <TierExerciseCompletions
-          data={row.original.exercise_completions}
-          highestTier={row.original.tier}
-          points={row.original.n_points}
-        />
-      ) : undefined,
-    [isNarrow],
+    ({ row }: { row: MRT_Row<TierExerciseRow> }) => (
+      /*!isNarrow && (row.original.exercise_completions ?? []).length > 0 ?*/ <TierExerciseCompletions
+        data={row.original.exercise_completions}
+        highestTier={row.original.tier}
+        points={row.original.n_points}
+      />
+    ) /*: undefined*/,
+    [
+      /*isNarrow*/
+    ],
   )
 
   const title = useCallback(
-    () => <Typography variant="h3">{t("exercises")}</Typography>,
+    () => <Typography variant="h3">{t("combinedExercises")}</Typography>,
     [t],
   )
 
@@ -162,7 +190,9 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
         enableColumnActions={false}
         renderTopToolbarCustomActions={title}
         muiExpandButtonProps={getExpandButtonProps}
-        renderDetailPanel={renderTierExerciseCompletions}
+        renderDetailPanel={
+          !isNarrow ? renderTierExerciseCompletions : undefined
+        }
         localization={localization}
       />
     </SummaryCard>

@@ -25,6 +25,12 @@ import ProfileTranslations from "/translations/profile"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 
+export const CourseEntriesContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+
 export const CourseEntryCardBase = styled((props: CardProps) => (
   <Card elevation={4} {...props} />
 ))`
@@ -60,8 +66,11 @@ interface CourseEntryCardProps {
   hasCollapseButton?: boolean
 }
 
-const CourseEntryCardSkeleton = ({ children }: PropsWithChildren) => (
-  <CourseEntryCardBase>
+const CourseEntryCardSkeleton = ({
+  children,
+  ...cardProps
+}: PropsWithChildren<CardProps>) => (
+  <CourseEntryCardBase {...cardProps}>
     <CourseEntryCardTitleWrapper>
       <CourseEntryCardTitle variant="h3">
         <Skeleton variant="text" width="200px" />
@@ -76,7 +85,8 @@ export const CourseEntryCard = ({
   hasCopyButton,
   hasCollapseButton,
   children,
-}: PropsWithChildren<CourseEntryCardProps>) => {
+  ...cardProps
+}: PropsWithChildren<CourseEntryCardProps & CardProps>) => {
   const t = useTranslator(ProfileTranslations)
   const router = useRouter()
   const { admin } = useLoginStateContext()
@@ -105,11 +115,15 @@ export const CourseEntryCard = ({
   }, [course, router])
 
   if (!course) {
-    return <CourseEntryCardSkeleton>{children}</CourseEntryCardSkeleton>
+    return (
+      <CourseEntryCardSkeleton {...cardProps}>
+        {children}
+      </CourseEntryCardSkeleton>
+    )
   }
 
   return (
-    <CourseEntryCardBase>
+    <CourseEntryCardBase {...cardProps}>
       <CourseEntryCardTitleWrapper>
         <CourseEntryCardTitle variant="h3">{course.name}</CourseEntryCardTitle>
         <Spacer />

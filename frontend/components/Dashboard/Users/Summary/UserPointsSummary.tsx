@@ -20,6 +20,7 @@ function UserPointsSummary() {
   const isNarrow = useMediaQuery("(max-width: 800px)")
   const t = useTranslator(CommonTranslations)
 
+  console.log(data)
   return (
     <UserPointsSummaryContainer>
       {!isNarrow && <CourseSelectList />}

@@ -2,32 +2,28 @@ import { createContext, useContext, useMemo } from "react"
 
 import { ApolloError } from "@apollo/client"
 
-import { SortOrder, UserCourseSummarySort } from "../types"
+import {
+  SortOrder,
+  UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment,
+  UserCourseSummarySort,
+  UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment,
+} from "../types"
 
-import { UserCourseSummaryCoreFieldsFragment } from "/graphql/generated"
+import {
+  UserCourseSummaryCoreFieldsFragment,
+  UserDetailedFieldsFragment,
+  UserTierCourseSummaryCoreFieldsFragment,
+} from "/graphql/generated"
 
 export interface UserPointsSummaryContext {
-  data: Array<UserCourseSummaryCoreFieldsFragment>
-  sort: UserCourseSummarySort
-  order: SortOrder
-  onSortOrderToggle: () => void
-  onCourseSortChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  sortOptions: Array<{ value: UserCourseSummarySort; label: string }>
-  loading?: boolean
+  data: Array<UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment>
+  loading: boolean
   error?: ApolloError
 }
 
 const UserPointsSummaryContextImpl = createContext<UserPointsSummaryContext>({
   data: [],
-  sort: "course_name",
-  order: "asc",
-  onSortOrderToggle: () => {
-    return
-  },
-  onCourseSortChange: () => {
-    return
-  },
-  sortOptions: [],
+  loading: true,
 })
 
 export default UserPointsSummaryContextImpl
@@ -36,20 +32,78 @@ export function useUserPointsSummaryContext() {
   return useContext(UserPointsSummaryContextImpl)
 }
 
-export function useUserPointsSummaryContextCourseById(courseId: string) {
+export function useUserPointsSummaryContextByCourseId(
+  courseId: string,
+  tierCourseId: string,
+): UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+export function useUserPointsSummaryContextByCourseId(
+  courseId: string,
+): UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+export function useUserPointsSummaryContextByCourseId(
+  courseId: string,
+  tierCourseId?: string,
+):
+  | UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+  | UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+export function useUserPointsSummaryContextByCourseId(
+  courseId: string,
+  tierCourseId?: string,
+):
+  | UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+  | UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment {
   const { data } = useUserPointsSummaryContext()
 
-  return useMemo(
-    () => data.find((course) => course.course?.id === courseId)!,
-    [data, courseId],
-  )
+  return useMemo(() => {
+    const courseData = data.find((course) => course.course?.id === courseId)!
+
+    if (tierCourseId) {
+      const tierCourseData = courseData.tier_summaries?.find(
+        (t) => t.course?.id === tierCourseId,
+      )
+      if (!tierCourseData) {
+        throw new Error("Tier course not found")
+      }
+      return tierCourseData as UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+    }
+    return courseData
+  }, [data, courseId, tierCourseId])
 }
 
-export function useUserPointsSummaryContextCourseBySlug(courseSlug: string) {
+export function useUserPointsSummaryContextByCourseSlug(
+  courseSlug: string,
+  tierCourseSlug: string,
+): UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+export function useUserPointsSummaryContextByCourseSlug(
+  courseSlug: string,
+): UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+export function useUserPointsSummaryContextByCourseSlug(
+  courseSlug: string,
+  tierCourseSlug?: string,
+):
+  | UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+  | UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+export function useUserPointsSummaryContextByCourseSlug(
+  courseSlug: string,
+  tierCourseSlug?: string,
+):
+  | UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+  | UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment {
   const { data } = useUserPointsSummaryContext()
 
-  return useMemo(
-    () => data.find((course) => course.course?.slug === courseSlug)!,
-    [data, courseSlug],
-  )
+  return useMemo(() => {
+    const courseData = data.find(
+      (course) => course.course?.slug === courseSlug,
+    )!
+
+    if (tierCourseSlug) {
+      const tierCourseData = courseData.tier_summaries?.find(
+        (t) => t.course?.slug === tierCourseSlug,
+      )
+      if (!tierCourseData) {
+        throw new Error("Tier course not found")
+      }
+      return tierCourseData as UserTierCourseSummaryCoreFieldsWithExerciseCompletionsFragment
+    }
+    return courseData
+  }, [data, courseSlug, tierCourseSlug])
 }

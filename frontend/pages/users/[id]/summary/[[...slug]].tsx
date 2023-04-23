@@ -23,12 +23,12 @@ import {
 } from "/components/Dashboard/Users/Summary/contexts"
 import {
   ActionType,
-  CollapsablePart,
   collapseReducer,
   createCollapseState,
   initialState,
 } from "/components/Dashboard/Users/Summary/contexts/CollapseContext"
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
+import useSummaryCourseData from "/components/Dashboard/Users/Summary/hooks/useSummaryCourseData"
 import useSummaryData from "/components/Dashboard/Users/Summary/hooks/useSummaryData"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
@@ -89,6 +89,7 @@ function UserSummaryView() {
   const slug = useQueryParameter("slug", false)
   const sort = useQueryParameter("sort", false)
   const order = useQueryParameter("order", false)
+
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: {
       upstream_id: Number(id),
@@ -96,6 +97,23 @@ function UserSummaryView() {
       includeDeletedExercises: false,
     },
     ssr: false,
+  })
+
+  const [searchVariables, setSearchVariables] = useState<SearchVariables>({
+    search: "",
+  })
+  const userPointsSummaryContextValue = useSummaryData({
+    slug,
+    data: data?.user?.user_course_summary ?? [],
+    loading,
+    search: searchVariables.search,
+  })
+  const userPointsSummarySelectedCourseContextValue = useSummaryCourseData({
+    slug,
+    data: data?.user?.user_course_summary ?? [],
+    loading,
+    sort,
+    order,
   })
 
   const breadcrumbs = useMemo(() => {
@@ -132,23 +150,11 @@ function UserSummaryView() {
   const title = useSubtitle(data?.user?.full_name ?? undefined)
 
   const [state, dispatch] = useReducer(collapseReducer, initialState)
-  const [searchVariables, setSearchVariables] = useState<SearchVariables>({
-    search: "",
-  })
   const [rawViewOpen, setRawViewOpen] = useState(false)
-  const [selected, setSelected] = useState<
+  /*const [selected, setSelected] = useState<
     UserCourseSummaryCourseFieldsFragment["slug"]
-  >(slug ?? "")
+  >(slug ?? "")*/
   const [userSearch, setUserSearch] = useState("")
-
-  const userPointsSummaryContextValue = useSummaryData({
-    data: data?.user?.user_course_summary,
-    sort,
-    order,
-    search: searchVariables.search,
-    loading,
-    error,
-  })
 
   useEffect(() => {
     dispatch({
@@ -159,22 +165,6 @@ function UserSummaryView() {
       ),
     })
   }, [data, loading])
-
-  const selectedData = useMemo(() => {
-    if (selected) {
-      return userPointsSummaryContextValue?.data.find(
-        (entry) => entry.course?.slug === selected,
-      ) // ?? userPointsSummaryContextValue?.data?.[0]
-    }
-    return userPointsSummaryContextValue?.data?.[0]
-  }, [userPointsSummaryContextValue, selected])
-
-  useEffect(() => {
-    if (selected || userPointsSummaryContextValue?.data?.length === 0) {
-      return
-    }
-    setSelected(userPointsSummaryContextValue?.data?.[0]?.course?.slug ?? "")
-  }, [userPointsSummaryContextValue])
 
   const onSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -188,29 +178,13 @@ function UserSummaryView() {
 
   const collapseContextValue = useMemo(() => ({ state, dispatch }), [state])
 
-  const allCoursesClosed = useMemo(
-    () => !Object.values(state.courses).some((s) => s.open),
-    [state],
-  )
-
-  // @ts-ignore: not used
-  const onCollapseClick = useCallback(
-    () =>
-      dispatch({
-        type: allCoursesClosed ? ActionType.OPEN_ALL : ActionType.CLOSE_ALL,
-        collapsable: CollapsablePart.COURSE,
-      }),
-    [allCoursesClosed],
-  )
-
-  const selectedCourseContextValue = useMemo(
+  /*const selectedCourseContextValue = useMemo(
     () => ({
       selected,
       setSelected,
-      selectedData,
     }),
-    [selected, setSelected, selectedData],
-  )
+    [selected, setSelected],
+  )*/
 
   const onUserSearchChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -251,9 +225,9 @@ function UserSummaryView() {
             value={userPointsSummaryContextValue}
           >
             <UserPointsSummarySelectedCourseContext.Provider
-              value={selectedCourseContextValue}
+              value={userPointsSummarySelectedCourseContextValue}
             >
-              <UserInfo data={omit(data?.user, "user_course_summary")} />
+              <UserInfo data={data?.user} />
               <SearchContainer>
                 <FilterMenu
                   searchVariables={searchVariables}
@@ -274,12 +248,7 @@ function UserSummaryView() {
                   >
                     Raw view
                   </Button>
-                  {isNarrow && (
-                    <CourseSelectDropdown
-                      selected={selected}
-                      loading={loading}
-                    />
-                  )}
+                  {isNarrow && <CourseSelectDropdown />}
                   <RightToolbarContainer>
                     {/*<CollapseButton
                       onClick={onCollapseClick}

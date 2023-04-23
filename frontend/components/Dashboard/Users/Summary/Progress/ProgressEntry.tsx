@@ -1,11 +1,11 @@
-import React, { PropsWithChildren, useCallback, useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
-import { Collapse, Typography } from "@mui/material"
+import { Collapse, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { useCollapseContext } from "./contexts"
-import { ActionType, CollapsablePart } from "./contexts/CollapseContext"
-import useProgress from "./hooks/useProgress"
+import { useCollapseContext } from "../contexts"
+import { ActionType, CollapsablePart } from "../contexts/CollapseContext"
+import useProgress from "../hooks/useProgress"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import PointsProgress, {
@@ -42,16 +42,6 @@ const TitleContainer = styled("div")`
   justify-content: space-between;
 `
 
-const ProgressEntryTitle = ({ children }: PropsWithChildren) => {
-  const t = useTranslator(ProfileTranslations)
-  return (
-    <TitleContainer>
-      <Typography variant="h3">{t("progress")}</Typography>
-      {children}
-    </TitleContainer>
-  )
-}
-
 function ProgressEntry({ data }: ProgressEntryProps) {
   const { course, user_course_progress, user_course_service_progresses } = data
   const t = useTranslator(ProfileTranslations)
@@ -74,13 +64,14 @@ function ProgressEntry({ data }: ProgressEntryProps) {
 
   return (
     <ProgressEntryCard>
-      <ProgressEntryTitle>
+      <TitleContainer>
+        <Typography variant="h3">{t("progress")}</Typography>
         <CollapseButton
           open={isOpen}
           onClick={onCollapseClick}
           tooltip={t("progressCollapseTooltip")}
         />
-      </ProgressEntryTitle>
+      </TitleContainer>
       <ProgressContainer>
         <PointsProgress
           {...totalProgress}
@@ -116,7 +107,11 @@ function ProgressEntry({ data }: ProgressEntryProps) {
 
 export const ProgressEntrySkeleton = () => (
   <ProgressEntryCard>
-    <ProgressEntryTitle />
+    <TitleContainer>
+      <Typography variant="h3">
+        <Skeleton variant="text" width="200px" />
+      </Typography>
+    </TitleContainer>
     <ProgressContainer>
       <PointsProgressSkeleton />
       <PointsProgressSkeleton />

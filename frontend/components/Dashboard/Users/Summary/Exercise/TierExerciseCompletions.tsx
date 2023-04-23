@@ -1,6 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 
 import {
+  renderCheckBase,
+  renderRequiredActionsBase,
   /*renderCheck, renderRequiredActions, */
   TierExerciseCompletionRow,
 } from "./common"
@@ -53,12 +55,12 @@ const TierExerciseCompletions = ({
               {ec.points}
             </TableCell>
             <TableCell>
-              {/*renderCheck(t("completed"))(ec.completed ?? false)*/}
+              {renderCheckBase(ec.completed ?? false, t("completed"))}
             </TableCell>
             <TableCell>
-              {/*renderRequiredActions(t)(
+              {renderRequiredActionsBase(t)(
                 ec.exercise_completion_required_actions,
-              )*/}
+              )}
             </TableCell>
           </TableRow>
         ))}

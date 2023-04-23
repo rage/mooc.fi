@@ -1159,7 +1159,9 @@ export type TierInfoKeySpecifier = (
   | "exercisePercentage"
   | "exercisesNeededPercentage"
   | "hasTier"
+  | "id"
   | "missingFromTier"
+  | "name"
   | "requiredByTier"
   | "tier"
   | TierInfoKeySpecifier
@@ -1170,7 +1172,9 @@ export type TierInfoFieldPolicy = {
   exercisePercentage?: FieldPolicy<any> | FieldReadFunction<any>
   exercisesNeededPercentage?: FieldPolicy<any> | FieldReadFunction<any>
   hasTier?: FieldPolicy<any> | FieldReadFunction<any>
+  id?: FieldPolicy<any> | FieldReadFunction<any>
   missingFromTier?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
   requiredByTier?: FieldPolicy<any> | FieldReadFunction<any>
   tier?: FieldPolicy<any> | FieldReadFunction<any>
 }
