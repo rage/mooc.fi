@@ -1,5 +1,5 @@
-import { groupBy, omit, orderBy, partition } from "lodash"
-import { booleanArg, idArg, objectType, stringArg } from "nexus"
+import { groupBy, orderBy as lodashOrderBy, omit, partition } from "lodash"
+import { arg, booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
@@ -13,6 +13,7 @@ interface SummaryCourseResult {
   inherit_settings_from_id: string | null
   completions_handled_by_id: string | null
   tier: number | null
+  name: string
 }
 
 interface SummaryCourseGroupResult extends SummaryCourseResult {
@@ -359,6 +360,9 @@ export const User = objectType({
           description:
             "If specified, only return the summary for the given course. Otherwise, return the summary for all courses with at least one exercise completion.",
         }),
+        orderBy: arg({
+          type: "UserCourseSummaryOrderByInput",
+        }),
       },
       resolve: async (
         { id },
@@ -367,6 +371,7 @@ export const User = objectType({
           course_slug,
           includeNoPointsAwardedExercises,
           includeDeletedExercises,
+          orderBy,
         },
         ctx,
       ) => {
@@ -399,6 +404,15 @@ export const User = objectType({
           ]
         }
 
+        let activityDateClause = Prisma.empty
+
+        if (orderBy?.activity_date) {
+          activityDateClause =
+            orderBy.activity_date === "desc"
+              ? Prisma.sql`order by ec.timestamp desc`
+              : Prisma.sql`order by ec.timestamp`
+        }
+
         const startedCourses = await ctx.prisma.$queryRaw<
           Array<SummaryCourseGroupResult>
         >(Prisma.sql`
@@ -406,6 +420,7 @@ export const User = objectType({
             c.id as course_id,
             inherit_settings_from_id,
             completions_handled_by_id,
+            name,
             tier,
             case
               when completions_handled_by_id is null or completions_handled_by_id = c.id then 'not_handled'
@@ -414,12 +429,15 @@ export const User = objectType({
             end as group
           from course c
           where c.id in (
-              select distinct(e.course_id)
+            select course_id from (
+              select distinct(e.course_id), ec.timestamp
                   from exercise_completion ec
                   join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${id}
               and ec.attempted = true
-          );
+              ${activityDateClause}
+            ) as sub
+          )
         `)
 
         // divide courses into three groups:
@@ -459,17 +477,58 @@ export const User = objectType({
         for (const [course_id, handledCourses] of Object.entries(
           tierCourseMap,
         )) {
+          let name: string | undefined | null = undefined
+          if (orderBy?.completion_date) {
+            const handlerCourse = await ctx.prisma.course.findUnique({
+              where: { id: course_id },
+              select: {
+                name: true,
+              },
+            })
+            name = handlerCourse?.name
+          }
           result.push({
             ...baseFields,
-            tier_summaries: orderBy(handledCourses, "tier").map((course) => ({
-              ...course,
-              ...baseFields,
-            })),
+            tier_summaries: lodashOrderBy(handledCourses, "tier").map(
+              (course) => ({
+                ...course,
+                ...baseFields,
+              }),
+            ),
             course_id,
+            name,
           })
         }
 
-        return result
+        let orderedResult = result
+
+        if (orderBy?.name) {
+          orderedResult = lodashOrderBy(result, ["name"], [orderBy.name])
+        } else if (orderBy?.completion_date) {
+          const courseHandlerIds = nonTiered
+            .map((c) => c.course_id)
+            .concat(Object.keys(tierCourseMap))
+          const completions = await prisma.completion.findMany({
+            where: {
+              user_id: id,
+              course_id: {
+                in: Object.values(courseHandlerIds).filter(notEmpty),
+              },
+            },
+          })
+          orderedResult = lodashOrderBy(
+            result,
+            [
+              (entry) =>
+                completions.find((c) => c.course_id === entry.course_id)
+                  ?.created_at ?? new Date("2999-12-31"),
+              (entry) => entry.name,
+            ],
+            [orderBy.completion_date, orderBy.name ?? "asc"],
+          )
+        }
+
+        return orderedResult
       },
     })
   },

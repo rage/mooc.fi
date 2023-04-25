@@ -15,7 +15,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-// Generated on 2023-04-23T22:08:50+03:00
+// Generated on 2023-04-25T17:17:01+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2374,6 +2374,7 @@ export type Useruser_course_summaryArgs = {
   course_slug?: InputMaybe<Scalars["String"]>
   includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
   includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
+  orderBy?: InputMaybe<UserCourseSummaryOrderByInput>
 }
 
 export type Useruser_organizationsArgs = {
@@ -2558,6 +2559,12 @@ export type UserCourseSummaryexercise_completionsArgs = {
 export type UserCourseSummaryexercisesArgs = {
   includeDeleted?: InputMaybe<Scalars["Boolean"]>
   includeNoPointsAwarded?: InputMaybe<Scalars["Boolean"]>
+}
+
+export type UserCourseSummaryOrderByInput = {
+  activity_date?: InputMaybe<SortOrder>
+  completion_date?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
 }
 
 export type UserEdge = {
@@ -4837,6 +4844,95 @@ export type UserCourseSummaryCoreFieldsFragment = {
   }> | null
 }
 
+export type UserCourseSummaryCourseListCourseFieldsFragment = {
+  __typename?: "Course"
+  has_certificate: boolean | null
+  points_needed: number | null
+  exercise_completions_needed: number | null
+  tier: number | null
+  name: string
+  ects: string | null
+  language: string | null
+  created_at: any | null
+  updated_at: any | null
+  id: string
+  slug: string
+  photo: {
+    __typename?: "Image"
+    id: string
+    name: string | null
+    original: string
+    original_mimetype: string
+    compressed: string | null
+    compressed_mimetype: string | null
+    uncompressed: string
+    uncompressed_mimetype: string
+    created_at: any | null
+    updated_at: any | null
+  } | null
+}
+
+export type UserCourseSummaryCourseListFieldsFragment = {
+  __typename?: "UserCourseSummary"
+  course: {
+    __typename?: "Course"
+    has_certificate: boolean | null
+    points_needed: number | null
+    exercise_completions_needed: number | null
+    tier: number | null
+    name: string
+    ects: string | null
+    language: string | null
+    created_at: any | null
+    updated_at: any | null
+    id: string
+    slug: string
+    photo: {
+      __typename?: "Image"
+      id: string
+      name: string | null
+      original: string
+      original_mimetype: string
+      compressed: string | null
+      compressed_mimetype: string | null
+      uncompressed: string
+      uncompressed_mimetype: string
+      created_at: any | null
+      updated_at: any | null
+    } | null
+  }
+  tier_summaries: Array<{
+    __typename?: "UserCourseSummary"
+    course: {
+      __typename?: "Course"
+      has_certificate: boolean | null
+      points_needed: number | null
+      exercise_completions_needed: number | null
+      tier: number | null
+      name: string
+      ects: string | null
+      language: string | null
+      created_at: any | null
+      updated_at: any | null
+      id: string
+      slug: string
+      photo: {
+        __typename?: "Image"
+        id: string
+        name: string | null
+        original: string
+        original_mimetype: string
+        compressed: string | null
+        compressed_mimetype: string | null
+        uncompressed: string
+        uncompressed_mimetype: string
+        created_at: any | null
+        updated_at: any | null
+      } | null
+    }
+  }> | null
+}
+
 export type UserTierCourseSummaryCoreFieldsFragment = {
   __typename?: "UserCourseSummary"
   start_date: any | null
@@ -6697,6 +6793,475 @@ export type UserSummaryQueryVariables = Exact<{
 }>
 
 export type UserSummaryQuery = {
+  __typename?: "Query"
+  user: {
+    __typename?: "User"
+    administrator: boolean
+    research_consent: boolean | null
+    id: string
+    upstream_id: number
+    first_name: string | null
+    last_name: string | null
+    full_name: string | null
+    username: string
+    email: string
+    student_number: string | null
+    real_student_number: string | null
+    created_at: any | null
+    updated_at: any | null
+    user_course_summary: Array<{
+      __typename?: "UserCourseSummary"
+      start_date: any | null
+      course: {
+        __typename?: "Course"
+        has_certificate: boolean | null
+        points_needed: number | null
+        exercise_completions_needed: number | null
+        tier: number | null
+        name: string
+        ects: string | null
+        language: string | null
+        created_at: any | null
+        updated_at: any | null
+        id: string
+        slug: string
+        exercises: Array<{
+          __typename?: "Exercise"
+          id: string
+          name: string | null
+          custom_id: string
+          course_id: string | null
+          part: number | null
+          section: number | null
+          max_points: number | null
+          deleted: boolean | null
+        }> | null
+        photo: {
+          __typename?: "Image"
+          id: string
+          name: string | null
+          original: string
+          original_mimetype: string
+          compressed: string | null
+          compressed_mimetype: string | null
+          uncompressed: string
+          uncompressed_mimetype: string
+          created_at: any | null
+          updated_at: any | null
+        } | null
+      }
+      exercise_completions: Array<{
+        __typename?: "ExerciseCompletion"
+        id: string
+        exercise_id: string | null
+        user_id: string | null
+        created_at: any | null
+        updated_at: any | null
+        attempted: boolean | null
+        completed: boolean | null
+        timestamp: any
+        n_points: number | null
+        exercise_completion_required_actions: Array<{
+          __typename?: "ExerciseCompletionRequiredAction"
+          id: string
+          exercise_completion_id: string | null
+          value: string
+        }>
+      }> | null
+      user_course_progress: {
+        __typename?: "UserCourseProgress"
+        id: string
+        course_id: string | null
+        user_id: string | null
+        max_points: number | null
+        n_points: number | null
+        created_at: any | null
+        updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
+        extra: {
+          __typename?: "ProgressExtra"
+          projectCompletion: boolean
+          highestTier: number | null
+          n_points: number
+          max_points: number
+          pointsNeeded: number
+          pointsPercentage: number
+          pointsNeededPercentage: number
+          exercisePercentage: number
+          exercisesNeededPercentage: number
+          totalExerciseCount: number
+          totalExerciseCompletions: number
+          totalExerciseCompletionsNeeded: number
+          tiers: Array<{
+            __typename?: "TierInfo"
+            id: string
+            name: string
+            tier: number
+            hasTier: boolean
+            missingFromTier: number
+            requiredByTier: number
+            exercisePercentage: number
+            exercisesNeededPercentage: number
+            exerciseCompletions: number
+            exerciseCount: number
+          }>
+          exercises: Array<{
+            __typename?: "TierProgress"
+            exercise_number: number
+            tier: number
+            n_points: number
+            max_points: number
+            progress: number
+            name: string | null
+            custom_id: string | null
+            exercise_completions: Array<{
+              __typename?: "ExerciseCompletion"
+              tier: number | null
+              max_points: number | null
+              id: string
+              exercise_id: string | null
+              user_id: string | null
+              created_at: any | null
+              updated_at: any | null
+              attempted: boolean | null
+              completed: boolean | null
+              timestamp: any
+              n_points: number | null
+              exercise_completion_required_actions: Array<{
+                __typename?: "ExerciseCompletionRequiredAction"
+                id: string
+                exercise_completion_id: string | null
+                value: string
+              }>
+            }> | null
+          }>
+        } | null
+        exercise_progress: {
+          __typename?: "ExerciseProgress"
+          total: number | null
+          exercises: number | null
+          exercise_count: number | null
+          exercises_completed_count: number | null
+        }
+      } | null
+      user_course_service_progresses: Array<{
+        __typename?: "UserCourseServiceProgress"
+        id: string
+        course_id: string | null
+        service_id: string | null
+        user_id: string | null
+        created_at: any | null
+        updated_at: any | null
+        points_by_group: Array<{
+          __typename?: "PointsByGroup"
+          group: string
+          n_points: number
+          max_points: number
+          progress: number
+        }>
+        service: { __typename?: "Service"; name: string; id: string } | null
+      }>
+      completion: {
+        __typename?: "Completion"
+        id: string
+        course_id: string | null
+        user_id: string | null
+        email: string
+        student_number: string | null
+        completion_language: string | null
+        completion_link: string | null
+        completion_date: any | null
+        tier: number | null
+        grade: string | null
+        eligible_for_ects: boolean | null
+        project_completion: boolean
+        registered: boolean
+        created_at: any | null
+        updated_at: any | null
+        completions_registered: Array<{
+          __typename?: "CompletionRegistered"
+          id: string
+          completion_id: string | null
+          organization_id: string | null
+          created_at: any | null
+          updated_at: any | null
+          organization: {
+            __typename?: "Organization"
+            id: string
+            slug: string
+            name: string | null
+          } | null
+        }>
+        certificate_availability: {
+          __typename?: "CertificateAvailability"
+          completed_course: boolean | null
+          existing_certificate: string | null
+          honors: boolean | null
+        } | null
+      } | null
+      tier_summaries: Array<{
+        __typename?: "UserCourseSummary"
+        start_date: any | null
+        course: {
+          __typename?: "Course"
+          has_certificate: boolean | null
+          points_needed: number | null
+          exercise_completions_needed: number | null
+          tier: number | null
+          name: string
+          ects: string | null
+          language: string | null
+          created_at: any | null
+          updated_at: any | null
+          id: string
+          slug: string
+          exercises: Array<{
+            __typename?: "Exercise"
+            id: string
+            name: string | null
+            custom_id: string
+            course_id: string | null
+            part: number | null
+            section: number | null
+            max_points: number | null
+            deleted: boolean | null
+          }> | null
+          photo: {
+            __typename?: "Image"
+            id: string
+            name: string | null
+            original: string
+            original_mimetype: string
+            compressed: string | null
+            compressed_mimetype: string | null
+            uncompressed: string
+            uncompressed_mimetype: string
+            created_at: any | null
+            updated_at: any | null
+          } | null
+        }
+        exercise_completions: Array<{
+          __typename?: "ExerciseCompletion"
+          id: string
+          exercise_id: string | null
+          user_id: string | null
+          created_at: any | null
+          updated_at: any | null
+          attempted: boolean | null
+          completed: boolean | null
+          timestamp: any
+          n_points: number | null
+          exercise_completion_required_actions: Array<{
+            __typename?: "ExerciseCompletionRequiredAction"
+            id: string
+            exercise_completion_id: string | null
+            value: string
+          }>
+        }> | null
+        user_course_progress: {
+          __typename?: "UserCourseProgress"
+          id: string
+          course_id: string | null
+          user_id: string | null
+          max_points: number | null
+          n_points: number | null
+          created_at: any | null
+          updated_at: any | null
+          points_by_group: Array<{
+            __typename?: "PointsByGroup"
+            group: string
+            n_points: number
+            max_points: number
+            progress: number
+          }>
+          extra: {
+            __typename?: "ProgressExtra"
+            projectCompletion: boolean
+            highestTier: number | null
+            n_points: number
+            max_points: number
+            pointsNeeded: number
+            pointsPercentage: number
+            pointsNeededPercentage: number
+            exercisePercentage: number
+            exercisesNeededPercentage: number
+            totalExerciseCount: number
+            totalExerciseCompletions: number
+            totalExerciseCompletionsNeeded: number
+            tiers: Array<{
+              __typename?: "TierInfo"
+              id: string
+              name: string
+              tier: number
+              hasTier: boolean
+              missingFromTier: number
+              requiredByTier: number
+              exercisePercentage: number
+              exercisesNeededPercentage: number
+              exerciseCompletions: number
+              exerciseCount: number
+            }>
+            exercises: Array<{
+              __typename?: "TierProgress"
+              exercise_number: number
+              tier: number
+              n_points: number
+              max_points: number
+              progress: number
+              name: string | null
+              custom_id: string | null
+              exercise_completions: Array<{
+                __typename?: "ExerciseCompletion"
+                tier: number | null
+                max_points: number | null
+                id: string
+                exercise_id: string | null
+                user_id: string | null
+                created_at: any | null
+                updated_at: any | null
+                attempted: boolean | null
+                completed: boolean | null
+                timestamp: any
+                n_points: number | null
+                exercise_completion_required_actions: Array<{
+                  __typename?: "ExerciseCompletionRequiredAction"
+                  id: string
+                  exercise_completion_id: string | null
+                  value: string
+                }>
+              }> | null
+            }>
+          } | null
+          exercise_progress: {
+            __typename?: "ExerciseProgress"
+            total: number | null
+            exercises: number | null
+            exercise_count: number | null
+            exercises_completed_count: number | null
+          }
+        } | null
+        user_course_service_progresses: Array<{
+          __typename?: "UserCourseServiceProgress"
+          id: string
+          course_id: string | null
+          service_id: string | null
+          user_id: string | null
+          created_at: any | null
+          updated_at: any | null
+          points_by_group: Array<{
+            __typename?: "PointsByGroup"
+            group: string
+            n_points: number
+            max_points: number
+            progress: number
+          }>
+          service: { __typename?: "Service"; name: string; id: string } | null
+        }>
+      }> | null
+    }> | null
+  } | null
+}
+
+export type UserSummaryCourseListQueryVariables = Exact<{
+  upstream_id?: InputMaybe<Scalars["Int"]>
+  includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
+  includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
+}>
+
+export type UserSummaryCourseListQuery = {
+  __typename?: "Query"
+  user: {
+    __typename?: "User"
+    administrator: boolean
+    research_consent: boolean | null
+    id: string
+    upstream_id: number
+    first_name: string | null
+    last_name: string | null
+    full_name: string | null
+    username: string
+    email: string
+    student_number: string | null
+    real_student_number: string | null
+    created_at: any | null
+    updated_at: any | null
+    user_course_summary: Array<{
+      __typename?: "UserCourseSummary"
+      course: {
+        __typename?: "Course"
+        has_certificate: boolean | null
+        points_needed: number | null
+        exercise_completions_needed: number | null
+        tier: number | null
+        name: string
+        ects: string | null
+        language: string | null
+        created_at: any | null
+        updated_at: any | null
+        id: string
+        slug: string
+        photo: {
+          __typename?: "Image"
+          id: string
+          name: string | null
+          original: string
+          original_mimetype: string
+          compressed: string | null
+          compressed_mimetype: string | null
+          uncompressed: string
+          uncompressed_mimetype: string
+          created_at: any | null
+          updated_at: any | null
+        } | null
+      }
+      tier_summaries: Array<{
+        __typename?: "UserCourseSummary"
+        course: {
+          __typename?: "Course"
+          has_certificate: boolean | null
+          points_needed: number | null
+          exercise_completions_needed: number | null
+          tier: number | null
+          name: string
+          ects: string | null
+          language: string | null
+          created_at: any | null
+          updated_at: any | null
+          id: string
+          slug: string
+          photo: {
+            __typename?: "Image"
+            id: string
+            name: string | null
+            original: string
+            original_mimetype: string
+            compressed: string | null
+            compressed_mimetype: string | null
+            uncompressed: string
+            uncompressed_mimetype: string
+            created_at: any | null
+            updated_at: any | null
+          } | null
+        }
+      }> | null
+    }> | null
+  } | null
+}
+
+export type UserSummaryForCourseQueryVariables = Exact<{
+  upstream_id?: InputMaybe<Scalars["Int"]>
+  course_slug: Scalars["String"]
+  includeNoPointsAwardedExercises?: InputMaybe<Scalars["Boolean"]>
+  includeDeletedExercises?: InputMaybe<Scalars["Boolean"]>
+}>
+
+export type UserSummaryForCourseQuery = {
   __typename?: "Query"
   user: {
     __typename?: "User"
@@ -16032,6 +16597,315 @@ export const UserCourseSummaryCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<UserCourseSummaryCoreFieldsFragment, unknown>
+export const UserCourseSummaryCourseListCourseFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCourseListCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          { kind: "Field", name: { kind: "Name", value: "points_needed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions_needed" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UserCourseSummaryCourseListCourseFieldsFragment,
+  unknown
+>
+export const UserCourseSummaryCourseListFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCourseListFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserCourseSummary" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserCourseSummaryCourseListCourseFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tier_summaries" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "course" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: {
+                          kind: "Name",
+                          value: "UserCourseSummaryCourseListCourseFields",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCourseListCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          { kind: "Field", name: { kind: "Name", value: "points_needed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions_needed" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserCourseSummaryCourseListFieldsFragment, unknown>
 export const OrganizationCoreFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -24913,6 +25787,1317 @@ export const UserSummaryDocument = {
     },
   ],
 } as unknown as DocumentNode<UserSummaryQuery, UserSummaryQueryVariables>
+export const UserSummaryCourseListDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "UserSummaryCourseList" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "upstream_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeNoPointsAwardedExercises" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeDeletedExercises" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "upstream_id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "upstream_id" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserDetailedFields" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "user_course_summary" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: {
+                        kind: "Name",
+                        value: "includeNoPointsAwardedExercises",
+                      },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "includeNoPointsAwardedExercises",
+                        },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "includeDeletedExercises" },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "includeDeletedExercises",
+                        },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: {
+                          kind: "Name",
+                          value: "UserCourseSummaryCourseListFields",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "User" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "upstream_id" } },
+          { kind: "Field", name: { kind: "Name", value: "first_name" } },
+          { kind: "Field", name: { kind: "Name", value: "last_name" } },
+          { kind: "Field", name: { kind: "Name", value: "full_name" } },
+          { kind: "Field", name: { kind: "Name", value: "username" } },
+          { kind: "Field", name: { kind: "Name", value: "email" } },
+          { kind: "Field", name: { kind: "Name", value: "student_number" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "real_student_number" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCourseListCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          { kind: "Field", name: { kind: "Name", value: "points_needed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions_needed" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserDetailedFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "User" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "administrator" } },
+          { kind: "Field", name: { kind: "Name", value: "research_consent" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCourseListFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserCourseSummary" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserCourseSummaryCourseListCourseFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tier_summaries" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "course" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: {
+                          kind: "Name",
+                          value: "UserCourseSummaryCourseListCourseFields",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UserSummaryCourseListQuery,
+  UserSummaryCourseListQueryVariables
+>
+export const UserSummaryForCourseDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "UserSummaryForCourse" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "upstream_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "course_slug" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeNoPointsAwardedExercises" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeDeletedExercises" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "upstream_id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "upstream_id" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserDetailedFields" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "user_course_summary" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "course_slug" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "course_slug" },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: {
+                        kind: "Name",
+                        value: "includeNoPointsAwardedExercises",
+                      },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "includeNoPointsAwardedExercises",
+                        },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "includeDeletedExercises" },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "includeDeletedExercises",
+                        },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: {
+                          kind: "Name",
+                          value: "UserCourseSummaryCoreFields",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "User" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "upstream_id" } },
+          { kind: "Field", name: { kind: "Name", value: "first_name" } },
+          { kind: "Field", name: { kind: "Name", value: "last_name" } },
+          { kind: "Field", name: { kind: "Name", value: "full_name" } },
+          { kind: "Field", name: { kind: "Name", value: "username" } },
+          { kind: "Field", name: { kind: "Name", value: "email" } },
+          { kind: "Field", name: { kind: "Name", value: "student_number" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "real_student_number" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Exercise" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          { kind: "Field", name: { kind: "Name", value: "course_id" } },
+          { kind: "Field", name: { kind: "Name", value: "part" } },
+          { kind: "Field", name: { kind: "Name", value: "section" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "deleted" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          { kind: "Field", name: { kind: "Name", value: "points_needed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions_needed" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercises" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeDeleted" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "includeDeletedExercises" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "includeNoPointsAwarded" },
+                value: {
+                  kind: "Variable",
+                  name: {
+                    kind: "Name",
+                    value: "includeNoPointsAwardedExercises",
+                  },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ExerciseCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "exercise_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+          { kind: "Field", name: { kind: "Name", value: "attempted" } },
+          { kind: "Field", name: { kind: "Name", value: "completed" } },
+          { kind: "Field", name: { kind: "Name", value: "timestamp" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "exercise_completion_required_actions",
+            },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_completion_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PointsByGroupFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PointsByGroup" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "group" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierInfoFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TierInfo" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "hasTier" } },
+          { kind: "Field", name: { kind: "Name", value: "missingFromTier" } },
+          { kind: "Field", name: { kind: "Name", value: "requiredByTier" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exerciseCompletions" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "exerciseCount" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressExerciseCompletionFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ExerciseCompletion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TierProgressFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TierProgress" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "exercise_number" } },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "progress" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "custom_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "TierProgressExerciseCompletionFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ProgressExtraFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ProgressExtra" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tiers" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TierInfoFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercises" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "TierProgressFields" },
+                },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "projectCompletion" } },
+          { kind: "Field", name: { kind: "Name", value: "highestTier" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsNeeded" } },
+          { kind: "Field", name: { kind: "Name", value: "pointsPercentage" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "pointsNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisePercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercisesNeededPercentage" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCount" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletions" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "totalExerciseCompletionsNeeded" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseProgressCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserCourseProgress" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "course_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "max_points" } },
+          { kind: "Field", name: { kind: "Name", value: "n_points" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "extra" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ProgressExtraFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_progress" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "total" } },
+                { kind: "Field", name: { kind: "Name", value: "exercises" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercise_count" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "exercises_completed_count" },
+                },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseServiceProgressCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserCourseServiceProgress" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "course_id" } },
+          { kind: "Field", name: { kind: "Name", value: "service_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "points_by_group" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "PointsByGroupFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "service" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CompletionCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Completion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "course_id" } },
+          { kind: "Field", name: { kind: "Name", value: "user_id" } },
+          { kind: "Field", name: { kind: "Name", value: "email" } },
+          { kind: "Field", name: { kind: "Name", value: "student_number" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "completion_language" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "completion_link" } },
+          { kind: "Field", name: { kind: "Name", value: "completion_date" } },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "grade" } },
+          { kind: "Field", name: { kind: "Name", value: "eligible_for_ects" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "project_completion" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "registered" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CompletionRegisteredCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CompletionRegistered" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "completion_id" } },
+          { kind: "Field", name: { kind: "Name", value: "organization_id" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organization" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CertificateAvailabilityFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CertificateAvailability" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "completed_course" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "existing_certificate" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "honors" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CompletionDetailedFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Completion" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CompletionCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "completions_registered" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "CompletionRegisteredCoreFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "certificate_availability" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "CertificateAvailabilityFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserTierCourseSummaryCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserCourseSummary" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserCourseSummaryCourseFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user_course_progress" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserCourseProgressCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user_course_service_progresses" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserCourseServiceProgressCoreFields",
+                  },
+                },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserDetailedFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "User" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "administrator" } },
+          { kind: "Field", name: { kind: "Name", value: "research_consent" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserCourseSummaryCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserCourseSummary" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserCourseSummaryCourseFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "exercise_completions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ExerciseCompletionCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user_course_progress" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "UserCourseProgressCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user_course_service_progresses" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserCourseServiceProgressCoreFields",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "completion" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "CompletionDetailedFields" },
+                },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "tier_summaries" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: {
+                    kind: "Name",
+                    value: "UserTierCourseSummaryCoreFields",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UserSummaryForCourseQuery,
+  UserSummaryForCourseQueryVariables
+>
 export const CurrentUserOverviewDocument = {
   kind: "Document",
   definitions: [

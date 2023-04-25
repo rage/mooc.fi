@@ -58,28 +58,7 @@ export const MaterialReactTable = dynamic(
     ssr: false,
     loading: () => (
       <NoSsr>
-        <TableContainer>
-          <Table key="loading">
-            <TableBody>
-              {[...Array(10)].map((i) => (
-                <TableRow key={i}>
-                  <TableCell width={20}>
-                    <Skeleton animation="wave" height={20} width={20} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton animation="wave" height={20} width="100%" />
-                  </TableCell>
-                  <TableCell width={20}>
-                    <Skeleton animation="wave" height={20} width={20} />
-                  </TableCell>
-                  <TableCell width={20}>
-                    <Skeleton animation="wave" height={20} width={20} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Skeleton width="100%" height={400} />
       </NoSsr>
     ),
   },
@@ -93,7 +72,5 @@ export const useMaterialReactTableLocalization = (locale?: string) => {
     if (locale === "fi") {
       return MRT_Localization_FI
     }
-
-    return
   }, [locale])
 }

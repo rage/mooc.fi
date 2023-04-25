@@ -1,4 +1,4 @@
-import { booleanArg, objectType } from "nexus"
+import { booleanArg, inputObjectType, objectType } from "nexus"
 
 // import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
 import { notEmpty } from "../util/notEmpty"
@@ -275,5 +275,14 @@ export const UserCourseSummary = objectType({
         }
       },
     })*/
+  },
+})
+
+export const UserCourseSummaryOrderByInput = inputObjectType({
+  name: "UserCourseSummaryOrderByInput",
+  definition(t) {
+    t.field("activity_date", { type: "SortOrder" })
+    t.field("completion_date", { type: "SortOrder" })
+    t.field("name", { type: "SortOrder" })
   },
 })

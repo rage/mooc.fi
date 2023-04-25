@@ -11,6 +11,7 @@ import {
   useMaterialReactTableLocalization,
 } from "../common"
 import {
+  NarrowCellBase,
   renderCheck,
   renderNarrowCell,
   renderNarrowCheck,
@@ -52,11 +53,13 @@ const conditionallyRenderTierExerciseCompletions = ({
   row: MRT_Row<TierExerciseRow>
 }) =>
   (row.original.exercise_completions ?? []).length > 0 ? (
-    <TierExerciseCompletions
-      data={row.original.exercise_completions}
-      highestTier={row.original.tier}
-      points={row.original.n_points}
-    />
+    <NarrowCellBase>
+      <TierExerciseCompletions
+        data={row.original.exercise_completions}
+        highestTier={row.original.tier}
+        points={row.original.n_points}
+      />
+    </NarrowCellBase>
   ) : undefined
 
 const hideCellIfNoExerciseCompletions = ({
@@ -67,6 +70,8 @@ const hideCellIfNoExerciseCompletions = ({
   row.original.exercise_completions?.length > 0
     ? {}
     : { sx: { display: "none" } }
+
+const renderNarrowCellFn = renderNarrowCell<TierExerciseRow>()
 
 const TierExerciseList = ({ data }: TierExerciseListProps) => {
   const { locale } = useRouter()
@@ -100,7 +105,7 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
           accessorKey: "completed",
           header: t("completed"),
           size: 40,
-          Cell: renderCheck(t("completed")),
+          Cell: renderCheck({ success: t("completed") }),
         },
       ]
     }
@@ -109,34 +114,36 @@ const TierExerciseList = ({ data }: TierExerciseListProps) => {
       {
         accessorKey: "exercise_number",
         header: "#",
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "name",
         header: t("exercise"),
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "tier",
         header: t("tier"),
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "points",
         header: t("points"),
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "completed",
         header: t("completed"),
-        Cell: renderNarrowCheck(t("completed"), t("notCompleted")),
+        Cell: renderNarrowCheck({
+          success: t("completed"),
+          failure: t("notCompleted"),
+        }),
       },
       {
         accessorKey: "exercise_completions",
         header: "asdf",
         Cell: conditionallyRenderTierExerciseCompletions,
-        muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
-        // TODO: create narrow version
+        // muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
       },
     ]
   }, [locale, t, isNarrow])

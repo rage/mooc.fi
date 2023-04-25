@@ -8,11 +8,17 @@ import CourseSelectList from "./CourseSelectList"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 
-const UserPointsSummaryContainer = styled("div")`
+const UserPointsSummaryContainer = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-direction: row;
   gap: 1rem;
-`
+
+  ${theme.breakpoints.down("lg")} {
+    flex-direction: column;
+  }
+`,
+)
 
 function UserPointsSummary() {
   const { data, loading } = useUserPointsSummaryContext()

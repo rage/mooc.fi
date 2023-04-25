@@ -81,6 +81,8 @@ interface ExerciseListProps {
   loading?: boolean
 }
 
+const renderNarrowCellFn = renderNarrowCell<ExerciseRow>()
+
 const hideCellIfNoExerciseCompletions = ({
   row,
 }: {
@@ -95,9 +97,7 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
   const { locale } = useRouter()
   const tableInstanceRef = useRef<MRT_TableInstance<ExerciseRow>>(null)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
-  // const { loading } = useUserPointsSummaryContext()
-  const render = useRef(false)
-  // const data = useUserPointsSummaryContextByCourseId(courseId, tierCourseId)
+
   const columns = useMemo((): Array<MRT_ColumnDef<ExerciseRow>> => {
     if (!isNarrow) {
       return [
@@ -109,7 +109,6 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
         {
           accessorKey: "name",
           header: t("exercise"),
-          size: 160,
         },
         {
           accessorKey: "points",
@@ -120,24 +119,24 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
           id: "status",
           accessorKey: "completed",
           header: "kissa",
-          Cell: renderCheck(t("completed")),
+          Cell: renderCheck({ success: t("completed") }),
           columns: [
             {
               accessorKey: "completed",
               header: t("completed"),
-              size: 40,
-              Cell: renderCheck(t("completed")),
+              size: 50,
+              Cell: renderCheck({ success: t("completed") }),
             },
             {
               accessorKey: "attempted",
               header: t("attempted"),
-              size: 40,
-              Cell: renderCheck(t("attempted")),
+              size: 50,
+              Cell: renderCheck({ success: t("attempted") }),
             },
             {
               accessorKey: "exercise_completion_required_actions",
               header: t("requiredActions"),
-              size: 100,
+              size: 80,
               Cell: renderRequiredActions(t),
             },
           ],
@@ -149,27 +148,33 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
       {
         accessorKey: "partSection",
         header: t("partSection"),
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "name",
         header: t("exercise"),
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "points",
         header: t("points"),
-        Cell: renderNarrowCell,
+        Cell: renderNarrowCellFn,
       },
       {
         accessorKey: "completed",
         header: t("completed"),
-        Cell: renderNarrowCheck(t("completed"), t("notCompleted")),
+        Cell: renderNarrowCheck({
+          success: t("completed"),
+          failure: t("notCompleted"),
+        }),
       },
       {
         accessorKey: "attempted",
         header: t("attempted"),
-        Cell: renderNarrowCheck(t("attempted"), t("notAttempted")),
+        Cell: renderNarrowCheck({
+          success: t("attempted"),
+          failure: t("notAttempted"),
+        }),
       },
       {
         accessorKey: "exercise_completion_required_actions",
@@ -181,7 +186,7 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
         header: t("createdAt"),
         Cell: (props) =>
           props.row.original.exercise_completions.length
-            ? renderNarrowCell(props)
+            ? renderNarrowCellFn(props)
             : undefined,
         muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
       },
@@ -190,21 +195,18 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
         header: t("timestamp"),
         Cell: (props) =>
           props.row.original.exercise_completions.length
-            ? renderNarrowCell(props)
+            ? renderNarrowCellFn(props)
             : undefined,
         muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
       },
     ]
   }, [locale, t, isNarrow])
 
-  const localeMapExerciseToRow = useMemo(
-    () => mapExerciseToRow(locale),
-    [locale],
-  )
-  const rows = useMemo(
-    () => (data ?? []).map(localeMapExerciseToRow),
-    [localeMapExerciseToRow, data],
-  )
+  const rows = useMemo(() => {
+    const localeMapExerciseToRow = mapExerciseToRow(locale)
+
+    return (data ?? []).map(localeMapExerciseToRow)
+  }, [locale, data])
 
   const getExpandButtonProps = useCallback(
     ({ row }: { row: MRT_Row<ExerciseRow> }) =>

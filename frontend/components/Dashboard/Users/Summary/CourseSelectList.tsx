@@ -20,9 +20,19 @@ import ProfileTranslations from "/translations/profile"
 
 import { UserCourseSummaryCourseFieldsFragment } from "/graphql/generated"
 
-const Container = styled("div")`
+const Container = styled("div")(
+  ({ theme }) => `
+  display: flex;
+  flex-direction: column;
   width: 30vw;
-`
+
+  ${theme.breakpoints.down("lg")} {
+    flex-direction: row;
+    width: 100%;
+    align-items: flex-start;
+  }
+`,
+)
 
 const CourseSelectListItemTextNested = styled("span")`
   display: block;
@@ -60,11 +70,20 @@ const CourseSelectListItemTextNested = styled("span")`
     height: 0.5rem;
   }
 `
+
 const CourseSelectListItemText = styled(ListItemText)`
   &:last-child {
     border-color: transparent;
   }
 `
+
+const CourseSelectListBase = styled(List)(
+  ({ theme }) => `
+  ${theme.breakpoints.down("lg")} {
+    width: 100%;
+  }
+`,
+)
 
 const ListToolbar = styled("div")`
   display: flex;
@@ -123,7 +142,7 @@ const CourseSelectList = () => {
           )}
         </IconButton>
       </ListToolbar>
-      <List component="nav">
+      <CourseSelectListBase component="nav">
         {loading && (
           <>
             <CourseSelectListItemSkeleton />
@@ -154,7 +173,7 @@ const CourseSelectList = () => {
             />
           </ListItemButton>
         ))}
-      </List>
+      </CourseSelectListBase>
     </Container>
   )
 }

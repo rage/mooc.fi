@@ -1,10 +1,21 @@
 import { DetailedHTMLProps, PropsWithChildren, useMemo } from "react"
 
+import { merge } from "lodash"
 import { MaterialReactTableProps, MRT_ColumnDef } from "material-react-table"
 
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
-import { Chip, Theme, Typography, useMediaQuery } from "@mui/material"
+import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
+import {
+  Chip,
+  ChipProps,
+  TableCellProps,
+  Theme,
+  Tooltip,
+  Typography,
+  TypographyProps,
+  useMediaQuery,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { iconStyle } from "../common"
@@ -57,32 +68,46 @@ export type TierExerciseRow = TierProgressFieldsFragment & {
   completed: boolean
 }
 
-interface NarrowCellProps {
+interface NarrowCellBaseProps {
   header: string
+  tooltip?: string
+  headerProps?: TypographyProps
 }
+
+export const NarrowCellBase = styled("div")`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 1rem;
+`
+
+type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never
+
+const TooltipWrapper = styled("div")`
+  margin-left: auto;
+  padding: 0 0.5rem;
+`
 
 const NarrowCell = ({
   header,
+  tooltip,
+  headerProps,
   children,
   ...props
-}: PropsWithChildren<
-  NarrowCellProps &
-    DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
->) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      width: "100%",
-      paddingRight: "1rem",
-    }}
-    {...props}
-  >
-    <Typography variant="body2" fontWeight="bold" width="50%">
+}: PropsWithChildren<NarrowCellBaseProps & PropsOf<typeof NarrowCellBase>>) => (
+  <NarrowCellBase {...props}>
+    <Typography variant="body2" fontWeight="bold" width="50%" {...headerProps}>
       {header}
+      {tooltip && (
+        <TooltipWrapper>
+          <Tooltip title={tooltip}>
+            <HelpIcon />
+          </Tooltip>
+        </TooltipWrapper>
+      )}
     </Typography>
     {children}
-  </div>
+  </NarrowCellBase>
 )
 
 const RequiredActionsContainer = styled("div")`
@@ -92,15 +117,28 @@ const RequiredActionsContainer = styled("div")`
   gap: 0.5rem;
 `
 
+type RequiredActionBaseProps = {
+  containerProps?: PropsOf<typeof RequiredActionsContainer>
+  chipProps?: ChipProps
+}
+
 export const renderRequiredActionsBase =
-  (t: Translator<any>) =>
+  (
+    t: Translator<any>,
+    { containerProps, chipProps }: RequiredActionBaseProps = {},
+  ) =>
   (
     values: ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"],
   ) =>
     (
-      <RequiredActionsContainer>
+      <RequiredActionsContainer {...containerProps}>
         {values.map((action) => (
-          <Chip key={action.id} label={t(action.value)} size="small" />
+          <Chip
+            key={action.id}
+            label={t(action.value)}
+            size="small"
+            {...chipProps}
+          />
         ))}
       </RequiredActionsContainer>
     )
@@ -108,86 +146,147 @@ export const renderRequiredActionsBase =
 export const renderRequiredActions =
   <T extends Record<string, any>>(
     t: Translator<any>,
+    props?: RequiredActionBaseProps,
   ): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
   ({ cell }) =>
-    renderRequiredActionsBase(t)(
+    renderRequiredActionsBase(
+      t,
+      props,
+    )(
       cell.getValue<
         ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"]
       >(),
     )
 
+type NarrowRequiredActionProps = RequiredActionBaseProps & {
+  cellProps?: Partial<NarrowCellBaseProps> & PropsOf<typeof NarrowCellBase>
+}
+
 export const renderNarrowRequiredActions =
   <T extends Record<string, any>>(
     t: Translator<any>,
+    actionProps: NarrowRequiredActionProps = {},
   ): MRT_ColumnDef<T>["Cell"] =>
-  (props) =>
-    (
-      <NarrowCell header={props.column.columnDef.header}>
-        {renderRequiredActions<T>(t)(props)}
-      </NarrowCell>
-    )
-
-export const renderCheckBase = (
-  value: boolean,
-  title: string,
-  failureTitle?: string,
-) => {
-  if (!value) {
-    if (!failureTitle) {
-      return
-    }
+  (props) => {
+    const { cellProps, ...requiredActionProps } = actionProps
     return (
-      <XMarkIcon css={iconStyle} color="warning" titleAccess={failureTitle} />
+      <NarrowCell {...cellProps} header={props.column.columnDef.header}>
+        {renderRequiredActions<T>(t, requiredActionProps)(props)}
+      </NarrowCell>
     )
   }
 
-  return <CheckIcon css={iconStyle} color="success" titleAccess={title} />
+export const renderCheckBase =
+  (success: string, failure?: string) => (value: boolean) => {
+    if (!value) {
+      if (!failure) {
+        return
+      }
+      return <XMarkIcon css={iconStyle} color="warning" titleAccess={failure} />
+    }
+
+    return <CheckIcon css={iconStyle} color="success" titleAccess={success} />
+  }
+
+type CheckProps = {
+  success: string
+  failure?: string
 }
 
 export const renderCheck =
-  <T extends Record<string, any>>(
-    title: string,
-    failureTitle?: string,
-  ): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
+  <T extends Record<string, any>>({
+    success,
+    failure,
+  }: CheckProps): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
   ({ cell }) => {
     const value = cell.getValue<boolean>()
 
-    return renderCheckBase(value, title, failureTitle)
+    return renderCheckBase(success, failure)(value)
   }
 
 export const renderNarrowCheck =
   <T extends Record<string, any>>(
-    title: string,
-    failureTitle: string,
+    checkProps: CheckProps &
+      Partial<NarrowCellBaseProps> &
+      PropsOf<typeof NarrowCellBase>,
   ): MRT_ColumnDef<T>["Cell"] =>
-  (props) =>
-    (
-      <NarrowCell header={props.column.columnDef.header}>
-        {renderCheck<T>(title, failureTitle)(props)}
+  (props) => {
+    const { success, failure, ...cellProps } = checkProps
+    return (
+      <NarrowCell {...cellProps} header={props.column.columnDef.header}>
+        {renderCheck<T>({ success, failure })(props)}
       </NarrowCell>
     )
+  }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const renderNarrowCell: <T extends Record<string, any> = {}>(
-  props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
-) => ReturnType<NonNullable<MRT_ColumnDef<T>["Cell"]>> = ({ cell, column }) => (
-  <NarrowCell header={column.columnDef.header}>
-    <Typography variant="body2" textAlign="right">
-      {cell.getValue<any>()}
-    </Typography>
-  </NarrowCell>
-)
+type NarrowCellProps<T extends Record<string, any>> =
+  Partial<NarrowCellBaseProps> & {
+    cellProps?:
+      | ((
+          props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
+        ) => PropsOf<typeof NarrowCellBase>)
+      | PropsOf<typeof NarrowCellBase>
+    headerProps?:
+      | ((
+          props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
+        ) => TypographyProps)
+      | TypographyProps
+    valueProps?:
+      | ((
+          props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
+        ) => TypographyProps)
+      | TypographyProps
+  }
+
+export const renderNarrowCell =
+  <T extends Record<string, any>>({
+    tooltip,
+    cellProps,
+    headerProps,
+    valueProps,
+  }: NarrowCellProps<T> = {}): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
+  (props) => {
+    let _cellProps = cellProps
+    if (typeof cellProps === "function") {
+      _cellProps = cellProps(props)
+    }
+    let _valueProps = valueProps
+    if (typeof valueProps === "function") {
+      _valueProps = valueProps(props)
+    }
+    let _headerProps = headerProps
+    if (typeof headerProps === "function") {
+      _headerProps = headerProps(props)
+    }
+    return (
+      <NarrowCell
+        header={props.column.columnDef.header}
+        tooltip={tooltip}
+        headerProps={_headerProps}
+        {..._cellProps}
+      >
+        <Typography variant="body2" textAlign="right" {..._valueProps}>
+          {props.cell.getValue<any>()}
+        </Typography>
+      </NarrowCell>
+    )
+  }
 
 export const useExerciseListProps = <T extends Record<string, any>>() => {
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+  const isVeryNarrow = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  )
+
+  const isWide = !isNarrow && !isVeryNarrow
 
   const props = useMemo(
     (): Omit<MaterialReactTableProps<T>, "columns" | "data"> => ({
       layoutMode: "grid",
+      enableTableHead: isWide,
       enableColumnActions: false,
-      displayColumnDefOptions: !isNarrow
-        ? { "mrt-row-expand": { size: 15 } }
-        : {},
+      enableSorting: false,
+      displayColumnDefOptions: isWide ? { "mrt-row-expand": { size: 15 } } : {},
       muiTablePaginationProps: {
         rowsPerPageOptions: [10, 30, 50, 100],
         sx: {
@@ -222,6 +321,9 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
       },
       muiTablePaperProps: {
         elevation: 0,
+        sx: {
+          width: "100%",
+        },
       },
       muiTableProps: {
         sx: {
@@ -230,7 +332,7 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
       },
       muiTableDetailPanelProps: {
         sx: {
-          display: isNarrow ? "none" : "table-cell",
+          display: !isWide ? "none" : "table-cell",
           width: "100%",
         },
       },
@@ -241,30 +343,32 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
       },
       muiTableBodyProps: {
         sx: {
-          ...(isNarrow && {
+          ...(!isWide && {
             "& .Mui-TableBodyCell-DetailPanel": {
               display: "none",
             },
           }),
         },
       },
-      muiTableHeadProps: {
-        sx: {
-          ...(isNarrow && { display: "none" }),
-        },
-      },
       muiTableHeadCellProps: {
         sx: {
+          textAlign: "left",
           overflow: "unset",
+          "& .Mui-TableHeadCell-Content-Labels": {
+            overflow: "inherit",
+          },
           "& .Mui-TableHeadCell-Content-Wrapper": {
             overflow: "unset",
             textOverflow: "unset",
+          },
+          "& .Mui-TableHeadCell-Content-Actions": {
+            display: "none",
           },
         },
       },
       muiTableBodyRowProps: {
         sx: {
-          ...(isNarrow && {
+          ...(!isWide && {
             margin: "0.5rem",
             width: "unset",
             flexDirection: "column",
@@ -272,19 +376,91 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
             borderRadius: "4px",
             padding: "0.5rem",
           }),
+          ...(isVeryNarrow && {
+            padding: "0",
+            border: "none",
+            marginBottom: "1rem",
+          }),
         },
       },
       muiTableBodyCellProps: {
         sx: {
-          ...(isNarrow && {
+          ...(!isWide && {
             borderBottom: "1px solid rgba(224, 224, 244, 1)",
             width: "100%",
+            ":first-of-type": {
+              display: "none",
+            },
           }),
         },
       },
     }),
-    [isNarrow],
+    [isNarrow, isVeryNarrow, isWide],
   )
 
   return props
+}
+
+type MuiCellProps<T extends Record<string, any>> = {
+  [K in keyof NonNullable<MRT_ColumnDef<T>> & `mui${string}Props`]: NonNullable<
+    MRT_ColumnDef<T>[K]
+  >
+}
+type MuiPropsType<T extends Record<string, any>> = {
+  [K in keyof MuiCellProps<T>]: ReturnType<Extract<MuiCellProps<T>[K], AnyFn>>
+}
+type MuiCellPropsParams<
+  T extends Record<string, any>,
+  K extends keyof MuiCellProps<T>,
+> = Parameters<Extract<MuiCellProps<T>[K], AnyFn>>
+
+type AnyFn = (...args: any[]) => any
+
+export const mergeOriginalMuiProps =
+  <
+    T extends Record<string, any> = Record<string, any>,
+    K extends keyof MuiPropsType<T> = keyof MuiPropsType<T>,
+  >(
+    props: MuiCellPropsParams<T, K>[0],
+  ) =>
+  (
+    originalProps?: MuiCellProps<T>[K],
+    newProps?: MuiPropsType<T>[K],
+  ): MuiPropsType<T>[K] => {
+    let originalMuiProps: any
+
+    if (typeof originalProps === "function") {
+      originalMuiProps = originalProps(props as any)
+    } else {
+      originalMuiProps = originalProps ?? {}
+    }
+
+    return merge(originalMuiProps, newProps ?? {}) as MuiPropsType<T>[K]
+  }
+
+export const mergeOriginalCellProps = <T extends Record<string, any>>(
+  props: Parameters<
+    Exclude<
+      NonNullable<MRT_ColumnDef<T>["muiTableBodyCellProps"]>,
+      TableCellProps
+    >
+  >[0],
+  newProps: TableCellProps,
+): ReturnType<
+  Exclude<
+    NonNullable<MRT_ColumnDef<T>["muiTableBodyCellProps"]>,
+    TableCellProps
+  >
+> => {
+  const { table } = props
+  let originalProps: TableCellProps = {}
+
+  const originalMuiTableBodyCellProps = table.options.muiTableBodyCellProps
+  if (typeof originalMuiTableBodyCellProps === "function") {
+    originalProps = originalMuiTableBodyCellProps(props)
+  } else {
+    originalProps = originalMuiTableBodyCellProps ?? {}
+  }
+
+  return merge(originalProps, newProps)
 }

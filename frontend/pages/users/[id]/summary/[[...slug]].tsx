@@ -10,7 +10,7 @@ import { omit } from "lodash"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useLazyQuery, useQuery } from "@apollo/client"
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
 import { styled, Theme } from "@mui/material/styles"
@@ -47,7 +47,9 @@ import UsersTranslations from "/translations/users"
 
 import {
   UserCourseSummaryCourseFieldsFragment,
+  UserSummaryCourseListDocument,
   UserSummaryDocument,
+  UserSummaryForCourseDocument,
 } from "/graphql/generated"
 
 const StyledForm = styled("form")`
