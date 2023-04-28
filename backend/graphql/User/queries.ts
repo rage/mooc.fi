@@ -113,7 +113,6 @@ export const UserSubscriptions = extendType({
 
         let users: Array<User> = []
 
-        console.log("fields", fields)
         return (async function* () {
           let fieldIndex = 1
 

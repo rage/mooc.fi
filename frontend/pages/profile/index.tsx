@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
@@ -50,13 +51,12 @@ function Profile() {
 
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
 
-  const handleTabChange = useCallback(
+  const handleTabChange = useEventCallback(
     (_: SyntheticEvent<Element, Event>, newValue: number) => {
       setTab(newValue)
       const query = newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""
       router.replace(router.pathname, `/profile${query}`, { shallow: true })
     },
-    [],
   )
 
   useEffect(() => {

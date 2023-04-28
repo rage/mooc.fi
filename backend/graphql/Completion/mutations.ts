@@ -117,7 +117,7 @@ export const CompletionMutations = extendType({
             certificate_id: null,
             eligible_for_ects: true,
             tier: o.tier ?? null,
-            completion_registration_attempt_date: null, // TODO: some date here?
+            completion_registration_attempt_date: null,
           }
         })
 

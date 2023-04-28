@@ -82,7 +82,6 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
       try {
         setStatus({ message: "Saving..." })
-        // TODO/FIXME: return value?
         await moduleMutation({
           variables: { study_module: mutationVariables },
           refetchQueries: () => refetchQueries,

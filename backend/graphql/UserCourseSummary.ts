@@ -76,9 +76,12 @@ export const UserCourseSummary = objectType({
 
     t.field("completion", {
       type: "Completion",
+      args: {
+        includeOnlyCompleted: booleanArg(),
+      },
       resolve: async (
         { user_id, course_id, completions_handled_by_id },
-        _,
+        { includeOnlyCompleted },
         ctx,
       ) => {
         const completions = await ctx.prisma.course
@@ -88,8 +91,8 @@ export const UserCourseSummary = objectType({
           .completions({
             where: {
               user_id,
+              ...(includeOnlyCompleted && { completed: true }),
             },
-            // TODO: completed: true?
             orderBy: { created_at: "asc" },
             take: 1,
           })
@@ -164,7 +167,6 @@ export const UserCourseSummary = objectType({
         const noPoints = notEmpty(includeNoPointsAwarded)
           ? includeNoPointsAwarded
           : include_no_points_awarded_exercises
-
         const data = await ctx.prisma.course
           .findUnique({
             where: { id: course_id },
@@ -191,7 +193,7 @@ export const UserCourseSummary = objectType({
           })
 
         return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
-        // TODO/FIXME: testing if this actually reomves any extra joins
+        // TODO/FIXME: testing if this actually removes any extra joins
         /*return ctx.prisma.user
           .findUnique({
             where: { id: user_id },

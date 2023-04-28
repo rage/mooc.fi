@@ -15,6 +15,7 @@ import {
   TablePagination,
 } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
@@ -49,25 +50,22 @@ const TablePaginationActions: React.FC = () => {
 
   const { count } = meta
 
-  const handleFirstPageButtonClick = useCallback(
+  const handleFirstPageButtonClick = useEventCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setPage(0)
     },
-    [],
   )
 
-  const handleBackButtonClick = useCallback(
+  const handleBackButtonClick = useEventCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setPage((p) => p - 1)
     },
-    [],
   )
 
-  const handleNextButtonClick = useCallback(
+  const handleNextButtonClick = useEventCallback(
     async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setPage((p) => p + 1)
     },
-    [],
   )
 
   const handleLastPageButtonClick = useCallback(
@@ -128,14 +126,13 @@ const Pagination: React.FC = () => {
   const { meta, rowsPerPage, page, setPage, setRowsPerPage, searchVariables } =
     useContext(UserSearchContext)
 
-  const handleChangeRowsPerPage = useCallback(
+  const handleChangeRowsPerPage = useEventCallback(
     async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newRowsPerPage = parseInt(e.target.value, 10)
 
       setPage(0)
       setRowsPerPage(newRowsPerPage)
     },
-    [searchVariables],
   )
 
   const labelDisplayedRows = useCallback(
@@ -150,7 +147,7 @@ const Pagination: React.FC = () => {
     [t],
   )
 
-  const onPageChange = useCallback(() => null, [])
+  const onPageChange = useEventCallback(() => null)
 
   return (
     <StyledTablePagination

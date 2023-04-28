@@ -5,11 +5,10 @@ export {
 } from "./CollapseContext"
 export {
   default as UserPointsSummaryContext,
+  UserPointsSummaryFunctionsContext,
   useUserPointsSummaryContext,
+  useUserPointsSummaryFunctionsContext,
   useUserPointsSummaryContextByCourseId,
-  useUserPointsSummaryContextByCourseSlug,
+  UserPointsSummaryContextProvider,
+  useSelectedData,
 } from "./UserPointsSummaryContext"
-export {
-  default as UserPointsSummarySelectedCourseContext,
-  useUserPointsSummarySelectedCourseContext,
-} from "./UserPointsSummarySelectedCourseContext"

@@ -1,5 +1,3 @@
-import { useCallback } from "react"
-
 import ReverseOrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-down-wide-short.svg?icon"
 import OrderIcon from "@fortawesome/fontawesome-free/svgs/solid/arrow-up-short-wide.svg?icon"
 import {
@@ -10,11 +8,14 @@ import {
   MenuItem,
   Skeleton,
   TextField,
-  Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
-import { useUserPointsSummarySelectedCourseContext } from "./contexts"
+import {
+  useUserPointsSummaryContext,
+  useUserPointsSummaryFunctionsContext,
+} from "./contexts"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 
@@ -83,7 +84,7 @@ const CourseSelectListBase = styled(List)(
     width: 100%;
   }
 `,
-)
+) as typeof List
 
 const ListToolbar = styled("div")`
   display: flex;
@@ -93,23 +94,13 @@ const ListToolbar = styled("div")`
 
 const CourseSelectList = () => {
   const t = useTranslator(ProfileTranslations)
-  const {
-    courses,
-    sort,
-    order,
-    onCourseSortChange,
-    onSortOrderToggle,
-    sortOptions,
-    loading,
-    selected,
-    setSelected,
-  } = useUserPointsSummarySelectedCourseContext()
-
-  const handleListItemClick = useCallback(
-    (slug: UserCourseSummaryCourseFieldsFragment["slug"]) => () => {
-      setSelected(slug)
-    },
-    [setSelected],
+  const { data, sort, order, sortOptions, loading, selected } =
+    useUserPointsSummaryContext()
+  const { setSelected, onCourseSortChange, onSortOrderToggle } =
+    useUserPointsSummaryFunctionsContext()
+  const handleListItemClick = useEventCallback(
+    (slug: UserCourseSummaryCourseFieldsFragment["slug"]) => () =>
+      setSelected(slug),
   )
 
   return (
@@ -122,7 +113,7 @@ const CourseSelectList = () => {
           label={t("courseSortOrder")}
           onChange={onCourseSortChange}
           size="small"
-          disabled={!loading && courses?.length === 0}
+          disabled={!loading && data?.length === 0}
         >
           {sortOptions.map((o) => (
             <MenuItem key={o.value} value={o.value}>
@@ -133,7 +124,7 @@ const CourseSelectList = () => {
         <IconButton
           onClick={onSortOrderToggle}
           title={order === "asc" ? t("orderAscending") : t("orderDescending")}
-          disabled={!loading && courses?.length === 0}
+          disabled={!loading && data?.length === 0}
         >
           {order === "desc" ? (
             <ReverseOrderIcon fontSize="small" />
@@ -153,19 +144,18 @@ const CourseSelectList = () => {
             <CourseSelectListItemSkeleton />
           </>
         )}
-        {courses?.map((course) => (
+        {data?.map(({ course, tier_summaries }) => (
           <ListItemButton
             key={course.id}
             selected={selected === course.slug}
             onClick={handleListItemClick(course.slug)}
           >
             <CourseSelectListItemText
-              primary={
-                <Typography variant="subtitle2" component="span">
-                  {course.name}
-                </Typography>
-              }
-              secondary={course.tiers?.map((tierCourse) => (
+              primary={course.name}
+              primaryTypographyProps={{
+                variant: "subtitle2",
+              }}
+              secondary={tier_summaries?.map(({ course: tierCourse }) => (
                 <CourseSelectListItemTextNested key={tierCourse.id}>
                   {tierCourse.name}
                 </CourseSelectListItemTextNested>

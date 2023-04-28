@@ -17,6 +17,7 @@ import {
   Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -77,7 +78,7 @@ const CertificateButton = ({
       message: t("certificateGeneratedMessage"),
       severity: "success",
     })
-  }, [])
+  }, [t])
   const onReceiveGeneratedCertificateError = useCallback(() => {
     setDialogOpen(false)
     addAlert({
@@ -85,7 +86,7 @@ const CertificateButton = ({
       message: t("nameFormErrorSubmit"),
       severity: "error",
     })
-  }, [])
+  }, [t])
 
   const {
     state,
@@ -111,15 +112,13 @@ const CertificateButton = ({
     [state.certificateId],
   )
 
-  const onDialogOpen = useCallback(() => setDialogOpen(true), [])
-  const onDialogClose = useCallback(() => setDialogOpen(false), [])
-  const onFirstNameChange = useCallback(
+  const onDialogOpen = useEventCallback(() => setDialogOpen(true))
+  const onDialogClose = useEventCallback(() => setDialogOpen(false))
+  const onFirstNameChange = useEventCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value),
-    [],
   )
-  const onLastNameChange = useCallback(
+  const onLastNameChange = useEventCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value),
-    [],
   )
 
   if (state.certificateId) {

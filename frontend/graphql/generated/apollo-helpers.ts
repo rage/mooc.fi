@@ -526,6 +526,7 @@ export type ExerciseCompletionRequiredActionFieldPolicy = {
 export type ExerciseProgressKeySpecifier = (
   | "exercise_count"
   | "exercises"
+  | "exercises_attempted_count"
   | "exercises_completed_count"
   | "total"
   | ExerciseProgressKeySpecifier
@@ -533,6 +534,7 @@ export type ExerciseProgressKeySpecifier = (
 export type ExerciseProgressFieldPolicy = {
   exercise_count?: FieldPolicy<any> | FieldReadFunction<any>
   exercises?: FieldPolicy<any> | FieldReadFunction<any>
+  exercises_attempted_count?: FieldPolicy<any> | FieldReadFunction<any>
   exercises_completed_count?: FieldPolicy<any> | FieldReadFunction<any>
   total?: FieldPolicy<any> | FieldReadFunction<any>
 }
@@ -1179,27 +1181,37 @@ export type TierInfoFieldPolicy = {
   tier?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type TierProgressKeySpecifier = (
+  | "course"
+  | "course_id"
   | "custom_id"
   | "exercise"
   | "exercise_completions"
+  | "exercise_id"
   | "exercise_number"
   | "max_points"
   | "n_points"
   | "name"
   | "progress"
+  | "service"
+  | "service_id"
   | "tier"
   | "user_id"
   | TierProgressKeySpecifier
 )[]
 export type TierProgressFieldPolicy = {
+  course?: FieldPolicy<any> | FieldReadFunction<any>
+  course_id?: FieldPolicy<any> | FieldReadFunction<any>
   custom_id?: FieldPolicy<any> | FieldReadFunction<any>
   exercise?: FieldPolicy<any> | FieldReadFunction<any>
   exercise_completions?: FieldPolicy<any> | FieldReadFunction<any>
+  exercise_id?: FieldPolicy<any> | FieldReadFunction<any>
   exercise_number?: FieldPolicy<any> | FieldReadFunction<any>
   max_points?: FieldPolicy<any> | FieldReadFunction<any>
   n_points?: FieldPolicy<any> | FieldReadFunction<any>
   name?: FieldPolicy<any> | FieldReadFunction<any>
   progress?: FieldPolicy<any> | FieldReadFunction<any>
+  service?: FieldPolicy<any> | FieldReadFunction<any>
+  service_id?: FieldPolicy<any> | FieldReadFunction<any>
   tier?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
 }

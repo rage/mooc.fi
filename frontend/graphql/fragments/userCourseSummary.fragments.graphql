@@ -12,6 +12,16 @@ fragment UserCourseSummaryCourseFields on Course {
   }
 }
 
+fragment UserCourseSummaryCourseFieldsWithExerciseCompletions on Course {
+  ...UserCourseSummaryCourseFields
+  exercises(
+    includeDeleted: $includeDeletedExercises
+    includeNoPointsAwarded: $includeNoPointsAwardedExercises
+  ) {
+    ...ExerciseWithExerciseCompletionsFields
+  }
+}
+
 fragment UserCourseSummaryCoreFields on UserCourseSummary {
   course {
     ...UserCourseSummaryCourseFields
@@ -31,6 +41,16 @@ fragment UserCourseSummaryCoreFields on UserCourseSummary {
   start_date
   tier_summaries {
     ...UserTierCourseSummaryCoreFields
+  }
+}
+
+fragment UserCourseSummaryCoreFieldsWithExerciseCompletions on UserCourseSummary {
+  ...UserCourseSummaryCoreFields
+  course {
+    ...UserCourseSummaryCourseFieldsWithExerciseCompletions
+  }
+  tier_summaries {
+    ...UserTierCourseSummaryCoreFieldsWithExerciseCompletions
   }
 }
 
@@ -67,4 +87,11 @@ fragment UserTierCourseSummaryCoreFields on UserCourseSummary {
       ...UserCourseServiceProgressCoreFields
     }
     start_date
+}
+
+fragment UserTierCourseSummaryCoreFieldsWithExerciseCompletions on UserCourseSummary {
+  ...UserTierCourseSummaryCoreFields
+  course {
+    ...UserCourseSummaryCourseFieldsWithExerciseCompletions
+  }
 }

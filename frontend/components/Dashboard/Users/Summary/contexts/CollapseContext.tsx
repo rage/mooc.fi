@@ -22,6 +22,7 @@ export type CollapseState = {
 
 export enum ActionType {
   INIT_STATE,
+  SET_LOADING,
   OPEN,
   CLOSE,
   TOGGLE,
@@ -72,6 +73,10 @@ export type CollapseAction =
   | {
       type: ActionType.INIT_STATE
       state: CollapseState
+    }
+  | {
+      type: ActionType.SET_LOADING
+      loading: boolean
     }
 
 interface CollapseContext {
@@ -181,16 +186,21 @@ export const collapseReducer = (
         return state
     }
   }
+  if (action.type === ActionType.SET_LOADING) {
+    return produce(state, (draft) => {
+      draft.loading = action.loading
+    })
+  }
 
   return state
 }
 
-export const initialState: CollapseState = {
+export const collapseInitialState: CollapseState = {
   courses: {},
   loading: true,
 }
 
-const createCoursesState = (
+const createCoursesCollapseState = (
   data: Array<
     | UserCourseSummaryCoreFieldsFragment
     | UserTierCourseSummaryCoreFieldsFragment
@@ -219,15 +229,17 @@ const createCoursesState = (
 
 export const createCollapseState = (
   data?: UserCourseSummaryCoreFieldsFragment[],
-  loading?: boolean,
 ) => ({
   courses: {
-    ...createCoursesState(data ?? []),
-    ...createCoursesState(data?.flatMap((d) => d?.tier_summaries ?? []) ?? [], {
-      open: false,
-    }),
+    ...createCoursesCollapseState(data ?? []),
+    ...createCoursesCollapseState(
+      data?.flatMap((d) => d?.tier_summaries ?? []) ?? [],
+      {
+        open: false,
+      },
+    ),
   },
-  loading: loading ?? true,
+  loading: false,
 })
 
 const CollapseContextImpl = createContext<CollapseContext>({

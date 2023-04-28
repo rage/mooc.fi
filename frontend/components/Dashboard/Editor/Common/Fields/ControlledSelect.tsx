@@ -12,6 +12,7 @@ import { InputAdornment, MenuItem, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
+import { pulseAnimation } from ".."
 import { useCourseEditorData } from "../../Course/CourseEditorDataContext"
 import { FormValues } from "../../types"
 import RevertButton from "/components/RevertButton"
@@ -21,6 +22,8 @@ import CommonTranslations from "/translations/common"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
+
+  ${pulseAnimation}
 `
 
 const ShiftedInputAdornment = styled(InputAdornment)`

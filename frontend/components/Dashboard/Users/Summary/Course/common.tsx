@@ -64,6 +64,7 @@ interface CourseEntryCardProps {
   course?: UserCourseSummaryCourseFieldsFragment | null
   hasCopyButton?: boolean
   hasCollapseButton?: boolean
+  mountOnCollapse?: boolean
 }
 
 const CourseEntryCardSkeleton = ({
@@ -84,6 +85,7 @@ export const CourseEntryCard = ({
   course,
   hasCopyButton,
   hasCollapseButton,
+  mountOnCollapse,
   children,
   ...cardProps
 }: PropsWithChildren<CourseEntryCardProps & CardProps>) => {
@@ -137,13 +139,13 @@ export const CourseEntryCard = ({
         )}
         {hasCollapseButton && (
           <CollapseButton
-            open={state.open}
+            open={state?.open}
             onClick={onCollapseCourseClick}
             tooltip={t("showCourseDetails")}
           />
         )}
       </CourseEntryCardTitleWrapper>
-      <Collapse in={state.open}>
+      <Collapse in={state?.open} unmountOnExit={mountOnCollapse}>
         <CardContent>
           {admin && (
             <CourseInfo>
@@ -163,8 +165,7 @@ export const CourseEntryCard = ({
               />
             </CourseInfo>
           )}
-
-          {children}
+          {mountOnCollapse ? (state?.open ? children : null) : children}
         </CardContent>
       </Collapse>
     </CourseEntryCardBase>

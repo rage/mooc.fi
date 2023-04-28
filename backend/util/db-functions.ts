@@ -235,9 +235,8 @@ interface GetCourseInput {
 export const getCourseOrAliasKnex =
   ({ knex }: BaseContext) =>
   async ({ id, slug }: GetCourseInput) => {
-    // TODO: actually accept both id and slug?
-    if ((!id && !slug) || (id && slug)) {
-      throw new Error("provide exactly one of id or slug")
+    if (!id && !slug) {
+      throw new Error("provide at least one of id or slug")
     }
 
     if (id) {

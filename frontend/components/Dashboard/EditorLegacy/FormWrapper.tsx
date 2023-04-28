@@ -91,9 +91,7 @@ const FormWrapper = <T extends FormValues>(
       setTab(anchor?.tab ?? 0)
 
       setImmediate(() => {
-        // TODO: add a simple pulsating animation to the field for a while
-        const element = document.getElementById(anchorLink)
-        element?.scrollIntoView()
+        document.getElementById(anchorLink)?.scrollIntoView()
       })
     } else {
       setSubmitted(true)

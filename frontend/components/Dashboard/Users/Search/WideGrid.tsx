@@ -43,32 +43,31 @@ const ButtonContainer = styled("div")`
   gap: 0.5rem;
 `
 
+const PaginationComponent: React.FC<{ loading?: boolean }> = ({ loading }) => (
+  <PaginationTableRow>
+    {loading ? (
+      <TableCell colSpan={5}>
+        <Skeleton width="400px" style={{ margin: "auto" }} />
+      </TableCell>
+    ) : (
+      <Pagination />
+    )}
+  </PaginationTableRow>
+)
+
 const WideGrid = () => {
   const t = useTranslator(UsersTranslations)
   const isVeryWide = useMediaQuery("(min-width: 1200px)")
-  const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
-
-  const PaginationComponent = useCallback(
-    () => (
-      <PaginationTableRow>
-        {loading ? (
-          <TableCell colSpan={5}>
-            <Skeleton width="400px" style={{ margin: "auto" }} />
-          </TableCell>
-        ) : (
-          <Pagination />
-        )}
-      </PaginationTableRow>
-    ),
-    [data, rowsPerPage, page, loading],
-  )
+  const { rowsPerPage, loading } = useContext(UserSearchContext)
 
   return (
     <StyledPaper>
       <TableWrapper>
         <Table>
           <TableHead>
-            {rowsPerPage >= 50 ? <PaginationComponent /> : null}
+            {rowsPerPage >= 50 ? (
+              <PaginationComponent loading={loading} />
+            ) : null}
             <TableRow>
               <StyledTableCell component="th" scope="row">
                 {t("userFullName")}
@@ -85,7 +84,7 @@ const WideGrid = () => {
           </TableHead>
           <RenderResults />
           <TableFooter>
-            <PaginationComponent />
+            <PaginationComponent loading={loading} />
           </TableFooter>
         </Table>
       </TableWrapper>

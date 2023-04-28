@@ -8,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { UserInputError } from "../lib/errors"
 
 export const OpenUniversityRegistrationLink = objectType({
   name: "OpenUniversityRegistrationLink",
@@ -100,6 +101,11 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
         link: stringArg(),
       },
       authorize: isAdmin,
+      validate: async (_, { course_code, course }) => {
+        if (!course_code || !course) {
+          throw new UserInputError("course_code and course are both required")
+        }
+      },
       resolve: async (_, args, ctx) => {
         const { course_code, course, language, link } = args
 
@@ -136,13 +142,12 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
           where: {
             id,
           },
-          // TODO/FIXME: this deletes the old values?
           data: {
             course: {
               connect: { id: course },
             },
-            course_code: course_code ?? "",
-            language: language ?? "",
+            ...(course_code && { course_code }),
+            ...(language && { language }),
             link,
           },
         })

@@ -76,9 +76,10 @@ const withApolloClient = (App: any) => {
 
     if (typeof window === "undefined") {
       if (inAppContext) {
-        props = { ...props, apollo }
+        props.apollo = apollo
       } else {
-        props = { pageProps: { ...props, apollo } }
+        Object.assign(props.pageProps, props ?? {}, { apollo })
+        //props = { pageProps: { ...props, apollo } }
       }
       if (res?.finished) {
         return props
@@ -95,7 +96,7 @@ const withApolloClient = (App: any) => {
           tree: (
             <AppTree
               {...props}
-              pageProps={props?.pageProps ?? {}}
+              //pageProps={props?.pageProps ?? {}}
               Component={Component}
             />
           ),

@@ -10,10 +10,13 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import { ControlledFieldProps } from "."
+import { pulseAnimation } from ".."
 import { useAnchor } from "/hooks/useAnchors"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
+
+  ${pulseAnimation}
 `
 
 const DatePickerTextField = (props: TextFieldProps) => (

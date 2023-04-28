@@ -1,14 +1,11 @@
 import { Context } from "../context"
 import { convertPagination, getCourseOrAlias } from "../util/db-functions"
 
-export default async function fetchCompletions(args: any, ctx: Context) {
-  const { course } = args
-  const startTime = new Date().getTime()
-  const data = await getCompletionDataFromDB(args, ctx)
-  console.log("FINISHED WITH", course)
-  const stopTime = new Date().getTime()
-  console.log("used", stopTime - startTime, "time")
-  return data
+export default async function fetchCompletions(
+  args: CompletionOptionTypes,
+  ctx: Context,
+) {
+  return getCompletionDataFromDB(args, ctx)
 }
 
 interface CompletionOptionTypes {

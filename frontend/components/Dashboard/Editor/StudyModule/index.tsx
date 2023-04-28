@@ -102,7 +102,6 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
       try {
         addSnackbar({ message: t("statusSaving") })
-        // TODO/FIXME: return value?
         await moduleMutation({
           variables: { study_module: mutationVariables },
           refetchQueries: () => refetchQueries,
@@ -121,14 +120,10 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
   const onError: SubmitErrorHandler<StudyModuleFormValues> = useCallback(
     (errors: Record<string, any>, _?: any) => {
-      const { anchorLink } = getFirstErrorAnchor(anchors, errors)
-
-      setTimeout(() => {
-        const element = document.getElementById(anchorLink)
-        element?.scrollIntoView()
-      }, 100)
+      addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
+      scrollFirstErrorIntoView(errors)
     },
-    [],
+    [t],
   )
 
   const onDelete = useCallback(async (id: string) => {

@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef } from "react"
 
-import { sortBy } from "lodash"
 import type {
   MRT_ColumnDef,
   MRT_Row,
@@ -10,11 +9,6 @@ import { useRouter } from "next/router"
 
 import { TableCellProps, Theme, Typography, useMediaQuery } from "@mui/material"
 
-import {
-  useUserPointsSummaryContext,
-  useUserPointsSummaryContextByCourseId,
-} from "../contexts"
-import { UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment } from "../types"
 import {
   ExerciseRow,
   renderCheck,
@@ -34,19 +28,11 @@ import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
-import {
-  ExerciseCompletionCoreFieldsFragment,
-  ExerciseCoreFieldsFragment,
-  UserCourseSummaryCoreFieldsFragment,
-  UserTierCourseSummaryCoreFieldsFragment,
-} from "/graphql/generated"
+import { ExerciseWithExerciseCompletionsFieldsFragment } from "/graphql/generated"
 
-type ExerciseWithCompletions = ExerciseCoreFieldsFragment & {
-  exercise_completions: ExerciseCompletionCoreFieldsFragment[] | null
-}
 const mapExerciseToRow =
   (locale?: string) =>
-  (exercise: ExerciseWithCompletions): ExerciseRow => {
+  (exercise: ExerciseWithExerciseCompletionsFieldsFragment): ExerciseRow => {
     const exerciseCompletion = exercise.exercise_completions?.[0]
 
     const created_at = exerciseCompletion?.created_at
@@ -77,7 +63,7 @@ const mapExerciseToRow =
   }
 
 interface ExerciseListProps {
-  data?: Array<ExerciseWithCompletions>
+  data?: Array<ExerciseWithExerciseCompletionsFieldsFragment> | null
   loading?: boolean
 }
 
@@ -220,7 +206,6 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
     [isNarrow],
   )
 
-  // TODO: use mrt here as well?
   const renderExerciseInfo = useCallback(
     ({ row }: { row: MRT_Row<ExerciseRow> }) =>
       !isNarrow ? <ExerciseInfo exercise={row.original} /> : undefined,

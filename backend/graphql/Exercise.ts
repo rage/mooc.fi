@@ -41,9 +41,10 @@ export const Exercise = objectType({
         }),
         user_id: idArg(),
         completed: booleanArg(),
+        attempted: booleanArg(),
       },
       resolve: async (parent, args, ctx: Context) => {
-        const { orderBy, user_id: user_id_arg, completed } = args
+        const { orderBy, user_id: user_id_arg, completed, attempted } = args
         const isAdmin = ctx.role === Role.ADMIN
         const user_id = isAdmin && user_id_arg ? user_id_arg : ctx?.user?.id
 
@@ -56,6 +57,7 @@ export const Exercise = objectType({
             where: {
               user_id,
               ...(completed && { completed: true }),
+              ...(attempted && { attempted: true }),
             },
             distinct: ["user_id", "exercise_id"],
             orderBy: [

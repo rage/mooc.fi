@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from "react"
 
-import { useRouter } from "next/router"
-
 import { FormSubtitleWithMargin } from "../Common"
 import {
   ControlledFieldArrayList,
@@ -21,9 +19,16 @@ const courseCodeContainerProps = {
   },
 }
 
+const conditions: ControlledFieldArrayListProps<
+  CourseFormValues,
+  "course_aliases"
+>["conditions"] = {
+  add: (values) => values?.[values.length - 1]?.course_code !== "",
+  remove: (item) => !item._id && item.course_code === "",
+}
+
 function CourseAliasForm() {
   const t = useTranslator(CoursesTranslations)
-  const { locale } = useRouter()
 
   const renderArrayListItem: ControlledFieldArrayListProps<
     CourseFormValues,
@@ -47,23 +52,12 @@ function CourseAliasForm() {
     [t],
   )
 
-  const conditions: ControlledFieldArrayListProps<
-    CourseFormValues,
-    "course_aliases"
-  >["conditions"] = useMemo(
-    () => ({
-      add: (values) => values?.[values.length - 1]?.course_code !== "",
-      remove: (item) => !item._id && item.course_code === "",
-    }),
-    [],
-  )
-
   const texts = useMemo(
     () => ({
       description: t("confirmationRemoveAlias"),
       noFields: t("courseNoAliases"),
     }),
-    [t, locale],
+    [t],
   )
 
   return (

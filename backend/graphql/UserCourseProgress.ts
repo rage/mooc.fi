@@ -1,3 +1,4 @@
+import { groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -25,6 +26,7 @@ import {
 } from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
+import { notEmpty } from "../util/notEmpty"
 
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
@@ -58,6 +60,7 @@ export const UserCourseProgress = objectType({
     // compatibility for older queries
     t.nonNull.list.nonNull.field("progress", {
       type: "Json",
+      deprecation: "use points_by_group",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseProgress.findUnique({
           where: { id: parent.id },
@@ -122,19 +125,29 @@ export const UserCourseProgress = objectType({
         }
 
         const exercises = await ctx.prisma.$queryRaw<
-          Array<{ exercise_id: string; exercise_completion_id: string | null }>
+          Array<{
+            exercise_id: string
+            exercise_completion_id: string | null
+            completed: boolean | null
+            attempted: boolean | null
+          }>
         >(Prisma.sql`
-          select e.id as exercise_id, ecs.id as exercise_completion_id
+          select e.id as exercise_id,
+                 ecs.id as exercise_completion_id,
+                 completed,
+                 attempted
             from exercise e
             full outer join (
               select
-                ec.id, ec.exercise_id,
-                row_number() over (partition by ec.exercise_id order by ec.timestamp desc, ec.updated_at desc) as row
+                ec.id, ec.exercise_id, completed, attempted,
+                row_number() over (
+                  partition by ec.exercise_id
+                  order by ec.timestamp desc, ec.updated_at desc
+                ) as row
               from exercise_completion ec
               join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${user_id}
               and e.course_id = ${course_id}
-              and ec.completed = true
             ) ecs on ecs.exercise_id = e.id and row = 1
           where e.course_id = ${course_id}
           and e.deleted <> true
@@ -142,7 +155,10 @@ export const UserCourseProgress = objectType({
         `)
 
         const completedExerciseCount = exercises.filter(
-          (e) => e.exercise_completion_id,
+          (e) => e.exercise_completion_id && e.completed,
+        ).length
+        const attemptedExerciseCount = exercises.filter(
+          (e) => e.exercise_completion_id && e.attempted,
         ).length
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const totalProgress = (n_points || 0) / (max_points || 1)
@@ -154,6 +170,7 @@ export const UserCourseProgress = objectType({
           exercises: exerciseProgress,
           exercise_count: exercises.length,
           exercises_completed_count: completedExerciseCount,
+          exercises_attempted_count: attemptedExerciseCount,
         }
       },
     })
@@ -193,9 +210,23 @@ export const UserCourseProgress = objectType({
             ...extra.tiers[key],
           }
         })
+        const exercisesFromTiers = await ctx.prisma.exercise.findMany({
+          where: {
+            custom_id: {
+              in: Object.values(extra.exercises)
+                .map((e) => e.custom_id)
+                .filter(notEmpty),
+            },
+          },
+        })
+        const exerciseMap = groupBy(exercisesFromTiers, "custom_id")
+
         const exercises = Object.keys(extra.exercises).map((key) => ({
           exercise_number: Number(key),
           user_id,
+          exercise_id:
+            exerciseMap[extra.exercises[key].custom_id ?? ""]?.[0]?.id,
+          exercise: exerciseMap[extra.exercises[key].custom_id ?? ""]?.[0],
           ...extra.exercises[key],
         }))
         const n_points = exercises.reduce((acc, curr) => acc + curr.n_points, 0)

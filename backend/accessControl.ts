@@ -20,6 +20,16 @@ export const isOrganization: AuthorizeFunction = (_root, _args, ctx, _info) =>
   ctx.role === Role.ORGANIZATION
 export const isVisitor: AuthorizeFunction = (_root, _args, ctx, _info) =>
   ctx.role === Role.VISITOR
+export const isSameOrganization: FieldAuthorizeResolver<
+  "Organization",
+  string
+> = async (root, args, ctx, info) => {
+  if (!isOrganization(root, args, ctx, info) || !ctx.organization?.id) {
+    return false
+  }
+  return root.id === ctx.organization.id
+}
+
 export const isCourseOwner =
   (course_id: string): AuthorizeFunction =>
   async (root, args, ctx, info) => {

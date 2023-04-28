@@ -58,6 +58,7 @@ const PersonalDetailsDisplay = ({ user }: PersonalDetailsDisplayProps) => {
     </>
   )
 }
+
 function PointsListItemCard(props: PointsListItemCardProps) {
   const t = useTranslator(ProfileTranslations)
   const {

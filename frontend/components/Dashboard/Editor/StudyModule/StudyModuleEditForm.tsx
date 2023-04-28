@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form"
 
 import { CircularProgress, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { FormSubtitle } from "../Common"
 import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
@@ -74,10 +75,10 @@ function StudyModuleEditForm() {
     setImageError(t("moduleImageError"))
   }, [t])
 
-  const onImageLoadingComplete = useCallback(() => {
+  const onImageLoadingComplete = useEventCallback(() => {
     setImageLoading(false)
     setImageError("")
-  }, [])
+  })
 
   return (
     <>

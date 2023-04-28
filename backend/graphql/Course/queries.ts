@@ -291,7 +291,7 @@ export const CourseQueries = extendType({
               link: course?.course_translations?.[0]?.link ?? "",
               name:
                 (language
-                  ? course?.course_translations?.[0]?.name
+                  ? course?.course_translations?.[0]?.name ?? course?.name
                   : course?.name) ?? "",
             }
           })

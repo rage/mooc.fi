@@ -6,6 +6,7 @@ import Image, { ImageProps } from "next/image"
 import CloseIcon from "@mui/icons-material/Close"
 import { Box, IconButton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
@@ -89,7 +90,7 @@ const ModalImage = ({ src, alt, ...props }: ModalImageProps) => {
     modalLoaded.current = true
     setOpen(true)
   }, [setOpen])
-  const handleClose = useCallback(() => setOpen(false), [setOpen])
+  const handleClose = useEventCallback(() => setOpen(false))
   const isStatic = typeof src !== "string"
 
   return (

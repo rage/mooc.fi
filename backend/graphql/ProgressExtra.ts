@@ -1,4 +1,4 @@
-import { objectType } from "nexus"
+import { booleanArg, objectType } from "nexus"
 
 import { BAIexercises } from "../config/courseConfig"
 
@@ -48,6 +48,8 @@ export const TierProgress = objectType({
     t.nonNull.float("progress")
     t.string("custom_id")
     t.nonNull.string("user_id")
+    t.field("exercise", { type: "Exercise" })
+    t.id("exercise_id")
 
     t.field("name", {
       type: "String",
@@ -61,7 +63,15 @@ export const TierProgress = objectType({
 
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
-      resolve: async ({ custom_id, user_id }, _, ctx) => {
+      args: {
+        completed: booleanArg(),
+        attempted: booleanArg(),
+      },
+      resolve: async (
+        { custom_id, user_id },
+        { completed, attempted },
+        ctx,
+      ) => {
         if (!custom_id || !user_id) {
           return null
         }
@@ -80,10 +90,12 @@ export const TierProgress = objectType({
           return null
         }
 
-        const completions = await ctx.prisma.exerciseCompletion.findMany({
+        return ctx.prisma.exerciseCompletion.findMany({
           where: {
             exercise: { custom_id: { in: exerciseCustomIds } },
             user_id,
+            ...(completed && { completed: true }),
+            ...(attempted && { attempted: true }),
           },
           orderBy: [
             {
@@ -92,22 +104,48 @@ export const TierProgress = objectType({
             { updated_at: "desc" },
           ],
         })
-
-        return completions
       },
     })
 
-    t.field("exercise", {
-      type: "Exercise",
-      resolve: async ({ custom_id }, _, ctx) => {
-        if (!custom_id) {
+    t.field("service", {
+      type: "Service",
+      resolve: async ({ exercise }, _, ctx) => {
+        if (!exercise?.service_id) {
           return null
         }
-        return ctx.prisma.exercise.findFirst({
+        return ctx.prisma.service.findUnique({
           where: {
-            custom_id,
+            id: exercise.service_id,
           },
         })
+      },
+    })
+
+    t.field("service_id", {
+      type: "String",
+      resolve: ({ exercise }) => {
+        return exercise?.service_id ?? null
+      },
+    })
+
+    t.field("course", {
+      type: "Course",
+      resolve: async ({ exercise }, _, ctx) => {
+        if (!exercise?.course_id) {
+          return null
+        }
+        return ctx.prisma.course.findUnique({
+          where: {
+            id: exercise.course_id,
+          },
+        })
+      },
+    })
+
+    t.field("course_id", {
+      type: "String",
+      resolve: ({ exercise }) => {
+        return exercise?.course_id ?? null
       },
     })
   },

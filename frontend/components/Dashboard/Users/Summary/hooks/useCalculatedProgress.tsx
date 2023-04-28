@@ -5,7 +5,7 @@ import {
   UserTierCourseSummaryCoreFieldsFragment,
 } from "/graphql/generated"
 
-const useProgress = (
+const useCalculatedProgress = (
   data:
     | UserCourseSummaryCoreFieldsFragment
     | UserTierCourseSummaryCoreFieldsFragment,
@@ -90,4 +90,4 @@ const useProgress = (
   return { totalProgress, exerciseProgress }
 }
 
-export default useProgress
+export default useCalculatedProgress

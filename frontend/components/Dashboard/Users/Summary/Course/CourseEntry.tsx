@@ -1,14 +1,11 @@
 import React, { PropsWithChildren, useMemo } from "react"
 
 import { sortBy } from "lodash"
+import dynamic from "next/dynamic"
 
 import { CardContent, Skeleton, Typography } from "@mui/material"
 
-import {
-  useUserPointsSummaryContext,
-  useUserPointsSummaryContextByCourseSlug,
-  useUserPointsSummarySelectedCourseContext,
-} from "../contexts"
+import { useUserPointsSummaryContext } from "../contexts"
 import ExerciseList from "../Exercise/ExerciseList"
 import TierExerciseList from "../Exercise/TierExerciseList"
 import Milestones, { MilestonesSkeleton } from "../Milestones"
@@ -24,8 +21,8 @@ import {
   CourseEntryCardTitle,
   CourseEntryCardTitleWrapper,
 } from "./common"
-import { CourseTierEntry } from "./CourseTierEntry"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"
 
 export const CourseEntrySkeleton = () => (
@@ -43,22 +40,30 @@ export const CourseEntrySkeleton = () => (
   </CourseEntryCardBase>
 )
 
+const tierToName: Record<number, string> = {
+  1: "beginner",
+  2: "intermediate",
+  3: "advanced",
+}
+
+const LazyCourseTierEntry = dynamic(() => import("./CourseTierEntry"), {
+  loading: () => <Skeleton variant="rectangular" height="300px" />,
+})
+
 export function CourseEntry({ children }: PropsWithChildren) {
-  const t = useTranslator(ProfileTranslations)
-  //const { loading, selectedData: data } = useUserPointsSummaryContext()
-  const { selected } = useUserPointsSummarySelectedCourseContext()
-  const data = useUserPointsSummaryContextByCourseSlug(selected)
+  const t = useTranslator(ProfileTranslations, CommonTranslations)
+  const { selectedData, hasNoData } = useUserPointsSummaryContext()
 
   const hasTierSummaries = useMemo(
-    () => (data?.tier_summaries?.length ?? 0) > 0,
-    [data],
+    () => (selectedData?.tier_summaries?.length ?? 0) > 0,
+    [selectedData],
   )
 
-  if (!data?.course) {
+  if (!selectedData?.course) {
     return (
       <CourseEntryCardBase elevation={0}>
         <Typography variant="subtitle1" p="0.5rem">
-          {t("noCourseFound")}
+          {hasNoData ? t("noResults") : t("noCourseFound")}
         </Typography>
       </CourseEntryCardBase>
     )
@@ -66,41 +71,51 @@ export function CourseEntry({ children }: PropsWithChildren) {
 
   return (
     <CourseEntriesContainer>
-      <CourseEntryCard course={data?.course} hasCopyButton>
+      <CourseEntryCard course={selectedData?.course} hasCopyButton>
         {children}
-        <Milestones data={data} />
+        <Milestones data={selectedData} />
         {hasTierSummaries ? (
           <>
-            {data.user_course_progress?.extra && (
+            {selectedData.user_course_progress?.extra && (
               <>
-                <ProgressEntry key={`${data.course.id}-progress`} data={data} />
-                <TotalProgressEntry data={data.user_course_progress.extra} />
+                <ProgressEntry
+                  key={`${selectedData.course.id}-progress`}
+                  data={selectedData}
+                />
+                <TotalProgressEntry /*data={selectedData.user_course_progress.extra}*/
+                />
                 <TierExerciseList
-                  data={data.user_course_progress?.extra.exercises}
+                /*data={selectedData.user_course_progress?.extra.exercises}*/
                 />
               </>
             )}
           </>
         ) : (
           <>
-            <ProgressEntry key={`${data.course.id}-progress`} data={data} />
+            <ProgressEntry
+              key={`${selectedData.course.id}-progress`}
+              data={selectedData}
+            />
             <ExerciseList
-              key={`${data.course.id}-exercise-list`}
-              data={data.course?.exercises}
+              key={`${selectedData.course.id}-exercise-list`}
+              data={selectedData.course?.exercises}
             />
           </>
         )}
       </CourseEntryCard>
       {hasTierSummaries &&
         sortBy(
-          data.tier_summaries ?? [],
+          selectedData.tier_summaries ?? [],
           (tierEntry) => tierEntry.course?.tier,
         ).map((tierEntry) => (
-          <CourseTierEntry
-            key={tierEntry.course?.id}
-            parentCourseId={data.course.id}
-            courseId={tierEntry.course?.id}
-          />
+          <CourseEntryCard
+            key={tierEntry.course.id}
+            course={tierEntry.course}
+            id={tierToName[tierEntry.course.tier ?? 0]}
+            hasCollapseButton
+          >
+            <LazyCourseTierEntry data={tierEntry} />
+          </CourseEntryCard>
         ))}
     </CourseEntriesContainer>
   )

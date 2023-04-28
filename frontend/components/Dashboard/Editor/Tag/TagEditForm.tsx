@@ -42,6 +42,14 @@ function toTagValues(tags: TagCoreFieldsFragment[]) {
   }))
 }
 
+const conditions: ControlledFieldArrayListProps<
+  TagValues,
+  "tag_translations"
+>["conditions"] = {
+  add: (values) => values?.[values.length - 1]?.name !== "",
+  remove: (item) => !item._id && item.name === "",
+}
+
 const initialTagTranslation = {
   language: "",
   name: "",
@@ -54,17 +62,6 @@ function TagEditor({ tags }: TagEditorProps) {
   const methods = useForm({
     defaultValues: initialValues.current,
   })
-
-  const conditions: ControlledFieldArrayListProps<
-    TagValues,
-    "tag_translations"
-  >["conditions"] = useMemo(
-    () => ({
-      add: (values) => values?.[values.length - 1]?.name !== "",
-      remove: (item) => !item._id && item.name === "",
-    }),
-    [],
-  )
 
   const renderArrayListItem: ControlledFieldArrayListProps<
     TagValues,

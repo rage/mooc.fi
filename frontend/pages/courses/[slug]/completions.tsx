@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import { TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { WideContainer } from "/components/Container"
 import CompletionsList from "/components/Dashboard/CompletionsList"
@@ -39,7 +40,7 @@ const Completions = () => {
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
 
-  const handleLanguageChange = useCallback(
+  const handleLanguageChange = useEventCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       // prevents reloading page, URL changes
 
@@ -47,12 +48,13 @@ const Completions = () => {
       changeLng(e.target.value)
       router.replace(router.pathname, href, { shallow: true })
     },
-    [],
   )
 
-  const handleSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearchString(e.target.value)
-  }, [])
+  const handleSearchChange = useEventCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchString(e.target.value)
+    },
+  )
   const handleSearchKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "Enter") {

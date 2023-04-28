@@ -103,14 +103,6 @@ export const ExerciseCompletionQueries = extendType({
         )
       },
     })
-
-    /*t.list.field("exerciseCompletions", {
-      type: "exercise_completion",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.exercise_completion.findMany()
-      },
-    })*/
   },
 })
 

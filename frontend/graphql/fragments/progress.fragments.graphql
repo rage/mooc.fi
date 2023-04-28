@@ -52,6 +52,9 @@ fragment TierProgressFields on TierProgress {
   progress
   name
   custom_id
+  course_id
+  exercise_id
+  service_id
   exercise_completions {
     ...TierProgressExerciseCompletionFields
   } 

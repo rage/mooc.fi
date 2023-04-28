@@ -2,7 +2,7 @@ import React from "react"
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
-import { IconButton, Tooltip, Typography } from "@mui/material"
+import { IconButton, IconButtonProps, Tooltip, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 interface CollapseButtonProps {
@@ -10,6 +10,7 @@ interface CollapseButtonProps {
   onClick: () => void
   label?: string
   tooltip?: string
+  IconButtonProps?: IconButtonProps
 }
 
 const CollapseButtonContainer = styled("div")`
@@ -20,12 +21,12 @@ const CollapseButtonContainer = styled("div")`
 `
 
 const CollapseButton = React.memo(
-  ({ open, onClick, label, tooltip }: CollapseButtonProps) => {
+  ({ open, onClick, label, tooltip, IconButtonProps }: CollapseButtonProps) => {
     return (
       <CollapseButtonContainer>
         {label ? <Typography variant="h4">{label}</Typography> : null}
         <Tooltip title={tooltip ?? ""}>
-          <IconButton size="small" onClick={onClick}>
+          <IconButton size="small" onClick={onClick} {...IconButtonProps}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </Tooltip>

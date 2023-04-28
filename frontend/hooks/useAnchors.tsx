@@ -54,12 +54,26 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
     [anchors],
   )
 
+  const scrollAndSetError = useCallback((ref: HTMLElement) => {
+    ref.scrollIntoView({
+      block: "center",
+    })
+    ref.setAttribute("data-error-pulsate", "true")
+    ref.parentElement?.setAttribute("data-error-pulsate", "true")
+    const timeout = setTimeout(() => {
+      ref.removeAttribute("data-error-pulsate")
+      ref.parentElement?.removeAttribute("data-error-pulsate")
+    }, 1000)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
   const scrollFirstErrorIntoView = useCallback(
     <TFieldValues extends FieldValues = FieldValues>(
       errors: FieldErrors<TFieldValues>,
       tab?: number,
       setTab?: Dispatch<SetStateAction<number>>,
-      retry?: boolean,
+      isRetry?: boolean,
     ) => {
       const flattenedErrors = flattenKeys(errors)
       const errorAnchors = Object.values(anchors).filter((anchor) =>
@@ -72,15 +86,11 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
 
       if (firstRef?.scrollIntoView && !isVisible(firstRef)) {
         if (!notEmpty(firstTab) || Number(firstTab) === tab) {
-          firstRef.scrollIntoView({
-            block: "center",
-          })
+          scrollAndSetError(firstRef)
         } else {
           setTab?.(Number(firstTab))
           setTimeout(() => {
-            firstRef.scrollIntoView({
-              block: "center",
-            })
+            scrollAndSetError(firstRef)
           }, 100)
         }
       }
@@ -88,11 +98,12 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
         !firstRef &&
         notEmpty(firstTab) &&
         Number(firstTab) !== tab &&
-        !retry
+        !isRetry
       ) {
         // the element has not mounted, change tab and try again _once_
         setTab?.(Number(firstTab))
         setTimeout(() => {
+          // next tick
           const redo = () => scrollFirstErrorIntoView(errors, tab, setTab, true)
           setTimeout(redo, 100)
         })

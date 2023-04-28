@@ -4,12 +4,12 @@ import { sortBy } from "lodash"
 
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
-import { Box, Button, Link, Typography } from "@mui/material"
+import { Box, Link, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import InfoRow from "../../InfoRow"
 import { SummaryCard } from "../common"
-import { useCollapseContext } from "../contexts"
+import { useCollapseContext, useSelectedData } from "../contexts"
 import { ActionType, CollapsablePart } from "../contexts/CollapseContext"
 import BorderedSection from "/components/BorderedSection"
 import PointsProgress from "/components/Dashboard/PointsProgress"
@@ -17,14 +17,7 @@ import { CardCaption } from "/components/Text/paragraphs"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 
-import {
-  ProgressExtraFieldsFragment,
-  TierInfoFieldsFragment,
-} from "/graphql/generated"
-
-interface TotalProgressEntryProps {
-  data: ProgressExtraFieldsFragment
-}
+import { TierInfoFieldsFragment } from "/graphql/generated"
 
 const iconStyle = css`
   height: 1rem;
@@ -134,7 +127,9 @@ function TierInfoList({ tiers }: TierInfoListProps) {
   )
 }
 
-function TotalProgressEntry({ data }: TotalProgressEntryProps) {
+function TotalProgressEntry() {
+  const selectedData = useSelectedData()
+  const data = selectedData!.user_course_progress!.extra!
   const t = useTranslator(ProfileTranslations)
 
   const highestTier = useMemo(() => {

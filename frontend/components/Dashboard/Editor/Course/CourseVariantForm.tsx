@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from "react"
 
-import { useRouter } from "next/router"
-
 import { styled } from "@mui/material/styles"
 
 import { FormSubtitleWithMargin } from "../Common"
@@ -37,9 +35,16 @@ const descriptionContainerProps = {
   },
 }
 
+const conditions: ControlledFieldArrayListProps<
+  CourseFormValues,
+  "course_variants"
+>["conditions"] = {
+  add: (values) => values[values.length - 1].slug !== "",
+  remove: (item) => !item._id && item.slug === "",
+}
+
 function CourseVariantForm() {
   const t = useTranslator(CoursesTranslations)
-  const { locale } = useRouter()
 
   const renderArrayListItem: ControlledFieldArrayListProps<
     CourseFormValues,
@@ -64,18 +69,7 @@ function CourseVariantForm() {
         />
       </CourseVariantEntryContainer>
     ),
-    [],
-  )
-
-  const conditions: ControlledFieldArrayListProps<
-    CourseFormValues,
-    "course_variants"
-  >["conditions"] = useMemo(
-    () => ({
-      add: (values) => values[values.length - 1].slug !== "",
-      remove: (item) => !item._id && item.slug === "",
-    }),
-    [],
+    [t],
   )
 
   const texts = useMemo(
@@ -83,7 +77,7 @@ function CourseVariantForm() {
       description: t("confirmationRemoveVariant"),
       noFields: t("courseNoVariants"),
     }),
-    [t, locale],
+    [t],
   )
 
   return (

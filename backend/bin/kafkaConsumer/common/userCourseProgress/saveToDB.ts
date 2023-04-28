@@ -110,7 +110,6 @@ export const saveToDatabase = async (
         },
       })
     }
-    // FIXME: weird
     const oldTimestamp = DateTime.fromISO(
       userCourseServiceProgress?.timestamp?.toISOString() ?? "",
     )

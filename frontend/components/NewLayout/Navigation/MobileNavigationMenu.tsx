@@ -30,6 +30,7 @@ import {
   SvgIcon,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -82,13 +83,15 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const client = useApolloClient()
   const { locale } = useRouter()
 
-  const onClick: MouseEventHandler<HTMLButtonElement> = useCallback((event) => {
-    setAnchor(event.currentTarget)
-  }, [])
+  const onClick: MouseEventHandler<HTMLButtonElement> = useEventCallback(
+    (event) => {
+      setAnchor(event.currentTarget)
+    },
+  )
 
-  const onClose: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
+  const onClose: MouseEventHandler<HTMLButtonElement> = useEventCallback(() => {
     setAnchor(null)
-  }, [])
+  })
 
   useEffect(() => {
     const resizeListener = () => {
@@ -112,7 +115,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     }
 
     return name
-  }, [currentUser, locale, t])
+  }, [currentUser, t])
 
   const menuItems = useMemo(() => {
     const items = [

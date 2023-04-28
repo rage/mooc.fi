@@ -90,7 +90,6 @@ function RegisterCompletionText({
 }: RegisterCompletionTextProps) {
   const t = useTranslator(RegisterCompletionTranslations)
 
-  console.log(tiers)
   return (
     <RegisterCompletionContainer>
       <Typography paragraph>{t("credits_details")}</Typography>

@@ -71,7 +71,7 @@ export type TierExerciseRow = TierProgressFieldsFragment & {
 interface NarrowCellBaseProps {
   header: string
   tooltip?: string
-  headerProps?: TypographyProps
+  HeaderProps?: TypographyProps
 }
 
 export const NarrowCellBase = styled("div")`
@@ -88,15 +88,15 @@ const TooltipWrapper = styled("div")`
   padding: 0 0.5rem;
 `
 
-const NarrowCell = ({
+export const NarrowCell = ({
   header,
   tooltip,
-  headerProps,
+  HeaderProps,
   children,
   ...props
 }: PropsWithChildren<NarrowCellBaseProps & PropsOf<typeof NarrowCellBase>>) => (
   <NarrowCellBase {...props}>
-    <Typography variant="body2" fontWeight="bold" width="50%" {...headerProps}>
+    <Typography variant="body2" fontWeight="bold" width="50%" {...HeaderProps}>
       {header}
       {tooltip && (
         <TooltipWrapper>
@@ -118,26 +118,26 @@ const RequiredActionsContainer = styled("div")`
 `
 
 type RequiredActionBaseProps = {
-  containerProps?: PropsOf<typeof RequiredActionsContainer>
-  chipProps?: ChipProps
+  ContainerProps?: PropsOf<typeof RequiredActionsContainer>
+  ChipProps?: ChipProps
 }
 
 export const renderRequiredActionsBase =
   (
     t: Translator<any>,
-    { containerProps, chipProps }: RequiredActionBaseProps = {},
+    { ContainerProps, ChipProps }: RequiredActionBaseProps = {},
   ) =>
   (
     values: ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"],
   ) =>
     (
-      <RequiredActionsContainer {...containerProps}>
+      <RequiredActionsContainer {...ContainerProps}>
         {values.map((action) => (
           <Chip
             key={action.id}
             label={t(action.value)}
             size="small"
-            {...chipProps}
+            {...ChipProps}
           />
         ))}
       </RequiredActionsContainer>
@@ -159,18 +159,18 @@ export const renderRequiredActions =
     )
 
 type NarrowRequiredActionProps = RequiredActionBaseProps & {
-  cellProps?: Partial<NarrowCellBaseProps> & PropsOf<typeof NarrowCellBase>
+  CellProps?: Partial<NarrowCellBaseProps> & PropsOf<typeof NarrowCellBase>
 }
 
 export const renderNarrowRequiredActions =
   <T extends Record<string, any>>(
     t: Translator<any>,
-    actionProps: NarrowRequiredActionProps = {},
+    ActionProps: NarrowRequiredActionProps = {},
   ): MRT_ColumnDef<T>["Cell"] =>
   (props) => {
-    const { cellProps, ...requiredActionProps } = actionProps
+    const { CellProps, ...requiredActionProps } = ActionProps
     return (
-      <NarrowCell {...cellProps} header={props.column.columnDef.header}>
+      <NarrowCell {...CellProps} header={props.column.columnDef.header}>
         {renderRequiredActions<T>(t, requiredActionProps)(props)}
       </NarrowCell>
     )
@@ -206,14 +206,14 @@ export const renderCheck =
 
 export const renderNarrowCheck =
   <T extends Record<string, any>>(
-    checkProps: CheckProps &
+    CheckProps: CheckProps &
       Partial<NarrowCellBaseProps> &
       PropsOf<typeof NarrowCellBase>,
   ): MRT_ColumnDef<T>["Cell"] =>
   (props) => {
-    const { success, failure, ...cellProps } = checkProps
+    const { success, failure, ...CellProps } = CheckProps
     return (
-      <NarrowCell {...cellProps} header={props.column.columnDef.header}>
+      <NarrowCell {...CellProps} header={props.column.columnDef.header}>
         {renderCheck<T>({ success, failure })(props)}
       </NarrowCell>
     )
@@ -221,17 +221,17 @@ export const renderNarrowCheck =
 
 type NarrowCellProps<T extends Record<string, any>> =
   Partial<NarrowCellBaseProps> & {
-    cellProps?:
+    CellProps?:
       | ((
           props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
         ) => PropsOf<typeof NarrowCellBase>)
       | PropsOf<typeof NarrowCellBase>
-    headerProps?:
+    HeaderProps?:
       | ((
           props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
         ) => TypographyProps)
       | TypographyProps
-    valueProps?:
+    ValueProps?:
       | ((
           props: Parameters<NonNullable<MRT_ColumnDef<T>["Cell"]>>[0],
         ) => TypographyProps)
@@ -241,31 +241,31 @@ type NarrowCellProps<T extends Record<string, any>> =
 export const renderNarrowCell =
   <T extends Record<string, any>>({
     tooltip,
-    cellProps,
-    headerProps,
-    valueProps,
+    CellProps: initialCellProps,
+    HeaderProps: initialHeaderProps,
+    ValueProps: initialValueProps,
   }: NarrowCellProps<T> = {}): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
   (props) => {
-    let _cellProps = cellProps
-    if (typeof cellProps === "function") {
-      _cellProps = cellProps(props)
+    let CellProps = initialCellProps
+    if (typeof initialCellProps === "function") {
+      CellProps = initialCellProps(props)
     }
-    let _valueProps = valueProps
-    if (typeof valueProps === "function") {
-      _valueProps = valueProps(props)
+    let ValueProps = initialValueProps
+    if (typeof initialValueProps === "function") {
+      ValueProps = initialValueProps(props)
     }
-    let _headerProps = headerProps
-    if (typeof headerProps === "function") {
-      _headerProps = headerProps(props)
+    let HeaderProps = initialHeaderProps
+    if (typeof initialHeaderProps === "function") {
+      HeaderProps = initialHeaderProps(props)
     }
     return (
       <NarrowCell
         header={props.column.columnDef.header}
         tooltip={tooltip}
-        headerProps={_headerProps}
-        {..._cellProps}
+        HeaderProps={HeaderProps}
+        {...CellProps}
       >
-        <Typography variant="body2" textAlign="right" {..._valueProps}>
+        <Typography variant="body2" textAlign="right" {...ValueProps}>
           {props.cell.getValue<any>()}
         </Typography>
       </NarrowCell>

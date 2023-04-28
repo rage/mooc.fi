@@ -72,7 +72,8 @@ function Milestones({ data }: MilestonesProps) {
     ? data?.tier_summaries
         ?.flatMap((ts) => ts.exercise_completions)
         .filter(notEmpty)
-    : data?.exercise_completions?.filter(notEmpty)
+        .filter((ec) => ec.attempted)
+    : data?.exercise_completions?.filter(notEmpty).filter((ec) => ec.attempted)
   const firstExerciseDate = min(
     exerciseCompletions?.map((ec) => ec.created_at).filter(notEmpty),
   )

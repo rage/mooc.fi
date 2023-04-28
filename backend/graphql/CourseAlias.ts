@@ -8,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { UserInputError } from "../lib/errors"
 
 export const CourseAlias = objectType({
   name: "CourseAlias",
@@ -64,10 +65,13 @@ export const CourseAliasMutations = extendType({
         course: nonNull(idArg()),
       },
       authorize: isAdmin,
+      validate: async (_, { course_code, course }) => {
+        if (!course_code || !course) {
+          throw new UserInputError("course code and course are both required")
+        }
+      },
       resolve: async (_, args, ctx) => {
         const { course_code, course } = args
-
-        // FIXME: what to do on empty course_code?
 
         const newCourseAlias = await ctx.prisma.courseAlias.create({
           data: {

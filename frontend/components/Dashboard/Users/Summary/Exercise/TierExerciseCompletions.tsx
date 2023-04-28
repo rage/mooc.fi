@@ -1,23 +1,9 @@
 import { useCallback, useMemo } from "react"
 
-import {
-  MRT_Cell,
-  MRT_ColumnDef,
-  MRT_TableInstance,
-} from "material-react-table"
+import { MRT_ColumnDef } from "material-react-table"
 import { useRouter } from "next/router"
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableCellProps,
-  TableHead,
-  TableRow,
-  Theme,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Theme, Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -25,15 +11,11 @@ import {
   useMaterialReactTableLocalization,
 } from "../common"
 import {
-  mergeOriginalCellProps,
-  mergeOriginalMuiProps,
   renderCheck,
-  renderCheckBase,
   renderNarrowCell,
   renderNarrowCheck,
   renderNarrowRequiredActions,
   renderRequiredActions,
-  renderRequiredActionsBase,
   TierExerciseCompletionRow,
   useExerciseListProps,
 } from "./common"
@@ -112,10 +94,10 @@ const TierExerciseCompletions = ({
   const renderTierCell = getRenderTierCell(highestTier)
   const renderPointsCell = getRenderPointsCell(points)
   const renderNarrowTierCell = renderNarrowCell({
-    valueProps: getRenderTierCellStyle(highestTier),
+    ValueProps: getRenderTierCellStyle(highestTier),
   })
   const renderNarrowPointsCell = renderNarrowCell({
-    valueProps: getRenderPointsCellStyle(points),
+    ValueProps: getRenderPointsCellStyle(points),
   })
 
   const columns = useMemo((): Array<
@@ -187,7 +169,6 @@ const TierExerciseCompletions = ({
     ]
   }, [locale, t, isNarrow, renderNarrowCell])
 
-  console.log(columns)
   const rows: Array<TierExerciseCompletionRow> = useMemo(() => {
     const localeMapDataToRow = mapDataToRow(locale)
     return (data ?? []).map(localeMapDataToRow)
@@ -215,54 +196,9 @@ const TierExerciseCompletions = ({
       enableFullScreenToggle={false}
       enablePagination={false}
       enableColumnActions={false}
-      renderTopToolbarCustomActions={title}
+      renderTopToolbarCustomActions={!isNarrow ? title : undefined}
       localization={localization}
     />
-  )
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>{t("submissionDate")}</TableCell>
-          <TableCell>{t("tier")}</TableCell>
-          <TableCell>{t("points")}</TableCell>
-          <TableCell>{t("completed")}</TableCell>
-          <TableCell>{t("requiredActions")}</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data.map((ec) => (
-          <TableRow key={ec.id}>
-            <TableCell>
-              {formatDateTime(ec.timestamp, {
-                dateStyle: "short",
-                timeStyle: "short",
-              })}
-            </TableCell>
-            <TableCell
-              style={{
-                fontWeight: ec.tier === highestTier ? "800" : undefined,
-              }}
-            >
-              {ec.tier}
-            </TableCell>
-            <TableCell
-              style={{ fontWeight: ec.n_points === points ? "800" : undefined }}
-            >
-              {ec.points}
-            </TableCell>
-            <TableCell>
-              {renderCheckBase(t("completed"))(ec.completed ?? false)}
-            </TableCell>
-            <TableCell>
-              {renderRequiredActionsBase(t)(
-                ec.exercise_completion_required_actions,
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
   )
 }
 

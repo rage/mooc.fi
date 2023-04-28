@@ -66,7 +66,6 @@ export const User = objectType({
         const { course_id, course_slug } = args
         let course: Course | null = null
 
-        // TODO: get by alias and then handler
         if (course_id || course_slug) {
           course = await getCourseOrCompletionHandlerCourse(ctx)({
             id: course_id ?? undefined,
@@ -284,22 +283,30 @@ export const User = objectType({
         course_id: idArg(),
         includeDeleted: booleanArg(),
         completed: booleanArg(),
+        attempted: booleanArg(),
       },
       resolve: async (
         parent,
-        { course_id, includeDeleted = false, completed },
+        { course_id, includeDeleted = false, completed, attempted },
         ctx,
       ) => {
         let exerciseWhere: Prisma.ExerciseWhereInput | undefined
+        let exerciseCompletionWhere:
+          | Prisma.ExerciseCompletionWhereInput
+          | undefined
 
-        if (!includeDeleted || completed) {
+        if (!includeDeleted) {
           exerciseWhere = {
-            ...(!includeDeleted && {
-              // same here: { deleted: { not: true } } will skip null
-              OR: [{ deleted: false }, { deleted: null }],
-            }),
+            OR: [{ deleted: false }, { deleted: null }],
+          }
+        }
+        if (completed || attempted) {
+          exerciseCompletionWhere = {
             ...(completed && {
               completed: true,
+            }),
+            ...(attempted && {
+              attempted: true,
             }),
           }
         }
@@ -315,6 +322,7 @@ export const User = objectType({
                 exercise_completions: {
                   where: {
                     user_id: parent.id,
+                    ...exerciseCompletionWhere,
                   },
                   orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
                   take: 1,
@@ -334,6 +342,7 @@ export const User = objectType({
               ...(exerciseWhere && {
                 exercise: exerciseWhere,
               }),
+              ...exerciseCompletionWhere,
             },
             distinct: "exercise_id",
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
@@ -375,8 +384,13 @@ export const User = objectType({
         },
         ctx,
       ) => {
-        // TODO: only get the newest one per exercise?
-        // not very optimal, as the exercise completions will be queried twice if that field is selected
+        const baseFields = {
+          user_id: id,
+          includeDeletedExercises: includeDeletedExercises ?? false,
+          includeNoPointsAwardedExercises:
+            includeNoPointsAwardedExercises ?? false,
+        }
+
         if (course_id || course_slug) {
           const course = await ctx.prisma.course.findUnique({
             where: course_id
@@ -396,23 +410,38 @@ export const User = objectType({
             {
               ...omit(course, "id"),
               course_id: course.id,
-              user_id: id,
-              include_deleted_exercises: includeDeletedExercises ?? false,
-              include_no_points_awarded_exercises:
-                includeNoPointsAwardedExercises ?? false,
+              ...baseFields,
             },
           ]
         }
 
-        let activityDateClause = Prisma.empty
+        let subquery = Prisma.sql`
+          select distinct(e.course_id) as course_id
+            from exercise_completion ec
+            join exercise e on ec.exercise_id = e.id
+          where ec.user_id = ${id}
+          and ec.attempted = true
+        `
 
         if (orderBy?.activity_date) {
-          activityDateClause =
+          const activityDateClause =
             orderBy.activity_date === "desc"
               ? Prisma.sql`order by ec.timestamp desc`
               : Prisma.sql`order by ec.timestamp`
+          subquery = Prisma.sql`
+            select course_id from (
+              select distinct(e.course_id) as course_id, ec.timestamp
+                from exercise_completion ec
+                join exercise e on ec.exercise_id = e.id
+              where ec.user_id = ${id}
+              and ec.attempted = true
+              ${activityDateClause}
+            ) as sub
+          `
         }
 
+        // TODO: only get the newest one per exercise?
+        // not very optimal, as the exercise completions will be queried twice if that field is selected
         const startedCourses = await ctx.prisma.$queryRaw<
           Array<SummaryCourseGroupResult>
         >(Prisma.sql`
@@ -429,14 +458,7 @@ export const User = objectType({
             end as group
           from course c
           where c.id in (
-            select course_id from (
-              select distinct(e.course_id), ec.timestamp
-                  from exercise_completion ec
-                  join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${id}
-              and ec.attempted = true
-              ${activityDateClause}
-            ) as sub
+            ${subquery}
           )
         `)
 
@@ -456,13 +478,6 @@ export const User = objectType({
           (c) => c.completions_handled_by_id,
         )
         // convert this to SQL
-
-        const baseFields = {
-          user_id: id,
-          includeDeletedExercises: includeDeletedExercises ?? false,
-          includeNoPointsAwardedExercises:
-            includeNoPointsAwardedExercises ?? false,
-        }
 
         const result = []
 

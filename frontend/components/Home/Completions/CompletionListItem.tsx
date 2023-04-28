@@ -147,7 +147,7 @@ export const CompletionListItem = ({
                   )}
                   {isRegistered && completion.completions_registered
                     ? completion.completions_registered?.map((r) => (
-                        <Column id={r.id}>
+                        <Column id={r.id} key={r.id}>
                           <CardSubtitle display="flex" alignItems="flex-end">
                             <strong>
                               {t("registeredDate")}{" "}

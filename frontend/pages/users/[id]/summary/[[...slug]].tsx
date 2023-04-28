@@ -1,40 +1,23 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from "react"
+import React, { useCallback, useMemo, useState } from "react"
 
-import { omit } from "lodash"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useLazyQuery, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
 import { styled, Theme } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import Container from "/components/Container"
-import {
-  CollapseContext,
-  UserPointsSummaryContext,
-  UserPointsSummarySelectedCourseContext,
-} from "/components/Dashboard/Users/Summary/contexts"
-import {
-  ActionType,
-  collapseReducer,
-  createCollapseState,
-  initialState,
-} from "/components/Dashboard/Users/Summary/contexts/CollapseContext"
+import { UserPointsSummaryContextProvider } from "/components/Dashboard/Users/Summary/contexts"
+import CourseFilterMenu from "/components/Dashboard/Users/Summary/CourseFilterMenu"
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
-import useSummaryCourseData from "/components/Dashboard/Users/Summary/hooks/useSummaryCourseData"
-import useSummaryData from "/components/Dashboard/Users/Summary/hooks/useSummaryData"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
+import { SortOrder } from "/components/Dashboard/Users/Summary/types"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
-import FilterMenu, { type SearchVariables } from "/components/FilterMenu"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
@@ -46,10 +29,8 @@ import ProfileTranslations from "/translations/profile"
 import UsersTranslations from "/translations/users"
 
 import {
-  UserCourseSummaryCourseFieldsFragment,
-  UserSummaryCourseListDocument,
+  UserCourseSummaryCoreFieldsFragment,
   UserSummaryDocument,
-  UserSummaryForCourseDocument,
 } from "/graphql/generated"
 
 const StyledForm = styled("form")`
@@ -78,6 +59,25 @@ const RightToolbarContainer = styled("div")`
   gap: 1rem;
 `
 
+function flipOrder(order: SortOrder) {
+  return order === "asc" ? "desc" : "asc"
+}
+
+const defaultSort = "course_name"
+const defaultOrder = "asc"
+
+const toCourseList = (data: UserCourseSummaryCoreFieldsFragment) => ({
+  id: data.course.id,
+  slug: data.course.slug,
+  name: data.course.name,
+  tiers:
+    data.tier_summaries?.map((t) => ({
+      id: t.course.id,
+      slug: t.course.slug,
+      name: t.course.name,
+    })) ?? undefined,
+})
+
 function UserSummaryView() {
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
@@ -89,8 +89,8 @@ function UserSummaryView() {
   const router = useRouter()
   const id = useQueryParameter("id")
   const slug = useQueryParameter("slug", false)
-  const sort = useQueryParameter("sort", false)
-  const order = useQueryParameter("order", false)
+  const initialSort = useQueryParameter("sort", false)
+  const initialOrder = useQueryParameter("order", false)
 
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: {
@@ -101,22 +101,15 @@ function UserSummaryView() {
     ssr: false,
   })
 
-  const [searchVariables, setSearchVariables] = useState<SearchVariables>({
-    search: "",
-  })
-  const userPointsSummaryContextValue = useSummaryData({
-    slug,
-    data: data?.user?.user_course_summary ?? [],
-    loading,
-    search: searchVariables.search,
-  })
-  const userPointsSummarySelectedCourseContextValue = useSummaryCourseData({
-    slug,
-    data: data?.user?.user_course_summary ?? [],
-    loading,
-    sort,
-    order,
-  })
+  const dataProps = { data, loading }
+  const options = useMemo(
+    () => ({
+      initialSort,
+      initialOrder,
+      slug,
+    }),
+    [],
+  )
 
   const breadcrumbs = useMemo(() => {
     const crumbs: Array<Breadcrumb> = [
@@ -151,25 +144,11 @@ function UserSummaryView() {
 
   const title = useSubtitle(data?.user?.full_name ?? undefined)
 
-  const [state, dispatch] = useReducer(collapseReducer, initialState)
   const [rawViewOpen, setRawViewOpen] = useState(false)
-  /*const [selected, setSelected] = useState<
-    UserCourseSummaryCourseFieldsFragment["slug"]
-  >(slug ?? "")*/
   const [userSearch, setUserSearch] = useState("")
 
-  useEffect(() => {
-    dispatch({
-      type: ActionType.INIT_STATE,
-      state: createCollapseState(
-        data?.user?.user_course_summary ?? [],
-        loading,
-      ),
-    })
-  }, [data, loading])
-
   const onSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
+    function onsub(event: React.FormEvent<HTMLFormElement>) {
       event.preventDefault()
       if (userSearch && userSearch.length >= 3) {
         router.push(`/users/search/${encodeURIComponent(userSearch)}`)
@@ -178,22 +157,19 @@ function UserSummaryView() {
     [userSearch],
   )
 
-  const collapseContextValue = useMemo(() => ({ state, dispatch }), [state])
-
-  /*const selectedCourseContextValue = useMemo(
-    () => ({
-      selected,
-      setSelected,
-    }),
-    [selected, setSelected],
-  )*/
-
-  const onUserSearchChange = useCallback(
+  const onUserSearchChange = useEventCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setUserSearch(event.target.value)
     },
-    [],
   )
+
+  const onRawViewToggle = useEventCallback(() => {
+    setRawViewOpen((prev) => !prev)
+  })
+
+  const onRawViewClose = useEventCallback(() => {
+    setRawViewOpen(false)
+  })
 
   if (error) {
     return (
@@ -222,53 +198,50 @@ function UserSummaryView() {
             }
           />
         </StyledForm>
-        <CollapseContext.Provider value={collapseContextValue}>
-          <UserPointsSummaryContext.Provider
+        {/*<CollapseContext.Provider value={collapseContextValue}>*/}
+        {/*<UserPointsSummaryContext.Provider
             value={userPointsSummaryContextValue}
-          >
-            <UserPointsSummarySelectedCourseContext.Provider
-              value={userPointsSummarySelectedCourseContextValue}
-            >
-              <UserInfo data={data?.user} />
-              <SearchContainer>
-                <FilterMenu
-                  searchVariables={searchVariables}
-                  setSearchVariables={setSearchVariables}
-                  loading={loading}
-                  label={t("searchInCourses")}
-                  fields={{
-                    hidden: false,
-                    status: false,
-                    handler: false,
-                  }}
-                />
-                <ToolbarContainer>
-                  <Button
-                    variant="outlined"
-                    startIcon={<BuildIcon />}
-                    onClick={() => setRawViewOpen(!rawViewOpen)}
-                  >
-                    Raw view
-                  </Button>
-                  {isNarrow && <CourseSelectDropdown />}
-                  <RightToolbarContainer>
-                    {/*<CollapseButton
+          >*/}
+        {/*<UserPointsSummaryContext.Provider value={contextData}>
+            <UserPointsSummaryFunctionsContext.Provider
+              value={functions}
+        >*/}
+        <UserPointsSummaryContextProvider
+          dataProps={dataProps}
+          options={options}
+        >
+          <UserInfo data={data?.user} />
+          <SearchContainer>
+            <CourseFilterMenu />
+            <ToolbarContainer>
+              <Button
+                variant="outlined"
+                startIcon={<BuildIcon />}
+                onClick={onRawViewToggle}
+              >
+                Raw view
+              </Button>
+              {isNarrow && <CourseSelectDropdown />}
+              <RightToolbarContainer>
+                {/*<CollapseButton
                       onClick={onCollapseClick}
                       open={!allCoursesClosed}
                       tooltip={t("allCoursesCollapseTooltip")}
                   />*/}
-                  </RightToolbarContainer>
-                </ToolbarContainer>
-              </SearchContainer>
-              <UserPointsSummary />
-            </UserPointsSummarySelectedCourseContext.Provider>
-          </UserPointsSummaryContext.Provider>
-        </CollapseContext.Provider>
+              </RightToolbarContainer>
+            </ToolbarContainer>
+          </SearchContainer>
+          <UserPointsSummary />
+        </UserPointsSummaryContextProvider>
+        {/*</UserPointsSummaryFunctionsContext.Provider>
+          </UserPointsSummaryContext.Provider>*/}
+        {/*</UserPointsSummaryContext.Provider>*/}
+        {/*</CollapseContext.Provider>*/}
         <Dialog
           fullWidth
           maxWidth="md"
           open={rawViewOpen}
-          onClose={() => setRawViewOpen(false)}
+          onClose={onRawViewClose}
         >
           <HideOverflow>
             <RawView value={JSON.stringify(data, undefined, 2)} />

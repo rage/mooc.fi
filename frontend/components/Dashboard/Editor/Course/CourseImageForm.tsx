@@ -34,13 +34,11 @@ function CourseImageForm(props: CourseImageFormProps) {
   const { defaultValues } = useCourseEditorData()
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const onImageLoad = useCallback(
-    (value: string | ArrayBuffer | null) => setValue("thumbnail", value),
-    [],
+  const onImageLoad = useEventCallback((value: string | ArrayBuffer | null) =>
+    setValue("thumbnail", value),
   )
-  const onImageAccepted = useCallback(
-    (value: File) => setValue("new_photo", value, { shouldDirty: true }),
-    [],
+  const onImageAccepted = useEventCallback((value: File) =>
+    setValue("new_photo", value, { shouldDirty: true }),
   )
 
   const onImageRemove = useCallback(
@@ -76,7 +74,7 @@ function CourseImageForm(props: CourseImageFormProps) {
           }
         })
         .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? [],
-    [courses, t, locale, slug],
+    [courses, t, slug],
   )
 
   const onImportPhotoDialogOpen = useEventCallback(() => setDialogOpen(true))

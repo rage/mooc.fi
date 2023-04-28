@@ -17,11 +17,31 @@ import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
 import { FormGroup, FormHelperText, Typography } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
 
 import { useEditorContext } from "../EditorContext"
 import { FormValues } from "../types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+
+export const pulseAnimation = css`
+  [data-error-pulsate="true"] {
+    animation-name: pulse-color;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+
+    @keyframes pulse-color {
+      0% {
+        background-color: rgba(255, 255, 255, 0);
+      }
+      50% {
+        background-color: rgba(255, 0, 0, 0.05);
+      }
+      100% {
+        background-color: rgba(255, 255, 255, 0);
+      }
+    }
+  }
+`
 
 export const FormSubtitle = styled(Typography)`
   padding: 20px 0px 20px 0px;

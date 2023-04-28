@@ -147,7 +147,7 @@ function CourseInstanceLanguageSelector(
         />
       </InputContainer>
     ),
-    [field],
+    [t, field],
   )
 
   const renderOption = useCallback(
@@ -156,7 +156,7 @@ function CourseInstanceLanguageSelector(
         {option.name ?? t("selectNoChoice")}
       </li>
     ),
-    [],
+    [t],
   )
 
   const value = useMemo(() => toOption(field.value), [field.value])

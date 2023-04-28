@@ -1,8 +1,8 @@
-import { Typography, useMediaQuery } from "@mui/material"
+import { Backdrop, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useUserPointsSummaryContext } from "./contexts"
 import { useCollapseContext } from "./contexts/CollapseContext"
-import { useUserPointsSummaryContext } from "./contexts/UserPointsSummaryContext"
 import { CourseEntry, CourseEntrySkeleton } from "./Course"
 import CourseSelectList from "./CourseSelectList"
 import { useTranslator } from "/hooks/useTranslator"
@@ -21,24 +21,29 @@ const UserPointsSummaryContainer = styled("div")(
 )
 
 function UserPointsSummary() {
-  const { data, loading } = useUserPointsSummaryContext()
+  const { loading, courseLoading } = useUserPointsSummaryContext()
   const { state } = useCollapseContext()
   const isNarrow = useMediaQuery("(max-width: 800px)")
   const t = useTranslator(CommonTranslations)
 
-  console.log(data)
   return (
     <UserPointsSummaryContainer>
       {!isNarrow && <CourseSelectList />}
-      {loading || state.loading ? (
-        <CourseEntrySkeleton />
-      ) : data?.length === 0 ? (
+      <div style={{ position: "relative" }}>
+        <Backdrop
+          open={courseLoading ?? false}
+          sx={{ position: "absolute", color: "#888", zIndex: 10 }}
+        />
+        {loading || state.loading ? (
+          <CourseEntrySkeleton />
+        ) : (
+          /*data?.length === 0 ? (
         <Typography variant="h3" margin="0.5rem" p="0.5rem">
           {t("noResults")}
         </Typography>
-      ) : (
-        <CourseEntry />
-      )}
+      ) : */ <CourseEntry />
+        )}
+      </div>
       {/*filteredData.map((entry, index) => (
             <CourseEntry key={entry.course?.id ?? index} data={entry} />
           ))*/}

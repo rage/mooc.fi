@@ -53,7 +53,6 @@ const UserSearch = () => {
     fieldsParamValue,
   )
 
-  console.log(fieldsParam)
   const userSearch = useSearch({
     search: textParam,
     page: pageParam,
@@ -139,7 +138,7 @@ const UserSearch = () => {
 
   const resetResults = useCallback(() => {
     setResults({ ...emptyResults })
-  }, [setResults])
+  }, [emptyResults])
 
   const { rowsPerPage, page } = userSearch
 

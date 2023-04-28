@@ -137,10 +137,7 @@ export function ListItem({
       const span = Math.round(description.scrollHeight / 320) // the max size of row should be in a var
       description.style.cssText = `--hero-span: ${span};`
     }
-  }, [
-    descriptionRef.current?.scrollHeight,
-    descriptionRef.current?.clientHeight,
-  ])
+  }, [descriptionRef.current])
 
   useEffect(() => {
     if (!window) {

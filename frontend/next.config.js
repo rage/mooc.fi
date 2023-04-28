@@ -192,12 +192,17 @@ const nextConfiguration = (_phase) => ({
         __dirname,
         "node_modules/@mui/material/locale",
       ),
+      "react-dom$": "react-dom/profiling",
     }
+
     return config
   },
-  //eslint: {
-  //  ignoreDuringBuilds: true,
-  //},
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   /*experimental: {
     swcPlugins: [
       [

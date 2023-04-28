@@ -95,27 +95,27 @@ MyApp.getInitialProps = async (props: AppContext) => {
   if (originalGetInitialProps) {
     originalProps = (await originalGetInitialProps(props)) ?? {}
   }
+  if (!originalProps?.pageProps) {
+    originalProps.pageProps = {}
+  }
   if (Component.getInitialProps) {
-    originalProps = {
-      ...originalProps,
-      pageProps: {
-        ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) ?? {}),
-      },
-    }
+    const originalComponentProps = (await Component.getInitialProps(ctx)) ?? {}
+    Object.assign(originalProps.pageProps, originalComponentProps)
   }
 
   const signedIn = isSignedIn(ctx)
   const admin = signedIn && isAdmin(ctx)
 
-  return {
+  Object.assign(originalProps.pageProps, { signedIn, admin })
+  return originalProps
+  /*return {
     ...originalProps,
     pageProps: {
       ...originalProps.pageProps,
       signedIn,
       admin,
     },
-  }
+  }*/
 }
 
 // @ts-ignore: silence for now

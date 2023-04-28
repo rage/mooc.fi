@@ -1,13 +1,14 @@
 import React, { useCallback, useMemo } from "react"
 
+import dynamic from "next/dynamic"
+
 import { Collapse, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useCollapseContext } from "../contexts"
 import { ActionType, CollapsablePart } from "../contexts/CollapseContext"
-import useProgress from "../hooks/useProgress"
+import useCalculatedProgress from "../hooks/useCalculatedProgress"
 import CollapseButton from "/components/Buttons/CollapseButton"
-import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import PointsProgress, {
   PointsProgressSkeleton,
 } from "/components/Dashboard/PointsProgress"
@@ -42,12 +43,19 @@ const TitleContainer = styled("div")`
   justify-content: space-between;
 `
 
+const DynamicPointsListItemCard = dynamic(
+  () => import("/components/Dashboard/PointsListItemCard"),
+  {
+    loading: () => <Skeleton variant="rectangular" height={200} />,
+  },
+)
+
 function ProgressEntry({ data }: ProgressEntryProps) {
   const { course, user_course_progress, user_course_service_progresses } = data
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
-  const { totalProgress, exerciseProgress } = useProgress(data)
+  const { totalProgress, exerciseProgress } = useCalculatedProgress(data)
   const isOpen = useMemo(
     () => state.courses[course.id]?.points ?? false,
     [state, course],
@@ -94,7 +102,7 @@ function ProgressEntry({ data }: ProgressEntryProps) {
         />
       </ProgressContainer>
       <Collapse in={isOpen} unmountOnExit>
-        <PointsListItemCard
+        <DynamicPointsListItemCard
           course={course}
           userCourseProgress={user_course_progress}
           userCourseServiceProgresses={user_course_service_progresses}

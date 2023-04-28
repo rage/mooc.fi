@@ -8,7 +8,9 @@ query ExportUserCourseProgresses(
     user {
       ...UserCoreFields
     }
-    progress
+    progress: points_by_group {
+      ...PointsByGroupFields
+    }
     user_course_settings {
       course_variant
       country

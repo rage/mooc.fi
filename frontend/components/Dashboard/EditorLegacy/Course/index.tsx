@@ -93,7 +93,6 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
       try {
         setStatus({ message: t("statusSaving") })
 
-        // TODO/FIXME: return value?
         if (newCourse) {
           await addCourse({
             variables: {
