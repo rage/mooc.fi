@@ -71,8 +71,6 @@ const ListItemTitle = styled(CardTitle)`
   padding-right: 0.5rem;
 ` as typeof CardTitle
 
-const CompletionColumn = styled(Column)``
-
 const ButtonColumn = styled(Column)`
   gap: 0.5rem;
   margin-left: 1rem;
@@ -107,7 +105,7 @@ export const CompletionListItem = ({
       <Row>
         <Column>
           <Row>
-            <CompletionColumn>
+            <Column>
               <Row>
                 <Column>
                   <CourseAvatar>
@@ -170,7 +168,7 @@ export const CompletionListItem = ({
                     : null}
                 </Column>
               </Row>
-            </CompletionColumn>
+            </Column>
           </Row>
         </Column>
         <ButtonColumn>

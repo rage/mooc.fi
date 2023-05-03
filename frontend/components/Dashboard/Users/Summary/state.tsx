@@ -126,7 +126,6 @@ const updateSortedData = (state: UserSummaryState) => {
   }
 
   if (state.searchVariables.search) {
-    console.log("has search")
     sortedData = sortedData.filter((entry) =>
       entry?.course?.name
         .trim()
@@ -207,7 +206,6 @@ export const userSummaryReducer: Reducer<
   UserSummaryState,
   UserSummaryAction
 > = (state, action) => {
-  console.log("reducer", action, state)
   switch (action.type) {
     case "SET_SELECTED":
       return selectDefault({

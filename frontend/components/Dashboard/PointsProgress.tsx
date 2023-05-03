@@ -18,8 +18,6 @@ import CommonTranslations from "/translations/common"
 import notEmpty from "/util/notEmpty"
 import round from "/util/round"
 
-const PointsProgressContainer = styled("div")``
-
 const ProgressItem = styled("div")`
   width: 100%;
   display: flex;
@@ -61,7 +59,7 @@ type ProgressLegendProps = {
 
 const Marker = styled("div", {
   shouldForwardProp: (prop) => prop !== "percentage" && prop !== "color",
-})<{ percentage: number }>`
+})<ProgressProps>`
   position: absolute;
   width: 0.125rem;
   height: 2.5rem;
@@ -271,7 +269,7 @@ const PointsProgress = ({
   const hasRequiredPercentage = notEmpty(requiredPercentage)
 
   return (
-    <PointsProgressContainer>
+    <>
       <PointsProgressTitle component="h3" variant="body1">
         {title}
       </PointsProgressTitle>
@@ -338,19 +336,19 @@ const PointsProgress = ({
           </>
         </CardCaption>
       )}
-    </PointsProgressContainer>
+    </>
   )
 }
 
 export const PointsProgressSkeleton = () => (
-  <PointsProgressContainer>
+  <>
     <PointsProgressTitle component="h3" variant="body1">
       <Skeleton variant="text" width="100px" />
     </PointsProgressTitle>
     <ChartContainer>
       <Skeleton width="85%" height="4rem" />
     </ChartContainer>
-  </PointsProgressContainer>
+  </>
 )
 
 export default PointsProgress

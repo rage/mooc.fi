@@ -47,7 +47,7 @@ export const CourseEntryCardTitleWrapper = styled("div")`
   display: flex;
   flex-direction: row;
 `
-export const CourseEntryCardTitle = styled(CardTitle)``
+export const CourseEntryCardTitle = CardTitle
 
 export const CourseInfo = styled("div")`
   padding: 1rem;
