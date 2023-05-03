@@ -197,12 +197,12 @@ const nextConfiguration = (_phase) => ({
 
     return config
   },
-  eslint: {
+  /*eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
+  },*/
   /*experimental: {
     swcPlugins: [
       [
@@ -212,7 +212,7 @@ const nextConfiguration = (_phase) => ({
     ],
   },*/
   // swcMinify: false
-  productionBrowserSourceMaps: true,
+  // productionBrowserSourceMaps: true,
 })
 
 /**

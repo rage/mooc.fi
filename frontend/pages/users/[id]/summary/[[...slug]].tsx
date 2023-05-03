@@ -175,14 +175,6 @@ function UserSummaryView() {
             }
           />
         </StyledForm>
-        {/*<CollapseContext.Provider value={collapseContextValue}>*/}
-        {/*<UserPointsSummaryContext.Provider
-            value={userPointsSummaryContextValue}
-          >*/}
-        {/*<UserPointsSummaryContext.Provider value={contextData}>
-            <UserPointsSummaryFunctionsContext.Provider
-              value={functions}
-        >*/}
         <UserPointsSummaryContextProvider
           dataProps={dataProps}
           options={options}
@@ -210,10 +202,6 @@ function UserSummaryView() {
           </SearchContainer>
           <UserPointsSummary />
         </UserPointsSummaryContextProvider>
-        {/*</UserPointsSummaryFunctionsContext.Provider>
-          </UserPointsSummaryContext.Provider>*/}
-        {/*</UserPointsSummaryContext.Provider>*/}
-        {/*</CollapseContext.Provider>*/}
         <Dialog
           fullWidth
           maxWidth="md"
