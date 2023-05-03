@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react"
+import { useRef } from "react"
 
 import { omit } from "lodash"
 import { FormProvider, useForm } from "react-hook-form"
@@ -56,40 +56,37 @@ const initialTagTranslation = {
   description: "",
 }
 
+const renderArrayListItem: ControlledFieldArrayListProps<
+  TagValues,
+  "tag_translations"
+>["render"] = ({ item, index }) => (
+  <>
+    <ControlledTextField
+      name={`tag_translations.${index}.language`}
+      label="language"
+      required
+      defaultValue={item.language}
+    />
+    <ControlledTextField
+      name={`tag_translations.${index}.name`}
+      label="name"
+      required
+      defaultValue={item.name}
+    />
+    <ControlledTextField
+      name={`tag_translations.${index}.description`}
+      label="description"
+      defaultValue={item.description}
+    />
+  </>
+)
+
 function TagEditor({ tags }: TagEditorProps) {
   const initialValues = useRef(toTagValues(tags))
 
   const methods = useForm({
     defaultValues: initialValues.current,
   })
-
-  const renderArrayListItem: ControlledFieldArrayListProps<
-    TagValues,
-    "tag_translations"
-  >["render"] = useCallback(
-    ({ item, index }) => (
-      <>
-        <ControlledTextField
-          name={`tag_translations.${index}.language`}
-          label="language"
-          required
-          defaultValue={item.language}
-        />
-        <ControlledTextField
-          name={`tag_translations.${index}.name`}
-          label="name"
-          required
-          defaultValue={item.name}
-        />
-        <ControlledTextField
-          name={`tag_translations.${index}.description`}
-          label="description"
-          defaultValue={item.description}
-        />
-      </>
-    ),
-    [],
-  )
 
   return (
     <FormProvider {...methods}>

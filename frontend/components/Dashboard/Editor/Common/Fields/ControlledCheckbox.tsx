@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React from "react"
 
 import { FieldValues, useController } from "react-hook-form"
 
@@ -20,6 +20,18 @@ interface ControlledCheckboxProps<
   onChange?: (e: React.SyntheticEvent<Element, Event>, checked: boolean) => void
 }
 
+const ControlledCheckboxLabel = React.memo(
+  (props: Pick<ControlledCheckboxProps, "label" | "tip">) => {
+    const { label, tip } = props
+    return (
+      <AlignedSpan>
+        {label}
+        {tip && <InfoTooltipWithLabel label={label} title={tip} />}
+      </AlignedSpan>
+    )
+  },
+)
+
 function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
   props: ControlledCheckboxProps<TFieldValues>,
 ) {
@@ -31,21 +43,11 @@ function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
   })
   const _onChange = onChange ?? field.onChange
 
-  const Label = useCallback(
-    () => (
-      <AlignedSpan>
-        {label}
-        {tip && <InfoTooltipWithLabel label={label} title={tip} />}
-      </AlignedSpan>
-    ),
-    [label, tip],
-  )
-
   return (
     <div>
       <FormControlLabel
         key={name}
-        label={<Label />}
+        label={<ControlledCheckboxLabel label={label} tip={tip} />}
         value={field.value}
         checked={Boolean(field.value)}
         onChange={_onChange}

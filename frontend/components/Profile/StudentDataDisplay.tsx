@@ -3,7 +3,8 @@ import { PropsWithChildren } from "react"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 
-import { Box, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ProfileSettings from "/components/Profile/ProfileSettings"
 
@@ -13,6 +14,12 @@ interface TabPanelProps {
   index: number
   value: number
 }
+
+const TabContainer = styled("div")(
+  ({ theme }) => `
+  ${theme.spacing(3)};
+`,
+)
 
 const TabPanel = ({
   value,
@@ -26,7 +33,7 @@ const TabPanel = ({
     id={`user-profile-${index}`}
     aria-labelledby={`user-profile-tab-${index}`}
   >
-    {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    {value === index && <TabContainer>{children}</TabContainer>}
   </Typography>
 )
 

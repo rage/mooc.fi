@@ -168,7 +168,7 @@ const CertificateButton = ({
       >
         <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
         <DialogContent>
-          <DialogContentText style={{ marginBottom: "1.5rem" }}>
+          <DialogContentText sx={{ marginBottom: "1.5rem" }}>
             {t("nameFormIntro")}
           </DialogContentText>
           <StyledTextField

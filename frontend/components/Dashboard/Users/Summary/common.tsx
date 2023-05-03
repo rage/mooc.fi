@@ -9,10 +9,7 @@ import {
   Paper,
   PaperProps,
   Skeleton,
-  Table,
-  TableBody,
   TableCell,
-  TableContainer,
   TableRow,
 } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
@@ -24,15 +21,13 @@ export const iconStyle = css`
   transition: all 1s ease-ease-in-out;
 `
 
-export const SummaryCardContainer = styled((props: PaperProps) => (
-  <Paper component="article" elevation={2} {...props} />
-))`
+const SummaryCardContainer = styled(Paper)`
   margin-bottom: 1rem;
-`
+` as typeof Paper
 
-export function SummaryCard({ children, ...props }: PaperProps) {
-  return <SummaryCardContainer {...props}>{children}</SummaryCardContainer>
-}
+export const SummaryCard = (props: PaperProps) => (
+  <SummaryCardContainer component="article" elevation={2} {...props} />
+)
 
 export const CollapseTableCell = styled(TableCell)`
   padding-top: 0;

@@ -1,5 +1,3 @@
-import { useCallback } from "react"
-
 import { Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -38,7 +36,7 @@ const InfoRowTitle = styled(Typography)`
   padding-right: 0.5rem;
 `
 
-const InfoRowContent = styled(Typography)(
+const InfoRowTextContent = styled(Typography)(
   ({ theme }) => `
   text-align: right;
 
@@ -55,6 +53,30 @@ const InfoRowElementContent = styled("div")`
 const isElement = (data: string | number | JSX.Element): data is JSX.Element =>
   typeof data !== "string" && typeof data !== "number"
 
+type InfoRowContentProps = Pick<InfoRowProps, "data" | "copyable">
+
+const InfoRowContent = ({
+  data,
+  copyable,
+  ...typographyProps
+}: InfoRowContentProps & TypographyProps) => {
+  const { hasClipboard } = useClipboard(data)
+
+  if (!data) {
+    return null
+  }
+
+  if (isElement(data)) {
+    return <InfoRowElementContent>{data}</InfoRowElementContent>
+  }
+  return (
+    <InfoRowTextContent variant="h4" {...typographyProps}>
+      {data}
+      {hasClipboard && copyable && <ClipboardButton data={data} />}
+    </InfoRowTextContent>
+  )
+}
+
 const InfoRow = ({
   title,
   data,
@@ -64,30 +86,13 @@ const InfoRow = ({
 }: InfoRowProps & TypographyProps) => {
   const { hasClipboard } = useClipboard(data)
 
-  const Content = useCallback(() => {
-    if (!data) {
-      return null
-    }
-
-    if (isElement(data)) {
-      return <InfoRowElementContent>{data}</InfoRowElementContent>
-    }
-
-    return (
-      <InfoRowContent variant="h4" {...typographyProps}>
-        {data}
-        {hasClipboard && copyable && <ClipboardButton data={data} />}
-      </InfoRowContent>
-    )
-  }, [data, hasClipboard, copyable, typographyProps])
-
   return (
     <InfoRowContainer fullWidth={fullWidth}>
       <InfoRowTitle variant="h4" {...typographyProps}>
         {title}
         {!data && hasClipboard && copyable && <ClipboardButton data={title} />}
       </InfoRowTitle>
-      <Content />
+      <InfoRowContent data={data} copyable={copyable} {...typographyProps} />
     </InfoRowContainer>
   )
 }

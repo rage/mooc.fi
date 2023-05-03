@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from "react"
+import React, { useContext, useMemo } from "react"
 
 import { range } from "lodash"
 
@@ -37,40 +37,51 @@ const UserCard = styled(Card)`
   justify-content: space-between;
 `
 
-const MobileGrid: React.FC = () => {
-  const { data, meta, page, rowsPerPage, loading } =
-    useContext(UserSearchContext)
-  const t = useTranslator(UsersTranslations)
+const UserCardContent = styled(CardContent)`
+  min-width: fit-content;
+  flex: 1;
+`
 
-  const PaginationComponent = useCallback(
-    () => (
-      <Paper style={{ width: "100%", marginTop: "5px" }}>
-        <Table>
-          <TableBody>
-            <TableRow>
-              {loading ? (
-                <TableCell>
-                  <Skeleton />
-                </TableCell>
-              ) : (
-                <Pagination />
-              )}
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Paper>
-    ),
-    [data, rowsPerPage, page, loading],
-  )
+const UserCardActions = styled(CardActions)`
+  margin-left: auto;
+  justify-content: flex-end;
+`
+
+const PaginationContainer = styled(Paper)`
+  width: 100%;
+  margin-top: 5px;
+`
+
+const PaginationComponent = ({ loading }: { loading?: boolean }) => (
+  <PaginationContainer>
+    <Table>
+      <TableBody>
+        <TableRow>
+          {loading ? (
+            <TableCell>
+              <Skeleton />
+            </TableCell>
+          ) : (
+            <Pagination />
+          )}
+        </TableRow>
+      </TableBody>
+    </Table>
+  </PaginationContainer>
+)
+
+const MobileGrid: React.FC = () => {
+  const { meta, loading } = useContext(UserSearchContext)
+  const t = useTranslator(UsersTranslations)
 
   return (
     <>
-      {loading || meta.count ? <PaginationComponent /> : null}
+      {loading || meta.count ? <PaginationComponent loading={loading} /> : null}
       {!loading && meta.finished && meta.count === 0 ? (
         <Typography>{t("noResults")}</Typography>
       ) : null}
       <RenderCards />
-      <PaginationComponent />
+      <PaginationComponent loading={loading} />
     </>
   )
 }
@@ -132,7 +143,7 @@ const DataCard = ({ row }: DataCardProps) => {
 
   return (
     <UserCard>
-      <CardContent style={{ minWidth: "fit-content", flex: 1 }}>
+      <UserCardContent>
         {fields.map((field) => {
           if (field.title) {
             return field.value ? (
@@ -162,8 +173,8 @@ const DataCard = ({ row }: DataCardProps) => {
             <Skeleton />
           )
         })}
-      </CardContent>
-      <CardActions style={{ marginLeft: "auto", justifyContent: "flex-end" }}>
+      </UserCardContent>
+      <UserCardActions>
         {row ? (
           <>
             <Button
@@ -184,7 +195,7 @@ const DataCard = ({ row }: DataCardProps) => {
         ) : (
           <Skeleton />
         )}
-      </CardActions>
+      </UserCardActions>
     </UserCard>
   )
 }

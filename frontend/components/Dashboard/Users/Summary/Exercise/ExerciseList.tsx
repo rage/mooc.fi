@@ -8,10 +8,12 @@ import type {
 import { useRouter } from "next/router"
 
 import { TableCellProps, Theme, Typography, useMediaQuery } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ExerciseRow,
   renderCheck,
+  renderHeader,
   renderNarrowCell,
   renderNarrowCheck,
   renderNarrowRequiredActions,
@@ -78,6 +80,16 @@ const hideCellIfNoExerciseCompletions = ({
     ? {}
     : { sx: { display: "none" } }
 
+const ExerciseListTitle = () => {
+  const t = useTranslator(ProfileTranslations)
+
+  return <Typography variant="h3">{t("exercises")}</Typography>
+}
+
+const ExerciseListSummaryCard = styled(SummaryCard)`
+  padding: 0.5rem;
+`
+
 function ExerciseList({ data, loading }: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
@@ -104,25 +116,28 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
         {
           id: "status",
           accessorKey: "completed",
-          header: "kissa",
+          header: t("exerciseStatus"),
           Cell: renderCheck({ success: t("completed") }),
           columns: [
             {
               accessorKey: "completed",
               header: t("completed"),
               size: 50,
+              Header: renderHeader({ tooltip: t("completedTooltip") }),
               Cell: renderCheck({ success: t("completed") }),
             },
             {
               accessorKey: "attempted",
               header: t("attempted"),
               size: 50,
+              Header: renderHeader({ tooltip: t("attemptedTooltip") }),
               Cell: renderCheck({ success: t("attempted") }),
             },
             {
               accessorKey: "exercise_completion_required_actions",
               header: t("requiredActions"),
               size: 80,
+              Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
               Cell: renderRequiredActions(t),
             },
           ],
@@ -149,6 +164,7 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
       {
         accessorKey: "completed",
         header: t("completed"),
+        Header: renderHeader({ tooltip: t("completedTooltip") }),
         Cell: renderNarrowCheck({
           success: t("completed"),
           failure: t("notCompleted"),
@@ -157,6 +173,7 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
       {
         accessorKey: "attempted",
         header: t("attempted"),
+        Header: renderHeader({ tooltip: t("attemptedTooltip") }),
         Cell: renderNarrowCheck({
           success: t("attempted"),
           failure: t("notAttempted"),
@@ -165,6 +182,7 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
       {
         accessorKey: "exercise_completion_required_actions",
         header: t("requiredActions"),
+        Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
         Cell: renderNarrowRequiredActions(t),
       },
       {
@@ -212,21 +230,16 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
     [isNarrow],
   )
 
-  const title = useCallback(
-    () => <Typography variant="h3">{t("exercises")}</Typography>,
-    [t],
-  )
-
   const tableProps = useExerciseListProps<ExerciseRow>()
   const localization = useMaterialReactTableLocalization(locale)
 
   return (
-    <SummaryCard sx={{ padding: "0.5rem" }}>
+    <ExerciseListSummaryCard>
       <MaterialReactTable<ExerciseRow>
         {...tableProps}
         data={rows}
         columns={columns}
-        renderTopToolbarCustomActions={title}
+        renderTopToolbarCustomActions={ExerciseListTitle}
         muiExpandButtonProps={getExpandButtonProps}
         renderDetailPanel={renderExerciseInfo}
         localization={localization}
@@ -246,7 +259,7 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
           // TODO: will this show loading on no data, or do we not render exerciselist at all then?
         }}
       />
-    </SummaryCard>
+    </ExerciseListSummaryCard>
   )
 }
 

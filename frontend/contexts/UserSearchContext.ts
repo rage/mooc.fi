@@ -34,7 +34,7 @@ export interface UserSearchResults {
   totalMeta: Array<UserSearchMetaFieldsFragment>
 }
 
-export default createContext<UserSearchContext>({
+const UserSearchContextImpl = createContext<UserSearchContext>({
   data: [] as Array<UserCoreFieldsFragment>,
   meta: {} as UserSearchMetaFieldsFragment,
   totalMeta: [] as Array<UserSearchMetaFieldsFragment>,
@@ -53,3 +53,5 @@ export default createContext<UserSearchContext>({
   resetResults: () => void 0,
   setResults: () => void 0,
 })
+
+export default UserSearchContextImpl

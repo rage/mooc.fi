@@ -134,11 +134,6 @@ function CourseTagsForm() {
       />
     </FormFieldGroup>
   )
-  /*return (
-    <FormFieldGroup>
-      <Controller name="tags" control={control} render={renderAutocomplete} />
-    </FormFieldGroup>
-  )*/
 }
 
 export default CourseTagsForm

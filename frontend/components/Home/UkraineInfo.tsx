@@ -79,6 +79,10 @@ const InfoContainer = styled("div")`
   }
 `
 
+const InfoTitle = styled(CardTitle)`
+  margin-top: 0;
+` as typeof CardTitle
+
 function UkraineInfo() {
   const t = useTranslator(CommonTranslations)
 
@@ -87,17 +91,17 @@ function UkraineInfo() {
       <NaviItemBase>
         <FlagBackground>
           <InfoContainer>
-            <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
+            <InfoTitle component="h3" variant="h3">
               {t("ukraineText")}
-            </CardTitle>
+            </InfoTitle>
             <OutboundLink href={t("ukraineLink")}>
               {t("ukraineLinkText")}
             </OutboundLink>
           </InfoContainer>
           <InfoContainer>
-            <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
+            <InfoTitle component="h3" variant="h3">
               {t("ukraineHyText")}
-            </CardTitle>
+            </InfoTitle>
             <OutboundLink href={t("ukraineHyLink")}>
               {t("ukraineHyLinkText")}
             </OutboundLink>

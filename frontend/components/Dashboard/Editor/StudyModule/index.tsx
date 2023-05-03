@@ -18,7 +18,6 @@ import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import { useSnackbarMethods } from "/contexts/SnackbarContext"
 import { useAnchors } from "/hooks/useAnchors"
-import { getFirstErrorAnchor } from "/hooks/useEnumeratingAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CommonTranslations from "/translations/common"
@@ -115,7 +114,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
         addSnackbar({ message: t("statusSavingError"), severity: "error" })
       }
     },
-    [],
+    [t],
   )
 
   const onError: SubmitErrorHandler<StudyModuleFormValues> = useCallback(

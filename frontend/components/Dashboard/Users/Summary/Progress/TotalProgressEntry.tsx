@@ -1,10 +1,10 @@
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 
 import { sortBy } from "lodash"
 
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
-import { Box, Link, Typography } from "@mui/material"
+import { Link, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import InfoRow from "../../InfoRow"
@@ -34,6 +34,11 @@ const CourseInfo = styled("div")`
   margin-top: 1rem;
 `
 
+const TierInfoTitle = styled(Typography)`
+  display: inline-flex;
+  align-items: center;
+`
+
 function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
@@ -46,13 +51,20 @@ function TierInfo({ tier }: TierInfoProps) {
   const t = useTranslator(ProfileTranslations)
   const { dispatch } = useCollapseContext()
 
+  const onTierCourseClick = useCallback(
+    () =>
+      dispatch({
+        type: ActionType.OPEN,
+        course: tier.id,
+        collapsable: CollapsablePart.COURSE,
+      }),
+    [tier],
+  )
+
   return (
     <BorderedSection
       title={
-        <Typography
-          variant="h4"
-          style={{ display: "inline-flex", alignItems: "center" }}
-        >
+        <TierInfoTitle variant="h4">
           {capitalizeFirstLetter(t(`completionTier-${tier.tier as 1 | 2 | 3}`))}
           {tier.hasTier ? (
             <CheckIcon
@@ -67,49 +79,45 @@ function TierInfo({ tier }: TierInfoProps) {
               titleAccess={t("tierNotCompleted")}
             />
           )}
-        </Typography>
+        </TierInfoTitle>
       }
     >
-      <Box style={{ padding: "0.5rem" }}>
-        <PointsProgress
-          percentage={Math.min(
-            ((tier.exerciseCompletions ?? 0) / (tier.exerciseCount ?? 1)) * 100,
-            100,
-          )}
-          requiredPercentage={Math.min(
-            ((tier.requiredByTier ?? 0) / (tier.exerciseCount ?? 1)) * 100,
-            100,
-          )}
-          title={t("tierProgress")}
-          pointsTitle={t("points")}
-          requiredTitle={t("pointsRequired")}
-          amount={tier.exerciseCompletions ?? 0}
-          total={tier.exerciseCount}
-          required={tier.requiredByTier}
-        />
-        {!tier.hasTier && (
-          <CardCaption component="h4" variant="caption">
-            {t("missingFromTier")} <strong>{tier.missingFromTier ?? 0}</strong>
-          </CardCaption>
+      <PointsProgress
+        percentage={Math.min(
+          ((tier.exerciseCompletions ?? 0) / (tier.exerciseCount ?? 1)) * 100,
+          100,
         )}
-        <Link
-          onClick={() =>
-            dispatch({
-              type: ActionType.OPEN,
-              course: tier.id,
-              collapsable: CollapsablePart.COURSE,
-            })
-          }
-          href={`#${tier.name}`}
-          underline="hover"
-          variant="caption"
-        >
-          {t("showTierCourse")}
-        </Link>
-      </Box>
+        requiredPercentage={Math.min(
+          ((tier.requiredByTier ?? 0) / (tier.exerciseCount ?? 1)) * 100,
+          100,
+        )}
+        title={t("tierProgress")}
+        pointsTitle={t("points")}
+        requiredTitle={t("pointsRequired")}
+        amount={tier.exerciseCompletions ?? 0}
+        total={tier.exerciseCount}
+        required={tier.requiredByTier}
+      />
+      {!tier.hasTier && (
+        <CardCaption component="h4" variant="caption">
+          {t("missingFromTier")} <strong>{tier.missingFromTier ?? 0}</strong>
+        </CardCaption>
+      )}
+      <Link
+        onClick={onTierCourseClick}
+        href={`#${tier.name}`}
+        underline="hover"
+        variant="caption"
+      >
+        {t("showTierCourse")}
+      </Link>
     </BorderedSection>
   )
 }
+
+const TierInfoContainer = styled("div")`
+  margin-bottom: 0.5rem;
+`
 
 interface TierInfoListProps {
   tiers: Array<TierInfoFieldsFragment>
@@ -119,9 +127,9 @@ function TierInfoList({ tiers }: TierInfoListProps) {
   return (
     <>
       {sortBy(tiers, (t) => t.tier).map((tierInfo) => (
-        <Box key={tierInfo.tier} style={{ marginBottom: "0.5rem" }}>
+        <TierInfoContainer key={tierInfo.tier}>
           <TierInfo tier={tierInfo} />
-        </Box>
+        </TierInfoContainer>
       ))}
     </>
   )

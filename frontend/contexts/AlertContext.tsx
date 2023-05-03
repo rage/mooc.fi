@@ -61,13 +61,13 @@ const reducer = (state: AlertState, action: AlertAction) => {
 export const AlertProvider = React.memo(function AlertProvider({
   children,
 }: React.PropsWithChildren) {
-  const addAlert = useEventCallback((alert: Alert) =>
-    dispatch({ type: "addAlert", payload: alert }),
-  )
+  const addAlert = useEventCallback((alert: Alert) => {
+    dispatch({ type: "addAlert", payload: alert })
+  })
 
-  const removeAlert = useEventCallback((alert: Alert) =>
-    dispatch({ type: "removeAlert", payload: alert }),
-  )
+  const removeAlert = useEventCallback((alert: Alert) => {
+    dispatch({ type: "removeAlert", payload: alert })
+  })
 
   const [state, dispatch] = useReducer(reducer, {
     alerts: [] as Array<Alert>,

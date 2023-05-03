@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 
 import { MRT_ColumnDef } from "material-react-table"
 import { useRouter } from "next/router"
@@ -12,6 +12,7 @@ import {
 } from "../common"
 import {
   renderCheck,
+  renderHeader,
   renderNarrowCell,
   renderNarrowCheck,
   renderNarrowRequiredActions,
@@ -83,6 +84,16 @@ const getRenderPointsCellStyle =
   ) =>
     props.cell.getValue<number>() === points ? { fontWeight: 800 } : {}
 
+const TierExerciseCompletionsTitle = () => {
+  const t = useTranslator(ProfileTranslations)
+
+  return (
+    <Typography variant="body2" fontWeight="bold">
+      {t("submissions")}
+    </Typography>
+  )
+}
+
 const TierExerciseCompletions = ({
   data,
   highestTier,
@@ -126,12 +137,14 @@ const TierExerciseCompletions = ({
           accessorKey: "completed",
           header: t("completed"),
           size: 20,
+          Header: renderHeader({ tooltip: t("completedTooltip") }),
           Cell: renderCheck({ success: t("completed") }),
         },
         {
           accessorKey: "exercise_completion_required_actions",
           header: t("requiredActions"),
           size: 100,
+          Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
           Cell: renderRequiredActions(t),
         },
       ]
@@ -156,6 +169,7 @@ const TierExerciseCompletions = ({
       {
         accessorKey: "completed",
         header: t("completed"),
+        Header: renderHeader({ tooltip: t("completedTooltip") }),
         Cell: renderNarrowCheck({
           success: t("completed"),
           failure: t("notCompleted"),
@@ -164,6 +178,7 @@ const TierExerciseCompletions = ({
       {
         accessorKey: "exercise_completion_required_actions",
         header: t("requiredActions"),
+        Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
         Cell: renderNarrowRequiredActions(t),
       },
     ]
@@ -173,14 +188,6 @@ const TierExerciseCompletions = ({
     const localeMapDataToRow = mapDataToRow(locale)
     return (data ?? []).map(localeMapDataToRow)
   }, [locale, data])
-  const title = useCallback(
-    () => (
-      <Typography variant="body2" fontWeight="bold">
-        {t("submissions")}
-      </Typography>
-    ),
-    [t],
-  )
   const tableProps = useExerciseListProps<TierExerciseCompletionRow>()
   const localization = useMaterialReactTableLocalization(locale)
 
@@ -196,7 +203,9 @@ const TierExerciseCompletions = ({
       enableFullScreenToggle={false}
       enablePagination={false}
       enableColumnActions={false}
-      renderTopToolbarCustomActions={!isNarrow ? title : undefined}
+      renderTopToolbarCustomActions={
+        !isNarrow ? TierExerciseCompletionsTitle : undefined
+      }
       localization={localization}
     />
   )

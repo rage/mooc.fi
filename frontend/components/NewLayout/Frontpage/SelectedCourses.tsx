@@ -36,9 +36,9 @@ const CardActions = styled("div")`
   align-items: center;
 `
 
-const Date = styled((props: TypographyProps) => (
+const Date = (props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
-))``
+)
 
 // @ts-ignore: not used for now
 const CourseCard = ({

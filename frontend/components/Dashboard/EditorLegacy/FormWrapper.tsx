@@ -17,6 +17,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useLegacyAnchorContext } from "./LegacyAnchorContext"
 import { FormValues } from "./types"
@@ -132,9 +133,8 @@ const FormWrapper = <T extends FormValues>(
     [values],
   )
 
-  const onToggleDeleteVisible = useCallback(
-    () => setDeleteVisible((value) => !value),
-    [],
+  const onToggleDeleteVisible = useEventCallback(() =>
+    setDeleteVisible((value) => !value),
   )
 
   return (

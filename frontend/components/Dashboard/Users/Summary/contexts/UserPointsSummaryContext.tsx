@@ -255,7 +255,7 @@ export const UserPointsSummaryContextProvider = ({
         value: o,
         label: t(`courseSortOrder-${o}`),
       })),
-    [router.locale],
+    [t],
   )
 
   const onCourseSortChange = useEventCallback(

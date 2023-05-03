@@ -63,7 +63,7 @@ const ModuleNaviCard = ({ studyModule }: ModuleNaviCardProps) => (
         </>
       ) : (
         <>
-          <TextBackground style={{ width: "70%" }}>
+          <TextBackground>
             <SkeletonTitle width="100%" />
             <SkeletonBodyText variant="text" />
           </TextBackground>

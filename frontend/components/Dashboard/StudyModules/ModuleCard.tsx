@@ -15,6 +15,8 @@ import { css, styled } from "@mui/material/styles"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import LoaderImage from "/components/LoaderImage"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+import { useTranslator } from "/hooks/useTranslator"
+import StudyModulesTranslations from "/translations/study-modules"
 
 import { StudyModuleDetailedFieldsFragment } from "/graphql/generated"
 
@@ -97,6 +99,16 @@ const NaviCardTitle = styled(Typography)<TypographyProps & BoxProps>`
   flex: 1;
 `
 
+const AddCourseIcon = styled(AddCircleIcon)`
+  color: rgba(100, 100, 255);
+  width: 100%;
+  height: 100%;
+`
+
+const ModuleButton = styled(ButtonWithPaddingAndMargin)`
+  width: 68%;
+`
+
 interface ModuleCardProps {
   studyModule?: StudyModuleDetailedFieldsFragment
   image?: Exclude<ImageProps["src"], string>
@@ -104,6 +116,7 @@ interface ModuleCardProps {
 }
 
 function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
+  const t = useTranslator(StudyModulesTranslations)
   const moduleFound = !loading && studyModule
   const moduleNotFound = !loading && !studyModule
 
@@ -127,13 +140,7 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
         )}
         {moduleNotFound && (
           <IconBackground>
-            <AddCircleIcon
-              style={{
-                color: "rgba(100,100,255)",
-                width: "100%",
-                height: "100%",
-              }}
-            />
+            <AddCourseIcon />
           </IconBackground>
         )}
         <ImageCover />
@@ -144,42 +151,36 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
             </NaviCardTitle>
           ) : (
             <NaviCardTitle align="left">
-              {studyModule ? studyModule.name : "New module"}
+              {studyModule ? studyModule.name : t("newStudyModule")}
             </NaviCardTitle>
           )}
 
           {loading && (
-            <ButtonWithPaddingAndMargin
-              variant="text"
-              color="secondary"
-              style={{ width: "68%" }}
-            >
+            <ModuleButton variant="text" color="secondary">
               <Skeleton variant="text" width="100%" />
-            </ButtonWithPaddingAndMargin>
+            </ModuleButton>
           )}
           {moduleFound && (
-            <ButtonWithPaddingAndMargin
+            <ModuleButton
               href={`/study-modules/${studyModule.slug}/edit`}
-              aria-label={`Edit study module ${studyModule.name}`}
+              aria-label={t("editStudyModule", { name: studyModule.name })}
               variant="text"
               color="secondary"
-              style={{ width: "68%" }}
             >
               <EditIcon />
-              Edit
-            </ButtonWithPaddingAndMargin>
+              {t("edit")}
+            </ModuleButton>
           )}
           {moduleNotFound && (
-            <ButtonWithPaddingAndMargin
+            <ModuleButton
               href={`/study-modules/new`}
-              aria-label="Create new study module"
+              aria-label={t("newStudyModule")}
               variant="text"
               color="secondary"
-              style={{ width: "68%" }}
             >
               <AddIcon />
-              Create
-            </ButtonWithPaddingAndMargin>
+              {t("create")}
+            </ModuleButton>
           )}
         </ContentArea>
       </Base>

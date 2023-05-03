@@ -72,13 +72,13 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
       prevSelectedLanguage === "en_US" ? "both" : "fi_FI",
     )
     append({ ...initialTranslation, language: "fi_FI" })
-  }, [selectedLanguage, setSelectedLanguage, append])
+  }, [selectedLanguage, setSelectedLanguage, append, initialTranslation])
   const onSelectEnglish = useCallback(() => {
     setSelectedLanguage((prevSelectedLanguage) =>
       prevSelectedLanguage === "fi_FI" ? "both" : "en_US",
     )
     append({ ...initialTranslation, language: "en_US" })
-  }, [selectedLanguage, setSelectedLanguage, append])
+  }, [selectedLanguage, setSelectedLanguage, append, initialTranslation])
   const onSelectBoth = useCallback(() => {
     if (selectedLanguage === "") {
       append({
@@ -99,7 +99,7 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
     }
 
     setSelectedLanguage("both")
-  }, [selectedLanguage, setSelectedLanguage, append])
+  }, [selectedLanguage, setSelectedLanguage, append, initialTranslation])
 
   return (
     <>

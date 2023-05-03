@@ -13,12 +13,7 @@ import {
   stringArg,
 } from "nexus"
 
-import {
-  isAdmin,
-  isCourseOwner,
-  isSameOrganization,
-  Role,
-} from "../accessControl"
+import { isAdmin, isSameOrganization, Role } from "../accessControl"
 import { Context } from "../context"
 import { GraphQLUserInputError } from "../lib/errors"
 import { filterNull } from "../util/db-functions"

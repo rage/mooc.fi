@@ -123,7 +123,7 @@ const TablePaginationActions: React.FC = () => {
 
 const Pagination: React.FC = () => {
   const t = useTranslator(UsersTranslations)
-  const { meta, rowsPerPage, page, setPage, setRowsPerPage, searchVariables } =
+  const { meta, rowsPerPage, page, setPage, setRowsPerPage } =
     useContext(UserSearchContext)
 
   const handleChangeRowsPerPage = useEventCallback(

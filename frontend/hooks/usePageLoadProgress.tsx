@@ -55,6 +55,7 @@ function usePageLoadProgress(props: UsePageLoadProgressArgs = {}) {
     Router.events.on("routeChangeComplete", handleRouteChangeComplete)
 
     return () => {
+      timeouts.forEach((timeout) => clearTimeout(timeout))
       Router.events.off("routeChangeStart", handleRouteChangeStart)
       Router.events.off("routeChangeError", handleRouteChangeComplete)
       Router.events.off("routeChangeComplete", handleRouteChangeComplete)

@@ -1,8 +1,9 @@
-import Image, { ImageProps } from "next/image"
+import { ImageProps } from "next/image"
 
 import { BoxProps, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ContainedImage from "/components/Images/ContainedImage"
 import {
   CardTitle,
   H2NoBackground,
@@ -34,23 +35,8 @@ export const ContentContainer = styled("div")`
   min-width: 33%;
 `
 
-export const ModuleHeader = styled(
-  ({
-    variant = "h2",
-    component = "h2",
-    align = "left",
-    ...props
-  }: TypographyProps & BoxProps) => (
-    <H2NoBackground
-      variant={variant}
-      component={component}
-      align={align}
-      {...props}
-    />
-  ),
-)<{
-  component?: React.ElementType
-}>`
+const ModuleHeaderStyled = styled(H2NoBackground)(
+  ({ theme }) => `
   color: white;
   margin-left: 0px;
   font-size: 72px;
@@ -58,15 +44,21 @@ export const ModuleHeader = styled(
   font-family: var(--header-font), sans-serif;
   font-weight: 300;
   width: 100%;
-  @media (max-width: 490px) {
+
+  ${theme.breakpoints.down("sm")} {
     font-size: 48px;
     line-height: 80px;
   }
-  @media (max-width: 360px) {
+  ${theme.breakpoints.down("xs")} {
     font-size: 37px;
     line-height: 70px;
   }
-` as typeof H2NoBackground
+`,
+)
+
+export const ModuleHeader = (props: TypographyProps & BoxProps) => (
+  <ModuleHeaderStyled variant="h2" component="h2" align="left" {...props} />
+)
 
 const ModuleImageContainer = styled("div")`
   position: relative;
@@ -80,11 +72,10 @@ export const ModuleImage = ({ src, alt, ...props }: ImageProps) => {
 
   return (
     <ModuleImageContainer>
-      <Image
+      <ContainedImage
         src={imgSrc}
         placeholder="blur"
         alt={alt ?? "Module image"}
-        style={{ objectFit: "contain" }}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         {...(!props.width && !props.height && { fill: true })}
         {...props}
@@ -92,52 +83,27 @@ export const ModuleImage = ({ src, alt, ...props }: ImageProps) => {
     </ModuleImageContainer>
   )
 }
-export const ModuleDescriptionText = styled(
-  ({
-    variant = "subtitle1",
-    component = "h3",
-    ...props
-  }: TypographyProps & BoxProps) => (
-    <SubtitleNoBackground variant={variant} component={component} {...props} />
-  ),
-)`
+
+const ModuleDescriptionTextStyled = styled(SubtitleNoBackground)(
+  ({ theme }) => `
   color: white;
   font-size: 28px;
   line-height: 47px;
-  @media (max-width: 360px) {
+  ${theme.breakpoints.down("sm")} {
     font-size: 18px;
     line-height: 37px;
   }
-` as typeof SubtitleNoBackground
+`,
+)
 
-export const ModuleCardTitle = styled(
-  ({
-    variant = "h3",
-    component = "h3",
-    align = "center",
-    ...props
-  }: TypographyProps & BoxProps) => (
-    <CardTitle
-      variant={variant}
-      component={component}
-      align={align}
-      {...props}
-    />
-  ),
-)``
+export const ModuleDescriptionText = (props: TypographyProps & BoxProps) => (
+  <ModuleDescriptionTextStyled variant="subtitle1" component="h3" {...props} />
+)
 
-export const ModuleCardText = styled(
-  ({
-    variant = "body1",
-    component = "p",
-    align = "left",
-    ...props
-  }: TypographyProps & BoxProps) => (
-    <CardText
-      variant={variant}
-      component={component}
-      align={align}
-      {...props}
-    />
-  ),
-)``
+export const ModuleCardTitle = (props: TypographyProps & BoxProps) => (
+  <CardTitle variant="h3" component="h3" align="center" {...props} />
+)
+
+export const ModuleCardText = (props: TypographyProps & BoxProps) => (
+  <CardText variant="body1" component="p" align="left" {...props} />
+)

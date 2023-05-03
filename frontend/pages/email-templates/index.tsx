@@ -27,10 +27,11 @@ const CardBackground = styled(ClickableButtonBase)`
   }
 ` as typeof ClickableButtonBase
 
-const TemplateCard = styled((props: PaperProps) => <Paper {...props} />)`
+const TemplateCardPaper = styled(Paper)`
   width: 100%;
   padding: 0.5rem;
 `
+const TemplateCard = (props: PaperProps) => <TemplateCardPaper {...props} />
 
 const EmailTemplates = (admin: boolean) => {
   const { loading, error, data } = useQuery(EmailTemplatesDocument)

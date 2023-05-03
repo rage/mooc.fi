@@ -67,6 +67,10 @@ const Column = styled("div")`
   flex-direction: column;
 `
 
+const ListItemTitle = styled(CardTitle)`
+  padding-right: 0.5rem;
+` as typeof CardTitle
+
 const CompletionColumn = styled(Column)``
 
 const ButtonColumn = styled(Column)`
@@ -96,9 +100,9 @@ export const CompletionListItem = ({
   return (
     <ListItemContainer {...paperProps}>
       <Row>
-        <CardTitle component="h2" variant="h3" sx={{ paddingRight: "0.5rem" }}>
+        <ListItemTitle component="h2" variant="h3">
           {course?.name}
-        </CardTitle>
+        </ListItemTitle>
       </Row>
       <Row>
         <Column>
@@ -153,7 +157,7 @@ export const CompletionListItem = ({
                               {t("registeredDate")}{" "}
                               {formatDateTime(r.created_at)}
                             </strong>
-                            <DoneIcon style={{ color: "green" }} />
+                            <DoneIcon color="success" />
                           </CardSubtitle>
                           {r.organization ? (
                             <CardSubtitle>

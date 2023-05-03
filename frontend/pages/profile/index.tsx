@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useCallback, useEffect, useState } from "react"
+import React, { SyntheticEvent, useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 

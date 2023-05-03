@@ -4,7 +4,7 @@
   "redirectMessagePre": "You will be redirected back to the module list in 5 seconds - press ",
   "redirectLinkText": "here",
   "redirectMessagePost": " to go there now.",
-  "editStudyModule": "Edit study module",
+  "editStudyModule": "Edit study module {{name}}",
   "newStudyModule": "New study module",
   "allStudyModules": "All study modules",
   "validationRequired": "required",
@@ -36,5 +36,7 @@
   "moduleDetailsTitle":"Study module details",
   "moduleTranslationsTitle":"Language versions",
   "moduleTranslations": "Translations",
-  "modulePhotoTitle": "Photo"
+  "modulePhotoTitle": "Photo",
+  "edit": "Edit",
+  "create": "Create"
 }

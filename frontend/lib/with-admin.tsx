@@ -1,8 +1,4 @@
-import React, {
-  PropsWithChildren,
-  PureComponent,
-  Component as ReactComponent,
-} from "react"
+import React, { PropsWithChildren, Component as ReactComponent } from "react"
 
 import { NextPageContext as NextContext } from "next"
 

@@ -68,7 +68,7 @@ function UserCourseSettingsVisibilityForm() {
           onDelete={onDelete(index)}
         />
       )),
-    [setValue, getValues],
+    [onDelete],
   )
 
   const renderInput = useCallback(

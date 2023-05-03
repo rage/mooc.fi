@@ -1,15 +1,9 @@
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 
 import { MRT_Column, MRT_ColumnDef, MRT_Row } from "material-react-table"
 import { useRouter } from "next/router"
 
-import {
-  Collapse,
-  TableCellProps,
-  Theme,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Theme, Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -17,10 +11,11 @@ import {
   SummaryCard,
   useMaterialReactTableLocalization,
 } from "../common"
-import { useSelectedData, useUserPointsSummaryContext } from "../contexts"
+import { useSelectedData } from "../contexts"
 import {
   NarrowCell,
   renderCheck,
+  renderHeader,
   renderNarrowCell,
   renderNarrowCheck,
   TierExerciseRow,
@@ -31,11 +26,6 @@ import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 
 import { TierProgressFieldsFragment } from "/graphql/generated"
-
-interface TierExerciseListProps {
-  data?: Array<TierProgressFieldsFragment>
-  loading?: boolean
-}
 
 const mapExerciseToRow = (
   exercise: TierProgressFieldsFragment,
@@ -80,15 +70,6 @@ const conditionallyRenderTierExerciseCompletions = ({
   ) : undefined
 }
 
-const hideCellIfNoExerciseCompletions = ({
-  row,
-}: {
-  row: MRT_Row<TierExerciseRow>
-}): TableCellProps =>
-  row.original.exercise_completions?.length > 0
-    ? {}
-    : { sx: { display: "none" } }
-
 const renderTierExerciseCompletions = ({
   row,
 }: {
@@ -104,7 +85,13 @@ const renderTierExerciseCompletions = ({
 
 const renderNarrowCellFn = renderNarrowCell<TierExerciseRow>()
 
-const TierExerciseList = (/*{ data }: TierExerciseListProps*/) => {
+const TierExerciseListTitle = () => {
+  const t = useTranslator(ProfileTranslations)
+
+  return <Typography variant="h3">{t("combinedExercises")}</Typography>
+}
+
+const TierExerciseList = () => {
   const selectedData = useSelectedData()
   const data = selectedData?.user_course_progress?.extra?.exercises ?? []
   const { locale } = useRouter()
@@ -138,6 +125,7 @@ const TierExerciseList = (/*{ data }: TierExerciseListProps*/) => {
           accessorKey: "completed",
           header: t("completed"),
           size: 40,
+          Header: renderHeader({ tooltip: t("completedTooltip") }),
           Cell: renderCheck({ success: t("completed") }),
         },
       ]
@@ -167,6 +155,7 @@ const TierExerciseList = (/*{ data }: TierExerciseListProps*/) => {
       {
         accessorKey: "completed",
         header: t("completed"),
+        Header: renderHeader({ tooltip: t("completedTooltip") }),
         Cell: renderNarrowCheck({
           success: t("completed"),
           failure: t("notCompleted"),
@@ -176,7 +165,6 @@ const TierExerciseList = (/*{ data }: TierExerciseListProps*/) => {
         accessorKey: "exercise_completions",
         header: t("submissions"),
         Cell: conditionallyRenderTierExerciseCompletions,
-        // muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
       },
     ]
   }, [locale, t, isNarrow])
@@ -198,11 +186,6 @@ const TierExerciseList = (/*{ data }: TierExerciseListProps*/) => {
     [isNarrow],
   )
 
-  const title = useCallback(
-    () => <Typography variant="h3">{t("combinedExercises")}</Typography>,
-    [t],
-  )
-
   const tableProps = useExerciseListProps<TierExerciseRow>()
   const localization = useMaterialReactTableLocalization(locale)
 
@@ -215,7 +198,7 @@ const TierExerciseList = (/*{ data }: TierExerciseListProps*/) => {
         layoutMode="grid"
         enablePagination={false}
         enableColumnActions={false}
-        renderTopToolbarCustomActions={title}
+        renderTopToolbarCustomActions={TierExerciseListTitle}
         muiExpandButtonProps={getExpandButtonProps}
         renderDetailPanel={
           !isNarrow ? renderTierExerciseCompletions : undefined

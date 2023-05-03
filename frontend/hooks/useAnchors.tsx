@@ -111,6 +111,7 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
     },
     [anchors],
   )
+
   return { anchors, addAnchor, scrollFirstErrorIntoView }
 }
 

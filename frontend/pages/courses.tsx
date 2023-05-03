@@ -171,17 +171,19 @@ function Courses() {
   )
 }
 
+interface CreateInitialSearchVariableArgs {
+  search?: string
+  handledBy?: string
+  hidden?: string
+  status?: string
+}
+
 const createInitialSearchVariables = ({
   search,
   handledBy,
   hidden,
   status,
-}: {
-  search?: string
-  handledBy?: string
-  hidden?: string
-  status?: string
-}) => {
+}: CreateInitialSearchVariableArgs) => {
   const statusParam = (decodeURIComponent(status ?? "")
     ?.split(",")
     .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]

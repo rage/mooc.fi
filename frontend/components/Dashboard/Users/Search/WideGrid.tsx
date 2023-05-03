@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react"
+import { useContext } from "react"
 
 import { range } from "lodash"
 
@@ -43,11 +43,15 @@ const ButtonContainer = styled("div")`
   gap: 0.5rem;
 `
 
+const CenteredSkeleton = styled(Skeleton)`
+  margin: auto;
+`
+
 const PaginationComponent: React.FC<{ loading?: boolean }> = ({ loading }) => (
   <PaginationTableRow>
     {loading ? (
       <TableCell colSpan={5}>
-        <Skeleton width="400px" style={{ margin: "auto" }} />
+        <CenteredSkeleton width="400px" />
       </TableCell>
     ) : (
       <Pagination />

@@ -230,6 +230,7 @@ const ChartContainer = styled("div")`
 
 const PointsProgressTitle = styled(CardSubtitle)`
   margin-right: 1rem;
+  margin-top: 0;
 ` as typeof CardSubtitle
 
 const ProgressPercentage = styled(CardSubtitle)`

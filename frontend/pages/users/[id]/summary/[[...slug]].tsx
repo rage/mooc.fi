@@ -14,7 +14,6 @@ import { UserPointsSummaryContextProvider } from "/components/Dashboard/Users/Su
 import CourseFilterMenu from "/components/Dashboard/Users/Summary/CourseFilterMenu"
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
-import { SortOrder } from "/components/Dashboard/Users/Summary/types"
 import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
@@ -28,10 +27,7 @@ import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"
 import UsersTranslations from "/translations/users"
 
-import {
-  UserCourseSummaryCoreFieldsFragment,
-  UserSummaryDocument,
-} from "/graphql/generated"
+import { UserSummaryDocument } from "/graphql/generated"
 
 const StyledForm = styled("form")`
   display: flex;
@@ -58,25 +54,6 @@ const RightToolbarContainer = styled("div")`
   display: flex;
   gap: 1rem;
 `
-
-function flipOrder(order: SortOrder) {
-  return order === "asc" ? "desc" : "asc"
-}
-
-const defaultSort = "course_name"
-const defaultOrder = "asc"
-
-const toCourseList = (data: UserCourseSummaryCoreFieldsFragment) => ({
-  id: data.course.id,
-  slug: data.course.slug,
-  name: data.course.name,
-  tiers:
-    data.tier_summaries?.map((t) => ({
-      id: t.course.id,
-      slug: t.course.slug,
-      name: t.course.name,
-    })) ?? undefined,
-})
 
 function UserSummaryView() {
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))

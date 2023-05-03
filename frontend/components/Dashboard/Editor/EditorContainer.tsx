@@ -11,7 +11,7 @@ import { Path, useFormContext } from "react-hook-form"
 import BuildIcon from "@mui/icons-material/Build"
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined"
 import { LoadingButton } from "@mui/lab"
-import { Checkbox, Container, Paper, PaperProps, Tooltip } from "@mui/material"
+import { Checkbox, Container, Paper, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
@@ -32,11 +32,13 @@ const StyledForm = styled("form")`
   padding: 2rem;
 `
 
-const StyledFormBackground = styled((props: PaperProps) => (
-  <FormBackground elevation={1} {...props} />
-))`
+const StyledFormBackground = styled(FormBackground)`
   background-color: #8c64ac;
 `
+
+StyledFormBackground.defaultProps = {
+  elevation: 1,
+}
 
 const ButtonContainer = styled("div")`
   display: flex;

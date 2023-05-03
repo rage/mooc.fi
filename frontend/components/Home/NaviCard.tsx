@@ -20,6 +20,23 @@ const NaviItemBase = styled(ClickableDiv)`
   align-items: flex-start;
 `
 
+const NaviItemTextBackground = styled(FullCoverTextBackground)`
+  width: 100%;
+`
+
+const NaviItemCardTitle = styled(CardTitle)`
+  max-width: 70%;
+` as typeof CardTitle
+
+const NaviItemCardText = styled(CardText)`
+  max-width: 70%;
+  flex: 1;
+` as typeof CardText
+
+const TitleImage = styled(Image)`
+  width: 70%;
+`
+
 const StyledLink = styled(Link)`
   color: black;
   text-decoration: none;
@@ -77,41 +94,30 @@ function NaviCard(props: NaviCardProps) {
               fill
             />
           ) : null}
-          <FullCoverTextBackground style={{ width: "100%" }}>
-            <CardTitle
-              component="h2"
-              variant="h3"
-              align="left"
-              style={{ maxWidth: "70%" }}
-            >
+          <NaviItemTextBackground>
+            <NaviItemCardTitle component="h2" variant="h3" align="left">
               {item.titleImg ? (
-                <Image
+                <TitleImage
                   src={require(`/public/images/navi/${item.titleImg}`)}
                   placeholder="blur"
                   priority
                   alt={item.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  style={{ width: "70%" }}
                 />
               ) : (
                 item.title
               )}
-            </CardTitle>
-            <CardText
-              component="p"
-              variant="body1"
-              align="left"
-              style={{ minWidth: "70%", flex: 1 }}
-            >
+            </NaviItemCardTitle>
+            <NaviItemCardText paragraph variant="body1" align="left">
               {item.text}
-            </CardText>
+            </NaviItemCardText>
             {item.linkText ? (
               <Button fullWidth aria-disabled="true">
                 {item.linkText}
               </Button>
             ) : undefined}
-          </FullCoverTextBackground>
+          </NaviItemTextBackground>
         </NaviItemBase>
       </StyledLink>
     </Grid>

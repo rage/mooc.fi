@@ -3,6 +3,7 @@ import { Fragment } from "react"
 import CloseIcon from "@mui/icons-material/Close"
 import DoneIcon from "@mui/icons-material/Done"
 import {
+  BoxProps,
   Divider,
   Icon,
   ListItem,
@@ -32,13 +33,13 @@ const ListItemArea = styled("div")`
   margin: 1rem auto 1rem auto;
 `
 
-const CompletionInfoText = styled(({ children, ...props }: TypographyProps) => (
-  <Typography component="span" {...props}>
-    {children}
-  </Typography>
-))`
+const CompletionInfoTextStyled = styled(Typography)`
   display: block;
 `
+
+const CompletionInfoText = (props: TypographyProps & BoxProps) => (
+  <CompletionInfoTextStyled component="span" {...props} />
+)
 
 interface CompletionCardProps {
   completer: CompletionsQueryNodeFieldsFragment

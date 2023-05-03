@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, PropsWithChildren, useMemo } from "react"
+import { PropsWithChildren, useMemo } from "react"
 
 import { merge } from "lodash"
 import { MaterialReactTableProps, MRT_ColumnDef } from "material-react-table"
@@ -109,6 +109,50 @@ export const NarrowCell = ({
     {children}
   </NarrowCellBase>
 )
+
+const HeaderContainer = styled("div")`
+  display: flex;
+  align-items: center;
+`
+
+const HoverTooltip = styled(Tooltip)`
+  :hover {
+    cursor: help;
+  }
+`
+type RenderHeaderProps = {
+  tooltip?: string
+  hasTooltipIcon?: boolean
+}
+
+export const renderHeader =
+  <T extends Record<string, any>>({
+    tooltip,
+    hasTooltipIcon,
+  }: RenderHeaderProps): NonNullable<MRT_ColumnDef<T>["Header"]> =>
+  (props) => {
+    if (!tooltip) {
+      return props.column.columnDef.header
+    }
+    if (!hasTooltipIcon) {
+      return (
+        <HoverTooltip title={tooltip}>
+          <span>{props.column.columnDef.header}</span>
+        </HoverTooltip>
+      )
+    }
+
+    return (
+      <HeaderContainer>
+        {props.column.columnDef.header}
+        <TooltipWrapper>
+          <Tooltip title={tooltip}>
+            <HelpIcon fontSize="small" />
+          </Tooltip>
+        </TooltipWrapper>
+      </HeaderContainer>
+    )
+  }
 
 const RequiredActionsContainer = styled("div")`
   display: flex;
@@ -246,6 +290,7 @@ export const renderNarrowCell =
     ValueProps: initialValueProps,
   }: NarrowCellProps<T> = {}): NonNullable<MRT_ColumnDef<T>["Cell"]> =>
   (props) => {
+    const { column, cell } = props
     let CellProps = initialCellProps
     if (typeof initialCellProps === "function") {
       CellProps = initialCellProps(props)
@@ -260,13 +305,13 @@ export const renderNarrowCell =
     }
     return (
       <NarrowCell
-        header={props.column.columnDef.header}
+        header={column.columnDef.header}
         tooltip={tooltip}
         HeaderProps={HeaderProps}
         {...CellProps}
       >
         <Typography variant="body2" textAlign="right" {...ValueProps}>
-          {props.cell.getValue<any>()}
+          {cell.getValue<any>()}
         </Typography>
       </NarrowCell>
     )
@@ -286,6 +331,7 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
       enableTableHead: isWide,
       enableColumnActions: false,
       enableSorting: false,
+      enableStickyHeader: true,
       displayColumnDefOptions: isWide ? { "mrt-row-expand": { size: 15 } } : {},
       muiTablePaginationProps: {
         rowsPerPageOptions: [10, 30, 50, 100],
@@ -401,18 +447,18 @@ export const useExerciseListProps = <T extends Record<string, any>>() => {
   return props
 }
 
-type MuiCellProps<T extends Record<string, any>> = {
+type MuiProps<T extends Record<string, any>> = {
   [K in keyof NonNullable<MRT_ColumnDef<T>> & `mui${string}Props`]: NonNullable<
     MRT_ColumnDef<T>[K]
   >
 }
 type MuiPropsType<T extends Record<string, any>> = {
-  [K in keyof MuiCellProps<T>]: ReturnType<Extract<MuiCellProps<T>[K], AnyFn>>
+  [K in keyof MuiProps<T>]: ReturnType<Extract<MuiProps<T>[K], AnyFn>>
 }
-type MuiCellPropsParams<
+type MuiPropsParams<
   T extends Record<string, any>,
-  K extends keyof MuiCellProps<T>,
-> = Parameters<Extract<MuiCellProps<T>[K], AnyFn>>
+  K extends keyof MuiProps<T>,
+> = Parameters<Extract<MuiProps<T>[K], AnyFn>>
 
 type AnyFn = (...args: any[]) => any
 
@@ -421,10 +467,10 @@ export const mergeOriginalMuiProps =
     T extends Record<string, any> = Record<string, any>,
     K extends keyof MuiPropsType<T> = keyof MuiPropsType<T>,
   >(
-    props: MuiCellPropsParams<T, K>[0],
+    props: MuiPropsParams<T, K>[0],
   ) =>
   (
-    originalProps?: MuiCellProps<T>[K],
+    originalProps?: MuiProps<T>[K],
     newProps?: MuiPropsType<T>[K],
   ): MuiPropsType<T>[K] => {
     let originalMuiProps: any

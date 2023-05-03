@@ -1,10 +1,10 @@
 import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
-import Image from "next/image"
 
 import { Button, EnhancedLink, Grid, Link } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ContainedImage from "../Images/ContainedImage"
 import {
   BackgroundImage,
   FullCoverTextBackground,
@@ -54,13 +54,27 @@ const Background = styled(FullCoverTextBackground)`
   }
 `
 
-const TitleImage = styled(Image)``
-
 const TitleImageContainer = styled("div")`
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  grid-area: title;
+`
+
+const WideNaviCardTitle = styled(CardTitle)`
+  max-width: 70%;
+  grid-area: title;
+` as typeof CardTitle
+
+const WideNaviCardText = styled(CardText)`
+  max-width: 70%;
+  grid-area: text;
+`
+
+const WideNaviCardbutton = styled(Button)`
+  grid-area: button;
+  max-height: 37px;
 `
 
 function WideNaviCard(props: NaviCardProps) {
@@ -82,12 +96,11 @@ function WideNaviCard(props: NaviCardProps) {
           )}
           <Background>
             {item.titleImg ? (
-              <TitleImageContainer style={{ gridArea: "title" }}>
-                <TitleImage
+              <TitleImageContainer>
+                <ContainedImage
                   src={require(`/public/images/navi/${item.titleImg}`)}
                   placeholder="blur"
                   alt={item.title ?? ""}
-                  style={{ objectFit: "contain" }}
                   {...(item.titleImgDimensions ?? {
                     sizes:
                       "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
@@ -96,30 +109,17 @@ function WideNaviCard(props: NaviCardProps) {
                 />
               </TitleImageContainer>
             ) : (
-              <CardTitle
-                component="h2"
-                variant="h3"
-                align="left"
-                style={{ maxWidth: "70%", gridArea: "title" }}
-              >
+              <WideNaviCardTitle component="h2" variant="h3" align="left">
                 {item.title}
-              </CardTitle>
+              </WideNaviCardTitle>
             )}
-            <CardText
-              component="p"
-              variant="body1"
-              align="left"
-              style={{ minWidth: "70%", flex: 1, gridArea: "text" }}
-            >
+            <WideNaviCardText paragraph variant="body1" align="left">
               {item.text}
-            </CardText>
+            </WideNaviCardText>
             {item.linkText && (
-              <Button
-                aria-disabled="true"
-                style={{ maxHeight: "37px", gridArea: "button" }}
-              >
+              <WideNaviCardbutton aria-disabled>
                 {item.linkText}
-              </Button>
+              </WideNaviCardbutton>
             )}
           </Background>
         </NaviItemBase>

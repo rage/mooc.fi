@@ -17,13 +17,15 @@ import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
 
 const CardBase = styled("div", {
   shouldForwardProp: (prop) => prop !== "isHidden",
-})<{ isHidden?: number }>`
+})<{ isHidden?: boolean | null }>`
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
 
@@ -98,6 +100,7 @@ const CourseCardContent = styled("div")`
   flex-direction: column;
   padding: 1rem;
   padding-bottom: 0;
+  grid-column: span 2;
 `
 
 const CourseCardActions = styled(CardActions)`
@@ -113,6 +116,7 @@ const CourseInfoList = styled("ul")`
 `
 const CourseInfoLine = styled("li")`
   display: grid;
+  align-items: baseline;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
@@ -122,20 +126,23 @@ const CourseInfoLine = styled("li")`
   flex-direction: row;
 `
 
-const CourseInfoField = styled(
-  ({
-    variant = "h4",
-    component = "h3",
-    children,
-    ...props
-  }: PropsWithChildren<TypographyProps & BoxProps>) => (
-    <Typography variant={variant} component={component} {...props}>
-      {children}
-    </Typography>
-  ),
-)`
+const CourseCardBase = styled(CardBase)`
+  grid-column: span 1;
+`
+
+const CourseInfoFieldStyled = styled(Typography)`
   display: block;
   margin-right: 0.5rem;
+`
+
+const CourseInfoField = (props: TypographyProps & BoxProps) => (
+  <CourseInfoFieldStyled variant="h4" component="h3" {...props} />
+)
+
+const CourseTitleBadgeContainer = styled("div")`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const CourseInfoValue = styled("div")`
@@ -176,39 +183,31 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
+  const t = useTranslator(CoursesTranslations)
   const courseFound = !loading && !!course
   const courseNotFound = !course && !loading
 
   return (
     <CourseCardItem key={course?.id ?? "new-course"}>
-      <CardBase
-        style={{ gridColumn: "span 1" }}
-        isHidden={course?.hidden ? 1 : undefined}
-      >
+      <CourseCardBase isHidden={course?.hidden}>
         <CourseCardImageContainer>
           {loading && <Skeleton variant="rectangular" height="100%" />}
           {courseFound && (
             <CourseImage photo={course.photo} alt={course.name} />
           )}
           {courseNotFound && (
-            <StyledLink href={`/courses/new`} aria-label={`Create new course`}>
+            <StyledLink href={`/courses/new`} aria-label={t("courseNewCourse")}>
               <CreateCourseIconContainer>
                 <AddCircleIcon fontSize="large" />
               </CreateCourseIconContainer>
             </StyledLink>
           )}
         </CourseCardImageContainer>
-        <CourseCardContent style={{ gridColumn: "span 2" }}>
+        <CourseCardContent>
           <CardTitle variant="h3" component="h2" align="left">
             {loading && <Skeleton variant="text" />}
             {courseFound && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+              <CourseTitleBadgeContainer>
                 {course.name}
                 <CourseStatusBadge
                   status={course?.status}
@@ -217,9 +216,9 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                     onClickStatus ? onClickStatus(course?.status) : undefined
                   }
                 />
-              </div>
+              </CourseTitleBadgeContainer>
             )}
-            {courseNotFound && "New Course"}
+            {courseNotFound && t("courseNewCourse")}
           </CardTitle>
           {course && (
             <CourseInfoList>
@@ -229,18 +228,18 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
               </CourseInfo>
 
               <CourseInfo
-                field="Teacher in charge:"
+                field={t("courseTeacherInChargeName")}
                 value={course?.teacher_in_charge_name ?? "-"}
               />
               <CourseInfo
-                field="Teacher in charge email:"
+                field={t("courseTeacherInChargeEmail")}
                 value={course?.teacher_in_charge_email ?? "-"}
               />
               <CourseInfo
-                field="Support email:"
+                field={t("courseSupportEmail")}
                 value={course?.support_email ?? "-"}
               />
-              <CourseInfo field="Slug:" value={course?.slug ?? "-"} />
+              <CourseInfo field={t("courseSlug")} value={course?.slug ?? "-"} />
             </CourseInfoList>
           )}
           <CourseCardActions>
@@ -249,7 +248,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
               <>
                 <StyledButton
                   href={`/courses/${course.slug}`}
-                  aria-label={`To the homepage of course ${course.name}`}
+                  aria-label={t("courseToCoursePage", { name: course.name })}
                   variant="text"
                   startIcon={<DashboardIcon />}
                 >
@@ -257,7 +256,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                 </StyledButton>
                 <StyledButton
                   href={`/courses/new?clone=${course.slug}`}
-                  aria-label={`Clone course ${course.name}`}
+                  aria-label={t("courseCloneCourse", { name: course.name })}
                   variant="text"
                   color="secondary"
                   startIcon={<AddIcon />}
@@ -267,7 +266,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                 <StyledButton
                   href={`/courses/${course.slug}/edit`}
                   prefetch={false}
-                  aria-label={`Edit course ${course.name}`}
+                  aria-label={t("courseEditCourse", { name: course.name })}
                   variant="text"
                   startIcon={<EditIcon />}
                 >
@@ -278,7 +277,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
             {courseNotFound && (
               <StyledButton
                 href={`/courses/new`}
-                aria-label="Create new course"
+                aria-label={t("courseNewCourse")}
                 variant="text"
                 color="secondary"
               >
@@ -288,7 +287,7 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
             )}
           </CourseCardActions>
         </CourseCardContent>
-      </CardBase>
+      </CourseCardBase>
     </CourseCardItem>
   )
 }

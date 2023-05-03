@@ -24,6 +24,9 @@ import { UserSearchField } from "/graphql/generated"
 
 const StyledTableContainer = styled(TableContainer)``
 
+const MetaTable = styled(Table)`
+  table-layout: auto;
+`
 const MetaRow = styled(Row)`
   justify-content: space-between;
   gap: 0.5rem;
@@ -57,7 +60,7 @@ export const MetaResult = () => {
 
   return (
     <StyledTableContainer>
-      <Table size="small" style={{ tableLayout: "auto" }}>
+      <MetaTable size="small">
         <TableHead>
           <TableRow>
             <TableCell>{t("searchField")}</TableCell>
@@ -96,7 +99,7 @@ export const MetaResult = () => {
             },
           )}
         </TableBody>
-      </Table>
+      </MetaTable>
     </StyledTableContainer>
   )
 }

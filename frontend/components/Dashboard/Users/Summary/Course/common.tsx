@@ -8,6 +8,7 @@ import {
   CardProps,
   Collapse,
   Paper,
+  PaperProps,
   Skeleton,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -31,13 +32,15 @@ export const CourseEntriesContainer = styled("div")`
   width: 100%;
 `
 
-export const CourseEntryCardBase = styled((props: CardProps) => (
-  <Card elevation={4} {...props} />
-))`
+export const CourseEntryCardBase = styled(Card)`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   width: 100%;
 `
+
+CourseEntryCardBase.defaultProps = {
+  elevation: 4,
+}
 
 export const CourseEntryCardTitleWrapper = styled("div")`
   margin: 0 1rem;
@@ -54,10 +57,15 @@ export const CourseInfo = styled("div")`
   background-color: #eee;
 `
 
-export const CourseEntryPartSkeleton = () => (
-  <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
+const SkeletonStyledPaper = styled(Paper)`
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+` as typeof Paper
+
+export const CourseEntryPartSkeleton = (props: PaperProps) => (
+  <SkeletonStyledPaper component="div" {...props}>
     <Skeleton />
-  </Paper>
+  </SkeletonStyledPaper>
 )
 
 interface CourseEntryCardProps {
@@ -104,6 +112,7 @@ export const CourseEntryCard = ({
       course: course?.id,
     })
   }, [course, dispatch])
+
   const permanentURL = useMemo(() => {
     if (!course) {
       return

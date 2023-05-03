@@ -50,6 +50,18 @@ const StyledButton = styled(ButtonWithPaddingAndMargin)`
   max-height: 3.5rem;
 `
 
+const SpacedRow = styled(Row)`
+  justify-content: space-between;
+`
+
+const FlexEndColumn = styled(Column)`
+  justify-content: flex-end;
+`
+
+const FitContentColumn = styled(Column)`
+  width: fit-content;
+`
+
 const SearchForm = () => {
   const {
     loading,
@@ -141,7 +153,7 @@ const SearchForm = () => {
       )
     }
     return <> </>
-  }, [searchVariables.search, metaVisible, loading, meta])
+  }, [t, searchVariables.search, metaVisible, loading, meta])
 
   return (
     <>
@@ -168,13 +180,13 @@ const SearchForm = () => {
             {t("search")}
           </StyledButton>
         </Row>
-        <Row style={{ justifyContent: "space-between" }}>
+        <SpacedRow>
           <Column>
             <FormHelperText>
               <MetaText />
             </FormHelperText>
           </Column>
-          <Column style={{ alignItems: "flex-end" }}>
+          <FlexEndColumn>
             <FormHelperText>
               {t("searchOptions")}
               <Tooltip
@@ -196,8 +208,8 @@ const SearchForm = () => {
                 </IconButton>
               </Tooltip>
             </FormHelperText>
-          </Column>
-        </Row>
+          </FlexEndColumn>
+        </SpacedRow>
         <Row>
           <Column>
             {!loading && meta.finished && (
@@ -206,11 +218,11 @@ const SearchForm = () => {
               </Collapse>
             )}
           </Column>
-          <Column style={{ width: "fit-content" }}>
+          <FitContentColumn>
             <OptionCollapse in={optionsVisible} unmountOnExit>
               <SearchFieldOptions />
             </OptionCollapse>
-          </Column>
+          </FitContentColumn>
         </Row>
       </StyledForm>
       <GridComponent />

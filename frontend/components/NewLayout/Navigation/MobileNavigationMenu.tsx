@@ -7,8 +7,6 @@ import React, {
   useState,
 } from "react"
 
-import { useRouter } from "next/router"
-
 import { useApolloClient } from "@apollo/client"
 import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
 import Dashboard from "@fortawesome/fontawesome-free/svgs/solid/gauge-high.svg?icon"
@@ -81,7 +79,6 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const client = useApolloClient()
-  const { locale } = useRouter()
 
   const onClick: MouseEventHandler<HTMLButtonElement> = useEventCallback(
     (event) => {

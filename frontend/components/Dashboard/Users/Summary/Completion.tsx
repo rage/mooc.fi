@@ -47,6 +47,10 @@ const CollapseTableCell = styled(TableCell)`
   padding-bottom: 0;
 `
 
+const CompletionListItemStyled = styled(CompletionListItem)`
+  padding: 0;
+`
+
 function CompletionBase({ children }: PropsWithChildren) {
   return (
     <TableContainer>
@@ -113,11 +117,10 @@ function Completion({ completion, course }: CompletionProps) {
         <CollapseTableCell colSpan={3}>
           <Collapse in={isOpen} mountOnEnter unmountOnExit>
             <CompletionListItemContainer>
-              <CompletionListItem
+              <CompletionListItemStyled
                 course={course}
                 completion={completion}
                 elevation={0}
-                sx={{ padding: "0" }}
               />
             </CompletionListItemContainer>
           </Collapse>

@@ -31,6 +31,7 @@ const Container = styled("div")(
     flex-direction: row;
     width: 100%;
     align-items: flex-start;
+    border: 1px solid ${theme.palette.divider};
   }
 `,
 )
@@ -86,11 +87,17 @@ const CourseSelectListBase = styled(List)(
 `,
 ) as typeof List
 
-const ListToolbar = styled("div")`
+const ListToolbar = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-direction: row;
   padding: 0.5rem;
-`
+
+  ${theme.breakpoints.down("lg")} {
+    width: 40%;
+  }
+`,
+)
 
 const CourseSelectList = () => {
   const t = useTranslator(ProfileTranslations)
