@@ -30,8 +30,6 @@ const OptionFormGroup = styled(FormGroup)`
   }
 ` as typeof FormGroup
 
-const OptionFormControlLabel = styled(FormControlLabel)``
-
 export const SearchFieldOptions = () => {
   const t = useTranslator(UsersTranslations)
   const { totalMeta, fields, setFields } = useContext(UserSearchContext)
@@ -78,7 +76,7 @@ export const SearchFieldOptions = () => {
       <OptionFormGroup row>
         {(Object.keys(UserSearchField) as Array<UserSearchField>).map(
           (field) => (
-            <OptionFormControlLabel
+            <FormControlLabel
               key={field}
               slotProps={{
                 typography: {
@@ -96,7 +94,7 @@ export const SearchFieldOptions = () => {
             />
           ),
         )}
-        <OptionFormControlLabel
+        <FormControlLabel
           key="all"
           slotProps={{
             typography: {

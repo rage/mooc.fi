@@ -12,8 +12,11 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { useCollapseContext } from "./contexts"
-import { ActionType, CollapsablePart } from "./contexts/CollapseContext"
+import {
+  ActionType,
+  CollapsablePart,
+  useCollapseContextCourse,
+} from "./contexts/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { CompletionListItem } from "/components/Home/Completions"
 import { useTranslator } from "/hooks/useTranslator"
@@ -63,12 +66,9 @@ function CompletionBase({ children }: PropsWithChildren) {
 
 function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
-  const { state, dispatch } = useCollapseContext()
+  const { state, dispatch } = useCollapseContextCourse(course?.id)
 
-  const isOpen = useMemo(
-    () => state.courses[course?.id ?? "_"]?.completion ?? false,
-    [state, course],
-  )
+  const isOpen = useMemo(() => state?.completion ?? false, [state, course])
 
   const onCollapseClick = useCallback(
     () =>

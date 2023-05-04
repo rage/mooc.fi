@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client"
-import { Paper, PaperProps, Typography } from "@mui/material"
+import { Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
@@ -27,11 +27,13 @@ const CardBackground = styled(ClickableButtonBase)`
   }
 ` as typeof ClickableButtonBase
 
-const TemplateCardPaper = styled(Paper)`
+const TemplateCard = styled(Paper)`
   width: 100%;
   padding: 0.5rem;
 `
-const TemplateCard = (props: PaperProps) => <TemplateCardPaper {...props} />
+const TemplateListItem = styled("li")`
+  list-style-type: none;
+`
 
 const EmailTemplates = (admin: boolean) => {
   const { loading, error, data } = useQuery(EmailTemplatesDocument)
@@ -71,7 +73,7 @@ const EmailTemplates = (admin: boolean) => {
         <ul>
           {data?.email_templates?.map((p) => {
             return (
-              <li style={{ listStyleType: "none" }} key={p.id}>
+              <TemplateListItem key={p.id}>
                 <CardBackground
                   href={`/email-templates/${p.id}`}
                   prefetch={false}
@@ -88,7 +90,7 @@ const EmailTemplates = (admin: boolean) => {
                   </TemplateCard>
                 </CardBackground>
                 <br></br>
-              </li>
+              </TemplateListItem>
             )
           })}
         </ul>

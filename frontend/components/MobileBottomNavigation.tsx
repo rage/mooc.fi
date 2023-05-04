@@ -1,9 +1,7 @@
 import dynamic from "next/dynamic"
 
-import { BoxProps } from "@mui/material"
-import AppBar, { AppBarProps } from "@mui/material/AppBar"
+import { AppBar, AppBarProps, BoxProps, Toolbar } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Toolbar from "@mui/material/Toolbar"
 
 const StyledBottomNavigation = styled(AppBar)<AppBarProps & BoxProps>`
   @media (min-width: 1050px) {

@@ -115,10 +115,8 @@ interface DataCardProps {
 const DataCard = ({ row }: DataCardProps) => {
   const t = useTranslator(UsersTranslations)
 
-  const { upstream_id } = row ?? {}
-
   const fields = useMemo(() => {
-    const { email, full_name, student_number } = row ?? {}
+    const { email, full_name, student_number, upstream_id } = row ?? {}
 
     return [
       {
@@ -178,14 +176,14 @@ const DataCard = ({ row }: DataCardProps) => {
         {row ? (
           <>
             <Button
-              href={`/users/${upstream_id}/summary`}
+              href={`/users/${row.upstream_id}/summary`}
               prefetch={false}
               variant="contained"
             >
               {t("summary")}
             </Button>
             <Button
-              href={`/users/${upstream_id}/completions`}
+              href={`/users/${row.upstream_id}/completions`}
               variant="contained"
               prefetch={false}
             >

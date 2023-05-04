@@ -253,8 +253,11 @@ export function useCollapseContext() {
   return useContext(CollapseContextImpl)
 }
 
-export function useCollapseContextCourse(course_id: string) {
+export function useCollapseContextCourse(course_id?: string | undefined) {
   const context = useContext(CollapseContextImpl)
 
-  return { state: context.state.courses[course_id], dispatch: context.dispatch }
+  return {
+    state: context.state.courses[course_id ?? "_"],
+    dispatch: context.dispatch,
+  }
 }

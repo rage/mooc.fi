@@ -16,15 +16,13 @@ import {
   defaultOrder,
   defaultSearch,
   defaultSort,
-  userSummaryReducer,
-  UserSummaryState,
-} from "../state"
-import {
   SortOrder,
   sortOrderOptions,
   UserCourseSummarySort,
   userCourseSummarySortOptions,
-} from "../types"
+  userSummaryReducer,
+  UserSummaryState,
+} from "../state"
 import CollapseContext, {
   ActionType,
   collapseInitialState,

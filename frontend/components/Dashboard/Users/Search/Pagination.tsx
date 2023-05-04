@@ -22,8 +22,6 @@ import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import UsersTranslations from "/translations/users"
 
-const PaginationActionsContainer = styled("div")``
-
 const StyledTablePagination = styled(TablePagination)`
   .MuiTablePagination-toolbar {
     padding: 0.5rem;
@@ -76,7 +74,7 @@ const TablePaginationActions: React.FC = () => {
   )
 
   return (
-    <PaginationActionsContainer>
+    <>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -117,7 +115,7 @@ const TablePaginationActions: React.FC = () => {
       >
         {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
-    </PaginationActionsContainer>
+    </>
   )
 }
 

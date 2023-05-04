@@ -35,7 +35,7 @@ export const ContentContainer = styled("div")`
   min-width: 33%;
 `
 
-const ModuleHeaderStyled = styled(H2NoBackground)(
+export const ModuleHeader = styled(H2NoBackground)(
   ({ theme }) => `
   color: white;
   margin-left: 0px;
@@ -56,9 +56,10 @@ const ModuleHeaderStyled = styled(H2NoBackground)(
 `,
 )
 
-export const ModuleHeader = (props: TypographyProps & BoxProps) => (
-  <ModuleHeaderStyled variant="h2" component="h2" align="left" {...props} />
-)
+ModuleHeader.defaultProps = {
+  variant: "h2",
+  align: "left",
+}
 
 const ModuleImageContainer = styled("div")`
   position: relative;

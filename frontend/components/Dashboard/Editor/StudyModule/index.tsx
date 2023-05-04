@@ -120,7 +120,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const onError: SubmitErrorHandler<StudyModuleFormValues> = useCallback(
     (errors: Record<string, any>, _?: any) => {
       addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
-      scrollFirstErrorIntoView(errors)
+      scrollFirstErrorIntoView({ errors })
     },
     [t],
   )

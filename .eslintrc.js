@@ -2,7 +2,7 @@
 /** @type {import("eslint").ESLint.ConfigData} **/
 const esLintConfig = {
   extends: [
-    "./eslintrc.base.js",
+    "./.eslintrc.base.js",
     "plugin:styled-components-a11y/strict",
     "plugin:@typescript-eslint/recommended",
     // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now

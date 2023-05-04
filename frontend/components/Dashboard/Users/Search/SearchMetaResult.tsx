@@ -22,8 +22,6 @@ import notEmpty from "/util/notEmpty"
 
 import { UserSearchField } from "/graphql/generated"
 
-const StyledTableContainer = styled(TableContainer)``
-
 const MetaTable = styled(Table)`
   table-layout: auto;
 `
@@ -59,7 +57,7 @@ export const MetaResult = () => {
     getFieldMetaAndCumulativeCountFn(totalMeta)
 
   return (
-    <StyledTableContainer>
+    <TableContainer>
       <MetaTable size="small">
         <TableHead>
           <TableRow>
@@ -100,7 +98,7 @@ export const MetaResult = () => {
           )}
         </TableBody>
       </MetaTable>
-    </StyledTableContainer>
+    </TableContainer>
   )
 }
 

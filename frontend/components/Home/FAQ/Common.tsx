@@ -98,10 +98,6 @@ export const Link = styled(MUILink)`
   color: default;
 ` as EnhancedLink
 
-const List = styled("ul")``
-const OrderedList = styled("ol")``
-const ListItem = styled("li")``
-
 type DynamicImportType = <T>() => Promise<React.ComponentType<T>>
 
 interface FAQComponentProps {
@@ -152,9 +148,6 @@ interface FAQPageProps {
 
 const mdxComponents: MDXComponents = {
   a: Link as React.ElementType,
-  ul: List,
-  ol: OrderedList,
-  li: ListItem,
 }
 
 export function FAQPage({

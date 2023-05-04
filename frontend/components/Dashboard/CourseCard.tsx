@@ -130,14 +130,15 @@ const CourseCardBase = styled(CardBase)`
   grid-column: span 1;
 `
 
-const CourseInfoFieldStyled = styled(Typography)`
+const CourseInfoField = styled(Typography)<TypographyProps & BoxProps>`
   display: block;
   margin-right: 0.5rem;
 `
 
-const CourseInfoField = (props: TypographyProps & BoxProps) => (
-  <CourseInfoFieldStyled variant="h4" component="h3" {...props} />
-)
+CourseInfoField.defaultProps = {
+  variant: "h4",
+  component: "h3",
+}
 
 const CourseTitleBadgeContainer = styled("div")`
   display: flex;

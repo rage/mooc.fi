@@ -63,8 +63,6 @@ const StyledModal = styled(Modal)`
   display: flex;
 `
 
-const ModalBoxImage = styled(Image)``
-
 const StyledIconButton = styled(IconButton)`
   position: absolute;
   top: 0;
@@ -111,7 +109,7 @@ const ModalImage = ({ src, alt, ...props }: ModalImageProps) => {
           aria-describedby="image-modal-description"
         >
           <ModalContainer>
-            <ModalBoxImage
+            <Image
               src={src}
               {...(isStatic ? { placeholder: "blur" } : {})}
               placeholder="blur"

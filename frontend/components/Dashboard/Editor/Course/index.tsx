@@ -139,7 +139,7 @@ function CourseEditor() {
   const onError: SubmitErrorHandler<CourseFormValues> = useCallback(
     (errors) => {
       addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
-      scrollFirstErrorIntoView(errors, tab, setTab)
+      scrollFirstErrorIntoView({ errors, tab, setTab })
     },
     [t, tab, setTab],
   )

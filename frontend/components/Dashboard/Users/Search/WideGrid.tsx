@@ -30,8 +30,6 @@ const StyledTableCell = styled(TableCell)`
   color: white;
 `
 
-const PaginationTableRow = styled(TableRow)``
-
 const StyledPaper = styled(Paper)`
   width: 100%;
   margin-top: 5px;
@@ -48,7 +46,7 @@ const CenteredSkeleton = styled(Skeleton)`
 `
 
 const PaginationComponent: React.FC<{ loading?: boolean }> = ({ loading }) => (
-  <PaginationTableRow>
+  <TableRow>
     {loading ? (
       <TableCell colSpan={5}>
         <CenteredSkeleton width="400px" />
@@ -56,7 +54,7 @@ const PaginationComponent: React.FC<{ loading?: boolean }> = ({ loading }) => (
     ) : (
       <Pagination />
     )}
-  </PaginationTableRow>
+  </TableRow>
 )
 
 const WideGrid = () => {

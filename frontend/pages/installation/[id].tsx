@@ -114,7 +114,7 @@ export const Note = styled("section")`
   font-size: 16px;
 `
 
-export const Link = styled(MUILink)``
+export const Link = MUILink
 
 const mdxComponents: MDXComponents = {
   a: Link as React.ElementType,
