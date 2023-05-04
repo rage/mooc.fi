@@ -20,7 +20,7 @@ import {
   BAIExerciseCount,
   pointsNeeded as BAIPointsNeeded,
   requiredByTier as BAIRequiredByTier,
-  BAITierNameToId,
+  BAITierNameToNumber,
   BAItiers,
   exerciseCompletionsNeeded,
 } from "../config/courseConfig"
@@ -189,10 +189,10 @@ export const UserCourseProgress = objectType({
         }
 
         const extra = progress.extra as unknown as ProgressExtra
-        const tiers = Object.keys(extra.tiers).map((key) => {
-          const tier = BAITierNameToId[key] ?? 0
+        const tiers = Object.keys(extra.tiers ?? {}).map((key) => {
+          const tier = BAITierNameToNumber[key] ?? 0
           const requiredByTier = BAIRequiredByTier[tier] ?? 0
-          const { exerciseCompletions } = extra.tiers[key]
+          const { exerciseCompletions } = extra.tiers?.[key] ?? {}
           const exercisesNeededPercentage =
             requiredByTier > 0
               ? Math.min((exerciseCompletions ?? 0) / requiredByTier, 1)
@@ -207,7 +207,7 @@ export const UserCourseProgress = objectType({
             exerciseCount: BAIExerciseCount,
             exercisePercentage,
             exercisesNeededPercentage,
-            ...extra.tiers[key],
+            ...extra.tiers?.[key],
           }
         })
         const exercisesFromTiers = await ctx.prisma.exercise.findMany({
