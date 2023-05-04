@@ -99,18 +99,18 @@ describe("User", () => {
 
       it("shows null when not logged in", async () => {
         const res = await ctx.client.request<any>(`
-      query {
-        currentUser {
-          id
-          administrator
-          email
-          first_name
-          last_name
-          username
-          upstream_id
-        }
-      }
-    `)
+          query {
+            currentUser {
+              id
+              administrator
+              email
+              first_name
+              last_name
+              username
+              upstream_id
+            }
+          }
+        `)
 
         expect(res.currentUser).toBeNull()
       })
@@ -156,8 +156,7 @@ describe("User", () => {
                 }
               }
             }
-          }
-        `,
+          }`,
           {},
           FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         )

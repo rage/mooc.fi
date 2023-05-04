@@ -106,7 +106,7 @@ describe("redisify", () => {
 
     it("get promise, should ignore params", async () => {
       const res = await redisify(
-        new Promise((resolve) => resolve("foo")),
+        Promise.resolve("foo"),
         {
           prefix: "bar",
           expireTime: 1,
@@ -165,9 +165,13 @@ describe("redisify", () => {
       expect(res).toEqual(undefined)
       expect(getMock).toHaveBeenCalledWith("bar:baz")
       expect(logger.info).toHaveBeenCalledWith("Cache miss: bar")
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Could not resolve value for bar:baz; error: ",
-        "foo",
+      expect(logger.warn).nthCalledWith(
+        1,
+        "Cache miss but failed to resolve value: bar; error: foo",
+      )
+      expect(logger.warn).nthCalledWith(
+        2,
+        "Cache miss but failed to resolve value twice, giving up: bar; error: foo",
       )
     })
   })

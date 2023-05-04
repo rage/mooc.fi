@@ -4,7 +4,7 @@
   "redirectMessagePre": "Sinut ohjataan takaisin opintokokonaisuuksien listaan 5 sekunnin kuluessa - paina ",
   "redirectLinkText": "tästä",
   "redirectMessagePost": " siirtyäksesi heti.",
-  "editStudyModule": "Muokkaa opintokokonaisuutta",
+  "editStudyModule": "Muokkaa opintokokonaisuutta {{name}}",
   "newStudyModule": "Uusi opintokokonaisuus",
   "allStudyModules": "Kaikki opintokokonaisuudet",
   "validationRequired": "vaaditaan",
@@ -36,6 +36,7 @@
   "moduleDetailsTitle":"Opintokokonaisuuden tiedot",
   "moduleTranslationsTitle":"Opintokokonaisuuden kieliversiot",
   "moduleTranslations": "Käännökset",
-  "modulePhotoTitle": "Kuva"
-
+  "modulePhotoTitle": "Kuva",
+  "edit": "Muokkaa",
+  "create": "Luo"
 }

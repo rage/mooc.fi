@@ -56,7 +56,6 @@ const UserPage = () => {
   ])
 
   // TODO: edit query to get username for title?
-
   if (error) {
     return (
       <ModifiableErrorMessage
@@ -74,9 +73,6 @@ const UserPage = () => {
       </Container>
     )
   }
-
-  // TODO: this doesn't work
-  // data?.userCourseSettings?.edges?.push(...more)
 
   return (
     <>

@@ -147,14 +147,15 @@ const buildPromises = (
   ctx: Context,
 ) => {
   return array.map(async (entry) => {
-    const { user_id, course_id } =
-      (await ctx.prisma.completion.findUnique({
-        where: { id: entry.completion_id },
-        select: {
-          course_id: true,
-          user_id: true,
-        },
-      })) ?? {}
+    const completion = await ctx.prisma.completion.findUnique({
+      where: { id: entry.completion_id },
+      select: {
+        course_id: true,
+        user_id: true,
+      },
+    })
+
+    const { course_id, user_id } = completion ?? {}
 
     if (!course_id || !user_id) {
       // TODO/FIXME: we now fail silently if course/user not found

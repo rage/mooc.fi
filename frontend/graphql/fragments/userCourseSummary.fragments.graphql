@@ -3,11 +3,22 @@ fragment UserCourseSummaryCourseFields on Course {
   has_certificate
   points_needed
   exercise_completions_needed
+  tier
   exercises(
     includeDeleted: $includeDeletedExercises
     includeNoPointsAwarded: $includeNoPointsAwardedExercises
   ) {
     ...ExerciseCoreFields
+  }
+}
+
+fragment UserCourseSummaryCourseFieldsWithExerciseCompletions on Course {
+  ...UserCourseSummaryCourseFields
+  exercises(
+    includeDeleted: $includeDeletedExercises
+    includeNoPointsAwarded: $includeNoPointsAwardedExercises
+  ) {
+    ...ExerciseWithExerciseCompletionsFields
   }
 }
 
@@ -28,4 +39,59 @@ fragment UserCourseSummaryCoreFields on UserCourseSummary {
     ...CompletionDetailedFields
   }
   start_date
+  tier_summaries {
+    ...UserTierCourseSummaryCoreFields
+  }
+}
+
+fragment UserCourseSummaryCoreFieldsWithExerciseCompletions on UserCourseSummary {
+  ...UserCourseSummaryCoreFields
+  course {
+    ...UserCourseSummaryCourseFieldsWithExerciseCompletions
+  }
+  tier_summaries {
+    ...UserTierCourseSummaryCoreFieldsWithExerciseCompletions
+  }
+}
+
+fragment UserCourseSummaryCourseListCourseFields on Course {
+  ...CourseWithPhotoCoreFields
+  has_certificate
+  points_needed
+  exercise_completions_needed
+  tier
+}
+
+fragment UserCourseSummaryCourseListFields on UserCourseSummary {
+  course {
+    ...UserCourseSummaryCourseListCourseFields
+  }
+  tier_summaries {
+    course {
+    ...UserCourseSummaryCourseListCourseFields
+    }
+  }
+}
+
+fragment UserTierCourseSummaryCoreFields on UserCourseSummary {
+    course {
+      ...UserCourseSummaryCourseFields
+    }
+    exercise_completions {
+      ...ExerciseCompletionCoreFields
+    }
+    user_course_progress {
+      ...UserCourseProgressCoreFields
+    }
+    user_course_service_progresses {
+      ...UserCourseServiceProgressCoreFields
+    }
+    start_date
+}
+
+fragment UserTierCourseSummaryCoreFieldsWithExerciseCompletions on UserCourseSummary {
+  ...UserTierCourseSummaryCoreFields
+  course {
+    ...UserCourseSummaryCourseFieldsWithExerciseCompletions
+  }
 }

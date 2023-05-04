@@ -1,10 +1,6 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useReducer,
-} from "react"
+import React, { createContext, useContext, useMemo, useReducer } from "react"
+
+import { useEventCallback } from "@mui/material/utils"
 
 export interface Alert {
   id?: number
@@ -65,15 +61,13 @@ const reducer = (state: AlertState, action: AlertAction) => {
 export const AlertProvider = React.memo(function AlertProvider({
   children,
 }: React.PropsWithChildren) {
-  const addAlert = useCallback(
-    (alert: Alert) => dispatch({ type: "addAlert", payload: alert }),
-    [],
-  )
+  const addAlert = useEventCallback((alert: Alert) => {
+    dispatch({ type: "addAlert", payload: alert })
+  })
 
-  const removeAlert = useCallback(
-    (alert: Alert) => dispatch({ type: "removeAlert", payload: alert }),
-    [],
-  )
+  const removeAlert = useEventCallback((alert: Alert) => {
+    dispatch({ type: "removeAlert", payload: alert })
+  })
 
   const [state, dispatch] = useReducer(reducer, {
     alerts: [] as Array<Alert>,

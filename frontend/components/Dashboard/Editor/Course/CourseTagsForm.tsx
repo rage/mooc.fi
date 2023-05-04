@@ -38,6 +38,22 @@ const hasNoLanguageTag = (tag: TagFormValue) =>
 const filterLanguageTags = (tags: TagFormValue[]) =>
   tags.filter(hasNoLanguageTag)
 
+const renderOption = (
+  props: React.HTMLAttributes<HTMLLIElement>,
+  option: TagFormValue,
+) => <li {...props}>{option.name}</li>
+
+const renderGroup = (params: AutocompleteRenderGroupParams) => (
+  <li key={params.key}>
+    <GroupHeader>
+      {params.group?.split(", ").map((type) => (
+        <TagTypeChip key={type} variant="outlined" label={type} size="small" />
+      ))}
+    </GroupHeader>
+    <GroupItems>{params.children}</GroupItems>
+  </li>
+)
+
 function CourseTagsForm() {
   const { tagOptions } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations)
@@ -95,33 +111,7 @@ function CourseTagsForm() {
         label={t("courseTags")}
       />
     ),
-    [field],
-  )
-
-  const renderOption = useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: TagFormValue) => (
-      <li {...props}>{option.name}</li>
-    ),
-    [],
-  )
-
-  const renderGroup = useCallback(
-    (params: AutocompleteRenderGroupParams) => (
-      <li key={params.key}>
-        <GroupHeader>
-          {params.group?.split(", ").map((type) => (
-            <TagTypeChip
-              key={type}
-              variant="outlined"
-              label={type}
-              size="small"
-            />
-          ))}
-        </GroupHeader>
-        <GroupItems>{params.children}</GroupItems>
-      </li>
-    ),
-    [],
+    [t, field],
   )
 
   const value = useMemo(() => filterLanguageTags(field.value ?? []), [field])
@@ -144,11 +134,6 @@ function CourseTagsForm() {
       />
     </FormFieldGroup>
   )
-  /*return (
-    <FormFieldGroup>
-      <Controller name="tags" control={control} render={renderAutocomplete} />
-    </FormFieldGroup>
-  )*/
 }
 
 export default CourseTagsForm

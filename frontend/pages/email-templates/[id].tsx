@@ -18,6 +18,7 @@ import { styled } from "@mui/material/styles"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
+import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -145,9 +146,13 @@ const EmailTemplateView = () => {
   if (loading) {
     return <Spinner />
   }
-  //TODO fix error message
-  if (error || !data) {
-    return <p>Error has occurred</p>
+
+  if (error) {
+    return <ErrorMessage />
+  }
+
+  if (!data) {
+    return <div>No template found</div>
   }
 
   if (data && !didInit) {
@@ -223,7 +228,7 @@ const EmailTemplateView = () => {
                 label="Email HTML Body (disabled)"
                 multiline
                 rows="4"
-                disabled={true}
+                disabled
                 value={htmlBody ?? ""}
                 variant="outlined"
                 onChange={(e) => {

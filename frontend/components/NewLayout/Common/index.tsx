@@ -1,9 +1,9 @@
 import { Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-export const SectionTitle = styled((props: TypographyProps) => (
+export const SectionTitle = (props: TypographyProps) => (
   <Typography variant="h1" {...props} />
-))``
+)
 
 export const SectionContainer = styled("section")(
   ({ theme }) => `

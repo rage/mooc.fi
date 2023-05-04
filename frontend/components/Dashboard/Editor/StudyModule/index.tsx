@@ -18,7 +18,6 @@ import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import { useSnackbarMethods } from "/contexts/SnackbarContext"
 import { useAnchors } from "/hooks/useAnchors"
-import { getFirstErrorAnchor } from "/hooks/useEnumeratingAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CommonTranslations from "/translations/common"
@@ -102,7 +101,6 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
 
       try {
         addSnackbar({ message: t("statusSaving") })
-        // TODO/FIXME: return value?
         await moduleMutation({
           variables: { study_module: mutationVariables },
           refetchQueries: () => refetchQueries,
@@ -116,19 +114,15 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
         addSnackbar({ message: t("statusSavingError"), severity: "error" })
       }
     },
-    [],
+    [t],
   )
 
   const onError: SubmitErrorHandler<StudyModuleFormValues> = useCallback(
     (errors: Record<string, any>, _?: any) => {
-      const { anchorLink } = getFirstErrorAnchor(anchors, errors)
-
-      setTimeout(() => {
-        const element = document.getElementById(anchorLink)
-        element?.scrollIntoView()
-      }, 100)
+      addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
+      scrollFirstErrorIntoView({ errors })
     },
-    [],
+    [t],
   )
 
   const onDelete = useCallback(async (id: string) => {

@@ -29,16 +29,16 @@ const CardHeader = styled("div")`
   overflow: hidden;
 `
 
-const CardActionArea = styled("div")`
+const CardActions = styled("div")`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 `
 
-const Date = styled((props: TypographyProps) => (
+const Date = (props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
-))``
+)
 
 // @ts-ignore: not used for now
 const CourseCard = ({
@@ -65,10 +65,10 @@ const CourseCard = ({
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
-        <CardActionArea>
+        <CardActions>
           <Date>{date}</Date>
           <Button>Kurssin tiedot</Button>
-        </CardActionArea>
+        </CardActions>
       </CardBody>
     </CardWrapper>
   )

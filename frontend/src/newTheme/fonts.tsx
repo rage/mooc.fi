@@ -7,6 +7,7 @@ export const headerFont = Raleway({
   display: "swap",
   subsets: ["latin"],
   variable: "--header-font",
+  preload: false,
 })
 
 export const bodyFont = Lato({
@@ -16,4 +17,5 @@ export const bodyFont = Lato({
   display: "swap",
   subsets: ["latin"],
   variable: "--body-font",
+  preload: false,
 })

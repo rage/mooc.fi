@@ -38,6 +38,40 @@ query UserSummary(
   }
 }
 
+query UserSummaryCourseList(
+  $upstream_id: Int
+  $includeNoPointsAwardedExercises: Boolean
+  $includeDeletedExercises: Boolean
+  ) {
+  user(upstream_id: $upstream_id) {
+    ...UserDetailedFields
+    user_course_summary(
+      includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
+      includeDeletedExercises: $includeDeletedExercises
+    ) {
+      ...UserCourseSummaryCourseListFields
+    }
+  }
+}
+
+query UserSummaryForCourse(
+  $upstream_id: Int
+  $course_slug: String!
+  $includeNoPointsAwardedExercises: Boolean
+  $includeDeletedExercises: Boolean
+  ) {
+  user(upstream_id: $upstream_id) {
+    ...UserDetailedFields
+    user_course_summary(
+      course_slug: $course_slug
+      includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
+      includeDeletedExercises: $includeDeletedExercises
+    ) {
+      ...UserCourseSummaryCoreFields
+    }
+  }
+}
+
 query CurrentUserOverview {
   currentUser {
     ...UserOverviewFields
@@ -129,8 +163,8 @@ fragment VerifiedUserFields on VerifiedUser {
   display_name
 }
 
-subscription UserSearch($search: String!) {
-  userSearch(search: $search) {
+subscription UserSearch($search: String!, $fields: [UserSearchField!]) {
+  userSearch(search: $search, fields: $fields) {
     ...UserSearchMetaFields
     matches {
       ...UserCoreFields
@@ -142,6 +176,7 @@ fragment UserSearchMetaFields on UserSearch {
   field
   fieldValue
   search
+  allMatchIds
   count
   fieldIndex
   fieldCount

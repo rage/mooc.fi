@@ -137,6 +137,9 @@ export const Completion = objectType({
           return null
         }
 
+        if (!course.has_certificate) {
+          return null
+        }
         const accessToken =
           ctx.req?.headers?.authorization?.replace("Bearer ", "") ?? ""
 
@@ -161,7 +164,7 @@ export const Completion = objectType({
               ),
             {
               prefix: "certificateavailability",
-              expireTime: 10,
+              expireTime: 300,
               key: `${course.slug}-${user_upstream_id}`,
             },
             {
@@ -173,7 +176,7 @@ export const Completion = objectType({
             async () => checkCertificate(course.slug, accessToken),
             {
               prefix: "certificateavailability",
-              expireTime: 10,
+              expireTime: 300,
               key: `${course.slug}-${ctx.user?.upstream_id}`,
             },
             {

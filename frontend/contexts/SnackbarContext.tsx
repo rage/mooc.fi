@@ -1,6 +1,7 @@
-import React, { createContext, useCallback, useMemo, useState } from "react"
+import React, { createContext, useMemo, useState } from "react"
 
 import { AlertColor } from "@mui/material"
+import { useEventCallback } from "@mui/material/utils"
 
 export interface SnackbarMessage {
   key: number
@@ -40,7 +41,7 @@ const SnackbarMethodsContextImpl = createContext<SnackbarMethods>({
 export const SnackbarProvider = ({ children }: React.PropsWithChildren) => {
   const [snackbars, setSnackbars] = useState<readonly SnackbarMessage[]>([])
 
-  const setSnackbarOpenStatus = useCallback(
+  const setSnackbarOpenStatus = useEventCallback(
     (message: SnackbarMessage, open: boolean) => {
       setSnackbars((prev) =>
         prev.map((snackbar) =>
@@ -48,43 +49,34 @@ export const SnackbarProvider = ({ children }: React.PropsWithChildren) => {
         ),
       )
     },
-    [setSnackbars],
   )
 
-  const removeSnackbar = useCallback(
-    (message: SnackbarMessage) => {
-      setSnackbars((prev) =>
-        prev.filter((snackbar) => snackbar.key !== message.key),
-      )
-    },
-    [setSnackbars],
-  )
+  const removeSnackbar = useEventCallback((message: SnackbarMessage) => {
+    setSnackbars((prev) =>
+      prev.filter((snackbar) => snackbar.key !== message.key),
+    )
+  })
 
-  const handleClose = useCallback(
+  const handleClose = useEventCallback(
     (message: SnackbarMessage) => (_: any, reason?: string) => {
       if (reason === "clickaway") {
         return
       }
       setSnackbarOpenStatus(message, false)
     },
-    [setSnackbarOpenStatus],
   )
 
-  const handleExited = useCallback(
-    (message: SnackbarMessage) => () => {
-      removeSnackbar(message)
-    },
-    [removeSnackbar],
-  )
+  const handleExited = useEventCallback((message: SnackbarMessage) => () => {
+    removeSnackbar(message)
+  })
 
-  const addSnackbar = useCallback(
+  const addSnackbar = useEventCallback(
     ({ message, severity }: AddSnackbarArgs) => {
       setSnackbars((prev) => [
         ...prev,
         { key: new Date().getTime(), message, severity, open: true },
       ])
     },
-    [setSnackbars],
   )
 
   const contextValue = useMemo(

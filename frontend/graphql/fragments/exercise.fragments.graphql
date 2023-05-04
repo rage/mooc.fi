@@ -8,3 +8,10 @@ fragment ExerciseCoreFields on Exercise {
   max_points
   deleted
 }
+
+fragment ExerciseWithExerciseCompletionsFields on Exercise {
+  ...ExerciseCoreFields
+  exercise_completions {
+    ...ExerciseCompletionCoreFields
+  }
+}

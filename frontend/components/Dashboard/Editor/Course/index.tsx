@@ -136,10 +136,13 @@ function CourseEditor() {
     [t],
   )
 
-  const onError: SubmitErrorHandler<CourseFormValues> = (errors) => {
-    addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
-    scrollFirstErrorIntoView(errors, tab, setTab)
-  }
+  const onError: SubmitErrorHandler<CourseFormValues> = useCallback(
+    (errors) => {
+      addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
+      scrollFirstErrorIntoView({ errors, tab, setTab })
+    },
+    [t, tab, setTab],
+  )
 
   const onCancel = useCallback(() => {
     router.push("/courses", undefined, { shallow: true })

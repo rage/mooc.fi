@@ -79,5 +79,12 @@
     "statusSavingSuccess": "Saved successfully",
     "statusSavingError": "Error while saving",
     "statusValidationErrors": "There are errors in the form",
-    "close": "Close"
+    "required": "required",
+    "close": "Close",
+    "firstPage": "first page",
+    "lastPage": "last page",
+    "previousPage": "previous page",
+    "nextPage": "next page",
+    "copyToClipboard": "Copy to clipboard",
+    "copiedToClipboard": "Copied!"
 } 

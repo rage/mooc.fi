@@ -59,7 +59,7 @@ function StudyModuleTranslationsForm() {
         />
       </ItemContainer>
     ),
-    [],
+    [t],
   )
 
   const conditions: ControlledFieldArrayListProps<

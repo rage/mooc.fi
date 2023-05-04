@@ -104,7 +104,6 @@ const handleExercise = async ({
   const exercisePart = parseExercisePart(exercise.part)
 
   if (existingExercise) {
-    // FIXME: well this is weird
     if (
       DateTime.fromISO(existingExercise.timestamp?.toISOString() ?? "") >
       timestamp

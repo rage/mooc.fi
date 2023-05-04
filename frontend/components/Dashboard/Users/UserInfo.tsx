@@ -75,7 +75,7 @@ const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
       if (!content || !title) {
         return null
       }
-      return <InfoRow key={title} title={title} content={content} />
+      return <InfoRow key={title} title={title} data={content} copyable />
     })
     .filter(notEmpty)
 }

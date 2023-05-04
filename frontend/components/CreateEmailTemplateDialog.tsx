@@ -16,6 +16,7 @@ import {
   TextField,
 } from "@mui/material"
 
+import ErrorMessage from "./ErrorMessage"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import notEmpty from "/util/notEmpty"
@@ -128,9 +129,14 @@ const CreateEmailTemplateDialog = ({
   if (loading) {
     return <Spinner />
   }
-  //TODO fix error messages
-  if (error || !data) {
-    return <p>Error has occurred</p>
+
+  if (error) {
+    console.log(error)
+    return <ErrorMessage />
+  }
+
+  if (!data) {
+    return <div>Template not found</div>
   }
 
   return (

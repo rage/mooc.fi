@@ -15,6 +15,7 @@ import {
   TextField,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useSearch } from "/hooks/useSearch"
 import { useTranslator } from "/hooks/useTranslator"
@@ -97,7 +98,11 @@ export interface SearchVariables {
 
 interface FilterProps {
   searchVariables: SearchVariables
-  setSearchVariables: React.Dispatch<React.SetStateAction<SearchVariables>>
+  setSearchVariables: (
+    variables:
+      | SearchVariables
+      | ((prevVariables: SearchVariables) => SearchVariables),
+  ) => void
   handlerCourses?: CourseCoreFieldsFragment[]
   loading: boolean
   fields?: FilterFields
@@ -132,7 +137,7 @@ function FilterMenu({
       ...previousSearchVariables,
       search,
     }))
-  }, [searchVariables, search])
+  }, [search])
 
   const handleStatusChange = useCallback(
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,31 +157,28 @@ function FilterMenu({
     [searchVariables],
   )
 
-  const handleHiddenChange = useCallback(
+  const handleHiddenChange = useEventCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchVariables((previousSearchVariables) => ({
         ...previousSearchVariables,
         hidden: e.target.checked,
       }))
     },
-    [searchVariables],
   )
 
-  const handleHandledByChange = useCallback(
+  const handleHandledByChange = useEventCallback(
     (e: SelectChangeEvent<string>) => {
       setSearchVariables((previousSearchVariables) => ({
         ...previousSearchVariables,
         handledBy: e.target.value,
       }))
     },
-    [searchVariables],
   )
 
-  const onSearchChange = useCallback(
+  const onSearchChange = useEventCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(e.target.value)
     },
-    [setSearch],
   )
   const onSearchKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -186,17 +188,17 @@ function FilterMenu({
     },
     [onSubmit],
   )
-  const onSearchReset = useCallback(() => {
+  const onSearchReset = useEventCallback(() => {
     setSearch("")
-  }, [])
-  const onFormReset = useCallback(() => {
+  })
+  const onFormReset = useEventCallback(() => {
     setSearchVariables({
       search: "",
       hidden: true,
       handledBy: null,
       status: [CourseStatus.Active, CourseStatus.Upcoming],
     })
-  }, [])
+  })
 
   return (
     <Container>
@@ -216,7 +218,7 @@ function FilterMenu({
                   onClick={onSearchReset}
                   disabled={search === ""}
                   edge="end"
-                  aria-label="clear search"
+                  title={t("reset")}
                   size="large"
                 >
                   <Clear />

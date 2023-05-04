@@ -9,19 +9,13 @@ let cursor = 0
 
 export function handledRecently(message: string): boolean {
   const hash = hashMessage(message)
-  const previouslySeenHash = messageHashes.find((o) => o === hash)
-  if (previouslySeenHash) {
-    return true
-  }
-  return false
+
+  return messageHashes.includes(hash)
 }
 
 export function setHandledRecently(message: string): void {
   messageHashes[cursor] = hashMessage(message)
-  cursor = cursor + 1
-  if (cursor >= CACHE_SIZE) {
-    cursor = 0
-  }
+  cursor = (cursor + 1) % CACHE_SIZE
 }
 
 function hashMessage(message: string): string {

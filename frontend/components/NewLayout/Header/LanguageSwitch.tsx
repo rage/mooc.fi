@@ -19,25 +19,21 @@ const LanguageSwitchButton = (buttonProps: ButtonProps<"div">) => (
   <Button {...buttonProps} component="div" tabIndex={-1} />
 )
 
-const LanguageSwitchContainer = styled(
-  (props: ButtonGroupProps & ButtonProps) => (
-    <ButtonGroup
-      component={LanguageSwitchButton}
-      disableRipple
-      disableFocusRipple
-      disableTouchRipple
-      {...props}
-      tabIndex={-1}
-    />
-  ),
-  {
-    name: "MuiButton",
-    overridesResolver: (_, styles) => styles.root,
-  },
-)`
+const StyledButtonGroup = styled(ButtonGroup)`
   cursor: unset;
   max-height: 8vh;
-`
+` as typeof ButtonGroup
+
+const LanguageSwitchContainer = (props: ButtonGroupProps & ButtonProps) => (
+  <StyledButtonGroup
+    component={LanguageSwitchButton}
+    disableRipple
+    disableFocusRipple
+    disableTouchRipple
+    {...props}
+    tabIndex={-1}
+  />
+)
 
 interface LanguageButtonProps {
   active: boolean

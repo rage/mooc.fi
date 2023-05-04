@@ -79,6 +79,13 @@
     "statusSavingSuccess": "Tallennus onnistui",
     "statusSavingError": "Virhe tallentaessa",
     "statusValidationErrors": "Lomakkeessa on virheitä",
-    "close": "Sulje"
+    "required": "vaaditaan",
+    "close": "Sulje",
+    "firstPage": "ensimmäinen sivu",
+    "lastPage": "viimeinen sivu",
+    "previousPage": "edellinen sivu",
+    "nextPage": "seuraava sivu",
+    "copyToClipboard": "Kopioi leikepöydälle",
+    "copiedToClipboard": "Kopioitu!"
 }
 

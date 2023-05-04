@@ -52,6 +52,13 @@ const TextArea = styled("div")`
   }
 `
 
+const CourseStatusChip = styled(Chip)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+`
+
 interface CourseCardProps {
   course?: FrontpageCourseFieldsFragment
 }
@@ -83,14 +90,8 @@ function CourseCard({ course }: CourseCardProps) {
           {course?.link &&
             course?.status === "Upcoming" &&
             course?.upcoming_active_link && (
-              <Chip
+              <CourseStatusChip
                 variant="outlined"
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  backgroundColor: "white",
-                }}
                 clickable
                 label={t("coursePageAvailable")}
               />
@@ -102,17 +103,19 @@ function CourseCard({ course }: CourseCardProps) {
               <CardTitle component="h3" variant="h3">
                 {course.name}
               </CardTitle>
-              <CardText component="p" variant="body1" paragraph align="left">
+              <CardText variant="body1" paragraph align="left">
                 {course.description}
               </CardText>
             </>
           ) : (
             <>
-              <h3>
+              <CardTitle variant="h3">
                 <Skeleton variant="text" width="100%" />
-              </h3>
-              <Skeleton variant="text" width="100%" />
-              <Skeleton variant="text" width="100%" />
+              </CardTitle>
+              <CardText paragraph variant="body1">
+                <Skeleton variant="text" width="100%" />
+                <Skeleton variant="text" width="100%" />
+              </CardText>
             </>
           )}
         </TextArea>

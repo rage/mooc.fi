@@ -39,7 +39,7 @@ export class StartedCourseCount extends Template {
           `
         )?.[0]?.count
 
-        return `${count}`
+        return `${count ?? 0}`
       },
       {
         prefix: "startedcoursecount",
@@ -91,7 +91,7 @@ export class CompletedCourseCount extends Template {
         `
         )?.[0]?.count
 
-        return `${count}`
+        return `${count ?? 0}`
       },
       {
         prefix: "completedcoursecount",
@@ -129,7 +129,7 @@ export class AtLeastOneExerciseCount extends Template {
           `
         )?.[0]?.count
 
-        return `${count}`
+        return `${count ?? 0}`
       },
       {
         prefix: "atleastoneexercisecount",

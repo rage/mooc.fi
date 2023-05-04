@@ -1,9 +1,9 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react"
 
-import { FieldErrors, SubmitErrorHandler, SubmitHandler } from "react-hook-form"
+import { SubmitErrorHandler, SubmitHandler } from "react-hook-form"
 
 import { FormValues } from "./types"
-import { Anchor } from "/hooks/useAnchors"
+import { Anchor, ScrollFirstErrorIntoViewArgs } from "/hooks/useAnchors"
 
 export interface EditorContext {
   tab: number
@@ -22,11 +22,7 @@ export interface EditorMethodContext<T extends FormValues> {
     ref: React.MutableRefObject<HTMLElement | undefined>,
     tab?: number,
   ) => Anchor
-  scrollFirstErrorIntoView: (
-    errors: FieldErrors<T>,
-    tab?: number,
-    setTab?: Dispatch<SetStateAction<number>>,
-  ) => void
+  scrollFirstErrorIntoView: (args: ScrollFirstErrorIntoViewArgs<T>) => void
 }
 
 const EditorContextImpl = createContext<EditorContext>({

@@ -15,9 +15,7 @@ const ModuleGrid = ({ modules, loading }: ModuleGridProps) => (
   <section>
     <Grid container spacing={3}>
       {loading ? (
-        range(4).map((i) => (
-          <ModuleCard key={`module-skeleton-${i}`} loading={true} />
-        ))
+        range(4).map((i) => <ModuleCard key={`module-skeleton-${i}`} loading />)
       ) : (
         <>
           {modules?.map((studyModule) => (

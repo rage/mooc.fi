@@ -28,6 +28,7 @@ import {
   MenuItem as MUIMenuItem,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { NavigationLinks } from "./NavigationLinks"
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
@@ -163,15 +164,17 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const client = useApolloClient()
 
-  const onClick: MouseEventHandler<HTMLButtonElement> = useCallback((event) => {
-    setIsOpen((value) => !value)
-    anchor.current = event.currentTarget
-  }, [])
+  const onClick: MouseEventHandler<HTMLButtonElement> = useEventCallback(
+    (event) => {
+      setIsOpen((value) => !value)
+      anchor.current = event.currentTarget
+    },
+  )
 
-  const onClose = useCallback(() => {
+  const onClose = useEventCallback(() => {
     setIsOpen(false)
     anchor.current = null
-  }, [])
+  })
 
   useEffect(() => {
     const resizeListener = () => {

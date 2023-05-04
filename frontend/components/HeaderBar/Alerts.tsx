@@ -1,17 +1,15 @@
-import { useCallback } from "react"
-
 import { useRouter } from "next/router"
 
 import { Alert, AlertTitle } from "@mui/material"
+import { useEventCallback } from "@mui/material/utils"
 
 import { Alert as AlertType, useAlertContext } from "/contexts/AlertContext"
 
 const Alerts = () => {
   const { alerts, removeAlert } = useAlertContext()
   const router = useRouter()
-  const onRemoveAlert = useCallback(
+  const onRemoveAlert = useEventCallback(
     (alert: AlertType) => () => removeAlert(alert),
-    [],
   )
 
   return (

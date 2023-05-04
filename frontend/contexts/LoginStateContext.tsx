@@ -41,6 +41,7 @@ const reducer = (state: LoginState, action: any) => {
     case "logInOrOut":
       return {
         ...state,
+        admin: state.loggedIn ? false : state.admin,
         loggedIn: !state.loggedIn,
       }
     case "updateUser":

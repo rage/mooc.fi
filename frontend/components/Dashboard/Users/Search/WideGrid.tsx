@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react"
+import { useContext } from "react"
 
 import { range } from "lodash"
 
@@ -16,7 +16,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import Pagination from "/components/Dashboard/Users/Pagination"
+import Pagination from "./Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
@@ -41,41 +41,40 @@ const ButtonContainer = styled("div")`
   gap: 0.5rem;
 `
 
+const CenteredSkeleton = styled(Skeleton)`
+  margin: auto;
+`
+
+const PaginationComponent: React.FC<{ loading?: boolean }> = ({ loading }) => (
+  <TableRow>
+    {loading ? (
+      <TableCell colSpan={5}>
+        <CenteredSkeleton width="400px" />
+      </TableCell>
+    ) : (
+      <Pagination />
+    )}
+  </TableRow>
+)
+
 const WideGrid = () => {
   const t = useTranslator(UsersTranslations)
   const isVeryWide = useMediaQuery("(min-width: 1200px)")
-  const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
-
-  const PaginationComponent = useCallback(
-    () => (
-      <TableRow>
-        {loading ? (
-          <TableCell colSpan={5}>
-            <Skeleton width="400px" style={{ margin: "auto" }} />
-          </TableCell>
-        ) : (
-          <Pagination />
-        )}
-      </TableRow>
-    ),
-    [data, rowsPerPage, page, loading],
-  )
+  const { rowsPerPage, loading } = useContext(UserSearchContext)
 
   return (
     <StyledPaper>
       <TableWrapper>
         <Table>
           <TableHead>
-            {rowsPerPage >= 50 ? <PaginationComponent /> : null}
+            {rowsPerPage >= 50 ? (
+              <PaginationComponent loading={loading} />
+            ) : null}
             <TableRow>
-              <StyledTableCell>{t("userEmail")}</StyledTableCell>
-              {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
-              <StyledTableCell align="right">
-                {t("userFirstName")}
+              <StyledTableCell component="th" scope="row">
+                {t("userFullName")}
               </StyledTableCell>
-              <StyledTableCell align="right">
-                {t("userLastName")}
-              </StyledTableCell>
+              <StyledTableCell align="right">{t("userEmail")}</StyledTableCell>
               <StyledTableCell align="right">{t("userTMCid")}</StyledTableCell>
               {isVeryWide && (
                 <StyledTableCell align="right">
@@ -87,7 +86,7 @@ const WideGrid = () => {
           </TableHead>
           <RenderResults />
           <TableFooter>
-            <PaginationComponent />
+            <PaginationComponent loading={loading} />
           </TableFooter>
         </Table>
       </TableWrapper>
@@ -134,16 +133,14 @@ const RenderResults = () => {
   return (
     <TableBody>
       {data.map((row) => {
-        const { upstream_id, email, first_name, last_name, student_number } =
-          row ?? {}
+        const { upstream_id, email, full_name, student_number } = row ?? {}
 
         return (
           <TableRow key={upstream_id}>
             <TableCell component="th" scope="row">
-              {email}
+              <strong>{full_name}</strong>
             </TableCell>
-            <TableCell align="right">{first_name}</TableCell>
-            <TableCell align="right">{last_name}</TableCell>
+            <TableCell align="right">{email}</TableCell>
             <TableCell align="right">{upstream_id}</TableCell>
             {isVeryWide && (
               <TableCell align="right">{student_number}</TableCell>

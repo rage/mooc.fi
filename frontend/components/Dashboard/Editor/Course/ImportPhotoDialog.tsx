@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react"
 
-import Image from "next/image"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -14,6 +13,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { ControlledSelect } from "../Common/Fields"
+import ContainedImage from "/components/Images/ContainedImage"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { addDomain } from "/util/imageUtils"
@@ -128,10 +128,9 @@ function ImportPhotoDialog({
         />
         <ImageContainer>
           {selected ? (
-            <Image
+            <ContainedImage
               src={addDomain(selected.photo?.compressed)}
               alt={selected.photo?.name ?? "selected image"}
-              style={{ objectFit: "contain" }}
               fill
             />
           ) : (

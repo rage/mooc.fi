@@ -13,7 +13,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { isAdmin, Role } from "../accessControl"
+import { isAdmin, isSameOrganization, Role } from "../accessControl"
 import { Context } from "../context"
 import { GraphQLUserInputError } from "../lib/errors"
 import { filterNull } from "../util/db-functions"
@@ -43,13 +43,30 @@ export const Organization = objectType({
     t.model.creator_id()
     t.model.creator()
     t.model.completions_registered({
-      authorize: isAdmin, // TODO: should this be something else?
+      authorize: isAdmin || isSameOrganization,
     })
     t.model.courses()
     t.model.course_organizations()
     t.model.organization_translations()
-    t.model.user_organizations()
-    t.model.verified_users()
+    t.model.user_organizations({
+      authorize: isAdmin || isSameOrganization,
+    })
+    t.model.verified_users({
+      authorize: isAdmin || isSameOrganization,
+    })
+
+    t.field("name", {
+      type: "String",
+      resolve: async (organization, _, ctx) => {
+        const translation = await ctx.prisma.organizationTranslation.findFirst({
+          where: {
+            organization_id: organization.id,
+          },
+        })
+
+        return translation?.name ?? null
+      },
+    })
   },
 })
 

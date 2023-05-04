@@ -11,6 +11,7 @@ import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
 import useAlternateLanguage from "/hooks/useAlternateLanguage"
+import useIsNew from "/hooks/useIsNew"
 import { useScrollToHash } from "/hooks/useScrollToHash"
 import useSeoConfig from "/hooks/useSeoConfig"
 import useThemeWithLocale from "/hooks/useThemeWithLocale"
@@ -30,11 +31,12 @@ export { augmentDocumentWithEmotionCache }
 export function MyApp({
   Component,
   pageProps,
+  deviceType,
 }: AppProps<{
   signedIn?: boolean
   admin?: boolean
   currentUser?: UserDetailedFieldsFragment
-}>) {
+}> & { deviceType?: string }) {
   useEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
@@ -44,8 +46,9 @@ export function MyApp({
 
   useScrollToHash()
 
+  const isNew = useIsNew()
   const seoConfig = useSeoConfig()
-  const themeWithLocale = useThemeWithLocale()
+  const themeWithLocale = useThemeWithLocale(deviceType)
   const alternateLanguage = useAlternateLanguage()
 
   const loginStateContextValue = useMemo(
@@ -70,7 +73,7 @@ export function MyApp({
         <CssBaseline />
         <LoginStateProvider value={loginStateContextValue}>
           <AppContextProvider>
-            <DynamicLayout>
+            <DynamicLayout isNew={isNew}>
               <DefaultSeo {...seoConfig} />
               <Component {...pageProps} />
             </DynamicLayout>
@@ -92,27 +95,27 @@ MyApp.getInitialProps = async (props: AppContext) => {
   if (originalGetInitialProps) {
     originalProps = (await originalGetInitialProps(props)) ?? {}
   }
+  if (!originalProps?.pageProps) {
+    originalProps.pageProps = {}
+  }
   if (Component.getInitialProps) {
-    originalProps = {
-      ...originalProps,
-      pageProps: {
-        ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) ?? {}),
-      },
-    }
+    const originalComponentProps = (await Component.getInitialProps(ctx)) ?? {}
+    Object.assign(originalProps.pageProps, originalComponentProps)
   }
 
   const signedIn = isSignedIn(ctx)
   const admin = signedIn && isAdmin(ctx)
 
-  return {
+  Object.assign(originalProps.pageProps, { signedIn, admin })
+  return originalProps
+  /*return {
     ...originalProps,
     pageProps: {
       ...originalProps.pageProps,
       signedIn,
       admin,
     },
-  }
+  }*/
 }
 
 // @ts-ignore: silence for now

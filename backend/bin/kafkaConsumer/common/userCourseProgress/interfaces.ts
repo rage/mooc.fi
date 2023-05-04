@@ -60,3 +60,11 @@ export type TierInfo = Record<
     exerciseCompletions: number
   }
 >
+
+export type ProgressExtra = {
+  tiers: TierInfo
+  exercises: TierProgressMap
+  projectCompletion: boolean
+  highestTier: number
+  totalExerciseCompletions: number
+}

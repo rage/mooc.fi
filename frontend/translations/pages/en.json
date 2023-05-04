@@ -16,7 +16,7 @@
     "/study-modules/new": "New study module",
     "/users/[id]": "User - {{title}}",
     "/users/[id]/completions": "Completions - {{title}}",
-    "/users/[id]/summary": "Summary - {{title}}",
+    "/users/[id]/summary/[[...slug]]": "Summary - {{title}}",
     "/users/search": "Search users",
     "/users/search/[text]": "Search users - [[text]]",
     "/users": "Users",

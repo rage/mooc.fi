@@ -1,7 +1,7 @@
-import Image from "next/image"
-
 import { ButtonBase, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
+
+import ContainedImage from "../Images/ContainedImage"
 
 const CloseButton = styled(ButtonBase)`
   position: absolute;
@@ -41,6 +41,7 @@ const ImagePreviewContainer = styled("div")`
   display: flex;
   position: absolute;
 `
+
 interface ImagePreviewProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -65,11 +66,10 @@ const ImagePreview = ({
 
   return (
     <ImagePreviewContainer {...rest}>
-      <Image
+      <ContainedImage
         src={file}
         alt={file.length > 64 ? "Image preview" : file} // don't spout gibberish if it's a base64
         fill
-        style={{ objectFit: "contain" }}
       />
       {onImageRemove && (
         <Tooltip title="Remove picture">

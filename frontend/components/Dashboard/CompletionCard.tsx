@@ -1,8 +1,7 @@
-import { Fragment } from "react"
-
 import CloseIcon from "@mui/icons-material/Close"
 import DoneIcon from "@mui/icons-material/Done"
 import {
+  BoxProps,
   Divider,
   Icon,
   ListItem,
@@ -32,13 +31,13 @@ const ListItemArea = styled("div")`
   margin: 1rem auto 1rem auto;
 `
 
-const CompletionInfoText = styled(({ children, ...props }: TypographyProps) => (
-  <Typography component="span" {...props}>
-    {children}
-  </Typography>
-))`
+const CompletionInfoText = styled(Typography)<TypographyProps & BoxProps>`
   display: block;
 `
+
+CompletionInfoText.defaultProps = {
+  component: "span",
+}
 
 interface CompletionCardProps {
   completer: CompletionsQueryNodeFieldsFragment
@@ -73,7 +72,7 @@ function CompletionCard({ completer }: CompletionCardProps) {
         <ListItemText
           primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
-            <Fragment>
+            <>
               <CompletionInfoText>
                 {completer.email} {studentId}
               </CompletionInfoText>
@@ -81,7 +80,7 @@ function CompletionCard({ completer }: CompletionCardProps) {
                 Completion language: {completionLanguage}
               </CompletionInfoText>
               <CompletionInfoText>{completionDate}</CompletionInfoText>
-            </Fragment>
+            </>
           }
         />
       </ListItem>

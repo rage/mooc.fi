@@ -63,7 +63,7 @@ export const createKafkaConsumer = ({
   })
 
   consumer.on("event.log", function (log) {
-    console.log(log)
+    logger.info(log)
   })
 
   consumer.on("connection.failure", (err, metrics) => {

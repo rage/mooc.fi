@@ -7,8 +7,6 @@ query Organizations {
 query OrganizationById($id: ID!) {
   organization(id: $id) {
     hidden
-    organization_translations {
-      name
-    }
+    name
   }
 }

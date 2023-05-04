@@ -96,7 +96,7 @@ const CourseAliasEditForm = () => {
                     variant="h3"
                     component="p"
                     align="center"
-                    gutterBottom={true}
+                    gutterBottom
                   >
                     {t("courseNoAliases")}
                   </Typography>

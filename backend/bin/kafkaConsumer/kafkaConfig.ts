@@ -1,4 +1,4 @@
-export default {
+const kafkaConfig = {
   exercise_consumer: {
     topic_name: "exercise",
   },
@@ -19,3 +19,5 @@ export default {
   },
   commit_interval: 50,
 }
+
+export default kafkaConfig

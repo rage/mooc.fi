@@ -10,7 +10,6 @@ export const getCourseOrCompletionHandlerCourse =
       throw new GraphQLUserInputError("must provide id and/or slug")
     }
 
-    // TODO: use course alias?
     const course = await ctx.prisma.course.findUnique({
       where: {
         id,
@@ -20,6 +19,21 @@ export const getCourseOrCompletionHandlerCourse =
         completions_handled_by: true,
       },
     })
+
+    if (!course && slug) {
+      const courseFromAlias = await ctx.prisma.courseAlias
+        .findUnique({
+          where: {
+            course_code: slug,
+          },
+        })
+        .course({
+          include: {
+            completions_handled_by: true,
+          },
+        })
+      return courseFromAlias?.completions_handled_by ?? courseFromAlias
+    }
 
     return course?.completions_handled_by ?? course
   }

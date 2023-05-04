@@ -1,4 +1,4 @@
-import { PropsWithChildren, Component as ReactComponent } from "react"
+import React, { PropsWithChildren, Component as ReactComponent } from "react"
 
 import { NextPageContext as NextContext } from "next"
 
@@ -9,8 +9,8 @@ import redirect from "/lib/redirect"
 
 let prevContext: NextContext | null = null
 
-export default function withAdmin(Component: any) {
-  return class WithAdmin extends ReactComponent<
+function withAdmin(Component: any) {
+  class WithAdmin extends ReactComponent<
     PropsWithChildren<{
       admin: boolean
       signedIn: boolean
@@ -69,4 +69,8 @@ export default function withAdmin(Component: any) {
       return <Component {...this.props}>{this.props.children}</Component>
     }
   }
+
+  return WithAdmin
 }
+
+export default withAdmin

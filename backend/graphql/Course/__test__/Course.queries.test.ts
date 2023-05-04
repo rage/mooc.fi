@@ -58,7 +58,7 @@ describe("Course", () => {
             FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
-          ;[resId, resSlug].forEach((res) =>
+          ;[resId, resSlug].forEach((res: any) =>
             // had sortStudyModules
             expect(res.course).toMatchSnapshot({
               id: expect.stringMatching(ID_REGEX),
@@ -136,7 +136,7 @@ describe("Course", () => {
             FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
           )
 
-          ;[resId, resSlug].forEach((res) =>
+          ;[resId, resSlug].forEach((res: any) =>
             expect(
               applySortFns([sortExercises, sortStudyModules, sortTags])(
                 res.course,

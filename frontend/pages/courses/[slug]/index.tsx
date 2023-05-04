@@ -164,12 +164,7 @@ const Course = () => {
           <H1NoBackground component="h1" variant="h1" align="center">
             {data.course?.name}
           </H1NoBackground>
-          <Title
-            component="p"
-            variant="subtitle2"
-            align="center"
-            gutterBottom={true}
-          >
+          <Title component="p" variant="subtitle2" align="center" gutterBottom>
             {data.course?.id}
           </Title>
           <SubtitleNoBackground

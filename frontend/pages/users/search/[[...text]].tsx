@@ -6,27 +6,24 @@ import { useRouter } from "next/router"
 import { useSubscription } from "@apollo/client"
 
 import Container from "/components/Container"
-import SearchForm from "/components/Dashboard/Users/SearchForm"
+import SearchForm from "/components/Dashboard/Users/Search/SearchForm"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
-import UserSearchContext from "/contexts/UserSearchContext"
+import UserSearchContext, {
+  UserSearchResults,
+} from "/contexts/UserSearchContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
+import { notEmptyOrEmptyString } from "/util/guards"
 import notEmpty from "/util/notEmpty"
 
 import {
-  UserCoreFieldsFragment,
-  UserDetailsContainsQueryVariables,
   UserSearchDocument,
+  UserSearchField,
   UserSearchMetaFieldsFragment,
+  UserSearchSubscriptionVariables,
 } from "/graphql/generated"
-
-interface UserSearchResults {
-  data: Array<UserCoreFieldsFragment>
-  meta: UserSearchMetaFieldsFragment
-  totalMeta: Array<UserSearchMetaFieldsFragment>
-}
 
 const emptyResults: UserSearchResults = {
   data: [],
@@ -39,9 +36,22 @@ const UserSearch = () => {
   const textParam = useQueryParameter("text", false)
   const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
   const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
+  const fieldsParam = useQueryParameter("fields", false)
+    ?.split(",")
+    .filter(notEmptyOrEmptyString) as Array<UserSearchField>
   const isSearching = useRef(false)
   const prevSearch = useRef("")
+  const prevFields = useRef<Array<UserSearchField> | undefined>(fieldsParam)
+
+  const fieldsParamValue =
+    fieldsParam && fieldsParam.length === 0
+      ? (Object.keys(UserSearchField) as Array<UserSearchField>)
+      : fieldsParam
+
   const [results, setResults] = useState<UserSearchResults>(emptyResults)
+  const [fields, setFields] = useState<Array<UserSearchField> | undefined>(
+    fieldsParamValue,
+  )
 
   const userSearch = useSearch({
     search: textParam,
@@ -50,23 +60,26 @@ const UserSearch = () => {
   })
 
   const [searchVariables, setSearchVariables] =
-    useState<UserDetailsContainsQueryVariables>({
+    useState<UserSearchSubscriptionVariables>({
       search: textParam,
-      first: rowsParam,
-      skip: pageParam > 0 ? pageParam * rowsParam : undefined,
+      fields: fieldsParamValue,
     })
 
   useSubscription(UserSearchDocument, {
-    variables: { search: searchVariables.search },
+    variables: {
+      search: searchVariables.search,
+      fields: searchVariables.fields,
+    },
     shouldResubscribe: true,
     fetchPolicy: "cache-first",
-    skip: !searchVariables.search,
+    skip: (searchVariables.search ?? "").length < 3,
     onData({ data }) {
       if (!data.data) {
         return
       }
 
       if (
+        data.data &&
         notEmpty(data.data.userSearch) &&
         data.data.userSearch.search === searchVariables.search
       ) {
@@ -76,17 +89,19 @@ const UserSearch = () => {
             field,
             fieldValue,
             count,
+            allMatchIds,
             fieldIndex,
             fieldCount,
             fieldResultCount,
             fieldUniqueResultCount,
             finished,
-          } = data.data?.userSearch ?? {}
+          } = data.data!.userSearch
           const meta = {
-            field: field ?? "",
+            field,
             fieldValue: fieldValue ?? "",
             search: searchVariables.search,
             count: count ?? 0,
+            allMatchIds: allMatchIds ?? [],
             fieldIndex: fieldIndex ?? 0,
             fieldCount: fieldCount ?? 0,
             fieldResultCount: fieldResultCount ?? 0,
@@ -123,20 +138,30 @@ const UserSearch = () => {
 
   const resetResults = useCallback(() => {
     setResults({ ...emptyResults })
-  }, [setResults])
+  }, [emptyResults])
 
   const { rowsPerPage, page } = userSearch
 
   useEffect(() => {
-    if ((searchVariables.search ?? "").trim().length === 0) {
+    if ((searchVariables.search ?? "").trim().length < 3) {
       return
     }
-    if (prevSearch.current === searchVariables.search) {
+    if (
+      prevSearch.current === searchVariables.search &&
+      prevFields.current === searchVariables.fields
+    ) {
       return
     }
     prevSearch.current = searchVariables.search
+    prevFields.current =
+      (searchVariables.fields as Array<UserSearchField>) ?? undefined
     isSearching.current = true
-  }, [searchVariables.search])
+  }, [
+    searchVariables.search,
+    searchVariables.fields,
+    prevSearch.current,
+    prevFields.current,
+  ])
 
   useEffect(() => {
     const searchParams = new URLSearchParams()
@@ -185,15 +210,21 @@ const UserSearch = () => {
       loading: isSearching.current,
       searchVariables,
       setSearchVariables,
+      fields,
+      setFields,
       resetResults,
+      setResults,
     }),
     [
+      fields,
       results.meta,
       results.data,
       isSearching.current,
       userSearch,
       searchVariables,
       resetResults,
+      setFields,
+      setResults,
     ],
   )
 

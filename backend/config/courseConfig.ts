@@ -425,6 +425,17 @@ export const BAITierNames: Record<string, string> = {
   "3": "advanced",
 }
 
+export const BAITierNameToId: Record<string, number> = Object.entries(
+  BAITierNames,
+).reduce(
+  (acc, [key, value]) => ({
+    ...acc,
+    [value]: Number(key),
+  }),
+  {},
+)
+
+export const BAIExerciseCount = 22
 export const requiredByTestTier: Record<string, number> = {
   "1": 2,
   "2": 1,

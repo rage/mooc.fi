@@ -3,6 +3,7 @@ import { useCallback } from "react"
 import nookies from "nookies"
 
 import { useApolloClient } from "@apollo/client"
+import { useEventCallback } from "@mui/material/utils"
 
 import ProfileButton from "./ProfileButton"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
@@ -20,9 +21,8 @@ const UserOptionsMenu = () => {
     () => signOut(client, logInOrOut),
     [client, logInOrOut],
   )
-  const onLoginClick = useCallback(
-    () => nookies.destroy(undefined, "redirect-back"),
-    [],
+  const onLoginClick = useEventCallback(() =>
+    nookies.destroy(undefined, "redirect-back"),
   )
 
   if (loggedIn) {

@@ -1,4 +1,5 @@
 import { Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import NaviCard from "./NaviCard"
 import Container from "/components/Container"
@@ -16,6 +17,10 @@ type NaviItem = {
   link: string
 }
 
+const NaviCardGrid = styled(Grid)`
+  margin-bottom: 3em;
+`
+
 function NaviCardList() {
   const t = useTranslator(NaviTranslations)
 
@@ -24,7 +29,7 @@ function NaviCardList() {
 
   return (
     <Container>
-      <Grid container spacing={3} style={{ marginBottom: "3em" }}>
+      <NaviCardGrid container spacing={3}>
         <UkraineInfo />
         {items.map((item) => (
           <NaviCard
@@ -37,7 +42,7 @@ function NaviCardList() {
         {customItems.map((item) => (
           <WideNaviCard key={item.title ?? item.text} item={item} />
         ))}
-      </Grid>
+      </NaviCardGrid>
     </Container>
   )
 }

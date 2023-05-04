@@ -1,11 +1,5 @@
-import {
-  extendType,
-  idArg,
-  intArg,
-  nonNull,
-  objectType,
-  stringArg,
-} from "nexus"
+import { arg, extendType, idArg, intArg, list, nonNull, stringArg } from "nexus"
+import { type NexusGenEnums } from "nexus-typegen"
 
 import { User } from "@prisma/client"
 
@@ -103,32 +97,6 @@ export const UserQueries = extendType({
   },
 })
 
-export const UserSearch = objectType({
-  name: "UserSearch",
-  definition(t) {
-    t.string("search")
-    t.string("field", { description: "current search condition field(s)" })
-    t.string("fieldValue", {
-      description: "values used for current search condition field(s)",
-    })
-    t.nonNull.list.nonNull.field("matches", { type: "User" })
-    t.nonNull.int("count", { description: "total count of matches so far" })
-    t.nonNull.int("fieldIndex", {
-      description: "index of current search field",
-    })
-    t.nonNull.int("fieldCount", {
-      description: "total number of search fields",
-    })
-    t.nonNull.int("fieldResultCount", {
-      description: "total number of matches for current search field",
-    })
-    t.nonNull.int("fieldUniqueResultCount", {
-      description: "total number of unique matches for current search field",
-    })
-    t.nonNull.boolean("finished")
-  },
-})
-
 export const UserSubscriptions = extendType({
   type: "Subscription",
   definition(t) {
@@ -136,10 +104,11 @@ export const UserSubscriptions = extendType({
       type: "UserSearch",
       args: {
         search: nonNull(stringArg()),
+        fields: list(nonNull(arg({ type: "UserSearchField" }))),
       },
       authorize: isAdmin,
-      subscribe(_, { search }, ctx) {
-        const queries = buildUserSearch(search) ?? []
+      subscribe(_, { search, fields }, ctx) {
+        const queries = buildUserSearch(search, fields ?? undefined) ?? []
         const fieldCount = queries.length
 
         let users: Array<User> = []
@@ -148,7 +117,13 @@ export const UserSubscriptions = extendType({
           let fieldIndex = 1
 
           for (const query of queries) {
-            const field = Object.keys(query).join(", ")
+            let field: NexusGenEnums["UserSearchField"]
+            const fields = Object.keys(query)
+            if (["first_name", "last_name"].every((f) => fields.includes(f))) {
+              field = "full_name"
+            } else {
+              field = fields[0] as NexusGenEnums["UserSearchField"]
+            }
             const fieldValue = Object.values(query)
               .map((q) =>
                 q !== null && typeof q === "object" && "contains" in q
@@ -163,6 +138,7 @@ export const UserSubscriptions = extendType({
             const newUsers = res.filter(
               (u) => !users.find((u2) => u2.id === u.id),
             )
+            const allMatchIds = res.map((u) => u.id)
             users = users.concat(newUsers)
 
             yield {
@@ -175,6 +151,7 @@ export const UserSubscriptions = extendType({
               fieldResultCount: res.length,
               fieldUniqueResultCount: newUsers.length,
               matches: newUsers,
+              allMatchIds,
               finished: fieldIndex === fieldCount,
             }
             fieldIndex++

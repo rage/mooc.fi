@@ -4,13 +4,18 @@ fragment UserCourseProgressCoreFields on UserCourseProgress {
   user_id
   max_points
   n_points
-  progress
-  extra
+  points_by_group {
+    ...PointsByGroupFields
+  }
+  extra {
+    ...ProgressExtraFields
+  }
   exercise_progress {
     total
     exercises
     exercise_count
     exercises_completed_count
+    exercises_attempted_count
   }
   created_at
   updated_at

@@ -77,7 +77,7 @@ export const checkBAICompletion = async ({
           connect: { id: handler?.id ?? course.id },
         },
         user: { connect: { id: user.id } },
-        ...newProgress,
+        ...newProgress, // includes "extra" field
       },
     })
   } else {

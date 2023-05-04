@@ -17,6 +17,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useLegacyAnchorContext } from "./LegacyAnchorContext"
 import { FormValues } from "./types"
@@ -91,9 +92,7 @@ const FormWrapper = <T extends FormValues>(
       setTab(anchor?.tab ?? 0)
 
       setImmediate(() => {
-        // TODO: add a simple pulsating animation to the field for a while
-        const element = document.getElementById(anchorLink)
-        element?.scrollIntoView()
+        document.getElementById(anchorLink)?.scrollIntoView()
       })
     } else {
       setSubmitted(true)
@@ -134,9 +133,8 @@ const FormWrapper = <T extends FormValues>(
     [values],
   )
 
-  const onToggleDeleteVisible = useCallback(
-    () => setDeleteVisible((value) => !value),
-    [],
+  const onToggleDeleteVisible = useEventCallback(() =>
+    setDeleteVisible((value) => !value),
   )
 
   return (

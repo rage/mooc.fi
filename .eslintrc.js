@@ -1,26 +1,14 @@
 // @ts-check
 /** @type {import("eslint").ESLint.ConfigData} **/
 const esLintConfig = {
-  parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-  plugins: [
-    "@typescript-eslint",
-    "eslint-custom-rules",
-    "react-hooks",
-    // "jsx-a11y",
-    "styled-components-a11y",
+  extends: [
+    "./.eslintrc.base.js",
+    "plugin:styled-components-a11y/strict",
+    "plugin:@typescript-eslint/recommended",
+    // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now
+    "prettier",
+    "plugin:@next/next/core-web-vitals",
   ],
-  parserOptions: {
-    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: "module", // Allows for the use of imports
-    ecmaFeatures: {
-      jsx: true, // Allows for the parsing of JSX
-    },
-    parser: "@typescript-eslint/parser",
-    project: ["./tsconfig.json"],
-    tsconfigRootDir: __dirname,
-    root: true,
-  },
-  ignorePatterns: ["node_modules/", "generated/", "dist/", "sourcemap/"],
   rules: {
     "@typescript-eslint/ban-ts-comment": [
       "error",
@@ -75,24 +63,24 @@ const esLintConfig = {
         "caughtErrorsIgnorePattern": "^_ "
       }
     ],*/
+    "import/no-anonymous-default-export": "error",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: [
+          "backend/**/__test__/*",
+          "backend/tests/**/*",
+          "backend/jest.config.ts",
+          "frontend/next.config.js",
+          "frontend/codegen.ts",
+        ],
+        optionalDependencies: false,
+        peerDependencies: ["eslint-custom-rules/*"],
+        includeInternal: true,
+        includeTypes: true,
+      },
+    ],
     complexity: "warn",
-  },
-  extends: [
-    // "plugin:jsx-a11y/recommended",
-    "plugin:@next/next/recommended",
-    "plugin:styled-components-a11y/recommended",
-    "plugin:@typescript-eslint/recommended",
-    // "plugin:@typescript-eslint/recommended-requiring-type-checking", // these are a bit too strict for now
-    "prettier",
-    "plugin:@next/next/core-web-vitals",
-  ],
-  settings: {
-    react: {
-      version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
-    },
-    next: {
-      rootDir: "frontend",
-    },
   },
 }
 

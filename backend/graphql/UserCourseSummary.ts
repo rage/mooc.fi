@@ -1,5 +1,6 @@
-import { booleanArg, objectType } from "nexus"
+import { booleanArg, inputObjectType, objectType } from "nexus"
 
+// import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
 import { notEmpty } from "../util/notEmpty"
 
 export const UserCourseSummary = objectType({
@@ -11,12 +12,18 @@ export const UserCourseSummary = objectType({
     t.id("completions_handled_by_id")
     t.boolean("include_no_points_awarded_exercises")
     t.boolean("include_deleted_exercises")
+    t.int("tier")
 
-    t.field("course", {
+    t.list.nonNull.field("tier_summaries", {
+      type: "UserCourseSummary",
+    })
+
+    t.nonNull.field("course", {
       type: "Course",
       resolve: async ({ course_id }, _, ctx) => {
         return ctx.prisma.course.findUnique({
           where: { id: course_id },
+          rejectOnNotFound: true,
         })
       },
     })
@@ -69,9 +76,12 @@ export const UserCourseSummary = objectType({
 
     t.field("completion", {
       type: "Completion",
+      args: {
+        includeOnlyCompleted: booleanArg(),
+      },
       resolve: async (
         { user_id, course_id, completions_handled_by_id },
-        _,
+        { includeOnlyCompleted },
         ctx,
       ) => {
         const completions = await ctx.prisma.course
@@ -81,8 +91,8 @@ export const UserCourseSummary = objectType({
           .completions({
             where: {
               user_id,
+              ...(includeOnlyCompleted && { completed: true }),
             },
-            // TODO: completed: true?
             orderBy: { created_at: "asc" },
             take: 1,
           })
@@ -157,7 +167,6 @@ export const UserCourseSummary = objectType({
         const noPoints = notEmpty(includeNoPointsAwarded)
           ? includeNoPointsAwarded
           : include_no_points_awarded_exercises
-
         const data = await ctx.prisma.course
           .findUnique({
             where: { id: course_id },
@@ -184,7 +193,7 @@ export const UserCourseSummary = objectType({
           })
 
         return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
-        // TODO/FIXME: testing if this actually reomves any extra joins
+        // TODO/FIXME: testing if this actually removes any extra joins
         /*return ctx.prisma.user
           .findUnique({
             where: { id: user_id },
@@ -228,5 +237,54 @@ export const UserCourseSummary = objectType({
         return userCourseSetting?.[0]?.created_at
       },
     })
+
+    // TODO: not sure if needed, can be queried through each user_course_progress
+    /*t.field("extra", {
+      type: "ProgressExtra",
+      resolve: async ({ user_id, completions_handled_by_id }, _, ctx) => {
+        if (!completions_handled_by_id) {
+          return null
+        }
+
+        const progress = await ctx.prisma.userCourseProgress.findFirst({
+          where: {
+            user_id,
+            course_id: completions_handled_by_id,
+          },
+          orderBy: {
+            created_at: "asc",
+          },
+        })
+
+        if (!progress?.extra) {
+          return null
+        }
+
+        const extra = progress.extra as unknown as ProgressExtra
+        const tiers = Object.keys(extra.tiers).map((key) => ({
+          tier: Number(key),
+          ...extra.tiers[key],
+        }))
+        const exercises = Object.keys(extra.exercises).map((key) => ({
+          exercise_number: Number(key),
+          ...extra.exercises[key],
+        }))
+
+        return {
+          ...extra,
+          tiers,
+          exercises,
+        }
+      },
+    })*/
+  },
+})
+
+export const UserCourseSummaryOrderByInput = inputObjectType({
+  name: "UserCourseSummaryOrderByInput",
+  definition(t) {
+    t.field("activity_date", { type: "SortOrder" })
+    t.field("completion_date", { type: "SortOrder" })
+    t.field("name", { type: "SortOrder" })
   },
 })

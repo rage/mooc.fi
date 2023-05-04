@@ -25,6 +25,29 @@ export type Anchor<ElemType extends HTMLElement = HTMLElement> = {
   tab?: number
 }
 
+const scrollAndSetError = (ref: HTMLElement) => {
+  ref.scrollIntoView({
+    block: "center",
+  })
+  ref.setAttribute("data-error-pulsate", "true")
+  ref.parentElement?.setAttribute("data-error-pulsate", "true")
+  const timeout = setTimeout(() => {
+    ref.removeAttribute("data-error-pulsate")
+    ref.parentElement?.removeAttribute("data-error-pulsate")
+  }, 1000)
+
+  return () => clearTimeout(timeout)
+}
+
+export type ScrollFirstErrorIntoViewArgs<
+  TFieldValues extends FieldValues = FieldValues,
+> = {
+  errors: FieldErrors<TFieldValues>
+  tab?: number
+  setTab?: Dispatch<SetStateAction<number>>
+  isRetry?: boolean
+}
+
 export function useAnchors(initialAnchors?: Record<string, Anchor>) {
   let nextId = 0
   const anchors = initialAnchors ?? {}
@@ -56,11 +79,9 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
 
   const scrollFirstErrorIntoView = useCallback(
     <TFieldValues extends FieldValues = FieldValues>(
-      errors: FieldErrors<TFieldValues>,
-      tab?: number,
-      setTab?: Dispatch<SetStateAction<number>>,
-      retry?: boolean,
+      args: ScrollFirstErrorIntoViewArgs<TFieldValues>,
     ) => {
+      const { errors, tab, setTab, isRetry } = args
       const flattenedErrors = flattenKeys(errors)
       const errorAnchors = Object.values(anchors).filter((anchor) =>
         Object.keys(flattenedErrors).includes(convertDotNotation(anchor.name)),
@@ -72,15 +93,11 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
 
       if (firstRef?.scrollIntoView && !isVisible(firstRef)) {
         if (!notEmpty(firstTab) || Number(firstTab) === tab) {
-          firstRef.scrollIntoView({
-            block: "center",
-          })
+          scrollAndSetError(firstRef)
         } else {
           setTab?.(Number(firstTab))
           setTimeout(() => {
-            firstRef.scrollIntoView({
-              block: "center",
-            })
+            scrollAndSetError(firstRef)
           }, 100)
         }
       }
@@ -88,18 +105,21 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
         !firstRef &&
         notEmpty(firstTab) &&
         Number(firstTab) !== tab &&
-        !retry
+        !isRetry
       ) {
         // the element has not mounted, change tab and try again _once_
         setTab?.(Number(firstTab))
         setTimeout(() => {
-          const redo = () => scrollFirstErrorIntoView(errors, tab, setTab, true)
+          // next tick
+          const redo = () =>
+            scrollFirstErrorIntoView({ ...args, isRetry: true })
           setTimeout(redo, 100)
         })
       }
     },
     [anchors],
   )
+
   return { anchors, addAnchor, scrollFirstErrorIntoView }
 }
 

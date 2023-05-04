@@ -3,6 +3,7 @@ import * as winston from "winston"
 
 import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
 import { BaseContext } from "../context"
+import { isNullOrUndefined } from "../util/isNullOrUndefined"
 
 const _logger = winston.createLogger({
   level: "info",
@@ -114,7 +115,7 @@ export async function redisify<T>(
   }
 
   const prefixedKey = `${prefix}:${key}`
-  let value: T | undefined
+  let value: T | undefined = undefined
   let resolveSuccess = false
 
   try {
@@ -122,37 +123,76 @@ export async function redisify<T>(
 
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
-      return JSON.parse(res)
+      try {
+        return JSON.parse(res)
+      } catch (e) {
+        logger.warn(`Cache hit but failed to parse result: ${prefix}`)
+        throw convertError(e)
+      }
     }
     logger.info(`Cache miss: ${prefix}`)
 
     value = await resolveValue()
     resolveSuccess = true
+  } catch (e) {
+    logger.warn(
+      attachError(`Cache miss but failed to resolve value: ${prefix}`, e),
+    )
 
-    await client?.set(prefixedKey, JSON.stringify(value), {
-      EX: expireTime,
-    })
-
-    return value
-  } catch (e1) {
-    try {
-      if (!resolveSuccess && retry) {
-        value = await resolveValue()
-      }
-      if (throwOnError && !value) {
-        throw e1 instanceof Error ? e1 : new Error(String(e1))
-      }
-      return value
-    } catch (e2) {
-      logger.warn(
-        `Could not resolve value for ${prefixedKey}; error: `,
-        e2 instanceof Error ? e2.message : e2,
-      )
-      if (throwOnError) {
-        throw e2 instanceof Error ? e2 : new Error(String(e2))
+    if (!resolveSuccess) {
+      if (retry) {
+        try {
+          value = await resolveValue()
+        } catch (e2) {
+          if (throwOnError && !value) {
+            throw convertError(e2)
+          }
+          logger.warn(
+            attachError(
+              `Cache miss but failed to resolve value twice, giving up: ${prefix}`,
+              e2,
+            ),
+          )
+          return
+        }
+      } else {
+        throw convertError(e)
       }
     }
   }
+
+  try {
+    if (typeof value === "undefined") {
+      await client?.del(prefixedKey)
+    } else {
+      await client?.set(prefixedKey, JSON.stringify(value), {
+        EX: expireTime,
+      })
+    }
+
+    return value
+  } catch (e) {
+    logger.warn(
+      attachError(`Resolved value but failed to set cache: ${prefix}`, e),
+    )
+    return value
+  }
+}
+
+const convertError = (err: unknown) => {
+  if (isNullOrUndefined(err) || err instanceof Error) {
+    return err
+  }
+
+  return new Error(String(err))
+}
+
+const attachError = (msg: string, err: unknown) => {
+  const e = convertError(err)
+  if (e) {
+    msg += `; error: ${e.message}`
+  }
+  return msg
 }
 
 export const invalidate = async (prefix: string, key: string) => {

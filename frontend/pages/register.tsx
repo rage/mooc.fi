@@ -39,9 +39,9 @@ const Header = styled(Typography)`
   margin-top: 1em;
 ` as typeof Typography
 
-const FormContainer = styled((props: ContainerProps & GridProps) => (
+const FormContainer = (props: ContainerProps & GridProps) => (
   <Container spacing={4} {...props} />
-))``
+)
 
 interface OrganizationCardProps {
   name: string
@@ -302,7 +302,7 @@ const Register = () => {
 
   return (
     <WideContainer>
-      <Header component="h1" variant="h2" gutterBottom={true} align="center">
+      <Header component="h1" variant="h2" gutterBottom align="center">
         {t("title")}
       </Header>
       <FormContainer maxWidth="md">

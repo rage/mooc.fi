@@ -41,6 +41,10 @@ const StyledButton = styled(Button, {
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
 ` as EnhancedButton<"button", StyledButtonProps>
 
+const MarginStyledButton = styled(StyledButton)`
+  margin-left: 1em;
+` as typeof StyledButton
+
 const ButtonLabel = styled(Typography)`
   font-family: var(--header-font) !important;
   font-weight: 200;
@@ -63,16 +67,15 @@ const UserMenu = () => {
     <>
       {admin && (
         <>
-          <StyledButton
+          <MarginStyledButton
             href="/courses"
             color="inherit"
             variant="text"
             active={active === "courses"}
-            style={{ marginLeft: "1em" }}
           >
             <ChalkboardTeacherIcon />
             <ButtonLabel>{t("courses")}</ButtonLabel>
-          </StyledButton>
+          </MarginStyledButton>
 
           <StyledButton
             href="/study-modules"

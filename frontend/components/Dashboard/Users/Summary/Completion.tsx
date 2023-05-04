@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo } from "react"
+import React, { PropsWithChildren, useCallback, useMemo } from "react"
 
 import {
   Collapse,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -14,10 +15,9 @@ import { styled } from "@mui/material/styles"
 import {
   ActionType,
   CollapsablePart,
-  useCollapseContext,
-} from "./CollapseContext"
+  useCollapseContextCourse,
+} from "./contexts/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
-import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { CompletionListItem } from "/components/Home/Completions"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -29,7 +29,7 @@ import {
 } from "/graphql/generated"
 
 interface CompletionProps {
-  completion?: CompletionDetailedFieldsFragment
+  completion?: CompletionDetailedFieldsFragment | null
   course: UserCourseSummaryCourseFieldsFragment
 }
 
@@ -39,8 +39,9 @@ const CompletionListItemContainer = styled("div")`
 `
 
 const CollapseTableRow = styled(TableRow)`
-  & > * {
+  & > td {
     border-bottom: unset;
+    padding: 1rem 0 0 0;
   }
 `
 
@@ -49,14 +50,25 @@ const CollapseTableCell = styled(TableCell)`
   padding-bottom: 0;
 `
 
+const CompletionListItemStyled = styled(CompletionListItem)`
+  padding: 0;
+`
+
+function CompletionBase({ children }: PropsWithChildren) {
+  return (
+    <TableContainer>
+      <Table>
+        <TableBody>{children}</TableBody>
+      </Table>
+    </TableContainer>
+  )
+}
+
 function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
-  const { state, dispatch } = useCollapseContext()
+  const { state, dispatch } = useCollapseContextCourse(course?.id)
 
-  const isOpen = useMemo(
-    () => state[course?.id ?? "_"]?.completion ?? false,
-    [state, course],
-  )
+  const isOpen = useMemo(() => state?.completion ?? false, [state, course])
 
   const onCollapseClick = useCallback(
     () =>
@@ -73,54 +85,65 @@ function Completion({ completion, course }: CompletionProps) {
   }
 
   return (
-    <SummaryCard>
-      <TableContainer>
-        <Table>
-          <TableBody>
-            <CollapseTableRow>
-              <TableCell>
-                <Typography variant="h3">
-                  {t("completedDate")}
-                  <strong>{formatDateTime(completion?.completion_date)}</strong>
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                {completion?.completions_registered?.length > 0 && (
-                  <Typography variant="h3">
-                    {t("registeredDate")}
-                    <strong>
-                      {completion?.completions_registered
-                        ?.map((cr) => formatDateTime(cr.created_at))
-                        ?.join(", ")}
-                    </strong>
-                  </Typography>
-                )}
-              </TableCell>
-              <TableCell align="right">
-                <CollapseButton
-                  open={isOpen}
-                  onClick={onCollapseClick}
-                  tooltip={t("completionCollapseTooltip")}
-                />
-              </TableCell>
-            </CollapseTableRow>
-            <CollapseTableRow>
-              <CollapseTableCell colSpan={3}>
-                <Collapse in={isOpen} mountOnEnter unmountOnExit>
-                  <CompletionListItemContainer>
-                    <CompletionListItem
-                      course={course}
-                      completion={completion}
-                    />
-                  </CompletionListItemContainer>
-                </Collapse>
-              </CollapseTableCell>
-            </CollapseTableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </SummaryCard>
+    <CompletionBase>
+      <CollapseTableRow>
+        <TableCell>
+          <Typography variant="h3">
+            {t("completedDate")}{" "}
+            <strong>{formatDateTime(completion?.completion_date)}</strong>
+          </Typography>
+        </TableCell>
+        <TableCell align="right">
+          {completion?.completions_registered?.length > 0 && (
+            <Typography variant="h3">
+              {t("registeredDate")}{" "}
+              <strong>
+                {completion?.completions_registered
+                  ?.map((cr) => formatDateTime(cr.created_at))
+                  ?.join(", ")}
+              </strong>
+            </Typography>
+          )}
+        </TableCell>
+        <TableCell align="right">
+          <CollapseButton
+            open={isOpen}
+            onClick={onCollapseClick}
+            tooltip={t("completionCollapseTooltip")}
+          />
+        </TableCell>
+      </CollapseTableRow>
+      <CollapseTableRow>
+        <CollapseTableCell colSpan={3}>
+          <Collapse in={isOpen} mountOnEnter unmountOnExit>
+            <CompletionListItemContainer>
+              <CompletionListItemStyled
+                course={course}
+                completion={completion}
+                elevation={0}
+              />
+            </CompletionListItemContainer>
+          </Collapse>
+        </CollapseTableCell>
+      </CollapseTableRow>
+    </CompletionBase>
   )
 }
+
+export const CompletionSkeleton = () => (
+  <CompletionBase>
+    <CollapseTableRow>
+      <TableCell>
+        <Typography variant="h3">
+          <Skeleton variant="text" />
+        </Typography>
+      </TableCell>
+      <TableCell align="right" />
+      <TableCell align="right">
+        <Skeleton width={24} />
+      </TableCell>
+    </CollapseTableRow>
+  </CompletionBase>
+)
 
 export default Completion

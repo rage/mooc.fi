@@ -1,4 +1,4 @@
-// generated Fri Dec 02 2022 11:28:08 GMT+0200 (Itä-Euroopan normaaliaika)
+// generated Tue Apr 18 2023 11:16:42 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
@@ -24,6 +24,7 @@ export * from "./Organization"
 export * from "./OrganizationTranslation"
 export * from "./PointsByGroup"
 export * from "./Progress"
+export * from "./ProgressExtra"
 export * from "./Service"
 export * from "./StoredData"
 export * from "./StudyModule"
@@ -40,4 +41,5 @@ export * from "./UserCourseSetting"
 export * from "./UserCourseSettingsVisibility"
 export * from "./UserCourseSummary"
 export * from "./UserOrganization"
+export * from "./UserSearch"
 export * from "./VerifiedUser"

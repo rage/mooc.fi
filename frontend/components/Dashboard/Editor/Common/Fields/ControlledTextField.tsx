@@ -12,6 +12,7 @@ import { InputAdornment, TextField, TextFieldProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
+import { pulseAnimation } from ".."
 import { useCourseEditorData } from "../../Course/CourseEditorDataContext"
 import RevertButton from "/components/RevertButton"
 import { InfoTooltipWithLabel } from "/components/Tooltip"
@@ -20,6 +21,8 @@ import { useAnchor } from "/hooks/useAnchors"
 const TextFieldContainer = styled("div")`
   display: flex;
   flex-direction: column;
+
+  ${pulseAnimation}
 `
 
 export interface ControlledTextFieldProps<

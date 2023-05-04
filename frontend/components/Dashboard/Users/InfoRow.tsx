@@ -1,58 +1,98 @@
-import { useCallback, useState } from "react"
-
-import { Typography } from "@mui/material"
+import { Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import ClipboardButton from "../../ClipboardButton"
+import ClipboardButton from "/components/ClipboardButton"
+import { useClipboard } from "/hooks/useClipboard"
 
-interface InfoRowProps {
+type InfoRowProps = {
   title: string
-  content: string
+  data?: JSX.Element | string | number
+  fullWidth?: boolean
+  copyable?: boolean
 }
 
-const isClipboardSupported =
-  typeof window !== "undefined" && navigator?.clipboard
-
-export const InfoRowContainer = styled("div")`
+export const InfoRowContainer = styled("div", {
+  shouldForwardProp: (prop) => prop !== "fullWidth",
+})<{ fullWidth?: boolean }>(
+  ({ fullWidth }) => `
   display: flex;
   flex-direction: row;
-  align-items: center;
-  align-content: baseline;
-  width: 80%;
-`
+  align-items: baseline;
+  align-content: center;
+  width: ${fullWidth ? "100" : "80"}%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`,
+)
 
+/*  ${theme.breakpoints.down("sm")} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+*/
 const InfoRowTitle = styled(Typography)`
   color: #666;
-`
-
-const InfoRowContent = styled(Typography)`
-  margin-left: auto;
   font-weight: 600;
+  padding-right: 0.5rem;
 `
 
-const InfoRow = ({ title, content }: InfoRowProps) => {
-  const [isCopied, setIsCopied] = useState(false)
+const InfoRowTextContent = styled(Typography)(
+  ({ theme }) => `
+  text-align: right;
 
-  const onCopyToClipboard = useCallback(() => {
-    if (!isClipboardSupported) {
-      return
-    }
+  ${theme.breakpoints.down("sm")} {
+    margin-left: 0;
+  }
+`,
+)
 
-    navigator.clipboard.writeText(content).then(() => {
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
-    })
-  }, [content])
+const InfoRowElementContent = styled("div")`
+  justify-content: flex-end;
+`
+
+const isElement = (data: string | number | JSX.Element): data is JSX.Element =>
+  typeof data !== "string" && typeof data !== "number"
+
+type InfoRowContentProps = Pick<InfoRowProps, "data" | "copyable">
+
+const InfoRowContent = ({
+  data,
+  copyable,
+  ...typographyProps
+}: InfoRowContentProps & TypographyProps) => {
+  const { hasClipboard } = useClipboard(data)
+
+  if (!data) {
+    return null
+  }
+
+  if (isElement(data)) {
+    return <InfoRowElementContent>{data}</InfoRowElementContent>
+  }
+  return (
+    <InfoRowTextContent variant="h4" {...typographyProps}>
+      {data}
+      {hasClipboard && copyable && <ClipboardButton data={data} />}
+    </InfoRowTextContent>
+  )
+}
+
+const InfoRow = ({
+  title,
+  data,
+  copyable,
+  fullWidth = false,
+  ...typographyProps
+}: InfoRowProps & TypographyProps) => {
+  const { hasClipboard } = useClipboard(data)
 
   return (
-    <InfoRowContainer>
-      <InfoRowTitle variant="h4">{title}</InfoRowTitle>
-      <InfoRowContent variant="h4">{content}</InfoRowContent>
-      <ClipboardButton
-        isCopied={isCopied}
-        disabled={!isClipboardSupported}
-        onClick={onCopyToClipboard}
-      />
+    <InfoRowContainer fullWidth={fullWidth}>
+      <InfoRowTitle variant="h4" {...typographyProps}>
+        {title}
+        {!data && hasClipboard && copyable && <ClipboardButton data={title} />}
+      </InfoRowTitle>
+      <InfoRowContent data={data} copyable={copyable} {...typographyProps} />
     </InfoRowContainer>
   )
 }

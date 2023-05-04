@@ -38,8 +38,8 @@ export const getTierProgress = (
 
     const existing_n_points = tierProgressMap[exercise]?.n_points || 0
     const n_points = Math.max(ec_n_points, existing_n_points)
-
     const maxTier = Math.max(tierProgressMap[exercise]?.tier || 0, tier || 0)
+
     tierProgressMap[String(exercise)] = {
       tier: maxTier,
       max_points,

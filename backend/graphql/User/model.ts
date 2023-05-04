@@ -1,5 +1,5 @@
-import { omit } from "lodash"
-import { booleanArg, idArg, objectType, stringArg } from "nexus"
+import { groupBy, orderBy as lodashOrderBy, omit, partition } from "lodash"
+import { arg, booleanArg, idArg, objectType, stringArg } from "nexus"
 
 import { Course, Prisma } from "@prisma/client"
 
@@ -7,6 +7,18 @@ import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
 import { getCourseOrAlias } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
+
+interface SummaryCourseResult {
+  course_id: string
+  inherit_settings_from_id: string | null
+  completions_handled_by_id: string | null
+  tier: number | null
+  name: string
+}
+
+interface SummaryCourseGroupResult extends SummaryCourseResult {
+  group: "handled" | "not_handled" | "tiered"
+}
 
 export const User = objectType({
   name: "User",
@@ -54,7 +66,6 @@ export const User = objectType({
         const { course_id, course_slug } = args
         let course: Course | null = null
 
-        // TODO: get by alias and then handler
         if (course_id || course_slug) {
           course = await getCourseOrCompletionHandlerCourse(ctx)({
             id: course_id ?? undefined,
@@ -272,22 +283,30 @@ export const User = objectType({
         course_id: idArg(),
         includeDeleted: booleanArg(),
         completed: booleanArg(),
+        attempted: booleanArg(),
       },
       resolve: async (
         parent,
-        { course_id, includeDeleted = false, completed },
+        { course_id, includeDeleted = false, completed, attempted },
         ctx,
       ) => {
         let exerciseWhere: Prisma.ExerciseWhereInput | undefined
+        let exerciseCompletionWhere:
+          | Prisma.ExerciseCompletionWhereInput
+          | undefined
 
-        if (!includeDeleted || completed) {
+        if (!includeDeleted) {
           exerciseWhere = {
-            ...(!includeDeleted && {
-              // same here: { deleted: { not: true } } will skip null
-              OR: [{ deleted: false }, { deleted: null }],
-            }),
+            OR: [{ deleted: false }, { deleted: null }],
+          }
+        }
+        if (completed || attempted) {
+          exerciseCompletionWhere = {
             ...(completed && {
               completed: true,
+            }),
+            ...(attempted && {
+              attempted: true,
             }),
           }
         }
@@ -303,6 +322,7 @@ export const User = objectType({
                 exercise_completions: {
                   where: {
                     user_id: parent.id,
+                    ...exerciseCompletionWhere,
                   },
                   orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
                   take: 1,
@@ -322,6 +342,7 @@ export const User = objectType({
               ...(exerciseWhere && {
                 exercise: exerciseWhere,
               }),
+              ...exerciseCompletionWhere,
             },
             distinct: "exercise_id",
             orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
@@ -348,6 +369,9 @@ export const User = objectType({
           description:
             "If specified, only return the summary for the given course. Otherwise, return the summary for all courses with at least one exercise completion.",
         }),
+        orderBy: arg({
+          type: "UserCourseSummaryOrderByInput",
+        }),
       },
       resolve: async (
         { id },
@@ -356,11 +380,17 @@ export const User = objectType({
           course_slug,
           includeNoPointsAwardedExercises,
           includeDeletedExercises,
+          orderBy,
         },
         ctx,
       ) => {
-        // TODO: only get the newest one per exercise?
-        // not very optimal, as the exercise completions will be queried twice if that field is selected
+        const baseFields = {
+          user_id: id,
+          includeDeletedExercises: includeDeletedExercises ?? false,
+          includeNoPointsAwardedExercises:
+            includeNoPointsAwardedExercises ?? false,
+        }
+
         if (course_id || course_slug) {
           const course = await ctx.prisma.course.findUnique({
             where: course_id
@@ -380,41 +410,140 @@ export const User = objectType({
             {
               ...omit(course, "id"),
               course_id: course.id,
-              user_id: id,
-              include_deleted_exercises: includeDeletedExercises ?? false,
-              include_no_points_awarded_exercises:
-                includeNoPointsAwardedExercises ?? false,
+              ...baseFields,
             },
           ]
         }
 
-        const startedCourses = await ctx.prisma.$queryRaw<
-          Array<{
-            course_id: string
-            inherit_settings_from_id: string | null
-            completions_handled_by_id: string | null
-          }>
-        >(Prisma.sql`
-          select c.id as course_id, inherit_settings_from_id, completions_handled_by_id
-          from course c
-          where c.id in (
-              select distinct(e.course_id)
-                  from exercise_completion ec
-                  join exercise e on ec.exercise_id = e.id
+        let subquery = Prisma.sql`
+          select distinct(e.course_id) as course_id
+            from exercise_completion ec
+            join exercise e on ec.exercise_id = e.id
+          where ec.user_id = ${id}
+          and ec.attempted = true
+        `
+
+        if (orderBy?.activity_date) {
+          const activityDateClause =
+            orderBy.activity_date === "desc"
+              ? Prisma.sql`order by ec.timestamp desc`
+              : Prisma.sql`order by ec.timestamp`
+          subquery = Prisma.sql`
+            select course_id from (
+              select distinct(e.course_id) as course_id, ec.timestamp
+                from exercise_completion ec
+                join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${id}
               and ec.attempted = true
-          );
+              ${activityDateClause}
+            ) as sub
+          `
+        }
+
+        // TODO: only get the newest one per exercise?
+        // not very optimal, as the exercise completions will be queried twice if that field is selected
+        const startedCourses = await ctx.prisma.$queryRaw<
+          Array<SummaryCourseGroupResult>
+        >(Prisma.sql`
+          select
+            c.id as course_id,
+            inherit_settings_from_id,
+            completions_handled_by_id,
+            name,
+            tier,
+            case
+              when completions_handled_by_id is null or completions_handled_by_id = c.id then 'not_handled'
+              when tier is null or tier < 1 THEN 'handled'
+              else 'tiered'
+            end as group
+          from course c
+          where c.id in (
+            ${subquery}
+          )
         `)
 
-        return startedCourses
-          .filter(({ course_id }) => notEmpty(course_id))
-          .map((course) => ({
+        // divide courses into three groups:
+        // - not handled
+        // - handled -- no tier set
+        // - tiered -- handled and tier set
+        // tiered courses should be under their parent course in tier_summaries
+        // instead of having their own separate entries
+
+        const [tiered, nonTiered] = partition(
+          startedCourses,
+          (c) => c.group === "tiered",
+        )
+        const tierCourseMap = groupBy(
+          tiered,
+          (c) => c.completions_handled_by_id,
+        )
+        // convert this to SQL
+
+        const result = []
+
+        for (const course of nonTiered) {
+          result.push({
+            ...baseFields,
             ...course,
-            user_id: id,
-            include_deleted_exercises: includeDeletedExercises ?? false,
-            include_no_points_awarded_exercises:
-              includeNoPointsAwardedExercises ?? false,
-          }))
+            course_id: course.course_id,
+          })
+        }
+
+        for (const [course_id, handledCourses] of Object.entries(
+          tierCourseMap,
+        )) {
+          let name: string | undefined | null = undefined
+          if (orderBy?.completion_date) {
+            const handlerCourse = await ctx.prisma.course.findUnique({
+              where: { id: course_id },
+              select: {
+                name: true,
+              },
+            })
+            name = handlerCourse?.name
+          }
+          result.push({
+            ...baseFields,
+            tier_summaries: lodashOrderBy(handledCourses, "tier").map(
+              (course) => ({
+                ...course,
+                ...baseFields,
+              }),
+            ),
+            course_id,
+            name,
+          })
+        }
+
+        let orderedResult = result
+
+        if (orderBy?.name) {
+          orderedResult = lodashOrderBy(result, ["name"], [orderBy.name])
+        } else if (orderBy?.completion_date) {
+          const courseHandlerIds = nonTiered
+            .map((c) => c.course_id)
+            .concat(Object.keys(tierCourseMap))
+          const completions = await prisma.completion.findMany({
+            where: {
+              user_id: id,
+              course_id: {
+                in: Object.values(courseHandlerIds).filter(notEmpty),
+              },
+            },
+          })
+          orderedResult = lodashOrderBy(
+            result,
+            [
+              (entry) =>
+                completions.find((c) => c.course_id === entry.course_id)
+                  ?.created_at ?? new Date("2999-12-31"),
+              (entry) => entry.name,
+            ],
+            [orderBy.completion_date, orderBy.name ?? "asc"],
+          )
+        }
+
+        return orderedResult
       },
     })
   },

@@ -136,6 +136,21 @@ function create(
       )
     : null
 
+  const errorLink = onError(
+    ({ graphQLErrors, networkError, forward, operation }) => {
+      if (graphQLErrors)
+        graphQLErrors.forEach(({ message, locations, path }) =>
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+              locations,
+            )}, Path: ${path}`,
+          ),
+        )
+      if (networkError) console.log(`[Network error]: ${networkError}`)
+      return forward(operation)
+    },
+  )
+
   const wsAndUploadAndBatchHTTPLink =
     isBrowser && wsLink
       ? split(
@@ -149,17 +164,15 @@ function create(
           wsLink,
           uploadAndBatchHTTPLink,
         )
-      : null
+      : uploadAndBatchHTTPLink
 
   const metricsLink = new ApolloLink((operation, forward) => {
     const { operationName } = operation
     const startTime = new Date().getTime()
-    const observable = forward(operation)
+    const subscriber = forward(operation)
 
-    // Return a new observable so no other links can call .subscribe on the
-    // the one that we were passed.
     return new Observable((observer) => {
-      observable.subscribe({
+      const subscription = subscriber.subscribe({
         complete: () => {
           const elapsed = new Date().getTime() - startTime
           console.warn(`[METRICS][${operationName}] (${elapsed}) complete`)
@@ -167,28 +180,17 @@ function create(
         },
         next: observer.next.bind(observer),
         error: (error) => {
-          // ...
-          console.log("error", error)
-          observer.error(error)
+          return observer.next(error)
         },
       })
+
+      return () => {
+        if (subscription) {
+          subscription.unsubscribe()
+        }
+      }
     })
   })
-
-  const errorLink = onError(
-    ({ graphQLErrors, networkError, forward, operation }) => {
-      if (graphQLErrors)
-        graphQLErrors.forEach(({ message, locations, path }) =>
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
-              locations,
-            )}, Path: ${path}`,
-          ),
-        )
-      if (networkError) console.log(`[Network error]: ${networkError}`)
-      forward(operation)
-    },
-  )
 
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser

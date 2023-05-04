@@ -15,7 +15,7 @@ import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
+import { notEmptyOrEmptyString } from "/util/guards"
 
 import {
   CourseStatus,
@@ -26,11 +26,6 @@ import {
 const Background = styled("section")`
   background-color: #61baad;
 `
-
-const notEmptyOrEmptyString = (
-  value: unknown,
-): value is string | true | number =>
-  notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
   const router = useRouter()
@@ -176,17 +171,19 @@ function Courses() {
   )
 }
 
+interface CreateInitialSearchVariableArgs {
+  search?: string
+  handledBy?: string
+  hidden?: string
+  status?: string
+}
+
 const createInitialSearchVariables = ({
   search,
   handledBy,
   hidden,
   status,
-}: {
-  search?: string
-  handledBy?: string
-  hidden?: string
-  status?: string
-}) => {
+}: CreateInitialSearchVariableArgs) => {
   const statusParam = (decodeURIComponent(status ?? "")
     ?.split(",")
     .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]

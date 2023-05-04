@@ -4,7 +4,7 @@ import bodyParser from "body-parser"
 import cors from "cors"
 import express, { Express } from "express"
 import { graphqlUploadExpress } from "graphql-upload"
-import { useServer } from "graphql-ws/lib/use/ws"
+import { useServer as addServer } from "graphql-ws/lib/use/ws"
 import { frameguard } from "helmet"
 import morgan from "morgan"
 import { WebSocketServer } from "ws"
@@ -46,7 +46,7 @@ const createExpressAppWithContext = ({
   return app
 }
 
-const useExpressMiddleware = (
+const addExpressMiddleware = (
   app: Express,
   apolloServer: ApolloServer<ServerContext>,
   serverContext: ServerContext,
@@ -70,7 +70,7 @@ const useExpressMiddleware = (
   return app
 }
 
-export default async (serverContext: ServerContext) => {
+const server = async (serverContext: ServerContext) => {
   const app = createExpressAppWithContext(serverContext)
   const httpServer = http.createServer(app)
   const schema = createSchema()
@@ -107,7 +107,7 @@ export default async (serverContext: ServerContext) => {
     path: isProduction ? "/api" : "/",
   })
 
-  const serverCleanup = useServer(
+  const serverCleanup = addServer(
     {
       schema,
       context: (ctx) => {
@@ -125,7 +125,7 @@ export default async (serverContext: ServerContext) => {
     wsServer,
   )
 
-  useExpressMiddleware(app, apolloServer, serverContext)
+  addExpressMiddleware(app, apolloServer, serverContext)
 
   return {
     apolloServer,
@@ -134,3 +134,5 @@ export default async (serverContext: ServerContext) => {
     wsServer,
   }
 }
+
+export default server

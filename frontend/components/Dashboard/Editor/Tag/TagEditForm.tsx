@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react"
+import { useRef } from "react"
 
 import { omit } from "lodash"
 import { FormProvider, useForm } from "react-hook-form"
@@ -42,11 +42,44 @@ function toTagValues(tags: TagCoreFieldsFragment[]) {
   }))
 }
 
+const conditions: ControlledFieldArrayListProps<
+  TagValues,
+  "tag_translations"
+>["conditions"] = {
+  add: (values) => values?.[values.length - 1]?.name !== "",
+  remove: (item) => !item._id && item.name === "",
+}
+
 const initialTagTranslation = {
   language: "",
   name: "",
   description: "",
 }
+
+const renderArrayListItem: ControlledFieldArrayListProps<
+  TagValues,
+  "tag_translations"
+>["render"] = ({ item, index }) => (
+  <>
+    <ControlledTextField
+      name={`tag_translations.${index}.language`}
+      label="language"
+      required
+      defaultValue={item.language}
+    />
+    <ControlledTextField
+      name={`tag_translations.${index}.name`}
+      label="name"
+      required
+      defaultValue={item.name}
+    />
+    <ControlledTextField
+      name={`tag_translations.${index}.description`}
+      label="description"
+      defaultValue={item.description}
+    />
+  </>
+)
 
 function TagEditor({ tags }: TagEditorProps) {
   const initialValues = useRef(toTagValues(tags))
@@ -54,45 +87,6 @@ function TagEditor({ tags }: TagEditorProps) {
   const methods = useForm({
     defaultValues: initialValues.current,
   })
-
-  const conditions: ControlledFieldArrayListProps<
-    TagValues,
-    "tag_translations"
-  >["conditions"] = useMemo(
-    () => ({
-      add: (values) => values?.[values.length - 1]?.name !== "",
-      remove: (item) => !item._id && item.name === "",
-    }),
-    [],
-  )
-
-  const renderArrayListItem: ControlledFieldArrayListProps<
-    TagValues,
-    "tag_translations"
-  >["render"] = useCallback(
-    ({ item, index }) => (
-      <>
-        <ControlledTextField
-          name={`tag_translations.${index}.language`}
-          label="language"
-          required
-          defaultValue={item.language}
-        />
-        <ControlledTextField
-          name={`tag_translations.${index}.name`}
-          label="name"
-          required
-          defaultValue={item.name}
-        />
-        <ControlledTextField
-          name={`tag_translations.${index}.description`}
-          label="description"
-          defaultValue={item.description}
-        />
-      </>
-    ),
-    [],
-  )
 
   return (
     <FormProvider {...methods}>

@@ -1,3 +1,4 @@
+import { groupBy } from "lodash"
 import {
   arg,
   extendType,
@@ -14,16 +15,31 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
+import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
+import {
+  BAIExerciseCount,
+  pointsNeeded as BAIPointsNeeded,
+  requiredByTier as BAIRequiredByTier,
+  BAITierNameToId,
+  BAItiers,
+  exerciseCompletionsNeeded,
+} from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
 import { getCourseOrAlias } from "../util/db-functions"
+import { notEmpty } from "../util/notEmpty"
 
 // progress seems not to be uniform, let's try to normalize it a bit
 const normalizeProgress = <T extends object | Prisma.JsonValue>(
   data?: T | T[],
-): T[] =>
-  (data ? (Array.isArray(data) ? data : [data]) : []).filter((p) =>
+): T[] => {
+  if (!data) {
+    return []
+  }
+
+  return (Array.isArray(data) ? data : [data]).filter((p) =>
     p?.hasOwnProperty("progress"),
   )
+}
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -40,10 +56,11 @@ export const UserCourseProgress = objectType({
     t.model.user_id()
     t.model.user()
     t.model.user_course_service_progresses()
-    t.model.extra()
 
-    t.list.nonNull.field("progress", {
+    // compatibility for older queries
+    t.nonNull.list.nonNull.field("progress", {
       type: "Json",
+      deprecation: "use points_by_group",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseProgress.findUnique({
           where: { id: parent.id },
@@ -52,6 +69,19 @@ export const UserCourseProgress = objectType({
 
         // TODO/FIXME: do we want to return progresses that might not have "progress" field?
         return normalizeProgress(res?.progress)
+      },
+    })
+
+    t.nonNull.list.nonNull.field("points_by_group", {
+      type: "PointsByGroup",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.prisma.userCourseProgress.findUnique({
+          where: { id: parent.id },
+          select: { progress: true },
+        })
+
+        // TODO/FIXME: do we want to return progresses that might not have "progress" field?
+        return normalizeProgress(res?.progress as any)
       },
     })
 
@@ -95,19 +125,29 @@ export const UserCourseProgress = objectType({
         }
 
         const exercises = await ctx.prisma.$queryRaw<
-          Array<{ exercise_id: string; exercise_completion_id: string | null }>
+          Array<{
+            exercise_id: string
+            exercise_completion_id: string | null
+            completed: boolean | null
+            attempted: boolean | null
+          }>
         >(Prisma.sql`
-          select e.id as exercise_id, ecs.id as exercise_completion_id
+          select e.id as exercise_id,
+                 ecs.id as exercise_completion_id,
+                 completed,
+                 attempted
             from exercise e
             full outer join (
               select
-                ec.id, ec.exercise_id,
-                row_number() over (partition by ec.exercise_id order by ec.timestamp desc, ec.updated_at desc) as row
+                ec.id, ec.exercise_id, completed, attempted,
+                row_number() over (
+                  partition by ec.exercise_id
+                  order by ec.timestamp desc, ec.updated_at desc
+                ) as row
               from exercise_completion ec
               join exercise e on ec.exercise_id = e.id
               where ec.user_id = ${user_id}
               and e.course_id = ${course_id}
-              and ec.completed = true
             ) ecs on ecs.exercise_id = e.id and row = 1
           where e.course_id = ${course_id}
           and e.deleted <> true
@@ -115,7 +155,10 @@ export const UserCourseProgress = objectType({
         `)
 
         const completedExerciseCount = exercises.filter(
-          (e) => e.exercise_completion_id,
+          (e) => e.exercise_completion_id && e.completed,
+        ).length
+        const attemptedExerciseCount = exercises.filter(
+          (e) => e.exercise_completion_id && e.attempted,
         ).length
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const totalProgress = (n_points || 0) / (max_points || 1)
@@ -127,6 +170,88 @@ export const UserCourseProgress = objectType({
           exercises: exerciseProgress,
           exercise_count: exercises.length,
           exercises_completed_count: completedExerciseCount,
+          exercises_attempted_count: attemptedExerciseCount,
+        }
+      },
+    })
+
+    t.field("extra", {
+      type: "ProgressExtra",
+      resolve: async ({ id, user_id }, _, ctx) => {
+        const progress = await ctx.prisma.userCourseProgress.findUnique({
+          where: {
+            id,
+          },
+        })
+
+        if (!progress?.extra || !user_id) {
+          return null
+        }
+
+        const extra = progress.extra as unknown as ProgressExtra
+        const tiers = Object.keys(extra.tiers).map((key) => {
+          const tier = BAITierNameToId[key] ?? 0
+          const requiredByTier = BAIRequiredByTier[tier] ?? 0
+          const { exerciseCompletions } = extra.tiers[key]
+          const exercisesNeededPercentage =
+            requiredByTier > 0
+              ? Math.min((exerciseCompletions ?? 0) / requiredByTier, 1)
+              : 1
+          const exercisePercentage = exerciseCompletions / BAIExerciseCount
+
+          return {
+            id: BAItiers[tier],
+            name: key,
+            tier,
+            requiredByTier,
+            exerciseCount: BAIExerciseCount,
+            exercisePercentage,
+            exercisesNeededPercentage,
+            ...extra.tiers[key],
+          }
+        })
+        const exercisesFromTiers = await ctx.prisma.exercise.findMany({
+          where: {
+            custom_id: {
+              in: Object.values(extra.exercises)
+                .map((e) => e.custom_id)
+                .filter(notEmpty),
+            },
+          },
+        })
+        const exerciseMap = groupBy(exercisesFromTiers, "custom_id")
+
+        const exercises = Object.keys(extra.exercises).map((key) => ({
+          exercise_number: Number(key),
+          user_id,
+          exercise_id:
+            exerciseMap[extra.exercises[key].custom_id ?? ""]?.[0]?.id,
+          exercise: exerciseMap[extra.exercises[key].custom_id ?? ""]?.[0],
+          ...extra.exercises[key],
+        }))
+        const n_points = exercises.reduce((acc, curr) => acc + curr.n_points, 0)
+        const max_points = BAIExerciseCount
+        const exercisePercentage = exercises.length / BAIExerciseCount
+        const pointsPercentage = n_points / max_points
+        const pointsNeededPercentage = Math.min(n_points / BAIPointsNeeded, 1)
+        const exercisesNeededPercentage = Math.min(
+          exercises.length / exerciseCompletionsNeeded,
+          1,
+        )
+
+        return {
+          ...extra,
+          n_points,
+          max_points,
+          pointsNeeded: BAIPointsNeeded,
+          exercisePercentage,
+          pointsPercentage,
+          pointsNeededPercentage,
+          exercisesNeededPercentage,
+          totalExerciseCount: BAIExerciseCount,
+          totalExerciseCompletionsNeeded: exerciseCompletionsNeeded,
+          tiers,
+          exercises,
         }
       },
     })
@@ -231,7 +356,7 @@ export const UserCourseProgressMutations = extendType({
         progress: list(
           nonNull(
             arg({
-              type: "PointsByGroup",
+              type: "PointsByGroupInput",
             }),
           ),
         ),

@@ -9,27 +9,6 @@ export const headerFontDeclaration = {
   fontWeight: "300",
 }
 
-/*export const openSansCondensed = localFont({
-  src: [
-    {
-      path: "../public/fonts/open-sans-condensed-v14-latin-300.ttf",
-      style: "normal",
-      weight: "300",
-    },
-    {
-      path: "../public/fonts/open-sans-condensed-v14-latin-300italic.ttf",
-      style: "italic",
-      weight: "300",
-    },
-    {
-      path: "../public/fonts/open-sans-condensed-v14-latin-700.ttf",
-      style: "normal",
-      weight: "700",
-    },
-  ],
-  variable: "--header-font",
-})*/
-
 export const fontVariableClass = `${headerFont.variable} ${bodyFont.variable}`
 
 export const withTypography = (theme: Theme) =>
@@ -83,6 +62,13 @@ export const withTypography = (theme: Theme) =>
         fontSize: 14,
         "@media (min-width: 600px)": {
           fontSize: 16,
+        },
+      },
+      h6: {
+        ...headerFontDeclaration,
+        fontSize: 10,
+        "@media (min-width: 600px)": {
+          fontSize: 12,
         },
       },
       subtitle1: {

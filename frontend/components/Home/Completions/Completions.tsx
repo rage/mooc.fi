@@ -29,6 +29,10 @@ const Title = styled(Typography)`
   }
 ` as typeof Typography
 
+const CompletionsContainer = styled(Container)`
+  max-width: 900px;
+`
+
 export const Completions = ({ completions }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
 
@@ -38,7 +42,7 @@ export const Completions = ({ completions }: CompletionsProps) => {
         {t("completionsTitle")}
       </Title>
 
-      <Container style={{ maxWidth: 900 }}>
+      <CompletionsContainer>
         {completions?.filter(completionHasCourse).map((completion) => (
           <CompletionListItem
             key={completion.id}
@@ -47,11 +51,11 @@ export const Completions = ({ completions }: CompletionsProps) => {
           />
         ))}
         {!(completions?.length ?? 0) && (
-          <Typography style={{ textAlign: "center" }} variant="body2">
+          <Typography sx={{ textAlign: "center" }} variant="body2">
             {t("nocompletionsText")}
           </Typography>
         )}
-      </Container>
+      </CompletionsContainer>
     </section>
   )
 }

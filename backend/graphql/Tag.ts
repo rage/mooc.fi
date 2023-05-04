@@ -288,23 +288,23 @@ export const TagMutations = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id, hidden, types, translations }, ctx) => {
-        const { tag_translations, tag_types } =
-          (await ctx.prisma.tag.findUnique({
-            where: { id },
-            select: {
-              tag_translations: true,
-              tag_types: true,
-            },
-          })) ?? {}
+        const tag = await ctx.prisma.tag.findUnique({
+          where: { id },
+          select: {
+            tag_translations: true,
+            tag_types: true,
+          },
+        })
+        const { tag_translations, tag_types } = tag ?? {}
 
         const data = {} as Prisma.TagUpdateInput
 
         if (translations?.length) {
-          const translationsToCreate = translations?.filter(
-            (translation) => !Boolean(translation.tag_id),
+          const translationsToCreate = translations.filter(
+            (translation) => !translation.tag_id,
           )
           const translationsToUpdate = translations
-            ?.filter((translation) => Boolean(translation.tag_id))
+            .filter((translation) => Boolean(translation.tag_id))
             .map((translation) => ({
               where: {
                 tag_id: translation.tag_id ?? undefined,
@@ -328,14 +328,14 @@ export const TagMutations = extendType({
         }
 
         if (types) {
-          const typesToConnect = types?.filter(
-            (name) => !Boolean(tag_types?.find((t) => t.name === name)),
+          const typesToConnect = types.filter(
+            (name) => !tag_types?.find((t) => t.name === name),
           )
           const typesToDisconnect = tag_types?.filter(
-            (type) => !types?.some((t) => t === type.name),
+            (type) => !types.some((t) => t === type.name),
           )
           data.tag_types = {
-            connect: typesToConnect?.map((name) => ({ name })),
+            connect: typesToConnect.map((name) => ({ name })),
             disconnect: typesToDisconnect,
           }
         }
@@ -361,6 +361,26 @@ export const TagMutations = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {
+        const existingTag = await ctx.prisma.tag.findUnique({
+          where: { id },
+          include: {
+            tag_types: true,
+            courses: true,
+          },
+        })
+
+        if (
+          existingTag?.tag_types?.map((tt) => tt.name).includes("language") &&
+          existingTag?.courses?.length > 0
+        ) {
+          await ctx.prisma.course.updateMany({
+            where: { id: { in: existingTag.courses.map((c) => c.id) } },
+            data: {
+              language: { set: null },
+            },
+          })
+        }
+
         return ctx.prisma.tag.delete({
           where: {
             id,

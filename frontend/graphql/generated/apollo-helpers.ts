@@ -483,7 +483,9 @@ export type ExerciseCompletionKeySpecifier = (
   | "exercise_completion_required_actions"
   | "exercise_id"
   | "id"
+  | "max_points"
   | "n_points"
+  | "tier"
   | "timestamp"
   | "updated_at"
   | "user"
@@ -500,7 +502,9 @@ export type ExerciseCompletionFieldPolicy = {
     | FieldReadFunction<any>
   exercise_id?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
+  max_points?: FieldPolicy<any> | FieldReadFunction<any>
   n_points?: FieldPolicy<any> | FieldReadFunction<any>
+  tier?: FieldPolicy<any> | FieldReadFunction<any>
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
   user?: FieldPolicy<any> | FieldReadFunction<any>
@@ -522,6 +526,7 @@ export type ExerciseCompletionRequiredActionFieldPolicy = {
 export type ExerciseProgressKeySpecifier = (
   | "exercise_count"
   | "exercises"
+  | "exercises_attempted_count"
   | "exercises_completed_count"
   | "total"
   | ExerciseProgressKeySpecifier
@@ -529,6 +534,7 @@ export type ExerciseProgressKeySpecifier = (
 export type ExerciseProgressFieldPolicy = {
   exercise_count?: FieldPolicy<any> | FieldReadFunction<any>
   exercises?: FieldPolicy<any> | FieldReadFunction<any>
+  exercises_attempted_count?: FieldPolicy<any> | FieldReadFunction<any>
   exercises_completed_count?: FieldPolicy<any> | FieldReadFunction<any>
   total?: FieldPolicy<any> | FieldReadFunction<any>
 }
@@ -729,6 +735,7 @@ export type OrganizationKeySpecifier = (
   | "logo_file_name"
   | "logo_file_size"
   | "logo_updated_at"
+  | "name"
   | "organization_translations"
   | "phone"
   | "pinned"
@@ -759,6 +766,7 @@ export type OrganizationFieldPolicy = {
   logo_file_name?: FieldPolicy<any> | FieldReadFunction<any>
   logo_file_size?: FieldPolicy<any> | FieldReadFunction<any>
   logo_updated_at?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
   organization_translations?: FieldPolicy<any> | FieldReadFunction<any>
   phone?: FieldPolicy<any> | FieldReadFunction<any>
   pinned?: FieldPolicy<any> | FieldReadFunction<any>
@@ -808,6 +816,19 @@ export type PageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>
 }
+export type PointsByGroupKeySpecifier = (
+  | "group"
+  | "max_points"
+  | "n_points"
+  | "progress"
+  | PointsByGroupKeySpecifier
+)[]
+export type PointsByGroupFieldPolicy = {
+  group?: FieldPolicy<any> | FieldReadFunction<any>
+  max_points?: FieldPolicy<any> | FieldReadFunction<any>
+  n_points?: FieldPolicy<any> | FieldReadFunction<any>
+  progress?: FieldPolicy<any> | FieldReadFunction<any>
+}
 export type ProgressKeySpecifier = (
   | "course"
   | "course_id"
@@ -824,6 +845,39 @@ export type ProgressFieldPolicy = {
   user_course_progress?: FieldPolicy<any> | FieldReadFunction<any>
   user_course_service_progresses?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
+}
+export type ProgressExtraKeySpecifier = (
+  | "exercisePercentage"
+  | "exercises"
+  | "exercisesNeededPercentage"
+  | "highestTier"
+  | "max_points"
+  | "n_points"
+  | "pointsNeeded"
+  | "pointsNeededPercentage"
+  | "pointsPercentage"
+  | "projectCompletion"
+  | "tiers"
+  | "totalExerciseCompletions"
+  | "totalExerciseCompletionsNeeded"
+  | "totalExerciseCount"
+  | ProgressExtraKeySpecifier
+)[]
+export type ProgressExtraFieldPolicy = {
+  exercisePercentage?: FieldPolicy<any> | FieldReadFunction<any>
+  exercises?: FieldPolicy<any> | FieldReadFunction<any>
+  exercisesNeededPercentage?: FieldPolicy<any> | FieldReadFunction<any>
+  highestTier?: FieldPolicy<any> | FieldReadFunction<any>
+  max_points?: FieldPolicy<any> | FieldReadFunction<any>
+  n_points?: FieldPolicy<any> | FieldReadFunction<any>
+  pointsNeeded?: FieldPolicy<any> | FieldReadFunction<any>
+  pointsNeededPercentage?: FieldPolicy<any> | FieldReadFunction<any>
+  pointsPercentage?: FieldPolicy<any> | FieldReadFunction<any>
+  projectCompletion?: FieldPolicy<any> | FieldReadFunction<any>
+  tiers?: FieldPolicy<any> | FieldReadFunction<any>
+  totalExerciseCompletions?: FieldPolicy<any> | FieldReadFunction<any>
+  totalExerciseCompletionsNeeded?: FieldPolicy<any> | FieldReadFunction<any>
+  totalExerciseCount?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type QueryKeySpecifier = (
   | "completions"
@@ -1101,6 +1155,66 @@ export type TagTypeFieldPolicy = {
   tags?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 }
+export type TierInfoKeySpecifier = (
+  | "exerciseCompletions"
+  | "exerciseCount"
+  | "exercisePercentage"
+  | "exercisesNeededPercentage"
+  | "hasTier"
+  | "id"
+  | "missingFromTier"
+  | "name"
+  | "requiredByTier"
+  | "tier"
+  | TierInfoKeySpecifier
+)[]
+export type TierInfoFieldPolicy = {
+  exerciseCompletions?: FieldPolicy<any> | FieldReadFunction<any>
+  exerciseCount?: FieldPolicy<any> | FieldReadFunction<any>
+  exercisePercentage?: FieldPolicy<any> | FieldReadFunction<any>
+  exercisesNeededPercentage?: FieldPolicy<any> | FieldReadFunction<any>
+  hasTier?: FieldPolicy<any> | FieldReadFunction<any>
+  id?: FieldPolicy<any> | FieldReadFunction<any>
+  missingFromTier?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
+  requiredByTier?: FieldPolicy<any> | FieldReadFunction<any>
+  tier?: FieldPolicy<any> | FieldReadFunction<any>
+}
+export type TierProgressKeySpecifier = (
+  | "course"
+  | "course_id"
+  | "custom_id"
+  | "exercise"
+  | "exercise_completions"
+  | "exercise_id"
+  | "exercise_number"
+  | "max_points"
+  | "n_points"
+  | "name"
+  | "progress"
+  | "service"
+  | "service_id"
+  | "tier"
+  | "user_id"
+  | TierProgressKeySpecifier
+)[]
+export type TierProgressFieldPolicy = {
+  course?: FieldPolicy<any> | FieldReadFunction<any>
+  course_id?: FieldPolicy<any> | FieldReadFunction<any>
+  custom_id?: FieldPolicy<any> | FieldReadFunction<any>
+  exercise?: FieldPolicy<any> | FieldReadFunction<any>
+  exercise_completions?: FieldPolicy<any> | FieldReadFunction<any>
+  exercise_id?: FieldPolicy<any> | FieldReadFunction<any>
+  exercise_number?: FieldPolicy<any> | FieldReadFunction<any>
+  max_points?: FieldPolicy<any> | FieldReadFunction<any>
+  n_points?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
+  progress?: FieldPolicy<any> | FieldReadFunction<any>
+  service?: FieldPolicy<any> | FieldReadFunction<any>
+  service_id?: FieldPolicy<any> | FieldReadFunction<any>
+  tier?: FieldPolicy<any> | FieldReadFunction<any>
+  user_id?: FieldPolicy<any> | FieldReadFunction<any>
+}
 export type UserKeySpecifier = (
   | "ab_enrollments"
   | "administrator"
@@ -1192,6 +1306,7 @@ export type UserCourseProgressKeySpecifier = (
   | "id"
   | "max_points"
   | "n_points"
+  | "points_by_group"
   | "progress"
   | "updated_at"
   | "user"
@@ -1209,6 +1324,7 @@ export type UserCourseProgressFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>
   max_points?: FieldPolicy<any> | FieldReadFunction<any>
   n_points?: FieldPolicy<any> | FieldReadFunction<any>
+  points_by_group?: FieldPolicy<any> | FieldReadFunction<any>
   progress?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
   user?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1221,6 +1337,7 @@ export type UserCourseServiceProgressKeySpecifier = (
   | "course_id"
   | "created_at"
   | "id"
+  | "points_by_group"
   | "progress"
   | "service"
   | "service_id"
@@ -1237,6 +1354,7 @@ export type UserCourseServiceProgressFieldPolicy = {
   course_id?: FieldPolicy<any> | FieldReadFunction<any>
   created_at?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
+  points_by_group?: FieldPolicy<any> | FieldReadFunction<any>
   progress?: FieldPolicy<any> | FieldReadFunction<any>
   service?: FieldPolicy<any> | FieldReadFunction<any>
   service_id?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1315,6 +1433,8 @@ export type UserCourseSummaryKeySpecifier = (
   | "include_no_points_awarded_exercises"
   | "inherit_settings_from_id"
   | "start_date"
+  | "tier"
+  | "tier_summaries"
   | "user_course_progress"
   | "user_course_service_progresses"
   | "user_id"
@@ -1333,6 +1453,8 @@ export type UserCourseSummaryFieldPolicy = {
     | FieldReadFunction<any>
   inherit_settings_from_id?: FieldPolicy<any> | FieldReadFunction<any>
   start_date?: FieldPolicy<any> | FieldReadFunction<any>
+  tier?: FieldPolicy<any> | FieldReadFunction<any>
+  tier_summaries?: FieldPolicy<any> | FieldReadFunction<any>
   user_course_progress?: FieldPolicy<any> | FieldReadFunction<any>
   user_course_service_progresses?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1364,6 +1486,7 @@ export type UserOrganizationFieldPolicy = {
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type UserSearchKeySpecifier = (
+  | "allMatchIds"
   | "count"
   | "field"
   | "fieldCount"
@@ -1377,6 +1500,7 @@ export type UserSearchKeySpecifier = (
   | UserSearchKeySpecifier
 )[]
 export type UserSearchFieldPolicy = {
+  allMatchIds?: FieldPolicy<any> | FieldReadFunction<any>
   count?: FieldPolicy<any> | FieldReadFunction<any>
   field?: FieldPolicy<any> | FieldReadFunction<any>
   fieldCount?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1590,12 +1714,26 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | PageInfoKeySpecifier)
     fields?: PageInfoFieldPolicy
   }
+  PointsByGroup?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | PointsByGroupKeySpecifier
+      | (() => undefined | PointsByGroupKeySpecifier)
+    fields?: PointsByGroupFieldPolicy
+  }
   Progress?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
       | false
       | ProgressKeySpecifier
       | (() => undefined | ProgressKeySpecifier)
     fields?: ProgressFieldPolicy
+  }
+  ProgressExtra?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ProgressExtraKeySpecifier
+      | (() => undefined | ProgressExtraKeySpecifier)
+    fields?: ProgressExtraFieldPolicy
   }
   Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
@@ -1688,6 +1826,20 @@ export type StrictTypedTypePolicies = {
       | TagTypeKeySpecifier
       | (() => undefined | TagTypeKeySpecifier)
     fields?: TagTypeFieldPolicy
+  }
+  TierInfo?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | TierInfoKeySpecifier
+      | (() => undefined | TierInfoKeySpecifier)
+    fields?: TierInfoFieldPolicy
+  }
+  TierProgress?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | TierProgressKeySpecifier
+      | (() => undefined | TierProgressKeySpecifier)
+    fields?: TierProgressFieldPolicy
   }
   User?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier)

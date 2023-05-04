@@ -1,43 +1,54 @@
 import ClipboardIcon from "@fortawesome/fontawesome-free/svgs/regular/clipboard.svg?icon"
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
-import { IconButton, Tooltip } from "@mui/material"
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
+
+import { useClipboard } from "/hooks/useClipboard"
+import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 
 const StyledIconButton = styled(IconButton)`
   transition: all 1s ease-ease-in-out;
-
-  :not(disabled):hover {
-    cursor: pointer;
-  }
 `
+
 const iconStyle = css`
-  fill: #666;
   height: 1rem;
   transition: all 1s ease-ease-in-out;
 `
 
-interface ClipboardButtonProps {
-  isCopied?: boolean
-  onClick: () => void
-  disabled?: boolean
+interface ClipboardProps extends IconButtonProps {
+  data: unknown
+  tooltipText?: string
+  tooltipCopiedText?: string
+  SuccessIcon?: () => JSX.Element
+  Icon?: () => JSX.Element
 }
 
+const DefaultSuccessIcon = () => <CheckIcon css={iconStyle} color="success" />
+const DefaultIcon = () => <ClipboardIcon css={iconStyle} />
+
 const ClipboardButton = ({
-  isCopied,
-  onClick,
-  disabled,
-}: ClipboardButtonProps) => (
-  <Tooltip title={isCopied ? "Copied!" : "Copy to clipboard"}>
-    <span>
-      <StyledIconButton onClick={onClick}>
-        {isCopied && !disabled ? (
-          <CheckIcon css={iconStyle} />
-        ) : (
-          <ClipboardIcon css={iconStyle} />
-        )}
+  data,
+  tooltipText,
+  tooltipCopiedText,
+  SuccessIcon = DefaultSuccessIcon,
+  Icon = DefaultIcon,
+  ...props
+}: ClipboardProps) => {
+  const t = useTranslator(CommonTranslations)
+
+  tooltipText ??= t("copyToClipboard")
+  tooltipCopiedText ??= t("copiedToClipboard")
+
+  const { hasClipboard, isCopied, onCopyToClipboard } = useClipboard(data)
+
+  return (
+    <Tooltip title={isCopied ? tooltipCopiedText : tooltipText}>
+      <StyledIconButton onClick={onCopyToClipboard} {...props}>
+        {isCopied && hasClipboard ? <SuccessIcon /> : <Icon />}
       </StyledIconButton>
-    </span>
-  </Tooltip>
-)
+    </Tooltip>
+  )
+}
 
 export default ClipboardButton

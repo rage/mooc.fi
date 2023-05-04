@@ -26,7 +26,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
 
   const onExportClick = useCallback(async () => {
     try {
-      const { utils, writeFile } = await import("xlsx").then((p) => p)
+      const { utils, writeFile } = await import("xlsx")
       setInfotext("Downloading data")
       const data = await downloadInChunks(slug, client, setInfotext)
       setInfotext("constructing csv")
@@ -110,33 +110,51 @@ async function downloadInChunks(
   client: ApolloClient<object>,
   setMessage: React.Dispatch<React.SetStateAction<string>>,
 ): Promise<ExportUserCourseProgressesQuery["userCourseProgresses"]> {
-  const res: ExportUserCourseProgressesQuery["userCourseProgresses"] = []
-  // let after: string | undefined = undefined
-  let skip = 0
+  let finished = false
+  let res: ExportUserCourseProgressesQuery["userCourseProgresses"] = []
 
-  while (true) {
-    const { data } = await client.query({
+  // kludge to not block the UI
+  const download = async (
+    skip = 0,
+    innerRes: ExportUserCourseProgressesQuery["userCourseProgresses"] = [],
+  ) => {
+    const { data, error } = await client.query({
       query: ExportUserCourseProgressesDocument,
       variables: {
         course_slug: courseSlug,
         skip,
         take: 100,
         /*after: after, 
-        first: 100*/
+            first: 100*/
       },
     })
     const downloaded = data?.userCourseProgresses ?? []
+    if (error) {
+      finished = true
+      setMessage("Error downloading data")
+      return Promise.reject()
+    }
     if (downloaded.length === 0) {
-      break
+      finished = true
+      res = innerRes ?? []
+      return Promise.resolve()
     }
     //after = downloaded[downloaded.length - 1]?.id
     // console.log("After:", after)
     skip += downloaded.length
     console.log("Skip:", skip)
 
-    const nDownLoaded = res.push(...downloaded)
-    setMessage(`Downloaded progress for ${nDownLoaded} users...`)
+    const nDownloaded = innerRes?.push(...downloaded)
+    setMessage(`Downloaded progress for ${nDownloaded} users...`)
+    requestAnimationFrame(() => download(skip, innerRes))
   }
+  await (async () => {
+    requestAnimationFrame(() => download())
+    while (!finished) {
+      await new Promise((resolve) => setTimeout(resolve, 10))
+    }
+  })()
+
   return res
 }
 

@@ -1,8 +1,11 @@
 import { useCallback, useState } from "react"
 
+import { LinkProps } from "next/link"
+
 import WarningIcon from "@mui/icons-material/Warning"
 import {
   Button,
+  ButtonProps,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -14,6 +17,7 @@ import {
   Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -29,9 +33,10 @@ import {
 const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const StyledButton = styled(Button)`
-  margin: auto;
   background-color: #005361;
-`
+  text-align: center;
+  max-width: 20vw;
+` as typeof Button
 
 const StyledDialog = styled(Dialog)`
   padding: 1rem;
@@ -54,7 +59,11 @@ interface CertificateProps {
   completion: CompletionDetailedFieldsFragment
 }
 
-const CertificateButton = ({ course, completion }: CertificateProps) => {
+const CertificateButton = ({
+  course,
+  completion,
+  ...buttonProps
+}: CertificateProps & Partial<ButtonProps> & Partial<LinkProps>) => {
   const t = useTranslator(CompletionsTranslations)
   const { currentUser } = useLoginStateContext()
   const { addAlert } = useAlertContext()
@@ -69,7 +78,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       message: t("certificateGeneratedMessage"),
       severity: "success",
     })
-  }, [])
+  }, [t])
   const onReceiveGeneratedCertificateError = useCallback(() => {
     setDialogOpen(false)
     addAlert({
@@ -77,7 +86,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       message: t("nameFormErrorSubmit"),
       severity: "error",
     })
-  }, [])
+  }, [t])
 
   const {
     state,
@@ -103,20 +112,18 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
     [state.certificateId],
   )
 
-  const onDialogOpen = useCallback(() => setDialogOpen(true), [])
-  const onDialogClose = useCallback(() => setDialogOpen(false), [])
-  const onFirstNameChange = useCallback(
+  const onDialogOpen = useEventCallback(() => setDialogOpen(true))
+  const onDialogClose = useEventCallback(() => setDialogOpen(false))
+  const onFirstNameChange = useEventCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value),
-    [],
   )
-  const onLastNameChange = useCallback(
+  const onLastNameChange = useEventCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value),
-    [],
   )
 
   if (state.certificateId) {
     return (
-      <StyledButton onClick={onShowCertificate}>
+      <StyledButton onClick={onShowCertificate} {...buttonProps}>
         {t("showCertificate")}
       </StyledButton>
     )
@@ -142,7 +149,11 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
 
   return (
     <>
-      <StyledButton disabled={state.status !== "IDLE"} onClick={onDialogOpen}>
+      <StyledButton
+        disabled={state.status !== "IDLE"}
+        onClick={onDialogOpen}
+        {...buttonProps}
+      >
         {state.status !== "IDLE" ? (
           <CircularProgress size={24} color="secondary" />
         ) : (
@@ -157,7 +168,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       >
         <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
         <DialogContent>
-          <DialogContentText style={{ marginBottom: "1.5rem" }}>
+          <DialogContentText sx={{ marginBottom: "1.5rem" }}>
             {t("nameFormIntro")}
           </DialogContentText>
           <StyledTextField

@@ -1,70 +1,44 @@
-import { useMemo } from "react"
-
-import { sortBy } from "lodash"
-
+import { useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { SkeletonCourseEntry } from "./CourseEntry"
-import CourseList from "/components/Dashboard/Users/Summary/CourseList"
-import { useTranslator } from "/hooks/useTranslator"
-import CommonTranslations from "/translations/common"
+import { useUserPointsSummaryContext } from "./contexts"
+import { useCollapseContext } from "./contexts/CollapseContext"
+import { CourseEntry, CourseEntrySkeleton } from "./Course"
+import CourseSelectList from "./CourseSelectList"
 
-import {
-  EditorCoursesQueryVariables,
-  UserCourseSummaryCoreFieldsFragment,
-} from "/graphql/generated"
+const UserPointsSummaryContainer = styled("div")(
+  ({ theme }) => `
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 
-const DataPlaceholder = styled("div")`
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-`
-
-interface UserPointsSummaryProps {
-  data?: UserCourseSummaryCoreFieldsFragment[] | null
-  search?: EditorCoursesQueryVariables["search"]
-}
-
-function UserPointsSummary({ data, search }: UserPointsSummaryProps) {
-  const t = useTranslator(CommonTranslations)
-
-  // TODO: add search from other fields?
-  const filteredData = useMemo(() => {
-    if (!data) {
-      return []
-    }
-
-    if (!search) {
-      return sortBy(data, "course.name")
-    }
-
-    return sortBy(
-      data?.filter((entry) =>
-        entry?.course?.name
-          .trim()
-          .toLocaleLowerCase()
-          .includes(search.toLocaleLowerCase()),
-      ),
-      "course.name",
-    )
-  }, [search, data])
-
-  if (!data) {
-    return (
-      <>
-        <SkeletonCourseEntry key="skeleton-course-1" />
-        <SkeletonCourseEntry key="skeleton-course-2" />
-        <SkeletonCourseEntry key="skeleton-course-3" />
-      </>
-    )
+  ${theme.breakpoints.down("lg")} {
+    flex-direction: column;
   }
+`,
+)
+
+function UserPointsSummary() {
+  const { loading } = useUserPointsSummaryContext()
+  const { state } = useCollapseContext()
+  const isNarrow = useMediaQuery("(max-width: 800px)")
 
   return (
-    <>
-      {filteredData?.length === 0 && (
-        <DataPlaceholder>{t("noResults")}</DataPlaceholder>
+    <UserPointsSummaryContainer>
+      {!isNarrow && <CourseSelectList />}
+      {loading || state.loading ? (
+        <CourseEntrySkeleton />
+      ) : (
+        /*data?.length === 0 ? (
+        <Typography variant="h3" margin="0.5rem" p="0.5rem">
+          {t("noResults")}
+        </Typography>
+      ) : */ <CourseEntry />
       )}
-      <CourseList data={filteredData} />
-    </>
+      {/*filteredData.map((entry, index) => (
+            <CourseEntry key={entry.course?.id ?? index} data={entry} />
+          ))*/}
+    </UserPointsSummaryContainer>
   )
 }
 
