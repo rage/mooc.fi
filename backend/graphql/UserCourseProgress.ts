@@ -189,27 +189,29 @@ export const UserCourseProgress = objectType({
         }
 
         const extra = progress.extra as unknown as ProgressExtra
-        const tiers = Object.keys(extra.tiers ?? {}).map((key) => {
-          const tier = BAITierNameToNumber[key] ?? 0
-          const requiredByTier = BAIRequiredByTier[tier] ?? 0
-          const { exerciseCompletions } = extra.tiers?.[key] ?? {}
-          const exercisesNeededPercentage =
-            requiredByTier > 0
-              ? Math.min((exerciseCompletions ?? 0) / requiredByTier, 1)
-              : 1
-          const exercisePercentage = exerciseCompletions / BAIExerciseCount
+        const tiers = Object.entries(extra.tiers ?? {}).map(
+          ([tierKey, tierValue]) => {
+            const tier = BAITierNameToNumber[tierKey] ?? 0
+            const requiredByTier = BAIRequiredByTier[tier] ?? 0
+            const { exerciseCompletions } = tierValue ?? {}
+            const exercisesNeededPercentage =
+              requiredByTier > 0
+                ? Math.min((exerciseCompletions ?? 0) / requiredByTier, 1)
+                : 1
+            const exercisePercentage = exerciseCompletions / BAIExerciseCount
 
-          return {
-            id: BAItiers[tier],
-            name: key,
-            tier,
-            requiredByTier,
-            exerciseCount: BAIExerciseCount,
-            exercisePercentage,
-            exercisesNeededPercentage,
-            ...extra.tiers?.[key],
-          }
-        })
+            return {
+              id: BAItiers[tier],
+              name: tierKey,
+              tier,
+              requiredByTier,
+              exerciseCount: BAIExerciseCount,
+              exercisePercentage,
+              exercisesNeededPercentage,
+              ...tierValue,
+            }
+          },
+        )
         const exercisesFromTiers = await ctx.prisma.exercise.findMany({
           where: {
             custom_id: {
