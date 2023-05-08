@@ -17,9 +17,5 @@ export const MessageYupSchema = yup.object().shape({
     .min(CURRENT_MESSAGE_FORMAT_VERSION)
     .max(CURRENT_MESSAGE_FORMAT_VERSION)
     .required(),
-  original_submission_date: yup.date().when("attempted", {
-    is: true,
-    then: (schema) => schema.required(),
-    otherwise: (schema) => schema.nullable().notRequired(),
-  }),
+  original_submission_date: yup.date(),
 })
