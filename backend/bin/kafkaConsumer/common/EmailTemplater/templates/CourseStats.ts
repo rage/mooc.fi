@@ -174,13 +174,17 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
           Prisma.sql`course_id = ${
             course.completions_handled_by_id ?? course.id
           }`,
+          Prisma.sql`user_id IS NOT NULL`,
         ]
         if (completionLanguage) {
           conditions.push(
             Prisma.sql`completion_language = ${completionLanguage}`,
           )
         }
-        const where = Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
+        const whereConditions = Prisma.sql`WHERE ${Prisma.join(
+          conditions,
+          " AND ",
+        )}`
         const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
             SELECT DISTINCT u.email
               FROM exercise_completion ec
@@ -194,8 +198,7 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
                 u.id NOT IN (
                   SELECT DISTINCT(user_id)
                     FROM completion c
-                    ${where}
-                    AND user_id IS NOT NULL;
+                    ${whereConditions}
                 );
             `
         return result?.map((entry) => entry.email).join("\n")
