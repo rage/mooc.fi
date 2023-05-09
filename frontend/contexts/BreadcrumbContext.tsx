@@ -31,7 +31,7 @@ export const BreadcrumbProvider = React.memo(function BreadcrumbProvider({
   const [breadcrumbs, setBreadcrumbs] = useState<Array<Breadcrumb>>([])
 
   const breadcrumbContextValue = useMemo(
-    () => ({ breadcrumbs: breadcrumbs, setBreadcrumbs }),
+    () => ({ breadcrumbs, setBreadcrumbs }),
     [breadcrumbs],
   )
 

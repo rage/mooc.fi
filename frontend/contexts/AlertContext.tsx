@@ -6,22 +6,29 @@ export interface Alert {
   id?: number
   title?: string
   message?: string
-  component?: JSX.Element
+  component?: React.JSX.Element
   severity?: "error" | "warning" | "info" | "success"
   ignorePages?: string[]
 }
 
 export interface AlertState {
   alerts: Alert[]
-  addAlert: (alert: Alert) => void
-  removeAlert: (alert: Alert) => void
   nextAlertId: number
 }
 
-export const AlertContext = createContext<AlertState>({
+export interface AlertContextType extends AlertState {
+  addAlert: (alert: Alert) => void
+  removeAlert: (alert: Alert) => void
+}
+
+const Nop = () => {
+  /* */
+}
+
+export const AlertContext = createContext<AlertContextType>({
   alerts: [],
-  addAlert: (_: Alert) => void 0,
-  removeAlert: (_: Alert) => void 0,
+  addAlert: Nop,
+  removeAlert: Nop,
   nextAlertId: 0,
 })
 
@@ -71,19 +78,16 @@ export const AlertProvider = React.memo(function AlertProvider({
 
   const [state, dispatch] = useReducer(reducer, {
     alerts: [] as Array<Alert>,
-    addAlert,
-    removeAlert,
     nextAlertId: 0,
   })
 
   const alertContextValue = useMemo(
     () => ({
-      alerts: state.alerts,
+      ...state,
       addAlert,
       removeAlert,
-      nextAlertId: state.nextAlertId,
     }),
-    [state.alerts, state.nextAlertId],
+    [state],
   )
 
   return (

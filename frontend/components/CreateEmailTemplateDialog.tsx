@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useId, useMemo, useState } from "react"
 
 import { omit } from "lodash"
 import Router from "next/router"
@@ -48,6 +48,7 @@ const CreateEmailTemplateDialog = ({
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
   const client = useApolloClient()
+  const dialogTitleId = useId()
 
   const handleDialogClickOpen = () => {
     setOpenDialog(true)
@@ -147,9 +148,9 @@ const CreateEmailTemplateDialog = ({
       <Dialog
         open={openDialog}
         onClose={handleDialogClose}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby={dialogTitleId}
       >
-        <DialogTitle id="form-dialog-title">Create</DialogTitle>
+        <DialogTitle id={dialogTitleId}>Create</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Name your new Email Template. This will create new Email Template

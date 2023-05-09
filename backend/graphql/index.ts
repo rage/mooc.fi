@@ -1,4 +1,4 @@
-// generated Tue Apr 18 2023 11:16:42 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Tue May 09 2023 18:56:50 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"

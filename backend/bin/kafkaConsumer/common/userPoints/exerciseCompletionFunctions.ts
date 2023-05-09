@@ -89,7 +89,7 @@ export const getCreatedAndUpdatedExerciseCompletions = async <
   if (messagesWithoutExerciseId.length > 0) {
     return err(
       new ValidationError(
-        "Messages do not contain an exercise id",
+        "Some messages do not contain an exercise id",
         messagesWithoutExerciseId,
       ),
     )

@@ -123,25 +123,23 @@ function CourseInstanceLanguageSelector(
           InputProps={{
             ...params?.InputProps,
             endAdornment: (
-              <>
-                <InputAdornment
-                  position="end"
-                  className="MuiAutocomplete-endAdornment"
-                >
-                  <InfoTooltipWithLabel
-                    label={t("courseInstanceLanguage")}
-                    title={t("helpCourseInstanceLanguage")}
-                  />
-                  <RevertButton
-                    disabled={
-                      !defaultValues["language"] ||
-                      field.value === defaultValues["language"]
-                    }
-                    onRevert={onRevert}
-                  />
-                  {params?.InputProps?.endAdornment}
-                </InputAdornment>
-              </>
+              <InputAdornment
+                position="end"
+                className="MuiAutocomplete-endAdornment"
+              >
+                <RevertButton
+                  disabled={
+                    !defaultValues["language"] ||
+                    field.value === defaultValues["language"]
+                  }
+                  onRevert={onRevert}
+                />
+                <InfoTooltipWithLabel
+                  label={t("courseInstanceLanguage")}
+                  title={t("helpCourseInstanceLanguage")}
+                />
+                {params?.InputProps?.endAdornment}
+              </InputAdornment>
             ),
           }}
         />

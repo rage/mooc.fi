@@ -141,8 +141,8 @@ export function FAQComponent({
 interface FAQPageProps {
   error: boolean
   meta?: {
-    title?: JSX.Element | string
-    ingress?: JSX.Element | string
+    title?: React.JSX.Element | string
+    ingress?: React.JSX.Element | string
   }
 }
 

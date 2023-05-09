@@ -6,7 +6,7 @@ import { FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 interface ModuleDisplayProps {
   name: string
-  description: string | JSX.Element
+  description: string | React.JSX.Element
   orderedCourses?: FrontpageCourseFieldsFragment[]
 }
 

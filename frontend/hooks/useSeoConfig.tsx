@@ -12,14 +12,13 @@ const defaultSeoConfig: DefaultSeoProps = {
 }
 
 export default function useSeoConfig() {
-  const router = useRouter()
+  const { pathname, asPath } = useRouter()
   const t = useTranslator(PagesTranslations)
 
   const seoConfig = useMemo(() => {
     const titleTemplates = t("titleTemplate")
     const titleTemplate =
-      titleTemplates?.[router?.pathname ?? ""] ??
-      titleTemplates?.[router?.asPath ?? ""]
+      titleTemplates?.[pathname ?? ""] ?? titleTemplates?.[asPath ?? ""]
 
     if (titleTemplate) {
       return {
@@ -29,7 +28,7 @@ export default function useSeoConfig() {
       }
     }
     return defaultSeoConfig
-  }, [router.pathname, t])
+  }, [pathname, asPath, t])
 
   return seoConfig
 }

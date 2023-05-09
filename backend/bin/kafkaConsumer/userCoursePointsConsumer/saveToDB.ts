@@ -18,20 +18,20 @@ export const saveToDatabase = async (
 
   logger.info("Handling message: " + JSON.stringify(message))
   const maybeTimestamp = getTimestamp(context, message)
-  const maybeUser = await getUser(context, message)
-  const maybeCourse = await getCourse(context, message)
-  const maybeCreatedAndUpdatedExerciseCompletions =
-    await getCreatedAndUpdatedExerciseCompletions(context, message)
-
   if (maybeTimestamp.isErr()) {
     return maybeTimestamp
   }
+  const maybeUser = await getUser(context, message)
   if (maybeUser.isErr()) {
     return maybeUser
   }
+  const maybeCourse = await getCourse(context, message)
   if (maybeCourse.isErr()) {
     return maybeCourse
   }
+  const maybeCreatedAndUpdatedExerciseCompletions =
+    await getCreatedAndUpdatedExerciseCompletions(context, message)
+
   if (maybeCreatedAndUpdatedExerciseCompletions.isErr()) {
     return maybeCreatedAndUpdatedExerciseCompletions
   }

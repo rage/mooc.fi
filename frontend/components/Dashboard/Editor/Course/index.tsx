@@ -9,6 +9,7 @@ import {
   type PureQueryOptions,
 } from "@apollo/client"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useEventCallback } from "@mui/material/utils"
 
 import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
@@ -144,9 +145,9 @@ function CourseEditor() {
     [t, tab, setTab],
   )
 
-  const onCancel = useCallback(() => {
+  const onCancel = useEventCallback(() => {
     router.push("/courses", undefined, { shallow: true })
-  }, [router])
+  })
 
   const onDelete = useCallback(async (id: string) => {
     await deleteCourse({ variables: { id } })

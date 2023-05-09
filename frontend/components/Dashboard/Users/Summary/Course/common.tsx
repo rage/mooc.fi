@@ -98,7 +98,7 @@ export const CourseEntryCard = ({
   ...cardProps
 }: PropsWithChildren<CourseEntryCardProps & CardProps>) => {
   const t = useTranslator(ProfileTranslations)
-  const router = useRouter()
+  const { asPath } = useRouter()
   const { admin } = useLoginStateContext()
   const { state, dispatch } = useCollapseContextCourse(course?.id ?? "_")
 
@@ -117,13 +117,13 @@ export const CourseEntryCard = ({
     if (!course) {
       return
     }
-    const basePath = router.asPath.split("?")[0].split("summary")[0]
+    const basePath = asPath.split("?")[0].split("summary")[0]
     const origin =
       typeof window !== "undefined" && window.location.origin
         ? window.location.origin
         : ""
     return `${origin}${basePath}summary/${course.slug}/`
-  }, [course, router])
+  }, [course, asPath])
 
   if (!course) {
     return (

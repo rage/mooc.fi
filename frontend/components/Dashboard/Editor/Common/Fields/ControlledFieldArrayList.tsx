@@ -65,7 +65,7 @@ export interface ControlledFieldArrayListProps<
   > = FieldArrayWithOptionalId<TFieldValues, TFieldArrayName, TKeyName>,
 > extends ControlledFieldArrayProps<TFieldValues, TFieldArrayName> {
   initialValues: UnwrapArray<FieldArrayPathValue<TFieldValues, TFieldArrayName>>
-  render: (props: RenderItemProps<TItem>) => JSX.Element
+  render: (props: RenderItemProps<TItem>) => React.JSX.Element
   conditions: {
     add: (item: Array<TItem>) => boolean
     remove: (item: TItem) => boolean

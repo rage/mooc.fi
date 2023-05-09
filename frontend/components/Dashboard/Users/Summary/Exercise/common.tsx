@@ -38,6 +38,7 @@ export type ExerciseRow = {
   section: number
   partSection: string
   points: string
+  max_points: number
   completed: boolean
   attempted: boolean
   exercise_completion_required_actions: ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"]

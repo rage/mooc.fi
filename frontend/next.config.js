@@ -1,5 +1,8 @@
 // @ts-check
 const path = require("path")
+
+const isProduction = process.env.NODE_ENV === "production"
+
 /** @type {NextPlugin} */
 let withStatoscope
 
@@ -110,9 +113,10 @@ const nextConfiguration = (_phase) => ({
   /**
    *
    * @param {import("webpack").Configuration} config
+   * @param {import("next/dist/server/config-shared").WebpackConfigContext} options
    * @returns {import("webpack").Configuration}
    */
-  webpack: (config) => {
+  webpack: (config, options) => {
     /*config.module.rules.push({
       test: /\.svg$/, // (svg|png|jpeg|jpg|gif|webp)
       type: "asset",
@@ -195,6 +199,15 @@ const nextConfiguration = (_phase) => ({
       "react-dom$": "react-dom/profiling",
     }
 
+    if (options.isServer) {
+      config.devtool = "source-map"
+    }
+
+    /*config.optimization = {
+      ...config.optimization,
+      minimize: false
+    }*/
+
     return config
   },
   /*eslint: {
@@ -203,15 +216,16 @@ const nextConfiguration = (_phase) => ({
   typescript: {
     ignoreBuildErrors: true,
   },*/
-  /*experimental: {
-    swcPlugins: [
+  experimental: {
+    ...(!isProduction && { logging: "verbose" }),
+    /*swcPlugins: [
       [
         "@graphql-codegen/client-preset-swc-plugin",
         { artifactDirectory: "./graphql/generated", gqlTagName: "gql" },
       ],
-    ],
-  },*/
-  // swcMinify: false
+    ],*/
+  },
+  // swcMinify: false,
   // productionBrowserSourceMaps: true,
 })
 

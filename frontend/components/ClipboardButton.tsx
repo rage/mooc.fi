@@ -1,3 +1,5 @@
+import React from "react"
+
 import ClipboardIcon from "@fortawesome/fontawesome-free/svgs/regular/clipboard.svg?icon"
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import { IconButton, IconButtonProps, Tooltip } from "@mui/material"
@@ -20,8 +22,8 @@ interface ClipboardProps extends IconButtonProps {
   data: unknown
   tooltipText?: string
   tooltipCopiedText?: string
-  SuccessIcon?: () => JSX.Element
-  Icon?: () => JSX.Element
+  SuccessIcon?: () => React.JSX.Element
+  Icon?: () => React.JSX.Element
 }
 
 const DefaultSuccessIcon = () => <CheckIcon css={iconStyle} color="success" />
@@ -43,11 +45,13 @@ const ClipboardButton = ({
   const { hasClipboard, isCopied, onCopyToClipboard } = useClipboard(data)
 
   return (
-    <Tooltip title={isCopied ? tooltipCopiedText : tooltipText}>
-      <StyledIconButton onClick={onCopyToClipboard} {...props}>
-        {isCopied && hasClipboard ? <SuccessIcon /> : <Icon />}
-      </StyledIconButton>
-    </Tooltip>
+    <span id={`clipboardbutton-${data}`}>
+      <Tooltip title={isCopied ? tooltipCopiedText : tooltipText}>
+        <StyledIconButton onClick={onCopyToClipboard} {...props}>
+          {isCopied && hasClipboard ? <SuccessIcon /> : <Icon />}
+        </StyledIconButton>
+      </Tooltip>
+    </span>
   )
 }
 

@@ -60,7 +60,7 @@ export const MaterialReactTable = dynamic(
   // eslint-disable-next-line @typescript-eslint/ban-types
 ) as <TData extends Record<string, any> = {}>(
   props: MaterialReactTableProps<TData>,
-) => JSX.Element
+) => React.JSX.Element
 
 export const useMaterialReactTableLocalization = (locale?: string) => {
   return useMemo(() => {

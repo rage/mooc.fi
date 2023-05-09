@@ -1,8 +1,15 @@
-import React, { SyntheticEvent, useCallback, useEffect, useState } from "react"
+import React, {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useState,
+  useTransition,
+} from "react"
 
-import { useRouter } from "next/router"
+import Router, { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
+import { NoSsr } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
@@ -13,6 +20,7 @@ import ConsentNotification from "/components/Profile/ConsentNotification"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Spinner from "/components/Spinner"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import withSignedIn from "/lib/with-signed-in"
@@ -46,21 +54,21 @@ for (const tab of Object.keys(tabs)) {
 }
 
 function Profile() {
+  const { currentUser } = useLoginStateContext()
   const _tab = useQueryParameter("tab", false) ?? "points"
-  const router = useRouter()
-
+  const { pathname } = useRouter()
+  const [, startTransition] = useTransition()
   const [tab, setTab] = useState(tabs[_tab] ?? 0)
 
   const handleTabChange = useCallback(
     (_: SyntheticEvent<Element, Event>, newValue: number) => {
-      setTab(newValue)
-      router.replace(
-        router.pathname,
-        `/profile${newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""}`,
-        { shallow: true },
-      )
+      startTransition(() => {
+        setTab(newValue)
+        const query = newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""
+        Router.replace(pathname, `/_new/profile${query}`, { shallow: true })
+      })
     },
-    [],
+    [pathname],
   )
 
   useEffect(() => {
@@ -83,26 +91,32 @@ function Profile() {
   if (error) {
     return <ErrorMessage />
   }
-  if (loading) {
-    return <Spinner />
-  }
-  if (!data?.currentUser) {
-    // todo: maybe something else
-    return <ErrorMessage />
-  }
 
   const { research_consent } = data?.currentUser ?? {}
 
   return (
     <>
       <Background />
-      <ProfilePageHeader user={data?.currentUser} />
+      <NoSsr>
+        <ProfilePageHeader user={currentUser} />
+      </NoSsr>
       <ProfileContainer>
-        {(research_consent === null ||
-          typeof research_consent === "undefined") && <ConsentNotification />}
-        <ProfileTabs selected={tab} onChange={handleTabChange}>
-          <StudentDataDisplay tab={tab} data={data?.currentUser || undefined} />
-        </ProfileTabs>
+        {loading && <Spinner />}
+        {!loading && !data?.currentUser && <ErrorMessage />}
+        {!loading && data?.currentUser && (
+          <>
+            {(research_consent === null ||
+              typeof research_consent === "undefined") && (
+              <ConsentNotification />
+            )}
+            <ProfileTabs selected={tab} onChange={handleTabChange}>
+              <StudentDataDisplay
+                tab={tab}
+                data={data?.currentUser || undefined}
+              />
+            </ProfileTabs>
+          </>
+        )}
       </ProfileContainer>
     </>
   )

@@ -7,7 +7,13 @@ import type {
 } from "material-react-table"
 import { useRouter } from "next/router"
 
-import { TableCellProps, Theme, Typography, useMediaQuery } from "@mui/material"
+import {
+  TableCellProps,
+  TableRowProps,
+  Theme,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
@@ -52,6 +58,7 @@ const mapExerciseToRow =
       points: `${Math.round((exerciseCompletion?.n_points ?? 0) * 100) / 100}/${
         exercise.max_points
       }`,
+      max_points: exercise.max_points ?? 0,
       completed:
         exercise.exercise_completions?.some((e) => e.completed) ?? false,
       attempted:
@@ -232,11 +239,22 @@ function ExerciseList({ data, loading }: ExerciseListProps) {
 
   const tableProps = useExerciseListProps<ExerciseRow>()
   const localization = useMaterialReactTableLocalization(locale)
+  const muiTableBodyRowProps = useCallback(
+    ({ row }: { row: MRT_Row<ExerciseRow> }) => ({
+      ...tableProps["muiTableBodyRowProps"],
+      sx: {
+        ...(tableProps["muiTableBodyRowProps"] as TableRowProps)?.sx,
+        ...(row.original.max_points === 0 ? { backgroundColor: "#eee" } : {}),
+      },
+    }),
+    [tableProps],
+  )
 
   return (
     <ExerciseListSummaryCard>
       <MaterialReactTable<ExerciseRow>
         {...tableProps}
+        muiTableBodyRowProps={muiTableBodyRowProps}
         data={rows}
         columns={columns}
         renderTopToolbarCustomActions={ExerciseListTitle}

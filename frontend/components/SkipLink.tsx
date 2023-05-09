@@ -50,7 +50,7 @@ function SkipLink() {
   const t = useTranslator(CommonTranslations)
 
   return (
-    <SkipLinkContainer href="#main">
+    <SkipLinkContainer id="skiplink" href="#main">
       <Typography variant="body1">{t("skiplink")}</Typography>
     </SkipLinkContainer>
   )

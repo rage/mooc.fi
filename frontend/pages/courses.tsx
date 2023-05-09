@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
@@ -109,14 +109,16 @@ function useCourseSearch() {
     searchVariables.status,
   ])
 
-  const onClickStatus =
+  const onClickStatus = useCallback(
     (value: CourseStatus | null) =>
-    (_: React.MouseEvent<Element, MouseEvent>) => {
-      setSearchVariables((previousSearchVariables) => ({
-        ...previousSearchVariables,
-        status: value ? [value] : [],
-      }))
-    }
+      (_: React.MouseEvent<Element, MouseEvent>) => {
+        setSearchVariables((previousSearchVariables) => ({
+          ...previousSearchVariables,
+          status: value ? [value] : [],
+        }))
+      },
+    [],
+  )
 
   return {
     loading: editorLoading || handlersLoading,

@@ -156,29 +156,30 @@ function RegisterCompletionPage() {
   }
 
   useEffect(() => {
-    if (locale) {
-      const controller = new AbortController()
-      fetch(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`, {
-        signal: controller?.signal,
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json()
-          }
-          return Promise.reject(res)
-        })
-        .then((json) => {
-          setInstructions(json)
-        })
-        .catch((res) => {
-          if (controller?.signal.aborted) {
-            return
-          }
-          res.json().then((json: any) => setInstructions(json))
-        })
-
-      return () => controller.abort()
+    if (!locale) {
+      return
     }
+    const controller = new AbortController()
+    fetch(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`, {
+      signal: controller?.signal,
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+        return Promise.reject(res)
+      })
+      .then((json) => {
+        setInstructions(json)
+      })
+      .catch((res) => {
+        if (controller?.signal.aborted) {
+          return
+        }
+        res.json().then((json: any) => setInstructions(json))
+      })
+
+    return () => controller.abort()
   }, [courseSlug, locale])
 
   useEffect(() => {

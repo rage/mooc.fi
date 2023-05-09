@@ -1,5 +1,5 @@
 // from https://github.com/garronej/tss-react/blob/main/src/next/pagesDir.tsx - a bit modified
-import React, { type ReactNode } from "react"
+import React from "react"
 
 import type { NextComponentType } from "next"
 // eslint-disable-next-line
@@ -26,10 +26,11 @@ export function createEmotionSsr(
     prepend?: boolean
   },
   /** By default <CacheProvider /> from 'import { CacheProvider } from "@emotion/react"' */
-  CacheProvider: (props: {
-    value: EmotionCache
-    children: ReactNode
-  }) => JSX.Element | null = DefaultCacheProvider,
+  CacheProvider: (
+    props: React.PropsWithChildren<{
+      value: EmotionCache
+    }>,
+  ) => React.JSX.Element | null = DefaultCacheProvider,
 ) {
   const { prepend, ...optionsWithoutPrependProp } = options
 

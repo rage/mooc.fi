@@ -6,7 +6,7 @@ import { useClipboard } from "/hooks/useClipboard"
 
 type InfoRowProps = {
   title: string
-  data?: JSX.Element | string | number
+  data?: React.JSX.Element | string | number
   fullWidth?: boolean
   copyable?: boolean
 }
@@ -50,7 +50,9 @@ const InfoRowElementContent = styled("div")`
   justify-content: flex-end;
 `
 
-const isElement = (data: string | number | JSX.Element): data is JSX.Element =>
+const isElement = (
+  data: string | number | React.JSX.Element,
+): data is React.JSX.Element =>
   typeof data !== "string" && typeof data !== "number"
 
 type InfoRowContentProps = Pick<InfoRowProps, "data" | "copyable">

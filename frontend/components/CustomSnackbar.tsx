@@ -55,7 +55,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
       autoHideDuration={6000}
       onClose={handleClose}
       message={
-        <span id="client-snackbar" aria-describedby="client-snackbar">
+        <span id="client-snackbar">
           <StyledIcon />
           {message}
         </span>
