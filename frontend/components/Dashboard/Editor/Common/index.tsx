@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react"
+import React, { PropsWithChildren, useCallback } from "react"
 
 import { isEqual } from "lodash"
 import {
@@ -71,10 +65,6 @@ export const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
 `
 
-export const Anchor = styled("div")``
-
-export const TabContext = createContext<{ tab: number }>({ tab: -1 })
-
 interface TabSectionProps {
   name?: string
   currentTab?: number
@@ -93,21 +83,18 @@ const TabSectionImpl = (
 ) => {
   const { currentTab, tab, name, children, ...sectionProps } = props
   const { tab: contextTab } = useEditorContext()
-  const contextValue = useMemo(() => ({ tab }), [tab])
 
   const _currentTab = contextTab ?? currentTab
 
   return (
-    <TabContext.Provider value={contextValue}>
-      <TabSectionComponent
-        role="tabpanel"
-        isActive={_currentTab === tab}
-        {...(name ? { id: `${name}-${tab}` } : {})}
-        {...sectionProps}
-      >
-        {children}
-      </TabSectionComponent>
-    </TabContext.Provider>
+    <TabSectionComponent
+      role="tabpanel"
+      isActive={_currentTab === tab}
+      {...(name ? { id: `${name}-${tab}` } : {})}
+      {...sectionProps}
+    >
+      {children}
+    </TabSectionComponent>
   )
 }
 
@@ -115,10 +102,6 @@ const TabSectionImpl = (
 export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
   return isEqual(prevProps, nextProps)
 }) as typeof TabSectionImpl
-
-export const useTabContext = () => {
-  return useContext(TabContext)
-}
 
 export function useCustomValidationResolver<
   TFieldValues extends FieldValues = FieldValues,

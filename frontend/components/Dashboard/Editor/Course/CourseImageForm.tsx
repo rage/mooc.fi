@@ -65,7 +65,7 @@ function CourseImageForm(props: CourseImageFormProps) {
         )
         .map((course) => {
           const translation = (course.course_translations?.filter(
-            (t) => t.language === locale,
+            (ct) => ct.language === locale,
           ) ?? [])[0]
 
           return {
@@ -74,7 +74,7 @@ function CourseImageForm(props: CourseImageFormProps) {
           }
         })
         .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? [],
-    [courses, t, slug],
+    [courses, slug],
   )
 
   const onImportPhotoDialogOpen = useEventCallback(() => setDialogOpen(true))

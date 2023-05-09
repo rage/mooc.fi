@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useId, useState } from "react"
 
 import { LinkProps } from "next/link"
 
@@ -68,6 +68,7 @@ const CertificateButton = ({
   const { currentUser } = useLoginStateContext()
   const { addAlert } = useAlertContext()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const dialogTitleId = useId()
 
   const isOtherUser = currentUser?.id !== completion.user_id
 
@@ -164,9 +165,9 @@ const CertificateButton = ({
         open={dialogOpen}
         disableEnforceFocus
         onClose={onDialogClose}
-        aria-labelledby="dialog-title"
+        aria-labelledby={dialogTitleId}
       >
-        <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
+        <DialogTitle id={dialogTitleId}>{t("nameFormTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ marginBottom: "1.5rem" }}>
             {t("nameFormIntro")}

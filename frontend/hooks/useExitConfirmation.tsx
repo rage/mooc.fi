@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 
 import { useConfirm } from "material-ui-confirm"
-import { useRouter } from "next/router"
+import Router, { useRouter } from "next/router"
+
+import { useEventCallback } from "@mui/material/utils"
 
 import { useTranslator } from "./useTranslator"
 import CommonTranslations from "/translations/common"
@@ -19,43 +21,40 @@ interface UseExitConfirmationArgs {
 // adapted from https://github.com/vercel/next.js/discussions/32231
 function useExitConfirmation({ texts, enabled }: UseExitConfirmationArgs = {}) {
   const t = useTranslator(CommonTranslations)
-  const {
-    title = t("confirmationUnsavedChanges"),
-    description = t("confirmationLeaveWithoutSaving"),
-    confirmationText = t("confirmationYes"),
-    cancellationText = t("confirmationNo"),
-  } = texts ?? {}
   const confirm = useConfirm()
+  const { asPath } = useRouter()
 
-  const router = useRouter()
+  if (!texts) {
+    texts = {}
+  }
+  texts.title ??= t("confirmationUnsavedChanges")
+  texts.description ??= t("confirmationLeaveWithoutSaving")
+  texts.confirmationText ??= t("confirmationYes")
+  texts.cancellationText ??= t("confirmationNo")
+
   const bypassConfirmationRef = useRef(false)
 
-  const stopNavigation = useCallback(() => {
-    router.events.emit("routeChangeError")
+  const stopNavigation = useEventCallback(() => {
+    Router.events.emit("routeChangeError")
     throw "Abort route change due to unsaved changes; ignore this error" // NOSONAR
-  }, [router.events])
+  })
 
   useEffect(() => {
-    const shouldByPassconfimation = () =>
+    const shouldBypassconfimation = () =>
       !enabled || bypassConfirmationRef.current
     const handleWindowClose = (e: BeforeUnloadEvent) => {
-      if (shouldByPassconfimation()) return
+      if (shouldBypassconfimation()) return
       e.preventDefault()
-      e.returnValue = description // will ignore this message, though
+      e.returnValue = texts?.description // will ignore this message, though
     }
     const handleBrowseAway = (url: string) => {
-      if (shouldByPassconfimation()) return
-      if (url === router.asPath) return
+      if (shouldBypassconfimation()) return
+      if (url === asPath) return
 
-      confirm({
-        title,
-        description,
-        confirmationText,
-        cancellationText,
-      })
+      confirm(texts)
         .then(() => {
-          router.events.off("routeChangeStart", handleBrowseAway)
-          router.push(url)
+          Router.events.off("routeChangeStart", handleBrowseAway)
+          Router.push(url)
         })
         .catch(() => {
           /* do nothing */
@@ -63,22 +62,13 @@ function useExitConfirmation({ texts, enabled }: UseExitConfirmationArgs = {}) {
       stopNavigation()
     }
     window.addEventListener("beforeunload", handleWindowClose)
-    router.events.on("routeChangeStart", handleBrowseAway)
+    Router.events.on("routeChangeStart", handleBrowseAway)
 
     return () => {
       window.removeEventListener("beforeunload", handleWindowClose)
-      router.events.off("routeChangeStart", handleBrowseAway)
+      Router.events.off("routeChangeStart", handleBrowseAway)
     }
-  }, [
-    enabled,
-    router.events,
-    t,
-    title,
-    description,
-    confirmationText,
-    cancellationText,
-    confirm,
-  ])
+  }, [enabled, asPath, t, texts, confirm])
 
   return {
     bypassExitConfirmation(value = true) {

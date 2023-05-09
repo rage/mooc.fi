@@ -34,6 +34,10 @@ export interface UserSearchResults {
   totalMeta: Array<UserSearchMetaFieldsFragment>
 }
 
+const Nop = () => {
+  /* */
+}
+
 const UserSearchContextImpl = createContext<UserSearchContext>({
   data: [] as Array<UserCoreFieldsFragment>,
   meta: {} as UserSearchMetaFieldsFragment,
@@ -45,13 +49,13 @@ const UserSearchContextImpl = createContext<UserSearchContext>({
     search: "",
   },
   search: "",
-  setPage: () => void 0,
-  setSearchVariables: () => void 0,
-  setRowsPerPage: () => void 0,
-  setSearch: () => void 0,
-  setFields: () => void 0,
-  resetResults: () => void 0,
-  setResults: () => void 0,
+  setPage: Nop,
+  setSearchVariables: Nop,
+  setRowsPerPage: Nop,
+  setSearch: Nop,
+  setFields: Nop,
+  resetResults: Nop,
+  setResults: Nop,
 })
 
 export default UserSearchContextImpl

@@ -143,8 +143,12 @@ interface MobileMenuItemProps extends MenuItemProps {
   onClick?: React.MouseEventHandler<HTMLLIElement>
 }
 
+const Nop = () => {
+  /* */
+}
+
 const MobileMenuItem = forwardRef<HTMLLIElement, MobileMenuItemProps>(
-  ({ icon: Icon, text, onClick = () => void 0, ...props }, ref) => {
+  ({ icon: Icon, text, onClick = Nop, ...props }, ref) => {
     return (
       <MenuItem onClick={onClick} ref={ref} {...props}>
         <ListItemIcon>

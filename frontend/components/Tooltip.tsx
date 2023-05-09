@@ -33,6 +33,10 @@ const InfoTooltip = styled(Tooltip)`
   }
 `
 
+const TooltipWrapper = styled("span")`
+  display: flex;
+`
+
 interface InfoTooltipWithLabelProps {
   label: string
 }
@@ -41,17 +45,19 @@ export const InfoTooltipWithLabel = ({
   label,
   ...props
 }: InfoTooltipWithLabelProps & Omit<TooltipProps, "children">) => (
-  <InfoTooltip
-    {...props}
-    title={
-      <>
-        <Typography variant="subtitle2">{label}</Typography>
-        <Typography variant="caption">{props.title}</Typography>
-      </>
-    }
-  >
-    <InfoIcon />
-  </InfoTooltip>
+  <TooltipWrapper id={`tooltip-${label}`}>
+    <InfoTooltip
+      {...props}
+      title={
+        <>
+          <Typography variant="subtitle2">{label}</Typography>
+          <Typography variant="caption">{props.title}</Typography>
+        </>
+      }
+    >
+      <InfoIcon />
+    </InfoTooltip>
+  </TooltipWrapper>
 )
 
 export default Tooltip

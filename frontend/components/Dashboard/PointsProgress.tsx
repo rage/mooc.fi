@@ -2,6 +2,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react"
@@ -116,13 +117,15 @@ const ProgressLegendMarker = ({
       markerRightX + 0.5 * rem + captionWidth > containerRightX
   }, [rendered, markerRef.current, captionRef.current])
 
+  useLayoutEffect(() => {
+    handleResize()
+  }, [])
+
   useEffect(() => {
     window.addEventListener("resize", handleResize)
 
-    handleResize()
-
     return () => window.removeEventListener("resize", handleResize)
-  })
+  }, [])
 
   return (
     <>
@@ -237,6 +240,11 @@ const ProgressPercentage = styled(CardSubtitle)`
   font-weight: 700;
 `
 
+const Column = styled("div")`
+  display: flex;
+  flex-direction: column;
+`
+
 export type PointsProgressData = {
   percentage: number
   amount?: number | null
@@ -269,7 +277,7 @@ const PointsProgress = ({
   const hasRequiredPercentage = notEmpty(requiredPercentage)
 
   return (
-    <>
+    <Column>
       <PointsProgressTitle component="h3" variant="body1">
         {title}
       </PointsProgressTitle>
@@ -336,7 +344,7 @@ const PointsProgress = ({
           </>
         </CardCaption>
       )}
-    </>
+    </Column>
   )
 }
 

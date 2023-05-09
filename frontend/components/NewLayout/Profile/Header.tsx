@@ -55,7 +55,7 @@ const ProfileCardWrapper = styled(CardWrapper)`
   min-height: unset;
 `
 interface ProfilePageHeaderProps {
-  user: CurrentUserQuery["currentUser"]
+  user?: CurrentUserQuery["currentUser"]
 }
 
 interface InfoRowProps {

@@ -24,6 +24,8 @@ const StyledButton = styled(Button, {
   flex-direction: column;
   text-align: center;
   gap: 0.5rem;
+  padding-bottom: ${(props) =>
+    props.active ? "calc(0.5rem - 1px)" : "0.5rem"};
 
   @media (max-width: 510px) {
     font-size: 18px;

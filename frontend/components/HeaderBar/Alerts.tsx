@@ -13,7 +13,7 @@ const Alerts = () => {
   )
 
   return (
-    <>
+    <div id="alerts">
       {alerts
         .filter((alert) => !alert.ignorePages?.includes(router.pathname))
         .map((alert) => (
@@ -26,7 +26,7 @@ const Alerts = () => {
             {alert.message ?? alert.component}
           </Alert>
         ))}
-    </>
+    </div>
   )
 }
 

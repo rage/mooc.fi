@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useId, useRef, useState } from "react"
 
 import dynamic from "next/dynamic"
 import Image, { ImageProps } from "next/image"
@@ -90,6 +90,7 @@ const ModalImage = ({ src, alt, ...props }: ModalImageProps) => {
   }, [setOpen])
   const handleClose = useEventCallback(() => setOpen(false))
   const isStatic = typeof src !== "string"
+  const modalId = useId()
 
   return (
     <ImageContainer {...props}>
@@ -106,7 +107,7 @@ const ModalImage = ({ src, alt, ...props }: ModalImageProps) => {
           open={open}
           onClose={handleClose}
           closeAfterTransition
-          aria-describedby="image-modal-description"
+          aria-describedby={modalId}
         >
           <ModalContainer>
             <Image
@@ -116,7 +117,7 @@ const ModalImage = ({ src, alt, ...props }: ModalImageProps) => {
               alt={alt}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            <Typography id="image-modal-description" variant="caption">
+            <Typography id={modalId} variant="caption">
               {alt}
             </Typography>
             <StyledIconButton aria-label={t("close")} onClick={handleClose}>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useInsertionEffect, useMemo } from "react"
 
 import { DefaultSeo } from "next-seo"
 import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
@@ -28,16 +28,19 @@ const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
 
 export { augmentDocumentWithEmotionCache }
 
-export function MyApp({
-  Component,
-  pageProps,
-  deviceType,
-}: AppProps<{
+interface MyPageProps {
   signedIn?: boolean
   admin?: boolean
   currentUser?: UserDetailedFieldsFragment
-}> & { deviceType?: string }) {
-  useEffect(() => {
+}
+
+interface MyAppProps extends AppProps<MyPageProps> {
+  deviceType?: string
+}
+
+export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
+  const { signedIn, admin, currentUser } = pageProps ?? {}
+  useInsertionEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
@@ -53,11 +56,11 @@ export function MyApp({
 
   const loginStateContextValue = useMemo(
     () => ({
-      loggedIn: pageProps?.signedIn ?? false,
-      admin: pageProps?.admin ?? false,
-      currentUser: pageProps?.currentUser,
+      loggedIn: signedIn ?? false,
+      admin: admin ?? false,
+      currentUser: currentUser,
     }),
-    [pageProps?.signedIn, pageProps?.admin, pageProps?.currentUser],
+    [signedIn, admin, currentUser],
   )
 
   return (

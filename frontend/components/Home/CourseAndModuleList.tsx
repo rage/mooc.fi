@@ -26,6 +26,7 @@ const CourseAndModuleList = () => {
   // TODO: do this in one query; get module courses already in backend
   const { loading, error, data } = useQuery(FrontpageCoursesModulesDocument, {
     variables: { language },
+    ssr: false,
   })
 
   const courses = data?.courses ?? []

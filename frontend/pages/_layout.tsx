@@ -52,7 +52,7 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
       <PageLoadingIndicators />
       <SkipLink />
       <FooterDownPusherWrapper>
-        <div>
+        <div id="header-to-footer">
           <Header />
           <main id="main">
             {!isHomePage && <Breadcrumbs />}

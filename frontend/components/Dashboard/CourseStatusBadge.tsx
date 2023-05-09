@@ -22,7 +22,7 @@ const StatusBadge = styled(Chip)<{ status?: CourseStatus | null }>`
   width: 100px;
 `
 
-const courseStatusIcon: Record<CourseStatus & string, JSX.Element> = {
+const courseStatusIcon: Record<CourseStatus & string, React.JSX.Element> = {
   [CourseStatus.Active]: <CheckCircle />,
   [CourseStatus.Upcoming]: <Schedule />,
   [CourseStatus.Ended]: <AlarmOff />,

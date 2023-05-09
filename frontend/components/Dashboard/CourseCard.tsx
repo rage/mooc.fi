@@ -160,8 +160,8 @@ const CreateCourseIconContainer = styled("div")`
 `
 
 interface CourseInfoProps {
-  field?: string | JSX.Element
-  value?: string | JSX.Element
+  field?: string | React.JSX.Element
+  value?: string | React.JSX.Element
 }
 const CourseInfo = ({
   field,

@@ -110,7 +110,7 @@ function Milestones({ data }: MilestonesProps) {
           </Typography>
         )*/}
           </DatesContainer>
-          <TooltipWrapper>
+          <TooltipWrapper id="milestones-tooltip">
             <Tooltip title={t("milestonesTooltip")}>
               <HelpIcon />
             </Tooltip>

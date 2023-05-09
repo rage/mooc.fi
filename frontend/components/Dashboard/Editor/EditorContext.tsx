@@ -30,14 +30,18 @@ const EditorContextImpl = createContext<EditorContext>({
   anchors: {},
 })
 
+const Nop = () => {
+  /* */
+}
+
 const EditorMethodContextImpl = createContext<EditorMethodContext<any>>({
-  setTab: (_) => void 0,
-  onSubmit: () => void 0,
-  onError: () => void 0,
-  onCancel: () => void 0,
-  onDelete: () => void 0,
+  setTab: Nop,
+  onSubmit: Nop,
+  onError: Nop,
+  onCancel: Nop,
+  onDelete: Nop,
   addAnchor: () => ({} as Anchor<any>),
-  scrollFirstErrorIntoView: () => void 0,
+  scrollFirstErrorIntoView: Nop,
 })
 
 export function useEditorContext() {

@@ -14,12 +14,11 @@ const iconTemplate = (
   return tpl`
 ${imports}
 ${interfaces}
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 import { SvgIcon, type SvgIconProps } from "@mui/material"
 
 function ${componentName}(svgProps: SvgIconProps) {
-  const svgElement = useCallback((${props}) => ${jsx}, [svgProps])
-  const mergedProps = useMemo(() => ({ ...svgProps, ...svgElement(svgProps).props }), [svgProps])
+  const mergedProps = useMemo(() => ({ ...svgProps, ...((${props}) => ${jsx})().props }), [svgProps])
 
   return (
     <SvgIcon {...mergedProps} />

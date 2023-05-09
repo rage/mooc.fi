@@ -1,6 +1,6 @@
 import { SyntheticEvent, useCallback, useState } from "react"
 
-import { useRouter } from "next/router"
+import Router from "next/router"
 
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
@@ -39,7 +39,7 @@ interface DashboardTabsProps {
 
 interface Route {
   label: string
-  icon: JSX.Element
+  icon: React.JSX.Element
   path: string
 }
 
@@ -69,14 +69,13 @@ const routes: Route[] = [
 function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
   const [value, setValue] = useState(selectedValue)
-  const router = useRouter()
 
   const handleChange = useCallback(
     (_: SyntheticEvent<Element, Event>, newValue: number) => {
       setValue(newValue)
-      router.push(`/courses/${slug}${routes[newValue].path}`)
+      Router.push(`/courses/${slug}${routes[newValue].path}`)
     },
-    [slug, router],
+    [slug],
   )
 
   return (

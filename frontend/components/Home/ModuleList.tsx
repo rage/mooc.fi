@@ -46,7 +46,7 @@ type ModuleComponent =
   | {
       type: "custom-module"
       id?: string
-      studyModule: JSX.Element
+      studyModule: React.JSX.Element
     }
   | {
       type: "divider"

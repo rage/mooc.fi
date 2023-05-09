@@ -200,6 +200,6 @@ const FormWrapper = <T extends FormValues>(
 // @ts-ignore: not used for now?
 const WrappedFormWrapper: <T extends FormValues>(
   props: React.PropsWithChildren<FormWrapperProps<T>>,
-) => JSX.Element = withEnumeratingAnchors(FormWrapper)
+) => React.JSX.Element = withEnumeratingAnchors(FormWrapper)
 
 export default withEnumeratingAnchors(FormWrapper) // as typeof FormWrapper

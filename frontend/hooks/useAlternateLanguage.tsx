@@ -11,7 +11,7 @@ const BASE_URL =
     : "http://localhost:3000"
 
 export default function useAlternateLanguage() {
-  const router = useRouter()
+  const { locale, asPath } = useRouter()
   const t = useTranslator(PagesTranslations)
 
   const alternateLanguage = useMemo(() => {
@@ -20,18 +20,18 @@ export default function useAlternateLanguage() {
       BASE_URL
 
     let newPath =
-      router.locale === "en"
-        ? router.asPath.replace("/en/", "/").replace(/#(.*)/, "")
-        : router.asPath.replace(/#(.*)/, "")
+      locale === "en"
+        ? asPath.replace("/en/", "/").replace(/#(.*)/, "")
+        : asPath.replace(/#(.*)/, "")
     if (t("alternate")?.[newPath]) {
       newPath = t("alternate")?.[newPath]
     }
 
-    if (router.locale === "en") {
+    if (locale === "en") {
       return { hrefLang: "fi-FI", href: origin + newPath }
     }
     return { hrefLang: "en-US", href: `${origin}/en${newPath}` }
-  }, [router.locale, router.asPath, t])
+  }, [locale, asPath, t])
 
   return alternateLanguage
 }

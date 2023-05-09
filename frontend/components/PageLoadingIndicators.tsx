@@ -23,10 +23,10 @@ const PageLoadingIndicators = () => {
   const { loading, loadingTakingLong } = usePageLoadProgress()
 
   return (
-    <>
+    <div id="pageloadingindicators">
       {loading && <FixedLinearProgress />}
       {loadingTakingLong && <FixedCircularProgress size={15} />}
-    </>
+    </div>
   )
 }
 

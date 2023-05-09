@@ -68,7 +68,7 @@ function Completion({ completion, course }: CompletionProps) {
   const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContextCourse(course?.id)
 
-  const isOpen = useMemo(() => state?.completion ?? false, [state, course])
+  const isOpen = useMemo(() => state?.completion ?? false, [state])
 
   const onCollapseClick = useCallback(
     () =>

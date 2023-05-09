@@ -36,7 +36,7 @@ export interface ControlledTextFieldProps<
   rows?: number
   width?: string
   unit?: string
-  Container?: (props: ContainerPropType) => JSX.Element
+  Container?: (props: ContainerPropType) => React.JSX.Element
   containerProps?: ContainerPropType
 }
 

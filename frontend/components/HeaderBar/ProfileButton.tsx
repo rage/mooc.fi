@@ -12,6 +12,8 @@ const StyledButton = styled(HeaderMenuButton, {
   border-radius: 0px;
   line-height: 90%;
   text-align: center;
+  padding-bottom: ${(props) =>
+    props.active ? "calc(0.5rem - 1px)" : "0.5rem"};
   color: ${(props) => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${(props) => (props.active ? "1px solid #3C8C7A" : "")};
 `

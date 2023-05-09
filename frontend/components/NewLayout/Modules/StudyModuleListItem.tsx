@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
 
 import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
@@ -148,8 +148,9 @@ export function ListItem({
     return () => {
       window.removeEventListener("resize", setDescriptionHeight)
     }
-  })
-  useEffect(setDescriptionHeight, [studyModule.description])
+  }, [])
+
+  useLayoutEffect(setDescriptionHeight, [studyModule.description])
 
   // TODO: the anchor link may have to be shifted by the amount of the header again
   return (

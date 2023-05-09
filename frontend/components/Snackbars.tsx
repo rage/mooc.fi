@@ -32,11 +32,11 @@ const TransitionComponent = (props: SlideProps) => (
 )
 
 export default function Snackbars() {
-  const { snackbars } = useSnackbarContext()
+  const snackbars = useSnackbarContext()
   const { handleClose, handleExited } = useSnackbarMethods()
 
   return (
-    <>
+    <div id="snackbars">
       {snackbars.map((snackbar, index) => (
         <StyledSnackbar
           key={snackbar.key}
@@ -58,6 +58,6 @@ export default function Snackbars() {
           </Alert>
         </StyledSnackbar>
       ))}
-    </>
+    </div>
   )
 }

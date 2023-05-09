@@ -31,6 +31,7 @@ const CourseSelectDropdown = () => {
       label={t("selectedCourse")}
       disabled={loading}
     >
+      {!data && loading && <MenuItem key="empty" value="" />}
       {data?.map(({ course }) => (
         <MenuItem key={course.id} value={course.slug}>
           {course.name}

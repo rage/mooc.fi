@@ -6,7 +6,7 @@ import {
 
 interface DescriptionProps {
   name: string
-  description: string | JSX.Element
+  description: string | React.JSX.Element
 }
 const ModuleDescription = (props: DescriptionProps) => {
   const { name, description } = props

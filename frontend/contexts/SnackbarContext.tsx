@@ -16,10 +16,7 @@ export interface AddSnackbarArgs {
   severity?: AlertColor
 }
 
-interface SnackbarContext {
-  snackbars: readonly SnackbarMessage[]
-}
-
+type SnackbarContext = readonly SnackbarMessage[]
 interface SnackbarMethods {
   addSnackbar: (args: AddSnackbarArgs) => void
   removeSnackbar: (message: SnackbarMessage) => void
@@ -27,15 +24,21 @@ interface SnackbarMethods {
   handleExited: (message: SnackbarMessage) => () => void
 }
 
-const SnackbarContextImpl = createContext<SnackbarContext>({
-  snackbars: [],
-})
+const SnackbarContextImpl = createContext<SnackbarContext>([])
+
+function Nop() {
+  /**/
+}
 
 const SnackbarMethodsContextImpl = createContext<SnackbarMethods>({
-  addSnackbar: () => void 0,
-  removeSnackbar: () => void 0,
-  handleClose: () => () => void 0,
-  handleExited: () => () => void 0,
+  addSnackbar: Nop,
+  removeSnackbar: Nop,
+  handleClose: function () {
+    return Nop
+  },
+  handleExited: function () {
+    return Nop
+  },
 })
 
 export const SnackbarProvider = ({ children }: React.PropsWithChildren) => {
@@ -79,13 +82,6 @@ export const SnackbarProvider = ({ children }: React.PropsWithChildren) => {
     },
   )
 
-  const contextValue = useMemo(
-    () => ({
-      snackbars,
-    }),
-    [snackbars],
-  )
-
   const contextMethods = useMemo(
     () => ({
       addSnackbar,
@@ -97,7 +93,7 @@ export const SnackbarProvider = ({ children }: React.PropsWithChildren) => {
   )
 
   return (
-    <SnackbarContextImpl.Provider value={contextValue}>
+    <SnackbarContextImpl.Provider value={snackbars}>
       <SnackbarMethodsContextImpl.Provider value={contextMethods}>
         {children}
       </SnackbarMethodsContextImpl.Provider>

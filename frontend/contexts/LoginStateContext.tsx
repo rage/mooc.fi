@@ -18,13 +18,16 @@ type UpdateUserPayload = {
 
 export interface LoginState {
   loggedIn: boolean
-  logInOrOut: () => void
   admin: boolean
   currentUser?: UserDetailedFieldsFragment
+}
+
+export interface LoginStateContextType extends LoginState {
+  logInOrOut: () => void
   updateUser: (user: UpdateUserPayload) => void
 }
 
-export const LoginStateContext = createContext<LoginState>({
+export const LoginStateContext = createContext<LoginStateContextType>({
   loggedIn: false,
   logInOrOut: () => void 0,
   currentUser: undefined,
@@ -69,10 +72,8 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
 
   const [state, dispatch] = useReducer(reducer, {
     loggedIn,
-    logInOrOut,
     admin,
     currentUser,
-    updateUser,
   })
 
   useEffect(() => {
@@ -86,13 +87,11 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
 
   const loginStateContextValue = useMemo(
     () => ({
-      loggedIn: state.loggedIn,
+      ...state,
       logInOrOut,
-      admin: state.admin,
-      currentUser: state.currentUser,
       updateUser,
     }),
-    [state.loggedIn, state.admin, state.currentUser],
+    [state],
   )
 
   return (

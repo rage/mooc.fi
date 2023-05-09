@@ -72,7 +72,7 @@ function UserSummaryView() {
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: {
       upstream_id: Number(id),
-      includeNoPointsAwardedExercises: false,
+      includeNoPointsAwardedExercises: true,
       includeDeletedExercises: false,
     },
     ssr: false,

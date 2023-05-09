@@ -131,7 +131,7 @@ export function Breadcrumbs() {
   }
 
   return (
-    <nav aria-label="breadcrumbs">
+    <nav id="breadcrumbs" aria-label="breadcrumbs">
       <BreadcrumbList>
         <BreadcrumbComponent translation="home" href="/" key="home" />
         {breadcrumbs.map((breadcrumb, index) => (
