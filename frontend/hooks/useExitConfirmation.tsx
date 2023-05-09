@@ -40,15 +40,15 @@ function useExitConfirmation({ texts, enabled }: UseExitConfirmationArgs = {}) {
   })
 
   useEffect(() => {
-    const shouldBypassconfimation = () =>
+    const shouldBypassConfirmation = () =>
       !enabled || bypassConfirmationRef.current
     const handleWindowClose = (e: BeforeUnloadEvent) => {
-      if (shouldBypassconfimation()) return
+      if (shouldBypassConfirmation()) return
       e.preventDefault()
       e.returnValue = texts?.description // will ignore this message, though
     }
     const handleBrowseAway = (url: string) => {
-      if (shouldBypassconfimation()) return
+      if (shouldBypassConfirmation()) return
       if (url === asPath) return
 
       confirm(texts)
