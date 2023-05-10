@@ -23,7 +23,9 @@ kafkaConsumer:
   userPointsRealtime:
     replicaCount: 1
   userCoursePoints:
-    replicaCount: 6
+    replicaCount: 2
+  userCoursePointsRealtime:
+    replicaCount: 1
 
 shibboTest:
   replicaCount: 0
