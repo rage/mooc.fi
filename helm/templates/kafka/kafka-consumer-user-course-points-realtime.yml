@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: kafka-consumer-user-course-points-realtime
       {{- include "helm.selectorLabels" . | nindent 6 }}
-  replicas: {{ .Values.kafkaConsumer.userCoursePoints.replicaCount }}
+  replicas: {{ .Values.kafkaConsumer.userCoursePointsRealtime.replicaCount }}
   template:
     metadata:
       labels:
