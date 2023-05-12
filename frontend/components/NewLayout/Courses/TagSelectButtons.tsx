@@ -89,7 +89,11 @@ const SelectAllButton = styled(Button)(
 interface TagSelectButtonsProps {
   tags: Record<string, Array<TagCoreFieldsFragment>>
   activeTags: Array<TagCoreFieldsFragment>
-  setActiveTags: (tags: Array<TagCoreFieldsFragment>) => void
+  setActiveTags: (
+    tags:
+      | Array<TagCoreFieldsFragment>
+      | ((tags: Array<TagCoreFieldsFragment>) => Array<TagCoreFieldsFragment>),
+  ) => void
   selectAllTags: () => void
 }
 

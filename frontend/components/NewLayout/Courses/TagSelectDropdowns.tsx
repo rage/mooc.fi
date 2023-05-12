@@ -22,7 +22,11 @@ const TagsContainer = styled("div")`
 interface TagSelectDropdownProps {
   tags: Record<string, Array<TagCoreFieldsFragment>>
   activeTags: Array<TagCoreFieldsFragment>
-  setActiveTags: (tags: Array<TagCoreFieldsFragment>) => void
+  setActiveTags: (
+    tags:
+      | Array<TagCoreFieldsFragment>
+      | ((tags: Array<TagCoreFieldsFragment>) => Array<TagCoreFieldsFragment>),
+  ) => void
   selectAllTags: () => void
 }
 
@@ -35,18 +39,22 @@ const TagSelectDropdowns = ({
   const allTags = Object.values(tags).flatMap((t) => t)
 
   const onChange = useCallback(
-    (_: any, value: Array<string> | Array<TagCoreFieldsFragment>) => {
-      setActiveTags(
-        value
-          .map((s) => {
-            if (typeof s === "string") {
-              return allTags.find((tag) => tag.id === s)
-            }
-            return s
-          })
-          .filter(notEmpty),
-      )
-    },
+    (category: string) =>
+      (_: any, value: Array<string> | Array<TagCoreFieldsFragment>) => {
+        setActiveTags((prevValue) => [
+          ...prevValue.filter(
+            (tag) => notEmpty(tag) && !tag.types?.includes(category),
+          ),
+          ...value
+            .map((s) => {
+              if (typeof s === "string") {
+                return allTags.find((tag) => tag.id === s)
+              }
+              return s
+            })
+            .filter(notEmpty),
+        ])
+      },
     [allTags],
   )
 
@@ -64,7 +72,7 @@ const TagSelectDropdowns = ({
             getOptionLabel={(option) => option.name ?? ""}
             options={tags[category]}
             value={categoryActiveTags}
-            onChange={onChange}
+            onChange={onChange(category)}
             renderInput={(params) => (
               <TextField
                 {...params}
