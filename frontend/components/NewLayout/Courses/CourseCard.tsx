@@ -211,7 +211,7 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
-const allowedLanguages = ["en", "fi", "se"]
+const allowedLanguages = ["en", "fi", "se", "other_language"]
 
 interface CourseCardProps {
   course: CourseFieldsFragment

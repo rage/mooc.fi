@@ -30,7 +30,7 @@ import {
   TagCoreFieldsFragment,
 } from "/graphql/generated"
 
-const allowedLanguages = ["en", "fi", "se"]
+const allowedLanguages = ["en", "fi", "se", "other_language"]
 
 /*  Coming in a later PR for better mobile view
   const Container = styled.div`
