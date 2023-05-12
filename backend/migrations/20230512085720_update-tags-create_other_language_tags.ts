@@ -5,7 +5,11 @@ export async function up(knex: Knex): Promise<void> {
     insert into tag (id, hidden) values ('other_language', false) on conflict do nothing;
   `)
   await knex.raw(`
-    insert into "_TagToTagType" ("A", "B") values ('other_language', 'language') on conflict do nothing;
+    insert into tag_type (name) values ('language') on conflict do nothing;
+  `)
+  await knex.raw(`
+    insert into "_TagToTagType" ("A", "B") values ('other_language', 'language') 
+      on conflict do nothing;
   `)
   await knex.raw(`
     insert into "_CourseToTag" ("A", "B")
