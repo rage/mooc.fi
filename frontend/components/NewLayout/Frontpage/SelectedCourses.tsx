@@ -36,7 +36,7 @@ const CardActions = styled("div")`
   align-items: center;
 `
 
-const Date = (props: TypographyProps) => (
+const CourseDate = (props: TypographyProps) => (
   <Typography variant="subtitle2" {...props} />
 )
 
@@ -66,7 +66,7 @@ const CourseCard = ({
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActions>
-          <Date>{date}</Date>
+          <CourseDate>{date}</CourseDate>
           <Button>Kurssin tiedot</Button>
         </CardActions>
       </CardBody>
@@ -96,6 +96,7 @@ function SelectedCourses() {
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(CoursesDocument, {
     variables: { language },
+    ssr: false,
   })
 
   return (

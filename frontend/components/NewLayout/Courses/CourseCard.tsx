@@ -211,6 +211,8 @@ const MoocfiLogo = styled(CardHeaderImage)``
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
 
+const allowedLanguages = ["en", "fi", "se"]
+
 interface CourseCardProps {
   course: CourseFieldsFragment
   tags?: string[]
@@ -303,6 +305,7 @@ function CourseCard({ course }: CourseCardProps) {
           <LanguageTags>
             {course?.tags
               ?.filter((t) => t.types?.includes("language"))
+              .filter((t) => allowedLanguages.includes(t.id))
               .map((tag) => (
                 <LanguageTag
                   key={tag.id}

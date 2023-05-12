@@ -52,12 +52,19 @@ const BorderedSectionBase = styled("div")`
   }
 `
 
+type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never
+
 function BorderedSection({
   title,
   children,
-}: PropsWithChildren<{ title?: string | React.ReactNode }>) {
+  ...props
+}: PropsWithChildren<
+  Omit<PropsOf<typeof BorderedSectionBase>, "title"> & {
+    title?: string | React.ReactNode
+  }
+>) {
   return (
-    <BorderedSectionBase>
+    <BorderedSectionBase {...props}>
       <div className="header">
         <div className="headerBorderBefore"></div>
         {title && <div className="headerTitle">{title}</div>}

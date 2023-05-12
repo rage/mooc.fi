@@ -86,5 +86,8 @@
     "previousPage": "previous page",
     "nextPage": "next page",
     "copyToClipboard": "Copy to clipboard",
-    "copiedToClipboard": "Copied!"
+    "copiedToClipboard": "Copied!",
+    "language": "Language",
+    "difficulty": "Difficulty",
+    "module": "Module"
 } 
