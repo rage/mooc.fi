@@ -86,6 +86,9 @@
     "previousPage": "edellinen sivu",
     "nextPage": "seuraava sivu",
     "copyToClipboard": "Kopioi leikepöydälle",
-    "copiedToClipboard": "Kopioitu!"
+    "copiedToClipboard": "Kopioitu!",
+    "language": "Kieli",
+    "difficulty": "Vaikeustaso",
+    "module": "Kokonaisuus"
 }
 

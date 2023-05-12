@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
@@ -9,11 +10,14 @@ import {
   ButtonProps,
   Checkbox,
   FormControlLabel,
+  Skeleton,
   TextField,
+  useMediaQuery,
 } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { styled, Theme } from "@mui/material/styles"
 
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
+import BorderedSection from "/components/BorderedSection"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
@@ -25,6 +29,8 @@ import {
   CourseStatus,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
+
+const allowedLanguages = ["en", "fi", "se"]
 
 /*  Coming in a later PR for better mobile view
   const Container = styled.div`
@@ -54,11 +60,19 @@ const CardContainer = styled.div`
   }
 ` */
 
-const Container = styled("div")`
+const Container = styled("div")(
+  ({ theme }) => `
   display: grid;
+  width: 90%;
+  margin: 0 auto;
   max-width: 1536px;
   padding: 1rem;
-`
+
+  ${theme.breakpoints.down("sm")} {
+    width: 98%;
+  }
+`,
+)
 
 const CardContainer = styled("ul")(
   ({ theme }) => `
@@ -85,41 +99,21 @@ const SearchBar = styled(TextField)`
   margin-bottom: 0.5rem 0;
 `
 
-const Filters = styled("div")`
+const Filters = styled("div")(
+  ({ theme }) => `
   margin: 1rem 0 1rem 0;
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: 5% 50% 30% 10%;
+  grid-template-columns: 10fr 6fr 4fr;
   grid-gap: 1rem;
-`
+  width: 100%;
 
-const FilterLabel = styled("div")`
-  align-self: center;
-  margin-right: 1rem;
-`
-
-const TagButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== "variant",
-})<ButtonProps & { variant: string }>`
-  border-radius: 2rem;
-  margin: 0.05rem 0.2rem;
-  font-weight: bold;
-  border-width: 0.15rem;
-  color: ${({ variant }) => (variant === "contained" ? "#F5F6F7" : "#378170")};
-  background-color: ${({ variant }) =>
-    variant === "contained" ? "#378170" : "#F5F6F7"};
-
-  &:hover {
-    border-width: 0.15rem;
-    background-color: ${({ variant }) =>
-      variant === "contained" ? "#378170" : "#F5F6F7"};
+  ${theme.breakpoints.down("md")} {
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
   }
-`
-
-const SelectAllButton = styled(TagButton)`
-  margin: auto;
-  margin-right: 1rem;
-`
+`,
+)
 
 const Statuses = styled("div")`
   justify-self: end;
@@ -143,14 +137,31 @@ const ResetFiltersButton = styled(Button, {
   }
 `
 
-const TagsContainer = styled("div")`
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  gap: 0.5rem;
-`
+const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
+  loading: () => (
+    <>
+      <Skeleton variant="rectangular" width="100%" height={50} />
+      <Skeleton variant="rectangular" width="100%" height={50} />
+      <Skeleton variant="rectangular" width="100%" height={50} />
+    </>
+  ),
+})
 
-const TypedTagsContainer = styled("div")`
-  display: flex;
+const DynamicTagSelectDropdowns = dynamic(
+  () => import("./TagSelectDropdowns"),
+  {
+    loading: () => (
+      <>
+        <Skeleton variant="rectangular" width="100%" height={56} />
+        <Skeleton variant="rectangular" width="100%" height={56} />
+        <Skeleton variant="rectangular" width="100%" height={56} />
+      </>
+    ),
+  },
+)
+
+const StyledBorderedSection = styled(BorderedSection)`
+  margin: 1rem 0;
 `
 
 const courseHasTag = (
@@ -163,14 +174,34 @@ const courseHasTag = (
   return course.tags.some((courseTag) => courseTag.name === tag.name)
 }
 
+const compareCourses = (
+  course1: CourseFieldsFragment,
+  course2: CourseFieldsFragment,
+) => {
+  if (course1.study_modules.length == 0) {
+    return 1
+  } else if (course2.study_modules.length == 0) {
+    return -1
+  } else if (course1.study_modules[0].name < course2.study_modules[0].name) {
+    return -1
+  } else if (course1.study_modules[0].name >= course2.study_modules[0].name) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
 function CourseGrid() {
   const t = useTranslator(CommonTranslations)
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
+  const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+
   const { loading: coursesLoading, data: coursesData } = useQuery(
     CoursesDocument,
     {
       variables: { language },
+      ssr: false,
     },
   )
 
@@ -179,6 +210,7 @@ function CourseGrid() {
     CourseCatalogueTagsDocument,
     {
       variables: { language },
+      ssr: false,
     },
   )
   const [searchString, setSearchString] = useState<string>("")
@@ -192,6 +224,13 @@ function CourseGrid() {
     () =>
       (tagsData?.tags ?? []).reduce((acc, curr) => {
         curr?.types?.forEach((t) => {
+          if (
+            t === "language" &&
+            curr.id &&
+            !allowedLanguages.includes(curr.id)
+          ) {
+            return acc
+          }
           acc[t] = (acc[t] ?? []).concat(curr)
         })
         return acc
@@ -199,14 +238,6 @@ function CourseGrid() {
     [tagsData],
   )
   // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
-
-  const handleClick = (tag: TagCoreFieldsFragment) => {
-    if (activeTags.includes(tag)) {
-      setActiveTags(activeTags.filter((t) => t !== tag))
-    } else {
-      setActiveTags([...activeTags, tag])
-    }
-  }
 
   const handleStatusChange = (status: string) => {
     filteredStatuses.includes(status)
@@ -218,37 +249,6 @@ function CourseGrid() {
     setSearchString("")
     setActiveTags([])
     setFilteredStatuses([CourseStatus.Active, CourseStatus.Upcoming])
-  }
-
-  const handleSelectAllClick = (category: string) => {
-    if (category in tags) {
-      if (tags[category].every((tag) => activeTags.includes(tag))) {
-        setActiveTags(activeTags.filter((tag) => !tags[category].includes(tag)))
-      } else {
-        const activeTagsWithAll = [...activeTags, ...tags[category]]
-        setActiveTags([...new Set(activeTagsWithAll)])
-      }
-    } else {
-      setActiveTags([...(tagsData?.tags ?? [])])
-    }
-  }
-
-  // TODO: need some preset order for tag categories
-  const compareCourses = (
-    course1: CourseFieldsFragment,
-    course2: CourseFieldsFragment,
-  ) => {
-    if (course1.study_modules.length == 0) {
-      return 1
-    } else if (course2.study_modules.length == 0) {
-      return -1
-    } else if (course1.study_modules[0].name < course2.study_modules[0].name) {
-      return -1
-    } else if (course1.study_modules[0].name >= course2.study_modules[0].name) {
-      return 1
-    } else {
-      return 0
-    }
   }
 
   const filteredCourses = useMemo(
@@ -285,6 +285,13 @@ function CourseGrid() {
     [coursesData, searchString, activeTags, filteredStatuses],
   )
 
+  const TagSelectComponent = useMemo(() => {
+    if (isNarrow) {
+      return DynamicTagSelectDropdowns
+    }
+    return DynamicTagSelectButtons
+  }, [isNarrow])
+
   return (
     <Container>
       <FiltersContainer>
@@ -298,66 +305,39 @@ function CourseGrid() {
             setSearchString(e.target.value)
           }
         />
-        <Filters>
-          <FilterLabel>{t("filter")}:</FilterLabel>
-          <TagsContainer>
-            {Object.keys(tags).map((category) => (
-              <TypedTagsContainer key={category}>
-                <div style={{ gridArea: `${category}Tags` }}>
-                  {tags[category].map((tag) => (
-                    <TagButton
-                      id={`tag-${category}-${tag.id}`}
-                      key={tag.id}
-                      variant={
-                        activeTags.includes(tag) ? "contained" : "outlined"
-                      }
-                      onClick={() => handleClick(tag)}
-                      size="small"
-                    >
-                      {tag.name}
-                    </TagButton>
-                  ))}
-                </div>
-                <SelectAllButton
-                  id={`select-all-${category}-tags`}
-                  variant={
-                    tags[category].every((tag) => activeTags.includes(tag))
-                      ? "contained"
-                      : "outlined"
+        <StyledBorderedSection title={t("filter")}>
+          <Filters>
+            <TagSelectComponent
+              tags={tags}
+              activeTags={activeTags}
+              setActiveTags={setActiveTags}
+              selectAllTags={() => setActiveTags([...(tagsData?.tags ?? [])])}
+            />
+            <Statuses>
+              {(["Active", "Upcoming", "Ended"] as const).map((status) => (
+                <FormControlLabel
+                  label={t(status)}
+                  key={status}
+                  control={
+                    <Checkbox
+                      id={status}
+                      checked={filteredStatuses.includes(status)}
+                      onChange={() => handleStatusChange(status)}
+                    />
                   }
-                  style={{ gridArea: `${category}SelectAll` }}
-                  onClick={() => handleSelectAllClick(category)}
-                  size="small"
-                >
-                  {t("selectAll")}
-                </SelectAllButton>
-              </TypedTagsContainer>
-            ))}
-          </TagsContainer>
-          <Statuses>
-            {(["Active", "Upcoming", "Ended"] as const).map((status) => (
-              <FormControlLabel
-                label={t(status)}
-                key={status}
-                control={
-                  <Checkbox
-                    id={status}
-                    checked={filteredStatuses.includes(status)}
-                    onChange={() => handleStatusChange(status)}
-                  />
-                }
-              />
-            ))}
-          </Statuses>
-          <ResetFiltersButton
-            id="resetFiltersButton"
-            variant="outlined"
-            onClick={handleResetButtonClick}
-            startIcon={<ClearIcon />}
-          >
-            {t("reset")}
-          </ResetFiltersButton>
-        </Filters>
+                />
+              ))}
+            </Statuses>
+            <ResetFiltersButton
+              id="resetFiltersButton"
+              variant="outlined"
+              onClick={handleResetButtonClick}
+              startIcon={<ClearIcon />}
+            >
+              {t("reset")}
+            </ResetFiltersButton>
+          </Filters>
+        </StyledBorderedSection>
       </FiltersContainer>
       {coursesLoading ? (
         <CardContainer>
@@ -371,6 +351,9 @@ function CourseGrid() {
           {filteredCourses.sort(compareCourses).map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
+          {filteredCourses.length === 0 && (
+            <li style={{ width: "100%" }}>no courses</li>
+          )}
         </CardContainer>
       )}
     </Container>

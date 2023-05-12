@@ -8,6 +8,7 @@ import CoursesTranslations from "/translations/_new/courses"
 const Container = styled("section")`
   display: grid;
   justify-items: center;
+  margin: 0 auto;
 `
 
 const Header = styled(Typography)`

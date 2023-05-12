@@ -150,6 +150,19 @@ function prismaTestContext() {
   let prisma: null | PrismaClient = null
   let knexClient: Knex | null = null
 
+  const clean = async () => {
+    await knexClient?.raw(`DO $$ BEGIN 
+    EXECUTE(
+      SELECT 'TRUNCATE TABLE ' 
+        || string_agg(format('%I.%I', schemaname, tablename), ', ') 
+        || ' CASCADE' 
+      FROM pg_tables 
+      WHERE schemaname = '${schemaName}'
+      AND tableowner = '${DB_USER}'
+    ); 
+  END $$;
+  `)
+  }
   return {
     async before() {
       // Generate a unique schema identifier for this test context
@@ -174,7 +187,8 @@ function prismaTestContext() {
         schemaName,
         database: databaseUrl,
       })
-
+      // Clear data that might have been inserted during the migrations
+      await clean()
       // Construct a new Prisma Client connected to the generated Postgres schema
       DEBUG && console.log(`creating prisma ${databaseUrl}`)
       prisma = new PrismaClient({
@@ -185,19 +199,7 @@ function prismaTestContext() {
         prisma,
       }
     },
-    async clean() {
-      await knexClient?.raw(`DO $$ BEGIN 
-        EXECUTE(
-          SELECT 'TRUNCATE TABLE ' 
-            || string_agg(format('%I.%I', schemaname, tablename), ', ') 
-            || ' CASCADE' 
-          FROM pg_tables 
-          WHERE schemaname = '${schemaName}'
-          AND tableowner = '${DB_USER}'
-        ); 
-      END $$;
-      `)
-    },
+    clean,
     async after() {
       // Drop the schema after the tests have completed
       DEBUG && console.log(`dropping schema ${schemaName}`)

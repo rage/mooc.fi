@@ -93,7 +93,7 @@ const UserOptionsMenu = () => {
   const { pathname, locale } = useRouter()
   const { loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
-  const isNarrow = useMediaQuery("(max-width: 899px)")
+  const isNarrow = useMediaQuery("(max-width: 899px)", { noSsr: true })
 
   const userDisplayName = useMemo(() => {
     const name = currentUser?.full_name
