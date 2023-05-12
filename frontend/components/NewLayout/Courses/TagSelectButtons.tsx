@@ -51,12 +51,6 @@ const TagChip = styled(Chip, {
 `,
 )
 
-/*
-    color: ${({ variant }) => (variant === "outlined" ? "#F5F6F7" : "#378170")};
-    background-color: ${({ variant }) =>
-      variant === "outlined" ? "#378170" : "#F5F6F7"};
-*/
-
 const SelectAllButton = styled(Button)(
   ({ theme, variant }) => `
   margin: 0 1rem auto auto;
