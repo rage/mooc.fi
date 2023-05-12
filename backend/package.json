@@ -26,6 +26,7 @@
     "kafka-consumer-user-points-batch": "node ./dist/bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.js",
     "kafka-consumer-user-points-realtime": "node ./dist/bin/kafkaConsumer/userPointsRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-user-course-points-batch": "node ./dist/bin/kafkaConsumer/userCoursePointsConsumer/kafkaConsumer.js",
+    "kafka-consumer-user-course-points-realtime": "node ./dist/bin/kafkaConsumer/userCoursePointsRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-exercises": "node ./dist/bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.js",
     "generate": "npm run generate:prisma && npm run generate:nexus",
     "generate:prisma": "prisma generate",

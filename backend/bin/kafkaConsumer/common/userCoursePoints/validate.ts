@@ -1,6 +1,6 @@
 import * as yup from "yup"
 
-import { MessageYupSchema as UserPointsMessageYupSchema } from "../common/userPoints/validate"
+import { MessageYupSchema as UserPointsMessageYupSchema } from "../userPoints/validate"
 
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 

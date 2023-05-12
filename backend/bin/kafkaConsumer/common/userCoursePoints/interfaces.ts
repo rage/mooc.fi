@@ -1,4 +1,4 @@
-import { Message as UserPointsMessage } from "../common/userPoints/interfaces"
+import { Message as UserPointsMessage } from "../userPoints/interfaces"
 
 export interface Message {
   timestamp: string

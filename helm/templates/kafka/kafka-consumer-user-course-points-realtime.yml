@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer-user-course-points-realtime
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: kafka-consumer-user-course-points-realtime
+      {{- include "helm.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.kafkaConsumer.userCoursePointsRealtime.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer-user-course-points-realtime
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: kafka-consumer-user-course-points-realtime
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "npm run kafka-consumer-user-course-points-realtime"]
+          imagePullPolicy: Always
+          ports:
+            - name: backend-http
+              containerPort: 4000
+          resources:
+            limits:
+              memory: 800Mi
+              cpu: 80m
+            requests:
+              memory: 200Mi
+              cpu: 20m
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+          volumeMounts:
+            - name: google-cloud-storage-serviceaccount
+              mountPath: "/etc/gcs"
+              readOnly: true
+      volumes:
+        - name: google-cloud-storage-serviceaccount
+          secret:
+            secretName: google-cloud-storage-serviceaccount
+            items:
+              - key: account.json
+                path: account.json

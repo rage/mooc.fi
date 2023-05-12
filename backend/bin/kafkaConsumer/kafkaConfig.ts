@@ -17,6 +17,9 @@ const kafkaConfig = {
   user_course_points_consumer: {
     topic_name: "user-course-points-batch",
   },
+  user_course_points_realtime_consumer: {
+    topic_name: "user-course-points-realtime",
+  },
   commit_interval: 50,
 }
 

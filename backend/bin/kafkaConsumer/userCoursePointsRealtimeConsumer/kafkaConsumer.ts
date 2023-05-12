@@ -8,16 +8,18 @@ import knex from "../../../services/knex"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
 import { KafkaContext } from "../common/kafkaContext"
-import { handledRecently, setHandledRecently } from "../common/messageHashCache"
+import { Message } from "../common/userCoursePoints/interfaces"
 import { saveToDatabase } from "../common/userCoursePoints/saveToDB"
 import { MessageYupSchema } from "../common/userCoursePoints/validate"
 import config from "../kafkaConfig"
 
-const TOPIC_NAME = [config.user_course_points_consumer.topic_name]
+const TOPIC_NAME = [config.user_course_points_realtime_consumer.topic_name]
 
 const mutex = new Mutex()
 
-const logger = sentryLogger({ service: "kafka-consumer-user-course-points" })
+const logger = sentryLogger({
+  service: "kafka-consumer-user-course-points-realtime",
+})
 const consumer = createKafkaConsumer({ logger, prisma })
 
 consumer.connect()
@@ -45,19 +47,12 @@ consumer.on("ready", () => {
     }
 
     if (messages.length > 0) {
-      const messageString = messages[0]?.value?.toString("utf8") ?? ""
-      if (!handledRecently(messageString)) {
-        await handleMessage({
-          context,
-          kafkaMessage: messages[0],
-          MessageYupSchema,
-          saveToDatabase,
-        })
-        setHandledRecently(messageString)
-      } else {
-        logger.info("Skipping message because it was already handled recently.")
-      }
-
+      await handleMessage<Message>({
+        context,
+        kafkaMessage: messages[0],
+        MessageYupSchema,
+        saveToDatabase,
+      })
       setImmediate(() => {
         consumer.consume(1, consumerImpl)
       })

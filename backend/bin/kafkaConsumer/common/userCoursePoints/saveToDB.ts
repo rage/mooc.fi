@@ -1,13 +1,13 @@
-import { ok } from "../../../util/result"
-import { KafkaContext } from "../common/kafkaContext"
-import { checkCompletion } from "../common/userFunctions"
+import { ok } from "../../../../util/result"
+import { KafkaContext } from "../kafkaContext"
+import { checkCompletion } from "../userFunctions"
 import {
   createExerciseCompletion,
   getCreatedAndUpdatedExerciseCompletions,
   pruneExerciseCompletions,
   updateExerciseCompletion,
-} from "../common/userPoints/exerciseCompletionFunctions"
-import { getCourse, getTimestamp, getUser } from "../common/userPoints/util"
+} from "../userPoints/exerciseCompletionFunctions"
+import { getCourse, getTimestamp, getUser } from "../userPoints/util"
 import { Message } from "./interfaces"
 
 export const saveToDatabase = async (
