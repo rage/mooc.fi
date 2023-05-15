@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react"
 
+import { PropsOf } from "@emotion/react"
 import { styled } from "@mui/material/styles"
 
 const BorderedSectionBase = styled("div")`
@@ -51,8 +52,6 @@ const BorderedSectionBase = styled("div")`
     }
   }
 `
-
-type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never
 
 function BorderedSection({
   title,

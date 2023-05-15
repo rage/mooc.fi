@@ -87,7 +87,7 @@ export const CardHeaderBackground = styled("span", {
     typeof prop !== "string" ||
     !["color", "image", "hue", "brightness"].includes(prop),
 })<CardHeaderBackgroundProps>`
-  ${CommonHeaderBackground};
+  ${CommonHeaderBackground.styles};
   background-size: cover;
   ${({ color, image }) => {
     if (!color && !image) {
@@ -114,7 +114,7 @@ export const CardImageHeaderBackground = styled(Image, {
   shouldForwardProp: (prop) =>
     typeof prop !== "string" || !["color", "hue", "brightness"].includes(prop),
 })<Omit<CardHeaderBackgroundProps, "image">>`
-  ${CommonHeaderBackground};
+  ${CommonHeaderBackground.styles};
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -129,6 +129,6 @@ CardImageHeaderBackground.defaultProps = {
 }
 
 export const CardHeaderBackgroundSkeleton = styled("span")`
-  ${CommonHeaderBackground};
+  ${CommonHeaderBackground.styles};
   background-color: #aaa;
 `

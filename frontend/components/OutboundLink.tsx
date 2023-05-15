@@ -19,7 +19,7 @@ export const OutboundLinkTextStyle = css`
 `
 
 const StyledOutboundLink = styled(Link)`
-  ${OutboundLinkTextStyle}
+  ${OutboundLinkTextStyle.styles}
 ` as EnhancedLink
 
 function OutboundLink({

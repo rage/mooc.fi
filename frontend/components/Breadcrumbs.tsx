@@ -78,11 +78,11 @@ const BreadcrumbLinkBase = css`
 `
 
 const BreadcrumbLink = styled(Link)`
-  ${BreadcrumbLinkBase}
+  ${BreadcrumbLinkBase.styles}
 `
 
 const BreadcrumbNonLink = styled("div")`
-  ${BreadcrumbLinkBase}
+  ${BreadcrumbLinkBase.styles}
 `
 
 const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({

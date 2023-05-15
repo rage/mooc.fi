@@ -40,12 +40,12 @@ const ImageBackgroundBase = css`
 `
 
 const ImageBackground = styled(LoaderImage)`
-  ${ImageBackgroundBase};
+  ${ImageBackgroundBase.styles};
   object-fit: cover;
 `
 
 const ImageBackgroundSkeleton = styled("span")`
-  ${ImageBackgroundBase}
+  ${ImageBackgroundBase.styles}
 `
 
 const IconBackground = styled("span")`

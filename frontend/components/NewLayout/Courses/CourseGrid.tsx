@@ -74,18 +74,19 @@ const Container = styled("div")(
 `,
 )
 
-const CardContainer = styled("ul")(
+const CardsContainer = styled("ul")(
   ({ theme }) => `
   list-style: none;
   padding: 0;
   display: grid;
-  grid-gap: 2rem;
+  grid-gap: 1.5rem;
   grid-template-columns: 1fr 1fr;
   margin-top: 0;
-  justify-self: center;
+  width: 100%;
 
   ${theme.breakpoints.down("lg")} {
     grid-template-columns: 1fr;
+    grid-gap: 2rem;
   }
 `,
 )
@@ -340,21 +341,21 @@ function CourseGrid() {
         </StyledBorderedSection>
       </FiltersContainer>
       {coursesLoading ? (
-        <CardContainer>
+        <CardsContainer>
           <CourseCardSkeleton />
           <CourseCardSkeleton />
           <CourseCardSkeleton />
           <CourseCardSkeleton />
-        </CardContainer>
+        </CardsContainer>
       ) : (
-        <CardContainer>
+        <CardsContainer>
           {filteredCourses.sort(compareCourses).map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
           {filteredCourses.length === 0 && (
             <li style={{ width: "100%" }}>no courses</li>
           )}
-        </CardContainer>
+        </CardsContainer>
       )}
     </Container>
   )

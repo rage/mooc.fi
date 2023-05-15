@@ -199,7 +199,7 @@ const nextConfiguration = (_phase) => ({
       "react-dom$": "react-dom/profiling",
     }
 
-    if (options.isServer) {
+    if (options.isServer && isProduction) {
       config.devtool = "source-map"
     }
 
