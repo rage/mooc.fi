@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 
 import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
@@ -6,6 +6,7 @@ import { css, styled } from "@mui/material/styles"
 import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
+import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
 import backgroundPattern from "/public/images/new/background/backgroundPattern.svg"
 
 import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
@@ -59,7 +60,7 @@ const ModuleCardBody = styled("ul")`
   --_max: var(--max, 100%); /* cards cannot be wider than this size */
 
   list-style: none;
-  padding: 1rem;
+  padding: 2rem 1rem;
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
@@ -169,7 +170,7 @@ export function ListItem({
     }
   }, [])
 
-  useLayoutEffect(setDescriptionHeight, [studyModule.description])
+  useIsomorphicLayoutEffect(setDescriptionHeight, [studyModule.description])
 
   // TODO: the anchor link may have to be shifted by the amount of the header again
   return (
