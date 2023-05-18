@@ -97,7 +97,7 @@ const ImageBackgroundBase = css`
   right: 0;
   top: 0;
   bottom: 0;
-  background-size: cover;
+  background-size: 200%;
   background-position: center 40%;
   z-index: -5;
 `
@@ -118,7 +118,10 @@ const CenteredHeader = styled(Typography)`
   margin-bottom: 2rem;
 ` as typeof Typography
 
-// const ModuleCourseCard = styled(CourseCard)``
+/*const ModuleCourseCard = styled(CourseCard)(
+  ({ theme }) => `
+`,
+)*/
 
 export function ListItem({
   studyModule,

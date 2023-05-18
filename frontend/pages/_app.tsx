@@ -3,6 +3,7 @@ import { useInsertionEffect, useMemo } from "react"
 import { DefaultSeo } from "next-seo"
 import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
+import Script from "next/script"
 
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
@@ -63,6 +64,11 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
     [signedIn, admin, currentUser],
   )
 
+  // test for container query support
+  const supportsContainerQueries =
+    typeof document !== "undefined" &&
+    "container" in document.documentElement.style
+
   return (
     <>
       <Head>
@@ -71,6 +77,12 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
         />
         <link rel="alternate" {...alternateLanguage} />
+        {!supportsContainerQueries && (
+          <Script
+            id="container-query-polyfill"
+            src="https://cdn.jsdelivr.net/npm/container-query-polyfill@1/dist/container-query-polyfill.modern.js"
+          />
+        )}
       </Head>
       <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
