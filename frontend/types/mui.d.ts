@@ -89,6 +89,7 @@ declare module "@mui/material/styles" {
     // adds breakpoints
     xxxs: true
     xxs: true
+    desktop: true
   }
 
   // add typography variants - also needs to be declared in Typography

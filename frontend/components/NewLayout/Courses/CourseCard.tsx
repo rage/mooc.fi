@@ -2,35 +2,30 @@ import React, { useMemo } from "react"
 
 import Image from "next/image"
 
-import { PropsOf } from "@emotion/react"
-import CircleIcon from "@mui/icons-material/Circle"
-import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"
 import HelpIcon from "@mui/icons-material/Help"
-import { Chip, Skeleton, Tooltip, Typography } from "@mui/material"
+import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
+import { allowedLanguages, colorSchemes, sortByLanguage } from "./common"
+import {
+  DifficultyTag,
+  DifficultyTags,
+  LanguageTag,
+  LanguageTags,
+  ModuleTag,
+  ModuleTags,
+} from "./Tags"
 import OutboundLink from "/components/OutboundLink"
 import { CardSubtitle } from "/components/Text/headers"
+import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
 import moocLogo from "/public/images/new/logos/moocfi_white.svg"
 //import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
-import newTheme from "/src/newTheme"
 import CommonTranslations from "/translations/common"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
-import { CourseFieldsFragment } from "/graphql/generated"
-
-const colorSchemes: Record<string, string> = {
-  "Cyber Security Base": newTheme.palette.blue.dark2!,
-  Ohjelmointi: newTheme.palette.green.dark2!,
-  "Pilvipohjaiset websovellukset": newTheme.palette.crimson.dark2!,
-  "Tekoäly ja data": newTheme.palette.purple.dark2!,
-  other: newTheme.palette.gray.dark1!,
-  difficulty: newTheme.palette.blue.dark1!,
-  module: newTheme.palette.purple.dark1!,
-  language: newTheme.palette.green.dark1!,
-}
+import { CourseFieldsFragment, TagCoreFieldsFragment } from "/graphql/generated"
 
 const ContainerBase = css`
   display: grid;
@@ -239,8 +234,20 @@ const Organizer = styled(Typography)`
 const StyledTooltip = styled(Tooltip)`
   max-height: 1rem;
   margin-right: -0.25rem;
+
   &:hover {
     cursor: help;
+  }
+` as typeof Tooltip
+
+const StyledHelpIcon = styled(HelpIcon)`
+  margin-left: 0.25rem;
+  font-size: inherit;
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    cursor: help;
+    scale: 1.2;
   }
 `
 
@@ -249,42 +256,6 @@ const Link = styled(OutboundLink)`
   margin-bottom: 0;
 ` as typeof OutboundLink
 
-const Tags = styled("div")`
-  display: flex;
-  flex-shrink: 1;
-  margin-bottom: auto;
-  padding: 0;
-  gap: 0.2rem;
-  justify-content: flex-end;
-`
-
-const LanguageTags = styled(Tags)`
-  grid-area: languageTags;
-  display: flex;
-  margin: 0 0 auto;
-  flex-shrink: 1;
-`
-
-const DifficultyTags = styled(Tags)`
-  grid-area: difficultyTags;
-  display: flex;
-  margin: 0 0 auto;
-  flex-shrink: 1;
-  justify-content: flex-start;
-`
-
-const ModuleTags = styled(Tags)`
-  grid-area: moduleTags;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  flex-flow: wrap;
-  margin: 0 auto;
-  flex-grow: 2;
-  flex-shrink: 0;
-  flex-basis: 50%;
-`
-
 const LinkArea = styled("div")`
   display: flex;
   justify-content: flex-end;
@@ -292,77 +263,6 @@ const LinkArea = styled("div")`
   grid-area: link;
   margin-left: auto;
   height: fit-content;
-`
-
-const Tag = styled(Chip)`
-  border-radius: 2rem;
-  background-color: ${colorSchemes["other"]} !important;
-  border-color: ${colorSchemes["other"]} !important;
-  color: #fff !important;
-  font-weight: bold;
-  text-transform: uppercase;
-`
-
-const LanguageTag = styled(Tag)`
-  background-color: ${colorSchemes["language"]} !important;
-  border-color: ${colorSchemes["language"]} !important;
-  border-radius: 3rem;
-  min-width: 40px;
-  max-height: 40px;
-`
-
-const DifficultyTagBase = styled(Tag)`
-  background-color: ${colorSchemes["difficulty"]} !important;
-  border-color: ${colorSchemes["difficulty"]} !important;
-`
-
-const DifficultyTagContainer = styled("div")`
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-`
-
-const DifficultyTag = ({
-  difficulty,
-  ...props
-}: PropsOf<typeof Tag> & { difficulty: string }) => (
-  <DifficultyTagContainer>
-    <DifficultyTagBase {...props}></DifficultyTagBase>
-    <CircleContainer>
-      <StyledCircleIcon />
-      {difficulty !== "beginner" ? (
-        <StyledCircleIcon />
-      ) : (
-        <StyledCircleOutlinedIcon />
-      )}
-      {difficulty === "advanced" ? (
-        <StyledCircleIcon />
-      ) : (
-        <StyledCircleOutlinedIcon />
-      )}
-    </CircleContainer>
-  </DifficultyTagContainer>
-)
-
-const ModuleTag = styled(Tag)`
-  background-color: ${colorSchemes["module"]} !important;
-  border-color: ${colorSchemes["module"]} !important;
-`
-
-const CircleContainer = styled("div")(
-  ({ theme }) => `
-  ${theme.breakpoints.down("sm")} {
-    display: none;
-  }
-`,
-)
-
-const StyledCircleIcon = styled(CircleIcon)`
-  max-width: 15px;
-`
-
-const StyledCircleOutlinedIcon = styled(CircleOutlinedIcon)`
-  max-width: 15px;
 `
 
 const CardHeaderImage = styled(Image)`
@@ -383,8 +283,6 @@ const MoocfiLogo = styled(CardHeaderImage)`
 
 const prettifyDate = (date: string) =>
   date.split("T").shift()?.split("-").reverse().join(".")
-
-const allowedLanguages = ["en", "fi", "se", "other_language"]
 
 interface CourseCardLayoutProps {
   title: string | React.ReactNode
@@ -456,6 +354,11 @@ function CourseCardLayout({
   )
 }
 
+const tagHasName = (
+  tag: TagCoreFieldsFragment,
+): tag is TagCoreFieldsFragment & { name: string } =>
+  typeof tag.name === "string"
+
 interface CourseCardProps {
   course: CourseFieldsFragment
   tags?: string[]
@@ -488,6 +391,71 @@ const CourseCard = React.forwardRef<HTMLLIElement, CourseCardProps>(
       }
     }, [course, t])
 
+    const moduleTags = useMemo(
+      () => (
+        <>
+          {course.tags
+            ?.filter((tag) => tag.types?.includes("module"))
+            .filter(tagHasName)
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((tag) => (
+              <ModuleTag
+                key={tag.id}
+                size="small"
+                variant="filled"
+                label={tag.name}
+              />
+            ))}
+        </>
+      ),
+      [course.tags],
+    )
+
+    const languageTags = useMemo(() => {
+      const langTags = course.tags?.filter((tag) =>
+        tag.types?.includes("language"),
+      )
+      const allowed = langTags
+        ?.filter((tag) => allowedLanguages.includes(tag.id))
+        .sort(sortByLanguage)
+      const otherLanguages = langTags?.filter(
+        (tag) => !allowedLanguages.includes(tag.id),
+      )
+
+      return (
+        <>
+          {allowed.map((tag) => (
+            <LanguageTag
+              key={tag.id}
+              size="small"
+              variant="filled"
+              label={tag.name}
+              {...(tag.id === "other_language" && {
+                otherLanguages,
+              })}
+            />
+          ))}
+        </>
+      )
+    }, [course.tags])
+
+    const difficultyTags = useMemo(
+      () =>
+        course.tags
+          ?.filter((t) => t.types?.includes("difficulty"))
+          .filter(tagHasName)
+          .map((tag) => (
+            <DifficultyTag
+              key={tag.id}
+              size="small"
+              variant="filled"
+              label={tag.name}
+              difficulty={tag.id}
+            />
+          )),
+      [course.tags],
+    )
+
     return (
       <Container
         ref={ref}
@@ -502,16 +470,7 @@ const CourseCard = React.forwardRef<HTMLLIElement, CourseCardProps>(
           title={course?.name}
           description={course?.description}
           schedule={schedule}
-          moduleTags={course?.tags
-            ?.filter((t) => t.types?.includes("module") && t.name)
-            .map((tag) => (
-              <ModuleTag
-                key={tag.id}
-                size="small"
-                variant="filled"
-                label={tag.name}
-              />
-            ))}
+          moduleTags={moduleTags}
           details={
             course.ects && (
               <CourseLength>
@@ -520,41 +479,19 @@ const CourseCard = React.forwardRef<HTMLLIElement, CourseCardProps>(
                   {Math.round((parseInt(course.ects) * 27) / 5) * 5}h
                 </Typography>
                 <StyledTooltip
-                  title={
-                    t("ectsHoursExplanation1") +
-                    ` ${course.ects} ` +
-                    t("ectsHoursExplanation2")
-                  }
+                  title={`${t("ectsHoursExplanation1")} ${course.ects} ${t(
+                    "ectsHoursExplanation2",
+                  )}`}
                 >
-                  <HelpIcon />
+                  <StyledHelpIcon />
                 </StyledTooltip>
               </CourseLength>
             )
           }
           /* TODO: add information regarding university/organization to course */
           organizer="Helsingin yliopisto"
-          languageTags={course?.tags
-            ?.filter((t) => t.types?.includes("language"))
-            .filter((t) => allowedLanguages.includes(t.id))
-            .map((tag) => (
-              <LanguageTag
-                key={tag.id}
-                size="small"
-                variant="filled"
-                label={tag.name?.toUpperCase()}
-              />
-            ))}
-          difficultyTags={course?.tags
-            ?.filter((t) => t.types?.includes("difficulty"))
-            .map((tag) => (
-              <DifficultyTag
-                key={tag.id}
-                size="small"
-                variant="filled"
-                label={tag.name}
-                difficulty={tag.id}
-              />
-            ))}
+          languageTags={languageTags}
+          difficultyTags={difficultyTags}
           link={<Link href="https://www.mooc.fi">{t("showCourse")}</Link>}
           /* <SponsorContainer>
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />

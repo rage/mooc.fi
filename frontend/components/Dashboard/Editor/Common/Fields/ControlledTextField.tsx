@@ -15,7 +15,7 @@ import { ControlledFieldProps } from "."
 import { pulseAnimation } from ".."
 import { useCourseEditorData } from "../../Course/CourseEditorDataContext"
 import RevertButton from "/components/RevertButton"
-import { InfoTooltipWithLabel } from "/components/Tooltip"
+import { InfoTooltip } from "/components/Tooltip"
 import { useAnchor } from "/hooks/useAnchors"
 
 const TextFieldContainer = styled("div")`
@@ -88,7 +88,7 @@ function ControlledTextFieldComponent<
                 onRevert={onRevert}
               />
             )}
-            {tip && <InfoTooltipWithLabel label={label} title={tip} />}
+            {tip && <InfoTooltip label={label} title={tip} />}
           </InputAdornment>
         ) : null,
     }),

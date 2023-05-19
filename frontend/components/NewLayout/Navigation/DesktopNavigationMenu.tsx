@@ -12,7 +12,7 @@ import {
   SvgIconProps,
   useMediaQuery,
 } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { styled, Theme } from "@mui/material/styles"
 
 import { NavigationLinks } from "./NavigationLinks"
 import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
@@ -90,12 +90,17 @@ const MenuButton = React.memo(
 
 const UserOptionsMenu = () => {
   const client = useApolloClient()
-  const { pathname, locale } = useRouter()
+  const { pathname } = useRouter()
   const { loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
-  const isNarrow = useMediaQuery("(max-width: 899px)", { noSsr: true })
+  const isNarrow = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("desktop"),
+  )
 
   const userDisplayName = useMemo(() => {
+    if (isNarrow) {
+      return null
+    }
     const name = currentUser?.full_name
     const initials = (
       (currentUser?.first_name?.[0] ?? "") + (currentUser?.last_name?.[0] ?? "")
@@ -109,7 +114,7 @@ const UserOptionsMenu = () => {
     }
 
     return name
-  }, [currentUser, locale, t])
+  }, [currentUser, t, isNarrow])
 
   const onLogOut = useCallback(
     () => signOut(client, logInOrOut),
@@ -125,7 +130,7 @@ const UserOptionsMenu = () => {
           narrow={isNarrow}
           title={t("myProfile")}
         >
-          {isNarrow ? null : userDisplayName}
+          {userDisplayName}
         </MenuButton>
         <MenuButton
           href={pathname}

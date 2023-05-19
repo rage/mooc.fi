@@ -24,7 +24,7 @@ import { UserDetailedFieldsFragment } from "/graphql/generated"
 
 const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
   createEmotionSsr({
-    key: "emotion-css",
+    key: "moocfi",
   })
 
 export { augmentDocumentWithEmotionCache }

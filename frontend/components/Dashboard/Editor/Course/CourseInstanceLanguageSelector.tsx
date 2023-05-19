@@ -14,7 +14,7 @@ import { useEventCallback } from "@mui/material/utils"
 import { useCourseEditorData } from "./CourseEditorDataContext"
 import { CourseFormValues } from "./types"
 import RevertButton from "/components/RevertButton"
-import { InfoTooltipWithLabel } from "/components/Tooltip"
+import { InfoTooltip } from "/components/Tooltip"
 import { useAnchor } from "/hooks/useAnchors"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
@@ -134,7 +134,7 @@ function CourseInstanceLanguageSelector(
                   }
                   onRevert={onRevert}
                 />
-                <InfoTooltipWithLabel
+                <InfoTooltip
                   label={t("courseInstanceLanguage")}
                   title={t("helpCourseInstanceLanguage")}
                 />
