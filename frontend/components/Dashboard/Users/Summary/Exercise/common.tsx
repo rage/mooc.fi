@@ -3,6 +3,7 @@ import { PropsWithChildren, useMemo } from "react"
 import { merge } from "lodash"
 import { MaterialReactTableProps, MRT_ColumnDef } from "material-react-table"
 
+import { PropsOf } from "@emotion/react"
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"
 import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
@@ -81,8 +82,6 @@ export const NarrowCellBase = styled("div")`
   width: 100%;
   padding-right: 1rem;
 `
-
-type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never
 
 const TooltipWrapper = styled("div")`
   margin-left: auto;

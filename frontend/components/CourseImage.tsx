@@ -16,7 +16,7 @@ const ImageComponentBase = css`
 `
 
 const PlaceholderComponent = styled("div")`
-  ${ImageComponentBase}
+  ${ImageComponentBase.styles}
   background-color: #F0F0F0;
   display: flex;
   justify-content: center;

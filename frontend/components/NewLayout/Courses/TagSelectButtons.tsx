@@ -1,6 +1,6 @@
 import React, { useCallback } from "react"
 
-import { Button, Chip } from "@mui/material"
+import { Button, Chip, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
@@ -16,6 +16,18 @@ const TagsContainer = styled("div")`
     "moduleTags moduleSelectAll";
   gap: 0.5rem;
 `
+
+const TagListContainer = styled("div", {
+  shouldForwardProp: (prop) => prop !== "category",
+})<{ category?: string }>(({ category }) =>
+  category ? `grid-area: ${category}Tags;` : "",
+)
+
+const SelectAllContainer = styled("div", {
+  shouldForwardProp: (prop) => prop !== "category",
+})<{ category?: string }>(({ category }) =>
+  category ? `grid-area: ${category}SelectAll;` : "",
+)
 
 const TagChip = styled(Chip, {
   shouldForwardProp: (prop) => prop !== "variant",
@@ -49,6 +61,41 @@ const TagChip = styled(Chip, {
     color: ${theme.palette.primary.contrastText};
   }
 `,
+)
+
+const TagSkeletonContainer = styled("div")`
+  display: grid;
+  grid-template-areas:
+    "skeleton1Tags skeleton1SelectAll"
+    "skeleton2Tags skeleton2SelectAll"
+    "skeleton3Tags skeleton3SelectAll";
+  gap: 0.5rem;
+`
+
+const TagsSkeleton = ({
+  category,
+  widths,
+}: {
+  category: string
+  widths: Array<number>
+}) => (
+  <>
+    <TagListContainer
+      category={category}
+      style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
+    >
+      {widths.map((width) => (
+        <Skeleton
+          width={width}
+          height={24}
+          key={`skeleton-${category}-${width}`}
+        />
+      ))}
+    </TagListContainer>
+    <SelectAllContainer category={category}>
+      <Skeleton width={100} height={31} />
+    </SelectAllContainer>
+  </>
 )
 
 const SelectAllButton = styled(Button)(
@@ -87,6 +134,7 @@ const SelectAllButton = styled(Button)(
 )
 
 interface TagSelectButtonsProps {
+  loading?: boolean
   tags: Record<string, Array<TagCoreFieldsFragment>>
   activeTags: Array<TagCoreFieldsFragment>
   setActiveTags: (
@@ -102,11 +150,12 @@ const TagSelectButtons = ({
   activeTags,
   setActiveTags,
   selectAllTags,
+  loading,
 }: TagSelectButtonsProps) => {
   const t = useTranslator(CommonTranslations)
 
   const handleClick = useCallback(
-    (tag: TagCoreFieldsFragment) => {
+    (tag: TagCoreFieldsFragment) => () => {
       if (activeTags.includes(tag)) {
         setActiveTags(activeTags.filter((t) => t !== tag))
       } else {
@@ -117,7 +166,7 @@ const TagSelectButtons = ({
   )
 
   const handleSelectAllClick = useCallback(
-    (category: string) => {
+    (category: string) => () => {
       if (category in tags) {
         if (tags[category].every((tag) => activeTags.includes(tag))) {
           setActiveTags(
@@ -134,23 +183,33 @@ const TagSelectButtons = ({
     [activeTags],
   )
 
+  if (loading) {
+    return (
+      <TagSkeletonContainer>
+        <TagsSkeleton widths={[70, 75, 80, 120]} category="skeleton1" />
+        <TagsSkeleton widths={[100, 70, 60]} category="skeleton2" />
+        <TagsSkeleton widths={[160, 100, 60]} category="skeleton3" />
+      </TagSkeletonContainer>
+    )
+  }
+
   return (
     <TagsContainer>
       {Object.keys(tags).map((category) => (
         <React.Fragment key={category}>
-          <div style={{ gridArea: `${category}Tags` }}>
+          <TagListContainer category={category}>
             {tags[category].map((tag) => (
               <TagChip
                 id={`tag-${category}-${tag.id}`}
                 key={tag.id}
                 variant={activeTags.includes(tag) ? "filled" : "outlined"}
-                onClick={() => handleClick(tag)}
+                onClick={handleClick(tag)}
                 size="small"
                 label={tag.name}
               />
             ))}
-          </div>
-          <div style={{ gridArea: `${category}SelectAll` }}>
+          </TagListContainer>
+          <SelectAllContainer category={category}>
             <SelectAllButton
               id={`select-all-${category}-tags`}
               variant={
@@ -158,12 +217,12 @@ const TagSelectButtons = ({
                   ? "contained"
                   : "outlined"
               }
-              onClick={() => handleSelectAllClick(category)}
+              onClick={handleSelectAllClick(category)}
               size="small"
             >
               {t("selectAll")}
             </SelectAllButton>
-          </div>
+          </SelectAllContainer>
         </React.Fragment>
       ))}
     </TagsContainer>

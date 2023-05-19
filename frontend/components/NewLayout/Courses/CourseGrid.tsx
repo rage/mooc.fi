@@ -16,6 +16,7 @@ import {
 } from "@mui/material"
 import { styled, Theme } from "@mui/material/styles"
 
+import { allowedLanguages, sortByLanguage } from "./common"
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import BorderedSection from "/components/BorderedSection"
 import { useTranslator } from "/hooks/useTranslator"
@@ -29,8 +30,6 @@ import {
   CourseStatus,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
-
-const allowedLanguages = ["en", "fi", "se", "other_language"]
 
 /*  Coming in a later PR for better mobile view
   const Container = styled.div`
@@ -74,18 +73,19 @@ const Container = styled("div")(
 `,
 )
 
-const CardContainer = styled("ul")(
+const CardsContainer = styled("ul")(
   ({ theme }) => `
   list-style: none;
   padding: 0;
   display: grid;
-  grid-gap: 2rem;
+  grid-gap: 1.5rem;
   grid-template-columns: 1fr 1fr;
   margin-top: 0;
-  justify-self: center;
+  width: 100%;
 
   ${theme.breakpoints.down("lg")} {
     grid-template-columns: 1fr;
+    grid-gap: 2rem;
   }
 `,
 )
@@ -138,13 +138,7 @@ const ResetFiltersButton = styled(Button, {
 `
 
 const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
-  loading: () => (
-    <>
-      <Skeleton variant="rectangular" width="100%" height={50} />
-      <Skeleton variant="rectangular" width="100%" height={50} />
-      <Skeleton variant="rectangular" width="100%" height={50} />
-    </>
-  ),
+  loading: () => <Skeleton variant="rectangular" width="100%" height={96} />,
 })
 
 const DynamicTagSelectDropdowns = dynamic(
@@ -205,7 +199,6 @@ function CourseGrid() {
     },
   )
 
-  // @ts-ignore: tagsLoading not used for now
   const { loading: tagsLoading, data: tagsData } = useQuery(
     CourseCatalogueTagsDocument,
     {
@@ -220,23 +213,27 @@ function CourseGrid() {
     CourseStatus.Upcoming,
   ])
 
-  const tags = useMemo(
-    () =>
-      (tagsData?.tags ?? []).reduce((acc, curr) => {
-        curr?.types?.forEach((t) => {
-          if (
-            t === "language" &&
-            curr.id &&
-            !allowedLanguages.includes(curr.id)
-          ) {
-            return acc
-          }
-          acc[t] = (acc[t] ?? []).concat(curr)
-        })
-        return acc
-      }, {} as Record<string, Array<TagCoreFieldsFragment>>),
-    [tagsData],
-  )
+  const tags = useMemo(() => {
+    const res = (tagsData?.tags ?? []).reduce((acc, curr) => {
+      curr?.types?.forEach((t) => {
+        if (
+          t === "language" &&
+          curr.id &&
+          !allowedLanguages.includes(curr.id)
+        ) {
+          return acc
+        }
+        acc[t] = (acc[t] ?? []).concat(curr)
+      })
+      return acc
+    }, {} as Record<string, Array<TagCoreFieldsFragment>>)
+
+    if (res["language"]) {
+      res["language"] = res["language"].sort(sortByLanguage)
+    }
+
+    return res
+  }, [tagsData])
   // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
 
   const handleStatusChange = (status: string) => {
@@ -312,6 +309,7 @@ function CourseGrid() {
               activeTags={activeTags}
               setActiveTags={setActiveTags}
               selectAllTags={() => setActiveTags([...(tagsData?.tags ?? [])])}
+              loading={tagsLoading}
             />
             <Statuses>
               {(["Active", "Upcoming", "Ended"] as const).map((status) => (
@@ -340,21 +338,21 @@ function CourseGrid() {
         </StyledBorderedSection>
       </FiltersContainer>
       {coursesLoading ? (
-        <CardContainer>
+        <CardsContainer>
           <CourseCardSkeleton />
           <CourseCardSkeleton />
           <CourseCardSkeleton />
           <CourseCardSkeleton />
-        </CardContainer>
+        </CardsContainer>
       ) : (
-        <CardContainer>
+        <CardsContainer>
           {filteredCourses.sort(compareCourses).map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
           {filteredCourses.length === 0 && (
             <li style={{ width: "100%" }}>no courses</li>
           )}
-        </CardContainer>
+        </CardsContainer>
       )}
     </Container>
   )

@@ -19,15 +19,15 @@ const IconBaseStyle = css`
 `
 
 const TwitterIcon = styled(Twitter)`
-  ${IconBaseStyle};
+  ${IconBaseStyle.styles};
 `
 
 const FacebookIcon = styled(Facebook)`
-  ${IconBaseStyle};
+  ${IconBaseStyle.styles};
 `
 
 const YoutubeIcon = styled(Youtube)`
-  ${IconBaseStyle};
+  ${IconBaseStyle.styles};
 `
 
 const FooterBar = styled("footer")`

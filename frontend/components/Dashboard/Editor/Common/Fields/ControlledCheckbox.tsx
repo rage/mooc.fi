@@ -6,7 +6,7 @@ import { Checkbox, FormControlLabel } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledFieldProps } from "."
-import { InfoTooltipWithLabel } from "/components/Tooltip"
+import { InfoTooltip } from "/components/Tooltip"
 import { useAnchor } from "/hooks/useAnchors"
 
 const AlignedSpan = styled("span")`
@@ -14,6 +14,7 @@ const AlignedSpan = styled("span")`
   align-items: flex-end;
   gap: 0.5rem;
 `
+
 interface ControlledCheckboxProps<
   TFieldValues extends FieldValues = FieldValues,
 > extends ControlledFieldProps<TFieldValues> {
@@ -26,7 +27,7 @@ const ControlledCheckboxLabel = React.memo(
     return (
       <AlignedSpan>
         {label}
-        {tip && <InfoTooltipWithLabel label={label} title={tip} />}
+        {tip && <InfoTooltip label={label} title={tip} />}
       </AlignedSpan>
     )
   },
