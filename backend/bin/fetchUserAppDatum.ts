@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 
-import { Course, PrismaClient, UserCourseSetting } from "@prisma/client"
+import { Course, Prisma, PrismaClient, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
@@ -212,7 +212,7 @@ const saveCourseVariant = async (p: any) => {
 }
 
 const saveOther = async (p: any) => {
-  const other: any = old.other ?? {}
+  const other = (old.other as Prisma.JsonObject) ?? {}
   if (p.value == "t") {
     p.value = true
   } else if (p.value == "f") {

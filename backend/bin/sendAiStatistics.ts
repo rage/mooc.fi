@@ -21,37 +21,40 @@ const data = { text: "" }
 const getDataByLanguage = async (langInfo: LanguageInfo) => {
   const { language, completion_language, country, langName } = langInfo
 
-  const totalByLang = await prisma.course
-    .findUnique({
-      where: { slug: "elements-of-ai" },
-    })
-    .user_course_settings({
-      where: {
-        language: language,
-      },
-      distinct: ["user_id"],
-    })
-  const completionsByLang = await prisma.course
-    .findUnique({
-      where: { slug: "elements-of-ai" },
-    })
-    .completions({
-      where: {
-        completion_language,
-      },
-      distinct: ["user_id"],
-    })
-  const englishInLang = await prisma.course
-    .findUnique({
-      where: { slug: "elements-of-ai" },
-    })
-    .user_course_settings({
-      where: {
-        country,
-        language: "en",
-      },
-      distinct: ["user_id"],
-    })
+  const totalByLang =
+    (await prisma.course
+      .findUnique({
+        where: { slug: "elements-of-ai" },
+      })
+      .user_course_settings({
+        where: {
+          language: language,
+        },
+        distinct: ["user_id"],
+      })) ?? []
+  const completionsByLang =
+    (await prisma.course
+      .findUnique({
+        where: { slug: "elements-of-ai" },
+      })
+      .completions({
+        where: {
+          completion_language,
+        },
+        distinct: ["user_id"],
+      })) ?? []
+  const englishInLang =
+    (await prisma.course
+      .findUnique({
+        where: { slug: "elements-of-ai" },
+      })
+      .user_course_settings({
+        where: {
+          country,
+          language: "en",
+        },
+        distinct: ["user_id"],
+      })) ?? []
 
   const now = new Date()
   return `\`\`\`Stats ${now.getDate()}.${

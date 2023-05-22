@@ -152,7 +152,7 @@ const addUserCourseSettingses = async (courseId: string) => {
         research: true,
         marketing: false,
         course_variant: null,
-        other: null,
+        other: Prisma.JsonNull,
       }
       return prisma.userCourseSetting.create({ data: ucs })
     }),
