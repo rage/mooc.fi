@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { ControlledSelect } from "../Common/Fields"
 import ContainedImage from "/components/Images/ContainedImage"
@@ -52,10 +53,10 @@ function ImportPhotoDialog({
   onClose,
   courses = [],
 }: ImportPhotoDialogProps) {
-  const { setValue, getValues, watch } = useFormContext()
+  const { setValue, watch } = useFormContext()
   const t = useTranslator(CoursesTranslations)
 
-  const fetchBase64 = useCallback(
+  const fetchBase64 = useEventCallback(
     (photo: ImageCoreFieldsFragment, filename: string) => {
       fetch(filename, {
         mode: "no-cors",
@@ -67,13 +68,12 @@ function ImportPhotoDialog({
           const file = new File([blob], photo?.name ?? "", {
             type: photo?.original_mimetype ?? "image/png",
           })
-          setValue("new_photo", file)
+          setValue("new_photo", file, { shouldDirty: true })
         })
     },
-    [setValue],
   )
 
-  const fetchURL = useCallback(
+  const fetchURL = useEventCallback(
     (photo: ImageCoreFieldsFragment, filename: string) => {
       const req = new XMLHttpRequest()
       req.open("GET", filename, true)
@@ -82,11 +82,10 @@ function ImportPhotoDialog({
         const file = new File([req.response], photo?.name ?? "", {
           type: photo?.original_mimetype ?? "image/png",
         })
-        setValue("new_photo", file)
+        setValue("new_photo", file, { shouldDirty: true })
       }
       req.send()
     },
-    [setValue],
   )
 
   const photo = watch("import_photo")
@@ -109,7 +108,7 @@ function ImportPhotoDialog({
       fetchURL(selectedPhoto, filename)
     }
     onClose()
-  }, [photo, courses, getValues, onClose, setValue, watch])
+  }, [photo, courses, onClose])
 
   const selected = useMemo(
     () => courses?.find((course) => course.id === photo) ?? null,

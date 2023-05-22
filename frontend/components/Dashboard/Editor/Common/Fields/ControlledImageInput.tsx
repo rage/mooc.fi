@@ -31,6 +31,7 @@ function ControlledImageInputImpl(props: ControlledImageInputProps) {
       }}
       onImageLoad={onImageLoad}
       onImageAccepted={onImageAccepted}
+      thumbnail={thumbnail}
     >
       <ImagePreview file={thumbnail} onImageRemove={onImageRemove} />
     </ImageDropzoneInput>

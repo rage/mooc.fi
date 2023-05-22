@@ -22,6 +22,12 @@ interface ToCourseFormArgs {
   modules?: StudyModuleDetailedFieldsFragment[] | null
 }
 
+const statusMap: Record<string, CourseStatus> = {
+  Upcoming: CourseStatus.Upcoming,
+  Active: CourseStatus.Active,
+  Ended: CourseStatus.Ended,
+}
+
 export const toCourseForm = ({
   course,
   modules,
@@ -236,14 +242,7 @@ export function fromCourseForm<Values extends CourseFormValues>({
         new_slug: string
       })
 
-  const status =
-    values.status === "Active"
-      ? CourseStatus.Active
-      : values.status === "Ended"
-      ? CourseStatus.Ended
-      : values.status === "Upcoming"
-      ? CourseStatus.Upcoming
-      : undefined
+  const status = statusMap[values.status]
 
   const c: FromCourseFormReturn<Values> = {
     ...formValues,

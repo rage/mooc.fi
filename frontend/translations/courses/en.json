@@ -30,6 +30,8 @@
   "courseModules": "Study modules",
   "coursePhoto": "Photo",
   "courseNewPhoto": "Upload new photo",
+  "courseRemovePhoto": "Remove photo",
+  "coursePhotoPreview": "Photo preview",
   "courseTranslations": "Course translations",
   "confirmationAreYouSure": "Are you sure?",
   "confirmationRemoveTranslation": "Do you want to remove this translation?",

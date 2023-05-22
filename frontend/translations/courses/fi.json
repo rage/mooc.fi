@@ -30,6 +30,8 @@
   "courseModules": "Opintokokonaisuudet",
   "coursePhoto": "Kuva",
   "courseNewPhoto": "Lataa uusi kuva",
+  "courseRemovePhoto": "Poista kuva",
+  "coursePhotoPreview": "Esikatselu",
   "courseTranslations": "Käännökset",
   "confirmationAreYouSure": "Oletko varma?",
   "confirmationRemoveTranslation": "Haluatko poistaa tämän käännöksen?",

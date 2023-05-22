@@ -2,6 +2,8 @@ import { ButtonBase, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import ContainedImage from "../Images/ContainedImage"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 const CloseButton = styled(ButtonBase)`
   position: absolute;
@@ -60,6 +62,7 @@ const ImagePreview = ({
   height,
   ...rest
 }: ImagePreviewProps) => {
+  const t = useTranslator(CoursesTranslations)
   if (!file) {
     return null
   }
@@ -68,11 +71,11 @@ const ImagePreview = ({
     <ImagePreviewContainer {...rest}>
       <ContainedImage
         src={file}
-        alt={file.length > 64 ? "Image preview" : file} // don't spout gibberish if it's a base64
+        alt={file.length > 64 ? t("coursePhotoPreview") : file} // don't spout gibberish if it's a base64
         fill
       />
       {onImageRemove && (
-        <Tooltip title="Remove picture">
+        <Tooltip title={t("courseRemovePhoto")}>
           <CloseButton onClick={onImageRemove}>&times;</CloseButton>
         </Tooltip>
       )}

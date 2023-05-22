@@ -113,8 +113,7 @@ export const toCourseForm = ({
     exercise_completions_needed:
       course?.exercise_completions_needed ?? undefined,
     points_needed: course?.points_needed ?? undefined,
-    // TODO: fix
-    new_photo: null, // course?.photo ?? null,
+    new_photo: null,
     photo: course?.photo ?? "",
     open_university_registration_links:
       course?.open_university_registration_links?.map((link) => ({

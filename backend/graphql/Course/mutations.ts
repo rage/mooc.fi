@@ -74,11 +74,11 @@ export const CourseMutations = extendType({
               "course_stats_email_id",
             ]),
             name: course.name ?? "",
-            photo: !!photo ? { connect: { id: photo } } : undefined,
+            photo: photo ? { connect: { id: photo } } : undefined,
             course_translations: {
               create: course_translations?.filter(isNotNullOrUndefined),
             },
-            study_modules: !!study_modules
+            study_modules: study_modules
               ? {
                   connect: study_modules.map((s) => ({
                     id: nullToUndefined(s?.id),
@@ -90,20 +90,20 @@ export const CourseMutations = extendType({
             },
             course_variants: { create: course_variants ?? undefined },
             course_aliases: { create: course_aliases ?? undefined },
-            inherit_settings_from: !!inherit_settings_from
+            inherit_settings_from: inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : undefined,
-            completions_handled_by: !!completions_handled_by
+            completions_handled_by: completions_handled_by
               ? { connect: { id: completions_handled_by } }
               : undefined,
             user_course_settings_visibilities: {
               create: user_course_settings_visibilities ?? undefined,
             },
             // don't think these will be passed by parameter, but let's be sure
-            completion_email: !!completion_email_id
+            completion_email: completion_email_id
               ? { connect: { id: completion_email_id } }
               : undefined,
-            course_stats_email: !!course_stats_email_id
+            course_stats_email: course_stats_email_id
               ? { connect: { id: course_stats_email_id } }
               : undefined,
             tags: { connect: (tags ?? []).map((tag) => ({ id: tag.id })) },
@@ -236,7 +236,7 @@ export const CourseMutations = extendType({
             end_date,
             // FIXME: disconnect removed photos?
             ...updatedFields,
-            photo: !!photo ? { connect: { id: photo } } : undefined,
+            photo: photo ? { connect: { id: photo } } : undefined,
             study_modules: studyModuleMutation,
             completion_email: completion_email_id
               ? { connect: { id: completion_email_id } }
