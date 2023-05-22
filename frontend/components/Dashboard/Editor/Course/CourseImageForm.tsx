@@ -34,6 +34,8 @@ function CourseImageForm(props: CourseImageFormProps) {
   const { defaultValues } = useCourseEditorData()
   const [dialogOpen, setDialogOpen] = useState(false)
 
+  const thumbnail = watch("thumbnail")
+
   const onImageLoad = useEventCallback((value: string | ArrayBuffer | null) =>
     setValue("thumbnail", value),
   )
@@ -54,6 +56,8 @@ function CourseImageForm(props: CourseImageFormProps) {
     },
     [defaultValues],
   )
+
+  const thumbnailWithDomain = useMemo(() => addDomain(thumbnail), [thumbnail])
 
   const slug = watch("slug")
 
@@ -85,10 +89,7 @@ function CourseImageForm(props: CourseImageFormProps) {
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("coursePhoto")}
       </FormSubtitle>
-      <ControlledHiddenField
-        name="thumbnail"
-        defaultValue={watch("thumbnail") ?? ""}
-      />
+      <ControlledHiddenField name="thumbnail" defaultValue={thumbnail ?? ""} />
       <ControlledHiddenField name="photo" defaultValue={watch("photo") ?? ""} />
       <ControlledHiddenField
         name="delete_photo"
@@ -100,7 +101,7 @@ function CourseImageForm(props: CourseImageFormProps) {
         onImageLoad={onImageLoad}
         onImageAccepted={onImageAccepted}
         onImageRemove={onImageRemove}
-        thumbnail={addDomain(watch("thumbnail"))}
+        thumbnail={thumbnailWithDomain}
       />
       <ImportButton color="primary" onClick={onImportPhotoDialogOpen}>
         {t("importPhotoButton")}

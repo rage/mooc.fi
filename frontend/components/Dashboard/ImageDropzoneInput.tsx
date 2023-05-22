@@ -19,25 +19,31 @@ const DropzoneContainer = styled("div", {
   shouldForwardProp: (prop) =>
     typeof prop !== "string" ||
     !["isDragActive", "isDragAccept", "error"].includes(prop), // TODO: should I list _all_ dropzonestate things
-})<DropzoneState & { error: MessageProps["error"] }>`
+})<DropzoneState & { error: MessageProps["error"] }>(
+  ({ isDragActive, isDragAccept, error }) => `
   display: flex;
   width: 100%;
   min-height: 250px;
   align-items: center;
   border-width: 2px;
   border-radius: 4px;
-  border-style: ${({ isDragActive }) => (isDragActive ? "solid" : "dashed")};
+  border-style: ${isDragActive ? "solid" : "dashed"};
   padding: 20px;
-  background-color: ${({ isDragActive, isDragAccept, error }) =>
-    isDragActive
-      ? isDragAccept
-        ? "#E0FFE0"
-        : "#FFC0C0"
-      : error
-      ? "#FFC0C0"
-      : "#FFFFFF"};
-  border-color: ${({ isDragActive, isDragAccept }) =>
-    isDragActive ? (isDragAccept ? "#00A000" : "#FF0000") : "rgba(0,0,0,0.23)"};
+  background-color: ${() => {
+    if (isDragActive) {
+      return isDragAccept ? "#E0FFE0" : "#FFC0C0"
+    }
+    if (error) {
+      return "#FFC0C0"
+    }
+    return "#FFFFFF"
+  }};
+  border-color: ${() => {
+    if (isDragActive) {
+      return isDragAccept ? "#00A000" : "#FF0000"
+    }
+    return "rgba(0,0,0,0.23)"
+  }};
   transition: border 0.24s ease-in-out;
   &:hover {
     cursor: pointer;
@@ -45,13 +51,17 @@ const DropzoneContainer = styled("div", {
   }
   justify-content: center;
   position: relative;
-`
+`,
+)
 
 const ErrorMessage = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "error",
-})<{ error: MessageProps["error"] }>`
-  color: ${({ error }) => (error ? "#FF0000" : "#000000")};
-`
+})<{ error: MessageProps["error"] }>(
+  ({ error }) => `
+  color: ${error ? "#FF0000" : "#000000"};
+`,
+)
+
 interface MessageProps {
   message: string
   error?: boolean
@@ -61,12 +71,14 @@ interface DropzoneProps {
   inputRef?: React.RefCallback<HTMLDivElement>
   onImageLoad: (result: string | ArrayBuffer | null) => void
   onImageAccepted: (field: File) => void
+  thumbnail?: string
 }
 
 const ImageDropzoneInput = ({
   inputRef,
   onImageAccepted,
   onImageLoad,
+  thumbnail,
   children,
 }: React.PropsWithChildren<DropzoneProps>) => {
   const t = useTranslator(CommonTranslations)
@@ -130,9 +142,11 @@ const ImageDropzoneInput = ({
     >
       {children}
       <input {...getInputProps()} />
-      <ErrorMessage variant="body1" align="center" error={status.error}>
-        {status.message}
-      </ErrorMessage>
+      {!thumbnail && (
+        <ErrorMessage variant="body1" align="center" error={status.error}>
+          {status.message}
+        </ErrorMessage>
+      )}
     </DropzoneContainer>
   )
 }
