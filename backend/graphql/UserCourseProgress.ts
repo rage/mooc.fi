@@ -146,10 +146,10 @@ export const UserCourseProgress = objectType({
                 ) as row
               from exercise_completion ec
               join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${user_id}
-              and e.course_id = ${course_id}
+              where ec.user_id = ${user_id}::uuid
+              and e.course_id = ${course_id}::uuid
             ) ecs on ecs.exercise_id = e.id and row = 1
-          where e.course_id = ${course_id}
+          where e.course_id = ${course_id}::uuid
           and e.deleted <> true
           and e.max_points > 0
         `

@@ -412,7 +412,7 @@ export const createCompletion = async ({
         UPDATE
           completion 
         SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
-        WHERE id=${completions[0].id} AND COALESCE(tier, 0) < ${tier}
+        WHERE id=${completions[0].id}::uuid AND COALESCE(tier, 0) < ${tier}
         RETURNING tier;`
       if (updated.length > 0) {
         logger.info("Existing completion found, updated tier")
