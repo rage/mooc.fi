@@ -206,16 +206,17 @@ export const User = objectType({
     t.list.nonNull.field("progresses", {
       type: "Progress",
       resolve: async (parent, _, ctx) => {
-        const progressCourses = await ctx.prisma.user
-          .findUnique({
-            where: { id: parent.id },
-          })
-          .user_course_progresses({
-            distinct: ["course_id"],
-            select: {
-              course: true,
-            },
-          })
+        const progressCourses =
+          (await ctx.prisma.user
+            .findUnique({
+              where: { id: parent.id },
+            })
+            .user_course_progresses({
+              distinct: ["course_id"],
+              select: {
+                course: true,
+              },
+            })) ?? []
 
         return progressCourses
           .map((pr) => pr.course)
@@ -273,7 +274,7 @@ export const User = objectType({
             take: 1,
           })
 
-        return progresses?.[0]
+        return progresses?.[0] ?? null
       },
     })
 
@@ -312,41 +313,44 @@ export const User = objectType({
         }
 
         if (course_id) {
-          const data = await ctx.prisma.course
-            .findUnique({
-              where: { id: course_id },
-            })
-            .exercises({
-              where: exerciseWhere,
-              select: {
-                exercise_completions: {
-                  where: {
-                    user_id: parent.id,
-                    ...exerciseCompletionWhere,
+          const data =
+            (await ctx.prisma.course
+              .findUnique({
+                where: { id: course_id },
+              })
+              .exercises({
+                where: exerciseWhere,
+                select: {
+                  exercise_completions: {
+                    where: {
+                      user_id: parent.id,
+                      ...exerciseCompletionWhere,
+                    },
+                    orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+                    take: 1,
                   },
-                  orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
-                  take: 1,
                 },
-              },
-            })
+              })) ?? []
           return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
         }
 
         // TODO/FIXME: testing if ^ removes some joins; need to update queries that use it
-        return ctx.prisma.user
-          .findUnique({
-            where: { id: parent.id },
-          })
-          .exercise_completions({
-            where: {
-              ...(exerciseWhere && {
-                exercise: exerciseWhere,
-              }),
-              ...exerciseCompletionWhere,
-            },
-            distinct: "exercise_id",
-            orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
-          })
+        return (
+          ctx.prisma.user
+            .findUnique({
+              where: { id: parent.id },
+            })
+            .exercise_completions({
+              where: {
+                ...(exerciseWhere && {
+                  exercise: exerciseWhere,
+                }),
+                ...exerciseCompletionWhere,
+              },
+              distinct: "exercise_id",
+              orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+            }) ?? []
+        )
       },
     })
 
@@ -419,7 +423,7 @@ export const User = objectType({
           select distinct(e.course_id) as course_id
             from exercise_completion ec
             join exercise e on ec.exercise_id = e.id
-          where ec.user_id = ${id}
+          where ec.user_id = ${id}::uuid
           and ec.attempted = true
         `
 
@@ -433,7 +437,7 @@ export const User = objectType({
               select distinct(e.course_id) as course_id, ec.timestamp
                 from exercise_completion ec
                 join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${id}
+              where ec.user_id = ${id}::uuid
               and ec.attempted = true
               ${activityDateClause}
             ) as sub
@@ -444,7 +448,7 @@ export const User = objectType({
         // not very optimal, as the exercise completions will be queried twice if that field is selected
         const startedCourses = await ctx.prisma.$queryRaw<
           Array<SummaryCourseGroupResult>
-        >(Prisma.sql`
+        >`
           select
             c.id as course_id,
             inherit_settings_from_id,
@@ -460,7 +464,7 @@ export const User = objectType({
           where c.id in (
             ${subquery}
           )
-        `)
+        `
 
         // divide courses into three groups:
         // - not handled

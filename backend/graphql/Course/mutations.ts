@@ -41,7 +41,6 @@ export const CourseMutations = extendType({
         const {
           // slug,
           course_translations,
-          open_university_registration_links,
           course_variants,
           course_aliases,
           study_modules,
@@ -63,6 +62,12 @@ export const CourseMutations = extendType({
         if (language) {
           tags = uniqBy((tags ?? []).concat({ id: language }), "id")
         }
+
+        const open_university_registration_links =
+          course.open_university_registration_links?.map((link) => ({
+            ...link,
+            tiers: link.tiers ?? Prisma.JsonNull,
+          })) ?? undefined
 
         const newCourse = await ctx.prisma.course.create({
           data: {
@@ -203,7 +208,7 @@ export const CourseMutations = extendType({
         }
 
         const studyModuleMutation:
-          | Prisma.StudyModuleUpdateManyWithoutCoursesInput
+          | Prisma.StudyModuleUpdateManyWithoutCoursesNestedInput
           | undefined = getStudyModuleMutation(existingCourse, study_modules)
         const inheritMutation = connectOrDisconnect(
           inherit_settings_from,
@@ -326,7 +331,7 @@ function getTagMutation<C extends Course>(
         | NexusGenInputs["CourseUpsertArg"]
       )["tags"]
     | null,
-): Prisma.TagUpdateManyWithoutCoursesInput | undefined {
+): Prisma.TagUpdateManyWithoutCoursesNestedInput | undefined {
   const languageTags = (tags ?? []).filter((tag) =>
     tag.types?.includes("language"),
   )
@@ -373,7 +378,7 @@ function getStudyModuleMutation<
         | NexusGenInputs["CourseUpsertArg"]
       )["study_modules"]
     | null,
-): Prisma.StudyModuleUpdateManyWithoutCoursesInput | undefined {
+): Prisma.StudyModuleUpdateManyWithoutCoursesNestedInput | undefined {
   if (!study_modules) {
     return
   }

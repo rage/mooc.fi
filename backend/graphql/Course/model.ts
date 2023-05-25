@@ -59,6 +59,7 @@ export const Course = objectType({
     t.model.upcoming_active_link()
     t.model.tier()
     t.model.handles_completions_for()
+    t.model.handles_settings_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
     t.model.language()
@@ -179,7 +180,7 @@ export const Course = objectType({
           }
         }
         if (!includeHidden) {
-          tagsWhere.OR = [{ hidden: false }, { hidden: null }]
+          tagsWhere.OR = [{ hidden: false }, { hidden: { not: true } }]
         }
 
         const res = await ctx.prisma.course.findUnique({

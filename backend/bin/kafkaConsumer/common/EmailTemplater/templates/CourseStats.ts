@@ -24,7 +24,7 @@ export class StartedCourseCount extends Template {
         const conditions = [
           Prisma.sql`course_id = ${
             course.inherit_settings_from_id ?? course.id
-          }`,
+          }::uuid`,
         ]
         if (courseInstanceLanguage) {
           conditions.push(Prisma.sql`language = ${courseInstanceLanguage}`)
@@ -74,7 +74,7 @@ export class CompletedCourseCount extends Template {
         const conditions = [
           Prisma.sql`course_id = ${
             course.completions_handled_by_id ?? course.id
-          }`,
+          }::uuid`,
         ]
         if (completionLanguage) {
           conditions.push(
@@ -124,7 +124,7 @@ export class AtLeastOneExerciseCount extends Template {
               COUNT(DISTINCT user_id)
             FROM exercise_completion ec
             JOIN exercise e ON ec.exercise_id = e.id
-            WHERE course_id = ${course.id}
+            WHERE course_id = ${course.id}::uuid
             AND attempted = true;
           `
         )?.[0]?.count
@@ -173,7 +173,7 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
         const conditions = [
           Prisma.sql`course_id = ${
             course.completions_handled_by_id ?? course.id
-          }`,
+          }::uuid`,
           Prisma.sql`user_id IS NOT NULL`,
         ]
         if (completionLanguage) {
@@ -191,7 +191,7 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
               JOIN exercise e ON ec.exercise_id = e.id
               JOIN "user" u ON ec.user_id = u.id
               WHERE 
-                e.course_id = ${course.id} 
+                e.course_id = ${course.id}::uuid
               AND
                 ec.attempted = true
               AND

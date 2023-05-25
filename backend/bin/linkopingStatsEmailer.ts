@@ -23,7 +23,7 @@ const linkopingStatsEmailer = async () => {
     WHERE u.email ILIKE '%liu.se'
       AND ucs.other ->> 'ects_consent_sweden' = 'true'
       AND ucs.other ->> 'bai_completion' = 'true'
-      AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'
+      AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
       AND ucs.country = 'Sweden'
     ORDER BY c.completion_date;
   `
