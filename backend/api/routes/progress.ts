@@ -311,39 +311,37 @@ export class ProgressController extends Controller {
     }
 
     logger.info("Querying existing progresses and completions")
-    const beforeParentProgresses =
-      (await prisma.course
-        .findUnique({
-          where: {
-            id: BAIParentCourse,
-          },
-        })
-        .user_course_progresses({
-          distinct: ["user_id"],
-          orderBy: {
-            created_at: "asc",
-          },
-          include: {
-            user: true,
-          },
-        })) ?? []
+    const beforeParentProgresses = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .user_course_progresses({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
 
-    const beforeCompletions =
-      (await prisma.course
-        .findUnique({
-          where: {
-            id: BAIParentCourse,
-          },
-        })
-        .completions({
-          distinct: ["user_id"],
-          orderBy: {
-            created_at: "asc",
-          },
-          include: {
-            user: true,
-          },
-        })) ?? []
+    const beforeCompletions = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .completions({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
 
     const getUsers = (arr: Array<object & { user: User | null }>) =>
       arr?.map((e) => e.user).filter(notEmpty) ?? []
@@ -420,20 +418,19 @@ export class ProgressController extends Controller {
       advancedBAICourse,
     ]) {
       logger.info(`Handling ${course.slug}`)
-      const userCourseProgresses =
-        (await prisma.course
-          .findUnique({
-            where: {
-              id: course.id,
-            },
-          })
-          .user_course_progresses({
-            distinct: ["user_id"],
-            orderBy: { created_at: "asc" },
-            include: {
-              user: true,
-            },
-          })) ?? []
+      const userCourseProgresses = await prisma.course
+        .findUnique({
+          where: {
+            id: course.id,
+          },
+        })
+        .user_course_progresses({
+          distinct: ["user_id"],
+          orderBy: { created_at: "asc" },
+          include: {
+            user: true,
+          },
+        })
 
       if (userCourseProgresses.length) {
         logger.info(
@@ -482,39 +479,37 @@ export class ProgressController extends Controller {
     }
 
     logger.info("Querying updated progresses and completions")
-    const afterParentProgresses =
-      (await prisma.course
-        .findUnique({
-          where: {
-            id: BAIParentCourse,
-          },
-        })
-        .user_course_progresses({
-          distinct: ["user_id"],
-          orderBy: {
-            created_at: "asc",
-          },
-          include: {
-            user: true,
-          },
-        })) ?? []
+    const afterParentProgresses = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .user_course_progresses({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
 
-    const afterCompletions =
-      (await prisma.course
-        .findUnique({
-          where: {
-            id: BAIParentCourse,
-          },
-        })
-        .completions({
-          distinct: ["user_id"],
-          orderBy: {
-            created_at: "asc",
-          },
-          include: {
-            user: true,
-          },
-        })) ?? []
+    const afterCompletions = await prisma.course
+      .findUnique({
+        where: {
+          id: BAIParentCourse,
+        },
+      })
+      .completions({
+        distinct: ["user_id"],
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: true,
+        },
+      })
 
     const result = {
       progresses: {

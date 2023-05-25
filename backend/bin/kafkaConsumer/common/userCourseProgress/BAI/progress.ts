@@ -10,8 +10,6 @@ import {
 } from "../../../../../config/courseConfig"
 import {
   ExerciseCompletionPart,
-  ProgressExtra,
-  ServiceProgressPartType,
   TierInfo,
   TierProgressGroup,
   TierProgressMap,
@@ -182,18 +180,15 @@ export const getProgress = ({
   projectCompletion,
   highestTier,
   totalExerciseCompletions,
-}: GetProgressArgs): {
-  progress: Array<ServiceProgressPartType>
-  extra: ProgressExtra
-} => {
+}: GetProgressArgs) => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const pointsProgress = (n_points || 0) / (max_points || 1)
   const newProgress = {
     progress: [
       {
         group: "total",
-        max_points: max_points || 0,
-        n_points: n_points || 0,
+        max_points,
+        n_points,
         progress: isNaN(pointsProgress) ? 0 : pointsProgress,
       },
     ],

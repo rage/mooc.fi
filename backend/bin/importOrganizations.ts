@@ -71,12 +71,11 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     information: org.information,
     organization: { connect: { id: organization.id } },
   }
-  const organizationTranslations =
-    (await prisma.organization
-      .findUnique({ where: { id: organization.id } })
-      .organization_translations({
-        where: { language: translationDetails.language },
-      })) ?? []
+  const organizationTranslations = await prisma.organization
+    .findUnique({ where: { id: organization.id } })
+    .organization_translations({
+      where: { language: translationDetails.language },
+    })
   const organizationTranslationId = organizationTranslations.length
     ? organizationTranslations[0].id
     : null

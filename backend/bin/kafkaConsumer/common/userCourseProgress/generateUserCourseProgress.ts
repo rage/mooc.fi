@@ -1,4 +1,4 @@
-import { Course, Prisma, User, UserCourseProgress } from "@prisma/client"
+import { Course, User, UserCourseProgress } from "@prisma/client"
 
 import { BAItiers } from "../../../../config/courseConfig"
 import { BaseContext } from "../../../../context"
@@ -58,7 +58,7 @@ export const generateUserCourseProgress = async ({
   return context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
-      progress: combined.progress ?? Prisma.JsonNull, // errors unless typed as any
+      progress: combined.progress as any, // errors unless typed as any
       max_points: { set: combined.total_max_points },
       n_points: { set: combined.total_n_points },
     },

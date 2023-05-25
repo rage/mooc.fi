@@ -21,8 +21,9 @@ export const UserCourseSummary = objectType({
     t.nonNull.field("course", {
       type: "Course",
       resolve: async ({ course_id }, _, ctx) => {
-        return ctx.prisma.course.findUniqueOrThrow({
+        return ctx.prisma.course.findUnique({
           where: { id: course_id },
+          rejectOnNotFound: true,
         })
       },
     })
@@ -55,23 +56,21 @@ export const UserCourseSummary = objectType({
           ? includeNoPointsAwarded
           : include_no_points_awarded_exercises
 
-        return (
-          (await ctx.prisma.course
-            .findUnique({
-              where: { id: course_id },
-            })
-            .exercises({
-              where: {
-                ...(!noPoints && {
-                  max_points: { gt: 0 },
-                }),
-                ...(!deleted && {
-                  // same here: { deleted: { not: true } } will skip null
-                  OR: [{ deleted: false }, { deleted: null }],
-                }),
-              },
-            })) ?? []
-        )
+        return ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .exercises({
+            where: {
+              ...(!noPoints && {
+                max_points: { gt: 0 },
+              }),
+              ...(!deleted && {
+                // same here: { deleted: { not: true } } will skip null
+                OR: [{ deleted: false }, { deleted: null }],
+              }),
+            },
+          })
       },
     })
 
@@ -98,7 +97,7 @@ export const UserCourseSummary = objectType({
             take: 1,
           })
 
-        return completions?.[0] ?? null
+        return completions?.[0]
       },
     })
 
@@ -117,7 +116,7 @@ export const UserCourseSummary = objectType({
             take: 1,
           })
 
-        return progresses?.[0] ?? null
+        return progresses?.[0]
       },
     })
 
@@ -168,31 +167,30 @@ export const UserCourseSummary = objectType({
         const noPoints = notEmpty(includeNoPointsAwarded)
           ? includeNoPointsAwarded
           : include_no_points_awarded_exercises
-        const data =
-          (await ctx.prisma.course
-            .findUnique({
-              where: { id: course_id },
-            })
-            .exercises({
-              where: {
-                ...(!noPoints && {
-                  max_points: { gt: 0 },
-                }),
-                ...(!deleted && {
-                  // same here: { deleted: { not: true } } will skip null
-                  OR: [{ deleted: false }, { deleted: null }],
-                }),
-              },
-              select: {
-                exercise_completions: {
-                  where: {
-                    user_id,
-                  },
-                  orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
-                  take: 1,
+        const data = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .exercises({
+            where: {
+              ...(!noPoints && {
+                max_points: { gt: 0 },
+              }),
+              ...(!deleted && {
+                // same here: { deleted: { not: true } } will skip null
+                OR: [{ deleted: false }, { deleted: null }],
+              }),
+            },
+            select: {
+              exercise_completions: {
+                where: {
+                  user_id,
                 },
+                orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+                take: 1,
               },
-            })) ?? []
+            },
+          })
 
         return data?.flatMap((d) => d.exercise_completions).filter(notEmpty)
         // TODO/FIXME: testing if this actually removes any extra joins

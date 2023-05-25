@@ -625,21 +625,20 @@ describe("exercise completion utilities", () => {
 
   describe("pruneDuplicateExerciseCompletions", () => {
     it("should prune duplicates", async () => {
-      const before =
-        (await ctx.prisma.user
-          .findUnique({
-            where: {
-              id: USER_ID_1,
-            },
-          })
-          .exercise_completions({
-            where: {
-              exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
-            },
-            orderBy: {
-              exercise_id: "asc",
-            },
-          })) ?? []
+      const before = await ctx.prisma.user
+        .findUnique({
+          where: {
+            id: USER_ID_1,
+          },
+        })
+        .exercise_completions({
+          where: {
+            exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
+          },
+          orderBy: {
+            exercise_id: "asc",
+          },
+        })
 
       const result = (
         await pruneDuplicateExerciseCompletions({
@@ -658,21 +657,20 @@ describe("exercise completion utilities", () => {
 
       expect(result).toEqual(expect.arrayContaining(expectedPruned))
 
-      const after =
-        (await ctx.prisma.user
-          .findUnique({
-            where: {
-              id: USER_ID_1,
-            },
-          })
-          .exercise_completions({
-            where: {
-              exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
-            },
-            orderBy: {
-              exercise_id: "asc",
-            },
-          })) ?? []
+      const after = await ctx.prisma.user
+        .findUnique({
+          where: {
+            id: USER_ID_1,
+          },
+        })
+        .exercise_completions({
+          where: {
+            exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
+          },
+          orderBy: {
+            exercise_id: "asc",
+          },
+        })
 
       expect(before.length - after.length).toEqual(result.length)
 

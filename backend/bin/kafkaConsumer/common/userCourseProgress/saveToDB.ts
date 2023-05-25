@@ -1,7 +1,6 @@
 import { DateTime } from "luxon"
 
 import {
-  Prisma,
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
@@ -78,7 +77,7 @@ export const saveToDatabase = async (
           connect: { id: message.course_id },
         },
         user: { connect: { id: user.id } },
-        progress: message.progress ?? Prisma.JsonNull, // type error without any
+        progress: message.progress as any, // type error without any
       },
     })
   } else if (userCourseProgresses.length > 1) {
@@ -123,7 +122,7 @@ export const saveToDatabase = async (
         id: userCourseServiceProgress.id,
       },
       data: {
-        progress: message.progress ?? Prisma.JsonNull, // type error without any
+        progress: message.progress as any, // type error without any
         timestamp: { set: timestamp.toJSDate() },
       },
     })
@@ -137,7 +136,7 @@ export const saveToDatabase = async (
         service: {
           connect: { id: message.service_id },
         },
-        progress: message.progress ?? Prisma.JsonNull, // type error without any
+        progress: message.progress as any, // type error without any
         user_course_progress: {
           connect: { id: userCourseProgress.id },
         },

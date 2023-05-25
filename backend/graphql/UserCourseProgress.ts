@@ -113,7 +113,7 @@ export const UserCourseProgress = objectType({
             },
           })
 
-        return settings?.[0] ?? null
+        return settings?.[0]
       },
     })
 
@@ -131,7 +131,7 @@ export const UserCourseProgress = objectType({
             completed: boolean | null
             attempted: boolean | null
           }>
-        >`
+        >(Prisma.sql`
           select e.id as exercise_id,
                  ecs.id as exercise_completion_id,
                  completed,
@@ -146,13 +146,13 @@ export const UserCourseProgress = objectType({
                 ) as row
               from exercise_completion ec
               join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${user_id}::uuid
-              and e.course_id = ${course_id}::uuid
+              where ec.user_id = ${user_id}
+              and e.course_id = ${course_id}
             ) ecs on ecs.exercise_id = e.id and row = 1
-          where e.course_id = ${course_id}::uuid
+          where e.course_id = ${course_id}
           and e.deleted <> true
           and e.max_points > 0
-        `
+        `)
 
         const completedExerciseCount = exercises.filter(
           (e) => e.exercise_completion_id && e.completed,
@@ -160,7 +160,6 @@ export const UserCourseProgress = objectType({
         const attemptedExerciseCount = exercises.filter(
           (e) => e.exercise_completion_id && e.attempted,
         ).length
-
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const totalProgress = (n_points || 0) / (max_points || 1)
         const exerciseProgress =
@@ -378,7 +377,7 @@ export const UserCourseProgressMutations = extendType({
           data: {
             user: { connect: { id: user_id } },
             course: { connect: { id: course_id } },
-            progress: progress ?? Prisma.JsonNull,
+            progress,
             extra,
             max_points,
             n_points,

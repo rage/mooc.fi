@@ -1,22 +1,10 @@
 import * as path from "path"
 import { join } from "path"
 
-import {
-  DateTimeResolver,
-  JSONObjectResolver,
-  JSONResolver,
-} from "graphql-scalars"
+import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
-import {
-  asNexusMethod,
-  connectionPlugin,
-  decorateType,
-  fieldAuthorizePlugin,
-  makeSchema,
-} from "nexus"
-import { GraphQLDecimal } from "prisma-graphql-type-decimal"
-
-import { nexusPrisma } from "@morgothulhu/nexus-plugin-prisma"
+import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
+import { nexusPrisma } from "nexus-plugin-prisma"
 
 import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
 import * as types from "./graphql"
@@ -29,14 +17,6 @@ import { validateArgsPlugin } from "./middlewares/validate"
 if (NEXUS_REFLECTION) {
   require("sharp") // image library sharp seems to crash without this require
 }
-
-const DateTime = asNexusMethod(DateTimeResolver, "datetime")
-const Decimal = asNexusMethod(GraphQLDecimal, "decimal")
-const JSONObject = asNexusMethod(JSONObjectResolver, "json")
-const Json = decorateType(JSONResolver, {
-  sourceType: "JSON",
-  asNexusMethod: "json",
-})
 
 const createPlugins = () => {
   const plugins = [
@@ -86,13 +66,7 @@ const createPlugins = () => {
 
 const createSchema = () =>
   makeSchema({
-    types: {
-      ...types,
-      DateTime,
-      Decimal,
-      Json,
-      JSONObject,
-    },
+    types,
     contextType: {
       module: join(process.cwd(), "context.ts"),
       export: "Context",
@@ -104,17 +78,9 @@ const createSchema = () =>
           alias: "prisma",
         },
         { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
-        {
-          module: path.join(__dirname, "types/GraphQLScalars.d.ts"),
-          alias: "scalars",
-        },
       ],
       mapping: {
         Upload: "upload.Upload['promise']",
-        Decimal: "scalars.GraphQLDecimal",
-        DateTime: "scalars.GraphQLDateTime",
-        Json: "scalars.GraphQLJSON",
-        JSONObject: "scalars.GraphQLJSONObject",
       },
     },
     plugins: createPlugins(),

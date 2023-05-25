@@ -20,7 +20,7 @@ const pragueStatsEmailer = async () => {
       FROM "user" u
       JOIN completion co on u.id = co.user_id
       JOIN user_course_setting ucs on u.id = ucs.user_id and co.course_id = ucs.course_id
-    WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
+    WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'
       AND ucs.other->>'bai_completion' = 'true'
       AND u.email ILIKE '%@vse.cz'
     GROUP BY co.tier, u.email, co.completion_date

@@ -35,16 +35,15 @@ export const getCombinedUserCourseProgress = async ({
   course,
   context: { prisma },
 }: GetCombinedUserCourseProgressArgs): Promise<CombinedUserCourseProgress> => {
-  const userCourseServiceProgresses =
-    (await prisma.user
-      .findUnique({ where: { id: user.id } })
-      .user_course_service_progresses({
-        where: {
-          course_id: course.id,
-        },
-        distinct: ["course_id", "service_id"],
-        orderBy: { created_at: "asc" },
-      })) ?? []
+  const userCourseServiceProgresses = await prisma.user
+    .findUnique({ where: { id: user.id } })
+    .user_course_service_progresses({
+      where: {
+        course_id: course.id,
+      },
+      distinct: ["course_id", "service_id"],
+      orderBy: { created_at: "asc" },
+    })
 
   /*
    * Get rid of everything we dont neeed. After this the array looks like this:
@@ -335,21 +334,20 @@ export const createCompletion = async ({
 
   const handlerCourse = handler ?? course
 
-  const completions =
-    (await prisma.user
-      .findUnique({
-        where: {
-          id: user.id,
-        },
-      })
-      .completions({
-        where: {
-          course_id: handlerCourse.id,
-        },
-        orderBy: {
-          created_at: "asc",
-        },
-      })) ?? []
+  const completions = await prisma.user
+    .findUnique({
+      where: {
+        id: user.id,
+      },
+    })
+    .completions({
+      where: {
+        course_id: handlerCourse.id,
+      },
+      orderBy: {
+        created_at: "asc",
+      },
+    })
 
   if (completions.length < 1) {
     logger.info("No existing completion found, creating new...")
@@ -408,12 +406,17 @@ export const createCompletion = async ({
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {
-      const updated = await prisma.$queryRaw<Array<number>>`
+      const updated = await prisma.$queryRaw(
+        `
         UPDATE
           completion 
-        SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
-        WHERE id=${completions[0].id}::uuid AND COALESCE(tier, 0) < ${tier}
-        RETURNING tier;`
+        SET tier=$1, eligible_for_ects=$2, updated_at=now()
+        WHERE id=$3 AND COALESCE(tier, 0) < $1
+        RETURNING tier;`,
+        tier,
+        eligible_for_ects,
+        completions[0].id,
+      )
       if (updated.length > 0) {
         logger.info("Existing completion found, updated tier")
       }

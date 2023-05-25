@@ -101,14 +101,12 @@ export const CompletionQueries = extendType({
         }
 
         return findManyCursorConnection(
-          async (args) => {
-            const res = await ctx.prisma.course
+          (args) =>
+            ctx.prisma.course
               .findUnique({
                 where: { id: course.completions_handled_by_id ?? course.id },
               })
-              .completions(merge(baseArgs, args))
-            return res ?? []
-          },
+              .completions(merge(baseArgs, args)),
           async () => {
             // TODO/FIXME: kludge as there is no distinct in prisma "count" or other aggregates
             //  ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
@@ -140,14 +138,14 @@ export const CompletionQueries = extendType({
             )*/
 
             return (
-              (await ctx.prisma.course
+              await ctx.prisma.course
                 .findUnique({
                   where: { id: course.completions_handled_by_id ?? course.id },
                 })
                 .completions({
                   ...baseArgs,
                   select: { id: true },
-                })) ?? []
+                })
             ).length
           },
           { first, last, before, after },

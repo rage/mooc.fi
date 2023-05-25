@@ -93,7 +93,7 @@ export const UserCourseServiceProgressQueries = extendType({
           orderBy: { created_at: "asc" },
         })
 
-        return progresses?.[0] ?? null
+        return progresses?.[0]
       },
     })
 
@@ -159,7 +159,7 @@ export const UserCourseServiceProgressMutations = extendType({
             course: {
               connect: { id: course_id },
             },
-            progress,
+            progress: progress,
             service: {
               connect: { id: service_id },
             },
