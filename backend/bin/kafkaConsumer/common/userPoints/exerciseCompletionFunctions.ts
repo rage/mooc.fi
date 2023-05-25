@@ -289,7 +289,7 @@ export const updateExerciseCompletion = async (
         n_points: Number(message.n_points),
         completed: { set: message.completed },
         attempted: {
-          set: message.attempted !== null ? message.attempted : false,
+          set: message.attempted ?? false,
         },
         exercise_completion_required_actions: {
           create: createActions,
