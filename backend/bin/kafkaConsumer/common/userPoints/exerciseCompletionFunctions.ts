@@ -55,21 +55,22 @@ export const getExerciseAndCompletions = async <
   }
 
   logger.info("Getting the exercise completion")
-  const exerciseCompletions = await prisma.user
-    .findUnique({
-      where: {
-        upstream_id: Number(message.user_id),
-      },
-    })
-    .exercise_completions({
-      where: {
-        exercise_id: exercise.id,
-      },
-      orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
-      include: {
-        exercise_completion_required_actions: true,
-      },
-    })
+  const exerciseCompletions =
+    (await prisma.user
+      .findUnique({
+        where: {
+          upstream_id: Number(message.user_id),
+        },
+      })
+      .exercise_completions({
+        where: {
+          exercise_id: exercise.id,
+        },
+        orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+        include: {
+          exercise_completion_required_actions: true,
+        },
+      })) ?? []
 
   return ok([exercise, exerciseCompletions] as const)
 }
@@ -134,22 +135,23 @@ export const getCreatedAndUpdatedExerciseCompletions = async <
   const exerciseIds = existingExercises.map((e) => e.id)
 
   logger.info("Getting the exercise completions")
-  const exerciseCompletions = await prisma.user
-    .findUnique({
-      where: {
-        upstream_id: Number(message.user_id),
-      },
-    })
-    .exercise_completions({
-      where: {
-        exercise_id: { in: exerciseIds },
-      },
-      distinct: ["exercise_id"],
-      orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
-      include: {
-        exercise_completion_required_actions: true,
-      },
-    })
+  const exerciseCompletions =
+    (await prisma.user
+      .findUnique({
+        where: {
+          upstream_id: Number(message.user_id),
+        },
+      })
+      .exercise_completions({
+        where: {
+          exercise_id: { in: exerciseIds },
+        },
+        distinct: ["exercise_id"],
+        orderBy: [{ timestamp: "desc" }, { updated_at: "desc" }],
+        include: {
+          exercise_completion_required_actions: true,
+        },
+      })) ?? []
 
   const existingCompletedExercises = exerciseCompletions.map(
     (ec) => ec.exercise_id,
@@ -287,7 +289,7 @@ export const updateExerciseCompletion = async (
         n_points: Number(message.n_points),
         completed: { set: message.completed },
         attempted: {
-          set: message.attempted !== null ? message.attempted : false,
+          set: message.attempted ?? false,
         },
         exercise_completion_required_actions: {
           create: createActions,

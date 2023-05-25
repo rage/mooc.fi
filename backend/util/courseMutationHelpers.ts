@@ -87,7 +87,8 @@ type CourseMutationFunction<
   params: CreateMutationParams<Relation, CourseRelationType<Relation>, IdKey>,
 ) => Promise<CreateMutationReturn<Relation>>
 
-// - given the data (a course field like course_translations) and the field name, returns the Prisma mutations to create, update, or delete data
+// given the data (a course field like course_translations) and the field name,
+// returns the Prisma mutations to create, update, or delete data
 const createCourseMutationFunction =
   <
     Relation extends CourseRelation = CourseRelation,
@@ -96,16 +97,7 @@ const createCourseMutationFunction =
     ctx: Context,
     slug: string,
   ): CourseMutationFunction<Relation> =>
-  /*async <
-    Relation extends CourseRelation,
-    // RelationInstance extends CourseRelationType<Relation> = CourseRelationType<Relation>,
-    IdKey extends CourseRelationKey<Relation> = CourseRelationKey<Relation>,
-  >*/ async (
-    { data, relation, id = "id" as IdKey } /*: CreateMutationParams<Relation>*/,
-  ) => {
-    /*: Promise<
-    CreateMutationReturn<Relation>
-  > => {*/
+  async ({ data, relation, id = "id" as IdKey }) => {
     if (!isNotNullOrUndefined(data)) {
       return undefined
     }
@@ -126,17 +118,17 @@ const createCourseMutationFunction =
     const hasIdFilter = hasId<Relation>(id as IdKey)
     const hasNotIdFilter = hasNotId<Relation>(id as IdKey)
 
-    const mutation = {} as NonNullable<CreateMutationReturn<Relation>> //CreateMutationReturn<Relation>
+    const mutation = {} as NonNullable<CreateMutationReturn<Relation>>
     mutation.create = data
-      .filter(hasNotIdFilter) // (t) => !t.id
+      .filter(hasNotIdFilter)
       .map((t) => Object.assign({}, t, { [id]: undefined }))
     mutation.updateMany = data
       .filter(isNotNullOrUndefined)
-      .filter(hasIdFilter) // (t) => !!t.id)
+      .filter(hasIdFilter)
       .map((t) => {
         return {
           where: { [id]: t[id as IdKey] },
-          data: t, //{ ...t, id: undefined },
+          data: t,
         }
       })
     mutation.deleteMany = filterNotIncluded(existing ?? [], data, id)

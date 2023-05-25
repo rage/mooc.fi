@@ -254,20 +254,22 @@ export class CompletionController extends Controller {
     user: User,
   ): Promise<Completion | null> => {
     return (
-      await this.ctx.prisma.user
-        .findUnique({
-          where: {
-            id: user.id,
-          },
-        })
-        .completions({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        })
-    )?.[0]
+      (
+        await this.ctx.prisma.user
+          .findUnique({
+            where: {
+              id: user.id,
+            },
+          })
+          .completions({
+            where: {
+              course_id: course.completions_handled_by_id ?? course.id,
+            },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
+      )?.[0] ?? null
+    )
   }
 
   recheckCompletion = async (

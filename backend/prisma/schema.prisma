@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["orderByRelation", "selectRelationCount", "orderByAggregateGroup", "filterJson"]
 }
 
 datasource db {
@@ -9,591 +8,639 @@ datasource db {
 }
 
 model AbEnrollment {
-  id                        String                  @id @default(uuid())
-  user_id                   String?                 
-  ab_study_id               String                 
-  group                     Int?
-  created_at                DateTime?               @default(now())
-  updated_at                DateTime?               @updatedAt
-  user                      User?                   @relation(fields: [user_id], references: [id])
-  ab_study                  AbStudy                 @relation(fields: [ab_study_id], references: [id])
+  id          String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  user_id     String?  @db.Uuid
+  ab_study_id String   @db.Uuid
+  group       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+  user        User?    @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  ab_study    AbStudy  @relation(fields: [ab_study_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([user_id, ab_study_id])
+  @@index([ab_study_id])
   @@map("ab_enrollment")
 }
 
 model AbStudy {
-  id                        String                  @id @default(uuid())
-  group_count               Int
-  name                      String
-  created_at                DateTime?               @default(now())
-  updated_at                DateTime?               @updatedAt
-  ab_enrollments            AbEnrollment[]
+  id             String         @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  group_count    Int
+  name           String?        @unique
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @default(now()) @updatedAt
+  ab_enrollments AbEnrollment[]
 
   @@map("ab_study")
 }
 
 model Completion {
-  certificate_id                            String?
-  completion_language                       String?
-  course_id                                 String?
-  created_at                                DateTime?               @default(now())
-  eligible_for_ects                         Boolean?                @default(true)
-  email                                     String
-  grade                                     String?
-  id                                        String                  @id @default(uuid())
-  student_number                            String?
-  updated_at                                DateTime?               @updatedAt
-  user_id                                   String?
-  user_upstream_id                          Int?
-  course                                    Course?                 @relation(fields: [course_id], references: [id])
-  user                                      User?                   @relation(fields: [user_id], references: [id])
-  completions_registered                    CompletionRegistered[]
-  completion_date                           DateTime?
-  tier                                      Int?
-  completion_registration_attempt_date      DateTime?
+  id                                   String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  course_id                            String?                @db.Uuid
+  user_id                              String?                @db.Uuid
+  certificate_id                       String?
+  completion_date                      DateTime?              @default(now()) @db.Timestamptz(6)
+  completion_language                  String?
+  completion_registration_attempt_date DateTime?
+  eligible_for_ects                    Boolean?               @default(true)
+  email                                String
+  grade                                String?
+  student_number                       String?
+  tier                                 Int?
+  user_upstream_id                     Int?
+  created_at                           DateTime               @default(now())
+  updated_at                           DateTime               @default(now()) @updatedAt
+  course                               Course?                @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  user                                 User?                  @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  completions_registered               CompletionRegistered[]
 
+  @@index([completion_language])
+  @@index([course_id, user_id, created_at])
+  @@index([user_id, course_id, created_at])
   @@map("completion")
 }
 
 model CompletionRegistered {
-  completion_id                                    String?       
-  course_id                                        String?       
-  created_at                                       DateTime?     @default(now())
-  id                                               String        @id @default(uuid())
-  organization_id                                  String?       
-  real_student_number                              String
-  updated_at                                       DateTime?     @updatedAt
-  user_id                                          String?       
-  completion                                       Completion?   @relation(fields: [completion_id], references: [id])
-  course                                           Course?       @relation(fields: [course_id], references: [id])
-  organization                                     Organization? @relation(fields: [organization_id], references: [id])
-  user                                             User?         @relation(fields: [user_id], references: [id])
-  registration_date                                DateTime?
+  id                  String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  real_student_number String
+  registration_date   DateTime?
+  user_id             String?       @db.Uuid
+  completion_id       String?       @db.Uuid
+  course_id           String?       @db.Uuid
+  organization_id     String?       @db.Uuid
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @default(now()) @updatedAt
+  completion          Completion?   @relation(fields: [completion_id], references: [id], onUpdate: NoAction)
+  course              Course?       @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  organization        Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  user                User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
+  @@index([completion_id])
+  @@index([course_id])
+  @@index([organization_id])
+  @@index([user_id, course_id])
   @@map("completion_registered")
 }
 
 model Course {
-  automatic_completions                              Boolean?                            @default(false)
-  automatic_completions_eligible_for_ects            Boolean?                            @default(true)
-  completion_email_id                                String?                             
-  completions_handled_by_id                          String?                             
-  created_at                                         DateTime?                           @default(now())
-  ects                                               String?
-  end_date                                           String?
-  exercise_completions_needed                        Int?
-  has_certificate                                    Boolean?                            @default(false)
-  hidden                                             Boolean?
-  id                                                 String                              @id @default(uuid())
-  inherit_settings_from_id                           String?                             
-  name                                               String
-  order                                              Int?
-  owner_organization_id                              String?                             
-  photo_id                                           String?                             
-  points_needed                                      Int?
-  promote                                            Boolean?
-  slug                                               String                              @unique
-  start_date                                         String
-  start_point                                        Boolean?
-  status                                             CourseStatus?                       @default(Upcoming)
-  study_module_order                                 Int?
-  study_module_start_point                           Boolean?
-  support_email                                      String?
-  teacher_in_charge_email                            String
-  teacher_in_charge_name                             String
-  language                                           String?
-  updated_at                                         DateTime?                           @updatedAt
-  completion_email                                   EmailTemplate?                      @relation("courseTocourse_completion_email", fields: [completion_email_id], references: [id])
-  completions_handled_by                             Course?                             @relation("courseTocourse_completions_handled_by", fields: [completions_handled_by_id], references: [id])
-  inherit_settings_from                              Course?                             @relation("courseTocourse_inherit_settings_from", fields: [inherit_settings_from_id], references: [id])
-  owner_organization                                 Organization?                       @relation(fields: [owner_organization_id], references: [id])
-  photo                                              Image?                              @relation(fields: [photo_id], references: [id])
-  completions                                        Completion[]
-  completions_registered                             CompletionRegistered[]
-  handles_completions_for                            Course[]                            @relation("courseTocourse_completions_handled_by")
-  other_course_courseTocourse_inherit_settings_from  Course[]                            @relation("courseTocourse_inherit_settings_from")
-  triggered_automatically_email                      EmailTemplate[]                     @relation("emailTemplateToCourse_triggered")
-  course_aliases                                     CourseAlias[]
-  course_organizations                               CourseOrganization[]
-  course_translations                                CourseTranslation[]
-  course_variants                                    CourseVariant[]
-  exercises                                          Exercise[]
-  open_university_registration_links                 OpenUniversityRegistrationLink[]
-  user_course_progresses                             UserCourseProgress[]
-  user_course_service_progresses                     UserCourseServiceProgress[]
-  user_course_settings                               UserCourseSetting[]
-  user_course_settings_visibilities                  UserCourseSettingsVisibility[]
-  services                                           Service[]                           @relation("course_to_service")
-  study_modules                                      StudyModule[]                       @relation("study_module_to_course")
-  upcoming_active_link                               Boolean?
-  tier                                               Int?
-  stored_data                                        StoredData[]                        
-  ownerships                                         CourseOwnership[]
-  course_stats_email_id                              String?
-  course_stats_email                                 EmailTemplate?                      @relation("courseTocourse_course_stats_email", fields: [course_stats_email_id], references: [id])
-  tags                                               Tag[]
+  id                                                String                           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name                                              String
+  slug                                              String                           @unique
+  teacher_in_charge_name                            String
+  teacher_in_charge_email                           String
+  support_email                                     String?
+  start_date                                        String
+  end_date                                          String?
+  ects                                              String?
+  promote                                           Boolean?
+  status                                            CourseStatus?                    @default(Upcoming)
+  start_point                                       Boolean?
+  hidden                                            Boolean?
+  study_module_start_point                          Boolean?
+  order                                             Int?
+  study_module_order                                Int?
+  automatic_completions                             Boolean?                         @default(false)
+  automatic_completions_eligible_for_ects           Boolean?                         @default(true)
+  points_needed                                     Int?
+  exercise_completions_needed                       Int?
+  has_certificate                                   Boolean?                         @default(false)
+  upcoming_active_link                              Boolean?                         @default(false)
+  tier                                              Int?
+  language                                          String?
+  owner_organization_id                             String?                          @db.Uuid
+  completion_email_id                               String?                          @db.Uuid
+  inherit_settings_from_id                          String?                          @db.Uuid
+  completions_handled_by_id                         String?                          @db.Uuid
+  course_stats_email_id                             String?                          @db.Uuid
+  photo_id                                          String?                          @db.Uuid
+  created_at                                        DateTime                         @default(now())
+  updated_at                                        DateTime                         @default(now()) @updatedAt
+  completions                                       Completion[]
+  completions_registered                            CompletionRegistered[]
+  completion_email                                  EmailTemplate?                   @relation("EmailTemplate_Course_completion_email", fields: [completion_email_id], references: [id], onUpdate: NoAction)
+  triggered_automatically_email                     EmailTemplate[]                  @relation("EmailTemplate_Course_triggered_automatically_by")
+  course_stats_email                                EmailTemplate?                   @relation("EmailTemplate_Course_stats_email", fields: [course_stats_email_id], references: [id], onUpdate: NoAction)
+  completions_handled_by                            Course?                          @relation("Course_completions_handled_by", fields: [completions_handled_by_id], references: [id], onUpdate: NoAction)
+  handles_completions_for                           Course[]                         @relation("Course_completions_handled_by")
+  inherit_settings_from                             Course?                          @relation("Course_inherit_settings_from", fields: [inherit_settings_from_id], references: [id], onUpdate: NoAction)
+  handles_settings_for                              Course[]                         @relation("Course_inherit_settings_from")
+  owner_organization                                Organization?                    @relation(fields: [owner_organization_id], references: [id], onUpdate: NoAction)
+  photo                                             Image?                           @relation(fields: [photo_id], references: [id], onUpdate: NoAction)
+  course_aliases                                    CourseAlias[]
+  course_organizations                              CourseOrganization[]
+  ownerships                                        CourseOwnership[]
+  course_translations                               CourseTranslation[]
+  course_variants                                   CourseVariant[]
+  exercises                                         Exercise[]
+  open_university_registration_links                OpenUniversityRegistrationLink[]
+  stored_data                                       StoredData[]
+  user_course_progresses                            UserCourseProgress[]
+  user_course_service_progresses                    UserCourseServiceProgress[]
+  user_course_settings                              UserCourseSetting[]
+  user_course_settings_visibilities                 UserCourseSettingsVisibility[]
+  tags                                              Tag[]                            @relation("CourseToTag")
+  services                                          Service[]                        @relation("course_to_service")
+  study_modules                                     StudyModule[]                    @relation("study_module_to_course")
 
+  @@index([completion_email_id])
+  @@index([completions_handled_by_id])
+  @@index([status])
   @@map("course")
 }
 
 model CourseAlias {
-  course_id                   String?   
-  course_code                 String    @unique
-  created_at                  DateTime? @default(now())
-  id                          String    @id @default(uuid())
-  updated_at                  DateTime? @updatedAt
-  course                      Course?   @relation(fields: [course_id], references: [id])
+  id          String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  course_code String   @unique
+  course_id   String?  @db.Uuid
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+  course      Course?  @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([course_id])
   @@map("course_alias")
 }
 
 model CourseOrganization {
-  course_id                                      String?       
-  created_at                                     DateTime?     @default(now())
-  creator                                        Boolean?
-  id                                             String        @id @default(uuid())
-  organization_id                                String?       
-  updated_at                                     DateTime?     @updatedAt
-  course                                         Course?       @relation(fields: [course_id], references: [id])
-  organization                                   Organization? @relation(fields: [organization_id], references: [id])
+  id              String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  creator         Boolean?
+  course_id       String?       @db.Uuid
+  organization_id String?       @db.Uuid
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now()) @updatedAt
+  course          Course?       @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  organization    Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
 
   @@map("course_organization")
 }
 
 model CourseTranslation {
-  course_id                         String?   
-  created_at                        DateTime? @default(now())
-  description                       String
-  instructions                      String?
-  id                                String    @id @default(uuid())
-  language                          String
-  link                              String?
-  name                              String
-  updated_at                        DateTime? @updatedAt
-  course                            Course?   @relation(fields: [course_id], references: [id])
+  id           String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name         String
+  language     String
+  description  String
+  link         String?
+  instructions String?
+  course_id    String?  @db.Uuid
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+  course       Course?  @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([course_id, language])
+  @@index([name])
   @@map("course_translation")
 }
 
 model CourseVariant {
-  course_id                     String?   
-  created_at                    DateTime? @default(now())
-  description                   String?
-  instructions                  String?
-  id                            String    @id @default(uuid())
-  slug                          String
-  updated_at                    DateTime? @updatedAt
-  course                        Course?   @relation(fields: [course_id], references: [id])
+  id           String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  slug         String
+  description  String?
+  instructions String?
+  course_id    String?  @db.Uuid
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+  course       Course?  @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([course_id])
+  @@index([slug])
   @@map("course_variant")
 }
 
 model EmailDelivery {
-  created_at                                    DateTime?       @default(now())
-  email_template_id                             String?         
-  error                                         Boolean         @default(false)
-  error_message                                 String?
-  id                                            String          @id @default(uuid())
-  sent                                          Boolean         @default(false)
-  updated_at                                    DateTime?       @updatedAt
-  user_id                                       String?         
-  email_template                                EmailTemplate?  @relation(fields: [email_template_id], references: [id])
-  user                                          User?           @relation(fields: [user_id], references: [id])
+  id                String         @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  sent              Boolean        @default(false)
+  error             Boolean        @default(false)
+  error_message     String?
+  user_id           String?        @db.Uuid
+  email_template_id String?        @db.Uuid
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @default(now()) @updatedAt
+  email_template    EmailTemplate? @relation(fields: [email_template_id], references: [id], onUpdate: NoAction)
+  user              User?          @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
+  @@index([email_template_id])
+  @@index([user_id, email_template_id])
   @@map("email_delivery")
 }
 
 model EmailTemplate {
-  created_at                               DateTime?                  @default(now())
-  html_body                                String?          
-  id                                       String                     @id @default(uuid())
-  name                                     String?          
-  title                                    String?          
-  txt_body                                 String?          
-  template_type                            String?          
-  exercise_completions_threshold           Int?         
-  points_threshold                         Int?         
-  updated_at                               DateTime?                  @updatedAt
-  course_instance_language                 String?
-  triggered_automatically_by_course_id     String?              
-  triggered_automatically_by_course        Course?                    @relation("emailTemplateToCourse_triggered", fields: [triggered_automatically_by_course_id], references: [id])
-  courses                                  Course[]                   @relation("courseTocourse_completion_email")
-  stats_courses                            Course[]                   @relation("courseTocourse_course_stats_email")
-  email_deliveries                         EmailDelivery[]
-  course_stats_subscriptions               CourseStatsSubscription[]
+  id                                   String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name                                 String?
+  txt_body                             String?
+  html_body                            String?
+  title                                String?
+  points_threshold                     Int?
+  exercise_completions_threshold       Int?
+  template_type                        String?
+  course_instance_language             String?
+  triggered_automatically_by_course_id String?                   @db.Uuid
+  created_at                           DateTime                  @default(now())
+  updated_at                           DateTime                  @default(now()) @updatedAt
+  courses                              Course[]                  @relation("EmailTemplate_Course_completion_email")
+  stats_courses                        Course[]                  @relation("EmailTemplate_Course_stats_email")
+  course_stats_subscriptions           CourseStatsSubscription[]
+  email_deliveries                     EmailDelivery[]
+  triggered_automatically_by_course    Course?                   @relation("EmailTemplate_Course_triggered_automatically_by", fields: [triggered_automatically_by_course_id], references: [id], onUpdate: NoAction)
 
+  @@index([triggered_automatically_by_course_id, template_type])
   @@map("email_template")
 }
 
 model Exercise {
-  course_id                 String?               
-  created_at                DateTime?             @default(now())
-  custom_id                 String
-  deleted                   Boolean?              @default(false)
-  id                        String                @id @default(uuid())
-  max_points                Int?
-  name                      String?
-  part                      Int?
-  section                   Int?
-  service_id                String?               
-  timestamp                 DateTime?
-  updated_at                DateTime?             @updatedAt
-  course                    Course?               @relation(fields: [course_id], references: [id])
-  service                   Service?              @relation(fields: [service_id], references: [id])
-  exercise_completions      ExerciseCompletion[]
+  id                   String               @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  custom_id            String
+  name                 String?
+  part                 Int?
+  section              Int?
+  max_points           Int?
+  timestamp            DateTime?
+  deleted              Boolean?             @default(false)
+  service_id           String?              @db.Uuid
+  course_id            String?              @db.Uuid
+  created_at           DateTime             @default(now())
+  updated_at           DateTime             @default(now()) @updatedAt
+  course               Course?              @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  service              Service?             @relation(fields: [service_id], references: [id], onUpdate: NoAction)
+  exercise_completions ExerciseCompletion[]
 
+  @@index([course_id, service_id, custom_id])
+  @@index([custom_id])
+  @@index([service_id])
   @@map("exercise")
 }
 
 model ExerciseCompletion {
-  completed                              Boolean?                               @default(false)
-  created_at                             DateTime?                              @default(now())
-  exercise_id                            String?                                
-  id                                     String                                 @id @default(uuid())
-  n_points                               Float?
-  timestamp                              DateTime
-  updated_at                             DateTime?                              @updatedAt
-  user_id                                String?                                
-  exercise                               Exercise?                              @relation(fields: [exercise_id], references: [id])
-  user                                   User?                                  @relation(fields: [user_id], references: [id])
-  exercise_completion_required_actions   ExerciseCompletionRequiredAction[]
-  attempted                              Boolean?
-  original_submission_date               DateTime?
-  
+  id                                   String                             @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  n_points                             Float?
+  timestamp                            DateTime
+  completed                            Boolean?                           @default(false)
+  attempted                            Boolean?
+  original_submission_date             DateTime?
+  user_id                              String?                            @db.Uuid
+  exercise_id                          String?                            @db.Uuid
+  created_at                           DateTime                           @default(now())
+  updated_at                           DateTime                           @default(now()) @updatedAt
+  exercise                             Exercise?                          @relation(fields: [exercise_id], references: [id], onUpdate: NoAction)
+  user                                 User?                              @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  exercise_completion_required_actions ExerciseCompletionRequiredAction[]
+
+  @@index([user_id, exercise_id, timestamp(sort: Desc), updated_at(sort: Desc)])
   @@map("exercise_completion")
 }
 
 model ExerciseCompletionRequiredAction {
-  exercise_completion_id                                                        String?              
-  id                                                                            String               @id @default(uuid())
-  value                                                                         String
-  exercise_completion                                                           ExerciseCompletion?  @relation(fields: [exercise_completion_id], references: [id])
+  id                     String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  value                  String
+  exercise_completion_id String?             @db.Uuid
+  exercise_completion    ExerciseCompletion? @relation(fields: [exercise_completion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("exercise_completion_required_actions")
 }
 
 model Image {
-  compressed            String?
-  compressed_mimetype   String?
-  created_at            DateTime? @default(now())
-  default               Boolean?
-  encoding              String?
-  id                    String    @id @default(uuid())
+  id                    String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   name                  String?
   original              String
   original_mimetype     String
   uncompressed          String
   uncompressed_mimetype String
-  updated_at            DateTime? @updatedAt
+  compressed            String?
+  compressed_mimetype   String?
+  encoding              String?
+  default               Boolean?
+  created_at            DateTime @default(now())
+  updated_at            DateTime @default(now()) @updatedAt
   courses               Course[]
 
   @@map("image")
 }
 
 model OpenUniversityRegistrationLink {
-  course_id                                        String?   
-  course_code                                      String
-  created_at                                       DateTime? @default(now())
-  id                                               String    @id @default(uuid())
-  language                                         String
-  link                                             String?
-  start_date                                       DateTime?
-  stop_date                                        DateTime?
-  updated_at                                       DateTime? @updatedAt
-  course                                           Course?   @relation(fields: [course_id], references: [id])
-  tiers                                            Json?
+  id          String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  course_code String
+  language    String
+  link        String?
+  start_date  DateTime?
+  stop_date   DateTime?
+  course_id   String?   @db.Uuid
+  tiers       Json?     @db.Json
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt
+  course      Course?   @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([course_id])
   @@map("open_university_registration_link")
 }
 
 model Organization {
-  contact_information       String?
-  created_at                DateTime?                  @default(now())
-  creator_id                String?                    
+  id                        String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  slug                      String                    @unique
+  secret_key                String                    @unique
+  verified_at               DateTime?
+  verified                  Boolean?
   disabled                  Boolean?
-  email                     String?
   hidden                    Boolean?
-  id                        String                     @id @default(uuid())
-  logo_content_type         String?
+  tmc_created_at            DateTime?
+  tmc_updated_at            DateTime?
   logo_file_name            String?
+  logo_content_type         String?
   logo_file_size            Int?
   logo_updated_at           DateTime?
   phone                     String?
-  pinned                    Boolean?
-  secret_key                String                     @unique
-  slug                      String                     @unique
-  tmc_created_at            DateTime?
-  tmc_updated_at            DateTime?
-  updated_at                DateTime?                  @updatedAt
-  verified                  Boolean?
-  verified_at               DateTime?
+  contact_information       String?
+  email                     String?
   website                   String?
-  creator                   User?                      @relation(fields: [creator_id], references: [id])
+  pinned                    Boolean?
+  creator_id                String?                   @db.Uuid
+  created_at                DateTime                  @default(now())
+  updated_at                DateTime                  @default(now()) @updatedAt
   completions_registered    CompletionRegistered[]
   courses                   Course[]
   course_organizations      CourseOrganization[]
+  creator                   User?                     @relation(fields: [creator_id], references: [id], onUpdate: NoAction)
   organization_translations OrganizationTranslation[]
   user_organizations        UserOrganization[]
   verified_users            VerifiedUser[]
 
+  @@index([creator_id])
   @@map("organization")
 }
 
 model OrganizationTranslation {
-  created_at                                          DateTime?     @default(now())
-  disabled_reason                                     String?
-  id                                                  String        @id @default(uuid())
-  information                                         String?
-  language                                            String
-  name                                                String
-  organization_id                                     String?       
-  updated_at                                          DateTime?     @updatedAt
-  organization                                        Organization? @relation(fields: [organization_id], references: [id])
+  id              String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  language        String
+  name            String
+  disabled_reason String?
+  information     String?
+  organization_id String?       @db.Uuid
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now()) @updatedAt
+  organization    Organization? @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([organization_id])
   @@map("organization_translation")
 }
 
 model Service {
-  created_at                     DateTime?                      @default(now())
-  id                             String                         @id @default(uuid())
-  name                           String
-  updated_at                     DateTime?                      @updatedAt
+  id                             String                      @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   url                            String
+  name                           String
+  created_at                     DateTime                    @default(now())
+  updated_at                     DateTime                    @default(now()) @updatedAt
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                       @relation("course_to_service")
+  courses                        Course[]                    @relation("course_to_service")
 
   @@map("service")
 }
 
 model StoredData {
-  created_at                     DateTime?                      @default(now())
-  updated_at                     DateTime?                      @updatedAt
-  data                           String
-  course_id                      String
-  user_id                        String
-  course                         Course?                        @relation(fields: [course_id], references: [id])
-  user                           User?                          @relation(fields: [user_id], references: [id])
+  data       String?
+  course_id  String   @db.Uuid
+  user_id    String   @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  course     Course   @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([user_id, course_id])
+  @@id([course_id, user_id])
+  @@unique([course_id, user_id])
+  @@index([user_id])
   @@map("stored_data")
 }
 
 model StudyModule {
-  created_at                DateTime?                  @default(now())
-  id                        String                     @id @default(uuid())
-  image                     String?
+  id                        String                   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  slug                      String                   @unique
   name                      String
+  image                     String?
   order                     Int?
-  slug                      String                     @unique
-  updated_at                DateTime?                  @updatedAt
+  created_at                DateTime                 @default(now())
+  updated_at                DateTime                 @default(now()) @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                   @relation("study_module_to_course")
+  courses                   Course[]                 @relation("study_module_to_course")
 
   @@map("study_module")
 }
 
 model StudyModuleTranslation {
-  created_at                                          DateTime?     @default(now())
-  description                                         String
-  id                                                  String        @id @default(uuid())
-  language                                            String
-  name                                                String
-  study_module_id                                     String?       
-  updated_at                                          DateTime?     @updatedAt
-  study_module                                        StudyModule? @relation(fields: [study_module_id], references: [id])
+  id              String       @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name            String
+  language        String
+  description     String
+  study_module_id String?      @db.Uuid
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @default(now()) @updatedAt
+  study_module    StudyModule? @relation(fields: [study_module_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([study_module_id, language])
   @@map("study_module_translation")
 }
 
 model User {
-  administrator                  Boolean
-  created_at                     DateTime?                      @default(now())
-  email                          String
+  id                             String                      @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  upstream_id                    Int                         @unique
+  username                       String                      @unique
   first_name                     String?
-  id                             String                         @id @default(uuid())
   last_name                      String?
+  email                          String
+  administrator                  Boolean
+  student_number                 String?
   real_student_number            String?
   research_consent               Boolean?
-  student_number                 String?
-  updated_at                     DateTime?                      @updatedAt
-  upstream_id                    Int                            @unique
-  username                       String                         @unique
+  created_at                     DateTime                    @default(now())
+  updated_at                     DateTime                    @default(now()) @updatedAt
+  ab_enrollments                 AbEnrollment[]
   completions                    Completion[]
   completions_registered         CompletionRegistered[]
+  course_ownerships              CourseOwnership[]
+  course_stats_subscriptions     CourseStatsSubscription[]
   email_deliveries               EmailDelivery[]
   exercise_completions           ExerciseCompletion[]
   organizations                  Organization[]
+  stored_data                    StoredData[]
   user_course_progresses         UserCourseProgress[]
   user_course_service_progresses UserCourseServiceProgress[]
   user_course_settings           UserCourseSetting[]
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
-  ab_enrollments                 AbEnrollment[]
-  stored_data                    StoredData[]
-  course_ownerships              CourseOwnership[]
-  course_stats_subscriptions     CourseStatsSubscription[]
 
+  @@index([email(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([first_name(ops: raw("gin_trgm_ops")), last_name(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([last_name(ops: raw("gin_trgm_ops"))], type: Gin)
   @@map("user")
 }
 
 model UserAppDatumConfig {
-  created_at DateTime? @default(now())
-  id         String    @default(uuid()) @id
+  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   name       String?   @unique
   timestamp  DateTime?
-  updated_at DateTime? @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
 
   @@map("user_app_datum_config")
 }
 
 model UserCourseProgress {
-  course_id                           String?                        
-  created_at                          DateTime?                      @default(now())
-  id                                  String                         @id @default(uuid())
-  max_points                          Float?
-  n_points                            Float?
-  progress                            Json
-  extra                               Json?
-  updated_at                          DateTime?                      @updatedAt
-  user_id                             String?                        
-  course                              Course?                        @relation(fields: [course_id], references: [id])
-  user                                User?                          @relation(fields: [user_id], references: [id])
-  user_course_service_progresses      UserCourseServiceProgress[]
+  id                             String                      @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  progress                       Json                        @db.Json
+  extra                          Json?                       @db.Json
+  max_points                     Float?
+  n_points                       Float?
+  user_id                        String?                     @db.Uuid
+  course_id                      String?                     @db.Uuid
+  created_at                     DateTime                    @default(now())
+  updated_at                     DateTime                    @default(now()) @updatedAt
+  course                         Course?                     @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  user                           User?                       @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  user_course_service_progresses UserCourseServiceProgress[]
 
+  @@index([course_id, user_id])
+  @@index([user_id])
   @@map("user_course_progress")
 }
 
 model UserCourseServiceProgress {
-  course_id                                                               String?               
-  created_at                                                              DateTime?             @default(now())
-  id                                                                      String                @id @default(uuid())
-  progress                                                                Json
-  service_id                                                              String?               
-  timestamp                                                               DateTime?
-  updated_at                                                              DateTime?             @updatedAt
-  user_id                                                                 String?               
-  user_course_progress_id                                                 String?               
-  course                                                                  Course?               @relation(fields: [course_id], references: [id])
-  service                                                                 Service?              @relation(fields: [service_id], references: [id])
-  user                                                                    User?                 @relation(fields: [user_id], references: [id])
-  user_course_progress                                                    UserCourseProgress?   @relation(fields: [user_course_progress_id], references: [id])
+  id                      String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  progress                Json                @db.Json
+  timestamp               DateTime?
+  service_id              String?             @db.Uuid
+  user_id                 String?             @db.Uuid
+  course_id               String?             @db.Uuid
+  user_course_progress_id String?             @db.Uuid
+  created_at              DateTime            @default(now())
+  updated_at              DateTime            @default(now()) @updatedAt
+  course                  Course?             @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  service                 Service?            @relation(fields: [service_id], references: [id], onUpdate: NoAction)
+  user_course_progress    UserCourseProgress? @relation(fields: [user_course_progress_id], references: [id], onUpdate: NoAction)
+  user                    User?               @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
-  @@map("user_course_service_progress")  
+  @@index([course_id])
+  @@index([service_id, course_id, user_id])
+  @@index([user_id])
+  @@map("user_course_service_progress")
 }
 
 model UserCourseSetting {
-  country                           String?
-  course_id                         String?   
-  course_variant                    String?
-  created_at                        DateTime? @default(now())
-  id                                String    @default(uuid()) @id
-  language                          String?
-  marketing                         Boolean?
-  other                             Json?
-  research                          Boolean?
-  updated_at                        DateTime? @updatedAt
-  user_id                           String?   
-  course                            Course?   @relation(fields: [course_id], references: [id])
-  user                              User?     @relation(fields: [user_id], references: [id])
+  id             String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  language       String?
+  country        String?
+  research       Boolean?
+  marketing      Boolean?
+  course_variant String?
+  other          Json?    @db.Json
+  user_id        String?  @db.Uuid
+  course_id      String?  @db.Uuid
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now()) @updatedAt
+  course         Course?  @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  user           User?    @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
+  @@index([country])
+  @@index([course_id, user_id, created_at])
+  @@index([language])
+  @@index([user_id])
   @@map("user_course_setting")
 }
 
 model UserCourseSettingsVisibility {
-  course_id                                      String?   
-  created_at                                     DateTime? @default(now())
-  id                                             String    @id @default(uuid())
-  language                                       String
-  updated_at                                     DateTime? @updatedAt
-  course                                         Course?   @relation(fields: [course_id], references: [id])
+  id         String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  language   String
+  course_id  String?  @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  course     Course?  @relation(fields: [course_id], references: [id], onUpdate: NoAction)
 
   @@map("user_course_settings_visibility")
 }
 
 model UserOrganization {
-  created_at                                   DateTime?          @default(now())
-  id                                           String             @id @default(uuid())
-  organization_id                              String?            
-  role                                         OrganizationRole?  @default(Student)
-  updated_at                                   DateTime?          @updatedAt
-  user_id                                      String?            
-  organization                                 Organization?      @relation(fields: [organization_id], references: [id])
-  user                                         User?              @relation(fields: [user_id], references: [id])
+  id              String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  role            OrganizationRole? @default(Student)
+  organization_id String?           @db.Uuid
+  user_id         String?           @db.Uuid
+  consented       Boolean?          @default(false)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @default(now()) @updatedAt
+  organization    Organization?     @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  user            User?             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
   @@map("user_organization")
 }
 
 model VerifiedUser {
-  created_at                               DateTime?     @default(now())
-  display_name                             String?
-  id                                       String        @id @default(uuid())
-  organization_id                          String?       
-  personal_unique_code                     String
-  updated_at                               DateTime?     @updatedAt
-  user_id                                  String?       
-  organization                             Organization? @relation(fields: [organization_id], references: [id])
-  user                                     User?         @relation(fields: [user_id], references: [id])
+  id                            String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  display_name                  String?
+  personal_unique_code          String
+  home_organization             String?
+  person_affiliation            String?
+  person_affiliation_updated_at DateTime?
+  mail                          String?
+  organizational_unit           String?
+  user_id                       String?       @db.Uuid
+  organization_id               String?       @db.Uuid
+  created_at                    DateTime      @default(now())
+  updated_at                    DateTime      @default(now()) @updatedAt
+  user                          User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  organization                  Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
 
+  @@unique([user_id, personal_unique_code, home_organization])
   @@map("verified_user")
 }
 
 model CourseOwnership {
-  created_at                               DateTime?     @default(now())
-  updated_at                               DateTime?     @updatedAt
-  id                                       String        @id @default(uuid())
-  user_id                                  String?
-  course_id                                String?
-  course                                   Course?       @relation(fields: [course_id], references: [id])
-  user                                     User?         @relation(fields: [user_id], references: [id])  
+  id         String   @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  course_id  String?  @db.Uuid
+  user_id    String?  @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  course     Course?  @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([user_id, course_id])
   @@map("course_ownership")
 }
 
 model CourseStatsSubscription {
-  created_at                               DateTime?        @default(now())
-  updated_at                               DateTime?        @updatedAt
-  id                                       String           @id @default(uuid())
-  user_id                                  String?
-  email_template_id                        String?
-  user                                     User?            @relation(fields: [user_id], references: [id])
-  email_template                           EmailTemplate?   @relation(fields: [email_template_id], references: [id])
+  id                String         @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  email_template_id String?        @db.Uuid
+  user_id           String?        @db.Uuid
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @default(now()) @updatedAt
+  email_template    EmailTemplate? @relation(fields: [email_template_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user              User?          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([user_id, email_template_id])
   @@map("course_stats_subscription")
 }
 
 model Tag {
-  created_at                               DateTime?        @default(now())
-  updated_at                               DateTime?        @updatedAt
-  id                                       String           @id
-  hidden                                   Boolean?         @default(false) 
-  tag_types                                TagType[]      
-  tag_translations                         TagTranslation[]
-  courses                                  Course[]
+  id               String           @id @default(dbgenerated("extensions.uuid_generate_v4()"))
+  hidden           Boolean          @default(false)
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @default(now()) @updatedAt
+  courses          Course[]         @relation("CourseToTag")
+  tag_types        TagType[]        @relation("TagToTagType")
+  tag_translations TagTranslation[]
 
   @@map("tag")
 }
 
 model TagType {
-  created_at                               DateTime?        @default(now())
-  updated_at                               DateTime?        @updatedAt
-  name                                     String           @id
-  tags                                     Tag[]
+  name       String   @id
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  tags       Tag[]    @relation("TagToTagType")
 
   @@map("tag_type")
 }
 
 model TagTranslation {
-  created_at                               DateTime?        @default(now())
-  updated_at                               DateTime?        @updatedAt
-  tag_id                                   String          
-  language                                 String
-  name                                     String
-  description                              String?
-  tag                                      Tag              @relation(fields: [tag_id], references: [id])
+  language    String
+  name        String
+  description String?
+  tag_id      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+  tag         Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([tag_id, language])
   @@unique([name, language])
@@ -609,9 +656,9 @@ enum CourseStatus {
 }
 
 enum OrganizationRole {
-  OrganizationAdmin
-  Student
   Teacher
+  Student
+  OrganizationAdmin
 
   @@map("organization_role")
 }

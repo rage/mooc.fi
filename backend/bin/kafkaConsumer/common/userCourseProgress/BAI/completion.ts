@@ -58,16 +58,17 @@ export const checkBAICompletion = async ({
   // even though the handler is in this case the completion handler course.
   // Add a separate progress_handled_by, even though that would only apply here
   // as the tiers have their own progress?
-  const existingProgresses = await prisma.course
-    .findUnique({
-      where: { id: handler?.id ?? course.id },
-    })
-    .user_course_progresses({
-      where: {
-        user_id: user.id,
-      },
-      orderBy: { created_at: "asc" },
-    })
+  const existingProgresses =
+    (await prisma.course
+      .findUnique({
+        where: { id: handler?.id ?? course.id },
+      })
+      .user_course_progresses({
+        where: {
+          user_id: user.id,
+        },
+        orderBy: { created_at: "asc" },
+      })) ?? []
 
   if (existingProgresses.length < 1) {
     logger.info("No existing progress found, creating new...")

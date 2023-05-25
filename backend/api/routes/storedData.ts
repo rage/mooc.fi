@@ -38,9 +38,9 @@ export class StoredDataController extends Controller {
     try {
       const existingStoredData = await prisma.storedData.findUnique({
         where: {
-          user_id_course_id: {
-            user_id: user.id,
+          course_id_user_id: {
             course_id: course.id,
+            user_id: user.id,
           },
         },
       })
@@ -59,9 +59,9 @@ export class StoredDataController extends Controller {
 
       await prisma.storedData.update({
         where: {
-          user_id_course_id: {
-            user_id: user.id,
+          course_id_user_id: {
             course_id: course.id,
+            user_id: user.id,
           },
         },
         data: {
@@ -98,25 +98,26 @@ export class StoredDataController extends Controller {
       return ownershipResult.error
     }
 
-    const storedData = await prisma.course
-      .findUnique({
-        where: { id: course.id },
-      })
-      .stored_data({
-        include: {
-          user: {
-            include: {
-              completions: {
-                where: {
-                  course_id: course.completions_handled_by_id ?? course.id,
+    const storedData =
+      (await prisma.course
+        .findUnique({
+          where: { id: course.id },
+        })
+        .stored_data({
+          include: {
+            user: {
+              include: {
+                completions: {
+                  where: {
+                    course_id: course.completions_handled_by_id ?? course.id,
+                  },
+                  orderBy: { created_at: "asc" },
+                  take: 1,
                 },
-                orderBy: { created_at: "asc" },
-                take: 1,
               },
             },
           },
-        },
-      })
+        })) ?? []
 
     const mappedStoredData = storedData.map((data) => ({
       user: omit(data.user, "completions"),
