@@ -77,7 +77,7 @@ export async function up(knex: Knex): Promise<void> {
   `)
   await knex.raw(`
     ALTER TABLE "exercise_completion_required_actions"
-      RENAME CONSTRAINT "exercise_completion_required_actions_exercise_completion_fkey" TO "exercise_completion_required_actions_exercise_completion_i_fkey";
+      RENAME CONSTRAINT "exercise_completion_required_actions_ExerciseCompletion_fkey" TO "exercise_completion_required_actions_exercise_completion_i_fkey";
   `)
   await knex.raw(`
     ALTER TABLE "open_university_registration_link"
@@ -244,7 +244,8 @@ export async function down(knex: Knex): Promise<void> {
 
   await knex.raw(`
   ALTER TABLE "exercise_completion_required_actions"
-    RENAME CONSTRAINT "exercise_completion_required_actions_exercise_completion_i_fkey" TO "exercise_completion_required_actions_exercise_completion_fkey";
+    RENAME CONSTRAINT "exercise_completion_required_actions_exercise_completion_i_fkey" 
+    TO "exercise_completion_required_actions_ExerciseCompletion_fkey";
 `)
 
   await knex.raw(`
