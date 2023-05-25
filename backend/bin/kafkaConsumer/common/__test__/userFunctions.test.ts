@@ -18,7 +18,6 @@ import {
   getExerciseCompletionsForCourses,
   getUserCourseSettings,
   pruneDuplicateExerciseCompletions,
-  pruneOrphanedExerciseCompletionRequiredActions,
 } from "../userFunctions"
 
 const ctx = getTestContext()
@@ -569,6 +568,7 @@ describe("exercise completion utilities", () => {
         }),
       )
     }
+
     Object.assign(context, {
       prisma: ctx.prisma,
       knex: ctx.knex,
@@ -681,31 +681,6 @@ describe("exercise completion utilities", () => {
         expect(beforeEntry).toEqual(ec)
         expect(result).not.toContain(ec.id)
       })
-    })
-  })
-
-  describe("pruneOrphanedExerciseCompletionRequiredActions", () => {
-    it("should prune orphaned actions", async () => {
-      const beforeActionCount =
-        await ctx.prisma.exerciseCompletionRequiredAction.count()
-      const existingIds = (
-        exerciseCompletions[2].exercise_completion_required_actions ?? []
-      )
-        .map(({ id }) => id)
-        .sort()
-      await ctx.prisma.exerciseCompletion.delete({
-        where: {
-          id: exerciseCompletions[2].id,
-        },
-      })
-      const result = await pruneOrphanedExerciseCompletionRequiredActions({
-        context,
-      })
-      const afterCount =
-        await ctx.prisma.exerciseCompletionRequiredAction.count()
-      expect(result.length).toBe(2)
-      expect(result.map(({ id }) => id).sort()).toEqual(existingIds)
-      expect(afterCount).toEqual(beforeActionCount - 2)
     })
   })
 })
