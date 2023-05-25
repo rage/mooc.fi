@@ -183,7 +183,7 @@ export const TagQueries = extendType({
         const res = await ctx.prisma.tag.findMany({
           where: {
             ...(!includeHidden && {
-              OR: [{ hidden: false }, { hidden: { not: true } }],
+              OR: [{ hidden: false }, { hidden: null }],
             }),
             ...(!includeWithNoCourses && {
               courses: {
@@ -249,7 +249,7 @@ export const TagMutations = extendType({
         return ctx.prisma.tag.create({
           data: {
             id: _id,
-            hidden: hidden ?? false,
+            hidden,
             ...(translations && {
               tag_translations: {
                 create: translations,
@@ -340,7 +340,7 @@ export const TagMutations = extendType({
           }
         }
         if (!isNotNullOrUndefined(hidden)) {
-          data.hidden = { set: hidden ?? undefined }
+          data.hidden = { set: hidden }
         }
 
         if (Object.keys(data).length === 0) {

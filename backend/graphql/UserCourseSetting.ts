@@ -122,7 +122,7 @@ export const UserCourseSettingQueries = extendType({
           return (await ctx.prisma.$queryRaw(countQueryString))?.[0].count ?? 0*/
 
           return (
-            (await ctx.prisma.course
+            await ctx.prisma.course
               .findUnique({
                 where: { id: course?.inherit_settings_from_id ?? course_id },
               })
@@ -134,7 +134,7 @@ export const UserCourseSettingQueries = extendType({
                 select: {
                   id: true,
                 },
-              })) ?? []
+              })
           ).length
         }
 
@@ -156,7 +156,7 @@ export const UserCourseSettingQueries = extendType({
         return (await ctx.prisma.$queryRaw(countQueryString))?.[0].count ?? 0*/
         if (user_id) {
           return (
-            (await ctx.prisma.user
+            await ctx.prisma.user
               .findUnique({
                 where: { id: user_id },
               })
@@ -165,7 +165,7 @@ export const UserCourseSettingQueries = extendType({
                 select: {
                   id: true,
                 },
-              })) ?? []
+              })
           ).length
         }
 
@@ -232,45 +232,41 @@ export const UserCourseSettingQueries = extendType({
         })
 
         return findManyCursorConnection(
-          async (connectionArgs) => {
+          (connectionArgs) => {
             if (course_id) {
-              return (
-                (await ctx.prisma.course
-                  .findUnique({
-                    where: {
-                      id: course_id,
-                    },
-                  })
-                  .user_course_settings({
-                    where: {
-                      user: {
-                        AND: userConditions,
-                      },
-                    },
-                    distinct: ["user_id", "course_id"],
-                    ...connectionArgs,
-                  })) ?? []
-              )
-            }
-
-            return (
-              (await ctx.prisma.user
-                .findFirst({
-                  // could be findUnique if userSearch not specified
+              return ctx.prisma.course
+                .findUnique({
                   where: {
-                    id: user_id ?? undefined,
-                    upstream_id: user_upstream_id ?? undefined,
-                    ...(userSearch ? { user: userSearch } : {}),
+                    id: course_id,
                   },
                 })
                 .user_course_settings({
                   where: {
-                    course_id,
+                    user: {
+                      AND: userConditions,
+                    },
                   },
                   distinct: ["user_id", "course_id"],
                   ...connectionArgs,
-                })) ?? []
-            )
+                })
+            }
+
+            return ctx.prisma.user
+              .findFirst({
+                // could be findUnique if userSearch not specified
+                where: {
+                  id: user_id ?? undefined,
+                  upstream_id: user_upstream_id ?? undefined,
+                  ...(userSearch ? { user: userSearch } : {}),
+                },
+              })
+              .user_course_settings({
+                where: {
+                  course_id,
+                },
+                distinct: ["user_id", "course_id"],
+                ...connectionArgs,
+              })
           },
           async () => {
             // TODO/FIXME: kludge because prisma "count" doesn't have distinct
@@ -327,7 +323,7 @@ export const UserCourseSettingQueries = extendType({
             })*/
             if (course_id) {
               return (
-                (await ctx.prisma.course
+                await ctx.prisma.course
                   .findUnique({
                     where: {
                       id: course_id,
@@ -341,12 +337,12 @@ export const UserCourseSettingQueries = extendType({
                     },
                     distinct: ["user_id", "course_id"],
                     select: { id: true },
-                  })) ?? []
+                  })
               ).length
             }
 
             return (
-              (await ctx.prisma.user
+              await ctx.prisma.user
                 .findFirst({
                   // could be findUnique if userSearch not specified
                   where: {
@@ -360,7 +356,7 @@ export const UserCourseSettingQueries = extendType({
                     course_id,
                   },
                   distinct: ["user_id", "course_id"],
-                })) ?? []
+                })
             ).length
           },
           pick(args, ["first", "last", "before", "after"]),

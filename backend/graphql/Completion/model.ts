@@ -77,12 +77,11 @@ export const Completion = objectType({
     t.nonNull.field("registered", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        const registered =
-          (await ctx.prisma.completion
-            .findUnique({
-              where: { id: parent.id },
-            })
-            .completions_registered()) ?? []
+        const registered = await ctx.prisma.completion
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .completions_registered()
 
         return registered.length > 0
       },

@@ -193,20 +193,19 @@ export const CompletionMutations = extendType({
           .filter((key) => key !== "null")
 
         // find users with completions
-        const completions =
-          (await ctx.prisma.course
-            .findUnique({
-              where: {
-                id: course.completions_handled_by_id ?? course.id,
-              },
-            })
-            .completions({
-              where: {
-                user_id: { in: userIds },
-              },
-              distinct: ["user_id", "course_id"],
-              orderBy: { created_at: "asc" },
-            })) ?? []
+        const completions = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course.completions_handled_by_id ?? course.id,
+            },
+          })
+          .completions({
+            where: {
+              user_id: { in: userIds },
+            },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
+          })
 
         // filter users without completions
         const userIdsWithoutCompletions = difference(
