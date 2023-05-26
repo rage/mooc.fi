@@ -1,4 +1,4 @@
-FROM node:16.16.0-buster
+FROM node:18.16.0-buster
 
 RUN apt-get update \
   && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
