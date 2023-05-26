@@ -47,7 +47,7 @@
     "dev": "npm run download-env && ts-node-dev --transpile-only ./app.ts",
     "dev:typecheck": "tsc --noEmit --watch",
     "generate:nexus": "cross-env NEXUS_REFLECTION=true NODE_ENV=production ts-node --transpile-only ./schema.ts",
-    "build": "npm run download-env && npm run createExports && tsc --noEmit false",
+    "build": "npm run download-env && npm run createExports && tsc --noEmit false && cp -R types dist",
     "start": "node dist/app.js",
     "copy-env": "cp ./config/env.json ./dist/config/env.json",
     "migrate": "knex migrate:latest",
