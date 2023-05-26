@@ -25,6 +25,6 @@
     "importHelpers": true,
     "sourceRoot": "/"
   },
-  "include": [".", "types.d.ts"],
+  "include": [".", "./types", "types.d.ts"],
   "exclude": ["node_modules", "__mocks__"]
 }

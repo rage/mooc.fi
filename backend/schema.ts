@@ -105,7 +105,7 @@ const createSchema = () =>
         },
         { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
         {
-          module: path.join(__dirname, "types/GraphQLScalars.d.ts"),
+          module: path.join(__dirname, "./types/GraphQLScalars.d.ts"),
           alias: "scalars",
         },
       ],

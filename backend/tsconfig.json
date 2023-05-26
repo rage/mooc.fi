@@ -22,6 +22,6 @@
     "plugins": [{ "name": "nexus/typescript-language-service" }],
     //"typeRoots": ["node_modules/@types", "types"]
   },
-  "include": [".", "./bin/**/*", "types.d.ts"],
+  "include": [".", "./bin/**/*", "./types", "types.d.ts"],
   "exclude": ["node_modules"]
 }
