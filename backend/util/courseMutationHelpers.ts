@@ -248,4 +248,4 @@ const hasNotId =
   >(
     data: any,
   ): data is RelationInstance & { [key in IdKey]: undefined } =>
-    !Boolean(data?.[id])
+    !data?.[id]

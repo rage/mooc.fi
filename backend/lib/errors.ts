@@ -1,5 +1,7 @@
 import { GraphQLError, GraphQLErrorOptions } from "graphql/error"
 
+import { stringifyWithIndent } from "../util/json"
+
 class CustomError extends Error {
   constructor(message: string) {
     super(message)
@@ -133,7 +135,7 @@ export class ValidationError extends CustomError {
 
   constructor(message: string, readonly data: object, readonly error?: Error) {
     super(message)
-    this.data_string = JSON.stringify(data ?? {})
+    this.data_string = stringifyWithIndent(data ?? {})
   }
 }
 

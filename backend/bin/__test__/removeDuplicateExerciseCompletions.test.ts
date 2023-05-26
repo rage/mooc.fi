@@ -116,10 +116,7 @@ describe("removeDuplicateExerciseCompletions", () => {
       }
     }
 
-    await expect(
-      async () =>
-        await removeDuplicateExerciseCompletions(ctx.knex, ctx.logger),
-    ).rejects.toThrow("0") // process.exit called with 0
+    await removeDuplicateExerciseCompletions(ctx.knex, ctx.logger)
 
     const after = await ctx.prisma.exerciseCompletion.findMany({
       include: {

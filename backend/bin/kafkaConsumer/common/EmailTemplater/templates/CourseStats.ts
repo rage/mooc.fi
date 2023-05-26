@@ -50,7 +50,7 @@ export class StartedCourseCount extends Template {
       },
     )
 
-    return startedCourse
+    return startedCourse ?? "0"
   }
 }
 
@@ -102,7 +102,7 @@ export class CompletedCourseCount extends Template {
       },
     )
 
-    return completedCourse
+    return completedCourse ?? "0"
   }
 }
 
@@ -138,7 +138,7 @@ export class AtLeastOneExerciseCount extends Template {
       },
     )
 
-    return atLeastOneExercise
+    return atLeastOneExercise ?? "0"
   }
 }
 
@@ -212,6 +212,6 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
       },
     )
 
-    return atLeastOneExerciseButNotCompletedEmails
+    return atLeastOneExerciseButNotCompletedEmails ?? ""
   }
 }

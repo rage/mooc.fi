@@ -25,10 +25,11 @@ const pruneOldStoredData = async () => {
         e instanceof Error ? e : new Error(e as string),
       ),
     )
-    process.exit(-1)
+    throw e
   }
   logger.info("Done")
-  process.exit(0)
 }
 
 pruneOldStoredData()
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1))

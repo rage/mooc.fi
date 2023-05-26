@@ -198,13 +198,11 @@ export class UserCourseSettingsController extends Controller {
           return { course: slug, language, error: true }
         }
 
-        let { count } = (
-          await knex("user_course_setting")
-            .countDistinct("user_id as count")
-            .where({ course_id, language })
-        )?.[0]
+        const settings = await knex("user_course_setting")
+          .countDistinct("user_id as count")
+          .where({ course_id, language })
 
-        count = Number(count)
+        let count = Number(settings?.[0]?.count ?? "0")
 
         if (count < 100) {
           count = -1
@@ -225,7 +223,7 @@ export class UserCourseSettingsController extends Controller {
       },
     )
 
-    if (resObject.error) {
+    if (isError(resObject)) {
       return res.status(403).json({
         message: "Course not found or user count not set to visible",
       })
@@ -280,3 +278,6 @@ export class UserCourseSettingsController extends Controller {
     }
   }
 }
+
+const isError = (res: any): res is { error: true } =>
+  "error" in res && res.error

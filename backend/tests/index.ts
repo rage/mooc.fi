@@ -122,7 +122,7 @@ function createTestContext(testContext: TestContext) {
           return {
             port,
             client: new GraphQLClient(`http://localhost:${port}`, {
-              headers: { "apollo-require-preflight": "true" },
+              headers: { "Apollo-Require-Preflight": "true" },
             }),
             prisma,
             knexClient,

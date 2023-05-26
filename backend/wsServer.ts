@@ -1,5 +1,6 @@
 import { createServer } from "http"
 
+import parseJSON from "json-parse-even-better-errors"
 import * as redis from "redis"
 import * as WebSocketServer from "websocket"
 import * as winston from "winston"
@@ -61,13 +62,13 @@ export const pushMessageToClient = async (
       )
     } else {
       connectionByUserCourse.delete(userCourseObjectString)
-      redisClient?.publish(
+      await redisClient?.publish(
         "websocket",
         JSON.stringify({ userId, courseId, type, message: payload }),
       )
     }
   } else {
-    redisClient?.publish(
+    await redisClient?.publish(
       "websocket",
       JSON.stringify({ userId, courseId, type, message: payload }),
     )
@@ -79,17 +80,29 @@ wsServer.on("request", (request: any) => {
   const connection = request.accept("echo-protocol", request.origin)
 
   connection.on("message", async (message: any) => {
-    const data = JSON.parse(message.utf8Data)
-    if (data instanceof Object && data.accessToken && data.courseId) {
-      const accessToken = data.accessToken
-      const courseId = data.courseId
+    let data
+    try {
+      data = parseJSON(message.utf8Data)
+    } catch (error) {
+      logger.error("Error parsing message", error)
+      return
+    }
+
+    if (
+      data instanceof Object &&
+      !Array.isArray(data) &&
+      data.accessToken &&
+      data.courseId
+    ) {
+      const accessToken = data.accessToken as string
+      const courseId = data.courseId as string
       try {
-        let user: UserInfo = JSON.parse(
+        let user = parseJSON(
           (await redisClient?.get(accessToken)) ?? "",
-        )
+        ) as UserInfo | null
         if (!user) {
           user = await getCurrentUserDetails(accessToken)
-          redisClient?.set(accessToken, JSON.stringify(user), {
+          await redisClient?.set(accessToken, JSON.stringify(user), {
             EX: 3600,
           })
         }
@@ -146,11 +159,24 @@ const createSubscriber = async () => {
 
   await subscriber?.connect()
 
-  subscriber?.subscribe("websocket", (message: any) => {
-    const data = JSON.parse(message)
-    if (data instanceof Object && data.userId && data.courseId && data.type) {
-      const userId = data.userId
-      const courseId = data.courseId
+  await subscriber?.subscribe("websocket", (message: any) => {
+    let data
+    try {
+      data = parseJSON(message)
+    } catch (error) {
+      logger.error("Error parsing message", error)
+      return
+    }
+
+    if (
+      data instanceof Object &&
+      !Array.isArray(data) &&
+      data.userId &&
+      data.courseId &&
+      data.type
+    ) {
+      const userId = data.userId as string
+      const courseId = data.courseId as string
       const userCourseObjectString = JSON.stringify({ userId, courseId })
       const connection = connectionByUserCourse.get(userCourseObjectString)
       if (connection) {

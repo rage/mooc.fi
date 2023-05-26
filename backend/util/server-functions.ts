@@ -84,17 +84,18 @@ export function getUser({ knex, logger }: BaseContext) {
     let details: UserInfo | null = null
     try {
       const client = new TmcClient(rawToken)
-      details = await redisify<UserInfo>(
-        async () => await client.getCurrentUserDetails(),
-        {
-          prefix: "userdetails",
-          expireTime: 3600,
-          key: rawToken,
-        },
-        {
-          logger,
-        },
-      )
+      details =
+        (await redisify<UserInfo>(
+          async () => await client.getCurrentUserDetails(),
+          {
+            prefix: "userdetails",
+            expireTime: 3600,
+            key: rawToken,
+          },
+          {
+            logger,
+          },
+        )) ?? null
     } catch (e) {
       logger.error("error", e)
     }

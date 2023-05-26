@@ -16,7 +16,6 @@ export const saveToDatabase = async (
 ) => {
   const { logger } = context
 
-  logger.info("Handling message: " + JSON.stringify(message))
   const maybeTimestamp = getTimestamp(context, message)
   if (maybeTimestamp.isErr()) {
     return maybeTimestamp
