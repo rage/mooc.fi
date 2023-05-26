@@ -8,8 +8,6 @@ Install `docker-compose`, if not already installed.
 
 ## Development workflow
 
-Current `node` version is `18.16.0`.
-
 Run `npm ci` in the each of the root, backend and frontend directories to install dependencies.
 
 Create separate shells for the database container, backend and frontend:
