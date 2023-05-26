@@ -1,3 +1,4 @@
+import parseJSON from "json-parse-even-better-errors"
 import * as redis from "redis"
 import * as winston from "winston"
 
@@ -124,7 +125,7 @@ export async function redisify<T>(
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
       try {
-        return JSON.parse(res)
+        return parseJSON(res) as T
       } catch (e) {
         logger.warn(`Cache hit but failed to parse result: ${prefix}`)
         throw convertError(e)
@@ -196,7 +197,7 @@ const attachError = (msg: string, err: unknown) => {
 }
 
 export const invalidate = async (prefix: string, key: string) => {
-  redisClient?.del(`${prefix}:${key}`)
+  await redisClient?.del(`${prefix}:${key}`)
 }
 
 export default getRedisClient()

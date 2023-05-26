@@ -53,7 +53,6 @@
     "immer": "^10.0.1",
     "isomorphic-unfetch": "^4.0.2",
     "lodash": "^4.17.21",
-    "lqip-loader": "^2.2.1",
     "luxon": "^3.3.0",
     "material-react-table": "^1.11.3",
     "material-ui-confirm": "^3.0.9",
@@ -72,7 +71,6 @@
     "styled-jsx": "^5.1.2",
     "tmc-client-js": "^0.0.11",
     "ua-parser-js": "^1.0.35",
-    "url": "^0.11.0",
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5",
     "yup": "^1.1.1"
@@ -106,7 +104,6 @@
     "@types/uuid": "^9.0.1",
     "cors": "^2.8.5",
     "event-stream": "^4.0.1",
-    "express-graphql": "^0.12.0",
     "next-statoscope": "^1.0.0",
     "source-map-support": "^0.5.21",
     "typescript": "^5.0.4",

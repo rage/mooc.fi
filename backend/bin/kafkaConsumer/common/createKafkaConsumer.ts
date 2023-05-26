@@ -67,7 +67,7 @@ export const createKafkaConsumer = ({
   })
 
   consumer.on("connection.failure", (err, metrics) => {
-    logger.info("Connection failed with " + err)
+    logger.info("Connection failed with " + err.message)
     logger.info("Metrics: " + JSON.stringify(metrics))
     consumer.connect()
   })

@@ -113,7 +113,7 @@ export const getCreatedAndUpdatedExerciseCompletions = async <
   if (missingExerciseIds.length > 0) {
     return err(
       new DatabaseInputError(
-        `Given exercises do not exist`,
+        `Given exercises do not exist (course_id: ${message.course_id}})`,
         missingExerciseIds,
       ),
     )
@@ -126,7 +126,7 @@ export const getCreatedAndUpdatedExerciseCompletions = async <
   if (wrongCourseIds.length > 0) {
     return err(
       new DatabaseInputError(
-        `Given exercises do not belong to the given course`,
+        `Given exercises do not belong to the given course (course_id: ${message.course_id}})`,
         wrongCourseIds,
       ),
     )
@@ -219,7 +219,7 @@ export const createExerciseCompletion = async (
       },
       n_points: Number(message.n_points),
       completed: message.completed,
-      attempted: message.attempted !== null ? message.attempted : false,
+      attempted: message.attempted ?? false,
       exercise_completion_required_actions: {
         create: required_actions.map((value) => ({ value })),
       },
@@ -341,24 +341,13 @@ export const pruneExerciseCompletions = async (
       "Pruning duplicate exercise completions with same timestamp as the newest one",
     )
     try {
-      const prunedActions =
-        await prisma.exerciseCompletionRequiredAction.deleteMany({
-          where: {
-            exercise_completion_id: {
-              in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id),
-            },
-          },
-        })
-
       const pruned = await prisma.exerciseCompletion.deleteMany({
         where: {
           id: { in: exerciseCompletionsWithSameTimestamp.map((ec) => ec.id) },
         },
       })
-      logger.info(
-        `Pruned ${pruned.count} exercise completions and ${prunedActions.count} related required actions`,
-      )
-      return ok({ pruned, prunedActions })
+      logger.info(`Pruned ${pruned.count} exercise completions`)
+      return ok({ pruned })
     } catch (e) {
       if (e instanceof Error) {
         logger.warn(

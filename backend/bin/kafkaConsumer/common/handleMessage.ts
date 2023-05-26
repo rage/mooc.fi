@@ -1,3 +1,4 @@
+import parseJSON from "json-parse-even-better-errors"
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
@@ -7,6 +8,7 @@ import {
   ValidationError,
   Warning,
 } from "../../../lib/errors"
+import { stringifyWithIndent } from "../../../util/json"
 import { Result } from "../../../util/result"
 import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
@@ -46,7 +48,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   let message: Message
 
   try {
-    message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
+    message = parseJSON(kafkaMessage?.value?.toString("utf8") ?? "") as Message
   } catch (error: any) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
     await commit(context, kafkaMessage)
@@ -66,7 +68,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   }
 
   try {
-    logger.info("Saving message", { message: JSON.stringify(message) })
+    logger.info("Saving message", { message: stringifyWithIndent(message) })
 
     const saveResult = await saveToDatabase(context, message)
 

@@ -42,7 +42,7 @@ export const removeDuplicateExerciseCompletions = async (
         e,
       ),
     )
-    process.exit(-1)
+    throw e
   }
 
   logger.info("Removing orphaned exercise completion required actions")
@@ -64,13 +64,18 @@ export const removeDuplicateExerciseCompletions = async (
         e,
       ),
     )
-    process.exit(-1)
+    throw e
   }
 
   logger.info("Done")
-  process.exit(0)
 }
 
 if (isProduction && !CIRCLECI) {
   removeDuplicateExerciseCompletions()
+    .then(() => {
+      process.exit(0)
+    })
+    .catch(() => {
+      process.exit(1)
+    })
 }

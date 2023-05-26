@@ -79,18 +79,19 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
   let isCached = true
 
   try {
-    details = await redisify<UserInfo>(
-      async () => {
-        isCached = false
-        return await client.getCurrentUserDetails()
-      },
-      {
-        prefix: "userdetails",
-        expireTime: 3600,
-        key: rawToken,
-      },
-      ctx,
-    )
+    details =
+      (await redisify<UserInfo>(
+        async () => {
+          isCached = false
+          return await client.getCurrentUserDetails()
+        },
+        {
+          prefix: "userdetails",
+          expireTime: 3600,
+          key: rawToken,
+        },
+        ctx,
+      )) ?? null
   } catch (e) {
     ctx.logger.warn("Error fetching user details", e)
   }
