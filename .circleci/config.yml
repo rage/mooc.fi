@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   helm: circleci/helm@2.0.1
-  docker: circleci/docker@2.2.0
   jq: circleci/jq@2.2.0
   node: circleci/node@5.1.0
 #  codecov: codecov/codecov@3.2.4
@@ -14,12 +13,6 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
-  cloudsdk_node:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-  cloudsdk:
-    docker:
-      - image: google/cloud-sdk:latest
 
 jobs:
   code_style:
@@ -41,7 +34,8 @@ jobs:
           command: "bin/helm.sh"
 
   build_frontend:
-    executor: cloudsdk
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - checkout
       - setup_remote_docker:
@@ -197,14 +191,14 @@ jobs:
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
   build_backend:
-    executor: cloudsdk_node
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - checkout
       - setup_remote_docker:
           version: "20.10.18"
           docker_layer_caching: true
       - jq/install
-      # - docker/install-docker-tools
       - run:
           name: patch-package hash
           command: md5sum backend/patches/* > backend/patches.hash
@@ -245,7 +239,8 @@ jobs:
     resource_class: large
 
   push_backend:
-    executor: cloudsdk_node
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - attach_workspace:
           at: ~/project
@@ -255,6 +250,9 @@ jobs:
           name: "Restore image"
           command: |
             docker load < ./build/moocfi-backend.tar.gz
+      - run:
+          name: "Install Sentry client"
+          command: npm i -g @sentry/cli --unsafe-perm
       - run:
           name: "Push image if on master/staging"
           command: "bin/push-docker-backend-image.sh"
@@ -299,7 +297,8 @@ jobs:
   #         name: "Push image if on master"
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
-    executor: cloudsdk
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - checkout
       - setup_remote_docker:
