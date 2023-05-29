@@ -6,8 +6,8 @@ module.exports = {
   trailingComma: "all",
   bracketSpacing: true,
   importOrder: [
+    "<BUILTIN_MODULES>",
     "^react(-dom)?$",
-    "^node:",
     "",
     "<THIRD_PARTY_MODULES>",
     "",
@@ -17,11 +17,6 @@ module.exports = {
     "",
     "^/graphql",
   ],
-  // plugins: [require.resolve("@ianvs/prettier-plugin-sort-imports")],
-  importOrderBuiltinModulesToTop: true,
-  importOrderSortSpecifiers: true,
-  importOrderCaseInsensitive: true,
-  importOrderSeparation: true,
   importOrderParserPlugins: [
     "typescript",
     "jsx",
