@@ -63,9 +63,15 @@ jobs:
           paths:
             - ~/.npm
             - ./frontend/.next/cache
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-frontend-image.sh"
+      - when:
+          condition:
+            or:
+              - equal: [ master, << pipeline.git.branch >> ]
+              - equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: "Push image"
+                command: "bin/push-docker-frontend-image.sh"
     resource_class: large
 
   prepare_backend_test:
@@ -232,38 +238,32 @@ jobs:
               - equal: [ staging, << pipeline.git.branch >> ]
           steps:
             - run:
-                name: "Persist image"
-                command: |
-                  REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
-                  TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-                  mkdir -p ~/project/build
-                  docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
-            - persist_to_workspace:
-                root: ~/project
-                paths:
-                  - build
-                  - backend/sourcemap
+                name: "Install Sentry client"
+                command: npm i -g @sentry/cli --unsafe-perm
+            - run:
+                name: "Push image"
+                command: "bin/push-docker-backend-image.sh"
     resource_class: large
 
-  push_backend:
-    docker:
-      - image: cimg/gcp:2023.05
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: "Restore image"
-          command: |
-            docker load < ./build/moocfi-backend.tar.gz
-      - run:
-          name: "Install Sentry client"
-          command: npm i -g @sentry/cli --unsafe-perm
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-backend-image.sh"
-    resource_class: large
+  # push_backend:
+  #   docker:
+  #     - image: cimg/gcp:2023.05
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/project
+  #     - setup_remote_docker:
+  #         docker_layer_caching: true
+  #     - run:
+  #         name: "Restore image"
+  #         command: |
+  #           docker load < ./build/moocfi-backend.tar.gz
+  #     - run:
+  #         name: "Install Sentry client"
+  #         command: npm i -g @sentry/cli --unsafe-perm
+  #     - run:
+  #         name: "Push image if on master/staging"
+  #         command: "bin/push-docker-backend-image.sh"
+  #   resource_class: large
 
   # build_auth:
   #   docker:
@@ -333,15 +333,15 @@ workflows:
       #    requires:
       #      - test_backend
       - build_backend
-      - push_backend:
-          requires:
-            - test_backend
-            - build_backend
-          filters:
-            branches:
-              only:
-                - master
-                - staging
+      # - push_backend:
+      #     requires:
+      #       - test_backend
+      #       - build_backend
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - staging
       # - build_auth
       - deploy_to_production:
           requires:
@@ -349,7 +349,7 @@ workflows:
             - test_backend
             #- upload_backend_coverage
             - build_backend
-            - push_backend
+            # - push_backend
             # - build_auth
             - code_style
           filters:
