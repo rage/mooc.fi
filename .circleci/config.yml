@@ -239,7 +239,7 @@ jobs:
           steps:
             - run:
                 name: "Install Sentry client"
-                command: npm i -g @sentry/cli --unsafe-perm
+                command: npm i --prefix=$HOME/.local -g @sentry/cli
             - run:
                 name: "Push image"
                 command: "bin/push-docker-backend-image.sh"
