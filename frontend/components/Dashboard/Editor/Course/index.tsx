@@ -180,7 +180,7 @@ function CourseEditor() {
         value={editorContextValue}
         methods={editorMethodContextValue}
       >
-        <EditorContainer<CourseFormValues>>
+        <EditorContainer>
           <CourseEditForm />
         </EditorContainer>
       </EditorContextProvider>

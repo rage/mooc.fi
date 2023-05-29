@@ -166,7 +166,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
         value={editorContextValue}
         methods={editorMethodContextValue}
       >
-        <EditorContainer<StudyModuleFormValues>>
+        <EditorContainer>
           <StudyModuleEditForm />
         </EditorContainer>
       </EditorContextProvider>
