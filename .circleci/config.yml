@@ -91,11 +91,7 @@ jobs:
           - backend-cache-{{ checksum "package-lock.json" }}
       - run:
           name: "Install dependencies"
-          command: npm ci
-      - save_cache:
-          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
-          paths:
-            - ~/.npm
+          command: npm ci --prefer-offline --no-audit
       - run:
           name: "Set environment"
           command: |
@@ -105,6 +101,10 @@ jobs:
           name: "Set up Prisma"
           command: |
             npm run generate
+      - save_cache:
+          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          paths:
+            - ~/.npm
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -313,8 +313,8 @@ jobs:
       - helm/install-helm-client:
           version: v3.4.2
       - run:
-          name: install envsubst
-          command: sudo apt-get install -qq -y gettext
+          name: Install envsubst
+          command: sudo apt-get update && sudo apt-get install -qq -y gettext
       - run:
           name: "Deploy"
           command: "bin/ci-update-deployments.sh"

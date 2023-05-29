@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --chown=node package.json /app/
 COPY --chown=node package-lock.json /app/
 
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit
 
 COPY --chown=node . /app
 

@@ -34,7 +34,7 @@ COPY --chown=node package-lock.json /app/
 COPY --chown=node patches /app/patches
 
 ARG BUILD_LIBRDKAFKA=0
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit
 # when node image incorporates alpine 3.18
 # RUN rm -rf /node_modules/node-rdkafka/deps
 
