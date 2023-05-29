@@ -43,8 +43,8 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
-          - dependency-cache-{{ checksum "frontend/package.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}
       - run:
           name: Install Docker Buildx
           command: |
@@ -59,7 +59,7 @@ jobs:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - save_cache:
-          key: dependency-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
+          key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           paths:
             - ~/.npm
             - ./frontend/.next/cache
@@ -80,14 +80,14 @@ jobs:
           command: md5sum patches/* > patches.hash
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
-          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
-          - dependency-cache-{{ checksum "package-lock.json" }}
+          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "package-lock.json" }}
       - run:
           name: "Install dependencies"
           command: npm ci
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
             - ~/.npm
       - run:
@@ -190,6 +190,7 @@ jobs:
   #           echo "Not implemented yet"
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
+  
   build_backend:
     docker:
       - image: cimg/gcp:2023.05
@@ -204,9 +205,9 @@ jobs:
           command: md5sum backend/patches/* > backend/patches.hash
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
-          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
-          - dependency-cache-{{ checksum "backend/package-lock.json" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}
       - run:
           name: Install Docker Buildx
           command: |
@@ -221,7 +222,7 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - save_cache:
-          key: dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
             - ~/.npm
       - run:
