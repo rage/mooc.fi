@@ -42,9 +42,12 @@ jobs:
 
   build_frontend:
     executor: cloudsdk
+    environment:
+      DOCKER_BUILDKIT: 1
     steps:
       - checkout
       - setup_remote_docker:
+          version: "20.10.18"
           docker_layer_caching: true
       - restore_cache:
           keys:
@@ -193,9 +196,12 @@ jobs:
   # - only that the node version is different in backend image?
   build_backend:
     executor: cloudsdk_node
+    environment:
+      DOCKER_BUILDKIT: 1
     steps:
       - checkout
       - setup_remote_docker:
+          version: "20.10.18"
           docker_layer_caching: true
       - jq/install
       - docker/install-docker-tools
@@ -207,6 +213,9 @@ jobs:
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
+          name: "Check docker version"
+          command: docker -v
       - run:
           name: "Setup Docker buildx"
           command: |
