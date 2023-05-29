@@ -45,11 +45,22 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
+          version: "20.10.18"
           docker_layer_caching: true
       - restore_cache:
           keys:
           - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
           - dependency-cache-{{ checksum "frontend/package.json" }}
+      - run:
+          name: Install Docker Buildx
+          command: |
+            mkdir -vp ~/.docker/cli-plugins/
+            curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+            docker buildx version
+            export DOCKER_BUILDKIT=1
+            docker buildx create --name buildx-frontend --use
+            docker buildx install
       - run:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
@@ -190,9 +201,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
+          version: "20.10.18"
           docker_layer_caching: true
       - jq/install
-      - docker/install-docker-tools
+      # - docker/install-docker-tools
       - run:
           name: patch-package hash
           command: md5sum backend/patches/* > backend/patches.hash
@@ -201,6 +213,16 @@ jobs:
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
+          name: Install Docker Buildx
+          command: |
+            mkdir -vp ~/.docker/cli-plugins/
+            curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+            docker buildx version
+            export DOCKER_BUILDKIT=1
+            docker buildx create --name buildx-backend --use
+            docker buildx install
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"

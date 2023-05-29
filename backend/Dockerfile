@@ -1,7 +1,7 @@
 FROM node:18.16.0-alpine
 
 RUN apk update && \
-    apk --no-cache add \
+    apk add \
       build-base \
       libpng-dev \
       postgresql-client \
@@ -18,9 +18,10 @@ RUN wget https://github.com/edenhill/librdkafka/archive/v2.1.1.tar.gz  -O - | ta
   && make && make install \
   && cd ..
 # when node image incorporates alpine 3.18
-#  RUN apk --no-cache add \
+#  RUN apk  add \
 #   librdkafka=2.1.1-r0 \
 #   librdkafka-dev=2.1.1-r0
+RUN rm -rf /var/cache/apk/*
 
 RUN mkdir -p /app && chown -R node /app
 
