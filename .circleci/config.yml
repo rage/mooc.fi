@@ -52,11 +52,13 @@ jobs:
           - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
           - dependency-cache-{{ checksum "frontend/package.json" }}
       - run:
-          name: "Enable BuildKit"
-          command: export DOCKER_BUILDKIT=1
-      - run:
-          name: "Setup Docker buildx"
+          name: Install Docker Buildx
           command: |
+            mkdir -vp ~/.docker/cli-plugins/
+            curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+            docker buildx version
+            export DOCKER_BUILDKIT=1
             docker buildx create --name buildx-frontend --use
             docker buildx install
       - run:
@@ -212,14 +214,13 @@ jobs:
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}
       - run:
-          name: "Check docker version"
-          command: docker -v
-      - run:
-          name: "Enable BuildKit"
-          command: export DOCKER_BUILDKIT=1
-      - run:
-          name: "Setup Docker buildx"
+          name: Install Docker Buildx
           command: |
+            mkdir -vp ~/.docker/cli-plugins/
+            curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+            docker buildx version
+            export DOCKER_BUILDKIT=1
             docker buildx create --name buildx-backend --use
             docker buildx install
       - run:
