@@ -42,8 +42,6 @@ jobs:
 
   build_frontend:
     executor: cloudsdk
-    environment:
-      DOCKER_BUILDKIT: 1
     steps:
       - checkout
       - setup_remote_docker:
@@ -54,10 +52,12 @@ jobs:
           - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
           - dependency-cache-{{ checksum "frontend/package.json" }}
       - run:
+          name: "Enable BuildKit"
+          command: export DOCKER_BUILDKIT=1
+      - run:
           name: "Setup Docker buildx"
           command: |
-            docker context create buildx-frontend
-            docker buildx create --use --name buildx-frontend
+            docker buildx create --name buildx-frontend --use
             docker buildx install
       - run:
           name: "Build frontend image"
@@ -196,8 +196,6 @@ jobs:
   # - only that the node version is different in backend image?
   build_backend:
     executor: cloudsdk_node
-    environment:
-      DOCKER_BUILDKIT: 1
     steps:
       - checkout
       - setup_remote_docker:
@@ -217,10 +215,12 @@ jobs:
           name: "Check docker version"
           command: docker -v
       - run:
+          name: "Enable BuildKit"
+          command: export DOCKER_BUILDKIT=1
+      - run:
           name: "Setup Docker buildx"
           command: |
-            docker context create buildx-backend
-            docker buildx create --use --name buildx-backend
+            docker buildx create --name buildx-backend --use
             docker buildx install
       - run:
           name: "Build backend image"
