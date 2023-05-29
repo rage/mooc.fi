@@ -225,19 +225,19 @@ jobs:
           key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
             - ~/.npm
-      - run:
-          name: "Persist image"
-          command: |
-            REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
-            TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-            mkdir -p ~/project/build
-            docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
       - when:
           condition:
             or:
               - equal: [ master, << pipeline.git.branch >> ]
               - equal: [ staging, << pipeline.git.branch >> ]
           steps:
+            - run:
+                name: "Persist image"
+                command: |
+                  REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
+                  TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
+                  mkdir -p ~/project/build
+                  docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
             - persist_to_workspace:
                 root: ~/project
                 paths:
