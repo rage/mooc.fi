@@ -12,7 +12,7 @@ RUN apk update && \
       bash \
       python3
 
-RUN apk --nocache add \
+RUN apk --no-cache add \
   librdkafka=2.1.1-r0 \
   librdkafka-dev=2.1.1-r0
 
