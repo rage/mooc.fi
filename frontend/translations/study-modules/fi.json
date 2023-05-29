@@ -4,7 +4,7 @@
   "redirectMessagePre": "Sinut ohjataan takaisin opintokokonaisuuksien listaan 5 sekunnin kuluessa - paina ",
   "redirectLinkText": "tästä",
   "redirectMessagePost": " siirtyäksesi heti.",
-  "editStudyModule": "Muokkaa opintokokonaisuutta {{name}}",
+  "editStudyModule": "Muokkaa opintokokonaisuutta",
   "newStudyModule": "Uusi opintokokonaisuus",
   "allStudyModules": "Kaikki opintokokonaisuudet",
   "validationRequired": "vaaditaan",

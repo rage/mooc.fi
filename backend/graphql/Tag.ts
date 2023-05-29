@@ -93,7 +93,7 @@ export const TagCreateInput = inputObjectType({
 export const TagUpsertInput = inputObjectType({
   name: "TagUpsertInput",
   definition(t) {
-    t.nonNull.id("id")
+    t.nonNull.string("id")
     t.list.nonNull.field("tag_translations", {
       type: "TagTranslationCreateOrUpdateInput",
     })

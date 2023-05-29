@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   helm: circleci/helm@2.0.1
-  docker: circleci/docker@1.7.0
+  docker: circleci/docker@2.2.0
   jq: circleci/jq@2.2.0
   node: circleci/node@5.1.0
 #  codecov: codecov/codecov@3.2.4
@@ -192,8 +192,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - jq/install
-      - docker/install-docker-tools:
-          docker-compose-version: 1.29.2
+      - docker/install-docker-tools
       - run:
           name: patch-package hash
           command: md5sum backend/patches/* > backend/patches.hash

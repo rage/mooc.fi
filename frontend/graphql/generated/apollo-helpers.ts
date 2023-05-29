@@ -166,6 +166,7 @@ export type CourseKeySpecifier = (
   | "exercise_completions_needed"
   | "exercises"
   | "handles_completions_for"
+  | "handles_settings_for"
   | "has_certificate"
   | "hidden"
   | "id"
@@ -224,6 +225,7 @@ export type CourseFieldPolicy = {
   exercise_completions_needed?: FieldPolicy<any> | FieldReadFunction<any>
   exercises?: FieldPolicy<any> | FieldReadFunction<any>
   handles_completions_for?: FieldPolicy<any> | FieldReadFunction<any>
+  handles_settings_for?: FieldPolicy<any> | FieldReadFunction<any>
   has_certificate?: FieldPolicy<any> | FieldReadFunction<any>
   hidden?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
