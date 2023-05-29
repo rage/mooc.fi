@@ -314,7 +314,7 @@ jobs:
           version: v3.4.2
       - run:
           name: install envsubst
-          command: apt-get install -qq -y gettext
+          command: sudo apt-get install -qq -y gettext
       - run:
           name: "Deploy"
           command: "bin/ci-update-deployments.sh"
