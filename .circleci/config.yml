@@ -155,10 +155,10 @@ jobs:
       - store_artifacts:
           path: ./coverage/jest
           destination: backend-tests
-      - persist_to_workspace:
-          root: ~/project/backend
-          paths:
-            - coverage
+      # - persist_to_workspace:
+      #     root: ~/project/backend
+      #     paths:
+      #       - coverage
       - run:
           name: "Upload coverage"
           command: |
@@ -232,11 +232,17 @@ jobs:
             TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
             mkdir -p ~/project/build
             docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - build
-            - backend/sourcemap
+      - when:
+          condition:
+            or:
+              - equal: [ master, << pipeline.git.branch >> ]
+              - equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - persist_to_workspace:
+                root: ~/project
+                paths:
+                  - build
+                  - backend/sourcemap
     resource_class: large
 
   push_backend:
