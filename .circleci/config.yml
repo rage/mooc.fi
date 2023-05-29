@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   helm: circleci/helm@2.0.1
-  docker: circleci/docker@2.2.0
   jq: circleci/jq@2.2.0
   node: circleci/node@5.1.0
 #  codecov: codecov/codecov@3.2.4
@@ -14,12 +13,6 @@ executors:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
-  cloudsdk_node:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
-  cloudsdk:
-    docker:
-      - image: google/cloud-sdk:latest
 
 jobs:
   code_style:
@@ -41,7 +34,8 @@ jobs:
           command: "bin/helm.sh"
 
   build_frontend:
-    executor: cloudsdk
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - checkout
       - setup_remote_docker:
@@ -49,8 +43,8 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
-          - dependency-cache-{{ checksum "frontend/package.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}
       - run:
           name: Install Docker Buildx
           command: |
@@ -65,13 +59,19 @@ jobs:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - save_cache:
-          key: dependency-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
+          key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           paths:
             - ~/.npm
             - ./frontend/.next/cache
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-frontend-image.sh"
+      - when:
+          condition:
+            or:
+              - equal: [ master, << pipeline.git.branch >> ]
+              - equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: "Push image"
+                command: "bin/push-docker-frontend-image.sh"
     resource_class: large
 
   prepare_backend_test:
@@ -86,14 +86,14 @@ jobs:
           command: md5sum patches/* > patches.hash
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
-          - dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
-          - dependency-cache-{{ checksum "package-lock.json" }}
+          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "package-lock.json" }}
       - run:
           name: "Install dependencies"
           command: npm ci
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
             - ~/.npm
       - run:
@@ -161,10 +161,10 @@ jobs:
       - store_artifacts:
           path: ./coverage/jest
           destination: backend-tests
-      - persist_to_workspace:
-          root: ~/project/backend
-          paths:
-            - coverage
+      # - persist_to_workspace:
+      #     root: ~/project/backend
+      #     paths:
+      #       - coverage
       - run:
           name: "Upload coverage"
           command: |
@@ -196,23 +196,24 @@ jobs:
   #           echo "Not implemented yet"
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
+  
   build_backend:
-    executor: cloudsdk_node
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - checkout
       - setup_remote_docker:
           version: "20.10.18"
           docker_layer_caching: true
       - jq/install
-      # - docker/install-docker-tools
       - run:
           name: patch-package hash
           command: md5sum backend/patches/* > backend/patches.hash
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
-          - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
-          - dependency-cache-{{ checksum "backend/package-lock.json" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}
       - run:
           name: Install Docker Buildx
           command: |
@@ -227,38 +228,42 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - save_cache:
-          key: dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
             - ~/.npm
-      - run:
-          name: "Persist image"
-          command: |
-            REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
-            TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-            mkdir -p ~/project/build
-            docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - build
-            - backend/sourcemap
+      - when:
+          condition:
+            or:
+              - equal: [ master, << pipeline.git.branch >> ]
+              - equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: "Install Sentry client"
+                command: npm i -g @sentry/cli --unsafe-perm
+            - run:
+                name: "Push image"
+                command: "bin/push-docker-backend-image.sh"
     resource_class: large
 
-  push_backend:
-    executor: cloudsdk_node
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: "Restore image"
-          command: |
-            docker load < ./build/moocfi-backend.tar.gz
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-backend-image.sh"
-    resource_class: large
+  # push_backend:
+  #   docker:
+  #     - image: cimg/gcp:2023.05
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/project
+  #     - setup_remote_docker:
+  #         docker_layer_caching: true
+  #     - run:
+  #         name: "Restore image"
+  #         command: |
+  #           docker load < ./build/moocfi-backend.tar.gz
+  #     - run:
+  #         name: "Install Sentry client"
+  #         command: npm i -g @sentry/cli --unsafe-perm
+  #     - run:
+  #         name: "Push image if on master/staging"
+  #         command: "bin/push-docker-backend-image.sh"
+  #   resource_class: large
 
   # build_auth:
   #   docker:
@@ -299,7 +304,8 @@ jobs:
   #         name: "Push image if on master"
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
-    executor: cloudsdk
+    docker:
+      - image: cimg/gcp:2023.05
     steps:
       - checkout
       - setup_remote_docker:
@@ -327,15 +333,15 @@ workflows:
       #    requires:
       #      - test_backend
       - build_backend
-      - push_backend:
-          requires:
-            - test_backend
-            - build_backend
-          filters:
-            branches:
-              only:
-                - master
-                - staging
+      # - push_backend:
+      #     requires:
+      #       - test_backend
+      #       - build_backend
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - staging
       # - build_auth
       - deploy_to_production:
           requires:
@@ -343,7 +349,7 @@ workflows:
             - test_backend
             #- upload_backend_coverage
             - build_backend
-            - push_backend
+            # - push_backend
             # - build_auth
             - code_style
           filters:
