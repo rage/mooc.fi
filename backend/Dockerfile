@@ -1,8 +1,8 @@
-FROM node:18.16.0-buster
+FROM node:18.16.0-alpine
 
-RUN apt-get update \
-  && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add --no-cache build-base libpng-dev postgresql-client libpq redis git jq bash python3
+
 RUN wget https://github.com/edenhill/librdkafka/archive/v2.0.2.tar.gz  -O - | tar -xz \
   && cd librdkafka-2.0.2 \
   && ./configure --prefix=/usr \

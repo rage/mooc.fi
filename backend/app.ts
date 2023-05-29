@@ -28,8 +28,9 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
+const ctx: ServerContext = { prisma, logger, knex }
+
 const startApp = async () => {
-  const ctx: ServerContext = { prisma, logger, knex }
   const { httpServer } = await server(ctx)
 
   attachPrismaEvents(ctx)

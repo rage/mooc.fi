@@ -190,7 +190,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 19.03.13
           docker_layer_caching: true
       - jq/install
       - docker/install-docker-tools:
@@ -230,7 +229,6 @@ jobs:
       - attach_workspace:
           at: ~/project
       - setup_remote_docker:
-          version: 19.03.13
           docker_layer_caching: true
       - run:
           name: "Restore image"

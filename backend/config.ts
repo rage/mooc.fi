@@ -32,7 +32,7 @@ export const DATABASE_URL =
     ? "postgres://prisma:prisma@localhost:5678/testing"
     : process.env.DATABASE_URL
 
-const url = new URL(DATABASE_URL || "")
+const url = new URL((DATABASE_URL || "").replaceAll('"', ""))
 url.searchParams.delete("schema")
 
 export const DATABASE_URL_WITHOUT_SCHEMA = url.href
