@@ -83,7 +83,7 @@ function StudyModuleEditForm() {
   return (
     <>
       <DisableAutoComplete key="disableautocomplete" />
-      <FormSubtitle variant="h6" component="h3" align="center">
+      <FormSubtitle variant="h5" component="h3" align="center">
         {t("moduleDetailsTitle")}
       </FormSubtitle>
       <ControlledHiddenField name="slug" defaultValue={watch("slug")} />

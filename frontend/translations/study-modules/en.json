@@ -4,7 +4,7 @@
   "redirectMessagePre": "You will be redirected back to the module list in 5 seconds - press ",
   "redirectLinkText": "here",
   "redirectMessagePost": " to go there now.",
-  "editStudyModule": "Edit study module {{name}}",
+  "editStudyModule": "Edit study module",
   "newStudyModule": "New study module",
   "allStudyModules": "All study modules",
   "validationRequired": "required",
