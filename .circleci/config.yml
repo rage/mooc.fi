@@ -51,6 +51,11 @@ jobs:
           - dependency-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
           - dependency-cache-{{ checksum "frontend/package.json" }}
       - run:
+          name: "Setup Docker buildx"
+          command: |
+            docker buildx create --use buildx-frontend
+            docker buildx install
+      - run:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - save_cache:
@@ -201,6 +206,11 @@ jobs:
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
           - dependency-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
+          name: "Setup Docker buildx"
+          command: |
+            docker buildx create --use buildx-backend
+            docker buildx install
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
