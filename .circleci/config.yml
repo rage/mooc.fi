@@ -53,6 +53,7 @@ jobs:
       - run:
           name: "Setup Docker buildx"
           command: |
+            docker context create buildx-frontend
             docker buildx create --use --name buildx-frontend
             docker buildx install
       - run:
@@ -209,6 +210,7 @@ jobs:
       - run:
           name: "Setup Docker buildx"
           command: |
+            docker context create buildx-backend
             docker buildx create --use --name buildx-backend
             docker buildx install
       - run:
