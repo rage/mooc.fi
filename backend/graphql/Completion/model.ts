@@ -49,42 +49,38 @@ export const Completion = objectType({
 
     t.field("completion_link", {
       type: "String",
-      resolve: async (parent, _, ctx) => {
-        if (!parent.course_id) {
+      resolve: async ({ course_id, completion_language }, _, ctx) => {
+        if (!course_id) {
           return null
         }
-        const link = (
-          await ctx.prisma.course
-            .findUnique({
-              where: { id: parent.course_id },
-            })
-            .open_university_registration_links({
-              where: {
-                ...(parent.completion_language &&
-                parent.completion_language !== "unknown"
-                  ? {
-                      language: parent.completion_language,
-                    }
-                  : {}),
-              },
-            })
-        )?.[0]
+        const links = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .open_university_registration_links({
+            where: {
+              ...(completion_language && completion_language !== "unknown"
+                ? {
+                    language: completion_language,
+                  }
+                : {}),
+            },
+          })
 
-        return link?.link ?? null
+        return links?.[0]?.link ?? null
       },
     })
 
     t.nonNull.field("registered", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        const registered =
-          (await ctx.prisma.completion
-            .findUnique({
-              where: { id: parent.id },
-            })
-            .completions_registered()) ?? []
+        const registered = await ctx.prisma.completion
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .completions_registered()
 
-        return registered.length > 0
+        return (registered ?? []).length > 0
       },
     })
 

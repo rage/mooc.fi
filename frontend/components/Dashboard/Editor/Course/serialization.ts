@@ -74,6 +74,7 @@ export const toCourseForm = ({
             ...omit(open_university_course_link, ["__typename", "id"]),
             _id: open_university_course_link?.id,
             link: open_university_course_link?.link ?? "",
+            language: course_translation.language ?? "",
             course_code: open_university_course_link?.course_code ?? "",
           },
           description: course_translation.description ?? "",

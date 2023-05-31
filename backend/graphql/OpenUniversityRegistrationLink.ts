@@ -79,13 +79,6 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
     t.crud.openUniversityRegistrationLinks({
       authorize: isAdmin,
     })
-    /*t.list.field("openUniversityRegistrationLinks", {
-      type: "open_university_registration_link",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.open_university_registration_link.findMany()
-      },
-    })*/
   },
 })
 
