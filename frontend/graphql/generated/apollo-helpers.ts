@@ -1099,6 +1099,7 @@ export type SubscriptionFieldPolicy = {
   userSearch?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type TagKeySpecifier = (
+  | "abbreviation"
   | "courses"
   | "created_at"
   | "description"
@@ -1113,6 +1114,7 @@ export type TagKeySpecifier = (
   | TagKeySpecifier
 )[]
 export type TagFieldPolicy = {
+  abbreviation?: FieldPolicy<any> | FieldReadFunction<any>
   courses?: FieldPolicy<any> | FieldReadFunction<any>
   created_at?: FieldPolicy<any> | FieldReadFunction<any>
   description?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1126,6 +1128,7 @@ export type TagFieldPolicy = {
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type TagTranslationKeySpecifier = (
+  | "abbreviation"
   | "created_at"
   | "description"
   | "language"
@@ -1136,6 +1139,7 @@ export type TagTranslationKeySpecifier = (
   | TagTranslationKeySpecifier
 )[]
 export type TagTranslationFieldPolicy = {
+  abbreviation?: FieldPolicy<any> | FieldReadFunction<any>
   created_at?: FieldPolicy<any> | FieldReadFunction<any>
   description?: FieldPolicy<any> | FieldReadFunction<any>
   language?: FieldPolicy<any> | FieldReadFunction<any>

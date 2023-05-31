@@ -96,7 +96,9 @@ export const CourseQueries = extendType({
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByWithRelationInput" }),
+        orderBy: arg({
+          type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
         search: stringArg(),
         hidden: booleanArg({ default: true }),

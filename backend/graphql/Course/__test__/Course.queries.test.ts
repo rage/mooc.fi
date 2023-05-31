@@ -429,7 +429,7 @@ const fullCourseQuery = gql`
 const coursesQuery = gql`
   query AllCourses(
     $language: String
-    $orderBy: CourseOrderByWithRelationInput
+    $orderBy: CourseOrderByWithRelationAndSearchRelevanceInput
     $search: String
     $hidden: Boolean
     $handledBy: String

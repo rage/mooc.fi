@@ -89,7 +89,9 @@ export const StudyModuleQueries = extendType({
     t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: arg({ type: "StudyModuleOrderByWithRelationInput" }),
+        orderBy: arg({
+          type: "StudyModuleOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
       },
       resolve: async (_, { orderBy, language }, ctx) => {

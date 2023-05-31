@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-05-29T13:48:40+03:00
+// Generated on 2023-05-30T16:53:58+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -65,6 +65,12 @@ export type AbEnrollmentCreateOrUpsertInput = {
   user_id: Scalars["ID"]["input"]
 }
 
+export type AbEnrollmentListRelationFilter = {
+  every?: InputMaybe<AbEnrollmentWhereInput>
+  none?: InputMaybe<AbEnrollmentWhereInput>
+  some?: InputMaybe<AbEnrollmentWhereInput>
+}
+
 export type AbEnrollmentOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -74,8 +80,32 @@ export type AbEnrollmentUser_idAb_study_idCompoundUniqueInput = {
   user_id: Scalars["String"]["input"]
 }
 
+export type AbEnrollmentWhereInput = {
+  AND?: InputMaybe<Array<AbEnrollmentWhereInput>>
+  NOT?: InputMaybe<Array<AbEnrollmentWhereInput>>
+  OR?: InputMaybe<Array<AbEnrollmentWhereInput>>
+  ab_study?: InputMaybe<AbStudyWhereInput>
+  ab_study_id?: InputMaybe<UuidFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  group?: InputMaybe<IntNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type AbEnrollmentWhereUniqueInput = {
+  AND?: InputMaybe<Array<AbEnrollmentWhereInput>>
+  NOT?: InputMaybe<Array<AbEnrollmentWhereInput>>
+  OR?: InputMaybe<Array<AbEnrollmentWhereInput>>
+  ab_study?: InputMaybe<AbStudyWhereInput>
+  ab_study_id?: InputMaybe<UuidFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  group?: InputMaybe<IntNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
   user_id_ab_study_id?: InputMaybe<AbEnrollmentUser_idAb_study_idCompoundUniqueInput>
 }
 
@@ -104,6 +134,28 @@ export type AbStudyUpsertInput = {
   group_count: Scalars["Int"]["input"]
   id: Scalars["ID"]["input"]
   name: Scalars["String"]["input"]
+}
+
+export type AbStudyWhereInput = {
+  AND?: InputMaybe<Array<AbStudyWhereInput>>
+  NOT?: InputMaybe<Array<AbStudyWhereInput>>
+  OR?: InputMaybe<Array<AbStudyWhereInput>>
+  ab_enrollments?: InputMaybe<AbEnrollmentListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  group_count?: InputMaybe<IntFilter>
+  id?: InputMaybe<UuidFilter>
+  name?: InputMaybe<StringNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type BoolFilter = {
+  equals?: InputMaybe<Scalars["Boolean"]["input"]>
+  not?: InputMaybe<NestedBoolFilter>
+}
+
+export type BoolNullableFilter = {
+  equals?: InputMaybe<Scalars["Boolean"]["input"]>
+  not?: InputMaybe<NestedBoolNullableFilter>
 }
 
 export type CertificateAvailability = {
@@ -160,6 +212,12 @@ export type CompletionEdge = {
   node: Completion
 }
 
+export type CompletionListRelationFilter = {
+  every?: InputMaybe<CompletionWhereInput>
+  none?: InputMaybe<CompletionWhereInput>
+  some?: InputMaybe<CompletionWhereInput>
+}
+
 export type CompletionOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -181,12 +239,76 @@ export type CompletionRegistered = {
   user_id: Maybe<Scalars["String"]["output"]>
 }
 
+export type CompletionRegisteredListRelationFilter = {
+  every?: InputMaybe<CompletionRegisteredWhereInput>
+  none?: InputMaybe<CompletionRegisteredWhereInput>
+  some?: InputMaybe<CompletionRegisteredWhereInput>
+}
+
 export type CompletionRegisteredOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type CompletionRegisteredWhereInput = {
+  AND?: InputMaybe<Array<CompletionRegisteredWhereInput>>
+  NOT?: InputMaybe<Array<CompletionRegisteredWhereInput>>
+  OR?: InputMaybe<Array<CompletionRegisteredWhereInput>>
+  completion?: InputMaybe<CompletionWhereInput>
+  completion_id?: InputMaybe<UuidNullableFilter>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  real_student_number?: InputMaybe<StringFilter>
+  registration_date?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type CompletionRegisteredWhereUniqueInput = {
+  AND?: InputMaybe<Array<CompletionRegisteredWhereInput>>
+  NOT?: InputMaybe<Array<CompletionRegisteredWhereInput>>
+  OR?: InputMaybe<Array<CompletionRegisteredWhereInput>>
+  completion?: InputMaybe<CompletionWhereInput>
+  completion_id?: InputMaybe<UuidNullableFilter>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  real_student_number?: InputMaybe<StringFilter>
+  registration_date?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
+export type CompletionWhereInput = {
+  AND?: InputMaybe<Array<CompletionWhereInput>>
+  NOT?: InputMaybe<Array<CompletionWhereInput>>
+  OR?: InputMaybe<Array<CompletionWhereInput>>
+  certificate_id?: InputMaybe<StringNullableFilter>
+  completion_date?: InputMaybe<DateTimeNullableFilter>
+  completion_language?: InputMaybe<StringNullableFilter>
+  completion_registration_attempt_date?: InputMaybe<DateTimeNullableFilter>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  eligible_for_ects?: InputMaybe<BoolNullableFilter>
+  email?: InputMaybe<StringFilter>
+  grade?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  student_number?: InputMaybe<StringNullableFilter>
+  tier?: InputMaybe<IntNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+  user_upstream_id?: InputMaybe<IntNullableFilter>
 }
 
 export type Course = {
@@ -339,6 +461,12 @@ export type CourseAliasCreateInput = {
   course_code: Scalars["String"]["input"]
 }
 
+export type CourseAliasListRelationFilter = {
+  every?: InputMaybe<CourseAliasWhereInput>
+  none?: InputMaybe<CourseAliasWhereInput>
+  some?: InputMaybe<CourseAliasWhereInput>
+}
+
 export type CourseAliasOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -349,9 +477,28 @@ export type CourseAliasUpsertInput = {
   id?: InputMaybe<Scalars["ID"]["input"]>
 }
 
+export type CourseAliasWhereInput = {
+  AND?: InputMaybe<Array<CourseAliasWhereInput>>
+  NOT?: InputMaybe<Array<CourseAliasWhereInput>>
+  OR?: InputMaybe<Array<CourseAliasWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_code?: InputMaybe<StringFilter>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type CourseAliasWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseAliasWhereInput>>
+  NOT?: InputMaybe<Array<CourseAliasWhereInput>>
+  OR?: InputMaybe<Array<CourseAliasWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
   course_code?: InputMaybe<Scalars["String"]["input"]>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type CourseCreateArg = {
@@ -400,6 +547,12 @@ export type CourseCreateArg = {
   >
 }
 
+export type CourseListRelationFilter = {
+  every?: InputMaybe<CourseWhereInput>
+  none?: InputMaybe<CourseWhereInput>
+  some?: InputMaybe<CourseWhereInput>
+}
+
 export type CourseOrderByInput = {
   created_at?: InputMaybe<SortOrder>
   ects?: InputMaybe<SortOrder>
@@ -423,18 +576,44 @@ export type CourseOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type CourseOrderByWithRelationInput = {
+export enum CourseOrderByRelevanceFieldEnum {
+  completion_email_id = "completion_email_id",
+  completions_handled_by_id = "completions_handled_by_id",
+  course_stats_email_id = "course_stats_email_id",
+  ects = "ects",
+  end_date = "end_date",
+  id = "id",
+  inherit_settings_from_id = "inherit_settings_from_id",
+  language = "language",
+  name = "name",
+  owner_organization_id = "owner_organization_id",
+  photo_id = "photo_id",
+  slug = "slug",
+  start_date = "start_date",
+  support_email = "support_email",
+  teacher_in_charge_email = "teacher_in_charge_email",
+  teacher_in_charge_name = "teacher_in_charge_name",
+}
+
+export type CourseOrderByRelevanceInput = {
+  fields: CourseOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type CourseOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<CourseOrderByRelevanceInput>
   automatic_completions?: InputMaybe<SortOrder>
   automatic_completions_eligible_for_ects?: InputMaybe<SortOrder>
-  completion_email?: InputMaybe<EmailTemplateOrderByWithRelationInput>
+  completion_email?: InputMaybe<EmailTemplateOrderByWithRelationAndSearchRelevanceInput>
   completion_email_id?: InputMaybe<SortOrder>
   completions?: InputMaybe<CompletionOrderByRelationAggregateInput>
-  completions_handled_by?: InputMaybe<CourseOrderByWithRelationInput>
+  completions_handled_by?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
   completions_handled_by_id?: InputMaybe<SortOrder>
   completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
   course_aliases?: InputMaybe<CourseAliasOrderByRelationAggregateInput>
   course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
-  course_stats_email?: InputMaybe<EmailTemplateOrderByWithRelationInput>
+  course_stats_email?: InputMaybe<EmailTemplateOrderByWithRelationAndSearchRelevanceInput>
   course_stats_email_id?: InputMaybe<SortOrder>
   course_translations?: InputMaybe<CourseTranslationOrderByRelationAggregateInput>
   course_variants?: InputMaybe<CourseVariantOrderByRelationAggregateInput>
@@ -448,16 +627,16 @@ export type CourseOrderByWithRelationInput = {
   has_certificate?: InputMaybe<SortOrder>
   hidden?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
-  inherit_settings_from?: InputMaybe<CourseOrderByWithRelationInput>
+  inherit_settings_from?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
   inherit_settings_from_id?: InputMaybe<SortOrder>
   language?: InputMaybe<SortOrder>
   name?: InputMaybe<SortOrder>
   open_university_registration_links?: InputMaybe<OpenUniversityRegistrationLinkOrderByRelationAggregateInput>
   order?: InputMaybe<SortOrder>
-  owner_organization?: InputMaybe<OrganizationOrderByWithRelationInput>
+  owner_organization?: InputMaybe<OrganizationOrderByWithRelationAndSearchRelevanceInput>
   owner_organization_id?: InputMaybe<SortOrder>
   ownerships?: InputMaybe<CourseOwnershipOrderByRelationAggregateInput>
-  photo?: InputMaybe<ImageOrderByWithRelationInput>
+  photo?: InputMaybe<ImageOrderByWithRelationAndSearchRelevanceInput>
   photo_id?: InputMaybe<SortOrder>
   points_needed?: InputMaybe<SortOrder>
   promote?: InputMaybe<SortOrder>
@@ -496,12 +675,42 @@ export type CourseOrganization = {
   updated_at: Scalars["DateTime"]["output"]
 }
 
+export type CourseOrganizationListRelationFilter = {
+  every?: InputMaybe<CourseOrganizationWhereInput>
+  none?: InputMaybe<CourseOrganizationWhereInput>
+  some?: InputMaybe<CourseOrganizationWhereInput>
+}
+
 export type CourseOrganizationOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type CourseOrganizationWhereInput = {
+  AND?: InputMaybe<Array<CourseOrganizationWhereInput>>
+  NOT?: InputMaybe<Array<CourseOrganizationWhereInput>>
+  OR?: InputMaybe<Array<CourseOrganizationWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  creator?: InputMaybe<BoolNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type CourseOrganizationWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseOrganizationWhereInput>>
+  NOT?: InputMaybe<Array<CourseOrganizationWhereInput>>
+  OR?: InputMaybe<Array<CourseOrganizationWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  creator?: InputMaybe<BoolNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type CourseOwnership = {
@@ -515,6 +724,12 @@ export type CourseOwnership = {
   user_id: Maybe<Scalars["String"]["output"]>
 }
 
+export type CourseOwnershipListRelationFilter = {
+  every?: InputMaybe<CourseOwnershipWhereInput>
+  none?: InputMaybe<CourseOwnershipWhereInput>
+  some?: InputMaybe<CourseOwnershipWhereInput>
+}
+
 export type CourseOwnershipOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -524,8 +739,30 @@ export type CourseOwnershipUser_idCourse_idCompoundUniqueInput = {
   user_id: Scalars["String"]["input"]
 }
 
+export type CourseOwnershipWhereInput = {
+  AND?: InputMaybe<Array<CourseOwnershipWhereInput>>
+  NOT?: InputMaybe<Array<CourseOwnershipWhereInput>>
+  OR?: InputMaybe<Array<CourseOwnershipWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type CourseOwnershipWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseOwnershipWhereInput>>
+  NOT?: InputMaybe<Array<CourseOwnershipWhereInput>>
+  OR?: InputMaybe<Array<CourseOwnershipWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
   user_id_course_id?: InputMaybe<CourseOwnershipUser_idCourse_idCompoundUniqueInput>
 }
 
@@ -540,6 +777,12 @@ export type CourseStatsSubscription = {
   user_id: Maybe<Scalars["String"]["output"]>
 }
 
+export type CourseStatsSubscriptionListRelationFilter = {
+  every?: InputMaybe<CourseStatsSubscriptionWhereInput>
+  none?: InputMaybe<CourseStatsSubscriptionWhereInput>
+  some?: InputMaybe<CourseStatsSubscriptionWhereInput>
+}
+
 export type CourseStatsSubscriptionOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -550,8 +793,30 @@ export type CourseStatsSubscriptionUser_idEmail_template_idCompoundUniqueInput =
     user_id: Scalars["String"]["input"]
   }
 
+export type CourseStatsSubscriptionWhereInput = {
+  AND?: InputMaybe<Array<CourseStatsSubscriptionWhereInput>>
+  NOT?: InputMaybe<Array<CourseStatsSubscriptionWhereInput>>
+  OR?: InputMaybe<Array<CourseStatsSubscriptionWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  email_template?: InputMaybe<EmailTemplateWhereInput>
+  email_template_id?: InputMaybe<UuidNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type CourseStatsSubscriptionWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseStatsSubscriptionWhereInput>>
+  NOT?: InputMaybe<Array<CourseStatsSubscriptionWhereInput>>
+  OR?: InputMaybe<Array<CourseStatsSubscriptionWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  email_template?: InputMaybe<EmailTemplateWhereInput>
+  email_template_id?: InputMaybe<UuidNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
   user_id_email_template_id?: InputMaybe<CourseStatsSubscriptionUser_idEmail_template_idCompoundUniqueInput>
 }
 
@@ -584,6 +849,12 @@ export type CourseTranslationCreateInput = {
   name: Scalars["String"]["input"]
 }
 
+export type CourseTranslationListRelationFilter = {
+  every?: InputMaybe<CourseTranslationWhereInput>
+  none?: InputMaybe<CourseTranslationWhereInput>
+  some?: InputMaybe<CourseTranslationWhereInput>
+}
+
 export type CourseTranslationOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -598,8 +869,36 @@ export type CourseTranslationUpsertInput = {
   name: Scalars["String"]["input"]
 }
 
+export type CourseTranslationWhereInput = {
+  AND?: InputMaybe<Array<CourseTranslationWhereInput>>
+  NOT?: InputMaybe<Array<CourseTranslationWhereInput>>
+  OR?: InputMaybe<Array<CourseTranslationWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringFilter>
+  id?: InputMaybe<UuidFilter>
+  instructions?: InputMaybe<StringNullableFilter>
+  language?: InputMaybe<StringFilter>
+  link?: InputMaybe<StringNullableFilter>
+  name?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type CourseTranslationWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseTranslationWhereInput>>
+  NOT?: InputMaybe<Array<CourseTranslationWhereInput>>
+  OR?: InputMaybe<Array<CourseTranslationWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  instructions?: InputMaybe<StringNullableFilter>
+  language?: InputMaybe<StringFilter>
+  link?: InputMaybe<StringNullableFilter>
+  name?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type CourseUpsertArg = {
@@ -669,6 +968,12 @@ export type CourseVariantCreateInput = {
   slug: Scalars["String"]["input"]
 }
 
+export type CourseVariantListRelationFilter = {
+  every?: InputMaybe<CourseVariantWhereInput>
+  none?: InputMaybe<CourseVariantWhereInput>
+  some?: InputMaybe<CourseVariantWhereInput>
+}
+
 export type CourseVariantOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -681,13 +986,182 @@ export type CourseVariantUpsertInput = {
   slug: Scalars["String"]["input"]
 }
 
+export type CourseVariantWhereInput = {
+  AND?: InputMaybe<Array<CourseVariantWhereInput>>
+  NOT?: InputMaybe<Array<CourseVariantWhereInput>>
+  OR?: InputMaybe<Array<CourseVariantWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  instructions?: InputMaybe<StringNullableFilter>
+  slug?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type CourseVariantWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseVariantWhereInput>>
+  NOT?: InputMaybe<Array<CourseVariantWhereInput>>
+  OR?: InputMaybe<Array<CourseVariantWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  instructions?: InputMaybe<StringNullableFilter>
+  slug?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type CourseWhereInput = {
+  AND?: InputMaybe<Array<CourseWhereInput>>
+  NOT?: InputMaybe<Array<CourseWhereInput>>
+  OR?: InputMaybe<Array<CourseWhereInput>>
+  automatic_completions?: InputMaybe<BoolNullableFilter>
+  automatic_completions_eligible_for_ects?: InputMaybe<BoolNullableFilter>
+  completion_email?: InputMaybe<EmailTemplateWhereInput>
+  completion_email_id?: InputMaybe<UuidNullableFilter>
+  completions?: InputMaybe<CompletionListRelationFilter>
+  completions_handled_by?: InputMaybe<CourseWhereInput>
+  completions_handled_by_id?: InputMaybe<UuidNullableFilter>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  course_aliases?: InputMaybe<CourseAliasListRelationFilter>
+  course_organizations?: InputMaybe<CourseOrganizationListRelationFilter>
+  course_stats_email?: InputMaybe<EmailTemplateWhereInput>
+  course_stats_email_id?: InputMaybe<UuidNullableFilter>
+  course_translations?: InputMaybe<CourseTranslationListRelationFilter>
+  course_variants?: InputMaybe<CourseVariantListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  ects?: InputMaybe<StringNullableFilter>
+  end_date?: InputMaybe<StringNullableFilter>
+  exercise_completions_needed?: InputMaybe<IntNullableFilter>
+  exercises?: InputMaybe<ExerciseListRelationFilter>
+  handles_completions_for?: InputMaybe<CourseListRelationFilter>
+  handles_settings_for?: InputMaybe<CourseListRelationFilter>
+  has_certificate?: InputMaybe<BoolNullableFilter>
+  hidden?: InputMaybe<BoolNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  inherit_settings_from?: InputMaybe<CourseWhereInput>
+  inherit_settings_from_id?: InputMaybe<UuidNullableFilter>
+  language?: InputMaybe<StringNullableFilter>
+  name?: InputMaybe<StringFilter>
+  open_university_registration_links?: InputMaybe<OpenUniversityRegistrationLinkListRelationFilter>
+  order?: InputMaybe<IntNullableFilter>
+  owner_organization?: InputMaybe<OrganizationWhereInput>
+  owner_organization_id?: InputMaybe<UuidNullableFilter>
+  ownerships?: InputMaybe<CourseOwnershipListRelationFilter>
+  photo?: InputMaybe<ImageWhereInput>
+  photo_id?: InputMaybe<UuidNullableFilter>
+  points_needed?: InputMaybe<IntNullableFilter>
+  promote?: InputMaybe<BoolNullableFilter>
+  services?: InputMaybe<ServiceListRelationFilter>
+  slug?: InputMaybe<StringFilter>
+  start_date?: InputMaybe<StringFilter>
+  start_point?: InputMaybe<BoolNullableFilter>
+  status?: InputMaybe<EnumCourseStatusNullableFilter>
+  stored_data?: InputMaybe<StoredDataListRelationFilter>
+  study_module_order?: InputMaybe<IntNullableFilter>
+  study_module_start_point?: InputMaybe<BoolNullableFilter>
+  study_modules?: InputMaybe<StudyModuleListRelationFilter>
+  support_email?: InputMaybe<StringNullableFilter>
+  tags?: InputMaybe<TagListRelationFilter>
+  teacher_in_charge_email?: InputMaybe<StringFilter>
+  teacher_in_charge_name?: InputMaybe<StringFilter>
+  tier?: InputMaybe<IntNullableFilter>
+  triggered_automatically_email?: InputMaybe<EmailTemplateListRelationFilter>
+  upcoming_active_link?: InputMaybe<BoolNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user_course_progresses?: InputMaybe<UserCourseProgressListRelationFilter>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
+  user_course_settings?: InputMaybe<UserCourseSettingListRelationFilter>
+  user_course_settings_visibilities?: InputMaybe<UserCourseSettingsVisibilityListRelationFilter>
 }
 
 export type CourseWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseWhereInput>>
+  NOT?: InputMaybe<Array<CourseWhereInput>>
+  OR?: InputMaybe<Array<CourseWhereInput>>
+  automatic_completions?: InputMaybe<BoolNullableFilter>
+  automatic_completions_eligible_for_ects?: InputMaybe<BoolNullableFilter>
+  completion_email?: InputMaybe<EmailTemplateWhereInput>
+  completion_email_id?: InputMaybe<UuidNullableFilter>
+  completions?: InputMaybe<CompletionListRelationFilter>
+  completions_handled_by?: InputMaybe<CourseWhereInput>
+  completions_handled_by_id?: InputMaybe<UuidNullableFilter>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  course_aliases?: InputMaybe<CourseAliasListRelationFilter>
+  course_organizations?: InputMaybe<CourseOrganizationListRelationFilter>
+  course_stats_email?: InputMaybe<EmailTemplateWhereInput>
+  course_stats_email_id?: InputMaybe<UuidNullableFilter>
+  course_translations?: InputMaybe<CourseTranslationListRelationFilter>
+  course_variants?: InputMaybe<CourseVariantListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  ects?: InputMaybe<StringNullableFilter>
+  end_date?: InputMaybe<StringNullableFilter>
+  exercise_completions_needed?: InputMaybe<IntNullableFilter>
+  exercises?: InputMaybe<ExerciseListRelationFilter>
+  handles_completions_for?: InputMaybe<CourseListRelationFilter>
+  handles_settings_for?: InputMaybe<CourseListRelationFilter>
+  has_certificate?: InputMaybe<BoolNullableFilter>
+  hidden?: InputMaybe<BoolNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  inherit_settings_from?: InputMaybe<CourseWhereInput>
+  inherit_settings_from_id?: InputMaybe<UuidNullableFilter>
+  language?: InputMaybe<StringNullableFilter>
+  name?: InputMaybe<StringFilter>
+  open_university_registration_links?: InputMaybe<OpenUniversityRegistrationLinkListRelationFilter>
+  order?: InputMaybe<IntNullableFilter>
+  owner_organization?: InputMaybe<OrganizationWhereInput>
+  owner_organization_id?: InputMaybe<UuidNullableFilter>
+  ownerships?: InputMaybe<CourseOwnershipListRelationFilter>
+  photo?: InputMaybe<ImageWhereInput>
+  photo_id?: InputMaybe<UuidNullableFilter>
+  points_needed?: InputMaybe<IntNullableFilter>
+  promote?: InputMaybe<BoolNullableFilter>
+  services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<Scalars["String"]["input"]>
+  start_date?: InputMaybe<StringFilter>
+  start_point?: InputMaybe<BoolNullableFilter>
+  status?: InputMaybe<EnumCourseStatusNullableFilter>
+  stored_data?: InputMaybe<StoredDataListRelationFilter>
+  study_module_order?: InputMaybe<IntNullableFilter>
+  study_module_start_point?: InputMaybe<BoolNullableFilter>
+  study_modules?: InputMaybe<StudyModuleListRelationFilter>
+  support_email?: InputMaybe<StringNullableFilter>
+  tags?: InputMaybe<TagListRelationFilter>
+  teacher_in_charge_email?: InputMaybe<StringFilter>
+  teacher_in_charge_name?: InputMaybe<StringFilter>
+  tier?: InputMaybe<IntNullableFilter>
+  triggered_automatically_email?: InputMaybe<EmailTemplateListRelationFilter>
+  upcoming_active_link?: InputMaybe<BoolNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user_course_progresses?: InputMaybe<UserCourseProgressListRelationFilter>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
+  user_course_settings?: InputMaybe<UserCourseSettingListRelationFilter>
+  user_course_settings_visibilities?: InputMaybe<UserCourseSettingsVisibilityListRelationFilter>
+}
+
+export type DateTimeFilter = {
+  equals?: InputMaybe<Scalars["DateTime"]["input"]>
+  gt?: InputMaybe<Scalars["DateTime"]["input"]>
+  gte?: InputMaybe<Scalars["DateTime"]["input"]>
+  in?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+  lt?: InputMaybe<Scalars["DateTime"]["input"]>
+  lte?: InputMaybe<Scalars["DateTime"]["input"]>
+  not?: InputMaybe<NestedDateTimeFilter>
+  notIn?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+}
+
+export type DateTimeNullableFilter = {
+  equals?: InputMaybe<Scalars["DateTime"]["input"]>
+  gt?: InputMaybe<Scalars["DateTime"]["input"]>
+  gte?: InputMaybe<Scalars["DateTime"]["input"]>
+  in?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+  lt?: InputMaybe<Scalars["DateTime"]["input"]>
+  lte?: InputMaybe<Scalars["DateTime"]["input"]>
+  not?: InputMaybe<NestedDateTimeNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
 }
 
 export type EmailDelivery = {
@@ -704,12 +1178,46 @@ export type EmailDelivery = {
   user_id: Maybe<Scalars["String"]["output"]>
 }
 
+export type EmailDeliveryListRelationFilter = {
+  every?: InputMaybe<EmailDeliveryWhereInput>
+  none?: InputMaybe<EmailDeliveryWhereInput>
+  some?: InputMaybe<EmailDeliveryWhereInput>
+}
+
 export type EmailDeliveryOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type EmailDeliveryWhereInput = {
+  AND?: InputMaybe<Array<EmailDeliveryWhereInput>>
+  NOT?: InputMaybe<Array<EmailDeliveryWhereInput>>
+  OR?: InputMaybe<Array<EmailDeliveryWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  email_template?: InputMaybe<EmailTemplateWhereInput>
+  email_template_id?: InputMaybe<UuidNullableFilter>
+  error?: InputMaybe<BoolFilter>
+  error_message?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  sent?: InputMaybe<BoolFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type EmailDeliveryWhereUniqueInput = {
+  AND?: InputMaybe<Array<EmailDeliveryWhereInput>>
+  NOT?: InputMaybe<Array<EmailDeliveryWhereInput>>
+  OR?: InputMaybe<Array<EmailDeliveryWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  email_template?: InputMaybe<EmailTemplateWhereInput>
+  email_template_id?: InputMaybe<UuidNullableFilter>
+  error?: InputMaybe<BoolFilter>
+  error_message?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  sent?: InputMaybe<BoolFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
 }
 
 export type EmailTemplate = {
@@ -749,11 +1257,35 @@ export type EmailTemplateemail_deliveriesArgs = {
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
 
+export type EmailTemplateListRelationFilter = {
+  every?: InputMaybe<EmailTemplateWhereInput>
+  none?: InputMaybe<EmailTemplateWhereInput>
+  some?: InputMaybe<EmailTemplateWhereInput>
+}
+
 export type EmailTemplateOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type EmailTemplateOrderByWithRelationInput = {
+export enum EmailTemplateOrderByRelevanceFieldEnum {
+  course_instance_language = "course_instance_language",
+  html_body = "html_body",
+  id = "id",
+  name = "name",
+  template_type = "template_type",
+  title = "title",
+  triggered_automatically_by_course_id = "triggered_automatically_by_course_id",
+  txt_body = "txt_body",
+}
+
+export type EmailTemplateOrderByRelevanceInput = {
+  fields: EmailTemplateOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type EmailTemplateOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<EmailTemplateOrderByRelevanceInput>
   course_instance_language?: InputMaybe<SortOrder>
   course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionOrderByRelationAggregateInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
@@ -767,10 +1299,47 @@ export type EmailTemplateOrderByWithRelationInput = {
   stats_courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   template_type?: InputMaybe<SortOrder>
   title?: InputMaybe<SortOrder>
-  triggered_automatically_by_course?: InputMaybe<CourseOrderByWithRelationInput>
+  triggered_automatically_by_course?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
   triggered_automatically_by_course_id?: InputMaybe<SortOrder>
   txt_body?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
+}
+
+export type EmailTemplateWhereInput = {
+  AND?: InputMaybe<Array<EmailTemplateWhereInput>>
+  NOT?: InputMaybe<Array<EmailTemplateWhereInput>>
+  OR?: InputMaybe<Array<EmailTemplateWhereInput>>
+  course_instance_language?: InputMaybe<StringNullableFilter>
+  course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionListRelationFilter>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  email_deliveries?: InputMaybe<EmailDeliveryListRelationFilter>
+  exercise_completions_threshold?: InputMaybe<IntNullableFilter>
+  html_body?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  name?: InputMaybe<StringNullableFilter>
+  points_threshold?: InputMaybe<IntNullableFilter>
+  stats_courses?: InputMaybe<CourseListRelationFilter>
+  template_type?: InputMaybe<StringNullableFilter>
+  title?: InputMaybe<StringNullableFilter>
+  triggered_automatically_by_course?: InputMaybe<CourseWhereInput>
+  triggered_automatically_by_course_id?: InputMaybe<UuidNullableFilter>
+  txt_body?: InputMaybe<StringNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type EnumCourseStatusNullableFilter = {
+  equals?: InputMaybe<CourseStatus>
+  in?: InputMaybe<Array<CourseStatus>>
+  not?: InputMaybe<NestedEnumCourseStatusNullableFilter>
+  notIn?: InputMaybe<Array<CourseStatus>>
+}
+
+export type EnumOrganizationRoleNullableFilter = {
+  equals?: InputMaybe<OrganizationRole>
+  in?: InputMaybe<Array<OrganizationRole>>
+  not?: InputMaybe<NestedEnumOrganizationRoleNullableFilter>
+  notIn?: InputMaybe<Array<OrganizationRole>>
 }
 
 export type Exercise = {
@@ -795,7 +1364,7 @@ export type Exercise = {
 export type Exerciseexercise_completionsArgs = {
   attempted?: InputMaybe<Scalars["Boolean"]["input"]>
   completed?: InputMaybe<Scalars["Boolean"]["input"]>
-  orderBy?: InputMaybe<ExerciseCompletionOrderByWithRelationInput>
+  orderBy?: InputMaybe<ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>
   user_id?: InputMaybe<Scalars["ID"]["input"]>
 }
 
@@ -823,6 +1392,12 @@ export type ExerciseCompletionexercise_completion_required_actionsArgs = {
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
 
+export type ExerciseCompletionListRelationFilter = {
+  every?: InputMaybe<ExerciseCompletionWhereInput>
+  none?: InputMaybe<ExerciseCompletionWhereInput>
+  some?: InputMaybe<ExerciseCompletionWhereInput>
+}
+
 export type ExerciseCompletionOrderByInput = {
   created_at?: InputMaybe<SortOrder>
   exercise_id?: InputMaybe<SortOrder>
@@ -837,11 +1412,24 @@ export type ExerciseCompletionOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type ExerciseCompletionOrderByWithRelationInput = {
+export enum ExerciseCompletionOrderByRelevanceFieldEnum {
+  exercise_id = "exercise_id",
+  id = "id",
+  user_id = "user_id",
+}
+
+export type ExerciseCompletionOrderByRelevanceInput = {
+  fields: ExerciseCompletionOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<ExerciseCompletionOrderByRelevanceInput>
   attempted?: InputMaybe<SortOrder>
   completed?: InputMaybe<SortOrder>
   created_at?: InputMaybe<SortOrder>
-  exercise?: InputMaybe<ExerciseOrderByWithRelationInput>
+  exercise?: InputMaybe<ExerciseOrderByWithRelationAndSearchRelevanceInput>
   exercise_completion_required_actions?: InputMaybe<ExerciseCompletionRequiredActionOrderByRelationAggregateInput>
   exercise_id?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
@@ -849,7 +1437,7 @@ export type ExerciseCompletionOrderByWithRelationInput = {
   original_submission_date?: InputMaybe<SortOrder>
   timestamp?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
-  user?: InputMaybe<UserOrderByWithRelationInput>
+  user?: InputMaybe<UserOrderByWithRelationAndSearchRelevanceInput>
   user_id?: InputMaybe<SortOrder>
 }
 
@@ -861,24 +1449,101 @@ export type ExerciseCompletionRequiredAction = {
   value: Scalars["String"]["output"]
 }
 
+export type ExerciseCompletionRequiredActionListRelationFilter = {
+  every?: InputMaybe<ExerciseCompletionRequiredActionWhereInput>
+  none?: InputMaybe<ExerciseCompletionRequiredActionWhereInput>
+  some?: InputMaybe<ExerciseCompletionRequiredActionWhereInput>
+}
+
 export type ExerciseCompletionRequiredActionOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type ExerciseCompletionRequiredActionWhereInput = {
+  AND?: InputMaybe<Array<ExerciseCompletionRequiredActionWhereInput>>
+  NOT?: InputMaybe<Array<ExerciseCompletionRequiredActionWhereInput>>
+  OR?: InputMaybe<Array<ExerciseCompletionRequiredActionWhereInput>>
+  exercise_completion?: InputMaybe<ExerciseCompletionWhereInput>
+  exercise_completion_id?: InputMaybe<UuidNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  value?: InputMaybe<StringFilter>
+}
+
 export type ExerciseCompletionRequiredActionWhereUniqueInput = {
+  AND?: InputMaybe<Array<ExerciseCompletionRequiredActionWhereInput>>
+  NOT?: InputMaybe<Array<ExerciseCompletionRequiredActionWhereInput>>
+  OR?: InputMaybe<Array<ExerciseCompletionRequiredActionWhereInput>>
+  exercise_completion?: InputMaybe<ExerciseCompletionWhereInput>
+  exercise_completion_id?: InputMaybe<UuidNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  value?: InputMaybe<StringFilter>
+}
+
+export type ExerciseCompletionWhereInput = {
+  AND?: InputMaybe<Array<ExerciseCompletionWhereInput>>
+  NOT?: InputMaybe<Array<ExerciseCompletionWhereInput>>
+  OR?: InputMaybe<Array<ExerciseCompletionWhereInput>>
+  attempted?: InputMaybe<BoolNullableFilter>
+  completed?: InputMaybe<BoolNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  exercise?: InputMaybe<ExerciseWhereInput>
+  exercise_completion_required_actions?: InputMaybe<ExerciseCompletionRequiredActionListRelationFilter>
+  exercise_id?: InputMaybe<UuidNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  n_points?: InputMaybe<FloatNullableFilter>
+  original_submission_date?: InputMaybe<DateTimeNullableFilter>
+  timestamp?: InputMaybe<DateTimeFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
 }
 
 export type ExerciseCompletionWhereUniqueInput = {
+  AND?: InputMaybe<Array<ExerciseCompletionWhereInput>>
+  NOT?: InputMaybe<Array<ExerciseCompletionWhereInput>>
+  OR?: InputMaybe<Array<ExerciseCompletionWhereInput>>
+  attempted?: InputMaybe<BoolNullableFilter>
+  completed?: InputMaybe<BoolNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  exercise?: InputMaybe<ExerciseWhereInput>
+  exercise_completion_required_actions?: InputMaybe<ExerciseCompletionRequiredActionListRelationFilter>
+  exercise_id?: InputMaybe<UuidNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  n_points?: InputMaybe<FloatNullableFilter>
+  original_submission_date?: InputMaybe<DateTimeNullableFilter>
+  timestamp?: InputMaybe<DateTimeFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
+export type ExerciseListRelationFilter = {
+  every?: InputMaybe<ExerciseWhereInput>
+  none?: InputMaybe<ExerciseWhereInput>
+  some?: InputMaybe<ExerciseWhereInput>
 }
 
 export type ExerciseOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type ExerciseOrderByWithRelationInput = {
-  course?: InputMaybe<CourseOrderByWithRelationInput>
+export enum ExerciseOrderByRelevanceFieldEnum {
+  course_id = "course_id",
+  custom_id = "custom_id",
+  id = "id",
+  name = "name",
+  service_id = "service_id",
+}
+
+export type ExerciseOrderByRelevanceInput = {
+  fields: ExerciseOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type ExerciseOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<ExerciseOrderByRelevanceInput>
+  course?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
   course_id?: InputMaybe<SortOrder>
   created_at?: InputMaybe<SortOrder>
   custom_id?: InputMaybe<SortOrder>
@@ -889,7 +1554,7 @@ export type ExerciseOrderByWithRelationInput = {
   name?: InputMaybe<SortOrder>
   part?: InputMaybe<SortOrder>
   section?: InputMaybe<SortOrder>
-  service?: InputMaybe<ServiceOrderByWithRelationInput>
+  service?: InputMaybe<ServiceOrderByWithRelationAndSearchRelevanceInput>
   service_id?: InputMaybe<SortOrder>
   timestamp?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
@@ -909,8 +1574,57 @@ export type ExerciseProgress = {
   total: Maybe<Scalars["Float"]["output"]>
 }
 
+export type ExerciseWhereInput = {
+  AND?: InputMaybe<Array<ExerciseWhereInput>>
+  NOT?: InputMaybe<Array<ExerciseWhereInput>>
+  OR?: InputMaybe<Array<ExerciseWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  custom_id?: InputMaybe<StringFilter>
+  deleted?: InputMaybe<BoolNullableFilter>
+  exercise_completions?: InputMaybe<ExerciseCompletionListRelationFilter>
+  id?: InputMaybe<UuidFilter>
+  max_points?: InputMaybe<IntNullableFilter>
+  name?: InputMaybe<StringNullableFilter>
+  part?: InputMaybe<IntNullableFilter>
+  section?: InputMaybe<IntNullableFilter>
+  service?: InputMaybe<ServiceWhereInput>
+  service_id?: InputMaybe<UuidNullableFilter>
+  timestamp?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type ExerciseWhereUniqueInput = {
+  AND?: InputMaybe<Array<ExerciseWhereInput>>
+  NOT?: InputMaybe<Array<ExerciseWhereInput>>
+  OR?: InputMaybe<Array<ExerciseWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  custom_id?: InputMaybe<StringFilter>
+  deleted?: InputMaybe<BoolNullableFilter>
+  exercise_completions?: InputMaybe<ExerciseCompletionListRelationFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  max_points?: InputMaybe<IntNullableFilter>
+  name?: InputMaybe<StringNullableFilter>
+  part?: InputMaybe<IntNullableFilter>
+  section?: InputMaybe<IntNullableFilter>
+  service?: InputMaybe<ServiceWhereInput>
+  service_id?: InputMaybe<UuidNullableFilter>
+  timestamp?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type FloatNullableFilter = {
+  equals?: InputMaybe<Scalars["Float"]["input"]>
+  gt?: InputMaybe<Scalars["Float"]["input"]>
+  gte?: InputMaybe<Scalars["Float"]["input"]>
+  in?: InputMaybe<Array<Scalars["Float"]["input"]>>
+  lt?: InputMaybe<Scalars["Float"]["input"]>
+  lte?: InputMaybe<Scalars["Float"]["input"]>
+  not?: InputMaybe<NestedFloatNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["Float"]["input"]>>
 }
 
 export type Image = {
@@ -929,7 +1643,26 @@ export type Image = {
   updated_at: Scalars["DateTime"]["output"]
 }
 
-export type ImageOrderByWithRelationInput = {
+export enum ImageOrderByRelevanceFieldEnum {
+  compressed = "compressed",
+  compressed_mimetype = "compressed_mimetype",
+  encoding = "encoding",
+  id = "id",
+  name = "name",
+  original = "original",
+  original_mimetype = "original_mimetype",
+  uncompressed = "uncompressed",
+  uncompressed_mimetype = "uncompressed_mimetype",
+}
+
+export type ImageOrderByRelevanceInput = {
+  fields: ImageOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type ImageOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<ImageOrderByRelevanceInput>
   compressed?: InputMaybe<SortOrder>
   compressed_mimetype?: InputMaybe<SortOrder>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
@@ -943,6 +1676,63 @@ export type ImageOrderByWithRelationInput = {
   uncompressed?: InputMaybe<SortOrder>
   uncompressed_mimetype?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
+}
+
+export type ImageWhereInput = {
+  AND?: InputMaybe<Array<ImageWhereInput>>
+  NOT?: InputMaybe<Array<ImageWhereInput>>
+  OR?: InputMaybe<Array<ImageWhereInput>>
+  compressed?: InputMaybe<StringNullableFilter>
+  compressed_mimetype?: InputMaybe<StringNullableFilter>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  default?: InputMaybe<BoolNullableFilter>
+  encoding?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  name?: InputMaybe<StringNullableFilter>
+  original?: InputMaybe<StringFilter>
+  original_mimetype?: InputMaybe<StringFilter>
+  uncompressed?: InputMaybe<StringFilter>
+  uncompressed_mimetype?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type IntFilter = {
+  equals?: InputMaybe<Scalars["Int"]["input"]>
+  gt?: InputMaybe<Scalars["Int"]["input"]>
+  gte?: InputMaybe<Scalars["Int"]["input"]>
+  in?: InputMaybe<Array<Scalars["Int"]["input"]>>
+  lt?: InputMaybe<Scalars["Int"]["input"]>
+  lte?: InputMaybe<Scalars["Int"]["input"]>
+  not?: InputMaybe<NestedIntFilter>
+  notIn?: InputMaybe<Array<Scalars["Int"]["input"]>>
+}
+
+export type IntNullableFilter = {
+  equals?: InputMaybe<Scalars["Int"]["input"]>
+  gt?: InputMaybe<Scalars["Int"]["input"]>
+  gte?: InputMaybe<Scalars["Int"]["input"]>
+  in?: InputMaybe<Array<Scalars["Int"]["input"]>>
+  lt?: InputMaybe<Scalars["Int"]["input"]>
+  lte?: InputMaybe<Scalars["Int"]["input"]>
+  not?: InputMaybe<NestedIntNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["Int"]["input"]>>
+}
+
+export type JsonNullableFilter = {
+  array_contains?: InputMaybe<Scalars["Json"]["input"]>
+  array_ends_with?: InputMaybe<Scalars["Json"]["input"]>
+  array_starts_with?: InputMaybe<Scalars["Json"]["input"]>
+  equals?: InputMaybe<Scalars["Json"]["input"]>
+  gt?: InputMaybe<Scalars["Json"]["input"]>
+  gte?: InputMaybe<Scalars["Json"]["input"]>
+  lt?: InputMaybe<Scalars["Json"]["input"]>
+  lte?: InputMaybe<Scalars["Json"]["input"]>
+  not?: InputMaybe<Scalars["Json"]["input"]>
+  path?: InputMaybe<Array<Scalars["String"]["input"]>>
+  string_contains?: InputMaybe<Scalars["String"]["input"]>
+  string_ends_with?: InputMaybe<Scalars["String"]["input"]>
+  string_starts_with?: InputMaybe<Scalars["String"]["input"]>
 }
 
 export type ManualCompletionArg = {
@@ -1176,6 +1966,7 @@ export type MutationcreateTagArgs = {
 }
 
 export type MutationcreateTagTranslationArgs = {
+  abbreviation?: InputMaybe<Scalars["String"]["input"]>
   description?: InputMaybe<Scalars["String"]["input"]>
   language: Scalars["String"]["input"]
   name: Scalars["String"]["input"]
@@ -1329,6 +2120,7 @@ export type MutationupdateTagArgs = {
 }
 
 export type MutationupdateTagTranslationArgs = {
+  abbreviation?: InputMaybe<Scalars["String"]["input"]>
   description?: InputMaybe<Scalars["String"]["input"]>
   language: Scalars["String"]["input"]
   name: Scalars["String"]["input"]
@@ -1349,6 +2141,127 @@ export type MutationupdateUserOrganizationArgs = {
   role?: InputMaybe<OrganizationRole>
 }
 
+export type NestedBoolFilter = {
+  equals?: InputMaybe<Scalars["Boolean"]["input"]>
+  not?: InputMaybe<NestedBoolFilter>
+}
+
+export type NestedBoolNullableFilter = {
+  equals?: InputMaybe<Scalars["Boolean"]["input"]>
+  not?: InputMaybe<NestedBoolNullableFilter>
+}
+
+export type NestedDateTimeFilter = {
+  equals?: InputMaybe<Scalars["DateTime"]["input"]>
+  gt?: InputMaybe<Scalars["DateTime"]["input"]>
+  gte?: InputMaybe<Scalars["DateTime"]["input"]>
+  in?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+  lt?: InputMaybe<Scalars["DateTime"]["input"]>
+  lte?: InputMaybe<Scalars["DateTime"]["input"]>
+  not?: InputMaybe<NestedDateTimeFilter>
+  notIn?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+}
+
+export type NestedDateTimeNullableFilter = {
+  equals?: InputMaybe<Scalars["DateTime"]["input"]>
+  gt?: InputMaybe<Scalars["DateTime"]["input"]>
+  gte?: InputMaybe<Scalars["DateTime"]["input"]>
+  in?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+  lt?: InputMaybe<Scalars["DateTime"]["input"]>
+  lte?: InputMaybe<Scalars["DateTime"]["input"]>
+  not?: InputMaybe<NestedDateTimeNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["DateTime"]["input"]>>
+}
+
+export type NestedEnumCourseStatusNullableFilter = {
+  equals?: InputMaybe<CourseStatus>
+  in?: InputMaybe<Array<CourseStatus>>
+  not?: InputMaybe<NestedEnumCourseStatusNullableFilter>
+  notIn?: InputMaybe<Array<CourseStatus>>
+}
+
+export type NestedEnumOrganizationRoleNullableFilter = {
+  equals?: InputMaybe<OrganizationRole>
+  in?: InputMaybe<Array<OrganizationRole>>
+  not?: InputMaybe<NestedEnumOrganizationRoleNullableFilter>
+  notIn?: InputMaybe<Array<OrganizationRole>>
+}
+
+export type NestedFloatNullableFilter = {
+  equals?: InputMaybe<Scalars["Float"]["input"]>
+  gt?: InputMaybe<Scalars["Float"]["input"]>
+  gte?: InputMaybe<Scalars["Float"]["input"]>
+  in?: InputMaybe<Array<Scalars["Float"]["input"]>>
+  lt?: InputMaybe<Scalars["Float"]["input"]>
+  lte?: InputMaybe<Scalars["Float"]["input"]>
+  not?: InputMaybe<NestedFloatNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["Float"]["input"]>>
+}
+
+export type NestedIntFilter = {
+  equals?: InputMaybe<Scalars["Int"]["input"]>
+  gt?: InputMaybe<Scalars["Int"]["input"]>
+  gte?: InputMaybe<Scalars["Int"]["input"]>
+  in?: InputMaybe<Array<Scalars["Int"]["input"]>>
+  lt?: InputMaybe<Scalars["Int"]["input"]>
+  lte?: InputMaybe<Scalars["Int"]["input"]>
+  not?: InputMaybe<NestedIntFilter>
+  notIn?: InputMaybe<Array<Scalars["Int"]["input"]>>
+}
+
+export type NestedIntNullableFilter = {
+  equals?: InputMaybe<Scalars["Int"]["input"]>
+  gt?: InputMaybe<Scalars["Int"]["input"]>
+  gte?: InputMaybe<Scalars["Int"]["input"]>
+  in?: InputMaybe<Array<Scalars["Int"]["input"]>>
+  lt?: InputMaybe<Scalars["Int"]["input"]>
+  lte?: InputMaybe<Scalars["Int"]["input"]>
+  not?: InputMaybe<NestedIntNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["Int"]["input"]>>
+}
+
+export type NestedStringFilter = {
+  contains?: InputMaybe<Scalars["String"]["input"]>
+  endsWith?: InputMaybe<Scalars["String"]["input"]>
+  equals?: InputMaybe<Scalars["String"]["input"]>
+  gt?: InputMaybe<Scalars["String"]["input"]>
+  gte?: InputMaybe<Scalars["String"]["input"]>
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>
+  lt?: InputMaybe<Scalars["String"]["input"]>
+  lte?: InputMaybe<Scalars["String"]["input"]>
+  not?: InputMaybe<NestedStringFilter>
+  notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
+  startsWith?: InputMaybe<Scalars["String"]["input"]>
+}
+
+export type NestedStringNullableFilter = {
+  contains?: InputMaybe<Scalars["String"]["input"]>
+  endsWith?: InputMaybe<Scalars["String"]["input"]>
+  equals?: InputMaybe<Scalars["String"]["input"]>
+  gt?: InputMaybe<Scalars["String"]["input"]>
+  gte?: InputMaybe<Scalars["String"]["input"]>
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>
+  lt?: InputMaybe<Scalars["String"]["input"]>
+  lte?: InputMaybe<Scalars["String"]["input"]>
+  not?: InputMaybe<NestedStringNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
+  startsWith?: InputMaybe<Scalars["String"]["input"]>
+}
+
+export type NestedUuidFilter = {
+  equals?: InputMaybe<Scalars["String"]["input"]>
+  gt?: InputMaybe<Scalars["String"]["input"]>
+  gte?: InputMaybe<Scalars["String"]["input"]>
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>
+  lt?: InputMaybe<Scalars["String"]["input"]>
+  lte?: InputMaybe<Scalars["String"]["input"]>
+  not?: InputMaybe<NestedUuidFilter>
+  notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
+}
+
 export type NestedUuidNullableFilter = {
   equals?: InputMaybe<Scalars["String"]["input"]>
   gt?: InputMaybe<Scalars["String"]["input"]>
@@ -1358,6 +2271,7 @@ export type NestedUuidNullableFilter = {
   lte?: InputMaybe<Scalars["String"]["input"]>
   not?: InputMaybe<NestedUuidNullableFilter>
   notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
 }
 
 export type OpenUniversityRegistrationLink = {
@@ -1384,6 +2298,12 @@ export type OpenUniversityRegistrationLinkCreateInput = {
   tiers?: InputMaybe<Array<Scalars["Json"]["input"]>>
 }
 
+export type OpenUniversityRegistrationLinkListRelationFilter = {
+  every?: InputMaybe<OpenUniversityRegistrationLinkWhereInput>
+  none?: InputMaybe<OpenUniversityRegistrationLinkWhereInput>
+  some?: InputMaybe<OpenUniversityRegistrationLinkWhereInput>
+}
+
 export type OpenUniversityRegistrationLinkOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -1398,8 +2318,38 @@ export type OpenUniversityRegistrationLinkUpsertInput = {
   tiers?: InputMaybe<Array<Scalars["Json"]["input"]>>
 }
 
+export type OpenUniversityRegistrationLinkWhereInput = {
+  AND?: InputMaybe<Array<OpenUniversityRegistrationLinkWhereInput>>
+  NOT?: InputMaybe<Array<OpenUniversityRegistrationLinkWhereInput>>
+  OR?: InputMaybe<Array<OpenUniversityRegistrationLinkWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_code?: InputMaybe<StringFilter>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  language?: InputMaybe<StringFilter>
+  link?: InputMaybe<StringNullableFilter>
+  start_date?: InputMaybe<DateTimeNullableFilter>
+  stop_date?: InputMaybe<DateTimeNullableFilter>
+  tiers?: InputMaybe<JsonNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type OpenUniversityRegistrationLinkWhereUniqueInput = {
+  AND?: InputMaybe<Array<OpenUniversityRegistrationLinkWhereInput>>
+  NOT?: InputMaybe<Array<OpenUniversityRegistrationLinkWhereInput>>
+  OR?: InputMaybe<Array<OpenUniversityRegistrationLinkWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_code?: InputMaybe<StringFilter>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  language?: InputMaybe<StringFilter>
+  link?: InputMaybe<StringNullableFilter>
+  start_date?: InputMaybe<DateTimeNullableFilter>
+  stop_date?: InputMaybe<DateTimeNullableFilter>
+  tiers?: InputMaybe<JsonNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type Organization = {
@@ -1470,6 +2420,12 @@ export type Organizationverified_usersArgs = {
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
 
+export type OrganizationListRelationFilter = {
+  every?: InputMaybe<OrganizationWhereInput>
+  none?: InputMaybe<OrganizationWhereInput>
+  some?: InputMaybe<OrganizationWhereInput>
+}
+
 export type OrganizationOrderByInput = {
   contact_information?: InputMaybe<SortOrder>
   created_at?: InputMaybe<SortOrder>
@@ -1487,13 +2443,33 @@ export type OrganizationOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type OrganizationOrderByWithRelationInput = {
+export enum OrganizationOrderByRelevanceFieldEnum {
+  contact_information = "contact_information",
+  creator_id = "creator_id",
+  email = "email",
+  id = "id",
+  logo_content_type = "logo_content_type",
+  logo_file_name = "logo_file_name",
+  phone = "phone",
+  secret_key = "secret_key",
+  slug = "slug",
+  website = "website",
+}
+
+export type OrganizationOrderByRelevanceInput = {
+  fields: OrganizationOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type OrganizationOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<OrganizationOrderByRelevanceInput>
   completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
   contact_information?: InputMaybe<SortOrder>
   course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
-  creator?: InputMaybe<UserOrderByWithRelationInput>
+  creator?: InputMaybe<UserOrderByWithRelationAndSearchRelevanceInput>
   creator_id?: InputMaybe<SortOrder>
   disabled?: InputMaybe<SortOrder>
   email?: InputMaybe<SortOrder>
@@ -1537,18 +2513,112 @@ export type OrganizationTranslation = {
   updated_at: Scalars["DateTime"]["output"]
 }
 
+export type OrganizationTranslationListRelationFilter = {
+  every?: InputMaybe<OrganizationTranslationWhereInput>
+  none?: InputMaybe<OrganizationTranslationWhereInput>
+  some?: InputMaybe<OrganizationTranslationWhereInput>
+}
+
 export type OrganizationTranslationOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type OrganizationTranslationWhereInput = {
+  AND?: InputMaybe<Array<OrganizationTranslationWhereInput>>
+  NOT?: InputMaybe<Array<OrganizationTranslationWhereInput>>
+  OR?: InputMaybe<Array<OrganizationTranslationWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  disabled_reason?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  information?: InputMaybe<StringNullableFilter>
+  language?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type OrganizationTranslationWhereUniqueInput = {
+  AND?: InputMaybe<Array<OrganizationTranslationWhereInput>>
+  NOT?: InputMaybe<Array<OrganizationTranslationWhereInput>>
+  OR?: InputMaybe<Array<OrganizationTranslationWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  disabled_reason?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  information?: InputMaybe<StringNullableFilter>
+  language?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type OrganizationWhereInput = {
+  AND?: InputMaybe<Array<OrganizationWhereInput>>
+  NOT?: InputMaybe<Array<OrganizationWhereInput>>
+  OR?: InputMaybe<Array<OrganizationWhereInput>>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  contact_information?: InputMaybe<StringNullableFilter>
+  course_organizations?: InputMaybe<CourseOrganizationListRelationFilter>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  creator?: InputMaybe<UserWhereInput>
+  creator_id?: InputMaybe<UuidNullableFilter>
+  disabled?: InputMaybe<BoolNullableFilter>
+  email?: InputMaybe<StringNullableFilter>
+  hidden?: InputMaybe<BoolNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  logo_content_type?: InputMaybe<StringNullableFilter>
+  logo_file_name?: InputMaybe<StringNullableFilter>
+  logo_file_size?: InputMaybe<IntNullableFilter>
+  logo_updated_at?: InputMaybe<DateTimeNullableFilter>
+  organization_translations?: InputMaybe<OrganizationTranslationListRelationFilter>
+  phone?: InputMaybe<StringNullableFilter>
+  pinned?: InputMaybe<BoolNullableFilter>
+  secret_key?: InputMaybe<StringFilter>
+  slug?: InputMaybe<StringFilter>
+  tmc_created_at?: InputMaybe<DateTimeNullableFilter>
+  tmc_updated_at?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user_organizations?: InputMaybe<UserOrganizationListRelationFilter>
+  verified?: InputMaybe<BoolNullableFilter>
+  verified_at?: InputMaybe<DateTimeNullableFilter>
+  verified_users?: InputMaybe<VerifiedUserListRelationFilter>
+  website?: InputMaybe<StringNullableFilter>
 }
 
 export type OrganizationWhereUniqueInput = {
+  AND?: InputMaybe<Array<OrganizationWhereInput>>
+  NOT?: InputMaybe<Array<OrganizationWhereInput>>
+  OR?: InputMaybe<Array<OrganizationWhereInput>>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  contact_information?: InputMaybe<StringNullableFilter>
+  course_organizations?: InputMaybe<CourseOrganizationListRelationFilter>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  creator?: InputMaybe<UserWhereInput>
+  creator_id?: InputMaybe<UuidNullableFilter>
+  disabled?: InputMaybe<BoolNullableFilter>
+  email?: InputMaybe<StringNullableFilter>
+  hidden?: InputMaybe<BoolNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  logo_content_type?: InputMaybe<StringNullableFilter>
+  logo_file_name?: InputMaybe<StringNullableFilter>
+  logo_file_size?: InputMaybe<IntNullableFilter>
+  logo_updated_at?: InputMaybe<DateTimeNullableFilter>
+  organization_translations?: InputMaybe<OrganizationTranslationListRelationFilter>
+  phone?: InputMaybe<StringNullableFilter>
+  pinned?: InputMaybe<BoolNullableFilter>
   secret_key?: InputMaybe<Scalars["String"]["input"]>
   slug?: InputMaybe<Scalars["String"]["input"]>
+  tmc_created_at?: InputMaybe<DateTimeNullableFilter>
+  tmc_updated_at?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user_organizations?: InputMaybe<UserOrganizationListRelationFilter>
+  verified?: InputMaybe<BoolNullableFilter>
+  verified_at?: InputMaybe<DateTimeNullableFilter>
+  verified_users?: InputMaybe<VerifiedUserListRelationFilter>
+  website?: InputMaybe<StringNullableFilter>
 }
 
 /** PageInfo cursor, as defined in https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
@@ -1723,7 +2793,7 @@ export type QuerycoursesArgs = {
   handledBy?: InputMaybe<Scalars["String"]["input"]>
   hidden?: InputMaybe<Scalars["Boolean"]["input"]>
   language?: InputMaybe<Scalars["String"]["input"]>
-  orderBy?: InputMaybe<CourseOrderByWithRelationInput>
+  orderBy?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
   search?: InputMaybe<Scalars["String"]["input"]>
   status?: InputMaybe<Array<CourseStatus>>
   tag_types?: InputMaybe<Array<Scalars["String"]["input"]>>
@@ -1748,7 +2818,9 @@ export type QueryexerciseCompletionArgs = {
 
 export type QueryexerciseCompletionsArgs = {
   cursor?: InputMaybe<ExerciseCompletionWhereUniqueInput>
-  orderBy?: InputMaybe<Array<ExerciseCompletionOrderByWithRelationInput>>
+  orderBy?: InputMaybe<
+    Array<ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>
+  >
   skip?: InputMaybe<Scalars["Int"]["input"]>
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
@@ -1777,7 +2849,7 @@ export type QueryorganizationArgs = {
 export type QueryorganizationsArgs = {
   cursor?: InputMaybe<OrganizationWhereUniqueInput>
   hidden?: InputMaybe<Scalars["Boolean"]["input"]>
-  orderBy?: InputMaybe<OrganizationOrderByWithRelationInput>
+  orderBy?: InputMaybe<OrganizationOrderByWithRelationAndSearchRelevanceInput>
   skip?: InputMaybe<Scalars["Int"]["input"]>
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
@@ -1806,7 +2878,7 @@ export type Querystudy_module_existsArgs = {
 
 export type Querystudy_modulesArgs = {
   language?: InputMaybe<Scalars["String"]["input"]>
-  orderBy?: InputMaybe<StudyModuleOrderByWithRelationInput>
+  orderBy?: InputMaybe<StudyModuleOrderByWithRelationAndSearchRelevanceInput>
 }
 
 export type QuerytagsArgs = {
@@ -1964,11 +3036,30 @@ export type Serviceuser_course_service_progressesArgs = {
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
 
+export type ServiceListRelationFilter = {
+  every?: InputMaybe<ServiceWhereInput>
+  none?: InputMaybe<ServiceWhereInput>
+  some?: InputMaybe<ServiceWhereInput>
+}
+
 export type ServiceOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type ServiceOrderByWithRelationInput = {
+export enum ServiceOrderByRelevanceFieldEnum {
+  id = "id",
+  name = "name",
+  url = "url",
+}
+
+export type ServiceOrderByRelevanceInput = {
+  fields: ServiceOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type ServiceOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<ServiceOrderByRelevanceInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
   exercises?: InputMaybe<ExerciseOrderByRelationAggregateInput>
@@ -1979,8 +3070,32 @@ export type ServiceOrderByWithRelationInput = {
   user_course_service_progresses?: InputMaybe<UserCourseServiceProgressOrderByRelationAggregateInput>
 }
 
+export type ServiceWhereInput = {
+  AND?: InputMaybe<Array<ServiceWhereInput>>
+  NOT?: InputMaybe<Array<ServiceWhereInput>>
+  OR?: InputMaybe<Array<ServiceWhereInput>>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  exercises?: InputMaybe<ExerciseListRelationFilter>
+  id?: InputMaybe<UuidFilter>
+  name?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  url?: InputMaybe<StringFilter>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
+}
+
 export type ServiceWhereUniqueInput = {
+  AND?: InputMaybe<Array<ServiceWhereInput>>
+  NOT?: InputMaybe<Array<ServiceWhereInput>>
+  OR?: InputMaybe<Array<ServiceWhereInput>>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  exercises?: InputMaybe<ExerciseListRelationFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  name?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  url?: InputMaybe<StringFilter>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
 }
 
 export enum SortOrder {
@@ -1999,8 +3114,59 @@ export type StoredData = {
   user_id: Scalars["String"]["output"]
 }
 
+export type StoredDataListRelationFilter = {
+  every?: InputMaybe<StoredDataWhereInput>
+  none?: InputMaybe<StoredDataWhereInput>
+  some?: InputMaybe<StoredDataWhereInput>
+}
+
 export type StoredDataOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
+}
+
+export type StoredDataWhereInput = {
+  AND?: InputMaybe<Array<StoredDataWhereInput>>
+  NOT?: InputMaybe<Array<StoredDataWhereInput>>
+  OR?: InputMaybe<Array<StoredDataWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  data?: InputMaybe<StringNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidFilter>
+}
+
+export type StringFilter = {
+  contains?: InputMaybe<Scalars["String"]["input"]>
+  endsWith?: InputMaybe<Scalars["String"]["input"]>
+  equals?: InputMaybe<Scalars["String"]["input"]>
+  gt?: InputMaybe<Scalars["String"]["input"]>
+  gte?: InputMaybe<Scalars["String"]["input"]>
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>
+  lt?: InputMaybe<Scalars["String"]["input"]>
+  lte?: InputMaybe<Scalars["String"]["input"]>
+  mode?: InputMaybe<QueryMode>
+  not?: InputMaybe<NestedStringFilter>
+  notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
+  startsWith?: InputMaybe<Scalars["String"]["input"]>
+}
+
+export type StringNullableFilter = {
+  contains?: InputMaybe<Scalars["String"]["input"]>
+  endsWith?: InputMaybe<Scalars["String"]["input"]>
+  equals?: InputMaybe<Scalars["String"]["input"]>
+  gt?: InputMaybe<Scalars["String"]["input"]>
+  gte?: InputMaybe<Scalars["String"]["input"]>
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>
+  lt?: InputMaybe<Scalars["String"]["input"]>
+  lte?: InputMaybe<Scalars["String"]["input"]>
+  mode?: InputMaybe<QueryMode>
+  not?: InputMaybe<NestedStringNullableFilter>
+  notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
+  startsWith?: InputMaybe<Scalars["String"]["input"]>
 }
 
 export type StudyModule = {
@@ -2019,7 +3185,7 @@ export type StudyModule = {
 
 export type StudyModulecoursesArgs = {
   language?: InputMaybe<Scalars["String"]["input"]>
-  orderBy?: InputMaybe<CourseOrderByWithRelationInput>
+  orderBy?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
 }
 
 export type StudyModulestudy_module_translationsArgs = {
@@ -2038,6 +3204,12 @@ export type StudyModuleCreateArg = {
   >
 }
 
+export type StudyModuleListRelationFilter = {
+  every?: InputMaybe<StudyModuleWhereInput>
+  none?: InputMaybe<StudyModuleWhereInput>
+  some?: InputMaybe<StudyModuleWhereInput>
+}
+
 export type StudyModuleOrderByInput = {
   id?: InputMaybe<SortOrder>
   image?: InputMaybe<SortOrder>
@@ -2050,7 +3222,21 @@ export type StudyModuleOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
-export type StudyModuleOrderByWithRelationInput = {
+export enum StudyModuleOrderByRelevanceFieldEnum {
+  id = "id",
+  image = "image",
+  name = "name",
+  slug = "slug",
+}
+
+export type StudyModuleOrderByRelevanceInput = {
+  fields: StudyModuleOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type StudyModuleOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<StudyModuleOrderByRelevanceInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
@@ -2081,6 +3267,12 @@ export type StudyModuleTranslationCreateInput = {
   study_module?: InputMaybe<Scalars["ID"]["input"]>
 }
 
+export type StudyModuleTranslationListRelationFilter = {
+  every?: InputMaybe<StudyModuleTranslationWhereInput>
+  none?: InputMaybe<StudyModuleTranslationWhereInput>
+  some?: InputMaybe<StudyModuleTranslationWhereInput>
+}
+
 export type StudyModuleTranslationOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -2093,8 +3285,32 @@ export type StudyModuleTranslationUpsertInput = {
   study_module?: InputMaybe<Scalars["ID"]["input"]>
 }
 
+export type StudyModuleTranslationWhereInput = {
+  AND?: InputMaybe<Array<StudyModuleTranslationWhereInput>>
+  NOT?: InputMaybe<Array<StudyModuleTranslationWhereInput>>
+  OR?: InputMaybe<Array<StudyModuleTranslationWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringFilter>
+  id?: InputMaybe<UuidFilter>
+  language?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
+  study_module?: InputMaybe<StudyModuleWhereInput>
+  study_module_id?: InputMaybe<UuidNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type StudyModuleTranslationWhereUniqueInput = {
+  AND?: InputMaybe<Array<StudyModuleTranslationWhereInput>>
+  NOT?: InputMaybe<Array<StudyModuleTranslationWhereInput>>
+  OR?: InputMaybe<Array<StudyModuleTranslationWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  language?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
+  study_module?: InputMaybe<StudyModuleWhereInput>
+  study_module_id?: InputMaybe<UuidNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type StudyModuleUpsertArg = {
@@ -2109,9 +3325,34 @@ export type StudyModuleUpsertArg = {
   >
 }
 
+export type StudyModuleWhereInput = {
+  AND?: InputMaybe<Array<StudyModuleWhereInput>>
+  NOT?: InputMaybe<Array<StudyModuleWhereInput>>
+  OR?: InputMaybe<Array<StudyModuleWhereInput>>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  image?: InputMaybe<StringNullableFilter>
+  name?: InputMaybe<StringFilter>
+  order?: InputMaybe<IntNullableFilter>
+  slug?: InputMaybe<StringFilter>
+  study_module_translations?: InputMaybe<StudyModuleTranslationListRelationFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type StudyModuleWhereUniqueInput = {
+  AND?: InputMaybe<Array<StudyModuleWhereInput>>
+  NOT?: InputMaybe<Array<StudyModuleWhereInput>>
+  OR?: InputMaybe<Array<StudyModuleWhereInput>>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  image?: InputMaybe<StringNullableFilter>
+  name?: InputMaybe<StringFilter>
+  order?: InputMaybe<IntNullableFilter>
   slug?: InputMaybe<Scalars["String"]["input"]>
+  study_module_translations?: InputMaybe<StudyModuleTranslationListRelationFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type Subscription = {
@@ -2126,6 +3367,7 @@ export type SubscriptionuserSearchArgs = {
 
 export type Tag = {
   __typename?: "Tag"
+  abbreviation: Maybe<Scalars["String"]["output"]>
   courses: Array<Course>
   created_at: Scalars["DateTime"]["output"]
   description: Maybe<Scalars["String"]["output"]>
@@ -2164,12 +3406,19 @@ export type TagCreateInput = {
   types?: InputMaybe<Array<Scalars["String"]["input"]>>
 }
 
+export type TagListRelationFilter = {
+  every?: InputMaybe<TagWhereInput>
+  none?: InputMaybe<TagWhereInput>
+  some?: InputMaybe<TagWhereInput>
+}
+
 export type TagOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
 export type TagTranslation = {
   __typename?: "TagTranslation"
+  abbreviation: Maybe<Scalars["String"]["output"]>
   created_at: Scalars["DateTime"]["output"]
   description: Maybe<Scalars["String"]["output"]>
   language: Scalars["String"]["output"]
@@ -2180,10 +3429,17 @@ export type TagTranslation = {
 }
 
 export type TagTranslationCreateOrUpdateInput = {
+  abbreviation?: InputMaybe<Scalars["String"]["input"]>
   description?: InputMaybe<Scalars["String"]["input"]>
   language: Scalars["String"]["input"]
   name: Scalars["String"]["input"]
   tag_id?: InputMaybe<Scalars["String"]["input"]>
+}
+
+export type TagTranslationListRelationFilter = {
+  every?: InputMaybe<TagTranslationWhereInput>
+  none?: InputMaybe<TagTranslationWhereInput>
+  some?: InputMaybe<TagTranslationWhereInput>
 }
 
 export type TagTranslationNameLanguageCompoundUniqueInput = {
@@ -2196,9 +3452,34 @@ export type TagTranslationTag_idLanguageCompoundUniqueInput = {
   tag_id: Scalars["String"]["input"]
 }
 
+export type TagTranslationWhereInput = {
+  AND?: InputMaybe<Array<TagTranslationWhereInput>>
+  NOT?: InputMaybe<Array<TagTranslationWhereInput>>
+  OR?: InputMaybe<Array<TagTranslationWhereInput>>
+  abbreviation?: InputMaybe<StringNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringNullableFilter>
+  language?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
+  tag?: InputMaybe<TagWhereInput>
+  tag_id?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type TagTranslationWhereUniqueInput = {
+  AND?: InputMaybe<Array<TagTranslationWhereInput>>
+  NOT?: InputMaybe<Array<TagTranslationWhereInput>>
+  OR?: InputMaybe<Array<TagTranslationWhereInput>>
+  abbreviation?: InputMaybe<StringNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  description?: InputMaybe<StringNullableFilter>
+  language?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
   name_language?: InputMaybe<TagTranslationNameLanguageCompoundUniqueInput>
+  tag?: InputMaybe<TagWhereInput>
+  tag_id?: InputMaybe<StringFilter>
   tag_id_language?: InputMaybe<TagTranslationTag_idLanguageCompoundUniqueInput>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type TagType = {
@@ -2215,8 +3496,30 @@ export type TagTypetagsArgs = {
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
 
+export type TagTypeListRelationFilter = {
+  every?: InputMaybe<TagTypeWhereInput>
+  none?: InputMaybe<TagTypeWhereInput>
+  some?: InputMaybe<TagTypeWhereInput>
+}
+
+export type TagTypeWhereInput = {
+  AND?: InputMaybe<Array<TagTypeWhereInput>>
+  NOT?: InputMaybe<Array<TagTypeWhereInput>>
+  OR?: InputMaybe<Array<TagTypeWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  name?: InputMaybe<StringFilter>
+  tags?: InputMaybe<TagListRelationFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type TagTypeWhereUniqueInput = {
+  AND?: InputMaybe<Array<TagTypeWhereInput>>
+  NOT?: InputMaybe<Array<TagTypeWhereInput>>
+  OR?: InputMaybe<Array<TagTypeWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
   name?: InputMaybe<Scalars["String"]["input"]>
+  tags?: InputMaybe<TagListRelationFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type TagUpsertInput = {
@@ -2226,8 +3529,30 @@ export type TagUpsertInput = {
   types?: InputMaybe<Array<Scalars["String"]["input"]>>
 }
 
+export type TagWhereInput = {
+  AND?: InputMaybe<Array<TagWhereInput>>
+  NOT?: InputMaybe<Array<TagWhereInput>>
+  OR?: InputMaybe<Array<TagWhereInput>>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  hidden?: InputMaybe<BoolFilter>
+  id?: InputMaybe<StringFilter>
+  tag_translations?: InputMaybe<TagTranslationListRelationFilter>
+  tag_types?: InputMaybe<TagTypeListRelationFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type TagWhereUniqueInput = {
+  AND?: InputMaybe<Array<TagWhereInput>>
+  NOT?: InputMaybe<Array<TagWhereInput>>
+  OR?: InputMaybe<Array<TagWhereInput>>
+  courses?: InputMaybe<CourseListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  hidden?: InputMaybe<BoolFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  tag_translations?: InputMaybe<TagTranslationListRelationFilter>
+  tag_types?: InputMaybe<TagTypeListRelationFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type TierInfo = {
@@ -2440,8 +3765,31 @@ export type UserCourseProgressCursorInput = {
   id: Scalars["ID"]["input"]
 }
 
+export type UserCourseProgressListRelationFilter = {
+  every?: InputMaybe<UserCourseProgressWhereInput>
+  none?: InputMaybe<UserCourseProgressWhereInput>
+  some?: InputMaybe<UserCourseProgressWhereInput>
+}
+
 export type UserCourseProgressOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
+}
+
+export type UserCourseProgressWhereInput = {
+  AND?: InputMaybe<Array<UserCourseProgressWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseProgressWhereInput>>
+  OR?: InputMaybe<Array<UserCourseProgressWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  extra?: InputMaybe<JsonNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  max_points?: InputMaybe<FloatNullableFilter>
+  n_points?: InputMaybe<FloatNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
+  user_id?: InputMaybe<UuidNullableFilter>
 }
 
 export type UserCourseServiceProgress = {
@@ -2462,12 +3810,50 @@ export type UserCourseServiceProgress = {
   user_id: Maybe<Scalars["String"]["output"]>
 }
 
+export type UserCourseServiceProgressListRelationFilter = {
+  every?: InputMaybe<UserCourseServiceProgressWhereInput>
+  none?: InputMaybe<UserCourseServiceProgressWhereInput>
+  some?: InputMaybe<UserCourseServiceProgressWhereInput>
+}
+
 export type UserCourseServiceProgressOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type UserCourseServiceProgressWhereInput = {
+  AND?: InputMaybe<Array<UserCourseServiceProgressWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseServiceProgressWhereInput>>
+  OR?: InputMaybe<Array<UserCourseServiceProgressWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  service?: InputMaybe<ServiceWhereInput>
+  service_id?: InputMaybe<UuidNullableFilter>
+  timestamp?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_course_progress?: InputMaybe<UserCourseProgressWhereInput>
+  user_course_progress_id?: InputMaybe<UuidNullableFilter>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type UserCourseServiceProgressWhereUniqueInput = {
+  AND?: InputMaybe<Array<UserCourseServiceProgressWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseServiceProgressWhereInput>>
+  OR?: InputMaybe<Array<UserCourseServiceProgressWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  service?: InputMaybe<ServiceWhereInput>
+  service_id?: InputMaybe<UuidNullableFilter>
+  timestamp?: InputMaybe<DateTimeNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_course_progress?: InputMaybe<UserCourseProgressWhereInput>
+  user_course_progress_id?: InputMaybe<UuidNullableFilter>
+  user_id?: InputMaybe<UuidNullableFilter>
 }
 
 export type UserCourseSetting = {
@@ -2495,12 +3881,52 @@ export type UserCourseSettingEdge = {
   node: UserCourseSetting
 }
 
+export type UserCourseSettingListRelationFilter = {
+  every?: InputMaybe<UserCourseSettingWhereInput>
+  none?: InputMaybe<UserCourseSettingWhereInput>
+  some?: InputMaybe<UserCourseSettingWhereInput>
+}
+
 export type UserCourseSettingOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type UserCourseSettingWhereInput = {
+  AND?: InputMaybe<Array<UserCourseSettingWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseSettingWhereInput>>
+  OR?: InputMaybe<Array<UserCourseSettingWhereInput>>
+  country?: InputMaybe<StringNullableFilter>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  course_variant?: InputMaybe<StringNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  language?: InputMaybe<StringNullableFilter>
+  marketing?: InputMaybe<BoolNullableFilter>
+  other?: InputMaybe<JsonNullableFilter>
+  research?: InputMaybe<BoolNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type UserCourseSettingWhereUniqueInput = {
+  AND?: InputMaybe<Array<UserCourseSettingWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseSettingWhereInput>>
+  OR?: InputMaybe<Array<UserCourseSettingWhereInput>>
+  country?: InputMaybe<StringNullableFilter>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  course_variant?: InputMaybe<StringNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  language?: InputMaybe<StringNullableFilter>
+  marketing?: InputMaybe<BoolNullableFilter>
+  other?: InputMaybe<JsonNullableFilter>
+  research?: InputMaybe<BoolNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
 }
 
 export type UserCourseSettingsVisibility = {
@@ -2518,6 +3944,12 @@ export type UserCourseSettingsVisibilityCreateInput = {
   language: Scalars["String"]["input"]
 }
 
+export type UserCourseSettingsVisibilityListRelationFilter = {
+  every?: InputMaybe<UserCourseSettingsVisibilityWhereInput>
+  none?: InputMaybe<UserCourseSettingsVisibilityWhereInput>
+  some?: InputMaybe<UserCourseSettingsVisibilityWhereInput>
+}
+
 export type UserCourseSettingsVisibilityOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -2528,8 +3960,28 @@ export type UserCourseSettingsVisibilityUpsertInput = {
   language: Scalars["String"]["input"]
 }
 
+export type UserCourseSettingsVisibilityWhereInput = {
+  AND?: InputMaybe<Array<UserCourseSettingsVisibilityWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseSettingsVisibilityWhereInput>>
+  OR?: InputMaybe<Array<UserCourseSettingsVisibilityWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  language?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
 export type UserCourseSettingsVisibilityWhereUniqueInput = {
+  AND?: InputMaybe<Array<UserCourseSettingsVisibilityWhereInput>>
+  NOT?: InputMaybe<Array<UserCourseSettingsVisibilityWhereInput>>
+  OR?: InputMaybe<Array<UserCourseSettingsVisibilityWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<UuidNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  language?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type UserCourseSummary = {
@@ -2579,7 +4031,24 @@ export type UserEdge = {
   node: User
 }
 
-export type UserOrderByWithRelationInput = {
+export enum UserOrderByRelevanceFieldEnum {
+  email = "email",
+  first_name = "first_name",
+  id = "id",
+  last_name = "last_name",
+  real_student_number = "real_student_number",
+  student_number = "student_number",
+  username = "username",
+}
+
+export type UserOrderByRelevanceInput = {
+  fields: UserOrderByRelevanceFieldEnum
+  search: Scalars["String"]["input"]
+  sort: SortOrder
+}
+
+export type UserOrderByWithRelationAndSearchRelevanceInput = {
+  _relevance?: InputMaybe<UserOrderByRelevanceInput>
   ab_enrollments?: InputMaybe<AbEnrollmentOrderByRelationAggregateInput>
   administrator?: InputMaybe<SortOrder>
   completions?: InputMaybe<CompletionOrderByRelationAggregateInput>
@@ -2620,12 +4089,44 @@ export type UserOrganization = {
   user_id: Maybe<Scalars["String"]["output"]>
 }
 
+export type UserOrganizationListRelationFilter = {
+  every?: InputMaybe<UserOrganizationWhereInput>
+  none?: InputMaybe<UserOrganizationWhereInput>
+  some?: InputMaybe<UserOrganizationWhereInput>
+}
+
 export type UserOrganizationOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
 
+export type UserOrganizationWhereInput = {
+  AND?: InputMaybe<Array<UserOrganizationWhereInput>>
+  NOT?: InputMaybe<Array<UserOrganizationWhereInput>>
+  OR?: InputMaybe<Array<UserOrganizationWhereInput>>
+  consented?: InputMaybe<BoolNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<UuidFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  role?: InputMaybe<EnumOrganizationRoleNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type UserOrganizationWhereUniqueInput = {
+  AND?: InputMaybe<Array<UserOrganizationWhereInput>>
+  NOT?: InputMaybe<Array<UserOrganizationWhereInput>>
+  OR?: InputMaybe<Array<UserOrganizationWhereInput>>
+  consented?: InputMaybe<BoolNullableFilter>
+  created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  role?: InputMaybe<EnumOrganizationRoleNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
 }
 
 export type UserSearch = {
@@ -2661,10 +4162,81 @@ export enum UserSearchField {
   username = "username",
 }
 
+export type UserWhereInput = {
+  AND?: InputMaybe<Array<UserWhereInput>>
+  NOT?: InputMaybe<Array<UserWhereInput>>
+  OR?: InputMaybe<Array<UserWhereInput>>
+  ab_enrollments?: InputMaybe<AbEnrollmentListRelationFilter>
+  administrator?: InputMaybe<BoolFilter>
+  completions?: InputMaybe<CompletionListRelationFilter>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  course_ownerships?: InputMaybe<CourseOwnershipListRelationFilter>
+  course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  email?: InputMaybe<StringFilter>
+  email_deliveries?: InputMaybe<EmailDeliveryListRelationFilter>
+  exercise_completions?: InputMaybe<ExerciseCompletionListRelationFilter>
+  first_name?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  last_name?: InputMaybe<StringNullableFilter>
+  organizations?: InputMaybe<OrganizationListRelationFilter>
+  real_student_number?: InputMaybe<StringNullableFilter>
+  research_consent?: InputMaybe<BoolNullableFilter>
+  stored_data?: InputMaybe<StoredDataListRelationFilter>
+  student_number?: InputMaybe<StringNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  upstream_id?: InputMaybe<IntFilter>
+  user_course_progresses?: InputMaybe<UserCourseProgressListRelationFilter>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
+  user_course_settings?: InputMaybe<UserCourseSettingListRelationFilter>
+  user_organizations?: InputMaybe<UserOrganizationListRelationFilter>
+  username?: InputMaybe<StringFilter>
+  verified_users?: InputMaybe<VerifiedUserListRelationFilter>
+}
+
 export type UserWhereUniqueInput = {
+  AND?: InputMaybe<Array<UserWhereInput>>
+  NOT?: InputMaybe<Array<UserWhereInput>>
+  OR?: InputMaybe<Array<UserWhereInput>>
+  ab_enrollments?: InputMaybe<AbEnrollmentListRelationFilter>
+  administrator?: InputMaybe<BoolFilter>
+  completions?: InputMaybe<CompletionListRelationFilter>
+  completions_registered?: InputMaybe<CompletionRegisteredListRelationFilter>
+  course_ownerships?: InputMaybe<CourseOwnershipListRelationFilter>
+  course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionListRelationFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  email?: InputMaybe<StringFilter>
+  email_deliveries?: InputMaybe<EmailDeliveryListRelationFilter>
+  exercise_completions?: InputMaybe<ExerciseCompletionListRelationFilter>
+  first_name?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  last_name?: InputMaybe<StringNullableFilter>
+  organizations?: InputMaybe<OrganizationListRelationFilter>
+  real_student_number?: InputMaybe<StringNullableFilter>
+  research_consent?: InputMaybe<BoolNullableFilter>
+  stored_data?: InputMaybe<StoredDataListRelationFilter>
+  student_number?: InputMaybe<StringNullableFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
   upstream_id?: InputMaybe<Scalars["Int"]["input"]>
+  user_course_progresses?: InputMaybe<UserCourseProgressListRelationFilter>
+  user_course_service_progresses?: InputMaybe<UserCourseServiceProgressListRelationFilter>
+  user_course_settings?: InputMaybe<UserCourseSettingListRelationFilter>
+  user_organizations?: InputMaybe<UserOrganizationListRelationFilter>
   username?: InputMaybe<Scalars["String"]["input"]>
+  verified_users?: InputMaybe<VerifiedUserListRelationFilter>
+}
+
+export type UuidFilter = {
+  equals?: InputMaybe<Scalars["String"]["input"]>
+  gt?: InputMaybe<Scalars["String"]["input"]>
+  gte?: InputMaybe<Scalars["String"]["input"]>
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>
+  lt?: InputMaybe<Scalars["String"]["input"]>
+  lte?: InputMaybe<Scalars["String"]["input"]>
+  mode?: InputMaybe<QueryMode>
+  not?: InputMaybe<NestedUuidFilter>
+  notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
 }
 
 export type UuidNullableFilter = {
@@ -2677,6 +4249,7 @@ export type UuidNullableFilter = {
   mode?: InputMaybe<QueryMode>
   not?: InputMaybe<NestedUuidNullableFilter>
   notIn?: InputMaybe<Array<Scalars["String"]["input"]>>
+  search?: InputMaybe<Scalars["String"]["input"]>
 }
 
 export type VerifiedUser = {
@@ -2699,6 +4272,12 @@ export type VerifiedUserArg = {
   personal_unique_code: Scalars["String"]["input"]
 }
 
+export type VerifiedUserListRelationFilter = {
+  every?: InputMaybe<VerifiedUserWhereInput>
+  none?: InputMaybe<VerifiedUserWhereInput>
+  some?: InputMaybe<VerifiedUserWhereInput>
+}
+
 export type VerifiedUserOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrder>
 }
@@ -2710,8 +4289,44 @@ export type VerifiedUserUser_idPersonal_unique_codeHome_organizationCompoundUniq
     user_id: Scalars["String"]["input"]
   }
 
+export type VerifiedUserWhereInput = {
+  AND?: InputMaybe<Array<VerifiedUserWhereInput>>
+  NOT?: InputMaybe<Array<VerifiedUserWhereInput>>
+  OR?: InputMaybe<Array<VerifiedUserWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  display_name?: InputMaybe<StringNullableFilter>
+  home_organization?: InputMaybe<StringNullableFilter>
+  id?: InputMaybe<UuidFilter>
+  mail?: InputMaybe<StringNullableFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  organizational_unit?: InputMaybe<StringNullableFilter>
+  person_affiliation?: InputMaybe<StringNullableFilter>
+  person_affiliation_updated_at?: InputMaybe<DateTimeNullableFilter>
+  personal_unique_code?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
+}
+
 export type VerifiedUserWhereUniqueInput = {
+  AND?: InputMaybe<Array<VerifiedUserWhereInput>>
+  NOT?: InputMaybe<Array<VerifiedUserWhereInput>>
+  OR?: InputMaybe<Array<VerifiedUserWhereInput>>
+  created_at?: InputMaybe<DateTimeFilter>
+  display_name?: InputMaybe<StringNullableFilter>
+  home_organization?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  mail?: InputMaybe<StringNullableFilter>
+  organization?: InputMaybe<OrganizationWhereInput>
+  organization_id?: InputMaybe<UuidNullableFilter>
+  organizational_unit?: InputMaybe<StringNullableFilter>
+  person_affiliation?: InputMaybe<StringNullableFilter>
+  person_affiliation_updated_at?: InputMaybe<DateTimeNullableFilter>
+  personal_unique_code?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+  user?: InputMaybe<UserWhereInput>
+  user_id?: InputMaybe<UuidNullableFilter>
   user_id_personal_unique_code_home_organization?: InputMaybe<VerifiedUserUser_idPersonal_unique_codeHome_organizationCompoundUniqueInput>
 }
 
@@ -3147,12 +4762,14 @@ export type CourseFieldsFragment = {
     hidden: boolean
     types: Array<string> | null
     name: string | null
+    abbreviation: string | null
     tag_translations: Array<{
       __typename?: "TagTranslation"
       tag_id: string
       name: string
       description: string | null
       language: string
+      abbreviation: string | null
     }>
   }>
   study_modules: Array<{
@@ -3241,12 +4858,14 @@ export type EditorCourseFieldsFragment = {
     hidden: boolean
     types: Array<string> | null
     name: string | null
+    abbreviation: string | null
     tag_translations: Array<{
       __typename?: "TagTranslation"
       tag_id: string
       name: string
       description: string | null
       language: string
+      abbreviation: string | null
     }>
   }>
   study_modules: Array<{
@@ -3358,12 +4977,14 @@ export type EditorCourseDetailedFieldsFragment = {
     hidden: boolean
     types: Array<string> | null
     name: string | null
+    abbreviation: string | null
     tag_translations: Array<{
       __typename?: "TagTranslation"
       tag_id: string
       name: string
       description: string | null
       language: string
+      abbreviation: string | null
     }>
   }>
   study_modules: Array<{
@@ -3907,12 +5528,14 @@ export type StudyModuleFieldsWithCoursesFragment = {
       hidden: boolean
       types: Array<string> | null
       name: string | null
+      abbreviation: string | null
       tag_translations: Array<{
         __typename?: "TagTranslation"
         tag_id: string
         name: string
         description: string | null
         language: string
+        abbreviation: string | null
       }>
     }>
     study_modules: Array<{
@@ -3943,12 +5566,14 @@ export type TagCoreFieldsFragment = {
   hidden: boolean
   types: Array<string> | null
   name: string | null
+  abbreviation: string | null
   tag_translations: Array<{
     __typename?: "TagTranslation"
     tag_id: string
     name: string
     description: string | null
     language: string
+    abbreviation: string | null
   }>
 }
 
@@ -3958,6 +5583,7 @@ export type TagTranslationFieldsFragment = {
   name: string
   description: string | null
   language: string
+  abbreviation: string | null
 }
 
 export type TagTypeFieldsFragment = { __typename?: "TagType"; name: string }
@@ -6002,12 +7628,14 @@ export type AddCourseMutation = {
       hidden: boolean
       types: Array<string> | null
       name: string | null
+      abbreviation: string | null
       tag_translations: Array<{
         __typename?: "TagTranslation"
         tag_id: string
         name: string
         description: string | null
         language: string
+        abbreviation: string | null
       }>
     }>
     study_modules: Array<{
@@ -6150,12 +7778,14 @@ export type UpdateCourseMutation = {
       hidden: boolean
       types: Array<string> | null
       name: string | null
+      abbreviation: string | null
       tag_translations: Array<{
         __typename?: "TagTranslation"
         tag_id: string
         name: string
         description: string | null
         language: string
+        abbreviation: string | null
       }>
     }>
     study_modules: Array<{
@@ -6630,12 +8260,14 @@ export type CoursesQuery = {
       hidden: boolean
       types: Array<string> | null
       name: string | null
+      abbreviation: string | null
       tag_translations: Array<{
         __typename?: "TagTranslation"
         tag_id: string
         name: string
         description: string | null
         language: string
+        abbreviation: string | null
       }>
     }>
     study_modules: Array<{
@@ -6800,12 +8432,14 @@ export type EditorCoursesQuery = {
       hidden: boolean
       types: Array<string> | null
       name: string | null
+      abbreviation: string | null
       tag_translations: Array<{
         __typename?: "TagTranslation"
         tag_id: string
         name: string
         description: string | null
         language: string
+        abbreviation: string | null
       }>
     }>
     study_modules: Array<{
@@ -7003,12 +8637,14 @@ export type CourseEditorDetailsQuery = {
       hidden: boolean
       types: Array<string> | null
       name: string | null
+      abbreviation: string | null
       tag_translations: Array<{
         __typename?: "TagTranslation"
         tag_id: string
         name: string
         description: string | null
         language: string
+        abbreviation: string | null
       }>
     }>
     study_modules: Array<{
@@ -7276,12 +8912,14 @@ export type StudyModulesWithCoursesQuery = {
         hidden: boolean
         types: Array<string> | null
         name: string | null
+        abbreviation: string | null
         tag_translations: Array<{
           __typename?: "TagTranslation"
           tag_id: string
           name: string
           description: string | null
           language: string
+          abbreviation: string | null
         }>
       }>
       study_modules: Array<{
@@ -7396,12 +9034,14 @@ export type CourseEditorTagsQuery = {
     hidden: boolean
     types: Array<string> | null
     name: string | null
+    abbreviation: string | null
     tag_translations: Array<{
       __typename?: "TagTranslation"
       tag_id: string
       name: string
       description: string | null
       language: string
+      abbreviation: string | null
     }>
   }> | null
 }
@@ -7416,12 +9056,14 @@ export type TagEditorTagsQuery = {
     hidden: boolean
     types: Array<string> | null
     name: string | null
+    abbreviation: string | null
     tag_translations: Array<{
       __typename?: "TagTranslation"
       tag_id: string
       name: string
       description: string | null
       language: string
+      abbreviation: string | null
     }>
   }> | null
 }
@@ -7445,12 +9087,14 @@ export type CourseCatalogueTagsQuery = {
     hidden: boolean
     types: Array<string> | null
     name: string | null
+    abbreviation: string | null
     tag_translations: Array<{
       __typename?: "TagTranslation"
       tag_id: string
       name: string
       description: string | null
       language: string
+      abbreviation: string | null
     }>
   }> | null
 }
@@ -10735,6 +12379,7 @@ export const TagTranslationFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -10757,6 +12402,7 @@ export const TagCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -10787,6 +12433,7 @@ export const TagCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -10982,6 +12629,7 @@ export const CourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -11077,6 +12725,7 @@ export const CourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -11389,6 +13038,7 @@ export const EditorCourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -11406,6 +13056,7 @@ export const EditorCourseFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -11839,6 +13490,7 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -11856,6 +13508,7 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -12711,6 +14364,7 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -12728,6 +14382,7 @@ export const StudyModuleFieldsWithCoursesFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -20590,6 +22245,7 @@ export const AddCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -20607,6 +22263,7 @@ export const AddCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -21161,6 +22818,7 @@ export const UpdateCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -21178,6 +22836,7 @@ export const UpdateCourseDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -23910,6 +25569,7 @@ export const CoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -23927,6 +25587,7 @@ export const CoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -24678,6 +26339,7 @@ export const EditorCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -24695,6 +26357,7 @@ export const EditorCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -25443,6 +27106,7 @@ export const CourseEditorDetailsDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -25460,6 +27124,7 @@ export const CourseEditorDetailsDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -26738,6 +28403,7 @@ export const StudyModulesWithCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -26755,6 +28421,7 @@ export const StudyModulesWithCoursesDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -27333,6 +29000,7 @@ export const CourseEditorTagsDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -27350,6 +29018,7 @@ export const CourseEditorTagsDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -27411,6 +29080,7 @@ export const TagEditorTagsDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -27428,6 +29098,7 @@ export const TagEditorTagsDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },
@@ -27549,6 +29220,7 @@ export const CourseCatalogueTagsDocument = {
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "description" } },
           { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
         ],
       },
     },
@@ -27566,6 +29238,7 @@ export const CourseCatalogueTagsDocument = {
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
           { kind: "Field", name: { kind: "Name", value: "types" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "abbreviation" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "tag_translations" },

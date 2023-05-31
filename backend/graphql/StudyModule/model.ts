@@ -22,7 +22,9 @@ export const StudyModule = objectType({
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByWithRelationInput" }),
+        orderBy: arg({
+          type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {

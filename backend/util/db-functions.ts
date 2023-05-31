@@ -5,7 +5,6 @@ import { Knex } from "knex"
 import { omit } from "lodash"
 
 import { Course, Prisma, PrismaClient } from "@prisma/client"
-
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
 import { GraphQLUserInputError } from "../lib/errors"
