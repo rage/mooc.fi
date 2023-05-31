@@ -1,5 +1,4 @@
-import type { PrismaClient } from "@prisma/client"
-
+import { type ExtendedPrismaClient } from "../../prisma"
 import {
   abEnrollments,
   abStudies,
@@ -26,8 +25,11 @@ import {
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 
-export const seed = async (prisma: PrismaClient) => {
-  const create = async <K extends ExcludeInternalKeys<keyof PrismaClient>, T>(
+export const seed = async (prisma: ExtendedPrismaClient) => {
+  const create = async <
+    K extends ExcludeInternalKeys<keyof ExtendedPrismaClient>,
+    T,
+  >(
     key: K,
     data: T[],
   ) => {

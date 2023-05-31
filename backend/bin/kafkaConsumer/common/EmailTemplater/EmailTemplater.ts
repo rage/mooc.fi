@@ -1,7 +1,8 @@
 import { render } from "micromustache"
 
-import { EmailTemplate, PrismaClient, User } from "@prisma/client"
+import { EmailTemplate, User } from "@prisma/client"
 
+import { type ExtendedPrismaClient } from "../../../../prisma"
 import * as Templates from "./templates"
 import ITemplateConstructor from "./types/ITemplateConstructor"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
@@ -20,9 +21,13 @@ export class EmailTemplater {
   }
   emailTemplate: EmailTemplate
   user: User
-  prisma: PrismaClient
+  prisma: ExtendedPrismaClient
 
-  constructor(emailTemplate: EmailTemplate, user: User, prisma: PrismaClient) {
+  constructor(
+    emailTemplate: EmailTemplate,
+    user: User,
+    prisma: ExtendedPrismaClient,
+  ) {
     this.emailTemplate = emailTemplate
     this.user = user
     this.prisma = prisma

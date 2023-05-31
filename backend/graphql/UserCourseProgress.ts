@@ -25,7 +25,6 @@ import {
   exerciseCompletionsNeeded,
 } from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
-import { getCourseOrAlias } from "../util/db-functions"
 import { notEmpty } from "../util/notEmpty"
 
 // progress seems not to be uniform, let's try to normalize it a bit
@@ -316,7 +315,7 @@ export const UserCourseProgressQueries = extendType({
         }
 
         if (course_slug) {
-          const course = await getCourseOrAlias(ctx)({
+          const course = await ctx.prisma.course.findUniqueOrAlias({
             where: {
               slug: course_slug,
             },

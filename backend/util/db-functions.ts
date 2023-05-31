@@ -2,12 +2,11 @@ import fs from "fs"
 import path from "path"
 
 import { Knex } from "knex"
-import { omit } from "lodash"
 
-import { Course, Prisma, PrismaClient } from "@prisma/client"
+import { Course, Prisma } from "@prisma/client"
+
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
-import { GraphQLUserInputError } from "../lib/errors"
 import { isNullOrUndefined } from "./isNullOrUndefined"
 import { notEmpty } from "./notEmpty"
 
@@ -254,129 +253,3 @@ export const getCourseOrAliasKnex =
 
     return slugCourse ?? courses?.[0]
   }
-
-type InferPrismaClientGlobalReject<C extends PrismaClient> =
-  C extends PrismaClient<any, any, infer GlobalReject> ? GlobalReject : never
-
-type FindUniqueFunction<
-  T extends Prisma.CourseFindUniqueArgs,
-  _LocalRejectSettings = T["rejectOnNotFound"] extends Prisma.RejectOnNotFound
-    ? T["rejectOnNotFound"]
-    : undefined,
-> = <_, _LocalRejectSettings>(
-  args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
-) => any
-type FindUniqueSelectType<
-  T extends Prisma.CourseFindUniqueArgs,
-  RejectOnNotFound = any,
-> = RejectOnNotFound extends Prisma.True
-  ? Prisma.CheckSelect<
-      T,
-      Prisma.Prisma__CourseClient<Course>,
-      Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T>>
-    >
-  : Prisma.CheckSelect<
-      T,
-      Prisma.Prisma__CourseClient<Course | null>,
-      Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T> | null>
-    >
-
-// @ts-ignore: not used
-type FindUniqueCourseType<
-  ClientType extends PrismaClient,
-  T extends Prisma.CourseFindUniqueArgs,
-> = {
-  [K in keyof Prisma.CourseDelegate<
-    InferPrismaClientGlobalReject<ClientType>
-  >]: K extends "findUnique"
-    ? Prisma.CourseDelegate<
-        InferPrismaClientGlobalReject<ClientType>
-      >[K] extends (
-        args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
-      ) => infer U
-      ? <T2>(args: Prisma.SelectSubset<T2, Prisma.CourseFindUniqueArgs>) => U
-      : never
-    : never
-}[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
-
-type FindUniqueCourseReturnType<
-  ClientType extends PrismaClient,
-  T extends Prisma.CourseFindUniqueArgs,
-> = {
-  [K in keyof Prisma.CourseDelegate<
-    InferPrismaClientGlobalReject<ClientType>
-  >]: K extends "findUnique"
-    ? Prisma.CourseDelegate<
-        InferPrismaClientGlobalReject<ClientType>
-      >[K] extends FindUniqueFunction<T, infer LocalRejectSettings>
-      ? FindUniqueSelectType<T, LocalRejectSettings>
-      : never
-    : never
-}[keyof Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>]
-
-/**
- * Get course by id or slug, or course_alias course_code provided by slug.
- *
- * If slug is given, we also try to find a `course_alias` with that `course_code`.
- * Course found with slug is preferred to course found with course_code.
- */
-const checkSelect = <T extends Prisma.CourseFindUniqueArgs>(
-  args: any,
-): args is T & Prisma.SelectAndInclude => {
-  if (args.select && args.include) {
-    return true
-  }
-  return false
-}
-// Prisma.CheckSelect<T, Prisma.Prisma__CourseClient<Course>, Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T>>> {
-export const getCourseOrAlias =
-  (ctx: BaseContext) =>
-  async <T extends Prisma.CourseFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>,
-  ): Promise<FindUniqueCourseReturnType<(typeof ctx)["prisma"], T>> => {
-    const { id, slug } = args?.where ?? {}
-    const { select, include } = args ?? {}
-
-    if (!id && !slug) {
-      throw new GraphQLUserInputError("You must provide either an id or a slug")
-    }
-
-    if (checkSelect(args)) {
-      throw new GraphQLUserInputError("Only provide one of include or select")
-    }
-
-    const course = await ctx.prisma.course.findUnique({
-      where: {
-        id: id ?? undefined,
-        slug: slug ?? undefined,
-      },
-      ...omit(args, "where"),
-    })
-
-    if (course) {
-      return course as unknown as FindUniqueCourseReturnType<
-        (typeof ctx)["prisma"],
-        T
-      >
-    }
-
-    const selectOrInclude: {
-      select?: Prisma.CourseSelect | null
-      include?: Prisma.CourseInclude | null
-    } = include ? { include } : { select }
-
-    const alias = ctx.prisma.courseAlias
-      .findUnique({
-        where: {
-          course_code: slug,
-        },
-      })
-      .course({
-        ...selectOrInclude,
-      })
-
-    return alias as FindUniqueCourseReturnType<(typeof ctx)["prisma"], T>
-  }
-// we're telling TS that this is a course findUnique when in reality
-// it isn't strictly speaking. But it's close enough for our purposes
-// to get the type inference we want.

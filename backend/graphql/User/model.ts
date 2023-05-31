@@ -4,7 +4,6 @@ import { arg, booleanArg, idArg, objectType, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
-import { getCourseOrAlias } from "../../util/db-functions"
 import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -156,7 +155,7 @@ export const User = objectType({
         // parameters obsolete.
         // Add a third parameter `query_siblings` that defaults to true to the query?
 
-        const data = await getCourseOrAlias(ctx)({
+        const data = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: course_id ?? undefined,
             slug: course_slug ?? undefined,
@@ -189,7 +188,7 @@ export const User = objectType({
         if ((!course_id && !slug) || (course_id && slug)) {
           throw new UserInputError("provide exactly one of course_id or slug")
         }
-        const course = await getCourseOrAlias(ctx)({
+        const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: course_id ?? undefined,
             slug: slug ?? undefined,

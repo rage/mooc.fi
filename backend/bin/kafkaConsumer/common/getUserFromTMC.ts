@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client"
-
+import { type ExtendedPrismaClient } from "../../../prisma"
 import TmcClient from "../../../services/tmc"
 
 const getUserFromTMCAndCreate = async (
-  prisma: PrismaClient,
+  prisma: ExtendedPrismaClient,
   user_id: number,
 ) => {
   const tmc: TmcClient = new TmcClient()

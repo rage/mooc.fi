@@ -233,7 +233,9 @@ export class UserCourseSettingsController extends Controller {
   }
 
   private async getCourseAndSettings(user: User, slug: string) {
-    const course = await this.getCourse({ where: { slug } })
+    const course = await this.ctx.prisma.course.findUniqueOrAlias({
+      where: { slug },
+    })
 
     if (!course) {
       return err(
