@@ -142,7 +142,7 @@ const CourseVariantEditForm = () => {
                     </Typography>
                   )}
                   {(values.length === 0 ||
-                    (values.length &&
+                    (values.length > 0 &&
                       values[values.length - 1].slug !== "")) && (
                     <Grid container justifyItems="center">
                       <ButtonWithWhiteText

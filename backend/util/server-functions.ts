@@ -42,7 +42,7 @@ export function requireCourseOwnership({
         .limit(1)
     )?.[0]
 
-    if (!Boolean(ownership)) {
+    if (!ownership) {
       return err(
         res.status(401).json({ message: "no ownership for this course" }),
       )

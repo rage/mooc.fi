@@ -36,14 +36,13 @@ const fetchUserAppDatum = async () => {
   logger.info(`data length ${tmcData.length}`)
   logger.info("sorting")
 
-  const data = tmcData
-    .sort(
-      (a, b) =>
-        DateTime.fromISO(a.updated_at).toMillis() -
-        DateTime.fromISO(b.updated_at).toMillis(),
-    )
-    .filter(notEmpty)
-    .filter((e) => e.user_id !== null)
+  tmcData.sort(
+    (a, b) =>
+      DateTime.fromISO(a.updated_at).toMillis() -
+      DateTime.fromISO(b.updated_at).toMillis(),
+  )
+
+  const data = tmcData.filter(notEmpty).filter((e) => e.user_id !== null)
 
   //  logger.info(data)
   // logger.info("sorted")

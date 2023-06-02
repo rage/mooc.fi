@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client"
 
 import { isDev } from "../config"
 import { logDefinition } from "../util/prismaLogger"
-import * as Extensions from "./extensions"
+import { applyExtensions } from "./extensions"
 
 export const createPrismaClient = (args?: Prisma.PrismaClientOptions) => {
   const initialPrisma = new PrismaClient({
@@ -10,9 +10,7 @@ export const createPrismaClient = (args?: Prisma.PrismaClientOptions) => {
     ...args,
   })
 
-  return initialPrisma
-    .$extends(Extensions.findManyPagination)
-    .$extends(Extensions.courseFindUniqueOrAlias)
+  return applyExtensions(initialPrisma)
 }
 
 declare global {
@@ -32,5 +30,5 @@ if (isDev) {
   global.prisma = prisma
 }
 
-export type ExtendedPrismaClient = typeof prisma
+export type ExtendedPrismaClient = ReturnType<typeof createPrismaClient>
 export default prisma

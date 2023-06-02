@@ -22,13 +22,14 @@ const fetchUserFieldValues = async () => {
 
   logger.info(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserFieldValues(
+  const data = await tmc.getUserFieldValues(
     latestTimeStamp?.toISOString() ?? null,
   )
   logger.info("Got data from tmc")
-  logger.info(`data length ${data_from_tmc.length}`)
+  logger.info(`data length ${data.length}`)
   logger.info("sorting")
-  const data = data_from_tmc.sort(
+
+  data.sort(
     (a, b) =>
       DateTime.fromISO(a.updated_at).toMillis() -
       DateTime.fromISO(b.updated_at).toMillis(),

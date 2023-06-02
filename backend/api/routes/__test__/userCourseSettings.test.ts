@@ -44,6 +44,16 @@ describe("API", () => {
           })
       })
 
+      it("errors on non-existent course", async () => {
+        return getSettings("foobar")({
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(404)
+          })
+      })
+
       it("returns null with user with no settings", async () => {
         return getSettings("course1")({
           headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
@@ -146,7 +156,7 @@ describe("API", () => {
         })
           .then(() => fail())
           .catch(({ response }) => {
-            expect(response.data.message).toContain("doesn't exist")
+            expect(response.data.message).toContain("course not found")
             expect(response.status).toBe(404)
           })
       })

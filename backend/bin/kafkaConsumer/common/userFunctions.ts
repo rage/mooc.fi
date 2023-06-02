@@ -4,7 +4,6 @@ import {
   ExerciseCompletionRequiredAction,
   User,
   UserCourseServiceProgress,
-  UserCourseSetting,
 } from "@prisma/client"
 
 import {
@@ -220,53 +219,6 @@ export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   return deleted
 }
 
-interface GetUserCourseSettingsArgs extends WithBaseContext {
-  user_id: string
-  course_id: string
-}
-
-export const getUserCourseSettings = async ({
-  user_id,
-  course_id,
-  context: { prisma },
-}: GetUserCourseSettingsArgs): Promise<UserCourseSetting | null> => {
-  // - if the course inherits user course settings from some course, get settings from that one
-  // - if not, get from the course itself or null if none exists
-  const result = await prisma.course.findUnique({
-    where: {
-      id: course_id,
-    },
-    include: {
-      user_course_settings: {
-        where: {
-          user_id,
-        },
-        orderBy: {
-          created_at: "asc",
-        },
-      },
-      inherit_settings_from: {
-        include: {
-          user_course_settings: {
-            where: {
-              user_id,
-            },
-            orderBy: {
-              created_at: "asc",
-            },
-          },
-        },
-      },
-    },
-  })
-
-  return (
-    result?.inherit_settings_from?.user_course_settings?.[0] ??
-    result?.user_course_settings?.[0] ??
-    null
-  )
-}
-
 interface CheckCompletionArgs extends WithBaseContext {
   user: User
   course: Course
@@ -327,10 +279,11 @@ export const createCompletion = async ({
 }: CreateCompletionArgs) => {
   const { logger, prisma } = context
 
-  const userCourseSettings = await getUserCourseSettings({
-    user_id: user.id,
-    course_id: course.id,
-    context,
+  const userCourseSettings = await prisma.user.findUserCourseSettings({
+    where: {
+      user_id: user.id,
+      course_id: course.id,
+    },
   })
 
   const handlerCourse = handler ?? course
@@ -376,13 +329,9 @@ export const createCompletion = async ({
       },
     })
 
-    if (!userCourseSettings) {
+    if (language && !completion_language) {
       logger.warn(
-        `No user course settings found for user ${user.id} on course ${course.id} (handler ${handlerCourse.id}), created completion ${newCompletion.id} anyway; completion_language will be null`,
-      )
-    } else if (language && !completion_language) {
-      logger.warn(
-        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway`,
+        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway, completion_language is null`,
       )
     }
 
