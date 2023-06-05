@@ -13,6 +13,7 @@ export const SectionContainer = styled("section")(
   align-items: center;
   padding-top: 2rem;
   margin: auto;
+  margin-bottom: 1rem;
 
   ${theme.breakpoints.down("xs")} {
     margin: 0;

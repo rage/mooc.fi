@@ -1,6 +1,9 @@
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
+import StudyModulesTranslations from "/translations/study-modules"
+
 const Header = styled(Typography)`
   display: flex;
   justify-content: center;
@@ -8,11 +11,13 @@ const Header = styled(Typography)`
 `
 
 export function StudyModuleHero() {
+  const t = useTranslator(StudyModulesTranslations)
+
   return (
     <Header
       variant="h1"
       dangerouslySetInnerHTML={{
-        __html: "Opinto&shy;kokonaisuudet",
+        __html: t("modulesTitle"),
       }}
     />
   )

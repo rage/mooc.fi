@@ -11,6 +11,8 @@ import {
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
+import { useTranslator } from "/hooks/useTranslator"
+import HomeTranslations from "/translations/home"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
@@ -34,6 +36,8 @@ const CardActions = styled("div")`
 export const ModuleCard = ({
   module: { name, slug, image, description },
 }: ModuleCardProps) => {
+  const t = useTranslator(HomeTranslations)
+
   return (
     <CardWrapper>
       <CardHeader>
@@ -54,7 +58,7 @@ export const ModuleCard = ({
         <CardDescription>{description}</CardDescription>
         <CardActions>
           <ModuleButton href={`/_new/study-modules/#${slug}`}>
-            Kokonaisuuden tiedot
+            {t("moduleInformation")}
           </ModuleButton>
         </CardActions>
       </CardBody>

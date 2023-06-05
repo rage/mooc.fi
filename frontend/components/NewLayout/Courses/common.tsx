@@ -26,21 +26,35 @@ export const sortByDifficulty = (
   b: TagCoreFieldsFragment,
 ) => difficultyOrder.indexOf(a.id) - difficultyOrder.indexOf(b.id)
 
-export const colorSchemes: Record<string, PaletteColor[keyof PaletteColor]> = {
-  "cyber-security": newTheme.palette.blue.dark2,
-  programming: newTheme.palette.green.dark2,
-  "pilvipohjaiset-websovellukset": newTheme.palette.crimson.dark2,
-  "tekoaly-ja-data": newTheme.palette.purple.dark2,
-  other: newTheme.palette.gray.dark1,
-  difficulty: newTheme.palette.blue.dark1,
-  module: newTheme.palette.purple.dark1,
-  language: newTheme.palette.green.dark1,
-  program: newTheme.palette.green.dark2, // dev
-  webdev: newTheme.palette.blue.dark2, // dev
-}
-
 export const courseStatuses: readonly CourseStatus[] = [
   CourseStatus.Active,
   CourseStatus.Upcoming,
   CourseStatus.Ended,
 ]
+export const courseColorSchemes: Record<string, PaletteColor[keyof PaletteColor]> = {
+  "cyber-security": newTheme.palette.blue.dark2!,
+  programming: newTheme.palette.green.dark2!,
+  "pilvipohjaiset-websovellukset": newTheme.palette.crimson.dark2!,
+  "tekoaly-ja-data": newTheme.palette.purple.dark2!,
+  other: newTheme.palette.gray.dark1!,
+  program: newTheme.palette.green.dark2, // dev
+  webdev: newTheme.palette.blue.dark2, // dev
+}
+
+export const tagColorSchemes: Record<string, PaletteColor[keyof PaletteColor]> = {
+  other: newTheme.palette.gray.dark1!,
+  difficulty: newTheme.palette.blue.dark1!,
+  module: newTheme.palette.purple.dark1!,
+  language: newTheme.palette.green.dark1!,
+  program: newTheme.palette.green.dark2, // dev
+  webdev: newTheme.palette.blue.dark2, // dev
+}
+
+export const moduleColorSchemes: Record<string, PaletteColor[keyof PaletteColor]> = {
+  "cyber-security": newTheme.palette.blue.dark3!,
+  programming: newTheme.palette.green.dark3!,
+  "pilvipohjaiset-websovellukset": newTheme.palette.crimson.dark3!,
+  "tekoaly-ja-data": newTheme.palette.purple.dark3!,
+  program: newTheme.palette.green.dark2, // dev
+  webdev: newTheme.palette.blue.dark2, // dev
+}
