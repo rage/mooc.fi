@@ -69,8 +69,10 @@
     "selectAll": "Select all",
     "unscheduled": "Indefinitely open",
     "showCourse": "Show course",
-    "ectsHoursExplanation1": "The estimated workload of the course, which is estimated based on the ECTS received from the course. The course awards",
-    "ectsHoursExplanation2": "ECTS. At the University of Helsinki, one ECTS requires approximately 27 hours of work.",
+    "cr": "cr",
+    "hour": "h",
+    "ectsHoursExplanation1": "The estimated workload of the course, which is estimated based on the ECTS credits received from the course. The course awards",
+    "ectsHoursExplanation2": "ECTS credits. At the University of Helsinki, one ECTS credit requires approximately 27 hours of work.",
     "noResults": "No results",
     "noFields": "No fields",
     "add": "Add",
@@ -91,4 +93,4 @@
     "difficulty": "Difficulty",
     "module": "Module",
     "courseOtherLanguages": "Also available in"
-} 
+}
