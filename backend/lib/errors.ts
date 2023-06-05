@@ -6,7 +6,8 @@ class CustomError extends Error {
   constructor(message: string) {
     super(message)
 
-    this.name = this.constructor.name
+    Object.defineProperty(this, "name", { value: new.target.name })
+    Object.setPrototypeOf(this, new.target.prototype)
 
     Error.captureStackTrace(this, this.constructor)
   }
@@ -16,7 +17,8 @@ export abstract class Warning extends Error {
   constructor(message: string) {
     super(message)
 
-    this.name = this.constructor.name
+    Object.defineProperty(this, "name", { value: new.target.name })
+    Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
@@ -24,7 +26,8 @@ class CustomGraphQLError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, options)
 
-    this.name = this.constructor.name
+    Object.defineProperty(this, "name", { value: new.target.name })
+    Object.setPrototypeOf(this, new.target.prototype)
 
     Error.captureStackTrace(this, this.constructor)
   }
