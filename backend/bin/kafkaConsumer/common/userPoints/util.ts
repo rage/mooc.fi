@@ -1,9 +1,9 @@
 import { DateTime } from "luxon"
 
-import { Course, User } from "@prisma/client"
+import { User } from "@prisma/client"
 
 import { DatabaseInputError, TMCError } from "../../../../lib/errors"
-import { err, ok, Result } from "../../../../util/result"
+import { err, ok } from "../../../../util/result"
 import { parseTimestamp } from "../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
@@ -11,7 +11,7 @@ import { KafkaContext } from "../kafkaContext"
 export const getTimestamp = <M extends { timestamp: string }>(
   { logger }: KafkaContext,
   message: M,
-): Result<DateTime, Error> => {
+) => {
   logger.info("Parsing timestamp")
 
   let timestamp: DateTime
@@ -34,7 +34,7 @@ export const getTimestamp = <M extends { timestamp: string }>(
 export const getUser = async <M extends { user_id: number }>(
   context: KafkaContext,
   message: M,
-): Promise<Result<User, Error>> => {
+) => {
   const { logger } = context
   logger.info(`Checking if user ${message.user_id} exists`)
 
@@ -62,9 +62,7 @@ export const getUser = async <M extends { user_id: number }>(
 export const getCourse = async <M extends { course_id: string }>(
   { prisma }: KafkaContext,
   message: M,
-): Promise<
-  Result<Course & { completions_handled_by: Course | null }, Error>
-> => {
+) => {
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
     include: {

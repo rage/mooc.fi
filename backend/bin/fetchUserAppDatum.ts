@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 
-import { Course, Prisma, PrismaClient, UserCourseSetting } from "@prisma/client"
+import { Course, Prisma, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
@@ -36,14 +36,13 @@ const fetchUserAppDatum = async () => {
   logger.info(`data length ${tmcData.length}`)
   logger.info("sorting")
 
-  const data = tmcData
-    .sort(
-      (a, b) =>
-        DateTime.fromISO(a.updated_at).toMillis() -
-        DateTime.fromISO(b.updated_at).toMillis(),
-    )
-    .filter(notEmpty)
-    .filter((e) => e.user_id !== null)
+  tmcData.sort(
+    (a, b) =>
+      DateTime.fromISO(a.updated_at).toMillis() -
+      DateTime.fromISO(b.updated_at).toMillis(),
+  )
+
+  const data = tmcData.filter(notEmpty).filter((e) => e.user_id !== null)
 
   //  logger.info(data)
   // logger.info("sorted")
@@ -146,11 +145,11 @@ const fetchUserAppDatum = async () => {
         await saveOther(e)
     }
     if (index % saveInterval == 0) {
-      await saveProgress(prisma, new Date(e.updated_at))
+      await saveProgress(new Date(e.updated_at))
     }
   }
 
-  await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
+  await saveProgress(new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
@@ -274,7 +273,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
+async function saveProgress(dateToDB: Date) {
   logger.info("saving")
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 

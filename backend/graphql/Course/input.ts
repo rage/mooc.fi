@@ -20,7 +20,7 @@ export const CourseCreateArg = inputObjectType({
     t.nonNull.string("start_date")
     t.string("end_date")
     t.list.nonNull.field("study_modules", {
-      type: "StudyModuleWhereUniqueInput",
+      type: "CourseStudyModuleUniqueInput",
     })
     t.list.nonNull.field("course_translations", {
       type: "CourseTranslationCreateInput",
@@ -81,7 +81,7 @@ export const CourseUpsertArg = inputObjectType({
     t.nonNull.string("start_date")
     t.string("end_date")
     t.list.nonNull.field("study_modules", {
-      type: "StudyModuleWhereUniqueInput",
+      type: "CourseStudyModuleUniqueInput",
     })
     t.list.nonNull.field("course_translations", {
       type: "CourseTranslationUpsertInput",
@@ -138,5 +138,13 @@ export const CourseOrderByInput = inputObjectType({
     t.field("support_email", { type: "SortOrder" })
     t.field("created_at", { type: "SortOrder" })
     t.field("updated_at", { type: "SortOrder" })
+  },
+})
+
+export const CourseStudyModuleUniqueInput = inputObjectType({
+  name: "CourseStudyModuleUniqueInput",
+  definition(t) {
+    t.id("id")
+    t.string("slug")
   },
 })

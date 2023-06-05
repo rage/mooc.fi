@@ -266,12 +266,14 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
       "id": "tag1",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
+          "abbreviation": null,
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -289,12 +291,14 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -562,12 +566,14 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -836,12 +842,14 @@ exports[`Course mutations addCourse creates a course with no course_translations
       "id": "tag1",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
+          "abbreviation": null,
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -859,12 +867,14 @@ exports[`Course mutations addCourse creates a course with no course_translations
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -1151,12 +1161,14 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
       "id": "tag1",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
+          "abbreviation": null,
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -1174,12 +1186,14 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -1443,12 +1457,14 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
       "id": "tag1",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
+          "abbreviation": null,
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -1466,12 +1482,14 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -1857,12 +1875,14 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
       "id": "tag2",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag2 description",
           "language": "en_US",
           "name": "tag2 in english",
           "tag_id": "tag2",
         },
         {
+          "abbreviation": null,
           "description": "tag2 kuvaus ja jotain muuta",
           "language": "fi_FI",
           "name": "tag2 suomeksi",
@@ -1883,12 +1903,14 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 2`
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -2253,12 +2275,14 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
       "id": "tag2",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag2 description",
           "language": "en_US",
           "name": "tag2 in english",
           "tag_id": "tag2",
         },
         {
+          "abbreviation": null,
           "description": "tag2 kuvaus ja jotain muuta",
           "language": "fi_FI",
           "name": "tag2 suomeksi",
@@ -2645,12 +2669,14 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
       "id": "tag2",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag2 description",
           "language": "en_US",
           "name": "tag2 in english",
           "tag_id": "tag2",
         },
         {
+          "abbreviation": null,
           "description": "tag2 kuvaus ja jotain muuta",
           "language": "fi_FI",
           "name": "tag2 suomeksi",
@@ -2671,12 +2697,14 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 2
       "id": "en",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "English",
           "tag_id": "en",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "englanti",
@@ -3060,12 +3088,14 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
       "id": "tag2",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": "tag2 description",
           "language": "en_US",
           "name": "tag2 in english",
           "tag_id": "tag2",
         },
         {
+          "abbreviation": null,
           "description": "tag2 kuvaus ja jotain muuta",
           "language": "fi_FI",
           "name": "tag2 suomeksi",
@@ -3086,12 +3116,14 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
       "id": "fi",
       "tag_translations": [
         {
+          "abbreviation": null,
           "description": null,
           "language": "en_US",
           "name": "Finnish",
           "tag_id": "fi",
         },
         {
+          "abbreviation": null,
           "description": null,
           "language": "fi_FI",
           "name": "suomi",

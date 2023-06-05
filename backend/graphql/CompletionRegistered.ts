@@ -15,7 +15,6 @@ import { Prisma } from "@prisma/client"
 import { isAdmin, isOrganization, or } from "../accessControl"
 import { Context } from "../context"
 import { GraphQLForbiddenError } from "../lib/errors"
-import { getCourseOrAlias } from "../util/db-functions"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -83,7 +82,18 @@ const withCourse = async (
   cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  const courseReference = await getCourseOrAlias(ctx)({
+  return ctx.prisma.course
+    .findUniqueOrAlias({
+      where: {
+        slug,
+      },
+    })
+    .completions_registered({
+      skip,
+      take,
+      cursor,
+    })
+  /*const courseReference = await ctx.prisma.course.findUniqueOrAlias({
     where: {
       slug,
     },
@@ -103,7 +113,7 @@ const withCourse = async (
       skip,
       take,
       cursor,
-    })
+    })*/
 }
 
 const all = async (

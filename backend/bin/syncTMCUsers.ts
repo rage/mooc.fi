@@ -2,11 +2,10 @@ import axios from "axios"
 import { groupBy, orderBy } from "lodash"
 import * as winston from "winston"
 
-import { PrismaClient } from "@prisma/client"
-
 import { isTest, TMC_HOST } from "../config"
 import { TMCError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
+import { type ExtendedPrismaClient } from "../prisma"
 import { getAccessToken } from "../services/tmc"
 import { notEmpty } from "../util/notEmpty"
 
@@ -26,7 +25,7 @@ export interface Change {
 const _logger = sentryLogger({ service: "sync-tmc-users" })
 
 export interface SyncTMCUsersContext {
-  prisma: PrismaClient
+  prisma: ExtendedPrismaClient
   logger: winston.Logger
 }
 

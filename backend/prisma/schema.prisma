@@ -1,10 +1,13 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "clientExtensions", "postgresqlExtensions", "extendedWhereUnique", "filteredRelationCount"]
+  // , "fieldReference", 
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuidOssp(map: "uuid-ossp", schema: "extensions"), pg_trgm(schema: "extensions"), btree_gin(schema: "extensions")]
 }
 
 model AbEnrollment {
@@ -82,64 +85,64 @@ model CompletionRegistered {
 }
 
 model Course {
-  id                                                String                           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  name                                              String
-  slug                                              String                           @unique
-  teacher_in_charge_name                            String
-  teacher_in_charge_email                           String
-  support_email                                     String?
-  start_date                                        String
-  end_date                                          String?
-  ects                                              String?
-  promote                                           Boolean?
-  status                                            CourseStatus?                    @default(Upcoming)
-  start_point                                       Boolean?
-  hidden                                            Boolean?
-  study_module_start_point                          Boolean?
-  order                                             Int?
-  study_module_order                                Int?
-  automatic_completions                             Boolean?                         @default(false)
-  automatic_completions_eligible_for_ects           Boolean?                         @default(true)
-  points_needed                                     Int?
-  exercise_completions_needed                       Int?
-  has_certificate                                   Boolean?                         @default(false)
-  upcoming_active_link                              Boolean?                         @default(false)
-  tier                                              Int?
-  language                                          String?
-  owner_organization_id                             String?                          @db.Uuid
-  completion_email_id                               String?                          @db.Uuid
-  inherit_settings_from_id                          String?                          @db.Uuid
-  completions_handled_by_id                         String?                          @db.Uuid
-  course_stats_email_id                             String?                          @db.Uuid
-  photo_id                                          String?                          @db.Uuid
-  created_at                                        DateTime                         @default(now())
-  updated_at                                        DateTime                         @default(now()) @updatedAt
-  completions                                       Completion[]
-  completions_registered                            CompletionRegistered[]
-  completion_email                                  EmailTemplate?                   @relation("EmailTemplate_Course_completion_email", fields: [completion_email_id], references: [id], onUpdate: NoAction)
-  triggered_automatically_email                     EmailTemplate[]                  @relation("EmailTemplate_Course_triggered_automatically_by")
-  course_stats_email                                EmailTemplate?                   @relation("EmailTemplate_Course_stats_email", fields: [course_stats_email_id], references: [id], onUpdate: NoAction)
-  completions_handled_by                            Course?                          @relation("Course_completions_handled_by", fields: [completions_handled_by_id], references: [id], onUpdate: NoAction)
-  handles_completions_for                           Course[]                         @relation("Course_completions_handled_by")
-  inherit_settings_from                             Course?                          @relation("Course_inherit_settings_from", fields: [inherit_settings_from_id], references: [id], onUpdate: NoAction)
-  handles_settings_for                              Course[]                         @relation("Course_inherit_settings_from")
-  owner_organization                                Organization?                    @relation(fields: [owner_organization_id], references: [id], onUpdate: NoAction)
-  photo                                             Image?                           @relation(fields: [photo_id], references: [id], onUpdate: NoAction)
-  course_aliases                                    CourseAlias[]
-  course_organizations                              CourseOrganization[]
-  ownerships                                        CourseOwnership[]
-  course_translations                               CourseTranslation[]
-  course_variants                                   CourseVariant[]
-  exercises                                         Exercise[]
-  open_university_registration_links                OpenUniversityRegistrationLink[]
-  stored_data                                       StoredData[]
-  user_course_progresses                            UserCourseProgress[]
-  user_course_service_progresses                    UserCourseServiceProgress[]
-  user_course_settings                              UserCourseSetting[]
-  user_course_settings_visibilities                 UserCourseSettingsVisibility[]
-  tags                                              Tag[]                            @relation("CourseToTag")
-  services                                          Service[]                        @relation("course_to_service")
-  study_modules                                     StudyModule[]                    @relation("study_module_to_course")
+  id                                      String                           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name                                    String
+  slug                                    String                           @unique
+  teacher_in_charge_name                  String
+  teacher_in_charge_email                 String
+  support_email                           String?
+  start_date                              String
+  end_date                                String?
+  ects                                    String?
+  promote                                 Boolean?
+  status                                  CourseStatus?                    @default(Upcoming)
+  start_point                             Boolean?
+  hidden                                  Boolean?
+  study_module_start_point                Boolean?
+  order                                   Int?
+  study_module_order                      Int?
+  automatic_completions                   Boolean?                         @default(false)
+  automatic_completions_eligible_for_ects Boolean?                         @default(true)
+  points_needed                           Int?
+  exercise_completions_needed             Int?
+  has_certificate                         Boolean?                         @default(false)
+  upcoming_active_link                    Boolean?                         @default(false)
+  tier                                    Int?
+  language                                String?
+  owner_organization_id                   String?                          @db.Uuid
+  completion_email_id                     String?                          @db.Uuid
+  inherit_settings_from_id                String?                          @db.Uuid
+  completions_handled_by_id               String?                          @db.Uuid
+  course_stats_email_id                   String?                          @db.Uuid
+  photo_id                                String?                          @db.Uuid
+  created_at                              DateTime                         @default(now())
+  updated_at                              DateTime                         @default(now()) @updatedAt
+  completions                             Completion[]
+  completions_registered                  CompletionRegistered[]
+  completion_email                        EmailTemplate?                   @relation("EmailTemplate_Course_completion_email", fields: [completion_email_id], references: [id], onUpdate: NoAction)
+  triggered_automatically_email           EmailTemplate[]                  @relation("EmailTemplate_Course_triggered_automatically_by")
+  course_stats_email                      EmailTemplate?                   @relation("EmailTemplate_Course_stats_email", fields: [course_stats_email_id], references: [id], onUpdate: NoAction)
+  completions_handled_by                  Course?                          @relation("Course_completions_handled_by", fields: [completions_handled_by_id], references: [id], onUpdate: NoAction)
+  handles_completions_for                 Course[]                         @relation("Course_completions_handled_by")
+  inherit_settings_from                   Course?                          @relation("Course_inherit_settings_from", fields: [inherit_settings_from_id], references: [id], onUpdate: NoAction)
+  handles_settings_for                    Course[]                         @relation("Course_inherit_settings_from")
+  owner_organization                      Organization?                    @relation(fields: [owner_organization_id], references: [id], onUpdate: NoAction)
+  photo                                   Image?                           @relation(fields: [photo_id], references: [id], onUpdate: NoAction)
+  course_aliases                          CourseAlias[]
+  course_organizations                    CourseOrganization[]
+  ownerships                              CourseOwnership[]
+  course_translations                     CourseTranslation[]
+  course_variants                         CourseVariant[]
+  exercises                               Exercise[]
+  open_university_registration_links      OpenUniversityRegistrationLink[]
+  stored_data                             StoredData[]
+  user_course_progresses                  UserCourseProgress[]
+  user_course_service_progresses          UserCourseServiceProgress[]
+  user_course_settings                    UserCourseSetting[]
+  user_course_settings_visibilities       UserCourseSettingsVisibility[]
+  tags                                    Tag[]                            @relation("CourseToTag")
+  services                                Service[]                        @relation("course_to_service")
+  study_modules                           StudyModule[]                    @relation("study_module_to_course")
 
   @@index([completion_email_id])
   @@index([completions_handled_by_id])
@@ -634,13 +637,14 @@ model TagType {
 }
 
 model TagTranslation {
-  language    String
-  name        String
-  description String?
-  tag_id      String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @default(now()) @updatedAt
-  tag         Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  language     String
+  name         String
+  abbreviation String?
+  description  String?
+  tag_id       String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+  tag          Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([tag_id, language])
   @@unique([name, language])

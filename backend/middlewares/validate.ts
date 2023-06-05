@@ -46,21 +46,24 @@ export type ValidateArgsResolver<
   info: GraphQLResolveInfo,
 ) => MaybePromise<void>
 
-export const validateArgsPlugin = () => {
-  const ensureError =
-    (
-      _root: any,
-      _args: any,
-      _ctx: GetGen<"context">,
-      _info: GraphQLResolveInfo,
-    ) =>
-    (error: Error) => {
-      if (error instanceof Error) {
-        throw error
-      }
-      throw new Error("Invalid arguments")
+const ensureError =
+  (
+    _root: any,
+    _args: any,
+    _ctx: GetGen<"context">,
+    _info: GraphQLResolveInfo,
+  ) =>
+  (error: any) => {
+    if (error instanceof Error) {
+      throw error
     }
+    throw new Error(
+      "Invalid arguments" +
+        (error ? ", error: " + (error?.toString() ?? error) : ""),
+    )
+  }
 
+export const validateArgsPlugin = () => {
   return plugin({
     name: "validateArgPlugin",
     fieldDefTypes,

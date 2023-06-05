@@ -221,7 +221,7 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "user not found" })
     }
 
-    const course = await this.getCourse({
+    const course = await prisma.course.findUniqueOrAlias({
       where: {
         slug,
       },
@@ -316,7 +316,7 @@ export class CompletionController extends Controller {
       })
     }
 
-    const course = await this.getCourse({
+    const course = await prisma.course.findUniqueOrAlias({
       where: {
         id: course_id ?? undefined,
         slug: slug ?? undefined,

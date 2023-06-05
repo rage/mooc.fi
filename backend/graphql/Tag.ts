@@ -66,6 +66,22 @@ export const Tag = objectType({
         return translation?.description ?? null
       },
     })
+    t.string("abbreviation", {
+      // @ts-ignore: language exists
+      resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
+        const translation = await ctx.prisma.tagTranslation.findUnique({
+          where: {
+            tag_id_language: {
+              tag_id: id,
+              language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
+            },
+          },
+        })
+
+        return translation?.abbreviation ?? null
+      },
+    })
+
     t.list.nonNull.string("types", {
       resolve: async ({ id }, _args, ctx) => {
         const types = await ctx.prisma.tag

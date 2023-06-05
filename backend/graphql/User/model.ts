@@ -4,8 +4,6 @@ import { arg, booleanArg, idArg, objectType, stringArg } from "nexus"
 import { Course, Prisma } from "@prisma/client"
 
 import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
-import { getCourseOrAlias } from "../../util/db-functions"
-import { getCourseOrCompletionHandlerCourse } from "../../util/graphql-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 interface SummaryCourseResult {
@@ -67,9 +65,11 @@ export const User = objectType({
         let course: Course | null = null
 
         if (course_id || course_slug) {
-          course = await getCourseOrCompletionHandlerCourse(ctx)({
-            id: course_id ?? undefined,
-            slug: course_slug ?? undefined,
+          course = await ctx.prisma.course.findUniqueCompletionHandler({
+            where: {
+              id: course_id ?? undefined,
+              slug: course_slug ?? undefined,
+            },
           })
 
           if (!course) {
@@ -106,11 +106,12 @@ export const User = objectType({
         const { course_id, course_slug, organization_id } = args
         let course: Course | null = null
 
-        // TODO: get by alias and then handler
         if (course_id || course_slug) {
-          course = await getCourseOrCompletionHandlerCourse(ctx)({
-            id: course_id ?? undefined,
-            slug: course_slug ?? undefined,
+          course = await ctx.prisma.course.findUniqueCompletionHandler({
+            where: {
+              id: course_id ?? undefined,
+              slug: course_slug ?? undefined,
+            },
           })
 
           if (!course) {
@@ -156,7 +157,7 @@ export const User = objectType({
         // parameters obsolete.
         // Add a third parameter `query_siblings` that defaults to true to the query?
 
-        const data = await getCourseOrAlias(ctx)({
+        const data = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: course_id ?? undefined,
             slug: course_slug ?? undefined,
@@ -173,7 +174,7 @@ export const User = objectType({
 
         return (
           data?.user_course_progresses?.some(
-            (p) => (p?.extra as any)?.projectCompletion,
+            (p) => (p?.extra as Prisma.JsonObject)?.projectCompletion,
           ) ?? false
         )
       },
@@ -189,7 +190,7 @@ export const User = objectType({
         if ((!course_id && !slug) || (course_id && slug)) {
           throw new UserInputError("provide exactly one of course_id or slug")
         }
-        const course = await getCourseOrAlias(ctx)({
+        const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: course_id ?? undefined,
             slug: slug ?? undefined,

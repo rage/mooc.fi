@@ -7,11 +7,14 @@ import { nanoid } from "nanoid"
 import winston from "winston"
 
 import type { ApolloServer } from "@apollo/server"
-import { PrismaClient, User } from "@prisma/client"
+import { User } from "@prisma/client"
 
 import { DATABASE_URL, DB_USER, DEBUG, EXTENSION_PATH } from "../config"
 import { ServerContext } from "../context"
-import binPrisma from "../prisma"
+import binPrisma, {
+  createPrismaClient,
+  type ExtendedPrismaClient,
+} from "../prisma"
 import server from "../server"
 import { fail } from "./util"
 
@@ -43,7 +46,7 @@ export const logger = {
 
 export type TestContext = {
   client: GraphQLClient
-  prisma: PrismaClient
+  prisma: ExtendedPrismaClient
   logger: winston.Logger
   knex: Knex
   user?: User
@@ -147,7 +150,7 @@ function createTestContext(testContext: TestContext) {
 function prismaTestContext() {
   let schemaName = ""
   let databaseUrl = ""
-  let prisma: null | PrismaClient = null
+  let prisma: null | ExtendedPrismaClient = null
   let knexClient: Knex | null = null
 
   const clean = async () => {
@@ -191,9 +194,11 @@ function prismaTestContext() {
       await clean()
       // Construct a new Prisma Client connected to the generated Postgres schema
       DEBUG && console.log(`creating prisma ${databaseUrl}`)
-      prisma = new PrismaClient({
+
+      prisma = createPrismaClient({
         datasources: { db: { url: databaseUrl } },
       })
+
       return {
         knexClient,
         prisma,

@@ -13,7 +13,7 @@ import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or } from "../../accessControl"
 import { GraphQLUserInputError } from "../../lib/errors"
-import { filterNullRecursive, getCourseOrAlias } from "../../util/db-functions"
+import { filterNullRecursive } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
@@ -60,7 +60,7 @@ export const CourseQueries = extendType({
               name: true,
             },
           }),*/
-        const course = await getCourseOrAlias(ctx)(query)
+        const course = await ctx.prisma.course.findUniqueOrAlias(query)
 
         if (!course) {
           throw new Error("course not found")
@@ -96,7 +96,9 @@ export const CourseQueries = extendType({
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByWithRelationInput" }),
+        orderBy: arg({
+          type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
         search: stringArg(),
         hidden: booleanArg({ default: true }),
@@ -331,7 +333,7 @@ export const CourseQueries = extendType({
         const { slug } = args
 
         return Boolean(
-          await getCourseOrAlias(ctx)({
+          await ctx.prisma.course.findUniqueOrAlias({
             where: {
               slug,
             },

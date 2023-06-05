@@ -9,7 +9,7 @@ interface RequestParams {
 export const createRequestHelpers = (port: number) => {
   const request =
     (method: Method) =>
-    (route = "", defaultHeaders: any) =>
+    (route = "", defaultHeaders: any = {}) =>
     async ({
       data = null,
       headers = defaultHeaders,
@@ -23,11 +23,11 @@ export const createRequestHelpers = (port: number) => {
         params,
       })
 
-  const get = (route = "", defaultHeaders: any) =>
+  const get = (route = "", defaultHeaders: any = {}) =>
     request("GET")(route, defaultHeaders)
-  const post = (route = "", defaultHeaders: any) =>
+  const post = (route = "", defaultHeaders: any = {}) =>
     request("POST")(route, defaultHeaders)
-  const patch = (route = "", defaultHeaders: any) =>
+  const patch = (route = "", defaultHeaders: any = {}) =>
     request("PATCH")(route, defaultHeaders)
 
   return {

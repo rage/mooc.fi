@@ -21,6 +21,25 @@ const fetchOrganizations = async () => {
   }
 }
 
+const parseLogoSize = (organization: OrganizationInfo) => {
+  const { logo_file_size } = organization
+  if (!logo_file_size) {
+    return undefined
+  }
+
+  const parsed = parseInt(logo_file_size)
+
+  if (isNaN(parsed)) {
+    logger.warn(
+      "Failed to parsed logo_file_size - organization data: " +
+        JSON.stringify(organization, null, 2),
+    )
+    return undefined
+  }
+
+  return parsed
+}
+
 const upsertOrganization = async (org: OrganizationInfo) => {
   const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
@@ -36,7 +55,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     creator: user !== null ? { connect: { id: user.id } } : undefined,
     logo_file_name: org.logo_file_name,
     logo_content_type: org.logo_content_type,
-    logo_file_size: parseInt(org.logo_file_size ?? "") ?? undefined,
+    logo_file_size: parseLogoSize(org),
     logo_updated_at: org.logo_updated_at,
     phone: org.phone,
     contact_information: org.contact_information,

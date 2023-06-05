@@ -1,7 +1,5 @@
 import { DateTime } from "luxon"
 
-import { PrismaClient } from "@prisma/client"
-
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
 import { DatabaseInputError, TMCError } from "../lib/errors"
@@ -13,7 +11,7 @@ const FETCH_USER_FIELD_VALUES_CONFIG_NAME = CONFIG_NAME ?? "userFieldValues"
 
 const logger = sentryLogger({ service: "fetch-user-field-values" })
 
-const fetcUserFieldValues = async () => {
+const fetchUserFieldValues = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
@@ -24,13 +22,14 @@ const fetcUserFieldValues = async () => {
 
   logger.info(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserFieldValues(
+  const data = await tmc.getUserFieldValues(
     latestTimeStamp?.toISOString() ?? null,
   )
   logger.info("Got data from tmc")
-  logger.info(`data length ${data_from_tmc.length}`)
+  logger.info(`data length ${data.length}`)
   logger.info("sorting")
-  const data = data_from_tmc.sort(
+
+  data.sort(
     (a, b) =>
       DateTime.fromISO(a.updated_at).toMillis() -
       DateTime.fromISO(b.updated_at).toMillis(),
@@ -83,11 +82,11 @@ const fetcUserFieldValues = async () => {
     }
 
     if (saveCounter % saveInterval == 0) {
-      await saveProgress(prisma, new Date(p.updated_at))
+      await saveProgress(new Date(p.updated_at))
     }
   }
 
-  await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
+  await saveProgress(new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
@@ -139,7 +138,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
+async function saveProgress(dateToDB: Date) {
   logger.info("saving")
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
@@ -155,7 +154,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   })
 }
 
-fetcUserFieldValues().catch((e) => {
+fetchUserFieldValues().catch((e) => {
   logger.error(e)
   process.exit(1)
 })

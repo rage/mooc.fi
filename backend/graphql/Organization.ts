@@ -126,7 +126,9 @@ export const OrganizationQueries = extendType({
         take: intArg(),
         skip: intArg(),
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
-        orderBy: arg({ type: "OrganizationOrderByWithRelationInput" }),
+        orderBy: arg({
+          type: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+        }),
         hidden: booleanArg(),
       },
       authorize: organizationPermission,

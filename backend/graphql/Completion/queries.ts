@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
 import { GraphQLForbiddenError } from "../../lib/errors"
-import { buildUserSearch, getCourseOrAlias } from "../../util/db-functions"
+import { buildUserSearch } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -30,7 +30,7 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        const course = await getCourseOrAlias(ctx)({
+        const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             slug,
           },
@@ -79,7 +79,9 @@ export const CompletionQueries = extendType({
           throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
 
-        const course = await getCourseOrAlias(ctx)({ where: { slug } })
+        const course = await ctx.prisma.course.findUniqueOrAlias({
+          where: { slug },
+        })
 
         if (!course) {
           throw new Error("Course not found")

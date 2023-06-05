@@ -3,8 +3,6 @@ import { ConsumerGlobalConfig } from "node-rdkafka"
 import { v4 } from "uuid"
 import winston from "winston"
 
-import type { PrismaClient } from "@prisma/client"
-
 import {
   KAFKA_CONSUMER_GROUP,
   KAFKA_DEBUG_CONTEXTS,
@@ -12,6 +10,7 @@ import {
   KAFKA_TOP_OF_THE_QUEUE,
 } from "../../../config"
 import { KafkaError } from "../../../lib/errors"
+import { type ExtendedPrismaClient } from "../../../prisma"
 import { attachPrismaEvents } from "../../../util/prismaLogger"
 import checkConnectionInInterval from "./connectedChecker"
 
@@ -29,7 +28,7 @@ const logCommit =
 
 interface CreateKafkaConsumerArgs {
   logger: winston.Logger
-  prisma?: PrismaClient
+  prisma?: ExtendedPrismaClient
 }
 
 export const createKafkaConsumer = ({

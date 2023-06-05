@@ -16,7 +16,6 @@ import { seed } from "../../../../tests/data"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,
-  getUserCourseSettings,
   pruneDuplicateExerciseCompletions,
 } from "../userFunctions"
 
@@ -270,15 +269,9 @@ describe("getUserCourseSettings", () => {
   const HANDLER_COURSE_ID = "00000000-0000-0000-0000-000000000666"
   const INHERITING_COURSE_ID = "00000000-0000-0000-0000-000000000668"
   const USER_ID = "20000000-0000-0000-0000-000000000104"
-  const context = {} as BaseContext
 
   beforeEach(async () => {
     await seed(ctx.prisma)
-    Object.assign(context, {
-      prisma: ctx.prisma,
-      knex: ctx.knex,
-      logger: ctx.logger,
-    })
   })
 
   it("should return inherited settings if they exist", async () => {
@@ -303,10 +296,11 @@ describe("getUserCourseSettings", () => {
       },
     })
 
-    const settings = await getUserCourseSettings({
-      user_id: USER_ID,
-      course_id: INHERITING_COURSE_ID,
-      context,
+    const settings = await ctx.prisma.user.findUserCourseSettings({
+      where: {
+        user_id: USER_ID,
+        course_id: INHERITING_COURSE_ID,
+      },
     })
 
     expect(settings).toEqual(handler)
@@ -324,20 +318,22 @@ describe("getUserCourseSettings", () => {
       },
     })
 
-    const settings = await getUserCourseSettings({
-      user_id: USER_ID,
-      course_id: INHERITING_COURSE_ID,
-      context,
+    const settings = await ctx.prisma.user.findUserCourseSettings({
+      where: {
+        user_id: USER_ID,
+        course_id: INHERITING_COURSE_ID,
+      },
     })
 
     expect(settings).toEqual(created)
   })
 
   it("should return null if no settings found", async () => {
-    const settings = await getUserCourseSettings({
-      user_id: USER_ID,
-      course_id: INHERITING_COURSE_ID,
-      context,
+    const settings = await ctx.prisma.user.findUserCourseSettings({
+      where: {
+        user_id: USER_ID,
+        course_id: INHERITING_COURSE_ID,
+      },
     })
 
     expect(settings).toBeNull()

@@ -91,7 +91,7 @@ jobs:
           - backend-cache-{{ checksum "package-lock.json" }}
       - run:
           name: "Install dependencies"
-          command: npm ci --cache /home/circleci/.npm --prefer-offline --no-audit
+          command: npm ci --prefer-offline --no-audit
       - run:
           name: "Set environment"
           command: |

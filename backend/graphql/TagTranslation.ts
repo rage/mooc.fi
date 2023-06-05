@@ -14,6 +14,7 @@ export const TagTranslation = objectType({
     t.model.tag_id()
     t.model.language()
     t.model.name()
+    t.model.abbreviation()
     t.model.description()
     t.model.tag()
     t.model.created_at()
@@ -27,6 +28,7 @@ export const TagTranslationCreateOrUpdateInput = inputObjectType({
     t.string("tag_id")
     t.nonNull.string("name")
     t.nonNull.string("language")
+    t.string("abbreviation")
     t.string("description")
   },
 })
@@ -41,14 +43,20 @@ export const TagTranslationMutations = extendType({
         language: nonNull(stringArg()),
         name: nonNull(stringArg()),
         description: stringArg(),
+        abbreviation: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, { tag_id, language, name, description }, ctx) => {
+      resolve: async (
+        _,
+        { tag_id, language, name, description, abbreviation },
+        ctx,
+      ) => {
         return ctx.prisma.tagTranslation.create({
           data: {
             name,
             language,
             description,
+            abbreviation,
             tag: { connect: { id: tag_id } },
           },
         })
@@ -62,9 +70,14 @@ export const TagTranslationMutations = extendType({
         language: nonNull(stringArg()),
         name: nonNull(stringArg()),
         description: stringArg(),
+        abbreviation: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, { tag_id, language, name, description }, ctx) => {
+      resolve: async (
+        _,
+        { tag_id, language, name, description, abbreviation },
+        ctx,
+      ) => {
         return ctx.prisma.tagTranslation.update({
           where: {
             tag_id_language: {
@@ -75,6 +88,7 @@ export const TagTranslationMutations = extendType({
           data: {
             name,
             description,
+            abbreviation,
           },
         })
       },

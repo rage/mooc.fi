@@ -27,7 +27,7 @@ export class StoredDataController extends Controller {
     if (!data) {
       return res.status(400).json({ message: "must provide data" })
     }
-    const course = await this.getCourse({ where: { slug } })
+    const course = await prisma.course.findUniqueOrAlias({ where: { slug } })
 
     if (!course) {
       return res.status(401).json({
@@ -81,7 +81,7 @@ export class StoredDataController extends Controller {
     const { prisma } = this.ctx
     const { slug } = req.params
 
-    const course = await this.getCourse({ where: { slug } })
+    const course = await prisma.course.findUniqueOrAlias({ where: { slug } })
 
     if (!course) {
       return res

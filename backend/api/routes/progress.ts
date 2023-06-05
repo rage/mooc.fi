@@ -21,8 +21,8 @@ interface ExerciseCompletionResult {
 }
 
 const isId = (idOrSlug: string) =>
-  Boolean(idOrSlug.match(/^[0-9a-fA-F]{32}$/)) ||
-  Boolean(idOrSlug.match(/^[0-9a-fA-F-]{36}$/))
+  Boolean(RegExp(/^[0-9a-fA-F]{32}$/).exec(idOrSlug)) ||
+  Boolean(RegExp(/^[0-9a-fA-F-]{36}$/).exec(idOrSlug))
 
 export class ProgressController extends Controller {
   constructor(override readonly ctx: ApiContext) {
@@ -255,7 +255,7 @@ export class ProgressController extends Controller {
 
     const { user } = getUserResult.value
 
-    const course = await this.getCourse({
+    const course = await prisma.course.findUniqueOrAlias({
       where: { slug },
     })
 

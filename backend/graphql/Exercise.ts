@@ -37,7 +37,7 @@ export const Exercise = objectType({
       type: "ExerciseCompletion",
       args: {
         orderBy: arg({
-          type: "ExerciseCompletionOrderByWithRelationInput",
+          type: "ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput",
         }),
         user_id: idArg(),
         completed: booleanArg(),

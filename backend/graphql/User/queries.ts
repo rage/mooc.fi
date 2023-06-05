@@ -5,7 +5,7 @@ import { User } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { ForbiddenError, UserInputError } from "../../lib/errors"
-import { buildUserSearch, convertPagination } from "../../util/db-functions"
+import { buildUserSearch } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const UserQueries = extendType({
@@ -62,11 +62,15 @@ export const UserQueries = extendType({
       nodes: async (_, args, ctx) => {
         const { search, first, last, before, after, skip } = args
 
-        return ctx.prisma.user.findMany({
-          ...convertPagination({ first, last, before, after, skip }),
+        return ctx.prisma.user.findManyWithPagination({
           where: {
             OR: buildUserSearch(search),
           },
+          first,
+          last,
+          before: before ? { id: before } : undefined,
+          after: after ? { id: after } : undefined,
+          skip: skip ?? undefined,
         })
       },
       extendConnection(t) {

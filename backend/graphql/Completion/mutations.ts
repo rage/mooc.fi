@@ -7,7 +7,6 @@ import { User } from "@sentry/node"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { getCourseOrAlias } from "../../util/db-functions"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
@@ -162,7 +161,7 @@ export const CompletionMutations = extendType({
           throw new Error("must provide course_id or slug!")
         }
 
-        const course = await getCourseOrAlias(ctx)({
+        const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: course_id ?? undefined,
             slug: slug ?? undefined,

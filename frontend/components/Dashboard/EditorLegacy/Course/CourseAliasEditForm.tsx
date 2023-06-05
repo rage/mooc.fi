@@ -102,7 +102,7 @@ const CourseAliasEditForm = () => {
                   </Typography>
                 )}
                 {(values.length == 0 ||
-                  (values.length &&
+                  (values.length > 0 &&
                     values[values.length - 1].course_code !== "")) && (
                   <section
                     style={{ justifyContent: "center", display: "flex" }}
