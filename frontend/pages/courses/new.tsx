@@ -32,8 +32,8 @@ const LegacyCourseEdit = dynamic(
 const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
 
-  const clone = useQueryParameter("clone", false)
-  const legacy = useQueryParameter("legacy", false)
+  const clone = useQueryParameter("clone", { enforce: false })
+  const legacy = useQueryParameter("legacy", { enforce: false })
 
   const { loading, error, data } = useEditorCourses({
     slug: clone,

@@ -99,7 +99,7 @@ export function ModuleNavigation() {
   })
 
   return (
-    <SectionContainer id="modules">
+    <SectionContainer id="modules" style={{ marginBottom: "2rem" }}>
       <SectionTitle>Opintokokonaisuudet</SectionTitle>
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <Button href="/_new/study-modules">Näytä kaikki kokonaisuudet</Button>

@@ -39,7 +39,7 @@ const LegacyCourseEdit = dynamic(
 const EditCourse = () => {
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
-  const legacy = useQueryParameter("legacy", false)
+  const legacy = useQueryParameter("legacy", { enforce: false })
   const router = useRouter()
   const { loading, error, data } = useEditorCourses({
     slug,

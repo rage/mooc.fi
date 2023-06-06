@@ -16,7 +16,7 @@ import CoursesTranslations from "/translations/courses"
 function CourseAdvancedOptionsForm() {
   const { course, courses } = useCourseEditorData()
   const t = useTranslator(CoursesTranslations)
-  const enableSuperSecret = useQueryParameter("secret", false)
+  const enableSuperSecret = useQueryParameter("secret", { enforce: false })
 
   const sortedCourses = useMemo(
     () =>

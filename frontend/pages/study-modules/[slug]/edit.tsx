@@ -42,7 +42,7 @@ const EditStudyModule = () => {
   const t = useTranslator(StudyModulesTranslations)
 
   const slug = useQueryParameter("slug")
-  const legacy = useQueryParameter("legacy", false)
+  const legacy = useQueryParameter("legacy", { enforce: false })
 
   const { data, loading, error } = useQuery(EditorStudyModuleDetailsDocument, {
     variables: { slug },

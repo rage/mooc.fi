@@ -33,12 +33,15 @@ const emptyResults: UserSearchResults = {
 
 const UserSearch = () => {
   const router = useRouter()
-  const textParam = useQueryParameter("text", false)
-  const pageParam = parseInt(useQueryParameter("page", false), 10) || 0
-  const rowsParam = parseInt(useQueryParameter("rowsPerPage", false), 10) || 10
-  const fieldsParam = useQueryParameter("fields", false)
-    ?.split(",")
-    .filter(notEmptyOrEmptyString) as Array<UserSearchField>
+  const textParam = useQueryParameter("text", { enforce: false })
+  const pageParam =
+    parseInt(useQueryParameter("page", { enforce: false }), 10) || 0
+  const rowsParam =
+    parseInt(useQueryParameter("rowsPerPage", { enforce: false }), 10) || 10
+  const fieldsParam = useQueryParameter("fields", {
+    enforce: false,
+    array: true,
+  }).filter(notEmptyOrEmptyString) as Array<UserSearchField>
   const isSearching = useRef(false)
   const prevSearch = useRef("")
   const prevFields = useRef<Array<UserSearchField> | undefined>(fieldsParam)
