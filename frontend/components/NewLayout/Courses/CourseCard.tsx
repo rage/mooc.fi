@@ -1,20 +1,21 @@
-import React, { useMemo } from "react"
+import React from "react"
 
 import Image from "next/image"
 
+import { PropsOf } from "@emotion/react"
 import HelpIcon from "@mui/icons-material/Help"
 import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
-import { allowedLanguages, colorSchemes, sortByLanguage } from "./common"
+import { colorSchemes } from "./common"
 import {
-  DifficultyTag,
   DifficultyTags,
-  LanguageTag,
+  DifficultyTagsContainer,
   LanguageTags,
-  ModuleTag,
+  LanguageTagsContainer,
   ModuleTags,
+  ModuleTagsContainer,
 } from "./Tags"
 import OutboundLink from "/components/OutboundLink"
 import { CardSubtitle } from "/components/Text/headers"
@@ -23,9 +24,9 @@ import { useTranslator } from "/hooks/useTranslator"
 import moocLogo from "/public/images/new/logos/moocfi_white.svg"
 //import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
 import CommonTranslations from "/translations/common"
-import { formatDateTime } from "/util/dataFormatFunctions"
+import { useFormatDateTime } from "/util/dataFormatFunctions"
 
-import { CourseFieldsFragment, TagCoreFieldsFragment } from "/graphql/generated"
+import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
 
 const ContainerBase = css`
   display: grid;
@@ -40,15 +41,16 @@ const ContainerBase = css`
 `
 
 const Container = styled("li", {
-  shouldForwardProp: (prop) => prop !== "studyModule",
-})<{ studyModule?: string }>(
-  ({ studyModule }) => `
+  shouldForwardProp: (prop) => prop !== "studyModule" && prop !== "ended",
+})<{ studyModule?: string; ended?: boolean }>(
+  ({ studyModule, ended }) => `
   ${ContainerBase.styles}
   background-color: ${
     studyModule ? colorSchemes[studyModule] : colorSchemes["other"]
   };
   height: 100%;
   container-type: inline-size;
+  ${ended ? "filter: grayscale(60%) opacity(0.8);" : ""}
 `,
 )
 
@@ -140,7 +142,7 @@ const MainContent = styled("div")`
   width: 400px;
 `
 
-const Schedule = styled(Typography)`
+const ScheduleContainer = styled(Typography)`
   grid-area: schedule;
   display: flex;
   align-items: flex-start;
@@ -281,13 +283,57 @@ const MoocfiLogo = styled(CardHeaderImage)`
   z-index: 0;
 `
 
-const prettifyDate = (date: string) =>
-  date.split("T").shift()?.split("-").reverse().join(".")
+interface ScheduleProps {
+  course?: CourseFieldsFragment
+}
+
+const Schedule = React.memo(
+  ({ course, children }: React.PropsWithChildren<ScheduleProps>) => {
+    const t = useTranslator(CommonTranslations)
+    const formatLocaleDateTime = useFormatDateTime()
+
+    let schedule: string | undefined
+
+    if (course) {
+      const { status, start_date, end_date } = course
+      if (status === CourseStatus.Upcoming) {
+        schedule = `${t("Upcoming")}${
+          start_date ? "&nbsp;" + formatLocaleDateTime(start_date) : ""
+        }`
+      } else if (status === CourseStatus.Ended) {
+        schedule = `${t("Ended")}${
+          end_date && Date.parse(end_date) < Date.now()
+            ? "&nbsp;" + formatLocaleDateTime(end_date)
+            : ""
+        }`
+      } else {
+        schedule = `${t("Active")}&nbsp;${
+          end_date
+            ? formatLocaleDateTime(start_date) +
+              "&nbsp;-&nbsp;" +
+              formatLocaleDateTime(end_date)
+            : "—&nbsp;" + t("unscheduled")
+        }`
+      }
+    }
+
+    return (
+      <ScheduleContainer
+        variant="body2"
+        component="div"
+        {...(schedule && { dangerouslySetInnerHTML: { __html: schedule } })}
+      >
+        {children}
+      </ScheduleContainer>
+    )
+  },
+  (prevProps, nextProps) => prevProps.course === nextProps.course,
+)
 
 interface CourseCardLayoutProps {
   title: string | React.ReactNode
   description: string | React.ReactNode
-  schedule: string | React.ReactNode
+  schedule: React.ReactNode
   details: string | React.ReactNode
   organizer?: string | React.ReactNode
   moduleTags?: React.ReactNode
@@ -334,173 +380,73 @@ function CourseCardLayout({
             {organizer}
           </Organizer>
         </CourseDetails>{" "}
-        {typeof schedule === "string" ? (
-          <Schedule
-            variant="body2"
-            component="div"
-            dangerouslySetInnerHTML={{ __html: schedule }}
-          />
-        ) : (
-          schedule
-        )}
+        {schedule}
         <ResponsiveTags>
-          <LanguageTags>{languageTags}</LanguageTags>
-          <DifficultyTags>{difficultyTags}</DifficultyTags>
+          <LanguageTagsContainer>{languageTags}</LanguageTagsContainer>
+          <DifficultyTagsContainer>{difficultyTags}</DifficultyTagsContainer>
         </ResponsiveTags>
-        <ModuleTags>{moduleTags}</ModuleTags>
+        <ModuleTagsContainer>{moduleTags}</ModuleTagsContainer>
         <LinkArea>{link}</LinkArea>
       </ContentContainer>
     </>
   )
 }
 
-const tagHasName = (
-  tag: TagCoreFieldsFragment,
-): tag is TagCoreFieldsFragment & { name: string } =>
-  typeof tag.name === "string"
-
 interface CourseCardProps {
   course: CourseFieldsFragment
-  tags?: string[]
+  studyModule?: string
 }
 
-const CourseCard = React.forwardRef<HTMLLIElement, CourseCardProps>(
-  ({ course, ...props }, ref) => {
-    const t = useTranslator(CommonTranslations)
+const CourseCard = React.forwardRef<
+  HTMLLIElement,
+  CourseCardProps & PropsOf<typeof Container>
+>(({ course, studyModule, ...props }, ref) => {
+  const t = useTranslator(CommonTranslations)
 
-    const schedule = useMemo(() => {
-      const { status, start_date, end_date } = course
-      if (status == "Upcoming") {
-        return `${t("Upcoming")}${
-          start_date ? "&nbsp;" + prettifyDate(start_date) : ""
-        }`
-      } else if (status == "Ended") {
-        return `${t("Ended")}${
-          end_date && Date.parse(end_date) < Date.now()
-            ? "&nbsp;" + formatDateTime(end_date)
-            : ""
-        }`
-      } else {
-        return `${t("Active")}&nbsp;${
-          end_date
-            ? formatDateTime(start_date) +
-              "&nbsp;-&nbsp;" +
-              formatDateTime(end_date)
-            : "—&nbsp;" + t("unscheduled")
-        }`
-      }
-    }, [course, t])
+  const courseStudyModule =
+    studyModule ?? course.study_modules[0]?.slug ?? "other"
 
-    const moduleTags = useMemo(
-      () => (
-        <>
-          {course.tags
-            ?.filter((tag) => tag.types?.includes("module"))
-            .filter(tagHasName)
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((tag) => (
-              <ModuleTag
-                key={tag.id}
-                size="small"
-                variant="filled"
-                label={tag.name}
-              />
-            ))}
-        </>
-      ),
-      [course.tags],
-    )
-
-    const languageTags = useMemo(() => {
-      const langTags = course.tags?.filter((tag) =>
-        tag.types?.includes("language"),
-      )
-      const allowed = langTags
-        ?.filter((tag) => allowedLanguages.includes(tag.id))
-        .sort(sortByLanguage)
-      const otherLanguages = langTags?.filter(
-        (tag) => !allowedLanguages.includes(tag.id),
-      )
-
-      return (
-        <>
-          {allowed.map((tag) => (
-            <LanguageTag
-              key={tag.id}
-              size="small"
-              variant="filled"
-              label={tag.name}
-              {...(tag.id === "other_language" && {
-                otherLanguages,
-              })}
-            />
-          ))}
-        </>
-      )
-    }, [course.tags])
-
-    const difficultyTags = useMemo(
-      () =>
-        course.tags
-          ?.filter((t) => t.types?.includes("difficulty"))
-          .filter(tagHasName)
-          .map((tag) => (
-            <DifficultyTag
-              key={tag.id}
-              size="small"
-              variant="filled"
-              label={tag.name}
-              difficulty={tag.id}
-            />
-          )),
-      [course.tags],
-    )
-
-    return (
-      <Container
-        ref={ref}
-        studyModule={
-          course.study_modules.length == 0
-            ? "other"
-            : course.study_modules[0].name
+  return (
+    <Container
+      ref={ref}
+      studyModule={courseStudyModule}
+      ended={course?.status === CourseStatus.Ended}
+      {...props}
+    >
+      <CourseCardLayout
+        title={course?.name}
+        description={course?.description}
+        schedule={<Schedule course={course} />}
+        moduleTags={<ModuleTags course={course} />}
+        details={
+          course.ects && (
+            <CourseLength>
+              <Typography variant="body2">
+                {course.ects}&nbsp;op&nbsp;|&nbsp;~
+                {Math.round((parseInt(course.ects) * 27) / 5) * 5}h
+              </Typography>
+              <StyledTooltip
+                title={`${t("ectsHoursExplanation1")} ${course.ects} ${t(
+                  "ectsHoursExplanation2",
+                )}`}
+              >
+                <StyledHelpIcon />
+              </StyledTooltip>
+            </CourseLength>
+          )
         }
-        {...props}
-      >
-        <CourseCardLayout
-          title={course?.name}
-          description={course?.description}
-          schedule={schedule}
-          moduleTags={moduleTags}
-          details={
-            course.ects && (
-              <CourseLength>
-                <Typography variant="body2">
-                  {course.ects}&nbsp;op&nbsp;|&nbsp;~
-                  {Math.round((parseInt(course.ects) * 27) / 5) * 5}h
-                </Typography>
-                <StyledTooltip
-                  title={`${t("ectsHoursExplanation1")} ${course.ects} ${t(
-                    "ectsHoursExplanation2",
-                  )}`}
-                >
-                  <StyledHelpIcon />
-                </StyledTooltip>
-              </CourseLength>
-            )
-          }
-          /* TODO: add information regarding university/organization to course */
-          organizer="Helsingin yliopisto"
-          languageTags={languageTags}
-          difficultyTags={difficultyTags}
-          link={<Link href="https://www.mooc.fi">{t("showCourse")}</Link>}
-          /* <SponsorContainer>
+        /* TODO: add information regarding university/organization to course */
+        organizer="Helsingin yliopisto"
+        languageTags={<LanguageTags course={course} />}
+        difficultyTags={<DifficultyTags course={course} />}
+        link={<Link href="https://www.mooc.fi">{t("showCourse")}</Link>}
+        /* <SponsorContainer>
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
         </SponsorContainer> */
-        />
-      </Container>
-    )
-  },
-)
+      />
+    </Container>
+  )
+})
 
 export const CourseCardSkeleton = () => (
   <SkeletonContainer>
@@ -513,7 +459,11 @@ export const CourseCardSkeleton = () => (
           <Skeleton width="35%" />
         </>
       }
-      schedule={<Skeleton width={200} height={20} />}
+      schedule={
+        <Schedule>
+          <Skeleton width={200} height={20} />
+        </Schedule>
+      }
       details={<Skeleton width={180} height={20} />}
       organizer={<Skeleton width={100} height={20} />}
       moduleTags={<Skeleton width={140} height={30} />}

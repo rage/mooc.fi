@@ -28,7 +28,7 @@ const LegacyStudyModuleEdit = dynamic(
 
 const NewStudyModule = () => {
   const t = useTranslator(StudyModulesTranslations)
-  const legacy = useQueryParameter("legacy", false)
+  const legacy = useQueryParameter("legacy", { enforce: false })
 
   useBreadcrumbs([
     {

@@ -1,15 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
 
-import { Skeleton, Typography } from "@mui/material"
+import { Button, Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
+import { useTranslator } from "/hooks/useTranslator"
 import backgroundPattern from "/public/images/new/background/backgroundPattern.svg"
+import StudyModulesTranslations from "/translations/_new/study-modules"
 
-import { StudyModuleFieldsWithCoursesFragment } from "/graphql/generated"
+import {
+  CourseStatus,
+  StudyModuleFieldsWithCoursesFragment,
+} from "/graphql/generated"
 
 interface StudyModuleListItemProps {
   studyModule: StudyModuleFieldsWithCoursesFragment
@@ -119,19 +124,49 @@ const CenteredHeader = styled(Typography)`
   margin-bottom: 2rem;
 ` as typeof Typography
 
-/*const ModuleCourseCard = styled(CourseCard)(
-  ({ theme }) => `
-`,
-)*/
+const EndedCoursesLinkContainer = styled("div")`
+  padding: 0rem 1rem 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`
+
+const EndedCoursesButton = styled(Button)`
+  background-color: #fff;
+
+  :hover {
+    background-color: #eee;
+  }
+`
+
+const getCoursesByStatus = (
+  courses: StudyModuleFieldsWithCoursesFragment["courses"],
+) => {
+  const filteredCourses = courses?.filter((course) => course.description) ?? []
+  const active = filteredCourses.filter(
+    (course) => course.status === CourseStatus.Active,
+  )
+  const upcoming = filteredCourses.filter(
+    (course) => course.status === CourseStatus.Upcoming,
+  )
+  const ended = filteredCourses.filter(
+    (course) => course.status === CourseStatus.Ended,
+  )
+
+  return { active, upcoming, ended }
+}
 
 export function ListItem({
   studyModule,
   backgroundColor,
 }: StudyModuleListItemProps) {
+  const t = useTranslator(StudyModulesTranslations)
+
   const descriptionRef = useRef<HTMLElement | null>()
   const moduleCardRef = useRef<HTMLLIElement | null>()
-  const courses = useMemo(
-    () => studyModule.courses?.filter((course) => course.description) ?? [],
+  const { active, upcoming, ended } = useMemo(
+    () => getCoursesByStatus(studyModule.courses),
     [studyModule],
   )
 
@@ -185,22 +220,34 @@ export function ListItem({
             </CenteredHeader>
             <ModuleCardDescriptionText variant="ingress">
               {studyModule.description}
-              {studyModule.description}
             </ModuleCardDescriptionText>
           </ModuleCardDescription>
         </HeroContainer>
-        {courses?.map((course, index) => (
-          <CourseCard
-            ref={(ref) => {
-              if (index === 0) {
-                moduleCardRef.current = ref
-              }
-            }}
-            course={course}
-            key={course.id}
-          />
-        ))}
+        {[active, upcoming].flatMap((courses) =>
+          courses?.map((course, index) => (
+            <CourseCard
+              ref={(ref) => {
+                if (index === 0) {
+                  moduleCardRef.current = ref
+                }
+              }}
+              course={course}
+              studyModule={studyModule.slug}
+              key={course.id}
+            />
+          )),
+        )}
+        {/* TODO: do something with ended courses */}
       </ModuleCardBody>
+      {ended.length > 0 && (
+        <EndedCoursesLinkContainer>
+          <EndedCoursesButton
+            href={`/_new/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
+          >
+            {t("showEndedCourses")}
+          </EndedCoursesButton>
+        </EndedCoursesLinkContainer>
+      )}
     </ModuleCardWrapper>
   )
 }

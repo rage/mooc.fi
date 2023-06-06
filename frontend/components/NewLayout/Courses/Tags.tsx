@@ -1,15 +1,23 @@
+import React from "react"
+
 import { PropsOf } from "@emotion/react"
 import CircleIcon from "@mui/icons-material/Circle"
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"
 import { Chip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { colorSchemes } from "./common"
+import {
+  allowedLanguages,
+  colorSchemes,
+  sortByDifficulty,
+  sortByLanguage,
+} from "./common"
 import { InfoTooltip } from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
+import { notEmptyOrEmptyString } from "/util/guards"
 
-import { TagCoreFieldsFragment } from "/graphql/generated"
+import { CourseFieldsFragment, TagCoreFieldsFragment } from "/graphql/generated"
 
 const Tag = styled(Chip)`
   border-radius: 2rem;
@@ -20,7 +28,7 @@ const Tag = styled(Chip)`
   text-transform: uppercase;
 `
 
-const Tags = styled("div")`
+const TagsContainer = styled("div")`
   display: flex;
   flex-shrink: 1;
   margin-bottom: auto;
@@ -29,20 +37,20 @@ const Tags = styled("div")`
   justify-content: flex-end;
 `
 
-export const LanguageTags = styled(Tags)`
+export const LanguageTagsContainer = styled(TagsContainer)`
   display: flex;
   margin: 0 0 auto;
   flex-shrink: 1;
 `
 
-export const DifficultyTags = styled(Tags)`
+export const DifficultyTagsContainer = styled(TagsContainer)`
   display: flex;
   margin: 0 0 auto;
   flex-shrink: 1;
   justify-content: flex-start;
 `
 
-export const ModuleTags = styled(Tags)`
+export const ModuleTagsContainer = styled(TagsContainer)`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -93,7 +101,8 @@ export const LanguageTag = ({
             labelProps={{ variant: "h6", component: "h3" }}
             title={otherLanguages
               .map((language) => language.name)
-              .sort()
+              .filter(notEmptyOrEmptyString)
+              .sort((a, b) => a.localeCompare(b))
               .join(", ")}
             outlined={false}
             IconProps={{
@@ -107,6 +116,42 @@ export const LanguageTag = ({
     />
   )
 }
+
+interface TagsProps {
+  course: CourseFieldsFragment
+  abbreviated?: boolean
+}
+
+const tagHasName = (
+  tag: TagCoreFieldsFragment,
+): tag is TagCoreFieldsFragment & { name: string } =>
+  typeof tag.name === "string"
+
+export const LanguageTags = React.memo(({ course, abbreviated }: TagsProps) => {
+  const langTags = course.tags?.filter((tag) => tag.types?.includes("language"))
+  const allowed = langTags
+    ?.filter((tag) => allowedLanguages.includes(tag.id))
+    .sort(sortByLanguage)
+  const otherLanguages = langTags?.filter(
+    (tag) => !allowedLanguages.includes(tag.id),
+  )
+
+  return (
+    <>
+      {allowed.map((tag) => (
+        <LanguageTag
+          key={tag.id}
+          size="small"
+          variant="filled"
+          label={abbreviated && tag.abbreviation ? tag.abbreviation : tag.name}
+          {...(tag.id === "other_language" && {
+            otherLanguages,
+          })}
+        />
+      ))}
+    </>
+  )
+})
 
 const DifficultyTagBase = styled(Tag)`
   background-color: ${colorSchemes["difficulty"]} !important;
@@ -141,10 +186,56 @@ export const DifficultyTag = ({
   </DifficultyTagContainer>
 )
 
+export const DifficultyTags = React.memo(
+  ({ course, abbreviated }: TagsProps) => (
+    <>
+      {course.tags
+        ?.filter((t) => t.types?.includes("difficulty"))
+        .filter(tagHasName)
+        .sort(sortByDifficulty)
+        .map((tag) => (
+          <DifficultyTag
+            key={tag.id}
+            size="small"
+            variant="filled"
+            label={
+              abbreviated && tag.abbreviation ? tag.abbreviation : tag.name
+            }
+            difficulty={tag.id}
+          />
+        ))}
+    </>
+  ),
+)
+
 export const ModuleTag = styled(Tag)`
   background-color: ${colorSchemes["module"]} !important;
   border-color: ${colorSchemes["module"]} !important;
 `
+
+export const ModuleTags = React.memo(({ course, abbreviated }: TagsProps) => (
+  <>
+    {course.tags
+      ?.filter((tag) => tag.types?.includes("module"))
+      .filter(tagHasName)
+      .sort((a, b) => {
+        if (abbreviated) {
+          return (a.abbreviation ?? a.name).localeCompare(
+            b.abbreviation ?? b.name,
+          )
+        }
+        return a.name.localeCompare(b.name)
+      })
+      .map((tag) => (
+        <ModuleTag
+          key={tag.id}
+          size="small"
+          variant="filled"
+          label={abbreviated && tag.abbreviation ? tag.abbreviation : tag.name}
+        />
+      ))}
+  </>
+))
 
 const CircleContainer = styled("div")(
   ({ theme }) => `

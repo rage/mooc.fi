@@ -55,7 +55,7 @@ for (const tab of Object.keys(tabs)) {
 
 function Profile() {
   const { currentUser } = useLoginStateContext()
-  const _tab = useQueryParameter("tab", false) ?? "points"
+  const _tab = useQueryParameter("tab", { enforce: false }) ?? "points"
   const { pathname } = useRouter()
   const [, startTransition] = useTransition()
   const [tab, setTab] = useState(tabs[_tab] ?? 0)

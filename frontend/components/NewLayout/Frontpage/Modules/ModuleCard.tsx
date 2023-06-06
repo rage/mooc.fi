@@ -37,7 +37,7 @@ export const ModuleCard = ({
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle variant="h3" component="h2">
+        <CardTitle variant="h4" component="h2">
           {name}
         </CardTitle>
         {image ? (

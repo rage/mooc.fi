@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { omit } from "lodash"
 
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
@@ -44,78 +44,51 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
-  const details = {
-    slug: org.slug,
-    verified_at: org.verified_at,
-    verified: org.verified ?? false,
-    disabled: org.disabled ?? false,
-    tmc_created_at: org.created_at,
-    tmc_updated_at: org.updated_at,
-    hidden: org.hidden ?? false,
-    creator: user !== null ? { connect: { id: user.id } } : undefined,
-    logo_file_name: org.logo_file_name,
-    logo_content_type: org.logo_content_type,
-    logo_file_size: parseLogoSize(org),
-    logo_updated_at: org.logo_updated_at,
-    phone: org.phone,
-    contact_information: org.contact_information,
-    email: org.email,
-    website: org.website,
-    pinned: org.pinned ?? false,
-  }
+  await prisma.$transaction(async (trx) => {
+    const details = {
+      ...omit(org, ["id", "creator_id"]),
+      verified: org.verified ?? false,
+      disabled: org.disabled ?? false,
+      hidden: org.hidden ?? false,
+      creator: user !== null ? { connect: { id: user.id } } : undefined,
+      logo_file_size: parseLogoSize(org),
+      pinned: org.pinned ?? false,
+    }
 
-  const existingOrganizations = await prisma.organization.findMany({
-    where: {
-      slug: org.slug,
-    },
-  })
-
-  let organization
-  if (existingOrganizations.length > 0) {
-    organization = await prisma.organization.update({
+    const organization = await trx.organization.upsert({
       where: {
         slug: org.slug,
       },
-      data: details,
+      create: {
+        ...details,
+        secret_key: await generateSecret(),
+      },
+      update: details,
+      include: {
+        organization_translations: true,
+      },
     })
-  } else {
-    organization = await prisma.organization.create({
-      data: await detailsWithSecret(details),
-    })
-  }
-  const translationDetails = {
-    language: "fi_FI", //placholder since there is no language information
-    name: org.name,
-    disabled_reason: org.disabled_reason,
-    information: org.information,
-    organization: { connect: { id: organization.id } },
-  }
-  const organizationTranslations =
-    (await prisma.organization
-      .findUnique({ where: { id: organization.id } })
-      .organization_translations({
-        where: { language: translationDetails.language },
-      })) ?? []
-  const organizationTranslationId = organizationTranslations.length
-    ? organizationTranslations[0].id
-    : null
-  if (organizationTranslationId != null) {
-    await prisma.organizationTranslation.update({
-      where: { id: organizationTranslationId },
-      data: translationDetails,
-    })
-  } else {
-    await prisma.organizationTranslation.create({ data: translationDetails })
-  }
-}
 
-const detailsWithSecret = async (
-  details: Omit<Prisma.OrganizationCreateInput, "secret_key">,
-): Promise<Prisma.OrganizationCreateInput> => {
-  return {
-    ...details,
-    secret_key: await generateSecret(),
-  }
+    const translationDetails = {
+      language: "fi_FI", //placeholder since there is no language information
+      name: org.name,
+      disabled_reason: org.disabled_reason,
+      information: org.information,
+      organization: { connect: { id: organization.id } },
+    }
+
+    await trx.organizationTranslation.upsert({
+      where: {
+        id: organization.organization_translations.find(
+          (ot) => ot.language === translationDetails.language,
+        )?.id,
+        organization_id: organization.id,
+        language: translationDetails.language,
+      },
+      create: translationDetails,
+      update: translationDetails,
+    })
+  })
 }
 
 const getUserFromTmc = async (user_id: number) => {

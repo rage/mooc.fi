@@ -65,9 +65,9 @@ function UserSummaryView() {
   )
   const router = useRouter()
   const id = useQueryParameter("id")
-  const slug = useQueryParameter("slug", false)
-  const initialSort = useQueryParameter("sort", false)
-  const initialOrder = useQueryParameter("order", false)
+  const slug = useQueryParameter("slug", { enforce: false })
+  const initialSort = useQueryParameter("sort", { enforce: false })
+  const initialOrder = useQueryParameter("order", { enforce: false })
 
   const { loading, error, data } = useQuery(UserSummaryDocument, {
     variables: {

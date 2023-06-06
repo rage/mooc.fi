@@ -38,10 +38,10 @@ function useCourseSearch() {
   ])
 
   const initialSearchVariables = createInitialSearchVariables({
-    search: useQueryParameter("search", false),
-    hidden: useQueryParameter("hidden", false),
-    handledBy: useQueryParameter("handledBy", false),
-    status: useQueryParameter("status", false),
+    search: useQueryParameter("search", { enforce: false }),
+    hidden: useQueryParameter("hidden", { enforce: false }),
+    handledBy: useQueryParameter("handledBy", { enforce: false }),
+    status: useQueryParameter("status", { enforce: false }),
   })
 
   const [searchVariables, setSearchVariables] = useState<

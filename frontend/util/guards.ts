@@ -15,7 +15,6 @@ export const isNullOrUndefined = <TValue>(
   value: TValue | null | undefined,
 ): value is null | undefined => value === null || typeof value === "undefined"
 
-export const notEmptyOrEmptyString = (
-  value: unknown,
-): value is string | true | number =>
-  notEmpty(value) && value !== "" && value !== false
+export const notEmptyOrEmptyString = <TValue>(
+  value: TValue | null | undefined,
+): value is TValue => notEmpty(value) && value !== "" && value !== false
