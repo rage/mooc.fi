@@ -24,7 +24,7 @@ const pragueStatsEmailer = async () => {
       AND ucs.other->>'bai_completion' = 'true'
       AND u.email ILIKE '%@vse.cz'
     GROUP BY co.tier, u.email, co.completion_date
-    ORDER BY co.tier, u.email, co.completion_date;
+    ORDER BY co.completion_date DESC, u.email, co.tier;
   `
 
   const tiers: Record<number, Array<string>> = {}
