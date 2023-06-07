@@ -8,7 +8,7 @@ import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
-import { colorSchemes } from "./common"
+import { courseColorSchemes } from "./common"
 import {
   DifficultyTags,
   DifficultyTagsContainer,
@@ -46,7 +46,7 @@ const Container = styled("li", {
   ({ studyModule, ended }) => `
   ${ContainerBase.styles}
   background-color: ${
-    studyModule ? colorSchemes[studyModule] : colorSchemes["other"]
+    studyModule ? courseColorSchemes[studyModule] : courseColorSchemes["other"]
   };
   height: 100%;
   container-type: inline-size;
@@ -91,7 +91,7 @@ const Title = styled(CardTitle)(
   border-radius: 0.2rem;
   width: 70%;
   padding-left: 1.5rem;
- 
+
   ${theme.breakpoints.down("sm")} {
     width: 80%;
     font-size: 90%;

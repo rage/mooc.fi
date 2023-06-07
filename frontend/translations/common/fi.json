@@ -69,6 +69,8 @@
     "selectAll": "Valitse kaikki",
     "unscheduled": "Aikatauluton",
     "showCourse": "Näytä kurssi",
+    "cr": "op",
+    "hour": "t",
     "ectsHoursExplanation1": "Kurssin arvoitu työmäärä, joka on arvioitu kurssista saatavien opintopisteiden perusteella. Kurssista saa ",
     "ectsHoursExplanation2": "opintopistettä. Helsingin yliopistolla yksi opintopiste vaatii noin 27 tunnin työmäärää.",
     "noResults": "Ei tuloksia",

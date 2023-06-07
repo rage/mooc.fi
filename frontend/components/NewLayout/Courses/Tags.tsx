@@ -8,9 +8,9 @@ import { styled } from "@mui/material/styles"
 
 import {
   allowedLanguages,
-  colorSchemes,
   sortByDifficulty,
   sortByLanguage,
+  tagColorSchemes,
 } from "./common"
 import { InfoTooltip } from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
@@ -21,8 +21,8 @@ import { CourseFieldsFragment, TagCoreFieldsFragment } from "/graphql/generated"
 
 const Tag = styled(Chip)`
   border-radius: 2rem;
-  background-color: ${colorSchemes["other"]} !important;
-  border-color: ${colorSchemes["other"]} !important;
+  background-color: ${tagColorSchemes["other"]} !important;
+  border-color: ${tagColorSchemes["other"]} !important;
   color: #fff !important;
   font-weight: bold;
   text-transform: uppercase;
@@ -62,8 +62,8 @@ export const ModuleTagsContainer = styled(TagsContainer)`
 `
 
 const LanguageTagBase = styled(Tag)`
-  background-color: ${colorSchemes["language"]} !important;
-  border-color: ${colorSchemes["language"]} !important;
+  background-color: ${tagColorSchemes["language"]} !important;
+  border-color: ${tagColorSchemes["language"]} !important;
   border-radius: 3rem;
   min-width: 40px;
   max-height: 40px;
@@ -154,8 +154,8 @@ export const LanguageTags = React.memo(({ course, abbreviated }: TagsProps) => {
 })
 
 const DifficultyTagBase = styled(Tag)`
-  background-color: ${colorSchemes["difficulty"]} !important;
-  border-color: ${colorSchemes["difficulty"]} !important;
+  background-color: ${tagColorSchemes["difficulty"]} !important;
+  border-color: ${tagColorSchemes["difficulty"]} !important;
 `
 
 const DifficultyTagContainer = styled("div")`
@@ -209,8 +209,8 @@ export const DifficultyTags = React.memo(
 )
 
 export const ModuleTag = styled(Tag)`
-  background-color: ${colorSchemes["module"]} !important;
-  border-color: ${colorSchemes["module"]} !important;
+  background-color: ${tagColorSchemes["module"]} !important;
+  border-color: ${tagColorSchemes["module"]} !important;
 `
 
 export const ModuleTags = React.memo(({ course, abbreviated }: TagsProps) => (

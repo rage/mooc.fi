@@ -6,6 +6,8 @@ import { styled } from "@mui/material/styles"
 
 import ModuleNaviList from "./ModuleNaviList"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
+import { useTranslator } from "/hooks/useTranslator"
+import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
@@ -93,6 +95,7 @@ const Arrow = styled("div")`
 
 export function ModuleNavigation() {
   const { locale = "fi" } = useRouter()
+  const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(StudyModulesDocument, {
     variables: { language },
@@ -100,9 +103,9 @@ export function ModuleNavigation() {
 
   return (
     <SectionContainer id="modules" style={{ marginBottom: "2rem" }}>
-      <SectionTitle>Opintokokonaisuudet</SectionTitle>
+      <SectionTitle>{t("studyModulesTitle")}</SectionTitle>
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
-      <Button href="/_new/study-modules">Näytä kaikki kokonaisuudet</Button>
+      <Button href="/_new/study-modules">{t("showAllModules")}</Button>
     </SectionContainer>
   )
 }

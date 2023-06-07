@@ -13,7 +13,9 @@ import {
 } from "/components/NewLayout/Common/Card"
 import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import moocLogo from "/public/images/new/logos/moocfi-transparent.svg"
+import HomeTranslations from "/translations/home"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
@@ -93,6 +95,7 @@ export const CoursesGrid = styled("div")(
 
 function SelectedCourses() {
   const { locale = "fi" } = useRouter()
+  const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(CoursesDocument, {
     variables: { language },
@@ -101,7 +104,7 @@ function SelectedCourses() {
 
   return (
     <SectionContainer id="courses">
-      <SectionTitle>Suosittuja kursseja</SectionTitle>
+      <SectionTitle>{t("popularCoursesTitle")}</SectionTitle>
       {loading && <p>Loading...</p>}
       <CoursesGrid>
         {data?.courses &&
@@ -111,7 +114,7 @@ function SelectedCourses() {
               <CommonCourseCard key={course.id} course={course} />
             ))}
       </CoursesGrid>
-      <Button href="/_new/courses">Näytä kaikki kurssit</Button>
+      <Button href="/_new/courses">{t("showAllCourses")}</Button>
     </SectionContainer>
   )
 }
