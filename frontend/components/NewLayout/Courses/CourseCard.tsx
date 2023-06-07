@@ -8,7 +8,7 @@ import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
-import { allowedLanguages, courseColorSchemes, sortByLanguage } from "./common"
+import { courseColorSchemes } from "./common"
 import {
   DifficultyTags,
   DifficultyTagsContainer,

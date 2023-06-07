@@ -8,9 +8,9 @@ import { styled } from "@mui/material/styles"
 
 import {
   allowedLanguages,
-  tagColorSchemes,
   sortByDifficulty,
   sortByLanguage,
+  tagColorSchemes,
 } from "./common"
 import { InfoTooltip } from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"

@@ -11,13 +11,6 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesWithCoursesDocument } from "/graphql/generated"
 
-// const colorSchemes = {
-//   csb: "#08457A",
-//   programming: "#065853",
-//   cloud: "#1A2333",
-//   ai: "#51309F",
-// }
-
 const ModuleList = styled("ul")`
   list-style: none;
   list-style-position: inside;
@@ -52,9 +45,17 @@ export function StudyModuleList() {
           variant="small"
         />
         <ModuleList>
-          <ListItemSkeleton backgroundColor={moduleColorSchemes.csb} />
-          <ListItemSkeleton backgroundColor={moduleColorSchemes.programming} />
-          <ListItemSkeleton backgroundColor={moduleColorSchemes.cloud} />
+          <ListItemSkeleton
+            backgroundColor={moduleColorSchemes["cyber-security"]!}
+          />
+          <ListItemSkeleton
+            backgroundColor={moduleColorSchemes["programming"]!}
+          />
+          <ListItemSkeleton
+            backgroundColor={
+              moduleColorSchemes["pilvipohjaiset-websovellukset"]!
+            }
+          />
         </ModuleList>
       </>
     )
@@ -68,11 +69,15 @@ export function StudyModuleList() {
         variant="small"
       />
       <ModuleList>
-        {data?.study_modules?.map((studyModule, index) => (
+        {data?.study_modules?.map((studyModule) => (
           <ListItem
             studyModule={studyModule}
             key={studyModule.id}
-            backgroundColor={Object.values(moduleColorSchemes)[index]}
+            backgroundColor={
+              studyModule?.slug
+                ? moduleColorSchemes[studyModule.slug]!
+                : moduleColorSchemes["other"]!
+            }
           />
         ))}
       </ModuleList>
