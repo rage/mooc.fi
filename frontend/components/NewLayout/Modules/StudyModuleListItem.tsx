@@ -112,6 +112,7 @@ const ImageBackground = styled("span", {
   shouldForwardProp: (prop) => prop !== "src",
 })<{ src: string }>`
   ${ImageBackgroundBase.styles};
+  filter: brightness(0) invert(1) opacity(20%);
   background-image: url(${(props) => props.src});
 `
 

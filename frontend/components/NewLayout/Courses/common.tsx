@@ -32,9 +32,9 @@ export const courseStatuses: readonly CourseStatus[] = [
   CourseStatus.Ended,
 ]
 export const courseColorSchemes: Record<string, PaletteColor[keyof PaletteColor]> = {
-  "cyber-security": newTheme.palette.blue.dark2!,
+  "cyber-security": newTheme.palette.crimson.dark2!,
   programming: newTheme.palette.green.dark2!,
-  "pilvipohjaiset-websovellukset": newTheme.palette.crimson.dark2!,
+  "pilvipohjaiset-websovellukset": newTheme.palette.blue.dark2!,
   "tekoaly-ja-data": newTheme.palette.purple.dark2!,
   other: newTheme.palette.gray.dark1!,
   program: newTheme.palette.green.dark2, // dev
@@ -51,9 +51,9 @@ export const tagColorSchemes: Record<string, PaletteColor[keyof PaletteColor]> =
 }
 
 export const moduleColorSchemes: Record<string, PaletteColor[keyof PaletteColor]> = {
-  "cyber-security": newTheme.palette.blue.dark3!,
+  "cyber-security": newTheme.palette.crimson.dark3!,
   programming: newTheme.palette.green.dark3!,
-  "pilvipohjaiset-websovellukset": newTheme.palette.crimson.dark3!,
+  "pilvipohjaiset-websovellukset": newTheme.palette.blue.dark3!,
   "tekoaly-ja-data": newTheme.palette.purple.dark3!,
   program: newTheme.palette.green.dark2, // dev
   webdev: newTheme.palette.blue.dark2, // dev
