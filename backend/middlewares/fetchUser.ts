@@ -3,10 +3,11 @@ import { MiddlewareFn } from "nexus/dist/plugin"
 
 import { Role } from "../accessControl"
 import { Context } from "../context"
+import { UserInfo } from "../domain/UserInfo"
 import { GraphQLAuthenticationError } from "../lib/errors"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { UserInfo } from "/domain/UserInfo"
+import { hashUserToken } from "../util/hashUser"
 
 const authMiddlewareFn: MiddlewareFn = async (
   root,
@@ -88,7 +89,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
         {
           prefix: "userdetails",
           expireTime: 3600,
-          key: rawToken,
+          key: hashUserToken(rawToken),
         },
         ctx,
       )) ?? null

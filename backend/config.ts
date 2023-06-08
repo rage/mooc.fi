@@ -92,6 +92,8 @@ export const TMC_USERNAME = process.env.TMC_USERNAME
 export const RATELIMIT_PROTECTION_SAFE_API_KEY =
   process.env.RATELIMIT_PROTECTION_SAFE_API_KEY || ""
 
+export const USER_HASH_SECRET = process.env.USER_HASH_SECRET || ""
+
 export const PUBLIC_KEY = process.env.PUBLIC_KEY
 export const PRIVATE_KEY = process.env.PRIVATE_KEY
 export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"

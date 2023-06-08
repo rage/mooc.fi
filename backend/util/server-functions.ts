@@ -7,6 +7,7 @@ import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
 import { err, ok, Result } from "../util/result"
+import { hashUserToken } from "./hashUser"
 
 interface GetUserReturn {
   user: User
@@ -90,7 +91,7 @@ export function getUser({ knex, logger }: BaseContext) {
           {
             prefix: "userdetails",
             expireTime: 3600,
-            key: rawToken,
+            key: hashUserToken(rawToken),
           },
           {
             logger,
