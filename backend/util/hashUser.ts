@@ -4,6 +4,8 @@ import { pick } from "lodash"
 
 import { User } from "@prisma/client"
 
+import { USER_HASH_SECRET } from "../config"
+
 const hashUser = (user: User) =>
   createHash("sha512")
     .update(
@@ -18,6 +20,11 @@ const hashUser = (user: User) =>
         ]),
       ).join("-"),
     )
+    .digest("hex")
+
+export const hashUserToken = (token: string) =>
+  createHash("sha256")
+    .update(token + USER_HASH_SECRET)
     .digest("hex")
 
 export default hashUser
