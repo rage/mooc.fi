@@ -38,7 +38,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis
+                  name: new-redis
                   key: redis-password
             - name: KAFKA_TOP_OF_THE_QUEUE
               value: "1"

@@ -2,7 +2,13 @@ import parseJSON from "json-parse-even-better-errors"
 import * as redis from "redis"
 import * as winston from "winston"
 
-import { isTest, NEXUS_REFLECTION, REDIS_PASSWORD, REDIS_URL } from "../config"
+import {
+  isTest,
+  NEXUS_REFLECTION,
+  REDIS_DB,
+  REDIS_PASSWORD,
+  REDIS_URL,
+} from "../config"
 import { BaseContext } from "../context"
 import { isNullOrUndefined } from "../util/isNullOrUndefined"
 
@@ -44,6 +50,7 @@ const getRedisClient = (): typeof redisClient => {
   const client = redis.createClient({
     url: REDIS_URL,
     password: REDIS_PASSWORD,
+    database: REDIS_DB,
     socket: {
       reconnectStrategy: redisReconnectStrategy(),
     },
