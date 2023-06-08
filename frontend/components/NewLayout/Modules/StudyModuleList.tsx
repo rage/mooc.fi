@@ -3,19 +3,13 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import { styled } from "@mui/material/styles"
 
+import { moduleColorSchemes } from "../Courses/common"
 import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
 import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
 import ErrorMessage from "/components/ErrorMessage"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesWithCoursesDocument } from "/graphql/generated"
-
-const colorSchemes = {
-  csb: "#08457A",
-  programming: "#065853",
-  cloud: "#1A2333",
-  ai: "#51309F",
-}
 
 const ModuleList = styled("ul")`
   list-style: none;
@@ -51,9 +45,17 @@ export function StudyModuleList() {
           variant="small"
         />
         <ModuleList>
-          <ListItemSkeleton backgroundColor={colorSchemes.csb} />
-          <ListItemSkeleton backgroundColor={colorSchemes.programming} />
-          <ListItemSkeleton backgroundColor={colorSchemes.cloud} />
+          <ListItemSkeleton
+            backgroundColor={moduleColorSchemes["cyber-security"]!}
+          />
+          <ListItemSkeleton
+            backgroundColor={moduleColorSchemes["programming"]!}
+          />
+          <ListItemSkeleton
+            backgroundColor={
+              moduleColorSchemes["pilvipohjaiset-websovellukset"]!
+            }
+          />
         </ModuleList>
       </>
     )
@@ -67,11 +69,15 @@ export function StudyModuleList() {
         variant="small"
       />
       <ModuleList>
-        {data?.study_modules?.map((studyModule, index) => (
+        {data?.study_modules?.map((studyModule) => (
           <ListItem
             studyModule={studyModule}
             key={studyModule.id}
-            backgroundColor={Object.values(colorSchemes)[index]}
+            backgroundColor={
+              studyModule?.slug
+                ? moduleColorSchemes[studyModule.slug]!
+                : moduleColorSchemes["other"]!
+            }
           />
         ))}
       </ModuleList>
