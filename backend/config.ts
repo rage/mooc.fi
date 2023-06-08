@@ -109,6 +109,7 @@ export const QUIZNATOR_TOKEN = process.env.QUIZNATOR_TOKEN
 
 export const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:7001"
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD
+export const REDIS_DB = process.env.REDIS_DB ? Number(process.env.REDIS_DB) : 4
 
 export const PRISMA_LOG_LEVELS = process.env.PRISMA_LOG_LEVELS
 

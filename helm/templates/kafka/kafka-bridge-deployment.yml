@@ -50,7 +50,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis
+                  name: new-redis
                   key: redis-password
             - name: UV_THREADPOOL_SIZE
               value: "8"
