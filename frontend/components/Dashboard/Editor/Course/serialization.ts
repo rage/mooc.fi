@@ -133,6 +133,7 @@ export const toCourseForm = ({
           language: tagTranslation.language,
           name: tagTranslation.name,
           description: tagTranslation.description ?? undefined,
+          abbreviation: tagTranslation.abbreviation ?? undefined,
         })),
       })) ?? [],
   }
@@ -236,7 +237,13 @@ export const fromCourseForm = ({
     | CourseUpsertArg["study_modules"]
 
   const tags = values?.tags?.map((tag) => ({
-    ...omit(tag, ["__typename", "_id", "name", "tag_translations"]),
+    ...omit(tag, [
+      "__typename",
+      "_id",
+      "name",
+      "abbreviation",
+      "tag_translations",
+    ]),
     id: tag._id,
   }))
 
