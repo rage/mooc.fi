@@ -191,6 +191,12 @@ export const languageInfo = [
     country: "English (US)",
     langName: "English",
   },
+  {
+    language: "es-uy",
+    completion_language: "es_UY",
+    country: "Uruguay",
+    langName: "Spanish (Uruguay)",
+  },
 ] as const
 
 export type LanguageInfo = (typeof languageInfo)[number]
