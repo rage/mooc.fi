@@ -13,6 +13,7 @@ const updateBAICompletionTiers = async () => {
   const course = await prisma.course.findUnique({
     where: { id: PARENT_COURSE_ID },
   })
+  await prisma.$disconnect()
 
   if (!course) {
     logger.error(new Error("couldn't find parent course!"))

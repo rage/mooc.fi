@@ -89,6 +89,7 @@ const fetchUserAppDatum = async () => {
     }
 
     if (!course) {
+      await prisma.$disconnect()
       process.exit(1)
     }
 
@@ -154,6 +155,7 @@ const fetchUserAppDatum = async () => {
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
 
+  await prisma.$disconnect()
   process.exit(0)
 }
 
