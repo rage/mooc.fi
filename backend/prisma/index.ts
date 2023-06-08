@@ -10,7 +10,9 @@ export const createPrismaClient = (args?: Prisma.PrismaClientOptions) => {
     ...args,
   })
 
-  return applyExtensions(initialPrisma)
+  const extendedPrisma = applyExtensions(initialPrisma)
+
+  return extendedPrisma
 }
 
 declare global {

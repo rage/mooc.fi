@@ -19,6 +19,7 @@ const fetchOrganizations = async () => {
     logger.info(`Upserting organization ${org.slug}`)
     await upsertOrganization(org)
   }
+  await prisma.$disconnect()
 }
 
 const parseLogoSize = (organization: OrganizationInfo) => {

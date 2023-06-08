@@ -61,6 +61,8 @@ export const syncTMCUsers = async (
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
 
+  await ctx.prisma.$disconnect()
+
   return {
     deletedUsers,
     updatedUsers,

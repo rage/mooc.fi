@@ -91,6 +91,7 @@ const fetchUserFieldValues = async () => {
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
 
+  await prisma.$disconnect()
   process.exit(0)
 }
 

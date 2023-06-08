@@ -90,6 +90,7 @@ const fetch = async () => {
     }
   }
   logger.info("Done")
+  await prisma.$disconnect()
   process.exit(0)
 }
 

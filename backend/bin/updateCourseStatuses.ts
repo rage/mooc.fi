@@ -64,7 +64,10 @@ const updateCourseStatuses = async () => {
     await kafkaProducer.queueProducerMessage(msg)
   }
   logger.info("Disconnecting from Kafka")
+
   await kafkaProducer.disconnect()
+  await prisma.$disconnect()
+
   logger.info("Done")
   process.exit(0)
 }
