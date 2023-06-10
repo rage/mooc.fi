@@ -117,7 +117,12 @@ const getUserFromTmc = async (user_id: number) => {
   })
 }
 
-fetchOrganizations().then(() => {
-  logger.info("Done")
-  process.exit(0)
-})
+fetchOrganizations()
+  .then(() => {
+    logger.info("Done")
+    process.exit(0)
+  })
+  .catch((e) => {
+    logger.error(e)
+    process.exit(1)
+  })

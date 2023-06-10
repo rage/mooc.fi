@@ -122,5 +122,5 @@ fetch().catch((error) => {
   } else {
     logger.error(new AvoinError("Error fetching", {}, error))
   }
-  throw error
+  process.exit(1)
 })

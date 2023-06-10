@@ -57,4 +57,7 @@ const updateBAICompletionTiers = async () => {
   process.exit(0)
 }
 
-updateBAICompletionTiers()
+updateBAICompletionTiers().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})

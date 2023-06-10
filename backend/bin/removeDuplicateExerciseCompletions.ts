@@ -75,7 +75,8 @@ if (isProduction && !CIRCLECI) {
     .then(() => {
       process.exit(0)
     })
-    .catch(() => {
+    .catch((e) => {
+      _logger.error(e)
       process.exit(1)
     })
 }

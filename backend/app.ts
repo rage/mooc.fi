@@ -44,4 +44,7 @@ const startApp = async () => {
   }
 }
 
-startApp()
+startApp().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})

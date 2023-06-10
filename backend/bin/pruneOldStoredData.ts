@@ -32,4 +32,7 @@ const pruneOldStoredData = async () => {
 
 pruneOldStoredData()
   .then(() => process.exit(0))
-  .catch(() => process.exit(1))
+  .catch((e) => {
+    logger.error(e)
+    process.exit(1)
+  })

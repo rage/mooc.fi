@@ -69,4 +69,7 @@ const updateCourseStatuses = async () => {
   process.exit(0)
 }
 
-updateCourseStatuses()
+updateCourseStatuses().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})
