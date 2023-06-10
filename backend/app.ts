@@ -36,6 +36,7 @@ const startApp = async () => {
   attachPrismaEvents(ctx)
 
   if (!NEXUS_REFLECTION) {
+    await ctx.prisma.$connect()
     httpServer.listen(4000, () => {
       console.log("server running on port 4000")
     })

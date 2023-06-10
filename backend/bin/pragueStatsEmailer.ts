@@ -63,8 +63,8 @@ const pragueStatsEmailer = async () => {
 }
 
 pragueStatsEmailer()
-  .then(() => process.exit(0))
+  .then(() => prisma.$disconnect().then(() => process.exit(0)))
   .catch((error) => {
     logger.error(error)
-    process.exit(1)
+    return prisma.$disconnect().then(() => process.exit(1))
   })

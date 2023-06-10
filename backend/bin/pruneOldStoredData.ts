@@ -31,8 +31,8 @@ const pruneOldStoredData = async () => {
 }
 
 pruneOldStoredData()
-  .then(() => process.exit(0))
-  .catch((e) => {
-    logger.error(e)
-    process.exit(1)
+  .then(() => prisma.$disconnect().then(() => process.exit(0)))
+  .catch((error) => {
+    logger.error(error)
+    return prisma.$disconnect().then(() => process.exit(1))
   })
