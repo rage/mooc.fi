@@ -1,6 +1,5 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import { URL } from "url"
-
-import { notEmpty } from "./util/notEmpty"
 
 export const isProduction = process.env.NODE_ENV === "production"
 export const isTest = process.env.NODE_ENV === "test"
@@ -21,34 +20,35 @@ export const isStaging = () =>
 export const DEBUG = Boolean(process.env.DEBUG)
 
 // database related
-export const DB_HOST = process.env.DB_HOST
-export const DB_PORT = Number(process.env.DB_PORT)
-export const DB_USER = process.env.DB_USER
-export const DB_PASSWORD = process.env.DB_PASSWORD
-export const DB_NAME = process.env.DB_NAME
 export const CIRCLECI = process.env.CIRCLECI
 export const DATABASE_URL =
   isTest && !CIRCLECI
     ? "postgres://prisma:prisma@localhost:5678/testing"
     : process.env.DATABASE_URL
 
+export const EXTENSION_PATH = "extensions"
+
+const defaultSearchPath = isProduction ? "moocfi$production" : "default$default"
+
 const url = new URL((DATABASE_URL || "").replaceAll('"', ""))
-url.searchParams.delete("schema")
-
-export const DATABASE_URL_WITHOUT_SCHEMA = url.href
-
-export const EXTENSION_PATH = "extensions" // CIRCLECI ? "public" : "extensions"
-
-export let SEARCH_PATH: Array<string>
-
-if (isProduction) {
-  SEARCH_PATH = [process.env.SEARCH_PATH || "moocfi$production"]
-} else {
-  SEARCH_PATH =
-    isTest && process.env.RUNNING_IN_CI
-      ? [process.env.SEARCH_PATH, EXTENSION_PATH].filter(notEmpty)
-      : [process.env.SEARCH_PATH || "default$default"]
+const searchPath = url.searchParams.get("schema")?.split(",") ?? []
+if (searchPath.length === 0) {
+  searchPath.push(defaultSearchPath)
 }
+if (isTest && process.env.RUNNING_IN_CI) {
+  searchPath.push(EXTENSION_PATH)
+}
+url.searchParams.delete("schema")
+const port = url.port ? Number(url.port) : 5432
+
+export const DB_HOST = url.hostname
+export const DB_PORT = !isNaN(port) ? port : 5432
+export const DB_USER = url.username
+export const DB_PASSWORD = url.password
+export const DB_NAME = url.pathname.replace("/", "") ?? undefined
+export const DATABASE_URL_WITHOUT_SCHEMA = url.href
+export const DB_CONNECTION_PARAMS = Object.fromEntries(url.searchParams)
+export const SEARCH_PATH = searchPath
 
 // sentry, new relic
 export const NEW_RELIC_LICENSE_KEY = process.env.NEW_RELIC_LICENSE_KEY
