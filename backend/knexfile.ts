@@ -1,19 +1,41 @@
-import { DATABASE_URL_WITHOUT_SCHEMA, SEARCH_PATH } from "./config"
+import { Knex } from "knex"
+
+import {
+  DB_CONNECTION_PARAMS,
+  DB_HOST,
+  DB_NAME,
+  DB_PASSWORD,
+  DB_PORT,
+  DB_USER,
+  SEARCH_PATH,
+} from "./config"
+
+const connection: Knex.PgConnectionConfig = {
+  host: DB_HOST,
+  port: DB_PORT,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
+  ...DB_CONNECTION_PARAMS,
+  application_name: `${
+    DB_CONNECTION_PARAMS?.["application_name"] ?? "moocfi"
+  }-knex`,
+}
 
 module.exports = {
   development: {
     client: "pg",
     searchPath: SEARCH_PATH,
-    connection: DATABASE_URL_WITHOUT_SCHEMA, // "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
+    connection,
   },
   test: {
     client: "pg",
-    connection: DATABASE_URL_WITHOUT_SCHEMA,
+    connection,
     searchPath: SEARCH_PATH,
   },
   production: {
     client: "pg",
-    connection: DATABASE_URL_WITHOUT_SCHEMA,
+    connection,
     searchPath: SEARCH_PATH,
     pool: {
       min: 2,

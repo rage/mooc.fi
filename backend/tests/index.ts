@@ -9,7 +9,12 @@ import winston from "winston"
 import type { ApolloServer } from "@apollo/server"
 import { User } from "@prisma/client"
 
-import { DATABASE_URL, DB_USER, DEBUG, EXTENSION_PATH } from "../config"
+import {
+  DATABASE_URL_WITHOUT_SCHEMA,
+  DB_USER,
+  DEBUG,
+  EXTENSION_PATH,
+} from "../config"
 import { ServerContext } from "../context"
 import binPrisma, {
   createPrismaClient,
@@ -171,21 +176,21 @@ function prismaTestContext() {
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `${DATABASE_URL}?schema=${schemaName}`
+      const databaseURLObject = new URL(DATABASE_URL_WITHOUT_SCHEMA)
+      databaseURLObject.searchParams.append("schema", schemaName)
+      databaseUrl = databaseURLObject.href
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
       knexClient = knex({
         client: "pg",
         connection: databaseUrl,
+        searchPath: [schemaName, EXTENSION_PATH],
         debug: DEBUG,
       })
 
       DEBUG && console.log(`running migrations ${schemaName}`)
       // Run the migrations to ensure our schema has the required structure
       await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
-      await knexClient.raw(
-        `SET SEARCH_PATH TO "${schemaName}","${EXTENSION_PATH}";`,
-      )
       await knexClient.migrate.latest({
         schemaName,
         database: databaseUrl,

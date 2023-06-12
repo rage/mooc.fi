@@ -42,7 +42,7 @@ function Module(props: ModuleProps) {
           (course) => course.status === CourseStatus.Active,
           (course) => course.status === CourseStatus.Upcoming,
         ],
-        ["desc", "desc", "desc"],
+        ["asc", "desc", "desc", "desc"],
       ),
     [studyModule?.courses],
   )
