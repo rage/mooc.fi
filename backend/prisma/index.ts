@@ -1,19 +1,8 @@
 import { Prisma, PrismaClient } from "@prisma/client"
 
-import { isDev } from "../config"
+import { DATABASE_URL, isDev } from "../config"
 import { logDefinition } from "../util/prismaLogger"
 import { applyExtensions } from "./extensions"
-
-export const createPrismaClient = (args?: Prisma.PrismaClientOptions) => {
-  const initialPrisma = new PrismaClient({
-    log: logDefinition,
-    ...args,
-  })
-
-  const extendedPrisma = applyExtensions(initialPrisma)
-
-  return extendedPrisma
-}
 
 declare global {
   // eslint-disable-next-line no-var
@@ -21,6 +10,22 @@ declare global {
 }
 
 let prisma: ReturnType<typeof createPrismaClient>
+
+export const createPrismaClient = (args?: Prisma.PrismaClientOptions) => {
+  const initialPrisma = new PrismaClient({
+    log: logDefinition,
+    datasources: {
+      db: {
+        url: DATABASE_URL,
+      },
+    },
+    ...args,
+  })
+
+  const extendedPrisma = applyExtensions(initialPrisma)
+
+  return extendedPrisma
+}
 
 if (global.prisma) {
   prisma = global.prisma

@@ -21,16 +21,15 @@ export const DEBUG = Boolean(process.env.DEBUG)
 
 // database related
 export const CIRCLECI = process.env.CIRCLECI
-export const DATABASE_URL =
+export const EXTENSION_PATH = "extensions"
+
+const rawDatabaseURL =
   isTest && !CIRCLECI
     ? "postgres://prisma:prisma@localhost:5678/testing"
     : process.env.DATABASE_URL
-
-export const EXTENSION_PATH = "extensions"
-
+const url = new URL((rawDatabaseURL ?? "").replaceAll('"', ""))
 const defaultSearchPath = isProduction ? "moocfi$production" : "default$default"
 
-const url = new URL((DATABASE_URL || "").replaceAll('"', ""))
 const searchPath = url.searchParams.get("schema")?.split(",") ?? []
 if (searchPath.length === 0) {
   searchPath.push(defaultSearchPath)
@@ -38,6 +37,26 @@ if (searchPath.length === 0) {
 if (isTest && process.env.RUNNING_IN_CI) {
   searchPath.push(EXTENSION_PATH)
 }
+
+const parsedConnectionLimit = Number(process.env.CONNECTION_LIMIT)
+export const CONNECTION_LIMIT =
+  isNaN(parsedConnectionLimit) || parsedConnectionLimit === 0
+    ? url.searchParams.get("connection_limit")
+    : parsedConnectionLimit
+
+if (CONNECTION_LIMIT) {
+  url.searchParams.set("connection_limit", CONNECTION_LIMIT.toString())
+} else {
+  url.searchParams.delete("connection_limit")
+}
+export const APPLICATION_NAME =
+  process.env.APPLICATION_NAME ??
+  url.searchParams.get("application_name") ??
+  "moocfi"
+url.searchParams.set("application_name", APPLICATION_NAME)
+
+export const DATABASE_URL = url.href
+
 url.searchParams.delete("schema")
 const port = url.port ? Number(url.port) : 5432
 

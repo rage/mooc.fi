@@ -1,6 +1,7 @@
 import { Knex } from "knex"
 
 import {
+  APPLICATION_NAME,
   DB_CONNECTION_PARAMS,
   DB_HOST,
   DB_NAME,
@@ -17,9 +18,7 @@ const connection: Knex.PgConnectionConfig = {
   password: DB_PASSWORD,
   database: DB_NAME,
   ...DB_CONNECTION_PARAMS,
-  application_name: `${
-    DB_CONNECTION_PARAMS?.["application_name"] ?? "moocfi"
-  }-knex`,
+  application_name: `${APPLICATION_NAME}-knex`,
 }
 
 module.exports = {
