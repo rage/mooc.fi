@@ -118,13 +118,14 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 4999) })
-          serverInstance = await new Promise((resolve) =>
+          serverInstance = await new Promise((resolve, reject) =>
             httpServer
               .listen(port, () => resolve(httpServer))
-              .on("error", (err) => {
-                throw err
-              }),
+              .on("error", reject),
           )
+          if (!serverInstance) {
+            throw new Error("no server instance")
+          }
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -163,14 +164,15 @@ function prismaTestContext() {
     EXECUTE(
       SELECT 'TRUNCATE TABLE ' 
         || string_agg(format('%I.%I', schemaname, tablename), ', ') 
-        || ' CASCADE' 
-      FROM pg_tables 
+        || ' RESTART IDENTITY CASCADE'
+      FROM pg_tables
       WHERE schemaname = '${schemaName}'
       AND tableowner = '${DB_USER}'
     ); 
   END $$;
   `)
   }
+
   return {
     async before() {
       // Generate a unique schema identifier for this test context
@@ -178,7 +180,9 @@ function prismaTestContext() {
       // Generate the pg connection string for the test schema
       const databaseURLObject = new URL(DATABASE_URL_WITHOUT_SCHEMA)
       databaseURLObject.searchParams.append("schema", schemaName)
+      databaseURLObject.searchParams.set("connection_limit", "10")
       databaseUrl = databaseURLObject.href
+      const databaseName = databaseURLObject.pathname.replace("/", "")
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
       knexClient = knex({
@@ -186,9 +190,18 @@ function prismaTestContext() {
         connection: databaseUrl,
         searchPath: [schemaName, EXTENSION_PATH],
         debug: DEBUG,
+        pool: {
+          min: 2,
+          max: 10,
+        },
       })
 
       DEBUG && console.log(`running migrations ${schemaName}`)
+      try {
+        await knexClient.raw(`CREATE DATABASE ${databaseName};`)
+      } catch {
+        // do nothing, test database probably exists
+      }
       // Run the migrations to ensure our schema has the required structure
       await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
       await knexClient.migrate.latest({
