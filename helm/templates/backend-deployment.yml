@@ -43,6 +43,8 @@ spec:
                   key: redis-password
             - name: NEW_RELIC_NO_CONFIG_FILE
               value: "true"
+            - name: CONNECTION_LIMIT
+              value: {{ default 0 .Values.backend.connectionLimit | quote }}
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"

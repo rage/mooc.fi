@@ -256,7 +256,7 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
 
           if (course_slug) {
             res = await (
-              client.$extends({}) as ExtendedPrismaClient
+              client.$extends({}) as ExtendedPrismaClient<typeof client>
             ).course.findUniqueOrAlias({
               where: {
                 slug: course_slug,
@@ -283,11 +283,14 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
   }),
 )
 
-export const applyExtensions = (prisma: PrismaClient) =>
+export const applyExtensions = <P extends PrismaClient = PrismaClient>(
+  prisma: P,
+) =>
   prisma
     .$extends(findManyPagination)
     .$extends(courseFindUniqueFns)
     .$extends(createFromTMC)
     .$extends(findUsercourseSettings)
 
-export type ExtendedPrismaClient = ReturnType<typeof applyExtensions>
+export type ExtendedPrismaClient<P extends PrismaClient = PrismaClient> =
+  ReturnType<typeof applyExtensions<P>>

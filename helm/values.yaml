@@ -4,28 +4,32 @@
 
 backend:
   replicaCount: 2
+  connectionLimit: 30
 
 frontend:
   replicaCount: 2
 
 kafkaBridge:
   replicaCount: 2
+  connectionLimit: 1
 
 kafkaConsumer:
-  exercises:
-    replicaCount: 1
-  userCourseProgress:
-    replicaCount: 1
-  userCourseProgressRealtime:
-    replicaCount: 1
-  userPoints:
-    replicaCount: 1
-  userPointsRealtime:
-    replicaCount: 1
-  userCoursePoints:
-    replicaCount: 6
-  userCoursePointsRealtime:
-    replicaCount: 1
+  connectionLimit: 1
+  topic:
+    exercises:
+      replicaCount: 1
+    userCourseProgress:
+      replicaCount: 1
+    userCourseProgressRealtime:
+      replicaCount: 1
+    userPoints:
+      replicaCount: 1
+    userPointsRealtime:
+      replicaCount: 1
+    userCoursePoints:
+      replicaCount: 6
+    userCoursePointsRealtime:
+      replicaCount: 1
 
 shibboTest:
   replicaCount: 0

@@ -1,23 +1,24 @@
+{{- $deploymentname := "kafka-consumer-exercises" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-consumer-exercises
+  name: {{ $deploymentname }}
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: kafka-consumer-exercises
+      app: {{ $deploymentname }}
       {{- include "helm.selectorLabels" . | nindent 6 }}
-  replicas: {{ .Values.kafkaConsumer.exercises.replicaCount }}
+  replicas: {{ .Values.kafkaConsumer.topic.exercises.replicaCount }}
   template:
     metadata:
       labels:
-        app: kafka-consumer-exercises
+        app: {{ $deploymentname }}
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: kafka-consumer-exercises
+        - name: {{ $deploymentname }}
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["sh", "-c", "npm run kafka-consumer-exercises"]
           imagePullPolicy: Always
@@ -40,6 +41,10 @@ spec:
                 secretKeyRef:
                   name: new-redis
                   key: redis-password
+            - name: CONNECTION_LIMIT
+              value: "{{ default .Values.kafkaConsumer.connectionLimit .Values.kafkaConsumer.topic.exercises.connectionLimit }}"
+            - name: APPLICATION_NAME
+              value: "{{ $deploymentname }}"
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
