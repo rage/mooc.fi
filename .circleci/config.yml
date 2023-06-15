@@ -123,7 +123,7 @@ jobs:
       - run:
           name: "Set up Prisma"
           command: |
-            pnpm enerate
+            pnpm generate
       - save_cache:
           key: backend-cache-{{ checksum "pnpm-lock.yaml" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
