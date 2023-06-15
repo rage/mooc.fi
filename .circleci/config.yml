@@ -82,7 +82,7 @@ jobs:
           path: ~/project
       - jq/install
       - run:
-          name: patch-package hash
+          name: Hash patches
           command: md5sum patches/* > patches.hash
       - run:
           name: "Setup pnpm store"
@@ -206,7 +206,7 @@ jobs:
           docker_layer_caching: true
       - jq/install
       - run:
-          name: patch-package hash
+          name: Hash patches
           command: md5sum backend/patches/* > backend/patches.hash
       - run:
           name: "Setup pnpm store"
