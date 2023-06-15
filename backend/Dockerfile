@@ -37,7 +37,7 @@ COPY --chown=node package.json /app/
 COPY --chown=node pnpm-lock.yaml /app/
 COPY --chown=node patches /app/patches
 
-RUN env BUILD_LIBRDKAFKA=0 pnpm ci --prefer-offline --frozen-lockfile
+RUN env BUILD_LIBRDKAFKA=0 pnpm i --prefer-offline --frozen-lockfile
 # when node image incorporates alpine 3.18
 # RUN rm -rf /node_modules/node-rdkafka/deps
 
