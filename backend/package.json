@@ -111,6 +111,7 @@
     "@babel/preset-env": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
+    "@prisma/internals": "^4.15.0",
     "@types/body-parser": "^1.19.2",
     "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.13",

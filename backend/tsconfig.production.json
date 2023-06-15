@@ -23,6 +23,7 @@
     "inlineSources": true,
     "noEmitHelpers": true,
     "importHelpers": true,
+    "preserveSymlinks": false,
     "sourceRoot": "/"
   },
   "include": [".", "./types", "types.d.ts"],
