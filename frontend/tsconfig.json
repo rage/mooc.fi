@@ -35,6 +35,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "preserveConstEnums": true,
+    "preserveSymlinks": false,
     "removeComments": false,
     "skipLibCheck": true,
     "sourceMap": true,
@@ -48,9 +49,10 @@
     "incremental": true,
     "maxNodeModuleJsDepth": 8,
     "typeRoots": [
-      "node_modules/@types",
+      "./node_modules/@types",
+      "./node_modules/**/@types",
       "types",
-      "node_modules/user-agent-data-types"
+      "./node_modules/user-agent-data-types"
     ],
     "plugins": [
       {

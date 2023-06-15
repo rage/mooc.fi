@@ -5,7 +5,7 @@ NC='\033[0m' # No Color
 
 echo "Typechecking..."
 cd backend
-npm run typecheck
+pnpm typecheck
 rc=$?;
 if [[ $rc != 0 ]]
 then
@@ -16,7 +16,7 @@ fi
 cd ..
 
 cd frontend
-npm run typecheck
+pnpm typecheck
 
 rc=$?;
 if [[ $rc != 0 ]]

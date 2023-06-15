@@ -22,7 +22,7 @@ spec:
           containers:
             - name: sync-tmc-users
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run sync-tmc-users"]
+              command: ["sh", "-c", "pnpm sync-tmc-users"]
               envFrom:
               - secretRef:
                   name: backend-secret

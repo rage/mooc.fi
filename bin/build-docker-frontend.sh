@@ -33,8 +33,10 @@ echo Building "$TAG"
 
 docker build . --cache-from eu.gcr.io/moocfi/moocfi-frontend:latest -f Dockerfile -t "$TAG" --load --progress=plain 
 
-echo "Copying node_modules and next cache from container to host"
+echo "Copying node_modules, pnpm store and next cache from container to host"
 docker create -ti --name frontend_tmp "$TAG" sh
+mkdir -p ~/.pnpm-store
+docker cp frontend_tmp:/node/.pnpm-store ~/.pnpm-store
 docker cp frontend_tmp:/app/node_modules node_modules
 mkdir -p .next/cache
 docker cp frontend_tmp:/app/.next/cache .next/cache

@@ -5,6 +5,7 @@ module.exports = {
   semi: false,
   trailingComma: "all",
   bracketSpacing: true,
+  plugins: ["@ianvs/prettier-plugin-sort-imports"],
   importOrder: [
     "<BUILTIN_MODULES>",
     "^react(-dom)?$",
@@ -23,4 +24,5 @@ module.exports = {
     "classProperties",
     "decorators-legacy",
   ],
+  importOrderTypeScriptVersion: "5.0.0",
 }

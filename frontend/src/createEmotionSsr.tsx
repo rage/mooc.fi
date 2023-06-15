@@ -30,7 +30,7 @@ export function createEmotionSsr(
     props: React.PropsWithChildren<{
       value: EmotionCache
     }>,
-  ) => React.JSX.Element | null = DefaultCacheProvider,
+  ) => React.ReactNode | React.JSX.Element | null = DefaultCacheProvider,
 ) {
   const { prepend, ...optionsWithoutPrependProp } = options
 

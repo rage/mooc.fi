@@ -1,7 +1,10 @@
-diff --git a/node_modules/nexus/dist/builder.js b/node_modules/nexus/dist/builder.js
-index 656750b..c6ff041 100644
---- a/node_modules/nexus/dist/builder.js
-+++ b/node_modules/nexus/dist/builder.js
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+deleted file mode 100644
+index d9f66d10fabc24e067257f088bf64c331cb9ff73..0000000000000000000000000000000000000000
+diff --git a/dist/builder.js b/dist/builder.js
+index 656750b96009fffb6d20b8a7e03f1e0cd8d49888..c6ff0415a69d3542915f3e464fa5049b94803220 100644
+--- a/dist/builder.js
++++ b/dist/builder.js
 @@ -807,8 +807,15 @@ class SchemaBuilder {
                  parentTypeConfig: typeConfig,
                  schemaConfig: this.config,

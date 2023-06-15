@@ -39,7 +39,7 @@ const config: CodegenConfig = {
             content: [
               "/**",
               " * This is an automatically generated file.",
-              " * Run `npm run graphql-codegen` to regenerate.",
+              " * Run `pnpm graphql-codegen` to regenerate.",
               " **/",
             ],
           },

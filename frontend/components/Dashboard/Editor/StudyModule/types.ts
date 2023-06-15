@@ -8,7 +8,7 @@ export interface StudyModuleFormValues extends FormValues {
   image: string
   order?: number
   // courses: any[]
-  study_module_translations: StudyModuleTranslationFormValues[]
+  study_module_translations?: StudyModuleTranslationFormValues[]
 }
 
 export interface StudyModuleTranslationFormValues extends FormValues {

@@ -9,6 +9,8 @@ import {
   stringArg,
 } from "nexus"
 
+import { Prisma } from "@prisma/client"
+
 import { isAdmin, Role } from "../accessControl"
 import { GraphQLAuthenticationError } from "../lib/errors"
 import { filterNullRecursive } from "../util/db-functions"
@@ -64,7 +66,9 @@ export const Exercise = objectType({
               { timestamp: "desc" },
               { updated_at: "desc" },
               filterNullRecursive(orderBy),
-            ].filter(notEmpty),
+            ].filter(
+              notEmpty,
+            ) as Prisma.Enumerable<Prisma.ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>,
           })
       },
     })

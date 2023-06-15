@@ -18,6 +18,7 @@ import { CourseFromSlugDocument, CourseStatus } from "/graphql/generated"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,
+  // @ts-expect-error: empty language is expected
   language: "",
   name: "",
   description: "",
@@ -47,6 +48,7 @@ export const initialValues: CourseFormValues = {
   language: "",
   teacher_in_charge_name: "",
   teacher_in_charge_email: "",
+  // @ts-expect-error: empty date is expected
   start_date: "",
   base64: false,
   start_point: false,
@@ -81,7 +83,7 @@ interface CourseEditSchemaArgs {
 }
 
 const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
-  return Yup.object().shape({
+  return Yup.object({
     name: Yup.string().required(t("validationRequired")),
     teacher_in_charge_name: Yup.string().required(
       t("courseTeacherNameRequired"),
@@ -140,15 +142,12 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
           return start && end ? start <= end : true
         },
       ),
-    ects: Yup.string().matches(
-      /(^\d+(\-\d+)?$|^$)/,
-      t("validationNumberRange"),
-    ),
+    ects: Yup.string().matches(/(^\d+(-\d+)?$|^$)/, t("validationNumberRange")),
     status: Yup.mixed<CourseStatus>()
       .oneOf(Object.keys(CourseStatus) as CourseStatus[])
       .required(t("validationRequired")),
     course_translations: Yup.array().of(
-      Yup.object().shape({
+      Yup.object({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
           .required(t("validationRequired"))
@@ -163,14 +162,11 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
           ),
         description: Yup.string().required(t("validationRequired")),
         instructions: Yup.string().optional(),
-        open_university_course_link: Yup.object()
-          .shape({
-            course_code: Yup.string().defined().strict(true),
-            link: Yup.string()
-              .url(t("validationValidUrl"))
-              .nullable()
-              .default(null),
-          })
+        open_university_course_link: Yup.object({
+          course_code: Yup.string().defined().strict(true),
+          link: Yup.string().url(t("validationValidUrl")).nullable().optional(),
+        })
+          .optional()
           .default(undefined),
       }),
     ),
@@ -179,7 +175,7 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
         slug: Yup.string()
           .required(t("validationRequired"))
           .trim()
-          .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
+          .matches(/^[^/\\\s]*$/, t("validationNoSpacesSlashes"))
           .test(
             "unique",
             t("validationTwoVariants"),
@@ -196,7 +192,7 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
         course_code: Yup.string()
           .required(t("validationRequired"))
           .trim()
-          .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
+          .matches(/^[^/\\\s]*$/, t("validationNoSpacesSlashes"))
           .test(
             "unique",
             t("validationTwoAliases"),
@@ -210,7 +206,7 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
     new_slug: Yup.string()
       .required(t("validationRequired"))
       .trim()
-      .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
+      .matches(/^[^/\\\s]*$/, t("validationNoSpacesSlashes"))
       .test(
         "unique",
         t("validationSlugInUse"),
@@ -264,7 +260,7 @@ const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
         variables: { slug: value },
       })
 
-      return !Boolean(data?.course?.id)
+      return !data?.course?.id
     } catch (e) {
       return true
     }

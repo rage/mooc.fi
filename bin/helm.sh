@@ -4,7 +4,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo "Linting..."
-npm run helm-lint
+pnpm helm-lint
 
 rc=$?;
 if [[ $rc != 0 ]]

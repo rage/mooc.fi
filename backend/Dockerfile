@@ -25,16 +25,19 @@ RUN rm -rf /var/cache/apk/*
 
 RUN mkdir -p /app && chown -R node /app
 
+RUN corepack enable \
+  && corepack prepare pnpm@latest-8 --activate \
+  && pnpm config set store-dir ~/.pnpm-store
+
 USER node
 
 WORKDIR /app
 
 COPY --chown=node package.json /app/
-COPY --chown=node package-lock.json /app/
+COPY --chown=node pnpm-lock.yaml /app/
 COPY --chown=node patches /app/patches
 
-ARG BUILD_LIBRDKAFKA=0
-RUN npm ci --prefer-offline --no-audit
+RUN env BUILD_LIBRDKAFKA=0 pnpm ci --prefer-offline --frozen-lockfile
 # when node image incorporates alpine 3.18
 # RUN rm -rf /node_modules/node-rdkafka/deps
 
@@ -42,18 +45,18 @@ COPY --chown=node . /app
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
-    && npm run download-env \
-    && npm run generate \
-    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
-RUN npm run build-sourcemap
-RUN npm run copy-env 
+    && pnpm download-env \
+    && pnpm generate \
+    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm build
+RUN pnpm build-sourcemap
+RUN pnpm copy-env
 
 ENV NODE_ENV=production
 
 EXPOSE 4000
 EXPOSE 7001
 
-CMD [ "npm", "run", "start" ]
+CMD [ "pnpm", "start" ]
 
 ARG GIT_COMMIT=""
 LABEL GIT_COMMIT=${GIT_COMMIT}

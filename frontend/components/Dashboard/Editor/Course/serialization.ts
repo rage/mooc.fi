@@ -44,8 +44,9 @@ export const toCourseForm = ({
     ]),
     language: course.language ?? "",
     support_email: course.support_email ?? "",
+    // @ts-expect-error: expected to be invalid initially
     start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
-    end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
+    end_date: course.end_date ? DateTime.fromISO(course.end_date) : undefined,
     start_point: course.start_point ?? false,
     promote: course.promote ?? false,
     hidden: course.hidden ?? false,
@@ -53,6 +54,7 @@ export const toCourseForm = ({
     order: course.order ?? undefined,
     study_module_order: course.study_module_order ?? undefined,
     status: course.status ?? CourseStatus.Upcoming,
+    // @ts-expect-error: language is expected to be invalid initially
     course_translations: (course.course_translations ?? []).map(
       (course_translation) => {
         const open_university_course_link =

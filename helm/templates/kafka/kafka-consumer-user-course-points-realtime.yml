@@ -20,7 +20,7 @@ spec:
       containers:
         - name: {{ $deploymentname }}
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "npm run kafka-consumer-user-course-points-realtime"]
+          command: ["sh", "-c", "pnpm kafka-consumer-user-course-points-realtime"]
           imagePullPolicy: Always
           ports:
             - name: backend-http

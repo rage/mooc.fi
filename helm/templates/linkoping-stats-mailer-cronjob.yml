@@ -23,7 +23,7 @@ spec:
           containers:
             - name: linkoping-stats-emailer
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run linkoping-stats-emailer"]
+              command: ["sh", "-c", "pnpm linkoping-stats-emailer"]
               envFrom:
                 - secretRef:
                     name: backend-secret

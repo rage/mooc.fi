@@ -1,7 +1,6 @@
+import { PropsOf } from "@emotion/react"
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { PropsFor } from "@mui/system"
 
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
@@ -25,7 +24,7 @@ const PartnerDividerWrapper = styled("section")`
   padding-left: 24px;
 `
 
-function PartnerDivider(props: PropsFor<typeof PartnerDividerWrapper>) {
+function PartnerDivider(props: PropsOf<typeof PartnerDividerWrapper>) {
   const t = useTranslator(CommonTranslations)
 
   return (

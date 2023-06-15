@@ -22,7 +22,7 @@ spec:
           containers:
             - name: prune-old-stored-data
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run prune-old-stored-data"]
+              command: ["sh", "-c", "pnpm prune-old-stored-data"]
               envFrom:
               - secretRef:
                   name: backend-secret

@@ -4,7 +4,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo "Running pre-push lint checks..."
-npm run eslint-pre-push
+pnpm eslint-pre-push
 
 rc=$?;
 if [[ $rc != 0 ]]
