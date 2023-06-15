@@ -30,6 +30,8 @@ if (NEXUS_REFLECTION) {
   require("sharp") // image library sharp seems to crash without this require
 }
 
+const PRISMA_PATH = path.resolve("./node_modules/.prisma/client")
+
 const DateTime = asNexusMethod(DateTimeResolver, "datetime")
 const Decimal = asNexusMethod(GraphQLDecimal, "decimal")
 const JSONObject = asNexusMethod(JSONObjectResolver, "json")
@@ -43,6 +45,9 @@ const createPlugins = () => {
     nexusPrisma({
       experimentalCRUD: true,
       paginationStrategy: "prisma",
+      inputs: {
+        prismaClient: PRISMA_PATH,
+      },
       outputs: {
         typegen: path.join(
           __dirname,
@@ -100,7 +105,7 @@ const createSchema = () =>
     sourceTypes: {
       modules: [
         {
-          module: require.resolve("@prisma/client/index.d.ts"),
+          module: `${PRISMA_PATH}/index.d.ts`,
           alias: "prisma",
         },
         { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
