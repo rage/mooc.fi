@@ -115,7 +115,7 @@ jobs:
           - backend-cache-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: "Install dependencies"
-          command: pnpm install --prefer-offline
+          command: pnpm install --prefer-offline --frozen-lockfile
       - run:
           name: "Set environment"
           command: |

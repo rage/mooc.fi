@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  output          = "../node_modules/.prisma/client"
+  output          = env("PRISMA_CLIENT_OUTPUT")
   previewFeatures = ["fullTextSearch", "clientExtensions", "postgresqlExtensions", "extendedWhereUnique", "filteredRelationCount"]
   // , "fieldReference", 
 }
