@@ -4,8 +4,6 @@
 
 Create `.env` files for backend and frontend. See examples and ask your local boffin for details.
 
-Install `docker-compose`, if not already installed.
-
 ## Development workflow
 
 Current `node` version is `18.16.0`.
@@ -30,7 +28,9 @@ npm run migrate
 npm run dev
 ```
 
-If the database doesn't seem to do anything, ie. no messages after the initial ones after running `docker-compose up` and the database queries are not getting through, run `docker-compose down` and try again. You can always run the database container in detached mode (`-d`) but then you won't see the logs live.
+If the database doesn't seem to do anything, ie. no messages after the initial ones after running `docker compose up` and the database queries are not getting through, run `docker compose down` and try again. You can always run the database container in detached mode (`-d`) but then you won't see the logs live.
+
+If you have used a development database with an older version of PostgreSQL and you want to keep your data, you will need to migrate it to the new version. See [here](docs/postgres.md) for instructions.
 
 Run `npm run prettier` in the root directory before committing. The commit runs hooks to check this as well as some linters, type checks etc.
 
