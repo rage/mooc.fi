@@ -40,7 +40,6 @@ export class Err<T, E> {
   hasError(): this is Err<never, E> {
     return !!this.error
   }
-
   hasValue() {
     return false
   }
