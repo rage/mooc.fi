@@ -81,7 +81,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
         logger.warn(saveResult.value.message)
       }
     } else {
-      if (saveResult.hasError()) {
+      if (saveResult.isErr()) {
         logger.error(saveResult.error)
       }
     }
