@@ -228,8 +228,10 @@ jobs:
           name: Hash patches
           command: md5sum backend/patches/* > backend/patches.hash
       - run:
-          name: "Setup pnpm store"
+          name: "Setup pnpm"
           command: |
+            corepack enable
+            corepack prepare pnmp@latest-8 --activate
             pnpm config set store-dir ~/.pnpm-store
             pnpm config set global-dir ~/.local
       - restore_cache:
