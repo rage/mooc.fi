@@ -100,7 +100,7 @@ const createSchema = () =>
     sourceTypes: {
       modules: [
         {
-          module: require.resolve(".prisma/client/index.d.ts"),
+          module: require.resolve("@prisma/client/index.d.ts"),
           alias: "prisma",
         },
         { module: "@types/graphql-upload/index.d.ts", alias: "upload" },
