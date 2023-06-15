@@ -8,7 +8,7 @@ executors:
   node_postgres:
     docker:
       - image: cimg/node:18.16.0
-      - image: cimg/postgres:14.6
+      - image: cimg/postgres:15.3
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
