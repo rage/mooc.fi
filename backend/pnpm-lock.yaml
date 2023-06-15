@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@morgothulhu/nexus-plugin-prisma@0.43.14':
+    hash: 4l5ytcotgc5ns3edjo7iatunre
+    path: patches/@morgothulhu__nexus-plugin-prisma@0.43.14.patch
   nexus@1.3.0:
     hash: l7nylqlhntajpkidbotqlza6yu
     path: patches/nexus@1.3.0.patch
@@ -24,7 +27,7 @@ dependencies:
     version: 10.0.0(graphql@16.6.0)
   '@morgothulhu/nexus-plugin-prisma':
     specifier: ^0.43.14
-    version: 0.43.14(@prisma/client@4.15.0)(graphql@16.6.0)(nexus@1.3.0)
+    version: 0.43.14(patch_hash=4l5ytcotgc5ns3edjo7iatunre)(@prisma/client@4.15.0)(graphql@16.6.0)(nexus@1.3.0)
   '@prisma/client':
     specifier: ^4.15.0
     version: 4.15.0(prisma@4.15.0)
@@ -3007,7 +3010,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@morgothulhu/nexus-plugin-prisma@0.43.14(@prisma/client@4.15.0)(graphql@16.6.0)(nexus@1.3.0):
+  /@morgothulhu/nexus-plugin-prisma@0.43.14(patch_hash=4l5ytcotgc5ns3edjo7iatunre)(@prisma/client@4.15.0)(graphql@16.6.0)(nexus@1.3.0):
     resolution: {integrity: sha512-qzBRsQvnMNsKbUczF3Y6xQXJcZr8jGbOE2UBi5vk1FwkoPlPP7NW06oaOG16Tz3oNsja5iHoHV4gOP+wUyAlCg==}
     requiresBuild: true
     peerDependencies:
@@ -3030,6 +3033,7 @@ packages:
       - encoding
       - supports-color
     dev: false
+    patched: true
 
   /@mrleebo/prisma-ast@0.5.2:
     resolution: {integrity: sha512-v2jwtrLt/x5/MaF7Sucsz/do8tDUmiq3KA+UYdyZfr3OQ2IGXUtpNSXmdlvyRM+vQ7Abn/FxpLW/qqhZGB9vhQ==}
