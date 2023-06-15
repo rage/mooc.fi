@@ -46,6 +46,7 @@ COPY --chown=node . /app
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
+    && pnpm download-env \
     && pnpm generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm build
 RUN pnpm build-sourcemap
