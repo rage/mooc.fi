@@ -5,9 +5,11 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app && chown -R node /app
 RUN corepack enable \
-  && corepack prepare pnpm@latest-8 --activate \
-  && pnpm config set store-dir /home/node/.pnpm-store
+  && corepack prepare pnpm@latest-8 --activate
+
 USER node
+
+RUN pnpm config set store-dir ~/.pnpm-store
 
 WORKDIR /app
 
