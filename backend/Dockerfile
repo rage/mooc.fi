@@ -27,7 +27,7 @@ RUN mkdir -p /app && chown -R node /app
 
 RUN corepack enable \
   && corepack prepare pnpm@latest-8 --activate \
-  && pnpm config set store-dir ~/.pnpm-store
+  && pnpm config set store-dir /home/node/.pnpm-store
 
 USER node
 
