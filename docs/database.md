@@ -10,7 +10,6 @@
 
 Install `cloud_sql_proxy` ([installation](https://cloud.google.com/sql/docs/mysql/sql-proxy)) or alternatively add your IP range to the Google Cloud Console (SQL -> Connections -> Authorized networks)
 
-
 If you decided to install `cloud_sql_proxy`, in a terminal window run
 `cloud_sql_proxy -instances=moocfi:europe-north1:quizzes-backend=tcp:0.0.0.0:3306`
 to proxy production to localhost port 3306
@@ -35,15 +34,15 @@ After installing DataGrip
 
 1. add new data source --> postgresql
 2. give a name to the source
-3.
-* `localhost` in host field,
-* `3306` in port field,
-* `postgres` in user field,
-* db_secret from earlier to the password field,
-* `postgres` in database field
-4. in Schemas-tab, check which dbs you want (probably certificates, exams, moocfi, quizzes1, 2 and 3, staging, maybe others based on usage)
-5. refresh the data source in the database explorer to see the databases
-6. for `moocfi` database, set schema in console to `moocfi$production` 
+3. insert
+    * `localhost` in host field,
+    * `3306` in port field,
+    * `postgres` in user field,
+    * db_secret from earlier to the password field,
+    * `postgres` in database field
+5. in Schemas-tab, check which dbs you want (probably certificates, exams, moocfi, quizzes1, 2 and 3, staging, maybe others based on usage)
+6. refresh the data source in the database explorer to see the databases
+7. for `moocfi` database, set schema in console to `moocfi$production` 
     - You can save this on console/SQL file basis; needs to be set again for each new window, though: https://www.jetbrains.com/help/datagrip/schemas.html#save-a-search-path-between-ide-restarts
 
 Now you can run sql commands in console, test for example `select * from course;` and you should see courses listed in output window.
