@@ -152,8 +152,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "nexus@1.3.0": "patches/nexus@1.3.0.patch",
-      "@morgothulhu/nexus-plugin-prisma@0.43.14": "patches/@morgothulhu__nexus-plugin-prisma@0.43.14.patch"
+      "nexus@1.3.0": "patches/nexus@1.3.0.patch"
     }
   }
 }
