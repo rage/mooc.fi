@@ -1,5 +1,5 @@
+import * as fs from "fs"
 import * as path from "path"
-import { join } from "path"
 
 import {
   DateTimeResolver,
@@ -30,7 +30,9 @@ if (NEXUS_REFLECTION) {
   require("sharp") // image library sharp seems to crash without this require
 }
 
-const PRISMA_PATH = path.resolve("./node_modules/.prisma/client")
+const PRISMA_PATH = fs
+  .realpathSync("node_modules/.prisma/client")
+  .replace(/^.*?\/node_modules\/(.+)$/, "$1")
 
 const DateTime = asNexusMethod(DateTimeResolver, "datetime")
 const Decimal = asNexusMethod(GraphQLDecimal, "decimal")
@@ -99,7 +101,7 @@ const createSchema = () =>
       JSONObject,
     },
     contextType: {
-      module: join(process.cwd(), "context.ts"),
+      module: path.join(process.cwd(), "context.ts"),
       export: "Context",
     },
     sourceTypes: {

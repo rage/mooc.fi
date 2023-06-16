@@ -34,7 +34,7 @@
     "seedPoints": "node ./dist/bin/seedPoints.js",
     "seedExercises": "node ./dist/bin/seedExercises.js",
     "seedCompletions": "node ./dist/bin/seedCompletions.js",
-    "createExports": "node ./dist/bin/createExports.js",
+    "createExports": "node ./bin/createExports.js",
     "kafka-bridge": "node ./dist/bin/kafkaBridge.js",
     "background-emailer": "node ./dist/bin/backgroundEmailer.js",
     "update-course-statuses": "node ./dist/bin/updateCourseStatuses.js",

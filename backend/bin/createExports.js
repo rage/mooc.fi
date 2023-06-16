@@ -1,14 +1,14 @@
-import * as fs from "fs"
-import * as path from "path"
+const fs = require("fs")
+const path = require("path")
 
 const DIRECTORY = "graphql"
-const IGNORED_FILES: string[] = ["__test__"]
+const IGNORED_FILES = ["__test__"]
 const OUTPUT_FILE = "index.ts"
 
 // @ts-ignore: not used for now
-const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+const capitalize = (str) => str[0].toUpperCase() + str.slice(1)
 
-const createExports = (dir: string): string[] => {
+const createExports = (dir) => {
   const files = fs.readdirSync(dir)
 
   return files
@@ -20,8 +20,8 @@ const createExports = (dir: string): string[] => {
       const fullname = `${dir ? dir + "/" : ""}${filename}`
 
       if (fs.statSync(fullname).isDirectory()) {
-        const exports = createExports(fullname)
-        outputExports(exports, fullname)
+        const res = createExports(fullname)
+        outputExports(res, fullname)
       }
 
       const basename = path.parse(filename).name
@@ -29,7 +29,7 @@ const createExports = (dir: string): string[] => {
     })
 }
 
-const outputExports = (exports: string[], dir: string) => {
+const outputExports = (exports, dir) => {
   const exportFileContents = `// generated ${new Date()}\n\n${exports.join(
     "\n",
   )}`
