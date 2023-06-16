@@ -14,13 +14,11 @@
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,
-    "noImplicitReturns": true,    
+    "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "plugins": [{ "name": "nexus/typescript-language-service" }],
-    //"typeRoots": ["node_modules/@types", "types"]
   },
   "include": [".", "./bin/**/*", "./types", "types.d.ts"],
   "exclude": ["node_modules"]

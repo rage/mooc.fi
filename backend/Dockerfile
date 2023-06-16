@@ -1,4 +1,4 @@
-FROM node:18.16.0-alpine
+FROM node:18.16.0-alpine3.18
 
 RUN apk update && \
     apk add \
@@ -10,17 +10,10 @@ RUN apk update && \
       git \
       jq \
       bash \
-      python3
+      python3 \
+      librdkafka=2.1.1-r0 \
+      librdkafka-dev=2.1.1-r0
 
-RUN wget https://github.com/edenhill/librdkafka/archive/v2.1.1.tar.gz  -O - | tar -xz \
-  && cd librdkafka-2.1.1 \
-  && ./configure --prefix=/usr \
-  && make && make install \
-  && cd ..
-# when node image incorporates alpine 3.18
-#  RUN apk  add \
-#   librdkafka=2.1.1-r0 \
-#   librdkafka-dev=2.1.1-r0
 RUN rm -rf /var/cache/apk/*
 
 RUN mkdir -p /app && chown -R node /app
@@ -34,21 +27,20 @@ RUN pnpm config set store-dir ~/.pnpm-store
 
 WORKDIR /app
 
-COPY --chown=node package.json /app/
-COPY --chown=node pnpm-lock.yaml /app/
+COPY --chown=node package.json pnpm-lock.yaml /app/
 COPY --chown=node patches /app/patches
+COPY --chown=node prisma /app/prisma
 
-RUN env BUILD_LIBRDKAFKA=0 pnpm i --prefer-offline --frozen-lockfile
-# when node image incorporates alpine 3.18
-# RUN rm -rf /node_modules/node-rdkafka/deps
+ARG BUILD_LIBRDKAFKA=0
+RUN pnpm i --prefer-offline --frozen-lockfile
 
 COPY --chown=node . /app
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
     && pnpm download-env \
-    && pnpm generate \
-    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm build
+    && pnpm generate
+RUN env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm build
 RUN pnpm build-sourcemap
 RUN pnpm copy-env
 

@@ -31,8 +31,13 @@ if (NEXUS_REFLECTION) {
 }
 
 const PRISMA_PATH = fs
-  .realpathSync("node_modules/.prisma/client")
-  .replace(/^.*?\/node_modules\/(.+)$/, "$1")
+  .realpathSync("node_modules/@prisma/client")
+  .replace(/^.*?\/node_modules\/(.+)$/, "$1") // remove everything before first node_modules
+
+const PRISMA_INPUT_PATH = PRISMA_PATH.replace(
+  /@prisma\/client/,
+  ".prisma/client",
+) // Nexus plugin needs .prisma instead of the alias
 
 const DateTime = asNexusMethod(DateTimeResolver, "datetime")
 const Decimal = asNexusMethod(GraphQLDecimal, "decimal")
@@ -48,7 +53,7 @@ const createPlugins = () => {
       experimentalCRUD: true,
       paginationStrategy: "prisma",
       inputs: {
-        prismaClient: PRISMA_PATH,
+        prismaClient: PRISMA_INPUT_PATH,
       },
       outputs: {
         typegen: path.join(
