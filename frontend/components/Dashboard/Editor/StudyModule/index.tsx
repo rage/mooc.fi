@@ -12,7 +12,9 @@ import { yupResolver } from "@hookform/resolvers/yup"
 
 import EditorContainer from "../EditorContainer"
 import { EditorContextProvider } from "../EditorContext"
-import studyModuleEditSchema from "./form-validation"
+import studyModuleEditSchema, {
+  StudyModuleEditSchemaType,
+} from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
@@ -57,9 +59,9 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     [client, module, t],
   )
 
-  const methods = useForm<StudyModuleFormValues>({
+  const methods = useForm({
     defaultValues: defaultValues.current,
-    resolver: yupResolver(validationSchema), // useCustomValidationResolver(validationSchema),
+    resolver: yupResolver<StudyModuleEditSchemaType>(validationSchema), // useCustomValidationResolver(validationSchema),
     mode: "onBlur",
   })
   const { trigger } = methods

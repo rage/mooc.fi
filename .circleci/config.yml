@@ -20,7 +20,22 @@ jobs:
       - image: cimg/node:18.16.0
     steps:
       - checkout
-      - node/install-packages
+      - run:
+          name: "Setup pnpm store"
+          command: |
+            pnpm config set store-dir ~/.pnpm-store
+      - restore_cache:
+          keys:
+          - root-cache-{{ checksum "package.json" }}-{{ checksum "pnpm-lock.yaml" }}
+          - root-cache-{{ checksum "package.json" }}
+      - run:
+          name: "Install packages"
+          command: |
+            pnpm i --prefer-offline --frozen-lockfile
+      - save_cache:
+          key: root-cache-{{ checksum "package.json" }}-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ~/.pnpm-store
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
@@ -41,9 +56,14 @@ jobs:
       - setup_remote_docker:
           version: "20.10.18"
           docker_layer_caching: true
+      - run:
+          name: "Setup pnpm"
+          command: |
+            npm i --prefix=~/.local -g pnpm
+            pnpm config set store-dir ~/.pnpm-store
       - restore_cache:
           keys:
-          - frontend-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/pnpm-lock.yaml" }}
           - frontend-cache-{{ checksum "frontend/package.json" }}
       - run:
           name: Install Docker Buildx
@@ -59,9 +79,9 @@ jobs:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - save_cache:
-          key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
+          key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/pnpm-lock.yaml" }}
           paths:
-            - ~/.npm
+            - ~/.pnpm-store
             - ./frontend/.next/cache
       - when:
           condition:
@@ -82,29 +102,33 @@ jobs:
           path: ~/project
       - jq/install
       - run:
-          name: patch-package hash
+          name: Hash patches
           command: md5sum patches/* > patches.hash
+      - run:
+          name: "Setup pnpm store"
+          command: |
+            pnpm config set store-dir ~/.pnpm-store
       - restore_cache:
           keys:
-          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
-          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
-          - backend-cache-{{ checksum "package-lock.json" }}
+          - backend-cache-{{ checksum "pnpm-lock.yaml" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          - backend-cache-{{ checksum "pnpm-lock.yaml" }}-{{ checksum "prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: "Install dependencies"
-          command: npm ci --prefer-offline --no-audit
+          command: pnpm install --prefer-offline --frozen-lockfile
       - run:
           name: "Set environment"
           command: |
-            npm run download-env
+            pnpm download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
           command: |
-            npm run generate
+            pnpm generate
       - save_cache:
-          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          key: backend-cache-{{ checksum "pnpm-lock.yaml" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
-            - ~/.npm
+            - ~/.pnpm-store
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -139,7 +163,7 @@ jobs:
           command: |
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
-            npm run test:ci -- --runTestsByPath $TEST
+            pnpm test:ci -- --runTestsByPath $TEST
       - run:
           name: "Process test reports"
           command: |
@@ -202,13 +226,19 @@ jobs:
           docker_layer_caching: true
       - jq/install
       - run:
-          name: patch-package hash
+          name: Hash patches
           command: md5sum backend/patches/* > backend/patches.hash
+      - run:
+          name: "Setup pnpm"
+          command: |
+            npm i --prefix=~/.local -g pnpm
+            pnpm config set store-dir ~/.pnpm-store
+            pnpm config set global-dir ~/.local
       - restore_cache:
           keys:
-          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
-          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
-          - backend-cache-{{ checksum "backend/package-lock.json" }}
+          - backend-cache-{{ checksum "backend/pnpm-lock.yaml" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          - backend-cache-{{ checksum "backend/pnpm-lock.yaml" }}-{{ checksum "backend/prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "backend/pnpm-lock.yaml" }}
       - run:
           name: Install Docker Buildx
           command: |
@@ -223,9 +253,9 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - save_cache:
-          key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          key: backend-cache-{{ checksum "backend/pnpm-lock.yaml" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
-            - ~/.npm
+            - ~/.pnpm-store
       - when:
           condition:
             or:
@@ -234,7 +264,7 @@ jobs:
           steps:
             - run:
                 name: "Install Sentry client"
-                command: npm i --prefix=$HOME/.local -g @sentry/cli
+                command: pnpm add -g @sentry/cli
             - run:
                 name: "Push image"
                 command: "bin/push-docker-backend-image.sh"

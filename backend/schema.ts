@@ -1,5 +1,5 @@
+import * as fs from "fs"
 import * as path from "path"
-import { join } from "path"
 
 import {
   DateTimeResolver,
@@ -30,6 +30,15 @@ if (NEXUS_REFLECTION) {
   require("sharp") // image library sharp seems to crash without this require
 }
 
+const PRISMA_PATH = fs
+  .realpathSync("node_modules/@prisma/client")
+  .replace(/^.*?\/node_modules\/(.+)$/, "$1") // remove everything before first node_modules
+
+const PRISMA_INPUT_PATH = PRISMA_PATH.replace(
+  /@prisma\/client/,
+  ".prisma/client",
+) // Nexus plugin needs .prisma instead of the alias
+
 const DateTime = asNexusMethod(DateTimeResolver, "datetime")
 const Decimal = asNexusMethod(GraphQLDecimal, "decimal")
 const JSONObject = asNexusMethod(JSONObjectResolver, "json")
@@ -43,6 +52,9 @@ const createPlugins = () => {
     nexusPrisma({
       experimentalCRUD: true,
       paginationStrategy: "prisma",
+      inputs: {
+        prismaClient: PRISMA_INPUT_PATH,
+      },
       outputs: {
         typegen: path.join(
           __dirname,
@@ -94,13 +106,13 @@ const createSchema = () =>
       JSONObject,
     },
     contextType: {
-      module: join(process.cwd(), "context.ts"),
+      module: path.join(process.cwd(), "context.ts"),
       export: "Context",
     },
     sourceTypes: {
       modules: [
         {
-          module: require.resolve(".prisma/client/index.d.ts"),
+          module: `${PRISMA_PATH}/index.d.ts`,
           alias: "prisma",
         },
         { module: "@types/graphql-upload/index.d.ts", alias: "upload" },

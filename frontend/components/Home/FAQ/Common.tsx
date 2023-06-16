@@ -147,7 +147,7 @@ interface FAQPageProps {
 }
 
 const mdxComponents: MDXComponents = {
-  a: Link as React.ElementType,
+  a: Link as (props: any) => React.JSX.Element,
 }
 
 export function FAQPage({

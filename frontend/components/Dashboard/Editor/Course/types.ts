@@ -17,8 +17,8 @@ export interface CourseFormValues extends FormValues {
   teacher_in_charge_name: string
   teacher_in_charge_email: string
   support_email?: string
-  start_date: string | DateTime
-  end_date?: string | DateTime
+  start_date: DateTime
+  end_date?: DateTime
   ects?: string
   photo?: string | ImageCoreFieldsFragment | null
   language?: string
@@ -55,7 +55,7 @@ export interface CourseFormValues extends FormValues {
 
 export interface CourseTranslationFormValues extends FormValues {
   _id?: string
-  language: string
+  language: "fi_FI" | "en_US" | "sv_SE"
   name: string
   description: string
   instructions?: string

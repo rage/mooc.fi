@@ -23,7 +23,7 @@ spec:
           containers:
             - name: resync-user-app-datum
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run fetch-user-app-datum"]
+              command: ["sh", "-c", "pnpm fetch-user-app-datum"]
               envFrom:
               - secretRef:
                   name: backend-secret

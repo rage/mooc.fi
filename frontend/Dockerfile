@@ -4,23 +4,27 @@ RUN apt-get update \
   && apt-get install -y build-essential libgl1-mesa-glx \
   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app && chown -R node /app
+RUN corepack enable \
+  && corepack prepare pnpm@latest-8 --activate
 
 USER node
+
+RUN pnpm config set store-dir ~/.pnpm-store
 
 WORKDIR /app
 
 COPY --chown=node package.json /app/
-COPY --chown=node package-lock.json /app/
+COPY --chown=node pnpm-lock.yaml /app/
 
-RUN npm ci --prefer-offline --no-audit
+RUN pnpm install --prefer-offline --frozen-lockfile
 
 COPY --chown=node . /app
 
 RUN rm schema.graphql \
-  && npm run build
+  && pnpm build
 
 ENV NODE_ENV=production
 
 EXPOSE 3021
 
-CMD [ "npm", "run", "start" ]
+CMD [ "pnpm", "start" ]

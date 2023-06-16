@@ -51,8 +51,8 @@ const CustomModuleContainer = styled("div")`
 `
 
 const components: MDXComponents = {
-  h3: ModuleCardTitle as React.ElementType,
-  p: ModuleCardText as React.ElementType,
+  h3: ModuleCardTitle as (props: any) => React.JSX.Element,
+  p: ModuleCardText as (props: any) => React.JSX.Element,
 }
 
 export const CustomModuleContent = ({ children }: PropsWithChildren) => {

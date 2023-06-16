@@ -1,4 +1,4 @@
-import { Request, Response } from "express-serve-static-core"
+import { Request, Response } from "express"
 import { omit } from "lodash"
 
 import { requireCourseOwnership } from "../../util/server-functions"

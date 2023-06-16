@@ -14,7 +14,7 @@ import { useEventCallback } from "@mui/material/utils"
 import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
 import { useCourseEditorData } from "./CourseEditorDataContext"
-import courseEditSchema from "./form-validation"
+import courseEditSchema, { CourseEditSchemaType } from "./form-validation"
 import { fromCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
 import { EditorContextProvider } from "/components/Dashboard/Editor/EditorContext"
@@ -59,7 +59,7 @@ function CourseEditor() {
   )
   const methods = useForm({
     defaultValues,
-    resolver: yupResolver(validationSchema), //useCustomValidationResolver(validationSchema),
+    resolver: yupResolver<CourseEditSchemaType>(validationSchema), //useCustomValidationResolver(validationSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     shouldFocusError: false,

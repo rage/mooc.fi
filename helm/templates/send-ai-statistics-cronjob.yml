@@ -22,7 +22,7 @@ spec:
           containers:
             - name: send-ai-statistics
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run send-ai-statistics"]
+              command: ["sh", "-c", "pnpm send-ai-statistics"]
               envFrom:
               - secretRef:
                   name: backend-secret

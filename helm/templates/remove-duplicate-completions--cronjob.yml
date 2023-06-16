@@ -22,7 +22,7 @@ spec:
           containers:
             - name: remove-duplicate-completions
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run remove-duplicate-completions"]
+              command: ["sh", "-c", "pnpm remove-duplicate-completions"]
               resources:
                 limits:
                   memory: 256Mi

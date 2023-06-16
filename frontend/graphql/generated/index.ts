@@ -1,6 +1,6 @@
 /**
  * This is an automatically generated file.
- * Run `npm run graphql-codegen` to regenerate.
+ * Run `pnpm graphql-codegen` to regenerate.
  **/
 import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core"
 
@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-05-30T16:53:58+03:00
+// Generated on 2023-06-15T21:52:44+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -535,7 +535,7 @@ export type CourseCreateArg = {
   status?: InputMaybe<CourseStatus>
   study_module_order?: InputMaybe<Scalars["Int"]["input"]>
   study_module_start_point?: InputMaybe<Scalars["Boolean"]["input"]>
-  study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
+  study_modules?: InputMaybe<Array<CourseStudyModuleUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]["input"]>
   tags?: InputMaybe<Array<TagCreateInput>>
   teacher_in_charge_email: Scalars["String"]["input"]
@@ -826,6 +826,11 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
+export type CourseStudyModuleUniqueInput = {
+  id?: InputMaybe<Scalars["ID"]["input"]>
+  slug?: InputMaybe<Scalars["String"]["input"]>
+}
+
 export type CourseTranslation = {
   __typename?: "CourseTranslation"
   course: Maybe<Course>
@@ -938,7 +943,7 @@ export type CourseUpsertArg = {
   status?: InputMaybe<CourseStatus>
   study_module_order?: InputMaybe<Scalars["Int"]["input"]>
   study_module_start_point?: InputMaybe<Scalars["Boolean"]["input"]>
-  study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
+  study_modules?: InputMaybe<Array<CourseStudyModuleUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]["input"]>
   tags?: InputMaybe<Array<TagUpsertInput>>
   teacher_in_charge_email: Scalars["String"]["input"]

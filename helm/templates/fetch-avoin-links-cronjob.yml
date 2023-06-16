@@ -22,7 +22,7 @@ spec:
           containers:
             - name: fetch-avoin-links
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run fetch-avoin-links"]
+              command: ["sh", "-c", "pnpm fetch-avoin-links"]
               envFrom:
               - secretRef:
                   name: backend-secret

@@ -20,7 +20,7 @@ spec:
       containers:
         - name: {{ $deploymentname }}
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "npm run kafka-bridge"]
+          command: ["sh", "-c", "pnpm kafka-bridge"]
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

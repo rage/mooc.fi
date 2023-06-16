@@ -22,7 +22,7 @@ spec:
           containers:
             - name: import-organizations
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run import-organizations"]
+              command: ["sh", "-c", "pnpm import-organizations"]
               envFrom:
               - secretRef:
                   name: backend-secret
