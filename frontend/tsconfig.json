@@ -48,9 +48,9 @@
     "incremental": true,
     "maxNodeModuleJsDepth": 8,
     "typeRoots": [
-      "node_modules/@types",
+      "./node_modules/@types",
       "types",
-      "node_modules/user-agent-data-types"
+      "./node_modules/user-agent-data-types"
     ],
     "plugins": [
       {

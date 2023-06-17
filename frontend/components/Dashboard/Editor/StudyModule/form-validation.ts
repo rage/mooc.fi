@@ -68,11 +68,11 @@ const studyModuleEditSchema = ({
   initialSlug,
   t,
 }: StudyModuleEditSchemaArgs) =>
-  Yup.object().shape({
+  Yup.object({
     new_slug: Yup.string()
       .required(t("validationRequired"))
       .trim()
-      .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
+      .matches(/^[^/\\\s]*$/, t("validationNoSpacesSlashes"))
       .test(
         "unique",
         t("validationSlugInUse"),
@@ -83,7 +83,7 @@ const studyModuleEditSchema = ({
       .test("exists", t("moduleImageError"), validateImage),
     name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
-      Yup.object().shape({
+      Yup.object({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
           .matches(/^((?!_empty).*)/, t("validationRequired"))
@@ -105,7 +105,8 @@ const studyModuleEditSchema = ({
     ),
     order: Yup.number()
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
-      .integer(t("validationInteger")),
+      .integer(t("validationInteger"))
+      .default(undefined),
   })
 
 export type StudyModuleEditSchemaType = Yup.InferType<

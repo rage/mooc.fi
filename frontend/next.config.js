@@ -43,12 +43,6 @@ const nextConfiguration = (_phase) => ({
       },
     ],
   },
-  publicRuntimeConfig: {
-    localeSubpaths:
-      typeof process.env.LOCALE_SUBPATHS === "string"
-        ? process.env.LOCALE_SUBPATHS
-        : "none",
-  },
   trailingSlash: true,
   i18n: {
     locales: ["en", "fi"],

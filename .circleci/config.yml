@@ -43,7 +43,7 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-          - frontend-cache-{{ checksum "frontend/package.json" }}-checksum "frontend/package-lock.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           - frontend-cache-{{ checksum "frontend/package.json" }}
       - run:
           name: Install Docker Buildx

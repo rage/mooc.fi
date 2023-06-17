@@ -1,4 +1,4 @@
-FROM node:18.16.0-alpine
+FROM node:18.16.0-alpine3.18
 
 RUN apk update && \
     apk add \
@@ -10,17 +10,10 @@ RUN apk update && \
       git \
       jq \
       bash \
-      python3
+      python3 \
+      librdkafka=2.1.1-r0 \
+      librdkafka-dev=2.1.1-r0
 
-RUN wget https://github.com/edenhill/librdkafka/archive/v2.1.1.tar.gz  -O - | tar -xz \
-  && cd librdkafka-2.1.1 \
-  && ./configure --prefix=/usr \
-  && make && make install \
-  && cd ..
-# when node image incorporates alpine 3.18
-#  RUN apk  add \
-#   librdkafka=2.1.1-r0 \
-#   librdkafka-dev=2.1.1-r0
 RUN rm -rf /var/cache/apk/*
 
 RUN mkdir -p /app && chown -R node /app
@@ -29,14 +22,13 @@ USER node
 
 WORKDIR /app
 
-COPY --chown=node package.json /app/
-COPY --chown=node package-lock.json /app/
+COPY --chown=node package.json package-lock.json /app/
 COPY --chown=node patches /app/patches
+COPY --chown=node prisma /app/prisma
 
 ARG BUILD_LIBRDKAFKA=0
 RUN npm ci --prefer-offline --no-audit
-# when node image incorporates alpine 3.18
-# RUN rm -rf /node_modules/node-rdkafka/deps
+RUN rm -rf /node_modules/node-rdkafka/deps
 
 COPY --chown=node . /app
 
