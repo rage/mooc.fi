@@ -1,10 +1,11 @@
 // @ts-check
 /** @type {import("@ianvs/prettier-plugin-sort-imports").PrettierConfig} */
-module.exports = {
+const config = {
   printWidth: 80,
   semi: false,
   trailingComma: "all",
   bracketSpacing: true,
+  plugins: ["@ianvs/prettier-plugin-sort-imports"],
   importOrder: [
     "<BUILTIN_MODULES>",
     "^react(-dom)?$",
@@ -23,4 +24,7 @@ module.exports = {
     "classProperties",
     "decorators-legacy",
   ],
+  importOrderTypeScriptVersion: "5.0.0",
 }
+
+module.exports = config

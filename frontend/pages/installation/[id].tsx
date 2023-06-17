@@ -117,7 +117,12 @@ export const Note = styled("section")`
 export const Link = MUILink
 
 const mdxComponents: MDXComponents = {
-  a: Link as React.ElementType,
+  a: Link as (
+    props: React.DetailedHTMLProps<
+      React.HTMLAttributes<HTMLAnchorElement>,
+      HTMLAnchorElement
+    >,
+  ) => React.JSX.Element,
   img: ({ src, ...props }: any) => (
     <ModalImage
       src={require(`/public/images/installation/${src}`)}
