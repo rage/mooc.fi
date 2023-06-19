@@ -131,6 +131,7 @@ query ConnectedUser {
       display_name
       organization {
         id
+        name
         organization_translations {
           language
           name
@@ -153,6 +154,7 @@ fragment VerifiedUserFields on VerifiedUser {
   id
   organization {
     slug
+    name
     organization_translations {
       language
       name

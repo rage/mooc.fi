@@ -2,6 +2,8 @@ fragment OrganizationCoreFields on Organization {
   id
   slug
   hidden
+  name
+  information
   created_at
   updated_at
   # required_confirmation

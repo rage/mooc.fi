@@ -43,8 +43,7 @@ function ConnectionSuccess() {
               alignItems: "baseline",
             }}
           >
-            Organization:{" "}
-            {verified_user.organization?.organization_translations?.[0]?.name}
+            Organization: {verified_user.organization?.name}
             <Typography variant="h4">
               Registered: {formatDateTime(verified_user.created_at)}
             </Typography>

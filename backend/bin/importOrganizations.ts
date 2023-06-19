@@ -45,50 +45,28 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
-  await prisma.$transaction(async (trx) => {
-    const details = {
-      ...omit(org, ["id", "creator_id"]),
-      verified: org.verified ?? false,
-      disabled: org.disabled ?? false,
-      hidden: org.hidden ?? false,
-      creator: user !== null ? { connect: { id: user.id } } : undefined,
-      logo_file_size: parseLogoSize(org),
-      pinned: org.pinned ?? false,
-    }
+  const details = {
+    ...omit(org, ["id", "creator_id"]),
+    name: org.name,
+    disabled_reason: org.disabled_reason,
+    information: org.information,
+    verified: org.verified ?? false,
+    disabled: org.disabled ?? false,
+    hidden: org.hidden ?? false,
+    creator: user !== null ? { connect: { id: user.id } } : undefined,
+    logo_file_size: parseLogoSize(org),
+    pinned: org.pinned ?? false,
+  }
 
-    const organization = await trx.organization.upsert({
-      where: {
-        slug: org.slug,
-      },
-      create: {
-        ...details,
-        secret_key: await generateSecret(),
-      },
-      update: details,
-      include: {
-        organization_translations: true,
-      },
-    })
-
-    const translationDetails = {
-      language: "fi_FI", //placeholder since there is no language information
-      name: org.name,
-      disabled_reason: org.disabled_reason,
-      information: org.information,
-      organization: { connect: { id: organization.id } },
-    }
-
-    await trx.organizationTranslation.upsert({
-      where: {
-        id: organization.organization_translations.find(
-          (ot) => ot.language === translationDetails.language,
-        )?.id,
-        organization_id: organization.id,
-        language: translationDetails.language,
-      },
-      create: translationDetails,
-      update: translationDetails,
-    })
+  await prisma.organization.upsert({
+    where: {
+      slug: org.slug,
+    },
+    create: {
+      ...details,
+      secret_key: await generateSecret(),
+    },
+    update: details,
   })
 }
 

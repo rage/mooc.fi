@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-05-30T16:53:58+03:00
+// Generated on 2023-06-19T16:09:13+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -535,7 +535,7 @@ export type CourseCreateArg = {
   status?: InputMaybe<CourseStatus>
   study_module_order?: InputMaybe<Scalars["Int"]["input"]>
   study_module_start_point?: InputMaybe<Scalars["Boolean"]["input"]>
-  study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
+  study_modules?: InputMaybe<Array<CourseStudyModuleUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]["input"]>
   tags?: InputMaybe<Array<TagCreateInput>>
   teacher_in_charge_email: Scalars["String"]["input"]
@@ -826,6 +826,11 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
+export type CourseStudyModuleUniqueInput = {
+  id?: InputMaybe<Scalars["ID"]["input"]>
+  slug?: InputMaybe<Scalars["String"]["input"]>
+}
+
 export type CourseTranslation = {
   __typename?: "CourseTranslation"
   course: Maybe<Course>
@@ -938,7 +943,7 @@ export type CourseUpsertArg = {
   status?: InputMaybe<CourseStatus>
   study_module_order?: InputMaybe<Scalars["Int"]["input"]>
   study_module_start_point?: InputMaybe<Scalars["Boolean"]["input"]>
-  study_modules?: InputMaybe<Array<StudyModuleWhereUniqueInput>>
+  study_modules?: InputMaybe<Array<CourseStudyModuleUniqueInput>>
   support_email?: InputMaybe<Scalars["String"]["input"]>
   tags?: InputMaybe<Array<TagUpsertInput>>
   teacher_in_charge_email: Scalars["String"]["input"]
@@ -2362,14 +2367,16 @@ export type Organization = {
   creator: Maybe<User>
   creator_id: Maybe<Scalars["String"]["output"]>
   disabled: Maybe<Scalars["Boolean"]["output"]>
+  disabled_reason: Maybe<Scalars["String"]["output"]>
   email: Maybe<Scalars["String"]["output"]>
   hidden: Maybe<Scalars["Boolean"]["output"]>
   id: Scalars["String"]["output"]
+  information: Maybe<Scalars["String"]["output"]>
   logo_content_type: Maybe<Scalars["String"]["output"]>
   logo_file_name: Maybe<Scalars["String"]["output"]>
   logo_file_size: Maybe<Scalars["Int"]["output"]>
   logo_updated_at: Maybe<Scalars["DateTime"]["output"]>
-  name: Maybe<Scalars["String"]["output"]>
+  name: Scalars["String"]["output"]
   organization_translations: Array<OrganizationTranslation>
   phone: Maybe<Scalars["String"]["output"]>
   pinned: Maybe<Scalars["Boolean"]["output"]>
@@ -2431,6 +2438,8 @@ export type OrganizationOrderByInput = {
   created_at?: InputMaybe<SortOrder>
   email?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
+  information?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
   phone?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
   tmc_created_at?: InputMaybe<SortOrder>
@@ -2446,10 +2455,13 @@ export type OrganizationOrderByRelationAggregateInput = {
 export enum OrganizationOrderByRelevanceFieldEnum {
   contact_information = "contact_information",
   creator_id = "creator_id",
+  disabled_reason = "disabled_reason",
   email = "email",
   id = "id",
+  information = "information",
   logo_content_type = "logo_content_type",
   logo_file_name = "logo_file_name",
+  name = "name",
   phone = "phone",
   secret_key = "secret_key",
   slug = "slug",
@@ -2472,13 +2484,16 @@ export type OrganizationOrderByWithRelationAndSearchRelevanceInput = {
   creator?: InputMaybe<UserOrderByWithRelationAndSearchRelevanceInput>
   creator_id?: InputMaybe<SortOrder>
   disabled?: InputMaybe<SortOrder>
+  disabled_reason?: InputMaybe<SortOrder>
   email?: InputMaybe<SortOrder>
   hidden?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
+  information?: InputMaybe<SortOrder>
   logo_content_type?: InputMaybe<SortOrder>
   logo_file_name?: InputMaybe<SortOrder>
   logo_file_size?: InputMaybe<SortOrder>
   logo_updated_at?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrder>
   organization_translations?: InputMaybe<OrganizationTranslationOrderByRelationAggregateInput>
   phone?: InputMaybe<SortOrder>
   pinned?: InputMaybe<SortOrder>
@@ -2503,7 +2518,6 @@ export enum OrganizationRole {
 export type OrganizationTranslation = {
   __typename?: "OrganizationTranslation"
   created_at: Scalars["DateTime"]["output"]
-  disabled_reason: Maybe<Scalars["String"]["output"]>
   id: Scalars["String"]["output"]
   information: Maybe<Scalars["String"]["output"]>
   language: Scalars["String"]["output"]
@@ -2528,7 +2542,6 @@ export type OrganizationTranslationWhereInput = {
   NOT?: InputMaybe<Array<OrganizationTranslationWhereInput>>
   OR?: InputMaybe<Array<OrganizationTranslationWhereInput>>
   created_at?: InputMaybe<DateTimeFilter>
-  disabled_reason?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<UuidFilter>
   information?: InputMaybe<StringNullableFilter>
   language?: InputMaybe<StringFilter>
@@ -2543,7 +2556,6 @@ export type OrganizationTranslationWhereUniqueInput = {
   NOT?: InputMaybe<Array<OrganizationTranslationWhereInput>>
   OR?: InputMaybe<Array<OrganizationTranslationWhereInput>>
   created_at?: InputMaybe<DateTimeFilter>
-  disabled_reason?: InputMaybe<StringNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
   information?: InputMaybe<StringNullableFilter>
   language?: InputMaybe<StringFilter>
@@ -2565,13 +2577,16 @@ export type OrganizationWhereInput = {
   creator?: InputMaybe<UserWhereInput>
   creator_id?: InputMaybe<UuidNullableFilter>
   disabled?: InputMaybe<BoolNullableFilter>
+  disabled_reason?: InputMaybe<StringNullableFilter>
   email?: InputMaybe<StringNullableFilter>
   hidden?: InputMaybe<BoolNullableFilter>
   id?: InputMaybe<UuidFilter>
+  information?: InputMaybe<StringNullableFilter>
   logo_content_type?: InputMaybe<StringNullableFilter>
   logo_file_name?: InputMaybe<StringNullableFilter>
   logo_file_size?: InputMaybe<IntNullableFilter>
   logo_updated_at?: InputMaybe<DateTimeNullableFilter>
+  name?: InputMaybe<StringFilter>
   organization_translations?: InputMaybe<OrganizationTranslationListRelationFilter>
   phone?: InputMaybe<StringNullableFilter>
   pinned?: InputMaybe<BoolNullableFilter>
@@ -2599,13 +2614,16 @@ export type OrganizationWhereUniqueInput = {
   creator?: InputMaybe<UserWhereInput>
   creator_id?: InputMaybe<UuidNullableFilter>
   disabled?: InputMaybe<BoolNullableFilter>
+  disabled_reason?: InputMaybe<StringNullableFilter>
   email?: InputMaybe<StringNullableFilter>
   hidden?: InputMaybe<BoolNullableFilter>
   id?: InputMaybe<Scalars["String"]["input"]>
+  information?: InputMaybe<StringNullableFilter>
   logo_content_type?: InputMaybe<StringNullableFilter>
   logo_file_name?: InputMaybe<StringNullableFilter>
   logo_file_size?: InputMaybe<IntNullableFilter>
   logo_updated_at?: InputMaybe<DateTimeNullableFilter>
+  name?: InputMaybe<StringFilter>
   organization_translations?: InputMaybe<OrganizationTranslationListRelationFilter>
   phone?: InputMaybe<StringNullableFilter>
   pinned?: InputMaybe<BoolNullableFilter>
@@ -4402,7 +4420,7 @@ export type CompletionDetailedFieldsFragment = {
       __typename?: "Organization"
       id: string
       slug: string
-      name: string | null
+      name: string
     } | null
   }>
   certificate_availability: {
@@ -4465,7 +4483,7 @@ export type CompletionDetailedFieldsWithCourseFragment = {
       __typename?: "Organization"
       id: string
       slug: string
-      name: string | null
+      name: string
     } | null
   }>
   certificate_availability: {
@@ -4611,7 +4629,7 @@ export type CompletionRegisteredCoreFieldsFragment = {
     __typename?: "Organization"
     id: string
     slug: string
-    name: string | null
+    name: string
   } | null
 }
 
@@ -5155,6 +5173,8 @@ export type OrganizationCoreFieldsFragment = {
   id: string
   slug: string
   hidden: boolean | null
+  name: string
+  information: string | null
   created_at: any
   updated_at: any
   organization_translations: Array<{
@@ -5843,7 +5863,7 @@ export type UserOverviewFieldsFragment = {
         __typename?: "Organization"
         id: string
         slug: string
-        name: string | null
+        name: string
       } | null
     }>
     certificate_availability: {
@@ -6434,7 +6454,7 @@ export type UserCourseSummaryCoreFieldsFragment = {
         __typename?: "Organization"
         id: string
         slug: string
-        name: string | null
+        name: string
       } | null
     }>
     certificate_availability: {
@@ -6998,7 +7018,7 @@ export type UserCourseSummaryCoreFieldsWithExerciseCompletionsFragment = {
         __typename?: "Organization"
         id: string
         slug: string
-        name: string | null
+        name: string
       } | null
     }>
     certificate_availability: {
@@ -7457,6 +7477,8 @@ export type UserOrganizationCoreFieldsFragment = {
     id: string
     slug: string
     hidden: boolean | null
+    name: string
+    information: string | null
     created_at: any
     updated_at: any
     organization_translations: Array<{
@@ -8813,6 +8835,8 @@ export type OrganizationsQuery = {
     id: string
     slug: string
     hidden: boolean | null
+    name: string
+    information: string | null
     created_at: any
     updated_at: any
     organization_translations: Array<{
@@ -8835,7 +8859,7 @@ export type OrganizationByIdQuery = {
   organization: {
     __typename?: "Organization"
     hidden: boolean | null
-    name: string | null
+    name: string
   } | null
 }
 
@@ -9371,7 +9395,7 @@ export type UserSummaryQuery = {
             __typename?: "Organization"
             id: string
             slug: string
-            name: string | null
+            name: string
           } | null
         }>
         certificate_availability: {
@@ -9848,7 +9872,7 @@ export type UserSummaryForCourseQuery = {
             __typename?: "Organization"
             id: string
             slug: string
-            name: string | null
+            name: string
           } | null
         }>
         certificate_availability: {
@@ -10096,7 +10120,7 @@ export type CurrentUserOverviewQuery = {
           __typename?: "Organization"
           id: string
           slug: string
-          name: string | null
+          name: string
         } | null
       }>
       certificate_availability: {
@@ -10182,7 +10206,7 @@ export type UserOverviewQuery = {
           __typename?: "Organization"
           id: string
           slug: string
-          name: string | null
+          name: string
         } | null
       }>
       certificate_availability: {
@@ -10400,6 +10424,7 @@ export type ConnectedUserQuery = {
       organization: {
         __typename?: "Organization"
         id: string
+        name: string
         organization_translations: Array<{
           __typename?: "OrganizationTranslation"
           language: string
@@ -10436,6 +10461,7 @@ export type ConnectionTestQuery = {
       organization: {
         __typename?: "Organization"
         slug: string
+        name: string
         organization_translations: Array<{
           __typename?: "OrganizationTranslation"
           language: string
@@ -10455,6 +10481,7 @@ export type VerifiedUserFieldsFragment = {
   organization: {
     __typename?: "Organization"
     slug: string
+    name: string
     organization_translations: Array<{
       __typename?: "OrganizationTranslation"
       language: string
@@ -10782,6 +10809,8 @@ export type CurrentUserOrganizationsQuery = {
         id: string
         slug: string
         hidden: boolean | null
+        name: string
+        information: string | null
         created_at: any
         updated_at: any
         organization_translations: Array<{
@@ -21515,6 +21544,8 @@ export const OrganizationCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "information" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
           {
@@ -21586,6 +21617,8 @@ export const UserOrganizationCoreFieldsFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "information" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
           {
@@ -21631,6 +21664,7 @@ export const VerifiedUserFieldsFragmentDoc = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "organization_translations" },
@@ -27908,6 +27942,8 @@ export const OrganizationsDocument = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "information" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
           {
@@ -33255,6 +33291,10 @@ export const ConnectedUserDocument = {
                             },
                             {
                               kind: "Field",
+                              name: { kind: "Name", value: "name" },
+                            },
+                            {
+                              kind: "Field",
                               name: {
                                 kind: "Name",
                                 value: "organization_translations",
@@ -33398,6 +33438,7 @@ export const ConnectionTestDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "organization_translations" },
@@ -34666,6 +34707,8 @@ export const CurrentUserOrganizationsDocument = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "slug" } },
           { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "information" } },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
           {

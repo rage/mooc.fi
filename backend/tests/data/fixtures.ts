@@ -70,6 +70,7 @@ export const organizations: Prisma.OrganizationCreateInput[] = [
     id: "10000000000000000000000000000102",
     secret_key: "kissa",
     slug: "test",
+    name: "test organization",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
