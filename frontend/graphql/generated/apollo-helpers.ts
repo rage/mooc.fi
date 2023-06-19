@@ -730,9 +730,11 @@ export type OrganizationKeySpecifier = (
   | "creator"
   | "creator_id"
   | "disabled"
+  | "disabled_reason"
   | "email"
   | "hidden"
   | "id"
+  | "information"
   | "logo_content_type"
   | "logo_file_name"
   | "logo_file_size"
@@ -761,9 +763,11 @@ export type OrganizationFieldPolicy = {
   creator?: FieldPolicy<any> | FieldReadFunction<any>
   creator_id?: FieldPolicy<any> | FieldReadFunction<any>
   disabled?: FieldPolicy<any> | FieldReadFunction<any>
+  disabled_reason?: FieldPolicy<any> | FieldReadFunction<any>
   email?: FieldPolicy<any> | FieldReadFunction<any>
   hidden?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
+  information?: FieldPolicy<any> | FieldReadFunction<any>
   logo_content_type?: FieldPolicy<any> | FieldReadFunction<any>
   logo_file_name?: FieldPolicy<any> | FieldReadFunction<any>
   logo_file_size?: FieldPolicy<any> | FieldReadFunction<any>
@@ -784,7 +788,6 @@ export type OrganizationFieldPolicy = {
 }
 export type OrganizationTranslationKeySpecifier = (
   | "created_at"
-  | "disabled_reason"
   | "id"
   | "information"
   | "language"
@@ -796,7 +799,6 @@ export type OrganizationTranslationKeySpecifier = (
 )[]
 export type OrganizationTranslationFieldPolicy = {
   created_at?: FieldPolicy<any> | FieldReadFunction<any>
-  disabled_reason?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
   information?: FieldPolicy<any> | FieldReadFunction<any>
   language?: FieldPolicy<any> | FieldReadFunction<any>

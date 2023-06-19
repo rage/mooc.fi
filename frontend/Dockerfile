@@ -1,7 +1,7 @@
 FROM node:18.16.0-buster
 
 RUN apt-get update \
-  && apt-get install -y build-essential libgl1-mesa-glx \
+  && apt-get install -y build-essential libgl1-mesa-glx pigz \
   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app && chown -R node /app
 

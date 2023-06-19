@@ -169,14 +169,9 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    const sortedOrganizations = (organizationsData?.organizations ?? [])
-      .filter((o) => o?.organization_translations?.length)
-      .sort((a, b) =>
-        a.organization_translations[0].name.localeCompare(
-          b.organization_translations[0].name,
-          "fi-FI",
-        ),
-      )
+    const sortedOrganizations = (organizationsData?.organizations ?? []).sort(
+      (a, b) => a.name.localeCompare(b.name, "fi-FI"),
+    )
     const orgs = {} as Record<string, OrganizationCoreFieldsFragment>
 
     for (const org of sortedOrganizations) {
@@ -204,11 +199,7 @@ function useRegisterOrganization(searchFilter: string) {
     >
 
     for (const [id, org] of Object.entries(organizations)) {
-      if (
-        !org.organization_translations[0].name
-          .toLowerCase()
-          .includes(searchFilter.toLowerCase())
-      ) {
+      if (!org.name.toLowerCase().includes(searchFilter.toLowerCase())) {
         continue
       }
       newFilteredOrganizations[id] = org
@@ -287,7 +278,7 @@ const OrganizationItems = () => {
       {Object.entries(filteredOrganizations).map(([id, organization]) => (
         <OrganizationCard
           key={id}
-          name={organization.organization_translations![0].name}
+          name={organization.name}
           isMember={memberships.includes(id)}
           onToggle={toggleMembership(id)}
         />

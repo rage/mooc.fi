@@ -36,6 +36,7 @@ jobs:
   build_frontend:
     docker:
       - image: cimg/gcp:2023.05
+    working_directory: /mnt/ramdisk
     steps:
       - checkout
       - setup_remote_docker:
@@ -45,6 +46,9 @@ jobs:
           keys:
           - frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           - frontend-cache-{{ checksum "frontend/package.json" }}
+      - run:
+          name: Set npm cache
+          command: "npm config set cache /mnt/ramdisk/.npm"
       - run:
           name: Install Docker Buildx
           command: |
@@ -61,8 +65,8 @@ jobs:
       - save_cache:
           key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           paths:
-            - ~/.npm
-            - ./frontend/.next/cache
+            - /mnt/ramdisk/.npm
+            - /mnt/ramdisk/frontend/.next/cache
       - when:
           condition:
             or:
@@ -76,10 +80,10 @@ jobs:
 
   prepare_backend_test:
     executor: node_postgres
-    working_directory: ~/project/backend
+    working_directory: /mnt/ramdisk/backend
     steps:
       - checkout:
-          path: ~/project
+          path: /mnt/ramdisk
       - jq/install
       - run:
           name: patch-package hash
@@ -89,6 +93,9 @@ jobs:
           - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
           - backend-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Set npm cache
+          command: "npm config set cache /mnt/ramdisk/.npm"
       - run:
           name: "Install dependencies"
           command: npm ci --prefer-offline --no-audit
@@ -104,11 +111,14 @@ jobs:
       - save_cache:
           key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
-            - ~/.npm
+            - /mnt/ramdisk/.npm
+      - run:
+          name: "Delete npm cache from workspace"
+          command: "rm -rf /mnt/ramdisk/.npm"
       - persist_to_workspace:
-          root: ~/project
+          root: /mnt/ramdisk
           paths:
-            - .
+            - backend
     resource_class: large
 
   test_backend:
@@ -118,15 +128,10 @@ jobs:
       RUNNING_IN_CI: "true"
       NODE_ENV: test
     parallelism: 8
-    working_directory: ~/project/backend
+    working_directory: /mnt/ramdisk/backend
     steps:
       - attach_workspace:
-          at: ~/project
-      # - run:
-      #     name: "Install psql client"
-      #     command: |
-      #       sudo apt-get update
-      #       sudo apt-get install postgresql-client
+          at: /mnt/ramdisk
       - run:
           name: "Wait for database"
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -195,6 +200,7 @@ jobs:
   build_backend:
     docker:
       - image: cimg/gcp:2023.05
+    working_directory: /mnt/ramdisk
     steps:
       - checkout
       - setup_remote_docker:
@@ -209,6 +215,9 @@ jobs:
           - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
           - backend-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
+          name: Set npm cache
+          command: "npm config set cache /mnt/ramdisk/.npm"
       - run:
           name: Install Docker Buildx
           command: |
@@ -225,7 +234,7 @@ jobs:
       - save_cache:
           key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
-            - ~/.npm
+            - /mnt/ramdisk/.npm
       - when:
           condition:
             or:
@@ -301,6 +310,7 @@ jobs:
   deploy_to_production:
     docker:
       - image: cimg/gcp:2023.05
+    working_directory: /mnt/ramdisk
     steps:
       - checkout
       - setup_remote_docker:

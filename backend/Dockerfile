@@ -11,6 +11,7 @@ RUN apk update && \
       jq \
       bash \
       python3 \
+      pigz \
       librdkafka=2.1.1-r0 \
       librdkafka-dev=2.1.1-r0
 

@@ -25,12 +25,15 @@ export const Organization = objectType({
     t.model.contact_information()
     t.model.created_at()
     t.model.disabled()
+    t.model.disabled_reason()
     t.model.email()
     t.model.hidden()
+    t.model.information()
     t.model.logo_content_type()
     t.model.logo_file_name()
     t.model.logo_file_size()
     t.model.logo_updated_at()
+    t.model.name()
     t.model.phone()
     t.model.pinned()
     t.model.slug()
@@ -54,19 +57,6 @@ export const Organization = objectType({
     t.model.verified_users({
       authorize: isAdmin || isSameOrganization,
     })
-
-    t.field("name", {
-      type: "String",
-      resolve: async (organization, _, ctx) => {
-        const translation = await ctx.prisma.organizationTranslation.findFirst({
-          where: {
-            organization_id: organization.id,
-          },
-        })
-
-        return translation?.name ?? null
-      },
-    })
   },
 })
 
@@ -77,6 +67,8 @@ export const OrganizationOrderByInput = inputObjectType({
     t.field("created_at", { type: "SortOrder" })
     t.field("email", { type: "SortOrder" })
     t.field("id", { type: "SortOrder" })
+    t.field("information", { type: "SortOrder" })
+    t.field("name", { type: "SortOrder" })
     t.field("phone", { type: "SortOrder" })
     t.field("slug", { type: "SortOrder" })
     t.field("tmc_created_at", { type: "SortOrder" })
@@ -182,12 +174,7 @@ export const OrganizationMutations = extendType({
           data: {
             slug,
             secret_key: secret,
-            organization_translations: {
-              create: {
-                name: name ?? "",
-                language: "fi_FI",
-              },
-            },
+            name: name ?? "",
           },
         })
 

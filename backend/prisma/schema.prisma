@@ -337,9 +337,12 @@ model Organization {
   id                        String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   slug                      String                    @unique
   secret_key                String                    @unique
+  name                      String
+  information               String?
   verified_at               DateTime?
   verified                  Boolean?
   disabled                  Boolean?
+  disabled_reason           String?
   hidden                    Boolean?
   tmc_created_at            DateTime?
   tmc_updated_at            DateTime?
@@ -371,7 +374,6 @@ model OrganizationTranslation {
   id              String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   language        String
   name            String
-  disabled_reason String?
   information     String?
   organization_id String?       @db.Uuid
   created_at      DateTime      @default(now())
