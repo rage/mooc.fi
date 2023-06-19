@@ -107,9 +107,9 @@ jobs:
           paths:
             - ~/.npm
       - persist_to_workspace:
-          root: /mnt/ramdisk
+          root: /mnt
           paths:
-            - .
+            - ramdisk
     resource_class: large
 
   test_backend:
@@ -122,7 +122,7 @@ jobs:
     working_directory: /mnt/ramdisk/backend
     steps:
       - attach_workspace:
-          at: /mnt/ramdisk
+          at: /mnt
       # - run:
       #     name: "Install psql client"
       #     command: |
