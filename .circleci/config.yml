@@ -47,6 +47,9 @@ jobs:
           - frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           - frontend-cache-{{ checksum "frontend/package.json" }}
       - run:
+          name: Set npm cache
+          command: "npm config --global set cache /mnt/ramdisk/.npm"
+      - run:
           name: Install Docker Buildx
           command: |
             mkdir -vp ~/.docker/cli-plugins/
@@ -62,8 +65,8 @@ jobs:
       - save_cache:
           key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
           paths:
-            - ~/.npm
-            - ./frontend/.next/cache
+            - /mnt/ramdisk/.npm
+            - /mnt/ramdisk/frontend/.next/cache
       - when:
           condition:
             or:
@@ -91,6 +94,9 @@ jobs:
           - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
           - backend-cache-{{ checksum "package-lock.json" }}
       - run:
+          name: Set npm cache
+          command: "npm config --global set cache /mnt/ramdisk/.npm"
+      - run:
           name: "Install dependencies"
           command: npm ci --prefer-offline --no-audit
       - run:
@@ -105,7 +111,10 @@ jobs:
       - save_cache:
           key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
-            - ~/.npm
+            - /mnt/ramdisk/.npm
+      - run:
+          name: "Delete npm cache from workspace"
+          command: "rm -rf /mnt/ramdisk/.npm"
       - persist_to_workspace:
           root: /mnt
           paths:
@@ -212,6 +221,9 @@ jobs:
           - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
           - backend-cache-{{ checksum "backend/package-lock.json" }}
       - run:
+          name: Set npm cache
+          command: "npm config --global set cache /mnt/ramdisk/.npm"
+      - run:
           name: Install Docker Buildx
           command: |
             mkdir -vp ~/.docker/cli-plugins/
@@ -227,7 +239,7 @@ jobs:
       - save_cache:
           key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
-            - ~/.npm
+            - /mnt/ramdisk/.npm
       - when:
           condition:
             or:
