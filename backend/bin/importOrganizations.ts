@@ -1,5 +1,7 @@
 import { omit } from "lodash"
 
+import { Prisma } from "@prisma/client"
+
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import { TMCError } from "../lib/errors"
@@ -45,8 +47,11 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
-  const details = {
-    ...omit(org, ["id", "creator_id", "whitelisted_ips", "logo_path"]),
+  const details: Prisma.OrganizationUpdateInput = {
+    ...(omit(org, ["id", "creator_id", "whitelisted_ips", "logo_path"]) as Omit<
+      OrganizationInfo,
+      "id" | "creator_id" | "whitelisted_ips" | "logo_path"
+    >),
     name: org.name,
     disabled_reason: org.disabled_reason,
     information: org.information,
@@ -63,7 +68,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
       slug: org.slug,
     },
     create: {
-      ...details,
+      ...(details as Prisma.OrganizationCreateInput),
       secret_key: await generateSecret(),
     },
     update: details,
