@@ -35,9 +35,9 @@ docker build . --cache-from eu.gcr.io/moocfi/moocfi-frontend:latest -f Dockerfil
 
 echo "Copying npm and next caches from container to host"
 docker create -ti --name frontend_tmp "$TAG" sh
-docker cp frontend_tmp:/home/node/.npm ~/.npm
+docker cp frontend_tmp:/home/node/.npm /mnt/ramdisk/.npm
 mkdir -p .next/cache
-docker cp frontend_tmp:/app/.next/cache .next/cache
+docker cp frontend_tmp:/app/.next/cache /mnt/ramdisk/frontend/.next/cache
 docker rm -f frontend_tmp
 
 cd ..

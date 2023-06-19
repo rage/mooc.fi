@@ -34,7 +34,7 @@ echo "Successfully built image: $TAG"
 echo "Copying sourcemap and npm cache from container to host"
 docker create -ti --name tmpcontainer "$TAG" sh
 docker cp tmpcontainer:/app/sourcemap sourcemap
-docker cp tmpcontainer:/home/node/.npm ~/.npm
+docker cp tmpcontainer:/home/node/.npm /mnt/ramdisk/.npm
 docker rm -f tmpcontainer
 echo "Sourcemap and npm cache copied from container!"
 
