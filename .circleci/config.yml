@@ -48,7 +48,7 @@ jobs:
           - frontend-cache-{{ checksum "frontend/package.json" }}
       - run:
           name: Set npm cache
-          command: "npm config --global set cache /mnt/ramdisk/.npm"
+          command: "npm config set cache /mnt/ramdisk/.npm"
       - run:
           name: Install Docker Buildx
           command: |
@@ -95,7 +95,7 @@ jobs:
           - backend-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Set npm cache
-          command: "npm config --global set cache /mnt/ramdisk/.npm"
+          command: "npm config set cache /mnt/ramdisk/.npm"
       - run:
           name: "Install dependencies"
           command: npm ci --prefer-offline --no-audit
@@ -222,7 +222,7 @@ jobs:
           - backend-cache-{{ checksum "backend/package-lock.json" }}
       - run:
           name: Set npm cache
-          command: "npm config --global set cache /mnt/ramdisk/.npm"
+          command: "npm config set cache /mnt/ramdisk/.npm"
       - run:
           name: Install Docker Buildx
           command: |
