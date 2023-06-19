@@ -115,6 +115,11 @@ jobs:
       - run:
           name: "Delete npm cache from workspace"
           command: "rm -rf /mnt/ramdisk/.npm"
+      - run:
+          name: "Debug ramdisk"
+          command: |
+            whoami
+            ls -lah /mnt/ramdisk
       - persist_to_workspace:
           root: /mnt
           paths:
@@ -130,6 +135,11 @@ jobs:
     parallelism: 8
     working_directory: /mnt/ramdisk/backend
     steps:
+      - run:
+          name: "Debug ramdisk"
+          command: |
+            whoami
+            ls -lah /mnt/ramdisk
       - attach_workspace:
           at: /mnt
       # - run:
