@@ -11,11 +11,12 @@ WORKDIR /app
 
 COPY --chown=node package.json /app/
 COPY --chown=node package-lock.json /app/
-COPY --chown=node /mnt/ramdisk/.npm /home/node/.npm
+COPY --chown=node .npm /home/node/.npm
 
 RUN npm ci --prefer-offline --no-audit
 
 COPY --chown=node . /app
+RUN rm -rf /app/.npm
 
 RUN rm schema.graphql \
   && npm run build

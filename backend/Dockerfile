@@ -26,13 +26,14 @@ WORKDIR /app
 COPY --chown=node package.json package-lock.json /app/
 COPY --chown=node patches /app/patches
 COPY --chown=node prisma /app/prisma
-COPY --chown=node /mnt/ramdisk/.npm /home/node/.npm
+COPY --chown=node .npm /home/node/.npm
 
 ARG BUILD_LIBRDKAFKA=0
 RUN npm ci --prefer-offline --no-audit
 RUN rm -rf /node_modules/node-rdkafka/deps
 
 COPY --chown=node . /app
+RUN rm -rf /app/.npm
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
