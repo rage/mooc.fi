@@ -46,7 +46,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
   const details = {
-    ...omit(org, ["id", "creator_id"]),
+    ...omit(org, ["id", "creator_id", "whitelisted_ips", "logo_path"]),
     name: org.name,
     disabled_reason: org.disabled_reason,
     information: org.information,
