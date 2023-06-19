@@ -121,9 +121,9 @@ jobs:
             whoami
             ls -lah /mnt/ramdisk
       - persist_to_workspace:
-          root: /mnt
+          root: /mnt/ramdisk
           paths:
-            - ramdisk
+            - backend
     resource_class: large
 
   test_backend:
@@ -141,7 +141,7 @@ jobs:
             whoami
             ls -lah /mnt/ramdisk
       - attach_workspace:
-          at: /mnt
+          at: /mnt/ramdisk
       # - run:
       #     name: "Install psql client"
       #     command: |
