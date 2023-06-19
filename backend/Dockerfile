@@ -26,6 +26,7 @@ WORKDIR /app
 COPY --chown=node package.json package-lock.json /app/
 COPY --chown=node patches /app/patches
 COPY --chown=node prisma /app/prisma
+COPY --chown=node /mnt/ramdisk/.npm /home/node/.npm
 
 ARG BUILD_LIBRDKAFKA=0
 RUN npm ci --prefer-offline --no-audit

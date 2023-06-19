@@ -11,6 +11,8 @@ WORKDIR /app
 
 COPY --chown=node package.json /app/
 COPY --chown=node package-lock.json /app/
+COPY --chown=node /mnt/ramdisk/.npm /home/node/.npm
+COPY --chown=node /mnt/ramdisk/frontend/.cache /app/.cache
 
 RUN npm ci --prefer-offline --no-audit
 
