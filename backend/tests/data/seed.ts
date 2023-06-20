@@ -13,6 +13,7 @@ import {
   openUniversityRegistrationLink,
   organizations,
   services,
+  sponsors,
   storedData,
   study_modules,
   tags,
@@ -45,6 +46,7 @@ export const seed = async (prisma: ExtendedPrismaClient) => {
 
   const seededTagTypes = await create("tagType", tagTypes)
   const seededTags = await create("tag", tags)
+  const seededSponsors = await create("sponsor", sponsors)
   const seededModules = await create("studyModule", study_modules)
   const seededCourses = await create("course", courses)
   const seededOrganizations = await create("organization", organizations)
@@ -111,5 +113,6 @@ export const seed = async (prisma: ExtendedPrismaClient) => {
     courseOwnerships: seededCourseOwnerships,
     tags: seededTags,
     tagTypes: seededTagTypes,
+    sponsors: seededSponsors,
   }
 }

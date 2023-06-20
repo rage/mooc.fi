@@ -3,7 +3,7 @@ import { omit, uniqBy } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { NexusGenInputs } from "nexus-typegen"
 
-import { Course, Prisma, StudyModule, Tag } from "@prisma/client"
+import { Course, Prisma, Sponsor, StudyModule, Tag } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
@@ -50,6 +50,7 @@ export const CourseMutations = extendType({
           completion_email_id,
           course_stats_email_id,
           language,
+          sponsors,
         } = course
         let tags = course.tags ?? []
 
@@ -112,6 +113,9 @@ export const CourseMutations = extendType({
               ? { connect: { id: course_stats_email_id } }
               : undefined,
             tags: { connect: (tags ?? []).map((tag) => ({ id: tag.id })) },
+            sponsors: {
+              connect: (sponsors ?? []).map((sponsor) => ({ id: sponsor.id })),
+            },
           },
         })
 
@@ -151,6 +155,7 @@ export const CourseMutations = extendType({
           completions_handled_by,
           course_stats_email_id,
           tags,
+          sponsors,
         } = course
         let { end_date } = course
 
@@ -168,6 +173,7 @@ export const CourseMutations = extendType({
             inherit_settings_from: true,
             user_course_settings_visibilities: true,
             tags: true,
+            sponsors: true,
           },
         })
 
@@ -219,7 +225,7 @@ export const CourseMutations = extendType({
           existingCourse.completions_handled_by,
         )
         const tagsMutation = getTagMutation(course, existingCourse, tags)
-
+        const sponsorsMutation = getSponsorMutation(existingCourse, sponsors)
         const updatedCourse = await ctx.prisma.course.update({
           where: {
             id: nullToUndefined(id),
@@ -252,6 +258,7 @@ export const CourseMutations = extendType({
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             tags: tagsMutation,
+            sponsors: sponsorsMutation,
           },
         })
 
@@ -365,6 +372,26 @@ function getTagMutation<C extends Course>(
   return {
     connect: connectTags.length ? connectTags : undefined,
     disconnect: removedTagIds.length ? removedTagIds : undefined,
+  }
+}
+
+function getSponsorMutation<C extends Course>(
+  existingCourse: C & { sponsors: Array<Sponsor> },
+  sponsors?:
+    | (
+        | NexusGenInputs["CourseCreateArg"]
+        | NexusGenInputs["CourseUpsertArg"]
+      )["sponsors"]
+    | null,
+): Prisma.SponsorUpdateManyWithoutCoursesNestedInput | undefined {
+  const sponsorIds = getIds(sponsors ?? [])
+  const removedSponsorIds =
+    existingCourse.sponsors
+      ?.filter((sponsor) => !sponsorIds.includes(sponsor.id))
+      .map((sponsor) => ({ id: sponsor.id })) ?? []
+  return {
+    connect: sponsorIds.length ? sponsorIds.map((id) => ({ id })) : undefined,
+    disconnect: removedSponsorIds.length ? removedSponsorIds : undefined,
   }
 }
 

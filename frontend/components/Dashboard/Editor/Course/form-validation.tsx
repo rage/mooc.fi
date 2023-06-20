@@ -66,6 +66,7 @@ export const initialValues: CourseFormValues = {
   user_course_settings_visibilities: [],
   upcoming_active_link: false,
   tags: [],
+  sponsors: [],
   completions_handled_by: "",
   inherit_settings_from: "",
 }

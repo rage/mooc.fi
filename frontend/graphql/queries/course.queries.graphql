@@ -4,9 +4,42 @@ query Courses($language: String) {
   }
 }
 
+query NewCourses($language: String) {
+  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+    ...NewCourseFields
+    sponsors(language: $language) {
+      ...SponsorFields
+      translations {
+        ...SponsorTranslationFields
+      }
+      images {
+        ...SponsorImageFields
+      }
+    }
+  }
+}
+
 query FrontpageCoursesModules($language: String) {
   courses(orderBy: { order: asc }, language: $language, hidden: false) {
     ...FrontpageCourseFields
+  }
+  study_modules(orderBy: { id: asc }, language: $language) {
+    ...StudyModuleFields
+  }
+}
+
+query NewFrontpageCoursesModules($language: String) {
+  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+    ...NewFrontpageCourseFields
+    sponsors(language: $language) {
+      ...SponsorFields
+      translations {
+        ...SponsorTranslationFields
+      }
+      images {
+        ...SponsorImageFields
+      }
+    }
   }
   study_modules(orderBy: { id: asc }, language: $language) {
     ...StudyModuleFields

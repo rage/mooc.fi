@@ -50,6 +50,42 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
   "points_needed": null,
   "promote": null,
   "slug": "new1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+  ],
   "start_date": "01/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -266,14 +302,14 @@ exports[`Course mutations addCourse creates a course full: toMatchStrippedSnapsh
       "id": "tag1",
       "tag_translations": [
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_en",
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_fi",
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -369,6 +405,42 @@ exports[`Course mutations addCourse creates a course with no course tags: toMatc
   "points_needed": null,
   "promote": null,
   "slug": "new1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+  ],
   "start_date": "01/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -636,6 +708,42 @@ exports[`Course mutations addCourse creates a course with no course_translations
   "points_needed": null,
   "promote": null,
   "slug": "new1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+  ],
   "start_date": "01/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -842,14 +950,14 @@ exports[`Course mutations addCourse creates a course with no course_translations
       "id": "tag1",
       "tag_translations": [
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_en",
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_fi",
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -945,6 +1053,42 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
   "points_needed": null,
   "promote": null,
   "slug": "new1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+  ],
   "start_date": "01/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -1161,14 +1305,334 @@ exports[`Course mutations addCourse creates a course with no photo: toMatchStrip
       "id": "tag1",
       "tag_translations": [
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_en",
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
+          "abbreviation": "tag1_fi",
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+          "tag_id": "tag1",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+    },
+    {
+      "hidden": false,
+      "id": "en",
+      "tag_translations": [
+        {
           "abbreviation": null,
+          "description": null,
+          "language": "en_US",
+          "name": "English",
+          "tag_id": "en",
+        },
+        {
+          "abbreviation": null,
+          "description": null,
+          "language": "fi_FI",
+          "name": "englanti",
+          "tag_id": "en",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "language",
+        },
+      ],
+    },
+  ],
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher",
+  "tier": null,
+  "upcoming_active_link": false,
+}
+`;
+
+exports[`Course mutations addCourse creates a course with no sponsors: toMatchStrippedSnapshot 1`] = `
+{
+  "automatic_completions": false,
+  "automatic_completions_eligible_for_ects": true,
+  "completions_handled_by": {
+    "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
+  },
+  "course_aliases": [
+    {
+      "course_code": "alias1",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    },
+  ],
+  "course_translations": [
+    {
+      "description": "description_en_US",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "en_US",
+      "link": null,
+      "name": "name_en_US",
+    },
+  ],
+  "course_variants": [
+    {
+      "description": "variant1",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "slug": "variant1",
+    },
+  ],
+  "ects": null,
+  "end_date": null,
+  "exercise_completions_needed": null,
+  "has_certificate": false,
+  "hidden": null,
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "inherit_settings_from": {
+    "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "name": "course1",
+    "slug": "course1",
+  },
+  "language": "en",
+  "name": "new1",
+  "open_university_registration_links": [],
+  "order": null,
+  "photo": null,
+  "points_needed": null,
+  "promote": null,
+  "slug": "new1",
+  "sponsors": [],
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": [
+    {
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "name": "module2",
+      "slug": "module2",
+    },
+  ],
+  "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag1",
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+        },
+      ],
+      "types": [
+        "type1",
+      ],
+    },
+    {
+      "hidden": false,
+      "id": "en",
+      "tag_translations": [
+        {
+          "description": null,
+          "language": "en_US",
+          "name": "English",
+        },
+        {
+          "description": null,
+          "language": "fi_FI",
+          "name": "englanti",
+        },
+      ],
+      "types": [
+        "language",
+      ],
+    },
+  ],
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher",
+  "tier": null,
+  "upcoming_active_link": false,
+  "user_course_settings_visibilities": [
+    {
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "language": "en_US",
+    },
+  ],
+}
+`;
+
+exports[`Course mutations addCourse creates a course with no sponsors: toMatchStrippedSnapshot 2`] = `
+{
+  "automatic_completions": false,
+  "automatic_completions_eligible_for_ects": true,
+  "completion_email": null,
+  "completion_email_id": null,
+  "completions_handled_by": {
+    "automatic_completions": true,
+    "automatic_completions_eligible_for_ects": true,
+    "completion_email_id": null,
+    "completions_handled_by_id": null,
+    "course_stats_email_id": null,
+    "ects": null,
+    "end_date": "12/31/2100",
+    "exercise_completions_needed": 1,
+    "has_certificate": false,
+    "hidden": null,
+    "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "inherit_settings_from_id": null,
+    "language": null,
+    "name": "course1",
+    "order": null,
+    "owner_organization_id": null,
+    "photo_id": "00000000-0000-0000-0000-000000001101",
+    "points_needed": 3,
+    "promote": null,
+    "slug": "course1",
+    "start_date": "01/01/1900",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "support_email": null,
+    "teacher_in_charge_email": "e@mail.com",
+    "teacher_in_charge_name": "teacher1",
+    "tier": null,
+    "upcoming_active_link": false,
+  },
+  "completions_handled_by_id": "00000000-0000-0000-0000-000000000002",
+  "course_aliases": [
+    {
+      "course_code": "alias1",
+      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    },
+  ],
+  "course_stats_email": null,
+  "course_stats_email_id": null,
+  "course_translations": [
+    {
+      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "description": "description_en_US",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "language": "en_US",
+      "link": null,
+      "name": "name_en_US",
+    },
+  ],
+  "course_variants": [
+    {
+      "course_id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "description": "variant1",
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "instructions": null,
+      "slug": "variant1",
+    },
+  ],
+  "ects": null,
+  "end_date": null,
+  "exercise_completions_needed": null,
+  "exercises": [],
+  "handles_completions_for": [],
+  "has_certificate": false,
+  "hidden": null,
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "inherit_settings_from": {
+    "automatic_completions": true,
+    "automatic_completions_eligible_for_ects": true,
+    "completion_email_id": null,
+    "completions_handled_by_id": null,
+    "course_stats_email_id": null,
+    "ects": null,
+    "end_date": "12/31/2100",
+    "exercise_completions_needed": 1,
+    "has_certificate": false,
+    "hidden": null,
+    "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+    "inherit_settings_from_id": null,
+    "language": null,
+    "name": "course1",
+    "order": null,
+    "owner_organization_id": null,
+    "photo_id": "00000000-0000-0000-0000-000000001101",
+    "points_needed": 3,
+    "promote": null,
+    "slug": "course1",
+    "start_date": "01/01/1900",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "support_email": null,
+    "teacher_in_charge_email": "e@mail.com",
+    "teacher_in_charge_name": "teacher1",
+    "tier": null,
+    "upcoming_active_link": false,
+  },
+  "inherit_settings_from_id": "00000000-0000-0000-0000-000000000002",
+  "language": "en",
+  "name": "new1",
+  "open_university_registration_links": [],
+  "order": null,
+  "owner_organization_id": null,
+  "photo": null,
+  "photo_id": null,
+  "points_needed": null,
+  "promote": null,
+  "services": [],
+  "slug": "new1",
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": [
+    {
+      "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+      "image": null,
+      "name": "module2",
+      "order": null,
+      "slug": "module2",
+      "study_module_translations": [
+        {
+          "description": "module2_fi_FI",
+          "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+          "language": "fi_FI",
+          "name": "module2_fi_FI",
+          "study_module_id": "00000000-0000-0000-0000-000000000101",
+        },
+      ],
+    },
+  ],
+  "support_email": null,
+  "tags": [
+    {
+      "hidden": false,
+      "id": "tag1",
+      "tag_translations": [
+        {
+          "abbreviation": "tag1_en",
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+          "tag_id": "tag1",
+        },
+        {
+          "abbreviation": "tag1_fi",
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -1264,6 +1728,42 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
   "points_needed": null,
   "promote": null,
   "slug": "new1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+  ],
   "start_date": "01/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -1457,14 +1957,14 @@ exports[`Course mutations addCourse creates a course with no study_modules: toMa
       "id": "tag1",
       "tag_translations": [
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_en",
           "description": "tag1 description",
           "language": "en_US",
           "name": "tag1 in english",
           "tag_id": "tag1",
         },
         {
-          "abbreviation": null,
+          "abbreviation": "tag1_fi",
           "description": "tag1 kuvaus",
           "language": "fi_FI",
           "name": "tag1 suomeksi",
@@ -1594,6 +2094,63 @@ exports[`Course mutations updateCourse deletes photo: toMatchStrippedSnapshot 1`
   "points_needed": 3,
   "promote": null,
   "slug": "course1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+    {
+      "id": "sponsor2",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor2-logo-60x60.png",
+          "width": 60,
+        },
+      ],
+      "name": "Sponsor 2",
+      "translations": [
+        {
+          "description": null,
+          "language": "en_US",
+          "link": null,
+          "link_text": null,
+          "name": "Sponsor 2",
+        },
+      ],
+    },
+  ],
   "start_date": "02/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -2002,6 +2559,63 @@ exports[`Course mutations updateCourse removes language tag: toMatchStrippedSnap
   "points_needed": 3,
   "promote": null,
   "slug": "course1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+    {
+      "id": "sponsor2",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor2-logo-60x60.png",
+          "width": 60,
+        },
+      ],
+      "name": "Sponsor 2",
+      "translations": [
+        {
+          "description": null,
+          "language": "en_US",
+          "link": null,
+          "link_text": null,
+          "name": "Sponsor 2",
+        },
+      ],
+    },
+  ],
   "start_date": "02/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -2377,6 +2991,63 @@ exports[`Course mutations updateCourse updates course: toMatchStrippedSnapshot 1
   "points_needed": 3,
   "promote": null,
   "slug": "updated_course1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+    {
+      "id": "sponsor2",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor2-logo-60x60.png",
+          "width": 60,
+        },
+      ],
+      "name": "Sponsor 2",
+      "translations": [
+        {
+          "description": null,
+          "language": "en_US",
+          "link": null,
+          "link_text": null,
+          "name": "Sponsor 2",
+        },
+      ],
+    },
+  ],
   "start_date": "02/01/1900",
   "start_point": null,
   "status": "Upcoming",
@@ -2796,6 +3467,63 @@ exports[`Course mutations updateCourse updates language tag: toMatchStrippedSnap
   "points_needed": 3,
   "promote": null,
   "slug": "course1",
+  "sponsors": [
+    {
+      "id": "sponsor1",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor1-logo-60x60.png",
+          "width": 60,
+        },
+        {
+          "height": 200,
+          "type": "banner",
+          "uri": "sponsor1-banner-800x200.png",
+          "width": 800,
+        },
+      ],
+      "name": "Sponsor 1",
+      "translations": [
+        {
+          "description": "Sponsor 1 description in English",
+          "language": "en_US",
+          "link": "http://sponsor1.com",
+          "link_text": "Sponsor 1 website",
+          "name": "Sponsor 1",
+        },
+        {
+          "description": "Sponsori 1:n suomenkielinen kuvaus",
+          "language": "fi_FI",
+          "link": "http://sponsor1.fi",
+          "link_text": "Sponsor 1:n sivusto",
+          "name": "Sponsori 1",
+        },
+      ],
+    },
+    {
+      "id": "sponsor2",
+      "images": [
+        {
+          "height": 60,
+          "type": "logo",
+          "uri": "sponsor2-logo-60x60.png",
+          "width": 60,
+        },
+      ],
+      "name": "Sponsor 2",
+      "translations": [
+        {
+          "description": null,
+          "language": "en_US",
+          "link": null,
+          "link_text": null,
+          "name": "Sponsor 2",
+        },
+      ],
+    },
+  ],
   "start_date": "02/01/1900",
   "start_point": null,
   "status": "Upcoming",

@@ -36,9 +36,9 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import {
   CourseCatalogueTagsDocument,
-  CourseFieldsFragment,
-  CoursesDocument,
   CourseStatus,
+  NewCourseFieldsFragment,
+  NewCoursesDocument,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
 
@@ -252,7 +252,7 @@ const SearchResultStatus = ({
 }
 
 const courseHasTag = (
-  course: CourseFieldsFragment | null,
+  course: NewCourseFieldsFragment | null,
   tag: TagCoreFieldsFragment,
 ) => {
   if (!course) {
@@ -262,8 +262,8 @@ const courseHasTag = (
 }
 
 const compareCourses = (
-  course1: CourseFieldsFragment,
-  course2: CourseFieldsFragment,
+  course1: NewCourseFieldsFragment,
+  course2: NewCourseFieldsFragment,
 ) => {
   if (course1.study_modules.length == 0) {
     return 1
@@ -298,7 +298,7 @@ function CourseGrid() {
   }) as CourseStatus[]
 
   const { loading: coursesLoading, data: coursesData } = useQuery(
-    CoursesDocument,
+    NewCoursesDocument,
     {
       variables: { language },
       ssr: false,

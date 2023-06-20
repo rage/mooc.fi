@@ -60,8 +60,42 @@ fragment FrontpageCourseFields on Course {
   }
 }
 
+fragment NewFrontpageCourseFields on Course {
+  ...CourseCoreFields
+  description
+  link
+  order
+  study_module_order
+  promote
+  status
+  start_point
+  study_module_start_point
+  hidden
+  upcoming_active_link
+  tier
+  support_email
+  teacher_in_charge_email
+  teacher_in_charge_name
+  start_date
+  end_date
+  has_certificate
+  study_modules {
+    ...StudyModuleCoreFields
+  }
+}
+
 fragment CourseFields on Course {
   ...FrontpageCourseFields
+  course_translations {
+    ...CourseTranslationCoreFields
+  }
+  tags {
+    ...TagCoreFields
+  }
+}
+
+fragment NewCourseFields on Course {
+  ...NewFrontpageCourseFields
   course_translations {
     ...CourseTranslationCoreFields
   }
@@ -107,6 +141,9 @@ fragment EditorCourseDetailedFields on Course {
   automatic_completions_eligible_for_ects
   exercise_completions_needed
   points_needed
+  sponsors {
+    ...SponsorCoreFields
+  }
 }
 
 fragment EditorCourseOtherCoursesFields on Course {

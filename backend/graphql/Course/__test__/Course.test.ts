@@ -58,12 +58,41 @@ const courseTagsQuery = gql`
         id
         name
         description
+        abbreviation
         hidden
         types
         tag_translations {
           language
           name
           description
+          abbreviation
+        }
+      }
+    }
+  }
+`
+
+const courseSponsorsQuery = gql`
+  query courseSponsors($slug: String, $language: String) {
+    course(slug: $slug, language: $language) {
+      id
+      slug
+      name
+      sponsors(language: $language) {
+        id
+        name
+        translations {
+          language
+          name
+          description
+          link
+          link_text
+        }
+        images {
+          type
+          width
+          height
+          uri
         }
       }
     }
@@ -189,7 +218,7 @@ describe("Course", () => {
           }
         })
 
-        it("should return name and description in root when language provided", async () => {
+        it("should return name, description and abbreviation in root when language provided", async () => {
           const res = await ctx.client.request<any>(
             courseTagsQuery,
             {
@@ -204,6 +233,7 @@ describe("Course", () => {
           expect(received.length).toBe(2)
           expect(received[0].name).toBe("tag1 in english")
           expect(received[0].description).toBe("tag1 description")
+          expect(received[0].abbreviation).toBe("tag1_en")
           expect(received[0].types).toContain("type1")
           expect(received[1].name).toBe("tag2 in english")
           expect(received[1].description).toBe("tag2 description")
@@ -272,6 +302,37 @@ describe("Course", () => {
           expect(res.course?.tags?.length).toBe(1)
           expect(res.course?.tags[0].name).toBe("piilotettu tag3")
         })
+      })
+    })
+
+    describe("sponsors", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      it("should return all if no language given", async () => {
+        const res = await ctx.client.request<any>(
+          courseSponsorsQuery,
+          {
+            slug: "course2",
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+        expect(res.course?.sponsors?.length).toBe(2)
+      })
+
+      it("should only return sponsors with given language", async () => {
+        const res = await ctx.client.request<any>(
+          courseSponsorsQuery,
+          {
+            slug: "course2",
+            language: "fi_FI",
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+        expect(res.course?.sponsors?.length).toBe(1)
+        expect(res.course?.sponsors[0].translations?.length).toBe(1)
+        expect(res.course?.sponsors[0].translations[0].name).toBe("Sponsori 1")
       })
     })
   })

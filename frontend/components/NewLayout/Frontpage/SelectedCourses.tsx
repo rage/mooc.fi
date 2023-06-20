@@ -19,7 +19,7 @@ import HomeTranslations from "/translations/home"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import { CourseFieldsFragment, CoursesDocument } from "/graphql/generated"
+import { NewCourseFieldsFragment, NewCoursesDocument } from "/graphql/generated"
 
 const CardHeader = styled("div")`
   position: relative;
@@ -48,7 +48,7 @@ const CourseCard = ({
   description,
   start_date,
   end_date,
-}: CourseFieldsFragment) => {
+}: NewCourseFieldsFragment) => {
   const date =
     start_date && end_date
       ? `${formatDateTime(start_date)} - ${formatDateTime(end_date)}`
@@ -97,7 +97,7 @@ function SelectedCourses() {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery(CoursesDocument, {
+  const { loading, data } = useQuery(NewCoursesDocument, {
     variables: { language },
     ssr: false,
   })

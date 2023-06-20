@@ -1,4 +1,4 @@
-// generated Fri May 26 2023 14:24:46 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Tue Jun 20 2023 11:50:20 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
@@ -26,6 +26,9 @@ export * from "./PointsByGroup"
 export * from "./Progress"
 export * from "./ProgressExtra"
 export * from "./Service"
+export * from "./Sponsor"
+export * from "./SponsorImage"
+export * from "./SponsorTranslation"
 export * from "./StoredData"
 export * from "./StudyModule"
 export * from "./StudyModuleTranslation"

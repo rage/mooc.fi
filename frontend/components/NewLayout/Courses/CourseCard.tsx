@@ -26,7 +26,7 @@ import moocLogo from "/public/images/new/logos/moocfi_white.svg"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
 
-import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus, NewCourseFieldsFragment } from "/graphql/generated"
 
 const ContainerBase = css`
   display: grid;
@@ -284,7 +284,7 @@ const MoocfiLogo = styled(CardHeaderImage)`
 `
 
 interface ScheduleProps {
-  course?: CourseFieldsFragment
+  course?: NewCourseFieldsFragment
 }
 
 const Schedule = React.memo(
@@ -393,7 +393,7 @@ function CourseCardLayout({
 }
 
 interface CourseCardProps {
-  course: CourseFieldsFragment
+  course: NewCourseFieldsFragment
   studyModule?: string
 }
 

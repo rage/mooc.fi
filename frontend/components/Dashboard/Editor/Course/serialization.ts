@@ -123,21 +123,42 @@ export const toCourseForm = ({
         ...omit(link, ["__typename", "id"]),
         _id: link.id ?? undefined,
       })) ?? [],
-    tags:
-      course?.tags?.map((tag) => ({
-        ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
-        _id: tag.id,
-        hidden: tag.hidden ?? false,
-        types: tag.types ?? [],
-        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
-          ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
-          _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
-          language: tagTranslation.language,
-          name: tagTranslation.name,
-          description: tagTranslation.description ?? undefined,
-          abbreviation: tagTranslation.abbreviation ?? undefined,
-        })),
-      })) ?? [],
+    tags: (course?.tags ?? []).map((tag) => ({
+      ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
+      _id: tag.id,
+      hidden: tag.hidden ?? false,
+      types: tag.types ?? [],
+      tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+        ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
+        _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
+        language: tagTranslation.language,
+        name: tagTranslation.name,
+        description: tagTranslation.description ?? undefined,
+        abbreviation: tagTranslation.abbreviation ?? undefined,
+      })),
+    })),
+    sponsors: (course?.sponsors ?? []).map((sponsor) => ({
+      ...omit(sponsor, ["__typename", "id", "created_at", "updated_at"]),
+      _id: sponsor.id,
+      name: sponsor.name,
+      translations: (sponsor.translations ?? []).map((translation) => ({
+        ...omit(translation, ["__typename", "created_at", "updated_at"]),
+        _id: `${translation.sponsor_id}:${translation.language}`,
+        language: translation.language,
+        description: translation.description ?? undefined,
+        name: translation.name,
+        link: translation.link ?? undefined,
+        link_text: translation.link_text ?? undefined,
+      })),
+      images: (sponsor.images ?? []).map((image) => ({
+        ...omit(image, ["__typename", "id", "created_at", "updated_at"]),
+        _id: `${image.sponsor_id}:${image.type}`,
+        type: image.type,
+        width: image.width,
+        height: image.height,
+        uri: image.uri,
+      })),
+    })),
   }
 }
 
@@ -249,6 +270,11 @@ export const fromCourseForm = ({
     id: tag._id,
   }))
 
+  const sponsors = values?.sponsors?.map((sponsor) => ({
+    ...omit(sponsor, ["__typename", "_id", "name", "translations", "images"]),
+    id: sponsor._id,
+  }))
+
   const formValues = newCourse
     ? omit(values, [
         "id",
@@ -308,6 +334,7 @@ export const fromCourseForm = ({
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
     tags,
+    sponsors,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)

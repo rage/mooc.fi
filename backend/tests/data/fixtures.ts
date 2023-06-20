@@ -137,6 +137,9 @@ export const courses: Prisma.CourseCreateInput[] = [
     tags: {
       connect: [{ id: "tag1" }, { id: "tag2" }],
     },
+    sponsors: {
+      connect: [{ id: "sponsor1" }],
+    },
     course_translations: {
       create: [
         {
@@ -196,6 +199,9 @@ export const courses: Prisma.CourseCreateInput[] = [
     teacher_in_charge_name: "teacher2",
     tags: {
       connect: { id: "tag3" },
+    },
+    sponsors: {
+      connect: [{ id: "sponsor1" }, { id: "sponsor2" }],
     },
     course_translations: {
       create: [
@@ -943,6 +949,7 @@ export const tags: Prisma.TagCreateInput[] = [
           language: "en_US",
           name: "tag1 in english",
           description: "tag1 description",
+          abbreviation: "tag1_en",
         },
         {
           created_at: "1900-01-01T10:00:00.00+02:00",
@@ -950,6 +957,7 @@ export const tags: Prisma.TagCreateInput[] = [
           language: "fi_FI",
           name: "tag1 suomeksi",
           description: "tag1 kuvaus",
+          abbreviation: "tag1_fi",
         },
       ],
     },
@@ -1036,6 +1044,85 @@ export const tags: Prisma.TagCreateInput[] = [
           updated_at: "1900-01-01T10:00:00.00+02:00",
           language: "fi_FI",
           name: "englanti",
+        },
+      ],
+    },
+  },
+]
+
+export const sponsors: Prisma.SponsorCreateInput[] = [
+  {
+    id: "sponsor1",
+    name: "Sponsor 1",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    translations: {
+      create: [
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "en_US",
+          name: "Sponsor 1",
+          description: "Sponsor 1 description in English",
+          link: "http://sponsor1.com",
+          link_text: "Sponsor 1 website",
+        },
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "fi_FI",
+          name: "Sponsori 1",
+          description: "Sponsori 1:n suomenkielinen kuvaus",
+          link: "http://sponsor1.fi",
+          link_text: "Sponsor 1:n sivusto",
+        },
+      ],
+    },
+    images: {
+      create: [
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          type: "logo",
+          width: 60,
+          height: 60,
+          uri: "sponsor1-logo-60x60.png",
+        },
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          type: "banner",
+          width: 800,
+          height: 200,
+          uri: "sponsor1-banner-800x200.png",
+        },
+      ],
+    },
+  },
+  {
+    id: "sponsor2",
+    name: "Sponsor 2",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    translations: {
+      create: [
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          language: "en_US",
+          name: "Sponsor 2",
+        },
+      ],
+    },
+    images: {
+      create: [
+        {
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+          type: "logo",
+          width: 60,
+          height: 60,
+          uri: "sponsor2-logo-60x60.png",
         },
       ],
     },
