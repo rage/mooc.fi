@@ -4,7 +4,7 @@
 
 backend:
   replicaCount: 2
-  connectionLimit: 30
+  connectionLimit: 5
 
 frontend:
   replicaCount: 2
